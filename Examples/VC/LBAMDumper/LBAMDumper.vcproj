@@ -56,7 +56,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
+				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -124,109 +124,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
-			UseOfMFC="0"
-			UseOfATL="2"
-			ATLMinimizesCRunTimeLibraryUsage="true"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description=""
-				CommandLine=""
-				Outputs=""
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-				TargetEnvironment="1"
-				TypeLibraryName="$(OutDir)/$(ProjectName).tlb"
-				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
-				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="stdafx.h"
-				PrecompiledHeaderFile="$(IntDir)\LBAMDumper.pch"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				RegisterOutput="false"
-				IgnoreImportLibrary="false"
-				AdditionalOptions="/libpath:&quot;/ARP/Lib&quot;"
-				LinkIncremental="0"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;"
-				ModuleDefinitionFile=".\LBAMDumper.def"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				EmbedManifest="true"
-				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
-				ComponentFileName="$(TargetName).dll"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile=".\ReleaseMinDependency/LBAMDumper.bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
@@ -263,7 +160,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
+				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -331,6 +228,109 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="true"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description=""
+				CommandLine=""
+				Outputs=""
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				AdditionalIncludeDirectories="\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+				TargetEnvironment="1"
+				TypeLibraryName="$(OutDir)/$(ProjectName).tlb"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile="$(IntDir)\LBAMDumper.pch"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="false"
+				IgnoreImportLibrary="false"
+				AdditionalOptions="/libpath:&quot;/ARP/Lib&quot;"
+				LinkIncremental="0"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;"
+				ModuleDefinitionFile=".\LBAMDumper.def"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				EmbedManifest="true"
+				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
+				ComponentFileName="$(TargetName).dll"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\ReleaseMinDependency/LBAMDumper.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|x64"
 			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
@@ -368,7 +368,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
+				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -454,21 +454,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -494,21 +494,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -541,17 +541,6 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCMIDLTool"
-						AdditionalIncludeDirectories=""
-						TargetEnvironment="1"
-						HeaderFileName="$(OutDir)/$(ProjectName).h"
-						InterfaceIdentifierFileName="$(OutDir)/$(ProjectName)_i.c"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
@@ -561,6 +550,17 @@
 						OutputDirectory=""
 						HeaderFileName="$(ProjectDir)$(ProjectName).h"
 						InterfaceIdentifierFileName="$(ProjectDir)$(ProjectName)_i.c"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCMIDLTool"
+						AdditionalIncludeDirectories=""
+						TargetEnvironment="1"
+						HeaderFileName="$(OutDir)/$(ProjectName).h"
+						InterfaceIdentifierFileName="$(OutDir)/$(ProjectName)_i.c"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -588,7 +588,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -597,7 +597,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -628,21 +628,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -668,21 +668,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -708,21 +708,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -748,21 +748,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -788,21 +788,21 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -829,22 +829,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_ATL_MIN_CRT"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_ATL_MIN_CRT"
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>

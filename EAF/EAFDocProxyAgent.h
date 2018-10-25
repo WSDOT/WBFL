@@ -49,8 +49,7 @@ public:
 
 //IEAFDisplayUnitsEventSink : IUnknown
 public:
-	HRESULT Fire_UnitsChanged(
-      eafTypes::UnitMode newUnitsMode)
+	HRESULT Fire_UnitsChanged(eafTypes::UnitMode newUnitsMode)
 	{
 		T* pT = (T*)this;
 
@@ -61,7 +60,7 @@ public:
       //}
 
       pT->Lock();
-		HRESULT ret;
+		HRESULT ret = S_OK;
 		IUnknown** pp = m_vec.begin();
 		while (pp < m_vec.end())
 		{
@@ -172,6 +171,7 @@ public:
 public:
    virtual BOOL IsModified();
    virtual void SetModified(BOOL bModified);
+   virtual void Save();
    virtual CString GetFileName();
    virtual CString GetFileTitle();
    virtual CString GetFilePath();

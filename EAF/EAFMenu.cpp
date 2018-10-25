@@ -29,6 +29,7 @@
 #include <EAF\EAFMenu.h>
 #include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFResources.h>
 
 #include <algorithm> // for std::find()
 
@@ -223,7 +224,7 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
       {
          CString strMenuItem;
          pMenu->GetMenuString( nID, strMenuItem, MF_BYCOMMAND );
-         AppendMenu(nID,strMenuItem,pCallback);
+         AppendMenu(nID,strMenuItem,EAF_FIRST_USER_COMMAND <= nID ? pCallback : NULL);
       }
    }
 }

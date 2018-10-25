@@ -96,8 +96,10 @@ public:
 	STDMETHOD(putref_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ ISegment* newVal);
 	STDMETHOD(get_SegmentCount)(/*[in]*/BSTR stage, /*[out, retval]*/ SegmentIndexType *pVal);
 	STDMETHOD(get_SegmentLength)(/*[in]*/BSTR stage, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(GetEndRelease)(/*[in]*/Side side, /*[out]*/ BSTR* removalStage,/*[out, retval]*/ MemberReleaseType *pVal);
-	STDMETHOD(SetEndRelease)(/*[in]*/Side side,  /*[in]*/ BSTR removalStage, /*[in]*/ MemberReleaseType newVal);
+	STDMETHOD(IsEndReleased)(/*[in]*/Side side, /*[in]*/ MemberReleaseType releaseType,/*[out,retval]*/VARIANT_BOOL* pvbIsReleased);
+	STDMETHOD(SetEndRelease)(/*[in]*/Side side, /*[in]*/ MemberReleaseType newVal);
+	STDMETHOD(GetEndReleaseRemovalStage)(/*[in]*/Side side, /*[out]*/ BSTR* removalStage);
+	STDMETHOD(SetEndReleaseRemovalStage)(/*[in]*/Side side,  /*[in]*/ BSTR removalStage);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
@@ -127,9 +129,9 @@ protected:
    CSegments* m_pSegments;
    Float64 m_Length;
    VARIANT_BOOL m_IsSymmetrical;
-   MemberReleaseType m_LeftRelease;
+   long m_LeftRelease;
    CComBSTR          m_LeftReleaseRemovalStage;
-   MemberReleaseType m_RightRelease;
+   long m_RightRelease;
    CComBSTR          m_RightReleaseRemovalStage;
    VARIANT_BOOL m_bIsLinkMember; // if VARIANT_TRUE, this superstructure member is used as a link
                                  // member between distinct parts of the superstructure. This would occur

@@ -423,12 +423,21 @@ ILBAMModel* CTestFourStage::CreateModel()
    pss_super0->Clone(&pss_super2);
    pss_super0->Clone(&pss_super3);
 
-   pss_super0->SetEndRelease(ssRight,_bstr_t("Stage 2"),mrtPinned);
-   pss_super1->SetEndRelease(ssLeft, _bstr_t("Stage 2"),mrtPinned);
-   pss_super1->SetEndRelease(ssRight,_bstr_t("Stage 3"),mrtPinned);
-   pss_super2->SetEndRelease(ssLeft, _bstr_t("Stage 3"),mrtPinned);
-   pss_super2->SetEndRelease(ssRight,_bstr_t("Stage 2"),mrtPinned);
-   pss_super3->SetEndRelease(ssLeft, _bstr_t("Stage 2"),mrtPinned);
+   pss_super0->SetEndReleaseRemovalStage(ssRight,_bstr_t("Stage 2"));
+   pss_super0->SetEndRelease(ssRight,mrtMz);
+
+   pss_super1->SetEndReleaseRemovalStage(ssLeft,_bstr_t("Stage 2"));
+   pss_super1->SetEndRelease(ssLeft,mrtMz);
+   pss_super1->SetEndReleaseRemovalStage(ssRight,_bstr_t("Stage 3"));
+   pss_super1->SetEndRelease(ssRight,mrtMz);
+
+   pss_super2->SetEndReleaseRemovalStage(ssLeft,_bstr_t("Stage 3"));
+   pss_super2->SetEndRelease(ssLeft,mrtMz);
+   pss_super2->SetEndReleaseRemovalStage(ssRight,_bstr_t("Stage 2"));
+   pss_super2->SetEndRelease(ssRight,mrtMz);
+
+   pss_super3->SetEndReleaseRemovalStage(ssLeft,_bstr_t("Stage 2"));
+   pss_super3->SetEndRelease(ssLeft,mrtMz);
 
    CComPtr<ISuperstructureMembers> pssms;
    TRY_TEST(psm->get_SuperstructureMembers(&pssms), S_OK);

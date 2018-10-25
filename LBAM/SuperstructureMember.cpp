@@ -27,12 +27,17 @@
 #include <WBFLComCollections.h>
 #include "SuperstructureMember.h"
 #include "LBAMUtils.h"
+#include <System\Flags.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+#define RELEASE_NONE 0
+#define RELEASE_MZ   0x0001
+#define RELEASE_FX   0x0002
 
 /////////////////////////////////////////////////////////////////////////////
 // CSuperstructureMember
@@ -119,62 +124,112 @@ STDMETHODIMP CSuperstructureMember::put_IsSymmetrical(VARIANT_BOOL newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMember::GetEndRelease(Side side, BSTR* pRemovalStage, MemberReleaseType *pVal)
+STDMETHODIMP CSuperstructureMember::IsEndReleased(Side side, MemberReleaseType releaseType,VARIANT_BOOL* pvbIsReleased)
 {
-   CHECK_RETVAL(pVal);
-   CHECK_RETSTRING(pRemovalStage);
+   CHECK_RETVAL(pvbIsReleased);
 
-	if (side==ssLeft)
+   long* pRelease = (side == ssLeft ? &m_LeftRelease : &m_RightRelease);
+   if ( releaseType == mrtNone )
    {
-      *pVal = m_LeftRelease;
-      *pRemovalStage = m_LeftReleaseRemovalStage.Copy();
+      *pvbIsReleased = (*pRelease == 0 ? VARIANT_TRUE : VARIANT_FALSE);
    }
-   else if (side==ssRight)
+   else if ( releaseType == mrtMz )
    {
-      *pVal = m_RightRelease;
-      *pRemovalStage = m_RightReleaseRemovalStage.Copy();
+      *pvbIsReleased = sysFlags<long>::IsSet(*pRelease,RELEASE_MZ) ? VARIANT_TRUE : VARIANT_FALSE;
+   }
+   else if ( releaseType == mrtFx )
+   {
+      *pvbIsReleased = sysFlags<long>::IsSet(*pRelease,RELEASE_FX) ? VARIANT_TRUE : VARIANT_FALSE;
    }
    else
+   {
       return E_INVALIDARG;
+   }
 
 	return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMember::SetEndRelease(Side side, BSTR removalStage, MemberReleaseType newVal)
+STDMETHODIMP CSuperstructureMember::SetEndRelease(Side side, MemberReleaseType newVal)
 {
-   CHECK_IN(removalStage);
-
    bool dofire=false;
 
-   // be on the lookout for nefarious values
-   if (newVal != mrtNone && newVal != mrtPinned)
-      return E_INVALIDARG;
-
-	if (side==ssLeft)
+   long* pRelease = (side == ssLeft ? &m_LeftRelease : &m_RightRelease);
+   if ( newVal == mrtNone && *pRelease != RELEASE_NONE )
    {
-      if (newVal != m_LeftRelease || m_LeftReleaseRemovalStage != removalStage)
+      *pRelease = RELEASE_NONE;
+      dofire = true;
+   }
+   else if ( newVal == mrtMz && !sysFlags<long>::IsSet(*pRelease,RELEASE_MZ) )
+   {
+      *pRelease |= RELEASE_MZ;
+      dofire = true;
+   }
+   else if ( newVal == mrtFx && !sysFlags<long>::IsSet(*pRelease,RELEASE_FX) )
+   {
+      *pRelease |= RELEASE_FX;
+      dofire = true;
+   }
+
+   if (dofire)
+   {
+      Fire_OnSuperstructureMemberChanged(this, CComBSTR("*"), cgtStiffness);
+   }
+
+	return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMember::GetEndReleaseRemovalStage(Side side,BSTR* pRemovalStage)
+{
+   CHECK_RETSTRING(pRemovalStage);
+
+	if (side == ssLeft)
+   {
+      *pRemovalStage = m_LeftReleaseRemovalStage.Copy();
+   }
+   else if (side == ssRight)
+   {
+      *pRemovalStage = m_RightReleaseRemovalStage.Copy();
+   }
+   else
+   {
+      return E_INVALIDARG;
+   }
+
+	return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMember::SetEndReleaseRemovalStage(Side side,BSTR removalStage)
+{
+   CHECK_IN(removalStage);
+   bool dofire=false;
+
+   if (side==ssLeft)
+   {
+      if (m_LeftReleaseRemovalStage != removalStage)
       {
-         m_LeftRelease = newVal;
          m_LeftReleaseRemovalStage = removalStage;
          dofire = true;
       }
    }
    else if (side==ssRight)
    {
-      if (newVal != m_RightRelease || m_RightReleaseRemovalStage != removalStage)
+      if (m_RightReleaseRemovalStage != removalStage)
       {
-         m_RightRelease = newVal;
          m_RightReleaseRemovalStage = removalStage;
          dofire = true;
       }
    }
    else
+   {
       return E_INVALIDARG;
+   }
 
    if (dofire)
+   {
       Fire_OnSuperstructureMemberChanged(this, CComBSTR("*"), cgtStiffness);
+   }
 
-	return S_OK;
+   return S_OK;
 }
 
 STDMETHODIMP CSuperstructureMember::get_SegmentLength(BSTR stage, Float64 *pVal)
@@ -460,7 +515,7 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
       var.Clear();
       if (rel == _bstr_t("Pinned"))
       {
-         m_LeftRelease=mrtPinned;
+         m_LeftRelease=mrtMz;
       }
       else if  (rel == _bstr_t("None"))
       {
@@ -486,7 +541,7 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
       var.Clear();
       if (rel == _bstr_t("Pinned"))
       {
-         m_RightRelease=mrtPinned;
+         m_RightRelease=mrtMz;
       }
       else if  (rel == _bstr_t("None"))
       {
@@ -538,12 +593,12 @@ STDMETHODIMP CSuperstructureMember::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("Length"),_variant_t(m_Length));
       hr = psave->put_Property(CComBSTR("IsSymmetrical"),_variant_t(m_IsSymmetrical));
 
-      _variant_t var = (m_LeftRelease==mrtPinned)?"Pinned":"None";
+      _variant_t var = (m_LeftRelease==mrtMz)?"Pinned":"None";
       hr = psave->put_Property(CComBSTR("LeftRelease"),var);
 
       hr = psave->put_Property(CComBSTR("LeftReleaseRemovalStage"),_variant_t(m_LeftReleaseRemovalStage));
 
-      var = (m_RightRelease==mrtPinned)?"Pinned":"None";
+      var = (m_RightRelease==mrtMz)?"Pinned":"None";
       hr = psave->put_Property(CComBSTR("RightRelease"),var);
 
       hr = psave->put_Property(CComBSTR("RightReleaseRemovalStage"),_variant_t(m_RightReleaseRemovalStage));
@@ -644,7 +699,7 @@ void CSuperstructureMember::Init()
    m_bIsLinkMember = VARIANT_FALSE;
    m_Length = 0.0;
    m_IsSymmetrical = VARIANT_FALSE;
-   m_LeftRelease = mrtNone;
-   m_RightRelease = mrtNone;
+   m_LeftRelease = RELEASE_NONE;
+   m_RightRelease = RELEASE_NONE;
 }
 

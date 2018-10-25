@@ -727,8 +727,11 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    TRY_TEST( ssm1->Clone(&ssm3), S_OK);
    TRY_TEST( ssms->Add(ssm3), S_OK);
    // hinges become continuous in stage 2
-   TRY_TEST( ssm1->SetEndRelease(ssRight, CComBSTR("Stage 2"), mrtPinned), S_OK);
-   TRY_TEST( ssm3->SetEndRelease(ssLeft,  CComBSTR("Stage 2"), mrtPinned), S_OK);
+   TRY_TEST( ssm1->SetEndReleaseRemovalStage(ssRight,CComBSTR("Stage 2")),S_OK);
+   TRY_TEST( ssm1->SetEndRelease(ssRight, mrtMz), S_OK);
+
+   TRY_TEST( ssm3->SetEndReleaseRemovalStage(ssLeft,CComBSTR("Stage 2")),S_OK);
+   TRY_TEST( ssm3->SetEndRelease(ssLeft,  mrtMz), S_OK);
 
    // configure LRFD live loads and combinations
    ConfigureLrfdLiveLoadModelInKipFeet(*model);

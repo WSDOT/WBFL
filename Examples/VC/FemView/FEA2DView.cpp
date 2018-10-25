@@ -252,11 +252,11 @@ void CFEA2DView::BuildMemberDisplayObjects()
       mbrRep->SetDrawLineStrategy(drawStrategy);
 
       VARIANT_BOOL bIsReleased;
-      pMbr->IsReleased(metStart,&bIsReleased);
+      pMbr->IsReleased(metStart,mbrReleaseMz,&bIsReleased);
       if ( bIsReleased == VARIANT_TRUE )
          drawStrategy->SetBeginType(leCircle);
 
-      pMbr->IsReleased(metEnd,&bIsReleased);
+      pMbr->IsReleased(metEnd,mbrReleaseMz,&bIsReleased);
       if ( bIsReleased == VARIANT_TRUE )
          drawStrategy->SetEndType(leCircle);
       

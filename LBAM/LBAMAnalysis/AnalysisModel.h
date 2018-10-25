@@ -250,7 +250,7 @@ private:
    void LayoutSpanNodes(ISuperstructureMembers* pmembers, ISpans* pspans, ISupports* pSupports, SuperNodeLocs* node_locs);
    void LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMembers, SuperNodeLocs* pSuperNodeLocs);
    void PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftOverhang, SuperNodeLocs* node_locs);
-   bool IsMemberEndReleased(ISuperstructureMember* pMember, Side side);
+   bool IsMemberEndReleased(ISuperstructureMember* pMember, Side side, MemberReleaseType releaseType);
 
    bool IsTempSupportInStage(ITemporarySupport* temporarySupport);
    bool IsTempSupportInModel(SupportIDType tmpSupportID); // call only after fem model is generated

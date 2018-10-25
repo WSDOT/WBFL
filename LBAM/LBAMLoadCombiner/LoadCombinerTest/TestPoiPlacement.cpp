@@ -288,8 +288,10 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    TRY_TEST(pssm1->AddSegment(_bstr_t("Stage 2"), pseg2s2), S_OK );
    TRY_TEST(pssm1->AddSegment(_bstr_t("Stage 3"), pseg2s3), S_OK );
 
-   TRY_TEST(pssm1->SetEndRelease(ssLeft,  _bstr_t("Stage 2"), mrtPinned), S_OK );
-   TRY_TEST(pssm1->SetEndRelease(ssRight, _bstr_t("Stage 3"), mrtPinned), S_OK );
+   TRY_TEST(pssm1->SetEndReleaseRemovalStage(ssLeft, _bstr_t("Stage 2")),S_OK);
+   TRY_TEST(pssm1->SetEndReleaseRemovalStage(ssRight,_bstr_t("Stage 3")),S_OK);
+   TRY_TEST(pssm1->SetEndRelease(ssLeft,  mrtMz), S_OK );
+   TRY_TEST(pssm1->SetEndRelease(ssRight, mrtMz), S_OK );
 
    // check the length of our ssms
    TRY_TEST(pssms->get_Length(&d), S_OK);

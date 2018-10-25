@@ -36,7 +36,7 @@
 
 class EAFCLASS CEAFChildFrame : public CMDIChildWnd
 {
-	DECLARE_DYNAMIC(CEAFChildFrame)
+	DECLARE_DYNCREATE(CEAFChildFrame)
 protected:
 	CEAFChildFrame();           // protected constructor used by dynamic creation
 

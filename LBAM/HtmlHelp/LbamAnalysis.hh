@@ -74,7 +74,7 @@
 #define IDH_E_INVALID_DIST_LOC                                       1600059
 #define IDH_E_TEMPERATURE_ZERO_DEPTH                                 1600060
 #define IDH_E_SETTLEMENT_LOC                                         1600061
-#define IDH_E_INVALID_HINGE_REMOVAL_STAGE                            1600062
+#define IDH_E_INVALID_RELEASE_REMOVAL_STAGE                          1600062
 #define IDH_E_TEMPORARY_SUPPORTS_TOO_CLOSE                           1600063
 #define IDH_E_POI_NOT_FOUND                                          1600065
 #define IDH_E_STRESS_NC                                              1600066

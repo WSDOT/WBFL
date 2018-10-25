@@ -88,7 +88,7 @@ END_COM_MAP()
 // IFem2dMember
 public:
 	STDMETHOD(ReleaseEnd)(/*[in]*/Fem2dMbrEndType, /*[in]*/Fem2dMbrReleaseType);
-	STDMETHOD(IsReleased)(/*[in]*/Fem2dMbrEndType end, /*[out, retval]*/ VARIANT_BOOL *pVal);
+	STDMETHOD(IsReleased)(/*[in]*/Fem2dMbrEndType end, /*[in]*/Fem2dMbrReleaseType releaseType, /*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_EI)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_EI)(/*[in]*/ Float64 newVal);
@@ -135,8 +135,8 @@ private:
 
    MemberIDType         m_ID;
    JointKeeper  m_JointKeeper;
-   bool         m_StartReleased;
-   bool         m_EndReleased;
+   long         m_StartReleases;
+   long         m_EndReleases;
    Float64       m_EA;
    Float64       m_EI;
 
@@ -151,7 +151,6 @@ protected:
    JointIDType GetJointNum(CJoint* pj);
    void GetGlobalJntForces(JointIDType jntId,Float64 *force);
    void ComputeResults();
-   MbrType GetMemberType();
    LONG GetNumDOF() const;
    LONG GetNumJoints() const;
    LONG GetCondensedDOF(LONG dof);
@@ -171,6 +170,9 @@ protected:
    void GetDeflection(Float64 loc,Float64 *disp);
 
    bool IsEquilibriumSatisfied(Float64 tolerance);
+
+   long GetReleaseTypeFlag(Fem2dMbrReleaseType releaseType);
+   bool IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType);
 
 private:
    void BuildTransformationMatrix();

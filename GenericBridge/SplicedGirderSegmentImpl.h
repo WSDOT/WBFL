@@ -730,20 +730,31 @@ protected:
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
-         m_ClosureJointFgMaterial[endType]->get_E(stageIdx,&Efg);
+         if ( m_ClosureJointFgMaterial[endType] == NULL )
+         {
+            m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
+         }
+         else
+         {
+            m_ClosureJointFgMaterial[endType]->get_E(stageIdx,&Efg);
+         }
       }
       
       Float64 Ebg = 0;
       if ( isClosureJoint == 0 )
       {
          if ( m_Shapes.front().BGMaterial )
+         {
             m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+         }
       }
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
          if ( m_ClosureJointBgMaterial[endType] )
+         {
             m_ClosureJointBgMaterial[endType]->get_E(stageIdx,&Ebg);
+         }
       }
 
       Float64 Dfg = 0;
@@ -754,20 +765,31 @@ protected:
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
-         m_ClosureJointFgMaterial[endType]->get_Density(stageIdx,&Dfg);
+         if ( m_ClosureJointFgMaterial[endType] == NULL )
+         {
+            m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
+         }
+         else
+         {
+            m_ClosureJointFgMaterial[endType]->get_Density(stageIdx,&Dfg);
+         }
       }
       
       Float64 Dbg = 0;
       if ( isClosureJoint == 0 )
       {
          if ( m_Shapes.front().BGMaterial )
+         {
             m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+         }
       }
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
          if ( m_ClosureJointBgMaterial[endType] )
+         {
             m_ClosureJointBgMaterial[endType]->get_Density(stageIdx,&Dbg);
+         }
       }
 
       section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
@@ -783,19 +805,27 @@ protected:
 
          Float64 Efg = 0;
          if ( shapeData.FGMaterial )
+         {
             shapeData.FGMaterial->get_E(stageIdx,&Efg);
+         }
 
          Float64 Ebg;
          if ( shapeData.BGMaterial )
+         {
             shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+         }
 
          Float64 Dfg = 0;
          if ( shapeData.FGMaterial )
+         {
             shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+         }
 
          Float64 Dbg = 0;
          if ( shapeData.BGMaterial )
+         {
             shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+         }
 
          CComPtr<IShape> shape;
          shapeData.Shape->Clone(&shape);
@@ -808,9 +838,6 @@ protected:
 
    int IsClosureJoint(Float64 Xs)
    {
-      if ( m_pPrevSegment == NULL && m_pNextSegment == NULL )
-         return 0; // if there is only one segment Xs cannot be in a closure
-
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
 
@@ -818,13 +845,19 @@ protected:
       girderLine->get_GirderLength(&segment_length);
 
       if ( ::InRange(0.0,Xs,segment_length) )
+      {
          return 0; 
+      }
 
       if ( Xs < 0.0 )
+      {
          return -1; // Xs is in the start closure
+      }
 
       if ( segment_length < Xs )
+      {
          return 1; // Xs is in the end closure
+      }
  
       ATLASSERT(false); // should not get here
       return 0; // Xs is not in a closure
@@ -1012,6 +1045,15 @@ protected:
             h2 = right_prismatic_bottom_flange_depth;
             h3 = left_tapered_bottom_flange_depth;
             h4 = right_tapered_bottom_flange_depth;
+         }
+
+
+         // add a dummy function before the start of the profile
+         // so we don't have issues with points that are just a little bit off
+         if ( pProfile->GetFunctionCount() == 0 )
+         {
+            mathLinFunc2d func(0.0,h1);
+            pProfile->AddFunction(xStart - 100*fabs(xStart),xStart,func);
          }
 
          if ( variationType == svtNone || 0 < left_prismatic_length )
@@ -1233,6 +1275,21 @@ protected:
          prevSegment.Release();
          nextSegment.Release();
       } while ( currSegment );
+
+
+      // add a dummy run out function at the end so we don't crash
+      // for points that are just a bit off the end
+#pragma Reminder("UPDATE: this isn't the best technique... make this more deterministic")
+      // for bridges with multiple groups, and the groups are made continuous or integral at the
+      // common pier, the 10th point of the span falls between the girders and it isn't captured
+      // in the profile. when we get the profile at these locations, *crash*
+      IndexType nFunctions = pProfile->GetFunctionCount();
+      const mathFunction2d* pLastFunction;
+      Float64 xMin,xMax;
+      pProfile->GetFunction(nFunctions-1,&pLastFunction,&xMin,&xMax);
+      Float64 h = pLastFunction->Evaluate(xMax);
+      mathLinFunc2d func(0.0,h);
+      pProfile->AddFunction(xMax,xMax + 100*fabs(xMax-xMin),func);
    }
 
    mathPolynomial2d GenerateParabola1(Float64 x1,Float64 y1,Float64 x2,Float64 y2,Float64 slope)

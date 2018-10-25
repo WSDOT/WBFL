@@ -72,7 +72,8 @@ library WBFLFem2d
    enum 
    {
       mbrReleaseNone  = 0,
-      mbrReleaseMz    = 1
+      mbrReleaseMz    = 1,
+      mbrReleaseFx    = 2
 
    } Fem2dMbrReleaseType;
 
@@ -323,7 +324,7 @@ library WBFLFem2d
 	   [propget, helpcontext(IDH_IFem2dMember_EndJoint), helpstring("property EndJoint")] 
        HRESULT EndJoint([out, retval] JointIDType *pVal);
 	   [helpcontext(IDH_IFem2dMember_IsReleased), helpstring("property IsReleased - Test if a particular end is released")] 
-       HRESULT IsReleased([in]Fem2dMbrEndType end, [out, retval] VARIANT_BOOL *pVal);
+       HRESULT IsReleased([in]Fem2dMbrEndType end, [in] Fem2dMbrReleaseType releaseType,[out, retval] VARIANT_BOOL *pVal);
 	   [helpcontext(IDH_IFem2dMember_ReleaseEnd), helpstring("method ReleaseEnd - release the start or end of the member")] 
        HRESULT ReleaseEnd([in]Fem2dMbrEndType whichEnd, [in]Fem2dMbrReleaseType releaseType);
 	   [propput, helpcontext(IDH_IFem2dMember_EndJoint), helpstring("property EndJoint ")] 

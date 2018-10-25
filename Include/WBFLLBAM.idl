@@ -84,8 +84,9 @@ library WBFLLBAM
    ] 
    enum 
    {
- 	   mrtNone    = 0,
-	   mrtPinned  = 1
+ 	   mrtNone  = 0,
+	   mrtMz    = 1,
+      mrtFx    = 2
    } MemberReleaseType;
 
    typedef
@@ -749,9 +750,13 @@ library WBFLLBAM
 		[propput, helpstring("property Length"),helpcontext(IDH_SuperstructureMember_Length)] 
 		HRESULT Length([in] Float64 newVal);
 		[helpstring("SetEndRelease"),helpcontext(IDH_SuperstructureMember_SetEndRelease)] 
-		HRESULT SetEndRelease([in]Side side, [in]BSTR removalStage, [in] MemberReleaseType newVal);
-		[helpstring("GetEndRelease"),helpcontext(IDH_SuperstructureMember_GetEndRelease)] 
-		HRESULT GetEndRelease([in]Side side, [out]BSTR* removalStage, [out] MemberReleaseType *pVal);
+		HRESULT SetEndRelease([in]Side side, [in] MemberReleaseType newVal);
+		[helpstring("IsEndReleased"),helpcontext(IDH_SuperstructureMember_GetEndRelease)] 
+		HRESULT IsEndReleased([in]Side side, [in] MemberReleaseType releaseType,[out,retval]VARIANT_BOOL* pvbIsReleased);
+		[helpstring("SetEndReleaseRemovalStage"),helpcontext(IDH_SuperstructureMember_SetEndRelease)] 
+		HRESULT SetEndReleaseRemovalStage([in]Side side, [in]BSTR removalStage);
+		[helpstring("GetEndReleaseRemovalStage"),helpcontext(IDH_SuperstructureMember_GetEndRelease)] 
+		HRESULT GetEndReleaseRemovalStage([in]Side side, [out]BSTR* removalStage);
 		[propget, helpstring("property SegmentLength"),helpcontext(IDH_SuperstructureMember_SegmentLength)] 
 		HRESULT SegmentLength([in]BSTR stage, [out, retval] Float64 *pVal);
 		[propget, helpstring("property SegmentCount"),helpcontext(IDH_SuperstructureMember_SegmentCount)] 

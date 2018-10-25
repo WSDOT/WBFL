@@ -36,6 +36,10 @@
 
 #include <math.h>
 
+#define BEAM_FIXED 0 
+#define BEAM_RELEASE_MZ 0x0001
+#define BEAM_RELEASE_FX 0x0002
+
 class Beam
 {
 public:
@@ -44,9 +48,8 @@ public:
 
 // Public Implementation
 public:
-	Beam(Float64 l,Float64 ea,Float64 ei,MbrType type = mtFixFix);
+	Beam(Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC);
    Float64 GetLength();
-   MbrType GetType();
 	virtual void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
                              Float64 &fxr,Float64 &fyr,Float64 &mzr) = 0;
 	virtual void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
@@ -59,14 +62,15 @@ protected:
 	Float64 m_L; // Length of the beam
 	Float64 m_EA; // Cross sectional area
 	Float64 m_EI; // Moment of inertia
-	MbrType m_Type; // Member type - boundary conditions
+	long m_LeftBC; // left end boundary condition
+   long m_RightBC; // right end boundary condition
 };
 
 class ConcLdBeam : public Beam
 {
 // Public Implementation
 public:
-	ConcLdBeam(Float64 q,Float64 la,LoadDir dir,Float64 l,Float64 ea,Float64 ei,MbrType type = mtFixFix);
+	ConcLdBeam(Float64 q,Float64 la,LoadDir dir,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC);
    void GetLoad(Float64 &ld);
    void GetLocation(Float64 &loc);
    LoadDir GetDirection();
@@ -91,6 +95,18 @@ private:
    void ComputeReactions();
    void ComputeDeflections();
 
+   void ComputeAxialReactions();
+   void ComputeBendingReactions();
+
+   void ComputeAxialDeflections();
+   void ComputeBendingDeflections();
+
+   void ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+   void ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+
+   void ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+   void ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+
    void ComputePPReactions();
    void ComputePFReactions();
    void ComputeFPReactions();
@@ -111,143 +127,53 @@ private:
 	void ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 	void ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 
-   void ComputePPReactionsFx();
    void ComputePPReactionsFy();
    void ComputePPReactionsMz();
 
-   void ComputePFReactionsFx();
    void ComputePFReactionsFy();
    void ComputePFReactionsMz();
 
-   void ComputeFPReactionsFx();
    void ComputeFPReactionsFy();
    void ComputeFPReactionsMz();
 
-   void ComputeFFReactionsFx();
    void ComputeFFReactionsFy();
    void ComputeFFReactionsMz();
 
-   void ComputePPDeflectionsFx();
    void ComputePPDeflectionsFy();
    void ComputePPDeflectionsMz();
 
-   void ComputePFDeflectionsFx();
    void ComputePFDeflectionsFy();
    void ComputePFDeflectionsMz();
 
-   void ComputeFPDeflectionsFx();
    void ComputeFPDeflectionsFy();
    void ComputeFPDeflectionsMz();
 
-   void ComputeFFDeflectionsFx();
    void ComputeFFDeflectionsFy();
    void ComputeFFDeflectionsMz();
 
-   void ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePPDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePFDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFPDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFFDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
-};
-
-// Beam modeling uniform member distortions starting at point a, measured from the left
-// end of the beam, and ending at the right end of the beam
-class MemberStrainBeam : public Beam
-{
-// Public Implementation
-public:
-	MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,MbrType type);
-   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a);
-	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
-                         Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
-	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
-
-// Private Implementation
-private:
-   MemberStrainBeam();
-   Float64 m_A; 
-   Float64 m_Qx;
-   Float64 m_Qz;
-   Float64 m_Fxl, m_Fxr;
-   Float64 m_Fyl, m_Fyr;
-   Float64 m_Mzl, m_Mzr;
-   Float64 m_Dxl, m_Dxr;
-   Float64 m_Dyl, m_Dyr;
-   Float64 m_Rzl, m_Rzr;
-
-   void ComputeReactions();
-   void ComputeDeflections();
-
-   void ComputePPReactions();
-   void ComputePFReactions();
-   void ComputeFPReactions();
-   void ComputeFFReactions();
-
-   void ComputePPDeflections();
-   void ComputePFDeflections();
-   void ComputeFPDeflections();
-   void ComputeFFDeflections();
-};
-
-// Beam modeling uniform member distortions starting at point a and ending at point b, measured from the left
-// end of the beam
-class UniformMemberDistortionBeam : public Beam
-{
-// Public Implementation
-public:
-	UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,MbrType type);
-   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b);
-	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
-                         Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
-	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
-
-// Private Implementation
-private:
-   UniformMemberDistortionBeam();
-   MemberStrainBeam m_Case1Beam; // distortion from point a to the end of beam
-   MemberStrainBeam m_Case2Beam; // distortion from point b to end of beam
-   // what we want is case 1 - case 2, distortion from point a to b.
-   //
-   // (==== is the portion of the beam with the applied distortion)
-   //
-   //           |<---- a ------>|
-   // Case 1    ----------------===============
-   //
-   //           |<---- b -------------->|
-   // Case 2    ------------------------=======
-   //
-   // Case 1 - Case 2
-   //           |<---- a ------>|
-   //           |<---- b -------------->|
-   //           ----------------=========------
 };
 
 class  TrapezoidalLdBeam : public Beam
@@ -257,7 +183,7 @@ class  TrapezoidalLdBeam : public Beam
 // Fifth Edition, McGraw Hill, 1975, p104-113. 
 
 public:
-	TrapezoidalLdBeam(Float64 wa,Float64 wb,Float64 la,Float64 lb,LoadDir dir,Float64 l,Float64 ea,Float64 ei,MbrType type = mtFixFix);
+	TrapezoidalLdBeam(Float64 wa,Float64 wb,Float64 la,Float64 lb,LoadDir dir,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC);
    void GetLoad(Float64 &wa, Float64& wb);
    void GetLocation(Float64 &la,Float64 &lb);
    LoadDir GetDirection();
@@ -291,6 +217,18 @@ private:
    void ComputeReactions();
    void ComputeDeflections();
 
+   void ComputeAxialReactions();
+   void ComputeBendingReactions();
+
+   void ComputeAxialDeflections();
+   void ComputeBendingDeflections();
+
+   void ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+   void ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+
+   void ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+   void ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+
    void ComputePPReactions();
    void ComputePFReactions();
    void ComputeFPReactions();
@@ -311,71 +249,131 @@ private:
 	void ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 	void ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 
-   void ComputePPReactionsFx();
    void ComputePPReactionsFy();
    void ComputePPReactionsMz();
 
-   void ComputePFReactionsFx();
    void ComputePFReactionsFy();
    void ComputePFReactionsMz();
 
-   void ComputeFPReactionsFx();
    void ComputeFPReactionsFy();
    void ComputeFPReactionsMz();
 
-   void ComputeFFReactionsFx();
    void ComputeFFReactionsFy();
    void ComputeFFReactionsMz();
 
-   void ComputePPDeflectionsFx();
    void ComputePPDeflectionsFy();
    void ComputePPDeflectionsMz();
 
-   void ComputePFDeflectionsFx();
    void ComputePFDeflectionsFy();
    void ComputePFDeflectionsMz();
 
-   void ComputeFPDeflectionsFx();
    void ComputeFPDeflectionsFy();
    void ComputeFPDeflectionsMz();
 
-   void ComputeFFDeflectionsFx();
    void ComputeFFDeflectionsFy();
    void ComputeFFDeflectionsMz();
 
-   void ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePPDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputePFDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFPDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFPDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 
-   void ComputeFFDeflectionFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFDeflectionFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputeFFDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+
+   Float64 ComputeFreeEndDeltaX(Float64 EA, Float64 W, Float64 wa, Float64 wb, Float64 a, Float64 b, Float64 x);
 };
 
+
+// Beam modeling uniform member distortions starting at point a, measured from the left
+// end of the beam, and ending at the right end of the beam
+class MemberStrainBeam : public Beam
+{
+// Public Implementation
+public:
+	MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC);
+   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a);
+	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                         Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+
+// Private Implementation
+private:
+   MemberStrainBeam();
+   Float64 m_A; 
+   Float64 m_Qx; // axial strain
+   Float64 m_Qz; // curvature
+   Float64 m_Fxl, m_Fxr;
+   Float64 m_Fyl, m_Fyr;
+   Float64 m_Mzl, m_Mzr;
+   Float64 m_Dxl, m_Dxr;
+   Float64 m_Dyl, m_Dyr;
+   Float64 m_Rzl, m_Rzr;
+
+   void ComputeReactions();
+   void ComputeDeflections();
+
+   void ComputePPReactions();
+   void ComputePFReactions();
+   void ComputeFPReactions();
+   void ComputeFFReactions();
+
+   void ComputePPDeflections();
+   void ComputePFDeflections();
+   void ComputeFPDeflections();
+   void ComputeFFDeflections();
+};
+
+// Beam modeling uniform member distortions starting at point a and ending at point b, measured from the left
+// end of the beam
+class UniformMemberDistortionBeam : public Beam
+{
+// Public Implementation
+public:
+	UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC);
+   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b);
+	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                         Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+
+// Private Implementation
+private:
+   UniformMemberDistortionBeam();
+   MemberStrainBeam m_Case1Beam; // distortion from point a to the end of beam
+   MemberStrainBeam m_Case2Beam; // distortion from point b to end of beam
+   // what we want is case 1 - case 2, distortion from point a to b.
+   //
+   // (==== is the portion of the beam with the applied distortion)
+   //
+   //           |<---- a ------>|
+   // Case 1    ----------------===============
+   //
+   //           |<---- b -------------->|
+   // Case 2    ------------------------=======
+   //
+   // Case 1 - Case 2
+   //           |<---- a ------>|
+   //           |<---- b -------------->|
+   //           ----------------=========------
+};
 
 
 #endif // FEM2D_BEAM_H_

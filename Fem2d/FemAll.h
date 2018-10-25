@@ -40,9 +40,6 @@
 #undef   zero_val
 #define  zero_val( x )     (((-EPS)<=(x)) && ((x)<=(EPS)))
 
-enum MbrType    {mtPinPin,mtPinFix,mtFixPin,mtFixFix};
-typedef MbrType MbrType;
-
 
 inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
 {

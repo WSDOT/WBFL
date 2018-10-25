@@ -154,6 +154,9 @@ interface IEAFDocument : IUnknown
    // Set the modified state of the document
    virtual void SetModified(BOOL bModified = TRUE) = 0;
 
+   // Causes the document to be saved
+   virtual void Save() = 0;
+
    // example: c:\my documents\myfile.txt
    virtual CString GetFileName() = 0; // returns myfile.txt
    virtual CString GetFileTitle() = 0; // returns myfile

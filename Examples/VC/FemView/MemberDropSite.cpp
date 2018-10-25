@@ -431,9 +431,9 @@ void CMemberDropSite::EditMember(IDType mbrID)
    CEditMemberDlg dlg(model,TRUE);
    mbr->get_ID(&dlg.m_MbrID);
    VARIANT_BOOL bIsReleased;
-   mbr->IsReleased(metStart,&bIsReleased);
+   mbr->IsReleased(metStart,mbrReleaseMz,&bIsReleased);
    dlg.m_bReleaseMzAtStart = bIsReleased == VARIANT_TRUE ? TRUE : FALSE;
-   mbr->IsReleased(metEnd,&bIsReleased);
+   mbr->IsReleased(metEnd,mbrReleaseMz,&bIsReleased);
    dlg.m_bReleaseMzAtEnd = bIsReleased == VARIANT_TRUE ? TRUE : FALSE;
    mbr->get_EA(&dlg.m_EA);
    mbr->get_EI(&dlg.m_EI);

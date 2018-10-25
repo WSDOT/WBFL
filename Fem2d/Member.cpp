@@ -34,6 +34,8 @@
 #include <cmath>
 #include <MathEx.h>
 
+#include <System\Flags.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +43,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define MBR_RELEASE_NONE 0
+#define MBR_RELEASE_MZ   0x0001
+#define MBR_RELEASE_FX   0x0002
 
 #define ON_MBR_CHANGED() ATLASSERT(m_pModel!=0); m_pModel->OnMemberChanged(this);
 
@@ -49,8 +54,8 @@ static char THIS_FILE[] = __FILE__;
 CMember::CMember():
    m_pModel(0),
    m_ID(0),
-   m_StartReleased(VARIANT_FALSE),
-   m_EndReleased(VARIANT_FALSE),
+   m_StartReleases(MBR_RELEASE_NONE),
+   m_EndReleases(MBR_RELEASE_NONE),
    m_EA(0.0),
    m_EI(0.0),
    m_TransMatrix(TotalDOF,TotalDOF),
@@ -82,7 +87,7 @@ void CMember::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, MemberIDType 
 
 }
 
-static const Float64 MY_VER=1.0;
+static const Float64 MY_VER=2.0;
 
 STDMETHODIMP CMember::Load(/*[in]*/ IStructuredLoad2 *pload)
 {
@@ -136,19 +141,36 @@ STDMETHODIMP CMember::Load(/*[in]*/ IStructuredLoad2 *pload)
 
       m_EI = vardbl.dblVal;
 
-      CComVariant varbool;
-      varbool.vt = VT_BOOL;
-      hr = pload->get_Property(CComBSTR("StartRelease"),&varbool);
-      if (FAILED(hr))
-         return hr;
+      if ( ver < 2 )
+      {
+         CComVariant varbool;
+         varbool.vt = VT_BOOL;
+         hr = pload->get_Property(CComBSTR("StartRelease"),&varbool);
+         if (FAILED(hr))
+            return hr;
 
-      m_StartReleased = (varbool.boolVal == VARIANT_TRUE ? true : false);
+         m_StartReleases = (varbool.boolVal == VARIANT_TRUE ? MBR_RELEASE_MZ : MBR_RELEASE_NONE);
 
-      hr = pload->get_Property(CComBSTR("EndRelease"),&varbool);
-      if (FAILED(hr))
-         return hr;
+         hr = pload->get_Property(CComBSTR("EndRelease"),&varbool);
+         if (FAILED(hr))
+            return hr;
 
-      m_EndReleased = (varbool.boolVal == VARIANT_TRUE ? true : false);
+         m_EndReleases = (varbool.boolVal == VARIANT_TRUE ? MBR_RELEASE_MZ : MBR_RELEASE_NONE);
+      }
+      else
+      {
+         hr = pload->get_Property(CComBSTR("StartRelease"),&varlong);
+         if (FAILED(hr))
+            return hr;
+
+         m_StartReleases = varlong.lVal;
+
+         hr = pload->get_Property(CComBSTR("EndRelease"),&varlong);
+         if (FAILED(hr))
+            return hr;
+
+         m_EndReleases = varlong.lVal;
+      }
    }
 
    VARIANT_BOOL eb;
@@ -192,11 +214,11 @@ STDMETHODIMP CMember::Save(/*[in]*/ IStructuredSave2 *psave)
       if (FAILED(hr))
          return hr;
 
-      hr = psave->put_Property(CComBSTR("StartRelease"),CComVariant(m_StartReleased));
+      hr = psave->put_Property(CComBSTR("StartRelease"),CComVariant(m_StartReleases));
       if (FAILED(hr))
          return hr;
 
-      hr = psave->put_Property(CComBSTR("EndRelease"),CComVariant(m_EndReleased));
+      hr = psave->put_Property(CComBSTR("EndRelease"),CComVariant(m_EndReleases));
       if (FAILED(hr))
          return hr;
    }
@@ -371,33 +393,34 @@ STDMETHODIMP CMember::get_Length(Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CMember::IsReleased(Fem2dMbrEndType end, VARIANT_BOOL *pVal)
+STDMETHODIMP CMember::IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType, VARIANT_BOOL *pVal)
 {
    CHECK_RETVAL(pVal);
-
-	if (end==metStart)
-   {
-      *pVal = (m_StartReleased ? VARIANT_TRUE : VARIANT_FALSE);
-   }
-   else
-   {
-      *pVal = (m_EndReleased ? VARIANT_TRUE : VARIANT_FALSE);
-   }
-
+   *pVal = (IsReleased(end,releaseType) ? VARIANT_TRUE : VARIANT_FALSE);
 	return S_OK;
 }
 
-STDMETHODIMP CMember::ReleaseEnd(Fem2dMbrEndType end, Fem2dMbrReleaseType rel)
+STDMETHODIMP CMember::ReleaseEnd(Fem2dMbrEndType end, Fem2dMbrReleaseType releaseType)
 {
-	if (end==metStart)
+   long* pReleases;
+	if (end == metStart)
    {
-      m_StartReleased = (rel == mbrReleaseMz) ? true : false;
+      pReleases = &m_StartReleases;
    }
    else
    {
-      m_EndReleased = (rel == mbrReleaseMz) ? true : false;
+      pReleases = &m_EndReleases;
    }
 
+   if ( releaseType == mbrReleaseNone )
+   {
+      // all member end releases are being removed
+      *pReleases = MBR_RELEASE_NONE;
+   }
+   else
+   {
+      *pReleases |= GetReleaseTypeFlag(releaseType);
+   }
    ON_MBR_CHANGED();
 	return S_OK;
 }
@@ -537,14 +560,16 @@ void CMember::BuildKlocal()
 
    Length = m_JointKeeper.GetLength();
 
-   vi = m_StartReleased ? 0 : 1;
-   vj = m_EndReleased   ? 0 : 1;
+   Float64 vk = IsReleased(metStart,mbrReleaseFx) || IsReleased(metEnd,mbrReleaseFx) ? 0 : 1;
+
+   vi = IsReleased(metStart,mbrReleaseMz) ? 0 : 1;
+   vj = IsReleased(metEnd,  mbrReleaseMz) ? 0 : 1;
    v  = 4 - vi*vj;
 
    /* compute global stiffness matrix */
 
-   A =  m_EA/Length;
-   D = -m_EA/Length;
+   A =  m_EA/Length * vk;
+   D = -m_EA/Length * vk;
    G =  (12*m_EI/pow(Length,3)) * (vi + vi*vj + vj)/v;
    H =   (6*m_EI/pow(Length,2)) * (2*vi + vi*vj)/v;
    J = -(12*m_EI/pow(Length,3)) * (vi + vi*vj + vj)/v;
@@ -552,7 +577,7 @@ void CMember::BuildKlocal()
    L =   (4*m_EI/Length)        * (3*vi)/v;
    N =  -(6*m_EI/pow(Length,2)) * (2*vi + vi*vj)/v;
    O =   (2*m_EI/Length)        * (3*vi*vj)/v;
-   P =  m_EA/Length;
+   P =  m_EA/Length * vk;
    S =  (12*m_EI/pow(Length,3)) * (vi + vi*vj + vj)/v;
    T =  -(6*m_EI/pow(Length,2)) * (2*vj + vi*vj)/v;
    U =   (4*m_EI/Length)        * (3*vj)/v;
@@ -681,8 +706,8 @@ void CMember::ComputeClassicResults()
 
       Float64 angle = m_JointKeeper.GetAngle();
       Float64 length = m_JointKeeper.GetLength();
-      mbrLd.GetForceVector(GetMemberType(),length,angle,force);
-      mbrLd.GetDispVector(GetMemberType(),length,angle ,m_EA, m_EI, disp);
+      mbrLd.GetForceVector(m_StartReleases,m_EndReleases,length,angle,force);
+      mbrLd.GetDispVector(m_StartReleases,m_EndReleases,length,angle ,m_EA, m_EI, disp);
 
       // Rotations may need to be adjusted for global joint rotation...
       // ra = r + rb ???
@@ -719,23 +744,6 @@ void CMember::ComputeClassicResults()
    m_Rlocal(5) = Mz2;
 }
 
-
-MbrType CMember::GetMemberType()
-{
-   MbrType mbrType;
-
-   if (m_StartReleased && m_EndReleased)
-      mbrType = mtPinPin;
-   else if (m_StartReleased)
-      mbrType = mtPinFix;
-   else if (m_EndReleased)
-      mbrType = mtFixPin;
-   else
-      mbrType = mtFixFix;
-
-   return mbrType;
-}
-
 // ComputeDeflections
 //
 // Computes the member joint Deflections in local coordinates,
@@ -763,30 +771,26 @@ void CMember::ComputeDeflections()
 
    // adjust member end rotation at released ends.
    Float64 r1,r2;
-   switch(GetMemberType())
-      {
-      case mtPinPin:
-           // Joint rotations are incorrect for this member.
-           // Adjust based on actual boundary condition.
-           GetPinPinRotation(r1,r2);
-           m_Dlocal(2) = r1;
-           m_Dlocal(5) = r2;
-           break;
-
-      case mtPinFix:
-           // Start joint rotation is incorrect for this member.
-           // Adjust based on actual boundary condition.
-           GetPinFixRotation(r1);
-           m_Dlocal(2) = r1;
-           break;
-
-      case mtFixPin:
-           // End joint rotation is incorrect for this member.
-           // Adjust based on actual boundary condition.
-           GetFixPinRotation(r2);
-           m_Dlocal(5) = r2;
-           break;
-      }
+   if ( IsReleased(metStart,mbrReleaseMz) && IsReleased(metEnd,mbrReleaseMz) )
+   {
+     GetPinPinRotation(r1,r2);
+     m_Dlocal(2) = r1;
+     m_Dlocal(5) = r2;
+   }
+   else if ( IsReleased(metStart,mbrReleaseMz) )
+   {
+     // Start joint rotation is incorrect for this member.
+     // Adjust based on actual boundary condition.
+     GetPinFixRotation(r1);
+     m_Dlocal(2) = r1;
+   }
+   else if ( IsReleased(metEnd,mbrReleaseMz) ) 
+   {
+     // End joint rotation is incorrect for this member.
+     // Adjust based on actual boundary condition.
+     GetFixPinRotation(r2);
+     m_Dlocal(5) = r2;
+   }
 }
 
 // ComputeForces
@@ -977,7 +981,7 @@ void CMember::GetDeflection(Float64 loc,Float64 *disp)
    {  
       // Member loads know how to compute their own internal Deflections.
       MbrLoad *mbrLd = *ld;
-      mbrLd->GetDeflection(loc,mtFixFix,length,angle,
+      mbrLd->GetDeflection(loc,BEAM_FIXED,BEAM_FIXED,length,angle,
                              m_EA, m_EI,
                              &dx,&dy,&rz);
 
@@ -1040,7 +1044,7 @@ void CMember::GetPinPinRotation(Float64 &rz1,Float64 &rz2)
    for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
-      load->GetDispVector(mtPinPin,length,angle,
+      load->GetDispVector(BEAM_RELEASE_MZ,BEAM_RELEASE_MZ,length,angle,
                           m_EA, m_EI,
                           vector);
       rz1 += vector[2];
@@ -1072,7 +1076,7 @@ void CMember::GetPinFixRotation(Float64 &rz1)
    for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
-      load->GetDispVector(mtPinFix,length,angle,
+      load->GetDispVector(BEAM_RELEASE_MZ,BEAM_FIXED,length,angle,
                           m_EA, m_EI,
                           disp_vector);
       rz1 += disp_vector[2];
@@ -1104,7 +1108,7 @@ void CMember::GetFixPinRotation(Float64 &rz2)
    for (; i!=iend; i++)
    {
       MbrLoad *load = *i;
-      load->GetDispVector(mtFixPin,length,angle,
+      load->GetDispVector(BEAM_FIXED,BEAM_RELEASE_MZ,length,angle,
                           m_EA, m_EI,
                           vector);
       rz2 += vector[5];
@@ -1147,7 +1151,7 @@ void CMember::AssembleF()
    {
       was_loaded = true;
       MbrLoad *mbrLd = *ld;
-      mbrLd->GetForceVector(GetMemberType(),length,angle,vector);
+      mbrLd->GetForceVector(m_StartReleases,m_EndReleases,length,angle,vector);
 
       // Integrate the force vector into this member's local force vector
       for (long i = 0; i < TotalDOF; i++)
@@ -1430,6 +1434,43 @@ CComBSTR CMember::JointDoesntExistError(Fem2dMbrEndType end)
    return CreateErrorMsg2(IDS_E_MEMBER_JOINT_NOT_EXISTS, m_ID, jntid);
 }
 
+long CMember::GetReleaseTypeFlag(Fem2dMbrReleaseType releaseType)
+{
+   long flag;
+   switch(releaseType)
+   {
+   case mbrReleaseNone:
+      flag = MBR_RELEASE_NONE;
+      break;
 
+   case mbrReleaseMz:
+      flag = MBR_RELEASE_MZ;
+      break;
 
+   case mbrReleaseFx:
+      flag = MBR_RELEASE_FX;
+      break;
 
+   default:
+      ATLASSERT(false); // is there a new release type?
+      flag = MBR_RELEASE_NONE;
+   }
+   return flag;
+}
+
+bool CMember::IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType)
+{
+   long flag = GetReleaseTypeFlag(releaseType);
+   bool bIsReleased;
+   
+	if (end == metStart)
+   {
+      bIsReleased = (sysFlags<long>::IsSet(m_StartReleases,flag) ? true : false);
+   }
+   else
+   {
+      bIsReleased = (sysFlags<long>::IsSet(m_EndReleases,flag) ? true : false);
+   }
+
+   return bIsReleased;
+}

@@ -335,7 +335,7 @@ STDMETHODIMP CMemberStrain::get_Loading(LoadCaseIDType *pVal)
 }
 
 
-void CMemberStrain::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector)
+void CMemberStrain::GetForceVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 *vector)
 {
    Float64 La, Lb;
    GetLocalData(Angle, Length, &La, &Lb);
@@ -351,7 +351,7 @@ void CMemberStrain::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Flo
    pmbr->get_EA(&ea);
    pmbr->get_EI(&ei);
 
-   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, ea, ei, type);
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, ea, ei, leftBC, rightBC);
    Float64 fxl,fyl,mzl,fxr,fyr,mzr;
    Beam.GetReactions( fxl, fyl, mzl, fxr, fyr, mzr);
 
@@ -363,14 +363,14 @@ void CMemberStrain::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Flo
    vector[5] = mzr;
 }
 
-void CMemberStrain::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
+void CMemberStrain::GetDispVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                      Float64 EA,Float64 EI,
                                      Float64 *vector)
 {
    Float64 La, Lb;
    GetLocalData(Angle, Length, &La, &Lb);
 
-   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, type);
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, leftBC, rightBC);
    Float64 dxl,dyl,rzl,dxr,dyr,rzr;
    Beam.GetDeflections( dxl, dyl, rzl, dxr, dyr, rzr);
 
@@ -389,14 +389,14 @@ void CMemberStrain::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem
    *pMz = 0;
 }
 
-void CMemberStrain::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+void CMemberStrain::GetDeflection(Float64 x,long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 {
    Float64 La, Lb;
    GetLocalData(Angle, Length, &La, &Lb);
 
-   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, type);
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, leftBC, rightBC);
    Beam.GetDeflection( x, *pdx, *pdy, *prz);
 }
 

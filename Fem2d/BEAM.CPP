@@ -33,6 +33,8 @@
 #include <MathEx.h>
 #include "beam.h"
 
+#include <System\Flags.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -41,12 +43,13 @@ static char THIS_FILE[] = __FILE__;
 
 static const Float64 ZTOL=1.0e-9;
 
-Beam::Beam(Float64 l,Float64 ea,Float64 ei,MbrType type)
+Beam::Beam(Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC)
 {
    m_L  = l;
    m_EA = ea;
    m_EI = ei;
-   m_Type = type;
+   m_LeftBC = leftBC;
+   m_RightBC = rightBC;
 }
 
 Float64 Beam::GetLength()
@@ -54,17 +57,11 @@ Float64 Beam::GetLength()
    return m_L;
 }
 
-MbrType Beam::GetType()
-{
-   return m_Type;
-}
-
-
 //
 // ConcLdBeam
 //
-ConcLdBeam::ConcLdBeam(Float64 q,Float64 la,LoadDir dir,Float64 l,Float64 ea,Float64 ei,MbrType type) :
-Beam(l,ea,ei,type)
+ConcLdBeam::ConcLdBeam(Float64 q,Float64 la,LoadDir dir,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC) :
+Beam(l,ea,ei,leftBC,rightBC)
 {
    m_Q = q;
    m_Dir = dir;
@@ -114,100 +111,285 @@ void ConcLdBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
 
 void ConcLdBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPForces(x,fx,fy,mz);
-           break;
-
-      case mtPinFix:
-           ComputePFForces(x,fx,fy,mz);
-           break;
-
-      case mtFixPin:
-           ComputeFPForces(x,fx,fy,mz);
-           break;
-
-      case mtFixFix:
-           ComputeFFForces(x,fx,fy,mz);
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialForces(x,fx,fy,mz);
+   }
+   else
+   {
+      ComputeBendingForces(x,fx,fy,mz);
+   }
 }
 
 void ConcLdBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPDeflection(x,dx,dy,rz);
-           break;
-
-      case mtPinFix:
-           ComputePFDeflection(x,dx,dy,rz);
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflection(x,dx,dy,rz);
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflection(x,dx,dy,rz);
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialDeflection(x,dx,dy,rz);
+   }
+   else
+   {
+      ComputeBendingDeflection(x,dx,dy,rz);
+   }
 }
 
 void ConcLdBeam::ComputeReactions()
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPReactions();
-           break;
-
-      case mtPinFix:
-           ComputePFReactions();
-           break;
-
-      case mtFixPin:
-           ComputeFPReactions();
-           break;
-
-      case mtFixFix:
-           ComputeFFReactions();
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialReactions();
+   }
+   else
+   {
+      ComputeBendingReactions();
+   }
 }
 
 void ConcLdBeam::ComputeDeflections()
 {
-   switch(m_Type)
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialDeflections();
+   }
+   else
+   {
+      ComputeBendingDeflections();
+   }
+}
+
+void ConcLdBeam::ComputeAxialReactions()
+{
+   // can't have axial releases at both ends
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = 0;
+      m_Fxr = -m_Q;
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = -m_Q;
+      m_Fxr = 0;
+   }
+   else
+   {
+      m_Fxl = -m_Q*m_b/m_L;
+      m_Fxr = -m_Q*m_a/m_L;
+   }
+
+  m_Fyl = 0;
+  m_Mzl = 0;
+
+  m_Fyr = 0;
+  m_Mzr = 0;
+}
+
+void ConcLdBeam::ComputeBendingReactions()
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPReactions();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFReactions();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPReactions();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFReactions();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void ConcLdBeam::ComputeAxialDeflections()
+{
+   m_Dxl = 0;
+   m_Dyl = 0;
+   m_Rzl = 0;
+
+   m_Dxr = 0;
+   m_Dyr = 0;
+   m_Rzr = 0;
+}
+
+void ConcLdBeam::ComputeBendingDeflections()
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPDeflections();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFDeflections();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPDeflections();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFDeflections();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void ConcLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      if ( x < m_a )
+         fx = 0;
+      else
+         fx = -m_Q;
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      if ( x < m_a )
+         fx = -m_Fxl;
+      else
+         fx = 0;
+   }
+   else
+   {
+      if (x < m_a)
       {
-      case mtPinPin:
-           ComputePPDeflections();
-           break;
-
-      case mtPinFix:
-           ComputePFDeflections();
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflections();
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflections();
-           break;
+         fx = -m_Fxl;
       }
+      else
+      {
+         fx = -(m_Fxl + m_Q);
+      }
+   }
+
+   fy = 0;
+   mz = 0;
+}
+
+void ConcLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPForces(x,fx,fy,mz);
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFForces(x,fx,fy,mz);
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPForces(x,fx,fy,mz);
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFForces(x,fx,fy,mz);
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void ConcLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      if ( x < m_a )
+      {
+         dx = m_Q*m_b/m_EA;
+      }
+      else
+      {
+         dx = m_Q*m_b*(m_L-x)/(m_EA*m_b);
+      }
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      if ( x < m_a )
+      {
+         dx = m_Q*m_a*x/(m_EA*m_a);
+      }
+      else
+      {
+         dx = m_Q*m_a/m_EA;
+      }
+   }
+   else
+   {
+      if (x < m_a)
+      {
+         dx = m_Q*m_b*x/(m_EA*m_L);
+      }
+      else
+      {
+         dx = m_Q*m_a*(m_L-x)/(m_EA*m_L);
+      }
+   }
+
+   dy = 0;
+   rz = 0;
+}
+
+void ConcLdBeam::ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPDeflection(x,dx,dy,rz);
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFDeflection(x,dx,dy,rz);
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPDeflection(x,dx,dy,rz);
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFDeflection(x,dx,dy,rz);
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
 }
 
 void ConcLdBeam::ComputePPReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPReactionsFx();
-           break;
-
       case ForceY:
            ComputePPReactionsFy();
            break;
@@ -220,12 +402,9 @@ void ConcLdBeam::ComputePPReactions()
 
 void ConcLdBeam::ComputePFReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFReactionsFx();
-           break;
-
       case ForceY:
            ComputePFReactionsFy();
            break;
@@ -238,12 +417,9 @@ void ConcLdBeam::ComputePFReactions()
 
 void ConcLdBeam::ComputeFPReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPReactionsFx();
-           break;
-
       case ForceY:
            ComputeFPReactionsFy();
            break;
@@ -256,12 +432,9 @@ void ConcLdBeam::ComputeFPReactions()
 
 void ConcLdBeam::ComputeFFReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFReactionsFx();
-           break;
-
       case ForceY:
            ComputeFFReactionsFy();
            break;
@@ -274,12 +447,9 @@ void ConcLdBeam::ComputeFFReactions()
 
 void ConcLdBeam::ComputePPDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPDeflectionsFx();
-           break;
-
       case ForceY:
            ComputePPDeflectionsFy();
            break;
@@ -292,12 +462,9 @@ void ConcLdBeam::ComputePPDeflections()
 
 void ConcLdBeam::ComputePFDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFDeflectionsFx();
-           break;
-
       case ForceY:
            ComputePFDeflectionsFy();
            break;
@@ -310,12 +477,9 @@ void ConcLdBeam::ComputePFDeflections()
 
 void ConcLdBeam::ComputeFPDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPDeflectionsFx();
-           break;
-
       case ForceY:
            ComputeFPDeflectionsFy();
            break;
@@ -328,12 +492,9 @@ void ConcLdBeam::ComputeFPDeflections()
 
 void ConcLdBeam::ComputeFFDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFDeflectionsFx();
-           break;
-
       case ForceY:
            ComputeFFDeflectionsFy();
            break;
@@ -346,12 +507,9 @@ void ConcLdBeam::ComputeFFDeflections()
 
 void ConcLdBeam::ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputePPForcesFy(x,fx,fy,mz);
            break;
@@ -364,12 +522,9 @@ void ConcLdBeam::ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 
 void ConcLdBeam::ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputePFForcesFy(x,fx,fy,mz);
            break;
@@ -382,12 +537,9 @@ void ConcLdBeam::ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 
 void ConcLdBeam::ComputeFPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputeFPForcesFy(x,fx,fy,mz);
            break;
@@ -400,12 +552,9 @@ void ConcLdBeam::ComputeFPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 
 void ConcLdBeam::ComputeFFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputeFFForcesFy(x,fx,fy,mz);
            break;
@@ -418,12 +567,9 @@ void ConcLdBeam::ComputeFFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 
 void ConcLdBeam::ComputePPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputePPDeflectionFy(x,dx,dy,rz);
            break;
@@ -436,12 +582,9 @@ void ConcLdBeam::ComputePPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &
 
 void ConcLdBeam::ComputePFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputePFDeflectionFy(x,dx,dy,rz);
            break;
@@ -454,12 +597,9 @@ void ConcLdBeam::ComputePFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &
 
 void ConcLdBeam::ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputeFPDeflectionFy(x,dx,dy,rz);
            break;
@@ -472,12 +612,9 @@ void ConcLdBeam::ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &
 
 void ConcLdBeam::ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputeFFDeflectionFy(x,dx,dy,rz);
            break;
@@ -486,17 +623,6 @@ void ConcLdBeam::ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &
            ComputeFFDeflectionMz(x,dx,dy,rz);
            break;
       }
-}
-
-void ConcLdBeam::ComputePPReactionsFx()
-{
-  m_Fxl = -m_Q*m_b/m_L;
-  m_Fyl = 0;
-  m_Mzl = 0;
-
-  m_Fxr = -m_Q*m_a/m_L;
-  m_Fyr = 0;
-  m_Mzr = 0;
 }
 
 void ConcLdBeam::ComputePPReactionsFy()
@@ -519,11 +645,6 @@ void ConcLdBeam::ComputePPReactionsMz()
   m_Fxr = 0;
   m_Fyr = -m_Q/m_L;
   m_Mzr = 0;
-}
-
-void ConcLdBeam::ComputePFReactionsFx()
-{
-   ComputePPReactionsFx();
 }
 
 void ConcLdBeam::ComputePFReactionsFy()
@@ -557,11 +678,6 @@ void ConcLdBeam::ComputePFReactionsMz()
   m_Mzr = m_Fyl*m_L - m_Q;
 }
 
-void ConcLdBeam::ComputeFPReactionsFx()
-{
-   ComputePPReactionsFx();
-}
-
 void ConcLdBeam::ComputeFPReactionsFy()
 {
   Float64 mL2 = m_L*m_L;
@@ -569,15 +685,6 @@ void ConcLdBeam::ComputeFPReactionsFy()
   Float64 ma2 = m_a*m_a;
   Float64 mb2 = m_b*m_b;
 
-/*
-  Fxr = 0;
-  Fyr = Q*(b3 - 3*b2*L)/(2*L3);
-  Mzr = 0;
-
-  Fxl = 0;
-  Fyl = -(Fyr + Q);
-  Mzl = -(Fyr*L + Q*a);
-*/
   m_Fxl = 0;
   m_Fyl = -m_Q*m_b*(3*mL2 - mb2)/(2*mL3);
   m_Mzl = -m_Q*m_a*m_b*(m_b+m_L)/(2*mL2);
@@ -600,11 +707,6 @@ void ConcLdBeam::ComputeFPReactionsMz()
   m_Fxr = 0;
   m_Fyr = -3*m_Q*(mL2 - mb2)/(2*mL3);
   m_Mzr = 0;
-}
-
-void ConcLdBeam::ComputeFFReactionsFx()
-{
-   ComputePPReactionsFx();
 }
 
 void ConcLdBeam::ComputeFFReactionsFy()
@@ -638,17 +740,6 @@ void ConcLdBeam::ComputeFFReactionsMz()
    m_Mzr = m_Q*(2*m_L*m_a - 3*ma2)/mL2;
 }
 
-void ConcLdBeam::ComputePPDeflectionsFx()
-{
-   m_Dxl = 0;
-   m_Dyl = 0;
-   m_Rzl = 0;
-
-   m_Dxr = 0;
-   m_Dyr = 0;
-   m_Rzr = 0;
-}
-
 void ConcLdBeam::ComputePPDeflectionsFy()
 {
    Float64 mb2 = m_b*m_b;
@@ -674,11 +765,6 @@ void ConcLdBeam::ComputePPDeflectionsMz()
    m_Dxr = 0;
    m_Dyr = 0;
    m_Rzr = -m_Q*(m_L - 3*ma2/m_L)/(6*m_EI);
-}
-
-void ConcLdBeam::ComputePFDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
 }
 
 void ConcLdBeam::ComputePFDeflectionsFy()
@@ -708,11 +794,6 @@ void ConcLdBeam::ComputePFDeflectionsMz()
    m_Rzr = 0;
 }
 
-void ConcLdBeam::ComputeFPDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
-}
-
 void ConcLdBeam::ComputeFPDeflectionsFy()
 {
    Float64 mL2 = m_L*m_L;
@@ -740,11 +821,6 @@ void ConcLdBeam::ComputeFPDeflectionsMz()
    m_Rzr = (m_Fyl*mL2 - 2*m_Mzl*m_L - 2*m_Q*(m_L-m_a))/(2*m_EI);
 }
 
-void ConcLdBeam::ComputeFFDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
-}
-
 void ConcLdBeam::ComputeFFDeflectionsFy()
 {
    m_Dxl = 0;
@@ -765,20 +841,6 @@ void ConcLdBeam::ComputeFFDeflectionsMz()
    m_Dxr = 0;
    m_Dyr = 0;
    m_Rzr = 0;
-}
-
-void ConcLdBeam::ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   fy = 0;
-   mz = 0;
-   if (x < m_a)
-   {
-      fx = -m_Fxl;
-   }
-   else
-   {
-      fx = -(m_Fxl + m_Q);
-   }
 }
 
 void ConcLdBeam::ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
@@ -811,11 +873,6 @@ void ConcLdBeam::ComputePPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz
    }
 }
 
-void ConcLdBeam::ComputePFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
-}
-
 void ConcLdBeam::ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    fx = 0;
@@ -844,11 +901,6 @@ void ConcLdBeam::ComputePFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz
       fy = m_Fyl;
       mz = m_Fyl*x - m_Q;
    }
-}
-
-void ConcLdBeam::ComputeFPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
 }
 
 void ConcLdBeam::ComputeFPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
@@ -881,11 +933,6 @@ void ConcLdBeam::ComputeFPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz
    }
 }
 
-void ConcLdBeam::ComputeFFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
-}
-
 void ConcLdBeam::ComputeFFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    fx = 0;
@@ -913,21 +960,6 @@ void ConcLdBeam::ComputeFFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz
    {
       fy = m_Fyl;
       mz = m_Fyl*x - m_Mzl - m_Q;
-   }
-}
-
-void ConcLdBeam::ComputePPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   dy = 0;
-   rz = 0;
-
-   if (x < m_a)
-   {
-      dx = m_Q*m_b*x/(m_EA*m_L);
-   }
-   else
-   {
-      dx = m_Q*m_a*(m_L-x)/(m_EA*m_L);
    }
 }
 
@@ -967,11 +999,6 @@ void ConcLdBeam::ComputePPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64
       dy = m_Q*(x3/m_L + (3*ma2/m_L + 2*m_L)*x - 3*ma2 - 3*x2)/(6*m_EI);
       rz = m_Q*(3*x2/m_L + 2*m_L + 3*ma2/m_L -6*x)/(6*m_EI);
    }
-}
-
-void ConcLdBeam::ComputePFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
 }
 
 void ConcLdBeam::ComputePFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
@@ -1017,11 +1044,6 @@ void ConcLdBeam::ComputePFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64
    }
 }
 
-void ConcLdBeam::ComputeFPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
-}
-
 void ConcLdBeam::ComputeFPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
    Float64 x2 = x*x;
@@ -1061,11 +1083,6 @@ void ConcLdBeam::ComputeFPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64
       dy = (m_L-x)*(3*(m_L+x)*m_Mzl - 3*m_Q*(2*m_a - x - m_L) - m_Fyl*(m_L*x + x2 + mL2))/(6*m_EI);
       rz = (m_Fyl*x2 - 2*m_Mzl*x - 2*m_Q*(x-m_a))/(2*m_EI);
    }
-}
-
-void ConcLdBeam::ComputeFFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
 }
 
 void ConcLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
@@ -1117,295 +1134,12 @@ void ConcLdBeam::ComputeFFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64
 //
 //
 
-//
-// MemberStrainBeam
-//
-MemberStrainBeam::MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,MbrType type) :
-Beam(l,ea,ei,type),
-m_A(a),
-m_Qx(qAxial),
-m_Qz(qCurvature)
-{
-   ComputeReactions();
-   ComputeDeflections();
-}
-
-void MemberStrainBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a)
-{
-   qAxial = m_Qx;
-   qCurvature = m_Qz;
-   a = m_A;
-}
-
-void MemberStrainBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
-                                    Float64 &fxr,Float64 &fyr,Float64 &mzr)
-{
-   fxl = m_Fxl;
-   fyl = m_Fyl;
-   mzl = m_Mzl;
-   fxr = m_Fxr;
-   fyr = m_Fyr;
-   mzr = m_Mzr;
-}
-
-void MemberStrainBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
-                                        Float64 &dxr,Float64 &dyr,Float64 &rzr)
-{
-   dxl = m_Dxl;
-   dyl = m_Dyl;
-   rzl = m_Rzl;
-   dxr = m_Dxr;
-   dyr = m_Dyr;
-   rzr = m_Rzr;
-}
-
-void MemberStrainBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ATLASSERT(x>=0.0 && x<=m_L);
-   fx = m_Fxl;
-   fy = m_Fyl;
-   mz = m_Mzl + m_Fyl*x;
-}
-
-void MemberStrainBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ATLASSERT(x>=0.0 && x<=m_L);
-   Float64 x2 = x*x;
-   Float64 x3 = x2*x;
-
-   dx = 0.0;
-   dy = m_Dyl + m_Rzl*x - m_Mzl*x2/(2*m_EI) + m_Fyl*x3/(6*m_EI);
-   if ( m_A < x )
-      dy += m_Qz*(x-m_A)*(x-m_A)/2;
-
-   rz = m_Rzl - m_Mzl*x/m_EI + m_Fyl*x2/(2*m_EI);
-   if ( m_A < x )
-      rz += m_Qz*(x - m_A);
-}
-
-void MemberStrainBeam::ComputeReactions()
-{
-// axial is independent of beam type
-
-   Float64 faxial = m_Qx*m_EA*(m_L-m_A)/m_L;
-   m_Fxl = faxial;
-   m_Fxr = -faxial;
-
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPReactions();
-           break;
-
-      case mtPinFix:
-           ComputePFReactions();
-           break;
-
-      case mtFixPin:
-           ComputeFPReactions();
-           break;
-
-      case mtFixFix:
-           ComputeFFReactions();
-           break;
-      }
-}
-
-void MemberStrainBeam::ComputeDeflections()
-{
-   m_Dxl = 0.0;
-   m_Dxr = 0.0;
-
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPDeflections();
-           break;
-
-      case mtPinFix:
-           ComputePFDeflections();
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflections();
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflections();
-           break;
-      }
-}
-
-// Equations taken from Roark's Formulas for Stress and Strain, 6th Edition
-// Table 3, Equations 6c-6e
-
-void MemberStrainBeam::ComputePPReactions()
-{
-  m_Fyl = 0;
-  m_Mzl = 0;
-
-  m_Fyr = 0;
-  m_Mzr = 0;
-}
-
-void MemberStrainBeam::ComputePFReactions()
-{
-  // Table 3, Equation 6c
-  m_Fyl = (-3.0*m_EI*m_Qz)*(m_L*m_L - m_A*m_A)/(2.0*m_L*m_L*m_L);
-  m_Mzl = 0;
-
-  m_Fyr = -m_Fyl;
-  m_Mzr =  m_Fyl*m_L;
-}
-
-void MemberStrainBeam::ComputeFPReactions()
-{
-   // These formulas are derived from Table 3, Equation 6c.
-   // The curvature is applied at the pinned end (in Eqn 6c the curvature is at the fixed end)
-   // This case is is the mirror image of Equation 6c with a = 0 minus the mirror image of
-   // Equation 6c with a measured from the right hand side.
-   m_Fyr = -3*m_EI*m_Qz*(m_L-m_A)*(m_L-m_A)/(2.0*m_L*m_L*m_L);
-   m_Mzr = 0;
-
-   m_Fyl = -m_Fyr;
-   m_Mzl = -m_Fyr*m_L;
-}
-
-void MemberStrainBeam::ComputeFFReactions()
-{
-   // Table 3, Equation 6d
-  m_Fyl = -6*m_EI*m_A*m_Qz*(m_L - m_A)/(m_L*m_L*m_L);
-  m_Mzl = -m_EI*m_Qz*(m_L - m_A)*(3*m_A - m_L)/(m_L*m_L);
-
-  m_Fyr = -m_Fyl;
-  m_Mzr = -m_EI*m_Qz*(m_L - m_A)*(3*m_A + m_L)/(m_L*m_L);
-}
-
-void MemberStrainBeam::ComputePPDeflections()
-{
-   // Table 3, Equation 6e
-   m_Dyl = 0;
-   m_Rzl = -m_Qz*(m_L-m_A)*(m_L-m_A)/(2*m_L);
-
-   m_Dyr = 0;
-   m_Rzr = m_Qz*(m_L*m_L-m_A*m_A)/(2*m_L);
-}
-
-void MemberStrainBeam::ComputePFDeflections()
-{
-   // Table 3, Equation 6c
-   m_Dyl = 0;
-   m_Rzl = m_Qz*(m_L-m_A)*(3*m_A - m_L)/(4*m_L);
-
-   m_Dyr = 0;
-   m_Rzr = 0;
-}
-
-void MemberStrainBeam::ComputeFPDeflections()
-{
-   m_Dyl = 0;
-   m_Rzl = 0;
-
-   m_Dyr = 0;
-   Float64 b = m_L - m_A;
-   m_Rzr = m_Qz*m_L/4 + m_Qz*(m_L - b)*(3*b - m_L)/(4*m_L);
-   //m_Rzr = m_Qz*(m_L*m_L - 2*m_A*m_L + 3*m_A*m_A)/(4*m_L); //???
-}
-
-void MemberStrainBeam::ComputeFFDeflections()
-{
-   // Table 3, Equation 6d
-   m_Dyl = 0;
-   m_Rzl = 0;
-
-   m_Dyr = 0;
-   m_Rzr = 0;
-}
-
-
-//
-// UniformMemberDistortionBeam
-//
-UniformMemberDistortionBeam::UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,MbrType type) :
-Beam(l,ea,ei,type),
-m_Case1Beam(qAxial,qCurvature,a,l,ea,ei,type),
-m_Case2Beam(qAxial,qCurvature,b,l,ea,ei,type)
-{
-}
-
-void UniformMemberDistortionBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b)
-{
-   m_Case1Beam.GetLoad(qAxial,qCurvature,a);
-   m_Case2Beam.GetLoad(qAxial,qCurvature,b);
-}
-
-void UniformMemberDistortionBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
-                                               Float64 &fxr,Float64 &fyr,Float64 &mzr)
-{
-   Float64 Fxl1,Fxl2;
-   Float64 Fyl1,Fyl2;
-   Float64 Mzl1,Mzl2;
-   Float64 Fxr1,Fxr2;
-   Float64 Fyr1,Fyr2;
-   Float64 Mzr1,Mzr2;
-   m_Case1Beam.GetReactions(Fxl1,Fyl1,Mzl1,Fxr1,Fyr1,Mzr1);
-   m_Case2Beam.GetReactions(Fxl2,Fyl2,Mzl2,Fxr2,Fyr2,Mzr2);
-
-   fxl = Fxl1 - Fxl2;
-   fyl = Fyl1 - Fyl2;
-   mzl = Mzl1 - Mzl2;
-   fxr = Fxr1 - Fxr2;
-   fyr = Fyr1 - Fyr2;
-   mzr = Mzr1 - Mzr2;
-}
-
-void UniformMemberDistortionBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
-                                                   Float64 &dxr,Float64 &dyr,Float64 &rzr)
-{
-   Float64 Dxl1,Dxl2;
-   Float64 Dyl1,Dyl2;
-   Float64 Rzl1,Rzl2;
-   Float64 Dxr1,Dxr2;
-   Float64 Dyr1,Dyr2;
-   Float64 Rzr1,Rzr2;
-   m_Case1Beam.GetDeflections(Dxl1,Dyl1,Rzl1,Dxr1,Dyr1,Rzr1);
-   m_Case2Beam.GetDeflections(Dxl2,Dyl2,Rzl2,Dxr2,Dyr2,Rzr2);
-
-   dxl = Dxl1 - Dxl2;
-   dyl = Dyl1 - Dyl2;
-   rzl = Rzl1 - Rzl2;
-   dxr = Dxr1 - Dxr2;
-   dyr = Dyr1 - Dyr2;
-   rzr = Rzr1 - Rzr2;
-}
-
-void UniformMemberDistortionBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   Float64 Fx1,Fy1,Mz1;
-   Float64 Fx2,Fy2,Mz2;
-   m_Case1Beam.GetForces(x,Fx1,Fy1,Mz1);
-   m_Case2Beam.GetForces(x,Fx2,Fy2,Mz2);
-   fx = Fx1 - Fx2;
-   fy = Fy1 - Fy2;
-   mz = Mz1 - Mz2;
-}
-
-void UniformMemberDistortionBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   Float64 Dx1,Dy1,Rz1;
-   Float64 Dx2,Dy2,Rz2;
-   m_Case1Beam.GetDeflection(x,Dx1,Dy1,Rz1);
-   m_Case2Beam.GetDeflection(x,Dx2,Dy2,Rz2);
-   dx = Dx1 - Dx2;
-   dy = Dy1 - Dy2;
-   rz = Rz1 - Rz2;
-}
 
 // 
 //
 //
-TrapezoidalLdBeam::TrapezoidalLdBeam(Float64 wa, Float64 wb,Float64 la,Float64 lb,LoadDir dir,Float64 l,Float64 ea,Float64 ei,MbrType type) :
-Beam(l,ea,ei,type)
+TrapezoidalLdBeam::TrapezoidalLdBeam(Float64 wa, Float64 wb,Float64 la,Float64 lb,LoadDir dir,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC) :
+Beam(l,ea,ei,leftBC,rightBC)
 {
    ATLASSERT(dir!=MomentZ); // not supported yet
    ATLASSERT(IsGE(0.0,la,ZTOL) && IsLE(la,l,ZTOL));
@@ -1471,100 +1205,364 @@ void TrapezoidalLdBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
 
 void TrapezoidalLdBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPForces(x,fx,fy,mz);
-           break;
-
-      case mtPinFix:
-           ComputePFForces(x,fx,fy,mz);
-           break;
-
-      case mtFixPin:
-           ComputeFPForces(x,fx,fy,mz);
-           break;
-
-      case mtFixFix:
-           ComputeFFForces(x,fx,fy,mz);
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialForces(x,fx,fy,mz);
+   }
+   else
+   {
+      ComputeBendingForces(x,fx,fy,mz);
+   }
 }
 
 void TrapezoidalLdBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPDeflection(x,dx,dy,rz);
-           break;
-
-      case mtPinFix:
-           ComputePFDeflection(x,dx,dy,rz);
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflection(x,dx,dy,rz);
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflection(x,dx,dy,rz);
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialDeflection(x,dx,dy,rz);
+   }
+   else
+   {
+      ComputeBendingDeflection(x,dx,dy,rz);
+   }
 }
 
 void TrapezoidalLdBeam::ComputeReactions()
 {
-   switch(m_Type)
-      {
-      case mtPinPin:
-           ComputePPReactions();
-           break;
-
-      case mtPinFix:
-           ComputePFReactions();
-           break;
-
-      case mtFixPin:
-           ComputeFPReactions();
-           break;
-
-      case mtFixFix:
-           ComputeFFReactions();
-           break;
-      }
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialReactions();
+   }
+   else
+   {
+      ComputeBendingReactions();
+   }
 }
 
 void TrapezoidalLdBeam::ComputeDeflections()
 {
-   switch(m_Type)
+   if ( m_Dir == ForceX )
+   {
+      ComputeAxialDeflections();
+   }
+   else
+   {
+      ComputeBendingDeflections();
+   }
+}
+
+void TrapezoidalLdBeam::ComputeAxialReactions()
+{
+   // can't have axial releases at both ends
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+
+   Float64 W = 0.5*(m_wb+m_wa)*(m_Lb-m_La); // force resultant
+
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = 0;
+      m_Fxr = -W;
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = -W;
+      m_Fxr = 0;
+   }
+   else
+   {
+      // deflection at b for free-ended bar
+      // this is the same as the deflection at L because there isn't any load from b to L
+      Float64 dL = ComputeFreeEndDeltaX(m_EA,W,m_wa,m_wb,m_La,m_Lb, m_Lb); 
+      m_Fxr = -dL*m_EA/m_L; // reaction required to fully restrain deflection at L
+      m_Fxl = -(W + m_Fxr); // Fxl + W + Fxr = 0 -> Fxl = -W - Fxr = -(W + Fxr)
+   }
+
+   m_Fyl=0;
+   m_Fyr=0;
+   m_Mzl=0;
+   m_Mzr=0;
+   m_Fyl_u=0;
+   m_Fyl_t=0;
+   m_Fyr_t=0;
+   m_Mzl_u=0;
+   m_Mzl_t=0;
+   m_Fyr_u=0;
+   m_Mzr_u=0;
+}
+
+void TrapezoidalLdBeam::ComputeBendingReactions()
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPReactions();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFReactions();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPReactions();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFReactions();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void TrapezoidalLdBeam::ComputeAxialDeflections()
+{
+   m_Dxl = 0;
+   m_Dyl = 0;
+   m_Rzl = 0;
+
+   m_Dxr = 0;
+   m_Dyr = 0;
+   m_Rzr = 0;
+}
+
+void TrapezoidalLdBeam::ComputeBendingDeflections()
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPDeflections();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFDeflections();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPDeflections();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFDeflections();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void TrapezoidalLdBeam::ComputeAxialForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+
+   Float64 a = m_La;
+   Float64 b = m_Lb;
+   Float64 W = 0.5*(m_wa + m_wb)*(b-a); // force resultant
+
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      if ( x <= a )
       {
-      case mtPinPin:
-           ComputePPDeflections();
-           break;
-
-      case mtPinFix:
-           ComputePFDeflections();
-           break;
-
-      case mtFixPin:
-           ComputeFPDeflections();
-           break;
-
-      case mtFixFix:
-           ComputeFFDeflections();
-           break;
+         // before start of load
+         fx = 0;
       }
+      else if ( x < b )
+      {
+         // in loaded region
+         Float64 wx =(m_wb - m_wa)*(x - a)/(b-a);
+         fx = -0.5*(wx + m_wa)*(x-a);
+      }
+      else
+      {
+         // after end of load
+         fx = -W;
+      }
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      if ( x <= a )
+      {
+         // before start of load
+         fx = -W;
+      }
+      else if ( x < b )
+      {
+         // in loaded region
+         // fx + Fxl + 0.5*(wa + wx)(x - a) = 0
+         // wx = (wb - wa)(x-a)/(b-a) + wa
+         Float64 wx = (m_wb - m_wa)*(x - a)/(b - a) + m_wa;
+         fx = -(m_Fxl + 0.5*(wx + m_wa)*(x-a));
+      }
+      else
+      {
+         // after end of load
+         fx = 0;
+      }
+   }
+   else
+   {
+      if (x<=m_La)
+      {
+         fx = -m_Fxl;
+      }
+      else if (x<m_Lb) // in region between a and b
+      {
+         // fx + Fxl + 0.5*(wa + wx)(x - a) = 0
+         // wx = (wb - wa)(x-a)/(b-a) + wa
+         Float64 wx = (m_wb - m_wa)*(x - a)/(b - a) + m_wa;
+         fx = -(m_Fxl + 0.5*(wx + m_wa)*(x-a)); // force when right end is free
+      }
+      else
+      {
+         fx = m_Fxr;
+      }
+   }
+
+   fy = 0;
+   mz = 0;
+}
+
+void TrapezoidalLdBeam::ComputeBendingForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPForces(x,fx,fy,mz);
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFForces(x,fx,fy,mz);
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPForces(x,fx,fy,mz);
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFForces(x,fx,fy,mz);
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void TrapezoidalLdBeam::ComputeAxialDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+
+   Float64 W = (m_wb+m_wa)/2. *(m_Lb-m_La); // force resultant
+
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      // for this case, the beam is fixed on the right end and free on the left
+      // our code is for fixed left and free right... just turn the variables around
+      Float64 WA = m_wb;
+      Float64 WB = m_wa;
+      Float64 A = m_Lb;
+      Float64 B = m_La;
+      Float64 X = m_L - x;
+      if ( x <= m_La )
+      {
+         // left of load
+         dx = ComputeFreeEndDeltaX(m_EA,W,WA,WB,A,B,B);
+      }
+      else if ( x < m_Lb )
+      {
+         // in loaded region
+         dx = ComputeFreeEndDeltaX(m_EA,W,WA,WB,A,B,X);
+      }
+      else
+      {
+         // right of load
+         dx = -m_Fxr/m_EA*(m_L-x);
+      }
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      if ( x <= m_La )
+      {
+         // left of load
+         dx = -m_Fxl/m_EA * x;
+      }
+      else if ( x < m_Lb )
+      {
+         // in loaded region
+         dx = ComputeFreeEndDeltaX(m_EA,W,m_wa,m_wb,m_La,m_Lb, x); // deflection at x for free-ended bar
+      }
+      else
+      {
+         // right of load
+         dx = ComputeFreeEndDeltaX(m_EA,W,m_wa,m_wb,m_La,m_Lb, m_Lb); // deflection at x for free-ended bar
+      }
+   }
+   else
+   {
+      if (x <= m_La)
+      {
+         dx = -m_Fxl/m_EA * x;
+      }
+      else if (x < m_Lb)
+      {
+         Float64 db = ComputeFreeEndDeltaX(m_EA,W,m_wa,m_wb,m_La,m_Lb, x); // deflection at x for free-ended bar
+         dx = db + m_Fxr/m_EA*x;
+      }
+      else
+      {
+         dx = -m_Fxr/m_EA*(m_L-x);
+      }
+   }
+
+   dy = 0;
+   rz = 0;
+}
+
+void TrapezoidalLdBeam::ComputeBendingDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPDeflection(x,dx,dy,rz);
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFDeflection(x,dx,dy,rz);
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPDeflection(x,dx,dy,rz);
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFDeflection(x,dx,dy,rz);
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
 }
 
 void TrapezoidalLdBeam::ComputePPReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPReactionsFx();
-           break;
-
       case ForceY:
            ComputePPReactionsFy();
            break;
@@ -1577,12 +1575,9 @@ void TrapezoidalLdBeam::ComputePPReactions()
 
 void TrapezoidalLdBeam::ComputePFReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFReactionsFx();
-           break;
-
       case ForceY:
            ComputePFReactionsFy();
            break;
@@ -1595,12 +1590,9 @@ void TrapezoidalLdBeam::ComputePFReactions()
 
 void TrapezoidalLdBeam::ComputeFPReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPReactionsFx();
-           break;
-
       case ForceY:
            ComputeFPReactionsFy();
            break;
@@ -1613,12 +1605,9 @@ void TrapezoidalLdBeam::ComputeFPReactions()
 
 void TrapezoidalLdBeam::ComputeFFReactions()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFReactionsFx();
-           break;
-
       case ForceY:
            ComputeFFReactionsFy();
            break;
@@ -1631,12 +1620,9 @@ void TrapezoidalLdBeam::ComputeFFReactions()
 
 void TrapezoidalLdBeam::ComputePPDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPDeflectionsFx();
-           break;
-
       case ForceY:
            ComputePPDeflectionsFy();
            break;
@@ -1649,12 +1635,9 @@ void TrapezoidalLdBeam::ComputePPDeflections()
 
 void TrapezoidalLdBeam::ComputePFDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFDeflectionsFx();
-           break;
-
       case ForceY:
            ComputePFDeflectionsFy();
            break;
@@ -1667,12 +1650,9 @@ void TrapezoidalLdBeam::ComputePFDeflections()
 
 void TrapezoidalLdBeam::ComputeFPDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPDeflectionsFx();
-           break;
-
       case ForceY:
            ComputeFPDeflectionsFy();
            break;
@@ -1685,12 +1665,9 @@ void TrapezoidalLdBeam::ComputeFPDeflections()
 
 void TrapezoidalLdBeam::ComputeFFDeflections()
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFDeflectionsFx();
-           break;
-
       case ForceY:
            ComputeFFDeflectionsFy();
            break;
@@ -1703,12 +1680,9 @@ void TrapezoidalLdBeam::ComputeFFDeflections()
 
 void TrapezoidalLdBeam::ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputePPForcesFy(x,fx,fy,mz);
            break;
@@ -1721,12 +1695,9 @@ void TrapezoidalLdBeam::ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float6
 
 void TrapezoidalLdBeam::ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputePFForcesFy(x,fx,fy,mz);
            break;
@@ -1739,12 +1710,9 @@ void TrapezoidalLdBeam::ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float6
 
 void TrapezoidalLdBeam::ComputeFPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputeFPForcesFy(x,fx,fy,mz);
            break;
@@ -1757,12 +1725,9 @@ void TrapezoidalLdBeam::ComputeFPForces(Float64 x,Float64 &fx,Float64 &fy,Float6
 
 void TrapezoidalLdBeam::ComputeFFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFForcesFx(x,fx,fy,mz);
-           break;
-
       case ForceY:
            ComputeFFForcesFy(x,fx,fy,mz);
            break;
@@ -1775,12 +1740,9 @@ void TrapezoidalLdBeam::ComputeFFForces(Float64 x,Float64 &fx,Float64 &fy,Float6
 
 void TrapezoidalLdBeam::ComputePPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePPDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputePPDeflectionFy(x,dx,dy,rz);
            break;
@@ -1793,12 +1755,9 @@ void TrapezoidalLdBeam::ComputePPDeflection(Float64 x,Float64 &dx,Float64 &dy,Fl
 
 void TrapezoidalLdBeam::ComputePFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputePFDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputePFDeflectionFy(x,dx,dy,rz);
            break;
@@ -1811,12 +1770,9 @@ void TrapezoidalLdBeam::ComputePFDeflection(Float64 x,Float64 &dx,Float64 &dy,Fl
 
 void TrapezoidalLdBeam::ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFPDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputeFPDeflectionFy(x,dx,dy,rz);
            break;
@@ -1829,12 +1785,9 @@ void TrapezoidalLdBeam::ComputeFPDeflection(Float64 x,Float64 &dx,Float64 &dy,Fl
 
 void TrapezoidalLdBeam::ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   ATLASSERT(m_Dir != ForceX); // ForceX is handled elsewhere
    switch(m_Dir)
       {
-      case ForceX:
-           ComputeFFDeflectionFx(x,dx,dy,rz);
-           break;
-
       case ForceY:
            ComputeFFDeflectionFy(x,dx,dy,rz);
            break;
@@ -1843,46 +1796,6 @@ void TrapezoidalLdBeam::ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Fl
            ComputeFFDeflectionMz(x,dx,dy,rz);
            break;
       }
-}
-
-// inline free function for determining deflection along bar between a and b
-Float64 TrapezoidalLdBeamComputeFxFree(Float64 EA, Float64 W, Float64 wa, Float64 wb, Float64 a, Float64 b, Float64 x)
-{
-   Float64 x2 = x*x;
-   Float64 x3 = x2*x;
-   Float64 a2 = a*a;
-   Float64 a3 = a2*a;
-
-   ATLASSERT(b>a);
-   ATLASSERT(IsGE(a,x,ZTOL) && IsLE(x,b,ZTOL));
-   ATLASSERT(EA!=0);
-   ATLASSERT(IsEqual(W, (wb+wa)/2.*(b-a),ZTOL));
-   Float64 d = 1/EA * (W*x - (wb-wa)/(b-a)*(x3/6.-a*x2/2.+a2*x/2.-a3/6.)-wa*(x2/2.-a*x+a2/2.));
-   return d;
-}
-
-
-void TrapezoidalLdBeam::ComputePPReactionsFx()
-{
-   m_Fyl=0;
-   m_Fyr=0;
-   m_Mzl=0;
-   m_Mzr=0;
-   m_Fyl_u=0;
-   m_Fyl_t=0;
-   m_Fyr_t=0;
-   m_Mzl_u=0;
-   m_Mzl_t=0;
-   m_Fyr_u=0;
-   m_Mzr_u=0;
-
-   // Refer to Mathcad document AxialTrapezoidalLoad.mcd
-   // and Imaging file AxialTrapezoidalLoad.tif for derivation of functions
-   Float64 W = (m_wb+m_wa)/2. *(m_Lb-m_La); // force resultant
-   Float64 db = TrapezoidalLdBeamComputeFxFree(m_EA,W,m_wa,m_wb,m_La,m_Lb, m_Lb); // deflection at b for free-ended bar
-
-   m_Fxr = -db*m_EA/m_L;
-   m_Fxl = -W-m_Fxr;
 }
 
 void TrapezoidalLdBeam::ComputePPReactionsFy()
@@ -1929,11 +1842,6 @@ void TrapezoidalLdBeam::ComputePPReactionsMz()
    m_Fxr = 0;
    m_Fyr = 0;
    m_Mzr = 0;
-}
-
-void TrapezoidalLdBeam::ComputePFReactionsFx()
-{
-   ComputePPReactionsFx();
 }
 
 void TrapezoidalLdBeam::ComputePFReactionsFy()
@@ -2000,11 +1908,6 @@ void TrapezoidalLdBeam::ComputePFReactionsMz()
    m_Mzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFPReactionsFx()
-{
-   ComputePPReactionsFx();
-}
-
 void TrapezoidalLdBeam::ComputeFPReactionsFy()
 {
    m_Fxr = 0;
@@ -2067,11 +1970,6 @@ void TrapezoidalLdBeam::ComputeFPReactionsMz()
    m_Mzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFFReactionsFx()
-{
-   ComputePPReactionsFx();
-}
-
 void TrapezoidalLdBeam::ComputeFFReactionsFy()
 {
    m_Fxl = 0;
@@ -2132,18 +2030,6 @@ void TrapezoidalLdBeam::ComputeFFReactionsMz()
    m_Mzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputePPDeflectionsFx()
-{
-   // ends are fixed for axial loading
-   m_Dxl = 0;
-   m_Dyl = 0;
-   m_Rzl = 0;
-
-   m_Dxr = 0;
-   m_Dyr = 0;
-   m_Rzr = 0;
-}
-
 void TrapezoidalLdBeam::ComputePPDeflectionsFy()
 {
    m_Dxl = 0;
@@ -2200,11 +2086,6 @@ void TrapezoidalLdBeam::ComputePPDeflectionsMz()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputePFDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
-}
-
 void TrapezoidalLdBeam::ComputePFDeflectionsFy()
 {
    m_Dxl = 0;
@@ -2252,11 +2133,6 @@ void TrapezoidalLdBeam::ComputePFDeflectionsMz()
    m_Dxr = 0;
    m_Dyr = 0;
    m_Rzr = 0;
-}
-
-void TrapezoidalLdBeam::ComputeFPDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
 }
 
 void TrapezoidalLdBeam::ComputeFPDeflectionsFy()
@@ -2310,11 +2186,6 @@ void TrapezoidalLdBeam::ComputeFPDeflectionsMz()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFFDeflectionsFx()
-{
-   ComputePPDeflectionsFx();
-}
-
 void TrapezoidalLdBeam::ComputeFFDeflectionsFy()
 {
    m_Dxl = 0;
@@ -2337,32 +2208,6 @@ void TrapezoidalLdBeam::ComputeFFDeflectionsMz()
    m_Dxr = 0;
    m_Dyr = 0;
    m_Rzr = 0;
-}
-
-void TrapezoidalLdBeam::ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   fy = 0.0;
-   mz = 0.0;
-
-   if (x<=m_La)
-   {
-      fx = -m_Fxl;
-   }
-   else if (x<m_Lb) // in region between a and b
-   {
-      Float64 a = m_La;
-      Float64 b = m_Lb;
-
-      Float64 a2 = a*a;
-
-      Float64 W = (m_wb+m_wa)/2. *(b-a); // force resultant
-      Float64 pdab = W - (m_wb-m_wa)/(b-a)*(x*x/2.-a*x+a2/2.) - m_wa*(x-a); // force if right end were free
-      fx = pdab + m_Fxr;
-   }
-   else
-   {
-      fx = m_Fxr;
-   }
 }
 
 void TrapezoidalLdBeam::ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
@@ -2440,11 +2285,6 @@ void TrapezoidalLdBeam::ComputePPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Floa
    mz = 0;
 }
 
-void TrapezoidalLdBeam::ComputePFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
-}
-
 void TrapezoidalLdBeam::ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    ATLASSERT(x>=0.0 && x<=m_L);
@@ -2516,11 +2356,6 @@ void TrapezoidalLdBeam::ComputePFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Floa
    mz = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
-}
-
 void TrapezoidalLdBeam::ComputeFPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    ATLASSERT(false);
@@ -2533,11 +2368,6 @@ void TrapezoidalLdBeam::ComputeFPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Floa
    fx = 0;
    fy = 0;
    mz = 0;
-}
-
-void TrapezoidalLdBeam::ComputeFFForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
-{
-   ComputePPForcesFx(x,fx,fy,mz);
 }
 
 void TrapezoidalLdBeam::ComputeFFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
@@ -2610,27 +2440,6 @@ void TrapezoidalLdBeam::ComputeFFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Floa
    fx = 0;
    fy = 0;
    mz = 0;
-}
-
-void TrapezoidalLdBeam::ComputePPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   dy = 0.0;
-   rz = 0.0;
-
-   if (x<=m_La)
-   {
-      dx = -m_Fxl/m_EA * x;
-   }
-   else if (x<m_Lb)
-   {
-      Float64 W = (m_wb+m_wa)/2. *(m_Lb-m_La); // force resultant
-      Float64 db = TrapezoidalLdBeamComputeFxFree(m_EA,W,m_wa,m_wb,m_La,m_Lb, x); // deflection at x for free-ended bar
-      dx = db + m_Fxr/m_EA*x;
-   }
-   else
-   {
-      dx = -m_Fxr/m_EA*(m_L-x);
-   }
 }
 
 void TrapezoidalLdBeam::ComputePPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
@@ -2742,11 +2551,6 @@ void TrapezoidalLdBeam::ComputePPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,
    rz = 0;
 }
 
-void TrapezoidalLdBeam::ComputePFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
-}
-
 void TrapezoidalLdBeam::ComputePFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
    dx = 0.0;
@@ -2846,11 +2650,6 @@ void TrapezoidalLdBeam::ComputePFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,
    rz = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
-}
-
 void TrapezoidalLdBeam::ComputeFPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
    ATLASSERT(false);
@@ -2863,11 +2662,6 @@ void TrapezoidalLdBeam::ComputeFPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,
    dx = 0;
    dy = 0;
    rz = 0;
-}
-
-void TrapezoidalLdBeam::ComputeFFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
-{
-   ComputePPDeflectionFx(x,dx,dy,rz);
 }
 
 void TrapezoidalLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
@@ -2966,3 +2760,344 @@ void TrapezoidalLdBeam::ComputeFFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,
    rz = 0;
 }
 
+// function for determining deflection along bar between a and b
+// bar is fixed at x = 0 and free at L
+//
+//   /|
+//   /|======================
+//   /|
+Float64 TrapezoidalLdBeam::ComputeFreeEndDeltaX(Float64 EA, Float64 W, Float64 wa, Float64 wb, Float64 a, Float64 b, Float64 x)
+{
+   ATLASSERT(b>a);
+   ATLASSERT(IsGE(a,x,ZTOL) && IsLE(x,b,ZTOL));
+   ATLASSERT(EA!=0);
+   ATLASSERT(IsEqual(W, (wb+wa)/2.*(b-a),ZTOL));
+   Float64 d = W*a - wa*(x*x - a*x) - 0.5*(wb-wa)*(x*x*x/3 - a*x*x - a*a*x)/(b-a);
+   d /= EA;
+   return d;
+}
+
+///////////////////////
+//
+// MemberStrainBeam
+//
+MemberStrainBeam::MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC) :
+Beam(l,ea,ei,leftBC,rightBC),
+m_A(a),
+m_Qx(qAxial),
+m_Qz(qCurvature)
+{
+   ComputeReactions();
+   ComputeDeflections();
+}
+
+void MemberStrainBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a)
+{
+   qAxial = m_Qx;
+   qCurvature = m_Qz;
+   a = m_A;
+}
+
+void MemberStrainBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
+                                    Float64 &fxr,Float64 &fyr,Float64 &mzr)
+{
+   fxl = m_Fxl;
+   fyl = m_Fyl;
+   mzl = m_Mzl;
+   fxr = m_Fxr;
+   fyr = m_Fyr;
+   mzr = m_Mzr;
+}
+
+void MemberStrainBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                                        Float64 &dxr,Float64 &dyr,Float64 &rzr)
+{
+   dxl = m_Dxl;
+   dyl = m_Dyl;
+   rzl = m_Rzl;
+   dxr = m_Dxr;
+   dyr = m_Dyr;
+   rzr = m_Rzr;
+}
+
+void MemberStrainBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   ATLASSERT(x>=0.0 && x<=m_L);
+   fx = m_Fxl;
+   fy = m_Fyl;
+   mz = m_Mzl + m_Fyl*x;
+}
+
+void MemberStrainBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   ATLASSERT(x>=0.0 && x<=m_L);
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
+   dx = 0.0;
+   dy = m_Dyl + m_Rzl*x - m_Mzl*x2/(2*m_EI) + m_Fyl*x3/(6*m_EI);
+   if ( m_A < x )
+      dy += m_Qz*(x-m_A)*(x-m_A)/2;
+
+   rz = m_Rzl - m_Mzl*x/m_EI + m_Fyl*x2/(2*m_EI);
+   if ( m_A < x )
+      rz += m_Qz*(x - m_A);
+}
+
+void MemberStrainBeam::ComputeReactions()
+{
+   // can't have axial releases at both ends
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = 0;
+      m_Fxr = 0;
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = 0;
+      m_Fxr = 0;
+   }
+   else
+   {
+      m_Fxl = m_Qx*m_EA*(m_L-m_A)/m_L;
+      m_Fxr = -m_Fxl;
+   }
+
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPReactions();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFReactions();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPReactions();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFReactions();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+void MemberStrainBeam::ComputeDeflections()
+{
+   ATLASSERT(!(sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) && sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX)));
+   if ( sysFlags<long>::IsSet(m_LeftBC,BEAM_RELEASE_FX) )
+   {
+      m_Fxl = m_Qx*(m_L - m_A);
+      m_Fxr = 0;
+   }
+   else if ( sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_FX) )
+   {
+      m_Dxl = 0;
+      m_Dxr = m_Qx*m_A;
+   }
+   else
+   {
+      m_Dxl = 0.0;
+      m_Dxr = 0.0;
+   }
+
+   bool bPinnedLeft  = sysFlags<long>::IsSet(m_LeftBC, BEAM_RELEASE_MZ) ? true : false;
+   bool bPinnedRight = sysFlags<long>::IsSet(m_RightBC,BEAM_RELEASE_MZ) ? true : false;
+   bool bFixedLeft  = !bPinnedLeft;
+   bool bFixedRight = !bPinnedRight;
+
+   if ( bPinnedLeft && bPinnedRight )
+   {
+      ComputePPReactions();
+   }
+   else if ( bPinnedLeft && bFixedRight )
+   {
+      ComputePFReactions();
+   }
+   else if ( bFixedLeft && bPinnedRight )
+   {
+      ComputeFPReactions();
+   }
+   else if ( bFixedLeft && bFixedRight )
+   {
+      ComputeFFReactions();
+   }
+   else
+   {
+      ATLASSERT(false); // should never get here
+   }
+}
+
+// Equations taken from Roark's Formulas for Stress and Strain, 6th Edition
+// Table 3, Equations 6c-6e
+
+void MemberStrainBeam::ComputePPReactions()
+{
+  m_Fyl = 0;
+  m_Mzl = 0;
+
+  m_Fyr = 0;
+  m_Mzr = 0;
+}
+
+void MemberStrainBeam::ComputePFReactions()
+{
+  // Table 3, Equation 6c
+  m_Fyl = (-3.0*m_EI*m_Qz)*(m_L*m_L - m_A*m_A)/(2.0*m_L*m_L*m_L);
+  m_Mzl = 0;
+
+  m_Fyr = -m_Fyl;
+  m_Mzr =  m_Fyl*m_L;
+}
+
+void MemberStrainBeam::ComputeFPReactions()
+{
+   // These formulas are derived from Table 3, Equation 6c.
+   // The curvature is applied at the pinned end (in Eqn 6c the curvature is at the fixed end)
+   // This case is is the mirror image of Equation 6c with a = 0 minus the mirror image of
+   // Equation 6c with a measured from the right hand side.
+   m_Fyr = -3*m_EI*m_Qz*(m_L-m_A)*(m_L-m_A)/(2.0*m_L*m_L*m_L);
+   m_Mzr = 0;
+
+   m_Fyl = -m_Fyr;
+   m_Mzl = -m_Fyr*m_L;
+}
+
+void MemberStrainBeam::ComputeFFReactions()
+{
+   // Table 3, Equation 6d
+  m_Fyl = -6*m_EI*m_A*m_Qz*(m_L - m_A)/(m_L*m_L*m_L);
+  m_Mzl = -m_EI*m_Qz*(m_L - m_A)*(3*m_A - m_L)/(m_L*m_L);
+
+  m_Fyr = -m_Fyl;
+  m_Mzr = -m_EI*m_Qz*(m_L - m_A)*(3*m_A + m_L)/(m_L*m_L);
+}
+
+void MemberStrainBeam::ComputePPDeflections()
+{
+   // Table 3, Equation 6e
+   m_Dyl = 0;
+   m_Rzl = -m_Qz*(m_L-m_A)*(m_L-m_A)/(2*m_L);
+
+   m_Dyr = 0;
+   m_Rzr = m_Qz*(m_L*m_L-m_A*m_A)/(2*m_L);
+}
+
+void MemberStrainBeam::ComputePFDeflections()
+{
+   // Table 3, Equation 6c
+   m_Dyl = 0;
+   m_Rzl = m_Qz*(m_L-m_A)*(3*m_A - m_L)/(4*m_L);
+
+   m_Dyr = 0;
+   m_Rzr = 0;
+}
+
+void MemberStrainBeam::ComputeFPDeflections()
+{
+   m_Dyl = 0;
+   m_Rzl = 0;
+
+   m_Dyr = 0;
+   Float64 b = m_L - m_A;
+   m_Rzr = m_Qz*m_L/4 + m_Qz*(m_L - b)*(3*b - m_L)/(4*m_L);
+   //m_Rzr = m_Qz*(m_L*m_L - 2*m_A*m_L + 3*m_A*m_A)/(4*m_L); //???
+}
+
+void MemberStrainBeam::ComputeFFDeflections()
+{
+   // Table 3, Equation 6d
+   m_Dyl = 0;
+   m_Rzl = 0;
+
+   m_Dyr = 0;
+   m_Rzr = 0;
+}
+
+
+//
+// UniformMemberDistortionBeam
+//
+UniformMemberDistortionBeam::UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC) :
+Beam(l,ea,ei,leftBC,rightBC),
+m_Case1Beam(qAxial,qCurvature,a,l,ea,ei,leftBC,rightBC),
+m_Case2Beam(qAxial,qCurvature,b,l,ea,ei,leftBC,rightBC)
+{
+}
+
+void UniformMemberDistortionBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b)
+{
+   m_Case1Beam.GetLoad(qAxial,qCurvature,a);
+   m_Case2Beam.GetLoad(qAxial,qCurvature,b);
+}
+
+void UniformMemberDistortionBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
+                                               Float64 &fxr,Float64 &fyr,Float64 &mzr)
+{
+   Float64 Fxl1,Fxl2;
+   Float64 Fyl1,Fyl2;
+   Float64 Mzl1,Mzl2;
+   Float64 Fxr1,Fxr2;
+   Float64 Fyr1,Fyr2;
+   Float64 Mzr1,Mzr2;
+   m_Case1Beam.GetReactions(Fxl1,Fyl1,Mzl1,Fxr1,Fyr1,Mzr1);
+   m_Case2Beam.GetReactions(Fxl2,Fyl2,Mzl2,Fxr2,Fyr2,Mzr2);
+
+   fxl = Fxl1 - Fxl2;
+   fyl = Fyl1 - Fyl2;
+   mzl = Mzl1 - Mzl2;
+   fxr = Fxr1 - Fxr2;
+   fyr = Fyr1 - Fyr2;
+   mzr = Mzr1 - Mzr2;
+}
+
+void UniformMemberDistortionBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                                                   Float64 &dxr,Float64 &dyr,Float64 &rzr)
+{
+   Float64 Dxl1,Dxl2;
+   Float64 Dyl1,Dyl2;
+   Float64 Rzl1,Rzl2;
+   Float64 Dxr1,Dxr2;
+   Float64 Dyr1,Dyr2;
+   Float64 Rzr1,Rzr2;
+   m_Case1Beam.GetDeflections(Dxl1,Dyl1,Rzl1,Dxr1,Dyr1,Rzr1);
+   m_Case2Beam.GetDeflections(Dxl2,Dyl2,Rzl2,Dxr2,Dyr2,Rzr2);
+
+   dxl = Dxl1 - Dxl2;
+   dyl = Dyl1 - Dyl2;
+   rzl = Rzl1 - Rzl2;
+   dxr = Dxr1 - Dxr2;
+   dyr = Dyr1 - Dyr2;
+   rzr = Rzr1 - Rzr2;
+}
+
+void UniformMemberDistortionBeam::GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
+{
+   Float64 Fx1,Fy1,Mz1;
+   Float64 Fx2,Fy2,Mz2;
+   m_Case1Beam.GetForces(x,Fx1,Fy1,Mz1);
+   m_Case2Beam.GetForces(x,Fx2,Fy2,Mz2);
+   fx = Fx1 - Fx2;
+   fy = Fy1 - Fy2;
+   mz = Mz1 - Mz2;
+}
+
+void UniformMemberDistortionBeam::GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
+{
+   Float64 Dx1,Dy1,Rz1;
+   Float64 Dx2,Dy2,Rz2;
+   m_Case1Beam.GetDeflection(x,Dx1,Dy1,Rz1);
+   m_Case2Beam.GetDeflection(x,Dx2,Dy2,Rz2);
+   dx = Dx1 - Dx2;
+   dy = Dy1 - Dy2;
+   rz = Rz1 - Rz2;
+}

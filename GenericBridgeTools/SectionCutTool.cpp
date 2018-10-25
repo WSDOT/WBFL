@@ -1194,10 +1194,10 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    // the girder is the primary shape so it is the first item in the section model
    CComQIPtr<ICompositeSectionEx> compositeSection(section);
    ATLASSERT(compositeSection);
-   CComPtr<ICompositeSectionItemEx> csi;
-   compositeSection->get_Item(0,&csi);
+   CComPtr<ICompositeSectionItemEx> compositeSectionItem;
+   compositeSection->get_Item(0,&compositeSectionItem);
    CComPtr<IShape> primary_shape;
-   csi->get_Shape(&primary_shape);
+   compositeSectionItem->get_Shape(&primary_shape);
 
    CComQIPtr<IXYPosition> position(primary_shape);
    CComPtr<IPoint2d> pntTopCenter;
@@ -1243,7 +1243,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
          primary_shape.Release();
          primary_shape = newShape;
-         csi->putref_Shape(primary_shape);
+         compositeSectionItem->putref_Shape(primary_shape);
       }
    }
    
@@ -1257,8 +1257,8 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // background properties are the foreground properties of the girder concrete (the holes are in the girder)
    Float64 Econc,Dconc;
-   csi->get_Efg(&Econc);
-   csi->get_Dfg(&Dconc);
+   compositeSectionItem->get_Efg(&Econc);
+   compositeSectionItem->get_Dfg(&Dconc);
 
    // get the PrecastGirder item data
    CComQIPtr<IItemData> item_data(segment);
@@ -1536,72 +1536,75 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          tendon->get_CG(Xg,tmPath,&pntCG);
 
          // location of duct in Gross Section Coordinates
-         Float64 x,y,z;
-         pntCG->Location(&x,&y,&z);
-         ATLASSERT(IsEqual(Xg,z));
-         ATLASSERT(y < 0); // below top of girder
-
-         // if Etendon is zero, the tendon is not installed yet
-         // Model the hole for the duct. Model this hole for gross, transformed and net properties
-         if ( IsZero(Etendon) )
+         if ( pntCG )
          {
-            // Put holes for ducts into girder
-            Float64 ductDiameter;
-            tendon->get_OutsideDiameter(&ductDiameter);
+            Float64 x,y,z;
+            pntCG->Location(&x,&y,&z);
+            ATLASSERT(IsEqual(Xg,z));
+            ATLASSERT(y < 0); // below top of girder
 
-            CComPtr<ICircle> duct;
-            duct.CoCreateInstance(CLSID_Circle);
-            duct->put_Radius(ductDiameter/2);
-
-            CComPtr<IPoint2d> center;
-            duct->get_Center(&center);
-            center->Move(xTop+x,yTop+y);
-
-            CComQIPtr<IShape> duct_shape(duct);
-
-            // If E is 0, then this models a hole in the section (E-Eg = -Eg)
-            // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
-            compositeSection->AddSection(duct_shape,0.0,Econc,0.0,Dconc,VARIANT_TRUE);
-         }
-         else
-         {
-            // Add Tendon
-            if ( sectionPropMethod == spmNet )
+            // if Etendon is zero, the tendon is not installed yet
+            // Model the hole for the duct. Model this hole for gross, transformed and net properties
+            if ( IsZero(Etendon) )
             {
-               // If we are computing net properties, we want to
-               // model the hole and not the tendon 
-               // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
-               Etendon = 0;
-               Dtendon = 0;
+               // Put holes for ducts into girder
+               Float64 ductDiameter;
+               tendon->get_OutsideDiameter(&ductDiameter);
+
+               CComPtr<ICircle> duct;
+               duct.CoCreateInstance(CLSID_Circle);
+               duct->put_Radius(ductDiameter/2);
+
+               CComPtr<IPoint2d> center;
+               duct->get_Center(&center);
+               center->Move(xTop+x,yTop+y);
+
+               CComQIPtr<IShape> duct_shape(duct);
+
+               // If E is 0, then this models a hole in the section (E-Eg = -Eg)
+               // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
+               compositeSection->AddSection(duct_shape,0.0,Econc,0.0,Dconc,VARIANT_TRUE);
             }
+            else
+            {
+               // Add Tendon
+               if ( sectionPropMethod == spmNet )
+               {
+                  // If we are computing net properties, we want to
+                  // model the hole and not the tendon 
+                  // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
+                  Etendon = 0;
+                  Dtendon = 0;
+               }
 
 #pragma Reminder("UPDATE: need to model tendon offsets")
-            // distance from the CG of the duct to the CG of the strand within the duct
-            Float64 cg_offset_x = 0.0;
-            Float64 cg_offset_y = 0.0;
+               // distance from the CG of the duct to the CG of the strand within the duct
+               Float64 cg_offset_x = 0.0;
+               Float64 cg_offset_y = 0.0;
 
-            Float64 Apt;
-            tendon->get_TendonArea(&Apt);
+               Float64 Apt;
+               tendon->get_TendonArea(&Apt);
 
-            // models tendon as an object with area. Moment of inertia is taken to be zero
-            CComPtr<IGenericShape> tendonShape;
-            tendonShape.CoCreateInstance(CLSID_GenericShape);
-            tendonShape->put_Area(Apt);
-            tendonShape->put_Ixx(0);
-            tendonShape->put_Iyy(0);
-            tendonShape->put_Ixy(0);
-            tendonShape->put_Perimeter(0);
+               // models tendon as an object with area. Moment of inertia is taken to be zero
+               CComPtr<IGenericShape> tendonShape;
+               tendonShape.CoCreateInstance(CLSID_GenericShape);
+               tendonShape->put_Area(Apt);
+               tendonShape->put_Ixx(0);
+               tendonShape->put_Iyy(0);
+               tendonShape->put_Ixy(0);
+               tendonShape->put_Perimeter(0);
 
-            CComPtr<IPoint2d> centroid;
-            tendonShape->get_Centroid(&centroid);
+               CComPtr<IPoint2d> centroid;
+               tendonShape->get_Centroid(&centroid);
 
-            centroid->Move(x+cg_offset_x,yTop + y + cg_offset_y);
+               centroid->Move(x+cg_offset_x,yTop + y + cg_offset_y);
 
-            CComQIPtr<IShape> tendon_shape(tendonShape);
+               CComQIPtr<IShape> tendon_shape(tendonShape);
 
-            // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
-            compositeSection->AddSection(tendon_shape,Etendon,Econc,Dtendon,Dconc,VARIANT_TRUE);
-         }
+               // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
+               compositeSection->AddSection(tendon_shape,Etendon,Econc,Dtendon,Dconc,VARIANT_TRUE);
+            }
+         } // if pntCG
       } // next duct
    } // if not gross properties
 

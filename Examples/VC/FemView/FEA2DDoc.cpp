@@ -336,21 +336,43 @@ void CFEA2DDoc::OnGTStrudl()
       MemberIDType mbrID;
       member->get_ID(&mbrID);
 
-      VARIANT_BOOL bReleaseStart, bReleaseEnd;
-      member->IsReleased(metStart,&bReleaseStart);
-      member->IsReleased(metEnd,  &bReleaseEnd);
+      VARIANT_BOOL bReleaseStartFx, bReleaseEndFx;
+      member->IsReleased(metStart,mbrReleaseFx,&bReleaseStartFx);
+      member->IsReleased(metEnd,  mbrReleaseFx,&bReleaseEndFx);
 
-      if ( bReleaseStart == VARIANT_TRUE || bReleaseEnd == VARIANT_TRUE )
+      VARIANT_BOOL bReleaseStartMz, bReleaseEndMz;
+      member->IsReleased(metStart,mbrReleaseMz,&bReleaseStartMz);
+      member->IsReleased(metEnd,  mbrReleaseMz,&bReleaseEndMz);
+
+      if ( bReleaseStartFx == VARIANT_TRUE || bReleaseEndFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE )
       {
          ofile << ID(mbrID);
-         if ( bReleaseStart == VARIANT_TRUE )
+         if ( bReleaseStartFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE )
          {
-            ofile << _T(" START MOMENT Z");
+            ofile << _T(" START");
+            if ( bReleaseStartFx == VARIANT_TRUE )
+            {
+               ofile << _T(" FORCE X");
+            }
+
+            if ( bReleaseStartMz == VARIANT_TRUE )
+            {
+               ofile << _T(" MOMENT Z");
+            }
          }
 
-         if ( bReleaseEnd == VARIANT_TRUE )
+         if ( bReleaseEndFx == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE )
          {
-            ofile << _T(" END MOMENT Z");
+            ofile << _T(" END");
+            if ( bReleaseEndFx == VARIANT_TRUE )
+            {
+               ofile << _T(" FORCE X");
+            }
+
+            if ( bReleaseEndMz == VARIANT_TRUE )
+            {
+               ofile << _T(" MOMENT Z");
+            }
          }
          ofile << std::endl;
       }

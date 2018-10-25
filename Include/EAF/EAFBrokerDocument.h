@@ -200,6 +200,8 @@ protected:
    void OnGraph(UINT nID);
    virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
 
+   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = NULL);
+
 public:
    // Allow applications to publish help for custom reports and favorites
    enum custRepportHelpType {

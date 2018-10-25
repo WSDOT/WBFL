@@ -392,7 +392,7 @@ STDMETHODIMP CDistributedLoad::put_WEnd(Float64 newVal)
 	return S_OK;
 }
 
-void CDistributedLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector)
+void CDistributedLoad::GetForceVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 *vector)
 {
    Float64 La, Lb;
    Float64 WxStart,WyStart,WxEnd,WyEnd;
@@ -411,7 +411,7 @@ void CDistributedLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,
    Float64 Fx2,Fy2,Mz2;
    if (WxStart!=0.0 || WxEnd!=0.0)
    {
-      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,1,1,type);
+      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,1,1,leftBC,rightBC);
       Pbeam.GetReactions(Fx1,Fy1,Mz1,Fx2,Fy2,Mz2);
       vector[0] += Fx1;
       vector[1] += Fy1;
@@ -423,7 +423,7 @@ void CDistributedLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,
 
    if (WyStart!=0.0 || WyEnd!=0.0)
    {
-      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,1,1,type);
+      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,1,1,leftBC,rightBC);
       Pbeam.GetReactions(Fx1,Fy1,Mz1,Fx2,Fy2,Mz2);
       vector[0] += Fx1;
       vector[1] += Fy1;
@@ -435,7 +435,7 @@ void CDistributedLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,
 }
 
 
-void CDistributedLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
+void CDistributedLoad::GetDispVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                      Float64 EA,Float64 EI,
                                      Float64 *vector)
 {
@@ -456,7 +456,7 @@ void CDistributedLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
    Float64 Dx2,Dy2,Rz2;
    if (WxStart!=0.0 || WxEnd!=0.0)
    {
-      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,EA,EI,type);
+      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,EA,EI,leftBC,rightBC);
       Pbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
       vector[0] += Dx1;
       vector[1] += Dy1;
@@ -468,7 +468,7 @@ void CDistributedLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
 
    if (WyStart!=0.0 || WyEnd!=0.0)
    {
-      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,EA,EI,type);
+      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,EA,EI,leftBC,rightBC);
       Pbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
       vector[0] += Dx1;
       vector[1] += Dy1;
@@ -548,7 +548,7 @@ void CDistributedLoad::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,
       ATLASSERT(false); 
 }
 
-void CDistributedLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+void CDistributedLoad::GetDeflection(Float64 x,long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 
@@ -563,14 +563,14 @@ void CDistributedLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float
 
    if (WxStart!=0.0 || WxEnd!=0.0)
    {
-      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,EA,EI,type);
+      TrapezoidalLdBeam Pbeam(WxStart,WxEnd,La,Lb,Beam::ForceX,Length,EA,EI,leftBC,rightBC);
       Pbeam.GetDeflection(x, *pdx, *pdy, *prz);
    }
 
    if (WyStart!=0.0 || WyEnd!=0.0)
    {
       Float64 dx, dy, rz;
-      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,EA,EI,type);
+      TrapezoidalLdBeam Pbeam(WyStart,WyEnd,La,Lb,Beam::ForceY,Length,EA,EI,leftBC,rightBC);
       Pbeam.GetDeflection(x, dx, dy, rz);
       *pdx += dx;
       *pdy += dy;

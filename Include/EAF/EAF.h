@@ -37,5 +37,6 @@
 #include <EAF\EAFApp.h>
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFMainFrame.h>
+#include <EAF\EAFChildFrame.h>
 
 #endif //  INCLUDED_EAF_EAF_H_

@@ -104,7 +104,7 @@ typedef SubNodeLocs::iterator SubNodeLocIterator;
 // utility class for extracting superstructure node layout information
 ////////////////////////////////////////////////////////////////////////////////////////
 enum SuperNodeReason{ nrSpanEnd=1, nrTemporarySupport=2, nrTemporarySupportLoc=4, nrMemberEnd=8, nrSegmentEnd=16};
-enum MemberRelease {mrFixed=0, mrLeftPinned=1, mrRightPinned=4};
+enum MemberRelease {mrFixed=0, mrLeftPinned=1, mrRightPinned=4, mrLeftAxial=8, mrRightAxial=16};
 
 class SuperNodeLoc
 {
@@ -119,6 +119,7 @@ public:
    Float64 GetLoc();
    void SetRelease(MemberRelease rel);
    bool IsPinned(Side side);
+   bool HasAxialRelease(Side side);
    SubNodeLocs* GetSubNodeLocs();
 
 public:

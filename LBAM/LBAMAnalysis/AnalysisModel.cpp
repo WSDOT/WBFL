@@ -3606,6 +3606,16 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
          pmbr->ReleaseEnd(metEnd, mbrReleaseMz);
       }
 
+      if ( left_node.HasAxialRelease(ssRight) )
+      {
+         pmbr->ReleaseEnd(metStart,mbrReleaseFx);
+      }
+
+      if ( right_node.HasAxialRelease(ssLeft) )
+      {
+         pmbr->ReleaseEnd(metEnd, mbrReleaseFx);
+      }
+
       // update span and ssm numbers for next go around
       if (right_node.IsReason(nrSpanEnd))
          curr_span++;
@@ -3668,7 +3678,7 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
                      if (jointID == startJointID) 
                      {
                         VARIANT_BOOL vbIsReleased;
-                        member->IsReleased(metStart,&vbIsReleased);
+                        member->IsReleased(metStart,mbrReleaseMz,&vbIsReleased);
                         if (vbIsReleased == VARIANT_FALSE)
                         {
                            is_stable = true;
@@ -3678,7 +3688,7 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
                      else if (jointID == endJointID)
                      {
                         VARIANT_BOOL vbIsReleased;
-                        member->IsReleased(metEnd,&vbIsReleased);
+                        member->IsReleased(metEnd,mbrReleaseMz,&vbIsReleased);
                         if (vbIsReleased == VARIANT_FALSE)
                         {
                            is_stable = true;
@@ -4192,32 +4202,44 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
    ATLASSERT( IsEqual(loc, m_TotalLength-m_LeftOverhang) );
 }
 
-bool CAnalysisModel::IsMemberEndReleased(ISuperstructureMember* pMember, Side side)
+bool CAnalysisModel::IsMemberEndReleased(ISuperstructureMember* pMember, Side side, MemberReleaseType releaseType)
 {
    CHRException hr;
 
-   CComBSTR bstrHingeRemovalStage;
-   MemberReleaseType releaseType;
-   hr = pMember->GetEndRelease(side, &bstrHingeRemovalStage, &releaseType);
+   CComBSTR bstrReleaseRemovalStage;
+   hr = pMember->GetEndReleaseRemovalStage(side,&bstrReleaseRemovalStage);
 
-   if (releaseType == mrtNone)
+   VARIANT_BOOL bIsReleased;
+   hr = pMember->IsEndReleased(side, mrtNone, &bIsReleased);
+
+   if (bIsReleased == VARIANT_TRUE)
    {
-      return false; // not hinged and never will be
+      // be careful...if releaseType is mrtNone this returns true... meaning
+      // "true, the member end release is none"
+      return (releaseType == mrtNone ? true : false);
    }
 
-   if (bstrHingeRemovalStage.Length() == 0)
+   hr = pMember->IsEndReleased(side,releaseType,&bIsReleased);
+   if ( bIsReleased == VARIANT_FALSE )
    {
-      // no removal stage defined - just use release given
-      return (releaseType == mrtPinned ? true : false);
+      return false; // the member is released in the requested manner
+   }
+
+   // the member has the release type we are asking about
+
+   if (bstrReleaseRemovalStage.Length() == 0)
+   {
+      // no removal stage defined - so the release is still in play
+      return true;
    }
    else
    {
-      // need to compare our current stage with hinge removal stage
-      StageIndexType hingeRemovalStageIdx;
-      if ( !m_pStageOrder->GetStageIndex(bstrHingeRemovalStage,&hingeRemovalStageIdx) )
+      // need to compare our current stage with release removal stage
+      StageIndexType releaseRemovalStageIdx;
+      if ( !m_pStageOrder->GetStageIndex(bstrReleaseRemovalStage,&releaseRemovalStageIdx) )
       {
-         CComBSTR msg(::CreateErrorMsg1S(IDS_E_INVALID_HINGE_REMOVAL_STAGE, bstrHingeRemovalStage));
-         THROW_LBAMA_MSG(INVALID_HINGE_REMOVAL_STAGE,msg);
+         CComBSTR msg(::CreateErrorMsg1S(IDS_E_INVALID_RELEASE_REMOVAL_STAGE, bstrReleaseRemovalStage));
+         THROW_LBAMA_MSG(INVALID_RELEASE_REMOVAL_STAGE,msg);
       }
 
       StageIndexType stageIdx;
@@ -4227,13 +4249,12 @@ bool CAnalysisModel::IsMemberEndReleased(ISuperstructureMember* pMember, Side si
       }
 
       // return true if the current stage is before removal stage
-      if(stageIdx < hingeRemovalStageIdx)
+      if(stageIdx < releaseRemovalStageIdx)
          return true;
       else
          return false;
    }
 }     
-
 
 void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftOverhang, SuperNodeLocs* node_locs)
 {
@@ -4255,7 +4276,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
 
       // check release on right and left sides
       // left first
-      if (IsMemberEndReleased(member, ssLeft))
+      if (IsMemberEndReleased(member, ssLeft, mrtMz))
       {
          SuperNodeLoc nodeLocation(start_loc, nrSegmentEnd); // SuperNodeReason has no consequence
          SuperNodeLocIterator found (node_locs->find(nodeLocation));
@@ -4264,11 +4285,27 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
             found->SetRelease(mrRightPinned); // pin right side of node
          }
          else
+         {
             THROW_HR(E_FAIL); // node not there? This should not happen
+         }
+      }
+
+      if (IsMemberEndReleased(member, ssLeft, mrtFx))
+      {
+         SuperNodeLoc nodeLocation(start_loc, nrSegmentEnd); // SuperNodeReason has no consequence
+         SuperNodeLocIterator found (node_locs->find(nodeLocation));
+         if (found != node_locs->end())
+         {
+            found->SetRelease(mrRightAxial); // axial release right side of node
+         }
+         else
+         {
+            THROW_HR(E_FAIL); // node not there? This should not happen
+         }
       }
 
       // next look at right end
-      if (IsMemberEndReleased(member, ssRight))
+      if (IsMemberEndReleased(member, ssRight, mrtMz))
       {
          SuperNodeLoc nodeLocation(end_loc, nrSegmentEnd); // SuperNodeReason has no consequence
          SuperNodeLocIterator found( node_locs->find(nodeLocation) );
@@ -4277,7 +4314,23 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
             found->SetRelease(mrLeftPinned);
          }
          else
+         {
             THROW_HR(E_FAIL); // node not there? This should not happen
+         }
+      }
+
+      if (IsMemberEndReleased(member, ssRight, mrtFx))
+      {
+         SuperNodeLoc nodeLocation(end_loc, nrSegmentEnd); // SuperNodeReason has no consequence
+         SuperNodeLocIterator found( node_locs->find(nodeLocation) );
+         if (found != node_locs->end())
+         {
+            found->SetRelease(mrLeftAxial);
+         }
+         else
+         {
+            THROW_HR(E_FAIL); // node not there? This should not happen
+         }
       }
 
       // loop
