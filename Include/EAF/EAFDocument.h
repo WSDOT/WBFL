@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,8 +98,12 @@ public:
    virtual BOOL GetSaveMissingPluginDataFlag();
 
    // called by the framework when an unwind exception is thrown
-   // Calls UpdateAllViews with EAF_HINT_UPDATEERROR
+   // Calls OnUpdateAllViews with EAF_HINT_UPDATEERROR
    virtual void OnUpdateError(const CString& errorMsg);
+
+   // MFC's UpdateAllViews is not virtual so there is no way to modify it's behavior
+   // This method is virtual and can be over-ridden. It calls UpdateAllViews
+   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = NULL);
 
 protected:
 // Overrides
@@ -164,6 +168,9 @@ public:
 
    // destroys a toolbar by id
    void DestroyToolBar(UINT toolbarID);
+
+   virtual void LoadToolbarState();
+   virtual void SaveToolbarState();
 
    //////////////////////////////////////////////////////////////
    // Views

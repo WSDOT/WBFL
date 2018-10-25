@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,15 +46,21 @@ public:
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
          CComPtr<IEAFAppPlugin> plugin = iter->second;
-         CEAFDocTemplate* pDocTemplate = plugin->CreateDocTemplate();
-         if ( pDocTemplate )
+         std::vector<CEAFDocTemplate*> vDocTemplates = plugin->CreateDocTemplates();
+         std::vector<CEAFDocTemplate*>::iterator iter(vDocTemplates.begin());
+         std::vector<CEAFDocTemplate*>::iterator end(vDocTemplates.end());
+         for ( ; iter != end; iter++ )
          {
-            CComPtr<IEAFAppPlugin> p;
-            pDocTemplate->GetPlugin(&p);
-            if ( p == NULL )
-               pDocTemplate->SetPlugin(plugin);
+            CEAFDocTemplate* pDocTemplate = *iter;
+            if ( pDocTemplate )
+            {
+               CComPtr<IEAFAppPlugin> p;
+               pDocTemplate->GetPlugin(&p);
+               if ( p == NULL )
+                  pDocTemplate->SetPlugin(plugin);
 
-            pApp->AddDocTemplate( pDocTemplate );
+               pApp->AddDocTemplate( pDocTemplate );
+            }
          }
       }
 

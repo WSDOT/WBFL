@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -205,21 +205,42 @@ STDMETHODIMP CCompositeShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
 
 STDMETHODIMP CCompositeShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 {
-   VARIANT_BOOL bResult = VARIANT_FALSE;
+   VARIANT_BOOL bIsInSolid = VARIANT_FALSE; // Point has to be in a solid shape to have a chance.
+                                            // If it is in a void, it's all over.
    ContainerIteratorType iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
       StoredType& value = *iter;
       CComPtr<ICompositeShapeItem> item(value.second);
 
-      CComPtr<IShape> shape;
-      item->get_Shape(&shape);
+      VARIANT_BOOL isVoid;
+      item->get_Void(&isVoid);
+      if (isVoid != VARIANT_FALSE)
+      {
+         CComPtr<IShape> shape;
+         item->get_Shape(&shape);
 
-      shape->PointInShape(pPoint,pbResult);
+         VARIANT_BOOL isInVoid;
+         shape->PointInShape(pPoint, &isInVoid);
 
-      if ( *pbResult == VARIANT_TRUE )
-         return S_OK;
+         // If point is in a void, it is not in the composite shape. We're out of here
+         if (isInVoid != VARIANT_FALSE)
+         {
+            *pbResult = VARIANT_FALSE;
+            return S_OK;
+         }
+      }
+      else if (bIsInSolid == VARIANT_FALSE) // No use testing more solids if point was already in one
+      {
+         // Shape is a solid. See if we are in.
+         CComPtr<IShape> shape;
+         item->get_Shape(&shape);
+
+         shape->PointInShape(pPoint, &bIsInSolid);
+      }
    }
+
+   *pbResult = bIsInSolid;
 
    return S_OK;
 }

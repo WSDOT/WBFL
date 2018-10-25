@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,8 +30,10 @@
 #include <ReportManager\ReportManagerExp.h>
 #include <string>
 #include <vector>
+#include <boost\shared_ptr.hpp>
 
 class CChapterBuilder;
+class CReportSpecification;
 
 class REPORTMANAGERCLASS CChapterInfo
 {
@@ -59,6 +61,9 @@ public:
    LPCTSTR GetReportName() const;
    void AddChapter(const CChapterBuilder* pChapterBuilder);
    std::vector<CChapterInfo> GetChapterInfo() const;
+
+   void ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const;
+   void ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const;
 
 private:
    std::_tstring m_ReportName;

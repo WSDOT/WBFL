@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,13 +29,15 @@ IMPLEMENT_DYNAMIC(CEAFTemplateItem,CObject)
 
 CEAFTemplateItem::CEAFTemplateItem()
 {
+   m_pDocTemplate = NULL;
    m_Name = "unnamed";
    m_Path = "";
    m_hIcon = NULL;
 }
 
-CEAFTemplateItem::CEAFTemplateItem(LPCTSTR name,LPCTSTR path,HICON hIcon)
+CEAFTemplateItem::CEAFTemplateItem(CEAFDocTemplate* pDocTemplate,LPCTSTR name,LPCTSTR path,HICON hIcon)
 {
+   m_pDocTemplate = pDocTemplate;
    m_Name = name;
    m_Path = path;
    m_hIcon = hIcon;
@@ -43,6 +45,21 @@ CEAFTemplateItem::CEAFTemplateItem(LPCTSTR name,LPCTSTR path,HICON hIcon)
 
 CEAFTemplateItem::~CEAFTemplateItem()
 {
+}
+
+CEAFTemplateItem* CEAFTemplateItem::Clone() const
+{
+   return new CEAFTemplateItem(m_pDocTemplate,m_Name,m_Path,m_hIcon);
+}
+
+void CEAFTemplateItem::SetDocTemplate(CEAFDocTemplate* pDocTemplate)
+{
+   m_pDocTemplate = pDocTemplate;
+}
+
+CEAFDocTemplate* CEAFTemplateItem::GetDocTemplate() const
+{
+   return m_pDocTemplate;
 }
 
 void CEAFTemplateItem::SetName(LPCTSTR name)
@@ -78,9 +95,9 @@ HICON CEAFTemplateItem::GetIcon() const
 /////////////////////////////////////////////////////////////
 IMPLEMENT_DYNAMIC(CEAFTemplateGroup,CObject)
 
-CEAFTemplateGroup::CEAFTemplateGroup(CEAFDocTemplate* pDocTemplate)
+CEAFTemplateGroup::CEAFTemplateGroup()
 {
-   m_pDocTemplate = pDocTemplate;
+   m_hIcon = NULL;
 }
 
 CEAFTemplateGroup::~CEAFTemplateGroup()
@@ -88,26 +105,52 @@ CEAFTemplateGroup::~CEAFTemplateGroup()
    Clear();
 }
 
+CEAFTemplateGroup* CEAFTemplateGroup::Clone() const
+{
+   CEAFTemplateGroup* pGroup = new CEAFTemplateGroup;
+   pGroup->DeepCopy(this);
+   return pGroup;
+}
+
+void CEAFTemplateGroup::DeepCopy(const CEAFTemplateGroup* pGroup)
+{
+   m_GroupName = pGroup->m_GroupName;
+   m_hIcon = pGroup->m_hIcon;
+
+   std::vector<CEAFTemplateItem*>::const_iterator itemIter(pGroup->m_Items.begin());
+   std::vector<CEAFTemplateItem*>::const_iterator itemIterEnd(pGroup->m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
+   {
+      CEAFTemplateItem* pItem = *itemIter;
+      AddItem(pItem->Clone());
+   }
+
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIter(pGroup->m_Groups.begin());
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIterEnd(pGroup->m_Groups.end());
+   for ( ; groupIter != groupIterEnd; groupIter++ )
+   {
+      CEAFTemplateGroup* pTemplateGroup = *groupIter;
+      AddGroup(pTemplateGroup->Clone());
+   }
+}
+
 void CEAFTemplateGroup::Clear()
 {
-   std::vector<const CEAFTemplateItem*>::iterator itemIter;
-   for ( itemIter = m_Items.begin(); itemIter != m_Items.end(); itemIter++ )
+   std::vector<CEAFTemplateItem*>::iterator itemIter(m_Items.begin());
+   std::vector<CEAFTemplateItem*>::iterator itemIterEnd(m_Items.end());
+   for ( ; itemIter != itemIterEnd; itemIter++ )
    {
       delete *itemIter;
    }
    m_Items.clear();
 
-   std::vector<const CEAFTemplateGroup*>::iterator groupIter;
-   for ( groupIter = m_Groups.begin(); groupIter != m_Groups.end(); groupIter++ )
+   std::vector<CEAFTemplateGroup*>::iterator groupIter(m_Groups.begin());
+   std::vector<CEAFTemplateGroup*>::iterator groupIterEnd(m_Groups.end());
+   for ( ; groupIter != groupIterEnd; groupIter++ )
    {
       delete *groupIter;
    }
    m_Groups.clear();
-}
-
-CEAFDocTemplate* CEAFTemplateGroup::GetDocTemplate()
-{
-   return m_pDocTemplate;
 }
 
 void CEAFTemplateGroup::SetGroupName(LPCTSTR name)
@@ -120,22 +163,88 @@ CString CEAFTemplateGroup::GetGroupName() const
    return m_GroupName;
 }
 
-void CEAFTemplateGroup::AddGroup(const CEAFTemplateGroup* group)
+void CEAFTemplateGroup::SetIcon(HICON hIcon)
+{
+   m_hIcon = hIcon;
+}
+
+HICON CEAFTemplateGroup::GetIcon() const
+{
+   return m_hIcon;
+}
+
+void CEAFTemplateGroup::AddGroup(CEAFTemplateGroup* group)
 {
    m_Groups.push_back(group);
 }
 
-CollectionIndexType CEAFTemplateGroup::GetGroupCount() const
+GroupIndexType CEAFTemplateGroup::GetGroupCount() const
 {
-   return (CollectionIndexType)m_Groups.size();
+   return (GroupIndexType)m_Groups.size();
 }
 
-const CEAFTemplateGroup* CEAFTemplateGroup::GetGroup(CollectionIndexType grpIdx) const
+const CEAFTemplateGroup* CEAFTemplateGroup::GetGroup(GroupIndexType grpIdx) const
 {
    return m_Groups[grpIdx];
 }
 
-void CEAFTemplateGroup::AddItem(const CEAFTemplateItem* pItem)
+CEAFTemplateGroup* CEAFTemplateGroup::GetGroup(GroupIndexType grpIdx)
+{
+   return m_Groups[grpIdx];
+}
+
+const CEAFTemplateGroup* CEAFTemplateGroup::FindGroup(LPCTSTR lpszGroupName) const
+{
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIter(m_Groups.begin());
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIterEnd(m_Groups.end());
+   for ( ; groupIter != groupIterEnd; groupIter++ )
+   {
+      CEAFTemplateGroup* pGroup = *groupIter;
+      if ( pGroup->GetGroupName() == lpszGroupName )
+         return pGroup;
+
+      GroupIndexType nGroups = pGroup->GetGroupCount();
+      for ( GroupIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+      {
+         CEAFTemplateGroup* pSubGroup = pGroup->GetGroup(grpIdx);
+         if ( pSubGroup->FindGroup(lpszGroupName) != NULL )
+            return pSubGroup;
+      }
+   }
+
+   return NULL;
+}
+
+CEAFTemplateGroup* CEAFTemplateGroup::FindGroup(LPCTSTR lpszGroupName)
+{
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIter(m_Groups.begin());
+   std::vector<CEAFTemplateGroup*>::const_iterator groupIterEnd(m_Groups.end());
+   for ( ; groupIter != groupIterEnd; groupIter++ )
+   {
+      CEAFTemplateGroup* pGroup = *groupIter;
+      if ( pGroup->GetGroupName() == lpszGroupName )
+         return pGroup;
+
+      GroupIndexType nGroups = pGroup->GetGroupCount();
+      for ( GroupIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+      {
+         CEAFTemplateGroup* pSubGroup = pGroup->GetGroup(grpIdx);
+         if ( pSubGroup->FindGroup(lpszGroupName) != NULL )
+            return pSubGroup;
+      }
+   }
+
+   return NULL;
+}
+
+void CEAFTemplateGroup::RemoveGroup(GroupIndexType grpIdx)
+{
+   CEAFTemplateGroup* pGroup = m_Groups[grpIdx];
+   delete pGroup;
+   m_Groups.erase(m_Groups.begin()+grpIdx);
+}
+
+void CEAFTemplateGroup::AddItem(CEAFTemplateItem* pItem)
 {
    m_Items.push_back(pItem);
 }
@@ -148,4 +257,26 @@ CollectionIndexType CEAFTemplateGroup::GetItemCount() const
 const CEAFTemplateItem* CEAFTemplateGroup::GetItem(CollectionIndexType itemIdx) const
 {
    return m_Items[itemIdx];
+}
+
+CEAFTemplateItem* CEAFTemplateGroup::GetItem(CollectionIndexType itemIdx)
+{
+   return m_Items[itemIdx];
+}
+
+void CEAFTemplateGroup::RemoveItem(CollectionIndexType itemIdx)
+{
+   CEAFTemplateItem* pItem = m_Items[itemIdx];
+   delete pItem;
+   m_Items.erase(m_Items.begin()+itemIdx);
+}
+
+bool CEAFTemplateGroup::operator<(const CEAFTemplateGroup& other) const
+{
+   return m_GroupName < other.m_GroupName;
+}
+
+bool CEAFTemplateGroup::operator==(const CEAFTemplateGroup& other) const
+{
+   return m_GroupName == other.m_GroupName;
 }

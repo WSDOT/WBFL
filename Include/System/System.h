@@ -56,6 +56,7 @@
 #include <System\StructuredLoadXml.h>
 #include <System\StructuredSaveXml.h>
 #include <System\SubjectT.h>
+#include <System\Tokenizer.h>
 #include <System\Time.h>
 #include <System\Transaction.h>
 #include <System\TxnManager.h>

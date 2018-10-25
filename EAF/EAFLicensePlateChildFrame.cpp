@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,6 @@ IMPLEMENT_DYNCREATE(CEAFLicensePlateChildFrame, CEAFChildFrame)
 BEGIN_MESSAGE_MAP(CEAFLicensePlateChildFrame, CEAFChildFrame)
 	//{{AFX_MSG_MAP(CEAFLicensePlateChildFrame)
 	ON_WM_CREATE()
-	ON_WM_SIZE()
 	ON_WM_ERASEBKGND()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -111,17 +110,6 @@ int CEAFLicensePlateChildFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
    return 0;
 }
-
-void CEAFLicensePlateChildFrame::OnSize(UINT nType, int cx, int cy) 
-{
-   CEAFChildFrame::OnSize(nType, cx, cy);
-
-   UpdateOuterRect();
-
-   // put the view where it's supposed to be
-   PositionWindow();
-}
-
 
 BOOL CEAFLicensePlateChildFrame::OnEraseBkgnd(CDC* pDC) 
 {
@@ -242,7 +230,7 @@ eafTypes::LpFrameMode CEAFLicensePlateChildFrame::GetLicensePlateMode()
    return m_Mode;
 }
 
-void CEAFLicensePlateChildFrame::Toggle()
+void CEAFLicensePlateChildFrame::ToggleLPFrame()
 {
    if ( m_Mode == eafTypes::lpfOn )
       SetLicensePlateMode( eafTypes::lpfOff );
@@ -367,7 +355,7 @@ void CEAFLicensePlateChildFrame::UpdateOuterRect()
       CWnd* p_child = GetWindow(GW_CHILD);
       for ( ; p_child != 0; p_child = p_child->GetWindow( GW_HWNDNEXT ) )
       {
-         if ( p_child != m_pWnd )
+         if ( p_child != m_pWnd && p_child->IsWindowVisible() )
          {
             // this is a little buggy.... only works for child windows on top and left edges
             CRect child_window_rect;
@@ -405,4 +393,18 @@ CRect CEAFLicensePlateChildFrame::GetInnerBorder()
    }
 
    return rect;
+}
+
+void CEAFLicensePlateChildFrame::UpdateLPFrame()
+{
+   UpdateOuterRect();
+
+   // put the view where it's supposed to be
+   PositionWindow();
+}
+
+void CEAFLicensePlateChildFrame::RecalcLayout(BOOL bNotify)
+{
+   CEAFChildFrame::RecalcLayout(bNotify);
+   UpdateLPFrame();
 }

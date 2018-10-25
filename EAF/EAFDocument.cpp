@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -170,7 +170,12 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
 void CEAFDocument::OnUpdateError(const CString& errorMsg)
 {
    CString my_string = errorMsg;
-   UpdateAllViews(0,EAF_HINT_UPDATEERROR,(CObject*)&my_string);
+   OnUpdateAllViews(0,EAF_HINT_UPDATEERROR,(CObject*)&my_string);
+}
+
+void CEAFDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* pHint)
+{
+   UpdateAllViews(pSender,lHint,pHint);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -243,15 +248,14 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
    }
 
    // save toolbar state before they are removed
-   CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( !bIntegrate )
-      pFrame->SaveBarState(CString("Toolbars\\") + GetToolbarSectionName());
+      SaveToolbarState();
 
    DoIntegrateWithUI(bIntegrate);
 
    // load toolbar state after toolbars are created
    if ( bIntegrate )
-      pFrame->LoadBarState(CString("Toolbars\\") + GetToolbarSectionName());
+      LoadToolbarState();
 
    m_bUIIntegrated = bIntegrate;
 }
@@ -310,6 +314,18 @@ void CEAFDocument::DestroyToolBar(UINT toolbarID)
 {
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->DestroyToolBar(toolbarID);
+}
+
+void CEAFDocument::LoadToolbarState()
+{
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->LoadBarState(CString("Toolbars\\")+GetToolbarSectionName());
+}
+
+void CEAFDocument::SaveToolbarState()
+{
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->SaveBarState(CString("Toolbars\\")+GetToolbarSectionName());
 }
 
 long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
@@ -420,6 +436,7 @@ BOOL CEAFDocument::GetSaveMissingPluginDataFlag()
 
 void CEAFDocument::InitFailMessage()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CString msg, msg1, msg2;
 
    CString strLogFile = EAFGetApp()->m_pszExeName;
@@ -972,7 +989,7 @@ CEAFStatusCenter& CEAFDocument::GetStatusCenter()
 
 void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 {
-   UpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
+   OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
 }
 
 void CEAFDocument::Execute(txnTransaction& rTxn)

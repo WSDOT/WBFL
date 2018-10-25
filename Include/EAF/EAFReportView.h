@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -112,6 +112,8 @@ public:
 
    // listen if our button was clicked
    void NotifyReportButtonWasClicked();
+
+   boost::shared_ptr<CReportSpecification> GetReportSpecification();
 
    // Generated message map functions
 protected:

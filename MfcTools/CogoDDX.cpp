@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -128,7 +128,7 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
    delete[] lpszBuffer;
 }
 
-void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
 {
    const unitLength& displayUnit = ( bUnitModeSI ? siDisplayUnit : usDisplayUnit );
 
@@ -183,7 +183,7 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, b
    delete[] lpszBuffer;
 }
 
-void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStationFormat& unitStation )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStationFormat& unitStation )
 {
    UnitModeType unitMode = unitStation.GetUnitOfMeasure() == unitStationFormat::Feet ? umUS : umSI;
    const unitLength& displayUnit = (unitMode == umUS ? unitMeasure::Feet : unitMeasure::Meter);
@@ -210,6 +210,14 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, c
          // Fail throws an exception delete lpszBuffer so we don't leak memory.
          delete[] lpszBuffer;
          lpszBuffer = 0;
+         CString strError;
+         if ( unitMode == umUS )
+            strError = _T("Invalid station format. Enter the station in the following format: xx+yy.zz");
+         else
+            strError = _T("Invalid station format. Enter the station in the following format: xx+yyy.zz");
+         
+         AfxMessageBox(strError);
+         
          pDX->Fail();
       }
 
@@ -240,7 +248,7 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, c
    delete[] lpszBuffer;
 }
 
-void MFCTOOLSFUNC DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
+void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit )
 {
    const unitLength& displayUnit = ( bUnitsModeSI ? siDisplayUnit : usDisplayUnit );
 	if (!pDX->m_bSaveAndValidate)
@@ -269,7 +277,7 @@ void MFCTOOLSFUNC DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, F
    }
 }
 
-void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation)
+void DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation)
 {
 	if (!pDX->m_bSaveAndValidate)
 	{

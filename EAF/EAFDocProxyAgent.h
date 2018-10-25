@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -211,6 +211,7 @@ public:
    virtual const unitmgtForceLength2Data&  GetStiffnessUnit();
    virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit();
    virtual const unitmgtPerLengthData&      GetPerLengthUnit();
+   virtual const unitmgtPerLengthData&      GetCurvatureUnit();
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit();
    virtual const unitmgtPressureData&       GetOverlayWeightUnit();
 

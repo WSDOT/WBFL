@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,10 +21,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <EAF\EAFExp.h>
-
 #pragma once
 
+
+#include <EAF\EAFExp.h>
+
+#include <EAF\EAFTemplateGroup.h>
 
 // CEAFDocManager provides a better new file dialog than MFC
 
@@ -48,7 +50,8 @@ public:
 private:
    CString m_strCurrentFilter; // filter for open/close of the current document
 
-   void SortDocTemplates();
+   CEAFTemplateGroup m_TemplateGroups;
+   void RemoveDocTemplate(CEAFDocTemplate* pTemplate,CEAFTemplateGroup* pGroups);
 };
 
 

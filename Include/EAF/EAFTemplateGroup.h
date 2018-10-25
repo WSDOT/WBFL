@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,7 +24,6 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-#include <vector>
 
 class CEAFDocTemplate;
 
@@ -36,10 +35,21 @@ class EAFCLASS CEAFTemplateItem : public CObject
 {
 public:
    CEAFTemplateItem();
-   CEAFTemplateItem(LPCTSTR name,LPCTSTR path,HICON hIcon);
+   CEAFTemplateItem(CEAFDocTemplate* pDocTemplate, // document template for creating the new document
+                    LPCTSTR name,                  // name to be displayed in the new dialog
+                    LPCTSTR path,                  // path to a template file (NULL if not using a template file)
+                    HICON hIcon);                  // handle to the icon to display in the new dialog
+
    virtual ~CEAFTemplateItem();
 
-   // Set/Get the name (usually the filename)
+   // Copying must be done through the Clone method
+   virtual CEAFTemplateItem* Clone() const;
+
+   // Set/Get the document template
+   virtual void SetDocTemplate(CEAFDocTemplate* pDocTemplate);
+   virtual CEAFDocTemplate* GetDocTemplate() const;
+
+   // Set/Get the name (usually the filename, this is what get displayed on the right side of the dialog)
    virtual void SetName(LPCTSTR name);
    virtual CString GetName() const;
 
@@ -52,8 +62,9 @@ public:
    virtual CString GetTemplateFilePath() const;
 
 protected:
-   CString m_Name;
+   CEAFDocTemplate* m_pDocTemplate;
    CString m_Path;
+   CString m_Name;
    HICON m_hIcon;
 
    DECLARE_DYNAMIC(CEAFTemplateItem)
@@ -68,43 +79,65 @@ protected:
 class EAFCLASS CEAFTemplateGroup : public CObject
 {
 public:
-   CEAFTemplateGroup(CEAFDocTemplate* pDocTemplate);
+   CEAFTemplateGroup();
    virtual ~CEAFTemplateGroup();
+
+   // copying must be done through the Clone method
+   virtual CEAFTemplateGroup* Clone() const;
 
    // Delete all template groups and template items
    void Clear();
 
-   // Returns the document template for this group of documents
-   CEAFDocTemplate* GetDocTemplate();
+   // Get/Get the group name. This name is displayed in the tree
+   // on the left side of the New dialog
+   void SetGroupName(LPCTSTR name);
+   CString GetGroupName() const;
 
-   // Get/Get the group name
-   virtual void SetGroupName(LPCTSTR name);
-   virtual CString GetGroupName() const;
+   void SetIcon(HICON hIcon);
+   HICON GetIcon() const;
 
-   // Add a sub-group
-   virtual void AddGroup(const CEAFTemplateGroup* pGroup);
+   // Add a sub-group. This container takes over ownership of the
+   // pointer and will delete it.
+   void AddGroup(CEAFTemplateGroup* pGroup);
 
    // Returns the group count
-   virtual CollectionIndexType GetGroupCount() const;
+   GroupIndexType GetGroupCount() const;
 
    // Gets a sub-group by index
-   virtual const CEAFTemplateGroup* GetGroup(CollectionIndexType grpIdx) const;
+   const CEAFTemplateGroup* GetGroup(GroupIndexType grpIdx) const;
+   CEAFTemplateGroup* GetGroup(GroupIndexType grpIdx);
 
-   // Adds an item to this group
-   virtual void AddItem(const CEAFTemplateItem* pItem);
+   const CEAFTemplateGroup* FindGroup(LPCTSTR lpszGroupName) const;
+   CEAFTemplateGroup* FindGroup(LPCTSTR lpszGroupName);
+
+   void RemoveGroup(GroupIndexType grpIdx);
+
+   // Adds an item to this group This container takes over ownership of the
+   // pointer and will delete it.
+   void AddItem(CEAFTemplateItem* pItem);
 
    // Returns the number of items in this group
-   virtual CollectionIndexType GetItemCount() const;
+   CollectionIndexType GetItemCount() const;
 
    // Returns a template item by index
-   virtual const CEAFTemplateItem* GetItem(CollectionIndexType itemIdx) const;
+   const CEAFTemplateItem* GetItem(CollectionIndexType itemIdx) const;
+   CEAFTemplateItem* GetItem(CollectionIndexType itemIdx);
+
+   void RemoveItem(CollectionIndexType itemIdx);
+
+   // compares based on group name
+   bool operator<(const CEAFTemplateGroup& other) const;
+   bool operator==(const CEAFTemplateGroup& other) const;
+
+protected:
+   void DeepCopy(const CEAFTemplateGroup* pGroup);
 
 private:
-   CEAFDocTemplate* m_pDocTemplate;
    CString m_GroupName;
+   HICON m_hIcon;
 
-   std::vector<const CEAFTemplateItem*> m_Items;
-   std::vector<const CEAFTemplateGroup*> m_Groups;
+   std::vector<CEAFTemplateItem*> m_Items;
+   std::vector<CEAFTemplateGroup*> m_Groups;
 
    DECLARE_DYNAMIC(CEAFTemplateGroup)
 };

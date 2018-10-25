@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "StorageTest Module"
             VALUE "FileVersion", "3.0.1.0"
             VALUE "InternalName", "StorageTest"
-            VALUE "LegalCopyright", "Copyright © 1999-2012"
+            VALUE "LegalCopyright", "Copyright © 1999-2013"
             VALUE "OriginalFilename", "StorageTest.DLL"
             VALUE "ProductName", "StorageTest Module"
             VALUE "ProductVersion", "3.0.1.0"

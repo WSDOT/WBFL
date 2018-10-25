@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -20,6 +20,14 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+
+cpp_quote("#if _WIN32_WINNT < 0x0600")
+cpp_quote("#define MAXUINT64   ((UINT64)~((UINT64)0))")
+cpp_quote("#define MAXUINT32   ((UINT32)~((UINT32)0))")
+cpp_quote("#define MAXINT16    ((INT16)(MAXUINT16 >> 1))")
+cpp_quote("#define MAXINT32    ((INT32)(MAXUINT32 >> 1))")
+cpp_quote("#define MAXINT64    ((INT64)(MAXUINT64 >> 1))")
+cpp_quote("#endif")
 
 import "basetsd.h";
 
@@ -83,21 +91,26 @@ typedef UINT64 Uint64;
 typedef float  Float32;
 typedef double Float64;
 
-
-#if defined VBA_BUILD
-cpp_quote("#pragma warning(disable:4018 4244 4267)")
-cpp_quote("#define INVALID_ID -1")
-#else
-cpp_quote("#define INVALID_ID SIZE_MAX")
-#endif
-
 #if defined VBA_BUILD
 typedef INT16 IDType;
+cpp_quote("#pragma warning(disable:4018 4244 4267)")
+cpp_quote("#define INVALID_ID -1")
+cpp_quote("#define MAX_ID MAXINT16")
+cpp_quote("#define VARIANT2ID(_var_) _var_.intVal")
+cpp_quote("#define VT_ID VT_INT")
 #else
 #if defined _WIN64
 typedef INT64   IDType;
+cpp_quote("#define INVALID_ID -1")
+cpp_quote("#define MAX_ID MAXINT64")
+cpp_quote("#define VARIANT2ID(_var_) _var_.llVal")
+cpp_quote("#define VT_ID VT_I8")
 #else
 typedef INT32   IDType;
+cpp_quote("#define INVALID_ID -1")
+cpp_quote("#define MAX_ID MAXINT32")
+cpp_quote("#define VARIANT2ID(_var_) _var_.lVal")
+cpp_quote("#define VT_ID VT_I4")
 #endif
 #endif
 
@@ -115,28 +128,37 @@ typedef IDType  LoadCombinationIDType;
 typedef Int32 BarSizeType;
 
 
+
+// VBA does not support UINT32 or UINT64 so we need to use LONG as the IndexType for VBA builds
 #if defined VBA_BUILD
+typedef long IndexType;
+cpp_quote("#define MAX_INDEX (MAX_LONG-1)")
 cpp_quote("#define INVALID_INDEX    -1")
+cpp_quote("#define VARIANT2INDEX(_var_) _var_.lVal")
+cpp_quote("#define VT_INDEX VT_I4")
 #else
-cpp_quote("#define INVALID_INDEX    SIZE_MAX")
+#if defined _WIN64
+typedef UINT64 IndexType;
+cpp_quote("#define MAX_INDEX (MAXUINT64-1)")
+cpp_quote("#define INVALID_INDEX (MAX_INDEX+1)")
+cpp_quote("#define VARIANT2INDEX(_var_) _var_.ullVal")
+cpp_quote("#define VT_INDEX VT_UI8")
+#else
+typedef UINT32 IndexType;
+cpp_quote("#define MAX_INDEX (MAXUINT32-1)")
+cpp_quote("#define INVALID_INDEX (MAX_INDEX+1)")
+cpp_quote("#define VARIANT2INDEX(_var_) _var_.ulVal")
+cpp_quote("#define VT_INDEX VT_UI4")
+#endif
 #endif
 
 cpp_quote("#define FIXED_AXLE_TRUCK INVALID_INDEX")
 cpp_quote("#define ALL_SPANS        INVALID_INDEX")
 cpp_quote("#define ALL_PIERS        INVALID_INDEX")
 cpp_quote("#define ALL_GIRDERS      INVALID_INDEX")
+cpp_quote("#define ALL_GROUPS       INVALID_INDEX")
+cpp_quote("#define ALL_STAGES       INVALID_INDEX")
 cpp_quote("#define INVALID_BAR_SIZE INVALID_INDEX")
-
-// VBA does not support UINT32 or UINT64 so we need to use LONG as the IndexType for VBA builds
-#if defined VBA_BUILD
-typedef long IndexType;
-#else
-#if defined _WIN64
-typedef UINT64 IndexType;
-#else
-typedef UINT32 IndexType;
-#endif
-#endif
 
 typedef IndexType CollectionIndexType;
 typedef IndexType StageIndexType;
