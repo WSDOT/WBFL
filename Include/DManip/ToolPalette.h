@@ -34,12 +34,18 @@
 #include <vector>
 #include <afxcmn.h>
 
+#if defined _EAF_USING_MFC_FEATURE_PACK
+#include <EAF\EAFPaneDialog.h>
+#else
+#define CEAFPaneDialog CDialogBar
+#endif
+
 struct iTool;
 
 /////////////////////////////////////////////////////////////////////////////
 // CToolPalette dialog
 
-class DMANIPCLASS CToolPalette : public CDialogBar
+class DMANIPCLASS CToolPalette : public CEAFPaneDialog
 {
 // Construction
 public:
@@ -69,6 +75,10 @@ public:
    void FindTool(IDType id,iTool** pTool);
    void RemoveTool(IndexType idx);
    void RemoveTool(IDType id);
+
+#if defined _DEBUG
+   virtual void AssertValid() const;
+#endif
 
 // Implementation
 protected:

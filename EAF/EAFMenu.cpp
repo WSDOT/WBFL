@@ -397,10 +397,10 @@ UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
    int offset = 0;
-   if ( pActiveFrame && pActiveFrame->IsZoomed() )
-   {
-      offset = 1;
-   }
+   //if ( pActiveFrame && pActiveFrame->IsZoomed() )
+   //{
+   //   offset = 1;
+   //}
 
    UINT nItems = pMenu->GetMenuItemCount();
    for ( UINT menuPos = 0; menuPos < nItems; menuPos++ )

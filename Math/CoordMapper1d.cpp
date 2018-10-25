@@ -89,7 +89,7 @@ Float64 mathCoordMapper1d::GetB( Float64 A) const
 
 void mathCoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
 {
-   PRECONDITIONX( !IsEqual(a1,a2,1.0e-16), _T("a1 cannot equal a2") );
+   ASSERT( !IsEqual(a1,a2,1.0e-16), _T("a1 cannot equal a2") );
 
    // set up mapping equation: A = B * m_c + m_d
 
@@ -107,13 +107,13 @@ void mathCoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Flo
    m_d = a1 - b1 * m_c;
 }
 
-void mathCoordMapper1d::SetMapSameScale(Float64 d, bool IsSameDirection)
+void mathCoordMapper1d::SetMapSameScale(Float64 d, bool bIsSameDirection)
 {
    // logic is bizarre here, but it works
 
    m_d = d;
 
-   if (IsSameDirection)
+   if (bIsSameDirection)
       m_c = 1;
    else
       m_c = -1;

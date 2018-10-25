@@ -968,7 +968,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
       CComPtr<IAnalysisPOIs> poi_utility;
       pDoc->m_pLBAMAnalysisEngine->get_AnalysisPOIs(&poi_utility);
 
-      CComPtr<ILongArray> poilist;
+      CComPtr<IIDArray> poilist;
       CComPtr<IDblArray> loclist;
       hr = poi_utility->GetSuperstructurePois(curr_stg , &poilist, &loclist);
       PROCESS_HR(hr);
@@ -979,8 +979,8 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
       // remove internally generated pois if asked
       if (pDoc->GetShowInternalPOIs()==FALSE)
       {
-         CComPtr<ILongArray> new_poilist;
-         hr = new_poilist.CoCreateInstance(CLSID_LongArray);
+         CComPtr<IIDArray> new_poilist;
+         hr = new_poilist.CoCreateInstance(CLSID_IDArray);
          CComPtr<IDblArray> new_loclist;
          hr = new_loclist.CoCreateInstance(CLSID_DblArray);
 

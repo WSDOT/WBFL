@@ -90,6 +90,7 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
+                         Float64 Mllim, // live load
 
                          Float64 Ag,    // Area of girder
                          Float64 Ig,    // Moment of inertia of girder
@@ -103,7 +104,7 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
 }
 
@@ -259,8 +260,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_Final() const
 
    Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation + elastic shortening
                 + GetDeltaFptr() // change in loss due to temporary strand removal
-                + ElasticGainDueToDeckPlacement()
-                + ElasticGainDueToSIDL()
+                - ElasticGainDueToDeckPlacement()
+                - ElasticGainDueToSIDL()
+                - ElasticGainDueToDeckShrinkage()
                 + TimeDependentLosses(); // total lump sum time dependent losses
 
    if ( m_TempStrandUsage != tsPretensioned )
@@ -412,12 +414,16 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       }
 
       // Elastic gain due to deck placement
-      m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig);
+      m_DeltaFcd1 = m_Madlg*m_eperm/m_Ig;
       m_dfpED = (m_Ep/m_Ec)*m_DeltaFcd1;
 
       // Elastic gain due to superimposed dead loads
-      m_DeltaFcd2 = -1*(m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+      m_DeltaFcd2 = m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic;
       m_dfpSIDL = (m_Ep/m_Ec)*m_DeltaFcd2;
+
+      // Elastic gain due to live load
+      m_DeltaFcdLL = (m_Mllim*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+      m_dfpLL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcdLL;
    }
 }
 

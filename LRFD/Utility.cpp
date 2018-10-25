@@ -109,7 +109,7 @@ Float64 lrfdUtility::IbeamEffFlangeWidth(Float64 effSpanLength,
    return wEff;
 }
 
-Float64 lrfdUtility::GetMultiplePresenceFactor(Uint32 nLanesLoaded)
+Float64 lrfdUtility::GetMultiplePresenceFactor(IndexType nLanesLoaded)
 {
    if ( nLanesLoaded == 0 || nLanesLoaded == 1 )
       return 1.2;

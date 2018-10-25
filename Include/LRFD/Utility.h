@@ -102,7 +102,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the multiple presence factor the the specified number of
    // loaded lanes. Article 3.6.1.1.2
-   static Float64 GetMultiplePresenceFactor(Uint32 nLanesLoaded);
+   static Float64 GetMultiplePresenceFactor(IndexType nLanesLoaded);
 
    //------------------------------------------------------------------------
    // Returns the width of a single design lane, given the curb to curb width
