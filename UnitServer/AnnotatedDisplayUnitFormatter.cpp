@@ -233,13 +233,24 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
 
    v2 *= m_Multiplier;
 
-   Float64 accuracy = max(m_Precision/pow(10.0,Float64(m_Precision+1)),0.0001);
+   Float64 accuracy = max(1.0/pow(10.0,Float64(m_Precision)),0.0001);
    v2 = RoundOff(v2,accuracy);
 
    // compute width of character buffer
    Uint32 width = m_Precision; // # of digits after decimal point
    width += (m_Precision > 0) ? 1 : 0; // Add one for the '.' if precision > 0
-   width += _cpp_max(IsZero(v2) ? 1L : (Uint32)log10(v2) + 1L,m_nDigits); // Number of digits before decimal point
+
+   // Number of digits before decimal point
+   Uint32 vfloor = (Uint32)v2;
+   if (vfloor<seperatorLocation)
+   {
+      width += _cpp_max(m_nDigits, 1);
+   }
+   else
+   {
+      Float64 ltmp = log10(v2);
+      width += (Uint32)(ltmp) + 1;
+   }
 
    // compute length of character string
    int nChar;
@@ -251,7 +262,11 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
    nChar += (sign < 0) ? 1 : 0; // for the "-" if the value is negative
 
    // Build the string
-   LPTSTR pBuffer = new TCHAR[nChar];
+   const int BUFF_SIZE=32;
+   _ASSERT(nChar<BUFF_SIZE);
+   nChar = _cpp_min(nChar,BUFF_SIZE); // assert if we blow out buffer, but do this also so we don't crash
+
+   TCHAR pBuffer[BUFF_SIZE];
    if ( tag == NULL )
       _stprintf_s(pBuffer,nChar,_T("%s%d %0*.*f"),sign < 0 ? _T("-") : _T(""),v1,width,m_Precision,v2);
    else
@@ -259,7 +274,9 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
 
    // Write the string into a different buffer so it is the right width and justification
    size_t sizeBuffer2 = _cpp_max((Uint32)_tcslen(pBuffer),m_Width)+1;
-   LPTSTR pBuffer2 = new TCHAR[sizeBuffer2];
+   _ASSERT(sizeBuffer2<BUFF_SIZE);
+   TCHAR pBuffer2[BUFF_SIZE];
+
    if ( m_Justify == tjLeft )
       _stprintf_s(pBuffer2,sizeBuffer2,_T("%-*s"),m_Width,pBuffer);
    else
@@ -268,9 +285,6 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
 
    CComBSTR bstrBuffer(pBuffer2);
    *fmtString = bstrBuffer.Detach();
-
-   delete[] pBuffer;
-   delete[] pBuffer2;
 
    return S_OK;
 }

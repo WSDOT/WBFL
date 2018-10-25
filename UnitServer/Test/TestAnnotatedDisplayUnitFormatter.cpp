@@ -166,6 +166,14 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
    pADUF->Format(-999.99,CComBSTR("ft"),&bstrTest);
    TRY_TEST(wcscmp(bstrTest,CComBSTR("-9+99.99")),0);
 
+   bstrTest.Empty();
+   pADUF->Format(14800.019,CComBSTR("ft"),&bstrTest);
+   TRY_TEST(wcscmp(bstrTest,CComBSTR("148+00.02")),0);
+
+   bstrTest.Empty();
+   pADUF->Format(14800.0019,CComBSTR("ft"),&bstrTest);
+   TRY_TEST(wcscmp(bstrTest,CComBSTR("148+00.00")),0);
+
    // SI Stationing
    pADUF->put_OffsetDigits(3);
    pADUF->put_Multiplier(1.0);
