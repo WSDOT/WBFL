@@ -62,6 +62,10 @@ public:
    void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
    void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
 
+   // Concrete density modification factor (LRFD2016 5.2.4.8)
+   void SetLambda(Float64 lambda);
+   Float64 GetLambda() const;
+
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -107,4 +111,5 @@ private:
    Float64 m_CreepK2;
    Float64 m_ShrinkageK1;
    Float64 m_ShrinkageK2;
+   Float64 m_Lambda;
 };

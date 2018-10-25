@@ -125,6 +125,8 @@ LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bA
 
    case SecondEditionWith2015Interims:
       return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2015 interim provisions"));
+   case SecondEditionWith2016Interims:
+      return (bAbbreviated ? _T("LRFR2016") : _T("Second Edition 2011, with 2011-2016 interim provisions"));
 
    default:
       ASSERT(false);
@@ -162,6 +164,10 @@ lrfrVersionMgr::Version lrfrVersionMgr::GetVersion(LPCTSTR strAbbrev)
    else if (strSpecVersion == _T("LRFR2015"))
    {
       return lrfrVersionMgr::SecondEditionWith2015Interims;
+   }
+   else if (strSpecVersion == _T("LRFR2016"))
+   {
+      return lrfrVersionMgr::SecondEditionWith2016Interims;
    }
    else
    {

@@ -285,12 +285,25 @@ STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
 }
 
 
-STDMETHODIMP CStrandGrid::putref_StrandMover(/*[out,retval]*/IStrandMover* mover)
+STDMETHODIMP CStrandGrid::putref_StrandMover(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[out,retval]*/IStrandMover* mover)
 {
    CHECK_IN(mover);
 
    m_pStrandMover = mover;
+   m_StrandGridType = gridType;
+   m_EndType = endType;
 
+   return S_OK;
+}
+
+STDMETHODIMP CStrandGrid::GetStrandMover(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover)
+{
+   CHECK_RETVAL(gridType);
+   CHECK_RETVAL(endType);
+   CHECK_RETOBJ(mover);
+   *gridType = m_StrandGridType;
+   *endType = m_EndType;
+   m_pStrandMover.CopyTo(mover);
    return S_OK;
 }
 
@@ -1622,7 +1635,10 @@ void CStrandGrid::AdjustStrand(Float64 originalX, Float64 originalY, Float64* ne
 {
    if (m_pStrandMover)
    {
-      m_pStrandMover->TranslateStrand( originalX, originalY, m_VerticalAdjustment, newX, newY );
+      if ( m_StrandGridType == sgtEnd )
+         m_pStrandMover->TranslateEndStrand( m_EndType, originalX, originalY, m_VerticalAdjustment, newX, newY );
+      else
+         m_pStrandMover->TranslateHpStrand( m_EndType,originalX, originalY, m_VerticalAdjustment, newX, newY );
    }
    else
    {
