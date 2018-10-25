@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -731,10 +731,10 @@ Uint16 rptHtmlRcVisitor::BorderToPixels( rptRiStyle::BorderStyle BStyle)
    case rptRiStyle::SINGLE_THICK:
       return 2;
 
-   case rptRiStyle::DOUBLE_THICK:
+   case rptRiStyle::Float64_THICK:
       return 6;
 
-   case rptRiStyle::DOUBLE_LINE:
+   case rptRiStyle::Float64_LINE:
       return 8;
 
    case rptRiStyle::DASHED:

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -94,7 +94,7 @@ public:
 
    //------------------------------------------------------------------------
    // Toggles the mode between on and off
-   void ToggleLPFrame();
+   void Toggle();
 
    //------------------------------------------------------------------------
    void SetFramedWindow(CWnd* pWnd);
@@ -126,6 +126,7 @@ public:
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CLicensePlateChildFrame)
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	//}}AFX_MSG
@@ -133,8 +134,6 @@ protected:
 
    CRect GetOuterBorder();
    CRect GetInnerBorder();
-
-   void UpdateLPFrame();
 
 private:
 	bool    m_IsBitmap;
@@ -148,6 +147,4 @@ private:
 
    void UpdateOuterRect();
 	void PositionWindow();
-public:
-   virtual void RecalcLayout(BOOL bNotify = TRUE);
 };

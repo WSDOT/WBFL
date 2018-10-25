@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -135,13 +135,10 @@ void CEAFSplashScreen::HideSplashScreen()
    m_Bitmap.Detach();
    m_ImageList.DeleteImageList();
 
-   DestroyWindow();
+	DestroyWindow();
    CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( pFrame )
-   {
-      pFrame->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-	  pFrame->UpdateWindow();
-   }
+	   pFrame->UpdateWindow();
 }
 
 void CEAFSplashScreen::PostNcDestroy()

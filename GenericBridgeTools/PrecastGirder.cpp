@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1700,7 +1700,7 @@ void CPrecastGirder::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElem
       {
          ;// do nothing - input is same as internal
       }
-      else if ( measure_loc == mlCenterlinePier )
+      else if ( measure_loc == mlPierLine )
       {
          // subtract end dist from bearing offset
          Float64 bearing_offset;
@@ -1769,7 +1769,7 @@ void CPrecastGirder::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElem
          // measured from centerline bearing
          offset_dist = bearing_to_pier_dist - end_dist;
       }
-      else if ( measure_loc == mlCenterlinePier )
+      else if ( measure_loc == mlPierLine )
       {
          offset_dist = end_dist;
 

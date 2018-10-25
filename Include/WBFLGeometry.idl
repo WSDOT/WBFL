@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1286,84 +1286,6 @@ library WBFLGeometry
 
 		[helpstring("method Rotate"),helpcontext(IDH_IXYPosition_Rotate)]
 		HRESULT Rotate([in] Float64 cx,[in] Float64 cy,[in] Float64 angle);
-	};
-
-
-	[
-		object,
-		uuid(06762F74-9BD3-4f96-B2F4-946D64F9C37D),
-		oleautomation,
-		helpstring("IGenericShape Interface"),
-		helpcontext(IDH_IGenericShape),
-		pointer_default(unique)
-	]
-	interface IGenericShape : IUnknown
-	{
-		[propget, helpstring("property Area"),helpcontext(IDH_IGenericShape_Area)]
-		HRESULT Area([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Area"),helpcontext(IDH_IGenericShape_Area)]
-		HRESULT Area([in] Float64 newVal);
-
-		[propput, helpstring("property Perimeter"),helpcontext(IDH_IGenericShape_Perimeter)]
-		HRESULT Perimeter([in] Float64 newVal);
-
-      [propget, helpstring("property Centroid"),helpcontext(IDH_IGenericShape_Centroid)]
-		HRESULT Centroid([out, retval] IPoint2d* *pVal);
-
-		[propputref, helpstring("property Centroid"),helpcontext(IDH_IGenericShape_Centroid)]
-		HRESULT Centroid([in] IPoint2d* newVal);
-
-		[propget, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
-		HRESULT Xleft([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
-		HRESULT Xleft([in] Float64 newVal);
-
-		[propget, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
-		HRESULT Xright([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
-		HRESULT Xright([in] Float64 newVal);
-
-		[propget, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
-		HRESULT Ytop([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
-		HRESULT Ytop([in] Float64 newVal);
-
-		[propget, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
-		HRESULT Ybottom([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
-		HRESULT Ybottom([in] Float64 newVal);
-
-		[propget, helpstring("property Ixx"),helpcontext(IDH_IGenericShape_Ixx)]
-		HRESULT Ixx([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ixx"),helpcontext(IDH_IGenericShape_Ixx)]
-		HRESULT Ixx([in] Float64 newVal);
-
-		[propget, helpstring("property Iyy"),helpcontext(IDH_IGenericShape_Iyy)]
-		HRESULT Iyy([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Iyy"),helpcontext(IDH_IGenericShape_Iyy)]
-		HRESULT Iyy([in] Float64 newVal);
-
-		[propget, helpstring("property Ixy"),helpcontext(IDH_IGenericShape_Ixy)]
-		HRESULT Ixy([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ixy"),helpcontext(IDH_IGenericShape_Ixy)]
-		HRESULT Ixy([in] Float64 newVal);
-
-		[propget, helpstring("property Shape"),helpcontext(IDH_IGenericShape_Shape)]
-		HRESULT Shape([out, retval] IShape* *pVal);
-
-		[propget, helpstring("property XYPosition"),helpcontext(IDH_IGenericShape_XYPosition)]
-		HRESULT XYPosition([out, retval] IXYPosition* *pVal);
-
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 	};
 
    [
@@ -3838,19 +3760,6 @@ interface IDeckedSlabBeam : IUnknown
 	coclass DeckedSlabBeam
 	{
 		[default] interface IDeckedSlabBeam;
-		interface IShape;
-		interface IXYPosition;
-		interface IStructuredStorage2;
-		// interface IPersist;
-	};
-
-	[
-		uuid(15C754B8-415F-4bf0-89C2-D5E991D51D7C),
-		helpstring("GenericShape Class")
-	]
-	coclass GenericShape
-	{
-		[default] interface IGenericShape;
 		interface IShape;
 		interface IXYPosition;
 		interface IStructuredStorage2;

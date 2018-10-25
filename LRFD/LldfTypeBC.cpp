@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -774,7 +774,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_1
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -809,7 +809,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_2
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
@@ -836,7 +836,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_1_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -869,7 +869,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_2_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext =  lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,12 +65,12 @@ STDMETHODIMP CLiveLoadModelResponse::InterfaceSupportsErrorInfo(REFIID riid)
 
 bool CompareMax(Float64 newv, Float64 oldv)
 {
-   return ::IsGT(oldv,newv); //newv>oldv;
+   return newv>oldv;
 }
 
 bool CompareMin(Float64 newv, Float64 oldv)
 {
-   return ::IsLT(newv,oldv); //newv<oldv;
+   return newv<oldv;
 }
 
 

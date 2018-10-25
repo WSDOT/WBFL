@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,7 +43,8 @@ CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
                                  CRuntimeClass* pViewClass,
                                  HMENU hSharedMenu,
                                  int maxViewCount) :
-CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
+CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass),
+m_TemplateGroup(this)
 {
    m_pPlugin = NULL;
    m_pCommandCallback = pCallback;
@@ -59,10 +60,6 @@ CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
    m_MaxViewCount = maxViewCount;
 
    m_pTemplateItem = NULL;
-
-   CString strFileNewName;
-   GetDocString(strFileNewName,CDocTemplate::fileNewName);
-   m_TemplateGroup.SetGroupName(strFileNewName);
 }
 
 CEAFDocTemplate::~CEAFDocTemplate()
@@ -102,7 +99,7 @@ void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
    else
       strItemName = strFileName;
  
-   m_TemplateGroup.AddItem( new CEAFTemplateItem(this,strItemName,NULL,hIcon) );
+   m_TemplateGroup.AddItem( new CEAFTemplateItem(strItemName,NULL,hIcon) );
 }
 
 CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible)

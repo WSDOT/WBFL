@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -333,7 +333,7 @@ STDMETHODIMP CGirderSpacing::get_GirderSpacing(SpacingIndexType spaceIdx,Measure
 
    PierIndexType startPierIdx = ( m_SpanEnd == etStart ? pierIdx     : pierIdx-1 );
    PierIndexType endPierIdx   = ( m_SpanEnd == etStart ? pierIdx + 1 : pierIdx   );
-   if ( ml == mlCenterlinePier )
+   if ( ml == mlPierLine )
    {
       ::GB_GetPierGirderPointId(startPierIdx, spaceIdx,   qcbAfter,  &leftPointID[etStart]);
       ::GB_GetPierGirderPointId(endPierIdx,   spaceIdx,   qcbBefore, &leftPointID[etEnd]);
@@ -369,7 +369,7 @@ STDMETHODIMP CGirderSpacing::get_GirderSpacing(SpacingIndexType spaceIdx,Measure
 
       // Get the normal to the alignment at the pier
       CComPtr<IStation> objStation;
-      if ( ml == mlCenterlinePier )
+      if ( ml == mlPierLine )
       {
          // want the normal where the CL Pier intersects the alignment
          m_pPier->get_Station(&objStation);
@@ -553,7 +553,7 @@ STDMETHODIMP CGirderSpacing::get_Width(Float64 distFromStartOfSpan,MeasurementTy
 
 STDMETHODIMP CGirderSpacing::get_WidthAtPier(MeasurementType measureType,Float64* width)
 {
-   return GetPierWidth(mlCenterlinePier,measureType,width);
+   return GetPierWidth(mlPierLine,measureType,width);
 }
 
 STDMETHODIMP CGirderSpacing::get_WidthAtBearing(MeasurementType measureType,Float64* width)
@@ -678,7 +678,7 @@ STDMETHODIMP CGirderSpacing::get_GirderOffset(GirderIndexType gdrIdx,Measurement
    CHECK_RETVAL(pOffset);
 
    Float64 width;
-   if ( measureLocation == mlCenterlinePier )
+   if ( measureLocation == mlPierLine )
       get_WidthAtPier(measureType,&width);
    else
       get_WidthAtBearing(measureType,&width);
@@ -1016,7 +1016,7 @@ HRESULT CGirderSpacing::GetPierWidth(MeasurementLocation measureLocation,Measure
    span->get_GirderCount(&nGirders);
 
    CogoElementKey startPointID, endPointID;
-   if ( measureLocation == mlCenterlinePier )
+   if ( measureLocation == mlPierLine )
    {
       ::GB_GetPierGirderPointId(pierIdx,          0, m_SpanEnd == etStart ? qcbAfter : qcbBefore,  &startPointID);
       ::GB_GetPierGirderPointId(pierIdx, nGirders-1, m_SpanEnd == etStart ? qcbAfter : qcbBefore, &endPointID);

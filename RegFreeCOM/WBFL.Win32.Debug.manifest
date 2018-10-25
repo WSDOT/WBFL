@@ -23,8 +23,6 @@
 			 description="Point2d Class" threadingModel="Apartment" progid="WBFLGeometry.Point2d">
          <progid>WBFLGeometry.Point2d.1</progid>
       </comClass>
-      <comClass clsid="{15C754B8-415F-4bf0-89C2-D5E991D51D7C}" tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
-			 description="GenericShape Class"/>
       <comClass clsid="{B77D2444-96A0-11D2-88A7-006097C68A9C}" tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
 			 description="Size2d Class" threadingModel="Apartment" progid="WBFLGeometry.Size2d">
          <progid>WBFLGeometry.Size2d.1</progid>

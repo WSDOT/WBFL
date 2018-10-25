@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,11 +45,9 @@ public:
    bool IsLpFrameEnabled() const;
    void OnUpdateNow();
 
-   virtual bool DoResultsExist() = 0;
+   virtual bool DoResultsExist() const = 0;
 
 	void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
-
-   CEAFAutoCalcDocMixin* GetAutoCalcDocument();
 
 // Implementation
 protected:

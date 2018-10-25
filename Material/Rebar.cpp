@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,27 +35,23 @@ static char THIS_FILE[] = __FILE__;
 CLASS
    matRebar
 ****************************************************************************/
-// -1 means the material is not defined
-// Index 0 = A615, 1 = A706, 2 = A1035
 
-static Float64 gs_Fy40[3] = { ::ConvertToSysUnits(40,unitMeasure::KSI), -1, -1 };
-static Float64 gs_Fu40[3] = { ::ConvertToSysUnits(60,unitMeasure::KSI), -1, -1 };
-static Float64 gs_Es40[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1, -1 };
 
-static Float64 gs_Fy60[3] = { ::ConvertToSysUnits(60,unitMeasure::KSI),    ::ConvertToSysUnits(60,unitMeasure::KSI), -1 };
-static Float64 gs_Fu60[3] = { ::ConvertToSysUnits(90,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI), -1 };
-static Float64 gs_Es60[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
-static Float64 gs_Fy75[3] = { ::ConvertToSysUnits(75,unitMeasure::KSI),    -1, -1 };
-static Float64 gs_Fu75[3] = { ::ConvertToSysUnits(100,unitMeasure::KSI),   -1, -1 };
-static Float64 gs_Es75[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1, -1 };
+static Float64 gs_Fy40[2] = { ::ConvertToSysUnits(40,unitMeasure::KSI), -1 };
+static Float64 gs_Fu40[2] = { ::ConvertToSysUnits(60,unitMeasure::KSI), -1 };
+static Float64 gs_Es40[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
 
-static Float64 gs_Fy80[3] = { ::ConvertToSysUnits(80,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI), -1 };
-static Float64 gs_Fu80[3] = { ::ConvertToSysUnits(105,unitMeasure::KSI),    ::ConvertToSysUnits(100,unitMeasure::KSI), -1 };
-static Float64 gs_Es80[3] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
+static Float64 gs_Fy60[2] = { ::ConvertToSysUnits(60,unitMeasure::KSI),    ::ConvertToSysUnits(60,unitMeasure::KSI) };
+static Float64 gs_Fu60[2] = { ::ConvertToSysUnits(90,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI) };
+static Float64 gs_Es60[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI) };
 
-static Float64 gs_Fy100[3] = { -1, -1, ::ConvertToSysUnits(100,unitMeasure::KSI) };
-static Float64 gs_Fu100[3] = { -1, -1, ::ConvertToSysUnits(150,unitMeasure::KSI) };
-static Float64 gs_Es100[3] = { -1, -1, ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+static Float64 gs_Fy75[2] = { ::ConvertToSysUnits(75,unitMeasure::KSI),    -1 };
+static Float64 gs_Fu75[2] = { ::ConvertToSysUnits(100,unitMeasure::KSI),   -1 };
+static Float64 gs_Es75[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
+
+static Float64 gs_Fy80[2] = { ::ConvertToSysUnits(80,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI) };
+static Float64 gs_Fu80[2] = { ::ConvertToSysUnits(105,unitMeasure::KSI),    ::ConvertToSysUnits(100,unitMeasure::KSI) };
+static Float64 gs_Es80[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI) };
 
 static Float64 gs_Area[11] = {
    ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3
@@ -100,29 +96,10 @@ int SizeIndex(matRebar::Size size)
    case matRebar::bs11: return 8;
    case matRebar::bs14: return 9;
    case matRebar::bs18: return 10;
-   default:
-      ASSERT(FALSE);
-      return 0;
    }; 
 
    return 0;
 }
-
-int TypeIndex(matRebar::Type type)
-{
-   switch(type)
-   {
-   case matRebar::A615:  return 0;
-   case matRebar::A706:  return 1;
-   case matRebar::A1035: return 2;
-   default:
-      ASSERT(FALSE);
-      return 0;
-   }
-
-   return 0;
-}
-
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -133,12 +110,11 @@ m_Name(_T("Unknown"))
    m_Size = bs3;
    m_Type = A615;
    m_Grade = Grade60;
-   int idx = TypeIndex(m_Type);
-   m_Fu = gs_Fu60[idx];
-   m_Fy = gs_Fy60[idx];
-   m_Es = gs_Es60[idx];
+   m_Fu = gs_Fu60[m_Type == A615 ? 0 : 1];
+   m_Fy = gs_Fy60[m_Type == A615 ? 0 : 1];
+   m_Es = gs_Es60[m_Type == A615 ? 0 : 1];
 
-   idx = SizeIndex(m_Size);
+   int idx = SizeIndex(m_Size);
    m_Dimension = gs_Diameter[idx];
    m_Area      = gs_Area[idx];
 }
@@ -153,41 +129,34 @@ m_Name( name )
    m_Type = type;
    m_Size = size;
 
-   int idx = TypeIndex(m_Type);
    switch(m_Grade)
    {
    case matRebar::Grade40:
-      m_Fu = gs_Fu40[idx];
-      m_Fy = gs_Fy40[idx];
-      m_Es = gs_Es40[idx];
+      m_Fu = gs_Fu40[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy40[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es40[m_Type == A615 ? 0 : 1];
       break;
 
    case matRebar::Grade60:
-      m_Fu = gs_Fu60[idx];
-      m_Fy = gs_Fy60[idx];
-      m_Es = gs_Es60[idx];
+      m_Fu = gs_Fu60[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy60[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es60[m_Type == A615 ? 0 : 1];
       break;
 
    case matRebar::Grade75:
-      m_Fu = gs_Fu75[idx];
-      m_Fy = gs_Fy75[idx];
-      m_Es = gs_Es75[idx];
+      m_Fu = gs_Fu75[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy75[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es75[m_Type == A615 ? 0 : 1];
       break;
 
    case matRebar::Grade80:
-      m_Fu = gs_Fu80[idx];
-      m_Fy = gs_Fy80[idx];
-      m_Es = gs_Es80[idx];
-      break;
-
-   case matRebar::Grade100:
-      m_Fu = gs_Fu100[idx];
-      m_Fy = gs_Fy100[idx];
-      m_Es = gs_Es100[idx];
+      m_Fu = gs_Fu80[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy80[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es80[m_Type == A615 ? 0 : 1];
       break;
    }
 
-   idx = SizeIndex(m_Size);
+   int idx = SizeIndex(m_Size);
    m_Dimension = gs_Diameter[idx];
    m_Area      = gs_Area[idx];
 }

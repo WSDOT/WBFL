@@ -677,6 +677,10 @@
               <param name="Local" value="Objects\LBAM_Model\DistributionFactor\GDSgl.htm">
             </object>
             <li><object type="text/sitemap">
+              <param name="Name" value="GFat">
+              <param name="Local" value="Objects\LBAM_Model\DistributionFactor\GFat.htm">
+            </object>
+            <li><object type="text/sitemap">
               <param name="Name" value="GNMMul">
               <param name="Local" value="Objects\LBAM_Model\DistributionFactor\GNMMul.htm">
             </object>
@@ -732,14 +736,6 @@
             <li><object type="text/sitemap">
               <param name="Name" value="SetG">
               <param name="Local" value="Objects\LBAM_Model\DistributionFactor\SetG.htm">
-            </object>
-            <li><object type="text/sitemap">
-              <param name="Name" value="GetGFat">
-              <param name="Local" value="Objects\LBAM_Model\DistributionFactor\GFat.htm">
-            </object>
-            <li><object type="text/sitemap">
-              <param name="Name" value="SetGFat">
-              <param name="Local" value="Objects\LBAM_Model\DistributionFactor\GFat.htm">
             </object>
             </ul>
           <li><object type="text/sitemap">

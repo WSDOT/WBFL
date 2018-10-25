@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,10 +55,6 @@ public:
    enum Version { FirstEdition2008              = 1,
                   // no interims in 2009
                   FirstEditionWith2010Interims  = 2,
-                  SecondEdition2011             = 3, // Is this 2010 or 2011... Original document says 2011, interims say 2010... very confusion
-                  SecondEditionWith2011Interims = 4,
-                  SecondEditionWith2013Interims = 5,
-                  LastVersion
 };
 
    ~lrfrVersionMgr();
@@ -89,10 +85,6 @@ public:
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
    static std::_tstring GetVersionString();
-
-   //------------------------------------------------------------------------
-   // Returns the current version of the specification as a string.
-   static std::_tstring GetVersionString(lrfrVersionMgr::Version version);
 
 
    // GROUP: INQUIRY

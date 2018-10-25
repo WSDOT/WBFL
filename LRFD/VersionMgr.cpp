@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2013  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -151,11 +151,11 @@ std::_tstring lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version)
       break;
 
    case FirstEditionWith1996Interims:
-      strVersion = _T("First Edition 1994 with 1996 interim provisions");
+      strVersion = _T("First Edition with 1996 interim provisions");
       break;
 
    case FirstEditionWith1997Interims:
-      strVersion = _T("First Edition 1994 with 1996 - 1997 interim provisions");
+      strVersion = _T("First Edition with 1996 - 1997 interim provisions");
       break;
 
    case SecondEdition1998:
@@ -163,67 +163,59 @@ std::_tstring lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version)
       break;
 
    case SecondEditionWith1999Interims:
-      strVersion = _T("Second Edition 1998 with 1999 interim provisions");
+      strVersion = _T("Second Edition with 1999 interim provisions");
       break;
 
    case SecondEditionWith2000Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2000 interim provisions");
+      strVersion = _T("Second Edition with 1999 - 2000 interim provisions");
       break;
 
    case SecondEditionWith2001Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2001 interim provisions");
+      strVersion = _T("Second Edition with 1999 - 2001 interim provisions");
       break;
 
    case SecondEditionWith2002Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2002 interim provisions");
+      strVersion = _T("Second Edition with 1999 - 2002 interim provisions");
       break;
 
    case SecondEditionWith2003Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2003 interim provisions");
+      strVersion = _T("2nd Edition, 1998 with 1999 - 2003 interim provisions");
       break;
 
    case ThirdEdition2004:
-      strVersion = _T("Third Edition 2004");
+      strVersion = _T("3rd Edition, 2004");
       break;
 
    case ThirdEditionWith2005Interims:
-      strVersion = _T("Third Edition 2004 with 2005 interim provisions");
+      strVersion = _T("3rd Edition, 2004 with 2005 interim provisions");
       break;
 
    case ThirdEditionWith2006Interims:
-      strVersion = _T("Third Edition 2004 with 2005 - 2006 interim provisions");
+      strVersion = _T("3rd Edition, 2004 with 2005 - 2006 interim provisions");
       break;
 
-      // NOTE: 4th is not spelled out in the official name of the 4th edition, but
-      // it is spelled out in all other editions. That is why 4th is used here
-      // instead of fourth
    case FourthEdition2007:
-      strVersion = _T("4th Edition 2007");
+      strVersion = _T("4th Edition, 2007");
       break;
 
    case FourthEditionWith2008Interims:
-      strVersion = _T("4th Edition 2007 with 2008 interim provisions");
+      strVersion = _T("4th Edition, 2007 with 2008 interim provisions");
       break;
 
    case FourthEditionWith2009Interims:
-      strVersion = _T("4th Edition 2007 with 2008 - 2009 interim provisions");
+      strVersion = _T("4th Edition, 2007 with 2008 - 2009 interim provisions");
       break;
 
    case FifthEdition2010:
-      strVersion = _T("Fifth Edition 2010");
+      strVersion = _T("5th Edition, 2010");
       break;
 
    case SixthEdition2012:
-      strVersion = _T("Sixth Edition 2012");
-      break;
-
-   case SixthEditionWith2013Interims:
-      strVersion = _T("Sixth Edition 2012 with 2013 interim provisions");
+      strVersion = _T("6th Edition, 2012");
       break;
 
    default:
-      strVersion = _T("Unknown");
-      ASSERT(false);
+      CHECK(false);
    }
 
    return strVersion;
