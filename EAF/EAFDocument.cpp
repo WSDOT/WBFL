@@ -1352,26 +1352,31 @@ void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 
 void CEAFDocument::Execute(txnTransaction& rTxn)
 {
+   CWaitCursor wait;
    txnTxnManager::GetInstance()->Execute(rTxn);
 }
 
 void CEAFDocument::Execute(txnTransaction* pTxn)
 {
+   CWaitCursor wait;
    txnTxnManager::GetInstance()->Execute(pTxn);
 }
 
 void CEAFDocument::Undo()
 {
+   CWaitCursor wait;
    txnTxnManager::GetInstance()->Undo();
 }
 
 void CEAFDocument::Redo()
 {
+   CWaitCursor wait;
    txnTxnManager::GetInstance()->Redo();
 }
 
 void CEAFDocument::Repeat()
 {
+   CWaitCursor wait;
    txnTxnManager::GetInstance()->Repeat();
 }
 
