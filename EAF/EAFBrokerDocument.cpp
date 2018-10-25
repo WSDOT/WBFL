@@ -53,6 +53,7 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
+   m_DisplayFavoriteReports = FALSE;
 
    // The base class registers as a unit mode listener
    // However, the DocProxyAgent also registers as a listener
@@ -630,6 +631,7 @@ void CEAFBrokerDocument::OnQuickReport(UINT nID)
 void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,bool bPrompt)
 {
    // User must override this method to display the report
+   AfxMessageBox(_T("Override CEAFBrokerDocument::CreateReportView to create the specific report view you want"));
 }
 
 

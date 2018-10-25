@@ -306,12 +306,23 @@ void lrfdCreepCoefficient2005::Update() const
       m_kvs = _cpp_max(kvs_limit, 1.45-0.0051*::ConvertFromSysUnits(VS,unitMeasure::Millimeter));
       m_kf = 35.0 / ( 7.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) );
       m_ktd = t / ( 61. - 0.58*::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) + t);
+      ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
       m_kvs = _cpp_max(kvs_limit, 1.45-0.13*::ConvertFromSysUnits(VS,unitMeasure::Inch));
       m_kf =  5.0 / ( 1.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) );
-      m_ktd = t / ( 61. - 4.*::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) + t);
+
+      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+      {
+         m_ktd = t / ( 61. - 4.*::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) + t);
+      }
+      else
+      {
+         // ktd equation changed in LRFD 2015
+         Float64 fc = ::ConvertFromSysUnits(m_Fc,unitMeasure::KSI);
+         m_ktd = t / (12*(100. - 4.*fc)/(fc + 20.) + t);
+      }
    }
 
    m_Ct = 1.9*m_K1*m_K2*m_kvs*m_khc*m_kf*m_ktd*pow(ti,-0.118); // see NCHRP Report 496, Eqn 62

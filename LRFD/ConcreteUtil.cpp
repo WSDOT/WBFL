@@ -100,14 +100,21 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
    else
    {
       // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::PSI;
-      p_density_unit = &unitMeasure::LbmPerFeet3;
-      p_E_unit       = &unitMeasure::PSI;
+      p_fc_unit      = &unitMeasure::KSI;
+      p_density_unit = &unitMeasure::KipPerFeet3;
+      p_E_unit       = &unitMeasure::KSI;
 
-      k = 33.;
+      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+      {
+         k = 33000.;
+      }
+      else
+      {
+         k = 120000.;
+      }
 
-      min_density =  90.; // pcf
-      max_density = 155.; // pcf
+      min_density = 0.090; // kcf
+      max_density = 0.155; // kcf
    }
 
    // Convert input to required units
@@ -121,7 +128,15 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
    if ( bCheckRange && !InRange( min_density, density, max_density ) )
       THROW(sysXProgrammingError,ValueOutOfRange);
 
-   E = k * pow( Density, 1.5 ) * sqrt( Fc );
+
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+   {
+      E = k * pow( Density, 1.5 ) * sqrt( Fc );
+   }
+   else
+   {
+      E = k*pow(Density,2.0)*pow(Fc,0.33);
+   }
 
    // Convert output to system units.
    e = ::ConvertToSysUnits( E, *p_E_unit );
@@ -156,18 +171,32 @@ Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
    else
    {
       // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::PSI;
-      p_density_unit = &unitMeasure::LbmPerFeet3;
-      p_E_unit       = &unitMeasure::PSI;
+      p_fc_unit      = &unitMeasure::KSI;
+      p_density_unit = &unitMeasure::KipPerFeet3;
+      p_E_unit       = &unitMeasure::KSI;
 
-      k = 33.;
+      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+      {
+         k = 33000.;
+      }
+      else
+      {
+         k = 120000.;
+      }
    }
 
    // Convert input to required units
    Ec      = ::ConvertFromSysUnits( ec,      *p_E_unit      );
    Density = ::ConvertFromSysUnits( density, *p_density_unit );
 
-   Fc = pow(Ec/(k*pow(Density,1.5)),2);
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
+   {
+      Fc = pow(Ec/(k*pow(Density,1.5)),2);
+   }
+   else
+   {
+      Fc = pow(Ec/(k*pow(Density,2)),1/0.33);
+   }
 
    // Convert output to system units.
    fc = ::ConvertToSysUnits( Fc, *p_fc_unit );

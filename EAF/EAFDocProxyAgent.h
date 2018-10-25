@@ -49,8 +49,7 @@ public:
 
 //IEAFDisplayUnitsEventSink : IUnknown
 public:
-	HRESULT Fire_UnitsChanged(
-      eafTypes::UnitMode newUnitsMode)
+	HRESULT Fire_UnitsChanged(eafTypes::UnitMode newUnitsMode)
 	{
 		T* pT = (T*)this;
 
@@ -61,7 +60,7 @@ public:
       //}
 
       pT->Lock();
-		HRESULT ret;
+		HRESULT ret = S_OK;
 		IUnknown** pp = m_vec.begin();
 		while (pp < m_vec.end())
 		{

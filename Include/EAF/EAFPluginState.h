@@ -28,15 +28,19 @@
 class EAFCLASS CEAFPluginState
 {
 public:
-   CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled);
+   CEAFPluginState(LPCTSTR strPluginName,const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled);
    void SetState(bool bNewState);
-   bool InitiallyEnabled();
-   bool StateChanged();
-   bool IsEnabled();
-   CLSID GetCLSID();
-   CString GetCLSIDString();
+   bool InitiallyEnabled() const;
+   bool StateChanged() const;
+   bool IsEnabled() const;
+   LPCTSTR GetName() const;
+   CLSID GetCLSID() const;
+   CString GetCLSIDString() const;
+
+   bool operator<(const CEAFPluginState& other);
 
 private:
+   CString m_Name;
    CLSID m_CLSID;
    CString m_strCLSID;
    bool m_bInitiallyEnabled;
