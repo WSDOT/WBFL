@@ -375,6 +375,7 @@ void CEAFApp::EnableTipOfTheDay(const std::vector<CString>& vTipFiles)
 
 bool CEAFApp::IsTipOfTheDayEnabled()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    BOOL bTipsEnabled = GetProfileInt(_T("Tip"),_T("StartUp"),TRUE);
    return bTipsEnabled && m_bTipsEnabled;
 }
