@@ -157,6 +157,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    m_pThread->m_bAutoDelete = TRUE;
    m_pThread->ResumeThread();
 
+   m_pActiveWnd = CWnd::GetActiveWindow();
    CWnd* pMainWnd;
    {
       AFX_MANAGE_STATE(AfxGetAppModuleState());
@@ -164,8 +165,6 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    }
 
    HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
-   m_ProgressMsgMarker.push_back(0);
-   UpdateMessage("Working...");
    ATLASSERT( SUCCEEDED(hr) );
    if ( FAILED(hr) )
    {
@@ -174,6 +173,9 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
       m_pThread = NULL;
       return PROGRESS_E_CREATE;
    }
+
+   m_ProgressMsgMarker.push_back(0);
+   UpdateMessage("Working...");
 
    // disable the main window
    pMainWnd->EnableWindow(FALSE);
@@ -238,9 +240,9 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
       // enable the main window
       {
          AFX_MANAGE_STATE(AfxGetAppModuleState());
-         CWnd* pMainWnd = AfxGetMainWnd();
-         pMainWnd->EnableWindow(TRUE);
-         pMainWnd->SetActiveWindow();
+         AfxGetMainWnd()->EnableWindow(TRUE);
+         m_pActiveWnd->EnableWindow(TRUE);
+         m_pActiveWnd->SetActiveWindow();
       }
    }
    else

@@ -118,10 +118,10 @@ void CTestAlignment3::Test1()
 
    subPath->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subPath->get_Item(0,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);
@@ -255,10 +255,10 @@ void CTestAlignment3::Test2()
 
    subPath->get_Count(&nElements);
 
-   TRY_TEST(nElements,2);
+   TRY_TEST(nElements,1);
 
    element.Release();
-   subPath->get_Item(1,&element);
+   subPath->get_Item(0,&element);
 
    element->get_Type(&type);
    TRY_TEST(type,petLineSegment);

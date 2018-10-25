@@ -261,11 +261,28 @@ STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndSta
    if ( FAILED(hr) )
       return hr;
 
+   CComQIPtr<IAlignment> alignment(*path);
+
    CComPtr<IPoint2d> pntStart;
    LocatePoint(varStartStation,omtAlongDirection, 0.00,CComVariant(0.00),&pntStart);
 
-   CComQIPtr<IAlignment> alignment(*path);
-   alignment->InsertEx(0,pntStart);
+   CollectionIndexType nElements;
+   (*path)->get_Count(&nElements);
+   if ( nElements == 0 )
+   {
+      CComPtr<IPoint2d> pntEnd;
+      LocatePoint(varEndStation,omtAlongDirection,0.00,CComVariant(0.00),&pntEnd);
+
+      CComPtr<ILineSegment2d> lineSegment;
+      lineSegment.CoCreateInstance(CLSID_LineSegment2d);
+      lineSegment->ThroughPoints(pntStart,pntEnd);
+      alignment->AddEx(lineSegment);
+   }
+   else
+   {
+      alignment->InsertEx(0,pntStart);
+   }
+
    alignment->put_RefStation(varStartStation);
 
    return S_OK;

@@ -103,6 +103,8 @@ private:
 
    BOOL m_bEndLines;
    std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;
+
+   CWnd* m_pActiveWnd;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)
