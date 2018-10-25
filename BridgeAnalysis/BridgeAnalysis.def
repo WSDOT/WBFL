@@ -1,2 +1,0 @@
-LIBRARY        WBFLBridgeAnalysis.dll
-EXPORTS  UnitTest @1
