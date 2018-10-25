@@ -1104,6 +1104,7 @@ library WBFLGenericBridge
    interface IAsymmetricSection : IUnknown
    {
       [helpstring("method GetTopWidth")] HRESULT GetTopWidth([out]Float64* pLeft, [out]Float64* pRight);
+      [helpstring("method GetHeight")] HRESULT GetHeight([out]Float64* pHmin, [out]Float64* pHcl, [out]Float64* pHmax);
       [helpstring("method GetStressPoints)")] HRESULT GetStressPoints([in]StressPointType spType, [out]IPoint2dCollection** ppPoints);
       [helpstring("method IgnoreBiaxialBending")] HRESULT IgnoreBiaxialBending([out]bool* pIgnoreBiaxial);
    };
@@ -1806,7 +1807,8 @@ library WBFLGenericBridge
 	   [propget,helpstring("property BottomFlangeThickness")] HRESULT BottomFlangeThickness([in]FlangeIndexType idx,[out,retval]Float64* tFlange);
 	   [propget,helpstring("property BottomFlangeSpacing")] HRESULT BottomFlangeSpacing([in]FlangeIndexType idx,[out,retval]Float64* spacing);
    
-	   [propget,helpstring("property GirderHeight")] HRESULT GirderHeight([out,retval]Float64* height);
+      [propget,helpstring("property OverallHeight")] HRESULT OverallHeight([out, retval]Float64* height);
+	   [propget,helpstring("property NominalHeight")] HRESULT NominalHeight([out,retval]Float64* height);
 	   [propget,helpstring("property TopWidth")] HRESULT TopWidth([out,retval]Float64* width);
 	   [propget,helpstring("property BottomWidth")] HRESULT BottomWidth([out,retval]Float64* width);
 	   [propget,helpstring("property ShearWidth")] HRESULT ShearWidth([out,retval]Float64* shearwidth);

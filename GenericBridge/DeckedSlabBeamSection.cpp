@@ -357,7 +357,12 @@ STDMETHODIMP CDeckedSlabBeamSection::get_BottomFlangeSpacing(FlangeIndexType idx
    return S_OK;
 }
 
-STDMETHODIMP CDeckedSlabBeamSection::get_GirderHeight(Float64* height)
+STDMETHODIMP CDeckedSlabBeamSection::get_OverallHeight(Float64* height)
+{
+   return get_NominalHeight(height);
+}
+
+STDMETHODIMP CDeckedSlabBeamSection::get_NominalHeight(Float64* height)
 {
    Float64 C, Tt;
    m_Beam->get_C(&C);

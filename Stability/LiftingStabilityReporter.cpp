@@ -942,7 +942,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of lifting devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
-      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("[") << Sub2(_T("F"), _T("o")) << _T("(") << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(")");
+      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("[") << Sub2(_T("F"), _T("o")) << _T("(") << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T("]");
    }
    else
    {

@@ -221,7 +221,7 @@ STDMETHODIMP CUGirderSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    this->get_BottomWidth(&w);
 
    Float64 h;
-   this->get_GirderHeight(&h);
+   this->get_OverallHeight(&h);
 
    CComPtr<IPoint3d> p1;
    p1.CoCreateInstance(CLSID_Point3d);
@@ -375,7 +375,12 @@ STDMETHODIMP CUGirderSection2::get_BottomFlangeSpacing(FlangeIndexType idx,Float
    return S_OK;
 }
 
-STDMETHODIMP CUGirderSection2::get_GirderHeight(Float64* height)
+STDMETHODIMP CUGirderSection2::get_OverallHeight(Float64* height)
+{
+   return get_NominalHeight(height);
+}
+
+STDMETHODIMP CUGirderSection2::get_NominalHeight(Float64* height)
 {
    return m_Beam->get_Height(height);
 }
