@@ -69,7 +69,30 @@ public:
    // GROUP: ENUMERATIONS
 
    //------------------------------------------------------------------------
-   enum ShapeType { Circle, Square };
+   enum Size { bs3  = 0x0001,
+               bs4  = 0x0002,
+               bs5  = 0x0004,
+               bs6  = 0x0008,
+               bs7  = 0x0010,
+               bs8  = 0x0020,
+               bs9  = 0x0040,
+               bs10 = 0x0080,
+               bs11 = 0x0100,
+               bs14 = 0x0200,
+               bs18 = 0x0400,
+               bsNone = 0x0FFF
+   }; 
+
+   //------------------------------------------------------------------------
+   enum Type { A615   = 0x1000,  // A615
+               A706 = 0x2000}; // A706
+
+   //------------------------------------------------------------------------
+   enum Grade { Grade40 = 0x00010000, 
+                Grade60 = 0x00020000,
+                Grade75 = 0x00040000,
+                Grade80 = 0x00080000,
+   };
 
    // GROUP: LIFECYCLE
 
@@ -81,12 +104,9 @@ public:
    //------------------------------------------------------------------------
    // Constructs a new rebar object using the supplied parameters.
    matRebar(const std::_tstring& name,
-            Float64 fpu,
-            Float64 fpy,
-            Float64 modE,
-            ShapeType st,
-            Float64 nd, // Nominal dimension
-            Float64 na ); // Nominal area
+            Grade grade,
+            Type type,
+            Size size);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -112,21 +132,28 @@ public:
    std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
-   void SetShape(ShapeType st);
+   void SetSize(Size size);
 
    //------------------------------------------------------------------------
-   ShapeType GetShape() const;
+   Size GetSize() const;
 
    //------------------------------------------------------------------------
-   void SetNominalDimension(Float64 d);
+   void SetGrade(Grade grade);
+
+   //------------------------------------------------------------------------
+   Grade GetGrade() const;
+
+   //------------------------------------------------------------------------
+   void SetType(Type type);
+
+   //------------------------------------------------------------------------
+   Type GetType() const;
+
+   //------------------------------------------------------------------------
    Float64 GetNominalDimension() const;
-   void SetNominalArea(Float64 a);
    Float64 GetNominalArea() const;
-   void SetUltimateStrength(Float64 fpu);
    Float64 GetUltimateStrength() const;
-   void SetYieldStrength(Float64 fpu);
    Float64 GetYieldStrength() const;
-   void SetE(Float64 e);
    Float64 GetE() const;
 
    // GROUP: INQUIRY
@@ -166,12 +193,14 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    std::_tstring m_Name;
-   ShapeType   m_Shape;
+   Size m_Size;
+   Grade m_Grade;
+   Type m_Type;
    Float64     m_Dimension;
    Float64     m_Area;
-   Float64     m_Fpu;
-   Float64     m_Fpy;
-   Float64     m_ModE;
+   Float64     m_Fu;
+   Float64     m_Fy;
+   Float64     m_Es;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
@@ -193,19 +222,34 @@ inline std::_tstring matRebar::GetName() const
    return m_Name;
 }
 
-inline void matRebar::SetShape(ShapeType st)
+inline void matRebar::SetType(Type type)
 {
-   m_Shape = st;
+   m_Type = type;
 }
 
-inline matRebar::ShapeType matRebar::GetShape() const
+inline matRebar::Type matRebar::GetType() const
 {
-   return m_Shape;
+   return m_Type;
 }
 
-inline void matRebar::SetNominalDimension(Float64 d)
+inline void matRebar::SetGrade(Grade grade)
 {
-   m_Dimension = d;
+   m_Grade = grade;
+}
+
+inline matRebar::Grade matRebar::GetGrade() const
+{
+   return m_Grade;
+}
+
+inline void matRebar::SetSize(Size size)
+{
+   m_Size = size;
+}
+
+inline matRebar::Size matRebar::GetSize() const
+{
+   return m_Size;
 }
 
 inline Float64 matRebar::GetNominalDimension() const
@@ -213,44 +257,24 @@ inline Float64 matRebar::GetNominalDimension() const
    return m_Dimension;
 }
 
-inline void matRebar::SetNominalArea(Float64 a)
-{
-   m_Area = a;
-}
-
 inline Float64 matRebar::GetNominalArea() const
 {
    return m_Area;
 }
 
-inline void matRebar::SetUltimateStrength(Float64 fpu)
-{
-   m_Fpu = fpu;
-}
-
 inline Float64 matRebar::GetUltimateStrength() const
 {
-   return m_Fpu;
-}
-
-inline void matRebar::SetYieldStrength(Float64 fpy)
-{
-   m_Fpy = fpy;
+   return m_Fu;
 }
 
 inline Float64 matRebar::GetYieldStrength() const
 {
-   return m_Fpy;
-}
-
-inline void matRebar::SetE(Float64 e)
-{
-   m_ModE = e;
+   return m_Fy;
 }
 
 inline Float64 matRebar::GetE() const
 {
-   return m_ModE;
+   return m_Es;
 }
 
 // EXTERNAL REFERENCES

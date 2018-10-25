@@ -52,6 +52,7 @@
 #define RPT_EPS Sub2(_T("E"),_T("ps"))
 #define RPT_EP  Sub2(_T("E"),_T("p"))
 #define RPT_FY  italic(ON) << Sub2(_T("f"),_T("y")) << italic(OFF)
+#define RPT_FU  italic(ON) << Sub2(_T("f"),_T("u")) << italic(OFF)
 #define RPT_FPU italic(ON) << Sub2(_T("f"),_T("pu")) << italic(OFF)
 #define RPT_FPJ italic(ON) << Sub2(_T("f"),_T("pj")) << italic(OFF)
 #define RPT_FPT italic(ON) << Sub2(_T("f"),_T("pt")) << italic(OFF)

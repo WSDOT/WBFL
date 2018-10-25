@@ -87,10 +87,10 @@ Float64 lrfdRebar::GetBurstingZoneLength(Float64 h)
       return h/4;
 }
 
-BarSizeType lrfdRebar::GetMinConfinmentBarSize()
+matRebar::Size lrfdRebar::GetMinConfinmentBarSize()
 {
 #pragma Reminder("Need min confinement bar in SI units") // rebar pool not set up for this
-   return 3;
+   return matRebar::bs3;
 }
 
 Float64 lrfdRebar::GetMaxConfinmentBarSpacing()
@@ -105,7 +105,7 @@ Float64 lrfdRebar::GetMinConfinmentAvS()
    // manufacture a bogus rebar to get properties from
    lrfdRebarPool* rp = lrfdRebarPool::GetInstance();
    CHECK(rp);
-   const matRebar* pr = rp->GetRebar(3);
+   const matRebar* pr = rp->GetRebar(matRebar::A615,matRebar::Grade60,matRebar::bs3);
    CHECK(pr);
 
    Float64 s  = lrfdRebar::GetMaxConfinmentBarSpacing();

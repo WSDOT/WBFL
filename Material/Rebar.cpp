@@ -23,6 +23,7 @@
 
 #include <Material\MatLib.h>
 #include <Material\Rebar.h>
+#include <Units\SysUnits.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,35 +37,128 @@ CLASS
 ****************************************************************************/
 
 
+static Float64 gs_Fy40[2] = { ::ConvertToSysUnits(40,unitMeasure::KSI), -1 };
+static Float64 gs_Fu40[2] = { ::ConvertToSysUnits(60,unitMeasure::KSI), -1 };
+static Float64 gs_Es40[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
+
+static Float64 gs_Fy60[2] = { ::ConvertToSysUnits(60,unitMeasure::KSI),    ::ConvertToSysUnits(60,unitMeasure::KSI) };
+static Float64 gs_Fu60[2] = { ::ConvertToSysUnits(90,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI) };
+static Float64 gs_Es60[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+
+static Float64 gs_Fy75[2] = { ::ConvertToSysUnits(75,unitMeasure::KSI),    -1 };
+static Float64 gs_Fu75[2] = { ::ConvertToSysUnits(100,unitMeasure::KSI),   -1 };
+static Float64 gs_Es75[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), -1 };
+
+static Float64 gs_Fy80[2] = { ::ConvertToSysUnits(80,unitMeasure::KSI),    ::ConvertToSysUnits(80,unitMeasure::KSI) };
+static Float64 gs_Fu80[2] = { ::ConvertToSysUnits(105,unitMeasure::KSI),    ::ConvertToSysUnits(100,unitMeasure::KSI) };
+static Float64 gs_Es80[2] = { ::ConvertToSysUnits(29000,unitMeasure::KSI), ::ConvertToSysUnits(29000,unitMeasure::KSI) };
+
+static Float64 gs_Area[11] = {
+   ::ConvertToSysUnits(0.11,unitMeasure::Inch2),  // #3
+   ::ConvertToSysUnits(0.20,unitMeasure::Inch2),  // #4
+   ::ConvertToSysUnits(0.31,unitMeasure::Inch2),  // #5
+   ::ConvertToSysUnits(0.44,unitMeasure::Inch2),  // #6
+   ::ConvertToSysUnits(0.60,unitMeasure::Inch2),  // #7
+   ::ConvertToSysUnits(0.79,unitMeasure::Inch2),  // #8 
+   ::ConvertToSysUnits(1.00,unitMeasure::Inch2),  // #9
+   ::ConvertToSysUnits(1.27,unitMeasure::Inch2),  // #10
+   ::ConvertToSysUnits(1.56,unitMeasure::Inch2),  // #11
+   ::ConvertToSysUnits(2.25,unitMeasure::Inch2),  // #14
+   ::ConvertToSysUnits(4.00,unitMeasure::Inch2)   // #18
+};
+
+static Float64 gs_Diameter[11] = {
+   ::ConvertToSysUnits(0.375,unitMeasure::Inch),  // #3
+   ::ConvertToSysUnits(0.500,unitMeasure::Inch),  // #4
+   ::ConvertToSysUnits(0.625,unitMeasure::Inch),  // #5
+   ::ConvertToSysUnits(0.750,unitMeasure::Inch),  // #6
+   ::ConvertToSysUnits(0.875,unitMeasure::Inch),  // #7
+   ::ConvertToSysUnits(1.000,unitMeasure::Inch),  // #8 
+   ::ConvertToSysUnits(1.128,unitMeasure::Inch),  // #9
+   ::ConvertToSysUnits(1.270,unitMeasure::Inch),  // #10
+   ::ConvertToSysUnits(1.410,unitMeasure::Inch),  // #11
+   ::ConvertToSysUnits(1.693,unitMeasure::Inch),  // #14
+   ::ConvertToSysUnits(2.257,unitMeasure::Inch)   // #18
+};
+
+int SizeIndex(matRebar::Size size)
+{
+   switch(size)
+   {
+   case matRebar::bs3:  return 0;
+   case matRebar::bs4:  return 1;
+   case matRebar::bs5:  return 2;
+   case matRebar::bs6:  return 3;
+   case matRebar::bs7:  return 4;
+   case matRebar::bs8:  return 5;
+   case matRebar::bs9:  return 6;
+   case matRebar::bs10: return 7;
+   case matRebar::bs11: return 8;
+   case matRebar::bs14: return 9;
+   case matRebar::bs18: return 10;
+   }; 
+
+   return 0;
+}
+
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
 matRebar::matRebar() :
 m_Name(_T("Unknown"))
 {
-   m_Shape     = Circle;
-   m_Dimension = 0.0;
-   m_Area      = 0.0;
-   m_Fpu       = 0.0;
-   m_Fpy       = 0.0;
-   m_ModE      = 0.0;
+   m_Size = bs3;
+   m_Type = A615;
+   m_Grade = Grade60;
+   m_Fu = gs_Fu60[m_Type == A615 ? 0 : 1];
+   m_Fy = gs_Fy60[m_Type == A615 ? 0 : 1];
+   m_Es = gs_Es60[m_Type == A615 ? 0 : 1];
+
+   int idx = SizeIndex(m_Size);
+   m_Dimension = gs_Diameter[idx];
+   m_Area      = gs_Area[idx];
 }
 
 matRebar::matRebar(const std::_tstring& name,
-                   Float64 fpu,
-                   Float64 fpy,
-                   Float64 modE,
-                   ShapeType st,
-                   Float64 nd,
-                   Float64 na ) :
+            Grade grade,
+            Type type,
+            Size size) :
 m_Name( name )
 {
-   m_Shape     = st;
-   m_Dimension = nd;
-   m_Area      = na;
-   m_Fpu       = fpu;
-   m_Fpy       = fpy;
-   m_ModE      = modE;
+   m_Grade = grade;
+   m_Type = type;
+   m_Size = size;
+
+   switch(m_Grade)
+   {
+   case matRebar::Grade40:
+      m_Fu = gs_Fu40[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy40[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es40[m_Type == A615 ? 0 : 1];
+      break;
+
+   case matRebar::Grade60:
+      m_Fu = gs_Fu60[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy60[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es60[m_Type == A615 ? 0 : 1];
+      break;
+
+   case matRebar::Grade75:
+      m_Fu = gs_Fu75[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy75[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es75[m_Type == A615 ? 0 : 1];
+      break;
+
+   case matRebar::Grade80:
+      m_Fu = gs_Fu80[m_Type == A615 ? 0 : 1];
+      m_Fy = gs_Fy80[m_Type == A615 ? 0 : 1];
+      m_Es = gs_Es80[m_Type == A615 ? 0 : 1];
+      break;
+   }
+
+   int idx = SizeIndex(m_Size);
+   m_Dimension = gs_Diameter[idx];
+   m_Area      = gs_Area[idx];
 }
 
 matRebar::matRebar(const matRebar& rOther)
@@ -95,7 +189,7 @@ matRebar& matRebar::operator= (const matRebar& rOther)
 #if defined _DEBUG
 bool matRebar::AssertValid() const
 {
-   if ( m_Fpy > m_Fpu )
+   if ( m_Fy > m_Fu )
       return false;
 
    if ( m_Dimension <= 0 )
@@ -104,7 +198,7 @@ bool matRebar::AssertValid() const
    if ( m_Area <= 0 )
       return false;
 
-   if ( m_ModE <= 0 )
+   if ( m_Es <= 0 )
       return false;
 
    return true;
@@ -133,12 +227,14 @@ bool matRebar::TestMe(dbgLog& rlog)
 void matRebar::MakeCopy(const matRebar& rOther)
 {
    m_Name      = rOther.m_Name;
-   m_Shape     = rOther.m_Shape;
+   m_Size = rOther.m_Size;
+   m_Grade = rOther.m_Grade;
+   m_Type = rOther.m_Type;
    m_Dimension = rOther.m_Dimension;
    m_Area      = rOther.m_Area;
-   m_Fpu       = rOther.m_Fpu;
-   m_Fpy       = rOther.m_Fpy;
-   m_ModE      = rOther.m_ModE;
+   m_Fu       = rOther.m_Fu;
+   m_Fy       = rOther.m_Fy;
+   m_Es      = rOther.m_Es;
 }
 
 void matRebar::MakeAssignment(const matRebar& rOther)

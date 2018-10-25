@@ -228,6 +228,7 @@ public:
    Float64 GetPermanentStrandKih() const;
    Float64 GetKL() const;
    Float64 Get_ebdf() const;
+   Float64 Get_ebif() const;
    Float64 GetKdf() const;
    Float64 Get_eddf() const;
 
@@ -351,6 +352,7 @@ private:
    mutable Float64 m_Kid;
    mutable Float64 m_Kih[2];
    mutable Float64 m_KL;
+   mutable Float64 m_ebif;
    mutable Float64 m_ebdf;
    mutable Float64 m_Kdf;
    mutable Float64 m_eddf;

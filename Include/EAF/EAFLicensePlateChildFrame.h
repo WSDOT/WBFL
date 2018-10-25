@@ -97,10 +97,10 @@ public:
    void Toggle();
 
    //------------------------------------------------------------------------
-   void SetView(CView* pView);
+   void SetFramedWindow(CWnd* pWnd);
 
    //------------------------------------------------------------------------
-   CView* GetView();
+   CWnd* GetFramedWindow();
 
    //------------------------------------------------------------------------
    // Returns true if the m_Mode is On
@@ -131,18 +131,20 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+
+   CRect GetOuterBorder();
+   CRect GetInnerBorder();
+
 private:
-	void PositionView();
 	bool    m_IsBitmap;
 	int     m_LpBorderWidth;
 	CString m_LpMessage;
    CBitmap m_bmBackground;
    CSize   m_szBackground;
    eafTypes::LpFrameMode m_Mode;
-   CView*  m_pView;
+   CWnd*  m_pWnd;
    CRect   m_OuterRect;
 
    void UpdateOuterRect();
-   CRect& GetOuterBorder();
-   CRect  GetInnerBorder();
+	void PositionWindow();
 };

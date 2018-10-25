@@ -61,10 +61,9 @@ bool CEAFAutoCalcViewMixin::IsLpFrameEnabled() const
 
 void CEAFAutoCalcViewMixin::EnableLpFrame(bool bEnable)
 {
-
    // don't want a lp frame if nothing to report
    if ( !DoResultsExist() )
-      bEnable=false;
+      bEnable = false;
 
    if ( m_bLpFrameEnabled != bEnable )
    {
@@ -95,8 +94,11 @@ void CEAFAutoCalcViewMixin::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHin
 
 void CEAFAutoCalcViewMixin::OnUpdateNow()
 {
-   UpdateNow();
+   bool bIsLpFrameEnabled = IsLpFrameEnabled();
    EnableLpFrame( false );
+
+   if ( !DoResultsExist() || bIsLpFrameEnabled )
+      UpdateNow();
 }
 
 void CEAFAutoCalcViewMixin::Initialize()
@@ -104,5 +106,5 @@ void CEAFAutoCalcViewMixin::Initialize()
    CEAFLicensePlateChildFrame* pLpFrame = GetLpFrame();
    pLpFrame->SetBackground(IDB_LPFRAME);
    pLpFrame->SetLicensePlateText("Warning: Contents out of date");
-   pLpFrame->SetView( m_pView );
+   pLpFrame->SetFramedWindow((CWnd*)m_pView );
 }

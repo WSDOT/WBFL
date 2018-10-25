@@ -79,13 +79,36 @@ STDMETHODIMP CRebarFactory::CreateRebar(MaterialSpec spec,RebarGrade grade,BarSi
       break;
 
    case Grade60:
-      fu = 90;
-      fy = 60;
+      if ( spec == msA615 )
+      {
+         fu = 90;
+         fy = 60;
+      }
+      else
+      {
+         // A706
+         fu = 80;
+         fy = 60;
+      }
       break;
 
    case Grade75:
       fu = 100;
       fy = 75;
+      break;
+
+   case Grade80:
+      if ( spec == msA615)
+      {
+         fu = 105;
+         fy = 80;
+      }
+      else
+      {
+         // A706
+         fu = 100;
+         fy = 80;
+      }
       break;
    }
 

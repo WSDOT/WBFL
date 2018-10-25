@@ -62,23 +62,23 @@ CEAFLicensePlateChildFrame::CEAFLicensePlateChildFrame()
    // set a default message
    m_LpMessage = "Current Data is Invalid";
 
-   m_pView = 0;
+   m_pWnd = 0;
 }
 
 CEAFLicensePlateChildFrame::~CEAFLicensePlateChildFrame()
 {
 }
 
-void CEAFLicensePlateChildFrame::SetView(CView* pView)
+void CEAFLicensePlateChildFrame::SetFramedWindow(CWnd* pWnd)
 {
-   m_pView = pView;
+   m_pWnd = pWnd;
    UpdateOuterRect();
-//   PositionView();
+   PositionWindow();
 }
 
-CView* CEAFLicensePlateChildFrame::GetView()
+CWnd* CEAFLicensePlateChildFrame::GetFramedWindow()
 {
-   return m_pView;
+   return m_pWnd;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ void CEAFLicensePlateChildFrame::OnSize(UINT nType, int cx, int cy)
    UpdateOuterRect();
 
    // put the view where it's supposed to be
-   PositionView();
+   PositionWindow();
 }
 
 
@@ -228,9 +228,12 @@ void CEAFLicensePlateChildFrame::SetLicensePlateMode(eafTypes::LpFrameMode mode)
    if ( mode != m_Mode )
    {
       m_Mode = mode;
-      PositionView();
-      Invalidate();
-      UpdateWindow();
+      PositionWindow();
+      if ( IsLicensePlateModeEnabled() )
+      {
+         Invalidate();
+         UpdateWindow();
+      }
    }
 }
 
@@ -258,8 +261,12 @@ void CEAFLicensePlateChildFrame::SetLicensePlateText(const CString& Message)
    if (Message != m_LpMessage)
    {
       m_LpMessage = Message;
-      Invalidate();
-      UpdateWindow();
+      if ( IsLicensePlateModeEnabled() )
+      {
+         // Force a redraw if the text changed and the license plate is visiable
+         Invalidate();
+         UpdateWindow();
+      }
    }
 }
 
@@ -283,17 +290,20 @@ void CEAFLicensePlateChildFrame::SetBackground(UINT BitMapID)
       m_IsBitmap = false;
    }
 
-   Invalidate();
-   UpdateWindow();
+   if ( IsLicensePlateModeEnabled() )
+   {
+      Invalidate();
+      UpdateWindow();
+   }
 }
 
-void CEAFLicensePlateChildFrame::PositionView()
+void CEAFLicensePlateChildFrame::PositionWindow()
 {
-   CView* p_active_view;
-   if ( m_pView == 0 )
-      p_active_view = GetActiveView();
+   CWnd* p_active_view;
+   if ( m_pWnd == 0 )
+      p_active_view = (CWnd*)GetActiveView();
    else
-      p_active_view = m_pView;
+      p_active_view = m_pWnd;
 
    if ( p_active_view )
    {
@@ -341,7 +351,7 @@ void CEAFLicensePlateChildFrame::UpdateOuterRect()
    // The outer border is the rect that bounds the view that is to be
    // framed (the active view).
 
-   if ( m_pView == 0 )
+   if ( m_pWnd == 0 )
    {
       // A view hasn't be specifically associated with the frame...
       GetClientRect( m_OuterRect );
@@ -357,17 +367,21 @@ void CEAFLicensePlateChildFrame::UpdateOuterRect()
       CWnd* p_child = GetWindow(GW_CHILD);
       for ( ; p_child != 0; p_child = p_child->GetWindow( GW_HWNDNEXT ) )
       {
-         if ( p_child != m_pView )
+         if ( p_child != m_pWnd )
          {
             // this is a little buggy.... only works for child windows on top and left edges
             CRect child_window_rect;
             p_child->GetWindowRect( child_window_rect );
 
-            if ( child_window_rect.bottom != rect.bottom )
+            if ( child_window_rect.top != rect.top )
+               rect.bottom = min( rect.bottom,    child_window_rect.top );
+            else if ( child_window_rect.bottom != rect.bottom )
                rect.top = max( rect.top,    child_window_rect.bottom );
 
             if ( child_window_rect.right != rect.right )
                rect.left = max (rect.left, child_window_rect.right );
+            else if ( child_window_rect.left != rect.left )
+               rect.right = min(rect.right, child_window_rect.left );
          }
       }
 
@@ -377,7 +391,7 @@ void CEAFLicensePlateChildFrame::UpdateOuterRect()
    }
 }
 
-CRect& CEAFLicensePlateChildFrame::GetOuterBorder()
+CRect CEAFLicensePlateChildFrame::GetOuterBorder()
 {
    return m_OuterRect;
 }
@@ -385,6 +399,10 @@ CRect& CEAFLicensePlateChildFrame::GetOuterBorder()
 CRect CEAFLicensePlateChildFrame::GetInnerBorder()
 {
    CRect rect = GetOuterBorder();
-   rect.DeflateRect( m_LpBorderWidth, m_LpBorderWidth );
+   if ( IsLicensePlateModeEnabled() )
+   {
+      rect.DeflateRect( m_LpBorderWidth, m_LpBorderWidth );
+   }
+
    return rect;
 }

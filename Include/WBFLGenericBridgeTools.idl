@@ -103,7 +103,8 @@ library WBFLGenericBridgeTools
    typedef [public,helpstring("enum MaterialSpec"),uuid(6033AA61-EB06-469e-8743-CFA09545FE96)]
    enum 
    {
-      msA615
+      msA615,
+      msA706
    } MaterialSpec;
 
    typedef [public,helpstring("enum RebarGrade"),uuid(3DB21D7F-CA67-453a-9E62-FE9989BBBEA7)]
@@ -111,7 +112,8 @@ library WBFLGenericBridgeTools
    {
 		Grade40,
 		Grade60,
-		Grade75
+		Grade75,
+      Grade80
    } RebarGrade;
 
    typedef [public,helpstring("enum BarSize"),uuid(FCC0993E-988B-4bf2-A708-094AC20B51BA)]
