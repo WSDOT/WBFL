@@ -1418,283 +1418,399 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    (*p1) = NULL;
    (*p2) = NULL;
 
-   // get some useful points
-   CComPtr<IPoint2d> TS, ST, CC, PI;
+   //
+   // First check to see if the line intersects the circular curve
+   ///
+
+   // get the key circular curve points
+   CComPtr<IPoint2d> SC, CS, CCC, PI, TS, ST;
+   get_CS(&CS);
+   get_SC(&SC);
+   get_CCC(&CCC);
+   get_PI(&PI);
    get_TS(&TS);
    get_ST(&ST);
-   get_CC(&CC);
-   get_PI(&PI);
-   
-   // if line is parallel to one of the tangents AND the distance from CC to
-   // the nearest point on the line is more than the distance from CC to TS, then the line
-   // cannot intersect the curve
-   CComPtr<ILine2d> bkTangentLine;
-   GetBkTangentLine(&bkTangentLine);
-   
-   CComPtr<ILine2d> fwdTangentLine;
-   GetFwdTangentLine(&fwdTangentLine);
 
-   // determine where line intersects the tangents
-   CComPtr<IPoint2d> bkTangentPoint, fwdTangentPoint;
-   m_GeomUtil->LineLineIntersect(line,bkTangentLine, &bkTangentPoint);
-   m_GeomUtil->LineLineIntersect(line,fwdTangentLine,&fwdTangentPoint);
+   CComPtr<ICircle> circle;
+   circle.CoCreateInstance(CLSID_Circle);
+   circle->putref_Center(CCC);
+   circle->put_Radius(m_Radius);
 
-   if ( bProjectBack == VARIANT_TRUE && bkTangentPoint && cogoUtil::IsPointBeforeStart(TS,PI,bkTangentPoint) )
+   CComPtr<IPoint2d> pnt1, pnt2;
+   short nIntersect;
+   m_GeomUtil->LineCircleIntersect(line,circle,&pnt1,&pnt2,&nIntersect);
+
+   Float64 delta;
+   CurveDirectionType direction;
+   get_Direction(&direction);
+   if ( direction == cdLeft )
+      m_GeomUtil->Angle(SC,CCC,CS,&delta);
+   else
+      m_GeomUtil->Angle(CS,CCC,SC,&delta);
+
+   CComPtr<IPoint2d> pntCurve1, pntCurve2;
+   if ( pnt1 )
    {
-      // this is the first intersection
-      bkTangentPoint.QueryInterface(p1);
+      Float64 angle;
+      if ( direction == cdLeft )
+         m_GeomUtil->Angle(SC,CCC,pnt1,&angle);
+      else
+         m_GeomUtil->Angle(pnt1,CCC,SC,&angle);
+
+      if ( 0 <= angle && angle <= delta )
+         pnt1.CopyTo(&pntCurve1);
    }
 
-   if ( bProjectAhead == VARIANT_TRUE && fwdTangentPoint && cogoUtil::IsPointAfterEnd(PI,ST,fwdTangentPoint) )
+   if ( pnt2 )
    {
-      fwdTangentPoint.QueryInterface(p2);
+      Float64 angle;
+      if ( direction == cdLeft )
+         m_GeomUtil->Angle(SC,CCC,pnt2,&angle);
+      else
+         m_GeomUtil->Angle(pnt2,CCC,SC,&angle);
+
+      if ( 0 <= angle && angle <= delta )
+         pnt2.CopyTo(&pntCurve2);
    }
 
-   if ( *p1 != NULL && *p2 != NULL )
+   if ( pntCurve1 == NULL && pntCurve2 != NULL )
    {
-      ATLASSERT(TestIntersection(line,*p1));
-      ATLASSERT(TestIntersection(line,*p2));
-      return S_OK; // we got both intersections
+      pntCurve1 = pntCurve2;
+      pntCurve2.Release();
    }
 
-   if ( LineParallelToTangent(bkTangentLine,line,TS) )
-      return S_FALSE; // no possibility of intersection
-
-   if ( LineParallelToTangent(fwdTangentLine,line,ST) )
-      return S_FALSE; // no possibility of intersection
-
-   // there must be intersections because of the parallel line test above
-   ATLASSERT(bkTangentPoint != NULL || fwdTangentPoint != NULL);
-
-   // create line segments from TS to PI and PI to ST. If the tangent intersection
-   // points are not on these segments then there cannot be intersections
-   CComPtr<ILineSegment2d> lsBkTangent, lsFwdTangent;
-   lsBkTangent.CoCreateInstance(CLSID_LineSegment2d);
-   lsBkTangent->putref_StartPoint(TS);
-   lsBkTangent->putref_EndPoint(PI);
-
-   lsFwdTangent.CoCreateInstance(CLSID_LineSegment2d);
-   lsFwdTangent->putref_StartPoint(PI);
-   lsFwdTangent->putref_EndPoint(ST);
-
-   Float64 tol = 0.1;
-
-   // determine if bkTangentPoint is in the line segment
-   VARIANT_BOOL bPointOnBkTangentSegment = VARIANT_FALSE;
-   m_GeomUtil->DoesLineSegmentContainPoint(lsBkTangent,bkTangentPoint,tol,&bPointOnBkTangentSegment);
-
-   // determine if fwdTangentPoint is in the line segment
-   VARIANT_BOOL bPointOnFwdTangentSegment = VARIANT_FALSE;
-   m_GeomUtil->DoesLineSegmentContainPoint(lsFwdTangent,fwdTangentPoint,tol,&bPointOnFwdTangentSegment);
-
-   // if neither point is on the segments, then there is no possibility of an intersection
-   // (except for the case of projecting the tangents, but we took care of that above)
-   if ( bPointOnBkTangentSegment == VARIANT_FALSE && bPointOnFwdTangentSegment == VARIANT_FALSE )
-      return (*p1 == NULL && *p2 == NULL ? S_FALSE : S_OK);
-
-   // at the mid-point of the curve, make a tangent line. Determine the points
-   // where this tangent line intersects the back and forward tangents.
-   CComPtr<IPoint2d> POBT, POFT;
-   GetCurveCenterNormalIntersectPoints(&POBT,&POFT);
-
-   // create line segments between these points and the PI
-   CComPtr<ILineSegment2d> lsPOBT_PI;
-   lsPOBT_PI.CoCreateInstance(CLSID_LineSegment2d);
-   lsPOBT_PI->putref_StartPoint(POBT);
-   lsPOBT_PI->putref_EndPoint(PI);
-
-   CComPtr<ILineSegment2d> lsPI_POFT;
-   lsPI_POFT.CoCreateInstance(CLSID_LineSegment2d);
-   lsPI_POFT->putref_StartPoint(PI);
-   lsPI_POFT->putref_EndPoint(POFT);
-
-   // determine if the tangent points are in the line segments
-   m_GeomUtil->DoesLineSegmentContainPoint(lsPOBT_PI,bkTangentPoint,tol,&bPointOnBkTangentSegment);
-   m_GeomUtil->DoesLineSegmentContainPoint(lsPI_POFT,fwdTangentPoint,tol,&bPointOnFwdTangentSegment);
-
-   // special case... line go directly through the PI
-   VARIANT_BOOL bLineHitsPI,bLineHitsPOBT,bLineHitsPOFT;
-   m_GeomUtil->DoesLineContainPoint(line,PI,tol,&bLineHitsPI);
-   m_GeomUtil->DoesLineContainPoint(line,POBT,tol,&bLineHitsPOBT);
-   m_GeomUtil->DoesLineContainPoint(line,POFT,tol,&bLineHitsPOFT);
-
-   // if both points are in the segments, then there is no possibility of an intersection
-   // unless the line hits the PI, POBT, or POFT
-   if ( bPointOnBkTangentSegment == VARIANT_TRUE && bPointOnFwdTangentSegment == VARIANT_TRUE && 
-        bLineHitsPI == VARIANT_FALSE && bLineHitsPOBT == VARIANT_FALSE && bLineHitsPOFT == VARIANT_FALSE)
+   // both intersection points are in the circular curve, we are done
+   if ( pntCurve1 && pntCurve2 )
    {
-      return S_FALSE;
-   }
-
-   // The line intersects the curve at least once
-
-   // when evaluated, this function returns the distance from the line to the curve
-   // if the curve is to the left of the line the distance is negative
-   CLineIntersectFunction function(this,line,m_GeomUtil);
-   mathBrentsRootFinder2d rootFinder;
-
-   Float64 length;
-   get_TotalLength(&length);
-
-   // evaluate function at start and end of curve. if signs are opposite, there is only one intersection
-   Float64 y1,y2;
-   y1 = function.Evaluate(0);
-   if ( IsZero(y1,tolerance) )
-   {
-      // found the intersection by dumb luck
-      if ( *p1 == NULL )
+      // make *p1 the point that is nearest the beginning of the curve
+      Float64 dist1, dist2;
+      TS->DistanceEx(pntCurve1,&dist1);
+      TS->DistanceEx(pntCurve2,&dist2);
+      if ( dist1 < dist2 )
       {
-         PointOnCurve(0,p1);
-         ATLASSERT(TestIntersection(line,*p1));
+         pntCurve1.CopyTo(p1);
+         pntCurve2.CopyTo(p2);
       }
       else
       {
-         PointOnCurve(0,p2);
-         ATLASSERT(TestIntersection(line,*p2));
+         pntCurve1.CopyTo(p2);
+         pntCurve2.CopyTo(p1);
       }
 
       return S_OK;
    }
 
-   y2 = function.Evaluate(length);
-   if ( IsZero(y2,tolerance) )
+   // If we get this far, the line doesn't intersect the circular curve 
+   // or it only intersects it in one place
+   
+   // Check if it intersects the entry spiral
+   CComPtr<IPoint2d> pntEntrySpiral;
+   if ( 0 < m_Ls1 )
    {
-      // found the intersection by dumb luck
-      if ( *p1 == NULL )
+      // when evaluated, this function returns the distance from the line to the curve
+      // if the curve is to the left of the line the distance is negative
+      CLineIntersectFunction function(this,line,m_GeomUtil);
+      mathBrentsRootFinder2d rootFinder;
+      Float64 ya = function.Evaluate(0);
+      Float64 yb = function.Evaluate(m_Ls1);
+      if ( 0 < ya*yb )
       {
-         PointOnCurve(length,p1);
-         ATLASSERT(TestIntersection(line,*p1));
+         // The end points don't bracket the solution....
+         // Either the line doesn't intersect the spiral, it intersects it in two places
+         // or it is tangent to the spiral
+
+         // If the line intersects both the lines that are tangent to the spiral
+         // then there is at least one intersection point
+         CComPtr<IPoint2d> SPI;
+         get_SPI(spEntry,&SPI);
+         CComPtr<ILineSegment2d> seg1;
+         seg1.CoCreateInstance(CLSID_LineSegment2d);
+         seg1->ThroughPoints(TS,SPI);
+         CComPtr<IPoint2d> pnt1;
+         m_GeomUtil->IntersectLineWithLineSegment(line,seg1,&pnt1);
+
+         CComPtr<ILineSegment2d> seg2;
+         seg2.CoCreateInstance(CLSID_LineSegment2d);
+         seg2->ThroughPoints(SPI,SC);
+         CComPtr<IPoint2d> pnt2;
+         m_GeomUtil->IntersectLineWithLineSegment(line,seg2,&pnt2);
+
+         if ( pnt1 && pnt2 )
+         {
+            // there are at least 1 intersection point... 
+            // need to find a disntace along the curve that is between the two intersection points
+            // so we have a brack that works... to do this, search for a point on the spiral where
+            // the tangent to the spiral is parallel to the line
+            CParallelLineFunction parallel_function(this,line,m_GeomUtil);
+            Float64 limit;
+            try
+            {
+               limit = rootFinder.FindRootInRange(parallel_function,0,m_Ls1,0.0000001);
+            }
+            catch(mathXRootFinder2dFailed& /*e*/)
+            {
+               ATLASSERT(false);
+            }
+
+            // if this location is on the intersecting line, the intersecting line
+            // is tangent to the spiral
+            CComPtr<IPoint2d> POC;
+            PointOnCurve(limit,&POC);
+            VARIANT_BOOL bContainsPoint;
+            m_GeomUtil->DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
+            if ( bContainsPoint == VARIANT_TRUE )
+            {
+               // Line is tangent
+               POC.CopyTo(p1);
+               return S_OK; // with tangency, there is only one solution so just leave now
+            }
+            else
+            {
+               // Line is not tangent
+               try
+               {
+                  // get first insersection in first segment
+                  Float64 dist1 = rootFinder.FindRootInRange(function,0,limit,0.0001);
+                  PointOnCurve(dist1,p1);
+                  ATLASSERT(TestIntersection(line,*p1));
+
+                  // get second interection in second segment
+                  Float64 dist2 = rootFinder.FindRootInRange(function,limit,m_Ls1,0.0001);
+                  PointOnCurve(dist2,p2);
+                  ATLASSERT(TestIntersection(line,*p2));
+
+                  return S_OK; // we got both intersection points... leave now
+               }
+               catch (mathXRootFinder2dFailed& /*mx*/)
+               {
+                  ATLASSERT(false); // should never fire
+               }
+            }
+         }
       }
       else
       {
-         PointOnCurve(length,p2);
-         ATLASSERT(TestIntersection(line,*p2));
+         // find the single intersection point
+         try
+         {
+            Float64 dist1 = rootFinder.FindRootInRange(function,0,m_Ls1,0.0001);
+            PointOnCurve(dist1,&pntEntrySpiral);
+            ATLASSERT(TestIntersection(line,pntEntrySpiral));
+         }
+         catch (mathXRootFinder2dFailed& /*mx*/)
+         {
+            ATLASSERT(false); 
+         }
       }
-
-      return S_OK;
    }
 
-   if ( y1*y2 < 0 )
+   
+   // Check if it intersects the exit spiral
+   CComPtr<IPoint2d> pntExitSpiral;
+   if ( 0 < m_Ls2 )
    {
-      // there is one intersection point.... find it
-      Float64 dist;
-      try
+      // when evaluated, this function returns the distance from the line to the curve
+      // if the curve is to the left of the line the distance is negative
+      CLineIntersectFunction function(this,line,m_GeomUtil);
+      mathBrentsRootFinder2d rootFinder;
+      Float64 length;
+      get_TotalLength(&length);
+      Float64 ya = function.Evaluate(length-m_Ls2);
+      Float64 yb = function.Evaluate(length);
+      if ( 0 < ya*yb )
       {
-         dist = rootFinder.FindRootInRange(function,0,length,0.0001);
+         // The end points don't bracket the solution....
+         // Either the line doesn't intersect the spiral, it intersects it in two places
+         // or it is tangent to the spiral
+
+         // If the line intersects both the lines that are tangent to the spiral
+         // then there is at least one intersection point
+         CComPtr<IPoint2d> SPI;
+         get_SPI(spExit,&SPI);
+         CComPtr<ILineSegment2d> seg1;
+         seg1.CoCreateInstance(CLSID_LineSegment2d);
+         seg1->ThroughPoints(ST,SPI);
+         CComPtr<IPoint2d> pnt1;
+         m_GeomUtil->IntersectLineWithLineSegment(line,seg1,&pnt1);
+
+         CComPtr<ILineSegment2d> seg2;
+         seg2.CoCreateInstance(CLSID_LineSegment2d);
+         seg2->ThroughPoints(SPI,CS);
+         CComPtr<IPoint2d> pnt2;
+         m_GeomUtil->IntersectLineWithLineSegment(line,seg2,&pnt2);
+
+         if ( pnt1 && pnt2 )
+         {
+            // there are at least 1 intersection point... 
+            // need to find a disntace along the curve that is between the two intersection points
+            // so we have a brack that works... to do this, search for a point on the spiral where
+            // the tangent to the spiral is parallel to the line
+            CParallelLineFunction parallel_function(this,line,m_GeomUtil);
+            Float64 limit;
+            try
+            {
+               limit = rootFinder.FindRootInRange(parallel_function,length-m_Ls2,length,0.0000001);
+            }
+            catch(mathXRootFinder2dFailed& /*e*/)
+            {
+               ATLASSERT(false);
+            }
+
+            // if this location is on the intersecting line, the intersecting line
+            // is tangent to the spiral
+            CComPtr<IPoint2d> POC;
+            PointOnCurve(limit,&POC);
+            VARIANT_BOOL bContainsPoint;
+            m_GeomUtil->DoesLineContainPoint(line,POC,0.001,&bContainsPoint);
+            if ( bContainsPoint == VARIANT_TRUE )
+            {
+               // Line is tangent
+               POC.CopyTo(p1);
+               return S_OK; // with tangency, there is only one solution so just leave now
+            }
+            else
+            {
+               // Line is not tangent
+               try
+               {
+                  // get first insersection in first segment
+                  Float64 dist1 = rootFinder.FindRootInRange(function,length-m_Ls2,limit,0.0001);
+                  PointOnCurve(dist1,p1);
+                  ATLASSERT(TestIntersection(line,*p1));
+
+                  // get second interection in second segment
+                  Float64 dist2 = rootFinder.FindRootInRange(function,limit,length,0.0001);
+                  PointOnCurve(dist2,p2);
+                  ATLASSERT(TestIntersection(line,*p2));
+
+                  return S_OK; // we got both intersection points... leave now
+               }
+               catch (mathXRootFinder2dFailed& /*mx*/)
+               {
+                  ATLASSERT(false); // should never fire
+               }
+            }
+         }
       }
-      catch(mathXRootFinder2dFailed& /*e*/)
+      else
       {
-         ATLASSERT(false);
+         // find the single intersection point
+         try
+         {
+            Float64 dist1 = rootFinder.FindRootInRange(function,length-m_Ls2,length,0.0001);
+            PointOnCurve(dist1,&pntExitSpiral);
+            ATLASSERT(TestIntersection(line,pntExitSpiral));
+         }
+         catch (mathXRootFinder2dFailed& /*mx*/)
+         {
+            ATLASSERT(false); 
+         }
       }
+   }
+
+   // check intersection with back tangent
+   CComPtr<IPoint2d> bkTangentPoint;
+   if ( bProjectBack == VARIANT_TRUE )
+   {
+      CComPtr<ILine2d> bkTangentLine;
+      GetBkTangentLine(&bkTangentLine);
+      m_GeomUtil->LineLineIntersect(line,bkTangentLine, &bkTangentPoint);
+
+      // if there was an intersection point and the point is not before the start of the TS-PI line
+      // then this isn't an intersection on the back tangent projection 
+      if ( bkTangentPoint && !cogoUtil::IsPointBeforeStart(TS,PI,bkTangentPoint) )
+         bkTangentPoint.Release();
+   }
+
+   // check intersection with forward tangent
+   CComPtr<IPoint2d> fwdTangentPoint;
+   if ( bProjectAhead == VARIANT_TRUE )
+   {
+      CComPtr<ILine2d> fwdTangentLine;
+      GetFwdTangentLine(&fwdTangentLine);
+      m_GeomUtil->LineLineIntersect(line,fwdTangentLine, &fwdTangentPoint);
+
+      // if there was an intersection point and the point is not after the end of the PI-ST line
+      // then this isn't an intersection on the forward tangent projection 
+      if ( fwdTangentPoint && !cogoUtil::IsPointAfterEnd(PI,ST,fwdTangentPoint) )
+         fwdTangentPoint.Release();
+   }
 
 #if defined _DEBUG
-      // use alternative method to confirm result
-      mathBisectionRootFinder2d rootFinder2;
-      Float64 dist2;
-      try
-      {
-         dist2 = rootFinder2.FindRootInRange(function,0,length,0.0001);
-      }
-      catch(mathXRootFinder2dFailed& /*e*/)
-      {
-         ATLASSERT(false);
-      }
-      ATLASSERT( IsZero(dist-dist2,tolerance) );
+   int nPoints = 0;
+
+   if ( bkTangentPoint )
+      nPoints++;
+
+   if ( pntCurve1 )
+      nPoints++;
+
+   if ( pntCurve2 )
+      nPoints++;
+
+   if ( pntEntrySpiral )
+      nPoints++;
+
+   if ( pntExitSpiral )
+      nPoints++;
+
+   if ( fwdTangentPoint )
+      nPoints++;
+
+   // This method assumes there is never more than 2 intersection points
+   ATLASSERT( nPoints <= 2 );
 #endif
 
+   if ( bkTangentPoint )
+   {
       if ( *p1 == NULL )
-      {
-         PointOnCurve(dist,p1);
-         ATLASSERT(TestIntersection(line,*p1));
-      }
+         bkTangentPoint.CopyTo(p1);
       else
-      {
-         PointOnCurve(dist,p2);
-         ATLASSERT(TestIntersection(line,*p2));
-      }
-
-      return S_OK;
+         bkTangentPoint.CopyTo(p2);
    }
 
-   // there are two intersection points on the curve
-//   ATLASSERT(*p1 == NULL && *p2 == NULL); // better not have previously found intersections
-
-   // need to find a distance along the curve that is between the two intersection points
-   // otherwise the root finder will fail.
-   // to do this, we search for a point on the curve where the tangent to the curve is
-   // parallel to the line
-   CParallelLineFunction parallel_function(this,line,m_GeomUtil);
-   Float64 limit;
-   try
+   if ( pntEntrySpiral )
    {
-      limit = rootFinder.FindRootInRange(parallel_function,0,length,0.0000001);
-   }
-   catch(mathXRootFinder2dFailed& /*e*/)
-   {
-      ATLASSERT(false);
+      if ( *p1 == NULL )
+         pntEntrySpiral.CopyTo(p1);
+      else
+         pntEntrySpiral.CopyTo(p2);
    }
 
-#if defined _DEBUG
-   Float64 limit2;
-   mathBisectionRootFinder2d rootFinder2;
-   try
+   if ( pntCurve1 )
    {
-      limit2 = rootFinder2.FindRootInRange(parallel_function,0,length,0.0000001);
-   }
-   catch(mathXRootFinder2dFailed& /*e*/)
-   {
-      ATLASSERT(false);
-   }
-   ATLASSERT( IsEqual(limit,limit2,tolerance) );
-#endif // _DEBUG
-
-   // check to see if the line is tangent to the curve
-   CComPtr<IPoint2d> POC;
-   PointOnCurve(limit,&POC);
-   VARIANT_BOOL bContainsPoint;
-   m_GeomUtil->DoesLineContainPoint(line,POC,tol,&bContainsPoint);
-   if ( bContainsPoint == VARIANT_TRUE )
-   {
-      // Line is tangent
-      (*p1) = POC;
-      (*p1)->AddRef();
-      ATLASSERT(TestIntersection(line,*p1));
-      return S_OK;
+      if ( *p1 == NULL )
+         pntCurve1.CopyTo(p1);
+      else
+         pntCurve1.CopyTo(p2);
    }
 
-   // ok, not tangent
-   // search the first segment
-   Float64 dist = 0;
-   try
+   if ( pntCurve2 )
    {
-      dist = rootFinder.FindRootInRange(function,0,limit,0.0001);
-   }
-   catch(mathXRootFinder2dFailed& /*e*/)
-   {
-      // this assert should never fire... root should be in range
-      ATLASSERT(false);
-   }
-   PointOnCurve(dist,p1);
-
-   // search the second segment
-   try
-   {
-      dist = rootFinder.FindRootInRange(function,limit,length,0.0001);
-   }
-   catch(mathXRootFinder2dFailed& /*e*/)
-   {
-      // this assert should never fire... root should be in range
-      ATLASSERT(false);
-   }
-   PointOnCurve(dist,p2);
-
-   if ( *p1 == NULL && *p2 != NULL )
-   {
-      *p1 = *p2;
-      *p2 = NULL;
+      if ( *p1 == NULL )
+         pntCurve2.CopyTo(p1);
+      else
+         pntCurve2.CopyTo(p2);
    }
 
-   ATLASSERT(TestIntersection(line,*p1));
+   if ( pntExitSpiral )
+   {
+      if ( *p1 == NULL )
+         pntExitSpiral.CopyTo(p1);
+      else
+         pntExitSpiral.CopyTo(p2);
+   }
+
+   if ( fwdTangentPoint )
+   {
+      if ( *p1 == NULL )
+         fwdTangentPoint.CopyTo(p1);
+      else
+         fwdTangentPoint.CopyTo(p2);
+   }
+
+   if ( *p1 == NULL && *p2 == NULL )
+      return S_FALSE;
 
    return S_OK;
 }

@@ -980,7 +980,7 @@ STDMETHODIMP CGeomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoi
    Float64 dist;
    Distance( pCenter, poln, &dist );
 
-   if ( dist > radius )
+   if ( radius < dist && !IsEqual(radius,dist) )
    {
       *nIntersect = 0;
       return S_OK;
@@ -1046,6 +1046,7 @@ STDMETHODIMP CGeomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoi
       Float64 C = pow(xc,2) + pow(b-yc,2) - pow(radius,2);
 
       Float64 D = B*B - 4*A*C;
+      D = (IsZero(D) ? 0 : D);
       ATLASSERT( D >= 0 );
       Float64 x1 = (-B - sqrt(D))/(2*A);
       Float64 x2 = (-B + sqrt(D))/(2*A);

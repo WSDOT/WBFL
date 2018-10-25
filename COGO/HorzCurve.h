@@ -342,6 +342,11 @@ public:
          Float64 angle;
          dir->get_Value(&angle);
 
+         if ( IsZero(angle) && 3*PI_OVER_2 < m_Angle )
+         {
+            angle = 2*M_PI;
+         }
+
          return m_Angle - angle;
       }
 

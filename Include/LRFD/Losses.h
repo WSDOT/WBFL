@@ -261,7 +261,7 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
    virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
-   virtual Float64 PermanentStrand_FinalWithLiveLoad() const;
+   virtual Float64 PermanentStrand_FinalWithLiveLoad(Float64 gLL) const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
    virtual Float64 TemporaryStrand_AfterTransfer() const;
@@ -283,10 +283,12 @@ public:
    virtual Float64 TemporaryStrand_RelaxationLossesBeforeTransfer() const;
    virtual Float64 TemporaryStrand_ElasticShorteningLosses() const;
 
-   Float64 ElasticGainDueToDeckPlacement() const;
-   Float64 ElasticGainDueToSIDL() const;
-   Float64 ElasticGainDueToDeckShrinkage() const;
-   Float64 ElasticGainDueToLiveLoad() const;
+   // These are the change in strand stress due to externally applied
+   // loads... used to compute the effective prestress
+   virtual Float64 ElasticGainDueToDeckPlacement() const;
+   virtual Float64 ElasticGainDueToSIDL() const;
+   virtual Float64 ElasticGainDueToDeckShrinkage() const;
+   virtual Float64 ElasticGainDueToLiveLoad() const;
 
    virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
 

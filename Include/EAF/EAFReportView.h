@@ -40,6 +40,7 @@ struct EAFCLASS CEAFReportViewCreationData
    // Option 1 - Provide Report Specification
    boost::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
    boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
+   bool m_bInitializeOnly; // if true, creates the report view, sets the spec and spec builder, but does not generate the report
 
    // Option 2 - Report view creates specification
    bool m_bPromptForSpec; // true = prompt user to configure spec through UI, otherwise use default
@@ -54,6 +55,7 @@ struct EAFCLASS CEAFReportViewCreationData
       m_bPromptForSpec = true;
       m_pReportBuilderMgr = NULL;
       m_pRptMgr = NULL;
+      m_bInitializeOnly = false;
    }
 };
 
@@ -98,6 +100,10 @@ protected:
 #endif
 
 public:
+   // Initializes the report view, but doesn't create the report. This methods is called by CreateReport
+   // so you generally will not need to call it directly
+   virtual bool InitReport(boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+
    // Creates a report. The report specification is created by the user through the UI
    virtual bool CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec=true);
 

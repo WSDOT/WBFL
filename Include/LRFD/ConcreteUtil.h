@@ -146,8 +146,22 @@ public:
    static Uint16 MinLegsForBv(Float64 bv);
 
    //------------------------------------------------------------------------
-   // Calculate minimum Avf using 5.8.4.1-4.
-   static Float64 AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
+   // Calculate minimum Avf using 5.8.4.4
+   // Use a struct to contain control information
+   struct HsAvfOverSMinType
+   {
+      enum ValidEqnsType {eq41only, eqBoth}; // 
+      ValidEqnsType ValidEqns; // Which equations were valid: 5.8.4.4-1, 5.8.4.1-3, or both
+      Float64 res5_8_4_4_1;
+      Float64 res5_8_4_1_3;
+      Float64 AvfOverSMin; // Min of two values above, or zero if negative
+
+      HsAvfOverSMinType(): // initialize with default constructor
+      ValidEqns(eq41only), res5_8_4_4_1(0.0), res5_8_4_1_3(0.0), AvfOverSMin(0.0)
+      {;}
+   };
+
+   static HsAvfOverSMinType AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
 
    //------------------------------------------------------------------------
    // Max bar spacing 5.8.4.1
