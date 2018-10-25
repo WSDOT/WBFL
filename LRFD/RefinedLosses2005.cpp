@@ -812,7 +812,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // 2. Creep coefficient - deck to final
    m_CreepDeckToFinal.SetCuringMethod(lrfdCreepCoefficient2005::Normal);
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
-   m_CreepDeckToFinal.SetFc(m_Fc);
+   m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
    m_CreepDeckToFinal.SetMaturity(m_tf);
    m_CreepDeckToFinal.SetRelHumidity(m_H);
@@ -859,7 +859,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // Shrinkage of Deck Concrete [5.9.5.4.3d]
    m_CreepDeck.SetCuringMethod(lrfdCreepCoefficient2005::Normal);
    m_CreepDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
-   m_CreepDeck.SetFc(m_FcSlab);
+   m_CreepDeck.SetFc(0.8*m_FcSlab); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    m_CreepDeck.SetInitialAge(0);
    m_CreepDeck.SetMaturity(m_tf-m_td);
    m_CreepDeck.SetRelHumidity(m_H);
@@ -870,7 +870,10 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    kvs = m_CreepDeck.GetKvs();
    kf  = m_CreepDeck.GetKf();
    ktd = m_CreepDeck.GetKtd();
-   m_eddf = -m_DeckShrinkageK1*m_DeckShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   if ( IsZero(m_VSlab) || IsZero(m_SSlab) )
+      m_eddf = 0.0;
+   else
+      m_eddf = -m_DeckShrinkageK1*m_DeckShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
