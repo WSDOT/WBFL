@@ -78,7 +78,8 @@ m_ModE( 0 ),
 m_MaxAggregateSize(0),
 m_Type(matConcrete::Normal),
 m_Fct(0),
-m_bHasFct(false)
+m_bHasFct(false),
+m_Lambda(1.0)
 {
    m_bIsDamaged = false;
    // Don't call assert value because this material model is not valid.
@@ -92,7 +93,8 @@ m_ModE( modE ),
 m_MaxAggregateSize(0.0),
 m_Type(matConcrete::Normal),
 m_Fct(0),
-m_bHasFct(false)
+m_bHasFct(false),
+m_Lambda(1.0)
 {
    m_bIsDamaged = false;
    ASSERTVALID;
@@ -302,6 +304,20 @@ Float64 matConcrete::GetMaxAggregateSize() const
    return m_MaxAggregateSize;
 }
 
+void matConcrete::SetLambda(Float64 lambda)
+{
+   if ( !IsEqual(m_Lambda,lambda) )
+   {
+      m_Lambda = lambda;
+      NotifyAllListeners();
+   }
+}
+
+Float64 matConcrete::GetLambda() const
+{
+   return m_Lambda;
+}
+
 //======================== INQUIRY    =======================================
 CollectionIndexType matConcrete::ListenerCount() const
 {
@@ -383,6 +399,7 @@ void matConcrete::MakeCopy(const matConcrete& rOther)
    m_Type      = rOther.m_Type;
    m_Fct        = rOther.m_Fct;
    m_bHasFct    = rOther.m_bHasFct;
+   m_Lambda     = rOther.m_Lambda;
 
    ASSERTVALID;
 }

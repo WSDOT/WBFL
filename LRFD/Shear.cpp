@@ -341,6 +341,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Float64 Vi   = pData->Vi;
    Float64 Mmax = pData->Mu;
    Float64 Mcre = pData->Mcre;
+   Float64 lambda = pData->lambda;
 
    Float64 VciMin  = 0;
    Float64 VciCalc = 0;
@@ -393,14 +394,21 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    }
 
    Float64 sqrt_fc;
-   if ( pData->ConcreteType == matConcrete::Normal )
-      sqrt_fc = sqrt(fc);
-   else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
-      sqrt_fc = min(Kfct*fct,sqrt(fc));
-   else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
-      sqrt_fc = 0.75*sqrt(fc);
-   else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
-      sqrt_fc = 0.85*sqrt(fc);
+   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() )
+   {
+      sqrt_fc = lambda*sqrt(fc);
+   }
+   else
+   {
+      if ( pData->ConcreteType == matConcrete::Normal )
+         sqrt_fc = sqrt(fc);
+      else if ( (pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct )
+         sqrt_fc = min(Kfct*fct,sqrt(fc));
+      else if ( pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct )
+         sqrt_fc = 0.75*sqrt(fc);
+      else if ( pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct )
+         sqrt_fc = 0.85*sqrt(fc);
+   }
 
 
 
