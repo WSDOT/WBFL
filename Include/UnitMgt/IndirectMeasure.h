@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitMgt - Service for managing display units indirectly
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -181,6 +181,7 @@ public:
    unitmgtTimeData           Time;
    unitmgtTimeData           Time2;
    unitmgtPerLengthData      PerLength;
+   unitmgtPerLengthData      Curvature;
    unitmgtForceLength2Data   ForceLength2;
    unitmgtSqrtPressureData   SqrtPressure;
 

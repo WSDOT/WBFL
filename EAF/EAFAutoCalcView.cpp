@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -72,6 +72,13 @@ void CEAFAutoCalcViewMixin::EnableLpFrame(bool bEnable)
       pLpFrame->SetLicensePlateMode( bEnable ? eafTypes::lpfOn : eafTypes::lpfOff );
       m_bLpFrameEnabled = bEnable;
    }
+}
+
+CEAFAutoCalcDocMixin* CEAFAutoCalcViewMixin::GetAutoCalcDocument()
+{
+   CDocument* pDoc = m_pView->GetDocument();
+   CEAFAutoCalcDocMixin* pMixin = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
+   return pMixin;
 }
 
 CEAFLicensePlateChildFrame* CEAFAutoCalcViewMixin::GetLpFrame()

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,15 +60,11 @@ interface IEAFAppPlugin : IUnknown
    virtual void IntegrateWithUI(BOOL bIntegrate) = 0;
 
    // Creates a document template for use in MFC's Doc/View model
-   virtual CEAFDocTemplate* CreateDocTemplate() = 0;
+   virtual std::vector<CEAFDocTemplate*> CreateDocTemplates() = 0;
 
    // Returns the menu handle of a shared menu. Return NULL if this application does
    // not use a shared menu
    virtual HMENU GetSharedMenuHandle() = 0;
-
-   // Returns the resource identifier for the document information string
-   // This is the string MFC uses to get document name, file extension, file filter, etc
-   virtual UINT GetDocumentResourceID() = 0;
 
    // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;

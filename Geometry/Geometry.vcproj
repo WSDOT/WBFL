@@ -1954,6 +1954,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GenericShape.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Geometry.cpp"
 				>
 				<FileConfiguration
@@ -5033,6 +5037,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\GenericShape.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Geometry.hh"
 				>
 			</File>
@@ -5215,6 +5223,10 @@
 			</File>
 			<File
 				RelativePath=".\FasterPolyShape.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\GenericShape.rgs"
 				>
 			</File>
 			<File

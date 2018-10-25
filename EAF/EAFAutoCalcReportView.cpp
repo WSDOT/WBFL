@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -128,9 +128,7 @@ void CEAFAutoCalcReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHi
 {
    CEAFAutoCalcViewMixin::OnUpdate(pSender,lHint,pHint); // turns on LP frame if needed
 
-   CDocument* pDoc = GetDocument();
-   CEAFAutoCalcDocMixin* pAutoCalcDoc = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
-   ATLASSERT(pAutoCalcDoc); // your document must use the autocalc mix in
+   CEAFAutoCalcDocMixin* pAutoCalcDoc = GetAutoCalcDocument();
 
    // this comes for some kind of event.. only have the report view update itself
    // if auto calc is enabled
@@ -201,7 +199,7 @@ HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(CReportHint* pHint)
    return hr;
 }
 
-bool CEAFAutoCalcReportView::DoResultsExist() const
+bool CEAFAutoCalcReportView::DoResultsExist()
 {
    return (m_pReportBrowser != 0 ? true : false);
 }

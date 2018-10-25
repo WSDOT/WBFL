@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -347,7 +347,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
    gi = lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_Strength();
 
    Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(slab_overhang, m_Savg/2) )
+   if ( IsGT(m_Savg/2,slab_overhang) )
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -381,7 +381,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
    Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(slab_overhang, m_Savg/2) )
+   if ( IsGT(m_Savg/2,slab_overhang) )
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_Strength();
@@ -425,7 +425,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
    gi = lrfdLldfTypeAEKIJ::GetShearDF_Int_1_Strength();
 
    Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(slab_overhang, m_Savg/2) )
+   if ( IsGT(m_Savg/2,slab_overhang) )
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -459,7 +459,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
    Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(slab_overhang, m_Savg/2) )
+   if ( IsGT(m_Savg/2,slab_overhang) )
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetShearDF_Ext_2_Strength();

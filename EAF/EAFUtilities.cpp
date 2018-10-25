@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -101,6 +101,22 @@ CEAFDocument* EAFGetDocument()
    return pFrame->GetDocument();
 }
 
+CView* EAFGetActiveView()
+{
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   CView* pView = pFrame->GetActiveView();
+   if ( pView )
+      return pView;
+
+   if ( pFrame->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
+   {
+      CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
+      pView = pChild->GetActiveView();
+      return pView;
+   }
+
+   return NULL;
+}
 
 bool operator<(REFIID a,REFIID b)
 {

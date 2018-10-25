@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,6 +29,7 @@
 #include "ReportManager.h"
 #include <ReportManager\ReportDescription.h>
 #include <ReportManager\ChapterBuilder.h>
+#include <ReportManager\ReportSpecification.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -79,4 +80,34 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
    }
 
    return v;
+}
+
+void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const
+{
+   std::vector<CChapterInfo> vChInfo = GetChapterInfo();
+   std::vector<CChapterInfo>::const_iterator iter;
+   for ( iter = vChInfo.begin(); iter != vChInfo.end(); iter++ )
+   {
+      CChapterInfo chInfo = *iter;
+      if (chInfo.Select)
+         pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+   }
+}
+
+void CReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const
+{
+   std::vector<CChapterInfo> vChInfo = GetChapterInfo();
+
+   std::vector<std::_tstring>::const_iterator iter;
+   for ( iter = chList.begin(); iter != chList.end(); iter++ )
+   {
+      CChapterInfo search;
+      search.Name = *iter;
+
+      std::vector<CChapterInfo>::iterator found = std::find(vChInfo.begin(),vChInfo.end(),search);
+      ATLASSERT( found != vChInfo.end() ); // if this fires, the supplied chapter list isn't consistent with the report description
+      CChapterInfo chInfo = *found;
+      ATLASSERT( chInfo.Name == *iter);
+      pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
+   }
 }

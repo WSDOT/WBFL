@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2012  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -88,6 +88,7 @@ public:
                   FifthEdition2010              = 16,
                   // no interims in 2011
                   SixthEdition2012              = 17,
+                  SixthEditionWith2013Interims  = 18,
                   LastVersion
    };
 
