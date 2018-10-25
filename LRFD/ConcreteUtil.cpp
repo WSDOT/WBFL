@@ -582,9 +582,13 @@ Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
    else
    {
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      {
          return g_0p6_M;
+      }
       else
+      {
          return g_24_IN;
+      }
    }
 }
 
