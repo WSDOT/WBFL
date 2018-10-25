@@ -37,19 +37,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const UINT g_TimerID = 1;
-CWnd* g_pTimerWnd = 0;
-void CALLBACK EXPORT TimerProc(HWND hWnd,UINT nMsg,UINT nIDEvent,DWORD dwTime)
-{
-   CHECK( g_pTimerWnd != 0 );
-   CHECK( g_pTimerWnd->GetSafeHwnd() == hWnd );
-   CHECK( nIDEvent == g_TimerID );
-
-   g_pTimerWnd->KillTimer( g_TimerID );
-   g_pTimerWnd->ShowWindow( SW_SHOW );
-   g_pTimerWnd = 0;
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // CSysAgent
 
@@ -66,6 +53,7 @@ HRESULT CSysAgent::FinalConstruct()
    m_pBroker = 0;
    m_bEndLines = TRUE;
    m_cProgressRef = 0;
+   m_pThread = NULL;
    return S_OK;
 }
 
@@ -153,69 +141,58 @@ STDMETHODIMP CSysAgent::GetClassID(CLSID* pCLSID)
 //
 STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
+//   AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    m_cProgressRef++;
 
    if ( m_cProgressRef > 1 )
    {
-      m_ProgressDlg.ResetContinueState();
+      //m_ProgressDlg.ResetContinueState();
       return S_OK;
    }
 
-   BOOL bCreated;
-   bCreated = m_ProgressDlg.Create( CProgressDlg::IDD );
-   ATLASSERT( bCreated == TRUE );
-   if ( !bCreated )
-      return PROGRESS_E_CREATE;
+   // Run the progress window in a UI thread
+   m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread),THREAD_PRIORITY_NORMAL,0,CREATE_SUSPENDED);
+   m_pThread->m_bAutoDelete = TRUE;
+   m_pThread->ResumeThread();
 
-   // Make sure the visible flag isn't set in the dialog resource.
-   ATLASSERT( m_ProgressDlg.IsWindowVisible() == false );
-
-   if ( dwMask & PW_NOMESSAGE )
-      m_ProgressDlg.m_MessageCtrl.ShowWindow( SW_HIDE );
-
-//   if ( dwMask & PW_NOGAUGE ) // Always hide
-      m_ProgressDlg.m_ProgressBar.ShowWindow( SW_HIDE );
-   
-   m_bCancelEnabled = TRUE;
-   if ( dwMask & PW_NOCANCEL )
+   CWnd* pMainWnd;
    {
-      m_ProgressDlg.m_Cancel.ShowWindow( SW_HIDE );
-      m_ProgressDlg.m_Cancel.EnableWindow(FALSE);
-      m_bCancelEnabled = FALSE;
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+      pMainWnd = AfxGetMainWnd();
    }
 
-   g_pTimerWnd = &(m_ProgressDlg);
-   m_ProgressDlg.SetTimer( g_TimerID, nDelay, &TimerProc );
-   m_ProgressDlg.PumpMessage();
+   HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
+   ATLASSERT( SUCCEEDED(hr) );
+   if ( FAILED(hr) )
+   {
+      m_cProgressRef--;
+      m_pThread->EndThread();
+      m_pThread = NULL;
+      return PROGRESS_E_CREATE;
+   }
 
+   // disable the main window
+   pMainWnd->EnableWindow(FALSE);
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::Init(short begin, short end, short inc)
 {
-   m_ProgressDlg.PumpMessage();
-   m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
-   m_ProgressDlg.m_ProgressBar.SetStep( inc );
-   m_ProgressDlg.m_ProgressBar.SetPos( begin );
-
+   m_pThread->Init(begin,end,inc);
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::Increment()
 {
-   m_ProgressDlg.PumpMessage();
-   m_ProgressDlg.m_ProgressBar.StepIt();
-
+   m_pThread->Increment();
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 {
-   m_ProgressDlg.PumpMessage();
-   m_ProgressDlg.m_Message = msg;
-   m_ProgressDlg.UpdateMessage(msg);
+   if ( m_pThread )
+      m_pThread->UpdateMessage(msg);
 
    return S_OK;
 }
@@ -224,22 +201,21 @@ STDMETHODIMP CSysAgent::Continue()
 {
    HRESULT hr = S_OK;
 
-   hr = m_ProgressDlg.Continue() ? S_OK : S_FALSE;
+   if ( m_pThread )
+      return m_pThread->Continue() ? S_OK : S_FALSE;
 
    return hr;
 }
 
 STDMETHODIMP CSysAgent::get_EnableCancel(BOOL* pbEnable)
 {
-   *pbEnable = m_bCancelEnabled;
+   *pbEnable = m_pThread->EnableCancel();
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::put_EnableCancel(BOOL bEnable)
 {
-   m_bCancelEnabled = bEnable;
-   m_ProgressDlg.m_Cancel.ShowWindow( bEnable ? SW_SHOW : SW_HIDE );
-   m_ProgressDlg.m_Cancel.EnableWindow(bEnable);
+   m_pThread->EnableCancel(bEnable);
    return S_OK;
 }
 
@@ -250,11 +226,17 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
 
    if ( m_cProgressRef == 0 )
    {
-      m_ProgressDlg.KillTimer( g_TimerID );
-      g_pTimerWnd = 0;
+      m_pThread->DestroyProgressWindow();
+      m_pThread->EndThread();
+      m_pThread = NULL;
 
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      m_ProgressDlg.DestroyWindow();
+      // enable the main window
+      {
+         AFX_MANAGE_STATE(AfxGetAppModuleState());
+         CWnd* pMainWnd = AfxGetMainWnd();
+         pMainWnd->EnableWindow(TRUE);
+         pMainWnd->SetActiveWindow();
+      }
    }
 
    return S_OK;

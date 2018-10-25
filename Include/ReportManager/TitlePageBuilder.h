@@ -34,6 +34,7 @@
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
+#include <ReportManager\ReportHint.h>
 #include <Reporter\Chapter.h>
 
 class REPORTMANAGERCLASS CTitlePageBuilder  
@@ -43,6 +44,7 @@ public:
 	virtual ~CTitlePageBuilder();
 
    virtual rptChapter* Build(boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
+   virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
 };
 
 #endif // !defined(AFX_TitlePageBuilder_H__A02521C5_E5AB_410C_A5C2_0D76AEDFDCA3__INCLUDED_)

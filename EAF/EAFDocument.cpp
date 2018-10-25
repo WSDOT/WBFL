@@ -357,9 +357,11 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
 
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
+   pTemplate->SetViewCreationData(pData);
    CView*                    pView      = pMainFrame->CreateOrActivateFrame(pTemplate);
    
    // done with the create data, so NULL it out
+   pTemplate->SetViewCreationData(NULL);
    pMyTemplate->SetViewCreationData(NULL);
 
    return pView;

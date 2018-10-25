@@ -94,7 +94,7 @@ std::string sysNumericFormatTool::AsString(Float64 value) const
         (get_width_demand( value, m_Precision ) > m_Width) )
    {
       // The specified with is insufficient, use scientific notation
-      WARN( true, "Switching to scientific notation : " << value);
+      //WARN( true, "Switching to scientific notation : " << value);
       format = Scientific;
    }
 
@@ -136,7 +136,7 @@ std::string sysNumericFormatTool::AsString(const sysSectionValue& value) const
       )
    {
       // The specified with is insufficient, use scientific notation
-      WARN( true, "Switching to scientific notation : " << value);
+      //WARN( true, "Switching to scientific notation : " << value);
       format = Scientific;
    }
 
@@ -241,7 +241,7 @@ void apply_stream_manipulators( std::ostream* pOS, sysNumericFormatTool::Format 
       Int16 max_precision = width - 8;
       if ( pOS->precision() > max_precision )
       {
-         WARN( max_precision <= pOS->precision(), "Scientific precision set too high to fit in width, using maximum available precision");
+         //WARN( max_precision <= pOS->precision(), "Scientific precision set too high to fit in width, using maximum available precision");
          pOS->precision( max_precision );
       } // end if
       } // end case

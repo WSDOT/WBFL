@@ -154,7 +154,7 @@ STDMETHODIMP CCrackedSectionSolver::get_Section(IGeneralSection** pSection)
    return S_OK;
 }
 
-STDMETHODIMP CCrackedSectionSolver::Solve(ICrackedSectionSolution** solution)
+STDMETHODIMP CCrackedSectionSolver::Solve(Float64 naAngle,ICrackedSectionSolution** solution)
 {
 #if defined _DEBUG_LOGGING
    m_Log.CoCreateInstance(CLSID_WBFLErrorLog);
@@ -169,6 +169,8 @@ STDMETHODIMP CCrackedSectionSolver::Solve(ICrackedSectionSolution** solution)
 
    if ( m_Section == NULL )
       return E_FAIL;
+
+   m_Angle = naAngle;
 
    DecomposeSection();
 
@@ -413,6 +415,9 @@ void CCrackedSectionSolver::DecomposeSection()
 
       CComPtr<IShape> shape;
       hr = original_shape->Clone(&shape);
+
+      CComQIPtr<IXYPosition> position(shape);
+      position->Rotate(0,0,-m_Angle);
 
       CComPtr<IRect2d> bndbox;
       shape->get_BoundingBox(&bndbox);

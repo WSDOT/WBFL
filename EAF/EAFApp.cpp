@@ -107,6 +107,8 @@ BOOL CEAFApp::InitInstance()
 		return FALSE;
 	}
 
+   m_pCommandLineInfo = new CEAFCommandLineInfo();
+
    // Get the units system set up 
    InitDisplayUnits();
 
@@ -197,12 +199,16 @@ BOOL CEAFApp::InitInstance()
    if ( cmdInfo.m_nParams != 0 )
       ProcessCommandLineOptions(cmdInfo);
 
+   m_strHelpFile = m_pszHelpFilePath;
+
 	return TRUE;
 }
 
 int CEAFApp::ExitInstance()
 {
 	int result = CWinApp::ExitInstance(); // must call before UnloadPlugins
+
+   delete m_pCommandLineInfo;
 
    // the document manager is usually deleted in CWinApp::~CWinApp, however,
    // when the plug in manager unloads the plug-ins, the DLLs from where the
@@ -264,7 +270,7 @@ void CEAFApp::RegistryExit()
 
 CEAFCommandLineInfo& CEAFApp::GetCommandLineInfo()
 {
-   return m_CommandLineInfo;
+   return *m_pCommandLineInfo;
 }
 
 void CEAFApp::ShowUsageMessage()
@@ -400,7 +406,7 @@ END_MESSAGE_MAP()
 // CEAFApp message handlers
 BOOL CEAFApp::RegisterDocTemplates()
 {
-   if ( !GetComponentInfoManager()->LoadPlugins() )
+   if ( !GetComponentInfoManager()->LoadPlugins(TRUE) ) // always attempt to load
       return FALSE;
 
    if ( !GetComponentInfoManager()->InitPlugins() )
@@ -542,6 +548,20 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    }
 
    return pDoc;
+}
+
+void CEAFApp::SetHelpFileName(LPCTSTR lpszHelpFile)
+{
+   if ( lpszHelpFile == NULL )
+   {
+      free((void*)m_pszHelpFilePath);
+      m_pszHelpFilePath = _tcsdup(_T(m_strHelpFile));
+   }
+   else
+   {
+      free((void*)m_pszHelpFilePath);
+      m_pszHelpFilePath = _tcsdup(_T(lpszHelpFile));
+   }
 }
 
 LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg) 

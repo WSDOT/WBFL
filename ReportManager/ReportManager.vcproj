@@ -352,6 +352,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\ReportHint.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ReportManager.cpp"
 				>
 				<FileConfiguration
@@ -555,6 +559,10 @@
 			</File>
 			<File
 				RelativePath="ReportDlg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\ReportManager\ReportHint.h"
 				>
 			</File>
 			<File

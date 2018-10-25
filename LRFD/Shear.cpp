@@ -278,7 +278,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       p_force_unit = &unitMeasure::Kip;
    }
 
-   VciCalc = IsZero(Mmax) ? DBL_MAX : K1*sqrt(fc)*bv*dv + Vd + Vi*Mcre/Mmax;
+   VciCalc = IsZero(Mmax) ? 1e100 : K1*sqrt(fc)*bv*dv + Vd + Vi*Mcre/Mmax;
    VciMin = K2*sqrt(fc)*bv*dv;
    Vci = _cpp_max(VciCalc,VciMin);
    Vcw = (K2*sqrt(fc) + 0.30*fpc)*bv*dv + Vp;

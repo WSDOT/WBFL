@@ -25,6 +25,10 @@
 #define INCLUDED_WBFLALL_H_
 #pragma once
 
+#ifndef _WBFL_VERSION
+#define _WBFL_VERSION 321 // version 3.2.1
+#endif 
+
 #include <System\AutoLib.h>
 
 // Make sure compiler settings are correct.

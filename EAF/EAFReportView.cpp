@@ -158,7 +158,7 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec
 
    UpdateViewTitle();
 
-   if ( SUCCEEDED(UpdateReportBrowser()) )
+   if ( SUCCEEDED(UpdateReportBrowser(NULL)) )
       return true;
 
    return false;
@@ -230,7 +230,7 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
    }
 }
 
-HRESULT CEAFReportView::UpdateReportBrowser()
+HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
 {
    if ( m_pReportSpec == NULL )
       return S_OK;
@@ -256,12 +256,15 @@ HRESULT CEAFReportView::UpdateReportBrowser()
       if ( m_pReportBrowser )
       {
          boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
-         boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
+         if ( pBuilder->NeedsUpdate(pHint,m_pReportSpec) )
+         {
+            boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
 
-         if ( m_btnEdit.GetSafeHwnd() )
-            m_btnEdit.ShowWindow(SW_SHOW);
+            if ( m_btnEdit.GetSafeHwnd() )
+               m_btnEdit.ShowWindow(SW_SHOW);
 
-         m_pReportBrowser->UpdateReport( pReport, true );
+            m_pReportBrowser->UpdateReport( pReport, true );
+         }
       }
       else
       {
@@ -413,10 +416,16 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    // Something has changed to invalidate the report
    m_bInvalidReport = true;
 
-   UpdateNow();
+   std::auto_ptr<CReportHint> pRptHint( TranslateHint(pSender,lHint,pHint) );
+   UpdateNow(pRptHint.get());
 }
 
-void CEAFReportView::UpdateNow()
+CReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint)
+{
+   return NULL;
+}
+
+void CEAFReportView::UpdateNow(CReportHint* pHint)
 {
    if ( CEAFReportView::ms_bIsUpdatingReport )
       return;
@@ -427,7 +436,7 @@ void CEAFReportView::UpdateNow()
    {
       try
       {
-         HRESULT hr = UpdateReportBrowser();
+         HRESULT hr = UpdateReportBrowser(pHint);
          if ( FAILED(hr)  )
          {
             if ( m_bNoBrowser )

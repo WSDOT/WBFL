@@ -2,8 +2,7 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-
-interface IProgress;
+#include <WBFLCore.h>
 
 /*****************************************************************************
 CLASS 
@@ -18,10 +17,6 @@ DESCRIPTION
    are throw, the destroy code is often never called.  This class encapsulates
    the destroy code and is automatically called as the stack unwinds.
 
-   You must create the progress window using the CreateProgressWindow
-   on this class, instead of the IProgress pointer, to have the auto destory
-   work properly.
-
 EXAMPLE
    EAFAutoProgress ap(pProgress);
    // Don't call CreateWindow or DestroyWindow on the IProgress interface
@@ -32,18 +27,19 @@ class EAFCLASS CEAFAutoProgress
 public:
    //------------------------------------------------------------------------
    // Default constructor
-   CEAFAutoProgress(IProgress* pProgress,UINT nDelay = 100);
+   CEAFAutoProgress(IProgress* pProgress,UINT nDelay = 100,DWORD dwMask = PW_ALL | PW_NOGAUGE | PW_NOCANCEL);
 
    //------------------------------------------------------------------------
    // Destructor
    ~CEAFAutoProgress();
 
-   HRESULT CreateProgressWindow(DWORD dwMask,UINT nDelay);
    HRESULT Continue();
 
 private:
    IProgress* m_pProgress; // weak reference
    bool m_bCreated;
+
+   HRESULT CreateProgressWindow(DWORD dwMask,UINT nDelay);
 
    // Prevent accidental copying and assignment
    CEAFAutoProgress(const CEAFAutoProgress&);

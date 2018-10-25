@@ -264,6 +264,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ProgressThread.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -315,6 +319,10 @@
 			</File>
 			<File
 				RelativePath=".\ProgressDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ProgressThread.h"
 				>
 			</File>
 			<File

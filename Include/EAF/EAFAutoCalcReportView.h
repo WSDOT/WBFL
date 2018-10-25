@@ -60,6 +60,7 @@ public:
 // Implementation
 public:
    virtual void UpdateNow();
+   virtual void UpdateNow(CReportHint* pHint);
    virtual void EditReport();
 
 protected:
@@ -73,7 +74,7 @@ protected:
 protected:
 	//{{AFX_MSG(CEAFAutoCalcReportView)
 	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser();
+   virtual HRESULT UpdateReportBrowser(CReportHint* pHint);
 
 	DECLARE_MESSAGE_MAP()
 };

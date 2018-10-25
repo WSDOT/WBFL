@@ -237,7 +237,7 @@ BOOL CBridgeGeometryAgent::OnCommandMessage(UINT nID,int nCode,void* pExtra,AFX_
    return m_CmdTarget.OnCmdMsg(nID,nCode,pExtra,pHandlerInfo);
 }
 
-void CBridgeGeometryAgent::GetStatusBarMessageString(UINT nID, CString& rMessage) const
+BOOL CBridgeGeometryAgent::GetStatusBarMessageString(UINT nID, CString& rMessage) const
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
@@ -246,15 +246,17 @@ void CBridgeGeometryAgent::GetStatusBarMessageString(UINT nID, CString& rMessage
 	{
 		// first newline terminates actual string
       rMessage.Replace('\n','\0');
+      return TRUE;
 	}
 	else
 	{
 		// not found
 		TRACE1("Warning: no message line prompt for ID 0x%04X.\n", nID);
+      return FALSE;
 	}
 }
 
-void CBridgeGeometryAgent::GetToolTipMessageString(UINT nID, CString& rMessage) const
+BOOL CBridgeGeometryAgent::GetToolTipMessageString(UINT nID, CString& rMessage) const
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    CString string;
@@ -265,11 +267,14 @@ void CBridgeGeometryAgent::GetToolTipMessageString(UINT nID, CString& rMessage) 
       int pos = string.Find('\n');
       if ( 0 < pos )
          rMessage = string.Mid(pos+1);
+
+      return TRUE;
 	}
 	else
 	{
 		// not found
 		TRACE1("Warning: no tool tip for ID 0x%04X.\n", nID);
+      return FALSE;
 	}
 }
 

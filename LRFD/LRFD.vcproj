@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="NDEBUG;_WINDOWS;BUILDLRFDLIB;WIN32;_AFXDLL;IGNORE_2007_CHANGES"
+				PreprocessorDefinitions="NDEBUG;_WINDOWS;BUILDLRFDLIB;WIN32;_AFXDLL;xIGNORE_2007_CHANGES"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
@@ -149,7 +149,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="BUILDLRFDLIB;_WINDOWS;_DEBUG;_AFXDLL;WIN32;IGNORE_2007_CHANGES;WBFL_DEBUG"
+				PreprocessorDefinitions="BUILDLRFDLIB;_WINDOWS;_DEBUG;_AFXDLL;WIN32;xIGNORE_2007_CHANGES;WBFL_DEBUG"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"

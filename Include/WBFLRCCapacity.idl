@@ -848,7 +848,7 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_ICrackedSectionSolver_Slices),helpstring("property Slices")] HRESULT Slices([out,retval]long* nSlices);
 		[propput,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([in]Float64 sliceGrowthFactor);
 		[propget,helpcontext(IDH_ICrackedSectionSolver_SliceGrowthFactor),helpstring("property SliceGrowthFactor")] HRESULT SliceGrowthFactor([out,retval]Float64* sliceGrowthFactor);
-		[helpcontext(IDH_ICrackedSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([out,retval]ICrackedSectionSolution** solution);
+		[helpcontext(IDH_ICrackedSectionSolver_Solve),helpstring("method Solve")] HRESULT Solve([in] Float64 naAngle,[out,retval]ICrackedSectionSolution** solution);
 	};
 
 	[

@@ -70,21 +70,9 @@ END_COM_MAP()
 
 
 private:
-   //CComPtr<IGeneralSectionSolver> m_GeneralSolver;
-   //CComPtr<IGeneralSectionSolution> m_GeneralSolution;
-   //CComPtr<IPlane3d> m_StrainPlane;
-   //CComPtr<IPoint3d> m_P1, m_P2, m_P3;
    Float64 m_CGTolerance;
    long m_MaxIter;
-   //bool m_bFurthestPointUpdated;
-   //Float64 m_XFurthest, m_YFurthest;
-
-   //void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 eo,SolutionMethod solutionMethod);
-   //void UpdateFurthestPoint(Float64 angle);
-   //Float64 GetCurvature(CollectionIndexType idx);
-   //HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
-   //HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod,IMomentCapacitySolution** solution);
-
+   Float64 m_Angle; // angle of neutral axis line. Compression is on the left side of the line
    long m_nSlices;
    Float64 m_SliceGrowthFactor; // height of last slice is slice growth factor times the height of the first slice
    CComPtr<IGeneralSection> m_Section;
@@ -143,7 +131,7 @@ public:
 	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor);
    STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
 	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-   STDMETHOD(Solve)(/*[out,retval]*/ICrackedSectionSolution** solution);
+   STDMETHOD(Solve)(/*[in]*/Float64 naAngle,/*[out,retval]*/ICrackedSectionSolution** solution);
 };
 
 #endif //__CrackedSectionSolver_H_
