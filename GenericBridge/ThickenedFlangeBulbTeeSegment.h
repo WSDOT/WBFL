@@ -124,6 +124,7 @@ public:
 
 // IThickenedFlangeSegment
 public:
+   STDMETHOD(get_TopFlangeSlope)(Float64* pSlope) override;
    STDMETHOD(put_FlangeThickeningType)(ThickeningType type) override;
    STDMETHOD(get_FlangeThickeningType)(ThickeningType* pType) override;
    STDMETHOD(put_FlangeThickening)(Float64 flangeThickening) override;
@@ -159,7 +160,6 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
-   Float64 GetSuperstructureMemberLength();
    HRESULT AdjustPosition(Float64 Xs, IBulbTee2* pBeam);
    HRESULT GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, IShape** ppLeftJoint, IShape** ppRightJoint);
 };

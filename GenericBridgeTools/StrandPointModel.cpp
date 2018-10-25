@@ -94,6 +94,16 @@ STDMETHODIMP CStrandPointModel::GetNumStrandsInRow(StrandType strandType, Float6
    return S_OK;
 }
 
+STDMETHODIMP CStrandPointModel::GetUnadjustedStrandRowElevation(StrandType strandType, Float64 Xs, RowIndexType rowIdx, Float64 * fElevation)
+{
+   CHECK_RETVAL(fElevation);
+   auto& rows = GetStrandRows(strandType, Xs);
+   auto iter = rows.begin();
+   std::advance(iter, rowIdx);
+   *fElevation = iter->Y;
+   return S_OK;
+}
+
 STDMETHODIMP CStrandPointModel::GetStrandsInRow(StrandType strandType, Float64 Xs, RowIndexType rowIdx, IIndexArray** ppStrandIndicies)
 {
    CHECK_RETOBJ(ppStrandIndicies);

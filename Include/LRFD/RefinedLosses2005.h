@@ -107,9 +107,9 @@ public:
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-                         Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+                         const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -139,14 +139,21 @@ public:
                          Float64 SSlab,    // Surface area of slab
 
                          Float64 Ag,   // area of girder
-                         Float64 Ig,   // moment of inertia of girder
+                         Float64 Ixx,   // moment of inertia of girder
+                         Float64 Iyy,
+                         Float64 Ixy,
                          Float64 Ybg,  // Centroid of girder measured from bottom
-                         Float64 Ac,   // area of composite girder
-                         Float64 Ic,   // moment of inertia of composite
-                         Float64 Ybc,  // Centroid of composite measured from bottom
+                         Float64 Ac1,   // area of composite girder, stage 1
+                         Float64 Ic1,   // moment of inertia of composite, stage 1
+                         Float64 Ybc1,  // Centroid of composite measured from bottom, stage 1
+                         Float64 Ac2,   // area of composite girder, stage 2
+                         Float64 Ic2,   // moment of inertia of composite, stage 2
+                         Float64 Ybc2,  // Centroid of composite measured from bottom, stage 2
 
                          Float64 An,   // area of girder
-                         Float64 In,   // moment of inertia of girder
+                         Float64 Ixxn,   // moment of inertia of girder
+                         Float64 Iyyn,
+                         Float64 Ixyn,
                          Float64 Ybn,  // Centroid of girder measured from bottom
                          Float64 Acn,   // area of composite girder
                          Float64 Icn,   // moment of inertia of composite
@@ -158,8 +165,9 @@ public:
                          
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
-                         
+                         Float64 Msidl1, // Superimposed dead loads, stage 1
+                         Float64 Msidl2, // Superimposed dead loads, stage 2
+
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
                          Float64 th,   // Time at hauling

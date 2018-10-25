@@ -35,6 +35,7 @@
 #endif
 
 #include <Lrfd\PsStrand.h>
+#include <GeometricPrimitives\Primitives.h>
 
 // LOCAL INCLUDES
 //
@@ -92,9 +93,11 @@ public:
                          Float64 ApsTemp,   // Area of temporary prestressing steel
                          bool    bGrossProperties, // true if using gross section properties
                          Float64 Ag,    // area of girder
-                         Float64 Ig,    // moment of inertia of girder
-                         Float64 ePerm, // eccentricity of permanent ps strands
-                         Float64 eTemp, // eccentricity of temporary ps strands
+                         Float64 Ixx,    // moment of inertia of girder
+                         Float64 Iyy,
+                         Float64 Ixy,
+                         const gpPoint2d& ePerm, // eccentricity of permanent ps strands
+                         const gpPoint2d& eTemp, // eccentricity of temporary ps strands
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 K,     // coefficient for post-tension members (N-1)/(2N)
                          Float64 Eci,   // Modulus of elasticity of concrete at transfer
@@ -146,19 +149,16 @@ public:
    void    PermanentStrand_Aps(Float64 Aps);
    Float64 PermanentStrand_Aps() const;
 
-   void    TemporaryStrand_Eccentricty(Float64 e);
-   Float64 TemporaryStrand_Eccentricty() const;
-   void    PermanentStrand_Eccentricty(Float64 e);
-   Float64 PermanentStrand_Eccentricty() const;
+   void    TemporaryStrand_Eccentricty(const gpPoint2d& e);
+   const gpPoint2d& TemporaryStrand_Eccentricty() const;
+   void    PermanentStrand_Eccentricty(const gpPoint2d& e);
+   const gpPoint2d& PermanentStrand_Eccentricty() const;
 
    void GrossProperties(bool bGrossProperties);
    bool GrossProperties() const;
 
-   void    Ag(Float64 Ag);
-   Float64 Ag() const;
-
-   void    Ig(Float64 Ig);
-   Float64 Ig() const;
+   void SetProperties(Float64 A, Float64 Ixx, Float64 Iyy, Float64 Ixy);
+   void GetProperties(Float64* pA, Float64* pIxx, Float64* pIyy, Float64* pIxy) const;
 
    void    GdrMoment(Float64 Mdlg);
    Float64 GdrMoment() const;
@@ -196,8 +196,8 @@ private:
    // GROUP: DATA MEMBERS
    Float64 m_ApsPerm;
    Float64 m_ApsTemp;
-   Float64 m_ePerm;
-   Float64 m_eTemp;  
+   gpPoint2d m_ePerm;
+   gpPoint2d m_eTemp;  
 
    Float64 m_FpjPerm;   // Jacking stress
    Float64 m_FpjTemp;   // Jacking stress
@@ -207,7 +207,9 @@ private:
 
    bool m_bGrossProperties;
    Float64 m_Ag;    // Area of the girder
-   Float64 m_Ig;    // Moment of inertia of the girder
+   Float64 m_Ixx;    // Moment of inertia of the girder
+   Float64 m_Iyy;
+   Float64 m_Ixy;
    Float64 m_Mdlg;  // Dead load moment of girder
    Float64 m_Eci;
    Float64 m_Ep;
@@ -251,16 +253,10 @@ inline Float64 lrfdElasticShortening::PermanentStrand_Aps() const      { return 
 inline void lrfdElasticShortening::GrossProperties(bool bGrossProperties) { m_bGrossProperties = bGrossProperties; m_bUpdate = true; }
 inline bool lrfdElasticShortening::GrossProperties() const { return m_bGrossProperties; }
 
-inline void    lrfdElasticShortening::Ag(Float64 Ag) { m_Ag = Ag; m_bUpdate = true; }
-inline Float64 lrfdElasticShortening::Ag() const     { return m_Ag; }
-
-inline void    lrfdElasticShortening::Ig(Float64 Ig) { m_Ig = Ig; m_bUpdate = true; }
-inline Float64 lrfdElasticShortening::Ig() const     { return m_Ig; }
-
-inline void    lrfdElasticShortening::TemporaryStrand_Eccentricty(Float64 e) { m_eTemp = e; m_bUpdate = true; }
-inline Float64 lrfdElasticShortening::TemporaryStrand_Eccentricty() const    { return m_eTemp; }
-inline void    lrfdElasticShortening::PermanentStrand_Eccentricty(Float64 e) { m_ePerm = e; m_bUpdate = true; }
-inline Float64 lrfdElasticShortening::PermanentStrand_Eccentricty() const    { return m_ePerm; }
+inline void    lrfdElasticShortening::TemporaryStrand_Eccentricty(const gpPoint2d& e) { m_eTemp = e; m_bUpdate = true; }
+inline const gpPoint2d& lrfdElasticShortening::TemporaryStrand_Eccentricty() const    { return m_eTemp; }
+inline void    lrfdElasticShortening::PermanentStrand_Eccentricty(const gpPoint2d& e) { m_ePerm = e; m_bUpdate = true; }
+inline const gpPoint2d& lrfdElasticShortening::PermanentStrand_Eccentricty() const    { return m_ePerm; }
 
 inline void    lrfdElasticShortening::GdrMoment(Float64 Mdlg) { m_Mdlg = Mdlg; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::GdrMoment() const       { return m_Mdlg; }

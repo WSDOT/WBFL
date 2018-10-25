@@ -993,6 +993,33 @@ STDMETHODIMP CStrandGrid::get_NumStrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out
    return S_OK;
 }
 
+STDMETHODIMP CStrandGrid::get_StrandRowElevation(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/Float64* pElevation)
+{
+   HRESULT hr = ValidateFill();
+   if (FAILED(hr))
+      return hr;
+
+   if ( rowIdx < 0 || (RowIndexType)m_Rows.size() <= rowIdx )
+      return E_INVALIDARG; // bad row index
+
+   CHECK_RETVAL(pElevation);
+
+   RowIndexType currentRowIdx = 0;
+   std::set<Row>::const_iterator iter;
+   for ( iter = m_Rows.begin(); iter != m_Rows.end(); iter++ )
+   {
+      if (rowIdx == currentRowIdx)
+      {
+         *pElevation = iter->Elevation;
+         break;
+      }
+
+      currentRowIdx++;
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CStrandGrid::get_StrandsInRow(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** ppStrandIndicies)
 {
    CHECK_RETOBJ(ppStrandIndicies);

@@ -40,7 +40,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
 {
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
-   *pPara << _T("Check for Hauling to Bridge Site [5.5.4.3][5.9.4.1]") << rptNewLine;
+   *pPara << _T("Check for Hauling to Bridge Site [5.5.4.3]") << rptNewLine;
 
    pPara = new rptParagraph;
    *pChapter << pPara;
@@ -583,7 +583,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    // this is the first check to see if epxs and lateral camber meet the criteria for simple formatting
    // we have to deal with the section propertes later
-   bool bSimpleFormatTest1 = IsZero(pStabilityProblem->GetFpeLateralEccentricity()) && (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
+   bool bSimpleFormatTest1 = /*IsZero(pStabilityProblem->GetFpeLateralEccentricity()) &&*/ (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
 
    Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
    pGirder->GetSectionProperties(0, stbTypes::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
@@ -616,7 +616,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
    *pPara << _T("Hauling Analysis Details") << rptNewLine;
-   *pPara << _T("Hauling to Bridge Site [5.5.4.3][5.9.4.1]") << rptNewLine;
+   *pPara << _T("Hauling to Bridge Site [5.5.4.3]") << rptNewLine;
 
    pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
    *pChapter << pPara;
@@ -1017,7 +1017,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       }
       else
       {
-         *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << symbol(SUM) << _T("(0.5(") << Super2(Sub2(_T("X"), _T("left")),_T("i")) << _T(" + ") << Super2(Sub2(_T("X"), _T("left")), _T("i+1")) << _T(")") << _T("(Section Length)") << _T(")/") << Sub2(_T("L"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
+         *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << symbol(SUM) << _T("(0.5(") << Sub2(_T("A"), _T("g i")) << Super2(Sub2(_T("X"), _T("left")), _T("i")) << _T(" + ") << Sub2(_T("A"), _T("g i+1")) << Super2(Sub2(_T("X"), _T("left")), _T("i+1")) << _T("))") << Sub2(_T("w"), _T("c")) << _T(")(Section Length)") << _T(")/") << Sub2(_T("W"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
       }
    }
    *pPara << _T("Lateral Sweep, ") << Sub2(_T("e"),_T("sweep")) << _T(" = ") << Sub2(_T("L"),_T("g")) << Sub2(_T("t"),_T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
@@ -1223,8 +1223,6 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    stress.ShowUnitTag(false);
    area.ShowUnitTag(false);
 
-   Float64 epsx = pStabilityProblem->GetFpeLateralEccentricity();
-
    RowIndexType row = pPrestressTable->GetNumberOfHeaderRows();
    for (const auto& sectionResult : pResults->vSectionResults)
    {
@@ -1237,28 +1235,28 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
       pGirder->GetSectionProperties(pAnalysisPoint->GetLocation(), &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
 
-      Float64 Fpe, Yps;
-      pStabilityProblem->GetFpe(stbTypes::Straight, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      Float64 Fpe, Xps, Yps;
+      pStabilityProblem->GetFpe(stbTypes::Straight, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
       (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
       if (!bSimpleFormat)
       {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
       }
       (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
 
-      pStabilityProblem->GetFpe(stbTypes::Harped, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      pStabilityProblem->GetFpe(stbTypes::Harped, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
       (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
       if (!bSimpleFormat)
       {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
       }
       (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
 
-      pStabilityProblem->GetFpe(stbTypes::Temporary, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      pStabilityProblem->GetFpe(stbTypes::Temporary, pAnalysisPoint->GetLocation(), &Fpe, &Xps, &Yps);
       (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
       if (!bSimpleFormat)
       {
-         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(Xleft - Xps);
       }
       (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
 
@@ -1544,6 +1542,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
             *pChapter << pPara;
+            pPara->SetName(strTitle);
             *pPara << strTitle << rptNewLine;
 
             pPara = new rptParagraph;

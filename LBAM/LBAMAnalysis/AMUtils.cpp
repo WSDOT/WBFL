@@ -133,7 +133,7 @@ bool SuperNodeLoc::operator< (const SuperNodeLoc& other) const
    //      returning true for the < comparison. It is a problem with
    //      internal accuracty. Adding a quick check for equality to eliminate
    //      the problem.
-   if ( IsEqual(m_Loc,other.m_Loc) )
+   if ( IsEqual(m_Loc,other.m_Loc,0.0009) )
       return false;
 
 

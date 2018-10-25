@@ -1098,7 +1098,6 @@ library WBFLGenericBridge
    [
       object,
       uuid(C0893B25-A46A-4FE5-8706-F7BDDDB4F00B),
-      oleautomation,
       helpstring("IAsymmetricSection Interface"),
       pointer_default(unique)
    ]
@@ -1106,6 +1105,7 @@ library WBFLGenericBridge
    {
       [helpstring("method GetTopWidth")] HRESULT GetTopWidth([out]Float64* pLeft, [out]Float64* pRight);
       [helpstring("method GetStressPoints)")] HRESULT GetStressPoints([in]StressPointType spType, [out]IPoint2dCollection** ppPoints);
+      [helpstring("method IgnoreBiaxialBending")] HRESULT IgnoreBiaxialBending([out]bool* pIgnoreBiaxial);
    };
 
    [
@@ -1503,6 +1503,7 @@ library WBFLGenericBridge
    ]
    interface IThickenedFlangeSegment : ISuperstructureMemberSegment
    {
+      [propget, helpstring("property TopFlangeSlope")] HRESULT TopFlangeSlope([out, retval]Float64* pSlope);
       [propput, helpstring("property FlangeThickeningType")] HRESULT FlangeThickeningType([in]ThickeningType type);
       [propget, helpstring("property FlangeThickeningType")] HRESULT FlangeThickeningType([out,retval]ThickeningType* pType);
       [propput, helpstring("property FlangeThickening")] HRESULT FlangeThickening([in]Float64 flangeThickening);

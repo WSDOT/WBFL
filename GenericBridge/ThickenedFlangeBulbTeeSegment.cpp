@@ -129,9 +129,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    CComQIPtr<IBulbTeeSection> btSection(primaryShape);
    ATLASSERT(btSection);
    CComPtr<IShape> leftJoint, rightJoint;
-   GetJointShapes(Xs, btSection, &leftJoint, &rightJoint);
-
-   btSection->SetJointShapes(leftJoint, rightJoint);
+   btSection->GetJointShapes(&leftJoint, &rightJoint);
 
    if (!IsZero(Ejoint))
    {
@@ -509,6 +507,54 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, IShape*
 
    *ppShape = newShape;
    (*ppShape)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeSlope(Float64* pSlope)
+{
+   // returns the transverse top flange slope
+   CHECK_RETVAL(pSlope);
+
+   if (m_Shapes.size() == 0)
+   {
+      *pSlope = 0;
+      return S_OK;
+   }
+
+   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
+
+                    // This object reprsents a prismatic shape... all sections are the same
+   HRESULT hr = S_OK;
+
+   // get dimensions of beam shape at start and end of segment
+   CComPtr<IBulbTee2> pcBeam;
+
+   Float64 n1, n2;
+   beam->get_Beam(&pcBeam);
+   pcBeam->get_n1(&n1); // left top flange slope
+   pcBeam->get_n2(&n2); // right top flange slope
+
+   Float64 C2;
+   pcBeam->get_C2(&C2); // location of crown point measured from left flange tip
+
+   Float64 W5, W6;
+   pcBeam->get_W5(&W5); // left top flange overhang
+   pcBeam->get_W6(&W6); // right top flange overhang
+
+   if (IsZero(C2))
+   {
+      *pSlope = n2;
+   }
+   else if (IsEqual(C2,W5+W6))
+   {
+      *pSlope = n1;
+   }
+   else
+   {
+      *pSlope = 0.5*(n1 + n2);
+   }
 
    return S_OK;
 }

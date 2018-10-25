@@ -36,6 +36,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// NOTE: Eccentricities have the opposite sign from the coordinate system used to compute stresses
+// That is [(Pex*Ixx + Pey*Ixy)(x) - (Pey*Iyy + Pex*Ixy)(y)]/(IxxIyy - Ixy^2)
+// x = -ex, y = -ey
+// positive ex is to the left of Y axis
+// positive ey is below the X axis
+// these are negative coordinates
+
 /****************************************************************************
 CLASS
    lrfdLosses
@@ -55,9 +62,9 @@ lrfdLosses::lrfdLosses(Float64 x,
    Float64 ApsPerm,  // area of permanent strand
    Float64 ApsTemp,   // area of TTS 
    Float64 aps,      // area of one temp strand
-   Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-   Float64 epermFinal,
-   Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+   const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+   const gpPoint2d& epermFinal,
+   const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
    lrfdLosses::TempStrandUsage usage,
    Float64 anchorSet,
    Float64 wobble,
@@ -73,17 +80,25 @@ lrfdLosses::lrfdLosses(Float64 x,
 
    Float64 Mdlg,  // Dead load moment of girder only
    Float64 Madlg,  // Additional dead load on girder section
-   Float64 Msidl, // Superimposed dead loads
+   Float64 Msidl1, // Superimposed dead loads
+   Float64 Msidl2, // Superimposed dead loads
 
    Float64 Ag,   // area of girder
-   Float64 Ig,   // moment of inertia of girder
+   Float64 Ixx,   // moment of inertia of girder
+   Float64 Iyy,
+   Float64 Ixy,
    Float64 Ybg,   // Centroid of girder measured from bottom
-   Float64 Ac,    // Area of the composite girder and deck
-   Float64 Ic,    // Moment of inertia of composite
-   Float64 Ybc,   // Centroid of composite measured from bottom
+   Float64 Ac1,    // Area of the composite girder and deck
+   Float64 Ic1,    // Moment of inertia of composite
+   Float64 Ybc1,   // Centroid of composite measured from bottom
+   Float64 Ac2,    // Area of the composite girder and deck
+   Float64 Ic2,    // Moment of inertia of composite
+   Float64 Ybc2,   // Centroid of composite measured from bottom
 
    Float64 An,   // area of girder
-   Float64 In,   // moment of inertia of girder
+   Float64 Ixxn,   // moment of inertia of girder
+   Float64 Iyyn,
+   Float64 Ixyn,
    Float64 Ybn,   // Centroid of girder measured from bottom
    Float64 Acn,    // Area of the composite girder and deck
    Float64 Icn,    // Moment of inertia of composite
@@ -138,21 +153,29 @@ lrfdLosses::lrfdLosses(Float64 x,
 
    m_Mdlg = Mdlg;
    m_Madlg = Madlg;
-   m_Msidl = Msidl;
+   m_Msidl1 = Msidl1;
+   m_Msidl2 = Msidl2;
 
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
    m_SectionProperties = sectionProperties;
 
    m_Ag                    = Ag;
-   m_Ig                    = Ig;
+   m_Ixx = Ixx;
+   m_Iyy = Iyy;
+   m_Ixy = Ixy;
    m_Ybg                   = Ybg;
-   m_Ac                    = Ac;
-   m_Ic                    = Ic;
-   m_Ybc                   = Ybc;
+   m_Ac1 = Ac1;
+   m_Ic1 = Ic1;
+   m_Ybc1 = Ybc1;
+   m_Ac2 = Ac2;
+   m_Ic2 = Ic2;
+   m_Ybc2 = Ybc2;
 
    m_An                    = An;
-   m_In                    = In;
+   m_Ixxn = Ixxn;
+   m_Iyyn = Iyyn;
+   m_Ixyn = Ixyn;
    m_Ybn                   = Ybn;
    m_Acn                   = Acn;
    m_Icn                   = Icn;
@@ -184,9 +207,9 @@ lrfdLosses::lrfdLosses()
    m_ApsPerm               = 0;
    m_ApsTemp               = 0;
    m_aps                   = 0;
-   m_epermRelease          = 0;
-   m_epermFinal            = 0;
-   m_etemp                 = 0;
+   //m_epermRelease          = 0;
+   //m_epermFinal            = 0;
+   //m_etemp                 = 0;
    m_Fc                    = 0;
    m_Fci                   = 0;
    m_FcSlab                = 0;
@@ -210,21 +233,29 @@ lrfdLosses::lrfdLosses()
 
    m_Mdlg                  = 0;
    m_Madlg                 = 0;
-   m_Msidl                 = 0;
+   m_Msidl1 = 0;
+   m_Msidl2 = 0;
 
    m_bIgnoreInitialRelaxation = true;
 
    m_SectionProperties = sptGross;
 
    m_Ag                    = 0;
-   m_Ig                    = 0;
+   m_Ixx                    = 0;
+   m_Iyy = 0;
+   m_Ixy = 0;
    m_Ybg                   = 0;
-   m_Ac                    = 0;
-   m_Ic                    = 0;
-   m_Ybc                   = 0;
+   m_Ac1 = 0;
+   m_Ic1 = 0;
+   m_Ybc1 = 0;
+   m_Ac2 = 0;
+   m_Ic2 = 0;
+   m_Ybc2 = 0;
 
    m_An                    = 0;
-   m_In                    = 0;
+   m_Ixxn                    = 0;
+   m_Iyyn = 0;
+   m_Ixyn = 0;
    m_Ybn                   = 0;
    m_Acn                   = 0;
    m_Icn                   = 0;
@@ -368,44 +399,44 @@ Float64 lrfdLosses::GetStrandArea() const
    return m_aps;
 }
 
-void lrfdLosses::SetEccPermanentRelease(Float64 e)
+void lrfdLosses::SetEccPermanentRelease(const gpPoint2d& e)
 {
-   if ( !IsEqual(m_epermRelease,e) )
+   if ( m_epermRelease != e )
    {
       m_epermRelease = e;
       m_IsDirty = true;
    }
 }
 
-Float64 lrfdLosses::GetEccPermanentRelease() const
+const gpPoint2d& lrfdLosses::GetEccPermanentRelease() const
 {
    return m_epermRelease;
 }
 
-void lrfdLosses::SetEccPermanentFinal(Float64 e)
+void lrfdLosses::SetEccPermanentFinal(const gpPoint2d& e)
 {
-   if ( !IsEqual(m_epermFinal,e) )
+   if ( m_epermFinal != e )
    {
       m_epermFinal = e;
       m_IsDirty = true;
    }
 }
 
-Float64 lrfdLosses::GetEccPermanentFinal() const
+const gpPoint2d& lrfdLosses::GetEccPermanentFinal() const
 {
    return m_epermFinal;
 }
 
-void lrfdLosses::SetEccTemporary(Float64 e)
+void lrfdLosses::SetEccTemporary(const gpPoint2d& e)
 {
-   if ( !IsEqual(m_etemp,e) )
+   if ( m_etemp != e )
    {
       m_etemp = e;
       m_IsDirty = true;
    }
 }
 
-Float64 lrfdLosses::GetEccTemporary() const
+const gpPoint2d& lrfdLosses::GetEccTemporary() const
 {
    return m_etemp;
 }
@@ -413,23 +444,106 @@ Float64 lrfdLosses::GetEccTemporary() const
 Float64 lrfdLosses::GetEccpc() const
 {
    // eccentricty of permanent strand on composite girder
-   return m_epermFinal + (m_Ybc - m_Ybg);
+   return m_epermFinal.Y() + (m_Ybc2 - m_Ybg);
 }
 
-Float64 lrfdLosses::GetEccpgRelease() const
+gpPoint2d lrfdLosses::GetEccpgRelease() const
 {
    // eccentricty of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
-   Float64 ecc = IsZero(Aps) ? 0 : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
+   gpPoint2d ecc = IsZero(Aps) ? gpPoint2d(0,0) : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 
-Float64 lrfdLosses::GetEccpgFinal() const
+gpPoint2d lrfdLosses::GetEccpgFinal() const
 {
    // eccentricty of all strand on non-composite girder
    Float64 Aps = m_ApsPerm + m_ApsTemp;
-   Float64 ecc = IsZero(Aps) ? 0 : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
+   gpPoint2d ecc = IsZero(Aps) ? gpPoint2d(0,0) : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
    return ecc;
+}
+
+void lrfdLosses::SetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
+{
+   m_Ag = Ag;
+   m_Ybg = Ybg;
+   m_Ixx = Ixx;
+   m_Iyy = Iyy;
+   m_Ixy = Ixy;
+   m_IsDirty = true;
+}
+
+void lrfdLosses::GetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
+{
+   *pAg = m_Ag;
+   *pYbg = m_Ybg;
+   *pIxx = m_Ixx;
+   *pIyy = m_Iyy;
+   *pIxy = m_Ixy;
+}
+
+void lrfdLosses::SetNetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy)
+{
+   m_An = Ag;
+   m_Ybn = Ybg;
+   m_Ixxn = Ixx;
+   m_Iyyn = Iyy;
+   m_Ixyn = Ixy;
+   m_IsDirty = true;
+}
+
+void lrfdLosses::GetNetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const
+{
+   *pAg = m_An;
+   *pYbg = m_Ybn;
+   *pIxx = m_Ixxn;
+   *pIyy = m_Iyyn;
+   *pIxy = m_Ixyn;
+}
+
+void lrfdLosses::SetCompositeProperties1(Float64 Ag, Float64 Ybg, Float64 Ixx)
+{
+   m_Ac1 = Ag;
+   m_Ybc1 = Ybg;
+   m_Ic1 = Ixx;
+   m_IsDirty = true;
+}
+
+void lrfdLosses::GetCompositeProperties1(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+{
+   *pAg = m_Ac1;
+   *pYbg = m_Ybc1;
+   *pIxx = m_Ic1;
+}
+
+void lrfdLosses::SetCompositeProperties2(Float64 Ag, Float64 Ybg, Float64 Ixx)
+{
+   m_Ac2 = Ag;
+   m_Ybc2 = Ybg;
+   m_Ic2 = Ixx;
+   m_IsDirty = true;
+}
+
+void lrfdLosses::GetCompositeProperties2(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+{
+   *pAg = m_Ac2;
+   *pYbg = m_Ybc2;
+   *pIxx = m_Ic2;
+}
+
+void lrfdLosses::SetNetCompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx)
+{
+   m_Acn = Ag;
+   m_Ybcn = Ybg;
+   m_Icn = Ixx;
+   m_IsDirty = true;
+}
+
+void lrfdLosses::GetNetCompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx) const
+{
+   *pAg = m_Acn;
+   *pYbg = m_Ybcn;
+   *pIxx = m_Icn;
 }
 
 const lrfdElasticShortening& lrfdLosses::ElasticShortening() const 
@@ -993,7 +1107,7 @@ Float64 lrfdLosses::GetDeltaFcd2() const
 
 Float64 lrfdLosses::GetDeltaFcdLL(Float64 Mllim) const
 {
-   return Mllim * (m_Ybc - m_Ybg + m_epermFinal) / m_Ic;
+   return Mllim * (m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2;
 }
 
 void lrfdLosses::UpdateLosses() const
@@ -1112,7 +1226,9 @@ void lrfdLosses::UpdateElasticShortening() const
                             (m_TempStrandUsage == tsPretensioned ? m_ApsTemp : 0),
                             m_SectionProperties == sptGross ? true : false,
                             m_Ag,
-                            m_Ig,
+                            m_Ixx,
+                            m_Iyy,
+                            m_Ixy,
                             m_epermRelease,
                             m_etemp,
                             m_Mdlg,
@@ -1237,7 +1353,11 @@ void lrfdLosses::UpdatePostTensionLosses() const
       m_PptMax = m_aps*m_fptMax;
 
       // compressive stress due to 1 strand at level of prestressing
-      m_Fcgpt = m_PptMax/m_Ag + m_PptMax*m_etemp*m_etemp/m_Ig;
+      //m_Fcgpt = m_PptMax/m_Ag + m_PptMax*m_etemp.Y()*m_etemp.Y()/m_Ixx;
+      Float64 mx = m_PptMax*m_etemp.Y();
+      Float64 my = 0;
+      Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
+      m_Fcgpt = m_PptMax / m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_etemp.X() / D - (mx*m_Iyy + my*m_Ixy)*-m_etemp.Y() / D;
 
       // effect on the stress in the previously jacked strands is
       if ( m_TempStrandUsage == tsPTBeforeShipping )
@@ -1263,7 +1383,9 @@ void lrfdLosses::UpdatePostTensionLosses() const
       m_PptAvg = m_ApsTemp*m_fptAvg;
 
       // compute effect of pt on the perminate strands
-      m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp*m_epermFinal/m_Ig; 
+      //m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp.Y()*m_epermFinal.Y()/m_Ixx;
+      mx = m_PptAvg*m_etemp.Y();
+      m_Fcgpp = m_PptAvg / m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_epermFinal.X() / D - (mx*m_Iyy + my*m_Ixy)*-m_epermFinal.Y() / D;
 
       if ( m_TempStrandUsage == tsPTBeforeShipping )
       {
@@ -1307,7 +1429,15 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    }
 
    m_Ptr   = m_ApsTemp*f; // force in temporary strands immediately before removal
-   m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_epermFinal*m_etemp/m_Ig; // concrete stress change due to removal
+
+   //m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_epermFinal.Y()*m_etemp.Y()/m_Ixx; // concrete stress change due to removal
+   Float64 mx = m_Ptr*m_etemp.Y();
+   Float64 my = 0;
+   Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
+   m_fptr = m_Ptr / m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_epermFinal.X() / D - (mx*m_Iyy + my*m_Ixy)*-m_epermFinal.Y() / D;
+   m_fptr *= -1; // because we are removing the strands, the stresses are opposite
+
+
    if ( 0.0 < m_ApsPerm )
    {
       m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
@@ -1357,21 +1487,29 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Lg                    = rOther.m_Lg;
    m_Mdlg                  = rOther.m_Mdlg;
    m_Madlg                 = rOther.m_Madlg;
-   m_Msidl                 = rOther.m_Msidl;
+   m_Msidl1 = rOther.m_Msidl1;
+   m_Msidl2 = rOther.m_Msidl2;
 
    m_ti                    = rOther.m_ti;
    
    m_SectionProperties     = rOther.m_SectionProperties;
 
    m_Ag                    = rOther.m_Ag;
-   m_Ig                    = rOther.m_Ig;
+   m_Ixx = rOther.m_Ixx;
+   m_Iyy = rOther.m_Iyy;
+   m_Ixy = rOther.m_Ixy;
    m_Ybg                   = rOther.m_Ybg;
-   m_Ac                    = rOther.m_Ac;
-   m_Ic                    = rOther.m_Ic;
-   m_Ybc                   = rOther.m_Ybc;
+   m_Ac1 = rOther.m_Ac1;
+   m_Ic1 = rOther.m_Ic1;
+   m_Ybc1 = rOther.m_Ybc1;
+   m_Ac2 = rOther.m_Ac2;
+   m_Ic2 = rOther.m_Ic2;
+   m_Ybc2 = rOther.m_Ybc2;
 
    m_An                    = rOther.m_An;
-   m_In                    = rOther.m_In;
+   m_Ixxn = rOther.m_Ixxn;
+   m_Iyyn = rOther.m_Iyyn;
+   m_Ixyn = rOther.m_Ixyn;
    m_Ybn                   = rOther.m_Ybn;
    m_Acn                   = rOther.m_Acn;
    m_Icn                   = rOther.m_Icn;

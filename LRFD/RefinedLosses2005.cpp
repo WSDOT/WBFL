@@ -89,9 +89,9 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,   // area of TTS 
                          Float64 aps,      // area of one temp strand
-                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         Float64 epermFinal,
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const gpPoint2d& epermFinal,
+                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          lrfdLosses::TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -121,14 +121,21 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 SSlab,    // Surface area of slab
 
                          Float64 Ag,   // area of girder
-                         Float64 Ig,   // moment of inertia of girder
+                         Float64 Ixx,   // moment of inertia of girder
+                         Float64 Iyy,
+                         Float64 Ixy,
                          Float64 Ybg,  // Centroid of girder measured from bottom
-                         Float64 Ac,   // area of composite girder
-                         Float64 Ic,   // moment of inertia of composite
-                         Float64 Ybc,  // Centroid of composite measured from bottom
+                         Float64 Ac1,   // area of composite girder
+                         Float64 Ic1,   // moment of inertia of composite
+                         Float64 Ybc1,  // Centroid of composite measured from bottom
+                         Float64 Ac2,   // area of composite girder
+                         Float64 Ic2,   // moment of inertia of composite
+                         Float64 Ybc2,  // Centroid of composite measured from bottom
 
                          Float64 An,   // area of girder
-                         Float64 In,   // moment of inertia of girder
+                         Float64 Ixxn,   // moment of inertia of girder
+                         Float64 Iyyn,
+                         Float64 Ixyn,
                          Float64 Ybn,  // Centroid of girder measured from bottom
                          Float64 Acn,   // area of composite girder
                          Float64 Icn,   // moment of inertia of composite
@@ -140,7 +147,8 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
+                         Float64 Msidl1, // Superimposed dead loads
+                         Float64 Msidl2,
 
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -153,7 +161,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -885,14 +893,16 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 2. Compute Kid
    Float64 Aps = m_ApsPerm;
-   Float64 e   = m_epermRelease;
+   gpPoint2d e = m_epermRelease;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
       e = GetEccpgRelease();
    }
 
-   m_Kid = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_epermRelease/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   Float64 D = m_Ixxn*m_Iyyn - m_Ixyn*m_Ixyn;
+   Float64 DE = (e.Y()*m_Iyyn + e.X()*m_Ixyn)*m_epermRelease.Y() - (e.X()*m_Ixxn + e.Y()*m_Ixyn)*m_epermRelease.X(); // e(X,Y) is where the total prestress force is acting... m_epermRelease(X,Y) is where we want the change in stress
+   m_Kid = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*DE/D)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kid = 1/m_Kid;
 
    // 3. Compute creep parameters for ktd for deck placement
@@ -1020,12 +1030,30 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetK2(m_CreepK2);
 
    // 3. Compute Delta Fcd
-   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : (m_Madlg*m_epermFinal/m_Ig);
-   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : (m_Msidl*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic);
-   m_DeltaFcd3 = (m_dfpCR + m_dfpSR + m_dfpR1)*(m_ApsPerm/m_Ag)*(1+m_Ag*m_epermFinal*m_epermFinal/m_Ig);
+   D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
+   if (IsZero(m_ApsPerm))
+   {
+      m_DeltaFcd1 = 0;
+   }
+   else
+   {
+      Float64 mx = m_Madlg;
+      Float64 my = 0;
+      m_DeltaFcd1 = (my*m_Ixx + mx*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
+   }
+   
+   // uniaxial stresses on composite section
+   Float64 deltaFcd2a = IsZero(m_ApsPerm) ? 0 : (m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1); // stage 1 composite... typically, longitudinal joints are composite but before topping is composite
+   Float64 deltaFcd2b = IsZero(m_ApsPerm) ? 0 : (m_Msidl2*(m_Ybc2 - m_Ybg + m_epermFinal.Y()) / m_Ic2); // stage 2 composite... typically, topping is now composite
+   m_DeltaFcd2 = deltaFcd2a + deltaFcd2b;
+   
+   Float64 P = (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm;
+   Float64 mx = P*m_epermFinal.Y();
+   Float64 my = 0;
+   m_DeltaFcd3 = P/m_Ag + (my*m_Ixx + mx*m_Ixy)*-m_epermFinal.X()/D - (mx*m_Iyy + my*m_Ixy)*-m_epermFinal.Y()/D;
+   
    // change sign because these moments cause tension at the level of
    // the strands which reduces creep
-
    m_DeltaFcd = -1.0*(m_DeltaFcd1 + m_DeltaFcd2 + m_DeltaFcd3);
 
    if ( IsZero(m_ApsPerm) )
@@ -1105,7 +1133,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
 
    // Shrinkage of Girder Concrete [5.9.5.4.2a]
    Float64 Aps = m_ApsPerm;
-   Float64 e   = m_epermFinal;
+   gpPoint2d e = m_epermFinal;
    if ( m_TempStrandUsage == lrfdRefinedLosses2005::tsPretensioned )
    {
       Aps += m_ApsTemp;
@@ -1124,10 +1152,13 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToFinal.SetK1(m_CreepK1);
    m_CreepInitialToFinal.SetK2(m_CreepK2);
 
-   m_Kih[TEMPORARY_STRAND] = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_etemp/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   Float64 D = m_Ixxn*m_Iyyn - m_Ixyn*m_Ixyn;
+   Float64 DE = (e.Y()*m_Iyyn + e.X()*m_Ixyn)*m_etemp.Y() - (e.X()*m_Ixxn + e.Y()*m_Ixyn)*m_etemp.X(); // e(X,Y) is where the total prestress force is acting... m_etemp(X,Y) is where we want the change in stress
+   m_Kih[TEMPORARY_STRAND] = 1 + (m_Ep / m_Eci)*(Aps / m_An)*(1 + m_An*DE / D)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kih[TEMPORARY_STRAND] = 1/m_Kih[TEMPORARY_STRAND];
 
-   m_Kih[PERMANENT_STRAND] = 1 + (m_Ep/m_Eci)*(Aps/m_An)*(1 + m_An*e*m_epermFinal/m_In)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
+   DE = (e.Y()*m_Iyyn + e.X()*m_Ixyn)*m_epermFinal.Y() - (e.X()*m_Ixxn + e.Y()*m_Ixyn)*m_epermFinal.X(); // e(X,Y) is where the total prestress force is acting... m_epermFinal(X,Y) is where we want the change in stress
+   m_Kih[PERMANENT_STRAND] = 1 + (m_Ep / m_Eci)*(Aps / m_An)*(1 + m_An*DE / D)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kih[PERMANENT_STRAND] = 1/m_Kih[PERMANENT_STRAND];
 
    // Compute creep parameters for ktd for shipping
@@ -1304,9 +1335,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          0.0051799896399999995,  // area of permanent strand
                          0.00055999887999999998,  // area of TTS 
                          0.00013999972000000000,      // area of one strand
-                         0.73344249937779116, // eccentricty of permanent ps strands with respect to CG of girder
-                         0.73344249937779116, // eccentricty of permanent ps strands with respect to CG of girder
-                         -0.81870344656815441, // eccentricty of temporary strands with respect to CG of girder
+                         gpPoint2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
+                         gpPoint2d(0,0.73344249937779116), // eccentricty of permanent ps strands with respect to CG of girder
+                         gpPoint2d(0,-0.81870344656815441), // eccentricty of temporary strands with respect to CG of girder
                          
                          tsPretensioned, // temporary strand usage
 
@@ -1332,15 +1363,22 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          
                          // Gross
                          0.56485774124999988,   // area of girder
-                         0.23197765412628035,   // moment of inertia of girder
+                         0.23197765412628035,   // moment of inertia of girder Ixx
+                         0.23197765412628035,   // moment of inertia of girder Iyy
+                         0.0, // Ixy
                          0.80689655343184530,  // Centroid of girder measured from bottom
                          0.83035029207347855,   // area of composite girder
                          0.39856959307884982,   // moment of inertia of composite
                          1.1133322567444859,  // Centroid of composite measured from bottom
-                         
+                         0.83035029207347855,   // area of composite girder
+                         0.39856959307884982,   // moment of inertia of composite
+                         1.1133322567444859,  // Centroid of composite measured from bottom
+
                          // Net
                          0.56485774124999988,   // area of girder
                          0.23197765412628035,   // moment of inertia of girder
+                         0.23197765412628035,   // moment of inertia of girder Iyy
+                         0.0, // Ixy
                          0.80689655343184530,  // Centroid of girder measured from bottom
                          0.83035029207347855,   // area of composite girder
                          0.39856959307884982,   // moment of inertia of composite
@@ -1352,6 +1390,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          
                          2701223.1744837998,  // Dead load moment of girder only
                          2144430.8154568151,  // Additional dead load on girder section
+                         0,
                          494526.00384487113, // Superimposed dead loads
 
                          75,  // Relative humidity [0,100]
@@ -1399,7 +1438,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 163455953.25443751) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 182922464.46524256) );
+   TRY_TESTME( IsEqual(value, 178191173.41146442) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();

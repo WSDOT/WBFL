@@ -32,10 +32,13 @@ struct STABILITYCLASS stbFpe
 {
    Float64 X;
    Float64 fpeStraight;
+   Float64 XpsStraight;
    Float64 YpsStraight;
    Float64 fpeHarped;
+   Float64 XpsHarped;
    Float64 YpsHarped;
    Float64 fpeTemporary;
+   Float64 XpsTemporary;
    Float64 YpsTemporary;
 
    bool operator==(const stbFpe& other) const
@@ -46,19 +49,28 @@ struct STABILITYCLASS stbFpe
       if ( !IsEqual(fpeStraight,other.fpeStraight) )
          return false;
 
-      if ( !IsEqual(YpsStraight,other.YpsStraight) )
+      if (!IsEqual(XpsStraight, other.XpsStraight))
+         return false;
+
+      if (!IsEqual(YpsStraight, other.YpsStraight))
          return false;
 
       if ( !IsEqual(fpeHarped,other.fpeHarped) )
          return false;
 
-      if ( !IsEqual(YpsHarped,other.YpsHarped) )
+      if (!IsEqual(XpsHarped, other.XpsHarped))
+         return false;
+
+      if (!IsEqual(YpsHarped, other.YpsHarped))
          return false;
 
       if ( !IsEqual(fpeTemporary,other.fpeTemporary) )
          return false;
 
-      if ( !IsEqual(YpsTemporary,other.YpsTemporary) )
+      if (!IsEqual(XpsTemporary, other.XpsTemporary))
+         return false;
+
+      if (!IsEqual(YpsTemporary, other.YpsTemporary))
          return false;
 
       return true;
@@ -258,9 +270,9 @@ public:
    // For constant Fpe, define a Fpe at a single location
    IndexType GetFpeCount() const;
    void ClearFpe();
-   void AddFpe(Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp);
-   void SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp);
-   void GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pYpsTemp) const;
+   void AddFpe(Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp);
+   void SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp);
+   void GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pXpsStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pXpsHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pXpsTemp,Float64* pYpsTemp) const;
 
    // Prestress transfer length... 
    // Linearly interpolates Fpe from zero at the ends of the girder to its full value
@@ -287,10 +299,7 @@ public:
    void SetSupportPlacementTolerance(Float64 spt);
    void SetImpact(Float64 up,Float64 down);
 
-   void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const;
-
-   void SetFpeLateralEccentricity(Float64 ex);
-   Float64 GetFpeLateralEccentricity() const;
+   void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const;
 
    void GetCamber(bool* pbDirectCamber,Float64* pCamber) const;
    void SetCamberMultiplier(Float64 m);
@@ -330,8 +339,6 @@ protected:
    Float64 m_Lg; // length of girder
 
    std::set<stbFpe> m_vFpe;
-
-   Float64 m_ex; // lateral eccentricty of prestress force
    
    bool m_bDirectCamber; // if true, a camber value has been input, otherwise, camber is estimated by increasing the height from the CG to the roll center by a percentage
    Float64 m_Camber; // direct camber value if bDirectCamber is true, otherwise camber estimate parameter
@@ -372,11 +379,9 @@ public:
 
    IndexType GetFpeCount() { return m_Imp.GetFpeCount(); }
    void ClearFpe() { m_Imp.ClearFpe(); }
-   void AddFpe(Float64 X, Float64 FpeStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 YpsTemp) { m_Imp.AddFpe(X, FpeStraight, YpsStraight, FpeHarped, YpsHarped, FpeTemp, YpsTemp); }
-   void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pYpsStraight, pFpeHarped, pYpsHarped, pFpeTemp, pYpsTemp); }
-   void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, YpsStraight, FpeHarped, YpsHarped, FpeTemp, YpsTemp); }
-
-   void SetFpeLateralEccentricity(Float64 ex) { m_Imp.SetFpeLateralEccentricity(ex); }
+   void AddFpe(Float64 X, Float64 FpeStraight, Float64 XpsStraight,Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { m_Imp.AddFpe(X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
+   void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pXpsStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pXpsHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pXpsTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pXpsStraight, pYpsStraight, pFpeHarped, pXpsHarped, pYpsHarped, pFpeTemp, pXpsTemp, pYpsTemp); }
+   void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
 
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
@@ -402,8 +407,7 @@ public:
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pYps); }
-   virtual Float64 GetFpeLateralEccentricity() const override { return m_Imp.GetFpeLateralEccentricity(); }
+   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
    virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {  return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }
@@ -450,11 +454,9 @@ public:
 
    IndexType GetFpeCount() { return m_Imp.GetFpeCount(); }
    void ClearFpe() { m_Imp.ClearFpe(); }
-   void AddFpe(Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp) { m_Imp.AddFpe(X,FpeStraight,YpsStraight,FpeHarped,YpsHarped,FpeTemp,YpsTemp); }
-   void GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx,pX,pFpeStraight,pYpsStraight,pFpeHarped,pYpsHarped,pFpeTemp,pYpsTemp); }
-   void SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx,X,FpeStraight,YpsStraight,FpeHarped,YpsHarped,FpeTemp,YpsTemp); }
-
-   void SetFpeLateralEccentricity(Float64 ex) { m_Imp.SetFpeLateralEccentricity(ex); }
+   void AddFpe(Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { m_Imp.AddFpe(X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
+   void GetFpe(IndexType fpeIdx, Float64* pX, Float64* pFpeStraight, Float64* pXpsStraight, Float64* pYpsStraight, Float64* pFpeHarped, Float64* pXpsHarped, Float64* pYpsHarped, Float64* pFpeTemp, Float64* pXpsTemp, Float64* pYpsTemp) const { return m_Imp.GetFpe(fpeIdx, pX, pFpeStraight, pXpsStraight, pYpsStraight, pFpeHarped, pXpsHarped, pYpsHarped, pFpeTemp, pXpsTemp, pYpsTemp); }
+   void SetFpe(IndexType fpeIdx, Float64 X, Float64 FpeStraight, Float64 XpsStraight, Float64 YpsStraight, Float64 FpeHarped, Float64 XpsHarped, Float64 YpsHarped, Float64 FpeTemp, Float64 XpsTemp, Float64 YpsTemp) { return m_Imp.SetFpe(fpeIdx, X, FpeStraight, XpsStraight, YpsStraight, FpeHarped, XpsHarped, YpsHarped, FpeTemp, XpsTemp, YpsTemp); }
 
    bool AdjustForXferLength() const { return m_Imp.AdjustForXferLength(); }
    void AdjustForXferLength(bool bAdjust) { m_Imp.AdjustForXferLength(bAdjust); }
@@ -480,8 +482,7 @@ public:
    void SetSweepTolerance(Float64 sweepTolerance) { m_Imp.SetSweepTolerance(sweepTolerance);  }
    void SetSupportPlacementTolerance(Float64 spt)  {  m_Imp.SetSupportPlacementTolerance(spt); }
    void SetImpact(Float64 up,Float64 down)  { m_Imp.SetImpact(up,down);   }
-   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pYps); }
-   virtual Float64 GetFpeLateralEccentricity() const override { return m_Imp.GetFpeLateralEccentricity(); }
+   virtual void GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const  override { m_Imp.GetFpe(strandType,X,pFpe,pXps,pYps); }
    virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const  override {   return m_Imp.GetCamber(pbDirectCamber,pCamber);   }
    virtual Float64 GetLateralCamber() const override { return m_Imp.GetLateralCamber(); }
    virtual bool IncludeLateralRollAxisOffset() const override { return m_Imp.IncludeLateralRollAxisOffset(); }

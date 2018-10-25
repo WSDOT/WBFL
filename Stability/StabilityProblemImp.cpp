@@ -368,8 +368,6 @@ stbStabilityProblemImp::stbStabilityProblemImp()
 {
    m_fy = 0;
 
-   m_ex = 0;
-
    m_bAdjustForXferLength = false;
    m_XferLength = 0;
 
@@ -417,9 +415,6 @@ stbStabilityProblemImp& stbStabilityProblemImp::operator=(const stbStabilityProb
 
 bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) const
 {
-   if (!IsEqual(m_ex, other.m_ex))
-      return false;
-
    if ( m_Concrete != other.m_Concrete )
       return false;
 
@@ -499,23 +494,26 @@ void stbStabilityProblemImp::ClearFpe()
    m_vFpe.clear();
 }
 
-void stbStabilityProblemImp::AddFpe(Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp)
+void stbStabilityProblemImp::AddFpe(Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp)
 {
    stbFpe fpe;
    fpe.X = X;
    fpe.fpeStraight = FpeStraight;
+   fpe.XpsStraight = XpsStraight;
    fpe.YpsStraight = YpsStraight;
 
    fpe.fpeHarped = FpeHarped;
+   fpe.XpsHarped = XpsHarped;
    fpe.YpsHarped = YpsHarped;
 
    fpe.fpeTemporary = FpeTemp;
+   fpe.XpsTemporary = XpsTemp;
    fpe.YpsTemporary = YpsTemp;
 
    m_vFpe.insert(fpe);
 }
 
-void stbStabilityProblemImp::SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 YpsTemp)
+void stbStabilityProblemImp::SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraight,Float64 XpsStraight,Float64 YpsStraight,Float64 FpeHarped,Float64 XpsHarped,Float64 YpsHarped,Float64 FpeTemp,Float64 XpsTemp,Float64 YpsTemp)
 {
    ATLASSERT(fpeIdx < m_vFpe.size());
 
@@ -526,26 +524,34 @@ void stbStabilityProblemImp::SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraig
    }
    stbFpe& fpe(const_cast<stbFpe&>(*iter));
 
-   fpe.fpeStraight  = FpeStraight;
-   fpe.YpsStraight  = YpsStraight;
-   fpe.fpeHarped    = FpeHarped;
-   fpe.YpsHarped    = YpsHarped;
+   fpe.fpeStraight = FpeStraight;
+   fpe.XpsStraight = XpsStraight;
+   fpe.YpsStraight = YpsStraight;
+
+   fpe.fpeHarped = FpeHarped;
+   fpe.XpsHarped = XpsHarped;
+   fpe.YpsHarped = YpsHarped;
+
    fpe.fpeTemporary = FpeTemp;
+   fpe.XpsTemporary = XpsTemp;
    fpe.YpsTemporary = YpsTemp;
 }
 
-void stbStabilityProblemImp::GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pYpsTemp) const
+void stbStabilityProblemImp::GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeStraight,Float64* pXpsStraight,Float64* pYpsStraight,Float64* pFpeHarped,Float64* pXpsHarped,Float64* pYpsHarped,Float64* pFpeTemp,Float64* pXpsTemp,Float64* pYpsTemp) const
 {
    if ( m_vFpe.size() == 0 )
    {
       *pX = 0;
       *pFpeStraight = 0;
+      *pXpsStraight = 0;
       *pYpsStraight = 0;
 
       *pFpeHarped = 0;
+      *pXpsHarped = 0;
       *pYpsHarped = 0;
 
       *pFpeTemp = 0;
+      *pXpsTemp = 0;
       *pYpsTemp = 0;
    }
    else
@@ -558,13 +564,16 @@ void stbStabilityProblemImp::GetFpe(IndexType fpeIdx,Float64* pX,Float64* pFpeSt
 
       *pX = iter->X;
       *pFpeStraight = iter->fpeStraight;
+      *pXpsStraight = iter->XpsStraight;
       *pYpsStraight = iter->YpsStraight;
 
-      *pFpeHarped   = iter->fpeHarped;
-      *pYpsHarped   = iter->YpsHarped;
+      *pFpeHarped = iter->fpeHarped;
+      *pXpsHarped = iter->XpsHarped;
+      *pYpsHarped = iter->YpsHarped;
 
-      *pFpeTemp     = iter->fpeTemporary;
-      *pYpsTemp     = iter->YpsTemporary;
+      *pFpeTemp = iter->fpeTemporary;
+      *pXpsTemp = iter->XpsTemporary;
+      *pYpsTemp = iter->YpsTemporary;
    }
 }
 
@@ -677,11 +686,12 @@ void stbStabilityProblemImp::SetImpact(Float64 up,Float64 down)
    m_ImpactDown = down;
 }
 
-void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pYps) const
+void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Float64* pFpe,Float64* pXps,Float64* pYps) const
 {
    if ( m_vFpe.size() == 0 )
    {
       *pFpe = 0;
+      *pXps = 0;
       *pYps = 0;
       return;
    }
@@ -706,16 +716,19 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
       if ( strandType == stbTypes::Straight )
       {
          *pFpe = m_vFpe.begin()->fpeStraight;
+         *pXps = m_vFpe.begin()->XpsStraight;
          *pYps = m_vFpe.begin()->YpsStraight;
       }
       else if ( strandType == stbTypes::Harped )
       {
          *pFpe = m_vFpe.begin()->fpeHarped;
+         *pXps = m_vFpe.begin()->XpsHarped;
          *pYps = m_vFpe.begin()->YpsHarped;
       }
       else
       {
          *pFpe = m_vFpe.begin()->fpeTemporary;
+         *pXps = m_vFpe.begin()->XpsTemporary;
          *pYps = m_vFpe.begin()->YpsTemporary;
       }
 
@@ -730,16 +743,19 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
       if ( strandType == stbTypes::Straight )
       {
          *pFpe = m_vFpe.rbegin()->fpeStraight;
+         *pXps = m_vFpe.rbegin()->XpsStraight;
          *pYps = m_vFpe.rbegin()->YpsStraight;
       }
       else if ( strandType == stbTypes::Harped )
       {
          *pFpe = m_vFpe.rbegin()->fpeHarped;
+         *pXps = m_vFpe.rbegin()->XpsHarped;
          *pYps = m_vFpe.rbegin()->YpsHarped;
       }
       else
       {
          *pFpe = m_vFpe.rbegin()->fpeTemporary;
+         *pXps = m_vFpe.rbegin()->XpsTemporary;
          *pYps = m_vFpe.rbegin()->YpsTemporary;
       }
 
@@ -761,32 +777,41 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
       if (::InRange(Xstart,X,Xend) )
       {
          Float64 FpeStart,FpeEnd;
+         Float64 XpsStart, XpsEnd;
          Float64 YpsStart,YpsEnd;
          if ( strandType == stbTypes::Straight )
          {
             FpeStart = iter1->fpeStraight;
+            XpsStart = iter1->XpsStraight;
             YpsStart = iter1->YpsStraight;
             FpeEnd   = iter2->fpeStraight;
+            XpsEnd = iter2->XpsStraight;
             YpsEnd   = iter2->YpsStraight;
          }
          else if ( strandType == stbTypes::Harped )
          {
             FpeStart = iter1->fpeHarped;
+            XpsStart = iter1->XpsHarped;
             YpsStart = iter1->YpsHarped;
             FpeEnd   = iter2->fpeHarped;
+            XpsEnd = iter2->XpsHarped;
             YpsEnd   = iter2->YpsHarped;
          }
          else
          {
             FpeStart = iter1->fpeTemporary;
+            XpsStart = iter1->XpsTemporary;
             YpsStart = iter1->YpsTemporary;
             FpeEnd   = iter2->fpeTemporary;
+            XpsEnd = iter2->XpsTemporary;
             YpsEnd   = iter2->YpsTemporary;
          }
 
          Float64 fpe = ::LinInterp(X-Xstart,FpeStart,FpeEnd,Xend-Xstart);
-         Float64 yps = ::LinInterp(X-Xstart,YpsStart,YpsEnd,Xend-Xstart);
+         Float64 xps = ::LinInterp(X - Xstart, XpsStart, XpsEnd, Xend - Xstart);
+         Float64 yps = ::LinInterp(X - Xstart, YpsStart, YpsEnd, Xend - Xstart);
          *pFpe = fpe;
+         *pXps = xps;
          *pYps = yps;
 
          *pFpe *= Xfer;
@@ -796,16 +821,6 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
    }
 
    ATLASSERT(false); // should never get here
-}
-
-void stbStabilityProblemImp::SetFpeLateralEccentricity(Float64 ex)
-{
-   m_ex = ex;
-}
-
-Float64 stbStabilityProblemImp::GetFpeLateralEccentricity() const
-{
-   return m_ex;
 }
 
 void stbStabilityProblemImp::GetCamber(bool* pbDirectCamber,Float64* pCamber) const
@@ -914,13 +929,11 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
    }
 
    m_bAdjustForXferLength = other.m_bAdjustForXferLength;;
-   m_XferLength = other.m_XferLength;;
+   m_XferLength = other.m_XferLength;
    m_Lg = other.m_Lg;
 
    m_vFpe = other.m_vFpe;
    
-   m_ex = other.m_ex;
-
    m_bDirectCamber = other.m_bDirectCamber;
    m_Camber = other.m_Camber;
    m_CamberMultiplier = other.m_CamberMultiplier;
@@ -963,16 +976,16 @@ void stbGirder::GetStressPoints(const stbSectionProperties& props, stbTypes::Sec
    }
    else
    {
-      pTL->X() = -props.Wtf[section] / 2;
+      pTL->X() = (props.Wbf[section] < props.Wtf[section] ? -props.Xleft[section] : props.Wbf[section] / 2 - props.Xleft[section] - props.Wtf[section] / 2);
       pTL->Y() = -props.Ytop[section];
 
-      pTR->X() = props.Wtf[section] / 2;
+      pTR->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wtf[section] - props.Xleft[section] : props.Wtf[section] / 2 - props.Xleft[section] + props.Wbf[section] / 2);
       pTR->Y() = -props.Ytop[section];
 
-      pBL->X() = -props.Wbf[section] / 2;
+      pBL->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wtf[section] / 2 - props.Xleft[section] - props.Wbf[section] / 2 : -props.Xleft[section]);
       pBL->Y() = -(props.Ytop[section] + props.Hg[section]);
 
-      pBR->X() = props.Wbf[section] / 2;
+      pBR->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wbf[section] / 2 - props.Xleft[section] + props.Wtf[section] / 2 : props.Wbf[section] - props.Xleft[section]);
       pBR->Y() = -(props.Ytop[section] + props.Hg[section]);
    }
 }

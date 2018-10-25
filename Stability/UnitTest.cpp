@@ -76,10 +76,11 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    Float64 Ag = ::ConvertToSysUnits(767,unitMeasure::Inch2);
    Float64 Ix = ::ConvertToSysUnits(545894,unitMeasure::Inch4);
    Float64 Iy = ::ConvertToSysUnits(37634,unitMeasure::Inch4);
-   Float64 Xleft = 0.0;
+   Float64 Ixy = 0;
+   Float64 Xleft = Wtf/2;
    Float64 Ytop = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
    Float64 L = ::ConvertToSysUnits(136,unitMeasure::Feet);
-   girder.AddSection(L,Ag,Ix,Iy,0.0,Xleft,Ytop,Hg,Wtf,Wbf);
+   girder.AddSection(L,Ag,Ix,Iy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf);
 
    matConcreteEx concrete;
    Float64 fci = 5.5;
@@ -96,7 +97,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
 
    // Example 6.1.1
    Float64 fpe = ::ConvertToSysUnits(1232.0,unitMeasure::Kip);
-   stabilityProblem.AddFpe(0,0,0,fpe,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch),0,0);
+   stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(5.0,unitMeasure::Inch),0,0,0);
 
    stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
 
@@ -205,10 +206,11 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    Float64 Ag = ::ConvertToSysUnits(767,unitMeasure::Inch2);
    Float64 Ix = ::ConvertToSysUnits(545894,unitMeasure::Inch4);
    Float64 Iy = ::ConvertToSysUnits(37634,unitMeasure::Inch4);
-   Float64 Xleft = 0;
+   Float64 Ixy = 0;
+   Float64 Xleft = Wtf/2;
    Float64 Ytop = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
    Float64 L = ::ConvertToSysUnits(136,unitMeasure::Feet);
-   girder.AddSection(L,Ag,Ix,Iy, 0.0, Xleft,Ytop,Hg,Wtf,Wbf);
+   girder.AddSection(L,Ag,Ix,Iy, Ixy, Xleft,Ytop,Hg,Wtf,Wbf);
 
    matConcreteEx concrete;
    Float64 fc = 7.0;
@@ -223,7 +225,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
 
    // Example 6.2.1
    Float64 fpe = ::ConvertToSysUnits(1251.5,unitMeasure::Kip);
-   stabilityProblem.AddFpe(0,0,0,fpe,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch),0,0);
+   stabilityProblem.AddFpe(0,0,0,0,fpe,Xleft,-Hg + ::ConvertToSysUnits(7.91,unitMeasure::Inch),0,0,0);
 
    stabilityProblem.SetCamber(true,::ConvertToSysUnits(2.92,unitMeasure::Inch));
 

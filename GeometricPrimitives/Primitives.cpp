@@ -357,8 +357,6 @@ gpPoint2d gpPoint2d::RotateBy(const gpPoint2d& centerPoint, Float64 angle) const
    return RotatePoint(centerPoint, angle, *this);
 }
 
-
-
 //======================== ACCESS     =======================================
 Float64 gpPoint2d::X() const
 {
@@ -435,6 +433,32 @@ std::_tostream& operator<<(std::_tostream& os,const gpPoint2d& p)
 {
    os << _T("(") << p.X() << _T(",") << p.Y() << _T(")");
    return os;
+}
+
+
+gpPoint2d operator*(const gpPoint2d& p1, const gpPoint2d& p2)
+{
+   return gpPoint2d(p1.X()*p2.X(), p1.Y()*p2.Y());
+}
+
+gpPoint2d operator*(Float64 K, const gpPoint2d& p)
+{
+   return gpPoint2d(p.X()*K,p.Y()*K);
+}
+
+gpPoint2d operator*(const gpPoint2d& p, Float64 K)
+{
+   return gpPoint2d(p.X()*K, p.Y()*K);
+}
+
+gpPoint2d operator/(Float64 K, const gpPoint2d& p)
+{
+   return gpPoint2d(p.X()/K, p.Y()/K);
+}
+
+gpPoint2d operator/(const gpPoint2d& p, Float64 K)
+{
+   return gpPoint2d(p.X() / K, p.Y() / K);
 }
 
 gpPoint2d RotatePoint(const gpPoint2d& fixed,Float64 angle,const gpPoint2d& pnt)
@@ -856,37 +880,29 @@ bool gpRect2d::IsNull() const
 
 bool gpRect2d::Contains(const gpPoint2d& point) const
 {
-   return ( (m_Left   <= point.X() && point.X() < m_Right) &&
-            (m_Bottom <= point.Y() && point.Y() < m_Top) );
+   return ( (::IsLE(m_Left,point.X()) && ::IsLT(point.X(),m_Right)) &&
+            (::IsLE(m_Bottom,point.Y()) && ::IsLT(point.Y(),m_Top)) );
 }
 
 bool gpRect2d::Contains(const gpRect2d& other) const
 {
-   return ( (m_Left   <= other.Left()   && other.Right() <= m_Right) &&
-            (m_Bottom <= other.Bottom() && other.Top()   <= m_Top) );
+   return ( (::IsLE(m_Left,other.Left()) && ::IsLE(other.Right(),m_Right)) &&
+            (::IsLE(m_Bottom,other.Bottom()) && ::IsLE(other.Top(),m_Top)) );
 }
 
 bool gpRect2d::Touches(const gpRect2d& other) const
 {
-   return ( (m_Left   < other.Right() && other.Left()   < m_Right) &&
-            (m_Bottom < other.Top()   && other.Bottom() < m_Top) );
+   return ( (::IsLT(m_Left,other.Right()) && ::IsLT(other.Left(),m_Right)) &&
+            (::IsLT(m_Bottom,other.Top()) && ::IsLT(other.Bottom(),m_Top)) );
 }
 
 gpRect2d::rctPosition gpRect2d::GetPosition(const gpRect2d& other) const
 {
-   Float64 oLeft   = other.m_Left;
-   Float64 oRight  = other.m_Right;
-   Float64 oBottom = other.m_Bottom;
-   Float64 oTop    = other.m_Top;
-
-   // Use contains and touches algorithms above
-   if ( (m_Left  <=oLeft    && oRight<=m_Right) &&
-        (m_Bottom<= oBottom && oTop  <= m_Top) )
+   if ( Contains(other) )
    {
       return gpRect2d::rpContains;
    }
-   else if ( (m_Left   < oRight && oLeft   < m_Right) &&
-             (m_Bottom < oTop   && oBottom < m_Top) )
+   else if ( Touches(other) )
    {
       return gpRect2d::rpTouches;
    }

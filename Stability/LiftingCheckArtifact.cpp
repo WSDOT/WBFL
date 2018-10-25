@@ -278,7 +278,7 @@ bool stbLiftingCheckArtifact::PassedTensionCheck() const
 
 Float64 stbLiftingCheckArtifact::GetAllowableTension(const stbLiftingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const
 {
-   if ( sectionResult.bSectionHasRebar[impact][wind] )
+   if ( sectionResult.bSectionHasRebar[impact][wind] && 0 <= sectionResult.AsRequired[impact][wind])
    {
       return m_Criteria.AllowableTensionWithRebar;
    }

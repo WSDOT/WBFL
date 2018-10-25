@@ -85,7 +85,7 @@ private:
    void AnalyzeHauling(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,stbHaulingResults& results) const;
 
    // Determines Xleft, relative to the roll axis
-   Float64 ComputeXcg(const stbIGirder* pGirder, stbResults& results) const;
+   Float64 ComputeXcg(const stbIGirder* pGirder, const stbIStabilityProblem* pStabilityProblem, stbResults& results) const;
 
    // Deterimes how to compute Zo
    void GetZoComputationMethod(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,IFem2dModel* pModel,stbResults& results) const;

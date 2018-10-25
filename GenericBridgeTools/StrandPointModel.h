@@ -144,6 +144,7 @@ public:
    STDMETHOD(GetStrandRowCount)(StrandType strandType, Float64 Xs, RowIndexType* nRows) override;
    STDMETHOD(GetNumStrandsInRow)(StrandType strandType, Float64 Xs, RowIndexType rowIdx, StrandIndexType* nStrands) override;
    STDMETHOD(GetStrandsInRow)(StrandType strandType, Float64 Xs, RowIndexType rowIdx, IIndexArray** ppStrandIndicies) override;
+   STDMETHOD(GetUnadjustedStrandRowElevation)(StrandType strandType, Float64 Xs, RowIndexType rowIdx, Float64* fElevation) override;
 
    STDMETHOD(GetStrandPositions)(StrandType strandType, Float64 Xs, IPoint2dCollection** ppPoints) override;
    STDMETHOD(GetStrandCount)(StrandType strandType, StrandIndexType* pStrands) override;
