@@ -23,10 +23,10 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// JointDisplacementCollection.h : Declaration of the CJointDisplacementCollection
+// JointDeflectionCollection.h : Declaration of the CJointDeflectionCollection
 
-#ifndef __JOINTDISPLACEMENTCOLLECTION_H_
-#define __JOINTDISPLACEMENTCOLLECTION_H_
+#ifndef __JOINTDeflectionCOLLECTION_H_
+#define __JOINTDeflectionCOLLECTION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -35,25 +35,25 @@
 #include "CircularChild.h"
 #include "JointDisplacement.h"
 
-typedef CLoadsCollection<IFem2dJointDisplacementCollection, IFem2dJointDisplacement, CJointDisplacement, IFem2dEnumJointDisplacement, &IID_IFem2dEnumJointDisplacement,LoadIDType> JointDisplacementCollImpl;
+typedef CLoadsCollection<IFem2dJointDeflectionCollection, IFem2dJointDeflection, CJointDeflection, IFem2dEnumJointDeflection, &IID_IFem2dEnumJointDeflection,LoadIDType> JointDeflectionCollImpl;
 
 class ModelEvents;
 
 /////////////////////////////////////////////////////////////////////////////
-// CJointDisplacementCollection
-class ATL_NO_VTABLE CJointDisplacementCollection : 
+// CJointDeflectionCollection
+class ATL_NO_VTABLE CJointDeflectionCollection : 
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
-   // public CComRefCountTracer<CJointDisplacementCollection,CCircularChild<IFem2dModel, CComSingleThreadModel> >,
+   // public CComRefCountTracer<CJointDeflectionCollection,CCircularChild<IFem2dModel, CComSingleThreadModel> >,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CJointDisplacementCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public JointDisplacementCollImpl
+   public IObjectSafetyImpl<CJointDeflectionCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+	public JointDeflectionCollImpl
 {
 public:
-   CJointDisplacementCollection()
+   CJointDeflectionCollection()
 	{
 	}
 
-   virtual ~CJointDisplacementCollection()
+   virtual ~CJointDeflectionCollection()
 	{
 	}
 
@@ -64,8 +64,8 @@ public:
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CJointDisplacementCollection)
-	COM_INTERFACE_ENTRY(IFem2dJointDisplacementCollection)
+BEGIN_COM_MAP(CJointDeflectionCollection)
+	COM_INTERFACE_ENTRY(IFem2dJointDeflectionCollection)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
@@ -73,11 +73,11 @@ END_COM_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IFem2dJointDisplacementCollection
+// IFem2dJointDeflectionCollection
 public:
-	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/JointIDType joint, /*[in]*/Float64 Dx, /*[in]*/Float64 Dy, /*[in]*/Float64 Rz, /*[out, retval]*/ IFem2dJointDisplacement** pVal);
+	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/JointIDType joint, /*[in]*/Float64 Dx, /*[in]*/Float64 Dy, /*[in]*/Float64 Rz, /*[out, retval]*/ IFem2dJointDeflection** pVal);
 	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid);
 	STDMETHOD(Clear)();
 };
 
-#endif //__JointDisplacementCollection_H_
+#endif //__JointDeflectionCollection_H_

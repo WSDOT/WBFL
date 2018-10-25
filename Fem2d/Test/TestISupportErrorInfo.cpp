@@ -146,14 +146,14 @@ void CTestISupportErrorInfo::Test()
    TEST_EI(pSEIFem2dMemberStrain, pMemberStrain, IID_IFem2dMemberStrain);
    TEST_EI(pSEIFem2dMemberStrains, pMemberStrains, IID_IFem2dMemberStrainCollection);
 
-   // support displacement 
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading1->get_JointDisplacements(&pJointDisplacements));
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement;
-   TRY_TEST_LC(pJointDisplacements->Create(1, 4, 0.4, -0.6, 0.0, &pJointDisplacement));
+   // support Deflection 
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading1->get_JointDeflections(&pJointDeflections));
+   CComPtr<IFem2dJointDeflection> pJointDeflection;
+   TRY_TEST_LC(pJointDeflections->Create(1, 4, 0.4, -0.6, 0.0, &pJointDeflection));
 
-   TEST_EI(pSEIFem2dJointDisplacement, pJointDisplacement, IID_IFem2dJointDisplacement);
-   TEST_EI(pSEIFem2dJointDisplacements, pJointDisplacements, IID_IFem2dJointDisplacementCollection);
+   TEST_EI(pSEIFem2dJointDeflection, pJointDeflection, IID_IFem2dJointDeflection);
+   TEST_EI(pSEIFem2dJointDeflections, pJointDeflections, IID_IFem2dJointDeflectionCollection);
 
    //  POI's 
    CComPtr<IFem2dPOICollection> pPOIs;

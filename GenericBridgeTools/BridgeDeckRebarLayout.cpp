@@ -144,7 +144,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::get_EffectiveFlangeWidthTool(IEffectiveFlan
    return S_OK;
 }
 
-STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section)
+STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section)
 {
    CHECK_RETOBJ(section);
    CComPtr<IRebarSection> pSection;
@@ -155,14 +155,14 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    // The reinforcing in this section is the amount of reinforcing within
    // the effective flange width
    Float64 effectiveFlangeWidth;
-   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&effectiveFlangeWidth);
+   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&effectiveFlangeWidth);
 
    // Get the distance from the start of the bridge to the point under consideration
 
    // station and offset of point under consideration
    CComPtr<IStation> station;
    Float64 offset;
-   m_BridgeGeometryTool->StationAndOffsetBySegment(m_Bridge,ssMbrID,segIdx,distFromStartOfSegment,&station,&offset);
+   m_BridgeGeometryTool->StationAndOffsetBySegment(m_Bridge,ssMbrID,segIdx,Xs,&station,&offset);
 
    // station of first pier in the bridge
    CComPtr<IPierCollection> piers;
@@ -175,8 +175,26 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    // location is distance between stations
    CComPtr<IAlignment> alignment;
    m_Bridge->get_Alignment(&alignment);
-   Float64 cutLocation;
-   alignment->DistanceBetweenStations(CComVariant(station),CComVariant(firstStation),&cutLocation);
+   Float64 cutLocation; // location of where we cutting through the deck to get the rebar. This is measured 
+                        // as a distance along the bridge measured from the first pier.
+   alignment->DistanceBetweenStations(CComVariant(firstStation),CComVariant(station),&cutLocation);
+
+   if ( cutLocation < 0 )
+   {
+      // when the first pier reference line is after the start of the segment (typically happens when
+      // the pier location is at the CL Bearing), the cut location will be negative... cut at zero
+      cutLocation = 0;
+   }
+
+   Float64 bridgeLength;
+   m_Bridge->get_Length(&bridgeLength);
+   if ( bridgeLength < cutLocation )
+   {
+      // when the last pier reference line is before the end of the segment (typically happens when
+      // the pier location is at the CL Bearing), the cut location will be beyond the end of the bridge...
+      // cut at the end of bridge
+      cutLocation = bridgeLength;
+   }
    
    CComPtr<IEnumBridgeDeckRebarLayoutItems> enumItems;
    get__EnumRebarLayoutItems(&enumItems);

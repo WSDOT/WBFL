@@ -116,6 +116,10 @@ public:
    void RemoveDataSeries(IndexType cookie);
 
    //------------------------------------------------------------------------
+   // Returns the number of data series from the graph
+   IndexType GetDataSeriesCount() const;
+
+   //------------------------------------------------------------------------
    // Returns the output rectangle
    RECT GetOutputRect() const;
 

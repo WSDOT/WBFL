@@ -40,11 +40,21 @@
 class REPORTMANAGERCLASS CTitlePageBuilder  
 {
 public:
-	CTitlePageBuilder();
+	CTitlePageBuilder(LPCTSTR title = _T(""));
+	CTitlePageBuilder(const CTitlePageBuilder& other);
 	virtual ~CTitlePageBuilder();
+
+   const std::_tstring& GetReportTitle() const;
+   void SetReportTitle(LPCTSTR title);
 
    virtual rptChapter* Build(boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
    virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
+
+   // polymorphic copy
+   virtual CTitlePageBuilder* Clone() const = 0;
+
+private:
+   std::_tstring m_Title;
 };
 
 #endif // !defined(AFX_TitlePageBuilder_H__A02521C5_E5AB_410C_A5C2_0D76AEDFDCA3__INCLUDED_)

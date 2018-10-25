@@ -22,11 +22,12 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <GraphicsLib\GraphicsLibLib.h>
-#include <math.h>
+#include <MathEx.h>
 #include <GraphicsLib\GraphXY.h>
 #include <float.h>
 #include <algorithm>
 #include <GraphicsLib\GraphTool.h>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -186,6 +187,11 @@ void grGraphXY::RemoveDataSeries(IndexType cookie)
 {
    m_GraphDataMap.erase( cookie );
    SetBroken();
+}
+
+IndexType grGraphXY::GetDataSeriesCount() const
+{
+   return m_GraphDataMap.size();
 }
 
 void grGraphXY::SetOutputRect(const RECT& rOutputRect)
@@ -898,7 +904,7 @@ void grGraphXY::DrawAxes(HDC hDC)
       else
          curr_val = x_increment;
 
-      while (curr_val <= right_val)
+      while ( ::IsLE(curr_val,right_val) )
       {
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL? bot_val : log10(bot_val), &ldx, &ldy);
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL? top_val : log10(top_val), &rdx, &rdy);
@@ -922,7 +928,7 @@ void grGraphXY::DrawAxes(HDC hDC)
       else
          curr_val = y_increment;
 
-      while (curr_val <= top_val)
+      while ( ::IsLE(curr_val,top_val) )
       {
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? left_val  : log10(left_val),  scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL ? curr_val : log10(curr_val), &ldx, &ldy);
          m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR || scaleX == grAxisXY::INTEGRAL ? right_val : log10(right_val), scaleY == grAxisXY::LINEAR || scaleY == grAxisXY::INTEGRAL ? curr_val : log10(curr_val), &rdx, &rdy);
@@ -943,7 +949,7 @@ void grGraphXY::DrawAxes(HDC hDC)
    else
    {
       // don't draw grid, but do draw a horizontal line along Y=0
-      if ( (top_val>0 && bot_val<0) || (top_val<0 && bot_val>0))
+      if ( (0 < top_val && bot_val < 0) || (top_val < 0 && 0 < bot_val))
       {
          LONG   ldx, ldy, rdx, rdy;
 

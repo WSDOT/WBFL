@@ -470,7 +470,7 @@ void PoiMapToFemPoi::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFe
    PoiIDType fem_poi_id = GetFemPoiID();
 
    // information is at poi - just get it
-   results->ComputePOIDisplacements(loadGroupID, fem_poi_id, lotGlobal, leftDx, leftDy, leftRz);
+   results->ComputePOIDeflections(loadGroupID, fem_poi_id, lotGlobal, leftDx, leftDy, leftRz);
    *rightDx = *leftDx;
    *rightDy = *leftDy;
    *rightRz = *leftRz;
@@ -641,10 +641,10 @@ void PoiMapToFemMbr::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFe
    // information is at ends of each member
    Float64 dx, dy, rz;
    if ( leftMbrID != INVALID_ID )
-      results->ComputeMemberDisplacements(loadGroupID, leftMbrID,   &dx, &dy, &rz, leftDx, leftDy, leftRz);
+      results->ComputeMemberDeflections(loadGroupID, leftMbrID,   &dx, &dy, &rz, leftDx, leftDy, leftRz);
 
    if ( rightMbrID != INVALID_ID )
-      results->ComputeMemberDisplacements(loadGroupID, rightMbrID,  rightDx, rightDy, rightRz, &dx, &dy, &rz);
+      results->ComputeMemberDeflections(loadGroupID, rightMbrID,  rightDx, rightDy, rightRz, &dx, &dy, &rz);
 }
 
 void PoiMapToFemMbr::GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)

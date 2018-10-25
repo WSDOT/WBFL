@@ -813,6 +813,7 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
       VERIFY(::DeleteFile(real_file_name));
    }
 
+   SetModifiedFlag(FALSE);
    OnStatusChanged();
 
    return TRUE;

@@ -22,24 +22,24 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-// TestJointDisplacement.h: interface for the CTestJointDisplacement class.
+// TestJointDeflection.h: interface for the CTestJointDeflection class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTJOINTDISPLACEMENT_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)
-#define AFX_TESTJOINTDISPLACEMENT_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_
+#if !defined(AFX_TESTJOINTDeflection_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)
+#define AFX_TESTJOINTDeflection_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CTestJointDisplacement : public CTestHarness 
+class CTestJointDeflection : public CTestHarness 
 {
 public:
 	void Test();
-	CTestJointDisplacement();
-	virtual ~CTestJointDisplacement();
+	CTestJointDeflection();
+	virtual ~CTestJointDeflection();
 
 };
 
-#endif // !defined(AFX_TESTJOINTDISPLACEMENT_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)
+#endif // !defined(AFX_TESTJOINTDeflection_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)

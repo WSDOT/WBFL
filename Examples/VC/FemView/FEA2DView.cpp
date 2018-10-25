@@ -307,7 +307,7 @@ void CFEA2DView::BuildMemberDisplayObjects()
 
       CMemberDropSite* pDropSite = new CMemberDropSite(pDoc);
       iDropSite* dropSite = (iDropSite*)pDropSite->GetInterface(&IID_iDropSite);
-      mbrRep->SetDropSite(dropSite);
+      mbrRep->RegisterDropSite(dropSite);
 
       iDisplayObjectEvents* pDOE = (iDisplayObjectEvents*)pDropSite->GetInterface(&IID_iDisplayObjectEvents);
       mbrRep->RegisterEventSink(pDOE);

@@ -343,10 +343,10 @@ const unitmgtLengthData&  CEAFDocProxyAgent::GetAlignmentLengthUnit()
    return pApp->GetDisplayUnits()->AlignmentLength;
 }
 
-const unitmgtLengthData&  CEAFDocProxyAgent::GetDisplacementUnit()
+const unitmgtLengthData&  CEAFDocProxyAgent::GetDeflectionUnit()
 {
    CEAFApp* pApp = EAFGetApp();
-   return pApp->GetDisplayUnits()->Displacement;
+   return pApp->GetDisplayUnits()->Deflection;
 }
 
 const unitmgtLength2Data& CEAFDocProxyAgent::GetAreaUnit()

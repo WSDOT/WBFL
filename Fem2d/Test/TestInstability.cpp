@@ -107,38 +107,38 @@ void CTestInstability::Test()
    TRY_TEST_LC(pDistributedLoads->Create(1, 1, loadDirFy, 0.0, -1.0, -0.5, -1.0, lotMember, &pDistributedLoad));
 
    // no boundary conditions - we're flying through space
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_FACTORING);
+   TRY_TEST(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_FACTORING);
 
    // support end, should now be cantilever - ok
    TRY_TEST_MC(pJoint1->Support());
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
 
    // now a floppy cantilever
    TRY_TEST_MC(pJoint1->ReleaseDof(jrtMz));
-   TRY_TEST(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
+   TRY_TEST(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
 
    // now pin-pin
    TRY_TEST_MC(pJoint3->Support());
    TRY_TEST_MC(pJoint3->ReleaseDof(jrtMz));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
 
    // put a hinge in the end of member 1
    TRY_TEST_MC(pMember1->ReleaseEnd(metEnd, mbrReleaseMz));
-   TRY_TEST(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
+   TRY_TEST(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
 
    TRY_TEST_MC(pMember1->ReleaseEnd(metEnd, mbrReleaseNone));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
 
    // pin at a released dof
    TRY_TEST_MC(pMember1->ReleaseEnd(metStart, mbrReleaseMz));
-   TRY_TEST(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_FACTORING);
+   TRY_TEST(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_FACTORING);
 
    // pin at start of member 2
    TRY_TEST_MC(pMember1->ReleaseEnd(metStart, mbrReleaseNone));
    TRY_TEST_MC(pMember2->ReleaseEnd(metStart, mbrReleaseMz));
-   TRY_TEST(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
+   TRY_TEST(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz), FEM2D_E_MATRIX_BACK_SUBSTITUTION);
 
    ReleaseModel(pmodel);
 }

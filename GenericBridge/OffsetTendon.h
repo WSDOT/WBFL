@@ -69,6 +69,8 @@ private:
 
    CComPtr<ITendon> m_RefTendon; // reference tendon
 
+   ISuperstructureMember* m_pSSMbr; // weak references
+
    struct Point
    {
       Float64 offsetX;
@@ -118,6 +120,8 @@ public:
 	STDMETHOD(get_End)(IPoint3d** end);
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type);
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type);
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr);
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr);
 
 // IStructuredStorage2
 public:

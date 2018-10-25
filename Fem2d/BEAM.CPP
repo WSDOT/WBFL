@@ -72,7 +72,7 @@ Beam(l,ea,ei,type)
    m_b = m_L - m_a;
 
    ComputeReactions();
-   ComputeDisplacements();
+   ComputeDeflections();
 }
 
 void ConcLdBeam::GetLoad(Float64 &ld)
@@ -101,7 +101,7 @@ void ConcLdBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
    mzr = m_Mzr;
 }
 
-void ConcLdBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+void ConcLdBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                                    Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
    dxl = m_Dxl;
@@ -178,24 +178,24 @@ void ConcLdBeam::ComputeReactions()
       }
 }
 
-void ConcLdBeam::ComputeDisplacements()
+void ConcLdBeam::ComputeDeflections()
 {
    switch(m_Type)
       {
       case mtPinPin:
-           ComputePPDisplacements();
+           ComputePPDeflections();
            break;
 
       case mtPinFix:
-           ComputePFDisplacements();
+           ComputePFDeflections();
            break;
 
       case mtFixPin:
-           ComputeFPDisplacements();
+           ComputeFPDeflections();
            break;
 
       case mtFixFix:
-           ComputeFFDisplacements();
+           ComputeFFDeflections();
            break;
       }
 }
@@ -272,74 +272,74 @@ void ConcLdBeam::ComputeFFReactions()
       }
 }
 
-void ConcLdBeam::ComputePPDisplacements()
+void ConcLdBeam::ComputePPDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputePPDisplacementsFx();
+           ComputePPDeflectionsFx();
            break;
 
       case ForceY:
-           ComputePPDisplacementsFy();
+           ComputePPDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputePPDisplacementsMz();
+           ComputePPDeflectionsMz();
            break;
       }
 }
 
-void ConcLdBeam::ComputePFDisplacements()
+void ConcLdBeam::ComputePFDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputePFDisplacementsFx();
+           ComputePFDeflectionsFx();
            break;
 
       case ForceY:
-           ComputePFDisplacementsFy();
+           ComputePFDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputePFDisplacementsMz();
+           ComputePFDeflectionsMz();
            break;
       }
 }
 
-void ConcLdBeam::ComputeFPDisplacements()
+void ConcLdBeam::ComputeFPDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputeFPDisplacementsFx();
+           ComputeFPDeflectionsFx();
            break;
 
       case ForceY:
-           ComputeFPDisplacementsFy();
+           ComputeFPDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputeFPDisplacementsMz();
+           ComputeFPDeflectionsMz();
            break;
       }
 }
 
-void ConcLdBeam::ComputeFFDisplacements()
+void ConcLdBeam::ComputeFFDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputeFFDisplacementsFx();
+           ComputeFFDeflectionsFx();
            break;
 
       case ForceY:
-           ComputeFFDisplacementsFy();
+           ComputeFFDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputeFFDisplacementsMz();
+           ComputeFFDeflectionsMz();
            break;
       }
 }
@@ -638,7 +638,7 @@ void ConcLdBeam::ComputeFFReactionsMz()
    m_Mzr = m_Q*(2*m_L*m_a - 3*ma2)/mL2;
 }
 
-void ConcLdBeam::ComputePPDisplacementsFx()
+void ConcLdBeam::ComputePPDeflectionsFx()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -649,7 +649,7 @@ void ConcLdBeam::ComputePPDisplacementsFx()
    m_Rzr = 0;
 }
 
-void ConcLdBeam::ComputePPDisplacementsFy()
+void ConcLdBeam::ComputePPDeflectionsFy()
 {
    Float64 mb2 = m_b*m_b;
    Float64 mb3 = mb2*m_b;
@@ -663,7 +663,7 @@ void ConcLdBeam::ComputePPDisplacementsFy()
    m_Rzr = -m_Q*(2*m_b*m_L + mb3/m_L - 3*mb2)/(6*m_EI);
 }
 
-void ConcLdBeam::ComputePPDisplacementsMz()
+void ConcLdBeam::ComputePPDeflectionsMz()
 {
    Float64 ma2 = m_a*m_a;
 
@@ -676,12 +676,12 @@ void ConcLdBeam::ComputePPDisplacementsMz()
    m_Rzr = -m_Q*(m_L - 3*ma2/m_L)/(6*m_EI);
 }
 
-void ConcLdBeam::ComputePFDisplacementsFx()
+void ConcLdBeam::ComputePFDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void ConcLdBeam::ComputePFDisplacementsFy()
+void ConcLdBeam::ComputePFDeflectionsFy()
 {
    Float64 ma2 = m_a*m_a;
    Float64 ma3 = ma2*m_a;
@@ -695,7 +695,7 @@ void ConcLdBeam::ComputePFDisplacementsFy()
    m_Rzr = 0;
 }
 
-void ConcLdBeam::ComputePFDisplacementsMz()
+void ConcLdBeam::ComputePFDeflectionsMz()
 {
    Float64 mL2 = m_L*m_L;
 
@@ -708,12 +708,12 @@ void ConcLdBeam::ComputePFDisplacementsMz()
    m_Rzr = 0;
 }
 
-void ConcLdBeam::ComputeFPDisplacementsFx()
+void ConcLdBeam::ComputeFPDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void ConcLdBeam::ComputeFPDisplacementsFy()
+void ConcLdBeam::ComputeFPDeflectionsFy()
 {
    Float64 mL2 = m_L*m_L;
    Float64 ma2 = m_a*m_a;
@@ -727,7 +727,7 @@ void ConcLdBeam::ComputeFPDisplacementsFy()
    m_Rzr = (m_Q*(mL2 - 2*m_L*m_a + ma2) + m_Fyl*mL2 - 2*m_L*m_Mzl)/(2*m_EI);
 }
 
-void ConcLdBeam::ComputeFPDisplacementsMz()
+void ConcLdBeam::ComputeFPDeflectionsMz()
 {
    Float64 mL2 = m_L*m_L;
 
@@ -740,12 +740,12 @@ void ConcLdBeam::ComputeFPDisplacementsMz()
    m_Rzr = (m_Fyl*mL2 - 2*m_Mzl*m_L - 2*m_Q*(m_L-m_a))/(2*m_EI);
 }
 
-void ConcLdBeam::ComputeFFDisplacementsFx()
+void ConcLdBeam::ComputeFFDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void ConcLdBeam::ComputeFFDisplacementsFy()
+void ConcLdBeam::ComputeFFDeflectionsFy()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -756,7 +756,7 @@ void ConcLdBeam::ComputeFFDisplacementsFy()
    m_Rzr = 0;
 }
 
-void ConcLdBeam::ComputeFFDisplacementsMz()
+void ConcLdBeam::ComputeFFDeflectionsMz()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -1127,7 +1127,7 @@ m_Qx(qAxial),
 m_Qz(qCurvature)
 {
    ComputeReactions();
-   ComputeDisplacements();
+   ComputeDeflections();
 }
 
 void MemberStrainBeam::GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a)
@@ -1148,7 +1148,7 @@ void MemberStrainBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
    mzr = m_Mzr;
 }
 
-void MemberStrainBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+void MemberStrainBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                                         Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
    dxl = m_Dxl;
@@ -1211,7 +1211,7 @@ void MemberStrainBeam::ComputeReactions()
       }
 }
 
-void MemberStrainBeam::ComputeDisplacements()
+void MemberStrainBeam::ComputeDeflections()
 {
    m_Dxl = 0.0;
    m_Dxr = 0.0;
@@ -1219,19 +1219,19 @@ void MemberStrainBeam::ComputeDisplacements()
    switch(m_Type)
       {
       case mtPinPin:
-           ComputePPDisplacements();
+           ComputePPDeflections();
            break;
 
       case mtPinFix:
-           ComputePFDisplacements();
+           ComputePFDeflections();
            break;
 
       case mtFixPin:
-           ComputeFPDisplacements();
+           ComputeFPDeflections();
            break;
 
       case mtFixFix:
-           ComputeFFDisplacements();
+           ComputeFFDeflections();
            break;
       }
 }
@@ -1281,7 +1281,7 @@ void MemberStrainBeam::ComputeFFReactions()
   m_Mzr = -m_EI*m_Qz*(m_L - m_A)*(3*m_A + m_L)/(m_L*m_L);
 }
 
-void MemberStrainBeam::ComputePPDisplacements()
+void MemberStrainBeam::ComputePPDeflections()
 {
    // Table 3, Equation 6e
    m_Dyl = 0;
@@ -1291,7 +1291,7 @@ void MemberStrainBeam::ComputePPDisplacements()
    m_Rzr = m_Qz*(m_L*m_L-m_A*m_A)/(2*m_L);
 }
 
-void MemberStrainBeam::ComputePFDisplacements()
+void MemberStrainBeam::ComputePFDeflections()
 {
    // Table 3, Equation 6c
    m_Dyl = 0;
@@ -1301,7 +1301,7 @@ void MemberStrainBeam::ComputePFDisplacements()
    m_Rzr = 0;
 }
 
-void MemberStrainBeam::ComputeFPDisplacements()
+void MemberStrainBeam::ComputeFPDeflections()
 {
    m_Dyl = 0;
    m_Rzl = 0;
@@ -1312,7 +1312,7 @@ void MemberStrainBeam::ComputeFPDisplacements()
    //m_Rzr = m_Qz*(m_L*m_L - 2*m_A*m_L + 3*m_A*m_A)/(4*m_L); //???
 }
 
-void MemberStrainBeam::ComputeFFDisplacements()
+void MemberStrainBeam::ComputeFFDeflections()
 {
    // Table 3, Equation 6d
    m_Dyl = 0;
@@ -1359,7 +1359,7 @@ void UniformMemberDistortionBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64
    mzr = Mzr1 - Mzr2;
 }
 
-void UniformMemberDistortionBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+void UniformMemberDistortionBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                                                    Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
    Float64 Dxl1,Dxl2;
@@ -1368,8 +1368,8 @@ void UniformMemberDistortionBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Flo
    Float64 Dxr1,Dxr2;
    Float64 Dyr1,Dyr2;
    Float64 Rzr1,Rzr2;
-   m_Case1Beam.GetDisplacements(Dxl1,Dyl1,Rzl1,Dxr1,Dyr1,Rzr1);
-   m_Case2Beam.GetDisplacements(Dxl2,Dyl2,Rzl2,Dxr2,Dyr2,Rzr2);
+   m_Case1Beam.GetDeflections(Dxl1,Dyl1,Rzl1,Dxr1,Dyr1,Rzr1);
+   m_Case2Beam.GetDeflections(Dxl2,Dyl2,Rzl2,Dxr2,Dyr2,Rzr2);
 
    dxl = Dxl1 - Dxl2;
    dyl = Dyl1 - Dyl2;
@@ -1427,7 +1427,7 @@ Beam(l,ea,ei,type)
    }
 
    ComputeReactions();
-   ComputeDisplacements();
+   ComputeDeflections();
 }
 
 void TrapezoidalLdBeam::GetLoad(Float64 &wa, Float64& wb)
@@ -1458,7 +1458,7 @@ void TrapezoidalLdBeam::GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
    mzr = m_Mzr;
 }
 
-void TrapezoidalLdBeam::GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+void TrapezoidalLdBeam::GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                                    Float64 &dxr,Float64 &dyr,Float64 &rzr)
 {
    dxl = m_Dxl;
@@ -1535,24 +1535,24 @@ void TrapezoidalLdBeam::ComputeReactions()
       }
 }
 
-void TrapezoidalLdBeam::ComputeDisplacements()
+void TrapezoidalLdBeam::ComputeDeflections()
 {
    switch(m_Type)
       {
       case mtPinPin:
-           ComputePPDisplacements();
+           ComputePPDeflections();
            break;
 
       case mtPinFix:
-           ComputePFDisplacements();
+           ComputePFDeflections();
            break;
 
       case mtFixPin:
-           ComputeFPDisplacements();
+           ComputeFPDeflections();
            break;
 
       case mtFixFix:
-           ComputeFFDisplacements();
+           ComputeFFDeflections();
            break;
       }
 }
@@ -1629,74 +1629,74 @@ void TrapezoidalLdBeam::ComputeFFReactions()
       }
 }
 
-void TrapezoidalLdBeam::ComputePPDisplacements()
+void TrapezoidalLdBeam::ComputePPDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputePPDisplacementsFx();
+           ComputePPDeflectionsFx();
            break;
 
       case ForceY:
-           ComputePPDisplacementsFy();
+           ComputePPDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputePPDisplacementsMz();
+           ComputePPDeflectionsMz();
            break;
       }
 }
 
-void TrapezoidalLdBeam::ComputePFDisplacements()
+void TrapezoidalLdBeam::ComputePFDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputePFDisplacementsFx();
+           ComputePFDeflectionsFx();
            break;
 
       case ForceY:
-           ComputePFDisplacementsFy();
+           ComputePFDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputePFDisplacementsMz();
+           ComputePFDeflectionsMz();
            break;
       }
 }
 
-void TrapezoidalLdBeam::ComputeFPDisplacements()
+void TrapezoidalLdBeam::ComputeFPDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputeFPDisplacementsFx();
+           ComputeFPDeflectionsFx();
            break;
 
       case ForceY:
-           ComputeFPDisplacementsFy();
+           ComputeFPDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputeFPDisplacementsMz();
+           ComputeFPDeflectionsMz();
            break;
       }
 }
 
-void TrapezoidalLdBeam::ComputeFFDisplacements()
+void TrapezoidalLdBeam::ComputeFFDeflections()
 {
    switch(m_Dir)
       {
       case ForceX:
-           ComputeFFDisplacementsFx();
+           ComputeFFDeflectionsFx();
            break;
 
       case ForceY:
-           ComputeFFDisplacementsFy();
+           ComputeFFDeflectionsFy();
            break;
 
       case MomentZ:
-           ComputeFFDisplacementsMz();
+           ComputeFFDeflectionsMz();
            break;
       }
 }
@@ -2132,7 +2132,7 @@ void TrapezoidalLdBeam::ComputeFFReactionsMz()
    m_Mzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputePPDisplacementsFx()
+void TrapezoidalLdBeam::ComputePPDeflectionsFx()
 {
    // ends are fixed for axial loading
    m_Dxl = 0;
@@ -2144,7 +2144,7 @@ void TrapezoidalLdBeam::ComputePPDisplacementsFx()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputePPDisplacementsFy()
+void TrapezoidalLdBeam::ComputePPDeflectionsFy()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -2187,7 +2187,7 @@ void TrapezoidalLdBeam::ComputePPDisplacementsFy()
    m_Rzr += rzr;
 }
 
-void TrapezoidalLdBeam::ComputePPDisplacementsMz()
+void TrapezoidalLdBeam::ComputePPDeflectionsMz()
 {
    // Not implemented yet
    ATLASSERT(0);
@@ -2200,12 +2200,12 @@ void TrapezoidalLdBeam::ComputePPDisplacementsMz()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputePFDisplacementsFx()
+void TrapezoidalLdBeam::ComputePFDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void TrapezoidalLdBeam::ComputePFDisplacementsFy()
+void TrapezoidalLdBeam::ComputePFDeflectionsFy()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -2241,7 +2241,7 @@ void TrapezoidalLdBeam::ComputePFDisplacementsFy()
    m_Rzl += rzl;
 }
 
-void TrapezoidalLdBeam::ComputePFDisplacementsMz()
+void TrapezoidalLdBeam::ComputePFDeflectionsMz()
 {
    // Not implemented yet
    ATLASSERT(0);
@@ -2254,12 +2254,12 @@ void TrapezoidalLdBeam::ComputePFDisplacementsMz()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFPDisplacementsFx()
+void TrapezoidalLdBeam::ComputeFPDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void TrapezoidalLdBeam::ComputeFPDisplacementsFy()
+void TrapezoidalLdBeam::ComputeFPDeflectionsFy()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -2297,7 +2297,7 @@ void TrapezoidalLdBeam::ComputeFPDisplacementsFy()
    m_Rzr += rzr;
 }
 
-void TrapezoidalLdBeam::ComputeFPDisplacementsMz()
+void TrapezoidalLdBeam::ComputeFPDeflectionsMz()
 {
    // Not implemented yet
    ATLASSERT(0);
@@ -2310,12 +2310,12 @@ void TrapezoidalLdBeam::ComputeFPDisplacementsMz()
    m_Rzr = 0;
 }
 
-void TrapezoidalLdBeam::ComputeFFDisplacementsFx()
+void TrapezoidalLdBeam::ComputeFFDeflectionsFx()
 {
-   ComputePPDisplacementsFx();
+   ComputePPDeflectionsFx();
 }
 
-void TrapezoidalLdBeam::ComputeFFDisplacementsFy()
+void TrapezoidalLdBeam::ComputeFFDeflectionsFy()
 {
    m_Dxl = 0;
    m_Dyl = 0;
@@ -2326,7 +2326,7 @@ void TrapezoidalLdBeam::ComputeFFDisplacementsFy()
 
 }
 
-void TrapezoidalLdBeam::ComputeFFDisplacementsMz()
+void TrapezoidalLdBeam::ComputeFFDeflectionsMz()
 {
    // Not implemented yet
    ATLASSERT(0);

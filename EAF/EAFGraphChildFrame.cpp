@@ -82,7 +82,7 @@ bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
    // of the graph builder. Each view needs its own unique graph builder.
    m_pMyGraphBuilder = boost::shared_ptr<CGraphBuilder>(pGraphBuilder->Clone());
 
-   if ( m_pMyGraphBuilder->CreateControls(this,AFX_IDW_CONTROLBAR_LAST) < 0 )
+   if ( m_pMyGraphBuilder->InitializeGraphController(this,AFX_IDW_CONTROLBAR_LAST) < 0 )
       return false;
 
    RecalcLayout();

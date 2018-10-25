@@ -101,10 +101,10 @@ public:
    virtual void OnJointLoadAdded(LoadIDType loadID, LoadCaseIDType loadingID);
    virtual void OnJointLoadRemoved(LoadIDType loadID, LoadCaseIDType loadingID );
    virtual void OnJointLoadsCleared(LoadCaseIDType loadingID );
-   virtual void OnJointDisplacementChanged(IFem2dJointDisplacement*, LoadCaseIDType loadingID);
-   virtual void OnJointDisplacementAdded(LoadIDType loadID, LoadCaseIDType loadingID);
-   virtual void OnJointDisplacementRemoved(LoadIDType loadID, LoadCaseIDType loadingID );
-   virtual void OnJointDisplacementsCleared(LoadCaseIDType loadingID );
+   virtual void OnJointDeflectionChanged(IFem2dJointDeflection*, LoadCaseIDType loadingID);
+   virtual void OnJointDeflectionAdded(LoadIDType loadID, LoadCaseIDType loadingID);
+   virtual void OnJointDeflectionRemoved(LoadIDType loadID, LoadCaseIDType loadingID );
+   virtual void OnJointDeflectionsCleared(LoadCaseIDType loadingID );
    virtual void OnPointLoadChanged(IFem2dPointLoad*, LoadCaseIDType loadingID);
    virtual void OnPointLoadAdded(LoadIDType loadID, LoadCaseIDType loadingID);
    virtual void OnPointLoadRemoved(LoadIDType loadID, LoadCaseIDType loadingID );
@@ -167,9 +167,9 @@ public:
 	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal);
 
 // IFem2dModelResultsForScriptingClients
-   STDMETHOD(ComputeJointDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
-   STDMETHOD(ComputeMemberDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/ Fem2dMbrDOF dof,/*[out,retval]*/Float64* pVal);
-   STDMETHOD(ComputePOIDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
+   STDMETHOD(ComputeJointDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
+   STDMETHOD(ComputeMemberDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/ Fem2dMbrDOF dof,/*[out,retval]*/Float64* pVal);
+   STDMETHOD(ComputePOIDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
    STDMETHOD(ComputeReactions)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
    STDMETHOD(ComputeMemberForces)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/ Fem2dMbrDOF dof,/*[out,retval]*/Float64* pVal);
    STDMETHOD(ComputePOIForces)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dMbrFaceType face, /*[in]*/Fem2dLoadOrientation orientation, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal);
@@ -178,9 +178,9 @@ public:
 	STDMETHOD(ComputePOIForces)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dMbrFaceType face, /*[in]*/Fem2dLoadOrientation orientation, /*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz);
 	STDMETHOD(ComputeMemberForces)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[out]*/Float64* startFx, /*[out]*/Float64* startFy, /*[out]*/Float64* startMz, /*[out]*/Float64* endFx, /*[out]*/Float64* endFy, /*[out]*/Float64* endMz);
 	STDMETHOD(ComputeReactions)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz);
-	STDMETHOD(ComputePOIDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
-	STDMETHOD(ComputeMemberDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[out]*/Float64* startDx, /*[out]*/Float64* startDy, /*[out]*/Float64* startRz, /*[out]*/Float64* endDx, /*[out]*/Float64* endDy, /*[out]*/Float64* endRz);
-	STDMETHOD(ComputeJointDisplacements)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
+	STDMETHOD(ComputePOIDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
+	STDMETHOD(ComputeMemberDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[out]*/Float64* startDx, /*[out]*/Float64* startDy, /*[out]*/Float64* startRz, /*[out]*/Float64* endDx, /*[out]*/Float64* endDy, /*[out]*/Float64* endRz);
+	STDMETHOD(ComputeJointDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
 
 // IFem2dModelResultsEx
 	STDMETHOD(ComputeMemberForcesEx)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/Fem2dLoadOrientation orientation, /*[out]*/Float64* startFx, /*[out]*/Float64* startFy, /*[out]*/Float64* startMz, /*[out]*/Float64* endFx, /*[out]*/Float64* endFy, /*[out]*/Float64* endMz);
@@ -257,11 +257,11 @@ private:
    void AssembleGlobalForceVector();
    void AssembleJointLoads();
    void AssembleElementLoads();
-   void ApplyJntDisplacements();
+   void ApplyJntDeflections();
    void ComputeMemberResults();
    void ComputeReactions();
    void CheckEquilibrium();
-   void SolveDisplacementsClassical();
+   void SolveDeflectionsClassical();
 
    void StoreJntResults(LoadCaseIDType lcase);
    void StoreMbrResults(LoadCaseIDType lcase);

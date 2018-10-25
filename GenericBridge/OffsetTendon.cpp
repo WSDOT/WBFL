@@ -44,6 +44,8 @@ HRESULT COffsetTendon::FinalConstruct()
    m_StrandCount    = 0;
    m_JackingEnd = jeLeft;
 
+   m_pSSMbr = NULL;
+
    return S_OK;
 }
 
@@ -302,6 +304,23 @@ STDMETHODIMP COffsetTendon::get_JackingEnd(JackingEndType* type)
 STDMETHODIMP COffsetTendon::put_JackingEnd(JackingEndType type)
 {
    m_JackingEnd = type;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::putref_SuperstructureMember(ISuperstructureMember* pMbr)
+{
+   m_pSSMbr = pMbr;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_SuperstructureMember(ISuperstructureMember** ppMbr)
+{
+   (*ppMbr) = m_pSSMbr;
+   if ( *ppMbr )
+   {
+      (*ppMbr)->AddRef();
+   }
+
    return S_OK;
 }
 

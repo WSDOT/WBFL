@@ -168,23 +168,23 @@ void CTestAxialLoads::Test()
    TRY_TEST_B( IsEqual(fy,  -19.199949516660));
    TRY_TEST_B( IsEqual(mz,  106.02170754850));
 
-   // get joint displacements - L1
+   // get joint Deflections - L1
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(1, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(1, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.65151288453378) );
    TRY_TEST_B( IsEqual(dy, 0.31306901466568) );
    TRY_TEST_B( IsEqual(rz, -0.071814129278972) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(1, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(1, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  1.0406600870525) );
    TRY_TEST_B( IsEqual(dy, -0.13210352199852) );
    TRY_TEST_B( IsEqual(rz, -0.067853604436147) );
 
-   // get joint displacements - L2
-   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 2, &dx, &dy, &rz));
+   // get joint Deflections - L2
+   TRY_TEST_HR(presults->ComputeJointDeflections(2, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.057162111891991) );
    TRY_TEST_B( IsEqual(dy, 0.19080005048334) );
    TRY_TEST_B( IsEqual(rz, -0.011989964247044) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(2, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(2, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.12431232437543) );
    TRY_TEST_B( IsEqual(dy, 0.028799924274989) );
    TRY_TEST_B( IsEqual(rz, -0.015320507378938) );

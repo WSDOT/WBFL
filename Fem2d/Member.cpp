@@ -653,14 +653,14 @@ void CMember::ComputeFemResults()
    // compute mbr end forces (local)
    ComputeForces();
 
-   // compute mbr end displacements (local)
-   ComputeDisplacements();
+   // compute mbr end Deflections (local)
+   ComputeDeflections();
 }
 
 void CMember::ComputeClassicResults()
 {
-   Float64 dx1,dy1,rz1; // start displacements
-   Float64 dx2,dy2,rz2; // end displacements
+   Float64 dx1,dy1,rz1; // start Deflections
+   Float64 dx2,dy2,rz2; // end Deflections
    Float64 Fx1,Fy1,Mz1; // start forces
    Float64 Fx2,Fy2,Mz2; // end forces
    Float64 force[TotalDOF];
@@ -672,7 +672,7 @@ void CMember::ComputeClassicResults()
    Fx2=Fy2=Mz2 = 0;
 
    // for every load in the current Loading
-   // compute member end displacements, rotations, and forces
+   // compute member end Deflections, rotations, and forces
    MbrLoadPointerIterator ld( m_Loads.begin() );
    MbrLoadPointerIterator ldend( m_Loads.end() );
    for (; ld!=ldend; ld++)
@@ -702,7 +702,7 @@ void CMember::ComputeClassicResults()
       rz2 += disp[5];
    }
 
-   // save displacements
+   // save Deflections
    m_Dlocal(0) = dx1;
    m_Dlocal(1) = dy1;
    m_Dlocal(2) = rz1;
@@ -736,22 +736,22 @@ MbrType CMember::GetMemberType()
    return mbrType;
 }
 
-// ComputeDisplacements
+// ComputeDeflections
 //
-// Computes the member joint displacements in local coordinates,
+// Computes the member joint Deflections in local coordinates,
 // making adjustments for member releases.
 //
 // This function should be moved to a higher level of abstraction
 // as TFemModel matures.
-void CMember::ComputeDisplacements()
+void CMember::ComputeDeflections()
 {
    Float64 Dglobal[6];
    Vector Disp(TotalDOF);
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
-   StartJnt->GetDisplacement(Dglobal);
-   EndJnt->GetDisplacement(&Dglobal[3]);
+   StartJnt->GetDeflection(Dglobal);
+   EndJnt->GetDeflection(&Dglobal[3]);
    Disp(0) = Dglobal[0];
    Disp(1) = Dglobal[1];
    Disp(2) = Dglobal[2];
@@ -792,7 +792,7 @@ void CMember::ComputeDisplacements()
 // ComputeForces
 //
 // Computes the element forces at its joints.
-// Assumes ComputeDisplacements have been called.
+// Assumes ComputeDeflections have been called.
 void CMember::ComputeForces()
 {
    Float64 Dglobal[6];
@@ -801,8 +801,8 @@ void CMember::ComputeForces()
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
-   StartJnt->GetDisplacement(Dglobal);
-   EndJnt->GetDisplacement(&Dglobal[3]);
+   StartJnt->GetDeflection(Dglobal);
+   EndJnt->GetDeflection(&Dglobal[3]);
    Disp(0) = Dglobal[0];
    Disp(1) = Dglobal[1];
    Disp(2) = Dglobal[2];
@@ -815,21 +815,21 @@ void CMember::ComputeForces()
    m_TransMatrix.Multiply(&Rglobal,&m_Rlocal);
 }
 
-void CMember::ComputeJointDisplacementForce(Vector* pdf)
+void CMember::ComputeJointDeflectionForce(Vector* pdf)
 {
-   // compute element forces due to a joint displacement
+   // compute element forces due to a joint Deflection
    Vector Disp(6);
    Disp.Zero();
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
-   if (StartJnt->WasDisplacementLoadApplied())
+   if (StartJnt->WasDeflectionLoadApplied())
    {
       Disp(0)=  StartJnt->m_dispLoad[0];
       Disp(1) = StartJnt->m_dispLoad[1];
       Disp(2) = StartJnt->m_dispLoad[2];
    }
 
-   if (EndJnt->WasDisplacementLoadApplied())
+   if (EndJnt->WasDeflectionLoadApplied())
    {
       Disp(3) = EndJnt->m_dispLoad[0];
       Disp(4) = EndJnt->m_dispLoad[1];
@@ -879,7 +879,7 @@ void CMember::GetResults(MbrResult* pres)
 {
    long i;
    for (i = 0; i < 6; i++)
-       pres->SetDisplacement(i, m_Dlocal(i));
+       pres->SetDeflection(i, m_Dlocal(i));
 
    for (i = 0; i < 6; i++)
        pres->SetForce(i,m_Rlocal(i));
@@ -889,7 +889,7 @@ void CMember::SetResults(const MbrResult& res)
 {
    long i;
    for (i = 0; i < 6; i++)
-      m_Dlocal(i) = res.GetDisplacement(i);
+      m_Dlocal(i) = res.GetDeflection(i);
 
    for (i = 0; i < 6; i++)
       m_Rlocal(i) = res.GetForce(i);
@@ -977,22 +977,22 @@ void CMember::GetDeflection(Float64 loc,Float64 *disp)
    MbrLoadPointerIterator ldend( m_Loads.end() );
    for (; ld!=ldend; ld++)
    {  
-      // Member loads know how to compute their own internal displacements.
+      // Member loads know how to compute their own internal Deflections.
       MbrLoad *mbrLd = *ld;
-      mbrLd->GetDisplacement(loc,mtFixFix,length,angle,
+      mbrLd->GetDeflection(loc,mtFixFix,length,angle,
                              m_EA, m_EI,
                              &dx,&dy,&rz);
 
-      // Integrate the internal displacements for this load into the resultant
-      // internal displacement. The effect of the member end disp associated
+      // Integrate the internal Deflections for this load into the resultant
+      // internal Deflection. The effect of the member end disp associated
       // with this load are not included.
       disp[0] += dx;
       disp[1] += dy;
       disp[2] += rz;
    }
 
-   // displacements due to beam action
-   // compute based on the fact that we know that the displacement
+   // Deflections due to beam action
+   // compute based on the fact that we know that the Deflection
    // due to beam action at member ends will be in the form of a cubic along
    // the member.
    // Can write in the form y = ax^3  + bx^2 + cx + d
@@ -1019,7 +1019,7 @@ void CMember::GetDeflection(Float64 loc,Float64 *disp)
    disp[1] += a*loc*loc*loc + b*loc*loc + c*loc + d;
    disp[2] += 3.0*a*loc*loc + 2.0*b*loc + c;
 
-   // Compute axial effects of frame displacement
+   // Compute axial effects of frame Deflection
    disp[0] += m_Dlocal(0) + (m_Dlocal(3) - m_Dlocal(0))*loc/length;
 }
 
@@ -1209,10 +1209,10 @@ void CMember::ApplyLoad(MbrLoad *load)
 
 void CMember::GetFglobal(Float64 *f) 
 {
-   // first compute member forces due to joint displacements
+   // first compute member forces due to joint Deflections
    // forces are transient since they are not needed later
    Vector dforce(6);
-   ComputeJointDisplacementForce(&dforce);
+   ComputeJointDeflectionForce(&dforce);
 
    for (long i = 0; i < TotalDOF; i++)
       f[i] = m_Fglobal(i) - dforce(i);

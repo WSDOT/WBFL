@@ -61,12 +61,12 @@ bool txnMacroTxn::Execute()
 {
    // Execute every txn in the list, starting with the first one
    // put into the container
-   TxnIterator begin = m_Transactions.begin();
-   TxnIterator end   = m_Transactions.end();
+   TxnIterator iter = m_Transactions.begin();
+   TxnIterator end  = m_Transactions.end();
 
-   while ( begin != end )
+   for ( ; iter != end; iter++ )
    {
-      TransactionPtr pTxn = *begin++;
+      TransactionPtr pTxn = *iter;
       pTxn->Execute();
    }
 

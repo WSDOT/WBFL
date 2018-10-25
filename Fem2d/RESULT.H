@@ -92,13 +92,13 @@ public:
       m_Force[dof] = force;
    }
 
-   Float64 GetDisplacement(LONG dof) const
+   Float64 GetDeflection(LONG dof) const
    {
       ATLASSERT(dof<TNDispDof); // "Bounds Error"
       return m_Disp[dof];
    }
 
-   void SetDisplacement(LONG dof, Float64 disp) 
+   void SetDeflection(LONG dof, Float64 disp) 
    {
       ATLASSERT(dof<TNDispDof); // "Bounds Error"
       m_Disp[dof] = disp;

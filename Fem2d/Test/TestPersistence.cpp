@@ -202,14 +202,14 @@ void CTestPersistence::Test()
    CComPtr<IFem2dMemberStrain> pMemberStrain;
    TRY_TEST_LC(pMemberStrains->Create(1, 7, 0.0, -1.0, 0.05, 0.0, &pMemberStrain));
 
-   // Loading 2 - support displacement case
+   // Loading 2 - support Deflection case
    CComPtr<IFem2dLoading> pLoading2;
    TRY_TEST_LC(pLoadings->Create(2, &pLoading2));
 
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading2->get_JointDisplacements(&pJointDisplacements));
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement;
-   TRY_TEST_LC(pJointDisplacements->Create(1, 4, 0.4, -0.6, 0.0, &pJointDisplacement));
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading2->get_JointDeflections(&pJointDeflections));
+   CComPtr<IFem2dJointDeflection> pJointDeflection;
+   TRY_TEST_LC(pJointDeflections->Create(1, 4, 0.4, -0.6, 0.0, &pJointDeflection));
 
    // now let's add some POI's 
    CComPtr<IFem2dPOICollection> pPOIs;
@@ -248,11 +248,11 @@ void CTestPersistence::Test()
    TRY_TEST_HR(presults->ComputeReactions(1, 4, &fx, &fy, &mz));
    cmp1.R_4.SetSaved(fx,fy,mz);
 
-   // look at  poi displacements
+   // look at  poi Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 35, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 35, lotGlobal, &dx, &dy, &rz));
    cmp1.PD_35.SetSaved(dx,dy,rz);
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 1025, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 1025, lotGlobal, &dx, &dy, &rz));
    cmp1.PD_1025.SetSaved(dx,dy,rz);
 
    // next look at poi forces
@@ -268,10 +268,10 @@ void CTestPersistence::Test()
    TRY_TEST_HR(presults->ComputeReactions(2, 4, &fx, &fy, &mz));
    cmp2.R_4.SetSaved(fx,fy,mz);
 
-   // look at  poi displacements
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 35, lotGlobal, &dx, &dy, &rz));
+   // look at  poi Deflections
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 35, lotGlobal, &dx, &dy, &rz));
    cmp2.PD_35.SetSaved(dx,dy,rz);
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 1025, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 1025, lotGlobal, &dx, &dy, &rz));
    cmp2.PD_1025.SetSaved(dx,dy,rz);
 
    // next look at poi forces
@@ -301,10 +301,10 @@ void CTestPersistence::Test()
    TRY_TEST_HR(presults->ComputeReactions(1, 4, &fx, &fy, &mz));
    cmp1.R_4.SetLoaded(fx,fy,mz);
 
-   // look at  poi displacements
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 35, lotGlobal, &dx, &dy, &rz));
+   // look at  poi Deflections
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 35, lotGlobal, &dx, &dy, &rz));
    cmp1.PD_35.SetLoaded(dx,dy,rz);
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 1025, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 1025, lotGlobal, &dx, &dy, &rz));
    cmp1.PD_1025.SetLoaded(dx,dy,rz);
 
    // next look at poi forces
@@ -320,10 +320,10 @@ void CTestPersistence::Test()
    TRY_TEST_HR(presults->ComputeReactions(2, 4, &fx, &fy, &mz));
    cmp2.R_4.SetLoaded(fx,fy,mz);
 
-   // look at  poi displacements
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 35, lotGlobal, &dx, &dy, &rz));
+   // look at  poi Deflections
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 35, lotGlobal, &dx, &dy, &rz));
    cmp2.PD_35.SetLoaded(dx,dy,rz);
-   TRY_TEST_HR(presults->ComputePOIDisplacements(2, 1025, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(2, 1025, lotGlobal, &dx, &dy, &rz));
    cmp2.PD_1025.SetLoaded(dx,dy,rz);
 
    // next look at poi forces

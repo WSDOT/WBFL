@@ -37,7 +37,7 @@ public:
    virtual void GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector) = 0;
    virtual void GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dMbrFaceType face,Float64* pFx,Float64* pFy,Float64* pMz) = 0;
    virtual void GetDispVector(MbrType type,Float64 Length,Float64 Angle,Float64 EA, Float64 EI,Float64 *vector) = 0;
-   virtual void GetDisplacement(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+   virtual void GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
                                 Float64 EA,Float64 EI,
                                 Float64* pdx,Float64* pdy,Float64* prz) = 0;
    virtual void GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx,Float64* pFy,Float64* pMz) = 0;

@@ -81,7 +81,7 @@ END_COM_MAP()
 public:
 	STDMETHOD(get_PointLoads)(/*[out, retval]*/ IFem2dPointLoadCollection* *pVal);
 	STDMETHOD(get_JointLoads)(/*[out, retval]*/ IFem2dJointLoadCollection* *pVal);
-	STDMETHOD(get_JointDisplacements)(/*[out, retval]*/ IFem2dJointDisplacementCollection* *pVal);
+	STDMETHOD(get_JointDeflections)(/*[out, retval]*/ IFem2dJointDeflectionCollection* *pVal);
 	STDMETHOD(get_MemberStrains)(/*[out, retval]*/ IFem2dMemberStrainCollection* *pVal);
 	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IFem2dDistributedLoadCollection* *pVal);
 	STDMETHOD(get_ID)(/*[out, retval]*/ LoadCaseIDType *pVal);
@@ -95,15 +95,15 @@ private:
    typedef JointLoads::iterator                     JointLoadIterator;
    typedef CComObject<CDistributedLoadCollection>   DistributedLoads;
    typedef DistributedLoads::iterator               DistributedLoadIterator;
-   typedef CComObject<CJointDisplacementCollection> JointDisplacements;
-   typedef JointDisplacements::iterator             JointDisplacementIterator;
+   typedef CComObject<CJointDeflectionCollection> JointDeflections;
+   typedef JointDeflections::iterator             JointDeflectionIterator;
    typedef CComObject<CMemberStrainCollection>      MemberStrains;
    typedef MemberStrains::iterator                  MemberStrainIterator;
 
    JointLoads*         m_pJointLoads;
    DistributedLoads*   m_pDistributedLoads;
    MemberStrains*      m_pMemberStrains;
-   JointDisplacements* m_pJointDisplacements;
+   JointDeflections* m_pJointDeflections;
    PointLoads*         m_pPointLoads;
 
    ModelEvents*           m_pModel;

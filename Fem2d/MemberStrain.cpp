@@ -332,7 +332,7 @@ void CMemberStrain::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
 
    UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, type);
    Float64 dxl,dyl,rzl,dxr,dyr,rzr;
-   Beam.GetDisplacements( dxl, dyl, rzl, dxr, dyr, rzr);
+   Beam.GetDeflections( dxl, dyl, rzl, dxr, dyr, rzr);
 
    vector[0] = dxl;
    vector[1] = dyl;
@@ -349,7 +349,7 @@ void CMemberStrain::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem
    *pMz = 0;
 }
 
-void CMemberStrain::GetDisplacement(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+void CMemberStrain::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 {

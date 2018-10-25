@@ -105,6 +105,7 @@ public:
    STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
 	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
    STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal);

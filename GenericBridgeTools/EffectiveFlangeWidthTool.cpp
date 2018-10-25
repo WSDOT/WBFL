@@ -67,31 +67,31 @@ STDMETHODIMP CEffectiveFlangeWidthTool::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
 {
    Float64 twLeft, twRight;
-   return TributaryFlangeWidthBySSMbrEx(bridge,ssMbrID,distFromStartOfSSMbr,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
+   return TributaryFlangeWidthBySSMbrEx(bridge,ssMbrID,Xgp,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp,GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
 
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
-   return TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,twLeft,twRight,tribFlangeWidth);
+   ssMbr->GetDistanceFromStartOfSegment(Xgp,&Xs,&segIdx,&segment);
+   return TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,twLeft,twRight,tribFlangeWidth);
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
 {
    Float64 twLeft, twRight;
-   return TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
+   return TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
 {
    CHECK_IN(bridge);
    CHECK_RETVAL(twLeft);
@@ -101,21 +101,21 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
    Float64 leftSpacing;
    if ( leftSSMbrID == INVALID_ID )
    {
-      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbLeft,&leftSpacing);
+      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbLeft,&leftSpacing);
    }
    else
    {
-      m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,&leftSpacing);
+      m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,&leftSpacing);
    }
 
    Float64 rightSpacing;
    if ( rightSSMbrID == INVALID_ID )
    {
-      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbRight,&rightSpacing);
+      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbRight,&rightSpacing);
    }
    else
    {
-      m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,rightSSMbrID,&rightSpacing);
+      m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,rightSSMbrID,&rightSpacing);
    }
 
    if ( leftSSMbrID == INVALID_ID )
@@ -174,10 +174,10 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
    return S_OK;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
 {
    CComPtr<IEffectiveFlangeWidthDetails> details;
-   HRESULT hr = EffectiveFlangeWidthBySSMbrEx(bridge,ssMbrID,distFromStartOfSSMbr,leftSSMbrID,rightSSMbrID,&details);
+   HRESULT hr = EffectiveFlangeWidthBySSMbrEx(bridge,ssMbrID,Xgp,leftSSMbrID,rightSSMbrID,&details);
    if ( FAILED(hr) )
       return hr;
 
@@ -186,23 +186,23 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBrid
    return S_OK;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
 
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssMbr->GetDistanceFromStartOfSegment(Xgp,&Xs,&segIdx,&segment);
 
-   return EffectiveFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,details);
+   return EffectiveFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,details);
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
 {
    CComPtr<IEffectiveFlangeWidthDetails> details;
-   HRESULT hr = EffectiveFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&details);
+   HRESULT hr = EffectiveFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&details);
    if ( FAILED(hr) )
       return hr;
 
@@ -211,7 +211,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegment(IGenericBr
    return S_OK;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(details);
@@ -260,7 +260,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
 
    // Get the girder section at the desired location
    CComPtr<IGirderSection> section;
-   hr = GetGirderSectionBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,&section);
+   hr = GetGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,&section);
    if ( FAILED(hr) )
       return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 
@@ -292,8 +292,8 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
    Float64 left_overhang;
    Float64 right_overhang;
 
-   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbLeft,&left_overhang);
-   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbRight,&right_overhang);
+   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbLeft,&left_overhang);
+   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbRight,&right_overhang);
 
    // Get parameters for each top flange on the girder
    CollectionIndexType nFlanges;
@@ -354,13 +354,13 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                // Girder Spacing - (previous girder right flange location) - (this girder left flange location)
 
                Float64 s;
-               m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,&s);
+               m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,&s);
 
                CComPtr<IGirderSection> prev_section;
                CComPtr<ISegment> prev_segment;
 
                // this protects against the adjacent girder being shorter because of skews
-               Float64 x = distFromStartOfSegment;
+               Float64 x = Xs;
                //Float64 gdr_length;
                //span->get_GirderLineLength(gdrIdx-1,&gdr_length);
                //if ( gdr_length < location )
@@ -413,13 +413,13 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                // Need distance to exterior flange of previous girder (half)
                // Girder Spacing - (next girder left flange location) - (this girder right flange location)
                Float64 s;
-               m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,rightSSMbrID,&s);
+               m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,rightSSMbrID,&s);
 
                CComPtr<IGirderSection> next_section;
                CComPtr<ISegment> next_segment;
 
                // this protects against the adjacent girder being shorter because of skews
-               Float64 x = distFromStartOfSegment;
+               Float64 x = Xs;
                //Float64 gdr_length;
                //span->get_GirderLineLength(gdrIdx+1,&gdr_length);
                //if ( gdr_length < location )

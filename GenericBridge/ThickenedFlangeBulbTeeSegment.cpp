@@ -154,6 +154,11 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Length(Float64 *pVal)
    return m_pGirderLine->get_GirderLength(pVal);
 }
 
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_LayoutLength(Float64 *pVal)
+{
+   return m_pGirderLine->get_LayoutLength(pVal);
+}
+
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
@@ -244,9 +249,6 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongS
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
-
-   Float64 segLength;
-   get_Length(&segLength);
 
    // get dimensions of beam shape at start and end of segment
    CComPtr<IBulbTee> pcBeam;

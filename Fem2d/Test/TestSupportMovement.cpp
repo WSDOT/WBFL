@@ -137,46 +137,46 @@ void CTestSupportMovement::TestTruss()
    TRY_TEST_LC(pJointLoads->Create(4, 4, 0.0, -20000.0, 0.0, &pJointLoad4));
 
 
-   // apply joint displacements at joints 1 and 4
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading->get_JointDisplacements(&pJointDisplacements));
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement1;
-   TRY_TEST_LC(pJointDisplacements->Create(1, 1, 0.0, -0.60, 0.0, &pJointDisplacement1));
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement4;
-   TRY_TEST_LC(pJointDisplacements->Create(4, 4, -0.3, 0.0, 0.0, &pJointDisplacement4));
+   // apply joint Deflections at joints 1 and 4
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading->get_JointDeflections(&pJointDeflections));
+   CComPtr<IFem2dJointDeflection> pJointDeflection1;
+   TRY_TEST_LC(pJointDeflections->Create(1, 1, 0.0, -0.60, 0.0, &pJointDeflection1));
+   CComPtr<IFem2dJointDeflection> pJointDeflection4;
+   TRY_TEST_LC(pJointDeflections->Create(4, 4, -0.3, 0.0, 0.0, &pJointDeflection4));
 
    // test get_Loading
    LoadCaseIDType ld;
-   TRY_TEST_HR(pJointDisplacement4->get_Loading(&ld));
+   TRY_TEST_HR(pJointDeflection4->get_Loading(&ld));
    TRY_TEST(ld, 0);
 
-   // apply displacement to free dof
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement5;
-   TRY_TEST_LC(pJointDisplacements->Create(5, 2, -0.3, 0.0, 0.0, &pJointDisplacement5));
+   // apply Deflection to free dof
+   CComPtr<IFem2dJointDeflection> pJointDeflection5;
+   TRY_TEST_LC(pJointDeflections->Create(5, 2, -0.3, 0.0, 0.0, &pJointDeflection5));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
    Float64 dx, dy, rz;
-   TRY_TEST(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz),FEM2D_E_JOINT_DISP_TO_FIXED_DOF_ONLY);
+   TRY_TEST(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz),FEM2D_E_JOINT_DISP_TO_FIXED_DOF_ONLY);
    LoadIDType id;
-   TRY_TEST_LC(pJointDisplacements->Remove(5, atID,&id));
+   TRY_TEST_LC(pJointDeflections->Remove(5, atID,&id));
    TRY_TEST(id, 5);
 
-   // get joint displacements
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   // get joint Deflections
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );    // u1
    TRY_TEST_B( IsEqual(dy,-0.6) );    // u2
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-0.33847916063898) ); // u3
    TRY_TEST_B( IsEqual(dy,-0.36436867720659) ); // u4
    TRY_TEST_B( IsEqual(rz, 0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-0.32342783496097) );  // u5
    TRY_TEST_B( IsEqual(dy,-0.0092373090239415) );    // u6
    TRY_TEST_B( IsEqual(rz, 0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 4, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 4, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-0.3) ); // u7
    TRY_TEST_B( IsEqual(dy,-0.0) ); // u8
    TRY_TEST_B( IsEqual(rz, 0.0));
@@ -264,26 +264,26 @@ void CTestSupportMovement::TestBar()
    TRY_TEST_LC(pJointLoads->Create(0, 2, 25.0, 0.0, 0.0, &pJointLoad));
 
    // apply settlement load of -0.000862 to joint 3
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading->get_JointDisplacements(&pJointDisplacements));
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading->get_JointDeflections(&pJointDeflections));
 
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement;
-   TRY_TEST_LC(pJointDisplacements->Create(0, 3, -0.00086208, 0.0, 0.0, &pJointDisplacement));
+   CComPtr<IFem2dJointDeflection> pJointDeflection;
+   TRY_TEST_LC(pJointDeflections->Create(0, 3, -0.00086208, 0.0, 0.0, &pJointDeflection));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0025862132183908) );
    TRY_TEST_B( IsEqual(dy,  0.0) );
    TRY_TEST_B( IsEqual(rz,  0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, -0.00086208) );
    TRY_TEST_B( IsEqual(dy,  0.0 ));
    TRY_TEST_B( IsEqual(rz,  0.0));
@@ -367,30 +367,30 @@ void CTestSupportMovement::TestBeam()
    TRY_TEST_MC(pMembers->Create(1,  1,  2, EA, EI, &pMember1));
    TRY_TEST_MC(pMembers->Create(2,  2,  3, EA, EI, &pMember2));
 
-   // create load case and apply support displacement to joint 2
+   // create load case and apply support Deflection to joint 2
    CComPtr<IFem2dLoadingCollection> pLoadings;
    TRY_TEST_HR(pmodel->get_Loadings(&pLoadings));
    CComPtr<IFem2dLoading> pLoading;
    TRY_TEST_LC(pLoadings->Create(0, &pLoading));
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading->get_JointDisplacements(&pJointDisplacements));
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement;
-   TRY_TEST_LC(pJointDisplacements->Create(0, 2, 0.0, -0.25, 0.0, &pJointDisplacement));
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading->get_JointDeflections(&pJointDeflections));
+   CComPtr<IFem2dJointDeflection> pJointDeflection;
+   TRY_TEST_LC(pJointDeflections->Create(0, 2, 0.0, -0.25, 0.0, &pJointDeflection));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );       // u1
    TRY_TEST_B( IsEqual(dy, 0.0) );       // u2
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) ); // u3
    TRY_TEST_B( IsEqual(dy,-0.25) ); // u4
    TRY_TEST_B( IsEqual(rz, -0.000892857));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );  // u5
    TRY_TEST_B( IsEqual(dy, 0.0) );    // u6
    TRY_TEST_B( IsEqual(rz, 0.00357142));
@@ -432,23 +432,23 @@ void CTestSupportMovement::TestBeam()
    TRY_TEST_MC(pJoint2->Free());
    TRY_TEST_MC(pJoint3->Support());
    LoadIDType id;
-   TRY_TEST_LC(pJointDisplacements->Remove(0,atID,&id));
+   TRY_TEST_LC(pJointDeflections->Remove(0,atID,&id));
    TRY_TEST(id, 0);
 
    // add a rotation of 0.1 at joint 3
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement2;
-   TRY_TEST_LC(pJointDisplacements->Create(0, 3, 0.0, 0.0, 0.1, &pJointDisplacement2));
+   CComPtr<IFem2dJointDeflection> pJointDeflection2;
+   TRY_TEST_LC(pJointDeflections->Create(0, 3, 0.0, 0.0, 0.1, &pJointDeflection2));
 
-   // get joint displacements
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   // get joint Deflections
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy,-3.0) );
    TRY_TEST_B( IsEqual(rz,-0.025));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.1));

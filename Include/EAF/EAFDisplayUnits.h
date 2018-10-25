@@ -48,7 +48,7 @@ interface IEAFDisplayUnits : IUnknown
    virtual const unitmgtLengthData&         GetComponentDimUnit() = 0;
    virtual const unitmgtLengthData&         GetXSectionDimUnit() = 0;
    virtual const unitmgtLengthData&         GetSpanLengthUnit() = 0;
-   virtual const unitmgtLengthData&         GetDisplacementUnit() = 0;
+   virtual const unitmgtLengthData&         GetDeflectionUnit() = 0;
    virtual const unitmgtLengthData&         GetAlignmentLengthUnit() = 0;
    virtual const unitmgtLength2Data&        GetAreaUnit() = 0;
    virtual const unitmgtLength4Data&        GetMomentOfInertiaUnit() = 0;

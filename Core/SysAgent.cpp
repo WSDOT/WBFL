@@ -241,8 +241,11 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
       {
          AFX_MANAGE_STATE(AfxGetAppModuleState());
          AfxGetMainWnd()->EnableWindow(TRUE);
-         m_pActiveWnd->EnableWindow(TRUE);
-         m_pActiveWnd->SetActiveWindow();
+         if ( m_pActiveWnd )
+         {
+            m_pActiveWnd->EnableWindow(TRUE);
+            m_pActiveWnd->SetActiveWindow();
+         }
       }
    }
    else

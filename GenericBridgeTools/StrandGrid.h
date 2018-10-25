@@ -72,6 +72,7 @@ public:
    // Grid points represent holes where strands can go
    // Grid points use a compacted numbering sequence where points with positive X values
    // are placed symmetrically (e.g., represent two actual strand locations)
+   // Grid points are in Girder Section Coordinates (0,0 is at top center of girder)
    STDMETHOD(AddGridPoint)(/*[in]*/IPoint2d* point);
    STDMETHOD(AddGridPoints)(/*[in]*/IPoint2dCollection* points);
    STDMETHOD(get_GridPointCount)(/*[out,retval]*/GridIndexType* count);

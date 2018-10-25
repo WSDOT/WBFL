@@ -37,7 +37,7 @@ class ModelEvents;
 class CModel;
 class CMember;
 class CJointLoad;
-class CJointDisplacement;
+class CJointDeflection;
 class CLoading;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -103,9 +103,9 @@ private:
    LONG   m_CondensedDOF[NumDof];         // Condensed DOF numbers
    LONG   m_GlobalDOF[NumDof];            // Global DOF numbers
    Float64 m_jntLoad[NumDof];              // Joint loads
-   Float64 m_dispLoad[NumDof];             // Joint displacement load
+   Float64 m_dispLoad[NumDof];             // Joint deflection load
    bool   m_dispLoadApplied;              //  was applied?
-   Float64 m_Disp[NumDof];                 // displacements
+   Float64 m_Disp[NumDof];                 // deflections
    Float64 m_Reaction[NumDof];             // reactions
 
    typedef std::set<CMember*>               MemberPointerContainer;
@@ -124,14 +124,14 @@ private:
 
    void ClearLoads();
    void ApplyLoad(CJointLoad *ld);
-   void ApplyLoad(CJointDisplacement *ld);
-   bool WasDisplacementLoadApplied() const 
+   void ApplyLoad(CJointDeflection *ld);
+   bool WasDeflectionLoadApplied() const 
    { return m_dispLoadApplied; }
    void GetFglobal(Float64 *v);
-   void ComputeJointDisplacementForces(Float64* f);
+   void ComputeJointDeflectionForces(Float64* f);
 
-   void SetDisplacement(const Float64 *disp);
-   void GetDisplacement(Float64 *disp) const;
+   void SetDeflection(const Float64 *disp);
+   void GetDeflection(Float64 *disp) const;
 
    void ComputeReactions();
    void GetReactions(Float64 *react) const;

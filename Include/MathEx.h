@@ -325,6 +325,14 @@ inline T PercentDifference(const T& a,const T& b)
    return ((fabs(a-b)/((a+b)/2)))*(T)100;
 }
 
+// returns true if value is an even number
+template <class T>
+inline bool IsEven(const T& value) { return value % 2 == 0; }
+
+// returns true if value is an odd number
+template <class T>
+inline bool IsOdd(const T& value) { return !IsEven(value); }
+
 #undef  M_PI
 #define M_PI        3.1415926535897932384626433832795
 

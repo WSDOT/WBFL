@@ -722,21 +722,21 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
    return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    // Validate input
    CHECK_RETOBJ(section);
    CHECK_IN(bridge);
 
-   return CreateCompositeSection(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
+   return CreateCompositeSection(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
 }
 
-STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateNetDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section)
 {
    CHECK_IN(bridge);
    CHECK_RETOBJ(section);
 
-   return CreateDeckSection(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,spmNet,section);
+   return CreateDeckSection(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,spmNet,section);
 }
 
 STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,BarrierSectionCut bsc,ISection** section)
@@ -925,10 +925,10 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,
    return CreateGirderShape(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
 }
 
-HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    CComPtr<ISection> ncsection;
-   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,distFromStartOfSegment,stageIdx,sectionPropMethod,&ncsection);
+   HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,&ncsection);
    if ( FAILED(hr) )
       return hr;
 
@@ -940,7 +940,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
       return S_OK;
 
    CComPtr<ISection> deckSection;
-   hr = CreateDeckSection(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,&deckSection);
+   hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,&deckSection);
    if ( FAILED(hr) )
       return hr;
 
@@ -977,7 +977,7 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    CComPtr<ICompositeSectionEx> cmpSection;
    cmpSection.CoCreateInstance(CLSID_CompositeSectionEx);
@@ -1010,13 +1010,13 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
 
    if ( IsZero(Econc) )
    {
-      // Deck isn't cast yet
-      return S_OK;
+      // Deck isn't cast yet, we are done
+      return S_FALSE;
    }
 
    // Need to get effective flange width of the slab
    Float64 eff_flange_width;
-   HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&eff_flange_width);
+   HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&eff_flange_width);
    if ( FAILED(hr) )
       return hr;
 
@@ -1048,7 +1048,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
       deck->get_RebarLayout(&rebarLayout);
 
       CComPtr<IRebarSection> rebarSection;
-      rebarLayout->CreateRebarSection(ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&rebarSection);
+      rebarLayout->CreateRebarSection(ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&rebarSection);
 
       CComPtr<IEnumRebarSectionItem> enumRebarSectionItem;
       rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
@@ -1123,7 +1123,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    return S_OK;
 }
 
-HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
+HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** ppSection)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
@@ -1137,11 +1137,9 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    Float64 segment_layout_length;
    girderLine->get_LayoutLength(&segment_layout_length);
 
-   distFromStartOfSegment = ::ForceIntoRange(0.0,distFromStartOfSegment,segment_layout_length);
-
    // this is the primary section (the girder)
    CComPtr<ISection> section;
-   HRESULT hr = segment->get_Section(stageIdx,distFromStartOfSegment,&section);
+   HRESULT hr = segment->get_Section(stageIdx,Xs,&section);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
       return hr;
@@ -1237,7 +1235,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    girderLine->get_EndDistance(etStart,&endDistance);
 
    // Distace measure from the face of the segment (not from the CLPier/CLTempSupport)
-   Float64 distFromFaceOfSegment = distFromStartOfSegment - (brgOffset-endDistance);
+   Float64 distFromFaceOfSegment = Xs - (brgOffset-endDistance);
    bool bIsPointOnSegment = ( 0 <= distFromFaceOfSegment && distFromFaceOfSegment <= girder_length ) ? true : false;
 
    // Add Strands and Rebar
@@ -1273,6 +1271,12 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             else
                girder->get_TemporaryStrandPositions(distFromFaceOfSegment,&strandLocations);
 
+#if defined LUMP_STRANDS
+            Float64 A  = 0;
+            Float64 AX = 0;
+            Float64 AY = 0;
+#endif // LUMP_STRANDS
+
             CComPtr<IPoint2d> point;
             CComPtr<IEnumPoint2d> enum_points;
             strandLocations->get__Enum(&enum_points);
@@ -1285,6 +1289,62 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
                Float64 Aps;
                strandMaterial->get_NominalArea(&Aps);
+
+#if defined LUMP_STRANDS
+               A += Aps;
+               AY += Aps*y;
+               AX += Aps*x;
+#else
+               // models strand as an object with area. Moment of inertia is taken to be zero
+               CComPtr<IGenericShape> strandShape;
+               strandShape.CoCreateInstance(CLSID_GenericShape);
+               strandShape->put_Area(Aps);
+               strandShape->put_Ixx(0);
+               strandShape->put_Iyy(0);
+               strandShape->put_Ixy(0);
+               strandShape->put_Perimeter(0);
+
+               CComPtr<IPoint2d> centroid;
+               strandShape->get_Centroid(&centroid);
+
+               centroid->Move(xTop + x,yTop + y);
+
+               // If the strand doesn't have strength or density in this stage, then it
+               // doesn't really exist in the section. 
+               // Make the foreground material properties the same as the background
+               // material properties. This will eliminate strand bar from the section
+               // (e.g EA = Aps(Estrand - Econc) = Aps(Econc - Econc) = 0)
+               if ( sectionPropMethod == spmTransformed )
+               {
+                  if ( IsZero(Estrand) )
+                     Estrand = Econc;
+
+                  if ( IsZero(Dstrand) )
+                     Dstrand = Dconc;
+               }
+               else if ( sectionPropMethod == spmNet )
+               {
+                  // If we are computing net properties, we want to
+                  // model the hole and not the strand
+                  // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
+                  Estrand = 0;
+                  Dstrand = 0;
+               }
+
+               // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
+               // models the strand and makes a hole in the concrete for the strand
+               CComQIPtr<IShape> strand_shape(strandShape);
+               compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
+#endif // LUMP_STRANDS
+               point.Release();
+            }
+
+#if defined LUMP_STRANDS
+            if ( !IsZero(A) )
+            {
+               Float64 Aps = A;
+               Float64 x = AX/A;
+               Float64 y = AY/A;
 
                // models strand as an object with area. Moment of inertia is taken to be zero
                CComPtr<IGenericShape> strandShape;
@@ -1326,8 +1386,8 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                // models the strand and makes a hole in the concrete for the strand
                CComQIPtr<IShape> strand_shape(strandShape);
                compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
-               point.Release();
             }
+#endif // LUMP_STRANDS
          } // End of Strand
 
          // Layout girder rebar
@@ -1366,7 +1426,9 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    DuctIndexType nTendons = 0; // # tendons is the same as # ducts in this context
    if ( tendons )
+   {
       tendons->get_Count(&nTendons);
+   }
 
    for ( DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++ )
    {
@@ -1387,7 +1449,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
       // create a circle for the tendon
       Float64 distFromStart; // measured in girder path coordinates
-      ssmbr->GetDistanceFromStart(segIdx,distFromStartOfSegment,&distFromStart);
+      ssmbr->GetDistanceFromStart(segIdx,Xs,&distFromStart);
 
 
       // convert distFromStart to be measured from the actual physical start of the girder

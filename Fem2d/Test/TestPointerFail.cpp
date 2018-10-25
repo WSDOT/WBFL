@@ -168,7 +168,7 @@ void CTestPointerFail::Test()
    TRY_TEST(pLoading->get_ID(NULL),E_POINTER);
    TRY_TEST(pLoading->get_JointLoads(NULL),E_POINTER);
    TRY_TEST(pLoading->get_DistributedLoads(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_JointDisplacements(NULL),E_POINTER);
+   TRY_TEST(pLoading->get_JointDeflections(NULL),E_POINTER);
    TRY_TEST(pLoading->get_PointLoads(NULL),E_POINTER);
    TRY_TEST(pLoading->get_MemberStrains(NULL),E_POINTER);
 
@@ -197,32 +197,32 @@ void CTestPointerFail::Test()
    TRY_TEST(pJointLoad->get_Loading(NULL),E_POINTER);
 
    /////////////////////////////////////////////
-   // JointDisplacements
+   // JointDeflections
    // null test pointers
-   IFem2dEnumJointDisplacement** ppNullJointDisplacementEnum=0;
-   IFem2dJointDisplacement* pNullJointDisplacement=0;
-   IFem2dJointDisplacement** ppNullJointDisplacement=0;
+   IFem2dEnumJointDeflection** ppNullJointDeflectionEnum=0;
+   IFem2dJointDeflection* pNullJointDeflection=0;
+   IFem2dJointDeflection** ppNullJointDeflection=0;
 
-   // JointDisplacements
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading->get_JointDisplacements(&pJointDisplacements));
+   // JointDeflections
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading->get_JointDeflections(&pJointDeflections));
 
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement;
-   TRY_TEST_LC(pJointDisplacements->Create(1, 1, 0.0, 0.0, 0.0, &pJointDisplacement));
+   CComPtr<IFem2dJointDeflection> pJointDeflection;
+   TRY_TEST_LC(pJointDeflections->Create(1, 1, 0.0, 0.0, 0.0, &pJointDeflection));
 
-   TRY_TEST(pJointDisplacements->Create(1, 1, 0.0, 0.0, 0.0, NULL),E_POINTER);
-   TRY_TEST(pJointDisplacements->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pJointDisplacements->Find(0, NULL),E_POINTER);
-   TRY_TEST(pJointDisplacements->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pJointDeflections->Create(1, 1, 0.0, 0.0, 0.0, NULL),E_POINTER);
+   TRY_TEST(pJointDeflections->get_Item(0, NULL),E_POINTER);
+   TRY_TEST(pJointDeflections->Find(0, NULL),E_POINTER);
+   TRY_TEST(pJointDeflections->get__EnumElements(NULL),E_POINTER);
 
-   // JointDisplacement
-   TRY_TEST(pJointDisplacement->get_ID(NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->get_JointID(NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->get_Dx(NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->get_Dy(NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->get_Rz(NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->GetDisplacement(NULL,NULL,NULL),E_POINTER);
-   TRY_TEST(pJointDisplacement->get_Loading(NULL),E_POINTER);
+   // JointDeflection
+   TRY_TEST(pJointDeflection->get_ID(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_JointID(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Dx(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Dy(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Rz(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->GetDeflection(NULL,NULL,NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Loading(NULL),E_POINTER);
 
    /////////////////////////////////////////////
    // PointLoads
@@ -305,9 +305,9 @@ void CTestPointerFail::Test()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   TRY_TEST(presults->ComputeJointDisplacements(0, 4, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputeMemberDisplacements(0, 1, NULL, NULL, NULL, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputePOIDisplacements(2, 10,  lotGlobal, NULL, NULL, NULL),E_POINTER);
+   TRY_TEST(presults->ComputeJointDeflections(0, 4, NULL, NULL, NULL),E_POINTER);
+   TRY_TEST(presults->ComputeMemberDeflections(0, 1, NULL, NULL, NULL, NULL, NULL, NULL),E_POINTER);
+   TRY_TEST(presults->ComputePOIDeflections(2, 10,  lotGlobal, NULL, NULL, NULL),E_POINTER);
    TRY_TEST(presults->ComputeReactions(0, 3, NULL, NULL, NULL),E_POINTER);
    TRY_TEST(presults->ComputeMemberForces(0, 6, NULL, NULL, NULL, NULL, NULL, NULL),E_POINTER);
    TRY_TEST(presults->ComputePOIForces(0, 14, mftRight, lotGlobal, NULL, NULL, NULL),E_POINTER);
