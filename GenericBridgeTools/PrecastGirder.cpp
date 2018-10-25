@@ -308,6 +308,31 @@ STDMETHODIMP CPrecastGirder::GetHarpingPoints(Float64* hp1,Float64* hp2)
    return S_OK;
 }
 
+STDMETHODIMP CPrecastGirder::SetEndHarpingPoints(Float64 hp1,Float64 hp2)
+{
+   // must be positive values... HarpPointMeasure will indicate if this is fractional
+   if ( hp1 < 0 || hp2 < 0 )
+   {
+      ATLASSERT(false);
+      return E_INVALIDARG;
+   }
+
+   m_HPStart = hp1;
+   m_HPEnd = hp2;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::GetEndHarpingPoints(Float64* hp1,Float64* hp2)
+{
+   CHECK_RETVAL(hp1);
+   CHECK_RETVAL(hp2);
+
+   *hp1 = m_HPStart;
+   *hp2 = m_HPEnd;
+
+   return S_OK;
+}
+
 STDMETHODIMP CPrecastGirder::put_HarpingPointMeasure(HarpPointMeasure measure)
 {
    m_HPMeasure = measure;
@@ -340,6 +365,15 @@ STDMETHODIMP CPrecastGirder::GetHarpingPointLocations(Float64* hp1,Float64* hp2)
    CHECK_RETVAL(hp2);
 
    GetHarpPointLocations(*hp1,*hp2);
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::GetEndHarpingPointLocations(Float64* hp1,Float64* hp2)
+{
+   CHECK_RETVAL(hp1);
+   CHECK_RETVAL(hp2);
+
+   GetEndHarpPointLocations(*hp1,*hp2);
    return S_OK;
 }
 
@@ -598,18 +632,19 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
    CHECK_RETOBJ(points);
 
    // may need to interpolate
-   Float64 gdrLength, leftHP, rightHP;
+   Float64 gdrLength, leftEndHP, leftHP, rightHP, rightEndHP;
    get_GirderLength(&gdrLength);
    GetHarpingPointLocations(&leftHP, &rightHP);
+   GetEndHarpingPointLocations(&leftEndHP,&rightEndHP);
 
-   if ( IsEqual(distFromStart,0.0) )
+   if ( ::IsLE(distFromStart,leftEndHP) )
    {
-      // exactly at start of girder
+      // in start portion of harped strands governed by the start grid
       return m_HarpGridEnd[etStart]->GetStrandPositionsEx(fill,points);
    }
-   else if ( IsEqual(distFromStart,gdrLength) )
+   else if ( ::IsGE(rightEndHP,distFromStart) )
    {
-      // exactly at girder end
+      // in end portion of the harped strands governed by the end grid
       return m_HarpGridEnd[etEnd]->GetStrandPositionsEx(fill,points);
    }
    else if ( leftHP <= distFromStart && distFromStart <= rightHP )
@@ -623,7 +658,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
-   else if ( distFromStart < leftHP )
+   else if ( leftEndHP < distFromStart && distFromStart < leftHP )
    {
       // on the sloped part of the harped strands at the left end of the girder
 
@@ -632,20 +667,20 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
       HRESULT hr = ComputeHpFill(fill, &hp_fill);
       ATLASSERT( SUCCEEDED(hr) );
 
-      hr = GetStrandPositions(distFromStart, leftHP, fill, m_HarpGridEnd[etStart], hp_fill, m_HarpGridHp[etStart], points);
+      hr = GetStrandPositions(distFromStart-leftEndHP, leftHP-leftEndHP, fill, m_HarpGridEnd[etStart], hp_fill, m_HarpGridHp[etStart], points);
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
    else
    {
-      ATLASSERT( rightHP < distFromStart );
+      ATLASSERT( rightHP < distFromStart && distFromStart < rightEndHP );
       // on the sloped part of the harped strands at right end of girder
       // compute harped fill at hp
       CComPtr<IIndexArray> hp_fill;
       HRESULT hr = ComputeHpFill(fill, &hp_fill);
       ATLASSERT( SUCCEEDED(hr) );
 
-      hr = GetStrandPositions(distFromStart - rightHP, gdrLength - rightHP, hp_fill, m_HarpGridHp[etEnd], fill, m_HarpGridEnd[etEnd], points);
+      hr = GetStrandPositions(distFromStart - rightHP, rightEndHP - rightHP, hp_fill, m_HarpGridHp[etEnd], fill, m_HarpGridEnd[etEnd], points);
       ATLASSERT( SUCCEEDED(hr) );
       return hr;
    }
@@ -1647,6 +1682,14 @@ void CPrecastGirder::GetHarpPointLocations(Float64& hp1,Float64& hp2)
    ATLASSERT( hp1 <= hp2 );
 }
 
+void CPrecastGirder::GetEndHarpPointLocations(Float64& hp1,Float64& hp2)
+{
+   hp1 = GetHarpPointLocation(m_HPStart,false);
+   hp2 = GetHarpPointLocation(m_HPEnd,true);
+
+   ATLASSERT( hp1 <= hp2 );
+}
+
 Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
 {
    Float64 left_end_distance;
@@ -1695,10 +1738,9 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
       break;
    }
 
-   ATLASSERT( 0 < result && result < gdr_length );
+   ATLASSERT( 0 <= result && result <= gdr_length );
    return result;
 }
-
 
 HRESULT CPrecastGirder::GetStrandPositions(Float64 distFromStart, Float64 distBetweenGrids, IIndexArray* startFill, IStrandGridFiller* pStartGrid, IIndexArray* endFill, IStrandGridFiller* pEndGrid, IPoint2dCollection** points)
 {

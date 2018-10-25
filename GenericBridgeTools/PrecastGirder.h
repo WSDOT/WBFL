@@ -50,8 +50,10 @@ public:
       // default harping point... fraction of girder length, measured from left end
       m_HPMeasure = hpmFractionOfGirderLength;
       m_HPReference = hprEndOfGirder;
+      m_HPStart = 0.0;
       m_HP1 = 0.4;
-      m_HP2 = 0.6;
+      m_HP2 = 0.4;
+      m_HPEnd = 0.0;
       m_AllowOddNumberOfHarpedStrands=VARIANT_FALSE;
       m_UseDifferentHarpedGirdAtEnds=VARIANT_TRUE;
 
@@ -111,7 +113,10 @@ private:
    CComPtr<IIndexArray> m_OddHpFill;
    HRESULT ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill);
 
-   Float64 m_HP1, m_HP2; // harping point location
+   // HPStart and HP1 are measured from the left end of the girder
+   // HPEnd and HP2 are measured from the right end of the girder
+   Float64 m_HPStart, m_HPEnd; // location of the m_HarpGridEnd harp grids
+   Float64 m_HP1, m_HP2; // harping point location (location of the m_HarpGridHp harp grids)
    HarpPointReference m_HPReference; // describes from where the harping point is measured
    HarpPointMeasure m_HPMeasure; // describes how the harping point is located
 
@@ -136,6 +141,7 @@ private:
    } m_Lengths;
   
    void GetHarpPointLocations(Float64& hp1,Float64& hp2);
+   void GetEndHarpPointLocations(Float64& hp1,Float64& hp2);
    Float64 GetHarpPointLocation(Float64 hp,bool bRight);
    Float64 GetHarpPatternFillAdjustment();
    HRESULT UpdateMaxStrandFill();
@@ -179,6 +185,8 @@ public:
 
 	STDMETHOD(SetHarpingPoints)(/*[in]*/Float64 hp1,/*[in]*/Float64 hp2);
 	STDMETHOD(GetHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
+	STDMETHOD(SetEndHarpingPoints)(/*[in]*/Float64 hp1,/*[in]*/Float64 hp2);
+	STDMETHOD(GetEndHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
 	STDMETHOD(put_HarpingPointMeasure)(/*[in]*/ HarpPointMeasure measure);
 	STDMETHOD(get_HarpingPointMeasure)(/*[out,retval]*/ HarpPointMeasure* measure);
 	STDMETHOD(put_HarpingPointReference)(/*[in]*/ HarpPointReference hpRef);
@@ -188,6 +196,7 @@ public:
    STDMETHOD(put_MinHarpPointDistance)(/*[in]*/Float64 minHpDist);
 	STDMETHOD(get_MinHarpPointDistance)(/*[out,retval]*/Float64* minHpDist);
 	STDMETHOD(GetHarpingPointLocations)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
+	STDMETHOD(GetEndHarpingPointLocations)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
 
    STDMETHOD(get_SpanLength)(/*[out,retval]*/ Float64* length);
    STDMETHOD(get_GirderLength)(/*[out,retval]*/ Float64* length);
