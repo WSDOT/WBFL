@@ -104,6 +104,7 @@
 #include "RebarSectionItem.h"
 #include "RebarSection.h"
 #include "RebarRowPattern.h"
+#include "RebarRowFacePattern.h"
 #include "CrossBeamRebarPattern.h"
 #include "FixedLengthRebarLayoutItem.h"
 #include "BridgeDeckRebarLayoutItem.h"
@@ -173,6 +174,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_RebarLayout,CRebarLayout)
    OBJECT_ENTRY(CLSID_RebarFactory,CRebarFactory)
    OBJECT_ENTRY(CLSID_RebarRowPattern,CRebarRowPattern)
+   OBJECT_ENTRY(CLSID_RebarRowFacePattern,CRebarRowFacePattern)
    OBJECT_ENTRY(CLSID_CrossBeamRebarPattern,CCrossBeamRebarPattern)
    OBJECT_ENTRY(CLSID_FixedLengthRebarLayoutItem,CFixedLengthRebarLayoutItem)
    OBJECT_ENTRY(CLSID_BridgeDeckRebarLayoutItem,CBridgeDeckRebarLayoutItem)

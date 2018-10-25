@@ -319,6 +319,7 @@ public:
    STDMETHOD(GetStraightStrandBondedLengthByGridIndex)(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, 
                                                /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
+   STDMETHOD(get_SuperstructureMemberSegment)(/*[out,retval]*/ISuperstructureMemberSegment** segment);
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
    STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
 

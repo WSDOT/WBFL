@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,46
- PRODUCTVERSION 4,0,0,46
+ FILEVERSION 4,0,0,47
+ PRODUCTVERSION 4,0,0,47
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,7 +74,7 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "4.0.0.46\0"
+            VALUE "FileVersion", "4.0.0.47\0"
             VALUE "InternalName", "GenericBridge\0"
             VALUE "LegalCopyright", "Copyright © 1999-2016, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -82,7 +82,7 @@ BEGIN
             VALUE "OriginalFilename", "GenericBridge.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.46\0"
+            VALUE "ProductVersion", "4.0.0.47\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -154,6 +154,7 @@ IDR_REBAR               REGISTRY DISCARDABLE    "Rebar.rgs"
 IDR_REBARSECTIONITEM    REGISTRY DISCARDABLE    "RebarSectionItem.rgs"
 IDR_REBARSECTION        REGISTRY DISCARDABLE    "RebarSection.rgs"
 IDR_REBARROWPATTERN     REGISTRY DISCARDABLE    "RebarRowPattern.rgs"
+IDR_REBARROWFACEPATTERN REGISTRY DISCARDABLE    "RebarRowFacePattern.rgs"
 IDR_CROSSBEAMREBARPATTERN     REGISTRY DISCARDABLE    "CrossBeamRebarPattern.rgs"
 IDR_REBARLAYOUT         REGISTRY DISCARDABLE    "RebarLayout.rgs"
 IDR_REBARFACTORY        REGISTRY DISCARDABLE    "RebarFactory.rgs"

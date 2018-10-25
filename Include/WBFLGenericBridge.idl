@@ -107,6 +107,7 @@ library WBFLGenericBridge
    interface IUGirderSection;
    interface IUGirderSection2;
    interface ITendon;
+   interface ISegment;
    
 // Enumerators
 
@@ -334,6 +335,13 @@ library WBFLGenericBridge
       clmPlaneOfPier
    } CurbLineMeasurementType;
 
+   typedef [public,helpstring("enum FaceType"),uuid(247F2AEF-880D-4236-ADE2-041A6CE96E64)]
+   enum
+   {
+      ftTopFace,
+      ftBottomFace
+   } FaceType;
+
 // Interface definitions
 
    [
@@ -489,7 +497,30 @@ library WBFLGenericBridge
       [propget,helpstring("property Profile")] HRESULT Profile([in]IndexType barIdx,[out,retval]IPoint2dCollection** ppProfile);
 	};
 
-   // A pattern of rebar defined by a horizontal or vertical row
+   // A pattern of rebar defined by a horizontal or vertical row and referenced to the face of the associated segment
+   [
+      object,
+      uuid(B818106D-4689-481d-BC87-9C4154355DB0),
+      oleautomation,
+      helpstring("IRebarRowFacePattern"),
+      pointer_default(unique)
+   ]
+   interface IRebarRowFacePattern : IRebarPattern
+   {
+      [propputref,helpstring("property Segment")] HRESULT Segment([in]ISegment* pSegment);
+      [propget,helpstring("property Segment")] HRESULT Segment([out,retval]ISegment** pSegment);
+      [propput,helpstring("property Face")] HRESULT Face([in]FaceType faceType);
+      [propget,helpstring("property Face")] HRESULT Face([out,retval]FaceType* faceType);
+      [propput,helpstring("property Offset")] HRESULT Offset([in]Float64 offset);
+      [propget,helpstring("property Offset")] HRESULT Offset([out,retval]Float64* offset);
+		[propput,helpstring("property Count")] HRESULT Count([in]RowIndexType count);
+		[propput,helpstring("property Spacing")] HRESULT Spacing([in]Float64 spacing);
+		[propget,helpstring("property Spacing")] HRESULT Spacing([out,retval]Float64* spacing);
+		[propput,helpstring("property Oreintation")] HRESULT Orientation([in]RebarRowOrientation oreintation);
+		[propget,helpstring("property Oreintation")] HRESULT Orientation([out,retval]RebarRowOrientation* oreintation);
+   };
+
+   // A pattern of rebar defined by a horizontal or vertical row with rebars anchored at a point
 	[
 		object,
 		uuid(200FB0A9-E906-4b1e-A2D0-01BBE933CB6C),
@@ -2082,6 +2113,15 @@ library WBFLGenericBridge
 	{
 		[default] interface IRebarSection;
 	};
+
+   [
+      uuid(0FBA0FAD-AF0B-4969-84DF-BA49A7D352B6),
+      helpstring("RebarRowFacePattern")
+   ]
+   coclass RebarRowFacePattern
+   {
+      [default] interface IRebarRowFacePattern;
+   }
 
 	[
 		uuid(5F9006C8-B6A7-488e-88BB-24304ED93E4D),
