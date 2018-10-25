@@ -36,6 +36,19 @@ static char THIS_FILE[] = __FILE__;
 const long g_AlignmentKey = 0;
 const long g_CLBridgeKey  = 1;
 
+HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = -1*( (spanIdx+1)*PIER_ID_OFFSET 
+               +(gdrIdx+1)*GIRDER_ID_OFFSET
+               +(2)*LOCATION_OFFSET
+               +(endType)*SIDE_OFFSET
+               );
+
+   return S_OK;
+}
+
 HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal)
 {
    CHECK_RETVAL(pVal);
@@ -76,6 +89,27 @@ HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,long* pVal)
    CHECK_RETVAL(pVal);
 
    (*pVal) = -1*(pierIdx+1)*BRIDGE_ID_OFFSET;
+
+   return S_OK;
+}
+
+HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2d* *left,IPoint2d* *right)
+{
+   CComPtr<ICogoInfo> cogoInfo;
+   bridge->get_CogoInfo(&cogoInfo);
+
+   CComPtr<ICogoModel> cogoModel;
+   bridge->get_CogoModel(&cogoModel);
+
+   CComPtr<IPointCollection> points;
+   cogoModel->get_Points(&points);
+
+   long id;
+   cogoInfo->get_PierPointID(pierIdx,pptLeft,&id);
+   points->get_Item(id,left);
+
+   cogoInfo->get_PierPointID(pierIdx,pptRight,&id);
+   points->get_Item(id,right);
 
    return S_OK;
 }

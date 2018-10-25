@@ -307,6 +307,8 @@ void CGenericBridge::DoUpdateBridgeModel()
          long lineID;
          ::GB_GetGirderLineId(spanIdx,gdrIdx,&lineID);
          lineSegments->Add(lineID,objA,objB,&objLS);
+
+         UpdateGirderEndPoints(spanIdx,gdrIdx);
       }
    }
 }
@@ -452,28 +454,44 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
    // get intersection point of pier and alignment
    CComPtr<IPoint2d> pntStartPier, pntEndPier;
-   long pointID;
-   ::GB_GetPierAlignmentPointId(prevPierIdx,&pointID);
-   points->get_Item(pointID,&pntStartPier);
+   long startPierPointID;
+   ::GB_GetPierAlignmentPointId(prevPierIdx,&startPierPointID);
+   points->get_Item(startPierPointID,&pntStartPier);
 
-   ::GB_GetPierAlignmentPointId(nextPierIdx,&pointID);
-   points->get_Item(pointID,&pntEndPier);
+   long endPierPointID;
+   ::GB_GetPierAlignmentPointId(nextPierIdx,&endPierPointID);
+   points->get_Item(endPierPointID,&pntEndPier);
 
    // create a line to represent the CL of start pier
    CComPtr<ILine2d> objStartPierLine;
    objStartPierLine.CoCreateInstance(CLSID_Line2d);
 
    CComPtr<IVector2d> v;
-   v.CoCreateInstance(CLSID_Vector2d);
+   CComPtr<IPoint2d> p;
+   objStartPierLine->GetExplicit(&p,&v);
    v->put_Direction(prevPierDirection);
-
    objStartPierLine->SetExplicit(pntStartPier,v);
+
+   // create a line to represent the line normal to the alignment at the start pier
+   CComPtr<ILine2d> objStartPierNormalLine;
+   objStartPierNormalLine.CoCreateInstance(CLSID_Line2d);
+   CComPtr<IDirection> objStartPierNormal;
+   alignment->Normal(CComVariant(objPrevPierStation),&objStartPierNormal);
+   Float64 dir;
+   objStartPierNormal->get_Value(&dir);
+   p.Release();
+   v.Release();
+   objStartPierNormalLine->GetExplicit(&p,&v);
+   v->put_Direction(dir);
+   objStartPierNormalLine->SetExplicit(pntStartPier,v);
+
 
    //
    // locate the CL Bridge - CL Pier intersection point at start of bridge
    //
    CComPtr<IPoint2d> pntStartPierBridge;
    clBridge->Intersect(objStartPierLine,pntStartPier,&pntStartPierBridge);
+   long pointID;
    ::GB_GetPierCLBridgePointId(prevPierIdx,&pointID);
    points->AddEx(pointID,pntStartPierBridge);
 
@@ -482,6 +500,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
    //
    CComPtr<IStation> objStartBrgStation;
    CComPtr<ILine2d> objStartBrgLine;
+   CComPtr<ILine2d> objStartBrgNormalLine;
    if ( start_brg_offset_measure == mtNormal )
    {
       // bearing offset is measured normal to the cl pier.
@@ -500,13 +519,48 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       Float64 offset;
       alignment->Offset(pntStartBrg,&objStartBrgStation,&offset);
       ATLASSERT( IsZero(offset) );
+
+      // create a line normal to the alignment at the CL Brg
+      CComPtr<IDirection> dirStartBrgNormal;
+      alignment->Normal(CComVariant(objStartBrgStation),&dirStartBrgNormal);
+
+      Float64 startBrgNormalDirection;
+      dirStartBrgNormal->get_Value(&startBrgNormalDirection);
+   
+      objStartBrgNormalLine.CoCreateInstance(CLSID_Line2d);
+      CComPtr<IPoint2d> p;
+      CComPtr<IVector2d> v;
+      objStartBrgNormalLine->GetExplicit(&p,&v);
+      v->put_Direction(startBrgNormalDirection);
+      objStartBrgNormalLine->SetExplicit(pntStartBrg,v);
+   }
+   else
+   {
+      // bearing offset is measured along the girder. With the general geometry
+      // there are multiple bearing lines. We cannot have a single bearing station
+      ATLASSERT( mlStart == mlCenterlinePier ); // spacing must be measured relative to CL pier
    }
 
    // create a line to represent the CL of end pier
    CComPtr<ILine2d> objEndPierLine;
    objEndPierLine.CoCreateInstance(CLSID_Line2d);
+   p.Release();
+   v.Release();
+   objEndPierLine->GetExplicit(&p,&v);
    v->put_Direction(nextPierDirection);
    objEndPierLine->SetExplicit(pntEndPier,v);
+
+   // create a line to represent the line normal to the alignment at the end pier
+   CComPtr<ILine2d> objEndPierNormalLine;
+   objEndPierNormalLine.CoCreateInstance(CLSID_Line2d);
+   CComPtr<IDirection> objEndPierNormal;
+   alignment->Normal(CComVariant(objNextPierStation),&objEndPierNormal);
+   objEndPierNormal->get_Value(&dir);
+   p.Release();
+   v.Release();
+   objEndPierNormalLine->GetExplicit(&p,&v);
+   v->put_Direction(dir);
+   objEndPierNormalLine->SetExplicit(pntEndPier,v);
 
    //
    // locate the CL Bridge - CL Pier intersection point at end of bridge
@@ -518,6 +572,7 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
    CComPtr<IStation> objEndBrgStation;
    CComPtr<ILine2d> objEndBrgLine;
+   CComPtr<ILine2d> objEndBrgNormalLine;
    if ( end_brg_offset_measure == mtNormal )
    {
       // bearing offset is measured normal to the cl pier.
@@ -535,6 +590,20 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       Float64 offset;
       alignment->Offset(pntEndBrg,&objEndBrgStation,&offset);
       ATLASSERT( IsZero(offset) );
+
+      // create a line normal to the alignment at the CL Brg
+      CComPtr<IDirection> dirEndBrgNormal;
+      alignment->Normal(CComVariant(objEndBrgStation),&dirEndBrgNormal);
+
+      Float64 endBrgNormalDirection;
+      dirEndBrgNormal->get_Value(&endBrgNormalDirection);
+   
+      objEndBrgNormalLine.CoCreateInstance(CLSID_Line2d);
+      CComPtr<IPoint2d> p;
+      CComPtr<IVector2d> v;
+      objEndBrgNormalLine->GetExplicit(&p,&v);
+      v->put_Direction(endBrgNormalDirection);
+      objEndBrgNormalLine->SetExplicit(pntEndBrg,v);
    }
    else
    {
@@ -714,19 +783,19 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
          {
 #if defined _DEBUG
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(objStartPierLine,pntStartPier,&bContainsPoint);
+            m_GeomUtil->DoesLineContainPoint(objStartPierNormalLine,pntStartPier,&bContainsPoint);
             ATLASSERT( bContainsPoint == VARIANT_TRUE);
 #endif
-            hr = parallel_path->Intersect(objStartPierLine,pntStartPier,&pntStartGirder);
+            hr = parallel_path->Intersect(objStartPierNormalLine,pntStartPier,&pntStartGirder);
          }
          else
          {
 #if defined _DEBUG
             VARIANT_BOOL bContainsPoint;
-            m_GeomUtil->DoesLineContainPoint(objStartBrgLine,pntStartBrg,&bContainsPoint);
+            m_GeomUtil->DoesLineContainPoint(objStartBrgNormalLine,pntStartBrg,&bContainsPoint);
             ATLASSERT( bContainsPoint == VARIANT_TRUE);
 #endif
-            hr = parallel_path->Intersect(objStartBrgLine,pntStartBrg,&pntStartGirder);
+            hr = parallel_path->Intersect(objStartBrgNormalLine,pntStartBrg,&pntStartGirder);
          }
 
          ATLASSERT(SUCCEEDED(hr));
@@ -758,9 +827,9 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
 
          // intersection with item line
          if ( mlEnd == mlCenterlinePier )
-            hr = parallel_path->Intersect(objEndPierLine,pntEndPier,&pntEndGirder);
+            hr = parallel_path->Intersect(objEndPierNormalLine,pntEndPier,&pntEndGirder);
          else
-            hr = parallel_path->Intersect(objEndBrgLine,pntEndBrg,&pntEndGirder);
+            hr = parallel_path->Intersect(objEndBrgNormalLine,pntEndBrg,&pntEndGirder);
 
          ATLASSERT(SUCCEEDED(hr));
       }
@@ -857,7 +926,167 @@ void CGenericBridge::UpdatePierGirderIntersectionPoints(SpanIndexType spanIdx,IS
       // store the point
       ::GB_GetBearingGirderPointId(next_pier_idx,gdrIdx,qcbBefore,&endPointID);
       points->AddEx(endPointID,pntEndBrgGirder);
+   } // next girder
+}
+
+void CGenericBridge::UpdateGirderEndPoints(SpanIndexType spanIdx,GirderIndexType gdrIdx)
+{
+   // locate points at the ends of the girder
+
+   // get the girder line ID
+   long girderlineID;
+   ::GB_GetGirderLineId(spanIdx,gdrIdx,&girderlineID);
+
+   // get the connections at each end of the girder
+   CComPtr<ISpan> span;
+   GetSpanCollection()->get_Item(spanIdx,&span);
+
+   CComPtr<IPier> prevPier, nextPier;
+   span->get_PrevPier(&prevPier);
+   span->get_NextPier(&nextPier);
+   PierIndexType prevPierIdx, nextPierIdx;
+   prevPier->get_Index(&prevPierIdx);
+   nextPier->get_Index(&nextPierIdx);
+
+   CComPtr<IConnection> startConnection, endConnection;
+   prevPier->get_Connection(qcbAfter, &startConnection);
+   nextPier->get_Connection(qcbBefore,&endConnection);
+
+   // get the COGO point IDs for the intersection of CL Girder/CL Brg, CL Girder/CL Pier
+   // and the girder end points
+   long startBrgPointID, startPierPointID, startEndPointID;
+   long endBrgPointID,   endPierPointID,   endEndPointID;
+   ::GB_GetBearingGirderPointId(prevPierIdx,gdrIdx,qcbAfter,&startBrgPointID);
+   ::GB_GetPierGirderPointId(prevPierIdx,gdrIdx,qcbAfter,&startPierPointID);
+   ::GB_GetGirderEndPointId(spanIdx,gdrIdx,etStart,&startEndPointID);
+   
+   ::GB_GetBearingGirderPointId(nextPierIdx,gdrIdx,qcbBefore,&endBrgPointID);
+   ::GB_GetPierGirderPointId(nextPierIdx,gdrIdx,qcbBefore,&endPierPointID);
+   ::GB_GetGirderEndPointId(spanIdx,gdrIdx,etEnd,&endEndPointID);
+
+   // get the distance from the CL bearing to the end of the girder
+   Float64 start_end_distance, end_end_distance;
+   GetEndDistance(etStart,startBrgPointID,startPierPointID,girderlineID,startConnection,prevPier,&start_end_distance);
+   GetEndDistance(etEnd,  endBrgPointID,  endPierPointID,  girderlineID,endConnection,  nextPier,&end_end_distance);
+
+   // locate the girder end points in the cogo model (points are saved into the cogo model)
+   CComQIPtr<ILocate> locate(m_CogoModel);
+   locate->PointOnLine(startEndPointID,startBrgPointID,startPierPointID,start_end_distance,0.0);
+   locate->PointOnLine(endEndPointID,  endBrgPointID,  endPierPointID,  end_end_distance,  0.0);
+}
+
+void CGenericBridge::GetEndDistance(EndType end,long brgPntID,long pierPntID,long girderLineID,IConnection* connection,IPier* pier,Float64* endDist)
+{
+   Float64 end_dist;
+   connection->get_EndDistance(&end_dist);
+
+   MeasurementType measure_type;
+   connection->get_EndDistanceMeasurementType(&measure_type);
+
+   MeasurementLocation measure_loc;
+   connection->get_EndDistanceMeasurementLocation(&measure_loc);
+
+   if ( measure_type == mtAlongItem )
+   {
+      // Measured along girder
+      if ( measure_loc == mlCenterlineBearing )
+      {
+         ;// do nothing - input is same as internal
+      }
+      else if ( measure_loc == mlCenterlinePier )
+      {
+         // subtract end dist from bearing offset
+         Float64 bearing_offset;
+         CComQIPtr<IMeasure> measure(m_CogoModel);
+         measure->Distance(brgPntID,pierPntID,&bearing_offset); // want offset measured along girder
+         end_dist = bearing_offset - end_dist;
+      }
+      else
+         ATLASSERT(0);
    }
+   else if ( measure_type == mtNormal )
+   {
+      // Measured normal to pier
+      // First create a line along the pier centerline
+      CComPtr<IPointCollection> points;
+      m_CogoModel->get_Points(&points);
+      CComPtr<IPoint2d> pier_pnt;
+      points->get_Item(pierPntID, &pier_pnt);
+
+      CComPtr<IDirection> pier_dir;
+      pier->get_Direction(&pier_dir);
+
+      CComQIPtr<ILocate2> locate(m_CogoEngine);
+
+      Float64 dist = end==etEnd ? 10.0 : -10.0; // distance is abitrary, we just want a line that's left side faces inward to span
+      CComPtr<IPoint2d> pier_pnt2;
+      locate->ByDistDir(pier_pnt, dist, CComVariant(pier_dir), 0.0, &pier_pnt2);
+
+      CComPtr<ILine2d> pier_line;
+      pier_line.CoCreateInstance(CLSID_Line2d);
+      pier_line->ThroughPoints(pier_pnt, pier_pnt2);
+
+      // compute distance from bearing point to CL pier along CL pier
+      CComPtr<IPoint2d> brg_pnt;
+      points->get_Item(brgPntID, &brg_pnt);
+
+      Float64 bearing_to_pier_dist;
+      m_GeomUtil->ShortestDistanceToPoint(pier_line, brg_pnt, &bearing_to_pier_dist);
+      bearing_to_pier_dist *= -1.0; // left side is negative 
+
+      // get girder line to intersect with
+      CComPtr<ILineSegmentCollection> lineSegments;
+      m_CogoModel->get_LineSegments(&lineSegments);
+      CComPtr<ILineSegment2d> gdr_lineseg;
+      lineSegments->get_Item(girderLineID,&gdr_lineseg);
+      // make segment into a line so we know we'll intersect
+      CComPtr<IPoint2d> gdr_pnt1, gdr_pnt2;
+      gdr_lineseg->get_StartPoint(&gdr_pnt1);
+      gdr_lineseg->get_EndPoint(&gdr_pnt2);
+
+      CComPtr<ILine2d> gdr_line;
+      gdr_line.CoCreateInstance(CLSID_Line2d);
+      gdr_line->ThroughPoints(gdr_pnt1, gdr_pnt2);
+
+      // Now we have our construction lines. Basic idea is to offset the pier line and find
+      // its intersection with the girder line. That will give us the end of the girder
+      Float64 offset_dist=0.0;
+      Float64 sign = 1;
+      if ( measure_loc == mlCenterlineBearing )
+      {
+         // measured from centerline bearing
+         offset_dist = bearing_to_pier_dist - end_dist;
+      }
+      else if ( measure_loc == mlCenterlinePier )
+      {
+         offset_dist = end_dist;
+
+         if (end_dist > bearing_to_pier_dist)
+         {
+            // end of girder is before bearing, negative end dist
+            sign = -1;
+         }
+      }
+      else
+      {
+         ATLASSERT(0);
+      }
+
+      pier_line->Offset(offset_dist);
+
+      CComPtr<IPoint2d> end_of_girder;
+      m_GeomUtil->LineLineIntersect(pier_line,gdr_line,&end_of_girder);
+
+      // finally, our end distance
+      m_GeomUtil->Distance(brg_pnt, end_of_girder, &end_dist);
+      end_dist *= sign;
+   }
+   else
+   {
+      ATLASSERT(0);
+   }
+
+   *endDist   = end_dist;
 }
 
 HRESULT CGenericBridge::AdviseChild(IUnknown* punk,REFIID riid,DWORD* pdwCookie)

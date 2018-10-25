@@ -69,6 +69,12 @@ STDMETHODIMP CCogoInfo::get_BearingGirderIntersectionPointID(PierIndexType pierI
    return ::GB_GetBearingGirderPointId(pierIdx,gdrIdx,posType,pVal);
 }
 
+STDMETHODIMP CCogoInfo::get_GirderEndPointID(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal)
+{
+   CHECK_RETVAL(pVal);
+   return ::GB_GetGirderEndPointId(spanIdx,gdrIdx,endType,pVal);
+}
+
 STDMETHODIMP CCogoInfo::get_PierPointID(PierIndexType pierIdx, PierPointType pointType, long *pVal)
 {
    CHECK_RETVAL(pVal);

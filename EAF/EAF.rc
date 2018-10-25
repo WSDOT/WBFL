@@ -155,8 +155,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,4,0,2
- PRODUCTVERSION 3,4,0,2
+ FILEVERSION 3,4,0,3
+ PRODUCTVERSION 3,4,0,3
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -174,12 +174,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "3.4.0.2"
+            VALUE "FileVersion", "3.4.0.4"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2011"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.4.0.2"
+            VALUE "ProductVersion", "3.4.0.4"
         END
     END
     BLOCK "VarFileInfo"

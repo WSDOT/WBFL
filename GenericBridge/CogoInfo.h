@@ -74,6 +74,7 @@ public:
    STDMETHOD(get_GirderLineID)(/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[out, retval]*/ long *pVal);
    STDMETHOD(get_PierGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ long *pVal);
 	STDMETHOD(get_BearingGirderIntersectionPointID)(/*[in]*/ PierIndexType pierIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/ PositionType posType, /*[out, retval]*/ long *pVal);
+   STDMETHOD(get_GirderEndPointID)(/*[in]*/SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx,/*[in]*/EndType endType,/*[out,retval]*/long* pVal);
 };
 
 #endif //__COGOINFO_H_
