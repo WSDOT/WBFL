@@ -675,6 +675,29 @@ void CEAFBrokerDocument::SetCustomReports(const CEAFCustomReports& reports)
    m_CustomReports = reports;
 }
 
+BOOL CEAFBrokerDocument::IsReportCommand(UINT nID,BOOL bQuickReport)
+{
+   GET_IFACE(IReportManager,pReportMgr);
+   if ( pReportMgr )
+   {
+      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
+      BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
+      BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
+      if ( bQuickReport )
+      {
+         return bIsQuickReport;
+      }
+      else
+      {
+         return bIsReport;
+      }
+   }
+   else
+   {
+      return FALSE;
+   }
+}
+
 void CEAFBrokerDocument::OnReportMenuDisplayMode()
 {
    // flip value

@@ -507,6 +507,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    }
 
    bool bExtensionMatched = false;
+   int templateIdx = 0; // keep track of which template is assocated with the file that got opened. we'll need to record this in the registry so that the File > Open dialog uses this type next time
    POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
    while ( pos != NULL )
    {
@@ -517,6 +518,11 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
       {
          int token_pos = 0;
          CString strExt = str.Tokenize(_T(";"),token_pos);
+         if ( strExt != _T("") )
+         {
+            templateIdx++;
+         }
+
          while ( strExt != _T("") )
          {
             if ( file_ext.CompareNoCase(strExt) == 0 )
@@ -528,6 +534,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
 
             strExt = str.Tokenize(_T(";"),token_pos);
          }
+
       }
    }
 
@@ -538,6 +545,9 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
       {
          m_pDocManager->CloseAllDocuments(FALSE);
          pDoc = CWinApp::OpenDocumentFile(lpszFileName);
+
+         CEAFApp* pApp = EAFGetApp();
+         pApp->WriteProfileInt(_T("Settings"),_T("LastFileType"),templateIdx);
       }
    }
    else
