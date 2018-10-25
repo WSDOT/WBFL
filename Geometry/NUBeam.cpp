@@ -47,6 +47,7 @@ HRESULT CNUBeam::FinalConstruct()
    m_D4 = 0.00;
    m_D5 = 0.00;
    m_T  = 0.00;
+   m_EndBlock = 0.00;
    m_W1 = 0.00;
    m_W2 = 0.00;
    m_R1 = 0.00;
@@ -152,11 +153,15 @@ HRESULT CNUBeam::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 
 HRESULT CNUBeam::UpdateShape()
 {
-
    if (m_Dirty)
    {
       // clear the polygon implemenation and recalculate all of the points
       m_pShape->Clear();
+
+      // Generate points along the left-hand side of the shape... 
+      // then we will copy and mirror them about the Y axis
+      CComPtr<IPoint2dCollection> points;
+      points.CoCreateInstance(CLSID_Point2dCollection);
 
       const long nSpaces = 20; // number of spaces used to approximate the curved fillets
       Float64 cx, cy;           // center of arc
@@ -166,12 +171,12 @@ HRESULT CNUBeam::UpdateShape()
       // Start at the lower left corner of the shape
       if  ( IsZero(m_C1) )
       {
-         m_pShape->AddPoint(-m_W2/2,0.0);
+         AddPoint(points,-m_W2/2,0.0);
       }
       else
       {
-         m_pShape->AddPoint(-m_W2/2+m_C1,0.0);
-         m_pShape->AddPoint(-m_W2/2,m_C1);
+         AddPoint(points,-m_W2/2+m_C1,0.0);
+         AddPoint(points,-m_W2/2,m_C1);
       }
 
       // compute angle of bottom flange (measured from vertical)
@@ -181,70 +186,99 @@ HRESULT CNUBeam::UpdateShape()
       cx = -m_W2/2 + m_R4;
       cy = m_D5 - m_R4*tan(delta/2);
       startAngle = M_PI;
-      GenerateFillet(m_pShape,cx,cy,m_R4,startAngle,-delta,nSpaces);
+      GenerateFillet(points,cx,cy,m_R4,startAngle,-delta,nSpaces);
 
       // generate bottom left flange-web fillet
-      cx = -m_T/2 - m_R2;
-      cy = m_D5 + m_D4 + m_R2*tan(delta/2);
-      startAngle = TWO_PI - delta;
-      GenerateFillet(m_pShape,cx,cy,m_R2,startAngle,delta,nSpaces);
+      if ( ::IsLE(m_R2*(1-cos(delta)),(m_EndBlock-m_T)/2) )
+      {
+         // the end block is wider that the fillet... no fillet
+         Float64 x1 = (m_W2-m_T)/2;
+         Float64 x2 = (m_EndBlock-m_T)/2;
+         Float64 d = x2*m_D4/x1;
+         cx = -m_EndBlock/2;
+         cy = m_D5 + m_D4 - d;
+         AddPoint(points,cx,cy);
+      }
+      else
+      {
+         cx = -m_T/2 - m_R2;
+         cy = m_D5 + m_D4 + m_R2*tan(delta/2);
+         startAngle = TWO_PI - delta;
+
+         Float64 deltaFillet = delta;
+         if ( m_T < m_EndBlock )
+         {
+            Float64 x = (m_EndBlock - m_T)/2;
+            Float64 theta = acos((m_R2 - x)/m_R2);
+            deltaFillet = delta - theta;
+         }
+
+         GenerateFillet(points,cx,cy,m_R2,startAngle,deltaFillet,nSpaces);
+      }
 
       // compute angle of top flange (measured from vertical)
       delta = atan2( (m_W1-m_T)/2, m_D2 );
 
       // generate top left flange-web fillet
-      cx = -m_T/2 - m_R1;
-      cy = m_D5 + m_D4 + m_D3 - m_R1*tan(delta/2);
-      startAngle = 0.0;
-      GenerateFillet(m_pShape,cx,cy,m_R1,startAngle,delta,nSpaces);
+      if ( ::IsLE(m_R1*(1-cos(delta)),(m_EndBlock-m_T)/2) )
+      {
+         // the end block is wider that the fillet... no fillet
+         Float64 x1 = (m_W1-m_T)/2;
+         Float64 x2 = (m_EndBlock-m_T)/2;
+         Float64 d = x2*m_D2/x1;
+         cx = -m_EndBlock/2;
+         cy = m_D5 + m_D4 + m_D3 + d;
+         AddPoint(points,cx,cy);
+      }
+      else
+      {
+         cx = -m_T/2 - m_R1;
+         cy = m_D5 + m_D4 + m_D3 - m_R1*tan(delta/2);
+         startAngle = 0.0;
+
+         Float64 deltaFillet = delta;
+         if ( m_T < m_EndBlock )
+         {
+            Float64 x = (m_EndBlock - m_T)/2;
+            Float64 theta = acos((m_R1 - x)/m_R1);
+            startAngle = theta;
+            deltaFillet = delta - theta;
+         }
+
+         GenerateFillet(points,cx,cy,m_R1,startAngle,deltaFillet,nSpaces);
+      }
 
       // generate top flange left fillet
       cx = -m_W1/2 + m_R3;
       cy = m_D5 + m_D4 + m_D3 + m_D2 + m_R3*tan(delta/2);
       startAngle = M_PI + delta;
-      GenerateFillet(m_pShape,cx,cy,m_R3,startAngle,-delta,nSpaces);
+      GenerateFillet(points,cx,cy,m_R3,startAngle,-delta,nSpaces);
 
       // extreme points on top flange
-      m_pShape->AddPoint(-m_W1/2,m_D5 + m_D4 + m_D3 + m_D2 + m_D1);
-      m_pShape->AddPoint( m_W1/2,m_D5 + m_D4 + m_D3 + m_D2 + m_D1);
+      AddPoint(points,-m_W1/2,m_D5 + m_D4 + m_D3 + m_D2 + m_D1);
 
-      // generate top flange right fillet
-      cx = m_W1/2 - m_R3;
-      cy = m_D5 + m_D4 + m_D3 + m_D2 + m_R3*tan(delta/2);
-      startAngle = 0;
-      GenerateFillet(m_pShape,cx,cy,m_R3,startAngle,-delta,nSpaces);
+      // copy the left hand side points
+      CComPtr<IPoint2dCollection> rightPoints;
+      points->Clone(&rightPoints);
 
-      // generate top right flange-web fillet
-      cx = m_T/2 + m_R1;
-      cy = m_D5 + m_D4 + m_D3 - m_R1*tan(delta/2);
-      startAngle = M_PI - delta;
-      GenerateFillet(m_pShape,cx,cy,m_R1,startAngle,delta,nSpaces);
+      // reverse the order of the points
+      rightPoints->Reverse();
 
-      // compute angle of bottom flange (measured from vertical)
-      delta = atan2( (m_W2-m_T)/2, m_D4 );
-
-      // generate bottom right flange-web fillet
-      cx = m_T/2 + m_R2;
-      cy = m_D5 + m_D4 + m_R2*tan(delta/2);
-      startAngle = M_PI;
-      GenerateFillet(m_pShape,cx,cy,m_R2,startAngle,delta,nSpaces);
-
-      // generate bottom flange right fillet
-      cx = m_W2/2 - m_R4;
-      cy = m_D5 - m_R4*tan(delta/2);
-      startAngle = delta;
-      GenerateFillet(m_pShape,cx,cy,m_R4,startAngle,-delta,nSpaces);
-
-      // bottom right point
-      if ( IsZero(m_C1) )
+      // mirror about Y = 0
+      CComPtr<IEnumPoint2d> enumPoints;
+      rightPoints->get__Enum(&enumPoints);
+      CComPtr<IPoint2d> pnt;
+      while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
       {
-         m_pShape->AddPoint(m_W2/2,0.0);
+         Float64 x;
+         pnt->get_X(&x);
+         x *= -1;
+         pnt->put_X(x);
+         pnt.Release();
       }
-      else
-      {
-         m_pShape->AddPoint(m_W2/2,m_C1);
-         m_pShape->AddPoint(m_W2/2-m_C1,0.0);
-      }
+
+      m_pShape->AddPoints(points);
+      m_pShape->AddPoints(rightPoints);
 
       // rotate if necessary
       CComQIPtr<IXYPosition> pPosition(m_pShape);
@@ -412,6 +446,25 @@ STDMETHODIMP CNUBeam::put_T(Float64 newVal)
       return Error(IDS_E_DIMENSION,IID_INUBeam,GEOMETRY_E_DIMENSION);
 
    m_T = newVal;
+
+   return S_OK;
+}
+
+STDMETHODIMP CNUBeam::get_EndBlock(Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = m_EndBlock;
+   return S_OK;
+}
+
+STDMETHODIMP CNUBeam::put_EndBlock(Float64 newVal)
+{
+   MakeDirty();
+   if ( newVal < 0.0 )
+      return Error(IDS_E_DIMENSION,IID_INUBeam,GEOMETRY_E_DIMENSION);
+
+   m_EndBlock = newVal;
 
    return S_OK;
 }
@@ -634,6 +687,7 @@ STDMETHODIMP CNUBeam::Clone(IShape** pClone)
    pTheClone->put_D4( m_D4 );
    pTheClone->put_D5( m_D5 );
    pTheClone->put_T( m_T );
+   pTheClone->put_EndBlock( m_EndBlock );
    pTheClone->put_W1( m_W1 );
    pTheClone->put_W2( m_W2 );
    pTheClone->put_R1( m_R1 );
@@ -796,13 +850,14 @@ STDMETHODIMP CNUBeam::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("NUBeam"),2.0);
+   pSave->BeginUnit(CComBSTR("NUBeam"),3.0);
    pSave->put_Property(CComBSTR("D1"),CComVariant(m_D1));
    pSave->put_Property(CComBSTR("D2"),CComVariant(m_D2));
    pSave->put_Property(CComBSTR("D3"),CComVariant(m_D3));
    pSave->put_Property(CComBSTR("D4"),CComVariant(m_D4));
    pSave->put_Property(CComBSTR("D5"),CComVariant(m_D5));
    pSave->put_Property(CComBSTR("T"),CComVariant(m_T));
+   pSave->put_Property(CComBSTR("EndBlock"),CComVariant(m_EndBlock)); // added in version 3.0
    pSave->put_Property(CComBSTR("W1"),CComVariant(m_W1));
    pSave->put_Property(CComBSTR("W2"),CComVariant(m_W2));
    pSave->put_Property(CComBSTR("R1"),CComVariant(m_R1));
@@ -824,6 +879,9 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("NUBeam"));
    
+   Float64 version;
+   pLoad->get_Version(&version);
+
    pLoad->get_Property(CComBSTR("D1"),&var);
    m_D1 = var.dblVal;
    
@@ -841,6 +899,12 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
    
    pLoad->get_Property(CComBSTR("T"),&var);
    m_T = var.dblVal;
+
+   if ( 2 < version )
+   {
+      pLoad->get_Property(CComBSTR("EndBlock"),&var);
+      m_EndBlock = var.dblVal;
+   }
    
    pLoad->get_Property(CComBSTR("W1"),&var);
    m_W1 = var.dblVal;
@@ -860,8 +924,6 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("R4"),&var);
    m_R4 = var.dblVal;
 
-   Float64 version;
-   pLoad->get_Version(&version);
    if ( 1.0 < version )
    {
       pLoad->get_Property(CComBSTR("C1"),&var);
@@ -885,7 +947,15 @@ STDMETHODIMP CNUBeam::Load(IStructuredLoad2* pLoad)
    return S_OK;
 }
 
-void CNUBeam::GenerateFillet(IPolyShape* pShape,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces)
+void CNUBeam::AddPoint(IPoint2dCollection* pPoints,Float64 x,Float64 y)
+{
+   CComPtr<IPoint2d> point;
+   point.CoCreateInstance(CLSID_Point2d);
+   point->Move(x,y);
+   pPoints->Add(point);
+}
+
+void CNUBeam::GenerateFillet(IPoint2dCollection* pPoints,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces)
 {
    if (!IsZero(r))
    {
@@ -895,7 +965,7 @@ void CNUBeam::GenerateFillet(IPolyShape* pShape,Float64 cx,Float64 cy,Float64 r,
          Float64 x = cx + r*cos(startAngle + i*dAngle);
          Float64 y = cy + r*sin(startAngle + i*dAngle);
 
-         pShape->AddPoint(x,y);
+         AddPoint(pPoints,x,y);
       }
    }
    else
@@ -903,7 +973,7 @@ void CNUBeam::GenerateFillet(IPolyShape* pShape,Float64 cx,Float64 cy,Float64 r,
       // No radius 
       Float64 x = cx;
       Float64 y = cy;
-      pShape->AddPoint(x,y);
+      AddPoint(pPoints,x,y);
    }
 }
 

@@ -32,15 +32,5 @@
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
-		<topic>
-			<name>StartLocation.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>EndLocation.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
 	</topics>
 </rhpml>

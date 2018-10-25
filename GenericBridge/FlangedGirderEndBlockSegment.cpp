@@ -436,7 +436,53 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSe
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
-   ATLASSERT(false); // not implemented yet
+   CHECK_RETOBJ(ppShape);
+   CComPtr<IRect2d> rect;
+
+   // it is assumed that the first shape is the main shape in the section and all
+   // other shapes are inside of it
+   m_Shapes[0].Shape->get_BoundingBox(&rect);
+
+   Float64 h;
+   rect->get_Height(&h);
+
+   Float64 l;
+   Float64 brgOffset,endDist;
+   if ( bIncludeClosure == VARIANT_TRUE )
+   {
+      m_pGirderLine->get_LayoutLength(&l);
+      brgOffset = 0;
+      endDist = 0;
+   }
+   else
+   {
+      m_pGirderLine->get_GirderLength(&l);
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
+   }
+
+   CComPtr<IRectangle> shape;
+   shape.CoCreateInstance(CLSID_Rect);
+   shape->put_Height(h);
+   shape->put_Width(l);
+
+   // CL Pier/Top Shape is at (0,0)
+   //
+   // CL Pier   End of segment
+   // |         |       CL Bearing
+   // | (0,0)   |       |
+   // *         +-------+---------------\  
+   // |         |       .               /
+   // |         +-------+---------------\  
+
+   CComQIPtr<IXYPosition> position(shape);
+   CComPtr<IPoint2d> topLeft;
+   position->get_LocatorPoint(lpTopLeft,&topLeft);
+   topLeft->Move(brgOffset-endDist,0);
+   position->put_LocatorPoint(lpTopLeft,topLeft);
+
+   shape->QueryInterface(ppShape);
+
    return S_OK;
 }
 

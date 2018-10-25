@@ -92,13 +92,15 @@ private:
    Float64   m_R3;
    Float64   m_R4;
    Float64   m_C1;
+   Float64   m_EndBlock;
 
    bool   m_Dirty;
    unsigned long   m_HookPointCookie;
 
    HRESULT GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py);
    HRESULT UpdateShape();
-   void GenerateFillet(IPolyShape* pShape,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces);
+   void AddPoint(IPoint2dCollection* pPoints,Float64 x,Float64 y);
+   void GenerateFillet(IPoint2dCollection* pPoints,Float64 cx,Float64 cy,Float64 r,Float64 startAngle,Float64 delta,long nSpaces);
    void MakeDirty() {m_Dirty = true;}
 
 // ISupportErrorInfo
@@ -124,6 +126,8 @@ public:
 	STDMETHOD(put_R2)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_R1)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_R1)(/*[in]*/ Float64 newVal);
+   STDMETHOD(get_EndBlock)(/*[out,retval]*/Float64* pVal);
+   STDMETHOD(put_EndBlock)(/*[in]*/Float64 newVal);
 	STDMETHOD(get_T)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_T)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_D5)(/*[out, retval]*/ Float64 *pVal);

@@ -91,12 +91,6 @@
 		<folder>
 			<name>CubicSpline</name>
 		</folder>
-		<folder>
-			<name>StationEquation</name>
-		</folder>
-		<folder>
-			<name>StationEquationCollection</name>
-		</folder>
 	</folders>
 	<topics>
 		<topic>

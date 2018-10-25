@@ -3,42 +3,12 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>ProjectPoint_Method_(Path_Object).htm</name>
+			<name>Remove_Method_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Clear_Method_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnPathChanged_Event_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnProfileChanged_Event_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Path_Object.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Add_Method_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>_EnumPathElements_Property_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Bearing_Method_(Path_Object).htm</name>
+			<name>Item_Property_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -48,12 +18,62 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>ProjectPoint_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Profile_Property_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>InsertEx_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>Clone_Method_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>Clear_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Bearing_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>AddEx_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>_EnumPathElements_Property_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Add_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Path_Object.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>OnProfileChanged_Event_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>OnPathChanged_Event_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -68,27 +88,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Remove_Method_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>InsertEx_Method_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Item_Property_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Move_Method_(Path_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateParallelPath_Method_(Path_Object).htm</name>
+			<name>Insert_Method_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -98,7 +98,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Insert_Method_(Path_Object).htm</name>
+			<name>CreateParallelPath_Method_(Path_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Move_Method_(Path_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

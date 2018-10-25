@@ -3,27 +3,12 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>Offset_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>Normal_Method_(Alignment_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>LocatePoint_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Bearing_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>RefStation_Property_(Alignment_Object).htm</name>
+			<name>Offset_Method_(Alignment_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -33,152 +18,17 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>AddEx_Method_(Alignment_Object).htm</name>
+			<name>RefStation_Property_(Alignment_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>PointFactory_Property_(Alignment_Object).htm</name>
+			<name>Bearing_Method_(Alignment_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Count_Property_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Add_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Item_Property_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateSubAlignment_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Clone_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>IntersectEx_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Remove_Method_(Alignment_Object)_.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateConnectedAlignment_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateParallelPath_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateSubPath_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateConnectedPath_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Move_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>DistanceBetweenStations_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Length_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Insert_Method_(AlignmentMethod).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>InsertEx_Method_(AlignmentMethod).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>LocateCrownPoint2D_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>LocateCrownPoint3D_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ProjectPoint_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Intersect_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>GetDirection_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CreateParallelAlignment_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Profile_Property_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>StationEquations_Property_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Clear_Method_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnAlignmentChanged_Event_(Alignment_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnProfileChanged_Event_(AlignmentObject).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnStationEquationChanged_Event_(AlignmentObject).htm</name>
+			<name>LocatePoint_Method_(Alignment_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

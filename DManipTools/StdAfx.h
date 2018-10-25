@@ -34,14 +34,6 @@
 
 #include <Private\WbflPackage.h>
 
-#include <afxdisp.h>
-#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
-#include <afxctl.h>
- 
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>			// MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override
 //something, but do not change the name of _Module

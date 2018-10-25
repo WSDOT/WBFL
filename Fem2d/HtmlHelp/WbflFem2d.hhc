@@ -517,14 +517,6 @@
           <param name="Name" value="AxialStrain">
           <param name="Local" value="Objects\MemberStrain\AxialStrain.htm">
         </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="StartLocation">
-          <param name="Local" value="Objects\MemberStrain\StartLocation.htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="EndLocation">
-          <param name="Local" value="Objects\MemberStrain\EndLocation.htm">
-        </object>
         </ul>
       </ul>
     <li><object type="text/sitemap">
@@ -997,10 +989,6 @@
     <li><object type="text/sitemap">
       <param name="Name" value="Stiffness values must be greater than zero">
       <param name="Local" value="Errors\Stiffness_values__must_be_greater_than_zero.htm">
-    </object>
-    <li><object type="text/sitemap">
-      <param name="Name" value="Strain load i in Loading j is located beyond the end of a member">
-      <param name="Local" value="Errors\strain_load_i_in_loading_j_is_located_beyond_the_end_of_a_member.htm">
     </object>
     </ul>
   <li><object type="text/sitemap">

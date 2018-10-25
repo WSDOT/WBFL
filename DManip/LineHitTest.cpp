@@ -72,5 +72,11 @@ BOOL CLineHitTest::HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,C
    CRect box(start,end);
    box.InflateRect(0,4);
 
-   return box.PtInRect(point);
+   CPoint testPoint;
+   Float64 c = cos(-angle);
+   Float64 s = sin(-angle);
+   testPoint.x =  (point.x - start.x)*c + (point.y - start.y)*s + start.x;
+   testPoint.y = -(point.y - start.y)*c + (point.x - start.x)*s + start.y;
+
+   return box.PtInRect(testPoint);
 }

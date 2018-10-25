@@ -233,9 +233,8 @@ STDMETHODIMP CStrLoad::Close()
 STDMETHODIMP CStrLoad::LoadRawUnit(BSTR* pbstrUnit)
 {
    CHECK_RETSTRING(pbstrUnit);
-
-   std::_tstring strXML = m_StrLoad.GetUnit();
-   *pbstrUnit = CComBSTR(strXML.c_str());
+   USES_CONVERSION;
+   *pbstrUnit = T2BSTR(m_StrLoad.GetUnit().c_str());
    return S_OK;
 }
 
