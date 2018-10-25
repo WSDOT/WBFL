@@ -82,19 +82,39 @@ protected:
    m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
    ASSERT( _ptr_.p != NULL )
 
+#define GET_IFACE_(_ns_,_i_,_ptr_) \
+   CIFacePtr<_ns_::_i_> _ptr_; \
+   m_pBroker->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
 #define GET_IFACE_NOCHECK(_i_,_ptr_) \
    CComPtr<_i_> _ptr_; \
    m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
    ASSERT( _ptr_.p != NULL )
 
-#define GET_IFACE2(b,_i_,_ptr_) \
-   CIFacePtr<_i_> _ptr_; \
-   b->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+#define GET_IFACE_NOCHECK_(_ns_,_i_,_ptr_) \
+   CComPtr<_ns_::_i_> _ptr_; \
+   m_pBroker->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
    ASSERT( _ptr_.p != NULL )
 
-#define GET_IFACE2_NOCHECK(b,_i_,_ptr_) \
+#define GET_IFACE2(_b_,_i_,_ptr_) \
+   CIFacePtr<_i_> _ptr_; \
+   _b_->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE2_(_ns_,_b_,_i_,_ptr_) \
+   CIFacePtr<_ns_::_i_> _ptr_; \
+   _b_->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE2_NOCHECK(_b_,_i_,_ptr_) \
    CComPtr<_i_> _ptr_; \
-   b->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   _b_->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE2_NOCHECK_(_ns_,_b_,_i_,_ptr_) \
+   CComPtr<_i_> _ptr_; \
+   _b_->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
    ASSERT( _ptr_.p != NULL )
 
 
