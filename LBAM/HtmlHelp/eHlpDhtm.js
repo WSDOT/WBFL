@@ -9,7 +9,7 @@
 /// Section Begin - General and relative topics(JavaScript 1.0)
 
 //{{HH_SYMBOL_SECTION
-var HH_ChmFilename = "F:\\ARP\\Lib\\WBFLLBam.chm";
+var HH_ChmFilename = "C:\\ARP\\Lib\\WBFLLBam.chm";
 var HH_WindowName = "NewWindow||NewWindow1";
 var HH_GlossaryFont = "";
 var HH_Glossary = "0,0";

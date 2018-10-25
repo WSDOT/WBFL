@@ -315,7 +315,7 @@ STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRad
    CHECK_RETVAL(pMinRadiusOfCurvature);
 
    // http://www.intmath.com/applications-differentiation/8-radius-curvature.php
-   // Using Example 1, Method 2 solution
+   // Using Example 2, Method 2 solution
 
    // Curvature of a straight line is zero so the radius of curvature is infinite. Use
    // the max value.
@@ -327,7 +327,11 @@ STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRad
    // d(dy/dx)/dx = dm/dx
    // r = [(1+m^2)^3/2]/(dm/dx)
    CComPtr<ILinearTendonSegment> prevSegment;
-   m_pPrevSegment->QueryInterface(&prevSegment);
+   if (m_pPrevSegment )
+   {
+      m_pPrevSegment->QueryInterface(&prevSegment);
+   }
+
    if ( prevSegment )
    {
       CComPtr<IPoint3d> start, end;
@@ -361,7 +365,11 @@ STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRad
    }
 
    CComPtr<ILinearTendonSegment> nextSegment;
-   m_pNextSegment->QueryInterface(&nextSegment);
+   if ( m_pNextSegment )
+   {
+      m_pNextSegment->QueryInterface(&nextSegment);
+   }
+
    if ( nextSegment )
    {
       Float64 x1,y1,z1;

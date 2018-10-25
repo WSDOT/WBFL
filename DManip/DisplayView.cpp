@@ -787,6 +787,11 @@ void CDisplayView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo,CRect rcDraw)
 {
    m_IsPrinting = true;
    m_PrintingRect = rcDraw;
+
+   CRgn clip;
+   clip.CreateRectRgnIndirect(&rcDraw);
+   pDC->SelectClipRgn(&clip);
+
    OnBeginPrinting(pDC,pInfo);
 }
 

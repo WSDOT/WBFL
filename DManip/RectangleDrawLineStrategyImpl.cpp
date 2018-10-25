@@ -85,7 +85,16 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO
       COLORREF fill_color = pDO->IsSelected() ? pDispMgr->GetSelectionFillColor() : m_crFillColor;
       CPen pen(PS_SOLID,0,fill_color);
       CPen* oldPen = pDC->SelectObject(&pen);
-      CBrush brush(fill_color);
+
+      CBrush brush;
+      if ( pDO->IsSelected() )
+      {
+         brush.CreateHatchBrush(HS_DIAGCROSS,fill_color);
+      }
+      else
+      {
+         brush.CreateSolidBrush(fill_color);
+      }
       CBrush* oldBrush = pDC->SelectObject(&brush);
 
       POINT points[4];
@@ -351,7 +360,7 @@ void CRectangleDrawLineStrategyImpl::GetPoints(iLineDisplayObject* pDO,IPoint2d*
 
    CComPtr<IPoint2d> pntBL;
    pntBL.CoCreateInstance(CLSID_Point2d);
-   pntBL->Move(sx-wx,sy-wy);
+   pntBL->Move(sx+wx,sy-wy);
 
    CComPtr<IPoint2d> pntBR;
    pntBR.CoCreateInstance(CLSID_Point2d);
@@ -359,7 +368,7 @@ void CRectangleDrawLineStrategyImpl::GetPoints(iLineDisplayObject* pDO,IPoint2d*
 
    CComPtr<IPoint2d> pntTR;
    pntTR.CoCreateInstance(CLSID_Point2d);
-   pntTR->Move(ex+wx,ey+wy);
+   pntTR->Move(ex-wx,ey+wy);
 
    (*pntTopLeft) = pntTL;
    (*pntTopLeft)->AddRef();

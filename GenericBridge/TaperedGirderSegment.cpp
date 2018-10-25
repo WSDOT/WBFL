@@ -416,7 +416,62 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IS
 
 STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
-   ATLASSERT(false); // not implemented yet
+   CHECK_RETOBJ(ppShape);
+   CComPtr<IRect2d> rect[2];
+
+   // it is assumed that the first shape is the main shape in the section and all
+   // other shapes are inside of it
+   m_Shapes[etStart].front().Shape->get_BoundingBox(&rect[etStart]);
+   m_Shapes[etEnd  ].front().Shape->get_BoundingBox(&rect[etEnd]);
+
+   Float64 h1, h2;
+   rect[etStart]->get_Height(&h1);
+   rect[etEnd  ]->get_Height(&h2);
+
+   Float64 l;
+   Float64 brgOffset, endDist;
+   if ( bIncludeClosure == VARIANT_TRUE )
+   {
+      m_pGirderLine->get_LayoutLength(&l);
+      brgOffset = 0;
+      endDist = 0;
+   }
+   else
+   {
+      m_pGirderLine->get_GirderLength(&l);
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
+   }
+
+   CComPtr<IPolyShape> shape;
+   shape.CoCreateInstance(CLSID_PolyShape);
+
+   shape->AddPoint(0,0);
+   shape->AddPoint(0,-h1);
+   shape->AddPoint(l,-h2);
+   shape->AddPoint(l,0);
+
+   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
+   //
+   // CL Pier   Start of segment
+   // |         |       CL Bearing
+   // |(0,0)    |       |
+   // *         +-------+---------------\  
+   // |         |       .               /
+   // |         +-------+---------------\  
+   //
+   //          Elevation View
+
+
+
+   CComQIPtr<IXYPosition> position(shape);
+   CComPtr<IPoint2d> topLeft;
+   position->get_LocatorPoint(lpTopLeft,&topLeft);
+   topLeft->Move(brgOffset-endDist,0);
+   position->put_LocatorPoint(lpTopLeft,topLeft);
+
+   shape->QueryInterface(ppShape);
+
    return S_OK;
 }
 

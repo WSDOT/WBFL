@@ -1715,6 +1715,12 @@ library WBFLGeometry
 		[propput, helpstring("property T"),helpcontext(IDH_INUBeam_T)]
 		HRESULT T([in] Float64 newVal);
 
+		[propget, helpstring("property EndBlock"),helpcontext(IDH_INUBeam_T)]
+		HRESULT EndBlock([out, retval] Float64 *pVal);
+
+		[propput, helpstring("property EndBlock"),helpcontext(IDH_INUBeam_T)]
+		HRESULT EndBlock([in] Float64 newVal);
+
 		[propget, helpstring("property R1"),helpcontext(IDH_INUBeam_R1)]
 		HRESULT R1([out, retval] Float64 *pVal);
 

@@ -913,7 +913,20 @@ HRESULT CEAFDocument::CloseDocumentRootNode(IStructuredSave* pStrSave)
 
 HRESULT CEAFDocument::OpenDocumentRootNode(IStructuredLoad* pStrLoad)
 {
-   return pStrLoad->BeginUnit(GetRootNodeName());
+   HRESULT hr = pStrLoad->BeginUnit(GetRootNodeName());
+   if ( FAILED(hr))
+   {
+      return hr;
+   }
+
+   Float64 version;
+   pStrLoad->get_Version(&version);
+   if ( GetRootNodeVersion() < version )
+   {
+      return STRLOAD_E_BADVERSION;
+   }
+
+   return S_OK;
 }
 
 HRESULT CEAFDocument::CloseDocumentRootNode(IStructuredLoad* pStrLoad)

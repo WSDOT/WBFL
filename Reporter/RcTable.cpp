@@ -141,11 +141,15 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
    if ( m_NumColumns <= ColNo )
    {
       // Report class name if no label
-      std::_tstring tname = this->m_Label.GetName();
-      if (tname.size()==0)
+      std::_tstring tname;
+      if (m_Label.GetName() == 0)
       {
          const type_info& ti = typeid(*this);
          tname = A2T(ti.name());
+      }
+      else
+      {
+         tname = m_Label.GetName();
       }
 
       ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);

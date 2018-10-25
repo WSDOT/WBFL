@@ -29,6 +29,7 @@
 #include "ReportManager.h"
 #include <ReportManager\ReportBuilder.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
+#include <ReportManager\TimeChapterBuilder.h>
 #include <Reporter\Reporter.h>
 
 #ifdef _DEBUG
@@ -41,9 +42,10 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden) :
+CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :
 m_Name(strName),
 m_bHidden(bHidden),
+m_bIncludeTimingChapter(bIncludeTimingChapter),
 m_pRptSpecBuilder( new CReportSpecificationBuilder )
 {
    m_pBitmap = NULL;
@@ -67,6 +69,16 @@ void CReportBuilder::Hidden(bool bHide)
 bool CReportBuilder::Hidden() const
 {
    return m_bHidden;
+}
+
+void CReportBuilder::IncludeTimingChapter(bool bInclude)
+{
+   m_bIncludeTimingChapter = bInclude;
+}
+
+bool CReportBuilder::IncludeTimingChapter() const
+{
+   return m_bIncludeTimingChapter;
 }
 
 void CReportBuilder::AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder)
@@ -172,6 +184,8 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
 
 boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
+   sysTime start;
+
    boost::shared_ptr<rptReport> pReport( new rptReport(pRptSpec->GetReportName()) );
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
@@ -190,6 +204,14 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    {
       rptChapter* pTitlePage = m_pTitlePageBuilder->Build( pRptSpec );
       pReport->InsertChapterAt(0, pTitlePage);
+   }
+
+   sysTime end;
+   if ( m_bIncludeTimingChapter )
+   {
+      CTimeChapterBuilder timeChapterBuilder;
+      rptChapter* pChapter = timeChapterBuilder.Build(start,end);
+      (*pReport) << pChapter;
    }
 
    return pReport;

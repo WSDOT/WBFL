@@ -23,9 +23,9 @@
 <meta name=generator-minor-version content=1>
 <meta name=filetype content=kadov>
 <meta name=filetype-version content=1>
-<meta name=page-count content=1>
-<meta name=layout-height content=687>
-<meta name=layout-width content=993>
+<meta name=page-count content=0>
+<meta name=layout-height content=0>
+<meta name=layout-width content=0>
 
 
 <!--(Links)=========================================================-->
@@ -48,8 +48,7 @@
 		wrapperparagraphselector=P
 		style="width: 100%;
 				border-spacing: 0px;
-				margin-top: 14pt;
-				border-spacing: 0px;"
+				margin-top: 14pt;"
 		cellspacing=0
 		width=100%>
 
@@ -93,15 +92,14 @@
 	valign=top
 	width=86%>
 <p>objMemberStrain = object.<span style="font-weight: bold;">Create</span><span 
- style="font-weight: normal;">(</span>[in]intID, [in]intMbrID, [in]fltStart, 
- [in]fltEnd, [in]fltAxialStrain, [in]fltCurvatureStrain)</p>
+ style="font-weight: normal;">(</span>[in]intID, [in]intMbrID, [in]fltAxialStrain, 
+ [in]fltCurvatureStrain)</p>
 <!--(Table)=========================================================-->
 <table x-use-null-cells
 		wrapperparagraphselector=P
 		style="width: 100%;
 				border-spacing: 0px;
-				margin-top: 14pt;
-				border-spacing: 0px;"
+				margin-top: 14pt;"
 		cellspacing=0
 		width=100%>
 
@@ -166,56 +164,6 @@
 <p style="margin-bottom: 0;">ID of the Member this load is applied to</td></tr>
 
 <tr>
-<td colspan=1
-	rowspan=1
-	style="x-cell-content-align: TOP;
-			width: 23%;
-			padding-left: 2px;
-			padding-top: 2px;
-			padding-right: 2px;
-			padding-bottom: 2px;"
-	valign=top
-	width=23%>
-<p style="margin-bottom: 0;">fltStart</td>
-<td colspan=1
-	rowspan=1
-	style="x-cell-content-align: TOP;
-			width: 77%;
-			padding-left: 2px;
-			padding-top: 2px;
-			padding-right: 2px;
-			padding-bottom: 2px;"
-	valign=top
-	width=77%>
-<p style="margin-bottom: 0;">Start location of the strain measured from 
- the member start joint</td></tr>
-
-<tr>
-<td colspan=1
-	rowspan=1
-	style="x-cell-content-align: TOP;
-			width: 23%;
-			padding-left: 2px;
-			padding-top: 2px;
-			padding-right: 2px;
-			padding-bottom: 2px;"
-	valign=top
-	width=23%>
-<p style="margin-bottom: 0;">fltEnd</td>
-<td colspan=1
-	rowspan=1
-	style="x-cell-content-align: TOP;
-			width: 77%;
-			padding-left: 2px;
-			padding-top: 2px;
-			padding-right: 2px;
-			padding-bottom: 2px;"
-	valign=top
-	width=77%>
-<p style="margin-bottom: 0;">End location of the strain measured from the 
- member start joint</td></tr>
-
-<tr>
 <td style="x-cell-content-align: TOP;
 			width: 23%;
 			padding-left: 2px;
@@ -233,8 +181,8 @@
 			padding-bottom: 2px;"
 	valign=top
 	width=77%>
-<p style="margin-bottom: 0;">Magnitude of uniform axial strain applied 
- along member</td></tr>
+<p style="margin-bottom: 0;">Magnitude of uniform axial strain load applied 
+ along entire member</td></tr>
 
 <tr>
 <td style="x-cell-content-align: TOP;
@@ -254,8 +202,8 @@
 			padding-bottom: 2px;"
 	valign=top
 	width=77%>
-<p style="margin-bottom: 0;">Magnitude of uniform curvature applied along 
- member</td></tr>
+<p style="margin-bottom: 0;">Magnitude of uniform curvature strain load 
+ applied along entire member</td></tr>
 </table></td></tr>
 
 <tr>
@@ -306,12 +254,12 @@
 
 
 <!--(HR)============================================================-->
-<hr style="float: aligncenter;
-			height: 2px;
-			width: 100%;"
-	align=center
+<hr style="height: 2px;
+			width: 100%;
+			/*begin!kadov{{*/ float: aligncenter; /*}}end!kadov*/ "
 	size=2
-	width=100%>
+	width=100%
+	align=center>
 
 
 <p>Copyright © 2000-2001, Washington State Department of Transportation</p>

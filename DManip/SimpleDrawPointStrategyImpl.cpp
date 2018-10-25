@@ -227,6 +227,7 @@ void CSimpleDrawPointStrategyImpl::DrawMe(const CRect& rect,CDC* pDC)
 
    case ptSquare:
       pDC->Rectangle(r);
+      break;
 
    default:
       ATLASSERT(false); // should never get here!!!

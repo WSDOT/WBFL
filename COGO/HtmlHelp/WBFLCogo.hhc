@@ -63,31 +63,19 @@
       <ul>
         <li><object type="text/sitemap">
           <param name="Name" value="Count">
-          <param name="Local" value="Objects\Alignment\Count_Property_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Count_Property_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Item">
-          <param name="Local" value="Objects\Alignment\Item_Property_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Length">
-          <param name="Local" value="Objects\Alignment\Length_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="PointFactory">
-          <param name="Local" value="Objects\Alignment\PointFactory_Property_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Item_Property_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Profile">
-          <param name="Local" value="Objects\Alignment\Profile_Property_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="RefStation">
           <param name="Local" value="Objects\Alignment\RefStation_Property_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="StationEquations">
-          <param name="Local" value="Objects\Alignment\StationEquations_Property_(Alignment_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="StructuredStorage">
@@ -100,11 +88,11 @@
       <ul>
         <li><object type="text/sitemap">
           <param name="Name" value="Add">
-          <param name="Local" value="Objects\Alignment\Add_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Add_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="AddEx">
-          <param name="Local" value="Objects\Alignment\AddEx_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\AddEx_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Bearing">
@@ -112,75 +100,23 @@
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Clear">
-          <param name="Local" value="Objects\Alignment\Clear_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Clear_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Clone">
-          <param name="Local" value="Objects\Alignment\Clone_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateConnectedAlignment">
-          <param name="Local" value="Objects\Alignment\CreateConnectedAlignment_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateConnectedPath">
-          <param name="Local" value="Objects\Alignment\CreateConnectedPath_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateParallelAlignment">
-          <param name="Local" value="Objects\Alignment\CreateParallelAlignment_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateParallelPath">
-          <param name="Local" value="Objects\Alignment\CreateParallelPath_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateSubAlignment">
-          <param name="Local" value="Objects\Alignment\CreateSubAlignment_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="CreateSubPath">
-          <param name="Local" value="Objects\Alignment\CreateSubPath_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="DistanceBetweenStations">
-          <param name="Local" value="Objects\Alignment\DistanceBetweenStations_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="GetDirection">
-          <param name="Local" value="Objects\Alignment\GetDirection_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\Clone_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Insert">
-          <param name="Local" value="Objects\Alignment\Insert_Method_(AlignmentMethod).htm">
+          <param name="Local" value="Objects\Path\Insert_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="InsertEx">
-          <param name="Local" value="Objects\Alignment\InsertEx_Method_(AlignmentMethod).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Intersect">
-          <param name="Local" value="Objects\Alignment\Intersect_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="IntersectEx">
-          <param name="Local" value="Objects\Alignment\IntersectEx_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="LocateCrownPoint2D">
-          <param name="Local" value="Objects\Alignment\LocateCrownPoint2D_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="LocateCrownPoint3D">
-          <param name="Local" value="Objects\Alignment\LocateCrownPoint3D_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\InsertEx_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="LocatePoint">
           <param name="Local" value="Objects\Alignment\LocatePoint_Method_(Alignment_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Move">
-          <param name="Local" value="Objects\Alignment\Move_Method_(Alignment_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Normal">
@@ -192,11 +128,11 @@
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="ProjectPoint">
-          <param name="Local" value="Objects\Alignment\ProjectPoint_Method_(Alignment_Object).htm">
+          <param name="Local" value="Objects\Path\ProjectPoint_Method_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="Remove">
-          <param name="Local" value="Objects\Alignment\Remove_Method_(Alignment_Object)_.htm">
+          <param name="Local" value="Objects\Path\Remove_Method_(Path_Object).htm">
         </object>
         </ul>
       <li><object type="text/sitemap">
@@ -204,16 +140,12 @@
       </object>
       <ul>
         <li><object type="text/sitemap">
-          <param name="Name" value="OnAlignmentChanged">
-          <param name="Local" value="Objects\Alignment\OnAlignmentChanged_Event_(Alignment_Object).htm">
+          <param name="Name" value="OnPathChanged">
+          <param name="Local" value="Objects\Path\OnPathChanged_Event_(Path_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="OnProfileChanged">
-          <param name="Local" value="Objects\Alignment\OnProfileChanged_Event_(AlignmentObject).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="OnStationEquationChanged Event">
-          <param name="Local" value="Objects\Alignment\OnStationEquationChanged_Event_(AlignmentObject).htm">
+          <param name="Local" value="Objects\Path\OnProfileChanged_Event_(Path_Object).htm">
         </object>
         </ul>
       <li><object type="text/sitemap">
@@ -1526,6 +1458,10 @@
           <param name="Name" value="Item">
           <param name="Local" value="Objects\Path\Item_Property_(Path_Object).htm">
         </object>
+        <li><object type="text/sitemap">
+          <param name="Name" value="Profile">
+          <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
+        </object>
         </ul>
       <li><object type="text/sitemap">
         <param name="Name" value="Methods">
@@ -2013,10 +1949,6 @@
           <param name="Local" value="Objects\ProfilePoint\Elevation_Property_(ProfilePoint_Object).htm">
         </object>
         <li><object type="text/sitemap">
-          <param name="Name" value="Profile">
-          <param name="Local" value="Objects\ProfilePoint\Profile_Property_(ProfilePoint_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
           <param name="Name" value="Station">
           <param name="Local" value="Objects\ProfilePoint\Station_Property_(ProfilePoint_Object).htm">
         </object>
@@ -2172,10 +2104,6 @@
       </object>
       <ul>
         <li><object type="text/sitemap">
-          <param name="Name" value="StationZoneIndex">
-          <param name="Local" value="Objects\Station\StationZoneIndex_Property_(Station_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
           <param name="Name" value="Value">
           <param name="Local" value="Objects\Station\Value_Property_(Station_Object).htm">
         </object>
@@ -2196,18 +2124,6 @@
           <param name="Name" value="FromString">
           <param name="Local" value="Objects\Station\FromString_Method_(Station_Object).htm">
         </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="FromVariant">
-          <param name="Local" value="Objects\Station\FromVariant_Method_(Station_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="GetStation">
-          <param name="Local" value="Objects\Station\GetStation_Method_(Station_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="SetStation">
-          <param name="Local" value="Objects\Station\SetStation_Method_(Station_Object).htm">
-        </object>
         </ul>
       <li><object type="text/sitemap">
         <param name="Name" value="Events">
@@ -2216,123 +2132,6 @@
         <li><object type="text/sitemap">
           <param name="Name" value="OnStationChanged">
           <param name="Local" value="Objects\Station\OnStationChanged_Event_(Station_Object).htm">
-        </object>
-        </ul>
-      </ul>
-    <li><object type="text/sitemap">
-      <param name="Name" value="StationEquation">
-      <param name="Local" value="Objects\StationEquation\StationEquation_Object.htm">
-    </object>
-    <ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Properties">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Ahead">
-          <param name="Local" value="Objects\StationEquation\Ahead_Property_(StationEquation_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Back">
-          <param name="Local" value="Objects\StationEquation\Back_Property_(StationEquation_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="NormalizedValue">
-          <param name="Local" value="Objects\StationEquation\NormalizedValue_Property_(StationEquation_Object).htm">
-        </object>
-        </ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Methods">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="GetEquation">
-          <param name="Local" value="Objects\StationEquation\GetEquation_Method_(StationEquation_Object).htm">
-        </object>
-        </ul>
-      </ul>
-    <li><object type="text/sitemap">
-      <param name="Name" value="StationEquationCollection">
-      <param name="Local" value="Objects\StationEquationCollection\StationEquationCollection_Object.htm">
-    </object>
-    <ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Properties">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Alignment">
-          <param name="Local" value="Objects\StationEquationCollection\Alignment_Property_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Count">
-          <param name="Local" value="Objects\StationEquationCollection\Count_Property_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Item">
-          <param name="Local" value="Objects\StationEquationCollection\Item_Property_(StationEquationCollection_Object).htm">
-        </object>
-        </ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Methods">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Add">
-          <param name="Local" value="Objects\StationEquationCollection\Add_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Clear">
-          <param name="Local" value="Objects\StationEquationCollection\Clear_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="ConvertFromNormalizedStation">
-          <param name="Local" value="Objects\StationEquationCollection\ConvertFromNormalizedStation_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="ConvertFromNormalizedStationEx">
-          <param name="Local" value="Objects\StationEquationCollection\ConvertFromNormalizedStationEx_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="ConvertToNormalizedStation">
-          <param name="Local" value="Objects\StationEquationCollection\ConvertToNormalizedStation_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="ConvertToNormalizedStationEx">
-          <param name="Local" value="Objects\StationEquationCollection\ConvertToNormalizedStationEx_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Distance">
-          <param name="Local" value="Objects\StationEquationCollection\Distance_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Increment">
-          <param name="Local" value="Objects\StationEquationCollection\Increment_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="IncrementBy">
-          <param name="Local" value="Objects\StationEquationCollection\IncrementBy_Method_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Remove">
-          <param name="Local" value="Objects\StationEquationCollection\Remove_Method_(StationEquationCollection_Object).htm">
-        </object>
-        </ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Events">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="OnEquationAdded">
-          <param name="Local" value="Objects\StationEquationCollection\OnEquationAdded_Event_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="OnEquationRemoved">
-          <param name="Local" value="Objects\StationEquationCollection\OnEquationRemoved_Event_(StationEquationCollection_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="OnEquationsCleared">
-          <param name="Local" value="Objects\StationEquationCollection\OnEquationsCleared_Event_(StationEquationCollection_Object).htm">
         </object>
         </ul>
       </ul>
@@ -2404,10 +2203,6 @@
         <li><object type="text/sitemap">
           <param name="Name" value="PFG">
           <param name="Local" value="Objects\VertCurve\PFG_Property_(VertCurve_Object).htm">
-        </object>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Profile">
-          <param name="Local" value="Objects\VertCurve\Profile_Property_(VertCurve_Object).htm">
         </object>
         <li><object type="text/sitemap">
           <param name="Name" value="ProfilePointFactory">
