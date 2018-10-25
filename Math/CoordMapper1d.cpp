@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -90,11 +90,20 @@ Float64 mathCoordMapper1d::GetB( Float64 A) const
 void mathCoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
 {
    PRECONDITIONX( !IsEqual(a1,a2,1.0e-16), _T("a1 cannot equal a2") );
-   PRECONDITIONX( !IsEqual(b1,b2,1.0e-16), _T("b1 cannot equal b2") );
 
    // set up mapping equation: A = B * m_c + m_d
 
-   m_c = (a2 - a1) / (b2 - b1);
+   // Don't allow divide by zero no matter what
+   if (!IsEqual(b1,b2,1.0e-16))
+   {
+      m_c = (a2 - a1) / (b2 - b1);
+   }
+   else
+   {
+      PRECONDITIONX( false, _T("b1 cannot equal b2") );
+      m_c = 1; // same default as in constructor
+   }
+
    m_d = a1 - b1 * m_c;
 }
 

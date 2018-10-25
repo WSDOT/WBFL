@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTypes.h>
+#include <EAF\EAFChildFrame.h>
 
 
 /*****************************************************************************
@@ -60,7 +61,7 @@ BUGS
    the WS_CLIPCHILDREN style for the view window.
 *****************************************************************************/
 
-class EAFCLASS CEAFLicensePlateChildFrame : public CMDIChildWnd
+class EAFCLASS CEAFLicensePlateChildFrame : public CEAFChildFrame
 {
 	DECLARE_DYNCREATE(CEAFLicensePlateChildFrame)
 public:

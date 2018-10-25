@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,6 +53,7 @@
 
 #include "TestShapeProperties.h"
 #include "TestPolyShape.h"
+#include "TestFasterPolyShape.h"
 #include "TestCircle.h"
 #include "TestCircularSegment.h"
 #include "TestRectangle.h"
@@ -83,12 +84,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-int main(int argc, LPTSTR argv[])
+int main(int argc, LPTSTR  argv[])
 {
    ::CoInitialize(NULL);
 
-   CTestSize2d::Test();
 
+   CTestSize2d::Test();
    CTestPoint2d::Test();
    CTestRect2d::Test();
    CTestPoint2dCollection::Test();
@@ -107,6 +108,7 @@ int main(int argc, LPTSTR argv[])
    CTestShapeProperties::Test();
    CTestShapeCollection::Test();
    CTestPolyShape::Test();
+   CTestFasterPolyShape::Test();
    CTestCircle::Test();
    CTestCircularSegment::Test();
    CTestRectangle::Test();

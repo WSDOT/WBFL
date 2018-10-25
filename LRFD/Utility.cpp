@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,16 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+// precomputed conversions
+static const Float64 g_3600_MM = ::ConvertToSysUnits( 3600., unitMeasure::Millimeter );
+static const Float64 g_6000_MM = ::ConvertToSysUnits( 6000., unitMeasure::Millimeter );
+static const Float64 g_7200_MM = ::ConvertToSysUnits( 7200., unitMeasure::Millimeter );
+
+static const Float64 g_12_FT = ::ConvertToSysUnits( 12., unitMeasure::Feet );
+static const Float64 g_20_FT = ::ConvertToSysUnits( 20., unitMeasure::Feet );
+static const Float64 g_24_FT = ::ConvertToSysUnits( 24., unitMeasure::Feet );
+
 
 /****************************************************************************
 CLASS
@@ -123,15 +133,15 @@ Float64 lrfdUtility::GetDesignLaneWidth(Float64 wCurbToCurb)
 
    if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      wStdLane       = ::ConvertToSysUnits( 3600., unitMeasure::Millimeter );
-      wCurbToCurbMin = ::ConvertToSysUnits( 6000., unitMeasure::Millimeter );
-      wCurbToCurbMax = ::ConvertToSysUnits( 7200., unitMeasure::Millimeter );
+      wStdLane       = g_3600_MM;
+      wCurbToCurbMin = g_6000_MM;
+      wCurbToCurbMax = g_7200_MM;
    }
    else
    {
-      wStdLane       = ::ConvertToSysUnits( 12., unitMeasure::Feet );
-      wCurbToCurbMin = ::ConvertToSysUnits( 20., unitMeasure::Feet );
-      wCurbToCurbMax = ::ConvertToSysUnits( 24., unitMeasure::Feet );
+      wStdLane       = g_12_FT;
+      wCurbToCurbMin = g_20_FT;
+      wCurbToCurbMax = g_24_FT;
    }
 
    nDesignLanes = (Uint16)floor(wCurbToCurb/wStdLane);
@@ -155,15 +165,15 @@ Uint16 lrfdUtility::GetNumDesignLanes(Float64 wCurbToCurb)
 
    if (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
-      wStdLane       = ::ConvertToSysUnits( 3600., unitMeasure::Millimeter );
-      wCurbToCurbMin = ::ConvertToSysUnits( 6000., unitMeasure::Millimeter );
-      wCurbToCurbMax = ::ConvertToSysUnits( 7200., unitMeasure::Millimeter );
+      wStdLane       = g_3600_MM;
+      wCurbToCurbMin = g_6000_MM;
+      wCurbToCurbMax = g_7200_MM;
    }
    else
    {
-      wStdLane       = ::ConvertToSysUnits( 12., unitMeasure::Feet );
-      wCurbToCurbMin = ::ConvertToSysUnits( 20., unitMeasure::Feet );
-      wCurbToCurbMax = ::ConvertToSysUnits( 24., unitMeasure::Feet );
+      wStdLane       = g_12_FT;
+      wCurbToCurbMin = g_20_FT;
+      wCurbToCurbMax = g_24_FT;
    }
 
    nDesignLanes = (Uint16)floor(wCurbToCurb/wStdLane);

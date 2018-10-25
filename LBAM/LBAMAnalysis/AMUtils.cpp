@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -521,7 +521,9 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
       pRightInflLines[i]->SetZeroTolerance(i < 3 ? forceZeroTolerance : deflZeroTolerance);
    }
 
-   for (InfluenceLoadSetIterator iter = influenceLoadSet.begin(); iter != influenceLoadSet.end(); iter++)
+   InfluenceLoadSetIterator iter( influenceLoadSet.begin() );
+   InfluenceLoadSetIterator iterend( influenceLoadSet.end() );
+   for (; iter != iterend; iter++)
    {
       const InfluenceLoadLocation& influenceLoadLocation = *iter;
 
@@ -674,7 +676,9 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    }
 
 
-   for (InfluenceLoadSetIterator it=influenceLoadSet.begin(); it!=influenceLoadSet.end(); it++)
+   InfluenceLoadSetIterator it( influenceLoadSet.begin() );
+   InfluenceLoadSetIterator itend( influenceLoadSet.end() );
+   for (; it!=itend; it++)
    {
       const InfluenceLoadLocation& ifll = *it;
 
@@ -735,7 +739,10 @@ SortedPoiMapTracker::SortedPoiMapTracker(PoiMapCollection& PoiMaps, bool squeeze
 {
    // fill us up with pois from analysis model
    this->reserve(PoiMaps.size());
-   for (PoiMapIterator it=PoiMaps.begin(); it!=PoiMaps.end(); it++)
+
+   PoiMapIterator it( PoiMaps.begin() );
+   PoiMapIterator itend( PoiMaps.end() );
+   for (; it!=itend; it++)
    {
       MemberType mt = (*it)->GetLBAMMemberType();
       if (mt==mtSpan || mt==mtSuperstructureMember)
@@ -768,17 +775,19 @@ bool SortedPoiMapTracker::IsPoiAtLocation(MemberType mbrType, MemberIDType mbrID
 
    while(true)
    {
-      if ( m_Cursor==end() )
+      iterator it_end( end() );
+
+      if ( m_Cursor==it_end )
          return false;
 
       PoiMap& curinf = *(*m_Cursor);
       if ( IsNearby(curinf.GetLocation(), globalX) )
       {
          // we are at right global location - now check if member is right - need to hold cursor here
-         iterator loc_cur = m_Cursor;
+         iterator loc_cur( m_Cursor );
          while(true)
          {
-            if ( loc_cur==end() )
+            if ( loc_cur==it_end )
                return false;
 
             PoiMap& loc_inf = *(*loc_cur);

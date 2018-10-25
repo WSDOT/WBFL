@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -126,12 +126,7 @@ HRESULT GetCoordinates(IPoint2d* pPoint,Float64* px,Float64* py)
 {
    ATLASSERT(pPoint != 0 && px != 0 && py != 0);
 
-   HRESULT hr;
-   hr = pPoint->get_X(px);
-   if (FAILED(hr))
-      return hr;
-
-   hr = pPoint->get_Y(py);
+   HRESULT hr = pPoint->Location(px,py);
    if (FAILED(hr))
       return hr;
 
@@ -142,16 +137,7 @@ HRESULT GetCoordinates(IPoint3d* pPoint,Float64* px,Float64* py,Float64* pz)
 {
    ATLASSERT(pPoint != 0 && px != 0 && py != 0 && pz != 0);
 
-   HRESULT hr;
-   hr = pPoint->get_X(px);
-   if (FAILED(hr))
-      return hr;
-
-   hr = pPoint->get_Y(py);
-   if (FAILED(hr))
-      return hr;
-
-   hr = pPoint->get_Z(pz);
+   HRESULT hr = pPoint->Location(px,py,pz);
    if (FAILED(hr))
       return hr;
 
@@ -207,8 +193,7 @@ HRESULT CreatePoint(IPoint2d* pPoint,IPoint2dFactory* pFactory,IPoint2d** ppPoin
    ATLASSERT( pPoint != 0 && ppPoint != 0 && (*ppPoint) == 0 );
 
    Float64 x,y;
-   pPoint->get_X(&x);
-   pPoint->get_Y(&y);
+   pPoint->Location(&x,&y);
 
    return CreatePoint(x,y,pFactory,ppPoint);
 }
@@ -245,9 +230,7 @@ HRESULT CreatePoint(IPoint3d* pPoint,IPoint3dFactory* pFactory,IPoint3d** ppPoin
    ATLASSERT( pPoint != 0 && ppPoint != 0 && (*ppPoint == 0) );
 
    Float64 x,y,z;
-   pPoint->get_X(&x);
-   pPoint->get_Y(&y);
-   pPoint->get_Z(&z);
+   pPoint->Location(&x,&y,&z);
 
    return CreatePoint(x,y,z,pFactory,ppPoint);
 }

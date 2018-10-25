@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -64,7 +64,7 @@ STDMETHODIMP CPOICollection::Create(PoiIDType id, MemberIDType memberID, Float64
    HRESULT hr = E_FAIL;
 
    // see if a POI with our id already exists
-   ContainerIteratorType it = m_coll.find(id);
+   ContainerIteratorType it( m_coll.find(id) );
    if (it != m_coll.end())
    {
       // exists - return error
@@ -86,8 +86,7 @@ STDMETHODIMP CPOICollection::Create(PoiIDType id, MemberIDType memberID, Float64
          return hr;
 
       // insert new poi
-      std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppPOI) ));
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppPOI) )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

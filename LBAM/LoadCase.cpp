@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -217,7 +217,9 @@ STDMETHODIMP CLoadCase::RemoveLoadGroup(BSTR loadGroupName)
 	CComBSTR tmp(loadGroupName);
 
    bool found = false;
-   for (LoadGroupIterator it=m_LoadGroups.begin(); it!=m_LoadGroups.end(); it++)
+   LoadGroupIterator it( m_LoadGroups.begin() );
+   LoadGroupIterator itend( m_LoadGroups.end() );
+   for (; it!=itend; it++)
    {
       if (tmp==*it)
       {
@@ -244,7 +246,7 @@ STDMETHODIMP CLoadCase::RemoveLoadGroupByIndex(CollectionIndexType index)
    {
       if ( IsValidIndex(index,m_LoadGroups) )
       {
-         LoadGroupIterator it=m_LoadGroups.begin();
+         LoadGroupIterator it(m_LoadGroups.begin());
          it += index;
          m_LoadGroups.erase(it);
          Fire_OnLoadCaseChanged(this, cgtCombination);

@@ -34,17 +34,38 @@
 #include <MathEx.h>
 #include "WBFLGenericBridge.h"
 
+template<class T_IBeam>
+class VoidedEndBlock
+{
+public:
+   static void InEndBlock(T_IBeam* pBeam)
+   {
+      pBeam->put_VoidCount(0);
+   }
+};
+
+template<class T_IBeam>
+class OutlineEndBlock
+{
+public:
+   static void InEndBlock(T_IBeam* pBeam)
+   {
+      pBeam->put_UseOutlineOnly(VARIANT_TRUE);
+   }
+};
+
 /////////////////////////////////////////////////////////////////////////////
 // TEndBlockSegmentImpl
 //                                                             IDeckedSlabBeam
-template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR> class TEndBlockSegmentImpl : 
+template<class T_IEndBlockSegment, class T_IBeamSection, class T_IBeam, const CLSID* T_CLSID, long T_IDR,class T_ENDBLOCK> 
+class TEndBlockSegmentImpl : 
 	public CComObjectRootEx<CComSingleThreadModel>,
 //   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR>, T_CLSID>,
+	public CComCoClass< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, T_CLSID>,
 	public ISupportErrorInfo,
-   public CProxyDSegmentEvents< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR> >,
-   public IConnectionPointContainerImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR> >,
-   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+   public CProxyDSegmentEvents< TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK> >,
+   public IConnectionPointContainerImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK> >,
+   public IObjectSafetyImpl<TEndBlockSegmentImpl<T_IEndBlockSegment, T_IBeamSection, T_IBeam, T_CLSID, T_IDR, T_ENDBLOCK>, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public T_IEndBlockSegment,
    public IMaterialEvents,
    public IStructuredStorage2
@@ -117,6 +138,7 @@ public:
    }
 
 // ISupportsErrorInfo
+public:
    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
    {
 	   static const IID* arr[] = 
@@ -226,11 +248,11 @@ public:
          Float64 length;
          get_SegmentLength(&length);
 
-         // Remove void(s) if in block region
+         // Section is in the end block so use the outline of the shape only
          if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
               (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
          {
-            newBeam->put_VoidCount(0);
+            T_ENDBLOCK::InEndBlock(newBeam);;
          }
 
          newSection.QueryInterface(ppShape);

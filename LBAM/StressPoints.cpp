@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,7 +53,9 @@ STDMETHODIMP CStressPoints::OnStressPointChanged(/*[in]*/IStressPoint* pStressPo
 {
    // find stress point in our collection - will only fire on first found
    CollectionIndexType i=0;
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       // could use COM identity (IUnknown), but seems like a waste.
       if (it->second.m_T == pStressPoint)
@@ -80,7 +82,9 @@ STDMETHODIMP CStressPoints::Clone(/*[out]*/IStressPoints* *pColl)
 
    CComPtr<IStressPoints> spisps(pnew); // holder for reference count
 
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<IStressPoint> isp;
       

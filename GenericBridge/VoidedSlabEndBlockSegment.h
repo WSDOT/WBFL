@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,4 +35,4 @@
 
 // Template takes care of all
 
-typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT> CVoidedSlabEndBlockSegment;
+typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT, VoidedEndBlock<IVoidedSlab2>> CVoidedSlabEndBlockSegment;

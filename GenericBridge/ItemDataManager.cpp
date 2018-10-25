@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,7 +49,7 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
    USES_CONVERSION;
 
    std::_tstring strName(OLE2T(name));
-   ItemDataCollection::iterator found = m_Items.find(strName);
+   ItemDataCollection::iterator found( m_Items.find(strName) );
 
    if ( found != m_Items.end() )
    {

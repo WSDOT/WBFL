@@ -49,7 +49,7 @@ BOOL CProgressThread::OnIdle(LONG lCount)
    if ( m_bTerminate )
       AfxPostQuitMessage(0);
 
-   return TRUE;
+   return FALSE;
 }
 
 void CProgressThread::EndThread()
@@ -76,7 +76,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    if ( dwMask & PW_NOMESSAGE )
       m_ProgressDlg.m_MessageCtrl.ShowWindow( SW_HIDE );
 
-//   if ( dwMask & PW_NOGAUGE ) // Always hide
+   if ( dwMask & PW_NOGAUGE ) // Always hide
       m_ProgressDlg.m_ProgressBar.ShowWindow( SW_HIDE );
    
    m_bCancelEnabled = TRUE;
@@ -99,6 +99,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
 void CProgressThread::Init(short begin, short end, short inc)
 {
    m_ProgressDlg.PumpMessage();
+   m_ProgressDlg.m_ProgressBar.ShowWindow( SW_SHOW );
    m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
    m_ProgressDlg.m_ProgressBar.SetStep( inc );
    m_ProgressDlg.m_ProgressBar.SetPos( begin );

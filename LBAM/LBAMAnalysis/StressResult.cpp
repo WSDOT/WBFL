@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -236,7 +236,9 @@ STDMETHODIMP CStressResult::HpSumResults(/*[in]*/CollectionIndexType Num, /*[in]
    if (Num!=size)
       return E_INVALIDARG;
 
-   for (Float64Iterator it=m_Results.begin(); it!=m_Results.end(); it++)
+   Float64Iterator it( m_Results.begin() );
+   Float64Iterator itend( m_Results.end() );
+   for (; it!=itend; it++)
    {
       *it += *(Vals++);
    }

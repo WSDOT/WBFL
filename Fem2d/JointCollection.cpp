@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -64,7 +64,7 @@ STDMETHODIMP CJointCollection::Create(JointIDType id, Float64 fltX, Float64 fltY
    HRESULT hr = E_FAIL;
 
    // see if a joint with our id already exists
-   ContainerIteratorType it = m_coll.find(id);
+   ContainerIteratorType it( m_coll.find(id) );
    if (it != m_coll.end())
    {
       // exists - return error
@@ -84,8 +84,7 @@ STDMETHODIMP CJointCollection::Create(JointIDType id, Float64 fltX, Float64 fltY
       pjnt->OnCreate(m_pModel, m_pEvents, id, fltX, fltY);
 
       // insert new joint
-      std::pair<ContainerIteratorType, bool> st;
-      st = m_coll.insert(ContainerValueType(id, CComVariant(*ppJoint)));
+      std::pair<ContainerIteratorType, bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppJoint))) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

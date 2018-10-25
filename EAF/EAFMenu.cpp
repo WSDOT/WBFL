@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -361,6 +361,16 @@ UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
    }
 
    return -1;
+}
+
+UINT CEAFMenu::GetMenuItemID(UINT nPosition,UINT* pOriginalID, IEAFCommandCallback** ppCallback)
+{
+   // Returns the ID assigned to the actual menu
+   // OriginalID is the ID used by the plug-in and callback is the associated callback object
+   CMenu* pMenu = GetMenu();
+   UINT nMappedID = pMenu->GetMenuItemID(nPosition);
+   m_pCmdMgr->GetCommandCallback(nMappedID,pOriginalID,ppCallback);
+   return nMappedID; 
 }
 
 BOOL CEAFMenu::TrackPopupMenu(UINT nFlags,int x,int y,CWnd* pWnd,LPCRECT lpRect)

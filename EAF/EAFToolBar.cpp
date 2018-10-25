@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -241,6 +241,32 @@ void CEAFToolBar::ClientToScreen(LPRECT lpRect) const
 {
    if ( m_pToolBar )
       m_pToolBar->GetToolBarCtrl().ClientToScreen(lpRect);
+}
+
+void CEAFToolBar::SetItemID(int nIndex,UINT nID,IEAFCommandCallback* pCallback)
+{
+   if ( m_pToolBar )
+   {
+      UINT nOldID;
+      UINT style;
+      int iImage;
+      m_pToolBar->GetButtonInfo(nIndex,nOldID,style,iImage);
+      m_pToolBar->SetButtonInfo(nIndex,nID,style,iImage);
+   }
+}
+
+void CEAFToolBar::GetItemID(int nIndex,UINT* pID,IEAFCommandCallback** ppCallback)
+{
+   UINT nMappedCmdID;
+   if ( m_pToolBar )
+   {
+      nMappedCmdID = m_pToolBar->GetItemID(nIndex);
+      if ( !m_pCmdMgr->GetCommandCallback(nMappedCmdID,pID,ppCallback) )
+      {
+         *pID = nMappedCmdID;
+         *ppCallback = NULL;
+      }
+   }
 }
 
 int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -555,8 +555,9 @@ void CJoint::ComputeReactions()
    m_Reaction[1] = 0;
    m_Reaction[2] = 0;
 
-   MemberPointerIterator e = m_AttachedMembers.begin();
-   while(e != m_AttachedMembers.end())
+   MemberPointerIterator e (m_AttachedMembers.begin() );
+   MemberPointerIterator eend (m_AttachedMembers.end() );
+   while(e != eend)
    {
       CMember *ele = *(e++);
 
@@ -599,8 +600,9 @@ bool CJoint::IsEquilibriumSatisfied(Float64 tolerance)
    Fx = 0;
    Fy = 0;
    Mz = 0;
-   MemberPointerIterator e = m_AttachedMembers.begin();
-   while(e != m_AttachedMembers.end())
+   MemberPointerIterator e (m_AttachedMembers.begin());
+   MemberPointerIterator eend (m_AttachedMembers.end());
+   while(e != eend)
    {
       CMember *ele = *e++;
       long jntId = ele->GetJointNum(this);

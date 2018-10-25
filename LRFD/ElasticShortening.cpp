@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,10 @@ CLASS
    lrfdElasticShortening
 ****************************************************************************/
 
-
+// preconvert for performance
+static const Float64 g_25000_MPA = ::ConvertToSysUnits(  25000, unitMeasure::MPa );
+static const Float64 g_1_MM2 = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
+static const Float64 g_1_MM4 = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
@@ -58,10 +61,10 @@ lrfdElasticShortening::lrfdElasticShortening()
    m_ePerm     = 0;
    m_eTemp     = 0;
 
-   m_Eci   = ::ConvertToSysUnits(  25000, unitMeasure::MPa );
+   m_Eci   = g_25000_MPA;
    m_Ep    = lrfdPsStrand::GetModE();
-   m_Ag    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter2 );
-   m_Ig    = ::ConvertToSysUnits( 1, unitMeasure::Millimeter4 );
+   m_Ag    = g_1_MM2;
+   m_Ig    = g_1_MM4;
 
    m_Mdlg  = 0;
    m_K     = 1;

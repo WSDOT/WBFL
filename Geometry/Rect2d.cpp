@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -119,6 +119,30 @@ STDMETHODIMP CRect2d::put_Bottom(Float64 newVal)
 
 	return S_OK;
 }
+
+STDMETHODIMP CRect2d::SetBounds(/*[in]*/ Float64 Left, /*[in]*/ Float64 Right, /*[in]*/ Float64 Bottom, /*[in]*/ Float64 Top)
+{
+   ATLASSERT(Left<=Right);
+   ATLASSERT(Bottom<=Top);
+
+   m_Left   = Left;
+   m_Right  = Right;
+   m_Bottom = Bottom;
+   m_Top    = Top;
+
+	return S_OK;
+}
+
+STDMETHODIMP CRect2d::GetBounds(/*[out, retval]*/ Float64* pLeft, /*[out, retval]*/ Float64* pRight, /*[out, retval]*/ Float64* pBottom, /*[out, retval]*/ Float64* pTop)
+{
+   *pLeft    = m_Left;
+   *pRight  = m_Right;
+   *pBottom = m_Bottom;
+   *pTop     = m_Top;
+
+	return S_OK;
+}
+
 
 STDMETHODIMP CRect2d::get_Area(Float64 *pVal)
 {

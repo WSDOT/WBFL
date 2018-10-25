@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,7 +116,9 @@ HRESULT CLoadCombinations::OnAfterRemove( BSTR name)
 void CLoadCombinations::FinalRelease()
 {
    // free up all of our connectionLoadCombinationnts on destruct
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       this->OnBeforeRemove(*it);
    }
@@ -137,7 +139,9 @@ STDMETHODIMP CLoadCombinations::Clone(ILoadCombinations* *pColl)
    // clone properties
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<ILoadCombination> isp;
       

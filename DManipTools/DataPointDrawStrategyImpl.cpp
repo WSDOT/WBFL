@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,7 +55,7 @@ END_INTERFACE_MAP()
 DELEGATE_CUSTOM_INTERFACE(CDataPointDrawStrategyImpl,DrawPointStrategy);
 DELEGATE_CUSTOM_INTERFACE(CDataPointDrawStrategyImpl,Strategy);
 
-STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::get_SymbolFontFace(LPTSTR *pVal)
+STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::get_SymbolFontFace(TCHAR* *pVal)
 {
    METHOD_PROLOGUE(CDataPointDrawStrategyImpl,Strategy);
 

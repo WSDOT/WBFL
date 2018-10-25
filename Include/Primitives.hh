@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -481,6 +481,20 @@
 #define IDH_IPlateGirder_Shape                           3410
 #define IDH_IPlateGirder_XYPosition                      3411
 #define IDH_IPlateGirder_HookPoint                       3412
+
+#define IDH_IFasterPolyShape                 3500
+#define IDH_IFasterPolyShape_AddPoint        3501
+#define IDH_IFasterPolyShape_AddPointEx      3502
+#define IDH_IFasterPolyShape_AddPoints       3503
+#define IDH_IFasterPolyShape_Clear           3504
+#define IDH_IFasterPolyShape_NumPoints       3505
+#define IDH_IFasterPolyShape_Point           3506
+#define IDH_IFasterPolyShape_CreatePoints    3507
+#define IDH_IFasterPolyShape_RemovePoint     3508
+#define IDH_IFasterPolyShape_Shape           3509
+#define IDH_IFasterPolyShape_XYPosition      3510
+#define IDH_IFasterPolyShape_ChangePoint     3501
+
 
 #define IDH_IUBeam                             1800
 #define IDH_IUBeam_W1                          1801

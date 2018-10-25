@@ -60,6 +60,9 @@
     <comClass clsid="{94FD8E64-0013-11D3-8CDF-8BF0A4AD5B35}"
               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
               description="PolyShape Class"></comClass>
+    <comClass clsid="{AFB02F20-6824-491f-B804-1AD34DAA965E}"
+              tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+              description="FasterPolyShape Class"></comClass>
     <comClass clsid="{219B8FC2-0154-11D3-8CDF-CCA4ADEF4534}"
               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
               description="Circle Class"></comClass>
@@ -895,6 +898,9 @@
     <comClass clsid="{B0E705F3-5B54-43e4-B869-222C77B2BD28}"
               tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
               description="BoxBeamEndBlockSegment Class"></comClass>
+    <comClass clsid="{E5E3C9E4-909B-47eb-8B40-E1279A1FE65E}"
+              tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+              description="UGirderSection2EndBlockSegment Class"></comClass>
     <comClass clsid="{432FB365-C5D0-46B0-9DCD-65F21A91580F}"
               tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
               description="TaperedGirderSegment Class"></comClass>

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -323,6 +323,12 @@ public:
    void DrawLegend(bool bDrawLegend) { m_bDrawLegend = bDrawLegend; }
 
    //------------------------------------------------------------------------
+   enum LegendBoarderType {lbNoBoarder, lbCheckerBoarder, lbBoundary};
+
+   void SetLegendBoarderStyle(LegendBoarderType type);
+   LegendBoarderType GetLegendBoarderStyle() const;
+
+   //------------------------------------------------------------------------
    // Set the pen style for a dataset
    // nPenStyle, nWidth and crColor are defined the same as for the 
    // CreatePen Windows api call.
@@ -414,6 +420,7 @@ private:
    bool m_DoDrawAxis;
    bool m_DoDrawGrid;
    bool m_bDrawLegend;
+   LegendBoarderType m_LegendBoarderType;
    PenData m_GridPenData;
 
    std::_tstring m_GraphTitle;

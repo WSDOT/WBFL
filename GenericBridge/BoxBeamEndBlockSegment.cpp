@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,4 +28,4 @@
 #include "BoxBeamEndBlockSegment.h"
 
 // Instantiate template in our dll
-template class TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT>;
+template class TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>>;

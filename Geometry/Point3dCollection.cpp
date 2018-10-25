@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -113,7 +113,7 @@ HRESULT CPoint3dCollection::OnAfterRemove ( CollectionIndexType idx)
 void CPoint3dCollection::UnadviseAll()
 {
    // free up all of our connectionpoints on destruct
-   long cnt=0;
+   CollectionIndexType cnt=0;
    for (iterator it= begin(); it != end(); it++)
    {
       OnBeforeRemove(*it, cnt++);

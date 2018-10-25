@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,7 +137,7 @@ public:
 
    TResult* Find( long resultId)
    {
-      ResultVecIterator it = m_ResultVec.find(resultId);
+      ResultVecIterator it( m_ResultVec.find(resultId) );
       if (it!=m_ResultVec.end())
          return &(it->second);
       else

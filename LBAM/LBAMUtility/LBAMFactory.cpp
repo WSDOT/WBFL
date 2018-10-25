@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Utility - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -990,11 +990,9 @@ STDMETHODIMP CLBAMFactory::ConfigureDeflectionLiveLoad(ILBAMModel* pModel, Float
       hr = convert->ConvertToBaseUnits(deflection_truck_weight[2],units==suUS?CComBSTR("kip"):CComBSTR("kN"),&deflection_truck_weight[2]);
 
       Float64 deflection_truck_axles[4]; // index 1,2 are the min and max spacing for the variable axle
-                                    // index 3 = minimum headway spacing for dual truck train
       deflection_truck_axles[0] = (units == suUS ? 14.0 : 4.3);
       deflection_truck_axles[1] = (units == suUS ? 14.0 : 4.3);
       deflection_truck_axles[2] = (units == suUS ? 30.0 : 9.1);
-      deflection_truck_axles[3] = (units == suUS ? 50.0 : 15.0);
       hr = convert->ConvertToBaseUnits(deflection_truck_axles[0],units==suUS?CComBSTR("ft"):CComBSTR("m"),&deflection_truck_axles[0]);
       hr = convert->ConvertToBaseUnits(deflection_truck_axles[1],units==suUS?CComBSTR("ft"):CComBSTR("m"),&deflection_truck_axles[1]);
       hr = convert->ConvertToBaseUnits(deflection_truck_axles[2],units==suUS?CComBSTR("ft"):CComBSTR("m"),&deflection_truck_axles[2]);

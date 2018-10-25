@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -255,7 +255,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::Load(IStructuredLoad2 * pload)
          if (FAILED(hr))
             return hr;
 
-         lcf.m_LoadCaseName = (LPTSTR)_bstr_t(var);
+         lcf.m_LoadCaseName = (TCHAR*)_bstr_t(var);
 
          var.Clear();
          hr = pload->get_Property(_bstr_t("LoadCaseFactor"),&var);

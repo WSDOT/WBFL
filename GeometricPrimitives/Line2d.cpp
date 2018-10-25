@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -353,9 +353,9 @@ bool gpLine2d::AssertValid() const
 
 void gpLine2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpLine2d" << endl;
-   os << "  m_c =" << m_c <<endl;
-   os << "m_N = ";
+   os << _T("Dump for gpLine2d") << endl;
+   os << _T("  m_c =") << m_c <<endl;
+   os << _T("m_N = ");
    m_N.Dump(os);
 }
 

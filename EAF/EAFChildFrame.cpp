@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -102,6 +102,16 @@ void CEAFChildFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
    {
       CMDIChildWnd::OnUpdateFrameTitle(bAddToTitle);
    }
+}
+
+void CEAFChildFrame::OnBeforeMaxViewActivate(void* pvCreateData)
+{
+   // Called by framework when a view cannot be created because it has reacted
+   // its maximum view count. pvCreateData is a pointer to the view creation
+   // data that would have been used to initialize the view if it had been created.
+
+   // Does nothing be default.
+   // Override this method if you want to modified the frame/view with the creation data
 }
 
 BOOL CEAFChildFrame::PreCreateWindow(CREATESTRUCT& cs) 

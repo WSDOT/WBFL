@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,6 +45,7 @@ void get_constants( bool bGr1725, Float64 *pA, Float64* pB, Float64* pC)
 }
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
+static const Float64 g_28500_KSI = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
 
 //======================== LIFECYCLE  =======================================
 matPsStrandCurve::matPsStrandCurve(const matPsStrand& strand) :
@@ -52,7 +53,7 @@ matYieldStressStrainCurve( strand.GetName(), 1,1,-1,1,1,-1,-1,1,1,-1,-1 )
 {
    m_bIsGr1725 = ( strand.GetGrade() ==  matPsStrand::Gr1725 );
 
-   Float64 E   = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
+   Float64 E   = g_28500_KSI;
    Float64 fpu = ( m_bIsGr1725 ? 249. : 269. );
    Float64 fu  = ::ConvertToSysUnits( fpu, unitMeasure::KSI );
    Float64 fy  = E * ( m_bIsGr1725 ? 0.00764091 : 0.00859219);

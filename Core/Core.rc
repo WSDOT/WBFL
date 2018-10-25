@@ -59,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,2,0
- PRODUCTVERSION 3,3,2,0
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 3,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -78,12 +78,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Core Services"
-            VALUE "FileVersion", "3.3.2.0"
+            VALUE "FileVersion", "3.4.0.0"
             VALUE "InternalName", "Core"
-            VALUE "LegalCopyright", "Copyright © 1999-2010"
+            VALUE "LegalCopyright", "Copyright © 1999-2011"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.3.2.0"
+            VALUE "ProductVersion", "3.4.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -98,15 +98,15 @@ END
 // Dialog
 //
 
-IDD_PROGRESSDLG DIALOGEX 0, 0, 214, 89
+IDD_PROGRESSDLG DIALOGEX 0, 0, 214, 65
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 CAPTION "Progress"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "Cancel",IDCANCEL,82,68,50,14
-    LTEXT           "Working...",IDC_MESSAGE,7,7,200,19
-    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",0x0,7,31,200,14
-    CONTROL         "Animate1",IDC_ANIMATE,"SysAnimate32",ACS_CENTER | ACS_TRANSPARENT | ACS_AUTOPLAY | WS_TABSTOP,7,32,200,30
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,82,49,50,14
+    LTEXT           "Working...",IDC_MESSAGE,7,3,200,19
+    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",0x0,7,38,200,10
+    CONTROL         "Animate1",IDC_ANIMATE,"SysAnimate32",ACS_CENTER | ACS_TRANSPARENT | ACS_AUTOPLAY | WS_TABSTOP,7,15,200,24
 END
 
 
@@ -123,7 +123,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 207
         TOPMARGIN, 7
-        BOTTOMMARGIN, 82
+        BOTTOMMARGIN, 58
     END
 END
 #endif    // APSTUDIO_INVOKED

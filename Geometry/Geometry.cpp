@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -78,6 +78,7 @@
 #include "VoidedSlab2.h"
 #include "BoxBeam.h"
 #include "DeckedSlabBeam.h"
+#include "FasterPolyShape.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -127,6 +128,7 @@ OBJECT_ENTRY(CLSID_VoidedSlab,CVoidedSlab)
 OBJECT_ENTRY(CLSID_VoidedSlab2,CVoidedSlab2)
 OBJECT_ENTRY(CLSID_DeckedSlabBeam,CDeckedSlabBeam)
 OBJECT_ENTRY(CLSID_BoxBeam,CBoxBeam)
+OBJECT_ENTRY(CLSID_FasterPolyShape, CFasterPolyShape)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

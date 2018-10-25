@@ -18,12 +18,13 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory=".\Release"
+			IntermediateDirectory=".\$(ConfigurationName)"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -34,11 +35,10 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="$(SolutionDir)Include"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
 				GenerateTypeLibrary="false"
 				TypeLibraryName=""
-				OutputDirectory=""
-				HeaderFileName=""
+				HeaderFileName="..\Include\$(ProjectName).h"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -48,7 +48,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory=".\Debug"
+			IntermediateDirectory=".\$(ConfigurationName)"
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -64,11 +64,40 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="$(SolutionDir)Include"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
 				GenerateTypeLibrary="false"
 				TypeLibraryName=""
-				OutputDirectory=""
-				HeaderFileName=""
+				HeaderFileName="..\Include\$(ProjectName).h"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Profile|Win32"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+			IntermediateDirectory=".\$(ConfigurationName)"
+			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				GenerateTypeLibrary="false"
+				TypeLibraryName=""
+				HeaderFileName="..\Include\$(ProjectName).h"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -92,9 +121,9 @@
 				<Tool
 					Name="VCMIDLTool"
 					GenerateTypeLibrary="true"
-					TypeLibraryName="$(OutDir)\WBFLCore.tlb"
-					HeaderFileName="$(SolutionDir)Include\WBFLCore.h"
-					InterfaceIdentifierFileName="$(SolutionDir)Include\WBFLCore_i.c"
+					TypeLibraryName="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\WBFLCore.tlb"
+					HeaderFileName="..\Include\WBFLCore.h"
+					InterfaceIdentifierFileName="..\Include\WBFLCore_i.c"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -103,9 +132,20 @@
 				<Tool
 					Name="VCMIDLTool"
 					GenerateTypeLibrary="true"
-					TypeLibraryName="$(OutDir)\WBFLCore.tlb"
-					HeaderFileName="$(SolutionDir)Include\WBFLCore.h"
-					InterfaceIdentifierFileName="$(SolutionDir)Include\WBFLCore_i.c"
+					TypeLibraryName="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\WBFLCore.tlb"
+					HeaderFileName="..\Include\WBFLCore.h"
+					InterfaceIdentifierFileName="..\Include\WBFLCore_i.c"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Profile|Win32"
+				>
+				<Tool
+					Name="VCMIDLTool"
+					GenerateTypeLibrary="true"
+					TypeLibraryName="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\WBFLCore.tlb"
+					HeaderFileName="..\Include\WBFLCore.h"
+					InterfaceIdentifierFileName="..\Include\WBFLCore_i.c"
 				/>
 			</FileConfiguration>
 		</File>
@@ -119,7 +159,7 @@
 				<Tool
 					Name="VCMIDLTool"
 					GenerateTypeLibrary="false"
-					HeaderFileName="$(SolutionDir)Include\WBFLTypes.h"
+					HeaderFileName="..\Include\$(InputName).h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -129,7 +169,16 @@
 				<Tool
 					Name="VCMIDLTool"
 					GenerateTypeLibrary="false"
-					HeaderFileName="$(SolutionDir)Include\WBFLTypes.h"
+					HeaderFileName="..\Include\$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Profile|Win32"
+				>
+				<Tool
+					Name="VCMIDLTool"
+					GenerateTypeLibrary="false"
+					HeaderFileName="..\Include\$(InputName).h"
 				/>
 			</FileConfiguration>
 		</File>

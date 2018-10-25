@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,6 +35,20 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// precompute conversions
+static const Float64 g_140p0_MPA  = ::ConvertToSysUnits(140.0,unitMeasure::MPa);
+
+static const Float64 g_20p0_KSI   = ::ConvertToSysUnits(20.0,unitMeasure::KSI);
+
+static const Float64 g_150_MM = ::ConvertToSysUnits( 150, unitMeasure::Millimeter );
+static const Float64 g_300_MM = ::ConvertToSysUnits( 300, unitMeasure::Millimeter );
+static const Float64 g_600_MM = ::ConvertToSysUnits( 600, unitMeasure::Millimeter );
+
+static const Float64 g_6_IN =  ::ConvertToSysUnits( 6, unitMeasure::Inch );
+static const Float64 g_12_IN = ::ConvertToSysUnits(12, unitMeasure::Inch );
+static const Float64 g_24_IN = ::ConvertToSysUnits(24, unitMeasure::Inch );
+
+
 /****************************************************************************
 CLASS
    lrfdRebar
@@ -57,8 +71,7 @@ Float64 lrfdRebar::GetMaxBurstingStress(Float64 fy)
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
    if( lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::FirstEditionWith1996Interims )
    {
-      Float64 fym = is_si ? ::ConvertToSysUnits( 140, unitMeasure::MPa )
-                          : ::ConvertToSysUnits(  20, unitMeasure::KSI );
+      Float64 fym = is_si ? g_140p0_MPA : g_20p0_KSI;
 
       fy = min(fy, fym);
    }
@@ -83,8 +96,7 @@ BarSizeType lrfdRebar::GetMinConfinmentBarSize()
 Float64 lrfdRebar::GetMaxConfinmentBarSpacing()
 {
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   Float64 bss = is_si ? ::ConvertToSysUnits( 150, unitMeasure::Millimeter )
-                       : ::ConvertToSysUnits( 6, unitMeasure::Inch );
+   Float64 bss = is_si ? g_150_MM : g_6_IN;
    return bss;
 }
 
@@ -133,13 +145,13 @@ void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
    bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
    if (is_si)
    {
-      *sUnderLimit = ::ConvertToSysUnits(600.,unitMeasure::Millimeter);
-      *sOverLimit  = ::ConvertToSysUnits(300.,unitMeasure::Millimeter);
+      *sUnderLimit = g_600_MM;
+      *sOverLimit  = g_300_MM;
    }
    else
    {
-      *sUnderLimit = ::ConvertToSysUnits(24.,unitMeasure::Inch);
-      *sOverLimit  = ::ConvertToSysUnits(12.,unitMeasure::Inch);
+      *sUnderLimit = g_24_IN;
+      *sOverLimit  = g_12_IN;
    }
 }
 

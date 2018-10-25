@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,2,0
- PRODUCTVERSION 3,3,2,0
+ FILEVERSION 3,4,0,0
+ PRODUCTVERSION 3,4,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,15 +74,15 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "3.3.2.0\0"
+            VALUE "FileVersion", "3.4.0.0\0"
             VALUE "InternalName", "GenericBridge\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2010\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2011\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "GenericBridge.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "3.3.2.0\0"
+            VALUE "ProductVersion", "3.4.0.0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -153,6 +153,7 @@ IDR_THICKENEDFLANGEBULBTEESEGMENT REGISTRY DISCARDABLE "ThickenedFlangeBulbTeeSe
 IDR_DECKEDSLABBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "DeckedSlabBeamEndBlockSegment.rgs"
 IDR_BOXBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "BoxBeamEndBlockSegment.rgs"
 IDR_DECKEDSLABBEAMSECTION REGISTRY DISCARDABLE "DeckedSlabBeamSection.rgs"
+IDR_UGIRDERSECTION2ENDBLOCKSEGMENT REGISTRY DISCARDABLE "UGirderSection2EndBlockSegment.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

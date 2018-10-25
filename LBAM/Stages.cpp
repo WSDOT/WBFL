@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,7 +70,9 @@ STDMETHODIMP CStages::Clone(IStages* *pColl)
    // clone properties
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<IStage> isp;
       
@@ -145,7 +147,9 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
    // linear search
    CComBSTR cnam(name);
    StageIndexType i=0;
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( begin() );
+   for (; it != itend; it++)
    {
       CComBSTR bnam;
       HRESULT hr = it->second.m_T->get_Name(&bnam);
@@ -172,7 +176,9 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
 IStage* CStages::Find(const CComBSTR& name)
 {
    // linear search
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComBSTR bnam;
       HRESULT hr = it->second.m_T->get_Name(&bnam);
@@ -199,7 +205,10 @@ STDMETHODIMP CStages::RemoveByName(BSTR name)
    StageIndexType idx = 0;
 
    CComBSTR tname(name);
-   for (iterator it= begin(); it != end(); it++)
+
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComBSTR bnam;
       HRESULT hr = it->second.m_T->get_Name(&bnam);

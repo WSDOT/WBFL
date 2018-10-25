@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -377,16 +377,19 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir
 
    objDir->get_Value(&dir);
 
-   dx = dist * cos( dir );
-   dy = dist * sin( dir );
+   Float64 sindir = sin( dir );
+   Float64 cosdir = cos( dir );
+
+   dx = dist * cosdir;
+   dy = dist * sindir;
 
    // Point on line
    x += dx;
    y += dy;
 
    // Apply offset
-   x += offset * sin( dir );
-   y -= offset * cos( dir );
+   x += offset * sindir;
+   y -= offset * cosdir;
 
    pFactory->CreatePoint(ppoint);
 

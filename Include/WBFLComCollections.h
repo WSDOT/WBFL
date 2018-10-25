@@ -436,10 +436,10 @@ public:
          return hr;
 
       // erase by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += index;
 
-      ContainerType::iterator insertLoc = m_coll.insert(it, store);
+      ContainerType::iterator insertLoc( m_coll.insert(it, store) );
 
       StoredType& realStoredItem = *insertLoc;
 
@@ -473,7 +473,7 @@ public:
          return E_INVALIDARG;
 
       // erase by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += index;
 
   		HRESULT hr = S_OK;
@@ -531,8 +531,9 @@ public:
       bool go = true;
       while (go)
       {
-         ContainerIteratorType it= m_coll.begin();
-         if (it!=m_coll.end())
+         ContainerIteratorType it( m_coll.begin() );
+         ContainerIteratorType itend( m_coll.end() );
+         if (it!=itend)
          {
   		      HRESULT hr = S_OK;
             hr = OnBeforeRemove(&*it, idx);
@@ -752,10 +753,10 @@ public:
          return hr;
 
       // insert by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += index;
 
-      ContainerType::iterator insertLoc = m_coll.insert(it, store);
+      ContainerType::iterator insertLoc( m_coll.insert(it, store) );
       StoredType& realStoredItem = *insertLoc;
       return OnAfterAdd(&realStoredItem, index);
    }
@@ -776,7 +777,7 @@ public:
       StoredType store( m_coll[fromIndex] );
 
       // erase by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += fromIndex;
 
       m_coll.erase(it);
@@ -806,7 +807,7 @@ public:
          return hr;
 
       // insert by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += toIndex;
 
       m_coll.insert(it, store);
@@ -820,7 +821,7 @@ public:
          return E_INVALIDARG;
 
       // erase by index
-      ContainerType::iterator it = m_coll.begin();
+      ContainerType::iterator it( m_coll.begin() );
       it += index;
 
   		HRESULT hr = S_OK;
@@ -928,8 +929,9 @@ public:
       bool go = true;
       while (go)
       {
-         ContainerIteratorType it= m_coll.begin();
-         if (it!=m_coll.end())
+         ContainerIteratorType it( m_coll.begin() );
+         ContainerIteratorType itend( m_coll.end() );
+         if (it!=itend)
          {
   		      HRESULT hr = S_OK;
             hr = OnBeforeRemove(&*it, idx);
@@ -1105,7 +1107,7 @@ public:
       }
 
       // check if already in container
-      ContainerIteratorType ifnd = m_coll.find(name);
+      ContainerIteratorType ifnd( m_coll.find(name) );
       if (ifnd != m_coll.end())
       {
          return WCC_E_NAME_ALREADY_EXISTS;
@@ -1117,8 +1119,7 @@ public:
          return hr;
 
       // insert 
-      std::pair<ContainerIteratorType, bool> st;
-      st = m_coll.insert(ContainerValueType(name, store));
+      std::pair<ContainerIteratorType, bool> st( m_coll.insert(ContainerValueType(name, store)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
@@ -1179,7 +1180,7 @@ public:
       CHECK_IN(name);
 
       // erase by id
-      ContainerIteratorType it = m_coll.find(name);
+      ContainerIteratorType it( m_coll.find(name) );
       if (it!=m_coll.end())
       {
          // must release element before erasing it
@@ -1208,7 +1209,7 @@ public:
       else
       {
          // zero-based access
-         ContainerIteratorType it = m_coll.begin();
+         ContainerIteratorType it( m_coll.begin() );
          for (IndexType i=0; i<Index; i++)
          {
             it++;
@@ -1234,7 +1235,7 @@ public:
       CHECK_RETOBJ(pVal);
 
       HRESULT hrResult = S_OK;
-      ContainerIteratorType it = m_coll.find(name);
+      ContainerIteratorType it( m_coll.find(name) );
       if (it!=m_coll.end())
       {
          CComPtr<ItemType> pi;
@@ -1268,13 +1269,15 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter = m_coll.begin();
-		while (iter != m_coll.end() && idx > 0)
+		ContainerType::iterator iter( m_coll.begin() );
+		ContainerType::iterator iterend( m_coll.end() );
+		while (iter != iterend && idx > 0)
 		{
 			iter++;
 			idx--;
 		}
-		if (iter != m_coll.end())
+
+		if (iter != iterend)
       {
          // have to be able to cast ItemType to ItemType
          ItemType* pi = 0;
@@ -1293,7 +1296,9 @@ public:
    STDMETHOD(Clear)()
    {
       // release all members first, then clear
-      for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
+      ContainerIteratorType it( m_coll.begin() );
+      ContainerIteratorType itend( m_coll.end() );
+      for (; it != itend; it++)
       {
          CComBSTR name(it->first);
   		   HRESULT hr = S_OK;
@@ -1313,7 +1318,7 @@ public:
 // Classes for local C++ clients
    ItemType* Find(BSTR name)
    {
-      ContainerIteratorType it = m_coll.find(name);
+      ContainerIteratorType it( m_coll.find(name) );
       if (it!=m_coll.end())
       {
          return it->second.second;
@@ -1440,7 +1445,7 @@ public:
          return E_FAIL;
 
       // check if already in container
-      ContainerIteratorType ifnd = m_coll.find(id);
+      ContainerIteratorType ifnd( m_coll.find(id) );
       if (ifnd != m_coll.end())
       {
          return WCC_E_NAME_ALREADY_EXISTS;
@@ -1452,8 +1457,7 @@ public:
          return hr;
 
       // insert 
-      std::pair<ContainerIteratorType, bool> st;
-      st = m_coll.insert(ContainerValueType(id, store));
+      std::pair<ContainerIteratorType, bool> st( m_coll.insert(ContainerValueType(id, store)) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why
@@ -1512,7 +1516,7 @@ public:
    STDMETHOD(RemoveByID)(/*[in]*/long id)
    {
       // erase by id
-      ContainerIteratorType it = m_coll.find(id);
+      ContainerIteratorType it( m_coll.find(id) );
       if (it!=m_coll.end())
       {
          // must release element before erasing it
@@ -1541,7 +1545,7 @@ public:
       else
       {
          // zero-based access
-         ContainerIteratorType it = m_coll.begin();
+         ContainerIteratorType it( m_coll.begin() );
          for (IndexType i=0; i<Index; i++)
          {
             it++;
@@ -1567,7 +1571,7 @@ public:
 
       HRESULT hrResult = S_OK;
 
-      ContainerIteratorType it = m_coll.find(ID);
+      ContainerIteratorType it( m_coll.find(ID) );
       if (it!=m_coll.end())
       {
          CComPtr<ItemType> pi;
@@ -1602,13 +1606,15 @@ public:
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter = m_coll.begin();
-		while (iter != m_coll.end() && idx > 0)
+		ContainerType::iterator iter( m_coll.begin() );
+		ContainerType::iterator iterend( m_coll.end() );
+		while (iter != iterend && idx > 0)
 		{
 			iter++;
 			idx--;
 		}
-		if (iter != m_coll.end())
+
+		if (iter != iterend)
       {
          // have to be able to cast ItemType to ItemType
          ItemType* pi = 0;
@@ -1627,7 +1633,9 @@ public:
    STDMETHOD(Clear)()
    {
       // release all members first, then clear
-      for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
+      ContainerIteratorType it( m_coll.begin() );
+      ContainerIteratorType itend( m_coll.end() );
+      for (; it != itend; it++)
       {
          long id = it->first;
   		   HRESULT hr = S_OK;
@@ -1647,7 +1655,7 @@ public:
 // Classes for local C++ clients
    ItemType* Find(long id)
    {
-      ContainerIteratorType it = m_coll.find(id);
+      ContainerIteratorType it( m_coll.find(id) );
       if (it!=m_coll.end())
       {
          return it->second.second;

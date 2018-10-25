@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_REPORTDESCRIPTION_H__D25A0902_EA73_40C0_AD7A_336442C2A746__INCLUDED_)
-#define AFX_REPORTDESCRIPTION_H__D25A0902_EA73_40C0_AD7A_336442C2A746__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <string>
@@ -69,5 +64,3 @@ private:
    std::_tstring m_ReportName;
    std::vector<const CChapterBuilder*> m_ChapterBuilders; // do not delete these pointers
 };
-
-#endif // !defined(AFX_REPORTDESCRIPTION_H__D25A0902_EA73_40C0_AD7A_336442C2A746__INCLUDED_)

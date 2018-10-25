@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -240,16 +240,24 @@ STDMETHODIMP CBridgeGeometryTool::GirderLinePoint(IGenericBridge* bridge,Float64
    }
 
    // Get the start and end points of the girder line in this span
+
+   CComPtr<ISpanCollection> spans;
+   bridge->get_Spans(&spans);
+   CComPtr<ISpan> objSpan;
+   spans->get_Item(spanIndex,&objSpan);
+   GirderIndexType nGirders;
+   objSpan->get_GirderCount(&nGirders);
    if ( gdrIdx == INVALID_INDEX )
    {
       // this means use the right-most girder
-      CComPtr<ISpanCollection> spans;
-      bridge->get_Spans(&spans);
-      CComPtr<ISpan> objSpan;
-      spans->get_Item(spanIndex,&objSpan);
-      GirderIndexType nGirders;
-      objSpan->get_GirderCount(&nGirders);
       gdrIdx = nGirders - 1;
+   }
+
+   if ( nGirders <= gdrIdx )
+   {
+      *spanIdx = INVALID_INDEX;
+      *distFromStartOfSpan = 0;
+      return S_FALSE;
    }
 
    CComPtr<ICogoInfo> cogoinfo;

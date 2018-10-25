@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -962,7 +962,7 @@ bool gpPolyPointIter2d::AssertValid() const
 
 void gpPolyPointIter2d::Dump(dbgDumpContext& os) const
 {
-   os<< _T("Dump for gpPolyPointIter2d")<<endl;
+   os<< _T("Dump for gpPolyPointIter2d") <<endl;
 }
 
 #endif // _DEBUG

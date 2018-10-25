@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -245,13 +245,13 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
    // save toolbar state before they are removed
    CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( !bIntegrate )
-      pFrame->SaveBarState(GetToolbarSectionName());
+      pFrame->SaveBarState(CString("Toolbars\\") + GetToolbarSectionName());
 
    DoIntegrateWithUI(bIntegrate);
 
    // load toolbar state after toolbars are created
    if ( bIntegrate )
-      pFrame->LoadBarState(GetToolbarSectionName());
+      pFrame->LoadBarState(CString("Toolbars\\") + GetToolbarSectionName());
 
    m_bUIIntegrated = bIntegrate;
 }

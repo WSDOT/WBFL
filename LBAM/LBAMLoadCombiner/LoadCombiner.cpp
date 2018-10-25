@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -322,7 +322,9 @@ STDMETHODIMP CLoadCombiner::GetActiveLoadCases(/*[out,retval]*/IBstrArray* *load
       CComPtr<IBstrArray> names;
       hr = names.CoCreateInstance(CLSID_BstrArray);
 
-      for (LoadCaseList::iterator it = m_LoadCases.begin(); it!=m_LoadCases.end(); it++)
+      LoadCaseList::iterator it( m_LoadCases.begin() );
+      LoadCaseList::iterator itend( m_LoadCases.end() );
+      for (; it!=itend; it++)
       {
          NameVec& load_grnms = it->second;
          if (! load_grnms.empty() )
@@ -380,7 +382,7 @@ void CLoadCombiner::ValidateLoadCases()
 
       // put load case into our list 
       NameVec empty_vec;
-      std::pair<LoadCaseIterator, bool> insit = m_LoadCases.insert(LoadCaseList::value_type(lc_name, empty_vec));
+      std::pair<LoadCaseIterator, bool> insit( m_LoadCases.insert(LoadCaseList::value_type(lc_name, empty_vec)) );
       if (!insit.second)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCASE_DUPLICATE, lc_name.m_T );
@@ -434,7 +436,7 @@ void CLoadCombiner::ValidateLoadCombinations()
 
       // put load combo into our list 
       ComboData empty_vec;
-      std::pair<LoadCombinationIterator, bool> insit = m_LoadCombinations.insert(LoadCombinationList::value_type(lcmb_name, empty_vec));
+      std::pair<LoadCombinationIterator, bool> insit( m_LoadCombinations.insert(LoadCombinationList::value_type(lcmb_name, empty_vec)) );
       if (!insit.second)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_LOADCOMBO_DUPLICATE, lcmb_name.m_T );
@@ -463,14 +465,16 @@ void CLoadCombiner::ValidateLoadCombinations()
       CollectionIndexType lcf_cnt;
       hr = load_combo->get_LoadCaseFactorCount(&lcf_cnt);
 
+      LoadCaseIterator lc_it_end( m_LoadCases.end());
+
       for (CollectionIndexType ilcf=0; ilcf<lcf_cnt; ilcf++)
       {
          CComBSTR lcs_name;
          Float64 min_factor, max_factor;
          hr = load_combo->GetLoadCaseFactor(ilcf, &lcs_name, &min_factor, &max_factor);
 
-         LoadCaseIterator lc_it = m_LoadCases.find(lcs_name);
-         if (lc_it != m_LoadCases.end())
+         LoadCaseIterator lc_it( m_LoadCases.find(lcs_name) );
+         if (lc_it != lc_it_end)
          {
             // see if load case has any associated load groups. Add case only if it does
             NameVec& rloadgroups = lc_it->second;

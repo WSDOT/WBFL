@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -223,7 +223,7 @@ void CEAFSplashScreen::SetText(LPCTSTR strText)
    dc.SetTextColor(m_Info.m_TextColor);
    size_t extra = 4; // DrawText can add up to 4 more characters
    size_t size = _tcslen(strText)+extra;
-   LPTSTR pText = new TCHAR[size];
+   TCHAR* pText = new TCHAR[size];
    memset((void*)pText,0,size);
    _tcscpy_s(pText,size,strText);
    dc.DrawText(pText,-1,m_Info.m_Rect,DT_MODIFYSTRING | DT_END_ELLIPSIS);

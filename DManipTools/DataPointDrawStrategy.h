@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@ interface iDataPointDrawStrategy : public IUnknown
 {
    // name of font face for symbol
    // "Symbol" is the default
-   STDMETHOD_(void,get_SymbolFontFace)(LPTSTR *pVal) PURE;
+   STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal) PURE;
    STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal) PURE;
 
    // character font size in 1/10 points

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,7 +117,9 @@ void CVehicularLoads::FinalRelease()
 {
    // free up all of our connectionVehicularLoadnts on destruct
    VehicleIndexType i=0;
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       this->OnBeforeRemove(*it, i);
       i++;
@@ -139,7 +141,9 @@ STDMETHODIMP CVehicularLoads::Clone(IVehicularLoads* *pColl)
    // clone properties
 
    // clone collection
-   for (iterator it= begin(); it != end(); it++)
+   iterator it( begin() );
+   iterator itend( end() );
+   for (; it != itend; it++)
    {
       CComPtr<IVehicularLoad> isp;
       

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.UGirderSection2EndBlockSegment.1 = s 'UGirderSection2EndBlockSegment Class'
+	{
+		CLSID = s '{E5E3C9E4-909B-47eb-8B40-E1279A1FE65E}'
+	}
+	WBFLGenericBridge.UGirderSection2EndBlockSegment = s 'UGirderSection2EndBlockSegment Class'
+	{
+		CLSID = s '{E5E3C9E4-909B-47eb-8B40-E1279A1FE65E}'
+		CurVer = s 'WBFLGenericBridge.UGirderSection2EndBlockSegment.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E5E3C9E4-909B-47eb-8B40-E1279A1FE65E} = s 'UGirderSection2EndBlockSegment Class'
+		{
+			ProgID = s 'WBFLGenericBridge.UGirderSection2EndBlockSegment.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.UGirderSection2EndBlockSegment'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

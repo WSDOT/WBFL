@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -622,7 +622,9 @@ void CLoadCombinationAnalysisContext::GetLoadModifier(MemberType mbrType, Member
 
          long span_no=0;
          bool found = false;
-         for (std::vector<Float64>::iterator its=m_SpanEnds.begin(); its!=m_SpanEnds.end(); its++)
+         std::vector<Float64>::iterator its( m_SpanEnds.begin() );
+         std::vector<Float64>::iterator itsend( m_SpanEnds.end() );
+         for (; its!=itsend; its++)
          {
             Float64 loc = *its;
             if (xloc<= loc)

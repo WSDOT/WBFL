@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -121,8 +121,9 @@ STDMETHODIMP CLoadCombination::AddLiveLoadModel(LiveLoadModelType newVal)
    if (newVal < lltNone || lltPermitSpecialRating < newVal)
       return E_INVALIDARG;
 
-   std::vector<LiveLoadModelType>::iterator iter;
-   for ( iter = m_LiveLoadModelTypes.begin(); iter != m_LiveLoadModelTypes.end(); iter++ )
+   std::vector<LiveLoadModelType>::iterator iter( m_LiveLoadModelTypes.begin() );
+   std::vector<LiveLoadModelType>::iterator iterend( m_LiveLoadModelTypes.end() );
+   for (; iter != iterend; iter++ )
    {
       if ( *iter == newVal )
          return S_OK;
@@ -238,8 +239,9 @@ STDMETHODIMP CLoadCombination::FindLoadCaseFactor(BSTR loadCaseName, Float64* mi
    CHECK_RETVAL(minFactor);
    CHECK_RETVAL(maxFactor);
 
-   LoadCaseFactorContainer::iterator iter;
-   for ( iter = m_LoadCaseFactors.begin(); iter != m_LoadCaseFactors.end(); iter++ )
+   LoadCaseFactorContainer::iterator iter( m_LoadCaseFactors.begin() );
+   LoadCaseFactorContainer::iterator iterend( m_LoadCaseFactors.end() );
+   for ( ; iter != iterend; iter++ )
    {
       LoadCaseFactor& lcFactor = *iter;
       if ( lcFactor.m_LoadCase == CComBSTR(loadCaseName) )
@@ -290,7 +292,7 @@ STDMETHODIMP CLoadCombination::RemoveLoadCaseFactor(CollectionIndexType index)
    {
       if ( IsValidIndex(index,m_LoadCaseFactors) )
       {
-         LoadCaseFactorIterator it=m_LoadCaseFactors.begin();
+         LoadCaseFactorIterator it( m_LoadCaseFactors.begin() );
          it += index;
          m_LoadCaseFactors.erase(it);
          Fire_OnLoadCombinationChanged(this, cgtCombination);

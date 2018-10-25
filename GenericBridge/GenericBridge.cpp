@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,6 +54,7 @@
 #include "VoidedSlabEndBlockSegment.h"
 #include "DeckedSlabBeamEndBlockSegment.h"
 #include "BoxBeamEndBlockSegment.h"
+#include "UGirderSection2EndBlockSegment.h"
 #include "TaperedGirderSegment.h"
 #include "ThickenedFlangeBulbTeeSegment.h"
 #include "SegmentItem.h"
@@ -111,6 +112,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_PrismaticSegment, CSegment)
    OBJECT_ENTRY(CLSID_FlangedGirderEndBlockSegment, CFlangedGirderEndBlockSegment)
    OBJECT_ENTRY(CLSID_VoidedSlabEndBlockSegment, CVoidedSlabEndBlockSegment)
+   OBJECT_ENTRY(CLSID_UGirderSection2EndBlockSegment, CUGirderSection2EndBlockSegment)
    OBJECT_ENTRY(CLSID_DeckedSlabBeamEndBlockSegment, CDeckedSlabBeamEndBlockSegment)
    OBJECT_ENTRY(CLSID_BoxBeamEndBlockSegment, CBoxBeamEndBlockSegment)
    OBJECT_ENTRY(CLSID_TaperedGirderSegment, CTaperedGirderSegment)

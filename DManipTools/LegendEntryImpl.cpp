@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -78,7 +78,7 @@ STDMETHODIMP_(void) CLegendEntryImpl::put_Name(BSTR newVal)
 
 }
 
-STDMETHODIMP_(void) CLegendEntryImpl::get_SymbolFontFace(LPTSTR *pVal)
+STDMETHODIMP_(void) CLegendEntryImpl::get_SymbolFontFace(TCHAR* *pVal)
 {
    int nChar = m_FontFace.GetLength()+1;
    *pVal = new TCHAR[nChar];
@@ -285,7 +285,7 @@ STDMETHODIMP_(void) CLegendEntryImpl::ReadDragData(iDragDataSource* pSource, UIN
 
    // font face
    pSource->Read(cfFormat,&len,sizeof(long));
-   LPTSTR tstr = new TCHAR[len+1];
+   TCHAR* tstr = new TCHAR[len+1];
 
    if (len>0)
       pSource->Read(cfFormat,tstr,len*sizeof(TCHAR)); 

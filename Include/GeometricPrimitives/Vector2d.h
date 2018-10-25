@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -222,6 +222,12 @@ public:
    // Changes the x and y components of this vector to size.Dx(), size.Dy(). 
    // Changes this vector.
    gpVector2d& SetSize(const gpSize2d& size);
+
+   //------------------------------------------------------------------------
+   // SetSize
+   // Changes the x and y components of this vector to X, Y
+   // Changes this vector.
+   gpVector2d& SetSize(Float64 x,Float64 y);
 
    //------------------------------------------------------------------------
    // Offset

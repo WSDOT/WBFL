@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,8 +55,9 @@ void CPOIStressPoints::FinalRelease()
 {
    try
    {
-      IteratorType it=m_Container.begin();
-      while( it!=m_Container.end())
+      IteratorType it(m_Container.begin());
+      IteratorType itend(m_Container.end());
+      while( it!=itend)
       {
          DoErase(it, false);
 
@@ -83,15 +84,17 @@ STDMETHODIMP CPOIStressPoints::get_Item(VARIANT invar, IPOIStressPointsItem **pV
 
    try
    {
+      IteratorType itend( m_Container.end() );
+
       CComPtr<IPOIStressPointsItem> item;
       if (invar.vt==VT_I4)
       {
          long idx = invar.lVal;
-         IteratorType it = m_Container.begin();
+         IteratorType it( m_Container.begin() );
          for (long i=0; i<idx; i++)
          {
             it++;
-            if (it==m_Container.end())
+            if (it==itend)
                return E_INVALIDARG;
          }
 
@@ -100,8 +103,8 @@ STDMETHODIMP CPOIStressPoints::get_Item(VARIANT invar, IPOIStressPointsItem **pV
       else if (invar.vt==VT_BSTR)
       {
          CComBSTR stage(invar.bstrVal);
-         IteratorType it = m_Container.find(stage);
-         if (it!=m_Container.end())
+         IteratorType it( m_Container.find(stage) );
+         if (it!=itend)
          {
             item = it->second.m_T;
          }
@@ -128,8 +131,9 @@ STDMETHODIMP CPOIStressPoints::Clear()
 {
    try
    {
-      IteratorType it=m_Container.begin();
-      while( it!=m_Container.end())
+      IteratorType it( m_Container.begin() );
+      IteratorType itend( m_Container.end() );
+      while( it!=itend)
       {
          Fire_OnPOIStressPointsBeforeRemove(it->second.m_T);
 
@@ -153,7 +157,7 @@ STDMETHODIMP CPOIStressPoints::Insert(BSTR Stage, IStressPoints *leftSps, IStres
    CHECK_IN(rightSps);
 
    HRESULT hr;
-	IteratorType it = m_Container.find( Stage);
+	IteratorType it( m_Container.find( Stage) );
    if (it!=m_Container.end())
    {
       // must remove old items before inserting new
@@ -196,7 +200,7 @@ STDMETHODIMP CPOIStressPoints::Remove(BSTR Stage)
    CHECK_IN(Stage);
    try
    {
-	   IteratorType it = m_Container.find( Stage);
+	   IteratorType it( m_Container.find( Stage) );
       if (it!=m_Container.end())
       {
          DoErase(it);
@@ -252,7 +256,9 @@ STDMETHODIMP CPOIStressPoints::Clone(IPOIStressPoints **Clone)
       CComPtr<IPOIStressPoints> pclone(cclone);
 
       // deep clone
-      for (IteratorType it=m_Container.begin(); it!=m_Container.end(); it++)
+      IteratorType it(m_Container.begin());
+      IteratorType itend(m_Container.end());
+      for (; it!=itend; it++)
       {
          IPOIStressPointsItem* item = it->second.m_T;
          CPOIStressPointsItem* citem = dynamic_cast<CPOIStressPointsItem*>(item);
@@ -421,7 +427,9 @@ STDMETHODIMP CPOIStressPoints::Save(IStructuredSave2 * psave)
       long cnt = m_Container.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
 
-      for (IteratorType it=m_Container.begin(); it!=m_Container.end(); it++)
+      IteratorType it( m_Container.begin() );
+      IteratorType itend( m_Container.end() );
+      for (; it!=itend; it++)
       {
          IPOIStressPointsItem* item = it->second.m_T;
 

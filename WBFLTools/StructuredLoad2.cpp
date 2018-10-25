@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -173,7 +173,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
    catch(_com_error& e) 
    {
       // parser errors
-      CComBSTR msg((LPTSTR)e.Description());
+      CComBSTR msg((LPTSTR )e.Description());
       THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
    }
 }
@@ -340,7 +340,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
          if (_bstr_t("VT_BSTR") == bsvt )
          {
             // must reconstitute string first
-            std::_tstring tmp((LPTSTR)(_bstr_t)vval);
+            std::_tstring tmp((LPTSTR )(_bstr_t)vval);
             find_replace_all(&tmp, _T("&amp;"),_T("&"));
             find_replace_all(&tmp, _T("&lt;"),_T("<"));
             find_replace_all(&tmp, _T("&gt;"),_T(">"));
@@ -406,8 +406,8 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             {
                // variant couldn't parse, so try brute force
                _bstr_t bval(vval);
-               LPTSTR sv = (LPTSTR)bval; 
-               //LPTSTR* ev = &sv + bval.length();
+               TCHAR* sv = (TCHAR*)bval; 
+               //TCHAR** ev = &sv + bval.length();
                unsigned long uval = _tcstoul(sv,NULL,10);
                if (uval==0 && *sv != _T('0') )
                   THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
@@ -858,7 +858,7 @@ _bstr_t GetParseError(MSXML::IXMLDOMParseErrorPtr pXMLError)
       pBReason = pXMLError->reason;
 
       if (line > 0)
-        os<< "Error in xml file on line "<< line<<", position "<<linePos<<" in \""<<(LPTSTR)pBURL<<"\" Reason was "<<(LPTSTR)pBReason; 
+        os<< "Error in xml file on line "<< line<<", position "<<linePos<<" in \""<<(TCHAR*)pBURL<<"\" Reason was "<<(TCHAR*)pBReason; 
       else
          os<<"Error in xml file - location unknown";
    }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,6 +45,8 @@ public:
 	CCoordinateXform2d()
 	{
       m_Angle = 0.0;
+      m_CosAngle = 1.0;
+      m_SinAngle = 0.0;
 	}
 
    HRESULT FinalConstruct();
@@ -65,6 +67,8 @@ END_COM_MAP()
 private:
    CComPtr<IPoint2d> m_Origin;
    Float64 m_Angle;
+   Float64 m_SinAngle;
+   Float64 m_CosAngle;
    STDMETHODIMP OldToNew(IPoint2d* point);
    STDMETHODIMP NewToOld(IPoint2d* point);
 

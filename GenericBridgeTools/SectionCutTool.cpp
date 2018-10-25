@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -754,6 +754,27 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
          bridge_section->AddSectionEx(item);
       }
+   }
+
+   // The deck shape is a flat rectangle, so move the tops of the girders up so
+   // that they touch to bottom of the slab.
+   // If the deck model improves, improve this.
+   CollectionIndexType nSections;
+   bridge_section->get_Count(&nSections);
+   for ( CollectionIndexType sectionIdx = 0; sectionIdx < nSections; sectionIdx++ )
+   {
+      CComPtr<ICompositeSectionItem> item;
+      bridge_section->get_Item(sectionIdx,&item);
+
+      CComPtr<IShape> shape;
+      item->get_Shape(&shape);
+
+      CComQIPtr<IXYPosition> position(shape);
+
+      CComPtr<IPoint2d> pntTC;
+      position->get_LocatorPoint(lpTopCenter,&pntTC);
+      pntTC->put_Y(bottom_deck_elevation);
+      position->put_LocatorPoint(lpTopCenter,pntTC);
    }
 
    // If appropriate for the bridge and stage, add the bridge deck

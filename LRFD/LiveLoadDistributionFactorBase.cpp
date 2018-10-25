@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,6 +36,15 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
+
+static const Float64 g_600_MM  = ::ConvertToSysUnits( 600.0, unitMeasure::Millimeter );
+static const Float64 g_1800_MM = ::ConvertToSysUnits( 1800.0, unitMeasure::Millimeter );
+static const Float64 g_3000_MM = ::ConvertToSysUnits( 3000.0, unitMeasure::Millimeter );
+
+static const Float64 g_2_FT  = ::ConvertToSysUnits(2.0, unitMeasure::Feet);
+static const Float64 g_6_FT  = ::ConvertToSysUnits(6.0, unitMeasure::Feet);
+static const Float64 g_10_FT = ::ConvertToSysUnits(10.0, unitMeasure::Feet);
+
 
 /****************************************************************************
 CLASS
@@ -1484,9 +1493,9 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetShyDistance() const
    Float64 shy;
 
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      shy = ::ConvertToSysUnits( 600.0, unitMeasure::Millimeter );
+      shy = g_600_MM;
    else
-      shy = ::ConvertToSysUnits( 2.0, unitMeasure::Feet );
+      shy = g_2_FT;
 
    return shy;
 }
@@ -1496,9 +1505,9 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetWheelLineSpacing() const
    // LRFD Figure 3.6.1.2.2-1
    Float64 space;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      space = ::ConvertToSysUnits( 1800., unitMeasure::Millimeter );
+      space = g_1800_MM;
    else
-      space = ::ConvertToSysUnits( 6.0, unitMeasure::Feet );
+      space = g_6_FT;
 
    return space;
 }
@@ -1508,9 +1517,9 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetTruckWidth() const
    // LRFD 3.6.1.2.1
    Float64 width;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      width = ::ConvertToSysUnits( 3000., unitMeasure::Millimeter );
+      width = g_3000_MM;
    else
-      width = ::ConvertToSysUnits( 10.0, unitMeasure::Feet );
+      width = g_10_FT;
 
    return width;
 }

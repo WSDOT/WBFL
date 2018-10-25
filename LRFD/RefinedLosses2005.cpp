@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,20 +42,34 @@ CLASS
    lrfdRefinedLosses2005
 ****************************************************************************/
 
+static const Float64 g_747p7_IN3   = ::ConvertToSysUnits(747.7,unitMeasure::Inch3);
+static const Float64 g_258p747_IN2 = ::ConvertToSysUnits(258.747,unitMeasure::Inch2);
+static const Float64 g_600_IN2     = ::ConvertToSysUnits(600.,unitMeasure::Inch2);
+static const Float64 g_m25p865_IN  = ::ConvertToSysUnits(-25.865,unitMeasure::Inch);
+
+static const Float64 g_10_DAY = ::ConvertToSysUnits(10.0,unitMeasure::Day); 
+static const Float64 g_90_DAY = ::ConvertToSysUnits(90.0,unitMeasure::Day); 
+static const Float64 g_120_DAY = ::ConvertToSysUnits(120.0,unitMeasure::Day); 
+
+static const Float64 g_27p95_MPA     = ::ConvertToSysUnits(27.95,unitMeasure::MPa);
+static const Float64 g_105p05_MPA    = ::ConvertToSysUnits(105.05,unitMeasure::MPa);
+
+static const Float64 g_3p95_KSI  = ::ConvertToSysUnits( 3.95, unitMeasure::KSI );
+static const Float64 g_15p05_KSI = ::ConvertToSysUnits( 15.05, unitMeasure::KSI );
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
 lrfdRefinedLosses2005::lrfdRefinedLosses2005()
 {
-   m_V                     = ::ConvertToSysUnits(747.7,unitMeasure::Inch3);
-   m_S                     = ::ConvertToSysUnits(258.747,unitMeasure::Inch2);
-   m_th                    = ::ConvertToSysUnits(10.0,unitMeasure::Day);
-   m_td                    = ::ConvertToSysUnits(90.0,unitMeasure::Day);
-   m_tf                    = ::ConvertToSysUnits(120.0,unitMeasure::Day);
+   m_V                     = g_747p7_IN3;
+   m_S                     = g_258p747_IN2;
+   m_th                    = g_10_DAY;
+   m_td                    = g_90_DAY;
+   m_tf                    = g_120_DAY;
    m_CuringMethod          = lrfdCreepCoefficient2005::Accelerated;
-   m_Ad                    = ::ConvertToSysUnits(600.,unitMeasure::Inch2);
-   m_ed                    = ::ConvertToSysUnits(-25.865,unitMeasure::Inch);
+   m_Ad                    = g_600_IN2;
+   m_ed                    = g_m25p865_IN;
    m_CuringMethodTimeAdjustmentFactor = 7;
 }
 
@@ -690,8 +704,8 @@ void lrfdRefinedLosses2005::ValidateParameters() const
    // that have a little round-off error in them.
    // 5.4.2.1 - Sets limits between 4 and 10KSI, but allows greater than 10 KSI when specific articles permit it
    // 5.9.5.1 permits up to 15KSI for loss calculations
-   Float64 fcMin = (is_si ? ::ConvertToSysUnits( 27.95, unitMeasure::MPa ) : ::ConvertToSysUnits( 3.95, unitMeasure::KSI ) );
-   Float64 fcMax = (is_si ? ::ConvertToSysUnits( 105.05, unitMeasure::MPa ) : ::ConvertToSysUnits( 15.05, unitMeasure::KSI ) );
+   Float64 fcMin = (is_si ? g_27p95_MPA : g_3p95_KSI );
+   Float64 fcMax = (is_si ? g_105p05_MPA : g_15p05_KSI );
    if ( m_Fc < fcMin || fcMax < m_Fc )
       THROW(lrfdXPsLosses,fcOutOfRange);
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -528,8 +528,13 @@ void ConcLdBeam::ComputePFReactionsFx()
 
 void ConcLdBeam::ComputePFReactionsFy()
 {
+  Float64 mL2 = m_L*m_L;
+  Float64 mL3 = mL2*m_L;
+  Float64 mb2 = m_b*m_b;
+  Float64 mb3 = mb2*m_b;
+
   m_Fxl = 0;
-  m_Fyl = m_Q*(pow(m_b,3) - 3*pow(m_b,2)*m_L)/(2*pow(m_L,3));
+  m_Fyl = m_Q*(mb3 - 3*mb2*m_L)/(2*mL3);
   m_Mzl = 0;
 
   m_Fxr = 0;
@@ -539,12 +544,16 @@ void ConcLdBeam::ComputePFReactionsFy()
 
 void ConcLdBeam::ComputePFReactionsMz()
 {
+  Float64 mL2 = m_L*m_L;
+  Float64 mL3 = mL2*m_L;
+  Float64 ma2 = m_a*m_a;
+
   m_Fxl = 0;
-  m_Fyl = 3*m_Q*(m_L*m_L - m_a*m_a)/(2*pow(m_L,3));
+  m_Fyl = 3*m_Q*(mL2 - ma2)/(2*mL3);
   m_Mzl = 0;
 
   m_Fxr = 0;
-  m_Fyr = -3*m_Q*(m_L*m_L - m_a*m_a)/(2*pow(m_L,3));
+  m_Fyr = -3*m_Q*(mL2 - ma2)/(2*mL3);
   m_Mzr = m_Fyl*m_L - m_Q;
 }
 
@@ -555,9 +564,14 @@ void ConcLdBeam::ComputeFPReactionsFx()
 
 void ConcLdBeam::ComputeFPReactionsFy()
 {
+  Float64 mL2 = m_L*m_L;
+  Float64 mL3 = mL2*m_L;
+  Float64 ma2 = m_a*m_a;
+  Float64 mb2 = m_b*m_b;
+
 /*
   Fxr = 0;
-  Fyr = Q*(b*b*b - 3*b*b*L)/(2*L*L*L);
+  Fyr = Q*(b3 - 3*b2*L)/(2*L3);
   Mzr = 0;
 
   Fxl = 0;
@@ -565,22 +579,26 @@ void ConcLdBeam::ComputeFPReactionsFy()
   Mzl = -(Fyr*L + Q*a);
 */
   m_Fxl = 0;
-  m_Fyl = -m_Q*m_b*(3*m_L*m_L - m_b*m_b)/(2*m_L*m_L*m_L);
-  m_Mzl = -m_Q*m_a*m_b*(m_b+m_L)/(2*m_L*m_L);
+  m_Fyl = -m_Q*m_b*(3*mL2 - mb2)/(2*mL3);
+  m_Mzl = -m_Q*m_a*m_b*(m_b+m_L)/(2*mL2);
 
   m_Fxr = 0;
-  m_Fyr = -m_Q*m_a*m_a*(m_b+2*m_L)/(2*m_L*m_L*m_L);
+  m_Fyr = -m_Q*ma2*(m_b+2*m_L)/(2*mL3);
   m_Mzr = 0;
 }
 
 void ConcLdBeam::ComputeFPReactionsMz()
 {
+  Float64 mL2 = m_L*m_L;
+  Float64 mL3 = mL2*m_L;
+  Float64 mb2 = m_b*m_b;
+
   m_Fxl = 0;
-  m_Fyl = 3*m_Q*(m_L*m_L - m_b*m_b)/(2*pow(m_L,3));
+  m_Fyl = 3*m_Q*(mL2 - mb2)/(2*mL3);
   m_Mzl = m_Fyl*m_L - m_Q;
 
   m_Fxr = 0;
-  m_Fyr = -3*m_Q*(m_L*m_L - m_b*m_b)/(2*pow(m_L,3));
+  m_Fyr = -3*m_Q*(mL2 - mb2)/(2*mL3);
   m_Mzr = 0;
 }
 
@@ -591,24 +609,33 @@ void ConcLdBeam::ComputeFFReactionsFx()
 
 void ConcLdBeam::ComputeFFReactionsFy()
 {
+   Float64 mL2 = m_L*m_L;
+   Float64 mL3 = mL2*m_L;
+   Float64 ma2 = m_a*m_a;
+   Float64 mb2 = m_b*m_b;
+
    m_Fxl = 0;
-   m_Fyl = -m_Q*pow(m_b,2)*(3*m_a + m_b)/pow(m_L,3);
-   m_Mzl = -m_Q*m_a*pow(m_b,2)/pow(m_L,2);
+   m_Fyl = -m_Q*mb2*(3*m_a + m_b)/mL3;
+   m_Mzl = -m_Q*m_a*mb2/mL2;
 
    m_Fxr = 0;
-   m_Fyr = -m_Q*pow(m_a,2)*(3*m_b + m_a)/pow(m_L,3);
-   m_Mzr =  m_Q*pow(m_a,2)*m_b/pow(m_L,2);
+   m_Fyr = -m_Q*ma2*(3*m_b + m_a)/mL3;
+   m_Mzr =  m_Q*ma2*m_b/mL2;
 }
 
 void ConcLdBeam::ComputeFFReactionsMz()
 {
+  Float64 mL2 = m_L*m_L;
+  Float64 mL3 = mL2*m_L;
+  Float64 ma2 = m_a*m_a;
+
    m_Fxl = 0;
-   m_Fyl = 6*m_Q*(m_a*m_L - m_a*m_a)/pow(m_L,3);
-   m_Mzl = m_Q*(4*m_L*m_a - 3*m_a*m_a - m_L*m_L)/pow(m_L,2);
+   m_Fyl = 6*m_Q*(m_a*m_L - ma2)/mL3;
+   m_Mzl = m_Q*(4*m_L*m_a - 3*ma2 - mL2)/mL2;
 
    m_Fxr = 0;
-   m_Fyr = -6*m_Q*(m_a*m_L - m_a*m_a)/pow(m_L,3);
-   m_Mzr = m_Q*(2*m_L*m_a - 3*m_a*m_a)/pow(m_L,2);
+   m_Fyr = -6*m_Q*(m_a*m_L - ma2)/mL3;
+   m_Mzr = m_Q*(2*m_L*m_a - 3*ma2)/mL2;
 }
 
 void ConcLdBeam::ComputePPDisplacementsFx()
@@ -624,24 +651,29 @@ void ConcLdBeam::ComputePPDisplacementsFx()
 
 void ConcLdBeam::ComputePPDisplacementsFy()
 {
+   Float64 mb2 = m_b*m_b;
+   Float64 mb3 = mb2*m_b;
+
    m_Dxl = 0;
    m_Dyl = 0;
-   m_Rzl = m_Q*(m_b*m_L - pow(m_b,3)/m_L)/(6*m_EI);
+   m_Rzl = m_Q*(m_b*m_L - mb3/m_L)/(6*m_EI);
 
    m_Dxr = 0;
    m_Dyr = 0;
-   m_Rzr = -m_Q*(2*m_b*m_L + pow(m_b,3)/m_L - 3*pow(m_b,2))/(6*m_EI);
+   m_Rzr = -m_Q*(2*m_b*m_L + mb3/m_L - 3*mb2)/(6*m_EI);
 }
 
 void ConcLdBeam::ComputePPDisplacementsMz()
 {
+   Float64 ma2 = m_a*m_a;
+
    m_Dxl = 0;
    m_Dyl = 0;
-   m_Rzl = m_Q*(2*m_L - 6*m_a + 3*m_a*m_a/m_L)/(6*m_EI);
+   m_Rzl = m_Q*(2*m_L - 6*m_a + 3*ma2/m_L)/(6*m_EI);
 
    m_Dxr = 0;
    m_Dyr = 0;
-   m_Rzr = -m_Q*(m_L - 3*m_a*m_a/m_L)/(6*m_EI);
+   m_Rzr = -m_Q*(m_L - 3*ma2/m_L)/(6*m_EI);
 }
 
 void ConcLdBeam::ComputePFDisplacementsFx()
@@ -651,9 +683,12 @@ void ConcLdBeam::ComputePFDisplacementsFx()
 
 void ConcLdBeam::ComputePFDisplacementsFy()
 {
+   Float64 ma2 = m_a*m_a;
+   Float64 ma3 = ma2*m_a;
+
    m_Dxl = 0;
    m_Dyl = 0;
-   m_Rzl = m_Q*(m_a*m_a - pow(m_a,3)/m_L)/(4*m_EI);
+   m_Rzl = m_Q*(ma2 - ma3/m_L)/(4*m_EI);
 
    m_Dxr = 0;
    m_Dyr = 0;
@@ -662,9 +697,11 @@ void ConcLdBeam::ComputePFDisplacementsFy()
 
 void ConcLdBeam::ComputePFDisplacementsMz()
 {
+   Float64 mL2 = m_L*m_L;
+
    m_Dxl = 0;
    m_Dyl = 0;
-   m_Rzl = (m_Q*(m_L-m_a) - m_Fyl*m_L*m_L/2)/(m_EI);
+   m_Rzl = (m_Q*(m_L-m_a) - m_Fyl*mL2/2)/(m_EI);
 
    m_Dxr = 0;
    m_Dyr = 0;
@@ -678,24 +715,29 @@ void ConcLdBeam::ComputeFPDisplacementsFx()
 
 void ConcLdBeam::ComputeFPDisplacementsFy()
 {
+   Float64 mL2 = m_L*m_L;
+   Float64 ma2 = m_a*m_a;
+
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
 
    m_Dxr = 0;
    m_Dyr = 0;
-   m_Rzr = (m_Q*(m_L*m_L - 2*m_L*m_a + m_a*m_a) + m_Fyl*m_L*m_L - 2*m_L*m_Mzl)/(2*m_EI);
+   m_Rzr = (m_Q*(mL2 - 2*m_L*m_a + ma2) + m_Fyl*mL2 - 2*m_L*m_Mzl)/(2*m_EI);
 }
 
 void ConcLdBeam::ComputeFPDisplacementsMz()
 {
+   Float64 mL2 = m_L*m_L;
+
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
 
    m_Dxr = 0;
    m_Dyr = 0;
-   m_Rzr = (m_Fyl*m_L*m_L - 2*m_Mzl*m_L - 2*m_Q*(m_L-m_a))/(2*m_EI);
+   m_Rzr = (m_Fyl*mL2 - 2*m_Mzl*m_L - 2*m_Q*(m_L-m_a))/(2*m_EI);
 }
 
 void ConcLdBeam::ComputeFFDisplacementsFx()
@@ -891,31 +933,39 @@ void ConcLdBeam::ComputePPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64
 
 void ConcLdBeam::ComputePPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 mb2 = m_b*m_b;
+   Float64 mL2 = m_L*m_L;
+   Float64 x2 = x*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = m_Q*m_b*x*(2*m_L*(m_L-x) - m_b*m_b - pow((m_L-x),2))/(6*m_EI*m_L);
-      rz = -m_Q*m_b*(3*x*x + m_b*m_b - m_L*m_L)/(6*m_EI*m_L);
+      dy = m_Q*m_b*x*(2*m_L*(m_L-x) - mb2 - pow((m_L-x),2))/(6*m_EI*m_L);
+      rz = -m_Q*m_b*(3*x2 + mb2 - mL2)/(6*m_EI*m_L);
    }
    else
    {
-      dy = m_Q*m_a*(m_L-x)*(2*m_L*m_b - m_b*m_b - pow((m_L-x),2))/(6*m_EI*m_L);
-      rz = m_Q*m_a*(3*x*x + m_b*m_b + 3*m_L*m_L - 2*m_L*m_b - 6*m_L*x)/(6*m_EI*m_L);
+      dy = m_Q*m_a*(m_L-x)*(2*m_L*m_b - mb2 - pow((m_L-x),2))/(6*m_EI*m_L);
+      rz = m_Q*m_a*(3*x2 + mb2 + 3*mL2 - 2*m_L*m_b - 6*m_L*x)/(6*m_EI*m_L);
    }
 }
 
 void ConcLdBeam::ComputePPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 ma2 = m_a*m_a;
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = m_Q*(pow(x,3)/m_L - (6*m_a - 3*m_a*m_a/m_L - 2*m_L)*x)/(6*m_EI);
-      rz = m_Q*(3*x*x/m_L - 6*m_a + 3*m_a*m_a/m_L + 2*m_L)/(6*m_EI);
+      dy = m_Q*(x3/m_L - (6*m_a - 3*ma2/m_L - 2*m_L)*x)/(6*m_EI);
+      rz = m_Q*(3*x2/m_L - 6*m_a + 3*ma2/m_L + 2*m_L)/(6*m_EI);
    }
    else
    {
-      dy = m_Q*(pow(x,3)/m_L + (3*m_a*m_a/m_L + 2*m_L)*x - 3*m_a*m_a - 3*x*x)/(6*m_EI);
-      rz = m_Q*(3*x*x/m_L + 2*m_L + 3*m_a*m_a/m_L -6*x)/(6*m_EI);
+      dy = m_Q*(x3/m_L + (3*ma2/m_L + 2*m_L)*x - 3*ma2 - 3*x2)/(6*m_EI);
+      rz = m_Q*(3*x2/m_L + 2*m_L + 3*ma2/m_L -6*x)/(6*m_EI);
    }
 }
 
@@ -926,31 +976,44 @@ void ConcLdBeam::ComputePFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64
 
 void ConcLdBeam::ComputePFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 mL2 = m_L*m_L;
+   Float64 ma2 = m_a*m_a;
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = (m_Fyl*(x*x*x - 3*m_L*m_L*x) + m_Q*x*(6*m_a*m_L - 3*m_a*m_a - 3*m_L*m_L))/(6*m_EI);
-      rz = (m_Q*(2*m_a*m_L - m_a*m_a - m_L*m_L) - m_Fyl*(m_L*m_L - x*x))/(2*m_EI);
+      dy = (m_Fyl*(x3 - 3*mL2*x) + m_Q*x*(6*m_a*m_L - 3*ma2 - 3*mL2))/(6*m_EI);
+      rz = (m_Q*(2*m_a*m_L - ma2 - mL2) - m_Fyl*(mL2 - x2))/(2*m_EI);
    }
    else
    {
-      dy = (m_Fyl*(x*x*x - 3*m_L*m_L*x + 2*m_L*m_L*m_L) + m_Q*(pow(x,3) - 3*m_a*x*x + (6*m_a*m_L - 3*m_L*m_L)*x + 2*pow(m_L,3) - 3*m_a*m_L*m_L))/(6*m_EI);
-      rz = (m_Q*(x*x - 2*m_a*x - m_L*m_L + 2*m_a*m_L) - m_Fyl*(m_L*m_L - x*x))/(2*m_EI);
+      Float64 mL3 = mL2*m_L;
+
+      dy = (m_Fyl*(x3 - 3*mL2*x + 2*mL3) + m_Q*(x3 - 3*m_a*x2 + (6*m_a*m_L - 3*mL2)*x + 2*mL3 - 3*m_a*mL2))/(6*m_EI);
+      rz = (m_Q*(x2 - 2*m_a*x - mL2 + 2*m_a*m_L) - m_Fyl*(mL2 - x2))/(2*m_EI);
    }
 }
 
 void ConcLdBeam::ComputePFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 mL2 = m_L*m_L;
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = (m_Q*x*(m_L-m_a) + m_Fyl*(x*x*x/6 - m_L*m_L*x/2))/(m_EI);
-      rz = (m_Q*(m_L-m_a) - m_Fyl*(m_L*m_L/2 - x*x/2))/(m_EI);
+      dy = (m_Q*x*(m_L-m_a) + m_Fyl*(x3/6 - mL2*x/2))/(m_EI);
+      rz = (m_Q*(m_L-m_a) - m_Fyl*(mL2/2 - x2/2))/(m_EI);
    }
    else
    {
-      dy = (m_Q*(m_L*x - x*x/2 - m_L*m_L/2) + m_Fyl*(x*x*x/6 - m_L*m_L*x/2 + m_L*m_L*m_L/3))/(m_EI);
-      rz = (m_Q*(m_L-x) - m_Fyl*(m_L*m_L/2 - x*x/2))/(m_EI);
+      Float64 mL3 = mL2*m_L;
+
+      dy = (m_Q*(m_L*x - x2/2 - mL2/2) + m_Fyl*(x3/6 - mL2*x/2 + mL3/3))/(m_EI);
+      rz = (m_Q*(m_L-x) - m_Fyl*(mL2/2 - x2/2))/(m_EI);
    }
 }
 
@@ -961,31 +1024,42 @@ void ConcLdBeam::ComputeFPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64
 
 void ConcLdBeam::ComputeFPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = (m_Fyl*x*x*x - 3*m_Mzl*x*x)/(6*m_EI);
-      rz = (m_Fyl*x*x - 2*m_Mzl*x)/(2*m_EI);
+      dy = (m_Fyl*x3 - 3*m_Mzl*x2)/(6*m_EI);
+      rz = (m_Fyl*x2 - 2*m_Mzl*x)/(2*m_EI);
    }
    else
    {
-      dy = (x-m_L)*(m_Q*(m_L*x + x*x - 3*x*m_a + m_L*m_L + 3*m_a*m_a - 3*m_L*m_a) - 3*(m_L+x)*m_Mzl + (x*x + m_L*x + m_L*m_L)*m_Fyl)/(6*m_EI);
-      rz = (m_Q*(x*x - 2*m_a*x + m_a*m_a) + m_Fyl*x*x - 2*m_Mzl*x)/(2*m_EI);
+      Float64 mL2 = m_L*m_L;
+      Float64 ma2 = m_a*m_a;
+
+      dy = (x-m_L)*(m_Q*(m_L*x + x2 - 3*x*m_a + mL2 + 3*ma2 - 3*m_L*m_a) - 3*(m_L+x)*m_Mzl + (x2 + m_L*x + mL2)*m_Fyl)/(6*m_EI);
+      rz = (m_Q*(x2 - 2*m_a*x + ma2) + m_Fyl*x2 - 2*m_Mzl*x)/(2*m_EI);
    }
 }
 
 void ConcLdBeam::ComputeFPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = (m_Fyl*x*x*x - 3*m_Mzl*x*x)/(6*m_EI);
-      rz = (m_Fyl*x*x - 2*m_Mzl*x)/(2*m_EI);
+      dy = (m_Fyl*x3 - 3*m_Mzl*x2)/(6*m_EI);
+      rz = (m_Fyl*x2 - 2*m_Mzl*x)/(2*m_EI);
    }
    else
    {
-      dy = (m_L-x)*(3*(m_L+x)*m_Mzl - 3*m_Q*(2*m_a - x - m_L) - m_Fyl*(m_L*x + x*x + m_L*m_L))/(6*m_EI);
-      rz = (m_Fyl*x*x - 2*m_Mzl*x - 2*m_Q*(x-m_a))/(2*m_EI);
+      Float64 mL2 = m_L*m_L;
+
+      dy = (m_L-x)*(3*(m_L+x)*m_Mzl - 3*m_Q*(2*m_a - x - m_L) - m_Fyl*(m_L*x + x2 + mL2))/(6*m_EI);
+      rz = (m_Fyl*x2 - 2*m_Mzl*x - 2*m_Q*(x-m_a))/(2*m_EI);
    }
 }
 
@@ -996,31 +1070,45 @@ void ConcLdBeam::ComputeFFDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,Float64
 
 void ConcLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 mL2 = m_L*m_L;
+   Float64 mL3 = mL2*m_L;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = m_Q*m_b*m_b*x*x*(3*m_a*m_L - 3*m_a*x - m_b*x)/(6*m_EI*pow(m_L,3));
-      rz = m_Q*m_b*m_b*x*(2*m_a*m_L - 3*m_a*x - m_b*x)/(2*m_EI*pow(m_L,3));
+      Float64 mb2 = m_b*m_b;
+      Float64 x2 = x*x;
+
+      dy = m_Q*mb2*x2*(3*m_a*m_L - 3*m_a*x - m_b*x)/(6*m_EI*mL3);
+      rz = m_Q*mb2*x*(2*m_a*m_L - 3*m_a*x - m_b*x)/(2*m_EI*mL3);
    }
    else
    {
-      dy = m_Q*m_a*m_a*pow(m_L-x,2)*(3*m_b*m_L - (3*m_b + m_a)*(m_L-x))/(6*m_EI*pow(m_L,3));
-      rz = m_Q*m_a*m_a*(m_L-x)*(m_a*m_L + m_b*m_L - 3*m_b*x - m_a*x)/(2*m_EI*pow(m_L,3));
+      Float64 ma2 = m_a*m_a;
+
+      dy = m_Q*ma2*pow(m_L-x,2)*(3*m_b*m_L - (3*m_b + m_a)*(m_L-x))/(6*m_EI*mL3);
+      rz = m_Q*ma2*(m_L-x)*(m_a*m_L + m_b*m_L - 3*m_b*x - m_a*x)/(2*m_EI*mL3);
    }
 }
 
 void ConcLdBeam::ComputeFFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    dx = 0;
    if (x < m_a)
    {
-      dy = (m_Fyl*pow(x,3) - 3*m_Mzl*x*x)/(6*m_EI);
-      rz = (3*m_Fyl*x*x - 6*m_Mzl*x)/(6*m_EI);
+      dy = (m_Fyl*x3 - 3*m_Mzl*x2)/(6*m_EI);
+      rz = (3*m_Fyl*x2 - 6*m_Mzl*x)/(6*m_EI);
    }
    else
    {
-      dy = (m_Fyl*(x*x*x + 2*m_L*m_L*m_L - 3*m_L*m_L*x) + (m_Q+m_Mzl)*(6*m_L*x - 3*x*x - 3*m_L*m_L))/(6*m_EI);
-      rz = (6*(m_Q+m_Mzl)*(m_L-x) - 3*m_Fyl*(m_L*m_L - x*x))/(6*m_EI);
+      Float64 mL2 = m_L*m_L;
+      Float64 mL3 = mL2*m_L;
+
+      dy = (m_Fyl*(x3 + 2*mL3 - 3*mL2*x) + (m_Q+m_Mzl)*(6*m_L*x - 3*x2 - 3*mL2))/(6*m_EI);
+      rz = (6*(m_Q+m_Mzl)*(m_L-x) - 3*m_Fyl*(mL2 - x2))/(6*m_EI);
    }
 }
 
@@ -1284,16 +1372,22 @@ void MemberStrainBeam::ComputePPDeflection(Float64 x,Float64 &dy,Float64 &rz)
 
 void MemberStrainBeam::ComputePFDeflection(Float64 x,Float64 &dy,Float64 &rz)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    ATLASSERT(x>=0.0 && x<=m_L);
-   dy = m_Rzl*x  + m_Fyl*x*x*x/(6.0*m_EI) + m_Qz*x*x/2.0;
-   rz = m_Rzl    + m_Fyl*x*x/(2.0*m_EI)   + m_Qz*x;
+   dy = m_Rzl*x  + m_Fyl*x3/(6.0*m_EI) + m_Qz*x2/2.0;
+   rz = m_Rzl    + m_Fyl*x2/(2.0*m_EI)   + m_Qz*x;
 }
 
 void MemberStrainBeam::ComputeFPDeflection(Float64 x,Float64 &dy,Float64 &rz)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
    ATLASSERT(x>=0.0 && x<=m_L);
-   dy =  -m_Mzl*x*x/(2*m_EI) + m_Fyl*x*x*x/(6.0*m_EI) + m_Qz*x*x/2.0;
-   rz =  -m_Mzl*x/m_EI       + m_Fyl*x*x/(2.0*m_EI)   + m_Qz*x;
+   dy =  -m_Mzl*x2/(2*m_EI) + m_Fyl*x3/(6.0*m_EI) + m_Qz*x2/2.0;
+   rz =  -m_Mzl*x/m_EI       + m_Fyl*x2/(2.0*m_EI)   + m_Qz*x;
 }
 
 void MemberStrainBeam::ComputeFFDeflection(Float64 x,Float64 &dy,Float64 &rz)
@@ -1750,11 +1844,16 @@ void TrapezoidalLdBeam::ComputeFFDeflection(Float64 x,Float64 &dx,Float64 &dy,Fl
 // inline free function for determining deflection along bar between a and b
 Float64 TrapezoidalLdBeamComputeFxFree(Float64 EA, Float64 W, Float64 wa, Float64 wb, Float64 a, Float64 b, Float64 x)
 {
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+
    ATLASSERT(b>a);
    ATLASSERT(IsGE(a,x,ZTOL) && IsLE(x,b,ZTOL));
    ATLASSERT(EA!=0);
    ATLASSERT(IsEqual(W, (wb+wa)/2.*(b-a),ZTOL));
-   Float64 d = 1/EA * (W*x - (wb-wa)/(b-a)*(x*x*x/6.-a*x*x/2.+a*a*x/2.-a*a*a/6.)-wa*(x*x/2.-a*x+a*a/2.));
+   Float64 d = 1/EA * (W*x - (wb-wa)/(b-a)*(x3/6.-a*x2/2.+a2*x/2.-a3/6.)-wa*(x2/2.-a*x+a2/2.));
    return d;
 }
 
@@ -1843,13 +1942,20 @@ void TrapezoidalLdBeam::ComputePFReactionsFy()
    Float64 a = L-m_Lb;
    Float64 b = L-m_La;
 
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+   Float64 b2 = b*b;
+   Float64 b3 = b2*b;
+
    // compute for uniform portion
 	// formulas 24
    Float64 d = L-b;    // distance from the right end to the center of the load
    Float64 c = b-a;    // length of load
    Float64 W = m_wa*c; // total load
 
-   m_Fyl_u  = -W/(8.*L*L*L)*(4.*L*(a*a+a*b+b*b)-a*a*a-a*b*b-a*a*b-b*b*b);
+   m_Fyl_u  = -W/(8.*L3)*(4.*L*(a2+a*b+b2)-a3-a*b2-a2*b-b3);
    m_Fyr_u  = -m_Fyl_u-W;
    m_Mzr_u  = m_Fyl_u*L + 0.5*W*(a+b);	    // reaction at the right end
 
@@ -1859,7 +1965,7 @@ void TrapezoidalLdBeam::ComputePFReactionsFy()
 
    W = 0.5*(m_wb-m_wa)*c;		// total load
 
-   Float64 rl = -W/(20.*L*L*L)*((10.*a*b+15.*a*a+5.*b*b)*L-4.*a*a*a-2.*a*b*b-3.*a*a*b-b*b*b);        // reaction at the left end
+   Float64 rl = -W/(20.*L3)*((10.*a*b+15.*a2+5.*b2)*L-4.*a3-2.*a*b2-3.*a2*b-b3);        // reaction at the left end
    Float64 r2 = -W-rl;
    Float64 m2 = rl*L + W/3.*(2.*a+b);
 
@@ -1908,7 +2014,15 @@ void TrapezoidalLdBeam::ComputeFPReactionsFy()
    Float64 c = b-a;    // length of load
    Float64 W = wa*c; // total load
 
-   m_Fyr_u  = -W/(8.*L*L*L)*(4.*L*(a*a+a*b+b*b)-a*a*a-a*b*b-a*a*b-b*b*b);
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+   Float64 b2 = b*b;
+   Float64 b3 = b2*b;
+
+
+   m_Fyr_u  = -W/(8.*L3)*(4.*L*(a2+a*b+b2)-a3-a*b2-a2*b-b3);
    m_Fyl_u  = -m_Fyr_u-W;
    m_Mzl_u  = -m_Fyr_u*L - 0.5*W*(a+b);	    // reaction at the right end
 
@@ -1918,7 +2032,7 @@ void TrapezoidalLdBeam::ComputeFPReactionsFy()
 
    W = 0.5*(wb-wa)*c;		// total load
 
-   Float64 r2 = -W/(20.*L*L*L)*((10.*a*b+15.*a*a+5.*b*b)*L-4.*a*a*a-2.*a*b*b-3.*a*a*b-b*b*b);        // reaction at the left end
+   Float64 r2 = -W/(20.*L3)*((10.*a*b+15.*a2+5.*b2)*L-4.*a3-2.*a*b2-3.*a2*b-b3);        // reaction at the left end
    Float64 r1 = -W-r2;
    Float64 m1 = -r2*L - W/3.*(2.*a+b);
 
@@ -1961,26 +2075,36 @@ void TrapezoidalLdBeam::ComputeFFReactionsFy()
    Float64 c = b-a;         // length of load
    Float64 W = m_wa*c;		   // total load
 
-   m_Fyl_u  = -W/(4.*L*L)*(12.*d*d-8.*d*d*d/L+2.*b*c*c/L-c*c*c/L-c*c);        // reaction at the left end
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 c2 = c*c;
+   Float64 c3 = c2*c;
+   Float64 d2 = d*d;
+   Float64 d3 = d2*d;
+
+   m_Fyl_u  = -W/(4.*L2)*(12.*d2-8.*d3/L+2.*b*c2/L-c3/L-c2);        // reaction at the left end
    m_Fyr_u  = -W-m_Fyl_u;
-   m_Mzl_u  = W/24./L*(24.*d*d*d/L-6.*b*c*c/L+3.*c*c*c/L+4.*c*c-24.*d*d);
-   m_Mzr_u  = W/24./L*(24.*d*d*d/L-6.*b*c*c/L+3.*c*c*c/L+2.*c*c-48.*d*d+24.*d*L);	    // reaction at the right end
+   m_Mzl_u  = W/24./L*(24.*d3/L-6.*b*c2/L+3.*c3/L+4.*c2-24.*d2);
+   m_Mzr_u  = W/24./L*(24.*d3/L-6.*b*c2/L+3.*c3/L+2.*c2-48.*d2+24.*d*L);	    // reaction at the right end
 
 	// Compute partial triangular load from b to a, load varying from zero to w
 	// a and b measured from the right and. 
 	// formulas 36
    d = L-a/3.-2./3.*b;    // distance from the right end to the center of the load
+   d2 = d*d;
+   d3 = d2*d;
+
    W = 0.5*(m_wb-m_wa)*c; // total load
 
-   Float64 rr1a = -W/L/L*(3.*d*d-c*c/6.+b*c*c/3./L-17.*c*c*c/135./L-2.*d*d*d/L);        // reaction at the left end
+   Float64 rr1a = -W/L/L*(3.*d2-c2/6.+b*c2/3./L-17.*c3/135./L-2.*d3/L);        // reaction at the left end
    m_Fyl_t =  rr1a;
    m_Fyl = m_Fyl_u + m_Fyl_t;
    m_Fyr = m_Fyr_u - W-rr1a;
 
-   Float64 mm1a = W/L*(d*d*d/L+c*c/9.+51./810.*c*c*c/L-c*c*b/6./L-d*d);
+   Float64 mm1a = W/L*(d3/L+c2/9.+51./810.*c3/L-c2*b/6./L-d2);
    m_Mzl_t = mm1a;
    m_Mzl = m_Mzl_u + m_Mzl_t;
-   m_Mzr = m_Mzr_u + W/L*(d*d*d/L+c*c/18.+51./810.*c*c*c/L-c*c*b/6./L-2.*d*d+d*L);	    // reaction at the right end
+   m_Mzr = m_Mzr_u + W/L*(d3/L+c2/18.+51./810.*c3/L-c2*b/6./L-2.*d2+d*L);	    // reaction at the right end
 }
 
 void TrapezoidalLdBeam::ComputeFFReactionsMz()
@@ -2026,16 +2150,26 @@ void TrapezoidalLdBeam::ComputePPDisplacementsFy()
 	Float64 c = b-a;		// length of load
    Float64 W = m_wa*c;
 	
-	m_Rzl = -1/(48.*m_EI)*((  8.*m_Fyl_u*L*L) + W*(8.*d*d*d/L -  2.*b*c*c/L + c*c*c/L + 2.*c*c));
-	m_Rzr = -1/(48.*m_EI)*((-16.*m_Fyl_u*L*L) - W*(24.*d*d - 8.*d*d*d/L + 2.*b*c*c/L - c*c*c/L ));
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 c2 = c*c;
+   Float64 c3 = c2*c;
+   Float64 d2 = d*d;
+   Float64 d3 = d2*d;
+
+	m_Rzl = -1/(48.*m_EI)*((  8.*m_Fyl_u*L2) + W*(8.*d3/L -  2.*b*c2/L + c3/L + 2.*c2));
+	m_Rzr = -1/(48.*m_EI)*((-16.*m_Fyl_u*L2) - W*(24.*d2 - 8.*d3/L + 2.*b*c2/L - c3/L ));
 
 	// Compute partial triangular load from a to b, load varying from zero to w
 	// a and b measured from the left and. 
 	// formulas 16
    d = L-a/3.-2./3.*b; // distance from the right end to the center of the load
+   d2 = d*d;
+   d3 = d2*d;
+
    W = 0.5*(m_wb-m_wa)*c;		// total load
-   Float64 rzl = -1./(6.*m_EI)*(     m_Fyl_t*L*L + W*(d*d*d/L + 1./6.*c*c + 17./270.*c*c*c/L - 1/6.*c*c*b/L));
-   Float64 rzr = -1./(6.*m_EI)*(-2.* m_Fyl_t*L*L + W*(d*d*d/L + 17./270.*c*c*c/L - 1/6.*c*c*b/L - 3.*d*d));
+   Float64 rzl = -1./(6.*m_EI)*(     m_Fyl_t*L2 + W*(d3/L + 1./6.*c2 + 17./270.*c3/L - 1/6.*c2*b/L));
+   Float64 rzr = -1./(6.*m_EI)*(-2.* m_Fyl_t*L2 + W*(d3/L + 17./270.*c3/L - 1/6.*c2*b/L - 3.*d2));
 
    m_Rzl += rzl;
    m_Rzr += rzr;
@@ -2074,18 +2208,23 @@ void TrapezoidalLdBeam::ComputePFDisplacementsFy()
    Float64 a = L-m_Lb;
    Float64 b = L-m_La;
 
-	Float64 d = L-b; // distance from the right end to the center of the load
 	Float64 c = b-a;		// length of load
    Float64 W = m_wa*c;
-	
-	m_Rzl = -1/(m_EI)*(m_Fyl_u*L*L/2. + W*(a*a/2. + a*c/2. + c*c/6.));
+
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+   Float64 c2 = c*c;
+   Float64 c3 = c2*c;
+
+	m_Rzl = -1/(m_EI)*(m_Fyl_u*L2/2. + W*(a2/2. + a*c/2. + c2/6.));
 
 	// Compute partial triangular load from a to b, load varying from zero to w
 	// a and b measured from the left and. 
 	// formulas 16
-   d = L-b;               // distance from the right end to the center of the load
    W = 0.5*(m_wb-m_wa)*c; // total load
-   Float64 rzl = -1/(m_EI)*(m_Fyl_t*L*L/2. + W*(c*c/12. + a*c/3. + a*a/2.));
+   Float64 rzl = -1/(m_EI)*(m_Fyl_t*L2/2. + W*(c2/12. + a*c/3. + a2/2.));
 
    m_Rzl += rzl;
 }
@@ -2125,18 +2264,23 @@ void TrapezoidalLdBeam::ComputeFPDisplacementsFy()
    Float64 wa = m_wb;
    Float64 wb = m_wa;
 
-	Float64 d = L-b; // distance from the right end to the center of the load
 	Float64 c = b-a;		// length of load
    Float64 W = wa*c;
 	
-	m_Rzr = 1/(m_EI)*(m_Fyr_u*L*L/2. + W*(a*a/2. + a*c/2. + c*c/6.));
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+   Float64 c2 = c*c;
+   Float64 c3 = c2*c;
+
+	m_Rzr = 1/(m_EI)*(m_Fyr_u*L2/2. + W*(a2/2. + a*c/2. + c2/6.));
 
 	// Compute partial triangular load from a to b, load varying from zero to w
 	// a and b measured from the left and. 
 	// formulas 16
-   d = L-b;
    W = 0.5*(wb-wa)*c;
-   Float64 rzr = 1/(m_EI)*(m_Fyr_t*L*L/2. + W*(c*c/12. + a*c/3. + a*a/2.));
+   Float64 rzr = 1/(m_EI)*(m_Fyr_t*L2/2. + W*(c2/12. + a*c/3. + a2/2.));
 
    m_Rzr += rzr;
 }
@@ -2196,8 +2340,11 @@ void TrapezoidalLdBeam::ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Floa
    {
       Float64 a = m_La;
       Float64 b = m_Lb;
+
+      Float64 a2 = a*a;
+
       Float64 W = (m_wb+m_wa)/2. *(b-a); // force resultant
-      Float64 pdab = W - (m_wb-m_wa)/(b-a)*(x*x/2.-a*x+a*a/2.) - m_wa*(x-a); // force if right end were free
+      Float64 pdab = W - (m_wb-m_wa)/(b-a)*(x*x/2.-a*x+a2/2.) - m_wa*(x-a); // force if right end were free
       fx = pdab + m_Fxr;
    }
    else
@@ -2324,7 +2471,6 @@ void TrapezoidalLdBeam::ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Floa
 // formulas 26
   if (m_wb-m_wa != 0.)
   {
-    	d = L-b; // distance from the right end to the center of the load
     	W = 0.5*(m_wb-m_wa)*c;		// total load
 
       if (x<L-b) 
@@ -2489,34 +2635,42 @@ void TrapezoidalLdBeam::ComputePPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 	Float64 c = b-a;		// length of load
    Float64 W = m_wa*c;
 	
+   Float64 L2 = L*L;
+   Float64 c2 = c*c;
+   Float64 c3 = c2*c;
+   Float64 d2 = d*d;
+   Float64 d3 = d2*d;
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
 	if (x<a) 
 	{
-		dy = 1/(48*m_EI)*(8*m_Fyl_u*(x*x*x-L*L*x)
-			+W*x*(8*d*d*d/L-2*b*c*c/L+c*c*c/L+2*c*c));
+		dy = 1/(48*m_EI)*(8*m_Fyl_u*(x3-L2*x)
+			+W*x*(8*d3/L-2*b*c2/L+c3/L+2*c2));
 
-		rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x*x-L*L)
-			+W*(8*d*d*d/L-2*b*c*c/L+c*c*c/L+2*c*c));
+		rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x2-L2)
+			+W*(8*d3/L-2*b*c2/L+c3/L+2*c2));
 	}
 	else 
 	{
 		if (x<b)
 		{
-			dy = 1/(48*m_EI)*(8*m_Fyl_u*(x*x*x-L*L*x)
-				+W*x*(8*d*d*d/L-2*b*c*c/L+c*c*c/L+2*c*c)
+			dy = 1/(48*m_EI)*(8*m_Fyl_u*(x3-L2*x)
+				+W*x*(8*d3/L-2*b*c2/L+c3/L+2*c2)
 				-2*W*pow(x-a,4)/c);
 
-			rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x*x-L*L)
-				+W*(8*d*d*d/L-2*b*c*c/L+c*c*c/L+2*c*c)
+			rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x2-L2)
+				+W*(8*d3/L-2*b*c2/L+c3/L+2*c2)
 				-8.*W*pow(x-a,3)/c);
 		}
 		else
 		{
-			dy = 1/(48*m_EI)*(8*m_Fyl_u*(x*x*x-L*L*x)
-				  +W*x*(8*d*d*d/L-2*b*c*c/L+c*c*c/L)
-				  -8*W*pow(x-0.5*a-0.5*b,3)+W*(2*b*c*c-c*c*c));
+			dy = 1/(48*m_EI)*(8*m_Fyl_u*(x3-L2*x)
+				  +W*x*(8*d3/L-2*b*c2/L+c3/L)
+				  -8*W*pow(x-0.5*a-0.5*b,3)+W*(2*b*c2-c3));
 
-			rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x*x-L*L)
-			 	  +W*(8*d*d*d/L-2*b*c*c/L+c*c*c/L)
+			rz = 1/(48*m_EI)*(8*m_Fyl_u*(3*x2-L2)
+			 	  +W*(8*d3/L-2*b*c2/L+c3/L)
 				  -24.*W*pow(x-0.5*a-0.5*b,2));
 		}
 	}
@@ -2529,37 +2683,40 @@ void TrapezoidalLdBeam::ComputePPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 	{
 
     	d = L-a/3.-2./3.*b; // distance from the right end to the center of the load
+      d2 = d*d;
+      d3 = d2*d;
+
     	W = 0.5*(m_wb-m_wa)*c;		// total load
 
 		if (x<a) 
 		 {
-	    	dy += 1./(6.*m_EI)*( m_Fyl_t*(x*x*x-L*L*x)
-		    		 +W*x*(d*d*d/L+1./6.*c*c*(1.-b/L)+17./270.*c*c*c/L));
+	    	dy += 1./(6.*m_EI)*( m_Fyl_t*(x3-L2*x)
+		    		 +W*x*(d3/L+1./6.*c2*(1.-b/L)+17./270.*c3/L));
 
-         rz += 1./(6.*m_EI)*( m_Fyl_t*(3*x*x-L*L)
-		    		 +W*(d*d*d/L+1./6.*c*c*(1.-b/L)+17./270.*c*c*c/L));
+         rz += 1./(6.*m_EI)*( m_Fyl_t*(3*x2-L2)
+		    		 +W*(d3/L+1./6.*c2*(1.-b/L)+17./270.*c3/L));
       }
     	else 
 	   {
 		   if (x<b)
 			{
-    			dy += 1./(6.*m_EI)*(m_Fyl_t*(x*x*x-L*L*x)
-	    				 -W/10.* pow(x-a,5.)/(c*c)
-		    			 +W*x*(d*d*d/L+c*c/6.-c*c*b/6./L+17./270.*c*c*c/L));
+    			dy += 1./(6.*m_EI)*(m_Fyl_t*(x3-L2*x)
+	    				 -W/10.* pow(x-a,5.)/(c2)
+		    			 +W*x*(d3/L+c2/6.-c2*b/6./L+17./270.*c3/L));
 
-            rz += 1./(6.*m_EI)*(m_Fyl_t*(3*x*x-L*L)
-	    				 -W/2.*pow(x-a,4.)/(c*c)
-		    			 +W*(d*d*d/L+c*c/6.-c*c*b/6./L+17./270.*c*c*c/L));
+            rz += 1./(6.*m_EI)*(m_Fyl_t*(3*x2-L2)
+	    				 -W/2.*pow(x-a,4.)/(c2)
+		    			 +W*(d3/L+c2/6.-c2*b/6./L+17./270.*c3/L));
 			}
 			 else
 			 {
-	    		dy += 1./(6.*m_EI)*( m_Fyl_t*(x*x*x-L*L*x)
-		    			 -W* ( pow(x-a/3.-2.*b/3.,3.)-d*d*d*x/L
-			    		 -b/6.*c*c*(1.-x/L)+17./270.*c*c*c*(1-x/L) ) );
+	    		dy += 1./(6.*m_EI)*( m_Fyl_t*(x3-L2*x)
+		    			 -W* ( pow(x-a/3.-2.*b/3.,3.)-d3*x/L
+			    		 -b/6.*c2*(1.-x/L)+17./270.*c3*(1-x/L) ) );
 
-            rz += 1./(6.*m_EI)*( m_Fyl_t*(3.*x*x-L*L)
-		    			 -W*(3*pow(x-a/3.-2.*b/3.,2.) - d*d*d/L
-			    		 -b/6.*c*c*(-1./L)+17./270.*c*c*c*(-1./L) ) );
+            rz += 1./(6.*m_EI)*( m_Fyl_t*(3.*x2-L2)
+		    			 -W*(3*pow(x-a/3.-2.*b/3.,2.) - d3/L
+			    		 -b/6.*c2*(-1./L)+17./270.*c3*(-1./L) ) );
 			 }
 		 }
 	}
@@ -2590,33 +2747,40 @@ void TrapezoidalLdBeam::ComputePFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 	Float64 c = b-a;		// length of load
 	Float64 W = m_wa*c;		// total load
 
+   Float64 L2 = L*L;
+   Float64 L3 = L2*L;
+   Float64 a2 = a*a;
+   Float64 c2 = c*c;
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
 	if (x<L-b) 
 	{
-		dy = 1./(m_EI)*( m_Fyl_u*(x*x*x/6.-.5*L*L*x)
-			+W*x*(0.5*a*a+.5*a*c+c*c/6.));
+		dy = 1./(m_EI)*( m_Fyl_u*(x3/6.-.5*L2*x)
+			+W*x*(0.5*a2+.5*a*c+c2/6.));
 
-		rz = 1./(m_EI)*( m_Fyl_u*(3.*x*x/6.-.5*L*L)
-			+W*(0.5*a*a+.5*a*c+c*c/6.));
+		rz = 1./(m_EI)*( m_Fyl_u*(3.*x2/6.-.5*L2)
+			+W*(0.5*a2+.5*a*c+c2/6.));
 	}
 	else 
 	{
 		if (x<L-a)
 		{
-			dy = 1./(m_EI)*( m_Fyl_u*(x*x*x/6.-.5*L*L*x)
-				 +W*x*(.5*a*a+.5*a*c+c*c/6.)
+			dy = 1./(m_EI)*( m_Fyl_u*(x3/6.-.5*L2*x)
+				 +W*x*(.5*a2+.5*a*c+c2/6.)
 			 	 -W*pow(x-d,4.)/(24.*c) );
 
-			rz = 1./(m_EI)*( m_Fyl_u*(3.*x*x/6.-.5*L*L)
-				 +W*(.5*a*a+.5*a*c+c*c/6.)
+			rz = 1./(m_EI)*( m_Fyl_u*(3.*x2/6.-.5*L2)
+				 +W*(.5*a2+.5*a*c+c2/6.)
 			 	 -4.*W*pow(x-d,3.)/(24.*c) );
 		}
 		else
 		{
-			dy = 1./(m_EI)*( m_Fyl_u*(x*x*x/6.-.5*L*L*x+L*L*L/3.)
+			dy = 1./(m_EI)*( m_Fyl_u*(x3/6.-.5*L2*x+L3/3.)
 				+W*( pow(a+0.5*c,3.)/6.-0.5*pow(a+0.5*c,2.)*L
 				 -1./6.*pow(x-d-0.5*c,3)+0.5*pow(a+0.5*c,2.)*x) );
 
-			rz = 1./(m_EI)*( m_Fyl_u*(3*x*x/6.-.5*L*L)
+			rz = 1./(m_EI)*( m_Fyl_u*(3*x2/6.-.5*L2)
 				+W*( -1./2.*pow(x-d-0.5*c,2.)+0.5*pow(a+0.5*c,2.)) );
 		}
 	}
@@ -2631,31 +2795,31 @@ void TrapezoidalLdBeam::ComputePFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 
       if (x<L-b) 
       {
-         dy += 1./(m_EI)*( m_Fyl_t*(x*x*x/6.-.5*L*L*x)
-		         +W*x*(0.5*a*a+a*c/3.+c*c/12.));
+         dy += 1./(m_EI)*( m_Fyl_t*(x3/6.-.5*L2*x)
+		         +W*x*(0.5*a2+a*c/3.+c2/12.));
 
-         rz += 1./(m_EI)*( m_Fyl_t*(3.*x*x/6.-.5*L*L)
-		         +W*(0.5*a*a+a*c/3.+c*c/12.));
+         rz += 1./(m_EI)*( m_Fyl_t*(3.*x2/6.-.5*L2)
+		         +W*(0.5*a2+a*c/3.+c2/12.));
       }
       else 
       {
          if (x<(L-a))
          {
-            dy += 1./(m_EI)*( m_Fyl_t*(x*x*x/6.-.5*L*L*x)
-	    	          +W*x*(0.5*a*a+a*c/3.+c*c/12.)
-		            -W*pow(x-d,5.)/(60.*c*c) );
+            dy += 1./(m_EI)*( m_Fyl_t*(x3/6.-.5*L2*x)
+	    	          +W*x*(0.5*a2+a*c/3.+c2/12.)
+		            -W*pow(x-d,5.)/(60.*c2) );
 
-            rz += 1./(m_EI)*( m_Fyl_t*(3.*x*x/6.-.5*L*L)
-	    	          +W*(0.5*a*a+a*c/3.+c*c/12.)
-		            -5.*W*pow(x-d,4.)/(60.*c*c) );
+            rz += 1./(m_EI)*( m_Fyl_t*(3.*x2/6.-.5*L2)
+	    	          +W*(0.5*a2+a*c/3.+c2/12.)
+		            -5.*W*pow(x-d,4.)/(60.*c2) );
          }
           else
          {
-            dy += 1./(m_EI)*( m_Fyl_t*(x*x*x/6.-.5*L*L*x+L*L*L/3.)
+            dy += 1./(m_EI)*( m_Fyl_t*(x3/6.-.5*L2*x+L3/3.)
 	    		          +W*( 0.5*pow(a+c/3.,2.)*x-1./6.*pow(x-d-2./3.*c,3.)
 		             +1./6.*pow(a+1./3.*c,3.)-0.5*pow(a+c/3.,2.)*L));
 
-            rz += 1./(m_EI)*( m_Fyl_t*(3.*x*x/6.-.5*L*L)
+            rz += 1./(m_EI)*( m_Fyl_t*(3.*x2/6.-.5*L2)
 	    		          +W*( 0.5*pow(a+c/3.,2.)-1./2.*pow(x-d-2./3.*c,2.)) );
          }
 	   }
@@ -2707,20 +2871,23 @@ void TrapezoidalLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
    Float64 c = b-a;		// length of load
    Float64 W = m_wa*c;		// total load
 
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+
 	if (x<a) 
 	{
-		dy = 1./(6.*m_EI)*(  m_Fyl_u*x*x*x-3.*m_Mzl_u*x*x);
+		dy = 1./(6.*m_EI)*(  m_Fyl_u*x3-3.*m_Mzl_u*x2);
 
-      rz = 1./(6.*m_EI)*(  m_Fyl_u*3.*x*x-6.*m_Mzl_u*x);
+      rz = 1./(6.*m_EI)*(  m_Fyl_u*3.*x2-6.*m_Mzl_u*x);
 	}
 	else 
 	{
 		if (x<b)
 		{
-			dy = 1./(6.*m_EI)*(  m_Fyl_u*x*x*x - 3.*m_Mzl_u*x*x
+			dy = 1./(6.*m_EI)*(  m_Fyl_u*x3 - 3.*m_Mzl_u*x2
 				+W/4.*pow(x-a,4.)/c);
 
-         rz = 1./(6.*m_EI)*(  3.*m_Fyl_u*x*x - 6.*m_Mzl_u*x
+         rz = 1./(6.*m_EI)*(  3.*m_Fyl_u*x2 - 6.*m_Mzl_u*x
 				+W*pow(x-a,3.)/c);
 		}
 		else
@@ -2742,29 +2909,34 @@ void TrapezoidalLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 
     	if (x<a) 
 	   {
-			 dyt = 1./(6.*m_EI)*( m_Fyl_t*x*x*x - 3.*m_Mzl_t*x*x);
+			 dyt = 1./(6.*m_EI)*( m_Fyl_t*x3 - 3.*m_Mzl_t*x2);
 
-			 rzt = 1./(6.*m_EI)*( 3.*m_Fyl_t*x*x - 6.*m_Mzl_t*x);
+			 rzt = 1./(6.*m_EI)*( 3.*m_Fyl_t*x2 - 6.*m_Mzl_t*x);
     	}
 	   else 
 		{
 			if (x<b)
 			{
-	    		dyt = 1./(m_EI)*( 1./6.*m_Fyl_t*x*x*x - .5*m_Mzl_t*x*x
+	    		dyt = 1./(m_EI)*( 1./6.*m_Fyl_t*x3 - .5*m_Mzl_t*x2
 		    			 +1./60.*W*pow(x-a,5.)/c/c );
 
-	    		rzt = 1./(m_EI)*( 1./2.*m_Fyl_t*x*x - m_Mzl_t*x
+	    		rzt = 1./(m_EI)*( 1./2.*m_Fyl_t*x2 - m_Mzl_t*x
 		    			 +1./12.*W*pow(x-a,4.)/c/c );
 			}
 			 else
     		{
-			   dyt = 1./(6.*m_EI)*( m_Fyl_t*(x*x*x-3.*L*L*x+2*L*L*L)
-				    	 -3.*m_Mzl_t*pow(L-x,2.)
-                   -W*(3.*d*d*x+d*d*d-3.*d*d*L-pow(x-L+d,3.)));
+            Float64 L2 = L*L;
+            Float64 L3 = L2*L;
+            Float64 d2 = d*d;
+            Float64 d3 = d2*d;
 
-			   rzt = 1./(6.*m_EI)*( m_Fyl_t*(3.*x*x-3.*L*L)
+			   dyt = 1./(6.*m_EI)*( m_Fyl_t*(x3-3.*L2*x+2*L3)
+				    	 -3.*m_Mzl_t*pow(L-x,2.)
+                   -W*(3.*d2*x+d3-3.*d2*L-pow(x-L+d,3.)));
+
+			   rzt = 1./(6.*m_EI)*( m_Fyl_t*(3.*x2-3.*L2)
 			    	   +6.*m_Mzl_t*(L-x)
-                  -W*(3.*d*d-3.*pow(x-L+d,2.)));
+                  -W*(3.*d2-3.*pow(x-L+d,2.)));
          }
     	}
 

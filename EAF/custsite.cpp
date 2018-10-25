@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -238,7 +238,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 
                _bstr_t bstr;
                bstr = pSel->Gettype();
-               CString strTag((LPTSTR)bstr);
+               CString strTag((TCHAR*)bstr);
                if (strTag=="None") // nothing selected, show our context menu
                {
                   CMenu menu;
@@ -426,11 +426,11 @@ anchorType GetAnchorInfo(long i, MSHTML::IHTMLElementCollectionPtr& pcoll, long*
    pel = pcoll->item(iv,iv);
 
    _bstr_t btitle = pel->Gettitle ( );
-   CString title((LPTSTR)btitle);
+   CString title((TCHAR*)btitle);
    *ptitle = title;
 
    _bstr_t bid = pel->Getid( );
-   CString cid((LPTSTR)bid);
+   CString cid((TCHAR*)bid);
 
    // parse id
    CString nid = cid.Right(cid.GetLength()-1);

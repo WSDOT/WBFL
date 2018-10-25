@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Modeling of geometric primitives
-// Copyright © 1999-2010  Washington State Department of Transportation
+// Copyright © 1999-2011  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -227,6 +227,12 @@ gpVector2d& gpVector2d::SetSize(const gpSize2d& size)
    return *this;
 }
 
+gpVector2d& gpVector2d::SetSize(Float64 x,Float64 y)
+{
+   m_X = x;
+   m_Y = y;
+   return *this;
+}
 
 gpVector2d& gpVector2d::SetMagnitude(Float64 magnitude)
 {
@@ -317,8 +323,8 @@ bool gpVector2d::AssertValid() const
 
 void gpVector2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpVector2d" << endl;
-   os << "  m_X = "<<m_X<<", m_Y = "<<m_Y<<endl;
+   os << _T("Dump for gpVector2d") << endl;
+   os << _T("  m_X = ")<<m_X<<_T(", m_Y = ")<<m_Y<<endl;
 }
 #endif // _DEBUG
 
