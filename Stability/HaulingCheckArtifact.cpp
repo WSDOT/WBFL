@@ -200,12 +200,17 @@ bool stbHaulingCheckArtifact::Passed(stbTypes::HaulingSlope slope) const
          }
       }
    }
-   return (PassedCrackingCheck(slope) && PassedRolloverCheck(slope) && PassedStressCheck(slope));
+   return (PassedCrackingCheck(slope) && PassedFailureCheck(slope) && PassedRolloverCheck(slope) && PassedStressCheck(slope));
 }
 
 bool stbHaulingCheckArtifact::PassedCrackingCheck(stbTypes::HaulingSlope slope) const
 {
    return m_Criteria.MinFScr < m_Results.MinFScr[slope];
+}
+
+bool stbHaulingCheckArtifact::PassedFailureCheck(stbTypes::HaulingSlope slope) const
+{
+   return m_Criteria.MinFSf < m_Results.MinFsFailure[slope];
 }
 
 bool stbHaulingCheckArtifact::PassedRolloverCheck(stbTypes::HaulingSlope slope) const

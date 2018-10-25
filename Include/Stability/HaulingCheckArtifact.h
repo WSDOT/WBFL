@@ -54,6 +54,7 @@ public:
    bool Passed(bool bIgnoreConfigurationLimits) const;
    bool Passed(stbTypes::HaulingSlope slope) const;
    bool PassedCrackingCheck(stbTypes::HaulingSlope slope) const;
+   bool PassedFailureCheck(stbTypes::HaulingSlope slope) const;
    bool PassedRolloverCheck(stbTypes::HaulingSlope slope) const;
    bool PassedDirectStressCheck(stbTypes::HaulingSlope slope) const;
    bool PassedDirectCompressionCheck(stbTypes::HaulingSlope slope) const;

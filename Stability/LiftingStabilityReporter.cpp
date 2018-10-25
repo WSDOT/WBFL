@@ -23,6 +23,7 @@
 
 #include <Stability\StabilityLib.h>
 #include <Stability\LiftingStabilityReporter.h>
+#include <Stability\ReportingConstants.h>
 
 #include <EAF\EAFApp.h>
 
@@ -283,7 +284,7 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    {
       (*pStressTable)(1, col++) << _T("Wind") << rptNewLine << _T("Direction");
    }
-   (*pStressTable)(1, col++) << Sub2(_T("FS"), _T("cr"));
+   (*pStressTable)(1, col++) << FS_CR;
 
    pStressTable->SetRowSpan(0,col,2);
    (*pStressTable)(0,col++) << _T("FS") << rptNewLine << _T("Status");
@@ -406,7 +407,7 @@ void stbLiftingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    *pPara << pTable << rptNewLine;
 
    row = pTable->GetNumberOfHeaderRows();
-   (*pTable)(row,0) << _T("Factor of Safety Against Failure (") << Sub2(_T("FS"),_T("f")) << _T(")");
+   (*pTable)(row,0) << _T("Factor of Safety Against Failure (") << FS_F << _T(")");
    (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure);
    row++;
 
@@ -843,7 +844,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   *pPara << _T("Offset Factor, ") << Sub2(_T("F"), _T("o")) << _T(" = (") << Sub2(_T("L"), _T("s")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+   *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("s")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
 
    bool bDirectCamber;
    Float64 camber;
@@ -854,7 +855,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
       *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
       *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
-      *pPara << _T("Location of center of gravity below roll axis, ") << Sub2(_T("y"), _T("r")) << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << Sub2(_T("F"), _T("o")) << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
+      *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("Y"), _T("top")) << _T(" - ") << FO << _T("(") << _T("m") << Sub2(symbol(DELTA), _T("camber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << _T(" + ") << Sub2(_T("y"), _T("rc")) << rptNewLine;
       for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
       {
          if (0 < impactCase)
@@ -862,7 +863,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T(", ");
          }
 
-         *pPara << Sub2(_T("y"), _T("r")) << _T(" = ") << shortLength.SetValue(pResults->Dra[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+         *pPara << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
       }
       *pPara << rptNewLine;
    }
@@ -870,7 +871,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       *pPara << _T("Camber offset factor, ") << Sub2(_T("F"), _T("co")) << _T(" = ") << scalar.SetValue(pResults->CamberOffsetFactor) << rptNewLine;
       *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
-      *pPara << _T("Location of center of gravity below roll axis, ") << Sub2(_T("y"), _T("r")) << _T(" = ") << Sub2(_T("F"), _T("co")) << _T("(") << Sub2(_T("Y"), _T("top")) << _T(" + ") << Sub2(_T("y"), _T("rc")) << _T(")") << _T(" - ") << Sub2(_T("F"), _T("o")) << _T("((IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << rptNewLine;
+      *pPara << _T("Location of center of gravity below roll axis, ") << YR << _T(" = ") << Sub2(_T("F"), _T("co")) << _T("(") << Sub2(_T("Y"), _T("top")) << _T(" + ") << Sub2(_T("y"), _T("rc")) << _T(")") << _T(" - ") << FO << _T("((IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(")") << rptNewLine;
       for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
       {
          if (0 < impactCase)
@@ -878,7 +879,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T(", ");
          }
 
-         *pPara << Sub2(_T("y"),_T("r")) << _T(" = ") << shortLength.SetValue(pResults->Dra[impactDir[impactCase]]);
+         *pPara << YR << _T(" = ") << shortLength.SetValue(pResults->Dra[impactDir[impactCase]]);
 
          if (!pResults->bIsStable[impactDir[impactCase]][stbTypes::Left] || !pResults->bIsStable[impactDir[impactCase]][stbTypes::Right])
          {
@@ -922,17 +923,17 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    pPara = new rptParagraph;
    *pChapter << pPara;
-   *pPara << _T("Lateral Sweep, ") << Sub2(_T("e"), _T("sweep")) << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
+   *pPara << _T("Lateral Sweep, ") << E_SWEEP << _T(" = ") << Sub2(_T("L"), _T("g")) << Sub2(_T("t"), _T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
 
 
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of lifting devices from centerline of girder, ") << rptNewLine;
    if (pStabilityProblem->IncludeLateralRollAxisOffset())
    {
-      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("[") << Sub2(_T("F"), _T("o")) << _T("(") << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T("]") << rptNewLine;
+      *pPara << EI << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("[") << FO << _T("(") << E_SWEEP << _T(" + ") << Sub2(symbol(DELTA), _T("lc")) << _T(")") << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T("]") << rptNewLine;
    }
    else
    {
-      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("(") << Sub2(_T("F"), _T("o")) << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(")") << rptNewLine;
+      *pPara << EI << _T(" = ") << Sub2(_T("m"), _T("e")) << _T("(") << FO << E_SWEEP << _T(" + ") << Sub2(_T("e"), _T("lift")) << _T(")") << rptNewLine;
    }
 
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
@@ -941,16 +942,16 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       {
          *pPara << _T(", ");
       }
-      *pPara << Sub2(_T("e"),_T("i")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << EI << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
-   *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << Sub2(_T("z"), _T("o")) << rptNewLine;
+   *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << ZO << rptNewLine;
    if (pResults->ZoMethod == stbTypes::Exact)
    {
       if (bSimpleFormat)
       {
-         *pPara << Sub2(_T("z"),_T("o")) << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
             << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
             << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
             << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
@@ -958,7 +959,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       }
       else
       {
-         *pPara << Sub2(_T("z"), _T("o")) << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+         *pPara << ZO << _T(" = (") << Sub2(_T("(IM)W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
             << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
             << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
             << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
@@ -972,7 +973,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       {
          *pPara << _T(", ");
       }
-      *pPara << Sub2(_T("z"),_T("o")) << _T(" = ") << shortLength.SetValue(pResults->Zo[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << ZO << _T(" = ") << shortLength.SetValue(pResults->Zo[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -994,15 +995,15 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    {
       *pPara << _T("Lateral wind pressure, ") << Sub2(_T("w"), _T("wind")) << _T(" = ") << pressure.SetValue(pResults->WindPressure) << rptNewLine;
    }
-   *pPara << _T("Total Wind Load, ") << Sub2(_T("W"), _T("wind")) << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
-   *pPara << _T("Location of resultant wind force below roll axis, ") << Sub2(_T("y"), _T("wind")) << rptNewLine;
+   *pPara << _T("Total Wind Load, ") << W_WIND << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
+   *pPara << _T("Location of resultant wind force below roll axis, ") << Y_WIND << rptNewLine;
    if (bDirectCamber)
    {
-      *pPara << Sub2(_T("y"), _T("wind")) << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << Sub2(_T("F"), _T("o")) << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
+      *pPara << Y_WIND << _T(" = ") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(" - ") << FO << _T("(") << _T("(m)") << Sub2(symbol(DELTA), _T("camber")) << _T(" + ") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + (IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
    }
    else
    {
-      *pPara << Sub2(_T("y"), _T("wind")) << _T(" = ") << Sub2(_T("F"), _T("co")) << _T("(") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(") - ") << Sub2(_T("F"), _T("o")) << _T("(") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + ") << _T("(IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
+      *pPara << Y_WIND << _T(" = ") << Sub2(_T("F"), _T("co")) << _T("(") << Sub2(_T("H"), _T("g")) << _T("/2 + ") << Sub2(_T("y"), _T("rc")) << _T(") - ") << FO << _T("(") << Sub2(symbol(DELTA),_T("precamber")) << _T(" + ") << _T("(IM)") << Sub2(symbol(DELTA), _T("lift")) << _T(")") << rptNewLine;
    }
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
@@ -1010,31 +1011,31 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       {
          *pPara << _T(", ");
       }
-      *pPara << Sub2(_T("y"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->Ywind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
-   }
-   *pPara << rptNewLine;
-
-   *pPara << _T("Lateral Deflection due to wind applied toward the left, ") << Sub2(_T("z"), _T("wind")) << rptNewLine;
-   *pPara << Sub2(_T("z"), _T("wind")) << _T(" = ") << Sub2(_T("W"), _T("wind")) << Sub2(_T("z"), _T("o")) << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
-   for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
-   {
-      if (0 < impactCase)
-      {
-         *pPara << _T(", ");
-      }
-      *pPara << Sub2(_T("z"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->ZoWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << Y_WIND << _T(" = ") << shortLength.SetValue(pResults->Ywind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
-   *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << Sub2(_T("e"), _T("wind")) << rptNewLine;
-   *pPara << Sub2(_T("e"),_T("wind")) << _T(" = ") << Sub2(_T("W"), _T("wind")) << Sub2(_T("y"), _T("wind")) << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
+   *pPara << _T("Lateral Deflection due to wind applied toward the left, ") << Z_WIND << rptNewLine;
+   *pPara << Z_WIND << _T(" = ") << W_WIND << ZO << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
    {
       if (0 < impactCase)
       {
          *pPara << _T(", ");
       }
-      *pPara << Sub2(_T("e"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+      *pPara << Z_WIND << _T(" = ") << shortLength.SetValue(pResults->ZoWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
+   }
+   *pPara << rptNewLine;
+
+   *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << E_WIND << rptNewLine;
+   *pPara << E_WIND << _T(" = ") << W_WIND << Y_WIND << _T("/[") << Sub2(_T("(IM)W"), _T("g")) << _T("]") << rptNewLine;
+   for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++)
+   {
+      if (0 < impactCase)
+      {
+         *pPara << _T(", ");
+      }
+      *pPara << E_WIND << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]) << _T(" (") << strImpact[impactCase] << _T(")");
    }
    *pPara << rptNewLine;
 
@@ -1343,12 +1344,12 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << RPT_STRESS(_T("h")) << _T(" = ") << _T("stress due to horizontal component of lifting cable force without impact") << rptNewLine;
    if (bSimpleFormat)
    {
-      *pPara << _T("Top ") << RPT_STRESS(_T("h")) << _T(" = -") << Sub2(_T("P"), _T("lift")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" + ") << Sub2(_T("y"), _T("r")) << Sub2(_T("Y"), _T("top")) << _T("/") << Sub2(_T("I"), _T("xx")) << _T(")") << rptNewLine;
-      *pPara << _T("Bottom ") << RPT_STRESS(_T("h")) << _T(" = -") << Sub2(_T("P"), _T("lift")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" - ") << Sub2(_T("y"), _T("r")) << _T("(") << Sub2(_T("H"), _T("g")) << _T(" - ") << Sub2(_T("Y"), _T("top")) << _T(")/") << Sub2(_T("I"), _T("xx")) << _T(")") << rptNewLine;
+      *pPara << _T("Top ") << RPT_STRESS(_T("h")) << _T(" = -") << Sub2(_T("P"), _T("lift")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" + ") << YR << Sub2(_T("Y"), _T("top")) << _T("/") << Sub2(_T("I"), _T("xx")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom ") << RPT_STRESS(_T("h")) << _T(" = -") << Sub2(_T("P"), _T("lift")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" - ") << YR << _T("(") << Sub2(_T("H"), _T("g")) << _T(" - ") << Sub2(_T("Y"), _T("top")) << _T(")/") << Sub2(_T("I"), _T("xx")) << _T(")") << rptNewLine;
    }
    else
    {
-      *pPara << Sub2(_T("M"), _T("lift")) << _T(" = ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("y"), _T("r")) << rptNewLine;
+      *pPara << Sub2(_T("M"), _T("lift")) << _T(" = ") << Sub2(_T("P"), _T("lift")) << YR << rptNewLine;
       *pPara << RPT_STRESS(_T("h")) << _T("(x,y) = ")
          << _T("(") << Sub2(_T("M"), _T("lift")) << Sub2(_T("I"), _T("xy")) << _T(")(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
          << _T(" - ")
@@ -1421,21 +1422,30 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Equilibrium Tilt Angle") << rptNewLine;
             pPara = new rptParagraph;
             *pChapter << pPara;
-            *pPara << Sub2(symbol(theta), _T("eq")) << _T(" = (") << Sub2(_T("e"), _T("i"));
+            *pPara << THETA_EQ << _T(" = (") << EI;
          }
          else
          {
             pPara = new rptParagraph;
             *pChapter << pPara;
-            *pPara << _T("Equilibrium Tilt Angle, ") << Sub2(symbol(theta), _T("eq")) << _T(" = (") << Sub2(_T("e"), _T("i"));
+            *pPara << _T("Equilibrium Tilt Angle, ") << THETA_EQ << _T(" = (") << EI;
          }
 
-         *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << Sub2(_T("e"),_T("wind"));
-         *pPara << _T(")/(") << Sub2(_T("y"),_T("r")) << _T(" - ") << Sub2(_T("z"),_T("o")) << _T(") = ");
-         *pPara << tiltAngle.SetValue(pResults->ThetaEq[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND;
+         *pPara << _T(")/(");
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            *pPara << _T("NOTE: ") << Sub2(_T("e"),_T("wind")) << _T(" > ") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("z"),_T("wind")) << _T(", Wind loading is sufficient to cause the girder to rotate to the right.") << rptNewLine;
+            *pPara << ZO << _T(" - ") << YR;
+         }
+         else
+         {
+            *pPara << YR << _T(" - ") << ZO;
+         }
+         *pPara << _T(") = ");
+         *pPara << tiltAngle.SetValue(fabs(pResults->ThetaEq[impactDir[impactCase]][wind])) << rptNewLine;
+         if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
+         {
+            *pPara << _T("NOTE: ") << E_WIND << _T(" > ") << EI << _T(" + ") << Z_WIND << _T(", Wind loading is sufficient to reverse the direction of girder tilt (clockwise rotation about the roll axis).") << rptNewLine;
          }
          *pPara << rptNewLine;
 
@@ -1449,23 +1459,23 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          rptRcTable* pTotalStressTable = rptStyleManager::CreateDefaultTable(16,_T("Stresses"));
          (*pPara) << pTotalStressTable << rptNewLine;
          (*pPara) << Sub2(_T("F"),_T("so")) << _T(" = Section Offset Factor = ") << _T("(") << Sub2(_T("L"),_T("s")) << _T("/") << Sub2(_T("L"),_T("g")) << Super2(_T(")"),_T("2")) << _T(" - ") << _T("((") << Sub2(_T("L"),_T("g")) << _T(" - 2X)") << _T("/") << Sub2(_T("L"),_T("g")) << Super2(_T(")"),_T("2")) << rptNewLine;
-         (*pPara) << Sub2(_T("e"),_T("h")) << _T(" = eccentricity of the horizontal component of the lift cable force = ") << Sub2(_T("m"),_T("e")) << Sub2(_T("e"),_T("lift")) << _T(" + ") << Sub2(_T("F"),_T("so")) << _T("(") << Sub2(_T("m"),_T("e")) << Sub2(_T("F"),_T("o")) << Sub2(_T("e"),_T("sweep")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind")) << _T(") = ") << Sub2(_T("m"),_T("e")) << Sub2(_T("e"),_T("lift")) << _T("(1 - ") << Sub2(_T("F"),_T("so")) << _T(") + ") << Sub2(_T("F"),_T("so")) << _T("(") << Sub2(_T("e"),_T("i")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind")) << _T(")") << rptNewLine;
+         (*pPara) << Sub2(_T("e"),_T("h")) << _T(" = eccentricity of the horizontal component of the lift cable force = ") << Sub2(_T("m"),_T("e")) << Sub2(_T("e"),_T("lift")) << _T(" + ") << Sub2(_T("F"),_T("so")) << _T("(") << Sub2(_T("m"),_T("e")) << FO << E_SWEEP << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind")) << _T(") = ") << Sub2(_T("m"),_T("e")) << Sub2(_T("e"),_T("lift")) << _T("(1 - ") << Sub2(_T("F"),_T("so")) << _T(") + ") << Sub2(_T("F"),_T("so")) << _T("(") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind")) << _T(")") << rptNewLine;
          (*pPara) << Sub2(_T("M"),_T("h")) << _T(" = lateral moment due to horizontal component of the lift cable force = (IM)") << Sub2(_T("P"),_T("lift")) << Sub2(_T("e"),_T("h")) << rptNewLine;
          (*pPara) << RPT_STRESS(_T("direct")) << _T(" = ") << RPT_STRESS(_T("ps")) << _T(" + (IM)(") << RPT_STRESS(_T("g")) << _T(" + ") << RPT_STRESS(_T("h")) << _T(") ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << rptNewLine;
          (*pPara) << RPT_STRESS(_T("tilt")) << _T(" = stress induced by girder rotation to equilibrium position") << rptNewLine;
          if (bSimpleFormat)
          {
-            (*pPara) << _T("Top Left ") << RPT_STRESS(_T("tilt")) << _T(" = ((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
-            (*pPara) << _T("Top Right ") << RPT_STRESS(_T("tilt")) << _T(" = -((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
-            (*pPara) << _T("Bottom Left ") << RPT_STRESS(_T("tilt")) << _T(" = ((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("bot")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
-            (*pPara) << _T("Bottom Right ") << RPT_STRESS(_T("tilt")) << _T(" = -((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("bot")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+            (*pPara) << _T("Top Left ") << RPT_STRESS(_T("tilt")) << _T(" = ((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+            (*pPara) << _T("Top Right ") << RPT_STRESS(_T("tilt")) << _T(" = -((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+            (*pPara) << _T("Bottom Left ") << RPT_STRESS(_T("tilt")) << _T(" = ((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("bot")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+            (*pPara) << _T("Bottom Right ") << RPT_STRESS(_T("tilt")) << _T(" = -((IM)") << _T("(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << _T(" + ") << Sub2(_T("M"), _T("h")) << _T(")") << Sub2(_T("W"), _T("bot")) << _T("/2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
          }
          else
          {
             (*pPara) << RPT_STRESS(_T("tilt")) << _T("(x,y) = ")
-               << _T("(IM)(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << Sub2(_T("I"), _T("xx")) << _T(")(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+               << _T("(IM)(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << Sub2(_T("I"), _T("xx")) << _T(")(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
                << _T(" - ")
-               << _T("(IM)(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")") << Sub2(symbol(theta), _T("eq")) << Sub2(_T("I"), _T("xy")) << _T(")(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
+               << _T("(IM)(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")") << THETA_EQ << Sub2(_T("I"), _T("xy")) << _T(")(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
          }
          (*pPara) << RPT_STRESS(_T("total")) << _T(" = ") << RPT_STRESS(_T("direct")) << _T(" + ") << RPT_STRESS(_T("tilt")) << rptNewLine;
 
@@ -1519,35 +1529,35 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          pPara = new rptParagraph;
          *pChapter << pPara;
 
-         (*pPara) << Sub2(_T("M"),_T("cr")) << _T(" = Cracking Moment") << rptNewLine;
+         (*pPara) << M_CR << _T(" = Cracking Moment") << rptNewLine;
          if (bSimpleFormat)
          {
             std::_tstring strLeftSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("") : _T("-"));
             std::_tstring strRightSign(pResults->ThetaEq[impactDir[impactCase]][wind] < 0 ? _T("-") : _T(""));
-            (*pPara) << _T("Top Left ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
-            (*pPara) << _T("Top Right ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
-            (*pPara) << _T("Bottom Left ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
-            (*pPara) << _T("Bottom Right ") << Sub2(_T("M"), _T("cr")) << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
+            (*pPara) << _T("Top Left ") << M_CR << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
+            (*pPara) << _T("Top Right ") << M_CR << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("top")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
+            (*pPara) << _T("Bottom Left ") << M_CR << _T(" = ") << strLeftSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
+            (*pPara) << _T("Bottom Right ") << M_CR << _T(" = ") << strRightSign << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("yy")) << _T("/") << Sub2(_T("W"), _T("bot")) << _T(" - ") << Sub2(_T("M"), _T("h")) << rptNewLine;
          }
          else
          {
-            (*pPara) << Sub2(_T("M"), _T("cr")) << _T(" = ") << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")") 
+            (*pPara) << M_CR << _T(" = ") << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")") 
                << _T("(") << Sub2(_T("I"),_T("xx")) << Sub2(_T("I"),_T("yy")) << _T(" - ") << Super2(Sub2(_T("I"),_T("xy")),_T("2")) << _T(")")
                << _T("(") << Sub2(_T("I"),_T("xx")) << _T("(x)") << _T(" - ") << Sub2(_T("I"),_T("xy")) << _T("(y)") << _T(")") 
                << _T(" - ") << Sub2(_T("M"),_T("h")) << rptNewLine;
          }
          (*pPara) << _T("Cracked Flange, indicates the flange that is first to crack") << rptNewLine;
-         (*pPara) << Sub2(symbol(theta), _T("cr")) << _T(" = tilt angle at cracking") << rptNewLine;
-         (*pPara) << Sub2(symbol(theta), _T("cr")) << _T(" = |") << Sub2(_T("M"), _T("cr")) << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << Sub2(_T("z"), _T("o")) << _T(")|") << _T(" ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+         (*pPara) << THETA_CRACK << _T(" = tilt angle at cracking") << rptNewLine;
+         (*pPara) << THETA_CRACK << _T(" = |") << M_CR << _T("/(") << Sub2(_T("M"), _T("girder")) << _T(" + ") << Sub2(_T("P"), _T("lift")) << ZO << _T(")|") << _T(" ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
 
-         (*pPara) << Sub2(_T("FS"), _T("cr")) << _T(" = Factor of Safety Against Cracking") << rptNewLine;
+         (*pPara) << FS_CR << _T(" = Factor of Safety Against Cracking") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            (*pPara) << Sub2(_T("FS"), _T("cr")) << _T(" = (") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("z"),_T("wind")) << _T(" + (") << Sub2(_T("y"),_T("r")) << _T(" - ") << Sub2(_T("z"),_T("o")) << _T(")/") << Sub2(symbol(theta),_T("cr")) <<_T(")/") << Sub2(_T("e"),_T("wind")) << rptNewLine;
+            (*pPara) << FS_CR << _T(" = (") << EI << _T(" + ") << Z_WIND << _T(" + (") << YR << _T(" - ") << ZO << _T(")/") << THETA_CRACK <<_T(")/") << E_WIND << rptNewLine;
          }
          else
          {
-            (*pPara) << Sub2(_T("FS"), _T("cr")) << _T(" = (") << Sub2(_T("y"), _T("r")) << Sub2(symbol(theta), _T("cr")) << _T(") / (") << Sub2(_T("e"), _T("i")) << _T(" + ") << Sub2(_T("z"), _T("o")) << Sub2(symbol(theta), _T("cr")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"), _T("wind")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << Sub2(_T("e"), _T("wind")) << _T(")") << rptNewLine;
+            (*pPara) << FS_CR << _T(" = (") << YR << THETA_CRACK << _T(") / (") << EI << _T(" + ") << ZO << THETA_CRACK << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(")") << rptNewLine;
          }
 
 #define SHOW_FULL_CRACKING_TABLE
@@ -1574,27 +1584,27 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
          pFullCrackingTable->SetColumnSpan(0, col, 3);
          (*pFullCrackingTable)(0, col) << _T("Top Left");
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(_T("M"), _T("cr")), rptMomentUnitTag, pDisplayUnits->Moment);
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(symbol(theta), _T("cr")), rptAngleUnitTag, pDisplayUnits->RadAngle);
-         (*pFullCrackingTable)(1, col++) << Sub2(_T("FS"), _T("cr"));
+         (*pFullCrackingTable)(1, col++) << COLHDR(M_CR, rptMomentUnitTag, pDisplayUnits->Moment);
+         (*pFullCrackingTable)(1, col++) << COLHDR(THETA_CRACK, rptAngleUnitTag, pDisplayUnits->RadAngle);
+         (*pFullCrackingTable)(1, col++) << FS_CR;
 
          pFullCrackingTable->SetColumnSpan(0, col, 3);
          (*pFullCrackingTable)(0, col) << _T("Top Right");
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(_T("M"), _T("cr")), rptMomentUnitTag, pDisplayUnits->Moment);
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(symbol(theta), _T("cr")), rptAngleUnitTag, pDisplayUnits->RadAngle);
-         (*pFullCrackingTable)(1, col++) << Sub2(_T("FS"), _T("cr"));
+         (*pFullCrackingTable)(1, col++) << COLHDR(M_CR, rptMomentUnitTag, pDisplayUnits->Moment);
+         (*pFullCrackingTable)(1, col++) << COLHDR(THETA_CRACK, rptAngleUnitTag, pDisplayUnits->RadAngle);
+         (*pFullCrackingTable)(1, col++) << FS_CR;
 
          pFullCrackingTable->SetColumnSpan(0, col, 3);
          (*pFullCrackingTable)(0, col) << _T("Bottom Left");
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(_T("M"), _T("cr")), rptMomentUnitTag, pDisplayUnits->Moment);
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(symbol(theta), _T("cr")), rptAngleUnitTag, pDisplayUnits->RadAngle);
-         (*pFullCrackingTable)(1, col++) << Sub2(_T("FS"), _T("cr"));
+         (*pFullCrackingTable)(1, col++) << COLHDR(M_CR, rptMomentUnitTag, pDisplayUnits->Moment);
+         (*pFullCrackingTable)(1, col++) << COLHDR(THETA_CRACK, rptAngleUnitTag, pDisplayUnits->RadAngle);
+         (*pFullCrackingTable)(1, col++) << FS_CR;
 
          pFullCrackingTable->SetColumnSpan(0, col, 3);
          (*pFullCrackingTable)(0, col) << _T("Bottom Right");
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(_T("M"), _T("cr")), rptMomentUnitTag, pDisplayUnits->Moment);
-         (*pFullCrackingTable)(1, col++) << COLHDR(Sub2(symbol(theta), _T("cr")), rptAngleUnitTag, pDisplayUnits->RadAngle);
-         (*pFullCrackingTable)(1, col++) << Sub2(_T("FS"), _T("cr"));
+         (*pFullCrackingTable)(1, col++) << COLHDR(M_CR, rptMomentUnitTag, pDisplayUnits->Moment);
+         (*pFullCrackingTable)(1, col++) << COLHDR(THETA_CRACK, rptAngleUnitTag, pDisplayUnits->RadAngle);
+         (*pFullCrackingTable)(1, col++) << FS_CR;
 #endif
 
          col = 0;
@@ -1606,10 +1616,10 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          {
             (*pCrackingTable)(0, col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength);
          }
-         (*pCrackingTable)(0,col++) << COLHDR(Sub2(_T("M"),_T("cr")),rptMomentUnitTag,pDisplayUnits->Moment);
+         (*pCrackingTable)(0,col++) << COLHDR(M_CR,rptMomentUnitTag,pDisplayUnits->Moment);
          (*pCrackingTable)(0,col++) << _T("Cracked Flange");
-         (*pCrackingTable)(0,col++) << COLHDR(Sub2(symbol(theta),_T("cr")),rptAngleUnitTag,pDisplayUnits->RadAngle);
-         (*pCrackingTable)(0,col++) << Sub2(_T("FS"),_T("cr"));
+         (*pCrackingTable)(0,col++) << COLHDR(THETA_CRACK,rptAngleUnitTag,pDisplayUnits->RadAngle);
+         (*pCrackingTable)(0,col++) << FS_CR;
 
 
          rptRcTable* pRebarTable = nullptr;
@@ -1806,30 +1816,30 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          pPara = new rptParagraph;
          *pChapter << pPara;
 
-         *pPara << Sub2(symbol(theta), _T("max")) << _T(" = maximum tilt angle") << rptNewLine;
+         *pPara << THETA_FAILURE << _T(" = maximum tilt angle") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            //*pPara << Sub2(symbol(theta), _T("max")) << _T(" = ") << _T("(") << symbol(ROOT) << _T("((") << Sub2(_T("y"), _T("r")) << _T(" - 2.5") << Sub2(_T("e"), _T("i")) << _T(")") << _T("/") << Sub2(_T("z"), _T("o")) << _T(")") << _T(" - 1)/2.5") << _T(" ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
-            *pPara << Sub2(symbol(theta), _T("max")) << _T(" = ") << _T("(") << Sub2(_T("y"), _T("r")) << _T(" + 2.5") << Sub2(_T("z"), _T("wind")) << _T(" - ") << Sub2(_T("z"),_T("o")) << _T(")") << _T("/(5") << Sub2(_T("z"), _T("o")) << _T(")") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            //*pPara << THETA_FAILURE << _T(" = ") << _T("(") << symbol(ROOT) << _T("((") << YR << _T(" - 2.5") << EI << _T(")") << _T("/") << ZO << _T(")") << _T(" - 1)/2.5") << _T(" ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            *pPara << THETA_FAILURE << _T(" = ") << _T("(") << YR << _T(" + 2.5") << Z_WIND << _T(" - ") << ZO << _T(")") << _T("/(5") << ZO << _T(")") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
          else
          {
-            *pPara << Sub2(symbol(theta), _T("max")) << _T(" = ") << symbol(ROOT) << _T("((") << Sub2(_T("e"), _T("i")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"), _T("wind")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << Sub2(_T("e"), _T("wind")) << _T(") / (2.5") << Sub2(_T("z"), _T("o")) << _T(")) ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
+            *pPara << THETA_FAILURE << _T(" = ") << symbol(ROOT) << _T("((") << EI << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(") / (2.5") << ZO << _T(")) ") << symbol(LTE) << _T(" 0.4 radian") << rptNewLine;
          }
-         *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[impactDir[impactCase]][wind]) << rptNewLine;
-         *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure") << rptNewLine;
+         *pPara << THETA_FAILURE << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << FS_F << _T(" = Factor of Safety Against Failure") << rptNewLine;
          if (pResults->ThetaEq[impactDir[impactCase]][wind] < 0)
          {
-            //*pPara << Sub2(_T("FS"), _T("f")) << _T(" = (") << Sub2(_T("e"), _T("i")) << _T(" + ") << Sub2(_T("y"), _T("r")) << Sub2(symbol(theta), _T("max")) << _T(" + (") << Sub2(_T("z"), _T("wind")) << _T(" - ") << Sub2(_T("z"), _T("o")) << _T(")(1 + 2.5") << Sub2(symbol(theta), _T("max")) << _T("))/(") << Sub2(_T("e"), _T("wind")) << _T("(1 + 2.5") << Sub2(symbol(theta), _T("max")) << _T("))") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = (") << Sub2(_T("e"), _T("i")) << _T(" + ") << Sub2(_T("y"), _T("r")) << Sub2(symbol(theta), _T("max")) << _T(" + (") << Sub2(_T("z"), _T("wind")) << _T(" - ") << Sub2(_T("z"), _T("o")) << _T(")(1 + 2.5") << Sub2(symbol(theta), _T("max")) << _T("))/") << Sub2(_T("e"), _T("wind")) << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            //*pPara << FS_F << _T(" = (") << EI << _T(" + ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" - ") << ZO << _T(")(1 + 2.5") << THETA_FAILURE << _T("))/(") << E_WIND << _T("(1 + 2.5") << THETA_FAILURE << _T("))") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << FS_F << _T(" = (") << EI << _T(" + ") << YR << THETA_FAILURE << _T(" + (") << Z_WIND << _T(" - ") << ZO << _T(")(1 + 2.5") << THETA_FAILURE << _T("))/") << E_WIND << _T("") << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
          }
          else
          {
-            //*pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << Sub2(_T("y"), _T("r")) << Sub2(symbol(theta), _T("max")) << _T(") / (") << Sub2(_T("e"), _T("i")) << _T(" + (1 + 2.5") << Sub2(symbol(theta), _T("max")) << _T(")(") << Sub2(_T("z"), _T("o")) << Sub2(symbol(theta), _T("max")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"), _T("wind")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << Sub2(_T("e"), _T("wind")) << _T(")) = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
-            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << Sub2(_T("y"), _T("r")) << Sub2(symbol(theta), _T("max")) << _T(") / (") << Sub2(_T("e"), _T("i")) << _T(" ") << strOppWindSign.c_str() << _T(" ") << Sub2(_T("e"),_T("wind")) << _T(" + (1 + 2.5") << Sub2(symbol(theta), _T("max")) << _T(")(") << Sub2(_T("z"), _T("o")) << Sub2(symbol(theta), _T("max")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"), _T("wind"))  << _T(")) = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            //*pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << YR << THETA_FAILURE << _T(") / (") << EI << _T(" + (1 + 2.5") << THETA_FAILURE << _T(")(") << ZO << THETA_FAILURE << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(")) = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = ") << _T("(") << YR << THETA_FAILURE << _T(") / (") << EI << _T(" ") << strOppWindSign.c_str() << _T(" ") << E_WIND << _T(" + (1 + 2.5") << THETA_FAILURE << _T(")(") << ZO << THETA_FAILURE << _T(" ") << strWindSign.c_str() << _T(" ") << Z_WIND  << _T(")) = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << rptNewLine;
          }
-         *pPara << _T("If ") << Sub2(_T("FS"),_T("f")) << _T(" is less than ") << Sub2(_T("FS"),_T("cr")) << _T(" then ") << Sub2(_T("FS"),_T("f")) << _T(" = ") << Sub2(_T("FS"),_T("cr")) << _T(". ");
-         *pPara << Sub2(_T("FS"),_T("f")) << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << _T(", ") << Sub2(_T("FS"),_T("cr")) << _T(" = ") << scalar.SetValue(pResults->MinFScr[impactDir[impactCase]][wind]) << _T(", therefore ") << Sub2(_T("FS"),_T("f")) << _T(" = ") << scalar.SetValue(pResults->AdjFsFailure[impactDir[impactCase]][wind]) << rptNewLine;
+         *pPara << _T("If ") << FS_F << _T(" is less than ") << FS_CR << _T(" then ") << FS_F << _T(" = ") << FS_CR << _T(". ");
+         *pPara << FS_F << _T(" = ") << scalar.SetValue(pResults->FsFailure[impactDir[impactCase]][wind]) << _T(", ") << FS_CR << _T(" = ") << scalar.SetValue(pResults->MinFScr[impactDir[impactCase]][wind]) << _T(", therefore ") << FS_F << _T(" = ") << scalar.SetValue(pResults->AdjFsFailure[impactDir[impactCase]][wind]) << rptNewLine;
 
          *pPara << rptNewLine;
 
@@ -1887,7 +1897,7 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       {
          *pPara << _T(" with ") << strTitle << rptNewLine;
       }
-      *pPara << Sub2(_T("FS"), _T("cr")) << _T(" Min = ") << scalar.SetValue(pResults->FScrMin) << rptNewLine;
+      *pPara << FS_CR << _T(" Min = ") << scalar.SetValue(pResults->FScrMin) << rptNewLine;
 
       *pPara << rptNewLine;
 
@@ -1912,6 +1922,6 @@ void stbLiftingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       }
 
       *pPara << _T("The minimum factor of safety against failure, ") << strTitle << rptNewLine;
-      *pPara << Sub2(_T("FS"), _T("f")) << _T(" Min = ") << scalar.SetValue(pResults->MinAdjFsFailure) << rptNewLine;
+      *pPara << FS_F << _T(" Min = ") << scalar.SetValue(pResults->MinAdjFsFailure) << rptNewLine;
    }
 }

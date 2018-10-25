@@ -101,10 +101,12 @@ class CBulbTeeSection;
 typedef CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2> CBulbTeeSectionBase;
 class CBulbTeeSection : 
    public CBulbTeeSectionBase,
-   public IAsymmetricSection
+   public IAsymmetricSection,
+   public IFlangePoints
 {
 BEGIN_COM_MAP(CBulbTeeSection)
    COM_INTERFACE_ENTRY(IAsymmetricSection)
+   COM_INTERFACE_ENTRY(IFlangePoints)
    COM_INTERFACE_ENTRY_CHAIN(CBulbTeeSectionBase)
 END_COM_MAP()
 
@@ -136,7 +138,19 @@ public:
 
       return S_OK;
    }
-   
+
+// IFlangePoints
+public:
+   STDMETHODIMP GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppTopCentral, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   {
+      return m_Beam->GetTopFlangePoints(ppLeftTop, ppLeftBottom, ppTopCentral, ppRightTop, ppRightBottom);
+   }
+
+   STDMETHODIMP GetBottomFlangePoints(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override
+   {
+      return m_Beam->GetBottomFlangePoints(ppLeftTop, ppLeftBottom, ppRightTop, ppRightBottom);
+   }
+
    STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints) override
    {
       CHECK_RETOBJ(ppPoints);
@@ -373,7 +387,7 @@ public:
       Float64 w5, w6;
       m_Beam->get_W5(&w5);
       m_Beam->get_W6(&w6);
-      *location = 0.5*(w6 - w5);
+      *location = 0.5*(w5 - w6);
 
       return S_OK;
    }

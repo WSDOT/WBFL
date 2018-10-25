@@ -154,11 +154,15 @@ public:
    stbTypes::WindDirection FScrWindDirection[2];   // wind direction associated with the minimum factor of safety against cracking
    stbTypes::Corner FScrCorner[2]; // corner associated with the minimum factor of safety against cracking
 
-   bool bCrackedAtRollover;
-   bool bLeftRolloverStability[2][3][2]; // if true, lateral forces alone cause rollover about the left tire
-   Float64 LeftThetaRollover[2][3][2]; // rollover at left tire
-   bool bRightRolloverStability[2][3][2]; // if true, lateral forces alone cause rollover about the right tire
-   Float64 RightThetaRollover[2][3][2]; // rollover at right tire
+   // Array indicies [HaulingSlope enum][ImpactDirection enum][Side Enum (wind)]
+   Float64 ThetaMax[2][3][2];    // maximum tilt angle of the cracked section
+   Float64 FsFailure[2][3][2];   // factor of safety against failure
+   Float64 AdjFsFailure[2][3][2];// adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr)
+   stbTypes::ImpactDirection FSfImpactDirection[2]; // impact direction associated with the minimum factor of safety against failure
+   stbTypes::WindDirection FSfWindDirection[2];   // wind direction associated with the minimum factor of safety against failure
+   Float64 MinFsFailure[2];         // minimum factor of safety against failure
+   Float64 MinAdjFsFailure[2];      // corrosponding adjusted minimum factor of safety against failure
+
    bool bRolloverStability[2][3][2]; // there is a rollover instability
    Float64 ThetaRollover[2][3][2]; // minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW
    Float64 FsRollover[2][3][2];    // factor of safety against roll over

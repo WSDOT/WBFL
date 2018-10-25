@@ -182,6 +182,8 @@ void CEAFHelpWindow::Navigate(LPCTSTR lpszURL)
    {
       ShowWindow(SW_SHOW);
    }
+   // force the help window to the top
+   SetWindowPos(&wndTop, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
 void CEAFHelpWindow::OnBack()

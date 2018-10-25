@@ -264,8 +264,8 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.478/*-3.486*/,0.001) );
          }
 
-         //TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.854/*2.857*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],2.108/*1.986*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.854/*2.857*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],2.042/*1.986*/,0.001) );
       }
    }
 
@@ -290,8 +290,8 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
             TRY_TESTME( ::IsEqual(::ConvertFromSysUnits(sectionResult.f[stbTypes::Superelevation][impact][wind][stbTypes::BottomRight],unitMeasure::KSI),-3.590/*-3.598*/,0.001) );
          }
 
-         //TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.813/*2.824*/,0.001) );
-         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.921/*1.868*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsFailure[stbTypes::Superelevation][impact][wind],2.813/*2.824*/,0.001) );
+         TRY_TESTME( ::IsEqual(result.FsRollover[stbTypes::Superelevation][impact][wind],1.876/*1.868*/,0.001) );
       }
    }
    TESTME_EPILOG("PCIHaulingExamples");

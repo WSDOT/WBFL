@@ -782,7 +782,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
    Float64 Hrs = pStabilityProblem->GetHeightOfRollAxisAboveRoadway();
    Float64 Wcc = pStabilityProblem->GetWheelLineSpacing();
 
-   Float64 cfSign = (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? -1 : 1);
+   Float64 cfSign = (pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? 1 : -1);
 
    // overturning moment due to wind and cf applied toward the left
    // Ywind and Dra are a function of impact because of impact forces in the horizontal
@@ -819,13 +819,14 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
             Float64 Mot = windSign*results.MotWind;
             if (slope == stbTypes::Superelevation)
             {
-               Zt -= cfSign*results.ZoCF;
-               Mot -= cfSign*results.MotCF;
+               Zt += cfSign*results.ZoCF;
+               Mot += cfSign*results.MotCF;
             }
 
             Float64 ei = results.EccLateralSweep[impact];
 
             results.ThetaEq[slope][impact][wind] = (Ktheta*alpha + im*Wg*(ei + Zt) + Mot)/(Ktheta - im*Wg*(results.Dra[impact] + im*results.Zo[stbTypes::NoImpact]));
+            // if ThetaEq < 0, then girder is rolling to the right
 
             if (results.ThetaEq[slope][impact][wind] < -THETA_MAX || THETA_MAX < results.ThetaEq[slope][impact][wind])
             {
@@ -965,8 +966,8 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   Float64 Mot = windSign*results.MotWind;
                   if (slope == stbTypes::Superelevation)
                   {
-                     Mot -= cfSign*results.MotCF;
-                     Zt -= cfSign*results.ZoCF;
+                     Mot += cfSign*results.MotCF;
+                     Zt += cfSign*results.ZoCF;
                   }
 
                   Float64 ei = results.EccLateralSweep[impact];
@@ -984,7 +985,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                      sectionResult.fDirect[slope][impact][wind][corner] = sectionResult.fps[corner] + im*sectionResult.fg[corner] + windSign*sectionResult.fw[corner];
                      if (slope == stbTypes::Superelevation)
                      {
-                        sectionResult.fDirect[slope][impact][wind][corner] += cfSign*sectionResult.fcf[corner];
+                        sectionResult.fDirect[slope][impact][wind][corner] -= cfSign*sectionResult.fcf[corner];
                      }
 
                      // keep track of the max direct stress at this section including the corner where it occurs
@@ -1087,8 +1088,9 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                         theta_crack = ::ForceIntoRange(0.0, theta_crack, THETA_MAX);
 
                         Float64 alpha = (slope == stbTypes::CrownSlope ? CrownSlope : Superelevation);
-                        Float64 Mr = Ktheta*(theta_crack - alpha);
-                        Float64 Ma = im*Wg*((im*results.Zo[stbTypes::NoImpact] + results.Dra[stbTypes::NoImpact])*theta_crack + Zt + ei) + Mot;
+                        Float64 sign = (results.ThetaEq[slope][impact][wind] < alpha ? -1 : 1);
+                        Float64 Mr = sign*Ktheta*(sign*theta_crack - alpha);
+                        Float64 Ma = im*Wg*((results.Dra[stbTypes::NoImpact]+ im*results.Zo[stbTypes::NoImpact])*theta_crack + sign*(ei + Zt)) + sign*Mot;
                         fscr = IsZero(Ma) ? Float64_Max : Mr / Ma;
                         fscr = Max(fscr, 0.0); // can't be less than zero... theta_crack-alpha < 0 means the slope of alpha alone will crack the girder
                      }
@@ -1164,101 +1166,102 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
          {
             stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
 
+            Float64 ei = results.EccLateralSweep[impact];
+            Float64 alpha = (slope == stbTypes::CrownSlope ? CrownSlope : Superelevation);
+
+            Float64 im = 1.0;
+            if (impactUsage == stbTypes::Both ||
+               (impactUsage == stbTypes::NormalCrown && slope == stbTypes::CrownSlope) ||
+               (impactUsage == stbTypes::MaxSuper    && slope == stbTypes::Superelevation)
+               )
+            {
+               im = IM[impact];
+            }
+
+            Float64 Zt = windSign*im*results.ZoWind[stbTypes::NoImpact];
+            Float64 Mot = windSign*results.MotWind;
+            if (slope == stbTypes::Superelevation)
+            {
+               Zt += cfSign*results.ZoCF;
+               Mot += cfSign*results.MotCF;
+            }
+
             if (results.bRotationalStability[slope][impact][wind])
             {
-               Float64 im = 1.0;
-               if (impactUsage == stbTypes::Both ||
-                  (impactUsage == stbTypes::NormalCrown && slope == stbTypes::CrownSlope) ||
-                  (impactUsage == stbTypes::MaxSuper    && slope == stbTypes::Superelevation)
-                  )
+               ////////////////////////////////////////
+               // Factor of Safety Against Failure
+               ////////////////////////////////////////
+
+               // This usually doesn't control because rollover will occur at a smaller angle then failure
+               // However, we don't know this to be true in all cases so we compute FSf
+
+               // compute theta max... PCI examples use a numerical solver in mathcad, however I derived the closed form solution.
+               // (See SupportingDocuments folder for derivation)
+               Float64 theta_max;
+               Float64 sign = (results.ThetaEq[slope][impact][wind] < alpha ? -1 : 1); // let equilbrium angle determine direction of failure mode
+               if (IsZero(im*Wg))
                {
-                  im = IM[impact];
+                  theta_max = THETA_MAX;
+               }
+               else
+               {
+                  Float64 Z = Zt + ei + Mot / (im*Wg) + (im*results.Zo[stbTypes::NoImpact] + results.Dra[stbTypes::NoImpact] + sign*2.5*Zt)*alpha;
+                  Float64 S = alpha*alpha + sign*Z / (2.5 * im*results.Zo[stbTypes::NoImpact]);
+                  theta_max = sign*alpha + sqrt(S);
+               }
+               theta_max = ::ForceIntoRange(0.0, theta_max, THETA_MAX);
+               results.ThetaMax[slope][impact][wind] = theta_max;
+
+               Float64 Mr = sign*Ktheta*(sign*theta_max - alpha); // resisting moment: Mr = Ktheta(theta-alpha) for theta_eq > 0 and Mr = Ktheta(theta+alpha) for theta_eq < 0
+               Float64 Ma = im*Wg*((im*results.Zo[stbTypes::NoImpact] * theta_max + sign*Zt)*(1 + 2.5*theta_max) + results.Dra[stbTypes::NoImpact] * theta_max + sign*ei) + sign*Mot; // acting moment
+               Float64 FSf = IsLE(Ma, 0.0) ? DBL_MAX : Mr / Ma;
+               results.FsFailure[slope][impact][wind] = FSf;
+
+               // if FSf < FScr then FSf = FScr (if the girder doesn't crack, it doesn't fail)
+               results.AdjFsFailure[slope][impact][wind] = Max(results.FsFailure[slope][impact][wind], results.MinFScr[slope]);
+
+               if (::IsLT(results.FsFailure[slope][impact][wind], results.MinFsFailure[slope]))
+               {
+                  results.MinFsFailure[slope] = results.FsFailure[slope][impact][wind];
+                  results.MinAdjFsFailure[slope] = results.AdjFsFailure[slope][impact][wind];
+                  results.FSfImpactDirection[slope] = impact;
+                  results.FSfWindDirection[slope] = wind;
                }
 
+               ////////////////////////////////////////
+               // Factor of Safety Against Rollover
+               ////////////////////////////////////////
+
                // critical angle at rollover (this is the angle when the truck is just about to overturn)
-               Float64 ei = results.EccLateralSweep[impact];
-               Float64 alpha = (slope == stbTypes::CrownSlope ? CrownSlope : Superelevation);
+               sign = (results.ThetaEq[slope][impact][wind] < 0 ? -1 : 1); // let equilbrium angle determine direction of failure mode
                Float64 Zmax = Wcc / 2;
                Float64 Wro = windSign*results.Wwind;
                if (slope == stbTypes::Superelevation)
                {
-                  Wro -= cfSign*results.Wcf;
+                  Wro += cfSign*results.Wcf;
                }
 
-               // Case 1 - overturning about the left tire
-               // NOTE: If the user input a crazy big value for Hrs and/or alpha, the height of the roll center could be high enough
-               // to cause rollover issues without any lateral loading
-               Float64 Mro = Wro*(Hrs + Zmax*alpha);
-               Float64 MaLeft = im*Wg*(Zmax - Hrs*alpha) - Mro; // acting moment = resisting moment
-               results.bLeftRolloverStability[slope][impact][wind] = (MaLeft < 0 ? false : true);
-               results.LeftThetaRollover[slope][impact][wind] = (MaLeft < 0 ? 0 : MaLeft / Ktheta + alpha); // Counterclockwise angle from vertial
-               ATLASSERT(0 <= results.LeftThetaRollover[slope][impact][wind]);
-
-               // Case 2 - overturning about the right tire 
-               Mro = Wro*(Hrs - Zmax*alpha);
-               Float64 MaRight = -im*Wg*(Zmax + Hrs*alpha) - Mro; // acting moment = resisting moment... CCW acting moment > 0 so we expect Ma to be < 0
-               results.bRightRolloverStability[slope][impact][wind] = (0 < MaRight ? false : true);
-               results.RightThetaRollover[slope][impact][wind] = (0 < MaRight ? 0 : MaRight / Ktheta + alpha); // Counterclockwise angle from vertical
-               ATLASSERT(results.RightThetaRollover[slope][impact][wind] <= 0);
-
-               results.bRolloverStability[slope][impact][wind] = (results.bLeftRolloverStability[slope][impact][wind] && results.bRightRolloverStability[slope][impact][wind] ? true : false);
+               Float64 Mro = Wro*(Hrs + sign*Zmax*alpha);
+               Ma = sign*im*Wg*(Zmax - sign*Hrs*alpha) - Mro;
+               results.bRolloverStability[slope][impact][wind] = (sign*Ma < 0 ? false : true);
                if (results.bRolloverStability[slope][impact][wind])
                {
-                  // roll over will occur in the direction that requires the least moment Ma
-                  if ( ::IsLE(MaLeft,-MaRight) )
-                  {
-                     // rollover left tire controls
-                     results.ThetaRollover[slope][impact][wind] = results.LeftThetaRollover[slope][impact][wind];
-                  }
-                  else
-                  {
-                     // rollover right tire controls
-                     results.ThetaRollover[slope][impact][wind] = results.RightThetaRollover[slope][impact][wind];
-                  }
-               }
-               else
-               {
-                  results.ThetaRollover[slope][impact][wind] = 0;
-               }
+                  Float64 theta_roll = Ma / Ktheta + sign*alpha;
+                  results.ThetaRollover[slope][impact][wind] = theta_roll;
 
-               // FS against Failure at Rollover
-               if (results.bRolloverStability[slope][impact][wind])
-               {
-                  Float64 theta_roll = results.ThetaRollover[slope][impact][wind];
-
-                  // only magnify the lateral deflections at rollover if the girder is cracked
-                  results.bCrackedAtRollover = false;
-                  const auto& critical_cracked_section = results.vSectionResults[results.FScrAnalysisPointIndex[slope]];
-                  Float64 theta_crack = critical_cracked_section.ThetaCrack[slope][results.FScrImpactDirection[slope]][results.FScrWindDirection[slope]][results.FScrCorner[slope]];
-                  Float64 FScr = critical_cracked_section.FScr[slope][results.FScrImpactDirection[slope]][results.FScrWindDirection[slope]][results.FScrCorner[slope]];
-                  Float64 lateral_deflection_scale_factor = 1.0;
-                  if (theta_roll < theta_crack || IsZero(FScr)) // FScr = 0 means the section is cracked before it is tilted
-                  {
-                     results.bCrackedAtRollover = true;
-                     lateral_deflection_scale_factor = 1 + 2.5*fabs(theta_roll); // theta_roll is a signed quantity... use magnitude of angle
-                  }
-
-                  Float64 Zt = windSign*im*results.ZoWind[stbTypes::NoImpact];
-                  Float64 Mot = windSign*results.MotWind;
-                  if (slope == stbTypes::Superelevation)
-                  {
-                     Zt -= cfSign*results.ZoCF;
-                     Mot -= cfSign*results.MotCF;
-                  }
-
-                  if (0 < theta_roll && ::IsLE(theta_roll,alpha))
+                  if (0 < theta_roll && ::IsLE(theta_roll, alpha))
                   {
                      // girder is tilted to the left (CCW rotation, but it isn't tilted more than the superelevation
                      // Mr = Ktheta(theta_roll - alpha) which is < 0
-                     // the girder cannot rollover to the left if it does not tilt atleast equal to the superelevation
+                     // the girder cannot rollover to the left if it does not tilt at least equal to the superelevation
                      // In the special case that theta_roll = alpha, Mr is 0 and for equilibrium, Ma also must be zero
                      // This is a perfectly balanced case and roll over will not occur
                      results.FsRollover[slope][impact][wind] = Float64_Max;
                   }
                   else
                   {
-                     Float64 Mr = Ktheta*(theta_roll - alpha); // resisting moment NOTE: don't use fabs(theta_roll) here... if rolling to the right theta_roll < 0 and we want (-theta_roll-alpha)*Ktheta
-                     Float64 Ma = im*Wg*((im*results.Zo[stbTypes::NoImpact] * fabs(theta_roll) + Zt)*lateral_deflection_scale_factor + results.Dra[stbTypes::NoImpact] * fabs(theta_roll) + ei) + Mot; // acting moment (note... moments take about center of stiffness so Mot is correct)
+                     Float64 Mr = Ktheta*(theta_roll - sign*alpha);
+                     Float64 Ma = im*Wg*((Zt + sign*im*results.Zo[stbTypes::NoImpact] * theta_roll)*(1 + 2.5*theta_roll) + results.Dra[stbTypes::NoImpact] * theta_roll + ei) + sign*Mot;
                      Float64 FSr = IsZero(Ma) ? Float64_Max : Mr / Ma;
                      results.FsRollover[slope][impact][wind] = FSr;
                   }
@@ -1266,6 +1269,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                else
                {
                   // there is a rollover instability... rollover will happen so take the FS to be 0
+                  results.ThetaRollover[slope][impact][wind] = 0;
                   results.FsRollover[slope][impact][wind] = 0;
                }
 

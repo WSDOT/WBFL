@@ -95,28 +95,29 @@ void sysXStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
    switch (m_Reason)
    {
    case (sysXStructuredLoad::InvalidFileFormat):
-      *pMsg += _T("File format was invalid\n");
+      *pMsg += _T("File format was invalid\n\n");
       break;
    case (sysXStructuredLoad::EndOfFile):
-      *pMsg += _T("Unexpected end of file\n");
+      *pMsg += _T("Unexpected end of file\n\n");
       break;
    case (sysXStructuredLoad::BadRead):
-      *pMsg += _T("Unexpected error trying to read file\n");
+      *pMsg += _T("Unexpected error trying to read file\n\n");
       break;
    case (sysXStructuredLoad::BadVersion):
-      *pMsg += _T("Unexpected version number reading structured data\n");
+      *pMsg += _T("Unexpected version number reading structured data\n\n");
       break;
    case (sysXStructuredLoad::MemoryError):
-      *pMsg += _T("Memory allocation error during structured read\n");
+      *pMsg += _T("Memory allocation error during structured read\n\n");
       break;
    case (sysXStructuredLoad::CantInitializeTheParser):
-      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n");
+      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n\n");
+      break;
+   case (sysXStructuredLoad::UserDefined):
       break;
    default:
-      *pMsg += _T("Unknown error reading structured data\n");
+      *pMsg += _T("Unknown error reading structured data\n\n");
       break;
    }
-   *pMsg += _T("\n");
    *pMsg +=m_ExtendedMessage;
 }
 

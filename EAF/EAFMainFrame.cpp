@@ -220,7 +220,7 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 
    // Tool Bars
-   EnableDocking(CBRS_ALIGN_ANY);
+   EnableDocking(CBRS_ALIGN_ANY | CBRS_FLOAT_MULTI);
    m_pMainFrameToolBar = CreateMainFrameToolBar();
    if ( !m_pMainFrameToolBar )
 	{
