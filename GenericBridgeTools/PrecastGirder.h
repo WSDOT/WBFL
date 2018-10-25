@@ -49,6 +49,7 @@ public:
 
       // default harping point... fraction of girder length, measured from left end
       m_HPMeasure = hpmFractionOfGirderLength;
+      m_EndHPMeasure = hpmFractionOfGirderLength;
       m_HPReference = hprEndOfGirder;
       m_HPStart = 0.0;
       m_HP1 = 0.4;
@@ -119,7 +120,10 @@ private:
    Float64 m_HPStart, m_HPEnd; // location of the m_HarpGridEnd harp grids
    Float64 m_HP1, m_HP2; // harping point location (location of the m_HarpGridHp harp grids)
    HarpPointReference m_HPReference; // describes from where the harping point is measured
-   HarpPointMeasure m_HPMeasure; // describes how the harping point is located
+   HarpPointMeasure m_HPMeasure;    // describes how the middle harping point is located
+
+   HarpPointReference m_EndHPReference; // describes from where the harping point is measured for the end harp points
+   HarpPointMeasure m_EndHPMeasure; // describes how the end harping point is located
 
    VARIANT_BOOL m_bUseMinHpDistance;
    Float64 m_MinHpDist;   
@@ -143,7 +147,7 @@ private:
   
    void GetHarpPointLocations(Float64& hp1,Float64& hp2);
    void GetEndHarpPointLocations(Float64& hp1,Float64& hp2);
-   Float64 GetHarpPointLocation(Float64 hp,bool bRight);
+   Float64 GetHarpPointLocation(Float64 hp, HarpPointReference hpRef, HarpPointMeasure hpMeasure, bool bRight,bool bLocatingEndHarpPoint);
    Float64 GetHarpPatternFillAdjustment();
    HRESULT UpdateMaxStrandFill();
 
@@ -193,8 +197,12 @@ public:
 	STDMETHOD(GetEndHarpingPoints)(/*[out]*/Float64* hp1,/*[out]*/Float64* hp2);
 	STDMETHOD(put_HarpingPointMeasure)(/*[in]*/ HarpPointMeasure measure);
 	STDMETHOD(get_HarpingPointMeasure)(/*[out,retval]*/ HarpPointMeasure* measure);
+	STDMETHOD(put_EndHarpingPointMeasure)(/*[in]*/ HarpPointMeasure measure);
+	STDMETHOD(get_EndHarpingPointMeasure)(/*[out,retval]*/ HarpPointMeasure* measure);
 	STDMETHOD(put_HarpingPointReference)(/*[in]*/ HarpPointReference hpRef);
 	STDMETHOD(get_HarpingPointReference)(/*[out,retval]*/ HarpPointReference* hpRef);
+	STDMETHOD(put_EndHarpingPointReference)(/*[in]*/ HarpPointReference hpRef);
+	STDMETHOD(get_EndHarpingPointReference)(/*[out,retval]*/ HarpPointReference* hpRef);
    STDMETHOD(put_UseMinHarpPointDistance)(/*[in]*/VARIANT_BOOL bUseMin);
 	STDMETHOD(get_UseMinHarpPointDistance)(/*[out,retval]*/VARIANT_BOOL* bUseMin);
    STDMETHOD(put_MinHarpPointDistance)(/*[in]*/Float64 minHpDist);

@@ -245,9 +245,13 @@ void CEAFApp::RegistryInit()
 
    CString strLegalNotice = GetProfileString(_T("Settings"),_T("LegalNotice"),strDefaultLegalNotice);
    if ( strLegalNotice.CompareNoCase(_T("On")) == 0 )
+   {
       m_bShowLegalNotice = VARIANT_TRUE;
+   }
    else
+   {
       m_bShowLegalNotice = VARIANT_FALSE;
+   }
 
    // the "default" time of last run will be the install time less one day so that if the
    // "LastRun" setting is not in the registry, this will look like there was a new install
@@ -290,9 +294,14 @@ void CEAFApp::ShowUsageMessage()
       CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
       if ( appCmdLine )
       {
-         CString str = appCmdLine->GetUsageMessage();
+         strUsage += _T("\n\n");
 
-         strUsage += _T("\n");
+         CString strAppName = appPlugin->GetName();
+         CString strAppOptions;
+         strAppOptions.Format(_T("%s <app options>\n"),strAppName);
+         strUsage += strAppOptions;
+
+         CString str = appCmdLine->GetUsageMessage();
          strUsage += str;
       }
    }
@@ -831,19 +840,48 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       {
          // otherwise, if no document, try to figure out which app plugin deals with it.
          BOOL bHandled = false;
-         CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
-         for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+         if ( cmdInfo.m_bTargetApp )
          {
+            // the target app plugin was specified on the command line... find the plugin and
+            // let it process the command line...
             CComPtr<IEAFAppPlugin> appPlugin;
-            GetAppPluginManager()->GetPlugin(idx,&appPlugin);
-
-            CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
-            if ( appCmdLine )
+            bool bFound = GetAppPluginManager()->FindPlugin(cmdInfo.GetTargetApp(),&appPlugin);
+            if ( bFound )
             {
-               bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
-               if ( bHandled )
+               CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+               if ( appCmdLine )
                {
-                  break;
+                  bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
+               }
+            }
+            else
+            {
+               // The specified app plug-in wasn't found
+               bHandled = true;
+               cmdInfo.m_bError = true;
+               cmdInfo.m_bCommandLineMode = TRUE;
+
+               // this would be the place to tailor the error message
+               // cmdInfo.SetErrorCode(specified app is invalid);
+            }
+         }
+         
+         if ( !bHandled && !cmdInfo.m_bError )
+         {
+            CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+            for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+            {
+               CComPtr<IEAFAppPlugin> appPlugin;
+               GetAppPluginManager()->GetPlugin(idx,&appPlugin);
+
+               CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+               if ( appCmdLine )
+               {
+                  bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
+                  if ( bHandled )
+                  {
+                     break;
+                  }
                }
             }
          }
@@ -867,7 +905,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    // At this point, the application is done running, but we don't want to return FALSE
    // because that says application initialization failed which isn't the case.
    // Close the documents and post a WM_QUIT message and return TRUE. This will cause
-   // the application to close normally and to do all of its necessary cleanup
+   // the application to close normally and do all of its necessary cleanup
    if ( cmdInfo.m_bCommandLineMode )
    {
       CloseAllDocuments(TRUE);

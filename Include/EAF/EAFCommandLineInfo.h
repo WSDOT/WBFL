@@ -37,6 +37,7 @@ public:
    BOOL  m_bCommandLineMode; // set this to TRUE if this is a batch run
    BOOL  m_bError; // set this to TRUE if there is a problem with the command line and the application
                    // needs to display the command line usage message and exit
+   BOOL m_bTargetApp;
 
    virtual void ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast);
 
@@ -44,6 +45,7 @@ public:
 
    virtual CString GetUsageMessage();
    virtual CString GetErrorMessage();
+   virtual CString GetTargetApp();
 
    CEAFCommandLineInfo& operator=(const CEAFCommandLineInfo& other);
 
@@ -52,6 +54,5 @@ protected:
    CEAFCommandLineInfo(const CEAFCommandLineInfo&);
 
    CString m_strErrorMsg;
-
-
+   CString m_strTargetApp; // name of EAF Application Plugin that is to process the command line options
 };
