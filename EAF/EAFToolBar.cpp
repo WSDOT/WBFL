@@ -256,6 +256,14 @@ int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback
    return -1;
 }
 
+DWORD CEAFToolBar::GetExtendedStyle()
+{
+   if ( m_pToolBar )
+      return m_pToolBar->GetToolBarCtrl().GetExtendedStyle();
+
+   return 0;
+}
+
 void CEAFToolBar::SetExtendedStyle(DWORD dwStyleEx)
 {
    if ( m_pToolBar )
@@ -298,4 +306,25 @@ BOOL CEAFToolBar::MoveButton(UINT nOldIndex,UINT nNewIndex)
       return m_pToolBar->GetToolBarCtrl().MoveButton(nOldIndex,nNewIndex);
 
    return FALSE;
+}
+
+BOOL CEAFToolBar::CreateDropDownButton(UINT nPluginCmd,IEAFCommandCallback* pCallback,DWORD dwBtnStyle)
+{
+   // REF: http://www.codejock.com/support/articles/mfc/general/g_5.asp
+   if ( !m_pToolBar )
+      return FALSE;
+
+   DWORD dwStyleEx = GetExtendedStyle();
+   dwStyleEx |= TBSTYLE_EX_DRAWDDARROWS;
+   SetExtendedStyle(dwStyleEx);
+
+   int idx = CommandToIndex(nPluginCmd,pCallback);
+   if ( idx < 0 ) 
+      return FALSE;
+
+   DWORD dwStyle = GetButtonStyle(idx);
+   dwStyle |= dwBtnStyle;
+   SetButtonStyle(idx,dwStyle);
+
+   return TRUE;
 }

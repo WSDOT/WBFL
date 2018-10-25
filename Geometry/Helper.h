@@ -92,6 +92,7 @@ HRESULT CreatePolyShape(IPoint2dCollection* pPoints,IPolyShape** ppPolyShape);
 HRESULT CreatePolyShape(IPolyShape** ppPolyShape);
 HRESULT CreateCompositeShape(ICompositeShape** ppCompositeShape);
 HRESULT CreateGeomUtil(IGeomUtil2d** ppUtil);
+HRESULT CreateGeomUtil(IGeomUtil3d** ppUtil);
 
 VARIANT_BOOL MakeBool(bool boolean);
 

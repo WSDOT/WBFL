@@ -768,17 +768,6 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          HandleOpenDocumentError( hr, lpszPathName );
          return FALSE;
       }
-
-      // end unit wrapping entire file
-      try
-      {
-         if (S_OK != pStrLoad->EndUnit())
-            return E_FAIL;
-      }
-      catch(...)
-      {
-         return E_FAIL;
-      }
       
       hr = pStrLoad->Close();
       if ( FAILED(hr) )
@@ -820,13 +809,20 @@ CString CEAFDocument::GetRootNodeName()
    return str;
 }
 
+Float64 CEAFDocument::GetRootNodeVersion()
+{
+   return 1.0;
+}
+
 HRESULT CEAFDocument::OpenDocumentRootNode(IStructuredSave* pStrSave)
 {
-   return pStrSave->BeginUnit(GetRootNodeName(),1.0);
+   // Open the unit around the entire file
+   return pStrSave->BeginUnit(GetRootNodeName(),GetRootNodeVersion());
 }
 
 HRESULT CEAFDocument::CloseDocumentRootNode(IStructuredSave* pStrSave)
 {
+   // close the unit around the entire file
    return pStrSave->EndUnit();
 }
 

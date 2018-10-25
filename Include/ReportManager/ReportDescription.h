@@ -42,9 +42,10 @@ public:
    std::string Name;
    std::string Key;
    Uint16 MaxLevel;
+   bool Select;
 
-   CChapterInfo() { Name = "Bad Chapter Name"; Key = "Bad Chapter Key"; MaxLevel = 0; }
-   CChapterInfo(const CChapterInfo& other): Name(other.Name), Key(other.Key), MaxLevel(other.MaxLevel) {}
+   CChapterInfo() { Name = "Bad Chapter Name"; Key = "Bad Chapter Key"; MaxLevel = 0; Select = true;}
+   CChapterInfo(const CChapterInfo& other): Name(other.Name), Key(other.Key), MaxLevel(other.MaxLevel), Select(other.Select) {}
 
    bool operator==(const CChapterInfo& other) const
    {

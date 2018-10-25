@@ -389,7 +389,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   if (ver!=MY_VER)
+   if (ver>MY_VER)
       return STRLOAD_E_BADVERSION;
 
    {        

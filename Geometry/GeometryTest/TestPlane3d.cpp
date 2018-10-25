@@ -130,6 +130,7 @@ void CTestPlane3d::Test()
    TRY_TEST(IsEqual(val,0.0),true);
 
    TestISupportErrorInfo();
+   TestPlaneLineIntersect();
 }
 
 void CTestPlane3d::TestISupportErrorInfo()
@@ -139,4 +140,96 @@ void CTestPlane3d::TestISupportErrorInfo()
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPlane3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
+}
+
+void CTestPlane3d::TestPlaneLineIntersect()
+{
+   CComPtr<IPlane3d> plane;
+   TRY_TEST(plane.CoCreateInstance( CLSID_Plane3d ),S_OK);
+
+   // Plane through three points
+   CComPtr<IPoint3d> p1;
+   p1.CoCreateInstance( CLSID_Point3d );
+   p1->Move(1,0,0);
+
+   CComPtr<IPoint3d> p2;
+   p2.CoCreateInstance( CLSID_Point3d );
+   p2->Move(0,1,0);
+
+   CComPtr<IPoint3d> p3;
+   p3.CoCreateInstance( CLSID_Point3d );
+   p3->Move(0,0,1);
+
+   plane->ThroughPoints(p1,  p2,  p3);
+
+   CComPtr<ILineSegment3d> line;
+   line.CoCreateInstance(CLSID_LineSegment3d);
+
+   CComPtr<IPoint3d> pA;
+   pA.CoCreateInstance(CLSID_Point3d);
+   pA->Move(0,0,0);
+
+   CComPtr<IPoint3d> pB;
+   pB.CoCreateInstance(CLSID_Point3d);
+   pB->Move(10,10,10);
+
+   line->ThroughPoints(pA,pB);
+
+   CComPtr<IPoint3d> pntIntersect;
+   plane->LineSegmentIntersect(line,&pntIntersect);
+
+   Float64 x,y,z;
+   pntIntersect->Location(&x,&y,&z);
+   TRY_TEST(IsEqual(x,0.333333),true);
+   TRY_TEST(IsEqual(y,0.333333),true);
+   TRY_TEST(IsEqual(z,0.333333),true);
+
+   pB->Move(10,10,0);
+   pntIntersect.Release();
+   plane->LineSegmentIntersect(line,&pntIntersect);
+   pntIntersect->Location(&x,&y,&z);
+   TRY_TEST(IsEqual(x,0.5),true);
+   TRY_TEST(IsEqual(y,0.5),true);
+   TRY_TEST(IsEqual(z,0.0),true);
+
+   pB->Move( 0,10,10);
+   pntIntersect.Release();
+   plane->LineSegmentIntersect(line,&pntIntersect);
+   pntIntersect->Location(&x,&y,&z);
+   TRY_TEST(IsEqual(x,0.0),true);
+   TRY_TEST(IsEqual(y,0.5),true);
+   TRY_TEST(IsEqual(z,0.5),true);
+
+   pB->Move(10, 0,10);
+   pntIntersect.Release();
+   plane->LineSegmentIntersect(line,&pntIntersect);
+   pntIntersect->Location(&x,&y,&z);
+   TRY_TEST(IsEqual(x,0.5),true);
+   TRY_TEST(IsEqual(y,0.0),true);
+   TRY_TEST(IsEqual(z,0.5),true);
+
+   // Parallel to YZ at X = 1
+   p1->Move(1,0,0);
+   p2->Move(1,1,0);
+   p3->Move(1,0,1);
+   plane->ThroughPoints(p1,p2,p3);
+
+   pB->Move(10,0,0);
+   pntIntersect.Release();
+   plane->LineSegmentIntersect(line,&pntIntersect);
+   pntIntersect->Location(&x,&y,&z);
+   TRY_TEST(IsEqual(x,1.0),true);
+   TRY_TEST(IsEqual(y,0.0),true);
+   TRY_TEST(IsEqual(z,0.0),true);
+
+   // parallel to the plane
+   pB->Move(0,10,10);
+   pntIntersect.Release();
+   TRY_TEST(plane->LineSegmentIntersect(line,&pntIntersect),GEOMETRY_E_NOSOLUTIONS);
+
+   // in the plane
+   pA->Move(1,0,0);
+   pB->Move(1,10,10);
+   pntIntersect.Release();
+   TRY_TEST(plane->LineSegmentIntersect(line,&pntIntersect),GEOMETRY_E_NOSOLUTIONS);
 }

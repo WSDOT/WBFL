@@ -169,7 +169,7 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
       }
       else if ( nID == 0 )
       {
-         AppendSeparator(pMenu); // separator
+         AppendSeparator(); // separator
       }
       else
       {
@@ -246,7 +246,7 @@ BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCom
 
 void CEAFMenu::AppendSeparator(CMenu* pMenu)
 {
-   pMenu->AppendMenu(MF_SEPARATOR);
+   VERIFY(pMenu->AppendMenu(MF_SEPARATOR));
 }
 
 void CEAFMenu::AppendSeparator()

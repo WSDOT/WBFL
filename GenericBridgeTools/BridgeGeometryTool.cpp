@@ -64,12 +64,11 @@ STDMETHODIMP CBridgeGeometryTool::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CBridgeGeometryTool::StationAndOffset(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfSpan,IStation** station,Float64* offset)
+STDMETHODIMP CBridgeGeometryTool::Point(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx, Float64 distFromStartOfSpan, IPoint2d** point)
 {
    // distFromStartOfSpan is measured along the girder line, from the intersection of the pier CL and the girder CL
 #pragma Reminder("UPDATE: Should be using actual path for the girderline")
    // Assuming a straight path for now (girder line paths have not been implemented yet)
-
    CComPtr<ICogoInfo> cogoinfo;
    bridge->get_CogoInfo(&cogoinfo);
 
@@ -90,8 +89,15 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffset(IGenericBridge* bridge,SpanIn
    CComPtr<ILocate2> locate;
    m_CogoEngine->get_Locate(&locate);
 
+   locate->PointOnLine(p1,p2,distFromStartOfSpan,0.00,point);
+
+   return S_OK;
+}
+
+STDMETHODIMP CBridgeGeometryTool::StationAndOffset(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfSpan,IStation** station,Float64* offset)
+{
    CComPtr<IPoint2d> point;
-   locate->PointOnLine(p1,p2,distFromStartOfSpan,0.00,&point);
+   Point(bridge,spanIdx,gdrIdx,distFromStartOfSpan,&point);
 
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);

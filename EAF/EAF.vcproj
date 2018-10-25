@@ -83,7 +83,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
-				AdditionalDependencies="htmlhelp.lib"
+				AdditionalDependencies="htmlhelp.lib uxtheme.lib"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(OutDir)"
@@ -189,7 +189,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				RegisterOutput="false"
-				AdditionalDependencies="htmlhelp.lib"
+				AdditionalDependencies="htmlhelp.lib uxtheme.lib"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;"
 				ModuleDefinitionFile=".\EAF.def"

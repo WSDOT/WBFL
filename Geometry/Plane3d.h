@@ -88,6 +88,9 @@ private:
 // IPlane3d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(PointOnPlaneNearestOrigin)(/*[out,retval]*/IPoint3d** ppPoint);
+   STDMETHOD(SortestDistance)(/*[in]*/IPoint3d* point,/*[out,retval]*/Float64* pDistance);
+   STDMETHOD(LineSegmentIntersect)(/*[in]*/ ILineSegment3d* pLineSegment,/*[out,retval]*/IPoint3d** ppPoint);
 	STDMETHOD(GetZ)(/*[in]*/ Float64 x,/*[in]*/ Float64 y, /*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(GetY)(/*[in]*/ Float64 x,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(GetX)(/*[in]*/ Float64 y,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal);

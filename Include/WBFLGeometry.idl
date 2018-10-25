@@ -557,6 +557,9 @@ library WBFLGeometry
 		[helpstring("method OffsetEx"), helpcontext(IDH_ILineSegment2d_OffsetEx)]
       HRESULT OffsetEx([in] ISize2d* pSize);
 
+		[helpstring("method ThroughPoints")/*, helpcontext(IDH_ILine2d_ThroughPoints)*/]
+      HRESULT ThroughPoints([in] IPoint2d* p1, [in] IPoint2d* p2);
+
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
@@ -683,6 +686,62 @@ library WBFLGeometry
    {
     [helpstring("event OnPointChanged"), helpcontext(IDH_IPoint3d_OnChanged)] 
     HRESULT OnPointChanged(IPoint3d* point);
+   };
+	[
+		object,
+		uuid(0356DD54-DC34-47b2-B324-3C6A20930301),
+		oleautomation,
+      //helpcontext(IDH_ILineSegment3d),
+		helpstring("ILineSegment3d Interface"),
+		pointer_default(unique)
+	]
+	interface ILineSegment3d : IUnknown
+	{
+		[propget, helpstring("property StartPoint")/*, helpcontext(IDH_ILineSegment2d_StartPoint)*/]
+      HRESULT StartPoint([out, retval] IPoint3d* *pVal);
+
+		[propputref, helpstring("property StartPoint")/*, helpcontext(IDH_ILineSegment2d_StartPoint)*/]
+      HRESULT StartPoint([in] IPoint3d* newVal);
+
+		[propget, helpstring("property EndPoint")/*, helpcontext(IDH_ILineSegment2d_EndPoint)*/]
+      HRESULT EndPoint([out, retval] IPoint3d* *pVal);
+
+		[propputref, helpstring("property EndPoint")/*, helpcontext(IDH_ILineSegment2d_EndPoint)*/]
+      HRESULT EndPoint([in] IPoint3d* newVal);
+
+		[propget, helpstring("property Length")/*, helpcontext(IDH_ILineSegment2d_Length)*/]
+      HRESULT Length([out, retval] Float64 *pVal);
+
+		[helpstring("method ThroughPoints")/*, helpcontext(IDH_ILine2d_ThroughPoints)*/]
+      HRESULT ThroughPoints([in] IPoint3d* p1, [in] IPoint3d* p2);
+
+		//[helpstring("method Rotate"), helpcontext(IDH_ILineSegment2d_Rotate)]
+  //    HRESULT Rotate([in] Float64 cx, [in] Float64 cy,[in] Float64 angle);
+
+		//[helpstring("method RotateEx"), helpcontext(IDH_ILineSegment2d_RotateEx)]
+  //    HRESULT RotateEx([in] IPoint2d* pCenter,[in] Float64 angle);
+
+		[helpstring("method Offset")/*, helpcontext(IDH_ILineSegment2d_Offset)*/]
+      HRESULT Offset([in] Float64 dx,[in] Float64 dy,[in]Float64 dz);
+
+		[helpstring("method OffsetEx")/*, helpcontext(IDH_ILineSegment2d_OffsetEx)*/]
+      HRESULT OffsetEx([in] ISize3d* pSize);
+
+		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+   [
+    object,
+    oleautomation,
+    uuid(708930E0-84C3-4f3e-A8FD-524E80D50918),
+    //helpcontext(IDH_ILineSegment2d),
+    helpstring("ILineSegment3dEvents Interface"),
+    pointer_default(unique)
+   ]
+   interface ILineSegment3dEvents : IUnknown
+   {
+    [helpstring("event OnLineSegmentChanged")/*,helpcontext(IDH_ILineSegment2d_OnChanged)*/] 
+    HRESULT OnLineSegmentChanged(ILineSegment3d* lineSegment);
    };
 
 	[
@@ -835,6 +894,15 @@ library WBFLGeometry
 
 		[helpstring("method GetZ"),helpcontext(IDH_IPlane3d_GetZ)]
 		HRESULT GetZ([in] Float64 x,[in] Float64 y, [out, retval] Float64 *pVal);
+
+		[helpstring("method LineSegmentIntersect")/*,helpcontext(IDH_IPlane3d_LineSegmentIntersect)*/]
+		HRESULT LineSegmentIntersect([in] ILineSegment3d* pLineSegment,[out,retval]IPoint3d** ppPoint);
+
+		[helpstring("method ShortestDistance")/*,helpcontext(IDH_IPlane3d_ShortestDistance)*/]
+      HRESULT SortestDistance(IPoint3d* point,Float64* pDistance);
+
+		[helpstring("method PointOnPlaneNearestOrigin")/*,helpcontext(IDH_IPlane3d_PointOnPlaneNearestOrigin)*/]
+      HRESULT PointOnPlaneNearestOrigin([out,retval]IPoint3d** ppPoint);
 
 		[helpstring("method Clone"),helpcontext(IDH_IPlane3d_Clone)]
 		HRESULT Clone([out,retval]IPlane3d** clone);
@@ -2980,6 +3048,27 @@ interface IBoxBeam : IUnknown
 
    [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
    HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+
+   [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+   HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
+
+   [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+   HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+
+   [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+   HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+
+   [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+   HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+
+   [propget,helpstring("property Width")]
+   HRESULT Width([out,retval]Float64* pVal);
+
+   [propput,helpstring("property UseOverallWidth")]
+   HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
+
+   [propget,helpstring("property UseOverallWidth")]
+   HRESULT UseOverallWidth([out,retval]VARIANT_BOOL* pbUseOverallWidth);
 };
 
 
@@ -3276,6 +3365,18 @@ interface IDeckedSlabBeam : IUnknown
       [default, source] interface IPoint3dEvents;
       interface IStructuredStorage2;
       // interface IPersist;
+	};
+	[
+		uuid(56CD2A28-FABF-4015-AA70-F27D95334249),
+      //helpcontext(IDH_ILineSegment2d),
+		helpstring("LineSegment3d Class")
+	]
+	coclass LineSegment3d
+	{
+		[default] interface ILineSegment3d;
+      [default, source] interface ILineSegment3dEvents;
+      interface IStructuredStorage2;
+        // interface IPersist;
 	};
 	[
 		uuid(75DB33E1-0449-11D3-8CDF-9E53F9A4BF35),

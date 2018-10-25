@@ -1176,19 +1176,29 @@ STDMETHODIMP_(void) CDisplayMgrImpl::CreateDragObjects(COleDataObject* pDataObje
       {
          CComPtr<iDisplayObject> pDO = *iter;
          CComQIPtr<iDraggable,&IID_iDraggable> pDraggable(pDO);
-         ASSERT(pDraggable != 0);
 
-         CComPtr<iDisplayObject> pDragObject;
-         // cycle through factories until we create something successfully
-         for (DisplayObjectFactoriesIterator it=m_pDisplayObjectFactories.begin(); it!=m_pDisplayObjectFactories.end(); it++)
+         if ( pDraggable )
          {
-            it->m_T->Create(pDraggable->Format(),pDataObject,&pDragObject);
+            bool bCreated = false;
+            CComPtr<iDisplayObject> pDragObject;
+            // cycle through factories until we create something successfully
+            for (DisplayObjectFactoriesIterator it=m_pDisplayObjectFactories.begin(); it!=m_pDisplayObjectFactories.end(); it++)
+            {
+               if ( pDataObject->IsDataAvailable(pDraggable->Format()) )
+               {
+                  it->m_T->Create(pDraggable->Format(),pDataObject,&pDragObject);
 
-            if (pDragObject)
-               break;
+                  if (pDragObject)
+                  {
+                     bCreated = true;
+                     break;
+                  }
+               }
+            }
+
+            if ( bCreated )
+               m_DragList.push_back( DragMember(pDraggable.p) );
          }
-
-         m_DragList.push_back( DragMember(pDraggable.p) );
       }
    }
 }

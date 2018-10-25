@@ -43,6 +43,7 @@ public:
 
 private:
 	static void TestISupportErrorInfo();
+   static void TestPlaneLineIntersect();
 };
 
 #endif // !defined(AFX_TESTPLANE3D_H__6EBA7721_B886_11D3_8A0D_006097C68A9C__INCLUDED_)

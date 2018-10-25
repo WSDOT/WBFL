@@ -764,7 +764,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       cmdInfo.m_bCommandLineMode = TRUE; // will cause an application shutdown
    }
 
-   if ( !cmdInfo.m_bError )
+   if ( !cmdInfo.m_bError && 1 < cmdInfo.m_nParams)
    {
       // If a document was opened when processing the shell command, get the doc template
       // and then the app plugin... let the app plugin deal with command line options
@@ -1108,16 +1108,12 @@ END_MESSAGE_MAP()
 
 void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 {
-   CString strTitle;
-   strTitle.Format("Manage %s Document Types...",this->m_pszAppName);
-   pCmdUI->SetText(strTitle);
+   pCmdUI->SetText("Project Types");
 }
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   CString strTitle;
-   strTitle.Format("Manage %s Document Types",this->m_pszAppName);
-   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins(strTitle,GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins("Project Types",GetAppPluginCategoryID(),EAFGetMainFrame());
    std::vector<CEAFPluginState>::iterator iter;
    for ( iter = pluginStates.begin(); iter != pluginStates.end(); iter++ )
    {
@@ -1291,19 +1287,19 @@ unitmgtIndirectMeasure init_english_units()
    im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
    im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
    im.SectModulus.Update(     unitMeasure::Inch3,           0.001,12, 1, sysNumericFormatTool::Fixed );
-   im.Stress.Update(          unitMeasure::KSI,             0.001, 8, 3, sysNumericFormatTool::Fixed );
+   im.Stress.Update(          unitMeasure::KSI,            1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
    im.AvOverS.Update(         unitMeasure::Inch2PerFoot,   1.0e-7, 9, 3, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::KSI,             0.001,14, 0, sysNumericFormatTool::Fixed );
-   im.GeneralForce.Update(    unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.ModE.Update(            unitMeasure::KSI,            1.0e-5,14, 0, sysNumericFormatTool::Fixed );
+   im.GeneralForce.Update(    unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
    im.Tonnage.Update(         unitMeasure::Ton,             0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Shear.Update(           unitMeasure::Kip,             0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Moment.Update(          unitMeasure::KipFeet,         0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SmallMoment.Update(     unitMeasure::KipInch,         0.001, 9, 0, sysNumericFormatTool::Fixed );
+   im.Shear.Update(           unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
+   im.Moment.Update(          unitMeasure::KipFeet,        1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
+   im.SmallMoment.Update(     unitMeasure::KipInch,        1.0e-5, 9, 0, sysNumericFormatTool::Fixed );
    im.Angle.Update(           unitMeasure::Degree,          0.001, 7, 2, sysNumericFormatTool::Fixed );
    im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
-   im.Density.Update(         unitMeasure::LbfPerFeet3,     0.001, 6, 0, sysNumericFormatTool::Fixed );
+   im.Density.Update(         unitMeasure::KipPerFeet3,     0.001, 6, 3, sysNumericFormatTool::Fixed );
    im.MassPerLength.Update(   unitMeasure::LbfPerFeet,      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.ForcePerLength.Update(  unitMeasure::KipPerFoot,      0.001, 9, 3, sysNumericFormatTool::Fixed );
+   im.ForcePerLength.Update(  unitMeasure::KipPerFoot,     1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
    im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
    im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
    im.Time2.Update(           unitMeasure::Day,             0.001, 7, 0, sysNumericFormatTool::Fixed );

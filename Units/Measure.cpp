@@ -126,6 +126,7 @@ const unitDensity unitMeasure::KgPerMeter3  ( 0.0, 1.0,           0.0, "kg/m^3" 
 const unitDensity unitMeasure::LbmPerFeet3  ( 0.0,  16.01846337396013800,  0.0, "lbm/ft^3"  );
 const unitDensity unitMeasure::SlugPerFeet3 ( 0.0, 515.37881839319730000, 0.0, "slug/ft^3" );
 const unitDensity unitMeasure::LbfPerFeet3  ( 0.0,  16.01846337396013800,  0.0, "lbf/ft^3"  );
+const unitDensity unitMeasure::KipPerFeet3  ( 0.0,  16018.46337396013800,  0.0, "kip/ft^3"  );
 
 const unitForce unitMeasure::Newton     ( 0.0, 1.0,           0.0, "N"          );
 const unitForce unitMeasure::Kilonewton ( 0.0, 1.0e03,       0.0, "kN"          );
@@ -213,6 +214,7 @@ bool unitMeasure::TestMe(dbgLog& rlog)
    TRY_TESTME( TEST( 1.0, KgPerMeter,  0.6719689, LbfPerFeet ));
    TRY_TESTME( TEST( 1.0, LbfPerFeet,  1.4881639, KgPerMeter ));
    TRY_TESTME( TEST( 1.0, LbfPerFeet3, 16.018463, KgPerMeter3 ));
+   TRY_TESTME( TEST( 1.0, KipPerFeet3, 16018.463, KgPerMeter3 ));
    TRY_TESTME( TEST( 0.0948, SqrtKSI,  0.2489246, SqrtMPa));
 
    TRY_TESTME( TEST( 1.0, NewtonMeter2,  2.419823, LbfFoot2));

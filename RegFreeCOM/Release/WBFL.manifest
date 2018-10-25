@@ -72,6 +72,13 @@
               progid="WBFLGeometry.LineSegment2d">
       <progid>WBFLGeometry.LineSegment2d.1</progid>
     </comClass>
+    <comClass clsid="{56CD2A28-FABF-4015-AA70-F27D95334249}"
+              tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+              description="LineSegment3d Class"
+              threadingModel="Apartment"
+              progid="WBFLGeometry.LineSegment3d">
+      <progid>WBFLGeometry.LineSegment3d.1</progid>
+    </comClass>
     <comClass clsid="{D72D7403-F9DB-11D2-8CDF-444553540000}"
               tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
               description="Line2d Class"

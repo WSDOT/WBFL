@@ -68,10 +68,10 @@ interface IEAFCommandCallback : IUnknown
    virtual BOOL OnCommandMessage(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) = 0;
 
    // Called by the framework to get the status bar message when the user slides the mouse over a menu item
-   virtual void GetStatusBarMessageString(UINT nID, CString& rMessage) const = 0;
+   virtual BOOL GetStatusBarMessageString(UINT nID, CString& rMessage) const = 0;
 
    // Called by the framework to get the toolbar tip
-   virtual void GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
+   virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////

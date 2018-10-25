@@ -102,6 +102,7 @@ public:
    virtual void OnDestroy();
 
 public:
+   BOOL PreCreateWindow(CREATESTRUCT& cs);
    BOOL PreTranslateMessage(MSG* pMsg);
 	//}}AFX_VIRTUAL
 
@@ -167,6 +168,7 @@ protected:
    afx_msg void OnToolBarMenuSelected(UINT id);
 	//}}AFX_MSG
    afx_msg BOOL OnToolTipText(UINT nID,NMHDR* pTTTStruct,LRESULT* pResult);
+   afx_msg BOOL OnToolbarDropDown(UINT nID,NMHDR* pnmhdr,LRESULT* plr);
 
    virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
    void UpdateFrameTitleForDocument(LPCTSTR lpszDocName);

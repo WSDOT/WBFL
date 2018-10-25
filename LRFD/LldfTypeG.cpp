@@ -130,9 +130,10 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
 
    ExteriorMomentEquationRule(bSISpec, true);
 
-   Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
-   if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
+   // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
+   //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   //if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
+   //   THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
 
 
    if (!m_IgnoreSkew && (!IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2)) )
@@ -667,6 +668,11 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
 
 Float64 lrfdLldfTypeG::MomentSkewCorrectionFactor() const
 {
+   // 4.6.2.2.2e - don't reduce moment if difference in skew is > 10 degree
+   Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
+      return 1.0;
+
    Float64 avg_skew_angle = fabs(m_SkewAngle1 + m_SkewAngle2)/2.;
 
    if ( IsZero(avg_skew_angle) )

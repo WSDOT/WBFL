@@ -492,6 +492,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\TestLineSegment3d.cpp"
+				>
+			</File>
+			<File
 				RelativePath="TestMultiWeb.cpp"
 				>
 				<FileConfiguration
@@ -1095,6 +1099,10 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
+				RelativePath="..\LineSegment3d.h"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.h"
 				>
 			</File>
@@ -1144,6 +1152,10 @@
 			</File>
 			<File
 				RelativePath="TestLineSegment2d.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestLineSegment3d.h"
 				>
 			</File>
 			<File

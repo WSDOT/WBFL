@@ -69,6 +69,7 @@ public:
 
 // IBridgeGeometryTool
 public:
+	STDMETHOD(Point)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfSpan,/*[out]*/ IPoint2d** point);
 	STDMETHOD(StationAndOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfSpan,/*[out]*/ IStation** station, /*[out]*/ Float64* offset);
 	STDMETHOD(GirderPathOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ VARIANT varStation, /*[out,retval]*/ Float64* offset);
    STDMETHOD(GirderLineBearing)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[out,retval]*/ IDirection** direction);

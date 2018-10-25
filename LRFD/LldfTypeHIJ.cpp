@@ -126,9 +126,10 @@ bool lrfdLldfTypeHIJ::TestRangeOfApplicability(Location loc) const
    if ( !IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2) )
       THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Skew corrections are not defined for this girder type. See 4.6.2.2.2e");
 
-   Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
-   if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
+   // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
+   //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
+   //if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
+   //   THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
 
    return true;
 }

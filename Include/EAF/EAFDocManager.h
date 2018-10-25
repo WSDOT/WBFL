@@ -41,10 +41,14 @@ public:
 	virtual BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle,
 			DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* pTemplate);
 
+	virtual void AddDocTemplate(CDocTemplate* pTemplate);
+
    void RemoveDocTemplate(POSITION pos);
 
 private:
    CString m_strCurrentFilter; // filter for open/close of the current document
+
+   void SortDocTemplates();
 };
 
 

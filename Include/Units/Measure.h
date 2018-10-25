@@ -156,6 +156,7 @@ public:
    static const unitDensity LbmPerFeet3;
    static const unitDensity SlugPerFeet3;
    static const unitDensity LbfPerFeet3;
+   static const unitDensity KipPerFeet3;
 
    static const unitForce Newton;
    static const unitForce Kilonewton;
