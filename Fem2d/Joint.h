@@ -87,7 +87,7 @@ public:
 	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_X)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_ID)(/*[out, retval]*/ JointIDType *pVal);
-	STDMETHOD(get_Members)(/*[out, retval]*/ IIDArray* *ppVal);
+	STDMETHOD(get_Members)(/*[out, retval]*/ ILongArray* *ppVal);
 
 
 private:

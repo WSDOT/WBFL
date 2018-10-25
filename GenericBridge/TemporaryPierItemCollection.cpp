@@ -185,7 +185,7 @@ STDMETHODIMP CTemporaryPierItemCollection::RemoveByIndex(CollectionIndexType ind
 
 STDMETHODIMP CTemporaryPierItemCollection::RemoveByID(IDType id)
 {
-   return PersistentTPICollImpl::RemoveByID(id);
+   return PersistentTPICollImpl::RemoveByKey(id);
 }
 
 STDMETHODIMP CTemporaryPierItemCollection::Clear()

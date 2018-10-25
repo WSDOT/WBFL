@@ -69,11 +69,6 @@ LOG
 class LRFDCLASS lrfdRefinedLosses2005 : public lrfdLosses
 {
 public:
-   enum RelaxationLossMethod { 
-      Simplified, // use LRFD Eqn 5.9.5.4.2c-1
-      Refined,    // use LRFD Eqn C5.9.5.4.2c-1
-      LumpSum     // use lump sum value of 1.2 KSI (only for low-relaxation strands)
-      };
 
    // GROUP: LIFECYCLE
 
@@ -145,12 +140,10 @@ public:
                          Float64 Ybc,  // Centroid of composite measured from bottom
                          Float64 Ad,   // area of deck
                          Float64 ed,   // eccentricity of deck CG with respect to CG of composite
-                         Float64 Ksh,  // deck shrinkage strain effectiveness
                          
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim,   // live load moment (factored)
                          
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -160,8 +153,7 @@ public:
                          lrfdCreepCoefficient2005::CuringMethod curingMethod,
                          Float64 tCuringAdjustment, // time scale factor for curing method
                          bool bIgnoreInitialRelaxation,
-                         bool bValidateParameters,
-                         RelaxationLossMethod relaxationMethod
+                         bool bValidateParameters
                          );
 
    //------------------------------------------------------------------------
@@ -201,6 +193,7 @@ public:
    Float64 ShrinkageLossAfterDeckPlacement() const;
    Float64 CreepLossAfterDeckPlacement() const;
    Float64 RelaxationLossAfterDeckPlacement() const;
+   Float64 DeckShrinkageLoss() const;
 
    //------------------------------------------------------------------------
    virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
@@ -258,9 +251,6 @@ public:
    void SetSurfaceAreaSlab(Float64 S);
    Float64 GetSurfaceAreaSlab() const;
 
-   // Returns true if the girder concrete strinkage strain is increased by 20%
-   // per LRFD 5.4.2.3.3
-   bool AdjustShrinkageStrain() const;
 
    void SetCuringMethod(lrfdCreepCoefficient2005::CuringMethod method);
    lrfdCreepCoefficient2005::CuringMethod GetCuringMethod() const;
@@ -278,7 +268,6 @@ public:
    void SetFinalAge(Float64 t);
    Float64 GetFinalAge() const;
 
-   virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
 
    //------------------------------------------------------------------------
    // Deck Geometry
@@ -291,13 +280,6 @@ public:
    void SetAd(Float64 Ad);
    Float64 GetAd() const;
 
-   // factor that is multiplied with the deck shrinkage strain
-   // to set the effectiveness of the shrinkage strain.
-   // Use 0.0 to remove deck shrinkage, 1.0 to account for full deck shrinkage
-   // 0.5 for half deck shrinage, and so on.
-   void SetDeckShrinkageFactor(Float64 Ksh);
-   Float64 GetDeckShrinakgeFactor() const;
-
 
    Float64 GetGdrK1Creep() const { return m_CreepK1; }
    Float64 GetGdrK2Creep() const { return m_CreepK2; }
@@ -309,8 +291,7 @@ public:
    Float64 GetDeckK1Shrinkage() const { return m_DeckShrinkageK1; }
    Float64 GetDeckK2Shrinkage() const { return m_DeckShrinkageK2; }
 
-   void SetRelaxationLossMethod(RelaxationLossMethod method);
-   RelaxationLossMethod GetRelaxationLossMethod() const;
+
    
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -358,9 +339,6 @@ private:
    
    Float64 m_Ad;    // Area of composite deck
    Float64 m_ed;    // Eccentricity of deck with respect to the transformed net composite section (neg if deck is above girder)
-   Float64 m_Ksh;   // deck shrinkage factor
-
-   RelaxationLossMethod m_RelaxationMethod;
 
 
    mutable Float64 m_DeltaFcd3;
@@ -385,6 +363,7 @@ private:
    mutable Float64 m_dfpSD;
    mutable Float64 m_dfpCD;
    mutable Float64 m_dfpR2;
+   mutable Float64 m_dfpSS;
    mutable Float64 m_dfpLT;
 
    // hauling losses
@@ -408,7 +387,6 @@ private:
    //------------------------------------------------------------------------
    virtual void UpdateHaulingLosses() const;
 
-
    // GROUP: ACCESS
    // GROUP: INQUIRY
 };
@@ -419,8 +397,6 @@ inline void lrfdRefinedLosses2005::SetDeckEccentricity(Float64 e) { m_ed; m_IsDi
 inline Float64 lrfdRefinedLosses2005::GetDeckEccentricity() const { return m_ed; }
 inline void lrfdRefinedLosses2005::SetAd(Float64 Ad) { m_Ad = Ad; m_IsDirty = true; }
 inline Float64 lrfdRefinedLosses2005::GetAd() const { return m_Ad; }
-inline void lrfdRefinedLosses2005::SetDeckShrinkageFactor(Float64 Ksh) { m_Ksh = Ksh; m_IsDirty = true; }
-inline Float64 lrfdRefinedLosses2005::GetDeckShrinakgeFactor() const { return m_Ksh; }
 
 // EXTERNAL REFERENCES
 //

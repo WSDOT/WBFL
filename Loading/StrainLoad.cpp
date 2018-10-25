@@ -51,7 +51,7 @@ STDMETHODIMP CStrainLoad::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CStrainLoad::get_MemberID(MemberIDType *pVal)
+STDMETHODIMP CStrainLoad::get_MemberID(long *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_MemberID;
@@ -59,7 +59,7 @@ STDMETHODIMP CStrainLoad::get_MemberID(MemberIDType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CStrainLoad::put_MemberID(MemberIDType newVal)
+STDMETHODIMP CStrainLoad::put_MemberID(long newVal)
 {
 	if (newVal<0)
       return E_INVALIDARG;
@@ -161,7 +161,7 @@ STDMETHODIMP CStrainLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_MemberID = var.iVal;
+      m_MemberID = var.lVal;
       var.Clear();
 
       hr = pload->get_Property(CComBSTR("AxialStrain"),&var);

@@ -116,26 +116,8 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthEx(IGenericBridge* b
 
       m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbLeft,&sl);
 
-      // If the overhang is negative, then the centerline of the girder
-      // is not under the slab.
-      if (sl > 0.0)
-      {
-         *twLeft  = sl; 
-         *twRight = sr/2.0;
-      }
-      else
-      {
-         *twLeft  = 0.0;
-
-         if(sr/2.0+sl > 0.0)
-         {
-            *twRight = sr/2.0+sl;
-         }
-         else
-         {
-            *twRight = 0.0;
-         }
-      }
+      *twLeft  = sl;
+      *twRight = sr/2.0;
    }
    else if ( gdrIdx == nGirders - 1 )
    {
@@ -145,25 +127,8 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthEx(IGenericBridge* b
 
       m_BridgeGeometryTool->DeckOverhangFromGirder(bridge,spanIdx,gdrIdx,location,qcbRight,&sr);
 
-      // Same comment as above for girder 0
-      if (sr > 0.0)
-      {
-         *twLeft  = sl/2.0;
-         *twRight = sr;
-      }
-      else
-      {
-         *twRight = 0.0;
-
-         if(sl/2.0+sr > 0.0)
-         {
-            *twLeft  = sl/2.0+sr;
-         }
-         else
-         {
-            *twLeft  = 0.0;
-         }
-      }
+      *twLeft  = sl/2.0;
+      *twRight = sr;
    }
    else
    {

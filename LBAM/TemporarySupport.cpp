@@ -58,8 +58,7 @@ m_Location(0.0),
 m_ID(0),
 m_IsSymmetrical(VARIANT_FALSE),
 m_BoundaryCondition(bcFixed),
-m_TopRelease(VARIANT_FALSE),
-m_bOmitReaction(VARIANT_FALSE)
+m_TopRelease(VARIANT_FALSE)
 {
 }
 
@@ -247,19 +246,6 @@ STDMETHODIMP CTemporarySupport::put_TopRelease(VARIANT_BOOL newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CTemporarySupport::get_OmitReaction(VARIANT_BOOL* pbOmit)
-{
-   CHECK_RETVAL(pbOmit);
-   *pbOmit = m_bOmitReaction;
-   return S_OK;
-}
-
-STDMETHODIMP CTemporarySupport::put_OmitReaction(VARIANT_BOOL bOmit)
-{
-   m_bOmitReaction = bOmit;
-   Fire_OnTemporarySupportChanged(this, CComBSTR("*"), cgtStiffness);
-   return S_OK;
-}
 
 STDMETHODIMP CTemporarySupport::get_SegmentLength(BSTR stage, Float64 *pVal)
 {
@@ -501,7 +487,7 @@ STDMETHODIMP CTemporarySupport::OnSegmentItemChanged(/*[in]*/ISegmentItem* Segme
 }
 
 // IStructuredStorage2
-static const Float64 MY_VER=2.0;
+static const Float64 MY_VER=1.0;
 STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
 {
    CHECK_IN(pload);
@@ -598,16 +584,6 @@ STDMETHODIMP CTemporarySupport::Load(IStructuredLoad2 * pload)
 
       m_TopRelease = var.boolVal;
 
-      if ( ver < 2.0 )
-      {
-         var.Clear();
-         hr = pload->get_Property(CComBSTR("OmitReaction"),&var);
-         if (FAILED(hr))
-            return hr;
-
-         m_bOmitReaction = var.boolVal;
-      }
-
       // LoadModifiers
       hr = m_LoadModifierHelper.Load(pload);
       if (FAILED(hr))
@@ -680,8 +656,7 @@ STDMETHODIMP CTemporarySupport::Save(IStructuredSave2 * psave)
 
       hr = psave->put_Property(CComBSTR("BoundaryCondition"),var);
 
-      hr = psave->put_Property(CComBSTR("TopRelease"),  _variant_t(m_TopRelease));
-      hr = psave->put_Property(CComBSTR("OmitReaction"),_variant_t(m_bOmitReaction));
+      hr = psave->put_Property(CComBSTR("TopRelease"),_variant_t(m_TopRelease));
 
       // load modifiers
       hr = m_LoadModifierHelper.Save(psave);
@@ -743,7 +718,6 @@ STDMETHODIMP CTemporarySupport::Clone(ITemporarySupport **clone)
    pnew->m_BoundaryCondition  = m_BoundaryCondition;
    pnew->m_StageRemoved  = m_StageRemoved;
    pnew->m_TopRelease    = m_TopRelease;
-   pnew->m_bOmitReaction = m_bOmitReaction;
 
    pnew->m_LoadModifierHelper  = m_LoadModifierHelper;
    if (FAILED(hr))

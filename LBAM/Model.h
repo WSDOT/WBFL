@@ -131,7 +131,6 @@ public:
 	STDMETHOD(get_Stages)(/*[out, retval]*/ IStages* *pVal);
 	STDMETHOD(get_POIs)(/*[out, retval]*/ IPOIs* *pVal);
 	STDMETHOD(Clear)();
-   STDMETHOD(get_TemporarySupports)(ITemporarySupports** ppVal);
 	STDMETHOD(get_Spans)(/*[out, retval]*/ ISpans* *pVal);
 	STDMETHOD(get_Supports)(/*[out, retval]*/ ISupports* *pVal);
 	STDMETHOD(Clone)(/*[out,retval]*/ ILBAMModel** clone);

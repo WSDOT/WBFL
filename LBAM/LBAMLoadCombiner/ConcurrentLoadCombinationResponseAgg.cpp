@@ -94,7 +94,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::InterfaceSupportsErrorInfo(R
 	return S_FALSE;
 }
 
-STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs, BSTR Stage, ResultsOrientation Orientation, 
+STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(ILongArray* POIs, BSTR Stage, ResultsOrientation Orientation, 
                                                                   ILoadCombinationResultConfiguration *Config, ISectionResult3Ds **pResults)
 {
    CHECK_IN(POIs);
@@ -187,7 +187,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs
 	return S_OK;
 }
 
-STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(ILongArray* POIs, BSTR Stage,
                                                                   ILoadCombinationResultConfiguration *Config, 
                                                                   ISectionResult3Ds **pResults)
 {
@@ -281,7 +281,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray*
 	return S_OK;
 }
 
-STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(ILongArray* POIs, BSTR Stage,
                                                                   ILoadCombinationResultConfiguration *Config, 
                                                                   IResult3Ds **pResults)
 {
@@ -374,7 +374,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* P
 	return S_OK;
 }
 
-STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(ILongArray* POIs, BSTR Stage,
                                                                   ILoadCombinationResultConfiguration *Config, 
                                                                   IResult3Ds **pResults)
 {
@@ -469,7 +469,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(II
 }
 
 
-STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(ILongArray* POIs, BSTR Stage,
                                                                   ILoadCombinationResultConfiguration *Config, 
                                                                   ISectionStressResults **pResults)
 {

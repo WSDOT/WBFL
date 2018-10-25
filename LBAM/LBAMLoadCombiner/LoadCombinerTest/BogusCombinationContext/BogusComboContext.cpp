@@ -27,16 +27,32 @@
 #include "stdafx.h"
 
 #if defined _DEBUG
+#if defined VBA_BUILD
+#if defined _WIN64
+#include "x64\VBA_Debug\BogusCombinationContext.h"
+#else
+#include "Win32\VBA_Debug\BogusCombinationContext.h"
+#endif
+#else
 #if defined _WIN64
 #include "x64\Debug\BogusCombinationContext.h"
 #else
 #include "Win32\Debug\BogusCombinationContext.h"
+#endif
+#endif
+#else
+#if defined VBA_BUILD
+#if defined _WIN64
+#include "x64\VBA_Release\BogusCombinationContext.h"
+#else
+#include "Win32\VBA_Release\BogusCombinationContext.h"
 #endif
 #else
 #if defined _WIN64
 #include "x64\Release\BogusCombinationContext.h"
 #else
 #include "Win32\Release\BogusCombinationContext.h"
+#endif
 #endif
 #endif
 
@@ -719,7 +735,7 @@ HRESULT CBogusComboContext::FinalConstruct()
 
 
 // ILoadGroupResponse
-STDMETHODIMP CBogusComboContext::ComputeForces(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsOrientation Orientation, ResultsSummationType summ, ISectionResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeForces(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsOrientation Orientation, ResultsSummationType summ, ISectionResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -737,7 +753,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(BSTR LoadGroup, IIDArray* POIs, B
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeDeflections(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, ISectionResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeDeflections(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, ISectionResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -755,7 +771,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(BSTR LoadGroup, IIDArray* PO
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeReactions(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, IResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeReactions(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, IResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -773,7 +789,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(BSTR LoadGroup, IIDArray* POIs
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, IResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, IResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -791,7 +807,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeStresses(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, ISectionStressResults * * results)
+STDMETHODIMP CBogusComboContext::ComputeStresses(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, ISectionStressResults * * results)
 {
 	if (results == NULL)
 		return E_POINTER;
@@ -810,7 +826,7 @@ STDMETHODIMP CBogusComboContext::ComputeStresses(BSTR LoadGroup, IIDArray* POIs,
    return E_FAIL;
 }
 // ILiveLoadModelResponse
-STDMETHODIMP CBogusComboContext::ComputeForces(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ResultsOrientation Orientation, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * Results)
+STDMETHODIMP CBogusComboContext::ComputeForces(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ResultsOrientation Orientation, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -828,7 +844,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(IIDArray* POIs, BSTR stage, LiveL
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeDeflections(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * Results)
+STDMETHODIMP CBogusComboContext::ComputeDeflections(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -846,7 +862,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(IIDArray* POIs, BSTR stage, 
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeReactions(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * Results)
+STDMETHODIMP CBogusComboContext::ComputeReactions(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -864,7 +880,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(IIDArray* POIs, BSTR stage, Li
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * Results)
+STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -882,7 +898,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(IIDArray* POIs, BSTR 
 
    return E_FAIL;
 }
-STDMETHODIMP CBogusComboContext::ComputeStresses(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelStressResults * * results)
+STDMETHODIMP CBogusComboContext::ComputeStresses(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelStressResults * * results)
 {
 	if (results == NULL)
 		return E_POINTER;
@@ -890,7 +906,7 @@ STDMETHODIMP CBogusComboContext::ComputeStresses(IIDArray* POIs, BSTR stage, Liv
 	return E_NOTIMPL;
 }
 // IBasicVehicularResponse
-STDMETHODIMP CBogusComboContext::ComputeForces(IIDArray* POIs, BSTR stage, ResultsOrientation Orientation, ILiveLoadConfiguration * config, ISectionResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeForces(ILongArray* POIs, BSTR stage, ResultsOrientation Orientation, ILiveLoadConfiguration * config, ISectionResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -912,7 +928,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(IIDArray* POIs, BSTR stage, Resul
 	return E_FAIL;
 }
 
-STDMETHODIMP CBogusComboContext::ComputeDeflections(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeDeflections(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -934,7 +950,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(IIDArray* POIs, BSTR stage, 
 	return E_FAIL;
 }
 
-STDMETHODIMP CBogusComboContext::ComputeReactions(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeReactions(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -956,7 +972,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(IIDArray* POIs, BSTR stage, IL
 	return E_FAIL;
 }
 
-STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * Results)
+STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * Results)
 {
 	if (Results == NULL)
 		return E_POINTER;
@@ -978,7 +994,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(IIDArray* POIs, BSTR 
 	return E_FAIL;
 }
 
-STDMETHODIMP CBogusComboContext::ComputeStresses(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionStressResults * * results)
+STDMETHODIMP CBogusComboContext::ComputeStresses(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionStressResults * * results)
 {
 	if (results == NULL)
 		return E_POINTER;
@@ -1022,7 +1038,7 @@ STDMETHODIMP CBogusComboContext::GetActiveLoadGroups(IBstrArray* *loadGroups)
 	return S_OK;
 }
 // IGetCombinationFactors
-STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(PoiIDType POI, BSTR stage, LoadCombinationType type, Float64 * minLoadModifier, Float64 * maxLoadModifier)
+STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(PoiIDType poi, BSTR stage, LoadCombinationType type, Float64 * minLoadModifier, Float64 * maxLoadModifier)
 {
 	if (minLoadModifier == NULL)
 		return E_POINTER;
@@ -1030,7 +1046,7 @@ STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(PoiIDType POI, BSTR st
 	if (maxLoadModifier == NULL)
 		return E_POINTER;
 
-   BenchMarkIterator it = m_BenchMarks.find(POI);
+   BenchMarkIterator it = m_BenchMarks.find(poi);
    if (it!=m_BenchMarks.end())
    {
       return it->second.GetCombinationFactors(stage, type, minLoadModifier, maxLoadModifier);
@@ -1077,7 +1093,7 @@ STDMETHODIMP CBogusComboContext::put_CantileverPoiIncrement(PoiIDType pVal)
 {
 	return E_NOTIMPL;
 }
-STDMETHODIMP CBogusComboContext::GetSuperstructurePois(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations)
+STDMETHODIMP CBogusComboContext::GetSuperstructurePois(BSTR stage, ILongArray* *poiIDs, IDblArray* *poiLocations)
 {
 	if (poiIDs == NULL)
 		return E_POINTER;
@@ -1086,10 +1102,8 @@ STDMETHODIMP CBogusComboContext::GetSuperstructurePois(BSTR stage, IIDArray* *po
 		return E_POINTER;
 
    // get poi id's from list of benchmarks
-   CollectionIndexType siz = m_BenchMarks.size();
-
-   CComPtr<IIDArray> pois;
-   pois.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> pois;
+   pois.CoCreateInstance(CLSID_LongArray);
 
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
@@ -1340,7 +1354,7 @@ STDMETHODIMP CBogusComboContext::GetStressPointsAtPOI(PoiIDType poiID, BSTR stag
 STDMETHODIMP CBogusComboContext::CompareLoadCaseSectionResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, VARIANT_BOOL doFlip, ISectionResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1373,7 +1387,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCaseSectionResults(BSTR loadCase, BS
 STDMETHODIMP CBogusComboContext::CompareLoadCaseResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, IResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1399,7 +1413,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCaseResults(BSTR loadCase, BSTR stag
 STDMETHODIMP CBogusComboContext::CompareLoadCaseStressResults(BSTR loadCase, BSTR stage, ResultsSummationType summ, ISectionStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1433,7 +1447,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationSectionResults(BSTR loadC
                                                                       ILoadCombinationSectionResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1485,7 +1499,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationSectionRes(BSTR loadCombo
                                                                   ISectionResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1553,7 +1567,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationResults(BSTR loadCombo, B
                                                                       ILoadCombinationResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1583,7 +1597,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationRes(BSTR loadCombo, BSTR 
                                                            OptimizationType opt, IResult3Ds* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1621,7 +1635,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationStressResults(BSTR loadCo
                                                                      ILoadCombinationStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;
@@ -1655,7 +1669,7 @@ STDMETHODIMP CBogusComboContext::CompareLoadCombinationStressRes(BSTR loadCombo,
                                                            OptimizationType opt, ISectionStressResults* results)
 {
    // iterate through benchmarks in same order as pois
-   CollectionIndexType i=0;
+   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       ComboBenchMark& rbench = it->second;

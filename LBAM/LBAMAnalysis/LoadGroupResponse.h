@@ -136,11 +136,11 @@ END_CONNECTION_POINT_MAP()
 public:
 	STDMETHOD(get_Model)(/*[out, retval]*/ ILBAMModel* *pVal);
 	STDMETHOD(putref_Model)(/*[in]*/ ILBAMModel* newVal);
-	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results);
+	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/ILongArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
+   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/ILongArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
+   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/ILongArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results);
+   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/ILongArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
+   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/ILongArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results);
 
 // IInfluenceLineResponse
    STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);
@@ -168,7 +168,7 @@ public:
    STDMETHOD(put_SpanPoiIncrement)(/*[in]*/ PoiIDType newVal);
    STDMETHOD(get_CantileverPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal);
    STDMETHOD(put_CantileverPoiIncrement)(/*[in]*/ PoiIDType newVal);
-   STDMETHOD(GetSuperstructurePois)(/*[in]*/BSTR stage, /*[out]*/IIDArray* *poiIDs, /*[out]*/IDblArray* *poiLocations);
+   STDMETHOD(GetSuperstructurePois)(/*[in]*/BSTR stage, /*[out]*/ILongArray* *poiIDs, /*[out]*/IDblArray* *poiLocations);
    STDMETHOD(GetPoiInfo)(/*[in]*/BSTR stage, /*[in]*/PoiIDType poiID, /*[out]*/MemberType* lbamMemberType, /*[out]*/MemberIDType* memberID, /*[out]*/Float64* memberLocation);
 
 // IGetActiveLoadGroups

@@ -94,14 +94,14 @@ public:
 	STDMETHOD(put_Fx)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ long *pVal);
+	STDMETHOD(put_MemberID)(/*[in]*/ long newVal);
 //	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
 //	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
 
 protected:
 //   MemberType   m_MemberType;
-   MemberIDType  m_MemberID;
+   long         m_MemberID;
    Float64       m_Location;
    Float64       m_Fx;
    Float64       m_Fy;
@@ -111,7 +111,7 @@ protected:
    static HRESULT PutFx(CPointLoad* pThis,Float64 fx);
    static HRESULT PutFy(CPointLoad* pThis,Float64 fy);
    static HRESULT PutMz(CPointLoad* pThis,Float64 mz);
-   static HRESULT PutMemberID(CPointLoad* pThis,MemberIDType id);
+   static HRESULT PutMemberID(CPointLoad* pThis,long id);
 };
 
 #endif //__POINTLOAD_H_

@@ -83,8 +83,6 @@ struct LRFDCLASS lrfdShearData
    matConcrete::Type ConcreteType;
    bool bHasfct;
    Float64 fct;
-   Float64 ag; // max aggregate size
-   Float64 sx; // spacing between layers of longitudinal cracking steel
 
    // Vci/Vcw parameters
    Float64 Vd;
@@ -102,11 +100,8 @@ struct LRFDCLASS lrfdShearData
    Float64 ex;
    Float64 Fe; // = -1 if not applicable
    Float64 vfc;   // v/fc
+
    Float64 vfc_tbl; // vfc from table (2000 and later)
-
-   Float64 sxe; // crack spacing parameter
-   Float64 sxe_tbl; // crack spacing parameter from table
-
    Float64 ex_tbl; // ex from table (2000 and later)
    Int16 Eqn; // Equation used to compute strain (ex). Only applicable
               // 2nd Edition, 2000 Interims and later.
@@ -116,16 +111,6 @@ struct LRFDCLASS lrfdShearData
               // 31 = Eqn 5.8.3.4.2-3 after 5.8.3.4.2-1
               // 32 = Eqn 5.8.3.4.2-3 after 5.8.3.4.2-2
 
-   Int16 BetaEqn; // Equation used to compute Beta. Only applicable 2009 and after
-              // 0 = Not applicable
-              // 1 = Eqn 5.8.3.4.2-1
-              // 2 = Eqn 5.8.3.4.2-2 - lacks minimum shear reinforcement
-
-   Int16 BetaTheta_tbl; // Table used to retreive Beta/Theta
-              // 0 = Not applicable
-              // 1 = Table 5.8.3.4.2-1
-              // 2 = Table 5.8.3.4.2-2 - lacks minimum shear reinforcement
- 
    Float64 VciMin; // Minimum Vci calculated by equation 5.8.3.4.3-1
    Float64 VciCalc; // Vci calculated by equation 5.8.3.4.3-1
    Float64 Vci; // Controlling Vci (max of VciCalc and Vci)

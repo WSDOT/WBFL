@@ -84,14 +84,14 @@ public:
 	STDMETHOD(put_TBottom)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_TTop)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_TTop)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ long *pVal);
+	STDMETHOD(put_MemberID)(/*[in]*/ long newVal);
 //	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
 //	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
 
 protected:
 //   MemberType   m_MemberType;
-   MemberIDType  m_MemberID;
+   long         m_MemberID;
    Float64       m_TTop;
    Float64       m_TBottom;
 };

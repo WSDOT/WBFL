@@ -307,7 +307,7 @@ void CTestMemberStrains2::TestStrudlBeam()
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
    // results for loading 1
-   LoadCaseIDType lc = 1;
+   long lc = 1;
    // get joint displacements
    Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDisplacements(lc, 1, &dx, &dy, &rz));
@@ -715,7 +715,7 @@ void CTestMemberStrains2::TestStrudlBeam2()
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
    // results for loading 1
-   LoadCaseIDType lc = 1;
+   long lc = 1;
    // get joint displacements
    Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDisplacements(lc, 1, &dx, &dy, &rz));

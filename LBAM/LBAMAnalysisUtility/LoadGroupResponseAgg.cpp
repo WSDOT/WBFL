@@ -70,7 +70,7 @@ STDMETHODIMP CLoadGroupResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // ILoadGroupResponse
-STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, IIDArray* POIs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** pResults)
+STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, ILongArray* POIs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -126,7 +126,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, IIDArray* POIs
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** pResults)
+STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -182,7 +182,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, IIDArray*
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
+STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -237,7 +237,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, IIDArray* P
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
+STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -293,7 +293,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, II
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionStressResults** pResults)
+STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionStressResults** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;

@@ -77,6 +77,7 @@ END_CONNECTION_POINT_MAP()
 private:
    CComPtr<ITrafficBarrier> m_BarrierShape;
    CComPtr<IMaterial> m_Material;
+   CComPtr<IPath> m_Path;
    VARIANT_BOOL m_bStructurallyContinuous;
 
    // ISupportsErrorInfo
@@ -84,15 +85,15 @@ public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // IFShapeBarrier
-   STDMETHOD(put_Shape)(/*[in]*/ ITrafficBarrier* shape);
-
-// IBarrier
 public:
    STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape);
+   STDMETHOD(put_Shape)(/*[in]*/ ITrafficBarrier* shape);
+   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape);
 	STDMETHOD(get_Material)(/*[out,retval]*/ IMaterial** material);
 	STDMETHOD(putref_Material)(/*[in]*/ IMaterial* material);
-   STDMETHOD(get_CurbLocation)(/*[out,retval]*/Float64* loc);
-   STDMETHOD(get_BarrierToeLocations)(/*[out]*/ Float64* interiorToe,/*[out]*/Float64* exteriorToe);
+	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path);
+	STDMETHOD(put_Path)(/*[in]*/ IPath* path);
+   STDMETHOD(get_ConnectionWidth)(/*[in]*/ Float64 location,/*[out,retval]*/Float64* width);
    STDMETHOD(get_IsStructurallyContinuous)(/*[out,retval]*/VARIANT_BOOL* pbContinuous);
 	STDMETHOD(put_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
    STDMETHOD(Clone)(/*[out,retval]*/IBarrier** barrier);

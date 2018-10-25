@@ -51,7 +51,7 @@ void CTestStrainLoad::Test()
    // first test a poi by itself
    CComBSTR bst;
    Float64 d;
-   MemberIDType i;
+   long i;
    TRY_TEST( pStrainLoad->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
    TRY_TEST( pStrainLoad->get_AxialStrain(&d), S_OK );
@@ -69,7 +69,7 @@ void CTestStrainLoad::Test()
    // cause some events to fire
    TRY_TEST( pStrainLoad->put_MemberID(3), S_OK );
    TEST_LOAD_FIRED();
-   MemberIDType l;
+   long l;
    TRY_TEST( pStrainLoad->get_MemberID(&l), S_OK );
    TRY_TEST( l, 3 );
 

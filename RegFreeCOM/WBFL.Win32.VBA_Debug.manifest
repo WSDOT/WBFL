@@ -956,6 +956,9 @@
    </file>
    <file name="WBFLGenericBridgeTools.dll"
          hashalg="SHA1">
+      <comClass clsid="{A757985C-CC7F-4789-B3F3-03BCCED77970}"
+                tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
+                description="StrandFillTool Class"></comClass>
       <comClass clsid="{7DDC7A24-05FA-4565-92AC-4FFD54D5063D}"
                 tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"
                 description="EffectiveFlangeWidthDetails Class"></comClass>
@@ -1245,9 +1248,6 @@
       <comClass clsid="{8B5D872B-21C3-41F4-BFFB-A79E58CB9AC8}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="SidewalkBarrier Class"></comClass>
-      <comClass clsid="{9B910467-C7CE-4b56-B2C8-0CD47B73FBC2}" 
-                tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
-			 description="GenericBarrier Class"/>
       <comClass clsid="{3041F4D5-169F-48BE-AB65-766A1086FAB3}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="Connection Class"></comClass>
@@ -3131,9 +3131,6 @@
    <comInterfaceExternalProxyStub name="ISidewalkBarrier"
                                   iid="{6ED29E23-2D11-4391-932A-6DEC77964D4B}"
                                   proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"></comInterfaceExternalProxyStub>
-   <comInterfaceExternalProxyStub name="IGenericBarrier"
-                                  iid="{41B59BA7-844E-4f23-9056-B1ECCF6E7706}"
-                                  proxyStubClsid32="{00020424-0000-0000-C000-000000000046}"/>
    <comInterfaceExternalProxyStub name="IGirderSpacingEvents"
                                   iid="{306765BA-5E09-43B7-9478-C6694AAF9315}"
                                   proxyStubClsid32="{306765BA-5E09-43B7-9478-C6694AAF9315}"></comInterfaceExternalProxyStub>

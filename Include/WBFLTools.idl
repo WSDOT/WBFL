@@ -294,7 +294,7 @@ library WBFLTools
 	   HRESULT Clone([out] IEnumLongArray** ppenum);
 
 	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] LONG* rgelt, [in,out] ULONG* pceltFetched);
+	   HRESULT Next([in] ULONG celt, [out] IDType* rgelt, [in,out] ULONG* pceltFetched);
 
 	   [helpstring("Reset")]
 	   HRESULT Reset();
@@ -314,10 +314,10 @@ library WBFLTools
 	interface ILongArray : IUnknown
 	{
 		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] LONG *pVal);
+      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IDType *pVal);
 
 		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] LONG newVal);
+      HRESULT Item([in]CollectionIndexType relPosition, [in] IDType newVal);
 
 		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval);  
@@ -329,67 +329,6 @@ library WBFLTools
       HRESULT Count([out, retval] CollectionIndexType *pVal);
 		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
       HRESULT Clone([out,retval]ILongArray* *clone);
-		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]long value, [out,retval]CollectionIndexType* fndIndex);
-		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]LONG item);
-		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]LONG item);
-		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
-	};
-
-	[
-	   object,
-	   uuid(6189734A-45B5-4a71-8DC1-68B030035B52),
-	   helpstring("IEnumIDArray Interface"),
-	   oleautomation,nonextensible,
-	   hidden,restricted,
-	   pointer_default(unique)
-	]
-	interface IEnumIDArray : IUnknown
-	{
-       [helpstring("Clone"),]
-	   HRESULT Clone([out] IEnumIDArray** ppenum);
-
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] IDType* rgelt, [in,out] ULONG* pceltFetched);
-
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
-
-	[
-		object,
-		uuid(8F36811E-3E9D-406a-AF6E-99AE377796BD),
-		oleautomation,
-		helpstring("IIDArray Interface - An array of longs"),
-      helpcontext(IDH_LongArray),
-		pointer_default(unique)
-	]
-	interface IIDArray : IUnknown
-	{
-		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] IDType *pVal);
-		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] IDType newVal);
-		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumIDArray* *pVal);
-		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
-      HRESULT Clear();
-		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IIDArray* *clone);
 		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
       HRESULT ReDim([in]CollectionIndexType size);
 		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
@@ -406,67 +345,6 @@ library WBFLTools
 
 
 	[
-	   object,
-	   uuid(E069B7E0-762D-4f4c-9A77-48A98AC82585),
-	   helpstring("IEnumIndexArray Interface"),
-	   oleautomation,nonextensible,
-	   hidden,restricted,
-	   pointer_default(unique)
-	]
-	interface IEnumIndexArray : IUnknown
-	{
-       [helpstring("Clone"),]
-	   HRESULT Clone([out] IEnumIndexArray** ppenum);
-
-	   [helpstring("Next")]
-	   HRESULT Next([in] ULONG celt, [out] CollectionIndexType* rgelt, [in,out] ULONG* pceltFetched);
-
-	   [helpstring("Reset")]
-	   HRESULT Reset();
-	   
-	   [helpstring("Skip")]
-	   HRESULT Skip([in] ULONG celt);
-	};
-
-	[
-		object,
-		uuid(C074A733-E1AB-419f-811F-56D192517490),
-		oleautomation,
-		helpstring("IIndexArray Interface - An array of indices"),
-      helpcontext(IDH_LongArray),
-		pointer_default(unique)
-	]
-	interface IIndexArray : IUnknown
-	{
-		[propget, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [out, retval] CollectionIndexType *pVal);
-		[propput, helpcontext(IDH_LongArray_Item), helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType relPosition, [in] CollectionIndexType newVal);
-		[propget, helpcontext(IDH_LongArray), helpstring("returns an standard COM enumerator for the collection.")]
-		HRESULT _NewEnum([out, retval] IUnknown** retval);  
-		[propget, helpcontext(IDH_LongArray), helpstring("property _EnumElements")] 
-		HRESULT _EnumElements([out, retval] IEnumIndexArray* *pVal);
-		[helpcontext(IDH_LongArray_Clear), helpstring("method Clear")] 
-      HRESULT Clear();
-		[propget, helpcontext(IDH_LongArray_Count), helpstring("property Count")] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[helpcontext(IDH_LongArray_Clone), helpstring("method Clone")] 
-      HRESULT Clone([out,retval]IIndexArray* *clone);
-		[helpcontext(IDH_LongArray_ReDim), helpstring("method ReDim")] 
-      HRESULT ReDim([in]CollectionIndexType size);
-		[helpcontext(IDH_LongArray_Find), helpstring("method Find")] 
-      HRESULT Find([in]CollectionIndexType value, [out,retval]CollectionIndexType* fndIndex);
-		[helpcontext(IDH_LongArray_Add), helpstring("method Add")] 
-      HRESULT Add([in]CollectionIndexType item);
-		[helpcontext(IDH_LongArray_Remove), helpstring("method Remove")] 
-      HRESULT Remove([in]CollectionIndexType relPosition);
-		[helpcontext(IDH_LongArray_Insert), helpstring("method Insert")] 
-      HRESULT Insert([in]CollectionIndexType relPosition, [in]CollectionIndexType item);
-		[helpcontext(IDH_LongArray_Reserve), helpstring("method Reserve")] 
-      HRESULT Reserve([in]CollectionIndexType count);
-	};
-
-   [
 	   object,
 	   uuid(EB880B96-ACFF-4d1c-BFFD-FC032A3E1D00),
 	   helpstring("IEnumDblArray Interface"),
@@ -747,22 +625,6 @@ library WBFLTools
 	coclass LongArray
 	{
 		[default] interface ILongArray;
-	};
-	[
-		uuid(78227B01-D41C-47e7-BE49-6A8CF2EB833A),
-		helpstring("IIDArray Class")
-	]
-	coclass IDArray
-	{
-		[default] interface IIDArray;
-	};
-	[
-		uuid(0AA0835E-C025-48c6-A9DD-CD33C0BBFB7B),
-		helpstring("IIndexArray Class")
-	]
-	coclass IndexArray
-	{
-		[default] interface IIndexArray;
 	};
 	[
 		uuid(851D2378-0F8C-4040-8E84-B26C5E7F9528),

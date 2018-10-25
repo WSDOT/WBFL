@@ -109,7 +109,7 @@ HRESULT CPOIs::OnBeforeRemove ( StoredType* pVal)
    return S_OK;
 }
 
-HRESULT CPOIs::OnAfterRemove( PoiIDType id)
+HRESULT CPOIs::OnAfterRemove( PoiIDType key)
 {
    return S_OK;
 }
@@ -125,10 +125,10 @@ void CPOIs::FinalRelease()
    }
 }
 
-//STDMETHODIMP CPOIs::get_Item(CollectionIndexType idx,IPOI** ppPOI)
-//{
-//   return PersistentPOICollImpl::get_Item(idx,ppPOI);
-//}
+STDMETHODIMP CPOIs::RemoveByID(PoiIDType ID)
+{
+   return RemoveByKey(ID);
+}
 
 STDMETHODIMP CPOIs::Clone(IPOIs* *pColl)
 {

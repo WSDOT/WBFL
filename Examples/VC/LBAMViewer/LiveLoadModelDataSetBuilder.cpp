@@ -31,7 +31,7 @@ LiveLoadModelDataSetBuilder::~LiveLoadModelDataSetBuilder()
 }
 
 
-void LiveLoadModelDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void LiveLoadModelDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
                                   CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                   COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -56,7 +56,7 @@ CString LiveLoadModelDataSetBuilder::GetDescription()
 }
 
 
-void LiveLoadModelDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void LiveLoadModelDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -192,7 +192,7 @@ void LiveLoadModelDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArra
    }
 }
 
-void LiveLoadModelDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void LiveLoadModelDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
@@ -325,7 +325,7 @@ void LiveLoadModelDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
    }
 }
 
-void LiveLoadModelDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BSTR currStg,
+void LiveLoadModelDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                   CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                   std::_tostream& os)
 {

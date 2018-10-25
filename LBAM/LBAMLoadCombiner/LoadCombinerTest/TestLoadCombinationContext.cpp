@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateSimpleLBAM(ILBAMModel** model);
 
-static HRESULT CreatePOI(PoiIDType ID, MemberType Type, MemberIDType memberID, Float64 Location, IPOI** newPOI)
+static HRESULT CreatePOI(long ID, MemberType Type, long memberID, Float64 Location, IPOI** newPOI)
 {
    CHECK_RETOBJ(newPOI);
 
@@ -260,8 +260,8 @@ void TestLoadCombinationContext::Test()
    // see if we can get a response for load group results
    CComQIPtr<ILoadGroupResponse> lgres(plclc);
    TRY_TEST(!lgres, false);
-   CComPtr<IIDArray> poi_ids;
-   poi_ids.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> poi_ids;
+   poi_ids.CoCreateInstance(CLSID_LongArray);
    poi_ids->Add(3);
    poi_ids->Add(7);
    CComPtr<ISectionResult3Ds> pres;
@@ -359,7 +359,7 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    TRY_TEST( support1->SetLoadModifier(lctStrength, 2.022, 12.022), S_OK);
 
    // add some pois
-   PoiIDType last_val;
+   long last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
    CComPtr<IPOIs> pois;

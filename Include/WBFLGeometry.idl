@@ -2241,7 +2241,7 @@ library WBFLGeometry
 		HRESULT DivideLineSegment([in] ILineSegment2d* pSeg,[in] IndexType nSpaces,[out,retval] IPoint2dCollection** ppPoints);
 
 		[helpstring("method DivideArc"),helpcontext(IDH_IGeomUtil2d_DivideArc)]
-		HRESULT DivideArc([in] IPoint2d* pStart,[in] IPoint2d* pCenter,[in] IPoint2d* pEnd,[in] IndexType nSpaces,[out,retval] IPoint2dCollection** ppPoints);
+		HRESULT DivideArc([in] IPoint2d* pStart,[in] IPoint2d* pCenter,[in] IPoint2d* pEnd,[in] long nSpaces,[out,retval] IPoint2dCollection** ppPoints);
 
 		[helpstring("method LineLineIntersect"),helpcontext(IDH_IGeomUtil2d_LineLineIntersect)]
 		HRESULT LineLineIntersect([in] ILine2d* l1,[in] ILine2d* l2,[out,retval] IPoint2d** ppPoint);

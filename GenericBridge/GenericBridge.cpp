@@ -90,7 +90,6 @@
 
 #include "FShapeBarrier.h"
 #include "SidewalkBarrier.h"
-#include "GenericBarrier.h"
 
 #include "Connection.h"
 
@@ -136,7 +135,6 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_BoxBeamSection,CBoxBeamSection)
    OBJECT_ENTRY(CLSID_FShapeBarrier,CFShapeBarrier)
    OBJECT_ENTRY(CLSID_SidewalkBarrier,CSidewalkBarrier)
-   OBJECT_ENTRY(CLSID_GenericBarrier,CGenericBarrier)
    OBJECT_ENTRY(CLSID_Connection,CConnection)
    OBJECT_ENTRY(CLSID_LinearTendonSegment,CLinearTendonSegment)
    OBJECT_ENTRY(CLSID_Tendon,CTendon)

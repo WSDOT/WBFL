@@ -98,7 +98,7 @@ static HRESULT TestContainer(TListen* pMe, const CLSID& clsid, const CLSID& cont
    // set will be in order as input
    CComPtr<TItem> pss0t, pss1t, pss2t,pss3t,pss4t, pss5t, pss6t;
    CComPtr<T>     pss0c, pss1c, pss2c,pss3c,pss4c, pss5c, pss6c;
-   IDType         id[7];
+   long           id[7];
    TRY_TEST( pcnt1->get_Item(0,&pss0t) , S_OK );
    TRY_TEST( pss0t->get_Load(&pss0c), S_OK );
    TRY_TEST(pss0c.IsEqualObject(pss0), true);

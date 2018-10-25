@@ -139,7 +139,7 @@ STDMETHODIMP CLoadCombination::put_LiveLoadFactor(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombination::get_LoadCaseFactorCount(CollectionIndexType *pVal)
+STDMETHODIMP CLoadCombination::get_LoadCaseFactorCount(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
    *pVal = m_LoadCaseFactors.size();
@@ -147,12 +147,12 @@ STDMETHODIMP CLoadCombination::get_LoadCaseFactorCount(CollectionIndexType *pVal
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombination::SetLoadCaseFactor(CollectionIndexType index, BSTR newName, Float64 minFactor, Float64 maxFactor)
+STDMETHODIMP CLoadCombination::SetLoadCaseFactor(IndexType index, BSTR newName, Float64 minFactor, Float64 maxFactor)
 {
    CHECK_IN(newName);
    try
    {
-      if (index>=0 && index<(CollectionIndexType)m_LoadCaseFactors.size())
+      if (index>=0 && index<m_LoadCaseFactors.size())
       {
          CComBSTR tmp(newName);
          if (tmp.Length()>0)
@@ -204,13 +204,13 @@ STDMETHODIMP CLoadCombination::AddLoadCaseFactor(BSTR loadCaseName, Float64 minF
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombination::GetLoadCaseFactor(CollectionIndexType index, BSTR *loadCaseName, Float64 *minFactor, Float64 *maxFactor)
+STDMETHODIMP CLoadCombination::GetLoadCaseFactor(IndexType index, BSTR *loadCaseName, Float64 *minFactor, Float64 *maxFactor)
 {
    CHECK_RETOBJ(loadCaseName);
    CHECK_RETVAL(minFactor);
    CHECK_RETVAL(maxFactor);
 
-   if (index>=0 && index<(CollectionIndexType)m_LoadCaseFactors.size())
+   if (index>=0 && index<m_LoadCaseFactors.size())
    {
        LoadCaseFactor& rlc = m_LoadCaseFactors[index];
        *minFactor = rlc.m_MinFactor;
@@ -234,11 +234,11 @@ STDMETHODIMP CLoadCombination::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombination::RemoveLoadCaseFactor(CollectionIndexType index)
+STDMETHODIMP CLoadCombination::RemoveLoadCaseFactor(IndexType index)
 {
    try
    {
-      if (index>=0 && index<(CollectionIndexType)m_LoadCaseFactors.size())
+      if (index>=0 && index<m_LoadCaseFactors.size())
       {
          LoadCaseFactorIterator it=m_LoadCaseFactors.begin();
          it += index;
@@ -445,10 +445,10 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = var.iVal;
+      long count = var.lVal;
       m_LoadCaseFactors.clear();
       m_LoadCaseFactors.reserve(count);
-      for (CollectionIndexType i=0; i<count; i++)
+      for (long i=0; i<count; i++)
       {
          hr = pload->BeginUnit(CComBSTR("LoadCaseFactor"));
          if (FAILED(hr))
@@ -507,9 +507,9 @@ STDMETHODIMP CLoadCombination::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("Name"),CComVariant(m_Name));
       hr = psave->put_Property(CComBSTR("Description"),CComVariant(m_Description));
       hr = psave->put_Property(CComBSTR("ItemData"), m_ItemData);
-      hr = psave->put_Property(CComBSTR("ldLiveLoadModelType"), CComVariant(m_LiveLoadModelType));
+      hr = psave->put_Property(CComBSTR("ldLiveLoadModelType"), CComVariant((long)m_LiveLoadModelType));
       hr = psave->put_Property(CComBSTR("LiveLoadFactor"), CComVariant(m_LiveLoadFactor));
-      hr = psave->put_Property(CComBSTR("ldLoadCombinationType"), CComVariant(m_LoadCombinationType));
+      hr = psave->put_Property(CComBSTR("ldLoadCombinationType"), CComVariant((long)m_LoadCombinationType));
 
       CollectionIndexType count = m_LoadCaseFactors.size();
       hr = psave->put_Property(CComBSTR("Count"),CComVariant(count));

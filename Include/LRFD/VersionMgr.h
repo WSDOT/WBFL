@@ -85,7 +85,10 @@ public:
                   FourthEdition2007             = 13,
                   FourthEditionWith2008Interims = 14,
                   FourthEditionWith2009Interims = 15,
-                  FifthEdition2010              = 16
+                  FifthEdition2010              = 16,
+                  // no interims in 2011
+                  SixthEdition2012              = 17,
+                  LastVersion
    };
 
    enum Units { SI, US };
@@ -141,6 +144,10 @@ public:
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
    static std::_tstring GetVersionString();
+
+   //------------------------------------------------------------------------
+   // Returns the current version of the specification as a string.
+   static std::_tstring GetVersionString(lrfdVersionMgr::Version version);
 
    //------------------------------------------------------------------------
    // Returns the current unit of the specification as a string.

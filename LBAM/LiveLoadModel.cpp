@@ -106,7 +106,7 @@ STDMETHODIMP CLiveLoadModel::put_DistributionFactorType(DistributionFactorType n
 {
 	if (newVal!=m_DistributionFactorType)
    {
-      if (newVal<dftNone || newVal>dftPedestrian)
+      if (newVal<dftNone || newVal>dftFatigue)
          return E_INVALIDARG;
 
       m_DistributionFactorType = newVal;
@@ -231,8 +231,6 @@ STDMETHODIMP CLiveLoadModel::Load(IStructuredLoad2 * pload)
          m_DistributionFactorType=dftFatigue;
       else if(dt==dftEnvelope)
          m_DistributionFactorType=dftEnvelope;
-	   else if(dt==dftPedestrian)
-         m_DistributionFactorType=dftPedestrian;
       else
       {
          ATLASSERT(0);

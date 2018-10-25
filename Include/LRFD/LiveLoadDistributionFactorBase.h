@@ -53,10 +53,10 @@ public:
    lrfdLiveLoadDistributionFactorMixin();
 
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,Uint32 Nl) const;
    //------------------------------------------------------------------------
    // Statical method only works for exterior beams
-   virtual lrfdILiveLoadDistributionFactor::RigidMethod DistributeByStaticalMethod(lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane, IndexType firstLoadedLane,IndexType lastLoadedLane) const;
+   virtual lrfdILiveLoadDistributionFactor::RigidMethod DistributeByStaticalMethod(lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane, Uint32 firstLoadedLane,Uint32 lastLoadedLane) const;
    //------------------------------------------------------------------------
    virtual Float64 GetShyDistance() const;
    //------------------------------------------------------------------------
@@ -64,7 +64,7 @@ public:
    //------------------------------------------------------------------------
    virtual Float64 GetTruckWidth() const;
 
-   virtual lrfdILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb) const;
+   virtual lrfdILiveLoadDistributionFactor::DFResult GetLanesBeamsMethod(Uint32 Nl,GirderIndexType Nb) const;
 
    // Local data to ignore MPF for lever rule when a single truck controls on exterior beams
    void IgnoreMpfLeverRule(bool doIgnore);
@@ -79,7 +79,7 @@ public:
 
 private:
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,Uint32 Nl) const;
    //------------------------------------------------------------------------
    virtual Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
 
@@ -116,7 +116,7 @@ public:
    // GROUP: LIFECYCLE
    lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane);
+                                      Uint32 Nl, Float64 wLane);
 private:
    //------------------------------------------------------------------------
    // no default
@@ -173,7 +173,7 @@ protected:
    Float64 m_Savg;
    Float64 m_LeftCurbOverhang;
    Float64 m_RightCurbOverhang;
-   CollectionIndexType m_Nl;
+   Uint32   m_Nl;
    Float64 m_wLane;
 
    DfSide  m_Side; // beam is nearest to this side

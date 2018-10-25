@@ -25,7 +25,7 @@
 
 #include <iomanip>
 
-static void DumpSectionForceResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISectionResult3Ds> pres, std::vector<Float64>& poi_locs)
+static void DumpSectionForceResults(std::_tofstream& os, ILongArray* pois , CComPtr<ISectionResult3Ds> pres, std::vector<Float64>& poi_locs)
 {
    // have to attach and detach variant to safearray
 
@@ -86,7 +86,7 @@ static void DumpSectionForceResults(std::_tofstream& os, IIDArray* pois , CComPt
    os<<std::endl;
 }
 
-static void DumpDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISectionResult3Ds> pres, std::vector<Float64>& poi_locs)
+static void DumpDeflectionResults(std::_tofstream& os, ILongArray* pois , CComPtr<ISectionResult3Ds> pres, std::vector<Float64>& poi_locs)
 {
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
@@ -109,7 +109,7 @@ static void DumpDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<
    os<<std::endl;
 }
 
-static void DumpSupportDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IResult3Ds> pres)
+static void DumpSupportDeflectionResults(std::_tofstream& os, ILongArray* pois , CComPtr<IResult3Ds> pres)
 {
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
@@ -132,7 +132,7 @@ static void DumpSupportDeflectionResults(std::_tofstream& os, IIDArray* pois , C
 
 }
 
-static void DumpReactionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IResult3Ds> pres)
+static void DumpReactionResults(std::_tofstream& os, ILongArray* pois , CComPtr<IResult3Ds> pres)
 {
    // have to attach and detach variant to safearray
    CollectionIndexType poi_cnt;
@@ -155,7 +155,7 @@ static void DumpReactionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IR
    os<<std::endl;
 }
 
-static void DumpStressResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISectionStressResults> pres)
+static void DumpStressResults(std::_tofstream& os, ILongArray* pois , CComPtr<ISectionStressResults> pres)
 {
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);

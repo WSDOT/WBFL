@@ -50,7 +50,7 @@ static char THIS_FILE[] = __FILE__;
 // CLoadGroupResponse
 
 // we can have up to this many temporary supports in a model
-static const LoadCaseIDType TS_LIMIT = 10000;
+static const long TS_LIMIT=10000;
 
 STDMETHODIMP CLoadGroupResponse::InterfaceSupportsErrorInfo(REFIID riid)
 {
@@ -919,7 +919,7 @@ void CLoadGroupResponse::CAnalysisController::UpdateLoadGroupOrder(ILBAMModel* p
 
       // load cases are incremented by TS_LIMIT. This way we can create one load case for every
       // temporary support, up to TS_LIMIT, for each load case.
-      m_LastFemLoadCase += TS_LIMIT;
+      m_LastFemLoadCase+=TS_LIMIT;
 
       std::pair<LoadGroupsTypeIterator, bool> tst ( m_LoadGroups.insert(LoadGroupsType::value_type( (BSTR)name, LoadGroupInfo(m_LastFemLoadCase,ist==VARIANT_TRUE))) );
       if (!tst.second)
@@ -1283,9 +1283,6 @@ void CLoadGroupResponse::ValidateTemporarySupportForces()
    CollectionIndexType nLoadGroups   = m_AnalysisController.LoadGroupCount();
    SupportIndexType nTempSupports = m_AnalysisController.TemporarySupportCount();
 
-   CComPtr<ITemporarySupports> tempSupports;
-   m_pLBAM->get_TemporarySupports(&tempSupports);
-
    for (CollectionIndexType loadGroupIdx = 0; loadGroupIdx < nLoadGroups; loadGroupIdx++)
    {
       LoadGroupIDType lg_fe;
@@ -1302,26 +1299,17 @@ void CLoadGroupResponse::ValidateTemporarySupportForces()
 
             SupportIDType tempSupportID = m_AnalysisController.GetTemporarySupportID(tempSupportIdx);
 
-            CComPtr<ITemporarySupport> ts;
-            tempSupports->Find(tempSupportID,&ts);
-
-            VARIANT_BOOL bOmitReaction;
-            ts->get_OmitReaction(&bOmitReaction);
-
-            if ( bOmitReaction == VARIANT_FALSE )
+            // sum to removal stage
+            StageIndexType removalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
+            CAnalysisModel& rfemModel_AfterRemoval = *(m_Models[removalStageIdx]);
+            for (StageIndexType stageIdx = 0; stageIdx < removalStageIdx; stageIdx++)
             {
-               // sum to removal stage
-               StageIndexType removalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
-               CAnalysisModel& rfemModel_AfterRemoval = *(m_Models[removalStageIdx]);
-               for (StageIndexType stageIdx = 0; stageIdx < removalStageIdx; stageIdx++)
-               {
-                  // get fem model for this stage
-                  CAnalysisModel& rfemModel = *(m_Models[stageIdx]);
+               // get fem model for this stage
+               CAnalysisModel& rfemModel = *(m_Models[stageIdx]);
 
-                  Float64 lfx, lfy, lmz;
-                  rfemModel.GetTemporarySupportReaction(lg_fe, tempSupportID, &lfx, &lfy, &lmz);
-                  rfemModel_AfterRemoval.ApplyTemporarySupportReaction(lg_fe,tempSupportID,-lfx,-lfy,-lmz);
-               }
+               Float64 lfx, lfy, lmz;
+               rfemModel.GetTemporarySupportReaction(lg_fe, tempSupportID, &lfx, &lfy, &lmz);
+               rfemModel_AfterRemoval.ApplyTemporarySupportReaction(lg_fe,tempSupportID,-lfx,-lfy,-lmz);
             }
          }
       }
@@ -1399,7 +1387,7 @@ STDMETHODIMP CLoadGroupResponse::InitializeProgressMonitor(IProgressMonitor * ne
 ////// ILoadGroupResponse
 ///////////////////////////////////////////////////////////////
 
-STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, 
+STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, 
                                           ResultsOrientation orientation, ResultsSummationType summType,
                                           ISectionResult3Ds **results)
 {
@@ -1477,7 +1465,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs,
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, 
+STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, 
                                                     ResultsSummationType summType, ISectionResult3Ds **results)
 {
    CHECK_RETOBJ(results);
@@ -1554,7 +1542,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, IIDArray* po
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supportIDs, BSTR Stage, ResultsSummationType summType, IResult3Ds** results)
+STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, ILongArray* supportIDs, BSTR Stage, ResultsSummationType summType, IResult3Ds** results)
 {
    CHECK_RETOBJ(results);
 
@@ -1625,7 +1613,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiIDs, BSTR Stage, 
+STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, ILongArray* poiIDs, BSTR Stage, 
                                                  ResultsSummationType summ,
                                                  ISectionStressResults **results)
 {
@@ -1745,7 +1733,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiID
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDArray* supportIDs, BSTR Stage, ResultsSummationType summType, IResult3Ds** results)
+STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, ILongArray* supportIDs, BSTR Stage, ResultsSummationType summType, IResult3Ds** results)
 {
    CHECK_RETOBJ(results);
 
@@ -2254,7 +2242,7 @@ STDMETHODIMP CLoadGroupResponse::put_CantileverPoiIncrement(PoiIDType newVal)
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::GetSuperstructurePois(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations)
+STDMETHODIMP CLoadGroupResponse::GetSuperstructurePois(BSTR stage, ILongArray* *poiIDs, IDblArray* *poiLocations)
 {
    try
    {

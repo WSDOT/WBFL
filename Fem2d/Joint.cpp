@@ -283,17 +283,16 @@ STDMETHODIMP CJoint::Free()
 	return S_OK;
 }
 
-STDMETHODIMP CJoint::get_Members(IIDArray* *ppMemberIDs)
+STDMETHODIMP CJoint::get_Members(ILongArray* *ppMemberIDs)
 {
    CHECK_RETOBJ(ppMemberIDs);
    HRESULT hr = S_OK;
 
    // create collection
-   CComPtr<IIDArray> pcoll;
-   hr = pcoll.CoCreateInstance(CLSID_IDArray);
-   ATLASSERT(SUCCEEDED(hr));
-   if (FAILED(hr))
-      return hr;
+   CComPtr<ILongArray> pcoll;
+   hr = pcoll.CoCreateInstance(CLSID_LongArray);
+      if (FAILED(hr))
+         return hr;
 
    // prep for client
    *ppMemberIDs = pcoll;
@@ -550,7 +549,7 @@ void CJoint::ComputeReactions()
 {
    // Reactions = unbalanced Member forces + loads applied directly
    //    to this joint
-   JointIDType jntnum;
+   long jntnum;
    Float64 react[3];
    m_Reaction[0] = 0;
    m_Reaction[1] = 0;
@@ -606,7 +605,7 @@ bool CJoint::IsEquilibriumSatisfied(Float64 tolerance)
    while(e != eend)
    {
       CMember *ele = *e++;
-      JointIDType jntId = ele->GetJointNum(this);
+      long jntId = ele->GetJointNum(this);
       Float64 eleEndForce[3];
       ele->GetGlobalJntForces(jntId,eleEndForce);
       Fx += eleEndForce[0];

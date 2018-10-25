@@ -184,13 +184,6 @@ void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage,
          *usedRightDistributionType = dftFatigue;
       }
       break;
-   case dftPedestrian:
-      {
-         GetDF(left_df, right_df, &IDistributionFactor::get_GPedestrian, leftFactor, rightFactor);
-         *usedLeftDistributionType = dftPedestrian;
-         *usedRightDistributionType = dftPedestrian;
-      }
-      break;
    default:
       ATLASSERT(0);
       *leftFactor = 1.0;
@@ -321,18 +314,6 @@ void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Sta
          *rightMzFactor = right_factor;
       }
       break;
-   case dftPedestrian:
-      {
-         Float64 left_factor, right_factor;
-         GetDF(left_df, right_df, &IDistributionFactor::get_GPedestrian, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
-         *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
-         *rightMzFactor = right_factor;
-      }
-      break;
    default:
       ATLASSERT(0);
       *leftFxFactor  = 1.0;
@@ -442,13 +423,6 @@ void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR S
          GetDF(left_df, right_df, &IDistributionFactor::get_GFat, leftFactor, rightFactor);
          *usedLeftDistributionType = dftFatigue;
          *usedRightDistributionType = dftFatigue;
-      }
-      break;
-   case dftPedestrian:
-      {
-         GetDF(left_df, right_df, &IDistributionFactor::get_GPedestrian, leftFactor, rightFactor);
-         *usedLeftDistributionType = dftPedestrian;
-         *usedRightDistributionType = dftPedestrian;
       }
       break;
    default:
@@ -561,18 +535,6 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID,
          *rightMzFactor = right_factor;
       }
       break;
-   case dftPedestrian:
-      {
-         Float64 left_factor, right_factor;
-         GetDF(left_df, right_df, &IDistributionFactor::get_GPedestrian, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
-         *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
-         *rightMzFactor = right_factor;
-      }
-      break;
    default:
       ATLASSERT(0);
       *leftFxFactor  = 1.0;
@@ -643,12 +605,6 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
       {
          GetDF1(df, &IDistributionFactor::get_GFat, leftFactor);
          *usedLeftDistributionType = dftFatigue;
-      }
-      break;
-   case dftPedestrian:
-      {
-         GetDF1(df, &IDistributionFactor::get_GPedestrian, leftFactor);
-         *usedLeftDistributionType = dftPedestrian;
       }
       break;
    default:
@@ -757,18 +713,6 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
          *rightMzFactor = factor;
       }
       break;
-   case dftPedestrian:
-      {
-         Float64 factor;
-         GetDF1(df, &IDistributionFactor::get_GPedestrian, &factor);
-         *leftFxFactor  = factor;
-         *leftFyFactor  = factor;
-         *leftMzFactor  = factor;
-         *rightFxFactor = factor;
-         *rightFyFactor = factor;
-         *rightMzFactor = factor;
-      }
-      break;
    default:
       ATLASSERT(0);
       *leftFxFactor  = 1.0;
@@ -855,13 +799,6 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
          *usedRightDistributionType = dftFatigue;
       }
       break;
-   case dftPedestrian:
-      {
-         GetDF(df, NULL, &IDistributionFactor::get_GPedestrian, leftFactor, rightFactor);
-         *usedLeftDistributionType = dftPedestrian;
-         *usedRightDistributionType = dftPedestrian;
-      }
-      break;
    default:
       ATLASSERT(0);
       *leftFactor = 1.0;
@@ -931,18 +868,6 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
       {
          Float64 left_factor, right_factor;
          GetDF(df, NULL, &IDistributionFactor::get_GFat, &left_factor, &right_factor);
-         *leftFxFactor  = left_factor;
-         *leftFyFactor  = left_factor;
-         *leftMzFactor  = left_factor;
-         *rightFxFactor = right_factor;
-         *rightFyFactor = right_factor;
-         *rightMzFactor = right_factor;
-      }
-      break;
-   case dftPedestrian:
-      {
-         Float64 left_factor, right_factor;
-         GetDF(df, NULL, &IDistributionFactor::get_GPedestrian, &left_factor, &right_factor);
          *leftFxFactor  = left_factor;
          *leftFyFactor  = left_factor;
          *leftMzFactor  = left_factor;

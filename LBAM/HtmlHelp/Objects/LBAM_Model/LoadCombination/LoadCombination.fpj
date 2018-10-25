@@ -3,42 +3,12 @@
 	<folders/>
 	<topics>
 		<topic>
-			<name>GetLiveLoadModelCount_Method_(LoadCombination_Object).htm</name>
+			<name>LoadCombination.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>AddLiveLoadModel_Method_(LoadCombination_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ClearLiveLoadModels_Method_(LoadCombination_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>RemoveLiveLoadModel_Method_(LoadCombination_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>GetLiveLoadModel_Method_(LoadCombination_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>LoadCombinationType.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>RemoveLoadCaseFactor.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ItemData.htm</name>
+			<name>LoadCaseFactorCount.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -48,12 +18,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>LoadCombination.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnLoadCombinationChanged.htm</name>
+			<name>AddLoadCaseFactor.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -63,7 +28,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>OnLoadCombinationRenamed.htm</name>
+			<name>ItemData.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -83,27 +48,57 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Clear.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>SetLoadCaseFactor.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>AddLoadCaseFactor.htm</name>
+			<name>RemoveLoadCaseFactor.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>LoadCaseFactorCount.htm</name>
+			<name>OnLoadCombinationRenamed.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>LiveLoadModelApplicationType.htm</name>
+			<name>OnLoadCombinationChanged.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>LoadCombinationType.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Clear.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>GetLiveLoadModelCount_Method_(LoadCombination_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>GetLiveLoadModel_Method_(LoadCombination_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>RemoveLiveLoadModel_Method_(LoadCombination_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>ClearLiveLoadModels_Method_(LoadCombination_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>AddLiveLoadModel_Method_(LoadCombination_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

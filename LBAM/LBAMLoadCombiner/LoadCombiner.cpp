@@ -452,9 +452,6 @@ void CLoadCombiner::ValidateLoadCombinations()
       // set up factors for live load
       hr = load_combo->get_LiveLoadFactor(&(rcombo_data.m_LiveLoadFactor));
 
-      // live load model application type
-      hr = load_combo->get_LiveLoadModelApplicationType(&(rcombo_data.m_LiveLoadModelApplicationType));
-
       CollectionIndexType count;
       hr = load_combo->GetLiveLoadModelCount(&count);
       for ( CollectionIndexType i = 0; i < count; i++ )

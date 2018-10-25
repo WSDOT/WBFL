@@ -59,6 +59,7 @@
 #include "RebarRowPattern.h"
 #include "FlexRebarLayoutItem.h"
 #include "StrandGrid.h"
+#include "StrandFillTool.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -82,6 +83,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY_NON_CREATEABLE(CRebarSectionItem)
    OBJECT_ENTRY_NON_CREATEABLE(CRebarSection)
    OBJECT_ENTRY(CLSID_StrandGrid, CStrandGrid)
+   OBJECT_ENTRY(CLSID_StrandFillTool, CStrandFillTool)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

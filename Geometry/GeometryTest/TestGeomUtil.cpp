@@ -630,6 +630,7 @@ void CTestGeomUtil::Test2d()
 
    points.Release();
    TRY_TEST( util2d->DivideLineSegment(NULL,4,&points), E_INVALIDARG );
+   TRY_TEST( util2d->DivideLineSegment(seg1,-1,&points), E_INVALIDARG );
    TRY_TEST( util2d->DivideLineSegment(seg1,4,NULL), E_POINTER );
    TRY_TEST( util2d->DivideLineSegment(seg1,0,&points), E_INVALIDARG );
 
@@ -728,6 +729,7 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(0,0);
    points.Release();
+   TRY_TEST( util2d->GenerateCircle(-1,p1,10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,NULL,10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,NULL,-10.0,M_PI/4,&points), E_INVALIDARG );
    TRY_TEST( util2d->GenerateCircle(4,p1,10.0,M_PI/4,NULL), E_POINTER );

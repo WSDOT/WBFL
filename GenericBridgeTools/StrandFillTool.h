@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// WBFLTools - Utility Tools for the WBFL
+// GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
 // Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -23,59 +23,43 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// IDArray.h : Declaration of the CLngArray
-
+// StrandFillTool.h : Declaration of the CStrandFillTool
 #pragma once
 
 #include "resource.h"       // main symbols
 
-#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////
-// CIDArray
-class ATL_NO_VTABLE CIDArray : 
+// CStrandFillTool
+class ATL_NO_VTABLE CStrandFillTool : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CIDArray, &CLSID_IDArray>,
+	public CComCoClass<CStrandFillTool, &CLSID_StrandFillTool>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CIDArray,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IIDArray
+	public IStrandFillTool,
+   public IObjectSafetyImpl<CStrandFillTool,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-	CIDArray()
+	CStrandFillTool()
 	{
 	}
 
-DECLARE_REGISTRY_RESOURCEID(IDR_IDARRAY)
+   HRESULT FinalConstruct();
+   void FinalRelease();
+
+DECLARE_REGISTRY_RESOURCEID(IDR_STRANDFILLTOOL)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CIDArray)
-	COM_INTERFACE_ENTRY(IIDArray)
+BEGIN_COM_MAP(CStrandFillTool)
+	COM_INTERFACE_ENTRY(IStrandFillTool)
+	COM_INTERFACE_ENTRY(IObjectSafety)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IIDArray
+// IStrandFillTool
 public:
-	STDMETHOD(Find)(/*[in]*/IDType value, /*[out,retval]*/CollectionIndexType* fndIndex);
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clone)(/*[out,retval]*/IIDArray* *clone);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IDType item);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/IDType item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IDType *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IDType newVal);
-	STDMETHOD(get__NewEnum)(struct IUnknown ** );
-	STDMETHOD(get__EnumElements)(struct IEnumIDArray ** );
-
-protected:
-   typedef std::vector<IDType>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
-   ContainerType m_Values;
+   STDMETHOD(ComputeHarpedStrandMaxFill)(IStrandGridFiller* pEndGridFiller,IStrandGridFiller* pHPGridFiller,StrandIndexType* pMaxStrandCount,ILongArray** ppStrandFill);
 };

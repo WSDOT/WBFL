@@ -249,8 +249,8 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    CComPtr<IDistributionFactor> df1, df2;
    TRY_TEST(df1.CoCreateInstance(CLSID_DistributionFactor), S_OK);
    TRY_TEST(df2.CoCreateInstance(CLSID_DistributionFactor), S_OK);
-   TRY_TEST(df1->SetG(2,2,2,2,2,2,2,2,2,2,2,2,2,2), S_OK);
-   TRY_TEST(df2->SetG(3,3,3,3,3,3,3,3,3,3,3,3,2,2), S_OK);
+   TRY_TEST(df1->SetG(2,2,2,2,2,2,2,2,2,2,2,2,2), S_OK);
+   TRY_TEST(df2->SetG(3,3,3,3,3,3,3,3,3,3,3,3,2), S_OK);
    CComPtr<IDistributionFactorSegment> dfs1, dfs2;
    TRY_TEST(dfs1.CoCreateInstance(CLSID_DistributionFactorSegment), S_OK);
    TRY_TEST(dfs2.CoCreateInstance(CLSID_DistributionFactorSegment), S_OK);
@@ -262,7 +262,7 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    TRY_TEST(dfs->Add(dfs2), S_OK);
 
    // add some pois
-   PoiIDType last_val;
+   long last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
    ConfigureLrfdLiveLoadModelInKipFeet(*model);

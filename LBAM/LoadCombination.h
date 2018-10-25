@@ -50,8 +50,7 @@ public:
 //   m_LiveLoadModelType(lltNone),
    m_LiveLoadFactor(0.0),
    m_ItemData(0),
-   m_LoadCombinationType(lctUserDefined),
-   m_LiveLoadModelApplicationType(llmaSum)
+   m_LoadCombinationType(lctUserDefined)
 	{
 	}
 
@@ -107,16 +106,13 @@ public:
 	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
 	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_LiveLoadModelApplicationType)(/*[out, retval]*/ LiveLoadModelApplicationType *pVal);
-	STDMETHOD(put_LiveLoadModelApplicationType)(/*[in]*/ LiveLoadModelApplicationType newVal);
 
 protected:
    CComBSTR            m_Name;
    CComBSTR            m_Description;
    CComVariant         m_ItemData;
-   Float64             m_LiveLoadFactor;
-   LoadCombinationType          m_LoadCombinationType;
-   LiveLoadModelApplicationType m_LiveLoadModelApplicationType;
+   Float64              m_LiveLoadFactor;
+   LoadCombinationType m_LoadCombinationType;
 
    std::vector<LiveLoadModelType> m_LiveLoadModelTypes;
 

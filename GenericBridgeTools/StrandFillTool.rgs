@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridgeTools.StrandFillTool.1 = s 'StrandFillTool Class'
+	{
+		CLSID = s '{A757985C-CC7F-4789-B3F3-03BCCED77970}'
+	}
+	WBFLGenericBridgeTools.StrandFillTool = s 'StrandFillTool Class'
+	{
+		CLSID = s '{A757985C-CC7F-4789-B3F3-03BCCED77970}'
+		CurVer = s 'WBFLGenericBridgeTools.StrandFillTool.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {A757985C-CC7F-4789-B3F3-03BCCED77970} = s 'StrandFillTool Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.StrandFillTool.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.StrandFillTool'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

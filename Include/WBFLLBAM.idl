@@ -121,19 +121,6 @@ library WBFLLBAM
    typedef
    [
       public,
-      uuid(5E176698-4F89-4db2-8AF0-B2EFA41E3BB9),
-      helpstring("Designates how LiveLoadModels are applied in load combinations"),
-	  helpcontext(IDH_LiveLoadModelApplicationType)
-   ] 
-   enum 
-   {
- 	   llmaEnvelope = 0,
-	   llmaSum  = 1
-   } LiveLoadModelApplicationType;
-
-   typedef
-   [
-      public,
       uuid(166AB081-7CA0-11d5-B036-00105A9AF985),
       helpstring("Designates side"),
 	  helpcontext(IDH_Side)
@@ -185,8 +172,7 @@ library WBFLLBAM
 		dftSingleLane  = 1,
 		dftMultipleLane= 2,
 		dftEnvelope    = 3,
-      dftFatigue     = 4,
-      dftPedestrian  = 5
+      dftFatigue     = 4
    } DistributionFactorType;
 
    typedef
@@ -1342,14 +1328,10 @@ library WBFLLBAM
 		HRESULT GFat([out, retval] Float64 *pVal);
 		[propput, helpstring("property GFat - Distribution factor for fatigue loads - used to calculate stresses"),helpcontext(IDH_DistributionFactor_GFat)] 
 		HRESULT GFat([in] Float64 newVal);
-		[propget, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
-		HRESULT GPedestrian([out, retval] Float64 *pVal);
-		[propput, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
-		HRESULT GPedestrian([in] Float64 newVal);
 		[helpstring("method SetG"),helpcontext(IDH_DistributionFactor_SetG)] 
-		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, [in] Float64 Fat, [in]Float64 Pedes);
+		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, [in] Float64 Fat);
 		[helpstring("method GetG"),helpcontext(IDH_DistributionFactor_GetG)] 
-		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, [out] Float64* Fat, [out]Float64* Pedes);
+		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, [out] Float64* Fat);
 		[helpstring("method Clone"),helpcontext(IDH_DistributionFactor_Clone)] 
 		HRESULT Clone([out, retval]IDistributionFactor**);
 		[propget, helpstring("property GTMul"),helpcontext(IDH_DistributionFactor_GTMul)] 
@@ -1570,8 +1552,6 @@ library WBFLLBAM
       HRESULT TopRelease([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpstring("property TopRelease"),helpcontext(IDH_TemporarySupport_TopRelease)] 
       HRESULT TopRelease([in] VARIANT_BOOL newVal);
-      [propget, helpstring("property OmitReaction")] HRESULT OmitReaction([out,retval]VARIANT_BOOL* pbOmit);
-      [propput, helpstring("property OmitReaction")] HRESULT OmitReaction([in]VARIANT_BOOL bOmit);
 	};
 
 	[
@@ -1625,9 +1605,7 @@ library WBFLLBAM
 		[helpstring("method Clear - Remove all TemporarySupports"),helpcontext(IDH_TemporarySupports_Clear)] 
         HRESULT Clear();
 		[helpstring("method Clone"),helpcontext(IDH_TemporarySupports_Clone)] 
-      HRESULT Clone(ITemporarySupports** clone);
-      [helpstring("method Find")]
-      HRESULT Find([in]SupportIDType tsID,[out,retval]ITemporarySupport** ppTS);
+        HRESULT Clone(ITemporarySupports** clone);
 	};
 
 
@@ -2789,10 +2767,6 @@ library WBFLLBAM
       HRESULT LoadCombinationType([out, retval] LoadCombinationType *pVal);
 		[propput, helpstring("property LoadCombinationType"),helpcontext(IDH_LoadCombination_LoadCombinationType)] 
       HRESULT LoadCombinationType([in] LoadCombinationType newVal);
-		[propget, helpstring("property LiveLoadModelApplicationType"),helpcontext(IDH_LoadCombination_LiveLoadModelApplicationType)] 
-      HRESULT LiveLoadModelApplicationType([out, retval] LiveLoadModelApplicationType *pVal);
-		[propput, helpstring("property LiveLoadModelApplicationType"),helpcontext(IDH_LoadCombination_LiveLoadModelApplicationType)] 
-      HRESULT LiveLoadModelApplicationType([in] LiveLoadModelApplicationType newVal);
 	};
 
 	[
@@ -2975,17 +2949,23 @@ library WBFLLBAM
 		[propget, helpstring("property SuperstructureMembers"),helpcontext(IDH_Model_SuperstructureMembers)] 
 		HRESULT SuperstructureMembers([out, retval] ISuperstructureMembers* *pVal);
 
+//		[propputref, helpstring("property SuperstructureMembers"),helpcontext(IDH_Model_SuperstructureMembers)] 
+//		HRESULT SuperstructureMembers([in] ISuperstructureMembers* newVal);
+
 		[helpstring("method Clone"),helpcontext(IDH_Model_Clone)] 
 		HRESULT Clone([out,retval] ILBAMModel** clone);
 
 		[propget, helpstring("property Supports"),helpcontext(IDH_Model_Supports)] 
 		HRESULT Supports([out, retval] ISupports* *pVal);
 
+//		[propputref, helpstring("property Supports"),helpcontext(IDH_Model_Supports)] 
+//		HRESULT Supports([in] ISupports* newVal);
+
 		[propget, helpstring("property Spans"),helpcontext(IDH_Model_Spans)] 
 		HRESULT Spans([out, retval] ISpans* *pVal);
 
-      [propget, helpstring("property TemporarySupports")]
-      HRESULT TemporarySupports([out,retval]ITemporarySupports** ppVal);
+//		[propputref, helpstring("property Spans"),helpcontext(IDH_Model_Spans)] 
+//		HRESULT Spans([in] ISpans* newVal);
 
 		[helpstring("method Clear"),helpcontext(IDH_Model_Clear)] 
 		HRESULT Clear();
@@ -2993,8 +2973,14 @@ library WBFLLBAM
 		[propget, helpstring("property POIs"),helpcontext(IDH_Model_POIs)] 
 		HRESULT POIs([out, retval] IPOIs* *pVal);
 		
+//      [propputref, helpstring("property POIs"),helpcontext(IDH_Model_POIs)] 
+//		HRESULT POIs([in] IPOIs* newVal);
+		
       [propget, helpstring("property Stages"),helpcontext(IDH_Model_Stages)] 
 		HRESULT Stages([out, retval] IStages* *pVal);
+
+//		[propputref, helpstring("property Stages"),helpcontext(IDH_Model_Stages)] 
+//		HRESULT Stages([in] IStages* newVal);
 
 		[helpstring("method RemoveStage"),helpcontext(IDH_Model_RemoveStage)] 
 		HRESULT RemoveStage(BSTR stage);
@@ -3014,26 +3000,50 @@ library WBFLLBAM
 		[propget, helpstring("property PointLoads"),helpcontext(IDH_Model_PointLoads)] 
 		HRESULT PointLoads([out, retval] IPointLoads* *pVal);
 
+//		[propputref, helpstring("property PointLoads"),helpcontext(IDH_Model_PointLoads)] 
+//		HRESULT PointLoads([in] IPointLoads* newVal);
+
 		[propget, helpstring("property DistributedLoads"),helpcontext(IDH_Model_DistributedLoads)] 
 		HRESULT DistributedLoads([out, retval] IDistributedLoads* *pVal);
+
+//		[propputref, helpstring("property DistributedLoads"),helpcontext(IDH_Model_DistributedLoads)] 
+//		HRESULT DistributedLoads([in] IDistributedLoads* newVal);
 
 		[propget, helpstring("property TemperatureLoads"),helpcontext(IDH_Model_TemperatureLoads)] 
 		HRESULT TemperatureLoads([out, retval] ITemperatureLoads* *pVal);
 
+//		[propputref, helpstring("property TemperatureLoads"),helpcontext(IDH_Model_TemperatureLoads)] 
+//		HRESULT TemperatureLoads([in] ITemperatureLoads* newVal);
+
 		[propget, helpstring("property SettlementLoads"),helpcontext(IDH_Model_SettlementLoads)] 
 		HRESULT SettlementLoads([out, retval] ISettlementLoads* *pVal);
+
+//		[propputref, helpstring("property SettlementLoads"),helpcontext(IDH_Model_SettlementLoads)] 
+//		HRESULT SettlementLoads([in] ISettlementLoads* newVal);
 
 		[propget, helpstring("property StrainLoads"),helpcontext(IDH_Model_StrainLoads)] 
 		HRESULT StrainLoads([out, retval] IStrainLoads* *pVal);
 
+//		[propputref, helpstring("property StrainLoads"),helpcontext(IDH_Model_StrainLoads)] 
+//		HRESULT StrainLoads([in] IStrainLoads* newVal);
+
 		[propget, helpstring("property LoadGroups"),helpcontext(IDH_Model_LoadGroups)] 
 		HRESULT LoadGroups([out, retval] ILoadGroups* *pVal);
+
+//		[propputref, helpstring("property LoadGroups"),helpcontext(IDH_Model_LoadGroups)] 
+//		HRESULT LoadGroups([in] ILoadGroups* newVal);
 
 		[propget, helpstring("property LoadCases"),helpcontext(IDH_Model_LoadCases)] 
 		HRESULT LoadCases([out, retval] ILoadCases* *pVal);
 
+//		[propputref, helpstring("property LoadCases"),helpcontext(IDH_Model_LoadCases)] 
+//		HRESULT LoadCases([in] ILoadCases* newVal);
+
 		[propget, helpstring("property LoadCombinations"),helpcontext(IDH_Model_LoadCombinations)] 
 		HRESULT LoadCombinations([out, retval] ILoadCombinations* *pVal);
+
+//		[propputref, helpstring("property LoadCombinations"),helpcontext(IDH_Model_LoadCombinations)] 
+//		HRESULT LoadCombinations([in] ILoadCombinations* newVal);
 
 		[helpstring("method ComputeLocation"),helpcontext(IDH_Model_ComputeLocation)] 
 		HRESULT ComputeLocation([in]MemberIDType mbrID, [in]MemberType mbrType, [in]Float64 mbrLocation, [out]Float64* Xloc, [out]Float64* Yloc);
@@ -3041,8 +3051,14 @@ library WBFLLBAM
 		[propget, helpstring("property LiveLoad"),helpcontext(IDH_Model_LiveLoad)] 
       HRESULT LiveLoad([out, retval] ILiveLoad* *pVal);
 
+//		[propputref, helpstring("property LiveLoad"),helpcontext(IDH_Model_LiveLoad)] 
+//      HRESULT LiveLoad([in] ILiveLoad* newVal);
+
 		[propget, helpstring("property DistributionFactors"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT DistributionFactors([out, retval] IDistributionFactors* *pVal);
+
+//		[propputref, helpstring("property DistributionFactors"),helpcontext(IDH_Model_ComputeLocation)] 
+//      HRESULT DistributionFactors([in] IDistributionFactors* newVal);
 
 	   [propget, helpstring("property StructuredStorage - Return IStructuredStorage2 Interface"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);

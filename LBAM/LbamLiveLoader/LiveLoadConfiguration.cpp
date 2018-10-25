@@ -51,8 +51,7 @@ STDMETHODIMP CLiveLoadConfiguration::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CLiveLoadConfiguration::FinalConstruct()
 {
-   HRESULT hr = m_AxleConfig.CoCreateInstance(CLSID_IndexArray);
-   ATLASSERT(SUCCEEDED(hr));
+   HRESULT hr = m_AxleConfig.CoCreateInstance(CLSID_LongArray);
    return hr;
 }
 
@@ -221,7 +220,7 @@ STDMETHODIMP CLiveLoadConfiguration::put_VariableSpacing(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadConfiguration::get_AxleConfig(IIndexArray* *pVal)
+STDMETHODIMP CLiveLoadConfiguration::get_AxleConfig(ILongArray* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
@@ -230,7 +229,7 @@ STDMETHODIMP CLiveLoadConfiguration::get_AxleConfig(IIndexArray* *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLiveLoadConfiguration::put_AxleConfig(IIndexArray* newVal)
+STDMETHODIMP CLiveLoadConfiguration::put_AxleConfig(ILongArray* newVal)
 {
    CHECK_IN(newVal);
 
@@ -397,19 +396,19 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
          if (FAILED(hr))
             return hr;
 
-         CollectionIndexType cnt = var;
+         long cnt = var;
 
          m_AxleConfig->Clear();
          m_AxleConfig->Reserve(cnt);
 
-         for (CollectionIndexType i=0; i<cnt; i++)
+         for (long i=0; i<cnt; i++)
          {
             var.Clear();
             hr = pload->get_Property(_bstr_t("Axle"),&var);
             if (FAILED(hr))
                return hr;
 
-            AxleIndexType axl = var;
+            long axl = var;
             m_AxleConfig->Add(axl);
          }
       }
@@ -541,7 +540,7 @@ STDMETHODIMP CLiveLoadConfiguration::Save(IStructuredSave2 * psave)
 
          for (AxleIndexType axleIdx = 0; axleIdx < nAxles; axleIdx++)
          {
-            AxleIndexType appliedAxleIdx;
+            IDType appliedAxleIdx; // index is stored as an ID type in LongArray
             hr = m_AxleConfig->get_Item(axleIdx, &appliedAxleIdx);
             hr = psave->put_Property(CComBSTR("Axle"),_variant_t(appliedAxleIdx));
             if (FAILED(hr))

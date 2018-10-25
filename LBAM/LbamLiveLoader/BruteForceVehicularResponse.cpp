@@ -273,7 +273,7 @@ STDMETHODIMP CBruteForceVehicularResponse::InitializeProgressMonitor(IProgressMo
 }
 
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeForces(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeForces(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type, 
                                                          VehicleIndexType vehicleIndex, ResultsOrientation orientation, 
                                                          ForceEffectType effect, OptimizationType optimization, 
                                                          VehicularLoadConfigurationType vehConfiguration,
@@ -330,7 +330,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeForces(IIDArray* poiIDs, BSTR 
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeDeflections(IIDArray* pois, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeDeflections(ILongArray* pois, BSTR stage, LiveLoadModelType type, 
                                                             VehicleIndexType vehicleIndex, 
                                                             ForceEffectType effect, OptimizationType optimization, 
                                                             VehicularLoadConfigurationType vehConfiguration,
@@ -383,7 +383,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeDeflections(IIDArray* pois, BS
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeReactions(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeReactions(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
                                                             VehicleIndexType vehicleIndex, 
                                                             ForceEffectType effect, OptimizationType optimization, 
                                                             VehicularLoadConfigurationType vehConfiguration,
@@ -445,7 +445,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeReactions(IIDArray* supports, 
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeSupportDeflections(IIDArray* supports, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeSupportDeflections(ILongArray* supports, BSTR stage, LiveLoadModelType type, 
                                                             VehicleIndexType vehicleIndex, 
                                                             ForceEffectType effect, OptimizationType optimization, 
                                                             VehicularLoadConfigurationType vehConfiguration,
@@ -505,7 +505,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeSupportDeflections(IIDArray* s
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeStresses(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeStresses(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type, 
                                                            VehicleIndexType vehicleIndex,
                                                            ForceEffectType effect, OptimizationType optimization, 
                                                            VehicularLoadConfigurationType vehConfiguration,
@@ -549,7 +549,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeStresses(IIDArray* poiIDs, BST
    return hr;
 }
 
-STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, 
+STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type, 
                                                            VehicleIndexType vehicleIndex, 
                                                            ForceEffectType effect, OptimizationType optimization, 
                                                            VehicularLoadConfigurationType vehConfiguration,
@@ -1141,7 +1141,7 @@ void CBruteForceVehicularResponse::Compute(BSTR stage, LiveLoadModelType type, V
       m_PoiLocations.clear();
 
       CComQIPtr<IAnalysisPOIs> poi_utility(m_Context);
-      CComPtr<IIDArray> poiids;
+      CComPtr<ILongArray> poiids;
       CComPtr<IDblArray> poilocs;
       hr = poi_utility->GetSuperstructurePois(stage , &poiids, &poilocs);
 

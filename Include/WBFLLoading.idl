@@ -234,9 +234,9 @@ library WBFLLoading
 //      [propput, helpstring("property MemberType"),helpcontext(IDH_PointLoad_MemberType)] 
 //      HRESULT MemberType([in] MemberType newVal);
       [propget, helpstring("property MemberID"),helpcontext(IDH_PointLoad_MemberID)] 
-      HRESULT MemberID([out, retval] MemberIDType *pVal);
+      HRESULT MemberID([out, retval] long *pVal);
       [propput, helpstring("property MemberID"),helpcontext(IDH_PointLoad_MemberID)] 
-      HRESULT MemberID([in] MemberIDType newVal);
+      HRESULT MemberID([in] long newVal);
       [propget, helpstring("property Location"),helpcontext(IDH_PointLoad_Location)] 
       HRESULT Location([out, retval] Float64 *pVal);
       [propput, helpstring("property Location"),helpcontext(IDH_PointLoad_Location)] 
@@ -287,7 +287,7 @@ library WBFLLoading
    interface ldIPointLoadItem : IUnknown
    {
       [propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
-      HRESULT ID([out, retval] IDType *pVal);
+      HRESULT ID([out, retval] long *pVal);
       [propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
       HRESULT Stage([out, retval] BSTR *pVal);
       [propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
@@ -335,17 +335,17 @@ library WBFLLoading
       [propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
       HRESULT Item([in]CollectionIndexType index, [out, retval] ldIPointLoadItem* *pVal);
       [propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-      HRESULT Load([in]IDType ID, [out, retval] ldIPointLoad* *pVal);
+      HRESULT Load([in]long ID, [out, retval] ldIPointLoad* *pVal);
       [propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-      HRESULT Load([in]IDType ID, [in] ldIPointLoad* newVal);
+      HRESULT Load([in]long ID, [in] ldIPointLoad* newVal);
       [propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
       HRESULT _EnumElements([out, retval] ldIEnumPointLoad* *pVal);
       [helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
       HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIPointLoad* Load);
       [helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
-      HRESULT Find([in]IDType ID, [out,retval] ldIPointLoadItem**);
+      HRESULT Find([in]long ID, [out,retval] ldIPointLoadItem**);
       [helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
-      HRESULT RemoveByID([in]IDType ID);
+      HRESULT RemoveByID([in]long ID);
       [helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
       HRESULT RemoveByIndex([in]CollectionIndexType index);
       [helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
@@ -411,9 +411,9 @@ library WBFLLoading
 //      [propput, helpstring("property MemberType"),helpcontext(IDH_DistributedLoad_MemberType)] 
 //      HRESULT MemberType([in] MemberType newVal);
       [propget, helpstring("property MemberID"),helpcontext(IDH_DistributedLoad_MemberID)] 
-      HRESULT MemberID([out, retval] MemberIDType *pVal);
+      HRESULT MemberID([out, retval] long *pVal);
       [propput, helpstring("property MemberID"),helpcontext(IDH_DistributedLoad_MemberID)] 
-      HRESULT MemberID([in] MemberIDType newVal);
+      HRESULT MemberID([in] long newVal);
       [propget, helpstring("property StartLocation"),helpcontext(IDH_DistributedLoad_StartLocation)] 
       HRESULT StartLocation([out, retval] Float64 *pVal);
       [propput, helpstring("property StartLocation"),helpcontext(IDH_DistributedLoad_StartLocation)] 
@@ -449,7 +449,7 @@ library WBFLLoading
 	interface ldIDistributedLoadItem : IUnknown
 	{
 		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
-		HRESULT ID([out, retval] IDType *pVal);
+		HRESULT ID([out, retval] long *pVal);
 		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
 		HRESULT Stage([out, retval] BSTR *pVal);
 		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
@@ -499,17 +499,17 @@ library WBFLLoading
 		[propget, helpstring("property Count"),helpcontext(IDH_Load_Collections_Count)] 
 		HRESULT Count([out, retval] CollectionIndexType *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [out, retval] ldIDistributedLoad* *pVal);
+		HRESULT Load([in]long ID, [out, retval] ldIDistributedLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [in] ldIDistributedLoad* newVal);
+		HRESULT Load([in]long ID, [in] ldIDistributedLoad* newVal);
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
 		HRESULT _EnumElements([out, retval] ldIEnumDistributedLoad* *pVal);
 		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
 		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIDistributedLoad* Load);
 		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
-		HRESULT Find([in]IDType ID, [out,retval] ldIDistributedLoadItem**);
+		HRESULT Find([in]long ID, [out,retval] ldIDistributedLoadItem**);
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
-		HRESULT RemoveByID([in]IDType ID);
+		HRESULT RemoveByID([in]long ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
 		HRESULT RemoveByIndex([in]CollectionIndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
@@ -551,9 +551,9 @@ library WBFLLoading
 	interface ldISettlementLoad : IUnknown
 	{
 		[propget, helpstring("property MemberID"),helpcontext(IDH_SettlementLoad_MemberID)] 
-		HRESULT MemberID([out, retval] MemberIDType *pVal);
+		HRESULT MemberID([out, retval] long *pVal);
 		[propput, helpstring("property MemberID"),helpcontext(IDH_SettlementLoad_MemberID)] 
-		HRESULT MemberID([in] MemberIDType newVal);
+		HRESULT MemberID([in] long newVal);
 		[propget, helpstring("property Dx"),helpcontext(IDH_SettlementLoad_Dx)] 
 		HRESULT Dx([out, retval] Float64 *pVal);
 		[propput, helpstring("property Dx"),helpcontext(IDH_SettlementLoad_Dx)] 
@@ -595,7 +595,7 @@ library WBFLLoading
 	interface ldISettlementLoadItem : IUnknown
 	{
 		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
-		HRESULT ID([out, retval] IDType *pVal);
+		HRESULT ID([out, retval] long *pVal);
 		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
 		HRESULT Stage([out, retval] BSTR *pVal);
 		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
@@ -641,17 +641,17 @@ library WBFLLoading
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
 		HRESULT Item([in]CollectionIndexType index, [out, retval] ldISettlementLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [out, retval] ldISettlementLoad* *pVal);
+		HRESULT Load([in]long ID, [out, retval] ldISettlementLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [in] ldISettlementLoad* newVal);
+		HRESULT Load([in]long ID, [in] ldISettlementLoad* newVal);
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
 		HRESULT _EnumElements([out, retval] ldIEnumSettlementLoad* *pVal);
 		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
 		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldISettlementLoad* Load);
 		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
-		HRESULT Find([in]IDType ID, [out,retval] ldISettlementLoadItem**);
+		HRESULT Find([in]long ID, [out,retval] ldISettlementLoadItem**);
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
-		HRESULT RemoveByID([in]IDType ID);
+		HRESULT RemoveByID([in]long ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
 		HRESULT RemoveByIndex([in]CollectionIndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
@@ -699,9 +699,9 @@ library WBFLLoading
 //		[propput, helpstring("property MemberType"),helpcontext(IDH_TemperatureLoad_MemberType)] 
 //		HRESULT MemberType([in] MemberType newVal);
 		[propget, helpstring("property MemberID"),helpcontext(IDH_TemperatureLoad_MemberID)] 
-		HRESULT MemberID([out, retval] MemberIDType *pVal);
+		HRESULT MemberID([out, retval] long *pVal);
 		[propput, helpstring("property MemberID"),helpcontext(IDH_TemperatureLoad_MemberID)] 
-		HRESULT MemberID([in] MemberIDType newVal);
+		HRESULT MemberID([in] long newVal);
 		[propget, helpstring("property TTop"),helpcontext(IDH_TemperatureLoad_TTop)] 
 		HRESULT TTop([out, retval] Float64 *pVal);
 		[propput, helpstring("property TTop"),helpcontext(IDH_TemperatureLoad_TTop)] 
@@ -739,7 +739,7 @@ library WBFLLoading
 	interface ldITemperatureLoadItem : IUnknown
 	{
 		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
-		HRESULT ID([out, retval] IDType *pVal);
+		HRESULT ID([out, retval] long *pVal);
 		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
 		HRESULT Stage([out, retval] BSTR *pVal);
 		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
@@ -786,17 +786,17 @@ library WBFLLoading
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
 		HRESULT Item([in]CollectionIndexType index, [out, retval] ldITemperatureLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [out, retval] ldITemperatureLoad* *pVal);
+		HRESULT Load([in]long ID, [out, retval] ldITemperatureLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [in] ldITemperatureLoad* newVal);
+		HRESULT Load([in]long ID, [in] ldITemperatureLoad* newVal);
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
 		HRESULT _EnumElements([out, retval] ldIEnumTemperatureLoad* *pVal);
 		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
 		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldITemperatureLoad* Load);
 		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
-		HRESULT Find([in]IDType ID, [out,retval] ldITemperatureLoadItem**);
+		HRESULT Find([in]long ID, [out,retval] ldITemperatureLoadItem**);
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
-		HRESULT RemoveByID([in]IDType ID);
+		HRESULT RemoveByID([in]long ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
 		HRESULT RemoveByIndex([in]CollectionIndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
@@ -844,9 +844,9 @@ library WBFLLoading
 //		[propput, helpstring("property MemberType"),helpcontext(IDH_StrainLoad_MemberType)] 
 //		HRESULT MemberType([in] MemberType newVal);
 		[propget, helpstring("property MemberID"),helpcontext(IDH_StrainLoad_MemberID)] 
-		HRESULT MemberID([out, retval] MemberIDType *pVal);
+		HRESULT MemberID([out, retval] long *pVal);
 		[propput, helpstring("property MemberID"),helpcontext(IDH_StrainLoad_MemberID)] 
-		HRESULT MemberID([in] MemberIDType newVal);
+		HRESULT MemberID([in] long newVal);
 		[propget, helpstring("property AxialStrain"),helpcontext(IDH_StrainLoad_AxialStrain)] 
 		HRESULT AxialStrain([out, retval] Float64 *pVal);
 		[propput, helpstring("property AxialStrain"),helpcontext(IDH_StrainLoad_AxialStrain)] 
@@ -884,7 +884,7 @@ library WBFLLoading
 	interface ldIStrainLoadItem : IUnknown
 	{
 		[propget, helpstring("property ID"),helpcontext(IDH_LoadItem_ID)] 
-		HRESULT ID([out, retval] IDType *pVal);
+		HRESULT ID([out, retval] long *pVal);
 		[propget, helpstring("property Stage"),helpcontext(IDH_LoadItem_Stage)] 
 		HRESULT Stage([out, retval] BSTR *pVal);
 		[propget, helpstring("property LoadGroup"),helpcontext(IDH_LoadItem_LoadGroup)]
@@ -932,17 +932,17 @@ library WBFLLoading
 		[propget, helpstring("property Item"),helpcontext(IDH_Load_Collections_Item)] 
 		HRESULT Item([in]CollectionIndexType index, [out, retval] ldIStrainLoadItem* *pVal);
 		[propget, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [out, retval] ldIStrainLoad* *pVal);
+		HRESULT Load([in]long ID, [out, retval] ldIStrainLoad* *pVal);
 		[propputref, helpstring("property Load"),helpcontext(IDH_Load_Collections_Load)] 
-		HRESULT Load([in]IDType ID, [in] ldIStrainLoad* newVal);
+		HRESULT Load([in]long ID, [in] ldIStrainLoad* newVal);
 		[propget, helpstring("property _EnumElements"),helpcontext(IDH_Load_Collections__EnumElements)] 
 		HRESULT _EnumElements([out, retval] ldIEnumStrainLoad* *pVal);
 		[helpstring("method Add"),helpcontext(IDH_Load_Collections_Add)] 
 		HRESULT Add([in]BSTR Stage, [in]BSTR LoadGroup, [in] ldIStrainLoad* Load);
 		[helpstring("method Find"),helpcontext(IDH_Load_Collections_Find)] 
-		HRESULT Find([in]IDType ID, [out,retval] ldIStrainLoadItem**);
+		HRESULT Find([in]long ID, [out,retval] ldIStrainLoadItem**);
 		[helpstring("method RemoveByID"),helpcontext(IDH_Load_Collections_RemoveByID)] 
-		HRESULT RemoveByID([in]IDType ID);
+		HRESULT RemoveByID([in]long ID);
 		[helpstring("method RemoveByIndex"),helpcontext(IDH_Load_Collections_RemoveByIndex)] 
 		HRESULT RemoveByIndex([in]CollectionIndexType index);
 		[helpstring("method FilterByStageGroup"),helpcontext(IDH_Load_Collections_FilterByStageGroup)] 
@@ -1526,17 +1526,17 @@ library WBFLLoading
 		[propput, helpstring("property LiveLoadFactor"),helpcontext(IDH_LoadCombination_LiveLoadFactor)] 
       HRESULT LiveLoadFactor([in] Float64 newVal);
 		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombination_LoadCaseFactorCount)] 
-      HRESULT LoadCaseFactorCount([out, retval] CollectionIndexType *pVal);
+      HRESULT LoadCaseFactorCount([out, retval] IndexType *pVal);
 		[helpstring("method SetLoadCaseFactor"),helpcontext(IDH_LoadCombination_SetLoadCaseFactor)] 
-      HRESULT SetLoadCaseFactor([in]CollectionIndexType index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
+      HRESULT SetLoadCaseFactor([in]IndexType index, [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombination_AddLoadCaseFactor)] 
       HRESULT AddLoadCaseFactor( [in]BSTR loadCaseName, [in]Float64 minFactor, [in]Float64 maxFactor);
 		[helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombination_GetLoadCaseFactor)] 
-      HRESULT GetLoadCaseFactor([in]CollectionIndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
+      HRESULT GetLoadCaseFactor([in]IndexType index,  [out]BSTR* loadCaseName, [out]Float64* minFactor, [out]Float64* maxFactor);
 		[helpstring("method Clear"),helpcontext(IDH_LoadCombination_Clear)] 
       HRESULT Clear();
 		[helpstring("method RemoveLoadCaseFactor"),helpcontext(IDH_LoadCombination_RemoveLoadCaseFactor)] 
-      HRESULT RemoveLoadCaseFactor([in]CollectionIndexType index);
+      HRESULT RemoveLoadCaseFactor([in]IndexType index);
 		[helpstring("method Clone"),helpcontext(IDH_LoadCombination_Clone)] 
       HRESULT Clone([out,retval] ldILoadCombination* *lone);
 		[propget, helpstring("property ItemData"),helpcontext(IDH_LoadCases_OnLoadCasesAdded)] 

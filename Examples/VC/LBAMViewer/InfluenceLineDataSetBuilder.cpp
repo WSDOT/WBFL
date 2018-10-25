@@ -27,7 +27,7 @@ InfluenceLineDataSetBuilder::~InfluenceLineDataSetBuilder()
 {
 }
 
-void InfluenceLineDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType responseType, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {

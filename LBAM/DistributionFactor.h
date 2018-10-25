@@ -45,7 +45,6 @@ class ATL_NO_VTABLE CDistributionFactor :
 {
 public:
    CDistributionFactor():
-   m_GPedestrian(1.0),
    m_GFat(1.0),
    m_GRMul(1.0),
    m_GRSgl(1.0),
@@ -98,14 +97,12 @@ public:
                    /*[in]*/ Float64 NMMul, /*[in]*/ Float64 VSgl,  /*[in]*/ Float64 VMul, 
                    /*[in]*/ Float64 DSgl,  /*[in]*/ Float64 DMul,  /*[in]*/ Float64 RSgl, 
                    /*[in]*/ Float64 RMul,  /*[in]*/ Float64 TSgl,  /*[in]*/ Float64 TMul,
-                   /*[in]*/ Float64 Fat,   /*[in]*/ Float64 Pedestrian);
+                   /*[in]*/ Float64 Fat);
 	STDMETHOD(GetG)(/*[out]*/ Float64* PMSgl, /*[out]*/ Float64* PMMul, /*[out]*/ Float64* NMSgl, 
                    /*[out]*/ Float64* NMMul, /*[out]*/ Float64* VSgl,  /*[out]*/ Float64* VMul, 
                    /*[out]*/ Float64* DSgl,  /*[out]*/ Float64* DMul,  /*[out]*/ Float64* RSgl, 
                    /*[out]*/ Float64* RMul,  /*[out]*/ Float64* TSgl,  /*[out]*/ Float64* TMul,
-                   /*[out]*/ Float64* Fat,   /*[out]*/ Float64* Pedestrian);
-	STDMETHOD(get_GPedestrian)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GPedestrian)(/*[in]*/ Float64 newVal);
+                   /*[out]*/ Float64* Fat);
 	STDMETHOD(get_GFat)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_GFat)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_GRMul)(/*[out, retval]*/ Float64 *pVal);
@@ -136,7 +133,6 @@ public:
 	STDMETHOD(Save)(IStructuredSave2 * Save);
 
 protected:
-   Float64 m_GPedestrian;
    Float64 m_GFat;
    Float64 m_GRMul;
    Float64 m_GRSgl;

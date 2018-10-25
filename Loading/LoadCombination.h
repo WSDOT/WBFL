@@ -86,12 +86,12 @@ public:
 	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal);
 	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal);
 	STDMETHOD(Clone)(/*[out,retval]*/ldILoadCombination* *lone);
-	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/CollectionIndexType index);
+	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/IndexType index);
 	STDMETHOD(Clear)();
-	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor);
+	STDMETHOD(GetLoadCaseFactor)(/*[in]*/IndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor);
 	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
-	STDMETHOD(SetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
-	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal);
+	STDMETHOD(SetLoadCaseFactor)(/*[in]*/IndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
+	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ IndexType *pVal);
 	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_LiveLoadModel)(/*[out, retval]*/ ldLiveLoadModelType *pVal);

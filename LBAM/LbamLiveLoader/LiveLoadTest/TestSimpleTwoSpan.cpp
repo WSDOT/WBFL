@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateASimpleLBAM(ILBAMModel** model);
 
-inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, MemberIDType mbrId, MemberType mType, Float64 ldVal)
+inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, long mbrId, MemberType mType, Float64 ldVal)
 {
    CComPtr<IDistributedLoad> dl;
    TRY_TEST( dl.CoCreateInstance(CLSID_DistributedLoad), S_OK);
@@ -535,7 +535,7 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    lcdc->AddLoadGroup(lgn_sw);
 
    // add some pois
-   PoiIDType last_val;
+   long last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 10, &last_val), S_OK);
 
 

@@ -37,19 +37,11 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSidewalkBarrier
-CSidewalkBarrier::CSidewalkBarrier()
-{
-   m_Configuration = 0;
-   m_bExteriorStructurallyContinuous = VARIANT_FALSE;
-   m_bSidewalkStructurallyContinuous = VARIANT_FALSE;
-   m_bInteriorStructurallyContinuous = VARIANT_FALSE;
-   m_SidewalkPosition = swpBetweenBarriers;
-}
-
-
 HRESULT CSidewalkBarrier::FinalConstruct()
 {
-   m_SidewalkShape.CoCreateInstance(CLSID_PolyShape);
+   m_CompShape.CoCreateInstance(CLSID_CompositeShape);
+   m_Material.CoCreateInstance(CLSID_Material);
+
    return S_OK;
 }
 
@@ -62,6 +54,7 @@ STDMETHODIMP CSidewalkBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 	static const IID* arr[] = 
 	{
 		&IID_ISidewalkBarrier,
+      &IID_IBarrier,
       &IID_IStructuredStorage2,
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -72,7 +65,8 @@ STDMETHODIMP CSidewalkBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSidewalkBarrier::Clone(ISidewalkBarrier** clone)
+
+STDMETHODIMP CSidewalkBarrier::Clone(IBarrier** clone)
 {
    CHECK_RETOBJ(clone);
 
@@ -82,44 +76,25 @@ STDMETHODIMP CSidewalkBarrier::Clone(ISidewalkBarrier** clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   CComPtr<IBarrier> extClone;
-   m_ExtBarrier->Clone(&extClone);
-
    if ( m_Configuration == 1 )
    {
-      pClone->put_Barrier1(extClone,m_Orientation);
+      pClone->put_Barrier1(m_ExtBarrier,m_ConnectionWidth);
    }
    else if ( m_Configuration == 2 )
    {
-      pClone->put_Barrier2(extClone,m_H1,m_H2,m_W,m_Orientation,m_SidewalkPosition);
+      pClone->put_Barrier2(m_ExtBarrier,m_H1,m_H2,m_W,m_Orientation,m_SidewalkPosition,m_ConnectionWidth);
    }
    else if ( m_Configuration == 3 )
    {
-      CComPtr<IBarrier> intClone;
-      m_IntBarrier->Clone(&intClone);
-
-      pClone->put_Barrier3(extClone,m_H1,m_H2,m_W,m_Orientation,m_SidewalkPosition,intClone);
+      pClone->put_Barrier3(m_ExtBarrier,m_H1,m_H2,m_W,m_IntBarrier,m_Orientation,m_SidewalkPosition,m_ConnectionWidth);
    }
 
    pClone->put_IsExteriorStructurallyContinuous(m_bExteriorStructurallyContinuous);
    pClone->put_IsSidewalkStructurallyContinuous(m_bSidewalkStructurallyContinuous);
    pClone->put_IsInteriorStructurallyContinuous(m_bInteriorStructurallyContinuous);
  
+   (*clone)->putref_Material(m_Material);
    (*clone)->put_Path(m_Path);
-
-   return S_OK;
-}
-
-STDMETHODIMP CSidewalkBarrier::get_HasSidewalk(VARIANT_BOOL *bHasSw)
-{
-   *bHasSw = m_Configuration > 1 ? VARIANT_TRUE : VARIANT_FALSE;
-
-   return S_OK;
-}
-
-STDMETHODIMP CSidewalkBarrier::get_HasInteriorBarrier(VARIANT_BOOL *bHasIb)
-{
-   *bHasIb = m_Configuration == 3 ? VARIANT_TRUE : VARIANT_FALSE;
 
    return S_OK;
 }
@@ -128,45 +103,8 @@ STDMETHODIMP CSidewalkBarrier::get_Shape(IShape** shape)
 {
    CHECK_RETOBJ(shape);
 
-   CComPtr<ICompositeShape> compShape;
-   compShape.CoCreateInstance(CLSID_CompositeShape);
-
-   // Copy shapes by reference here - could be dangerous
-   CComPtr<IShape> extShape;
-   m_ExtBarrier->get_Shape(&extShape);
-
-   compShape->AddShape(extShape, VARIANT_FALSE);
-
-   if (m_Configuration > 1)
-   {
-      CComQIPtr<IShape> swshape(m_SidewalkShape);
-      compShape->AddShape(swshape, VARIANT_FALSE);
-
-      if (m_Configuration > 2)
-      {
-         CComPtr<IShape> intShape;
-         m_IntBarrier->get_Shape(&intShape);
-         compShape->AddShape(intShape, VARIANT_FALSE);
-      }
-   }
-
-   return compShape.QueryInterface(shape);
-}
-
-
-STDMETHODIMP CSidewalkBarrier::get_SidewalkShape(IShape** shape)
-{
-   CHECK_RETOBJ(shape);
-
-   if (m_Configuration > 1)
-   {
-      return m_SidewalkShape.QueryInterface(shape);
-   }
-   else
-   {
-      ATLASSERT(0); 
-      *shape = NULL;
-   }
+   CComQIPtr<IShape> s(m_CompShape);
+   s->Clone(shape);
 
    return S_OK;
 }
@@ -181,275 +119,282 @@ STDMETHODIMP CSidewalkBarrier::get_StructuralShape(IShape** shape)
       return S_OK;
    }
 
+
    CComPtr<ICompositeShape> compShape;
    compShape.CoCreateInstance(CLSID_CompositeShape);
 
    if ( m_bExteriorStructurallyContinuous == VARIANT_TRUE )
    {
-      CComPtr<IShape> extShape;
-      m_ExtBarrier->get_Shape(&extShape);
-      compShape->AddShape(extShape, VARIANT_FALSE);
+      CComPtr<ICompositeShapeItem> shapeItem;
+      m_CompShape->get_Item(m_idxExteriorBarrier, &shapeItem);
+      compShape->AddShapeEx(shapeItem);
    }
 
-   if (m_Configuration > 1 && m_bSidewalkStructurallyContinuous == VARIANT_TRUE )
+   if ( m_bSidewalkStructurallyContinuous == VARIANT_TRUE )
    {
-      CComQIPtr<IShape> swshape(m_SidewalkShape);
-      compShape->AddShape(swshape, VARIANT_FALSE);
+      CComPtr<ICompositeShapeItem> shapeItem;
+      m_CompShape->get_Item(m_idxSidewalk, &shapeItem);
+      compShape->AddShapeEx(shapeItem);
    }
 
-   if (m_Configuration > 2 && m_bInteriorStructurallyContinuous == VARIANT_TRUE )
+   if ( m_bInteriorStructurallyContinuous == VARIANT_TRUE )
    {
-      CComPtr<IShape> intShape;
-      m_IntBarrier->get_Shape(&intShape);
-      compShape->AddShape(intShape, VARIANT_FALSE);
+      CComPtr<ICompositeShapeItem> shapeItem;
+      m_CompShape->get_Item(m_idxInteriorBarrier, &shapeItem);
+      compShape->AddShapeEx(shapeItem);
    }
 
    compShape.QueryInterface(shape);
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::put_Barrier1(IBarrier* extBarrier,TrafficBarrierOrientation orientation)
+STDMETHODIMP CSidewalkBarrier::put_Barrier1(IShape* shape,Float64 connectionWidth)
 {
    // single barrier configuration
-   CHECK_IN(extBarrier);
+   CHECK_IN(shape);
 
-   m_ExtBarrier = extBarrier;
+   m_ConnectionWidth = connectionWidth;
+
+   m_CompShape->Clear();
+   m_CompShape->AddShape(shape,VARIANT_FALSE);
+
+   m_ExtBarrier = shape;
    m_W = 0;
    m_Configuration = 1;
-   m_Orientation = orientation;
 
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::put_Barrier2(IBarrier* extBarrier,Float64 h1,Float64 h2,Float64 swWidth,
-                                            TrafficBarrierOrientation orientation,SidewalkPositionType swPosition)
+STDMETHODIMP CSidewalkBarrier::put_Barrier2(IShape* shape,Float64 h1,Float64 h2,Float64 w,TrafficBarrierOrientation orientation,SidewalkPositionType swPosition,Float64 connectionWidth)
 {
    // single barrier and sidewalk configuration
-   CHECK_IN(extBarrier);
+   CHECK_IN(shape);
+
+   m_ConnectionWidth = connectionWidth;
 
    m_SidewalkPosition = swPosition;
-   m_Orientation      = orientation;
 
-   m_SidewalkShape->Clear();
+   m_Orientation = orientation;
 
-   // get the bounding box of the exterior barrier
-   // the sidewalk width is measured from at its right/left most point
-   CComPtr<IShape> extShape;
-   extBarrier->get_Shape(&extShape);
+   m_CompShape->Clear();
 
-   CComPtr<IRect2d> bbox;
-   extShape->get_BoundingBox(&bbox);
-
-   // Get interior edge of barrier
-   Float64 xextEdge;
+   Float64 xStart;
    Float64 sign;
-   if ( orientation == tboLeft )
-   {
-      bbox->get_Right(&xextEdge);
-      sign = 1;
-   }
-   else
-   {
-      bbox->get_Left(&xextEdge);
-      sign = -1;
-   }
-
-   Float64 xSwEnd = xextEdge + sign*swWidth; // interior edge of sw is always here
-
-   // Exterior edge depends on sw position
-   Float64 xSwStart;
-   Float64 swIntToeOffset, swExtToeOffset;
-   extBarrier->get_BarrierToeLocations(&swIntToeOffset, &swExtToeOffset);
-
    if ( m_SidewalkPosition == swpBetweenBarriers )
    {
-      // Sidewalk starts at barrier's interior edge
-      xSwStart = xextEdge - sign*swIntToeOffset;
-   }
-   else
-   {
-      // sidewalk starts at the max of deck's edge and exterior toe of barrier
-      Float64 xSwExt;
+      // get the bounding box of the exterior barrier
+      // the sidewalk starts at its right/left most point
+      CComPtr<IRect2d> bbox;
+      shape->get_BoundingBox(&bbox);
+
       if ( orientation == tboLeft )
       {
-         bbox->get_Left(&xSwExt);
-         xSwExt += swExtToeOffset;
-         xSwStart = max(0, xSwExt);
+         bbox->get_Right(&xStart);
+         sign = 1;
       }
       else
       {
-         bbox->get_Right(&xSwExt);
-         xSwExt -= swExtToeOffset;
-         xSwStart = min(0, xSwExt);
+         bbox->get_Left(&xStart);
+         sign = -1;
+      }
+   }
+   else
+   {
+      m_idxExteriorBarrier = 1;
+      m_idxSidewalk = 0;
+      // sidewalk starts at the deck's edge
+      xStart = 0;
+
+      if ( orientation == tboLeft )
+      {
+         sign = 1;
+      }
+      else
+      {
+         sign = -1;
       }
 
       // move the barrier so it is above the sidewalk
-      CComQIPtr<IXYPosition> position(extShape);
-      position->Offset(0, h1);
+      CComQIPtr<IXYPosition> position(shape);
+      CComPtr<IPoint2d> hp;
+      position->get_LocatorPoint(lpHookPoint,&hp);
+      hp->Move(0,h1);
+      position->put_LocatorPoint(lpHookPoint,hp);
    }
+
 
    // sidewalk coordinates
    Float64 x[4], y[4];
-   x[0] = xSwStart;
+   x[0] = xStart;
    y[0] = 0;
 
-   x[1] = xSwStart;
+   x[1] = xStart;
    y[1] = h1;
 
-   x[2] = xSwEnd;
+   x[2] = xStart + sign*w;
    y[2] = h2;
 
-   x[3] = xSwEnd;
+   x[3] = xStart + sign*w;
    y[3] = 0;
 
-   // Sidewalk shape boundary
-   m_SidewalkShape->AddPoint(x[0],y[0]);
-   m_SidewalkShape->AddPoint(x[1],y[1]);
-   m_SidewalkShape->AddPoint(x[2],y[2]);
-   m_SidewalkShape->AddPoint(x[3],y[3]);
+   // create the sidewalk shape
+   CComPtr<IPolyShape> sidewalk;
+   sidewalk.CoCreateInstance(CLSID_PolyShape);
 
-   m_ExtBarrier = extBarrier;
+   sidewalk->AddPoint(x[0],y[0]);
+   sidewalk->AddPoint(x[1],y[1]);
+   sidewalk->AddPoint(x[2],y[2]);
+   sidewalk->AddPoint(x[3],y[3]);
+
+   CComQIPtr<IShape> shapeSidewalk(sidewalk);
+
+   if ( m_SidewalkPosition == swpBetweenBarriers )
+   {
+      m_CompShape->AddShape(shape,VARIANT_FALSE);
+      m_CompShape->AddShape(shapeSidewalk,VARIANT_FALSE);
+   }
+   else
+   {
+      m_CompShape->AddShape(shapeSidewalk,VARIANT_FALSE);
+      m_CompShape->AddShape(shape,VARIANT_FALSE);
+   }
+
+   m_ExtBarrier = shape;
    m_H1 = h1;
    m_H2 = h2;
-   m_W  = swWidth;
+   m_W  = w;
    m_Configuration = 2;
 
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::put_Barrier3(IBarrier* extBarrier,Float64 h1,Float64 h2,Float64 swWidth,
-                                            TrafficBarrierOrientation orientation,SidewalkPositionType swPosition,
-                                            IBarrier* intBarrier)
+STDMETHODIMP CSidewalkBarrier::put_Barrier3(IShape* extShape,Float64 h1,Float64 h2,Float64 w,IShape* intShape,TrafficBarrierOrientation orientation,SidewalkPositionType swPosition,Float64 connectionWidth)
 {
-   // int/ext barrier and sidewalk configuration
-   CHECK_IN(extBarrier);
-   CHECK_IN(intBarrier);
+   // Float64 barrier and sidewalk configuration
+   CHECK_IN(extShape);
+   CHECK_IN(intShape);
 
+   m_Orientation = orientation;
+   m_ConnectionWidth = connectionWidth;
    m_SidewalkPosition = swPosition;
-   m_Orientation      = orientation;
 
-   m_SidewalkShape->Clear();
+   m_CompShape->Clear();
 
-   // get the bounding boxes of barriers
-   CComPtr<IShape> extShape, intShape;
-   extBarrier->get_Shape(&extShape);
-   intBarrier->get_Shape(&intShape);
-
-   CComPtr<IRect2d> ext_bbox, int_bbox;
-   extShape->get_BoundingBox(&ext_bbox);
-   intShape->get_BoundingBox(&int_bbox);
-
-   // The input (nominal) sidewalk width is measured from ext box interior-most point to swWidth
-   Float64 extIntEdge;
+   Float64 xStart;
    Float64 sign;
-   if ( orientation == tboLeft )
-   {
-      ext_bbox->get_Right(&extIntEdge);
-      sign = 1;
-   }
-   else
-   {
-      ext_bbox->get_Left(&extIntEdge);
-      sign = -1;
-   }
-
-   // Edges of nominal sw
-   Float64 extNomSwEdge = extIntEdge; 
-   Float64 intNomSwEdge = extIntEdge + sign*swWidth;
-
-   // Edges of real sidewalk depend on barrier toe locations and sw position
-   Float64 extIntToeOffset, extExtToeOffset;
-   extBarrier->get_BarrierToeLocations(&extIntToeOffset, &extExtToeOffset);
-
-   Float64 intIntToeOffset, intExtToeOffset;
-   intBarrier->get_BarrierToeLocations(&intIntToeOffset, &intExtToeOffset);
-
-   Float64 extRealSwEdge;
-   Float64 intRealSwEdge;
    if ( m_SidewalkPosition == swpBetweenBarriers )
    {
-      // Sidewalk starts/ends at barriers' toes
-      extRealSwEdge = extNomSwEdge - sign*extIntToeOffset;
-      intRealSwEdge  = intNomSwEdge + sign*intExtToeOffset;
-   }
-   else
-   {
-      // move the exterior barrier so it is above the sidewalk
-      CComQIPtr<IXYPosition> position(extShape);
-      position->Offset(0, h1);
+      m_idxExteriorBarrier = 0;
+      m_idxSidewalk = 1;
 
-      // Sidewalk starts at the max of deck's edge and exterior toe of barrier
-      // and ends at interior toe of interior barrier
+      // get the bounding box of the exterior barrier
+      // the sidewalk starts at its right/left most point
+      CComPtr<IRect2d> bbox;
+      extShape->get_BoundingBox(&bbox);
+
       if ( orientation == tboLeft )
       {
-         ext_bbox->get_Left(&extRealSwEdge);
-         extRealSwEdge += extExtToeOffset;
-         extRealSwEdge = max(0, extRealSwEdge);
+         bbox->get_Right(&xStart);
+         sign = 1;
       }
       else
       {
-         ext_bbox->get_Right(&extRealSwEdge);
-         extRealSwEdge -= extExtToeOffset;
-         extRealSwEdge = min(0, extRealSwEdge);
+         bbox->get_Left(&xStart);
+         sign = -1;
+      }
+   }
+   else
+   {
+      m_idxExteriorBarrier = 1;
+      m_idxSidewalk = 0;
+
+      // sidewalk starts at the deck's edge
+      xStart = 0;
+
+      if ( orientation == tboLeft )
+      {
+         sign = 1;
+      }
+      else
+      {
+         sign = -1;
       }
 
-      Float64 intWid;
-      int_bbox->get_Width(&intWid);
-      intWid -= intIntToeOffset;
-
-      intRealSwEdge = intNomSwEdge + sign*intWid;
+      // move the barrier so it is above the sidewalk
+      CComQIPtr<IXYPosition> position(extShape);
+      CComPtr<IPoint2d> hp;
+      position->get_LocatorPoint(lpHookPoint,&hp);
+      hp->Move(0,h1);
+      position->put_LocatorPoint(lpHookPoint,hp);
    }
+
 
    // sidewalk coordinates
    Float64 x[4], y[4];
-   x[0] = extRealSwEdge;
+   x[0] = xStart;
    y[0] = 0;
 
-   x[1] = extRealSwEdge;
+   x[1] = xStart;
    y[1] = h1;
 
-   x[2] = intRealSwEdge;
+   x[2] = xStart + sign*w;
    y[2] = h2;
 
-   x[3] = intRealSwEdge;
+   x[3] = xStart + sign*w;
    y[3] = 0;
-
+   
    // create the sidewalk shape
-   m_SidewalkShape->AddPoint(x[0],y[0]);
-   m_SidewalkShape->AddPoint(x[1],y[1]);
-   m_SidewalkShape->AddPoint(x[2],y[2]);
-   m_SidewalkShape->AddPoint(x[3],y[3]);
+   CComPtr<IPolyShape> sidewalk;
+   sidewalk.CoCreateInstance(CLSID_PolyShape);
 
-   // Move the interior barrier
+   sidewalk->AddPoint(x[0],y[0]);
+   sidewalk->AddPoint(x[1],y[1]);
+   sidewalk->AddPoint(x[2],y[2]);
+   sidewalk->AddPoint(x[3],y[3]);
+
+   CComQIPtr<IShape> shapeSidewalk(sidewalk);
+
+   // move the interior barrier
    CComQIPtr<IXYPosition> position(intShape);
-
-   LocatorPointType lp;
-   lp = orientation == tboLeft ? lpBottomLeft : lpBottomRight;
-
    CComPtr<IPoint2d> point;
+   LocatorPointType lp;
+   if (m_SidewalkPosition == swpBetweenBarriers)
+      lp = orientation == tboLeft ? lpBottomLeft : lpBottomRight;
+   else
+      lp = orientation == tboLeft ? lpBottomRight : lpBottomLeft;
+
    position->get_LocatorPoint(lp,&point);
-
-   Float64 locate_x;
-   point->get_X(&locate_x);
-
-   Float64 dx = intNomSwEdge-locate_x;
-   Float64 dy;
+   Float64 dx,dy;
    if ( m_SidewalkPosition == swpBetweenBarriers )
    {
+      dx = x[3];
       dy = 0;
    }
    else
    {
+      dx = x[3];
       dy = h2;
    }
+   point->Move(dx,dy);
+   position->put_LocatorPoint(lp,point);
 
-   position->Offset(dx, dy);
+   if ( m_SidewalkPosition == swpBetweenBarriers )
+   {
+      m_CompShape->AddShape(extShape,VARIANT_FALSE);
+      m_CompShape->AddShape(shapeSidewalk,VARIANT_FALSE);
+   }
+   else
+   {
+      m_CompShape->AddShape(shapeSidewalk,VARIANT_FALSE);
+      m_CompShape->AddShape(extShape,VARIANT_FALSE);
+   }
+   m_CompShape->AddShape(intShape,VARIANT_FALSE);
 
-   m_ExtBarrier = extBarrier;
+   m_ExtBarrier = extShape;
    m_H1 = h1;
    m_H2 = h2;
-   m_W  = swWidth;
-   m_IntBarrier = intBarrier;
+   m_W  = w;
+   m_IntBarrier = intShape;
    m_Configuration = 3;
 
    return S_OK;
@@ -459,6 +404,26 @@ STDMETHODIMP CSidewalkBarrier::get_SidewalkWidth(Float64* width)
 {
    CHECK_RETVAL(width);
    *width = m_W;
+   return S_OK;
+}
+
+STDMETHODIMP CSidewalkBarrier::get_Material(IMaterial** material)
+{
+   CHECK_RETOBJ(material);
+   (*material) = m_Material;
+   (*material)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CSidewalkBarrier::putref_Material(IMaterial* material)
+{
+   if ( m_Material.IsEqualObject(material) )
+      return S_OK;
+
+   m_Material = material;
+
+#pragma Reminder("UPDATE: Fire Event")
+
    return S_OK;
 }
 
@@ -479,163 +444,16 @@ STDMETHODIMP CSidewalkBarrier::put_Path(IPath* path)
    m_Path.Release();
    path->Clone(&m_Path);
 
-   return S_OK;
-}
-
-STDMETHODIMP CSidewalkBarrier::get_ExteriorCurbWidth(Float64* width)
-{
-   CHECK_RETVAL(width);
-
-   // always have an exterior barrier
-   CComPtr<IShape> ext_shape;
-   m_ExtBarrier->get_Shape(&ext_shape);
-
-   CComPtr<IRect2d> ext_bb;
-   ext_shape->get_BoundingBox(&ext_bb);
-
-   Float64 xextEdge;
-   Float64 sign;
-   if ( m_Orientation == tboLeft )
-   {
-      ext_bb->get_Right(&xextEdge);
-      sign = 1;
-   }
-   else
-   {
-      ext_bb->get_Left(&xextEdge);
-      sign = -1;
-   }
-
-   Float64 curb_loc;
-   m_ExtBarrier->get_CurbLocation(&curb_loc);
-
-   *width = sign*xextEdge - curb_loc;
+#pragma Reminder("UPDATE: Fire Event")
 
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::get_CurbWidth(Float64* width)
+STDMETHODIMP CSidewalkBarrier::get_ConnectionWidth(Float64 location,Float64* width)
 {
    CHECK_RETVAL(width);
 
-   // always have an exterior barrier
-   CComPtr<IShape> ext_shape;
-   m_ExtBarrier->get_Shape(&ext_shape);
-
-   CComPtr<IRect2d> ext_bb;
-   ext_shape->get_BoundingBox(&ext_bb);
-
-   Float64 xextEdge;
-   Float64 sign;
-   if ( m_Orientation == tboLeft )
-   {
-      ext_bb->get_Right(&xextEdge);
-      sign = 1;
-   }
-   else
-   {
-      ext_bb->get_Left(&xextEdge);
-      sign = -1;
-   }
-
-   // width depends on configuration
-   if (m_Configuration==1)
-   {
-      Float64 curb_loc;
-      m_ExtBarrier->get_CurbLocation(&curb_loc);
-
-      *width = sign*xextEdge - curb_loc;
-   }
-   else if (m_Configuration==2)
-   {
-      *width = sign*xextEdge + m_W;
-   }
-   else if (m_Configuration==3)
-   {
-      CComPtr<IShape> int_shape;
-      m_IntBarrier->get_Shape(&int_shape);
-
-      CComPtr<IRect2d> int_bb;
-      int_shape->get_BoundingBox(&int_bb);
-
-      Float64 int_width;
-      int_bb->get_Width(&int_width);
-
-      Float64 curb_loc;
-      m_IntBarrier->get_CurbLocation(&curb_loc);
-
-      *width = sign*xextEdge + m_W + int_width - curb_loc;
-   }
-   else
-   {
-      ATLASSERT(0); // this is bad
-      *width = 0.0;
-      return E_FAIL;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CSidewalkBarrier::get_OverlayToeWidth(Float64* width)
-{
-   CHECK_RETVAL(width);
-
-   // always have an exterior barrier
-   CComPtr<IShape> ext_shape;
-   m_ExtBarrier->get_Shape(&ext_shape);
-
-   CComPtr<IRect2d> ext_bb;
-   ext_shape->get_BoundingBox(&ext_bb);
-
-   Float64 xextEdge;
-   Float64 sign;
-   if ( m_Orientation == tboLeft )
-   {
-      ext_bb->get_Right(&xextEdge);
-      sign = 1;
-   }
-   else
-   {
-      ext_bb->get_Left(&xextEdge);
-      sign = -1;
-   }
-
-   // width depends on configuration
-   if (m_Configuration==1)
-   {
-      Float64 int_toe, ext_toe;
-      m_ExtBarrier->get_BarrierToeLocations(&int_toe, &ext_toe);
-
-      *width = sign*xextEdge - int_toe;
-   }
-   else if (m_Configuration==2)
-   {
-      // toe is edge of sw if no interior barrier
-      *width = sign*xextEdge + m_W;
-   }
-   else if (m_Configuration==3)
-   {
-      CComPtr<IShape> int_shape;
-      m_IntBarrier->get_Shape(&int_shape);
-
-      CComPtr<IRect2d> int_bb;
-      int_shape->get_BoundingBox(&int_bb);
-
-      Float64 int_width;
-      int_bb->get_Width(&int_width);
-
-      Float64 int_toe, ext_toe;
-      m_IntBarrier->get_BarrierToeLocations(&int_toe, &ext_toe);
-
-      *width = sign*xextEdge + m_W + int_width - int_toe;
-   }
-   else
-   {
-      ATLASSERT(0); // this is bad
-      *width = 0.0;
-      return E_FAIL;
-   }
-
+   *width = m_ConnectionWidth;
    return S_OK;
 }
 
@@ -648,15 +466,41 @@ STDMETHODIMP CSidewalkBarrier::get_IsStructurallyContinuous(VARIANT_BOOL* pbCont
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::put_IsInteriorStructurallyContinuous(VARIANT_BOOL bContinuous)
+STDMETHODIMP CSidewalkBarrier::put_IsStructurallyContinuous(VARIANT_BOOL bContinuous)
 {
    m_bInteriorStructurallyContinuous = bContinuous;
+   m_bSidewalkStructurallyContinuous = bContinuous;
+   m_bExteriorStructurallyContinuous = bContinuous;
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::put_IsExteriorStructurallyContinuous(VARIANT_BOOL bContinuous)
+STDMETHODIMP CSidewalkBarrier::get_ExteriorBarrierShape(IShape** shape)
 {
-   m_bExteriorStructurallyContinuous = bContinuous;
+   CComPtr<ICompositeShapeItem> shapeItem;
+   m_CompShape->get_Item(0, &shapeItem);
+
+   return shapeItem->get_Shape(shape);
+}
+
+STDMETHODIMP CSidewalkBarrier::get_SidewalkShape(IShape** shape)
+{
+   CComPtr<ICompositeShapeItem> shapeItem;
+   m_CompShape->get_Item(1, &shapeItem);
+
+   return shapeItem->get_Shape(shape);
+}
+
+STDMETHODIMP CSidewalkBarrier::get_InteriorBarrierShape(IShape** shape)
+{
+   CComPtr<ICompositeShapeItem> shapeItem;
+   m_CompShape->get_Item(2, &shapeItem);
+
+   return shapeItem->get_Shape(shape);
+}
+
+STDMETHODIMP CSidewalkBarrier::put_IsInteriorStructurallyContinuous(VARIANT_BOOL bContinuous)
+{
+   m_bInteriorStructurallyContinuous = bContinuous;
    return S_OK;
 }
 
@@ -666,24 +510,9 @@ STDMETHODIMP CSidewalkBarrier::put_IsSidewalkStructurallyContinuous(VARIANT_BOOL
    return S_OK;
 }
 
-
-STDMETHODIMP CSidewalkBarrier::get_ExteriorBarrier(IBarrier** barr)
+STDMETHODIMP CSidewalkBarrier::put_IsExteriorStructurallyContinuous(VARIANT_BOOL bContinuous)
 {
-   CHECK_RETOBJ(barr);
-
-   return m_ExtBarrier.CopyTo(barr);
-}
-
-STDMETHODIMP CSidewalkBarrier::get_InteriorBarrier(IBarrier** barr)
-{
-   CHECK_RETOBJ(barr);
-
-   return m_IntBarrier.CopyTo(barr);
-}
-
-STDMETHODIMP CSidewalkBarrier::get_SidewalkPosition(SidewalkPositionType* posType)
-{
-   *posType = m_SidewalkPosition;
+   m_bExteriorStructurallyContinuous = bContinuous;
    return S_OK;
 }
 

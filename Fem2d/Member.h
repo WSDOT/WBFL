@@ -152,7 +152,7 @@ protected:
    void InitModel();
    void ClearLoads();
    void AssembleF();
-   JointIDType GetJointNum(CJoint* pj);
+   long  GetJointNum(CJoint* pj);
    void GetGlobalJntForces(JointIDType jntId,Float64 *force);
    void ComputeResults();
    MbrType GetMemberType();

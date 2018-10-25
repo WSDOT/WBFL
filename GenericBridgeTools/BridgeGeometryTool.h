@@ -83,7 +83,6 @@ public:
    STDMETHOD(CurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
 	STDMETHOD(DeckOverhang)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOverhang);
 	STDMETHOD(DeckOverhangFromGirder)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ SpanIndexType spanIdx,/*[in]*/ GirderIndexType gdrIdx, /*[in]*/ Float64 distFromStartOfGirder,/*[in]*/ DirectionType side,/*[out]*/ Float64* pOverhang);
-   STDMETHOD(InteriorCurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* pOffset);
 };
 
 #endif //__BridgeGeometryTool_H_

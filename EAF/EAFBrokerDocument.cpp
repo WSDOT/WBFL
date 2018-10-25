@@ -281,7 +281,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
 BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent)
 {
    // this function does the actual work of loading an agent
-   CComPtr<IIndexArray> lErrArray;
+   CComPtr<ILongArray> lErrArray;
    HRESULT hr;
    if ( bRequiredAgent )
       hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrArray );
@@ -294,7 +294,7 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
       lErrArray->get_Count(&nErrors);
       for ( CollectionIndexType errIdx = 0; errIdx < nErrors; errIdx++ )
       {
-         IndexType agentIdx;
+         IDType agentIdx; // should be index, but can't be because of long array
          lErrArray->get_Item(errIdx,&agentIdx);
          LPOLESTR pszCLSID;
          StringFromCLSID( pClsid[agentIdx], &pszCLSID );

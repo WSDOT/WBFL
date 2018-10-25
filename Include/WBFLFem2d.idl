@@ -245,7 +245,7 @@ library WBFLFem2d
        HRESULT IsDofSupported([in]Fem2dJointReleaseType rel, [out, retval] VARIANT_BOOL *pVal);
 
 	   [propget, helpcontext(IDH_IFem2dJoint_Members), helpstring("property Members - returns collection of ID's of Members connected to this Joint")] 
-       HRESULT Members([out, retval] IIDArray **pVal);
+       HRESULT Members([out, retval] ILongArray **pVal);
    };
 
    [

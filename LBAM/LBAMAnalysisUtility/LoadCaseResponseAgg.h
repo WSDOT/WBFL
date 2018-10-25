@@ -66,11 +66,11 @@ END_CONNECTION_POINT_MAP()
 public:
 // ILoadCaseResponse
 public:
-	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-	STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-	STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-	STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults** results);
+	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCase, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
+	STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
+	STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCase, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
+	STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCase, /*[in]*/ILongArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults** results);
 
 private:
    // internal implementation

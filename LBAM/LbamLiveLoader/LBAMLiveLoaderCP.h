@@ -27,7 +27,7 @@ public:
             events->OnLiveLoadChanged(lltype);
 		}
 	}
-	VOID Fire_OnStiffnessResponseChanged(ChangeScopeType scope, PoiIDType poiID)
+	VOID Fire_OnStiffnessResponseChanged(ChangeScopeType scope, LONG poiID)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
