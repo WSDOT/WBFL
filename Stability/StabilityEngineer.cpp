@@ -59,9 +59,8 @@ static char THIS_FILE[] = __FILE__;
 
 #define THETA_MAX 0.4
 
-stbStabilityEngineer::stbStabilityEngineer(IUnitConvert* pUnitConvert)
+stbStabilityEngineer::stbStabilityEngineer()
 {
-   m_pUnitConvert = pUnitConvert;
 }
 
 stbLiftingResults stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILiftingStabilityProblem* pStabilityProblem) const
@@ -115,10 +114,19 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
 
    results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg;
 
+   ComputeXcg(pGirder, results);
+
    for ( IndexType i = 0; i < 3; i++ )
    {
       stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
-      results.EccLateralSweep[impact] = results.OffsetFactor*results.LateralSweep + pStabilityProblem->GetSupportPlacementTolerance();
+      if (pStabilityProblem->IncludeLateralRollAxisOffset())
+      {
+         results.EccLateralSweep[impact] = results.OffsetFactor*(results.LateralSweep + pStabilityProblem->GetLateralCamber()) + pStabilityProblem->GetSupportPlacementTolerance() + results.Xleft;
+      }
+      else
+      {
+         results.EccLateralSweep[impact] = results.OffsetFactor*results.LateralSweep + pStabilityProblem->GetSupportPlacementTolerance();
+      }
    }
 }
 
@@ -153,13 +161,13 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    results.Ywind[stbTypes::ImpactUp]   = Ywind;
    results.Ywind[stbTypes::ImpactDown] = Ywind;
 
-   results.Yr = Yra - results.Ycg; // location from the center of gravity from the roll axis (positive means roll center is above CG)
+   results.Yr = Yra - results.Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
 
    Float64 Dra = fabs(results.Yr);  // adjusted distance between CG and roll axis (using fabs because distance is an absolute value)
    if ( bDirectCamber )
    {
       Float64 m = pStabilityProblem->GetCamberMultiplier();
-      Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*m*Camber;
+      Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*(m*Camber + pGirder->GetPrecamber());
       results.CamberOffsetFactor = 1.0; // not applicable, but set it to a nice number
    }
    else
@@ -170,7 +178,7 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
       // for hauling Camber should be greater than zero because camber causes the cg to move
       // further away from the roll axis
       ATLASSERT(::InRange(0.0,fabs(Camber),1.0)); // must be a fraction, not an actual percentage
-      results.CamberOffsetFactor = 1.0 - ::BinarySign(results.Yr)*Camber;
+      results.CamberOffsetFactor = 1.0 - (::BinarySign(results.Yr)*Camber + pGirder->GetPrecamber());
       Dra *= results.CamberOffsetFactor;
    }
    // additional effects due to impact adjusted force of inclined lifting cable will be added later
@@ -201,15 +209,16 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    Float64 Wg = results.Wg;
 
    // compute critical buckling load
-   Float64 Ag,Ix,Iy,Yt,Hg,Wtop,Wbot;
-   pGirder->GetSectionProperties(Lg/2,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtop,&Wbot);
+   Float64 Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtop,Wbot;
+   pGirder->GetSectionProperties(Lg/2,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtop,&Wbot);
    Float64 Ll, Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
 
    const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
 
    Float64 Ec = concrete.GetE();
-   results.Pcrit = M_PI*M_PI*Ec*Iy/((Lg - Ll - Lr)*(Lg - Ll - Lr));
+   Float64 L = Lg - Ll - Lr;
+   results.Pcrit = M_PI*M_PI*Ec*(Ixx*Iyy-Ixy*Ixy)/(Ixx*L*L);
 
    Float64 ImpactUp,ImpactDown;
    pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
@@ -293,12 +302,12 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    results.vSectionResults.clear();
    results.vSectionResults.reserve(pStabilityProblem->GetAnalysisPoints().size());
 
-   results.MinFScr         =  DBL_MAX;
-   results.MinFsFailure    =  DBL_MAX;
-   results.MaxStress       = -DBL_MAX;
-   results.MinStress       =  DBL_MAX;
-   results.MaxDirectStress = -DBL_MAX;
-   results.MinDirectStress =  DBL_MAX;
+   results.MinFScr         =  Float64_Max;
+   results.MinFsFailure    =  Float64_Max;
+   results.MaxStress       = -Float64_Max;
+   results.MinStress       =  Float64_Max;
+   results.MaxDirectStress = -Float64_Max;
+   results.MinDirectStress =  Float64_Max;
 
    Float64 fr = concrete.GetFlexureFr();
 
@@ -314,6 +323,8 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    Float64 Camber;
    pStabilityProblem->GetCamber(&bDirectCamber,&Camber);
 
+   // lateral eccentricity of prestress force... this value is constant so get it outside the loop
+   Float64 exps = pStabilityProblem->GetFpeLateralEccentricity();
 
    PoiIDType poiID = 0;
    IndexType analysisPointIdx = 0;
@@ -343,7 +354,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       if ( segment )
       {
          rebarLayout->CreateRebarSection(X,0,&rebarSection);
-         segment->get_PrimaryShape(X,sbLeft,&shape);
+         segment->get_PrimaryShape(X,&shape);
       }
 
       // eccentricity of horizontal load due to inclined cable at X
@@ -361,25 +372,36 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
-      Float64 Hg,Ag,Ix,Iy,Yt,Wtf,Wbf;
-      pGirder->GetSectionProperties(X,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
+      Float64 Hg,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Wtf,Wbf;
+      pGirder->GetSectionProperties(X,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+
+      Float64 D = Ixx*Iyy - Ixy*Ixy;
+
+      gpPoint2d pntStress[4];
+      pGirder->GetStressPoints(X, &pntStress[stbTypes::TopLeft], &pntStress[stbTypes::TopRight], &pntStress[stbTypes::BottomLeft], &pntStress[stbTypes::BottomRight]);
 
       // stress due to prestressing
-      sectionResult.fps[stbTypes::Top]    = 0;
-      sectionResult.fps[stbTypes::Bottom] = 0;
-      for ( int s = 0; s < 3; s++ )
+      for (int s = 0; s < 3; s++)
       {
          stbTypes::StrandType strandType = (stbTypes::StrandType)s;
 
          Float64 Fpe, Y;
-         pStabilityProblem->GetFpe(strandType,X,&Fpe,&Y);
-         Float64 eps = Y - Yt; // eccentricity of strands (positive values means ps force is above CG)
+         pStabilityProblem->GetFpe(strandType, X, &Fpe, &Y);
+      
+         if (!IsZero(Fpe))
+         {
+            Float64 eyps = Y - Ytop; // eccentricity of strands (positive values means ps force is above CG)
 
-         Float64 ft = -Fpe/Ag + Fpe*eps*Yt/Ix;
-         Float64 fb = -Fpe/Ag + Fpe*eps*(Hg + Yt)/Ix;
+            Float64 Mxps = Fpe*eyps;
+            Float64 Myps = Fpe*exps;
 
-         sectionResult.fps[stbTypes::Top]    += ft;
-         sectionResult.fps[stbTypes::Bottom] += fb;
+            for (int c = 0; c < 4; c++)
+            {
+               stbTypes::Corner corner = (stbTypes::Corner)c;
+               Float64 f = ((Myps*Ixx + Mxps*Ixy)*pntStress[corner].X() - (Mxps*Iyy + Myps*Ixy)*pntStress[corner].Y()) / D - (Fpe/Ag);
+               sectionResult.fps[corner] += f;
+            }
+         }
       }
 
       // stress due to inclined lift cable
@@ -389,19 +411,25 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
          Plift = 0; // X is not between the lifting devices so there isn't any axial load due to the inclined cable
       }
 
-      // stress due to inclined lift cables (no impact)
-      sectionResult.fcable[stbTypes::Top]    = Plift*(1/Ag - results.Dra[stbTypes::NoImpact]*Yt/Ix);
-      sectionResult.fcable[stbTypes::Bottom] = Plift*(1/Ag - results.Dra[stbTypes::NoImpact]*(Hg+Yt)/Ix);
+      Float64 MxLift = -Plift*results.Dra[stbTypes::NoImpact];
+      Float64 MyLift = 0;
+      Float64 MxGirder = sectionResult.Mg;
+      Float64 MyGirder = 0;
+      Float64 MxWind = 0;
+      Float64 MyWind = -sectionResult.Mw;
+      for (int c = 0; c < 4; c++)
+      {
+         stbTypes::Corner corner = (stbTypes::Corner)c;
 
-      // stress due to dead load (no impact)
-      sectionResult.fg[stbTypes::Top]    = sectionResult.Mg*Yt/Ix;
-      sectionResult.fg[stbTypes::Bottom] = sectionResult.Mg*(Hg + Yt)/Ix;
+         // stress due to inclined lift cables (no impact)
+         sectionResult.fcable[corner] = ((MyLift*Ixx + MxLift*Ixy)*pntStress[corner].X() - (MxLift*Iyy + MyLift*Ixy)*pntStress[corner].Y()) / D - (-Plift / Ag);
+         
+         // stress due to plumb girder (no impact)
+         sectionResult.fg[corner] = ((MyGirder*Ixx + MxGirder*Ixy)*pntStress[corner].X() - (MxGirder*Iyy + MyGirder*Ixy)*pntStress[corner].Y()) / D;
 
-      // stress due to wind towards the left
-      sectionResult.fw[stbTypes::TopLeft]     =  sectionResult.Mw*Wtf/(2*Iy);
-      sectionResult.fw[stbTypes::TopRight]    = -sectionResult.Mw*Wtf/(2*Iy);
-      sectionResult.fw[stbTypes::BottomLeft]  =  sectionResult.Mw*Wbf/(2*Iy);
-      sectionResult.fw[stbTypes::BottomRight] = -sectionResult.Mw*Wbf/(2*Iy);
+         // stress due to wind towards the left
+         sectionResult.fw[corner] = ((MyWind*Ixx + MxWind*Ixy)*pntStress[corner].X() - (MxWind*Iyy + MyWind*Ixy)*pntStress[corner].Y()) / D;
+      }
 
       // analyze the girder for all the combinations of impact and wind
       for ( IndexType i = 0; i < 3; i++ )
@@ -435,12 +463,9 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                stbTypes::Corner corner = (stbTypes::Corner)c;
 
                stbTypes::Face face = (corner == stbTypes::TopLeft || corner == stbTypes::TopRight ? stbTypes::Top : stbTypes::Bottom);
-               Float64 b = (face == stbTypes::Top ? Wtf : Wbf);
-
-               Float64 cornerSign = (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft ? 1 : -1);
 
                // stress due to direct loads
-               sectionResult.fDirect[impact][wind][corner] = sectionResult.fps[face] + IM[impact]*(sectionResult.fcable[face] + sectionResult.fg[face]) + windSign*sectionResult.fw[corner];
+               sectionResult.fDirect[impact][wind][corner] = sectionResult.fps[corner] + IM[impact]*(sectionResult.fcable[corner] + sectionResult.fg[corner]) + windSign*sectionResult.fw[corner];
 
                if ( ::IsLT(sectionResult.fMaxDirect[face],sectionResult.fDirect[impact][wind][corner]) )
                {
@@ -462,7 +487,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if ( ::IsLT(results.MaxDirectStress,sectionResult.fDirect[impact][wind][corner]) )
                {
                   results.MaxDirectStress = sectionResult.fDirect[impact][wind][corner];
-                  results.MaxDirectStressAnalysisPointIndex = (IndexType)poiID;
+                  results.MaxDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
                   results.MaxDirectStressImpactDirection = impact;
                   results.MaxDirectStressWindDirection = wind;
                   results.MaxDirectStressCorner = corner;
@@ -472,14 +497,17 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if ( ::IsLT(sectionResult.fDirect[impact][wind][corner],results.MinDirectStress) )
                {
                   results.MinDirectStress = sectionResult.fDirect[impact][wind][corner];
-                  results.MinDirectStressAnalysisPointIndex = (IndexType)poiID;
+                  results.MinDirectStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
                   results.MinDirectStressImpactDirection = impact;
                   results.MinDirectStressWindDirection = wind;
                   results.MinDirectStressCorner = corner;
                }
 
                // stress due to lateral loads caused by the girder being tilted
-               sectionResult.fTilt[impact][wind][corner] = cornerSign*(IM[impact]*(sectionResult.Mg - Plift*results.Zo[impact])*results.ThetaEq[impact][wind] + sectionResult.Mh[impact][wind])*b/(2*Iy);
+               Float64 Mx = 0;
+               Float64 My = -1.0*IM[impact] * ((sectionResult.Mg - Plift*results.Zo[impact])*results.ThetaEq[impact][wind] + sectionResult.Mh[impact][wind]);
+               Float64 f = ((My*Ixx + Mx*Ixy)*pntStress[corner].X() - (Mx*Iyy + My*Ixy)*pntStress[corner].Y()) / D;
+               sectionResult.fTilt[impact][wind][corner] = f;
 
                // total stress
                sectionResult.f[impact][wind][corner] = sectionResult.fDirect[impact][wind][corner] + sectionResult.fTilt[impact][wind][corner];
@@ -503,7 +531,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if ( ::IsLT(results.MaxStress,sectionResult.f[impact][wind][corner]) )
                {
                   results.MaxStress = sectionResult.f[impact][wind][corner];
-                  results.MaxStressAnalysisPointIndex = (IndexType)poiID;
+                  results.MaxStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
                   results.MaxStressImpactDirection = impact;
                   results.MaxStressWindDirection = wind;
                   results.MaxStressCorner = corner;
@@ -512,15 +540,21 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
                if ( ::IsLT(sectionResult.f[impact][wind][corner],results.MinStress) )
                {
                   results.MinStress = sectionResult.f[impact][wind][corner];
-                  results.MinStressAnalysisPointIndex = (IndexType)poiID;
+                  results.MinStressAnalysisPointIndex = sectionResult.AnalysisPointIndex;
                   results.MinStressImpactDirection = impact;
                   results.MinStressWindDirection = wind;
                   results.MinStressCorner = corner;
                }
 
                // compute cracking moment and cracking factor of safety
-               Float64 mcr = (fr - sectionResult.fDirect[impact][wind][corner])*2*Iy/b - sectionResult.Mh[impact][wind];
-               mcr = Max(mcr,0.0); // if mcr is less than zero, the beam cracks even if it is not tilted... there isn't a lateral moment to cause cracking since it is already cracked
+               Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted
+               if (sectionResult.fDirect[impact][wind][corner] < fr )
+               {
+                  // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
+                  mcr = fabs((fr - sectionResult.fDirect[impact][wind][corner])*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y())) - sectionResult.Mh[impact][wind];
+                  mcr = Max(mcr, 0.0); // make sure Mh doesn't make mcr negative... if mcr is negative, Mh causes cracking so the girder is cracked before tilting
+               }
+
                Float64 m = fabs(IM[impact]*sectionResult.Mg - Plift*results.Zo[impact]);
 
                Float64 theta_crack = (IsZero(m) ? THETA_MAX : mcr/m);
@@ -554,7 +588,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             // keep track of the minimum FScr for all analysis points
             if ( ::IsLT(sectionResult.FScr[impact][wind],results.MinFScr) )
             {
-               results.FScrAnalysisPointIndex = (IndexType)poiID; // poiIDs exactly match the analysis point indicies
+               results.FScrAnalysisPointIndex = sectionResult.AnalysisPointIndex; // poiIDs exactly match the analysis point indicies
                results.FScrImpactDirection = impact;
                results.FScrWindDirection = wind;
                results.FScrCorner = sectionResult.CrackedFlange[impact][wind];
@@ -564,7 +598,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
             if ( segment )
             {
                CComPtr<IShape> shape;
-               segment->get_PrimaryShape(X,sbLeft,&shape);
+               segment->get_PrimaryShape(X,&shape);
 
                CComPtr<IRebarSection> rebarSection;
                rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
@@ -746,6 +780,9 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       }
    }
 
+   // lateral eccentricity of prestress force... this value is constant so get it outside the loop
+   Float64 exps = pStabilityProblem->GetFpeLateralEccentricity();
+
    PoiIDType poiID = 0;
    CComQIPtr<IFem2dModelResults> femResults(model);
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
@@ -792,42 +829,53 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mcf = mz;
 
-      Float64 Hg,Ag,Ix,Iy,Yt,Wbf,Wtf;
-      pGirder->GetSectionProperties(X,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
+      Float64 Hg,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Wbf,Wtf;
+      pGirder->GetSectionProperties(X,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+
+      Float64 D = Ixx*Iyy - Ixy*Ixy;
+
+      gpPoint2d pntStress[4];
+      pGirder->GetStressPoints(X, &pntStress[stbTypes::TopLeft], &pntStress[stbTypes::TopRight], &pntStress[stbTypes::BottomLeft], &pntStress[stbTypes::BottomRight]);
 
       // stress due to prestressing
-      sectionResult.fps[stbTypes::Top]    = 0;
-      sectionResult.fps[stbTypes::Bottom] = 0;
       for ( int s = 0; s < 3; s++ )
       {
          stbTypes::StrandType strandType = (stbTypes::StrandType)s;
 
          Float64 Fpe, Y;
          pStabilityProblem->GetFpe(strandType,X,&Fpe,&Y);
-         Float64 eps = Y - Yt; // eccentricity of strands (positive values means ps force is above CG)
+         Float64 eyps = Y - Ytop; // eccentricity of strands (positive values means ps force is above CG)
 
-         Float64 ft = -Fpe/Ag + Fpe*eps*Yt/Ix;
-         Float64 fb = -Fpe/Ag + Fpe*eps*(Hg + Yt)/Ix;
+         Float64 Mxps = Fpe*eyps;
+         Float64 Myps = Fpe*exps;
 
-         sectionResult.fps[stbTypes::Top]    += ft;
-         sectionResult.fps[stbTypes::Bottom] += fb;
+         for (int c = 0; c < 4; c++)
+         {
+            stbTypes::Corner corner = (stbTypes::Corner)c;
+            Float64 f = ((Myps*Ixx + Mxps*Ixy)*pntStress[corner].X() - (Mxps*Iyy + Myps*Ixy)*pntStress[corner].Y()) / D - (Fpe / Ag);
+            sectionResult.fps[corner] += f;
+         }
       }
 
-      // stress due to dead load
-      sectionResult.fg[stbTypes::Top]    = sectionResult.Mg*Yt/Ix;
-      sectionResult.fg[stbTypes::Bottom] = sectionResult.Mg*(Hg + Yt)/Ix;
+      Float64 MxCF = 0;
+      Float64 MyCF = -sectionResult.Mcf;
+      Float64 MxGirder = sectionResult.Mg;
+      Float64 MyGirder = 0;
+      Float64 MxWind = 0;
+      Float64 MyWind = -sectionResult.Mw;
+      for (int c = 0; c < 4; c++)
+      {
+         stbTypes::Corner corner = (stbTypes::Corner)c;
 
-      // stress due to wind towards the left
-      sectionResult.fw[stbTypes::TopLeft]     =  sectionResult.Mw*Wtf/(2*Iy);
-      sectionResult.fw[stbTypes::TopRight]    = -sectionResult.Mw*Wtf/(2*Iy);
-      sectionResult.fw[stbTypes::BottomLeft]  =  sectionResult.Mw*Wbf/(2*Iy);
-      sectionResult.fw[stbTypes::BottomRight] = -sectionResult.Mw*Wbf/(2*Iy);
+         // stress due to plumb girder (no impact)
+         sectionResult.fg[corner] = ((MyGirder*Ixx + MxGirder*Ixy)*pntStress[corner].X() - (MxGirder*Iyy + MyGirder*Ixy)*pntStress[corner].Y()) / D;
 
-      // stress due to centrifugal
-      sectionResult.fcf[stbTypes::TopLeft]     =  cfSign*sectionResult.Mcf*Wtf/(2*Iy);
-      sectionResult.fcf[stbTypes::TopRight]    = -cfSign*sectionResult.Mcf*Wtf/(2*Iy);
-      sectionResult.fcf[stbTypes::BottomLeft]  =  cfSign*sectionResult.Mcf*Wbf/(2*Iy);
-      sectionResult.fcf[stbTypes::BottomRight] = -cfSign*sectionResult.Mcf*Wbf/(2*Iy);
+         // stress due to wind towards the left
+         sectionResult.fw[corner] = ((MyWind*Ixx + MxWind*Ixy)*pntStress[corner].X() - (MxWind*Iyy + MyWind*Ixy)*pntStress[corner].Y()) / D;
+
+         // stress due to centrifugal forces
+         sectionResult.fcf[corner] = ((MyCF*Ixx + MxCF*Ixy)*pntStress[corner].X() - (MxCF*Iyy + MyCF*Ixy)*pntStress[corner].Y()) / D;
+      }
 
       for ( int i = 0; i < 3; i++ )
       {
@@ -875,7 +923,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   Float64 cornerSign = (corner == stbTypes::TopLeft || corner == stbTypes::BottomLeft ? 1 : -1);
 
                   // stress due to direct loads (plumb girder)
-                  sectionResult.fDirect[slope][impact][wind][corner] = sectionResult.fps[face] + im*sectionResult.fg[face] + windSign*sectionResult.fw[corner];
+                  sectionResult.fDirect[slope][impact][wind][corner] = sectionResult.fps[corner] + im*sectionResult.fg[corner] + windSign*sectionResult.fw[corner];
                   if ( slope == stbTypes::Superelevation )
                   {
                      sectionResult.fDirect[slope][impact][wind][corner] += sectionResult.fcf[corner];
@@ -901,7 +949,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   if ( ::IsLT(results.MaxDirectStress[slope],sectionResult.fDirect[slope][impact][wind][corner]) )
                   {
                      results.MaxDirectStress[slope] = sectionResult.fDirect[slope][impact][wind][corner];
-                     results.MaxDirectStressAnalysisPointIndex[slope] = (IndexType)poiID;
+                     results.MaxDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
                      results.MaxDirectStressImpactDirection[slope] = impact;
                      results.MaxDirectStressWindDirection[slope] = wind;
                      results.MaxDirectStressCorner[slope] = corner;
@@ -911,15 +959,18 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   if ( ::IsLT(sectionResult.fDirect[slope][impact][wind][corner],results.MinDirectStress[slope]) )
                   {
                      results.MinDirectStress[slope] = sectionResult.fDirect[slope][impact][wind][corner];
-                     results.MinDirectStressAnalysisPointIndex[slope] = (IndexType)poiID;
+                     results.MinDirectStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
                      results.MinDirectStressImpactDirection[slope] = impact;
                      results.MinDirectStressWindDirection[slope] = wind;
                      results.MinDirectStressCorner[slope] = corner;
                   }
 
                   // stress due to lateral loads caused by the girder being tilted
-                  sectionResult.fTilt[slope][impact][wind][corner] = cornerSign*(im*sectionResult.Mg*results.ThetaEq[slope][impact][wind])*b/(2*Iy);
-               
+                  Float64 Mx = 0;
+                  Float64 My = -1.0 * im * sectionResult.Mg*results.ThetaEq[slope][impact][wind];
+                  Float64 f = ((My*Ixx + Mx*Ixy)*pntStress[corner].X() - (Mx*Iyy + My*Ixy)*pntStress[corner].Y()) / D;
+                  sectionResult.fTilt[slope][impact][wind][corner] = f;
+
                   // total stress
                   sectionResult.f[slope][impact][wind][corner] = sectionResult.fDirect[slope][impact][wind][corner] + sectionResult.fTilt[slope][impact][wind][corner];
 
@@ -942,8 +993,8 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   // Overall max stress (all analysis points)
                   if ( ::IsLT(results.MaxStress[slope],sectionResult.f[slope][impact][wind][corner]) )
                   {
+                     results.MaxStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
                      results.MaxStress[slope] = sectionResult.f[slope][impact][wind][corner];
-                     results.MaxStressAnalysisPointIndex[slope] = (IndexType)poiID;
                      results.MaxStressImpactDirection[slope] = impact;
                      results.MaxStressWindDirection[slope] = wind;
                      results.MaxStressCorner[slope] = corner;
@@ -952,16 +1003,21 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                   // Overall min stress (all analysis points)
                   if ( ::IsLT(sectionResult.f[slope][impact][wind][corner],results.MinStress[slope]) )
                   {
+                     results.MinStressAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex;
                      results.MinStress[slope] = sectionResult.f[slope][impact][wind][corner];
-                     results.MinStressAnalysisPointIndex[slope] = (IndexType)poiID;
                      results.MinStressImpactDirection[slope] = impact;
                      results.MinStressWindDirection[slope] = wind;
                      results.MinStressCorner[slope] = corner;
                   }
 
                   // compute cracking moment and cracking factor of safety
-                  Float64 mcr = (fr - sectionResult.fDirect[slope][impact][wind][corner])*2*Iy/b;
-                  mcr = Max(mcr,0.0); // if mcr is less than zero, the beam cracks even if it is not tilted... there isn't a lateral moment to cause cracking since it is already cracked
+                  Float64 mcr = 0; // if the direct stress exceedes the modulus of rupture, the beam is cracked before it is tilted
+                  if (sectionResult.fDirect[slope][impact][wind][corner] < fr )
+                  {
+                     // the direct stress is less than the modulus of rupture, therefore there needs to be additional moment applied to cause cracking
+                     mcr = fabs((fr - sectionResult.fDirect[slope][impact][wind][corner])*D / (Ixx*pntStress[corner].X() - Ixy*pntStress[corner].Y()));
+                  }
+
                   Float64 m = fabs(im*sectionResult.Mg);
                   Float64 theta_crack = (IsZero(m) ? THETA_MAX : mcr/m);
                   theta_crack = ::ForceIntoRange(0.0,theta_crack,THETA_MAX);
@@ -995,7 +1051,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                if ( ::IsLT(sectionResult.FScr[slope][impact][wind],results.MinFScr[slope]) )
                {
                   results.MinFScr[slope] = sectionResult.FScr[slope][impact][wind];
-                  results.FScrAnalysisPointIndex[slope] = (IndexType)poiID; // poiIDs exactly match the analysis point indicies
+                  results.FScrAnalysisPointIndex[slope] = sectionResult.AnalysisPointIndex; 
                   results.FScrImpactDirection[slope] = impact;
                   results.FScrWindDirection[slope] = wind;
                }
@@ -1003,7 +1059,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
                if ( segment )
                {
                   CComPtr<IShape> shape;
-                  segment->get_PrimaryShape(X,sbLeft,&shape);
+                  segment->get_PrimaryShape(X,&shape);
 
                   CComPtr<IRebarSection> rebarSection;
                   rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
@@ -1321,8 +1377,8 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    std::vector<Float64>::iterator prevIter(vX.begin());
    std::vector<Float64>::iterator iter = prevIter+1;
    std::vector<Float64>::iterator end(vX.end());
-   Float64 prevA, Ix, Iy, prevYt, prevHg, Wtf, Wbf;
-   pGirder->GetSectionProperties(*prevIter,&prevA,&Ix,&Iy,&prevYt,&prevHg,&Wtf,&Wbf);
+   Float64 prevA, Ixx, Iyy, Ixy, prevXcg, prevYcg, prevHg, Wtf, Wbf;
+   pGirder->GetSectionProperties(*prevIter,&prevA,&Ixx,&Iyy,&Ixy,&prevXcg,&prevYcg,&prevHg,&Wtf,&Wbf);
    LoadIDType loadID = 0;
    Float64 Wg = 0;
    Float64 Wcf = 0;
@@ -1334,11 +1390,11 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       Float64 prevX = *prevIter;
       Float64 currX = *iter;
       
-      Float64 Ag,Yt,Hg;
-      pGirder->GetSectionProperties(currX,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
+      Float64 Ag,Xleft,Ytop,Hg;
+      pGirder->GetSectionProperties(currX,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
 
-      Float64 EA = Ag*Ec;
-      Float64 EI = Ix*Ec;
+      Float64 EA = Ec*Ag;
+      Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy)/Iyy;
 
       // create member
       CComPtr<IFem2dMember> member;
@@ -1353,7 +1409,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 
       Float64 wg = (wStart + wEnd)*(currX - prevX);
       Wg += wg;
-      ycgwg += (prevYt + Yt)*wg;
+      ycgwg += (prevYcg + Ytop)*wg;
 
       // NOTE: Wind and CF is applied in the same direction as gravity
       // We have a 2D, plane frame model, not a 3D space frame. Our FEM engine does not support out of plane loading
@@ -1396,13 +1452,14 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       YwindWwind += -y_wind*w_wind;
 
       prevA = Ag;
-      prevYt = Yt;
+      prevXcg = Xleft;
+      prevYcg = Ytop;
       prevHg = Hg;
    }
 
    results.Wg = Wg/2;
    ycgwg /= 2;
-   results.Ycg = ycgwg/Wg;
+   results.Ytop = ycgwg/Wg;
 
    // divide by 2 to get total wind load (see note above)
    results.Wwind = Wwind/2;
@@ -1452,13 +1509,13 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       swPointLoads->Create(ptLoadID++,mbrID,Xmbr,0,P,0,lotMember,&ptLoad);
 
       Wg += -P;
-      Float64 Ag,Ix,Iy,Yt,Hg,Wtf,Wbf;
-      pGirder->GetSectionProperties(X,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
-      ycgwg = Yt*P;
+      Float64 Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf;
+      pGirder->GetSectionProperties(X,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+      ycgwg = Ytop*P;
    }
 
    // adjust total weight and vertical center of mass for point loads
-   results.Ycg = (results.Wg*results.Ycg + ycgwg)/(results.Wg + Wg);
+   results.Ytop = (results.Wg*results.Ytop + ycgwg)/(results.Wg + Wg);
    results.Wg += Wg;
 
    // Apply point loads for due to lifting
@@ -1471,12 +1528,12 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 
       Float64 Yrc = pStabilityProblem->GetYRollAxis();
 
-      Float64 Ag,Ix,Iy,Yt,Hg,Wtf,Wbf;
-      pGirder->GetSectionProperties(leftSupportLoc,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
-      Float64 Mleft = -Ph*(Yt + Yrc);
+      Float64 Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf;
+      pGirder->GetSectionProperties(leftSupportLoc,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+      Float64 Mleft = -Ph*(Ytop + Yrc);
 
-      pGirder->GetSectionProperties(rightSupportLoc,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtf,&Wbf);
-      Float64 Mright = Ph*(Yt + Yrc);
+      pGirder->GetSectionProperties(rightSupportLoc,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
+      Float64 Mright = Ph*(Ytop + Yrc);
 
       CComPtr<IFem2dJointLoad> leftJntLoad,rightJntLoad;
       liftJointLoads->Create(0,leftSupportJntID,0.0,0.0,Mleft,&leftJntLoad);
@@ -1647,18 +1704,70 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 #endif
 }
 
+Float64 stbStabilityEngineer::ComputeXcg(const stbIGirder* pGirder, stbResults& results) const
+{
+   // Location of CG with respect to the roll axis, assuming the roll axis is at the middle of the girder (Wtop/2)
+   SectionIndexType nSections = pGirder->GetSectionCount();
+   if (nSections == 1)
+   {
+      Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
+      Float64 Ag2, Ixx2, Iyy2, Ixy2, Xcg2, Ycg2, Hg2, Wtop2, Wbot2;
+      pGirder->GetSectionProperties(0, stbTypes::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+      pGirder->GetSectionProperties(0, stbTypes::End, &Ag2, &Ixx2, &Iyy2, &Ixy2, &Xcg2, &Ycg2, &Hg2, &Wtop2, &Wbot2);
+      if (IsEqual(Max(Wtop1,Wbot1),Max(Wtop2,Wbot2)) && IsEqual(Xcg1, Xcg2))
+      {
+         results.XcgMethod = stbTypes::Exact;
+         results.Xleft = fabs(Xcg1 - Max(Wtop1,Wbot2) / 2);
+      }
+      else
+      {
+         results.XcgMethod = stbTypes::Approximate;
+         Float64 Xbar1 = fabs(Xcg1 - Max(Wtop1,Wbot1) / 2);
+         Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
+         results.Xleft = (Xbar1 + Xbar2) / 2;
+      }
+   }
+   else
+   {
+      results.XcgMethod = stbTypes::Approximate;
+      Float64 xcg_dL = 0;
+      Float64 L = 0;
+      for (SectionIndexType sectIdx = 0; sectIdx < nSections; sectIdx++)
+      {
+         Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
+         pGirder->GetSectionProperties(sectIdx, stbTypes::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+         Float64 Xbar1 = fabs(Xcg1 - Max(Wtop1,Wbot1) / 2);
+
+         Float64 Ag2, Ixx2, Iyy2, Ixy2, Xcg2, Ycg2, Hg2, Wtop2, Wbot2;
+         pGirder->GetSectionProperties(sectIdx, stbTypes::End, &Ag2, &Ixx2, &Iyy2, &Ixy2, &Xcg2, &Ycg2, &Hg2, &Wtop2, &Wbot2);
+         Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
+
+         Float64 Xleft = 0.5*(Xbar1 + Xbar2);
+
+         Float64 dL = pGirder->GetSectionLength(sectIdx);
+
+         xcg_dL += Xleft*dL;
+         L += dL;
+      }
+
+      results.Xleft = xcg_dL / L;
+   }
+
+   return results.Xleft;
+}
+
 void stbStabilityEngineer::GetZoComputationMethod(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,IFem2dModel* pModel,stbResults& results) const
 {
    if ( pGirder->GetSectionCount() == 1 )
    {
-      Float64 Ag1,Ix1,Iy1,Yt1,Hg1,Wtop1,Wbot1;
-      Float64 Ag2,Ix2,Iy2,Yt2,Hg2,Wtop2,Wbot2;
-      pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ix1,&Iy1,&Yt1,&Hg1,&Wtop1,&Wbot1);
-      pGirder->GetSectionProperties(0,stbTypes::End,  &Ag2,&Ix2,&Iy2,&Yt2,&Hg2,&Wtop2,&Wbot2);
+      Float64 Ag1,Ixx1,Iyy1,Ixy1,Xcg1,Ycg1,Hg1,Wtop1,Wbot1;
+      Float64 Ag2,Ixx2,Iyy2,Ixy2,Xcg2,Ycg2,Hg2,Wtop2,Wbot2;
+      pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xcg1,&Ycg1,&Hg1,&Wtop1,&Wbot1);
+      pGirder->GetSectionProperties(0,stbTypes::End,  &Ag2,&Ixx2,&Iyy2,&Ixy2,&Xcg2,&Ycg2,&Hg2,&Wtop2,&Wbot2);
       Float64 Ll, Lr;
       pStabilityProblem->GetSupportLocations(&Ll,&Lr);
       std::vector<std::pair<Float64,Float64>> vLoads = pGirder->GetAdditionalLoads();
-      if ( IsEqual(Ag1,Ag2) && IsEqual(Ix1,Ix2) && IsEqual(Iy1,Iy2) && IsEqual(Yt1,Yt2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) && IsEqual(Ll,Lr) && vLoads.size() == 0)
+      if ( IsEqual(Ag1,Ag2) && IsEqual(Ixx1,Ixx2) && IsEqual(Iyy1,Iyy2) && IsEqual(Ixy1,Ixy2) && IsEqual(Xcg1,Xcg2) && IsEqual(Ycg1,Ycg2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) && IsEqual(Ll,Lr) && vLoads.size() == 0)
       {
          results.ZoMethod = stbTypes::Exact;
       }
@@ -1680,12 +1789,13 @@ Float64 stbStabilityEngineer::ComputeZo(const stbIGirder* pGirder,const stbIStab
    {
       Float64 Ec = pStabilityProblem->GetConcrete().GetE();
       Float64 Lg = pGirder->GetGirderLength();
-      Float64 Ag,Ix,Iy,Yt,Hg,Wt,Wb;
-      pGirder->GetSectionProperties(Lg/2,&Ag,&Ix,&Iy,&Yt,&Hg,&Wt,&Wb);
+      Float64 Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wt,Wb;
+      pGirder->GetSectionProperties(Lg/2,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wt,&Wb);
       Float64 W = results.Wg;
       Float64 l = results.Ls;
       Float64 a = (Lg-l)/2; // assuming equal overhangs
-      Zo = (W/(12*Ec*Iy*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.);
+      Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy)/Ixx;
+      Zo = (W/(12*EI*Lg*Lg))*(l*l*l*l*l/10. - a*a*l*l*l + 3.*a*a*a*a*l + 6.*a*a*a*a*a/5.);
    }
    else
    {
@@ -1708,10 +1818,10 @@ Float64 stbStabilityEngineer::ComputeZo(const stbIGirder* pGirder,const stbIStab
          Float64 x1 = *iter1;
          Float64 x2 = *iter2;
 
-         Float64 Ag1,Ix1,Iy1,Yt,Hg,Wtop,Wbot;
-         Float64 Ag2,Ix2,Iy2;
-         pGirder->GetSectionProperties(x1,&Ag1,&Ix1,&Iy1,&Yt,&Hg,&Wtop,&Wbot);
-         pGirder->GetSectionProperties(x2,&Ag2,&Ix2,&Iy2,&Yt,&Hg,&Wtop,&Wbot);
+         Float64 Ag1,Ixx1,Iyy1,Ixy1,Xleft,Ytop,Hg,Wtop,Wbot;
+         Float64 Ag2,Ixx2,Iyy2,Ixy2;
+         pGirder->GetSectionProperties(x1,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xleft,&Ytop,&Hg,&Wtop,&Wbot);
+         pGirder->GetSectionProperties(x2,&Ag2,&Ixx2,&Iyy2,&Ixy2,&Xleft,&Ytop,&Hg,&Wtop,&Wbot);
 
          Float64 w1 = Ag1*unitWeight;
          Float64 w2 = Ag2*unitWeight;
@@ -1720,9 +1830,10 @@ Float64 stbStabilityEngineer::ComputeZo(const stbIGirder* pGirder,const stbIStab
          Float64 dx,dy1,dy2,rz;
          femResults->ComputePOIDeflections(LCID_GIRDER,poiID1,lotMember,&dx,&dy1,&rz);
          femResults->ComputePOIDeflections(LCID_GIRDER,poiID2,lotMember,&dx,&dy2,&rz);
+
          // we want lateral deflection based on Iy...
-         dy1 *= Ix1/Iy1;
-         dy2 *= Ix2/Iy2;
+         dy1 *= Ixx1/Iyy1;
+         dy2 *= Ixx2/Iyy2;
 
          Float64 zo = 0.5*(w1*dy1 + w2*dy2)*(x2 - x1);
          Zo += zo;

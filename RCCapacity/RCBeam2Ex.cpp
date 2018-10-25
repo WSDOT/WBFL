@@ -299,7 +299,7 @@ STDMETHODIMP CRCBeam2Ex::AddRebarLayer(Float64 ds,Float64 As,Float64 devFactor)
    if ( devFactor < 0 || 1.0 < devFactor)
       return E_INVALIDARG;
 
-   m_Rebar.push_back(Reinforcement(ds,As,devFactor));
+   m_Rebar.emplace_back(ds,As,devFactor);
 
    return S_OK;
 }
@@ -386,7 +386,7 @@ STDMETHODIMP CRCBeam2Ex::AddStrandLayer(Float64 dps,Float64 Aps,Float64 devFacto
    if ( devFactor < 0 || 1.0 < devFactor)
       return E_INVALIDARG;
 
-   m_Strands.push_back(Reinforcement(dps,Aps,devFactor));
+   m_Strands.emplace_back(dps,Aps,devFactor);
 
    return S_OK;
 }
@@ -575,7 +575,7 @@ STDMETHODIMP CRCBeam2Ex::Load(IStructuredLoad2* pLoad)
          return STRLOAD_E_INVALIDFORMAT;
       devFactor = var.dblVal;
       
-      m_Rebar.push_back(Reinforcement(ds,As,devFactor));
+      m_Rebar.emplace_back(ds,As,devFactor);
    }
 
    pLoad->EndUnit(&bEnd);
@@ -606,7 +606,7 @@ STDMETHODIMP CRCBeam2Ex::Load(IStructuredLoad2* pLoad)
          return STRLOAD_E_INVALIDFORMAT;
       devFactor = var.dblVal;
       
-      m_Strands.push_back(Reinforcement(dps,Aps,devFactor));
+      m_Strands.emplace_back(dps,Aps,devFactor);
    }
 
    pLoad->EndUnit(&bEnd);

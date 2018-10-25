@@ -61,7 +61,7 @@ void txnTxnManager::Execute(txnTransaction* pTxn)
 {
    if (pTxn->Execute())
    {
-      m_TxnHistory.push_back( TxnItem(pTxn) );
+      m_TxnHistory.emplace_back(pTxn);
       m_Mode = RepeatMode;
    }
 } // Execute

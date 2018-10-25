@@ -84,7 +84,7 @@ void sysStructuredSaveXml::BeginUnit(LPCTSTR name, Float64 version)
 {
    ASSERTVALID;
    m_Level++;
-   m_UnitList.push_back(ListItem(name,version));
+   m_UnitList.emplace_back(name,version);
    
    try
    {

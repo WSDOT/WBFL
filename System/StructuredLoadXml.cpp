@@ -141,7 +141,7 @@ bool sysStructuredLoadXml::BeginUnit(LPCTSTR name)
             unit_version = 0;
          // push unit onto stack
          m_Level++;
-         m_UnitList.push_back(ListItem(unit_name,unit_version));
+         m_UnitList.emplace_back(unit_name,unit_version);
          // Read next line and store in buffer
          ReadNext();
          return true;

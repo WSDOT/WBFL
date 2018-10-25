@@ -76,9 +76,10 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    Float64 Ag = ::ConvertToSysUnits(767,unitMeasure::Inch2);
    Float64 Ix = ::ConvertToSysUnits(545894,unitMeasure::Inch4);
    Float64 Iy = ::ConvertToSysUnits(37634,unitMeasure::Inch4);
-   Float64 Yt = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
+   Float64 Xleft = 0.0;
+   Float64 Ytop = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
    Float64 L = ::ConvertToSysUnits(136,unitMeasure::Feet);
-   girder.AddSection(L,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf);
+   girder.AddSection(L,Ag,Ix,Iy,0.0,Xleft,Ytop,Hg,Wtf,Wbf);
 
    matConcreteEx concrete;
    Float64 fci = 5.5;
@@ -108,7 +109,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    stabilityProblem.SetImpact( 0.0, 0.0 );
    stabilityProblem.EvaluateStressesAtEquilibriumAngle(true);
 
-   stbStabilityEngineer engineer(nullptr);
+   stbStabilityEngineer engineer;
 
    stbLiftingResults result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
@@ -204,9 +205,10 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    Float64 Ag = ::ConvertToSysUnits(767,unitMeasure::Inch2);
    Float64 Ix = ::ConvertToSysUnits(545894,unitMeasure::Inch4);
    Float64 Iy = ::ConvertToSysUnits(37634,unitMeasure::Inch4);
-   Float64 Yt = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
+   Float64 Xleft = 0;
+   Float64 Ytop = ::ConvertToSysUnits(36.6-72,unitMeasure::Inch); // want neg because we are in section coordinates
    Float64 L = ::ConvertToSysUnits(136,unitMeasure::Feet);
-   girder.AddSection(L,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf);
+   girder.AddSection(L,Ag,Ix,Iy, 0.0, Xleft,Ytop,Hg,Wtf,Wbf);
 
    matConcreteEx concrete;
    Float64 fc = 7.0;
@@ -241,7 +243,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetHeightOfRollAxisAboveRoadway(::ConvertToSysUnits(24.,unitMeasure::Inch));
 
 
-   stbStabilityEngineer engineer(nullptr);
+   stbStabilityEngineer engineer;
 
    stbHaulingResults result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )

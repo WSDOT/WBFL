@@ -477,7 +477,7 @@ void sysStructuredSaveXmlPrs_Impl::BeginUnit(LPCTSTR name, Float64 version)
      // walk down to next level
      m_spCurrentUnit = pchild;
      m_Level++;
-     m_UnitList.push_back(ListItem(name,version));
+     m_UnitList.emplace_back(name,version);
    }
    catch(...)
    {

@@ -1544,7 +1544,10 @@
       <comClass clsid="{6DBAF4E1-4291-4112-9687-9C8F9E0425B4}"
                 tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
                 description="ViewTitle Class"></comClass>
-      <comClass clsid="{DC3F42E8-7A6A-48BE-8E0C-5D86E9D5EEBE}"
+     <comClass clsid="{7926CB45-FD46-4F0D-84E6-7849AEEEBFB8}"
+               tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
+               description="AnchoredTextBlock Class"></comClass>
+     <comClass clsid="{DC3F42E8-7A6A-48BE-8E0C-5D86E9D5EEBE}"
                 tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
                 description="NorthArrow Class"></comClass>
       <comClass clsid="{4F2C8970-5720-437B-B6CA-EA9092311244}"

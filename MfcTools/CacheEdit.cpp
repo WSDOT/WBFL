@@ -33,10 +33,12 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CCacheEdit
 
-CCacheEdit::CCacheEdit()
+CCacheEdit::CCacheEdit() :
+m_strDefault(_T("")),
+m_strCache(_T("")),
+m_DefaultValue(0.0),
+m_bShowDefault(FALSE)
 {
-   m_DefaultValue = 0;
-   m_bShowDefault = FALSE;
 }
 
 CCacheEdit::~CCacheEdit()
