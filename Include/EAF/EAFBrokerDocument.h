@@ -120,6 +120,12 @@ public:
    // Returns the full documentation URL for the given URL
    virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
 
+   // Returns TRUE if the command id (nID) is for a report.
+   BOOL IsReportCommand(UINT nID,BOOL bQuickReport);
+
+   // Returns TRUE if the command id is for a graph
+   BOOL IsGraphCommand(UINT nID);
+
 // Generated message map functions
 protected:
    IBroker* m_pBroker;

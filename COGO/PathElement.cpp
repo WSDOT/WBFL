@@ -198,6 +198,35 @@ STDMETHODIMP CPathElement::Clone(IPathElement* *clone)
    return S_OK;
 }
 
+STDMETHODIMP CPathElement::Offset(Float64 dx,Float64 dy)
+{
+   switch( m_Type )
+   {
+   case petPoint:
+      {
+         CComQIPtr<IPoint2d> point(m_Value);
+         point->Offset(dx,dy);
+      }
+      break;
+
+   case petHorzCurve:
+      {
+         CComQIPtr<IHorzCurve> hc(m_Value);
+         hc->Offset(dx,dy);
+      }
+      break;
+
+   case petLineSegment:
+      {
+         CComQIPtr<ILineSegment2d> ls(m_Value);
+         ls->Offset(dx,dy);
+      }
+      break;
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CPathElement::Move(Float64 dist,IDirection* direction)
 {
    Float64 angle;

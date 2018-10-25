@@ -153,6 +153,7 @@ STDMETHODIMP CHorzCurve::putref_PBT(IPoint2d *newVal)
 
    Unadvise(m_PBT,&m_dwPBT);
    m_PBT = newVal;
+   OnPointChanged(m_PBT);
    Advise(m_PBT,&m_dwPBT);
 
    Fire_OnHorzCurveChanged(this);
@@ -174,6 +175,7 @@ STDMETHODIMP CHorzCurve::putref_PI(IPoint2d *newVal)
 
    Unadvise(m_PI,&m_dwPI);
    m_PI = newVal;
+   OnPointChanged(m_PI);
    Advise(m_PI,&m_dwPI);
 
    Fire_OnHorzCurveChanged(this);
@@ -195,6 +197,7 @@ STDMETHODIMP CHorzCurve::putref_PFT(IPoint2d *newVal)
 
    Unadvise(m_PFT,&m_dwPFT);
    m_PFT = newVal;
+   OnPointChanged(m_PFT);
    Advise(m_PFT,&m_dwPFT);
 
    Fire_OnHorzCurveChanged(this);

@@ -1686,6 +1686,7 @@ library WBFLCogo
 		[propputref, helpstring("property Value"), helpcontext(IDH_PathElement_Value)] HRESULT Value([in] IUnknown* newVal);
       [helpstring("method Clone"), helpcontext(IDH_PathElement_Clone)] HRESULT Clone([out,retval] IPathElement* *clone);
 		[helpstring("method Move")] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
+      [helpstring("method Offset")] HRESULT Offset([in]Float64 dx,[in]Float64 dy);
 
      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
 	};

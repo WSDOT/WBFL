@@ -111,6 +111,7 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
 void CProgressThread::Init(short begin, short end, short inc)
 {
    m_ProgressDlg.PumpMessage();
+   m_ProgressDlg.m_ProgressBar.ShowWindow( SW_SHOW );
    m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
    m_ProgressDlg.m_ProgressBar.SetStep( inc );
    m_ProgressDlg.m_ProgressBar.SetPos( begin );

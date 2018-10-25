@@ -453,14 +453,14 @@ STDMETHODIMP CSurface::CreateSurfaceProfile(VARIANT varStation,VARIANT varDirect
    ATLASSERT(m_RidgeLines.size() == nSubSurfaces);
    for ( IndexType subSurfaceIdx = 0; subSurfaceIdx < nSubSurfaces; subSurfaceIdx++ )
    {
-      std::vector<CComPtr<ILineSegment2d>>& vRidgeLines = m_RidgeLines[subSurfaceIdx];
+      std::vector<CComPtr<IPath>>& vRidgeLines = m_RidgeLines[subSurfaceIdx];
       IndexType nRidgeLines = vRidgeLines.size();
       for ( IndexType ridgeLineIdx = 0; ridgeLineIdx < nRidgeLines; ridgeLineIdx++ )
       {
-         CComQIPtr<ILineSegment2d> ridgeLine(vRidgeLines[ridgeLineIdx]);
+         CComQIPtr<IPath> ridgeLine(vRidgeLines[ridgeLineIdx]);
 
          CComPtr<IPoint2d> pnt;
-         geomUtil->IntersectLineWithLineSegment(cutLine,ridgeLine,&pnt);
+         ridgeLine->Intersect(cutLine,pntAlignment,&pnt);
 
          if ( pnt == NULL && (subSurfaceIdx == 0 || subSurfaceIdx == nSubSurfaces-1) )
          {
@@ -655,7 +655,7 @@ void CSurface::ValidateRidgeLines()
       ATLASSERT(ns == nSegments);
 #endif
 
-      std::vector<CComPtr<ILineSegment2d>> vRidgeLines;
+      std::vector<CComPtr<IPath>> vRidgeLines;
       IndexType nRidgePoints = nSegments+1;
       for ( IndexType ridgePointIdx = 0; ridgePointIdx < nRidgePoints; ridgePointIdx++ )
       {
@@ -664,15 +664,11 @@ void CSurface::ValidateRidgeLines()
          template1->GetRidgePointOffset(ridgePointIdx,m_AlignmentPointIdx,&offset1);
          template2->GetRidgePointOffset(ridgePointIdx,m_AlignmentPointIdx,&offset2);
 
-         // locate the ridge points in plan view
-         CComPtr<IPoint2d> pnt1, pnt2;
-         alignment->LocatePoint(CComVariant(station1),omtAlongDirection,offset1,CComVariant(normal1),&pnt1);
-         alignment->LocatePoint(CComVariant(station2),omtAlongDirection,offset2,CComVariant(normal2),&pnt2);
+         ATLASSERT(::IsEqual(offset1,offset2)); // we can't handle a surface that is getting wider yet
 
-         CComPtr<ILineSegment2d> ridgeLine;
-         ridgeLine.CoCreateInstance(CLSID_LineSegment2d);
-         ridgeLine->ThroughPoints(pnt1,pnt2);
-         vRidgeLines.push_back(ridgeLine);
+         CComPtr<IPath> path;
+         alignment->CreateParallelPath(offset1,&path);
+         vRidgeLines.push_back(path);
       }
 
       m_RidgeLines.insert(std::make_pair(subSurfaceIndex,vRidgeLines));

@@ -1992,12 +1992,21 @@ STDMETHODIMP CPath::Move(Float64 dist,IDirection* direction)
 {
    CHECK_IN(direction);
 
+   Float64 angle;
+   direction->get_Value(&angle);
+   Float64 dx, dy;
+   dx = dist*cos(angle);
+   dy = dist*sin(angle);
+
+   dx = ::IsZero(dx) ? 0 : dx;
+   dy = ::IsZero(dy) ? 0 : dy;
+
    CComPtr<IEnumPathElements> enumPathElements;
    get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> path_element;
    while ( enumPathElements->Next(1,&path_element,NULL) != S_FALSE )
    {
-      path_element->Move(dist,direction);
+      path_element->Offset(dx,dy);
       path_element.Release();
    };
 
