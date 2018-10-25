@@ -363,6 +363,19 @@ STDMETHODIMP CPrecastGirder::get_HarpingPointMeasure(HarpPointMeasure* measure)
    return S_OK;
 }
 
+STDMETHODIMP CPrecastGirder::put_EndHarpingPointMeasure(HarpPointMeasure measure)
+{
+   m_EndHPMeasure = measure;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_EndHarpingPointMeasure(HarpPointMeasure* measure)
+{
+   CHECK_RETVAL(measure);
+   *measure = m_EndHPMeasure;
+   return S_OK;
+}
+
 STDMETHODIMP CPrecastGirder::put_HarpingPointReference(HarpPointReference hpRef)
 {
    m_HPReference = hpRef;
@@ -373,6 +386,19 @@ STDMETHODIMP CPrecastGirder::get_HarpingPointReference(HarpPointReference* hpRef
 {
    CHECK_RETVAL(hpRef);
    *hpRef = m_HPReference;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::put_EndHarpingPointReference(HarpPointReference hpRef)
+{
+   m_EndHPReference = hpRef;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_EndHarpingPointReference(HarpPointReference* hpRef)
+{
+   CHECK_RETVAL(hpRef);
+   *hpRef = m_EndHPReference;
    return S_OK;
 }
 
@@ -1720,21 +1746,21 @@ STDMETHODIMP CPrecastGirder::get_ClosureJointRebarLayout(IRebarLayout** rebarLay
 ///// PRIVATE /////
 void CPrecastGirder::GetHarpPointLocations(Float64& hp1,Float64& hp2)
 {
-   hp1 = GetHarpPointLocation(m_HP1,false);
-   hp2 = GetHarpPointLocation(m_HP2,true);
+   hp1 = GetHarpPointLocation(m_HP1,m_HPReference,m_HPMeasure,false,false);
+   hp2 = GetHarpPointLocation(m_HP2,m_HPReference,m_HPMeasure,true,false);
 
    ATLASSERT( hp1 <= hp2 );
 }
 
 void CPrecastGirder::GetEndHarpPointLocations(Float64& hp1,Float64& hp2)
 {
-   hp1 = GetHarpPointLocation(m_HPStart,false);
-   hp2 = GetHarpPointLocation(m_HPEnd,true);
+   hp1 = GetHarpPointLocation(m_HPStart,m_EndHPReference,m_EndHPMeasure,false,true);
+   hp2 = GetHarpPointLocation(m_HPEnd,  m_EndHPReference,m_EndHPMeasure,true,true);
 
    ATLASSERT( hp1 <= hp2 );
 }
 
-Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
+Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,HarpPointReference hpRef,HarpPointMeasure hpMeasure,bool bRight,bool bLocatingEndHarpPoint)
 {
    Float64 left_end_distance;
    Float64 right_end_distance;
@@ -1745,13 +1771,13 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   if ( m_HPMeasure == hpmFractionOfGirderLength )
+   if ( hpMeasure == hpmFractionOfGirderLength )
       hp *= gdr_length;
 
-   if ( m_HPMeasure == hpmFractionOfSpanLength )
+   if ( hpMeasure == hpmFractionOfSpanLength )
       hp *= span_length;
 
-   if ( m_bUseMinHpDistance == VARIANT_TRUE && hp < m_MinHpDist )
+   if ( m_bUseMinHpDistance == VARIANT_TRUE && hp < m_MinHpDist && !bLocatingEndHarpPoint )
       hp = m_MinHpDist;
 
    // hp can now be considered the location of the harp point measured
@@ -1759,7 +1785,7 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
 
    // convert the hp from it's point of reference to the left end of the girder
    Float64 result;
-   switch( m_HPReference )
+   switch( hpRef )
    {
    case hprEndOfGirder:
       result = (bRight ? gdr_length - hp : hp);

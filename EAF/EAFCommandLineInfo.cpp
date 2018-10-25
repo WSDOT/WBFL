@@ -35,6 +35,7 @@ CCommandLineInfo(),
 m_bUsageMessage(FALSE),
 m_bCommandLineMode(FALSE),
 m_bError(FALSE),
+m_bTargetApp(FALSE),
 m_nParams(0)
 {
 }
@@ -45,10 +46,10 @@ CEAFCommandLineInfo::~CEAFCommandLineInfo()
 
 void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
 {
+   CString strParam(lpszParam);
    if ( bFlag && m_nParams == 0 )
    {
       // first param and it is a flag... see if it is /? or /help
-      CString strParam(lpszParam);
       if ( strParam.CompareNoCase(_T("?")) == 0 || strParam.CompareNoCase(_T("Help")) == 0 )
       {
          m_bUsageMessage = TRUE;
@@ -68,6 +69,18 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
    {
       m_bCommandLineMode = TRUE;
    }
+
+   if ( strParam.Left(3).CompareNoCase(_T("App")) == 0 )
+   {
+      // We've encountered the /App=<appname> option
+      if ( !m_bTargetApp && m_strTargetApp.IsEmpty() )
+      {
+         m_bTargetApp = TRUE;
+         int length = strParam.GetLength();
+         m_strTargetApp = strParam.Right(length - 4); 
+         m_bCommandLineMode = TRUE;
+      }
+   }
 }
 
 CEAFCommandLineInfo& CEAFCommandLineInfo::operator=(const CEAFCommandLineInfo& other)
@@ -77,6 +90,8 @@ CEAFCommandLineInfo& CEAFCommandLineInfo::operator=(const CEAFCommandLineInfo& o
    m_bError           = other.m_bError;
    m_bShowSplash      = other.m_bShowSplash;
    m_strErrorMsg      = other.m_strErrorMsg;
+   m_bTargetApp       = other.m_bTargetApp;
+   m_strTargetApp     = other.m_strTargetApp;
 
    return *this;
 }
@@ -90,8 +105,21 @@ CString CEAFCommandLineInfo::GetUsageMessage()
 {
    CEAFApp* pApp = EAFGetApp();
 
+   CString strCommand1;
+   strCommand1.Format(_T("%s filename"),pApp->m_pszAppName);
+
+   CString strCommand2;
+   strCommand2.Format(_T("%s <options>"),pApp->m_pszAppName);
+
+   CString strOption1(_T("/? - Get command line options"));
+   CString strOption2(_T("/help - Get command line options"));
+   CString strOption3(_T("/<app options> filename - Opens the specified file and passes <app options> to the application associated with the file"));
+   CString strOption4(_T("/<appname> <app options> - Passes <app options> to the application specified with <appname> for processing"));
+
    CString strMsg;
-   strMsg.Format(_T("Usage:\n%s filename\n%s /?"),pApp->m_pszAppName,pApp->m_pszAppName);
+   strMsg.Format(_T("Usage:\n%s\n%s\n\nwhere <options> are:\n%s\n%s\n%s\n%s"),
+      strCommand1,strCommand2,strOption1,strOption2,strOption3,strOption4);
+
    return strMsg;
 }
 
@@ -110,4 +138,9 @@ CString CEAFCommandLineInfo::GetErrorMessage()
    }
 
    return strMsg;
+}
+
+CString CEAFCommandLineInfo::GetTargetApp()
+{
+   return m_strTargetApp;
 }

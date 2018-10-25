@@ -205,7 +205,7 @@ void CFEA2DDoc::OnGTStrudl()
    std::_tofstream ofile(strName);
 
    ofile << _T("STRUDL") << std::endl;
-   ofile << _T("UNITS MET KIPS DEG FAH") << std::endl;
+   ofile << _T("UNITS METER NEWTON DEG FAH") << std::endl;
 
    // Joint Coordinates
    ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
@@ -422,7 +422,14 @@ void CFEA2DDoc::OnGTStrudl()
          load->get_WStart(&wStart);
          load->get_WEnd(&wEnd);
 
-         ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+         if ( xStart < 0 || xEnd < 0 )
+         {
+            ofile << ID(mbrID) << _T(" FORCE Y LINEAR FRA WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+         }
+         else
+         {
+            ofile << ID(mbrID) << _T(" FORCE Y LINEAR WA ") << wStart << _T(" WB ") << wEnd << _T(" LA ") << fabs(xStart) << _T(" LB ") << fabs(xEnd) << std::endl;
+         }
       }
 
    }

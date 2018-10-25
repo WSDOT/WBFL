@@ -391,8 +391,12 @@ library WBFLGenericBridgeTools
 	   [propget,helpstring("method MinHarpPointDistance")] HRESULT MinHarpPointDistance([out,retval]Float64* minHpDist);
 	   [propput,helpstring("property HarpingPointMeasure")] HRESULT HarpingPointMeasure([in] HarpPointMeasure measure);
 	   [propget,helpstring("property HarpingPointMeasure")] HRESULT HarpingPointMeasure([out,retval] HarpPointMeasure* measure);
+	   [propput,helpstring("property EndHarpingPointMeasure")] HRESULT EndHarpingPointMeasure([in] HarpPointMeasure measure);
+	   [propget,helpstring("property EndHarpingPointMeasure")] HRESULT EndHarpingPointMeasure([out,retval] HarpPointMeasure* measure);
 	   [propput,helpstring("property HarpingPointReference")] HRESULT HarpingPointReference([in] HarpPointReference hpRef);
 	   [propget,helpstring("property HarpingPointReference")] HRESULT HarpingPointReference([out,retval] HarpPointReference* hpRef);
+	   [propput,helpstring("property EndHarpingPointReference")] HRESULT EndHarpingPointReference([in] HarpPointReference hpRef);
+	   [propget,helpstring("property EndHarpingPointReference")] HRESULT EndHarpingPointReference([out,retval] HarpPointReference* hpRef);
 	   [helpstring("method GetHarpingPointLocations")] HRESULT GetHarpingPointLocations([out]Float64* hp1,[out]Float64* hp2);
 	   [helpstring("method GetEndHarpingPointLocations")] HRESULT GetEndHarpingPointLocations([out]Float64* hp1,[out]Float64* hp2);
 

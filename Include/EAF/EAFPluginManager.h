@@ -259,6 +259,24 @@ public:
       return S_OK;
    }
 
+   bool FindPlugin(LPCTSTR lpszName,T** ppPlugin)
+   {
+      Plugins::iterator iter(m_Plugins.begin());
+      Plugins::iterator end(m_Plugins.end());
+      for ( ; iter != end; iter++ )
+      {
+         CComPtr<T> plugin = iter->second;
+         if ( plugin->GetName().CompareNoCase(lpszName) == 0 )
+         {
+            plugin.CopyTo(ppPlugin);
+            return true;
+         }
+      }
+
+      (*ppPlugin) = NULL;
+      return false;
+   }
+
    void ManagePlugins(LPCTSTR lpszTitle)
    {
       CWnd* pWnd = EAFGetMainFrame();
