@@ -64,7 +64,9 @@ END_MESSAGE_MAP()
 void CInplaceEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
    ASSERT(m_pTask != 0);
+   m_pTask->AddRef();
    m_pTask->OnKeyDown(nChar,nRepCnt,nFlags);
 
 	CEdit::OnChar(nChar, nRepCnt, nFlags);
+   m_pTask->Release();
 }

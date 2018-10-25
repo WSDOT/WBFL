@@ -142,7 +142,7 @@ STDMETHODIMP CEffectiveFlangeWidthDetails::EffectiveFlangeWidth(Float64* effFlan
       w3 += left+right;
    }
 
-   (*effFlangeWidth) = Min3(w1,w2,w3);
+   (*effFlangeWidth) = Min(w1,w2,w3);
 
    return S_OK;
 }

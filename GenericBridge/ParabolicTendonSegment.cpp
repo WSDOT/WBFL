@@ -191,13 +191,6 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
    vector->put_X(sx);
    vector->put_Y(sy);
    vector->put_Z(1);
-   //vector->Normalize();
-
-//#if defined _DEBUG
-//   Float64 mag;
-//   vector->get_Magnitude(&mag);
-//   ATLASSERT(IsEqual(mag,1.0));
-//#endif
 
    (*slope) = vector;
    (*slope)->AddRef();

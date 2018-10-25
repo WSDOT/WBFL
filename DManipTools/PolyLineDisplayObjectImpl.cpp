@@ -43,7 +43,8 @@ CPolyLineDisplayObjectImpl::CPolyLineDisplayObjectImpl():
 m_Color(RGB(0,0,0)),
 m_Width(100),
 m_PtType(plpCircle),
-m_CurrId(0)
+m_CurrId(0),
+m_NumDos(0)
 {
 }
 
@@ -75,6 +76,9 @@ HRESULT CPolyLineDisplayObjectImpl::FinalConstruct()
 
 void::CPolyLineDisplayObjectImpl::FinalRelease()
 {
+   UnregisterDropSite();
+   UnregisterEventSink();
+
    ClearDisplayObjects();
 
    m_pDisplayObject.Release();
@@ -219,7 +223,7 @@ HRESULT CPolyLineDisplayObjectImpl::RebuildDisplayObjects()
       {
          CComPtr<IPoint2d> end_pnt = it->m_T;
 
-         BuildLine(m_pDisplayObject, start_pnt, end_pnt);
+         BuildLine(start_pnt, end_pnt);
 
          start_pnt = end_pnt;
          it++;
@@ -260,7 +264,7 @@ void CPolyLineDisplayObjectImpl::ClearDisplayObjects()
    }
 }
 
-void CPolyLineDisplayObjectImpl::BuildLine(iCompositeDisplayObject* pCdo, IPoint2d* fromPoint,IPoint2d* toPoint)
+void CPolyLineDisplayObjectImpl::BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint)
 {
    // put points at locations and make them sockets
    CComPtr<iPointDisplayObject> from_rep;
@@ -271,7 +275,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(iCompositeDisplayObject* pCdo, IPoint
    CComPtr<iSocket> from_socket;
    from_connectable->AddSocket(0,fromPoint,&from_socket);
    from_rep->Visible(FALSE);
-   pCdo->AddDisplayObject(from_rep);
+   AddMyDisplayObject(from_rep);
 
    CComPtr<iPointDisplayObject> to_rep;
    ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&to_rep);
@@ -281,7 +285,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(iCompositeDisplayObject* pCdo, IPoint
    CComPtr<iSocket> to_socket;
    to_connectable->AddSocket(0,toPoint,&to_socket);
    to_rep->Visible(FALSE);
-   pCdo->AddDisplayObject(to_rep);
+   AddMyDisplayObject(to_rep);
 
    // Create the line object
    CComPtr<iLineDisplayObject> line;
@@ -318,5 +322,5 @@ void CPolyLineDisplayObjectImpl::BuildLine(iCompositeDisplayObject* pCdo, IPoint
 
    line->SetID(m_CurrId++);
 
-   pCdo->AddDisplayObject(line);
+   AddMyDisplayObject(line);
 }

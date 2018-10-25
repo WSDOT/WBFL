@@ -219,6 +219,17 @@ STDMETHODIMP CPrecastGirder::get_AllowOddNumberOfHarpedStrands(VARIANT_BOOL* bUs
    return S_OK;
 }
 
+STDMETHODIMP CPrecastGirder::put_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL bUseDifferent)
+{
+   m_UseDifferentHarpedGirdAtEnds = bUseDifferent;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL* bUseDifferent)
+{
+   *bUseDifferent = m_UseDifferentHarpedGirdAtEnds;
+   return S_OK;
+}
 
 STDMETHODIMP CPrecastGirder::get_HarpedStrandAdjustmentEnd(Float64* offset)
 {
@@ -1129,64 +1140,69 @@ STDMETHODIMP CPrecastGirder::ComputeMaxHarpedStrandSlope(Float64 distFromStart,F
    if ( hp1 < distFromStart && distFromStart < hp2 )
    {
       // point under consideration is between harp points
+      // assume strands to be horizonal
       *slope = DBL_MAX;
       return S_OK;
    }
 
-   EndType endType = (distFromStart <= hp1 ? etStart : etEnd);
-
-   StrandIndexType nstrands;
-   m_HarpGridEnd[endType]->GetStrandCount(&nstrands);
-   if ( nstrands == 0 )
+   StrandIndexType nStrands;
+   m_HarpGridEnd[etStart]->GetStrandCount(&nStrands);
+   if ( nStrands == 0 )
    {
       *slope = DBL_MAX;
       return S_OK;
    }
-
-
-
 
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   ATLASSERT(distFromStart>=0.0 && distFromStart<=gdr_length);
+   ATLASSERT(0.0 <= distFromStart  && distFromStart <= gdr_length);
 
    Float64 run; // as in rise over run
-   CComPtr<IPoint2dCollection> start, hp;
-   if ( distFromStart <= hp1 )
+   CComPtr<IPoint2dCollection> start, end;
+   if ( ::IsLE(distFromStart,hp1) )
    {
       get_HarpedStrandPositions(0.0,&start);
-      get_HarpedStrandPositions(hp1,&hp);
+      get_HarpedStrandPositions(hp1,&end);
       run = hp1;
    }
-   else if ( hp2 <= distFromStart )
+   else
    {
-      get_HarpedStrandPositions(gdr_length,&start);
-      get_HarpedStrandPositions(hp2,&hp);
+      ATLASSERT(hp2 <= distFromStart);
+      get_HarpedStrandPositions(hp2,&start);
+      get_HarpedStrandPositions(gdr_length,&end);
       run = gdr_length - hp2;
    }
 
-   CollectionIndexType nStrandStart,nStrandHP;
+#if defined _DEBUG
+   CollectionIndexType nStrandStart,nStrandEnd;
    start->get_Count(&nStrandStart);
-   hp->get_Count(&nStrandHP);
-   ATLASSERT(nStrandStart == nStrandHP && nStrandStart == nstrands);
+   end->get_Count(&nStrandEnd);
+   ATLASSERT(nStrandStart == nStrandEnd && nStrandStart == nStrands);
+#endif
 
    *slope = DBL_MAX;
-   for ( StrandIndexType strandIdx = 0; strandIdx < nstrands; strandIdx++ )
+   for ( StrandIndexType strandIdx = 0; strandIdx < nStrands; strandIdx++ )
    {
       CComPtr<IPoint2d> pntStart, pntEnd;
       start->get_Item(strandIdx,&pntStart);
-      hp->get_Item(strandIdx,&pntEnd);
+      end->get_Item(strandIdx,&pntEnd);
 
       Float64 ys, ye;
       pntStart->get_Y(&ys);
       pntEnd->get_Y(&ye);
 
-      Float64 rise = ys - ye;
+      Float64 rise = ye - ys;
 
-      if (rise!=0.0)
+      if (rise != 0.0)
       {
-         *slope = _cpp_min(*slope,run/rise);
+         // Slope is in the format 1:n (rise:run)
+         // Positive slopes are upwards and towards the right
+         Float64 n = run/rise;
+         if ( MinIndex(fabs(*slope),fabs(n)) == 1 )
+         {
+            *slope = n;
+         }
       }
    }
 
@@ -1197,9 +1213,9 @@ STDMETHODIMP CPrecastGirder::ComputeMaxHarpedStrandSlopeEx(Float64 distFromStart
 {
    CHECK_RETVAL(slope);
 
-   StrandIndexType nstrands;
-   m_HarpGridEnd[etStart]->GetStrandCountEx(fill, &nstrands);
-   if ( nstrands == 0 )
+   StrandIndexType nStrands;
+   m_HarpGridEnd[etStart]->GetStrandCountEx(fill, &nStrands);
+   if ( nStrands == 0 )
    {
       *slope = DBL_MAX;
       return S_OK;
@@ -1218,51 +1234,72 @@ STDMETHODIMP CPrecastGirder::ComputeMaxHarpedStrandSlopeEx(Float64 distFromStart
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   ATLASSERT(distFromStart>=0.0 && distFromStart<=gdr_length);
-
-   EndType endType = ( distFromStart < hp1 ) ? etStart : etEnd;
+   ATLASSERT(0.0 <= distFromStart && distFromStart <= gdr_length);
 
    // strand positions - adjusted for current offset value
-   CComPtr<IPoint2dCollection> end_strands, hp_strands;
-   m_HarpGridEnd[endType]->GetStrandPositionsEx(fill, &end_strands);
-   m_HarpGridHp[endType]->GetStrandPositionsEx(fill, &hp_strands);
-
-   // need to subtract current offsets out so we can add our own
-   Float64 curr_end_offset, curr_hp_offset;
-   m_HarpGridEnd[endType]->get_VerticalStrandAdjustment(&curr_end_offset);
-   m_HarpGridHp[endType]->get_VerticalStrandAdjustment(&curr_hp_offset);
-
+   CComPtr<IPoint2dCollection> start, end;
+   Float64 curr_start_offset, curr_end_offset;
+   Float64 start_offset, end_offset;
    Float64 run; // as in rise over run
    if ( ::IsLE(distFromStart,hp1) )
    {
+      m_HarpGridEnd[etStart]->GetStrandPositionsEx(fill, &start);
+      m_HarpGridHp[etStart]->GetStrandPositionsEx(fill, &end);
+
+      // need to subtract current offsets out so we can add our own
+      m_HarpGridEnd[etStart]->get_VerticalStrandAdjustment(&curr_start_offset);
+      m_HarpGridHp[etStart]->get_VerticalStrandAdjustment(&curr_end_offset);
+
+      start_offset = endOffset;
+      end_offset   = hpOffset;
+
       run = hp1;
    }
-   else if ( ::IsLE(hp2,distFromStart) )
+   else
    {
+      m_HarpGridHp[etEnd]->GetStrandPositionsEx(fill, &start);
+      m_HarpGridEnd[etEnd]->GetStrandPositionsEx(fill, &end);
+
+      // need to subtract current offsets out so we can add our own
+      m_HarpGridHp[etEnd]->get_VerticalStrandAdjustment(&curr_start_offset);
+      m_HarpGridEnd[etEnd]->get_VerticalStrandAdjustment(&curr_end_offset);
+
+      start_offset = hpOffset;
+      end_offset   = endOffset;
+
       run = gdr_length - hp2;
    }
 
-   CollectionIndexType nStrandStart,nStrandHP;
-   end_strands->get_Count(&nStrandStart);
-   hp_strands->get_Count(&nStrandHP);
-   ATLASSERT(nStrandStart == nStrandHP && nStrandStart == nstrands);
+#if defined _DEBUG
+   CollectionIndexType nStrandStart,nStrandEnd;
+   start->get_Count(&nStrandStart);
+   end->get_Count(&nStrandEnd);
+   ATLASSERT(nStrandStart == nStrandEnd && nStrandStart == nStrands);
+#endif
 
    *slope = DBL_MAX;
-   for ( StrandIndexType strandIdx = 0; strandIdx < nstrands; strandIdx++ )
+   for ( StrandIndexType strandIdx = 0; strandIdx < nStrands; strandIdx++ )
    {
-      CComPtr<IPoint2d> pntEnd, pntHP;
-      end_strands->get_Item(strandIdx,&pntEnd);
-      hp_strands->get_Item(strandIdx,&pntHP);
+      CComPtr<IPoint2d> pntStart, pntEnd;
+      start->get_Item(strandIdx,&pntStart);
+      end->get_Item(strandIdx,&pntEnd);
 
-      Float64 yend, yhp;
-      pntEnd->get_Y(&yend);
-      pntHP->get_Y(&yhp);
 
-      Float64 rise = (yend - curr_end_offset + endOffset) - (yhp - curr_hp_offset + hpOffset);
+      Float64 ys, ye;
+      pntStart->get_Y(&ys);
+      pntEnd->get_Y(&ye);
 
-      if (rise!=0.0)
+      Float64 rise = (ye - curr_end_offset + end_offset) - (ys - curr_start_offset + start_offset);
+
+      if (rise != 0.0)
       {
-         *slope = _cpp_min(*slope,run/rise);
+         // Slope is in the format 1:n (rise:run)
+         // Positive slopes are upwards and towards the right
+         Float64 n = run/rise;
+         if ( MinIndex(fabs(*slope),fabs(n)) == 1 )
+         {
+            *slope = n;
+         }
       }
    }
     
@@ -1300,8 +1337,8 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlopeEx(Float64 distFromStart
       cg_end += endOffset;
       cg_hp  += hpOffset;
 
-      if (cg_end!=cg_hp)
-         *slope = hp1/(cg_end - cg_hp);
+      if (cg_end != cg_hp)
+         *slope = hp1/(cg_hp - cg_end);
       else
          *slope = DBL_MAX;
    }
@@ -1323,7 +1360,7 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlopeEx(Float64 distFromStart
       cg_end += endOffset;
       cg_hp  += hpOffset;
 
-      if (cg_end!=cg_hp)
+      if (cg_end != cg_hp)
          *slope = (gdr_length - hp2) / (cg_end - cg_hp);
       else
          *slope = DBL_MAX;
@@ -1347,7 +1384,7 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlope(Float64 distFromStart, 
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   ATLASSERT(distFromStart>=0.0 && distFromStart<=gdr_length+TOLERANCE);
+   ATLASSERT(0.0 <= distFromStart && distFromStart <= gdr_length+TOLERANCE);
 
    if ( ::IsLE(distFromStart,hp1) )
    {
@@ -1356,7 +1393,7 @@ STDMETHODIMP CPrecastGirder::ComputeAvgHarpedStrandSlope(Float64 distFromStart, 
       m_HarpGridHp[etStart]->get_CG(&cg_x, &cg_hp);
 
       if (cg_end!=cg_hp)
-         *slope = hp1/(cg_end - cg_hp);
+         *slope = hp1/(cg_hp - cg_end);
       else
          *slope = DBL_MAX;
    }
@@ -1718,8 +1755,8 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
          ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
 #endif
 
-         StrandIndexType running_cnt = 2;
-         m_OddHpFill->Add(running_cnt); // start with 2 strands
+         StrandIndexType running_cnt = (m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE ? 2 : 1);
+         m_OddHpFill->Add(running_cnt); 
 
          for (CollectionIndexType is = 1; is < fill_size; is++)
          {
@@ -1740,7 +1777,11 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
                else
                {
                   // we are at the end... add the odd strand
-                  m_OddHpFill->Add(fill_val-1);
+                  if ( m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE )
+                     m_OddHpFill->Add(fill_val-1);
+                  else
+                     m_OddHpFill->Add(fill_val);
+
                   running_cnt--;
                }
             }

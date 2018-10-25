@@ -74,7 +74,7 @@ private:
    IDType m_ID;
    CComPtr<IPoint2d> m_Position;
    static DWORD ms_dwCookies;
-   typedef std::map<DWORD,CComPtr<iPlug> > PlugContainer;
+   typedef std::map<DWORD,iPlug*> PlugContainer; // use a weak reference to the plug
    PlugContainer m_Plugs;
 
    // weak reference

@@ -103,7 +103,8 @@ interface iDisplayObject : public IUnknown
    STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) PURE;
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) PURE;
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) PURE;
+   STDMETHOD_(void,UnregisterDropSite)() PURE;
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) PURE;
 };
 

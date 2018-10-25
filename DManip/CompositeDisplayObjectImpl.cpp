@@ -62,6 +62,8 @@ HRESULT CCompositeDisplayObjectImpl::FinalConstruct()
 
 void CCompositeDisplayObjectImpl::FinalRelease()
 {
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+
    m_CompositeItems.Release();
    m_BoundingBox.Release();
 }

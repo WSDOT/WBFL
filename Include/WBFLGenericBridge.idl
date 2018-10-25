@@ -1216,11 +1216,11 @@ library WBFLGenericBridge
       [helpstring("method GetSegmentHeight")] HRESULT GetSegmentHeight([in]Float64 distFromStartOfSegment,[out,retval]Float64* pHeight);
       [propget, helpstring("property BottomFlangeProfile")] HRESULT BottomFlangeProfile([out,retval]IPoint2dCollection** ppPoints);
 
-      [propget, helpstring("property ClosurePourLength")] HRESULT ClosurePourLength([in]EndType endType,[out,retval]Float64* pLength);
-      [propput, helpstring("property ClosurePourFgMaterial")] HRESULT ClosurePourForegroundMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
-      [propget, helpstring("property ClosurePourFgMaterial")] HRESULT ClosurePourForegroundMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
-      [propput, helpstring("property ClosurePourBgMaterial")] HRESULT ClosurePourBackgroundMaterial([in]EndType endType,[in]IMaterial* pBGMaterial);
-      [propget, helpstring("property ClosurePourBgMaterial")] HRESULT ClosurePourBackgroundMaterial([in]EndType endType,[out,retval]IMaterial** ppBGMaterial);
+      [propget, helpstring("property ClosureJointLength")] HRESULT ClosureJointLength([in]EndType endType,[out,retval]Float64* pLength);
+      [propput, helpstring("property ClosureJointFgMaterial")] HRESULT ClosureJointForegroundMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
+      [propget, helpstring("property ClosureJointFgMaterial")] HRESULT ClosureJointForegroundMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
+      [propput, helpstring("property ClosureJointBgMaterial")] HRESULT ClosureJointBackgroundMaterial([in]EndType endType,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ClosureJointBgMaterial")] HRESULT ClosureJointBackgroundMaterial([in]EndType endType,[out,retval]IMaterial** ppBGMaterial);
    };
 
    [

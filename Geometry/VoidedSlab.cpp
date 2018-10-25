@@ -149,9 +149,8 @@ HRESULT CVoidedSlab::UpdateShape()
 {
    if (m_Dirty)
    {
-      // create a new shape
-      m_pShape.Release();
-      CreateCompositeShape(&m_pShape);
+      IndexType nShapes;
+      m_pShape->get_Count(&nShapes);
 
       // Create the main slab rectangle
       CComPtr<IRectangle> slab;
@@ -160,7 +159,10 @@ HRESULT CVoidedSlab::UpdateShape()
       slab->put_Height(m_H);
 
       CComQIPtr<IShape> slabShape(slab);
-      m_pShape->AddShape(slabShape,VARIANT_FALSE);
+      if ( nShapes == 0 )
+         m_pShape->AddShape(slabShape,VARIANT_FALSE);
+      else
+         m_pShape->Replace(0,slabShape);
 
       Float64 y = 0;
       Float64 x = -m_S*(m_VoidCount-1)/2;
@@ -177,7 +179,11 @@ HRESULT CVoidedSlab::UpdateShape()
          center->Move(x,y);
 
          CComQIPtr<IShape> voidShape(circle);
-         m_pShape->AddShape(voidShape,VARIANT_TRUE);
+
+         if ( nShapes == 0 )
+            m_pShape->AddShape(voidShape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(i+1,voidShape);
 
          x += m_S;
       }

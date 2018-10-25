@@ -37,6 +37,8 @@ interface iDimensionLine : public iDisplayObject
    STDMETHOD_(Float64,GetAngle)() PURE;
    STDMETHOD_(void,SetWitnessLength)(LONG l) PURE;
    STDMETHOD_(LONG,GetWitnessLength)() PURE;
+   STDMETHOD_(void,SetHiddenWitnessLength)(LONG l) PURE;
+   STDMETHOD_(LONG,GetHiddenWitnessLength)() PURE;
    STDMETHOD_(void,SetWitnessOffset)(LONG wOffset) PURE;
    STDMETHOD_(LONG,GetWitnessOffset)() PURE;
    STDMETHOD_(void,SetArrowHeadSize)(CSize size) PURE;

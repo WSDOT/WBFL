@@ -1608,25 +1608,9 @@ STDMETHODIMP CInfluenceLine::ComputeAreaInRegions(IDblArray* regions, Float64* p
       hr = regions->get_Count(&rgn_size);
 
       if (rgn_size%2 != 0)
-         THROW_LBAMA(INVALID_REGION); // regions must have two boundaries
-
-      // regions boundaries must increase
-      bool first=true;
-      Float64 old_val;
-      for (CollectionIndexType i=0; i<rgn_size; i++)
       {
-         Float64 new_val;
-         hr = regions->get_Item(i, &new_val);
-         if (first)
-         {
-            first = false;
-         }
-         else
-         {
-            if (new_val < old_val)
-               THROW_LBAMA(INVALID_REGION); 
-         }
-         old_val = new_val;
+         ATLASSERT(false); // about to throw
+         THROW_LBAMA(INVALID_REGION); // regions must have two boundaries
       }
 
       // no regions, no area
@@ -1635,58 +1619,61 @@ STDMETHODIMP CInfluenceLine::ComputeAreaInRegions(IDblArray* regions, Float64* p
          *pArea=0.0;
          return S_OK;
       }
-      else
+
+      // we have regions
+      // regions must be within bounds of il
+      Float64 ilstart, ilend;
+      hr = Bounds(&ilstart, &ilend);
+
+      Float64 loc;
+      hr = regions->get_Item(0, &loc);
+      if (loc < ilstart)
       {
-         // we have regions
-         // regions must be within bounds of il
-         Float64 ilstart, ilend;
-         CHRException hr;
-         hr = this->Bounds(&ilstart, &ilend);
+         ATLASSERT(false); // about to throw
+         THROW_LBAMA(INVALID_REGION); 
+      }
 
-         Float64 loc;
-         hr = regions->get_Item(0, &loc);
-         if (loc < ilstart)
-            THROW_LBAMA(INVALID_REGION); 
+      hr = regions->get_Item(rgn_size-1, &loc);
+      if (ilend < loc)
+      {
+         ATLASSERT(false); // about to throw
+         THROW_LBAMA(INVALID_REGION); 
+      }
 
-         hr = regions->get_Item(rgn_size-1, &loc);
-         if (loc > ilend)
-            THROW_LBAMA(INVALID_REGION); 
+      // Compute areas
+      InfluencePointContainer& container = GetContainer(ilsBoth);
+      InfluencePointIterator cursor( container.begin() );
+      InfluencePointIterator end( container.end() );
 
-         // Compute areas
-         InfluencePointContainer& container = GetContainer(ilsBoth);
-         InfluencePointIterator cursor( container.begin() );
-         InfluencePointIterator end( container.end() );
+      Float64 area = 0.0;
+      CollectionIndexType num_rgns = rgn_size/2;
+      for (CollectionIndexType ir = 0; ir < num_rgns; ir++)
+      {
+         // start and end locations of region
+         Float64 r_start, r_end;
+         hr = regions->get_Item(ir*2,   &r_start);
+         hr = regions->get_Item(ir*2+1, &r_end);
 
-         Float64 area = 0.0;
-         CollectionIndexType num_rgns = rgn_size/2;
-         for (CollectionIndexType ir=0; ir<num_rgns; ir++)
+         // forward cursor to inflpoint at or just before start of region
+         FindInflPnt(r_start, cursor, end);
+         if (cursor == end)
+            break;
+
+         // only compute area if region is not zero-length
+         if ( 0.0 < (r_end - r_start))
          {
-            // start and end locations of region
-            Float64 r_start, r_end;
-            hr = regions->get_Item(ir*2,   &r_start);
-            hr = regions->get_Item(ir*2+1, &r_end);
+            // compute area of all segments in this region and
+            // forward cursor to inflpoint at or just before end of this region
+            Float64 loc_area = CalcInflArea(r_start, r_end, cursor, end);
 
-            // forward cursor to inflpoint at or just before start of region
-            FindInflPnt(r_start, cursor, end);
-            if (cursor==end)
-               break;
-
-            // only compute area if region is not zero-length
-            if (r_end - r_start > 0.0)
-            {
-               // compute area of all segments in this region and
-               // forward cursor to inflpoint at or just before end of this region
-               Float64 loc_area = CalcInflArea(r_start, r_end, cursor, end);
-
-               area += loc_area;
-            }
-
-            if (cursor==end)
-               break;
+            area += loc_area;
          }
 
-         *pArea=area;
+         if (cursor==end)
+            break;
       }
+
+      *pArea=area;
    }
    catch(...)
    {
@@ -1712,7 +1699,7 @@ STDMETHODIMP CInfluenceLine::IsZero(InfluenceSideType side, VARIANT_BOOL* isZero
 
       InfluencePointIterator it( container.begin() );
       InfluencePointIterator itend( container.end() );
-      while(it!=itend)
+      while(it != itend)
       {
          InflPoint& p1 = *it++;
 

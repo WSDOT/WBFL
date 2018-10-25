@@ -315,7 +315,7 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    {
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       UINT nPluginCmdID;
-      IEAFCommandCallback* pCallback;
+      CComPtr<IEAFCommandCallback> pCallback;
       if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
       {
          // this command belogs to one of the plug-ins
@@ -331,7 +331,7 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    {
       CEAFApp* pApp = EAFGetApp();
       UINT nPluginCmdID;
-      IEAFCommandCallback* pCallback;
+      CComPtr<IEAFCommandCallback> pCallback;
       if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
       {
          // this command belogs to one application of the plug-ins

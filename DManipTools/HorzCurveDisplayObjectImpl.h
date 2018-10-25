@@ -150,7 +150,8 @@ public:
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) { Do_SetDropSite(pDropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
 };
 

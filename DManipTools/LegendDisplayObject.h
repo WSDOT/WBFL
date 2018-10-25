@@ -46,6 +46,8 @@ class ATL_NO_VTABLE CLegendDisplayObject :
 {
 public:
 	CLegendDisplayObject();
+   HRESULT FinalConstruct();
+   void FinalRelease();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_LEGENDDISPLAYOBJECT)
 
@@ -129,7 +131,8 @@ END_CONNECTION_POINT_MAP()
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) { Do_SetDropSite(pDropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
 
    // iDraggable Implementation
@@ -175,10 +178,6 @@ END_CONNECTION_POINT_MAP()
 
    // iMessageListener
    virtual void OnCaughtMessage(int msg);
-
-public:
-   HRESULT FinalConstruct();
-   void FinalRelease();
 
 private:
    void Draw(CDC* pDC, iCoordinateMap* map, const CPoint& location, BOOL hiLite, BOOL beingDragged=FALSE);

@@ -423,7 +423,6 @@ HRESULT CBrokerImp2::AddAgent(IAgentEx* pAgent,Agents& agents)
          return BROKER_E_ADDAGENT;
    }
 
-   pAgent->AddRef();
    CLSID clsid;
    pAgent->GetClassID(&clsid);
 

@@ -55,6 +55,7 @@ class EAFCLASS CEAFStatusItem
 {
 public:
    CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,LPCTSTR strDescription);
+   virtual ~CEAFStatusItem();
 
    // Called by the framework to assign a unique identifier
    // to the status item. Don't call this method

@@ -5,6 +5,12 @@
 #include "ProgressThread.h"
 #include <WBFLCore.h>
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 
 const UINT g_TimerID = 1;
 CWnd* g_pTimerWnd = 0;

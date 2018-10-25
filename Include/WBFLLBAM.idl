@@ -1436,6 +1436,10 @@ library WBFLLBAM
       HRESULT TopRelease([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpstring("property TopRelease"),helpcontext(IDH_Support_TopRelease)] 
       HRESULT TopRelease([in] VARIANT_BOOL newVal);
+
+      [helpstring("method AddAssociatedSupport")] HRESULT AddAssociatedSupport([in]SupportIDType id);
+      [helpstring("method GetAssociatedSupportCount")] HRESULT GetAssociatedSupportCount([out,retval]SupportIndexType* pCount);
+      [helpstring("method GetAssociatedSupportCount")] HRESULT GetAssociatedSupportID([in]IndexType index,[out,retval]SupportIDType* pID);
 	};
 
 

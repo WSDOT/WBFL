@@ -167,18 +167,13 @@ STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape
    rect->get_Height(&h);
 
    Float64 l;
-   Float64 brgOffset,endDist;
    if ( bIncludeClosure == VARIANT_TRUE )
    {
       m_pGirderLine->get_LayoutLength(&l);
-      brgOffset = 0;
-      endDist = 0;
    }
    else
    {
       m_pGirderLine->get_GirderLength(&l);
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
    }
 
    CComPtr<IRectangle> shape;
@@ -186,19 +181,21 @@ STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape
    shape->put_Height(h);
    shape->put_Width(l);
 
-   // CL Pier/Top Shape is at (0,0)
+   // Top left corner of shape is at (0,0)
    //
-   // CL Pier   End of segment
+   // CL Pier   Start of segment
    // |         |       CL Bearing
-   // | (0,0)   |       |
-   // *         +-------+---------------\  
+   // |   (0,0) |       |
+   // |         *-------+---------------\  
    // |         |       .               /
    // |         +-------+---------------\  
+   //
+   //          Elevation View
 
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
    position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(brgOffset-endDist,0);
+   topLeft->Move(0,0);
    position->put_LocatorPoint(lpTopLeft,topLeft);
 
    shape->QueryInterface(ppShape);

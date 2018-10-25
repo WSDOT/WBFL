@@ -46,6 +46,14 @@ CDragDataSourceImpl::CDragDataSourceImpl()
 
 CDragDataSourceImpl::~CDragDataSourceImpl()
 {
+   std::map<UINT,DataSource*>::iterator iter(m_Sources.begin());
+   std::map<UINT,DataSource*>::iterator end(m_Sources.end());
+   for ( ; iter != end; iter++ )
+   {
+      DataSource* pSource = (*iter).second;
+      delete pSource;
+   }
+   m_Sources.clear();
 }
 
 STDMETHODIMP_(void) CDragDataSourceImpl::SetDataObject(COleDataObject* pDataObj)
@@ -88,12 +96,14 @@ CDragDataSinkImpl::CDragDataSinkImpl()
 
 CDragDataSinkImpl::~CDragDataSinkImpl()
 {
-   std::map<UINT,DataSink*>::iterator iter;
-   for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
+   std::map<UINT,DataSink*>::iterator iter(m_Sinks.begin());
+   std::map<UINT,DataSink*>::iterator end(m_Sinks.end());
+   for ( ; iter != end; iter++ )
    {
       DataSink* pSink = (*iter).second;
       delete pSink;
    }
+   m_Sinks.clear();
 }
 
 STDMETHODIMP_(void) CDragDataSinkImpl::CreateFormat(UINT cfFormat)
@@ -127,8 +137,9 @@ STDMETHODIMP_(BOOL) CDragDataSinkImpl::Write(UINT cfFormat,void* pBuf,UINT nMax)
 
 void CDragDataSinkImpl::CacheGlobalData(COleDataSource* pODS)
 {
-   std::map<UINT,DataSink*>::iterator iter;
-   for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
+   std::map<UINT,DataSink*>::iterator iter(m_Sinks.begin());
+   std::map<UINT,DataSink*>::iterator end(m_Sinks.end());
+   for ( ; iter != end; iter++ )
    {
       UINT cf = (*iter).first;
       DataSink* pSink = (*iter).second;

@@ -166,9 +166,8 @@ HRESULT CBoxBeam::UpdateShape()
 {
    if (m_Dirty)
    {
-      // create a new shape
-      m_pShape.Release();
-      CreateCompositeShape(&m_pShape);
+      IndexType nShapes;
+      m_pShape->get_Count(&nShapes);
 
       // Create the outer shape
       CComPtr<IPolyShape> outer;
@@ -303,7 +302,10 @@ HRESULT CBoxBeam::UpdateShape()
       }
 
       CComQIPtr<IShape> outer_shape(outer);
-      m_pShape->AddShape(outer_shape,VARIANT_FALSE);
+      if ( nShapes == 0 )
+         m_pShape->AddShape(outer_shape,VARIANT_FALSE);
+      else
+         m_pShape->Replace(0,outer_shape);
 
       // inner shape
       if (m_VoidCount>0)
@@ -344,7 +346,10 @@ HRESULT CBoxBeam::UpdateShape()
          inner->AddPoint(-x1,y1);
 
          CComQIPtr<IShape> inner_shape(inner);
-         m_pShape->AddShape(inner_shape,VARIANT_TRUE);
+         if ( nShapes == 0 )
+            m_pShape->AddShape(inner_shape,VARIANT_TRUE);
+         else
+            m_pShape->Replace(1,inner_shape);
       }
 
       CComQIPtr<IXYPosition> pPosition(m_pShape);

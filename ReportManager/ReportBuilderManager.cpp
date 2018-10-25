@@ -73,8 +73,9 @@ CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHi
       return m_RptBuilders.size();
 
    CollectionIndexType nReportBuilders = 0;
-   RptBuilderContainer::const_iterator iter;
-   for ( iter = m_RptBuilders.begin(); iter != m_RptBuilders.end(); iter++ )
+   RptBuilderContainer::const_iterator iter(m_RptBuilders.begin());
+   RptBuilderContainer::const_iterator end(m_RptBuilders.end());
+   for ( ; iter != end; iter++ )
    {
       const RptBuilderEntry& entry = *iter;
       if ( !entry.second->Hidden() )

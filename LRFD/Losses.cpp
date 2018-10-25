@@ -1003,7 +1003,8 @@ void lrfdLosses::UpdateElasticShortening() const
                             m_Mdlg,
                             1.0,
                             m_Eci,
-                            m_Ep);
+                            m_Ep,
+                            lrfdElasticShortening::fcgpIterative);
 
    m_ElasticShortening = es;
 
@@ -1187,7 +1188,14 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
 
    m_Ptr   = m_ApsTemp*f; // force in temporary strands immediately before removal
    m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_epermFinal*m_etemp/m_Ig; // concrete stress change due to removal
-   m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
+   if ( 0.0 < m_ApsPerm )
+   {
+      m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
+   }
+   else
+   {
+      m_dfptr = 0.0; // no permanent strands, so the effect is zero
+   }
 }
 
 void lrfdLosses::MakeAssignment( const lrfdLosses& rOther )

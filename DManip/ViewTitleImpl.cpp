@@ -65,6 +65,11 @@ HRESULT CViewTitleImpl::FinalConstruct()
    return S_OK;
 }
 
+void CViewTitleImpl::FinalRelease()
+{
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+}
+
 // iDisplayObject Implementation
 // This are the methods not delegated to the implementation object
 STDMETHODIMP_(void) CViewTitleImpl::Draw(CDC* pDC)

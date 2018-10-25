@@ -23,7 +23,7 @@ class MFCTOOLSCLASS CCoolButton : public CButton
 public:
      CCoolButton();
      BOOL SetIDs(UINT nID1, UINT m_nID2);
-     BOOL AddMenuItem(UINT nMenuId,const CString strMenu, UINT nMenuFlags);
+     BOOL AddMenuItem(UINT nMenuId,const CString strMenu, UINT nMenuFlags = 0);
      BOOL SetButtonImage(UINT nResourceId, COLORREF crMask);
      void SetSplit(BOOL b) { m_bSplit = b && (m_bMenuLoaded || m_nID2); }
      void SetAsDefaultBtn(BOOL b) { m_bDefaultBtn = b; }

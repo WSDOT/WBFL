@@ -50,7 +50,6 @@ CDimensionLineImpl::CDimensionLineImpl()
 
 CDimensionLineImpl::~CDimensionLineImpl()
 {
-   SetTextBlock(NULL);
 }
 
 HRESULT CDimensionLineImpl::FinalConstruct()
@@ -61,6 +60,8 @@ HRESULT CDimensionLineImpl::FinalConstruct()
    m_Angle = 0;
    m_bAlignWithPlugs = TRUE;
 
+   m_HiddenWitnessLength = 0;
+
    m_LenWitness    = 1440 * 3/8;
    m_DimOffset     = 1440 * 1/16;
    m_WitnessOffset = 1440 * 1/32;
@@ -70,12 +71,16 @@ HRESULT CDimensionLineImpl::FinalConstruct()
 
    m_Style = DManip::ahsFilled;
 
-   m_pTextBlock = 0;
-
    m_bAutoText = FALSE;
 
    return CConnectorImpl::FinalConstruct();
 }
+
+void CDimensionLineImpl::FinalRelease()
+{
+   CDisplayObjectDefaultImpl::Do_FinalRelease();
+}
+
 
 /////////////////////////////////////////////////////////
 // iDisplayObject Implementation
@@ -83,8 +88,8 @@ STDMETHODIMP_(void) CDimensionLineImpl::SetDisplayList(iDisplayList* pDL)
 {
    Do_SetDisplayList(pDL);
 
-   if ( m_pTextBlock )
-      m_pTextBlock->SetDisplayList(pDL);
+   if ( m_TextBlock )
+      m_TextBlock->SetDisplayList(pDL);
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::Draw(CDC* pDC)
@@ -110,8 +115,8 @@ STDMETHODIMP_(void) CDimensionLineImpl::Draw(CDC* pDC)
    DrawArrowHead(pDC,m_Style,m_StartArrow.left,m_StartArrow.tip,m_StartArrow.right);
    DrawArrowHead(pDC,m_Style,m_EndArrow.left,m_EndArrow.tip,m_EndArrow.right);
 
-   if ( m_pTextBlock )
-      m_pTextBlock->Draw(pDC);
+   if ( m_TextBlock )
+      m_TextBlock->Draw(pDC);
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::Highlite(CDC* pDC,BOOL bHighlite)
@@ -125,7 +130,7 @@ STDMETHODIMP_(BOOL) CDimensionLineImpl::HitTest(CPoint point)
 {
    UpdateWorkPoints();
 
-   if ( m_pTextBlock && m_pTextBlock->HitTest(point) )
+   if ( m_TextBlock && m_TextBlock->HitTest(point) )
       return TRUE;
 
    if ( m_pGravityWellStrategy )
@@ -163,9 +168,9 @@ STDMETHODIMP_(void) CDimensionLineImpl::GetBoundingBox(IRect2d** rect)
    IncludePointInRect(m_EndArrow.left,&r);
    IncludePointInRect(m_EndArrow.right,&r);
 
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      CRect box = m_pTextBlock->GetBoundingBox();
+      CRect box = m_TextBlock->GetBoundingBox();
       r.NormalizeRect();
       box.NormalizeRect();
       r.UnionRect(&r,&box);
@@ -198,16 +203,16 @@ STDMETHODIMP_(void) CDimensionLineImpl::GetBoundingBox(IRect2d** rect)
 STDMETHODIMP_(CString) CDimensionLineImpl::GetToolTipText()
 {
    CString strMyTip = Do_GetToolTipText();
-   if ( strMyTip.GetLength() == CString("") && m_pTextBlock )
-      return m_pTextBlock->GetToolTipText();
+   if ( strMyTip.GetLength() == CString("") && m_TextBlock )
+      return m_TextBlock->GetToolTipText();
    else
       return strMyTip;
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::SetMaxTipWidth(INT maxWidth)
 { 
-   if ( m_pTextBlock )
-      m_pTextBlock->SetMaxTipWidth(maxWidth);
+   if ( m_TextBlock )
+      m_TextBlock->SetMaxTipWidth(maxWidth);
    else
       Do_SetMaxTipWidth(maxWidth); 
 }
@@ -215,24 +220,24 @@ STDMETHODIMP_(void) CDimensionLineImpl::SetMaxTipWidth(INT maxWidth)
 STDMETHODIMP_(INT) CDimensionLineImpl::GetMaxTipWidth()
 {
    INT width = Do_GetMaxTipWidth();
-   if ( m_pTextBlock )
-      return m_pTextBlock->GetMaxTipWidth();
+   if ( m_TextBlock )
+      return m_TextBlock->GetMaxTipWidth();
    else
       return width;
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::SetTipDisplayTime(INT iTime)
 {
-   if ( m_pTextBlock )
-      m_pTextBlock->SetTipDisplayTime(iTime);
+   if ( m_TextBlock )
+      m_TextBlock->SetTipDisplayTime(iTime);
    else
       Do_SetTipDisplayTime(iTime); 
 }
 
 STDMETHODIMP_(INT) CDimensionLineImpl::GetTipDisplayTime()
 {
-   if ( m_pTextBlock )
-      return m_pTextBlock->GetTipDisplayTime();
+   if ( m_TextBlock )
+      return m_TextBlock->GetTipDisplayTime();
    else
       return Do_GetTipDisplayTime();
 }
@@ -240,9 +245,9 @@ STDMETHODIMP_(INT) CDimensionLineImpl::GetTipDisplayTime()
 STDMETHODIMP_(bool) CDimensionLineImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      m_pTextBlock->OnKeyDown(nChar,nRepCnt,nFlags);
+      m_TextBlock->OnKeyDown(nChar,nRepCnt,nFlags);
       return true;
    }
    else
@@ -254,9 +259,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT
 STDMETHODIMP_(bool) CDimensionLineImpl::OnContextMenu(CWnd* pWnd,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      m_pTextBlock->OnContextMenu(pWnd,point);
+      m_TextBlock->OnContextMenu(pWnd,point);
       return true;
    }
    else
@@ -268,9 +273,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnContextMenu(CWnd* pWnd,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDown(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnLButtonDown(nFlags,point);
+      return m_TextBlock->OnLButtonDown(nFlags,point);
    }
    else
    {
@@ -281,9 +286,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDown(UINT nFlags,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonUp(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnLButtonUp(nFlags,point);
+      return m_TextBlock->OnLButtonUp(nFlags,point);
    }
    else
    {
@@ -294,9 +299,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonUp(UINT nFlags,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDblClk(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnLButtonDblClk(nFlags,point);
+      return m_TextBlock->OnLButtonDblClk(nFlags,point);
    }
    else
    {
@@ -307,9 +312,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDblClk(UINT nFlags,CPoint point
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDown(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnRButtonDown(nFlags,point);
+      return m_TextBlock->OnRButtonDown(nFlags,point);
    }
    else
    {
@@ -320,9 +325,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDown(UINT nFlags,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonUp(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnRButtonUp(nFlags,point);
+      return m_TextBlock->OnRButtonUp(nFlags,point);
    }
    else
    {
@@ -333,9 +338,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonUp(UINT nFlags,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDblClk(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnRButtonDblClk(nFlags,point);
+      return m_TextBlock->OnRButtonDblClk(nFlags,point);
    }
    else
    {
@@ -346,9 +351,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDblClk(UINT nFlags,CPoint point
 STDMETHODIMP_(bool) CDimensionLineImpl::OnMouseMove(UINT nFlags,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnMouseMove(nFlags,point);
+      return m_TextBlock->OnMouseMove(nFlags,point);
    }
    else
    {
@@ -359,9 +364,9 @@ STDMETHODIMP_(bool) CDimensionLineImpl::OnMouseMove(UINT nFlags,CPoint point)
 STDMETHODIMP_(bool) CDimensionLineImpl::OnMouseWheel(UINT nFlags,short zDelta,CPoint point)
 {
    // If there is a text block, forward the event
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      return m_pTextBlock->OnMouseWheel(nFlags,zDelta,point);
+      return m_TextBlock->OnMouseWheel(nFlags,zDelta,point);
    }
    else
    {
@@ -380,6 +385,16 @@ STDMETHODIMP_(void) CDimensionLineImpl::SetAngle(Float64 angle)
 STDMETHODIMP_(Float64) CDimensionLineImpl::GetAngle()
 {
    return m_Angle;
+}
+
+STDMETHODIMP_(LONG) CDimensionLineImpl::GetHiddenWitnessLength()
+{
+   return m_HiddenWitnessLength;
+}
+
+STDMETHODIMP_(void) CDimensionLineImpl::SetHiddenWitnessLength(LONG l)
+{
+   m_HiddenWitnessLength = l;
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::SetWitnessLength(LONG l)
@@ -435,27 +450,29 @@ STDMETHODIMP_(BOOL) CDimensionLineImpl::IsAutoTextEnabled()
 
 STDMETHODIMP_(void) CDimensionLineImpl::SetTextBlock(iTextBlock* pTextBlock)
 {
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
    {
-      m_pTextBlock->UnregisterEventSink();
-      m_pTextBlock = 0;
+      InternalAddRef(); // opposite of InternalRelease below
+      m_TextBlock->UnregisterEventSink();
+      m_TextBlock = 0;
    }
 
-   m_pTextBlock = pTextBlock;
-   if ( m_pTextBlock )
+   m_TextBlock = pTextBlock;
+   if ( m_TextBlock )
    {
       CComPtr<iDisplayList> list;
       GetDisplayList(&list);
-      m_pTextBlock->SetDisplayList(list);
-      m_pTextBlock->RegisterEventSink(this);
+      m_TextBlock->SetDisplayList(list);
+      m_TextBlock->RegisterEventSink(this); // this causes a circular reference
+      InternalRelease(); // decrement our reference count
    }
 }
 
 STDMETHODIMP_(void) CDimensionLineImpl::GetTextBlock(iTextBlock** textBlock)
 {
-   (*textBlock) = m_pTextBlock;
+   (*textBlock) = m_TextBlock;
 
-   if ( m_pTextBlock )
+   if ( m_TextBlock )
       (*textBlock)->AddRef();
 }
 
@@ -463,7 +480,7 @@ STDMETHODIMP_(void) CDimensionLineImpl::GetTextBlock(iTextBlock** textBlock)
 // iDisplayObjectEvents Implementation
 STDMETHODIMP_(void) CDimensionLineImpl::OnChanged(iDisplayObject* pDO)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
 
    // The text block changed...
    Fire_OnChanged();
@@ -471,7 +488,7 @@ STDMETHODIMP_(void) CDimensionLineImpl::OnChanged(iDisplayObject* pDO)
 
 STDMETHODIMP_(void) CDimensionLineImpl::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
 
    // The text block moved...
    Fire_OnDragMoved(offset);
@@ -479,49 +496,49 @@ STDMETHODIMP_(void) CDimensionLineImpl::OnDragMoved(iDisplayObject* pDO,ISize2d*
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnLButtonDblClk(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnLButtonDown(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnLButtonUp(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnRButtonDblClk(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnRButtonDown(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnRButtonUp(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnMouseMove(nFlags,point);
 }
 
 STDMETHODIMP_(bool) CDimensionLineImpl::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
 {
-//   ASSERT(m_pTextBlock.IsEqualObject(pDO));
+//   ASSERT(m_TextBlock.IsEqualObject(pDO));
    return Fire_OnMouseWheel(nFlags,zDelta,point);
 }
 
@@ -622,8 +639,8 @@ void CDimensionLineImpl::UpdateWorkPoints()
    //
 
    // Start of Witness Line
-   m_ptA.x = m_ptStart.x - (LONG)(m_WitnessOffset*s*stx*fw);
-   m_ptA.y = m_ptStart.y - (LONG)(m_WitnessOffset*c*sty*fw);
+   m_ptA.x = m_ptStart.x - (LONG)((m_WitnessOffset+m_HiddenWitnessLength)*s*stx*fw);
+   m_ptA.y = m_ptStart.y - (LONG)((m_WitnessOffset+m_HiddenWitnessLength)*c*sty*fw);
 
    // End of Witness Line
    m_ptB.x = m_ptStart.x - (LONG)(m_LenWitness*s*stx);
@@ -667,8 +684,8 @@ void CDimensionLineImpl::UpdateWorkPoints()
    CSize extension = m_ptZ - m_ptEnd;
 
    // Start of Witness Line
-   m_ptD.x = m_ptEnd.x - (LONG)(m_WitnessOffset*s*stx*fw);
-   m_ptD.y = m_ptEnd.y - (LONG)(m_WitnessOffset*c*sty*fw);
+   m_ptD.x = m_ptEnd.x - (LONG)((m_WitnessOffset+m_HiddenWitnessLength)*s*stx*fw);
+   m_ptD.y = m_ptEnd.y - (LONG)((m_WitnessOffset+m_HiddenWitnessLength)*c*sty*fw);
 
    // End of Witness Line
    m_ptE.x = m_ptEnd.x + extension.cx - (LONG)(m_LenWitness*s*stx);
@@ -709,7 +726,7 @@ void CDimensionLineImpl::UpdateArrowHeads(Float64 stx, Float64 sty)
 
 void CDimensionLineImpl::UpdateTextBlock()
 {
-   if ( m_pTextBlock == 0 )
+   if ( m_TextBlock == 0 )
       return;
 
    // Update position
@@ -732,15 +749,15 @@ void CDimensionLineImpl::UpdateTextBlock()
    CComPtr<IPoint2d> loc;
    loc.CoCreateInstance(CLSID_Point2d);
    loc->Move(0.5*(x1+x2),0.5*(y1+y2));
-   m_pTextBlock->SetPosition(loc);
-   m_pTextBlock->SetTextAlign(TA_BOTTOM | TA_CENTER);
+   m_TextBlock->SetPosition(loc);
+   m_TextBlock->SetTextAlign(TA_BOTTOM | TA_CENTER);
 
    // Compute the angle of the text
    CSize delta = m_ptF - m_ptC;
    Float64 angle = atan(-(Float64)delta.cy/(Float64)delta.cx);
 
    LONG lAngle = (LONG)(1800.0*angle/M_PI); // tenth of a degree
-   m_pTextBlock->SetAngle(lAngle);
+   m_TextBlock->SetAngle(lAngle);
 
    if ( m_bAutoText )
    {
@@ -769,7 +786,7 @@ void CDimensionLineImpl::UpdateTextBlock()
       CString strDist;
       strDist.Format(_T("%f"),dist);
 
-      m_pTextBlock->SetText(strDist);
+      m_TextBlock->SetText(strDist);
    }
 }
 

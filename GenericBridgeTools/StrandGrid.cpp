@@ -1487,11 +1487,22 @@ void CStrandGrid::ValidateGrid()
       m_MaxFill->Clear();
       m_MaxFill->Reserve(m_GridPoints.size());
       m_MaxCount=0;
-      for (GridCollectionIterator it=m_GridPoints.begin(); it!=m_GridPoints.end(); it++)
-      {
-         const GridPoint2d& pnt = *it;
+      GridCollectionIterator begin(m_GridPoints.begin());
+      GridCollectionIterator iter(begin);
+      GridCollectionIterator end(m_GridPoints.end());
 
-         m_GridBoundingBox->BoundPoint(pnt.dPointX , pnt.dPointY);
+      for ( ; iter != end; iter++ )
+      {
+         const GridPoint2d& pnt = *iter;
+
+         if ( iter == begin )
+         {
+            m_GridBoundingBox->SetBounds(pnt.dPointX,pnt.dPointX,pnt.dPointY,pnt.dPointY);
+         }
+         else
+         {
+            m_GridBoundingBox->BoundPoint(pnt.dPointX , pnt.dPointY);
+         }
 
          // if there is a postive X value, then two strands can be placed.
          StrandIndexType val = (pnt.dPointX > 0.0) ? 2 : 1;

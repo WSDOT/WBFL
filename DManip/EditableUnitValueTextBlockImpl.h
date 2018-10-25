@@ -52,7 +52,6 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 DECLARE_REGISTRY_RESOURCEID(IDR_EDITABLEUNITVALUETEXTBLOCK)
@@ -133,7 +132,8 @@ END_COM_MAP()
    STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink);
 
    // Drag Drop
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite);
+   STDMETHOD_(void,UnregisterDropSite)();
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite);
 
    // iTextBlock overrides

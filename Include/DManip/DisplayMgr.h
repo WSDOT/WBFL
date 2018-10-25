@@ -136,7 +136,8 @@ interface iDisplayMgr : public IUnknown
    STDMETHOD_(void,CreateDragObjects)(COleDataObject* pDataObject) PURE;
    STDMETHOD_(void,DrawDragObjects)(const CPoint& dragStart, const CPoint& dragPoint) PURE;
    STDMETHOD_(void,DestroyDragObjects)() PURE;
-   STDMETHOD_(void,SetDropSite)(iDropSite* pDropSite) PURE;
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) PURE;
+   STDMETHOD_(void,UnregisterDropSite)() PURE;
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) PURE;
    STDMETHOD_(void,HighliteDropSite)(BOOL bHighlite) PURE;
    STDMETHOD_(void,OnDragFinished)(DROPEFFECT de) PURE;

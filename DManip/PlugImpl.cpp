@@ -42,7 +42,7 @@ static char THIS_FILE[]=__FILE__;
 
 CPlugImpl::CPlugImpl()
 {
-
+   m_pSocket = NULL;
 }
 
 CPlugImpl::~CPlugImpl()
@@ -52,9 +52,9 @@ CPlugImpl::~CPlugImpl()
 
 STDMETHODIMP_(void) CPlugImpl::Notify(iSocket* socket)
 {
-   // Does nothing by default
-   std::vector< iPlugEvents* >::iterator iter;
-   for ( iter = m_EventSinks.begin(); iter != m_EventSinks.end(); iter++ )
+   std::vector< iPlugEvents* >::iterator iter(m_EventSinks.begin());
+   std::vector< iPlugEvents* >::iterator end(m_EventSinks.end());
+   for ( ; iter != end; iter++ )
    {
       iPlugEvents* sink = *iter;
       sink->Notify(this);
@@ -74,7 +74,11 @@ STDMETHODIMP_(void) CPlugImpl::SetSocket(iSocket* pSocket)
 STDMETHODIMP_(void) CPlugImpl::GetSocket(iSocket** socket)
 {
    (*socket) = m_pSocket;
-   (*socket)->AddRef();
+
+   if ( m_pSocket != NULL )
+   {
+      (*socket)->AddRef();
+   }
 }
 
 STDMETHODIMP_(void) CPlugImpl::Register(iPlugEvents* pEventSink)

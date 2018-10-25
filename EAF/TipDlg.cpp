@@ -55,6 +55,7 @@ CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
 	m_bStartup = TRUE;
 	//}}AFX_DATA_INIT
 
+   srand((unsigned)time(NULL));
    int idx = rand()%vTipFiles.size();
 
    CFileFind finder;

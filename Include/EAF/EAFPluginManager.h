@@ -201,11 +201,13 @@ public:
 
    virtual void UnloadPlugins()
    {
-      Plugins::iterator iter;
-      for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
+      Plugins::iterator iter(m_Plugins.begin());
+      Plugins::iterator end(m_Plugins.end());
+      for ( ; iter != end; iter++ )
       {
          CComPtr<T> plugin = iter->second;
          plugin->Terminate();
+         plugin.Release();
       }
       m_Plugins.clear();
    }

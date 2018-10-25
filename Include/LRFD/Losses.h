@@ -418,9 +418,9 @@ protected:
 
    void UpdateLosses() const;
    void UpdateInitialLosses() const;
-   void UpdateRelaxationBeforeTransfer() const;
-   void UpdateElasticShortening() const;
-   void UpdatePostTensionLosses() const;
+   virtual void UpdateRelaxationBeforeTransfer() const;
+   virtual void UpdateElasticShortening() const;
+   virtual void UpdatePostTensionLosses() const;
 
    // Called by the framework to validate the parameters in this object
    // Throw lrfdXPsLosses-based exceptions of there are invalid parameters
@@ -445,7 +445,7 @@ protected:
    matPsStrand::Type m_Type;
    matPsStrand::Grade m_Grade;
    Float64 m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
-   Float64 m_epermFinal; // CG of permanent prestress with respect to centroid of noncomposite section
+   Float64 m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
    Float64 m_etemp; // CG of temporary prestress 
    Float64 m_ApsPerm; // Area of permanent strands
    Float64 m_ApsTemp; // Area of temporary strands

@@ -98,7 +98,7 @@ private:
    struct CCallbackItem 
    {
       UINT nPluginCmdID;
-      CAdapt<CComPtr<IEAFCommandCallback>> pCallback;
+      CComPtr<IEAFCommandCallback> pCallback;
    };
 
    typedef std::map<UINT,CCallbackItem> CallbackContainer;

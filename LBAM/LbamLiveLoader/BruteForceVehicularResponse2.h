@@ -311,7 +311,7 @@ private:
 
    void ComputeInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                             VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact, VARIANT_BOOL computePlacements,
-                            IInfluenceLine* inflLine, Side side,
+                            std::vector<CComPtr<IInfluenceLine>>& inflLines, Side side,
                             Float64* leftResult, Float64 *rightResult, 
                             ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);
 
@@ -366,7 +366,7 @@ private:
 
    void EvaluateTruckLoad(LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                           VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
-                          VARIANT_BOOL computePlacements, IInfluenceLine* inflLine, InfluenceSideType truck_side,
+                          VARIANT_BOOL computePlacements, std::vector<CComPtr<IInfluenceLine>>& inflLines, InfluenceSideType truck_side,
                           iLLCompare* pLeftCompare,iLLCompare* pRightCompare,
                           Float64* pLeftResult, Float64 *pRightResult,
                           ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);
@@ -380,14 +380,14 @@ private:
       
    void EvaluateForInteriorSupportReaction(LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                              VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
-                             VARIANT_BOOL computePlacements, IInfluenceLine* inflLine, InfluenceSideType truck_side,
+                             VARIANT_BOOL computePlacements, std::vector<CComPtr<IInfluenceLine>>& inflLines, InfluenceSideType truck_side,
                              iLLCompare* pLeftCompare,iLLCompare* pRightCompare,
                              Float64* pLeftResult, Float64 *pRightResult,
                              ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);
 
    void Evaluate(LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                  VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
-                 VARIANT_BOOL computePlacements, IInfluenceLine* inflLine, InfluenceSideType truck_side,
+                 VARIANT_BOOL computePlacements, std::vector<CComPtr<IInfluenceLine>>& inflLines, InfluenceSideType truck_side,
                  iLLCompare* pLeftCompare,iLLCompare* pRightCompare,
                  Float64* pLeftResult, Float64 *pRightResult,
                  ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);

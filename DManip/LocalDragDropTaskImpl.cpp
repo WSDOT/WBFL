@@ -75,8 +75,9 @@ STDMETHODIMP_(void) CLocalDragDropTaskImpl::Start()
 
    CComObject<CDragDataSinkImpl>* pSink;
    CComObject<CDragDataSinkImpl>::CreateInstance(&pSink);
+   CComPtr<iDragDataSink> sink(pSink);
    
-   m_pDispMgr->PrepareDragData(pSink);
+   m_pDispMgr->PrepareDragData(sink);
 
    COleDataSource ods;
    pSink->CacheGlobalData(&ods);
@@ -230,7 +231,7 @@ STDMETHODIMP_(void) CLocalDragDropTaskImpl::DestroyDragObjects()
    m_pDispMgr->DestroyDragObjects();
 
    m_pDispMgr->HighliteDropSite(FALSE);
-   m_pDispMgr->SetDropSite(NULL);
+   m_pDispMgr->UnregisterDropSite();
 }
 
 STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::DetermineDropEffect()
@@ -279,7 +280,7 @@ STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::DetermineDropEffect()
             }
 
             // Set the new drop site
-            m_pDispMgr->SetDropSite(pDropSite);
+            m_pDispMgr->RegisterDropSite(pDropSite);
 
             // draw in highlited stage
             m_pDispMgr->HighliteDropSite(TRUE);
@@ -294,7 +295,7 @@ STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::DetermineDropEffect()
    {
       // Cursor is not over a display object - relegate to the view
       m_pDispMgr->HighliteDropSite(FALSE);
-      m_pDispMgr->SetDropSite(NULL);
+      m_pDispMgr->UnregisterDropSite();
 
       // Ask the View if we can drop the payload on the canvas
       CDisplayView* pView = m_pDispMgr->GetView();
