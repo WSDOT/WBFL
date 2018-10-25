@@ -731,10 +731,10 @@ Uint16 rptHtmlRcVisitor::BorderToPixels( rptRiStyle::BorderStyle BStyle)
    case rptRiStyle::SINGLE_THICK:
       return 2;
 
-   case rptRiStyle::Float64_THICK:
+   case rptRiStyle::DOUBLE_THICK:
       return 6;
 
-   case rptRiStyle::Float64_LINE:
+   case rptRiStyle::DOUBLE_LINE:
       return 8;
 
    case rptRiStyle::DASHED:

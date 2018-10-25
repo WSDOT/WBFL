@@ -249,8 +249,8 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    CComPtr<IDistributionFactor> df1, df2;
    TRY_TEST(df1.CoCreateInstance(CLSID_DistributionFactor), S_OK);
    TRY_TEST(df2.CoCreateInstance(CLSID_DistributionFactor), S_OK);
-   TRY_TEST(df1->SetG(2,2,2,2,2,2,2,2,2,2,2,2,2,2), S_OK);
-   TRY_TEST(df2->SetG(3,3,3,3,3,3,3,3,3,3,3,3,2,2), S_OK);
+   TRY_TEST(df1->SetG(2,2,2,2,2,2,2,2,2,2,2,2,2,2,2), S_OK);
+   TRY_TEST(df2->SetG(3,3,3,3,3,3,3,3,3,3,3,3,2,2,2), S_OK);
    CComPtr<IDistributionFactorSegment> dfs1, dfs2;
    TRY_TEST(dfs1.CoCreateInstance(CLSID_DistributionFactorSegment), S_OK);
    TRY_TEST(dfs2.CoCreateInstance(CLSID_DistributionFactorSegment), S_OK);

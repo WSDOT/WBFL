@@ -59,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,6,3,0
- PRODUCTVERSION 3,6,3,0
+ FILEVERSION 3,6,3,1
+ PRODUCTVERSION 3,6,3,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -78,12 +78,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Core Services"
-            VALUE "FileVersion", "3.6.3.0"
+            VALUE "FileVersion", "3.6.3.1"
             VALUE "InternalName", "Core"
             VALUE "LegalCopyright", "Copyright © 1999-2013"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.6.3.0"
+            VALUE "ProductVersion", "3.6.3.1"
         END
     END
     BLOCK "VarFileInfo"
