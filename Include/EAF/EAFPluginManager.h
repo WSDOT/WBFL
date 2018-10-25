@@ -262,7 +262,7 @@ public:
    void ManagePlugins(LPCTSTR lpszTitle)
    {
       CWnd* pWnd = EAFGetMainFrame();
-      EAFManagePlugins(lpszTitle,m_CATID,pWnd);
+      EAFManageApplicationPlugins(lpszTitle,m_CATID,pWnd);
    }
 
 protected:

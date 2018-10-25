@@ -70,7 +70,9 @@ void CReportBuilderManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& 
 CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    if ( bIncludeHidden )
+   {
       return m_RptBuilders.size();
+   }
 
    CollectionIndexType nReportBuilders = 0;
    RptBuilderContainer::const_iterator iter(m_RptBuilders.begin());
@@ -79,7 +81,9 @@ CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHi
    {
       const RptBuilderEntry& entry = *iter;
       if ( !entry.second->Hidden() )
+      {
          nReportBuilders++;
+      }
    }
 
    return nReportBuilders;
@@ -94,7 +98,9 @@ boost::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const 
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
+   {
       return boost::shared_ptr<CReportBuilder>();
+   }
 
    return (*found).second;
 }
@@ -108,7 +114,9 @@ boost::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(con
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
+   {
       return boost::shared_ptr<CReportBuilder>();
+   }
 
    boost::shared_ptr<CReportBuilder> rptBuilder = (*found).second;
 
@@ -124,7 +132,9 @@ std::vector<std::_tstring> CReportBuilderManager::GetReportNames(bool bIncludeHi
    for ( iter = m_RptBuilders.begin(); iter != m_RptBuilders.end(); iter++ )
    {
       if ( bIncludeHidden || !(*iter).second->Hidden() )
+      {
          names.push_back( (*iter).first );
+      }
    }
 
    return names;
@@ -165,7 +175,9 @@ boost::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportS
 {
    boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
    if ( pRptBuilder == NULL )
+   {
       return boost::shared_ptr<CReportSpecificationBuilder>();
+   }
 
    boost::shared_ptr<CReportSpecificationBuilder> pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    return pRptSpecBuilder;

@@ -71,7 +71,7 @@ HRESULT CPoint2dCollection::OnBeforeAdd ( Point2dVectorImpl::StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 
@@ -97,7 +97,7 @@ HRESULT CPoint2dCollection::OnBeforeRemove ( Point2dVectorImpl::StoredType* pVal
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

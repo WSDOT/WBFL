@@ -116,7 +116,9 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
    min_density = ::ConvertToSysUnits( min_density, *p_density_unit );
    max_density = ::ConvertToSysUnits( max_density, *p_density_unit );
    if ( bCheckRange && !InRange( min_density, density, max_density ) )
+   {
       THROW(sysXProgrammingError,ValueOutOfRange);
+   }
 
    E = k * pow( Density, 1.5 ) * sqrt( Fc );
 
@@ -198,9 +200,13 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64
       {
       case NormalDensity:
          if ( bAfter2004 )
+         {
             k = (is_si) ? 0.97 : 0.37;
+         }
          else
+         {
             k = (is_si) ? 0.63 : 0.24;
+         }
          break;
 
       case SandLowDensity:
@@ -271,9 +277,13 @@ Float64 lrfdConcreteUtil::ShearFrictionFactor(bool isRoughened)
 {
    // friction factor, MU
    if (isRoughened)
+   {
       return 1.0; // from 5.8.4.3 - first bullet
+   }
    else
+   {
       return 0.6; // from 5.8.4.3 - 5th bullet
+   }
 }
 
 Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil::DensityType girderDensityType,lrfdConcreteUtil::DensityType slabDensityType)
@@ -288,16 +298,24 @@ Float64 lrfdConcreteUtil::ShearCohesionFactor(bool isRoughened,lrfdConcreteUtil:
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
          if (isRoughened)
+         {
             c = g_p7_MPA;
+         }
          else
+         {
             c =g_p52_MPA;
+         }
       }
       else
       {
          if (isRoughened)
+         {
             c = g_p1_KSI;
+         }
          else
+         {
             c = g_p075_KSI;
+         }
       }
 
       return c*lamda;
@@ -397,7 +415,9 @@ void lrfdConcreteUtil::HorizontalShearResistances(Float64 c, Float64 u, Float64 
 {
    // nominal shear capacity 5.8.4.1-1,2
    if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SixthEditionWith2013Interims )
+   {
       fy = min(fy,g_60_KSI);
+   }
 
    Float64 Vn1 = c*Acv + u*(Avf * fy + Pc);
    Float64 Vn2 = K1 * fc * Acv;
@@ -476,9 +496,13 @@ Uint16 lrfdConcreteUtil::MinLegsForBv(Float64 bv)
 {
    Float64 upper_bv = UpperLimitForBv();
    if (bv >= upper_bv)
+   {
       return 4;
+   }
    else
+   {
       return 1;
+   }
 }
 
 lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc)
@@ -493,7 +517,9 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
       Float64 bv_used = ::ConvertFromSysUnits(bv, unitMeasure::Millimeter);
       Float64 fy_used = ::ConvertFromSysUnits(fy, unitMeasure::MPa);
       if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
+      {
          bv_used = min(bv_used, 900.0);
+      }
 
       Float64 avf = 0.35 * bv_used / fy_used;
 
@@ -507,7 +533,9 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
       Float64 bv_used = ::ConvertFromSysUnits(bv, unitMeasure::Inch);
       Float64 fy_used = ::ConvertFromSysUnits(fy, unitMeasure::KSI);
       if (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994)
+      {
          bv_used = min(bv_used, 36.0);
+      }
 
       Float64 avf = 0.05 * bv_used / fy_used;
 
@@ -536,7 +564,9 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
       // But, less than zero means the reinforcement isn't needed to satify strength
       // requirements. Set to zero if so
       if ( hsAvfOverSMin.AvfOverSMin  < 0.0 )
+      {
          hsAvfOverSMin.AvfOverSMin  = 0.0;
+      }
    }
 
    return hsAvfOverSMin;
@@ -545,9 +575,13 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
 Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()
 {
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
       return g_0p6_M;
+   }
    else
+   {
       return g_2_FT;
+   }
 }
 
 Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,

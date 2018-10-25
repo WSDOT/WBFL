@@ -195,7 +195,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -206,7 +206,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -217,7 +217,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -228,7 +228,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -239,7 +239,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -250,7 +250,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
    }
@@ -979,7 +979,7 @@ void CBruteForceVehicularResponse::ComputeInflResponse(LiveLoadModelType type, V
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          throw E_INVALIDARG;
       }
    }

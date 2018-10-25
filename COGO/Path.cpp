@@ -47,7 +47,9 @@ HRESULT CPath::FinalConstruct()
 {
    HRESULT hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComObject<CPointFactory>* pFactory;
    CComObject<CPointFactory>::CreateInstance(&pFactory);
@@ -77,7 +79,9 @@ STDMETHODIMP CPath::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -92,7 +96,9 @@ STDMETHODIMP CPath::get_Item(CollectionIndexType idx, IPathElement* *pVal)
    CHECK_RETOBJ(pVal);
 
    if ( !IsValidIndex(idx,m_coll) )
+   {
       return E_INVALIDARG;
+   }
 
    PathType& at = m_coll[idx];
    CComVariant& var = at.second;
@@ -106,7 +112,9 @@ STDMETHODIMP CPath::putref_Item(CollectionIndexType idx, IPathElement *pVal)
    CHECK_IN(pVal);
 
    if ( !IsValidIndex(idx,m_coll) )
+   {
       return E_INVALIDARG;
+   }
 
    // Get the item
    PathType& at = m_coll[idx];
@@ -152,7 +160,9 @@ STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
    CHECK_IN(element);
 
    if ( idx < 0 || (CollectionIndexType)m_coll.size() < idx )
+   {
       return E_INVALIDARG;
+   }
 
    DWORD dwCookie;
    AdviseElement(element,&dwCookie);
@@ -171,7 +181,9 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
    CComQIPtr<IPath> path(dispElement);
 
    if ( point == NULL && curve == NULL && ls == NULL && spline == NULL && path == NULL )
+   {
       return Error(IDS_E_PATHELEMENTTYPE,IID_IPath,COGO_E_PATHELEMENTTYPE);
+   }
 
    if ( path )
    {
@@ -184,7 +196,9 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
 
          HRESULT hr = Insert(m_coll.size(),element);
          if ( FAILED(hr) )
+         {
             return hr;
+         }
       }
    }
    else
@@ -215,7 +229,9 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
       // Element identified by zero-based index
       long index = (varID.vt == VT_I2 ? varID.iVal : varID.lVal);
       if ( index < 0 || (long)m_coll.size() <= index )
+      {
          return E_INVALIDARG;
+      }
 
       UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
@@ -262,7 +278,9 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
       }
 
       if ( !bRemoved )
+      {
          return E_INVALIDARG;
+      }
    }
    else
    {
@@ -291,7 +309,9 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
    {
       hr = cogoUtil::DirectionFromVariant(varDir,&dir);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
 
    if ( offsetMeasure == omtNormal && !IsZero(offset) && dir != NULL)
@@ -373,7 +393,9 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
       CComPtr<IPoint2d> basePoint;
       hr = hc->PointOnCurve(dist_along_curve,&basePoint);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       if ( !IsZero(offset) )
       {
@@ -401,7 +423,9 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
       CComPtr<IPoint2d> basePoint;
       hr = spline->PointOnSpline(dist_along_spline,&basePoint);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       if ( !IsZero(offset) )
       {
@@ -498,7 +522,9 @@ STDMETHODIMP CPath::Normal(Float64 distance,IDirection* *dir)
 
    HRESULT hr = Bearing(distance,dir);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    (*dir)->IncrementBy(CComVariant(3*PI_OVER_2));
 
@@ -616,7 +642,9 @@ STDMETHODIMP CPath::get_Length(Float64* pLength)
    CComPtr<IPath> path;
    HRESULT hr = CreateConnectedPath(&path);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 length = 0;
    CComPtr<IEnumPathElements> enumPath;
@@ -682,11 +710,15 @@ STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = pEnum->Init( NULL, m_coll );
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    pEnum->QueryInterface( pVal );
 
@@ -730,7 +762,9 @@ void CPath::UnadviseElement(CollectionIndexType idx)
    //
    PathType& p = m_coll[idx];
    if ( p.first == 0 )
+   {
       return;
+   }
 
    DWORD dwCookie = (DWORD)p.first;
    CComVariant& var = p.second;
@@ -896,7 +930,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
             cogoUtil::Inverse(currPoint,nextPoint,&dist,&dir);
 
             if ( IsZero(dist) ) 
+            {
                continue;
+            }
 
             nextDistance = currDistance + dist;
 
@@ -929,7 +965,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
             currLS->get_Length(&length);
 
             if ( IsZero(length) ) 
+            {
                continue;
+            }
 
             nextDistance = currDistance + length;
 
@@ -964,7 +1002,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
                cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
 
                if ( IsZero(dist) ) 
+               {
                   continue;
+               }
 
                nextDistance = currDistance + dist;
 
@@ -995,7 +1035,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
             currHC->get_TotalLength(&length);
 
             if ( IsZero(length) ) 
+            {
                continue;
+            }
 
             nextDistance = currDistance + length;
 
@@ -1031,7 +1073,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
                cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
 
                if ( IsZero(dist) ) 
+               {
                   continue;
+               }
 
                nextDistance = currDistance + dist;
 
@@ -1063,7 +1107,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
             currSpline->get_Length(&length);
 
             if ( IsZero(length) ) 
+            {
                continue;
+            }
 
             nextDistance = currDistance + length;
 
@@ -1099,7 +1145,9 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
                cogoUtil::Inverse(currEndPoint,nextStartPoint,&dist,&dir);
 
                if ( IsZero(dist) ) 
+               {
                   continue;
+               }
 
                nextDistance = currDistance + dist;
 
@@ -1505,7 +1553,17 @@ CPath::ElementContainer CPath::GetAllElements()
 
             CComPtr<IPathElement> element;
             CreateDummyPathElement(prevPoint,lastPoint,&element);
-            elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+
+            CComPtr<IUnknown> dispDummy;
+            element->get_Value(&dispDummy);
+            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
+            Float64 length;
+            dummyLS->get_Length(&length);
+
+            if ( !IsZero(length) )
+            {
+               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+            }
          }
       }
       else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
@@ -1645,7 +1703,9 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
             dummyLS->get_Length(&length);
             nextDist += length;
             if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
+            {
                elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+            }
          }
          else if ( currType == petLineSegment )
          {
@@ -1683,8 +1743,10 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               {
                   elements.push_back(std::make_pair(currDist,AdaptElement(element)));
+               }
             }
          }
          else if ( currType == petHorzCurve )
@@ -1725,8 +1787,10 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               {
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+               }
             }
          }
          else if ( currType == petCubicSpline )
@@ -1767,8 +1831,10 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               {
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+               }
             }
          }
          else
@@ -1842,13 +1908,17 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
          CComPtr<IPathElement> element;
          CreateDummyPathElement(prevPoint,lastPoint,&element);
          if ( DoesPointProjectOntoElement(point,element,false,true) )
+         {
             elements.push_back( std::make_pair(currDist,AdaptElement(element)));
+         }
       }
       else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
       {
          // The last element is a line segment or horz curve... Simply return that element
          if ( DoesPointProjectOntoElement(point,lastElement,false,true) )
+         {
             elements.push_back( std::make_pair(currDist,AdaptElement(lastElement)));
+         }
       }
    }
 
@@ -1955,6 +2025,12 @@ void CPath::CreateDummyPathElement(IPoint2d* pStart,IPoint2d* pEnd,IPathElement*
    dummyElement.CoCreateInstance(CLSID_PathElement);
    dummyElement->putref_Value(dummyLS);
 
+#if defined _DEBUG
+   Float64 length;
+   dummyLS->get_Length(&length);
+   ATLASSERT(!IsZero(length));
+#endif
+
    (*pElement) = dummyElement;
    (*pElement)->AddRef();
 }
@@ -1985,7 +2061,9 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
          CComPtr<IPoint2d> p;
          m_GeomUtil->IntersectLineWithLineSegment(line,ls,&p);
          if ( p )
+         {
             points->Add(p);
+         }
 
          return; // Done!
       }
@@ -2030,12 +2108,14 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
                     &p1, &p2);
 
       if ( p1 )
+      {
          points->Add(p1);
+      }
 
       if ( p2 )
+      {
          points->Add(p2);
-
-//      ATLASSERT( p1 == NULL ? p2 == NULL : true ); // p2 must be NULL if p1 is NULL
+      }
    }
    else if ( type == petCubicSpline )
    {
@@ -2214,19 +2294,31 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
    point1->get_X(&x1);
    point2->get_X(&x2);
 
-   // Supress round off error
-   x1 = IsZero(x1) ? 0.00 : x1;
+   // NOTE: this code is commented out because it causes problems.
+   // There is a case (seem mantis issue 404) where x1 is a very small
+   // positive value. When it gets forced to zero the line below
+   // if ( 0 < x1 && 0 <= x2 ) evaluates to false, because x1 is zero,
+   // and the point ends up not being projected onto anything. This is
+   // a bug. Just leave x1 alone.
+   //// Supress round off error
+   //x1 = IsZero(x1) ? 0.00 : x1;
    x2 = IsZero(x2) ? 0.00 : x2;
 
    // Adjust mapping if the element is to be extended
    if ( bExtendBack )
+   {
       x1 = 1;
+   }
 
    if ( bExtendAhead )
+   {
       x2 = 1;
+   }
 
    if ( 0 < x1 && 0 <= x2 )
+   {
       bDoesProject = true;
+   }
 
    return bDoesProject;
 }
@@ -2280,7 +2372,9 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
          m_GeomUtil->Distance(endPoint,prjPoint,&dist2);
          dist = dist1;
          if ( IsEqual(dist1+length,dist2) )
+         {
             dist *= -1; // Point is before start of line segment
+         }
 
          dist_to_point = startDistance + dist;
 
@@ -2571,13 +2665,19 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
             if ( SUCCEEDED(hr) )
             {
                if ( result1 )
+               {
                   SavePathElement(*path,result1);
+               }
 
                if ( result2 )
+               {
                   SavePathElement(*path,result2);
+               }
 
                if ( result3 )
+               {
                   SavePathElement(*path,result3);
+               }
             }
          }
          break;
@@ -2759,7 +2859,9 @@ void CPath::CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** res
    hc->get_Radius(&radius);
    Float64 newRadius = (curve_direction == cdRight ? radius - offset : radius + offset);
    if ( newRadius < 0 )
+   {
       newRadius = 0; // curve has spirals only
+   }
 
    // Compute new length of spirals
    CComPtr<IAngle> spaEntry, spaExit; // spiral angles
@@ -2836,7 +2938,9 @@ void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IP
    CComPtr<IPathElement> nextElement;
    get_Item(elementIdx+1,&nextElement);
    if ( nextElement )
+   {
       GetStartPoint(nextElement,&nextPoint);
+   }
 
    if (prevPoint == NULL && nextPoint == NULL )
    {
@@ -3425,11 +3529,15 @@ HRESULT CPath::SavePathElement(IPath* pPath,IUnknown* pUnk)
    CComPtr<IPathElement> newPathElement = pNewPathElement;
    HRESULT hr = newPathElement->putref_Value(pUnk);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = pPath->Add(newPathElement);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }

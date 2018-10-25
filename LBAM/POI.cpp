@@ -58,7 +58,7 @@ void CPOI::FinalRelease()
    {
       hr = CrUnadvise(m_POIStressPoints, this, IID_IPOIStressPointsEvents, m_POIStressPointsCookie);
       if (FAILED(hr))
-         ATLASSERT(0);
+         ATLASSERT(false);
    }
 }
 

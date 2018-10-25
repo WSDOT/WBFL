@@ -148,7 +148,9 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
    // Do the regular command routing first
    BOOL bResult = CDocument::OnCmdMsg(nID,nCode,pExtra,pHandlerInfo);
    if ( bResult )
+   {
       return bResult;
+   }
 
    // Next, see if anyone registered callback commands
    CComPtr<IEAFCommandCallback> pCallback;
@@ -158,7 +160,9 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
       // process the callback command
       bResult = pCallback->OnCommandMessage(nPluginCmdID,nCode,pExtra,pHandlerInfo);
       if ( bResult )
+      {
          return bResult;
+      }
    }
 
    // normal mfc command routing will get the message to the application plugin if it
@@ -231,7 +235,9 @@ BOOL CEAFDocument::InitMainMenu()
 {
    // Set up the menu mapping stuff before initializing agents
    if (m_pMainMenu)
+   {
       delete m_pMainMenu;
+   }
 
    m_pMainMenu = CreateMainMenu();
    return TRUE;
@@ -250,13 +256,17 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
 
    // save toolbar state before they are removed
    if ( !bIntegrate )
+   {
       SaveToolbarState();
+   }
 
    DoIntegrateWithUI(bIntegrate);
 
    // load toolbar state after toolbars are created
    if ( bIntegrate )
+   {
       LoadToolbarState();
+   }
 
    m_bUIIntegrated = bIntegrate;
 }
@@ -286,7 +296,9 @@ BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       if ( cmdLinePlugin )
       {
          if ( cmdLinePlugin->ProcessCommandLineOptions(cmdInfo) )
+         {
             return TRUE; // handled
+         }
       }
    }
 
@@ -482,7 +494,9 @@ void CEAFDocument::InitFailMessage()
 BOOL CEAFDocument::Init()
 {
    if ( !LoadDocumentPlugins() )
+   {
       return FALSE;
+   }
 
    LoadDocumentSettings();
 
@@ -508,7 +522,9 @@ BOOL CEAFDocument::LoadDocumentPlugins()
 {
    CATID catid = GetDocumentPluginCATID();
    if ( catid == CLSID_NULL )
+   {
       return TRUE; // no plugins for this document type
+   }
 
    GetDocPluginManager()->SetCATID(catid);
 
@@ -540,11 +556,15 @@ void CEAFDocument::OnViewStatusCenter()
 BOOL CEAFDocument::OnNewDocument()
 {
 	if (!CDocument::OnNewDocument())
+   {
 		return FALSE;
+   }
 
    // Initialize the document
    if ( !Init() ) // init menus and toolbars... subclasses do more initialization
+   {
       return FALSE;
+   }
 
    SetModifiedFlag(TRUE);
    OnStatusChanged();
@@ -560,7 +580,9 @@ BOOL CEAFDocument::OnNewDocument()
 BOOL CEAFDocument::OnNewDocumentFromTemplate(LPCTSTR lpszPathName)
 {
    if ( !OnNewDocument() )
+   {
       return FALSE;
+   }
 
    if ( OpenTheDocument( lpszPathName ) )
    {
@@ -591,7 +613,9 @@ BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
 	
    // Initialize the document
    if ( !Init() ) // init menus and toolbars... subclasses do more initialization
+   {
       return FALSE;
+   }
 
    BOOL bDocumentOpened = OpenTheDocument( lpszPathName );
 
@@ -691,7 +715,9 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    {
       // Save was successful... Delete the backup if one was created
       if ( bDidCreateBackup )
+      {
          ::DeleteFile( strBackupFile );
+      }
       // It's no big deal if this call fails.  The user is simply left
       // with an out of date backup file on their disk drive.
    }
@@ -972,7 +998,9 @@ BOOL CEAFDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 		// first newline terminates actual string
 		lpsz = _tcschr(lpsz, '\n');
 		if (lpsz != NULL)
+      {
 			*lpsz = '\0';
+      }
 
       bHandled = TRUE;
 	}
@@ -998,7 +1026,9 @@ BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
 		// tip is after first newline 
       int pos = string.Find('\n');
       if ( 0 < pos )
+      {
          rMessage = string.Mid(pos+1);
+      }
 
       bHandled = TRUE;
 	}
@@ -1041,7 +1071,9 @@ void CEAFDocument::OnCloseDocument()
    // need to clean up the status bar
    CEAFStatusBar* pStatusBar = pMainFrame->GetStatusBar();
    if ( pStatusBar )
+   {
       pStatusBar->Reset();
+   }
 }
 
 CEAFStatusCenter& CEAFDocument::GetStatusCenter()

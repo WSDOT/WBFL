@@ -94,7 +94,7 @@ public:
          st = m_coll.insert(ContainerValueType(id, CComVariant(item)));
          if (!st.second)
          {
-            ATLASSERT(0); // insert failed - better check why
+            ATLASSERT(false); // insert failed - better check why
             return E_FAIL;
          }
       }

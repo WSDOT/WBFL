@@ -109,25 +109,8 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShap
    Float64 c1 = C1;
 
    // Get the end block dimensions
-
-   // we need to get the end block width based on a section's location
-   // from the actual end face of the girder (this is how end blocks are measured)
-   // compute the distance along the girder
-   Float64 distAlongSegment = Xs;
-   Float64 brgOffset, endDist;
-   m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-   m_pGirderLine->get_EndDistance(etStart,&endDist);
-   distAlongSegment -= (brgOffset - endDist);
-
-   if ( distAlongSegment < 0 )
-   {
-      // If distAlongSegment is < 0 then Xs is before the face of the segment.
-      // Set distAlongSegment to 0 so we get the end block data at the face of the segment
-      distAlongSegment = 0;
-   }
-
    Float64 Wt, Wb;
-   GetEndBlockWidth(distAlongSegment,&Wt,&Wb);
+   GetEndBlockWidth(Xs,&Wt,&Wb);
 
    // adjust dimensions based on end block size
 

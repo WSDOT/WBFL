@@ -440,7 +440,7 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
          poiLocs->push_back(mbr_loc);
       }
       else
-         ATLASSERT(0); // we can only handle superstructure
+         ATLASSERT(false); // we can only handle superstructure
    }
 }
 

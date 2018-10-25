@@ -36,10 +36,38 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_DISABLE,0);
+DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_ENABLE,0);
+
+InterfaceItem::InterfaceItem() : 
+pUsageCount(new Uint64) 
+{ 
+   *pUsageCount = 0; 
+}
+
+bool InterfaceItem::operator<(const InterfaceItem& other) const 
+{ 
+   return iid < other.iid; 
+}
+
+bool InterfaceItem::operator==(const InterfaceItem& other) const 
+{ 
+   return (iid == other.iid ? true : false); 
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CBrokerImp2
+CBrokerImp2::CBrokerImp2() :
+   m_MostFrequentlyUsed(10) // 10 most recently used interfaces
+{
+   m_DelayInit = false;
+   m_bAgentsInitialized = false;
+   m_bSaveMissingAgentData = VARIANT_TRUE;
+}
+
+CBrokerImp2::~CBrokerImp2()
+{
+}
 
 HRESULT CBrokerImp2::FinalConstruct()
 {
@@ -53,6 +81,7 @@ void CBrokerImp2::FinalRelease()
 #if defined _DEBUG
 void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
 {
+   Uint32 leakCount = 0;
    CComQIPtr<IConnectionPointContainer> pCPC(pAgent);
    if ( pCPC )
    {
@@ -68,20 +97,23 @@ void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
          CONNECTDATA cdata;
          while ( pEnumConnections->Next(1,&cdata,NULL) != S_FALSE )
          {
-            WATCHX(IFC,0,"Leaked connection point cookie " << cdata.dwCookie);
+            WATCHX(IFC,0,_T("Leaked connection point cookie ") << cdata.dwCookie);
             cdata.pUnk->Release(); // documtation says caller must call Release
+            leakCount++;
          }
 
          pCP.Release();
       }
    }
+
+   ATLASSERT(leakCount == 0); // if this fires, there are connection point leaks
 }
 #endif // _DEBUG
 
 void CBrokerImp2::ClearAgents()
 {
 #if defined _DEBUG
-   WATCHX(IFC,0,"Clearing Agents");
+   WATCHX(IFC,0,_T("Clearing Agents"));
    Agents::iterator i;
    for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
    {
@@ -120,10 +152,10 @@ void CBrokerImp2::ClearAgents()
 // returns whether item1 has a greater usage count than item 2
 bool SortByUsageFrequency(const InterfaceItem& item1,const InterfaceItem& item2)
 {
-   return *(item1.pUsageCount) > *(item2.pUsageCount);
+   return *(item2.pUsageCount) < *(item1.pUsageCount);
 }
 
-STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
+STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, IUnknown** ppUnk)
 {
    ATLASSERT( m_bAgentsInitialized == true ); // agents have to be initialized
 
@@ -134,16 +166,19 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
    if ( found != m_MostFrequentlyUsed.end() )
    {
       InterfaceItem& item = *found;
-      ASSERT( riid == item.iid );
+      ATLASSERT( riid == item.iid );
+
+      ATLASSERT( item.m_pUnk != NULL);
+      HRESULT hr = item.m_pUnk.CopyTo(ppUnk);
+      if ( FAILED(hr) )
+      {
+         ATLASSERT(false);
+         return hr;
+      }
 
       // this IID is on the frequently used list
       // increment the usage count (updates in the main list of all interfaces as well)
       (*item.pUsageCount)++;
-
-      // get the interface
-      HRESULT hr = item.pAgent->QueryInterface( riid, ppv );
-      if ( FAILED(hr) )
-         return hr;
 
       // sort the MFU list based on usage count
       std::sort( m_MostFrequentlyUsed.begin(),m_MostFrequentlyUsed.end(), SortByUsageFrequency );
@@ -152,14 +187,26 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
    }
 
    // IID is not in the most frequently used list... search for it in the regular list of interfaces
-   HRESULT hr = E_NOINTERFACE;
    Interfaces::iterator interface_found( m_Interfaces.find( key ) );
    if ( interface_found == m_Interfaces.end() )
+   {
+      // the interface wasn't found
       return E_NOINTERFACE;
+   }
 
    InterfaceItem& item = *interface_found;
-   IAgentEx* pAgent = item.pAgent;
-   hr = pAgent->QueryInterface( riid, ppv );
+   HRESULT hr = S_OK;
+   if ( item.m_pUnk == NULL )
+   {
+      // this is the first time the interface has been requested
+      ATLASSERT(*(item.pUsageCount) == 0);
+
+      IAgentEx* pAgent = item.pAgent;
+      hr = pAgent->QueryInterface( riid, (void**)&item.m_pUnk );
+      ATLASSERT(SUCCEEDED(hr));
+   }
+
+   hr = item.m_pUnk.CopyTo(ppUnk);
 
    if ( SUCCEEDED(hr) )
    {
@@ -167,7 +214,11 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
       (*item.pUsageCount)++;
 
       // See if the usage count is high enough to be in the most frequently used list
-      if ( !m_MostFrequentlyUsed.empty() )
+      if ( m_MostFrequentlyUsed.empty() )
+      {
+         m_MostFrequentlyUsed.push_front(item);
+      }
+      else
       {
          const InterfaceItem& least_used_item = m_MostFrequentlyUsed.back();
 
@@ -185,10 +236,6 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
             std::sort( m_MostFrequentlyUsed.begin(),m_MostFrequentlyUsed.end(), SortByUsageFrequency );
          }
       }
-      else
-      {
-         m_MostFrequentlyUsed.push_front(item);
-      }
    }
 
    return hr;
@@ -196,7 +243,7 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
 
 STDMETHODIMP CBrokerImp2::Reset()
 {
-   WATCHX(IFC,0,"Broker Reset");
+   WATCHX(IFC,0,_T("Broker Reset"));
 
    if ( !m_bAgentsInitialized )
       return S_OK; // do nothing if the agents weren't initialized
@@ -235,7 +282,7 @@ bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
 
 STDMETHODIMP CBrokerImp2::ShutDown()
 {
-   WATCHX(IFC,0,"Broker ShutDown");
+   WATCHX(IFC,0,_T("Broker ShutDown"));
 
    Reset();
 
@@ -259,37 +306,40 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
 #if defined _DEBUG
    USES_CONVERSION;
-   WATCHX(IFC,0,"Most frequently used interfaces");
-   boost::circular_buffer<InterfaceItem>::iterator iter;
-   for ( iter = m_MostFrequentlyUsed.begin(); iter != m_MostFrequentlyUsed.end(); iter++ )
+   WATCHX(IFC,0,_T("Most frequently used interfaces"));
+   boost::circular_buffer<InterfaceItem>::iterator mfuIter(m_MostFrequentlyUsed.begin());
+   boost::circular_buffer<InterfaceItem>::iterator mfuIterEnd(m_MostFrequentlyUsed.end());
+   for ( ; mfuIter != mfuIterEnd; mfuIter++ )
    {
-      InterfaceItem& item = *iter;
+      InterfaceItem& item = *mfuIter;
 
       OLECHAR szGUID[39];
       ::StringFromGUID2(item.iid,szGUID,39);
-      WATCHX(IFC,0,"IID = " << OLE2T(szGUID) << " Usage Count = " << (*item.pUsageCount));
+      WATCHX(IFC,0,_T("IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount));
 
    }
 
-   WATCHX(IFC,0,"");
-   WATCHX(IFC,0,"Total interface usage count");
+   WATCHX(IFC,0,_T(""));
+   WATCHX(IFC,0,_T("Total interface usage count"));
 
    // fill up a temporary vector so we can sort and report by CLSID
    std::vector<InterfaceItem> interfaces;
-   Interfaces::iterator j;
-   for ( j = m_Interfaces.begin(); j != m_Interfaces.end(); j++ )
+   Interfaces::iterator ifaceIter(m_Interfaces.begin());
+   Interfaces::iterator ifaceIterEnd(m_Interfaces.end());
+   for ( ; ifaceIter != ifaceIterEnd; ifaceIter++ )
    {
-      InterfaceItem& item = *j;
+      InterfaceItem& item = *ifaceIter;
       interfaces.push_back(item);
    }
 
    std::sort(interfaces.begin(),interfaces.end(),CompareCLSID);
 
    IndexType count = 0;
-   std::vector<InterfaceItem>::iterator k;
-   for ( k = interfaces.begin(); k != interfaces.end(); k++ )
+   std::vector<InterfaceItem>::iterator ifaceItemIter(interfaces.begin());
+   std::vector<InterfaceItem>::iterator ifaceItemIterEnd(interfaces.end());
+   for ( ; ifaceItemIter != ifaceItemIterEnd; ifaceItemIter++ )
    {
-      InterfaceItem& item = *k;
+      InterfaceItem& item = *ifaceItemIter;
 
       UINT cRef = item.pAgent->AddRef();
       item.pAgent->Release();
@@ -305,11 +355,11 @@ STDMETHODIMP CBrokerImp2::ShutDown()
       item.pAgent->GetClassID(&clsid);
       OLECHAR szCLSID[39];
       ::StringFromGUID2(clsid,szCLSID,39);
-      WATCHX(IFC,0,"CLSID = " << OLE2T(szCLSID) << " IID = " << OLE2T(szGUID) << " Usage Count = " << (*item.pUsageCount) << " Agent Ref Count = " << cRef);
+      WATCHX(IFC,0,_T("CLSID = ") << OLE2T(szCLSID) << _T(" IID = ") << OLE2T(szGUID) << _T(" Usage Count = ") << (*item.pUsageCount) << _T(" Agent Ref Count = ") << cRef);
 
       count += (*item.pUsageCount);
    }
-   WATCHX(IFC,0,"Total count = " << count);
+   WATCHX(IFC,0,_T("Total count = ") << count);
 #endif // _DEBUG
 
    ClearAgents();

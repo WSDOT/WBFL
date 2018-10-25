@@ -155,7 +155,7 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
       HRESULT hr = it->second.m_T->get_Name(&bnam);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return 0;
       }
 
@@ -184,7 +184,7 @@ IStage* CStages::Find(const CComBSTR& name)
       HRESULT hr = it->second.m_T->get_Name(&bnam);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return 0;
       }
 
@@ -214,7 +214,7 @@ STDMETHODIMP CStages::RemoveByName(BSTR name)
       HRESULT hr = it->second.m_T->get_Name(&bnam);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 

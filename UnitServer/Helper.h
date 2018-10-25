@@ -47,8 +47,7 @@ private:
 
 inline LPCOLESTR GetHelpFile()
 {
-   USES_CONVERSION;
-   return A2OLE("WBFLUnitServer.chm");
+   return _T("WBFLUnitServer.chm");
 }
 
 #endif

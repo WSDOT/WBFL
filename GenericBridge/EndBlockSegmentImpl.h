@@ -136,16 +136,6 @@ public:
       m_Shapes.clear();
    }
 
-   Float64 ConvertSegmentCoordinateToDistanceAlongSegment(Float64 Xs)
-   {
-      Float64 brgOffset, endDist;
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
-
-      Float64 distAlongSegment = Xs - (brgOffset-endDist);
-      return distAlongSegment;
-   }
-
 // ISupportsErrorInfo
 public:
    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
@@ -282,12 +272,9 @@ public:
       Float64 length;
       get_Length(&length);
 
-
-      Float64 distAlongSegment = ConvertSegmentCoordinateToDistanceAlongSegment(Xs);
-
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -385,11 +372,9 @@ public:
       Float64 length;
       get_Length(&length);
 
-      Float64 distAlongSegment = ConvertSegmentCoordinateToDistanceAlongSegment(Xs);
-
       // Section is in the end block so use the outline of the shape only
-      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
-           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }

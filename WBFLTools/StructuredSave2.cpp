@@ -154,7 +154,7 @@ void CStructuredSave2::EndSave()
    if(m_NodeStack.size()!=1) // Error: BeginUnit-EndUnit mismatch - this is ok with
                              // the xml parser, but indicates a problem in client code
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       // THROW_IDS(IDS_E_BEGIN_END_UNIT_MISMATCH,TOOLS_E_BEGIN_END_UNIT_MISMATCH,IDH_E_BEGIN_END_UNIT_MISMATCH);
    }
 
@@ -179,7 +179,7 @@ void CStructuredSave2::EndSave()
    m_spDoc->save((IStream*)m_pIStream);
    if (m_pIStream==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
    }
 
@@ -215,7 +215,7 @@ HRESULT CStructuredSave2::BeginUnit( BSTR name, Float64 version)
       MSXML::IXMLDOMNodePtr pchild = MakeChildNode(name, version);
       if (!(bool)pchild)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -224,7 +224,7 @@ HRESULT CStructuredSave2::BeginUnit( BSTR name, Float64 version)
       pchild = rback->appendChild(pchild);
       if (!(bool)pchild)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -253,7 +253,7 @@ HRESULT CStructuredSave2::EndUnit()
       // should never pop back to top level document
       if (m_NodeStack.size()<1)
       {
-         ATLASSERT(0);// Popped too far - no parent for child node
+         ATLASSERT(false);// Popped too far - no parent for child node
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -392,7 +392,7 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
 
       default:
          // all other kinds not supported
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_INVALID_VARIANT_TYPE, STRSAVE_E_INVALID_VARIANT_TYPE, IDH_STRSAVE_E_INVALID_VARIANT_TYPE );
          break;
       }
@@ -412,7 +412,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
 
    if (pUnk==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_MSG("NULL Pointer: CStructuredSave2::Property",E_POINTER, NULL);
    }
 
@@ -425,7 +425,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       MSXML::IXMLDOMNodePtr pot = MakeChildNode(OLESTR("ObjectTable"), 1.0);
       if (!(bool)pot)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -449,7 +449,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = pUnk->QueryInterface(IID_IPersist, (void**)&pip);
       if (FAILED(hr) || pip==NULL)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_IPERSIST,STRSAVE_E_IPERSIST,IDH_STRSAVE_E_IPERSIST);
       }
 
@@ -457,7 +457,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = pUnk->QueryInterface(IID_IStructuredStorage2, (void**)&pss);
       if (FAILED(hr) || pss==NULL)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2,STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2,IDH_STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2);
       }
 
@@ -478,7 +478,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = this->BeginUnit(object_name, 0.0);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -487,7 +487,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = pip->GetClassID(&clsid);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_IPERSIST,STRSAVE_E_IPERSIST,IDH_STRSAVE_E_IPERSIST);
       }
 
@@ -495,14 +495,14 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = StringFromCLSID(clsid, &postr);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
       hr = this->put_Property(OLESTR("CLSID"), _variant_t(postr));
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -512,7 +512,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = pss->Save(this);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -522,7 +522,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       hr = this->EndUnit();
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -551,19 +551,19 @@ void CStructuredSave2::AssertValid() const
    // file needs to be open
    if (!m_bOpen)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_FILE_NOT_OPEN,STRSAVE_E_FILE_NOT_OPEN,IDH_STRSAVE_E_FILE_NOT_OPEN);
    }
 
    // cannot have negative levels
    if (m_NodeStack.size()<1) 
    {
-      ATLASSERT(0); 
+      ATLASSERT(false); 
    }
 
    if (m_pIStream==0) // must have happy stream
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_FILE_NOT_OPEN,STRSAVE_E_FILE_NOT_OPEN,IDH_STRSAVE_E_FILE_NOT_OPEN);
    }
 #endif // _DEBUG
@@ -584,7 +584,7 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakeChildNode(BSTR name, Float64 vers)
       pchild = m_spDoc->createNode(type, name, "");
       if (!(bool)pchild)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -600,14 +600,14 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakeChildNode(BSTR name, Float64 vers)
         }
         else
         {
-           ATLASSERT(0); // eating our own dog food here. this should be impossible.
+           ATLASSERT(false); // eating our own dog food here. this should be impossible.
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
         }
       }
    }
    catch(_com_error& e) 
    {
-      ATLASSERT(0); // parser threw
+      ATLASSERT(false); // parser threw
       _bstr_t msg(e.Description());
       THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
    }
@@ -640,7 +640,7 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakePropertyNode(BSTR name, VARIANT* pVa
    // huck if variant type is not known
    if (vtName== _bstr_t("VT_EMPTY"))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_INVALID_VARIANT_TYPE, STRSAVE_E_INVALID_VARIANT_TYPE, IDH_STRSAVE_E_INVALID_VARIANT_TYPE);
    }
 
@@ -652,7 +652,7 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakePropertyNode(BSTR name, VARIANT* pVa
       pchild = m_spDoc->createNode(type, name, "");
       if (!(bool)pchild)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
@@ -666,12 +666,12 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakePropertyNode(BSTR name, VARIANT* pVa
      }
      else
      {
-        ATLASSERT(0); // should never happen
+        ATLASSERT(false); // should never happen
      }
    }
    catch(_com_error& e) 
    {
-      ATLASSERT(0); // parser threw
+      ATLASSERT(false); // parser threw
       _bstr_t msg(e.Description());
       THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
    }
@@ -691,13 +691,13 @@ MSXML::IXMLDOMNodePtr CStructuredSave2::MakePropertyNode(BSTR name, VARIANT* pVa
    }
    catch(_com_error &e) 
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       _bstr_t msg(e.Description());
       THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
    }
 
@@ -716,7 +716,7 @@ HRESULT CStructuredSave2::HandleException()
    }
    catch (CComException& re)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       // somebody puked from way down deep. Build error message and return hresult
       _bstr_t msg(re.GetErrorMessage());
       HRESULT hr = re.GetHresult();
@@ -726,7 +726,7 @@ HRESULT CStructuredSave2::HandleException()
    catch(_com_error &e) 
    {
       // parser puked
-      ATLASSERT(0);
+      ATLASSERT(false);
       _bstr_t msg(e.Description());
       HRESULT hr = STRSAVE_E_BADWRITE;
       DWORD helpid = IDH_STRSAVE_E_BADWRITE;
@@ -736,7 +736,7 @@ HRESULT CStructuredSave2::HandleException()
    {
       // could make up a custom message here, but we don't know what happened so why try?
       // the main point is not to let the exception out into the com world
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 }

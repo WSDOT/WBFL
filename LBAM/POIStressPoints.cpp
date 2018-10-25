@@ -66,7 +66,7 @@ void CPOIStressPoints::FinalRelease()
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 }
 
@@ -164,7 +164,7 @@ STDMETHODIMP CPOIStressPoints::Insert(BSTR Stage, IStressPoints *leftSps, IStres
       hr = Remove(Stage);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
    }
@@ -239,7 +239,7 @@ void CPOIStressPoints::DoErase(IteratorType& it, bool doFire)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_HR(E_FAIL);
    }
 }

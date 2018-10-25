@@ -633,6 +633,15 @@ library WBFLLBAMAnalysis
 
    [
       object,
+      uuid(C72EEE97-B176-4275-A847-394A63B4A819),
+   ]
+   interface IDiagnostics : IUnknown
+   {
+      HRESULT DumpFEMModels();
+   };
+
+   [
+      object,
       uuid(7D6930D2-707E-49a2-9E77-7786C51E70FF),
       oleautomation,
       helpstring("IUnitLoadResponse"),
@@ -641,7 +650,7 @@ library WBFLLBAMAnalysis
    ]
    interface IUnitLoadResponse : IUnknown
    {
-      [] HRESULT ComputeForces([in]IIDArray* poiIDs,[in]PoiIDType ldPoiID,[in]BSTR bstrStage,[in]ResultsOrientation orientation, [out,retval]ISectionResult3Ds** results);
+      [] HRESULT ComputeForces([in]IIDArray* poiIDs,[in]PoiIDType ldPoiID,[in]BSTR bstrStage,[in]ForceEffectType forceEffectType,[in]ResultsOrientation orientation, [out,retval]ISectionResult3Ds** results);
    };
 
 

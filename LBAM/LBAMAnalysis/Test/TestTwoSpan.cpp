@@ -484,7 +484,7 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
          poiLocs->push_back(mbr_loc);
       }
       else
-         ATLASSERT(0); // we can only handle superstructure
+         ATLASSERT(false); // we can only handle superstructure
    }
 }
 

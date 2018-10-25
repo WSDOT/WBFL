@@ -69,7 +69,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
          hr = CComAggObject<CLoadGroupResponseAgg>::CreateInstance(pControllingUnknown,&pLoadGroupResponseAgg);
          if ( FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return hr;
          }
 
@@ -80,7 +80,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
          hr = pLoadGroupResponseAgg->QueryInterface(IID_IUnknown,(void**)&m_pLoadGroupResponseAgg[i][j]);
          if (FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return hr;
          }
 
@@ -90,7 +90,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
          hr = CComAggObject<CLoadCaseResponseAgg>::CreateInstance(pControllingUnknown,&pLoadCaseResponseAgg);
          if ( FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return hr;
          }
 
@@ -101,7 +101,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
          hr = pLoadCaseResponseAgg->QueryInterface(IID_IUnknown,(void**)&m_pLoadCaseResponseAgg[i][j]);
          if (FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return hr;
          }
       }
@@ -114,7 +114,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = CComAggObject<CLoadCombinationResponseAgg>::CreateInstance(pControllingUnknown,&pLoadCombinationResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -124,7 +124,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = pLoadCombinationResponseAgg->QueryInterface(IID_IUnknown, (void**)&m_pLoadCombinationResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -133,7 +133,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = CComAggObject<CLiveLoadResponseAgg>::CreateInstance(pControllingUnknown,&pLiveLoadResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -143,7 +143,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = pLiveLoadResponseAgg->QueryInterface(IID_IUnknown, (void**)&m_pLiveLoadResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -153,7 +153,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = CComAggObject<CEnvelopedVehicularLoadResponseAgg>::CreateInstance(pControllingUnknown,&pEnvelopedVehicularLoadResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -163,7 +163,7 @@ HRESULT CLBAMModelEnveloper::FinalConstruct()
    hr = pEnvelopedVehicularLoadResponseAgg->QueryInterface(IID_IUnknown, (void**)&m_pEnvelopedVehicularLoadResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -313,13 +313,13 @@ void CLBAMModelEnveloper::GetEngine(CollectionIndexType idx, ILBAMAnalysisEngine
 
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          throw hr;
       }
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       *engine = NULL;
    }
 }

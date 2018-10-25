@@ -193,7 +193,7 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
          poiLocs->push_back(mbr_loc);
       }
       else
-         ATLASSERT(0); // we can only handle superstructure
+         ATLASSERT(false); // we can only handle superstructure
    }
 }
 

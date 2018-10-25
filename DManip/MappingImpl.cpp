@@ -77,7 +77,7 @@ CMappingImpl::~CMappingImpl()
    if (!m_Stack.empty())
    {
       CollectionIndexType siz = m_Stack.size();
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 }
 
@@ -454,7 +454,7 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(const LOGFONT& font, LPCTSTR lp
 {
    if (m_Stack.empty())
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return CSize(1440, 144);
    }
 

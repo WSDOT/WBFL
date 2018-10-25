@@ -63,22 +63,24 @@ END_COM_MAP()
 	HRESULT FinalConstruct()
 	{
       m_pBridge   = 0;
-      m_BackEdgeID   = INVALID_INDEX;
-      m_BackEdgeType = setLayout;
 
-      m_ForwardEdgeID   = INVALID_INDEX;
-      m_ForwardEdgeType = setLayout;
+      m_TransverseEdgeID[etStart]   = INVALID_INDEX;
+      m_TransverseEdgeType[etStart] = setLayout;
 
-      m_LeftEdgeID       = INVALID_INDEX;
-      m_RightEdgeID      = INVALID_INDEX;
-      m_LeftEdgeBreakID  = INVALID_INDEX;
-      m_RightEdgeBreakID = INVALID_INDEX;
+      m_TransverseEdgeID[etEnd]   = INVALID_INDEX;
+      m_TransverseEdgeType[etEnd] = setLayout;
 
-      m_vbBreakLeftEdge[etStart] = VARIANT_FALSE;
-      m_vbBreakLeftEdge[etEnd]   = VARIANT_FALSE;
+      m_EdgeID[etStart]       = INVALID_INDEX;
+      m_EdgeBreakID[etStart]  = INVALID_INDEX;
+      m_EdgeID[etEnd]         = INVALID_INDEX;
+      m_EdgeBreakID[etEnd]    = INVALID_INDEX;
+
+      m_vbBreakEdge[etStart][stLeft] = VARIANT_FALSE;
+      m_vbBreakEdge[etEnd][stLeft]   = VARIANT_FALSE;
       
-      m_vbBreakRightEdge[etStart] = VARIANT_FALSE;
-      m_vbBreakRightEdge[etEnd]   = VARIANT_FALSE;
+      m_vbBreakEdge[etStart][stRight] = VARIANT_FALSE;
+      m_vbBreakEdge[etEnd][stRight]   = VARIANT_FALSE;
+
       return S_OK;
 	}
 
@@ -86,39 +88,39 @@ END_COM_MAP()
 	{
 	}
 
-   IBridgeGeometry* m_pBridge;
-   LineIDType m_BackEdgeID;
-   DeckBoundaryEdgeType m_BackEdgeType;
+   IBridgeGeometry* m_pBridge; // weak reference to the bridge
 
-   LineIDType m_ForwardEdgeID;
-   DeckBoundaryEdgeType m_ForwardEdgeType;
+   // Use the EndType enum to access these arrays
+   LineIDType m_TransverseEdgeID[2]; // ID of the path that defines the transverse edge of the deck
+   DeckBoundaryEdgeType m_TransverseEdgeType[2]; // Type of line that defines the transverse edge of deck
 
-   LineIDType m_LeftEdgeID;
-   LineIDType m_RightEdgeID;
-   LineIDType m_LeftEdgeBreakID;
-   LineIDType m_RightEdgeBreakID;
+   // Use the SideType enum to access these arrays
+   PathIDType m_EdgeID[2];       // ID of construction line that defines the edge of deck
+   PathIDType m_EdgeBreakID[2];  // ID of construction line that defines the break back points
 
-   VARIANT_BOOL m_vbBreakLeftEdge[2];
-   VARIANT_BOOL m_vbBreakRightEdge[2];
+   // Boolean value that indicates if there is a break point 
+   // in the ends of the slab.
+   // use the EndType and SideType to access the array
+   // e.g. m_vbBreakEdge[etStart][stLeft]
+   VARIANT_BOOL m_vbBreakEdge[2][2];
 
-   CComPtr<IPoint2d> m_LeftEdgePoint[2];
-   CComPtr<IPoint2d> m_LeftEdgeBreakPoint[2];
-   CComPtr<IPoint2d> m_RightEdgeBreakPoint[2];
-   CComPtr<IPoint2d> m_RightEdgePoint[2];
+   // Coordinates that define the ends of the slab. 
+   // Use the EndType and SideType to access the array
+   // e.g. m_EdgePoint[etStart][stLeft]
+   CComPtr<IPoint2d> m_EdgePoint[2][2];        // intersection of slab edge with the slab path
+   CComPtr<IPoint2d> m_EdgeBreakPoint[2][2];   // location of break back point
 
-   CComPtr<IPath> m_LeftEdgePath;
-   CComPtr<IPath> m_RightEdgePath;
+   CComPtr<IPath> m_EdgePath[2];  // path that defined the edge of the deck. Use the SideType enum to access the array
 
    HRESULT UpdateGeometry();
    HRESULT CreateDeckBoundaryEndPoints(EndType endType,LineIDType endLineID,DeckBoundaryEdgeType edgeType,IPoint2d** end1,IPoint2d** end2,IPoint2d** end3,IPoint2d** end4);
-   HRESULT CreateEdgePath(LineIDType edgePathID, IPoint2d* pntStart, IPoint2d* pntEnd,IPath** pPath);
+   HRESULT CreateEdgePath(PathIDType edgePathID, IPoint2d* pntStart, IPoint2d* pntEnd,IPath** pPath);
 
 public:
-   STDMETHOD(get_Perimeter)(CollectionIndexType nPointsPerSide,IPoint2dCollection** points);
-   STDMETHOD(get_PerimeterEx)(CollectionIndexType nPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** points);
+   STDMETHOD(get_Perimeter)(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** points);
+   STDMETHOD(get_PerimeterEx)(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** points);
    STDMETHOD(get_TransverseEdgePoints)(EndType endType,IPoint2d** ppLeft,IPoint2d** ppLeftBreak,IPoint2d** ppRightBreak,IPoint2d** ppRight);
-   STDMETHOD(get_LeftEdgePath)(VARIANT_BOOL vbLayoutLine,IPath** path);
-   STDMETHOD(get_RightEdgePath)(VARIANT_BOOL vbLayoutLine,IPath** path);
+   STDMETHOD(get_EdgePath)(SideType side,VARIANT_BOOL vbLayoutLine,IPath** path);
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(DeckBoundary), CDeckBoundary)

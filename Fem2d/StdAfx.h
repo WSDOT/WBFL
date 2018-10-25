@@ -46,7 +46,7 @@ extern CComModule _Module;
 #include <atlctl.h>
 
 #include <WbflAtlExt.h> // WBFL ATL Extensions and helpers
-
+#include <MathEx.h>
 #include <WBFLTools.h>
 
 #include "resource.h"       // main symbols

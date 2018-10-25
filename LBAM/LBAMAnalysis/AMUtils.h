@@ -251,9 +251,8 @@ class PoiMapToFemPoi: public PoiMap
 {
 public:
    PoiMapToFemPoi(PoiIDType lbamPoiID, Float64 globalX, MemberType mType, MemberIDType memberID, Float64 lbamPoiLocation);
-   void SetFemPoi(PoiIDType id, Float64 femMbrLoc);
+   void SetFemPoi(PoiIDType id);
    PoiIDType GetFemPoiID() const;
-   Float64 GetFemPoiMbrLocation() const;
    void SetMemberLocationType(MemberLocationType type);
    virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
    virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
@@ -271,19 +270,18 @@ public:
 
 private:
    PoiIDType  m_FemPoiID;
-   Float64 m_FemMbrLoc;
-
 };
 
 
 // A poimap that maps lbam pois to fem2d member ends
+// Actually maps to fem POI at the end of the left member and at the start of the right member
 class PoiMapToFemMbr: public PoiMap
 {
 public:
    PoiMapToFemMbr(PoiIDType lbamPoiID, Float64 globalX, MemberType mType, MemberIDType memberID, Float64 lbamPoiLocation);
-   void SetFemMbrs(MemberIDType leftID, MemberIDType rightID);
-   MemberIDType GetLeftMbrID() const;
-   MemberIDType GetRightMbrID() const;
+   void SetFemPoiID(PoiIDType leftPoiID, PoiIDType rightPoiID);
+   MemberIDType GetLeftPoiID() const;
+   MemberIDType GetRightPoiID() const;
    virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
    virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
    virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
@@ -299,8 +297,8 @@ public:
 
 
 private:
-   MemberIDType   m_LftMbrID;
-   MemberIDType   m_RgtMbrID;
+   PoiIDType   m_LeftPoiID;
+   PoiIDType   m_RightPoiID;
 };
 
 

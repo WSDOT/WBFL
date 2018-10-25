@@ -149,7 +149,9 @@ lrfdElasticShortening::~lrfdElasticShortening()
 lrfdElasticShortening& lrfdElasticShortening::operator=(const lrfdElasticShortening& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -158,7 +160,9 @@ lrfdElasticShortening& lrfdElasticShortening::operator=(const lrfdElasticShorten
 Float64 lrfdElasticShortening::P() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_P;
 }
@@ -166,7 +170,9 @@ Float64 lrfdElasticShortening::P() const
 Float64 lrfdElasticShortening::TemporaryStrand_ElasticShorteningLosses() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_dfESTemp;
 }
@@ -174,7 +180,9 @@ Float64 lrfdElasticShortening::TemporaryStrand_ElasticShorteningLosses() const
 Float64 lrfdElasticShortening::PermanentStrand_ElasticShorteningLosses() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_dfESPerm;
 }
@@ -182,7 +190,9 @@ Float64 lrfdElasticShortening::PermanentStrand_ElasticShorteningLosses() const
 Float64 lrfdElasticShortening::TemporaryStrand_Fcgp() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_FcgpTemp;
 }
@@ -190,7 +200,9 @@ Float64 lrfdElasticShortening::TemporaryStrand_Fcgp() const
 Float64 lrfdElasticShortening::PermanentStrand_Fcgp() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_FcgpPerm;
 }
@@ -247,10 +259,14 @@ void lrfdElasticShortening::Update() const
             m_FcgpPerm *= -1.0; // Need a sign reversal to meet code equations
 
             if ( IsZero(m_ApsPerm*m_FpjPerm) )
+            {
                m_FcgpPerm = 0;
+            }
 
             if ( IsZero(m_ApsTemp*m_FpjTemp) )
+            {
                m_FcgpTemp = 0;
+            }
 
             m_dfESTemp = m_K * (m_Ep/m_Eci) * m_FcgpTemp;
             m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
@@ -270,10 +286,14 @@ void lrfdElasticShortening::Update() const
          m_FcgpPerm *= -1.0; // Need a sign reversal to meet code equations
 
          if ( IsZero(m_ApsPerm*m_FpjPerm) )
+         {
             m_FcgpPerm = 0;
+         }
 
          if ( IsZero(m_ApsTemp*m_FpjTemp) )
+         {
             m_FcgpTemp = 0;
+         }
 
          m_dfESTemp = m_K * (m_Ep/m_Eci) * m_FcgpTemp;
          m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
@@ -296,17 +316,21 @@ void lrfdElasticShortening::Update() const
       m_FcgpPerm *= -1.0; // Need a sign reversal to meet code equations
 
       if ( IsZero(m_ApsPerm*m_FpjPerm) )
+      {
          m_FcgpPerm = 0;
+      }
 
       if ( IsZero(m_ApsTemp*m_FpjTemp) )
+      {
          m_FcgpTemp = 0;
+      }
 
       m_dfESTemp = m_K * (m_Ep/m_Eci) * m_FcgpTemp;
       m_dfESPerm = m_K * (m_Ep/m_Eci) * m_FcgpPerm;
    }
    else
    {
-      ATLASSERT(0); // new method?
+      ATLASSERT(false); // new method?
    }
 
    m_bUpdate = false;

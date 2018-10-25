@@ -1141,7 +1141,7 @@ STDMETHODIMP CCircularSegment::OnPointChanged(IPoint2d* point)
          AdjustHookPoint();
       }
       else
-         ATLASSERT(0); // we should not be listening to anyone else
+         ATLASSERT(false); // we should not be listening to anyone else
    }
 
    return S_OK;

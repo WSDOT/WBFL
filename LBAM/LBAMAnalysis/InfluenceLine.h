@@ -171,7 +171,7 @@ public:
                }
                else
                {
-                  ATLASSERT(0); // container should prevent this
+                  ATLASSERT(false); // container should prevent this
                   return m_Location < other.m_Location; 
                }
             }
@@ -183,13 +183,13 @@ public:
                }
                else
                {
-                  ATLASSERT(0); // container should prevent this
+                  ATLASSERT(false); // container should prevent this
                   return m_Location < other.m_Location; 
                }
             }
             else
             {
-               ATLASSERT(0); // container should prevent duplicate iflSingle values
+               ATLASSERT(false); // container should prevent duplicate iflSingle values
                return m_Location < other.m_Location; 
             }
          }

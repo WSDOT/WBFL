@@ -245,7 +245,7 @@ void CTestLoadCombination::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -290,7 +290,7 @@ void CTestLoadCombination::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -318,7 +318,7 @@ HRESULT CTestLoadCombination::OnLoadCombinationChanged(ldILoadCombination* LoadC
    else if (change==ldcgUserItemData)
       m_csLoadCombinationFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -330,7 +330,7 @@ HRESULT CTestLoadCombination::OnLoadCombinationsChanged(ldILoadCombination* Load
    else if (change==ldcgDescription)
       m_csLoadCombinationsFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

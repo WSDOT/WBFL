@@ -64,7 +64,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = CComAggObject<CLoadCasesAgg>::CreateInstance(myiu,&plc);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -74,7 +74,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = plc->QueryInterface(IID_IUnknown, (void**)&m_pLoadCases);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -83,7 +83,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = CComAggObject<CStagesAgg>::CreateInstance(myiu,&pstg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -93,7 +93,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = pstg->QueryInterface(IID_IUnknown, (void**)&m_pStages);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -102,7 +102,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = CComAggObject<CLoadCombinationsAgg>::CreateInstance(myiu,&plcb);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -112,7 +112,7 @@ HRESULT CLoadCombinationAnalysisContext::FinalConstruct()
    hr = plcb->QueryInterface(IID_IUnknown, (void**)&m_pLoadCombinations);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 

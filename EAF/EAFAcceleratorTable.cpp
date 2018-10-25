@@ -89,6 +89,9 @@ BOOL CEAFAcceleratorTable::AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback*
    DestroyAcceleratorTable(m_hAccelTable);
    m_hAccelTable = CreateAcceleratorTable(lpAccel,nAccelerators+nNewAccelerators);
 
+   LocalFree(lpAccelNew);
+   LocalFree(lpAccel);
+
    return TRUE;
 }
 
@@ -111,6 +114,8 @@ BOOL CEAFAcceleratorTable::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandC
 
    DestroyAcceleratorTable(m_hAccelTable);
    m_hAccelTable = CreateAcceleratorTable(lpAccelNew,nAccelerators+1);
+
+   LocalFree(lpAccelNew);
 
    return TRUE;
 }
@@ -148,6 +153,8 @@ BOOL CEAFAcceleratorTable::RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallbac
 
    m_pCmdMgr->RemoveCommandCallback(nCmdID);
 
+   LocalFree(lpAccelNew);
+
    return TRUE;
 }
 
@@ -173,7 +180,10 @@ BOOL CEAFAcceleratorTable::RemoveAccelKey(BYTE fVirt,WORD key)
    }
 
    if ( nAccelerators <= i )
+   {
+      LocalFree(lpAccelNew);
       return FALSE;
+   }
 
    for ( ; i < nAccelerators; i++ )
    {
@@ -184,6 +194,8 @@ BOOL CEAFAcceleratorTable::RemoveAccelKey(BYTE fVirt,WORD key)
    m_hAccelTable = CreateAcceleratorTable(lpAccelNew,nAccelerators-1);
 
    m_pCmdMgr->RemoveCommandCallback(nCmdID);
+
+   LocalFree(lpAccelNew);
 
    return TRUE;
 }

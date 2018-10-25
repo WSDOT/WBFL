@@ -50,22 +50,6 @@ class ATL_NO_VTABLE CSimpleDeckBoundaryFactory :
 public:
 	CSimpleDeckBoundaryFactory()
 	{
-      m_BackEdgeID   = INVALID_INDEX;
-      m_BackEdgeType = setLayout;
-
-      m_ForwardEdgeID   = INVALID_INDEX;
-      m_ForwardEdgeType = setLayout;
-
-      m_LeftEdgeID       = INVALID_INDEX;
-      m_RightEdgeID      = INVALID_INDEX;
-      m_LeftEdgeBreakID  = INVALID_INDEX;
-      m_RightEdgeBreakID = INVALID_INDEX;
-
-      m_vbBreakLeftEdge[etStart] = VARIANT_FALSE;
-      m_vbBreakLeftEdge[etEnd]   = VARIANT_FALSE;
-      
-      m_vbBreakRightEdge[etStart] = VARIANT_FALSE;
-      m_vbBreakRightEdge[etEnd]   = VARIANT_FALSE;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SIMPLEDECKBOUNDARYFACTORY)
@@ -89,41 +73,31 @@ END_COM_MAP()
 	{
 	}
 
-   LineIDType m_BackEdgeID;
-   DeckBoundaryEdgeType m_BackEdgeType;
+   // Use the EndType enum to access these arrays
+   PathIDType m_TransverseEdgeID[2]; // ID of the path that defines the transverse edge of the deck
+   DeckBoundaryEdgeType m_TransverseEdgeType[2]; // Type of line that defines the transverse edge of deck
 
-   LineIDType m_ForwardEdgeID;
-   DeckBoundaryEdgeType m_ForwardEdgeType;
+   // Use the SideType enum to access these arrays
+   PathIDType m_EdgeID[2];       // ID of construction line that defines the edge of deck
+   PathIDType m_EdgeBreakID[2];  // ID of construction line that defines the break back points
 
-   LineIDType m_LeftEdgeID;
-   LineIDType m_RightEdgeID;
-   LineIDType m_LeftEdgeBreakID;
-   LineIDType m_RightEdgeBreakID;
-
-   VARIANT_BOOL m_vbBreakLeftEdge[2];
-   VARIANT_BOOL m_vbBreakRightEdge[2];
+   // Boolean value that indicates if there is a break point 
+   // in the ends of the slab.
+   // use the EndType and SideType to access the array
+   // e.g. m_vbBreakEdge[etStart][stLeft]
+   VARIANT_BOOL m_vbBreakEdge[2][2];
 
 public:
-   STDMETHOD(put_BackEdgeID)(LineIDType ID);
-   STDMETHOD(get_BackEdgeID)(LineIDType* ID);
-   STDMETHOD(put_BackEdgeType)(DeckBoundaryEdgeType edgeType);
-   STDMETHOD(get_BackEdgeType)(DeckBoundaryEdgeType* edgeType);
-   STDMETHOD(put_ForwardEdgeID)(LineIDType ID);
-   STDMETHOD(get_ForwardEdgeID)(LineIDType* ID);
-   STDMETHOD(put_ForwardEdgeType)(DeckBoundaryEdgeType edgeType);
-   STDMETHOD(get_ForwardEdgeType)(DeckBoundaryEdgeType* edgeType);
-   STDMETHOD(put_LeftEdgeID)(LineIDType ID);
-   STDMETHOD(get_LeftEdgeID)(LineIDType* ID);
-   STDMETHOD(put_RightEdgeID)(LineIDType ID);
-   STDMETHOD(get_RightEdgeID)(LineIDType* ID);
-   STDMETHOD(put_LeftEdgeBreakID)(LineIDType ID);
-   STDMETHOD(get_LeftEdgeBreakID)(LineIDType* ID);
-   STDMETHOD(put_RightEdgeBreakID)(LineIDType ID);
-   STDMETHOD(get_RightEdgeBreakID)(LineIDType* ID);
-   STDMETHOD(put_BreakLeftEdge)(EndType end,VARIANT_BOOL bBreak);
-   STDMETHOD(get_BreakLeftEdge)(EndType end,VARIANT_BOOL* bBreak);
-   STDMETHOD(put_BreakRightEdge)(EndType end,VARIANT_BOOL bBreak);
-   STDMETHOD(get_BreakRightEdge)(EndType end,VARIANT_BOOL* bBreak);
+   STDMETHOD(put_TransverseEdgeID)(EndType end,LineIDType ID);
+   STDMETHOD(get_TransverseEdgeID)(EndType end,LineIDType* ID);
+   STDMETHOD(put_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType edgeType);
+   STDMETHOD(get_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType* edgeType);
+   STDMETHOD(put_EdgeID)(SideType side,PathIDType ID);
+   STDMETHOD(get_EdgeID)(SideType side,PathIDType* ID);
+   STDMETHOD(put_EdgeBreakID)(SideType side,LineIDType ID);
+   STDMETHOD(get_EdgeBreakID)(SideType side,LineIDType* ID);
+   STDMETHOD(put_BreakEdge)(EndType end,SideType side,VARIANT_BOOL bBreak);
+   STDMETHOD(get_BreakEdge)(EndType end,SideType side,VARIANT_BOOL* bBreak);
 
    STDMETHOD(Create)(IBridgeGeometry* pBridge,IDeckBoundary** ppDeckBoundary);
    STDMETHOD(Reset)();

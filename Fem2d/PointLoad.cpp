@@ -122,7 +122,7 @@ STDMETHODIMP CPointLoad::Load(/*[in]*/ IStructuredLoad2 *pload)
 //         m_Orientation = lotGlobalProjected;
 //      else
 //      {
-//         ATLASSERT(0); // invalid orientation was written
+//         ATLASSERT(false); // invalid orientation was written
 //         return STRLOAD_E_INVALIDFORMAT;
 //      }
 
@@ -263,7 +263,7 @@ STDMETHODIMP CPointLoad::put_Orientation(Fem2dLoadOrientation newVal)
    }
    catch (...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

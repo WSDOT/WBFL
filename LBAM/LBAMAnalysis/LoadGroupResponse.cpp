@@ -1026,7 +1026,7 @@ CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType 
       cnt++;
    }
 
-   ATLASSERT(0); // invalid index
+   ATLASSERT(false); // invalid index
    return CComBSTR();
 }
 
@@ -1046,7 +1046,7 @@ void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfoByIndex(Collection
       currentLoadGroupIdx++;
    }
 
-   ATLASSERT(0); // invalid index;
+   ATLASSERT(false); // invalid index;
 }
 
 void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfo(BSTR loadGroup, LoadCaseIDType* femLoadCaseID, bool* bIsTransient)
@@ -1071,6 +1071,20 @@ void CLoadGroupResponse::CAnalysisController::GetLoadGroupInfo(BSTR loadGroup, L
 SupportIndexType CLoadGroupResponse::CAnalysisController::TemporarySupportCount()
 {
    return m_TemporarySupportInfo.size();
+}
+
+SupportIndexType CLoadGroupResponse::CAnalysisController::GetTemporarySupportIndex(SupportIDType tsID)
+{
+   std::vector<TemporarySupportInfo>::iterator iter(m_TemporarySupportInfo.begin());
+   std::vector<TemporarySupportInfo>::iterator iterEnd(m_TemporarySupportInfo.end());
+   for ( ; iter != iterEnd; iter++ )
+   {
+      if ( iter->m_ID == tsID )
+      {
+         return std::distance(m_TemporarySupportInfo.begin(),iter);
+      }
+   }
+   return INVALID_INDEX;
 }
 
 SupportIDType CLoadGroupResponse::CAnalysisController::GetTemporarySupportID(SupportIndexType tempSupportIdx)
@@ -1174,12 +1188,12 @@ void CLoadGroupResponse::ValidateInfluenceCalc(BSTR stage)
          // clear out loadings in fem model
          StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
-         CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
-         rfemModel.ClearInfluenceLoads();
+         boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
+         pAnalysisModel->ClearInfluenceLoads();
 
          // determine all influence loading locations and,
          // generate influence loads and their fem loadings
-         rfemModel.GenerateInfluenceLoads();
+         pAnalysisModel->GenerateInfluenceLoads();
       }
 
       // we are up to date now
@@ -1188,7 +1202,7 @@ void CLoadGroupResponse::ValidateInfluenceCalc(BSTR stage)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       ClearModels();
       throw;
    }
@@ -1263,9 +1277,6 @@ void CLoadGroupResponse::ValidateModels()
 
                   // Apply reaction forces for temporary supports
                   ValidateTemporarySupportForces();
-
-                  // tell the change manager we're up to date
-                  m_ChangeManager.OnModelUpdated();
                }
 
                if (m_ChangeManager.HavePOIsChanged() || m_ChangeManager.IsStressCalcHosed())
@@ -1280,14 +1291,21 @@ void CLoadGroupResponse::ValidateModels()
                      pFemModel->GeneratePOIs();
                   }
                }
-
-               // tell the change manager we're up to date
-               m_ChangeManager.OnModelUpdated();
             }
             else
             {
-               ATLASSERT(0); // type of change not handled properly
+               ATLASSERT(false); // type of change not handled properly
             }
+
+            // tell the change manager we're up to date
+            // must do this outside of the if-else block... if one or more of the
+            // change types have to be processed, processing the first one would
+            // and then calling m_ChangeManager.OnModelUpdated() caused processing
+            // of the subsequent change times to be skipped. An example is model that
+            // has the load group changed and POI changed. The load group would get
+            // processed, but the poi would not.
+            // moving this call here, solves that problem
+            m_ChangeManager.OnModelUpdated();
          }
       }
    }
@@ -1399,7 +1417,7 @@ STDMETHODIMP CLoadGroupResponse::putref_Model(ILBAMModel *newVal)
    HRESULT hr = Init(newVal);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1610,6 +1628,28 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
       {
          SupportIDType supportID;
          hr = supportIDs->get_Item(supportIDIdx, &supportID);
+
+         SupportIndexType tempSupportIdx = m_AnalysisController.GetTemporarySupportIndex(supportID);
+         if ( tempSupportIdx != INVALID_INDEX )
+         {
+            StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
+
+            StageIndexType thisStageIdx = m_AnalysisController.CheckedStageOrder(Stage);
+            if ( tempSupportRemovalStageIdx <= thisStageIdx )
+            {
+               // this support is a temporary support and it has already been removed... report
+               // its cumulative and incremental reaction as zero
+
+               // create results object and add it to the collection
+               CComObject<CResult3D>* presult;
+               hr = CComObject<CResult3D>::CreateInstance(&presult);
+
+               CComPtr<IResult3D> the_result(presult);
+               hr = the_results->Add(the_result);
+               the_result->Sum(0,0,0);
+               continue; // next support
+            }
+         }
 
          // create results object and add it to the collection
          CComObject<CResult3D>* presult;
@@ -1838,12 +1878,27 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
    return S_OK;
 }
 
+STDMETHODIMP CLoadGroupResponse::DumpFEMModels()
+{
+   ModelsIterator modelIter(m_Models.begin());
+   ModelsIterator modelIterEnd(m_Models.end());
+   for ( ; modelIter != modelIterEnd; modelIter++)
+   {
+      boost::shared_ptr<CAnalysisModel>& analysisModel(*modelIter);
+      analysisModel->DumpFEMModel();
+   }
+   return S_OK;
+}
+
+
 ///////////////////////////////////////////////////////////////
 ////// IUnitLoadReponse
 ///////////////////////////////////////////////////////////////
 // 
-STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiID,BSTR bstrStage,ResultsOrientation orientation,ISectionResult3Ds** results)
+STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiID,BSTR bstrStage,ForceEffectType forceEffectType,ResultsOrientation orientation,ISectionResult3Ds** results)
 {
+   ATLASSERT(forceEffectType == fetFy || forceEffectType == fetMz);
+
    CHECK_IN(poiIDs);
    CHECK_RETOBJ(results);
 
@@ -1854,7 +1909,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiI
       ValidateInfluenceCalc(bstrStage);
 
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(bstrStage);
-      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+      boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stageIdx];
 
 
       // let's see how many pois we have to return results for
@@ -1883,7 +1938,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiI
 
          hr = the_results->Add(the_result);
 
-         pFemModel->GetUnitForceResponse(poiID,ldPoiID,orientation, &fx_left, &fy_left, &mz_left, &fx_right, &fy_right, &mz_right);
+         pAnalysisModel->GetUnitLoadResponse(poiID,ldPoiID,forceEffectType,orientation, &fx_left, &fy_left, &mz_left, &fx_right, &fy_right, &mz_right);
 
          // sum results 
          hr = the_result->Sum(fx_left, fy_left, mz_left, fx_right, fy_right, mz_right);
@@ -2512,18 +2567,18 @@ HRESULT CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,Resu
    try
    {
       StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
-      CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
+      boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
 
       CComPtr<IInfluenceLine> ilFx[2], ilFy[2], ilMz[2], ilDx[2], ilDy[2], ilRz[2];
 
-      rfemModel.GetInfluenceLines(poiID, 
-                                  orientation, m_ForceInfluenceZeroTolerance, m_DeflectionInfluenceZeroTolerance, 
-                                  &ilFx[0], &ilFx[1],
-                                  &ilFy[0], &ilFy[1],
-                                  &ilMz[0], &ilMz[1],
-                                  &ilDx[0], &ilDx[1],
-                                  &ilDy[0], &ilDy[1],
-                                  &ilRz[0], &ilRz[1]);
+      pAnalysisModel->GetInfluenceLines(poiID, 
+                                        orientation, m_ForceInfluenceZeroTolerance, m_DeflectionInfluenceZeroTolerance, 
+                                        &ilFx[0], &ilFx[1],
+                                        &ilFy[0], &ilFy[1],
+                                        &ilMz[0], &ilMz[1],
+                                        &ilDx[0], &ilDx[1],
+                                        &ilDy[0], &ilDy[1],
+                                        &ilRz[0], &ilRz[1]);
 
       // cache it and return it
       m_CachedForceInfluenceLines.insert( DvInfluenceLineKeeper(poiID, stg_idx, fetFx, orientation, ilFx[0], ilFx[1]) );

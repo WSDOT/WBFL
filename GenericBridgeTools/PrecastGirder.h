@@ -270,11 +270,11 @@ public:
    STDMETHOD(ClearStraightStrandDebonding)();
 	STDMETHOD(DebondStraightStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2);
 	STDMETHOD(GetDebondedStraightStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes);
-	STDMETHOD(GetStraightStrandDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
+	STDMETHOD(GetStraightStrandDebondLengthByGridIndex)(/*[in]*/EndType endType,/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
 
    // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-	STDMETHOD(GetStraightStrandDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord,/*[out]*/Float64* l1,/*[out]*/Float64* l2);
-	STDMETHOD(GetStraightStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes);
+	STDMETHOD(GetStraightStrandDebondLengthByPositionIndex)(/*[in]*/EndType endType,/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord,/*[out]*/Float64* l1,/*[out]*/Float64* l2);
+	STDMETHOD(GetStraightStrandsDebondedByPositionIndex)(/*[in]*/EndType endType,/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes);
 
 	STDMETHOD(get_StraightStrandRowsWithStrand)(/*[out,retval]*/RowIndexType* nRows);
 	STDMETHOD(get_NumStraightStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);

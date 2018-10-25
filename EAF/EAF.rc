@@ -156,8 +156,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,8
- PRODUCTVERSION 4,0,0,8
+ FILEVERSION 4,0,0,10
+ PRODUCTVERSION 4,0,0,10
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -175,12 +175,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.0.0.8"
+            VALUE "FileVersion", "4.0.0.10"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2014, Washington State Department of Transportation, All Rights ReservedPassed(pgsTypes::BottomGirder)"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.8"
+            VALUE "ProductVersion", "4.0.0.10"
         END
     END
     BLOCK "VarFileInfo"
@@ -293,7 +293,7 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,151,159,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,205,159,50,14
-    LTEXT           "Enable Components",IDC_STATIC,7,7,64,8
+    LTEXT           "Select the Project Types that you want to be available",IDC_STATIC,7,7,175,8
     LISTBOX         IDC_PLUGIN_LIST,7,21,302,134,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Help",IDHELP,259,159,50,14
 END
@@ -521,9 +521,10 @@ STRINGTABLE
 BEGIN
     EAFID_UNITS_SI          "Change units mode to SI\nSI Units"
     EAFID_UNITS_US          "Change units mode to US\nUS Units"
-    EAFID_EDIT_UNITS        "Change the system of units\nUnits."
-    EAFID_TIPOFTHEDAY       "Displays a Tip of the Day."
-    EAFID_MANAGE_APP_PLUGINS "Manage Application Plugins"
+    EAFID_EDIT_UNITS        "Change the system of units\nUnits"
+    EAFID_TIPOFTHEDAY       "Displays a Tip of the Day\n"
+    EAFID_MANAGE_APP_PLUGINS "Manage Application Plugins\n"
+    EAFID_REPORT_MENU_DISPLAY_MODE "Change Report Menu Display Mode\n"
 END
 
 STRINGTABLE 

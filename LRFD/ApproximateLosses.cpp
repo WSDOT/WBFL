@@ -126,7 +126,9 @@ lrfdApproximateLosses::~lrfdApproximateLosses()
 lrfdApproximateLosses& lrfdApproximateLosses::operator=(const lrfdApproximateLosses& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -165,7 +167,9 @@ Float64 lrfdApproximateLosses::TimeDependentLossesAfterDeck() const
 Float64 lrfdApproximateLosses::TimeDependentLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpLT;
 }
@@ -176,14 +180,18 @@ Float64 lrfdApproximateLosses::PermanentStrand_Final() const
    // doesn't have to be consistent with the other losses
 
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation + elastic shortening
                 + GetDeltaFptr() // change in loss due to temporary strand removal
                 + TimeDependentLosses(); // total lump sum time dependent losses
 
    if ( m_TempStrandUsage != tsPretensioned )
+   {
       loss += GetDeltaFpp();//m_dfpp = effect of post-tensioning
+   }
 
    return loss;
 }
@@ -191,7 +199,9 @@ Float64 lrfdApproximateLosses::PermanentStrand_Final() const
 Float64 lrfdApproximateLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AtShipping();
    return loss;
@@ -200,7 +210,9 @@ Float64 lrfdApproximateLosses::PermanentStrand_BeforeTemporaryStrandRemoval() co
 Float64 lrfdApproximateLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval() + GetDeltaFptr();//m_dfptr;;
    return loss;
@@ -261,9 +273,13 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
 
       if ( is_si )
+      {
          p_unit = &unitMeasure::MPa;
+      }
       else
+      {
          p_unit = &unitMeasure::KSI;
+      }
 
       Float64 lowRelaxReduction = 0.0;
       if ( m_BeamType == IBeam )
@@ -311,7 +327,9 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
 
       if ( m_Type == matPsStrand::LowRelaxation )
+      {
          losses -= lowRelaxReduction;
+      }
 
       if ( m_ConcreteType != lrfdConcreteUtil::NormalDensity )
       {

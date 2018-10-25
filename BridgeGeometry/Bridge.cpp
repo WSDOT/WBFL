@@ -65,7 +65,9 @@ STDMETHODIMP CBridge::get_Alignment(CogoObjectID ID,IAlignment** pAlignment)
    CHECK_RETOBJ(pAlignment);
    AlignmentCollection::iterator found = m_Alignments.find(ID);
    if ( found == m_Alignments.end() )
+   {
       return Error(IDS_E_ID,IID_IBridgeGeometry,BRIDGEGEOMETRY_E_ID);
+   }
 
    return found->second.CopyTo(pAlignment);
 }
@@ -114,7 +116,9 @@ STDMETHODIMP CBridge::CreateLayoutLines(ILayoutLineFactory* pFactory)
 
    HRESULT hr = pFactory->Create(this,m_LayoutLines);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -125,7 +129,9 @@ STDMETHODIMP CBridge::FindLayoutLine(CogoObjectID ID,IPath** ppPath)
    CComPtr<IPath> path;
    HRESULT hr = m_LayoutLines->get_Item(ID,&path);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return path->Clone(ppPath);
 }
@@ -144,7 +150,9 @@ STDMETHODIMP CBridge::CreatePierLine(PierIDType ID, CogoObjectID alignmentID,VAR
    CComPtr<IPierLine> otherPierLine;
    m_PierLines->FindPierLine(ID,&otherPierLine);
    if ( otherPierLine != NULL )
+   {
       return Error(IDS_E_ID,IID_IBridgeGeometry,BRIDGEGEOMETRY_E_ID);
+   }
 
    // create pier object
    CComObject<CPierLine>* pPierLine;
@@ -157,7 +165,9 @@ STDMETHODIMP CBridge::CreatePierLine(PierIDType ID, CogoObjectID alignmentID,VAR
    pPierLine->m_AlignmentID = alignmentID;
    HRESULT hr = pPierLine->m_Station->FromVariant(station);
    if ( FAILED(hr) )
+   {
       return Error(IDS_E_INVALIDSTATION,IID_IBridgeGeometry,BRIDGEGEOMETRY_E_INVALIDSTATION);
+   }
 
    pPierLine->m_bstrOrientation = orientation;
 
@@ -197,7 +207,9 @@ STDMETHODIMP CBridge::CreateGirderLines(IGirderLineFactory* pFactory)
    CComPtr<IUnkArray> arrUnks;
    HRESULT hr = pFactory->Create(this,&arrUnks);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType nItems;
    arrUnks->get_Count(&nItems);
@@ -221,7 +233,9 @@ STDMETHODIMP CBridge::CreateGirderLines(IGirderLineFactory* pFactory)
          insert_result = m_GirderLines.insert( std::make_pair(ID,girderLine) );
          ATLASSERT(insert_result.second == true); // WTF happened
          if ( insert_result.second == false )
+         {
             return E_FAIL;
+         }
       }
    }
 
@@ -233,7 +247,9 @@ STDMETHODIMP CBridge::FindGirderLine(GirderIDType ID,IGirderLine** ppGirderLine)
    CHECK_RETOBJ(ppGirderLine);
    GirderLineCollection::iterator found = m_GirderLines.find(ID);
    if ( found == m_GirderLines.end() )
+   {
       return E_FAIL;
+   }
 
    return found->second.CopyTo(ppGirderLine);
 }
@@ -252,7 +268,9 @@ STDMETHODIMP CBridge::CreateDiaphragmLines(IDiaphragmLineFactory* pFactory)
    CComPtr<IUnkArray> arrUnks;
    HRESULT hr = pFactory->Create(this,&arrUnks);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType nItems;
    arrUnks->get_Count(&nItems);
@@ -276,7 +294,9 @@ STDMETHODIMP CBridge::CreateDiaphragmLines(IDiaphragmLineFactory* pFactory)
          insert_result = m_DiaphragmLines.insert( std::make_pair(ID,diaphragmLine) );
          ATLASSERT(insert_result.second == true); // WTF happened
          if ( insert_result.second == false )
+         {
             return E_FAIL;
+         }
       }
    }
 
@@ -288,7 +308,9 @@ STDMETHODIMP CBridge::FindDiaphragmLine(LineIDType ID,IDiaphragmLine** ppDiaphra
    CHECK_RETOBJ(ppDiaphragmLine);
    DiaphragmLineCollection::iterator found = m_DiaphragmLines.find(ID);
    if ( found == m_DiaphragmLines.end() )
+   {
       return E_FAIL;
+   }
 
    return found->second.CopyTo(ppDiaphragmLine);
 }
@@ -306,7 +328,9 @@ STDMETHODIMP CBridge::CreateDeckBoundary(IDeckBoundaryFactory* pFactory)
    m_DeckBoundary.Release();
    HRESULT hr = pFactory->Create(this,&m_DeckBoundary);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -326,23 +350,33 @@ STDMETHODIMP CBridge::UpdateGeometry()
 
    HRESULT hr = UpdateBridgeLine();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdatePierGeometry();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateGirderGeometry();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateDiaphragmGeometry();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateDeckBoundaryGeometry();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -368,7 +402,9 @@ HRESULT CBridge::UpdateBridgeLine()
    CComPtr<IAlignment> alignment;
    HRESULT hr = get_BridgeAlignment(&alignment);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    m_BridgeLine.Release();
    return alignment->CreateParallelPath(-m_AlignmentOffset,&m_BridgeLine);
@@ -389,7 +425,9 @@ HRESULT CBridge::UpdatePierGeometry()
       CPierLine* pPier = (CPierLine*)pier.p;
       hr = pPier->UpdateGeometry();
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       pier.Release();
    }
@@ -407,7 +445,9 @@ HRESULT CBridge::UpdateGirderGeometry()
       CGirderLine* pGirderLine = (CGirderLine*)girderLine.p;
       HRESULT hr = pGirderLine->UpdateGeometry();
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
 
    return S_OK;
@@ -423,7 +463,9 @@ HRESULT CBridge::UpdateDiaphragmGeometry()
       CDiaphragmLine* pDiaphragmLine = (CDiaphragmLine*)DiaphragmLine.p;
       HRESULT hr = pDiaphragmLine->UpdateGeometry();
       if ( FAILED(hr) )
+      {
          return hr;
+      }
    }
 
    return S_OK;

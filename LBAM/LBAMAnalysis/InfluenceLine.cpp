@@ -90,7 +90,7 @@ STDMETHODIMP CInfluenceLine::Item(/*[in]*/CollectionIndexType idx, /*[in]*/Influ
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_INVALIDARG;
       }
    }
@@ -157,7 +157,7 @@ STDMETHODIMP CInfluenceLine::Remove(/*[in]*/CollectionIndexType idx)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_INVALIDARG;
       }
    }
@@ -461,7 +461,7 @@ STDMETHODIMP CInfluenceLine::Reserve(CollectionIndexType n)
 {
    if (n<0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_INVALIDARG;
    }
 
@@ -608,7 +608,7 @@ STDMETHODIMP CInfluenceLine::Load(IStructuredLoad2 * pload)
          }
          else
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return STRLOAD_E_INVALIDFORMAT;
          }
 
@@ -774,7 +774,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    CollectionIndexType source_size = source.size();
    if (source_size==0)
    {
-      ATLASSERT(0);  // probably shouldn't see any empty influence lines here
+      ATLASSERT(false);  // probably shouldn't see any empty influence lines here
      target.clear();
       return;
    }
@@ -900,7 +900,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
 //         {
 //            if (last_matched)
 //            {
-//               ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
+//               ATLASSERT(false); // have three points at the same location - this is bad form and indicates an inefficient influence line
 //            }
 //            last_matched = true;
 //            last_loc = it2->m_Location;
@@ -921,7 +921,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
 {
    if (side==ilsBoth)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return;
    }
 
@@ -985,7 +985,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // vertical drop
                   // if assert below fires, then influence line was not properly laid out
-                  ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
+                  //ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
                   local_infl.push_back( p2 );
                }
                else
@@ -1003,7 +1003,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // vertical climb
                   // if assert below fires, then influence line was not properly laid out
-                  ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
+                  //ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
                   local_infl.push_back( p2.CopyAndZero() );
                }
                else
@@ -1082,7 +1082,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // vertical drop
                   // if assert below fires, then influence line was not properly laid out
-                  ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
+                  //ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
                   local_infl.push_back( p2.CopyAndZero() );
                }
                else
@@ -1100,7 +1100,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // vertical climb
                   // if assert below fires, then influence line was not properly laid out
-                  ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
+                  //ATLASSERT( p1.m_LocationType==iflDualLeft && p2.m_LocationType==iflDualRight );
                   local_infl.push_back( p2 );
                }
                else
@@ -1126,7 +1126,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 }
 

@@ -111,15 +111,26 @@ STDMETHODIMP CSuperstructureMember::get_Segment(SegmentIndexType idx, ISegment *
    return m_Segments[idx].CopyTo(pVal);
 }
 
-STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 distFromStartOfSSMbr,Float64* distFromStartOfSegment,SegmentIndexType* pSegIdx,ISegment** ppSeg)
+STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISegment** ppSeg)
 {
-   if ( distFromStartOfSSMbr < 0 )
+   if ( Xg < 0 )
    {
       // location before start, return first segment
+      ATLASSERT(false);
       m_Segments.front().CopyTo(ppSeg);
       *pSegIdx = 0;
       return E_FAIL;
    }
+
+   CComPtr<ISegment> firstSegment(m_Segments.front());
+   CComPtr<IGirderLine> firstGirderLine;
+   firstSegment->get_GirderLine(&firstGirderLine);
+   Float64 brgOffset,endDist;
+   firstGirderLine->get_BearingOffset(etStart,&brgOffset);
+   firstGirderLine->get_EndDistance(etStart,&endDist);
+
+   // it is easier to work in girder path coordinates
+   Float64 Xgp = Xg + (brgOffset-endDist);
 
    std::vector<CComPtr<ISegment>>::iterator segIter(m_Segments.begin());
    std::vector<CComPtr<ISegment>>::iterator segIterEnd(m_Segments.end());
@@ -129,19 +140,32 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 distFr
    {
       CComPtr<ISegment> segment(*segIter);
 
+      CComPtr<ISegment> prevSegment, nextSegment;
+      segment->get_PrevSegment(&prevSegment);
+      segment->get_NextSegment(&nextSegment);
+
       Float64 segmentLength;
-      segment->get_Length(&segmentLength);
+      segment->get_LayoutLength(&segmentLength);
 
       currentDistFromStart += segmentLength;
-      if ( distFromStartOfSSMbr <= currentDistFromStart )
+      if ( Xgp <= currentDistFromStart )
       {
          // The end of the current segment is right at or beyond the location we are looking for.
          // This is the first segment to have its end go past the target location so
          // it is the segment we are looking for.
 
+         Float64 XgpStart = currentDistFromStart - segmentLength; // location of the start of the segment in girder path coordinates
+         Float64 Xsp = Xgp - XgpStart; // distance along segments in segment path coordinates
+
+         CComPtr<IGirderLine> girderLine;
+         segment->get_GirderLine(&girderLine);
+         girderLine->get_BearingOffset(etStart,&brgOffset);
+         girderLine->get_EndDistance(etStart,&endDist);
+
+         Float64 Xs  = Xsp - (brgOffset-endDist); // distance from start face of segment
+
          segment.CopyTo(ppSeg);
-         Float64 distFromEndOfSegment = currentDistFromStart - distFromStartOfSSMbr;
-         *distFromStartOfSegment = segmentLength - distFromEndOfSegment;
+         *pXs = Xs;
 
          *pSegIdx = segIter - m_Segments.begin();
 
@@ -149,21 +173,51 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStartOfSegment(Float64 distFr
       }
    }
 
-   // segment not found, return last segment
+   // the point we are looking for is beyond the end of the girder path coordinates.
+   // this, however does not mean the point isn't on the girder. if the distance between
+   // the Xgp and the end of the girder path coordinate system is less than the end size
+   // Xgp is on the end of the last segment.
+   CComPtr<ISegment> lastSegment(m_Segments.back());
+   CComPtr<IGirderLine> lastGirderLine;
+   lastSegment->get_GirderLine(&lastGirderLine);
+   lastGirderLine->get_BearingOffset(etEnd,&brgOffset);
+   lastGirderLine->get_EndDistance(etEnd,&endDist);
+   if ( currentDistFromStart-Xgp <= brgOffset-endDist )
+   {
+      lastSegment.CopyTo(ppSeg);
+      *pSegIdx = m_Segments.size()-1;
+      Float64 segmentLength;
+      lastGirderLine->get_LayoutLength(&segmentLength);
+      Float64 XgpStart = currentDistFromStart - segmentLength;
+      Float64 Xsp = Xgp - XgpStart;
+      lastGirderLine->get_BearingOffset(etStart,&brgOffset);
+      lastGirderLine->get_EndDistance(etStart,&endDist);
+      Float64 Xs = Xsp - (brgOffset-endDist);
+      *pXs = Xs;
+      return S_OK;
+   }
+
+   // Xgp is not on the girder, return last segment
    m_Segments.back().CopyTo(ppSeg);
    *pSegIdx = m_Segments.size()-1;
    return E_FAIL;
 }
 
-STDMETHODIMP CSuperstructureMember::GetDistanceFromStart(SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pDistFromStartOfGirder)
+STDMETHODIMP CSuperstructureMember::GetDistanceFromStart(SegmentIndexType segIdx,Float64 Xs,Float64* pXg)
 {
-   // distFromStartOfSegment is in segment coordinates
-   // pDistFromStartOfGirder is in girder path coordinates
+   if ( segIdx == 0 )
+   {
+      // Xg = Xs for the first segment
+      *pXg = Xs;
+      return S_OK;
+   }
 
+   // work in girder path coordinates
+   // sum layout lengths until we get to the start of the segment in question
+   Float64 XgpStart = 0;
+   ATLASSERT( segIdx < m_Segments.size() );
    std::vector<CComPtr<ISegment>>::iterator segIter(m_Segments.begin());
    std::vector<CComPtr<ISegment>>::iterator segIterEnd(segIter + segIdx);
-
-   Float64 distFromStart = 0;
    for ( ; segIter != segIterEnd; segIter++ )
    {
       CComPtr<ISegment> segment(*segIter);
@@ -171,13 +225,47 @@ STDMETHODIMP CSuperstructureMember::GetDistanceFromStart(SegmentIndexType segIdx
       CComPtr<IGirderLine> girderLine;
       segment->get_GirderLine(&girderLine);
 
-      Float64 length;
-      girderLine->get_LayoutLength(&length);
+      Float64 layout_length;
+      girderLine->get_LayoutLength(&layout_length);
 
-      distFromStart += length;
+      XgpStart += layout_length;
    }
 
-   *pDistFromStartOfGirder = distFromStart + distFromStartOfSegment;
+   // add distance from CL Pier/TS to start face of this segment
+   //
+   // CL Pier 0
+   // |
+   // |<--------------------------- Xgp ---------------------->|
+   // |<----------------- XgpFace ----------->|<----- Xs ----->|
+   // |<-------------- XgpStart ---------->|  |                |
+   // |                                    |  |                |
+   // |     +--------------/ /----------+  |  +----------------*-----/
+   // |     | Seg 0        \ \ Seg i-1  |  |  |  Seg i (thisSegment) \
+   // |     +--------------/ /----------+  |  +----------------------/
+   // |     |                             CL Pier/TS           |
+   // |< * >|<-------------------- Xg ------------------------>|
+   //    |
+   //    +-- offset
+
+   CComPtr<ISegment> thisSegment(*(m_Segments.begin()+segIdx));
+   CComPtr<IGirderLine> girderLine;
+   thisSegment->get_GirderLine(&girderLine);
+   Float64 brgOffset, endDist;
+   girderLine->get_BearingOffset(etStart,&brgOffset);
+   girderLine->get_EndDistance(etStart,&endDist);
+   Float64 XgpFace = XgpStart + (brgOffset-endDist);
+
+   // add segment distance
+   Float64 Xgp = XgpFace + Xs;
+
+   // subtract the distance from CL Pier at start of girder to face of start of girder
+   girderLine.Release();
+   m_Segments.front()->get_GirderLine(&girderLine);
+   girderLine->get_BearingOffset(etStart,&brgOffset);
+   girderLine->get_EndDistance(etStart,&endDist);
+   Float64 offset = brgOffset - endDist;
+   Float64 Xg = Xgp - offset;
+   *pXg = Xg;
 
    return S_OK;
 }

@@ -340,7 +340,7 @@ library WBFLCore
 	]
 	interface IBroker : IUnknown
 	{
-		[helpstring("method GetInterface")] HRESULT GetInterface([in] REFIID riid, [out,iid_is(riid)] void** ppv);
+		[helpstring("method GetInterface")] HRESULT GetInterface([in] REFIID riid, [out,iid_is(riid)] IUnknown** ppUnk);
 		[helpstring("method Reset")] HRESULT Reset();
 		[helpstring("method ShutDown")] HRESULT ShutDown();
 	};

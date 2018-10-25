@@ -196,7 +196,7 @@ void CTestStage::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -356,7 +356,7 @@ HRESULT CTestStage::OnStageChanged(IStage* Stage, ChangeType change)
    if (change==cgtStage || change==cgtDescription)
       m_csStageFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -366,7 +366,7 @@ HRESULT CTestStage::OnStagesChanged(IStage* Stage, ChangeType change)
    if (change==cgtStage || change==cgtDescription)
       m_csStageFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

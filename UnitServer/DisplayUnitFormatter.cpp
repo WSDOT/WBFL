@@ -67,10 +67,10 @@ STDMETHODIMP CDisplayUnitFormatter::Format(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag
    if ( 0.95*std::numeric_limits<Float64>::max() < fabs(cv) )
    {
       // Check if the number is +/- infinity
-      CComBSTR bstrString( cv < 0 ? "-INF" : "INF" );
+      CComBSTR bstrString( cv < 0 ? _T("-INF") : _T("INF") );
       if ( tag )
       {
-         bstrString += CComBSTR(" ");
+         bstrString += CComBSTR(_T(" "));
          bstrString += tag;
       }
       *fmtString = bstrString.Detach();
@@ -94,7 +94,7 @@ STDMETHODIMP CDisplayUnitFormatter::Format(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag
 
    if ( tag != 0 )
    {
-      os << " " << OLE2T(tag);
+      os << _T(" ") << OLE2T(tag);
    }
 
    CComBSTR bstrString( os.str().c_str() );

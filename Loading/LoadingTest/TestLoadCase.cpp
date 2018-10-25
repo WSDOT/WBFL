@@ -224,7 +224,7 @@ void CTestLoadCase::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -269,7 +269,7 @@ void CTestLoadCase::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -297,7 +297,7 @@ HRESULT CTestLoadCase::OnLoadCaseChanged(ldILoadCase* LoadCase, ldLoadingChangeT
    else if (change==ldcgUserItemData)
       m_csLoadCaseFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -309,7 +309,7 @@ HRESULT CTestLoadCase::OnLoadCasesChanged(ldILoadCase* LoadCase, ldLoadingChange
    else if (change==ldcgDescription)
       m_csLoadCasesFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

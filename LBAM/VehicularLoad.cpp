@@ -432,7 +432,7 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
          m_LiveLoadApplicability = llaNegMomentAndInteriorPierReaction;
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return STRLOAD_E_INVALIDFORMAT;
       }
 
@@ -441,7 +441,7 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_VariableAxle = var;
+      m_VariableAxle = VARIANT2INDEX(var);
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("VariableMaxSpacing"),&var);

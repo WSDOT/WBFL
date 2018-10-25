@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// LBAM Utility - Longitindal Bridge Analysis Model
+// MfcTools - Extension library for MFC
 // Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -20,21 +20,18 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
+#include <MfcTools\MfcToolsExp.h>
 
-#if !defined INCLUDED_UTILITYUTILS_H_
-#define INCLUDED_UTILITYUTILS_H_
-
-#include "ComException.h"
-
-// macros to help error processing
-// short-hand version if consistent naming conventions are used
-#define THROW_LBAMU(errNam) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMU_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMU_MSG(errNam, msg) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, msg, LBAMU_E_##errNam, IDH_E_##errNam);}
-
-inline CComBSTR GetHelpFile()
+// class that sets the application profile name for this plug-in and then
+// rolls it back to the original value when the object goes out of scope
+class MFCTOOLSCLASS CAutoRegistry
 {
-   return CComBSTR("WBFLLBAM.chm");
-}
+public:
+   CAutoRegistry(LPCTSTR lpszProfile);
+   ~CAutoRegistry();
 
-#endif 
+private:
+   CString m_strAppProfileName;
+};

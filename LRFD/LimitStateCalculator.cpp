@@ -1195,9 +1195,13 @@ Float64 lrfdLimitStateCalculator::GetMaxLLIMLoadFactor(lrfdTypes::LimitState ls)
 {
    Float64 g;
    if ( ls == lrfdTypes::ExtremeEventI )
+   {
       g = m_MaxEQ;
+   }
    else
+   {
       g = g_LLIMFactors[ls].Max;
+   }
 
    return g;
 }
@@ -1206,9 +1210,13 @@ Float64 lrfdLimitStateCalculator::GetMinLLIMLoadFactor(lrfdTypes::LimitState ls)
 {
    Float64 g;
    if ( ls == lrfdTypes::ExtremeEventI )
+   {
       g = m_MinEQ;
+   }
    else
+   {
       g = g_LLIMFactors[ls].Min;
+   }
 
    return g;
 }
@@ -1217,9 +1225,13 @@ Float64 lrfdLimitStateCalculator::GetMaxDeflectionLLIMLoadFactor(lrfdTypes::Limi
 {
    Float64 g;
    if ( ls == lrfdTypes::ExtremeEventI )
+   {
       g = m_MaxDeflEQ;
+   }
    else
+   {
       g = g_LLIMFactors[ls].MaxDeflection;
+   }
 
    return g;
 }
@@ -1228,9 +1240,13 @@ Float64 lrfdLimitStateCalculator::GetMinDeflectionLLIMLoadFactor(lrfdTypes::Limi
 {
    Float64 g;
    if ( ls == lrfdTypes::ExtremeEventI )
+   {
       g = m_MinDeflEQ;
+   }
    else
+   {
       g = g_LLIMFactors[ls].MinDeflection;
+   }
 
    return g;
 }

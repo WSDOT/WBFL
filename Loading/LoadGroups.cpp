@@ -76,7 +76,7 @@ HRESULT CLoadGroups::OnBeforeAdd( StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
    return S_OK;
@@ -100,7 +100,7 @@ HRESULT CLoadGroups::OnBeforeRemove ( StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

@@ -219,7 +219,7 @@ rcaCapacitySolution rcaCapacitySolver::SolveUniaxial(rcaCapacityProblem& problem
 
    try
    {
-      WATCHX(rca,0,"Solving Uniaxial for P = " << m_AxialForce << " Angle = " << m_MomentAngle);
+      WATCHX(rca,0,_T("Solving Uniaxial for P = ") << m_AxialForce << _T(" Angle = ") << m_MomentAngle);
 
       // set iteration counts - for performance tuning
       m_TotalIter = 0;
@@ -376,7 +376,7 @@ rcaCapacitySolution rcaCapacitySolver::Solve(rcaCapacityProblem& problem) const
 
    try
    {
-      WATCHX(rca,0,"Solving for P = " << m_AxialForce << " Angle = " << m_MomentAngle);
+      WATCHX(rca,0,_T("Solving for P = ") << m_AxialForce << _T(" Angle = ") << m_MomentAngle);
 
       // set iteration counts - for performance tuning
       m_TotalIter = 0;
@@ -486,8 +486,8 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
       m_Theta = x;
       CHECK( InRange(m_ThetaOriginalLower, m_Theta, m_ThetaOriginalUpper) );
 
-      WATCHX(rca,0,"*** Trying Theta = " << m_Theta);
-      WATCHX(rca,0,"               D = " << m_D);
+      WATCHX(rca,0,_T("*** Trying Theta = ") << m_Theta);
+      WATCHX(rca,0,_T("               D = ") << m_D);
 #ifdef DUMP_LOG
       m_Log << "A "<<++m_AngleIter<<", "<<m_Theta << std::endl;
 #endif
@@ -526,7 +526,7 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
 
       Float64 angle = m_Adapter.P2Solver( atan2(smy,smx) );
       Float64 delta_angle = m_MomentAngle - angle;
-      WATCHX(rca,0,"Delta Angle = " << delta_angle);
+      WATCHX(rca,0,_T("Delta Angle = ") << delta_angle);
 
 #ifdef DUMP_LOG
       m_AxialIter=0;
@@ -537,18 +537,18 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
    }
    else
    {
-   // axial solver is making the call - return forces
-   m_D = x;
-   WATCHX(rca,0,"   Trying D = " << m_D);
-      WATCHX(rca,0,"   Theta = " << m_Theta);
+      // axial solver is making the call - return forces
+      m_D = x;
+      WATCHX(rca,0,_T("   Trying D = ") << m_D);
+      WATCHX(rca,0,_T("   Theta = ") << m_Theta);
 
       PcCoords2Na(m_PlasticCentroid, m_D, m_Theta, &m_NaLoc);
       m_pTheProblem->SetNeutralAxisLocation(m_NaLoc);
-   m_pTheProblem->GetSectionForces(&sfz, &smx, &smy);
-   Float64 delta_force = sfz - m_AxialForce;
+      m_pTheProblem->GetSectionForces(&sfz, &smx, &smy);
+      Float64 delta_force = sfz - m_AxialForce;
       m_TotalIter++;
 
-   WATCHX(rca,0,"      Delta Force = " << delta_force );
+      WATCHX(rca,0,_T("      Delta Force = ") << delta_force );
 #ifdef DUMP_LOG
       m_Log <<"D "<<++m_AxialIter<<", "<<m_D <<", "<<sfz<<", "<<smx<<", "<<smy<<", "<<delta_force << std::endl;
 #endif

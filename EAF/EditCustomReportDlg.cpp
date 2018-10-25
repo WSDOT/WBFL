@@ -234,7 +234,7 @@ void CEditCustomReportDlg::OnBnClickedAddButton()
       OnSelectAvailable( FALSE );
    }
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 void CEditCustomReportDlg::OnBnClickedRemoveButton()
@@ -253,7 +253,7 @@ void CEditCustomReportDlg::OnBnClickedRemoveButton()
       OnSelectSelected( FALSE );
    }
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 void CEditCustomReportDlg::OnBnClickedAddAllButton()

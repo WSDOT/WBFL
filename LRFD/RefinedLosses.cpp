@@ -128,7 +128,9 @@ lrfdRefinedLosses::~lrfdRefinedLosses()
 lrfdRefinedLosses& lrfdRefinedLosses::operator=(const lrfdRefinedLosses& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -142,9 +144,13 @@ Float64 lrfdRefinedLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 Float64 lrfdRefinedLosses::PermanentStrand_TimeDependentLossesAtShipping() const
 {
    if ( m_Shipping < 0 )
+   {
       return -m_Shipping*TimeDependentLosses();
+   }
    else
+   {
       return m_Shipping;
+   }
 }
 
 Float64 lrfdRefinedLosses::TimeDependentLossesBeforeDeck() const
@@ -160,7 +166,9 @@ Float64 lrfdRefinedLosses::TimeDependentLossesAfterDeck() const
 Float64 lrfdRefinedLosses::TimeDependentLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpSR + m_dfpCR + m_dfpR2;
 }
@@ -168,7 +176,9 @@ Float64 lrfdRefinedLosses::TimeDependentLosses() const
 Float64 lrfdRefinedLosses::ShrinkageLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpSR;
 }
@@ -176,7 +186,9 @@ Float64 lrfdRefinedLosses::ShrinkageLosses() const
 Float64 lrfdRefinedLosses::CreepLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpCR;
 }
@@ -184,7 +196,9 @@ Float64 lrfdRefinedLosses::CreepLosses() const
 Float64 lrfdRefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[0];
 }
@@ -192,7 +206,9 @@ Float64 lrfdRefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
 Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[1];
 }
@@ -200,7 +216,9 @@ Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
 Float64 lrfdRefinedLosses::RelaxationLossesAfterXfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR2;
 }
@@ -208,7 +226,9 @@ Float64 lrfdRefinedLosses::RelaxationLossesAfterXfer() const
 Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[0];
 }
@@ -216,7 +236,9 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
 Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[1];
 }
@@ -224,7 +246,9 @@ Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
 Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[0] + m_dfpR0[0];
 }
@@ -232,7 +256,9 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
 Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[1] + m_dfpR0[1];
 }
@@ -317,9 +343,13 @@ Float64 shrinkage_losses(Float64 h)
    bool is_si = IsSI();
 
    if ( is_si )
+   {
       p_unit = &unitMeasure::MPa;
+   }
    else
+   {
       p_unit = &unitMeasure::KSI;
+   }
 
    A = is_si ? 117. : 17.;
    B = is_si ? 1.03 : 0.150;
@@ -365,13 +395,15 @@ Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,F
    losses = A - 0.4*es - 0.2*(sr+cr);
 
    if ( type == matPsStrand::LowRelaxation )
+   {
       losses *= 0.3;
+   }
 
    losses = ::ConvertToSysUnits(losses,*p_unit);
 
    if ( losses < 0 )
    {
-      WATCH("Losses less than zero. Setting them to zero");
+      WATCH(_T("Losses less than zero. Setting them to zero"));
       losses = 0; // Per Bijan Khaleghi 12/18/98
    }
 

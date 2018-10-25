@@ -653,6 +653,9 @@ Float64 NormalizeAngle(Float64 angle)
 
    ATLASSERT( InRange(0.0,angle,TWO_PI) );
 
+   angle = IsZero(angle) ? 0 : angle;
+   angle = IsEqual(angle,TWO_PI) ? TWO_PI : angle;
+
    return angle;
 }
 

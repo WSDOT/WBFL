@@ -169,7 +169,7 @@ void CTestLoadGroup::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -194,7 +194,7 @@ HRESULT CTestLoadGroup::OnLoadGroupChanged(ldILoadGroup* LoadGroup, ldLoadingCha
    else if (change==ldcgLoading)
       m_csLoadGroupFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -206,7 +206,7 @@ HRESULT CTestLoadGroup::OnLoadGroupsChanged(ldILoadGroup* LoadGroup, ldLoadingCh
    else if (change==ldcgDescription)
       m_csLoadGroupsFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

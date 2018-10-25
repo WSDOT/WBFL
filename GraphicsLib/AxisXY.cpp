@@ -45,15 +45,14 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LifECYCLE  =======================================
-grAxisXY::grAxisXY(AxisOrientation orientation, const sysINumericFormatToolBase& rFormat):
+grAxisXY::grAxisXY(AxisOrientation orientation, sysNumericFormatTool& rFormat):
 m_pValueFormat(&rFormat)
 {
    Init();
    SetOrientation(orientation, 0, 1, 0);
 }
 
-grAxisXY::grAxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,
-const sysINumericFormatToolBase& rFormat):
+grAxisXY::grAxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,sysNumericFormatTool& rFormat):
 m_pValueFormat(&rFormat)
 {
    CHECK(AxMin<AxMax);
@@ -249,7 +248,18 @@ void grAxisXY::Draw(HDC hDC)
             // draw value text
             if (m_DoShowText)
             {
+               sysNumericFormatTool::Format format = m_pValueFormat->GetFormat();
+               int p = m_pValueFormat->GetPrecision();
+               if ( m_Scale == LOGARITHMIC && tic_value < 1.0 && p < 1 )
+               {
+                  m_pValueFormat->SetPrecision(1);
+                  m_pValueFormat->SetFormat(sysNumericFormatTool::Fixed);
+               }
+
                std::_tstring value_text = m_pValueFormat->AsString(tic_value);
+
+               m_pValueFormat->SetPrecision(p);
+               m_pValueFormat->SetFormat(format);
 
                if (m_Orientation == X_AXIS)
                {
@@ -457,12 +467,12 @@ LONG grAxisXY::GetValueAngle() const
    return m_ValueAngle;
 }
 
-void grAxisXY::SetValueFormat(const sysINumericFormatToolBase& format)
+void grAxisXY::SetValueFormat(sysNumericFormatTool& format)
 {
    m_pValueFormat = &format;
 }
 
-const sysINumericFormatToolBase* grAxisXY::GetValueFormat() const
+const sysNumericFormatTool* grAxisXY::GetValueFormat() const
 {
    return m_pValueFormat;
 }

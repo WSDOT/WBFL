@@ -223,7 +223,7 @@ void CTestSupport::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -242,7 +242,7 @@ HRESULT CTestSupport::OnSupportChanged(ISupport* Support, BSTR stage, ChangeType
    else if (change==cgtDistributionFactor)
       m_csDfFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -257,7 +257,7 @@ HRESULT CTestSupport::OnSupportsChanged(ISupport* Support, BSTR stage, ChangeTyp
    else if (change==cgtDistributionFactor)
       m_csDfFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

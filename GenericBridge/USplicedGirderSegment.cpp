@@ -51,7 +51,7 @@ void CUSplicedGirderSegment::FinalRelease()
 ////////////////////////////////////////////////////////////////////
 // ISplicedGirderSegment implementation
 
-HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -70,7 +70,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape*
    beam->get_Beam(&pcBeam);
 
    Float64 Wt, Wb;
-   GetEndBlockWidth(distAlongSegment,&Wt,&Wb);
+   GetEndBlockWidth(Xs,&Wt,&Wb);
 
    Float64 W1, W2, W3, W4, W5;
    Float64 D1, D2, D3, D4, D5, D6, D7;
@@ -110,7 +110,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape*
    // Adjust D2 based on the bottom flange height
    // If bottom flange height is zero then don't make any adjustments (take zero to be don't change bottom flange)
    //
-   Float64 bottom_flange_height = GetBottomFlangeHeight(distAlongSegment);
+   Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
    if ( !IsZero(bottom_flange_height) )
    {
       d2 = bottom_flange_height;
@@ -127,7 +127,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape*
    //
    // Adjust D1 based on the spliced girder profile
    //
-   Float64 section_height = GetSectionDepth(distAlongSegment);
+   Float64 section_height = GetSectionDepth(Xs);
    d1 = section_height;
    ATLASSERT( 0 <= d1 );
 
@@ -156,7 +156,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape*
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newUGirderSection);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);

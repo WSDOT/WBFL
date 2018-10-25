@@ -324,13 +324,13 @@ library WBFLGenericBridge
 	]
 	interface IEffectiveFlangeWidthTool : IUnknown
 	{
-      [helpstring("method TributaryFlangeWidthBySSMbr")] HRESULT TributaryFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
-      [helpstring("method TributaryFlangeWidthBySSMbrEx")] HRESULT TributaryFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySSMbr")] HRESULT TributaryFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xg, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySSMbrEx")] HRESULT TributaryFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xg, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
       [helpstring("method TributaryFlangeWidthBySegment")] HRESULT TributaryFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
       [helpstring("method TributaryFlangeWidthBySegmentEx")] HRESULT TributaryFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
 
-	   [helpstring("method EffectiveFlangeWidthBySSMbr")] HRESULT EffectiveFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
-	   [helpstring("method EffectiveFlangeWidthBySSMbrEx")] HRESULT EffectiveFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
+	   [helpstring("method EffectiveFlangeWidthBySSMbr")] HRESULT EffectiveFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xg, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
+	   [helpstring("method EffectiveFlangeWidthBySSMbrEx")] HRESULT EffectiveFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xg, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
 	   [helpstring("method EffectiveFlangeWidthBySegment")] HRESULT EffectiveFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
 	   [helpstring("method EffectiveFlangeWidthBySegmentEx")] HRESULT EffectiveFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
    };
@@ -1024,8 +1024,8 @@ library WBFLGenericBridge
 		[helpstring("method AddSegment")] HRESULT AddSegment([in]ISegment* segment);
 		[propget, helpstring("property Segment")] HRESULT Segment([in] SegmentIndexType idx, [out, retval] ISegment* *pVal);
 		[propget, helpstring("property SegmentCount")] HRESULT SegmentCount([out, retval] SegmentIndexType *pVal);
-		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 distFromStartOfSSMbr,[out] Float64* distFromStartOfSegment,[out] SegmentIndexType* pSegIdx,[out] ISegment** ppSeg);
-      [helpstring("method GetDistanceFromStart")] HRESULT GetDistanceFromStart([in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment,[out,retval]Float64* pDistFromStartOfSSMbr);
+		[helpstring("method GetDistanceFromStartOfSegment")] HRESULT GetDistanceFromStartOfSegment([in] Float64 Xg,[out] Float64* pXs,[out] SegmentIndexType* pSegIdx,[out] ISegment** ppSeg);
+      [helpstring("method GetDistanceFromStart")] HRESULT GetDistanceFromStart([in]SegmentIndexType segIdx,[in]Float64 Xs,[out,retval]Float64* pXg);
 		[helpstring("method SetEndRelease")] HRESULT SetEndRelease([in] EndType end,[in] StageIndexType stageIdx,[in] ReleaseType release);
 		[helpstring("method GetEndRelease")] HRESULT GetEndRelease([in] EndType end,[out] StageIndexType* pStageIdx,[out] ReleaseType* release);
 
@@ -1602,10 +1602,11 @@ library WBFLGenericBridge
 	{
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
 	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
-	   [propget,helpstring("property Position")] HRESULT Position([in] Float64 z,[out,retval] IPoint3d** cg);
+	   [propget,helpstring("property Position")] HRESULT Position([in] TendonMeasure measure,[in] Float64 z,[out,retval] IPoint3d** cg);
 	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[out,retval] IVector3d** slope);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval] Float64* length);
 	   [helpstring("method ProjectedLength")] HRESULT ProjectedLength([out] Float64* dx,[out] Float64* dy,[out] Float64* dz);
+      [propget,helpstring("property Centerline")] HRESULT Centerline([in] TendonMeasure measure,[out,retval]IPoint3dCollection** ppPoints);
 
       [propputref,helpstring("property Tendon")] HRESULT Tendon([in]ITendon* pTendon);
       [propget,helpstring("property Tendon")] HRESULT Tendon([out,retval]ITendon** ppTendon);
@@ -1674,6 +1675,7 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
 	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
+      [propget,helpstring("property Centerline")] HRESULT Centerline([in] TendonMeasure measure,[out,retval]IPoint3dCollection** ppPoints);
 
       [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pMbr);
       [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppMbr);

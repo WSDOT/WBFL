@@ -493,7 +493,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
          }
          else
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return STRLOAD_E_INVALIDFORMAT;
          }
       }

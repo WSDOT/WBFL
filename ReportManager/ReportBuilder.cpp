@@ -101,7 +101,9 @@ boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(LPCTSTR str
    {
       boost::shared_ptr<CChapterBuilder> pChBuilder = (*iter);
       if ( std::_tstring(pChBuilder->GetKey()) == std::_tstring(strKey) )
+      {
          return pChBuilder;
+      }
    }
 
    return boost::shared_ptr<CChapterBuilder>();
@@ -136,7 +138,9 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
    if ( m_pTitlePageBuilder.get() != NULL && m_pTitlePageBuilder->NeedsUpdate(pHint,pRptSpec) )
+   {
       return true;
+   }
 
    std::vector<CChapterInfo>::iterator iter;
    for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
@@ -144,7 +148,9 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
       CChapterInfo chInfo = *iter;
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       if ( pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
+      {
          return true;
+      }
    }
 
    return false;

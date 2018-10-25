@@ -621,7 +621,7 @@ STDMETHODIMP CSupport::Save(IStructuredSave2 * psave)
          var = "Roller";
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          var = "Fixed";
       }
 

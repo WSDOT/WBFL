@@ -837,9 +837,7 @@ void CMember::ComputeJointDeflectionForce(Vector* pdf)
    }
 
    m_Kglobal.Multiply(&Disp,pdf);
-
 }
-
 
 void CMember::GetGlobalJntForces(JointIDType jntId,Float64 *force)
 {
@@ -869,7 +867,7 @@ JointIDType CMember::GetJointNum(CJoint* j)
       return 1;
    else
    {
-      ATLASSERT(0); // "CMember::GetJointNum - Joint not found"
+      ATLASSERT(false); // "CMember::GetJointNum - Joint not found"
       return -1;
    }
 }
@@ -879,20 +877,20 @@ void CMember::GetResults(MbrResult* pres)
 {
    long i;
    for (i = 0; i < 6; i++)
+   {
        pres->SetDeflection(i, m_Dlocal(i));
-
-   for (i = 0; i < 6; i++)
        pres->SetForce(i,m_Rlocal(i));
+   }
 }
 
 void CMember::SetResults(const MbrResult& res)
 {
    long i;
    for (i = 0; i < 6; i++)
+   {
       m_Dlocal(i) = res.GetDeflection(i);
-
-   for (i = 0; i < 6; i++)
       m_Rlocal(i) = res.GetForce(i);
+   }
 }
 
 

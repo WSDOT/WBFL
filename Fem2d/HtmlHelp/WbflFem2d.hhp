@@ -221,7 +221,6 @@ Errors\strain_load_i_in_loading_j_is_located_beyond_the_end_of_a_member.htm
 eHelp.xml
 RoboHHRE.lng
 
-WbflFem2d.glo
 WbflFem2d.brs
 [ALIAS]
 #include WbflFem2d.ali

@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 // CModel
 CModel::CModel()
 {  
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile.open("fem.log");
    logfile << "Dump for Fem2d Model"<<std::endl;
 #endif
@@ -72,7 +72,7 @@ CModel::~CModel()
 {  
    ClearAnalysis();
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile.close();
 #endif
 
@@ -365,7 +365,7 @@ HRESULT CModel::DealWithExceptions()
    {
       // could make up a custom message here, but we don't know what happened so why try?
       // the main point is not to let the exception out into the com world
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 }
@@ -555,7 +555,7 @@ STDMETHODIMP CModel::ComputeMemberForcesEx(LoadCaseIDType lc, MemberIDType mid, 
          CMember *mbr = m_pMembers->Find(mid);
          if (mbr==0)
          {
-            ATLASSERT(0); // lookup above should have caught this
+            ATLASSERT(false); // lookup above should have caught this
             CComBSTR msg(::CreateErrorMsg1(IDS_E_MEMBER_NOT_FOUND, mid));
             return CComCoClass<CModel,&CLSID_Fem2dModel>::Error(msg, IDH_E_MEMBER_NOT_FOUND, GetHelpFile(), IID_IFem2dModel, FEM2D_E_MEMBER_NOT_FOUND);
          }
@@ -624,7 +624,7 @@ STDMETHODIMP CModel::ComputePOIDeflections(LoadCaseIDType lc, PoiIDType poiID, F
       // should have thrown by here if problem
       if (poiResult==0)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_MSG("Logic error computing poi result CModel::ComputePOIDeflections",E_FAIL, IDH_E_LOGIC_ERROR); 
       }
 
@@ -642,7 +642,7 @@ STDMETHODIMP CModel::ComputePOIDeflections(LoadCaseIDType lc, PoiIDType poiID, F
          CPOI *poi = m_pPOIs->Find(poiID);
          if (poi==0)
          {
-            ATLASSERT(0); // this should never happen
+            ATLASSERT(false); // this should never happen
             CComBSTR msg = ::CreateErrorMsg1(IDS_E_POI_NOT_FOUND, poiID);
             THROW_MSG(msg, FEM2D_E_POI_NOT_FOUND, IDH_E_POI_NOT_FOUND);
          }
@@ -652,7 +652,7 @@ STDMETHODIMP CModel::ComputePOIDeflections(LoadCaseIDType lc, PoiIDType poiID, F
          if (mbr==0)
          {
             // poi references a non-existent member
-            ATLASSERT(0); // should not happen
+            ATLASSERT(false); // should not happen
             CComBSTR msg = CreateErrorMsg2(IDS_E_POI_REFERENCES_MEMBER_NOT_EXISTS, poiID, mid);
             THROW_MSG(msg, FEM2D_E_POI_REFERENCES_MEMBER_NOT_EXISTS, IDH_E_POI_REFERENCES_MEMBER_NOT_EXISTS);
          }
@@ -672,7 +672,7 @@ STDMETHODIMP CModel::ComputePOIDeflections(LoadCaseIDType lc, PoiIDType poiID, F
       }
       else
       {
-         ATLASSERT(0); // new orientation type?
+         ATLASSERT(false); // new orientation type?
          return E_INVALIDARG;
       }
    }
@@ -717,7 +717,7 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
       // should have thrown by here if problem
       if (poiResult==0)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_MSG("Logic error computing poi result CModel::ComputePOIForces",E_FAIL,IDH_E_LOGIC_ERROR); 
       }
 
@@ -743,7 +743,7 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
          CPOI *poi = m_pPOIs->Find(poiID);
          if (poi==0)
          {
-            ATLASSERT(0); // this should never happen
+            ATLASSERT(false); // this should never happen
             CComBSTR msg = ::CreateErrorMsg1(IDS_E_POI_NOT_FOUND, poiID);
             THROW_MSG(msg, FEM2D_E_POI_NOT_FOUND, IDH_E_POI_NOT_FOUND);
          }
@@ -753,7 +753,7 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
          if (mbr==0)
          {
             // poi references a non-existent member
-            ATLASSERT(0); // should not happen
+            ATLASSERT(false); // should not happen
             CComBSTR msg = CreateErrorMsg2(IDS_E_POI_REFERENCES_MEMBER_NOT_EXISTS, poiID, mid);
             THROW_MSG(msg, FEM2D_E_POI_REFERENCES_MEMBER_NOT_EXISTS, IDH_E_POI_REFERENCES_MEMBER_NOT_EXISTS);
          }
@@ -773,7 +773,7 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
       }
       else
       {
-         ATLASSERT(0); // new orientation we don't know about?
+         ATLASSERT(false); // new orientation we don't know about?
          return E_INVALIDARG;
       }
    }
@@ -1398,7 +1398,7 @@ void CModel::FemAnalysis()
 
    AssembleGlobalStiffnessMatrix();
 
-#if defined DUMP_KMATRIX
+#if defined LOGGING_ENABLED
    logfile << "Condensed Global Stiffness Matrix: Size =" << m_K.NumRows()<<"  Bandwidth = "<<m_K.BandWidth() << std::endl;
    logfile << m_K << std::endl;
 #endif
@@ -1419,11 +1419,11 @@ void CModel::FemAnalysis()
    }
    catch(...)
    {
-      ATLASSERT(0); // something getting thrown that shouldn't be
+      ATLASSERT(false); // something getting thrown that shouldn't be
       throw;
    }
 
-#if defined DUMP_KMATRIX
+#if defined LOGGING_ENABLED
    logfile <<std::endl<<"Factored Condensed Global Stiffness Matrix: Size =" << m_K.NumRows()<<"  Bandwidth = "<<m_K.BandWidth() << std::endl;
    logfile << m_K << std::endl;
 #endif
@@ -1449,7 +1449,7 @@ void CModel::ComputeLoadings()
       {
          AssembleGlobalForceVector();
 
-#if defined DUMP_KMATRIX
+#if defined LOGGING_ENABLED
          logfile << "Global Force Vector: Loading =" << lid << std::endl;
          for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
@@ -1469,10 +1469,10 @@ void CModel::ComputeLoadings()
          }
          catch(...)
          {
-            ATLASSERT(0); // something getting thrown that shouldn't be
+            ATLASSERT(false); // something getting thrown that shouldn't be
             throw;
          }
-#if defined DUMP_KMATRIX
+#if defined LOGGING_ENABLED
          logfile << "Solution: Loading =" << lid << std::endl;
          for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
@@ -1833,7 +1833,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
    Float64 force[3];
    Float64 disp[3];
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile << "Loading " << lcase << std::endl;
 #endif
 
@@ -1849,7 +1849,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
       JointIDType id;
       jnt->get_ID(&id);
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
       logfile << "Joint " << id << std::endl;
       logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
       logfile << "Dx = " <<  disp[0] << " Dy = " <<  disp[1] << " Dz = " <<  disp[2] << std::endl;
@@ -1883,7 +1883,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
 void CModel::StoreMbrResults(LoadCaseIDType lcase)
 {
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile << "StoreMbrResults::Loading = " << lcase << std::endl;
 #endif
 
@@ -1906,7 +1906,7 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
       CMember::MbrResult result(lcase);
       mbr->GetResults(&result);
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
       logfile << "Member " << mid << " Start End" << std::endl;
       logfile << "Fx = " << result.GetForce(0) << " Fy = " << result.GetForce(1) << " Mz = " << result.GetForce(2) << std::endl;
       logfile << "Dx = " <<  result.GetDeflection(0) << " Dy = " <<  result.GetDeflection(1) << " Dz = " <<  result.GetDeflection(2) << std::endl;
@@ -1929,7 +1929,7 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
 
 void CModel::StorePoiResults(LoadCaseIDType lcase)
 {
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile << "StorePoiResults::Loading = " << lcase << std::endl;
 #endif
 
@@ -1984,7 +1984,7 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
 
       mbr->GetDeflection(poiloc,disp);
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
       logfile << "poi " << poiid << " Left Face" << std::endl;
       logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
       logfile << "poi " << poiid << " Right Face" << std::endl;
@@ -2096,7 +2096,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
       force[i] = -1.0 * force[i];
 
 
-#if defined _DEBUG
+#if defined LOGGING_ENABLED
    logfile << "poi " << poiid << " Left Face" << std::endl;
    logfile << "Fx = " << force[0] << " Fy = " << force[1] << " Mz = " << force[2] << std::endl;
    logfile << "poi " << poiid << " Right Face" << std::endl;

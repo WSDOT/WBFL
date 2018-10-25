@@ -134,7 +134,7 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
          throw frTooSmall;
    }
 
-   ATLASSERT(0); //can't get here
+   ATLASSERT(false); //can't get here
    return 0.0;
 }
 

@@ -424,7 +424,7 @@ LONG CJoint::GetCondensedDOF(LONG dof) const
    // Update for 3d
    if (dof < 0 || dof > 2)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       CComBSTR msg(CreateErrorMsg1(IDS_E_INVALID_CONDENSED_DOF, dof));
       THROW_MSG(msg, FEM2D_E_INVALID_CONDENSED_DOF, IDH_E_INVALID_CONDENSED_DOF);
    }
@@ -441,7 +441,7 @@ LONG CJoint::GetGlobalDOF(LONG dof) const
    // Update for 3d
    if (dof < 0 || dof > 2)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       CComBSTR msg = CreateErrorMsg1(IDS_E_INVALID_GLOBAL_DOF, dof);
       THROW_MSG(msg, FEM2D_E_INVALID_GLOBAL_DOF, IDH_E_INVALID_GLOBAL_DOF);
    }

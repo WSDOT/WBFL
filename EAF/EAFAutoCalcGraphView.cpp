@@ -94,7 +94,9 @@ void CEAFAutoCalcGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHin
    // if auto calc is enabled
 
    if ( pAutoCalcDoc->IsAutoCalcEnabled() )
+   {
       CEAFGraphView::OnUpdate(pSender,lHint,pHint);
+   }
 }
 
 bool CEAFAutoCalcGraphView::DoResultsExist()

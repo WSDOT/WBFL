@@ -44,6 +44,7 @@ UnitSystemType GetWBFLUnitSystemType(OpenBridgeML::Units::UnitSystemEnum ust)
 
 BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclaration,IUnitServer* pUnitServer)
 {
+   USES_CONVERSION;
    HRESULT hr = S_OK;
    OpenBridgeML::Units::UnitsDeclarationType::ExtendedUnits_optional& extendedUnits(pDeclaration->ExtendedUnits());
    if ( extendedUnits.present() )

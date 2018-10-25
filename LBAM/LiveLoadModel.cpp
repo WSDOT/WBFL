@@ -235,7 +235,7 @@ STDMETHODIMP CLiveLoadModel::Load(IStructuredLoad2 * pload)
          m_DistributionFactorType=dftPedestrian;
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return STRLOAD_E_INVALIDFORMAT;
       }
 

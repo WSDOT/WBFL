@@ -346,7 +346,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
       Invalidate();
 
       if ( m_pBtnEdit->GetSafeHwnd() )
+      {
          m_pBtnEdit->ShowWindow(SW_SHOW);
+      }
 
       // size the browser window to fill the view
       CRect rect;
@@ -356,7 +358,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
    else
    {
       if ( m_pBtnEdit->GetSafeHwnd() ) 
+      {
          m_pBtnEdit->ShowWindow(SW_HIDE);
+      }
 
       m_bNoBrowser = true;
    }
@@ -396,7 +400,9 @@ void CEAFReportView::OnSize(UINT nType, int cx, int cy)
    }
 
    if ( m_pBtnEdit->GetSafeHwnd() )
+   {
       m_pBtnEdit->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+   }
 }
 
 void CEAFReportView::OnFilePrint() 
@@ -419,7 +425,9 @@ void CEAFReportView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
    if ( m_bIsNewReport )
+   {
       return; // this the OnUpdate that comes from OnInitialUpdate() ... nothing to do here
+   }
 
    CView::OnUpdate( pSender, lHint, pHint ); // base class
 
@@ -430,7 +438,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_bUpdateError = true;
 
       if ( m_pBtnEdit->GetSafeHwnd() )
+      {
          m_pBtnEdit->ShowWindow(SW_HIDE);
+      }
 
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
@@ -450,7 +460,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
 
       if ( m_pBtnEdit->GetSafeHwnd() )
+      {
          m_pBtnEdit->ShowWindow(SW_HIDE);
+      }
 
       // delete the report browser because what ever it is displaying is totally invalid
       // also need to elimintate it so that we can draw the error message on the view window itself
@@ -477,7 +489,9 @@ CReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject
 void CEAFReportView::UpdateNow(CReportHint* pHint)
 {
    if ( CEAFReportView::ms_bIsUpdatingReport )
+   {
       return;
+   }
 
    CEAFReportView::ms_bIsUpdatingReport = true;
 
@@ -532,9 +546,13 @@ void CEAFReportView::OnInitialUpdate()
       if ( pCreateData->m_pRptSpecification )
       {
          if ( pCreateData->m_bInitializeOnly )
+         {
             InitReport(pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
+         }
          else
+         {
             CreateReport(rptIdx,pCreateData->m_pRptSpecification,pCreateData->m_pRptSpecificationBuilder);
+         }
       }
       else
       {
@@ -613,7 +631,7 @@ void CEAFReportView::OnCmenuSelected(UINT id)
 
   default:
      // must be a toc anchor
-     CHECK(cmd>=CCS_RB_TOC);
+     ATLASSERT(CCS_RB_TOC <= cmd);
      m_pReportBrowser->NavigateAnchor(cmd-CCS_RB_TOC);
   }
 }
@@ -621,16 +639,13 @@ void CEAFReportView::OnCmenuSelected(UINT id)
 
 BOOL CEAFReportView::PreTranslateMessage(MSG* pMsg) 
 {
-   if (pMsg->message == WM_KEYDOWN) 
+   if (pMsg->message == WM_KEYDOWN && (pMsg->wParam =='f' || pMsg->wParam =='F') ) 
    {
-      if (pMsg->wParam =='f' || pMsg->wParam =='F')
+      // ctrl - F = Find
+      if (::GetKeyState(VK_CONTROL))
       {
-         // ctrl - F = Find
-         if (::GetKeyState(VK_CONTROL))
-         {
-            m_pReportBrowser->Find();
-            return TRUE;
-         }
+         m_pReportBrowser->Find();
+         return TRUE;
       }
    }
 
@@ -678,25 +693,37 @@ void CEAFReportView::CreateEditButton()
 std::vector<std::_tstring> CEAFReportView::GetReportNames()
 {
    if ( m_pReportBuilderMgr )
+   {
       return m_pReportBuilderMgr->GetReportNames();
+   }
    else
+   {
       return m_pRptMgr->GetReportNames();
+   }
 }
 
 boost::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName)
 {
    if ( m_pReportBuilderMgr )
+   {
       return m_pReportBuilderMgr->GetReportBuilder(strRptName);
+   }
    else
+   {
       return m_pRptMgr->GetReportBuilder(strRptName);
+   }
 }
 
 boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
+   {
       return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+   }
    else
+   {
       return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+   }
 }
 
 void CEAFReportView::NotifyReportButtonWasClicked()

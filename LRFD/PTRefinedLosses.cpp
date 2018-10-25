@@ -366,7 +366,7 @@ Float64 pt_relaxation_after_transfer(matPsStrand::Type type,Float64 fr,Float64 e
 
    if ( losses < 0 )
    {
-      WATCH("Losses less than zero. Setting them to zero");
+      WATCH(_T("Losses less than zero. Setting them to zero"));
       losses = 0; // Per Bijan Khaleghi 12/18/98
    }
 

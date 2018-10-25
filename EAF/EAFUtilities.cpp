@@ -79,7 +79,7 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    return E_FAIL;
 }
 
-std::vector<CEAFPluginState> EAFManagePlugins(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent)
+std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    CManagePluginsDlg dlg(lpszTitle,catid,pParent);

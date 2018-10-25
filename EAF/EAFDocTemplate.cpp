@@ -239,7 +239,9 @@ void CEAFDocTemplate::GetPlugin(IEAFAppPlugin** ppPlugin)
 {
    (*ppPlugin) = m_pPlugin;
    if ( *ppPlugin )
+   {
       (*ppPlugin)->AddRef();
+   }
 }
 
 CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDocument*& rpDocMatch)

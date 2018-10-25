@@ -40,9 +40,9 @@ static char THIS_FILE[] = __FILE__;
 // COffsetTendon
 HRESULT COffsetTendon::FinalConstruct()
 {
-   m_DuctDiameter     = 0.0;
-   m_StrandCount    = 0;
-   m_JackingEnd = jeLeft;
+   m_DuctDiameter = 0.0;
+   m_StrandCount  = 0;
+   m_JackingEnd   = jeLeft;
 
    m_pSSMbr = NULL;
 
@@ -64,7 +64,9 @@ STDMETHODIMP COffsetTendon::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -133,7 +135,9 @@ STDMETHODIMP COffsetTendon::get_DuctDiameter(Float64* size)
 STDMETHODIMP COffsetTendon::put_DuctDiameter(Float64 size)
 {
    if ( size < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_DuctDiameter = size;
    return S_OK;
@@ -149,7 +153,9 @@ STDMETHODIMP COffsetTendon::get_StrandCount(StrandIndexType* count)
 STDMETHODIMP COffsetTendon::put_StrandCount(StrandIndexType count)
 {
    if ( count < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_StrandCount = count;
    return S_OK;
@@ -160,7 +166,9 @@ STDMETHODIMP COffsetTendon::get_Material(IPrestressingStrand** material)
    CHECK_RETOBJ(material);
    (*material) = m_Material;
    if ( m_Material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }
@@ -196,20 +204,14 @@ STDMETHODIMP COffsetTendon::get_CG(Float64 z,TendonMeasure measure,IPoint3d** cg
 {
    HRESULT hr = m_RefTendon->get_CG(z,measure,cg);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 offsetX = GetOffsetX(z);
    Float64 offsetY = GetOffsetY(z);
 
-   Float64 x;
-   (*cg)->get_X(&x);
-   x += offsetX;
-   (*cg)->put_X(x);
-
-   Float64 y;
-   (*cg)->get_Y(&y);
-   y += offsetY;
-   (*cg)->put_Y(y);
+   (*cg)->Offset(offsetX,offsetY,0);
 
    return S_OK;
 }
@@ -218,7 +220,9 @@ STDMETHODIMP COffsetTendon::get_Slope(Float64 z,TendonMeasure measure,IVector3d*
 {
    HRESULT hr = m_RefTendon->get_Slope(z,measure,slope);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 slope_offset_x = GetOffsetSlopeX(z);
    Float64 slope_offset_y = GetOffsetSlopeY(z);
@@ -248,23 +252,17 @@ STDMETHODIMP COffsetTendon::get_Start(IPoint3d** start)
 {
    HRESULT hr = m_RefTendon->get_Start(start);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 z;
    (*start)->get_Z(&z);
 
-   Float64 offset_x = GetOffsetX(z);
-   Float64 offset_y = GetOffsetY(z);
+   Float64 offsetX = GetOffsetX(z);
+   Float64 offsetY = GetOffsetY(z);
 
-   Float64 x;
-   (*start)->get_X(&x);
-   x += offset_x;
-   (*start)->put_X(x);
-
-   Float64 y;
-   (*start)->get_Y(&y);
-   y += offset_y;
-   (*start)->put_Y(y);
+   (*start)->Offset(offsetX,offsetY,0);
 
    return S_OK;
 }
@@ -273,23 +271,45 @@ STDMETHODIMP COffsetTendon::get_End(IPoint3d** end)
 {
    HRESULT hr = m_RefTendon->get_End(end);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 z;
    (*end)->get_Z(&z);
 
-   Float64 offset_x = GetOffsetX(z);
-   Float64 offset_y = GetOffsetY(z);
+   Float64 offsetX = GetOffsetX(z);
+   Float64 offsetY = GetOffsetY(z);
 
-   Float64 x;
-   (*end)->get_X(&x);
-   x += offset_x;
-   (*end)->put_X(x);
+   (*end)->Offset(offsetX,offsetY,0);
 
-   Float64 y;
-   (*end)->get_Y(&y);
-   y += offset_y;
-   (*end)->put_Y(y);
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_Centerline(TendonMeasure measure,IPoint3dCollection** ppPoints)
+{
+   ATLASSERT(false);
+   return E_NOTIMPL;
+
+   HRESULT hr = m_RefTendon->get_Centerline(measure,ppPoints);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   CComPtr<IPoint3d> point;
+   CComPtr<IEnumPoint3d> enumPoints;
+   (*ppPoints)->get__Enum(&enumPoints);
+   while ( enumPoints->Next(0,&point,NULL) != S_FALSE )
+   {
+      Float64 z;
+      point->get_Z(&z);
+
+      Float64 offsetX = GetOffsetX(z);
+      Float64 offsetY = GetOffsetY(z);
+
+      point->Offset(offsetX,offsetY,0);
+   }
 
    return S_OK;
 }
@@ -359,10 +379,14 @@ STDMETHODIMP COffsetTendon::Save(IStructuredSave2* save)
 Float64 COffsetTendon::GetOffsetX(Float64 z)
 {
    if ( m_Points.size() == 0 )
+   {
       return 0;
+   }
 
    if ( m_Points.size() == 1 )
+   {
       return m_Points.front().offsetX;
+   }
 
    std::vector<Point>::const_iterator iter1(m_Points.begin());
    std::vector<Point>::const_iterator iter2(iter1+1);
@@ -370,7 +394,9 @@ Float64 COffsetTendon::GetOffsetX(Float64 z)
 
    Float64 z1 = iter1->z;
    if ( z < z1 )
+   {
       return iter1->offsetX;
+   }
 
    for (; iter2 != iterEnd; iter1++, iter2++ )
    {
@@ -393,10 +419,14 @@ Float64 COffsetTendon::GetOffsetX(Float64 z)
 Float64 COffsetTendon::GetOffsetY(Float64 z)
 {
    if ( m_Points.size() == 0 )
+   {
       return 0;
+   }
 
    if ( m_Points.size() == 1 )
+   {
       return m_Points.front().offsetY;
+   }
 
    std::vector<Point>::const_iterator iter1(m_Points.begin());
    std::vector<Point>::const_iterator iter2(iter1+1);
@@ -404,7 +434,9 @@ Float64 COffsetTendon::GetOffsetY(Float64 z)
 
    Float64 z1 = iter1->z;
    if ( z < z1 )
+   {
       return iter1->offsetY;
+   }
 
    for (; iter2 != iterEnd; iter1++, iter2++ )
    {
@@ -427,7 +459,9 @@ Float64 COffsetTendon::GetOffsetY(Float64 z)
 Float64 COffsetTendon::GetOffsetSlopeX(Float64 z)
 {
    if ( m_Points.size() <= 1 )
+   {
       return 0.0;
+   }
 
    std::vector<Point>::const_iterator iter1(m_Points.begin());
    std::vector<Point>::const_iterator iter2(iter1+1);
@@ -435,7 +469,9 @@ Float64 COffsetTendon::GetOffsetSlopeX(Float64 z)
 
    Float64 z1 = iter1->z;
    if ( z < z1 )
+   {
       return 0.0; // before the first offset point
+   }
 
    for (; iter2 != iterEnd; iter1++, iter2++ )
    {
@@ -461,7 +497,9 @@ Float64 COffsetTendon::GetOffsetSlopeX(Float64 z)
 Float64 COffsetTendon::GetOffsetSlopeY(Float64 z)
 {
    if ( m_Points.size() <= 1 )
+   {
       return 0.0;
+   }
 
    std::vector<Point>::const_iterator iter1(m_Points.begin());
    std::vector<Point>::const_iterator iter2(iter1+1);
@@ -469,7 +507,9 @@ Float64 COffsetTendon::GetOffsetSlopeY(Float64 z)
 
    Float64 z1 = iter1->z;
    if ( z < z1 )
+   {
       return 0.0; // before the first offset point
+   }
 
    for (; iter2 != iterEnd; iter1++, iter2++ )
    {

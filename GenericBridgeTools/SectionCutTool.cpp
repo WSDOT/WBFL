@@ -47,7 +47,9 @@ HRESULT CSectionCutTool::FinalConstruct()
    CComObject<CEffectiveFlangeWidthTool>* pTool;
    HRESULT hr = CComObject<CEffectiveFlangeWidthTool>::CreateInstance(&pTool);
    if ( FAILED(hr) || pTool == NULL )
+   {
       return E_FAIL;
+   }
 
    m_EffFlangeTool = pTool;
 
@@ -55,7 +57,9 @@ HRESULT CSectionCutTool::FinalConstruct()
    CComObject<CBridgeGeometryTool>* pBGTool;
    hr = CComObject<CBridgeGeometryTool>::CreateInstance(&pBGTool);
    if ( FAILED(hr) || pBGTool == NULL )
+   {
       return E_FAIL;
+   }
 
    m_BridgeGeometryTool = pBGTool;
 
@@ -77,7 +81,9 @@ STDMETHODIMP CSectionCutTool::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -179,9 +185,13 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    // returns the whole railing system shape including sidewalk and interior railing
    CComPtr<IShape> shape;
    if ( bStructuralOnly == VARIANT_TRUE )
+   {
       barrier->get_StructuralShape(&shape);
+   }
    else
+   {
       barrier->get_Shape(&shape);
+   }
 
 
    if ( !shape )
@@ -256,9 +266,13 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    // returns the whole railing system shape including sidewalk and interior railing
    CComPtr<IShape> shape;
    if ( bStructuralOnly == VARIANT_TRUE )
+   {
       barrier->get_StructuralShape(&shape);
+   }
    else
+   {
       barrier->get_Shape(&shape);
+   }
 
    if ( !shape )
    {
@@ -493,7 +507,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&dist_along_segment,&segIdx,&segment);
 
       if ( segIdx == INVALID_INDEX || segment == NULL )
+      {
          continue;
+      }
 
       // orientation of girder in radians... 0 = plumb, rotated CW is +
       Float64 orientation;
@@ -508,7 +524,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       FlangeIndexType nTopFlanges;
       girder_section->get_TopFlangeCount(&nTopFlanges);
       if ( nTopFlanges != 0 )
+      {
          girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
+      }
 
       //SpanIndexType spanIdx;
       //Float64 spanDist;
@@ -709,17 +727,17 @@ STDMETHODIMP CSectionCutTool::get_EffectiveFlangeWidthTool(IEffectiveFlangeWidth
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
+STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
 
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
+   return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
 }
 
 STDMETHODIMP CSectionCutTool::CreateGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
@@ -778,6 +796,8 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
       SegmentIndexType nSegments;
       ssMbr->get_SegmentCount(&nSegments);
+      Float64 brgOffset = 0;
+      Float64 endDist = 0;
       for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
       {
          CComPtr<ISegment> segment;
@@ -785,6 +805,12 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
          CComPtr<IGirderLine> girderLine;
          segment->get_GirderLine(&girderLine);
+
+         if (segIdx == 0 )
+         {
+            girderLine->get_BearingOffset(etStart,&brgOffset);
+            girderLine->get_EndDistance(etStart,&endDist);
+         }
 
          // get station range for segment
          // can't use pier stations because they don't account for skew and offset from alignment
@@ -813,7 +839,9 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
             CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == NULL )
+            {
                continue; // this girder does not cross the section cut... must be a short, highly skewed bridge
+            }
 
             CComPtr<IRect2d> boundbox;
             girder_section->get_BoundingBox(&boundbox);
@@ -864,7 +892,9 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    CComPtr<ICompositeSectionItemEx> deckitem;
    hr = CreateBridgeDeckSection(bridge,distFromStartOfBridge,stageIdx,bottom_deck_elevation,&deckitem);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    if ( deckitem )
    {
@@ -903,26 +933,26 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
 
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
-   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
+   return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
 }
 
-STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape)
+STDMETHODIMP CSectionCutTool::CreateGirderShapeBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape)
 {
    // Validate input
    CHECK_RETOBJ(ppShape);
    CHECK_IN(bridge);
 
-   return CreateGirderShape(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
+   return CreateGirderShape(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
 }
 
 HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section)
@@ -930,19 +960,25 @@ HRESULT CSectionCutTool::CreateCompositeSection(IGenericBridge* bridge,GirderIDT
    CComPtr<ISection> ncsection;
    HRESULT hr = CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,stageIdx,sectionPropMethod,&ncsection);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    (*section) = ncsection;
    (*section)->AddRef();
 
    // for net properties, we only want the girder
    if ( sectionPropMethod == spmNet )
+   {
       return S_OK;
+   }
 
    CComPtr<ISection> deckSection;
    hr = CreateDeckSection(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,&deckSection);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    if ( hr == S_OK )
    {
@@ -1018,7 +1054,9 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    Float64 eff_flange_width;
    HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&eff_flange_width);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // get structural thickness of deck
    Float64 structural_depth = 0;
@@ -1098,10 +1136,14 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
          if ( sectionPropMethod == spmTransformed )
          {
             if ( IsZero(Ebar) )
+            {
                Ebar = Econc;
+            }
 
             if ( IsZero(Dbar) )
+            {
                Dbar = Dconc;
+            }
          }
          else if ( sectionPropMethod == spmNet )
          {
@@ -1142,7 +1184,9 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    HRESULT hr = segment->get_Section(stageIdx,Xs,&section);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    section.CopyTo(ppSection);
 
@@ -1216,7 +1260,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    csi->get_Efg(&Econc);
    csi->get_Dfg(&Dconc);
 
-   // on the segment, get the PrecastGirder item data
+   // get the PrecastGirder item data
    CComQIPtr<IItemData> item_data(segment);
    ATLASSERT(item_data); // segments must have item data
    CComPtr<IUnknown> punk;
@@ -1225,18 +1269,11 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComQIPtr<IPrecastGirder> girder(punk);
    ATLASSERT(girder != NULL);
 
-   Float64 girder_length; // end-to-end segment length
-   girder->get_GirderLength(&girder_length);
-
    // need to make sure the location we are looking at is actually
    // on the precast girder or if it is in a closure pour region
-   Float64 brgOffset,endDistance;
-   girderLine->get_BearingOffset(etStart,&brgOffset);
-   girderLine->get_EndDistance(etStart,&endDistance);
-
-   // Distace measure from the face of the segment (not from the CLPier/CLTempSupport)
-   Float64 distFromFaceOfSegment = Xs - (brgOffset-endDistance);
-   bool bIsPointOnSegment = ( 0 <= distFromFaceOfSegment && distFromFaceOfSegment <= girder_length ) ? true : false;
+   Float64 segment_length; // end-to-end segment length
+   segment->get_Length(&segment_length);
+   bool bIsPointOnSegment = ( InRange(0.0,Xs,segment_length) ? true : false );
 
    // Add Strands and Rebar
    if ( sectionPropMethod != spmGross )
@@ -1253,11 +1290,17 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             CComPtr<IPrestressingStrand> strandMaterial;
 
             if ( i == 0 )
+            {
                girder->get_StraightStrandMaterial(&strandMaterial);
+            }
             else if ( i == 1 )
+            {
                girder->get_HarpedStrandMaterial(&strandMaterial);
+            }
             else
+            {
                girder->get_TemporaryStrandMaterial(&strandMaterial);
+            }
 
             strandMaterial.QueryInterface(&material);
             Float64 Estrand, Dstrand;
@@ -1265,11 +1308,17 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             material->get_Density(stageIdx,&Dstrand);
             CComPtr<IPoint2dCollection> strandLocations;
             if ( i == 0 )
-               girder->get_StraightStrandPositions(distFromFaceOfSegment,&strandLocations);
+            {
+               girder->get_StraightStrandPositions(Xs,&strandLocations);
+            }
             else if ( i == 1 )
-               girder->get_HarpedStrandPositions(distFromFaceOfSegment,&strandLocations);
+            {
+               girder->get_HarpedStrandPositions(Xs,&strandLocations);
+            }
             else
-               girder->get_TemporaryStrandPositions(distFromFaceOfSegment,&strandLocations);
+            {
+               girder->get_TemporaryStrandPositions(Xs,&strandLocations);
+            }
 
 #if defined LUMP_STRANDS
             Float64 A  = 0;
@@ -1317,10 +1366,14 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                if ( sectionPropMethod == spmTransformed )
                {
                   if ( IsZero(Estrand) )
+                  {
                      Estrand = Econc;
+                  }
 
                   if ( IsZero(Dstrand) )
+                  {
                      Dstrand = Dconc;
+                  }
                }
                else if ( sectionPropMethod == spmNet )
                {
@@ -1368,10 +1421,14 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                if ( sectionPropMethod == spmTransformed )
                {
                   if ( IsZero(Estrand) )
+                  {
                      Estrand = Econc;
+                  }
 
                   if ( IsZero(Dstrand) )
+                  {
                      Dstrand = Dconc;
+                  }
                }
                else if ( sectionPropMethod == spmNet )
                {
@@ -1395,7 +1452,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          girder->get_RebarLayout(&rebarLayout);
 
          CComPtr<IRebarSection> rebarSection;
-         rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
+         rebarLayout->CreateRebarSection(Xs,&rebarSection);
 
          LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
 
@@ -1408,134 +1465,120 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          girder->get_RebarLayout(&rebarLayout);
 
          CComPtr<IRebarSection> rebarSection;
-         rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
+         rebarLayout->CreateRebarSection(Xs,&rebarSection);
 
          LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
       } // is point on precast girder
-   } // if not gross properties
 
+      // add holes for tendons/ducts if the stage is before the grouting stage
+      // otherwise, omit the holes
+      
+      // get the tendon model. it is stored as item data on the superstructure member
+      CComQIPtr<IItemData> itemData(ssmbr);
+      CComPtr<IUnknown> unk;
+      itemData->GetItemData(CComBSTR("Tendons"),&unk);
+      CComQIPtr<ITendonCollection> tendons(unk);
 
-   // add holes for tendons/ducts if the stage is before the grouting stage
-   // otherwise, omit the holes
-   
-   // get the tendon model. it is stored as item data on the superstructure member
-   CComQIPtr<IItemData> itemData(ssmbr);
-   CComPtr<IUnknown> unk;
-   itemData->GetItemData(CComBSTR("Tendons"),&unk);
-   CComQIPtr<ITendonCollection> tendons(unk);
-
-   DuctIndexType nTendons = 0; // # tendons is the same as # ducts in this context
-   if ( tendons )
-   {
-      tendons->get_Count(&nTendons);
-   }
-
-   for ( DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++ )
-   {
-      CComPtr<ITendon> tendon;
-      tendons->get_Item(tendonIdx,&tendon);
-
-      CComPtr<IPrestressingStrand> strand;
-      tendon->get_Material(&strand);
-
-      CComQIPtr<IMaterial> material(strand);
-      ATLASSERT(material);
-
-      Float64 Etendon;
-      material->get_E(stageIdx,&Etendon);
-
-      Float64 Dtendon;
-      material->get_Density(stageIdx,&Dtendon);
-
-      // create a circle for the tendon
-      Float64 distFromStart; // measured in girder path coordinates
-      ssmbr->GetDistanceFromStart(segIdx,Xs,&distFromStart);
-
-
-      // convert distFromStart to be measured from the actual physical start of the girder
-      CComPtr<ISegment> firstSegment;
-      ssmbr->get_Segment(0,&firstSegment);
-
-      CComPtr<IGirderLine> girderLine;
-      firstSegment->get_GirderLine(&girderLine);
-
-      Float64 brgOffset,endDist;
-      girderLine->get_BearingOffset(etStart,&brgOffset);
-      girderLine->get_EndDistance(etStart,&endDist);
-      distFromStart -= (brgOffset-endDist);
-
-
-      CComPtr<IPoint3d> pntCG;
-      tendon->get_CG(distFromStart,tmPath,&pntCG);
-
-      // location of duct in Gross Section Coordinates
-      Float64 x,y,z;
-      pntCG->Location(&x,&y,&z);
-      ATLASSERT(IsEqual(distFromStart,z));
-      ATLASSERT(y < 0); // below top of girder
-
-      // if Etendon is zero, the tendon is not installed yet
-      // Model the hole for the duct. Model this hole for gross, transformed and net properties
-      if ( IsZero(Etendon) )
+      DuctIndexType nTendons = 0; // # tendons is the same as # ducts in this context
+      if ( tendons )
       {
-         // Put holes for ducts into girder
-         Float64 ductDiameter;
-         tendon->get_DuctDiameter(&ductDiameter);
-
-         CComPtr<ICircle> duct;
-         duct.CoCreateInstance(CLSID_Circle);
-         duct->put_Radius(ductDiameter/2);
-
-         CComPtr<IPoint2d> center;
-         duct->get_Center(&center);
-         center->Move(xTop+x,yTop+y);
-
-         CComQIPtr<IShape> duct_shape(duct);
-
-         // If E is 0, then this models a hole in the section (E-Eg = -Eg)
-         // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
-         compositeSection->AddSection(duct_shape,0.0,Econc,0.0,Dconc,VARIANT_TRUE);
+         tendons->get_Count(&nTendons);
       }
-      else
+
+      for ( DuctIndexType tendonIdx = 0; tendonIdx < nTendons; tendonIdx++ )
       {
-         // Add Tendon
-         if ( sectionPropMethod == spmNet )
+         CComPtr<ITendon> tendon;
+         tendons->get_Item(tendonIdx,&tendon);
+
+         CComPtr<IPrestressingStrand> strand;
+         tendon->get_Material(&strand);
+
+         CComQIPtr<IMaterial> material(strand);
+         ATLASSERT(material);
+
+         Float64 Etendon;
+         material->get_E(stageIdx,&Etendon);
+
+         Float64 Dtendon;
+         material->get_Density(stageIdx,&Dtendon);
+
+         // create a circle for the tendon
+         Float64 Xg; // measured in girder coordinates
+         ssmbr->GetDistanceFromStart(segIdx,Xs,&Xg);
+
+
+         CComPtr<IPoint3d> pntCG;
+         tendon->get_CG(Xg,tmPath,&pntCG);
+
+         // location of duct in Gross Section Coordinates
+         Float64 x,y,z;
+         pntCG->Location(&x,&y,&z);
+         ATLASSERT(IsEqual(Xg,z));
+         ATLASSERT(y < 0); // below top of girder
+
+         // if Etendon is zero, the tendon is not installed yet
+         // Model the hole for the duct. Model this hole for gross, transformed and net properties
+         if ( IsZero(Etendon) )
          {
-            // If we are computing net properties, we want to
-            // model the hole and not the tendon 
-            // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
-            Etendon = 0;
-            Dtendon = 0;
+            // Put holes for ducts into girder
+            Float64 ductDiameter;
+            tendon->get_DuctDiameter(&ductDiameter);
+
+            CComPtr<ICircle> duct;
+            duct.CoCreateInstance(CLSID_Circle);
+            duct->put_Radius(ductDiameter/2);
+
+            CComPtr<IPoint2d> center;
+            duct->get_Center(&center);
+            center->Move(xTop+x,yTop+y);
+
+            CComQIPtr<IShape> duct_shape(duct);
+
+            // If E is 0, then this models a hole in the section (E-Eg = -Eg)
+            // and Summation of EA = EgAg - EgAhole = Eg(Ag - Ahole)
+            compositeSection->AddSection(duct_shape,0.0,Econc,0.0,Dconc,VARIANT_TRUE);
          }
+         else
+         {
+            // Add Tendon
+            if ( sectionPropMethod == spmNet )
+            {
+               // If we are computing net properties, we want to
+               // model the hole and not the tendon 
+               // (e.g. EA = EconcAg + Atendon(0 - Econc) = EconcAg - Atendon(Econc) = (Ag-Atendon)Econc
+               Etendon = 0;
+               Dtendon = 0;
+            }
 
 #pragma Reminder("UPDATE: need to model tendon offsets")
-         // distance from the CG of the duct to the CG of the strand within the duct
-         Float64 cg_offset_x = 0.0;
-         Float64 cg_offset_y = 0.0;
+            // distance from the CG of the duct to the CG of the strand within the duct
+            Float64 cg_offset_x = 0.0;
+            Float64 cg_offset_y = 0.0;
 
-         Float64 Apt;
-         tendon->get_TendonArea(&Apt);
+            Float64 Apt;
+            tendon->get_TendonArea(&Apt);
 
-         // models tendon as an object with area. Moment of inertia is taken to be zero
-         CComPtr<IGenericShape> tendonShape;
-         tendonShape.CoCreateInstance(CLSID_GenericShape);
-         tendonShape->put_Area(Apt);
-         tendonShape->put_Ixx(0);
-         tendonShape->put_Iyy(0);
-         tendonShape->put_Ixy(0);
-         tendonShape->put_Perimeter(0);
+            // models tendon as an object with area. Moment of inertia is taken to be zero
+            CComPtr<IGenericShape> tendonShape;
+            tendonShape.CoCreateInstance(CLSID_GenericShape);
+            tendonShape->put_Area(Apt);
+            tendonShape->put_Ixx(0);
+            tendonShape->put_Iyy(0);
+            tendonShape->put_Ixy(0);
+            tendonShape->put_Perimeter(0);
 
-         CComPtr<IPoint2d> centroid;
-         tendonShape->get_Centroid(&centroid);
+            CComPtr<IPoint2d> centroid;
+            tendonShape->get_Centroid(&centroid);
 
-         centroid->Move(x+cg_offset_x,yTop + y + cg_offset_y);
+            centroid->Move(x+cg_offset_x,yTop + y + cg_offset_y);
 
-         CComQIPtr<IShape> tendon_shape(tendonShape);
+            CComQIPtr<IShape> tendon_shape(tendonShape);
 
-         // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
-         compositeSection->AddSection(tendon_shape,Etendon,Econc,Dtendon,Dconc,VARIANT_TRUE);
-      }
-   } // next duct
+            // EA = EgAg + Apt(Ept-Eg) = Eg(Ag-Apt) + EptApt: Tendon is added and a hole is created in the concrete
+            compositeSection->AddSection(tendon_shape,Etendon,Econc,Dtendon,Dconc,VARIANT_TRUE);
+         }
+      } // next duct
+   } // if not gross properties
 
    return S_OK;
 }
@@ -1590,10 +1633,14 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
       if ( sectionPropMethod == spmTransformed )
       {
          if ( IsZero(Ebar) )
+         {
             Ebar = Econc;
+         }
 
          if ( IsZero(Dbar) )
+         {
             Dbar = Dconc;
+         }
       }
       else if ( sectionPropMethod == spmNet )
       {
@@ -1638,8 +1685,8 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
          deck->get_DeckBoundary(&deckBoundary);
 
          CComPtr<IPath> leftPath, rightPath;
-         deckBoundary->get_LeftEdgePath(VARIANT_TRUE,&leftPath);
-         deckBoundary->get_RightEdgePath(VARIANT_TRUE,&rightPath);
+         deckBoundary->get_EdgePath(stLeft,VARIANT_TRUE,&leftPath);
+         deckBoundary->get_EdgePath(stRight,VARIANT_TRUE,&rightPath);
 
          Float64 station = DistanceToStation(bridge,distFromStartOfBridge);
 
@@ -1711,7 +1758,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    return hr;
 }
 
-HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
+HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape)
 {
    // distFromStartOfSegment is in segment coordinates
    CComPtr<ISuperstructureMember> ssmbr;
@@ -1721,7 +1768,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;
-   segment->get_PrimaryShape(distFromStartOfSegment,&primary_shape);
+   segment->get_PrimaryShape(Xs,&primary_shape);
 
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it
@@ -1810,19 +1857,8 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          material->get_E(stageIdx,&Etendon);
 
          // create a circle for the tendon
-         Float64 Xgp; // in girder path coordinates
-         ssmbr->GetDistanceFromStart(segIdx,distFromStartOfSegment,&Xgp);
-
-         // Convert Xgp to Xg
-         CComPtr<ISegment> segment;
-         ssmbr->get_Segment(0,&segment);
-         CComPtr<IGirderLine> girderLine;
-         segment->get_GirderLine(&girderLine);
-         Float64 brgOffset, endDist;
-         girderLine->get_BearingOffset(etStart,&brgOffset);
-         girderLine->get_EndDistance(etStart,&endDist);
-         Float64 offset = brgOffset-endDist;
-         Float64 Xg = Xgp - offset; // int Girder Coordinates
+         Float64 Xg; // in girder coordinates
+         ssmbr->GetDistanceFromStart(segIdx,Xs,&Xg);
 
          CComPtr<IPoint3d> pntCG;
          tendon->get_CG(Xg,tmPath,&pntCG); // Xg is in Girder Coordinates
@@ -1883,9 +1919,11 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
 
       // Need to get effective flange width of the slab
       Float64 eff_flange_width;
-      HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,leftSSMbrID,rightSSMbrID,&eff_flange_width);
+      HRESULT hr = m_EffFlangeTool->EffectiveFlangeWidthBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&eff_flange_width);
       if ( FAILED(hr) )
+      {
          return hr;
+      }
 
       // get structural thickness of deck
       Float64 structural_depth = 0;

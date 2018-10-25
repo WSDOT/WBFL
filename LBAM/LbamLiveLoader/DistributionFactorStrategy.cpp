@@ -73,7 +73,7 @@ inline Float64 GetGfactor(ForceEffectType effect, Float64 gM, Float64 gV)
       return gM;
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       return gM;
       break;
    }
@@ -162,7 +162,7 @@ void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage,
 
    if (left_df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -228,7 +228,7 @@ void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage,
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFactor = 1.0;
       *rightFactor = 1.0;
       *usedLeftDistributionType = dftNone;
@@ -302,7 +302,7 @@ void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Sta
 
    if (left_df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -365,7 +365,7 @@ void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Sta
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFxFactor  = 1.0;
       *leftFyFactor  = 1.0;
       *leftMzFactor  = 1.0;
@@ -417,7 +417,7 @@ void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR S
 
    if (left_df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -483,7 +483,7 @@ void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR S
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFactor = 1.0;
       *rightFactor = 1.0;
       *usedLeftDistributionType = dftNone;
@@ -537,7 +537,7 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID,
 
    if (left_df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -609,7 +609,7 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID,
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFxFactor  = 1.0;
       *leftFyFactor  = 1.0;
       *leftMzFactor  = 1.0;
@@ -635,7 +635,7 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
 
    if (df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -688,7 +688,7 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFactor = 1.0;
       *usedLeftDistributionType = dftNone;
    }
@@ -739,7 +739,7 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
 
    if (df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -801,7 +801,7 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFxFactor  = 1.0;
       *leftFyFactor  = 1.0;
       *leftMzFactor  = 1.0;
@@ -827,7 +827,7 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
 
    if (df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -894,7 +894,7 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFactor = 1.0;
       *rightFactor = 1.0;
       *usedLeftDistributionType = dftNone;
@@ -914,7 +914,7 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
 
    if (df==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       hr = E_FAIL; // this should never happen
    }
 
@@ -978,7 +978,7 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
       }
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
       *leftFxFactor  = 1.0;
       *leftFyFactor  = 1.0;
       *leftMzFactor  = 1.0;

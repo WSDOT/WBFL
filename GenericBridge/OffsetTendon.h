@@ -118,6 +118,7 @@ public:
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
    STDMETHOD(get_Start)(IPoint3d** start);
 	STDMETHOD(get_End)(IPoint3d** end);
+   STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints);
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type);
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type);
    STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr);

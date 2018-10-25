@@ -472,11 +472,11 @@ library WBFLGenericBridgeTools
 	   [helpstring("method ClearStraightStrandDebonding")] HRESULT ClearStraightStrandDebonding();
       [helpstring("method DebondStraightStrandByGridIndex")] HRESULT DebondStraightStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
       [helpstring("method GetDebondedStraightStrandsByGridIndex")] HRESULT GetDebondedStraightStrandsByGridIndex([out,retval]IIndexArray** grdIndexes);
-      [helpstring("method GetStraightStrandDebondLengthByGridIndex")] HRESULT GetStraightStrandDebondLengthByGridIndex([in]GridIndexType grdIndex,[out]Float64* YCoord,[out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetStraightStrandDebondLengthByGridIndex")] HRESULT GetStraightStrandDebondLengthByGridIndex([in]EndType endType,[in]GridIndexType grdIndex,[out]Float64* YCoord,[out]Float64* l1,[out]Float64* l2);
 
       // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-      [helpstring("method GetStraightStrandDebondLengthByPositionIndex")] HRESULT GetStraightStrandDebondLengthByPositionIndex([in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
-      [helpstring("method GetStraightStrandsDebondedByPositionIndex")] HRESULT GetStraightStrandsDebondedByPositionIndex([in]Float64 distFromStart, [out,retval]IIndexArray** positionIndexes);
+      [helpstring("method GetStraightStrandDebondLengthByPositionIndex")] HRESULT GetStraightStrandDebondLengthByPositionIndex([in]EndType endType,[in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetStraightStrandsDebondedByPositionIndex")] HRESULT GetStraightStrandsDebondedByPositionIndex([in]EndType endType,[in]Float64 distFromStart, [out,retval]IIndexArray** positionIndexes);
 
       [propget,helpstring("property StraightStrandRowsWithStrand")] HRESULT StraightStrandRowsWithStrand([out,retval]RowIndexType* nRows);
       [propget,helpstring("property StraightStrandsInRow")] HRESULT StraightStrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);

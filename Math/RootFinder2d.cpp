@@ -289,7 +289,7 @@ mathRootFinder2d::BracketOutcome mathRootFinder2d::Bracket(const mathFunction2d&
    
       if (f0*f1 < 0.0)
       {
-         WATCH("bracket complete, n = " << j);
+         WATCH(_T("bracket complete, n = ") << j);
          return Bracketted; // normal return
       }  
       else if (fabs(f0) < fabs(f1))
@@ -364,7 +364,7 @@ mathRootFinder2d::BracketOutcome mathRootFinder2d::BracketConstrainedMin(const m
    
       if (f0*f1 < 0.0) 
       {
-         WATCH("bracket complete, n = " << j);
+         WATCH(_T("bracket complete, n = ") << j);
          return Bracketted; // normal return
       }  
       else if (!constrainedMin && (f0 < f1)) 
@@ -457,7 +457,7 @@ mathRootFinder2d::BracketOutcome mathRootFinder2d::BracketConstrainedMax(const m
    
       if (f0*f1 < 0.0) 
       {
-         WATCH("bracket complete, n = " << j);
+         WATCH(_T("bracket complete, n = ") << j);
          return Bracketted; // normal return
       }  
       else if (!constrainedMax && (f0 < f1)) 

@@ -98,7 +98,7 @@ const libILibrary* libLibraryEntry::GetLibrary() const
 Uint32 libLibraryEntry::AddRef() const
 {
    m_RefCnt++;
-// WATCH( "Referencing " << m_Name << " Ref Count = " << m_RefCnt );
+// WATCH( _T("Referencing ") << m_Name << _T(" Ref Count = ") << m_RefCnt );
    return m_RefCnt;
 }
 
@@ -112,7 +112,7 @@ Uint32 libLibraryEntry::Release() const
 
    m_RefCnt--;
 
-// WATCH( "Releasing " << m_Name << " Ref Count = " << m_RefCnt );
+// WATCH( _T("Releasing ") << m_Name << _T(" Ref Count = ") << m_RefCnt );
    return m_RefCnt;
 }
 

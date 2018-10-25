@@ -85,7 +85,7 @@ STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::put_SymbolSize(long s
    if (size>20)
       pThis->m_FontSize = size;
    else
-      ATLASSERT(0); // are you sure you want smaller than a two point font?
+      ATLASSERT(false); // are you sure you want smaller than a two point font?
 }
 
 STDMETHODIMP_(DWORD) CDataPointDrawStrategyImpl::XStrategy::get_SymbolCharacterCode()

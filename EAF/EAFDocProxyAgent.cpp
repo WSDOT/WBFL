@@ -86,7 +86,7 @@ CEAFMainFrame* CEAFDocProxyAgent::GetMainFrame()
 // IAgentEx
 STDMETHODIMP CEAFDocProxyAgent::SetBroker(IBroker* pBroker)
 {
-   AGENT_SET_BROKER(pBroker);
+   EAF_AGENT_SET_BROKER(pBroker);
    return S_OK;
 }
 
@@ -99,7 +99,7 @@ STDMETHODIMP CEAFDocProxyAgent::RegInterfaces()
    pBrokerInit->RegInterface( IID_IEAFToolbars,         this );
    pBrokerInit->RegInterface( IID_IEAFDocument,         this );
    pBrokerInit->RegInterface( IID_IEAFAcceleratorTable, this );
-   pBrokerInit->RegInterface( IID_IEAFDisplayUnits,        this );
+   pBrokerInit->RegInterface( IID_IEAFDisplayUnits,     this );
    pBrokerInit->RegInterface( IID_IEAFStatusCenter,     this );
    pBrokerInit->RegInterface( IID_IEAFTransactions,     this );
    pBrokerInit->RegInterface( IID_IEAFProjectLog,       this );
@@ -109,7 +109,7 @@ STDMETHODIMP CEAFDocProxyAgent::RegInterfaces()
 
 STDMETHODIMP CEAFDocProxyAgent::Init()
 {
-   AGENT_INIT;
+   EAF_AGENT_INIT;
    return S_OK;
 }
 
@@ -125,14 +125,15 @@ STDMETHODIMP CEAFDocProxyAgent::Reset()
 
 STDMETHODIMP CEAFDocProxyAgent::ShutDown()
 {
-   GET_IFACE( ILogFile, pLogFile );
    if ( IsLogFileOpen() )
    {
       m_pDoc->OnLogFileClosing();
+
+      GET_IFACE( ILogFile, pLogFile );
       pLogFile->Close( m_dwLogFileCookie );
    }
 
-   AGENT_CLEAR_INTERFACE_CACHE;
+   EAF_AGENT_CLEAR_INTERFACE_CACHE;
 
    CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);

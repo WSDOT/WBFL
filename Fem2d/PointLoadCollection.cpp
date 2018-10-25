@@ -88,7 +88,7 @@ STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberI
       std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppPointLoad) )) );
       if (!st.second)
       {
-         ATLASSERT(0); // insert failed - better check why
+         ATLASSERT(false); // insert failed - better check why
          return E_FAIL;
       }
 

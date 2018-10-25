@@ -66,7 +66,7 @@ STDMETHODIMP CStressPoints::OnStressPointChanged(/*[in]*/IStressPoint* pStressPo
       i++;
    }
 
-   ATLASSERT(0); // all stress points that we watch should be in our container?
+   ATLASSERT(false); // all stress points that we watch should be in our container?
    return S_OK;
 }
 

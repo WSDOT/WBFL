@@ -427,13 +427,13 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
 
   if (grcnt==0)
   {
-     ATLASSERT(0);
+     ATLASSERT(false);
      return E_FAIL;
   }
 
   if (gridIndex>grcnt-1)
   {
-     ATLASSERT(0);
+     ATLASSERT(false);
      return E_INVALIDARG;
   }
 
@@ -458,7 +458,7 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
   }
   else
   {
-     ATLASSERT(0);
+     ATLASSERT(false);
      return E_FAIL;
   }
 
@@ -1144,7 +1144,7 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 {
    if (girderLength<0.0 || distFromStart<0.0 || girderLength < distFromStart)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_INVALIDARG;
    }
 
@@ -1152,7 +1152,7 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 
    if ( grdIndex == INVALID_INDEX || m_GridPoints.size() <= grdIndex )
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_INVALIDARG;
    }
 
@@ -1544,7 +1544,7 @@ HRESULT CStrandGrid::ValidateFill()
          else
          {
             // strand placement data is corrupt
-            ATLASSERT(0);
+            ATLASSERT(false);
             nStrandsAtGridPoint = 0;
             m_CurrentFill->put_Item(gridPointIdx, 0);
          }

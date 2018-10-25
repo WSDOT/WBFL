@@ -65,7 +65,7 @@ END_COM_MAP()
 
 // IBroker
 public:
-   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ void** ppv);
+   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppv);
    STDMETHOD(Reset)();
 	STDMETHOD(ShutDown)();
 

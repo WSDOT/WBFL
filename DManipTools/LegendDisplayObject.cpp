@@ -201,7 +201,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::put_Font(const LOGFONT& Font)
    }
    else
       // we expect point fonts here
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_Font(LOGFONT* pFont)
@@ -291,7 +291,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::put_NumRows(CollectionIndexType count)
 
    }
    else if (count<1)
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 STDMETHODIMP_(void) CLegendDisplayObject::get_CellSize(CSize* size)

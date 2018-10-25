@@ -244,7 +244,7 @@ STDMETHODIMP CPrecastGirder::put_HarpedStrandAdjustmentEnd(Float64 offset)
 
    if (increment<0.0 && !IsZero(offset))
    {
-      ATLASSERT(0); // cannot adjust if increment<0.0
+      ATLASSERT(false); // cannot adjust if increment<0.0
       m_HarpGridEnd[etStart]->put_VerticalStrandAdjustment(0.0);
       m_HarpGridEnd[etEnd]->put_VerticalStrandAdjustment(0.0);
       return E_INVALIDARG;
@@ -270,7 +270,7 @@ STDMETHODIMP CPrecastGirder::put_HarpedStrandAdjustmentHP(Float64 offset)
 
    if (increment<0.0 && !IsZero(offset))
    {
-      ATLASSERT(0); // cannot adjust if increment<0.0
+      ATLASSERT(false); // cannot adjust if increment<0.0
       m_HarpGridHp[etStart]->put_VerticalStrandAdjustment(0.0);
       m_HarpGridHp[etEnd]->put_VerticalStrandAdjustment(0.0);
       return E_INVALIDARG;
@@ -509,14 +509,14 @@ STDMETHODIMP CPrecastGirder::put_HarpedStrandFill(/*[inl]*/IIndexArray* fill)
    HRESULT hr = m_HarpGridEnd[etStart]->put_StrandFill(fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_HarpGridEnd[etEnd]->put_StrandFill(fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -524,21 +524,21 @@ STDMETHODIMP CPrecastGirder::put_HarpedStrandFill(/*[inl]*/IIndexArray* fill)
    hr = ComputeHpFill(fill, &hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_HarpGridHp[etStart]->put_StrandFill(hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_HarpGridHp[etEnd]->put_StrandFill(hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -555,14 +555,14 @@ STDMETHODIMP CPrecastGirder::put_TemporaryStrandFill(/*[inl]*/IIndexArray* fill)
    HRESULT hr = m_TempGrid[etStart]->put_StrandFill(fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_TempGrid[etEnd]->put_StrandFill(fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -731,7 +731,7 @@ STDMETHODIMP CPrecastGirder::HarpedHpStrandBoundingBoxEx(EndType endType, IIndex
    HRESULT hr = ComputeHpFill(fill, &hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -759,7 +759,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBounds(/*[out]*/Float64* minD
    hr = m_HarpGridEnd[endType]->get_FilledGridBounds(&bottom,&top);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -767,7 +767,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBounds(/*[out]*/Float64* minD
    hr = m_HarpGridEnd[endType]->get_VerticalStrandAdjustment(&adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -787,7 +787,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBounds(/*[out]*/Float64* minD
       hr = m_pStrandMover->get_EndStrandElevationBoundaries(&bottom_min, &top_max);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
@@ -817,7 +817,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBoundsEx(/*[in]*/ IIndexArray
    hr = m_HarpGridEnd[endType]->get_FilledGridBoundsEx(fill,&bottom,&top);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -825,7 +825,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBoundsEx(/*[in]*/ IIndexArray
    hr = m_HarpGridEnd[endType]->get_VerticalStrandAdjustment(&adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -845,7 +845,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedEndAdjustmentBoundsEx(/*[in]*/ IIndexArray
       hr = m_pStrandMover->get_EndStrandElevationBoundaries(&bottom_min, &top_max);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
@@ -875,7 +875,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBounds(/*[out]*/Float64* minDo
    hr = m_HarpGridHp[endType]->get_FilledGridBounds(&bottom,&top);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -883,7 +883,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBounds(/*[out]*/Float64* minDo
    hr = m_HarpGridHp[endType]->get_VerticalStrandAdjustment(&adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -903,7 +903,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBounds(/*[out]*/Float64* minDo
       hr = m_pStrandMover->get_HpStrandElevationBoundaries(&bottom_min, &top_max);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
@@ -933,7 +933,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBoundsEx(/*[in]*/ IIndexArray*
    hr = ComputeHpFill(fill, &hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -942,7 +942,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBoundsEx(/*[in]*/ IIndexArray*
    hr = m_HarpGridHp[endType]->get_FilledGridBoundsEx(hp_fill,&bottom,&top);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -950,7 +950,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBoundsEx(/*[in]*/ IIndexArray*
    hr = m_HarpGridHp[endType]->get_VerticalStrandAdjustment(&adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -971,7 +971,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpAdjustmentBoundsEx(/*[in]*/ IIndexArray*
       hr = m_pStrandMover->get_HpStrandElevationBoundaries(&bottom_min, &top_max);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
@@ -1001,7 +1001,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedHpFilledGridBoundsEx(/*[in]*/IIndexArray* 
    HRESULT hr = ComputeHpFill(fill, &hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1014,7 +1014,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedEndAdjustmentIncrement(/*[out,retval]*/Fl
    HRESULT hr = m_HarpGridEnd[etStart]->get_MaxStrandCount(&cnt);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1036,7 +1036,7 @@ STDMETHODIMP CPrecastGirder::get_HarpedHpAdjustmentIncrement(/*[out,retval]*/Flo
    HRESULT hr = m_HarpGridEnd[etStart]->get_MaxStrandCount(&cnt);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1062,7 +1062,7 @@ STDMETHODIMP CPrecastGirder::HarpedEndStrandBoundaryCheck(Float64* adjustment)
    hr = m_HarpGridEnd[etStart]->get_VerticalStrandAdjustment(&current_adjustment);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1070,7 +1070,7 @@ STDMETHODIMP CPrecastGirder::HarpedEndStrandBoundaryCheck(Float64* adjustment)
    hr = GetHarpedEndAdjustmentBounds(&min_adjust, &max_adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1100,7 +1100,7 @@ STDMETHODIMP CPrecastGirder::HarpedHpStrandBoundaryCheck(Float64* adjustment)
    hr = m_HarpGridHp[etStart]->get_VerticalStrandAdjustment(&current_adjustment);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1108,7 +1108,7 @@ STDMETHODIMP CPrecastGirder::HarpedHpStrandBoundaryCheck(Float64* adjustment)
    hr = GetHarpedHpAdjustmentBounds(&min_adjust, &max_adjust);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1473,7 +1473,7 @@ STDMETHODIMP CPrecastGirder::GetHarpedStrandCountEx(/*[in]*/ IIndexArray* fill, 
    hr = ComputeHpFill(fill, &hp_fill);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -1513,23 +1513,23 @@ STDMETHODIMP CPrecastGirder::GetDebondedStraightStrandsByGridIndex(/*[out,retval
    return m_StraightGrid[etStart]->GetDebondedStrandsByGridIndex(grdIndexes);
 }
 
-STDMETHODIMP CPrecastGirder::GetStraightStrandDebondLengthByGridIndex(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
+STDMETHODIMP CPrecastGirder::GetStraightStrandDebondLengthByGridIndex(/*[in]*/EndType endType,/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
 {
-   return m_StraightGrid[etStart]->GetDebondLengthByGridIndex(grdIndex, YCoord, l1, l2);
+   return m_StraightGrid[endType]->GetDebondLengthByGridIndex(grdIndex, YCoord, l1, l2);
 }
 
 // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-STDMETHODIMP CPrecastGirder::GetStraightStrandDebondLengthByPositionIndex(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
+STDMETHODIMP CPrecastGirder::GetStraightStrandDebondLengthByPositionIndex(/*[in]*/EndType endType,/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
 {
-   return m_StraightGrid[etStart]->GetDebondLengthByPositionIndex(positionIndex, YCoord, l1, l2);
+   return m_StraightGrid[endType]->GetDebondLengthByPositionIndex(positionIndex, YCoord, l1, l2);
 }
 
-STDMETHODIMP CPrecastGirder::GetStraightStrandsDebondedByPositionIndex(/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes)
+STDMETHODIMP CPrecastGirder::GetStraightStrandsDebondedByPositionIndex(/*[in]*/EndType endType,/*[in]*/Float64 distFromStart, /*[out,retval]*/IIndexArray** positionIndexes)
 {
    Float64 grd_length;
    this->get_GirderLength(&grd_length);
 
-   return m_StraightGrid[etStart]->GetStrandsDebondedByPositionIndex(distFromStart, grd_length, positionIndexes);
+   return m_StraightGrid[endType]->GetStrandsDebondedByPositionIndex(distFromStart, grd_length, positionIndexes);
 }
 
 STDMETHODIMP CPrecastGirder::get_StraightStrandRowsWithStrand(/*[out,retval]*/RowIndexType* nRows)
@@ -1578,7 +1578,19 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByPositionIndex(/*[in]
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   return m_StraightGrid[etStart]->GetBondedLengthByPositionIndex(positionIndex, distFromStart, gdr_length, YCoord, leftBond, rightBond);
+   // straight strand grids may not be exactly equal for taper girders...
+   Float64 leftBond1, leftBond2;
+   Float64 rightBond1, rightBond2;
+   Float64 Y1,Y2;
+   m_StraightGrid[etStart]->GetBondedLengthByPositionIndex(positionIndex, distFromStart, gdr_length, &Y1, &leftBond1, &rightBond1);
+   m_StraightGrid[etEnd  ]->GetBondedLengthByPositionIndex(positionIndex, distFromStart, gdr_length, &Y2, &leftBond2, &rightBond2);
+   ATLASSERT(IsEqual(leftBond1,leftBond2));
+   ATLASSERT(IsEqual(rightBond1,rightBond2));
+   *leftBond = leftBond1;
+   *rightBond = rightBond1;
+   *YCoord = ::LinInterp(distFromStart,Y1,Y2,gdr_length);
+
+   return S_OK;
 }
 
 STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByGridIndex(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, 
@@ -1587,7 +1599,18 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByGridIndex(/*[in]*/Gr
    Float64 gdr_length;
    get_GirderLength(&gdr_length);
 
-   return m_StraightGrid[etStart]->GetBondedLengthByGridIndex(grdIndex, distFromStart, gdr_length, YCoord, leftBond, rightBond);
+   Float64 leftBond1, leftBond2;
+   Float64 rightBond1, rightBond2;
+   Float64 Y1,Y2;
+   m_StraightGrid[etStart]->GetBondedLengthByGridIndex(grdIndex, distFromStart, gdr_length, &Y1, &leftBond1, &rightBond1);
+   m_StraightGrid[etEnd  ]->GetBondedLengthByGridIndex(grdIndex, distFromStart, gdr_length, &Y2, &leftBond2, &rightBond2);
+   ATLASSERT(IsEqual(leftBond1,leftBond2));
+   ATLASSERT(IsEqual(rightBond1,rightBond2));
+   *leftBond = leftBond1;
+   *rightBond = rightBond1;
+   *YCoord = ::LinInterp(distFromStart,Y1,Y2,gdr_length);
+
+   return S_OK;
 }
 
 STDMETHODIMP CPrecastGirder::get_HarpedStrandRowsWithStrand(RowIndexType* nRows)

@@ -164,7 +164,7 @@ STDMETHODIMP CSidewalkBarrier::get_SidewalkShape(IShape** shape)
    }
    else
    {
-      ATLASSERT(0); 
+      ATLASSERT(false); 
       *shape = NULL;
    }
 
@@ -568,7 +568,7 @@ STDMETHODIMP CSidewalkBarrier::get_CurbWidth(Float64* width)
    }
    else
    {
-      ATLASSERT(0); // this is bad
+      ATLASSERT(false); // this is bad
       *width = 0.0;
       return E_FAIL;
    }
@@ -631,7 +631,7 @@ STDMETHODIMP CSidewalkBarrier::get_OverlayToeWidth(Float64* width)
    }
    else
    {
-      ATLASSERT(0); // this is bad
+      ATLASSERT(false); // this is bad
       *width = 0.0;
       return E_FAIL;
    }

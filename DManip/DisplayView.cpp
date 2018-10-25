@@ -561,7 +561,7 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
 {
    if (factor<=0.0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return;
    }
    
@@ -621,7 +621,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
           PassedPD(wid, orig_width,  pd_tolerance, 1.0e-4) &&
           PassedPD(hgt, orig_height, pd_tolerance, 1.0e-4) )
       {
-         WATCHX(DManip,1,"Found bounding rect after " << it << " iterations");
+         WATCHX(DManip,1,_T("Found bounding rect after ") << it << _T(" iterations"));
          break;
       }
       else 

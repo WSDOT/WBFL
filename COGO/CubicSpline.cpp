@@ -52,7 +52,9 @@ STDMETHODIMP CCubicSpline::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -61,15 +63,21 @@ HRESULT CCubicSpline::FinalConstruct()
 {
    HRESULT hr = m_Points.CoCreateInstance(CLSID_Point2dCollection);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_CoordXform.CoCreateInstance(CLSID_CoordinateXform2d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -153,7 +161,9 @@ STDMETHODIMP CCubicSpline::get_Point(CollectionIndexType idx,IPoint2d** point)
 {
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return m_Points->get_Item(idx,point);
 }
@@ -192,7 +202,9 @@ STDMETHODIMP CCubicSpline::get_StartPoint(IPoint2d** point)
 {
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return m_Points->get_Item(0,point);
 }
@@ -201,7 +213,9 @@ STDMETHODIMP CCubicSpline::get_EndPoint(IPoint2d** point)
 {
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType nPoints;
    m_Points->get_Count(&nPoints);
@@ -252,11 +266,15 @@ STDMETHODIMP CCubicSpline::Bearing(Float64 distance,IDirection* *pVal)
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    distance = IsZero(distance) ? 0 : distance;
    if ( distance <= 0 )
@@ -269,7 +287,9 @@ STDMETHODIMP CCubicSpline::Bearing(Float64 distance,IDirection* *pVal)
    Float64 length;
    hr = get_Length(&length);
    if ( FAILED(hr) ) 
+   {
       return hr;
+   }
 
    distance = IsEqual(length,distance) ? length : distance;
 
@@ -302,18 +322,24 @@ STDMETHODIMP CCubicSpline::BearingAtPoint(CollectionIndexType idx,IDirection** p
    CollectionIndexType nPoints;
    m_Points->get_Count(&nPoints);
    if ( idx < 0 || nPoints <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(pDir);
 
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType splineIdx = (idx == m_SplineSegments.size() ? idx-1 : idx);
    const CSplineSegment& splineSegment = m_SplineSegments[splineIdx];
@@ -333,11 +359,15 @@ STDMETHODIMP CCubicSpline::Normal( Float64 distance, IDirection* *pVal)
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // get the bearing and rotate it
    Bearing(distance,pVal);
@@ -351,17 +381,23 @@ STDMETHODIMP CCubicSpline::NormalAtPoint(CollectionIndexType idx,IDirection** pD
    CollectionIndexType nPoints;
    m_Points->get_Count(&nPoints);
    if ( idx < 0 || nPoints <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(pDir);
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // get the bearing and rotate it
    BearingAtPoint(idx,pDir);
@@ -376,11 +412,15 @@ STDMETHODIMP CCubicSpline::PointOnSpline(Float64 distance,IPoint2d* *pVal)
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CHECK_RETVAL(pVal);
 
@@ -462,16 +502,22 @@ STDMETHODIMP CCubicSpline::DistanceFromStartAtPoint(CollectionIndexType idx,Floa
    CollectionIndexType nPoints;
    m_Points->get_Count(&nPoints);
    if ( idx < 0 || nPoints <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(dist);
 
    *dist = 0;
    if ( idx == 0 )
+   {
       return S_OK;
+   }
 
    if ( idx == nPoints-1 )
+   {
       return get_Length(dist);
+   }
 
    // add up length of spline segments
    for ( CollectionIndexType segmentIdx = 0; segmentIdx < idx; segmentIdx++ )
@@ -490,11 +536,15 @@ STDMETHODIMP CCubicSpline::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VAR
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CHECK_RETOBJ(points);
    CComPtr<IPoint2dCollection> objPoints;
@@ -660,11 +710,15 @@ STDMETHODIMP CCubicSpline::get_Length(Float64* pLength)
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 L = 0;
    std::vector<CSplineSegment>::iterator iter;
@@ -785,7 +839,9 @@ STDMETHODIMP CCubicSpline::Evaluate(Float64 x,VARIANT_BOOL bProjectBack,VARIANT_
    CComPtr<IPoint2dCollection> points;
    HRESULT hr = Intersect(line,bProjectBack,bProjectAhead,&points);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType nPoints;
    points->get_Count(&nPoints);
@@ -810,7 +866,9 @@ STDMETHODIMP CCubicSpline::Slope(Float64 x,VARIANT_BOOL bProjectBack,VARIANT_BOO
    Float64 y;
    HRESULT hr = Evaluate(x,bProjectBack,bProjectAhead,&y);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // convert X into spline coordinates
    CComPtr<IPoint2d> p;
@@ -920,7 +978,9 @@ HRESULT CCubicSpline::CreateSplineSegments()
 
       // xb has to come after xa
       if ( xb <= xa )
+      {
          return Error(IDS_E_CUBICSPLINEPOINTS,IID_ICubicSpline,COGO_E_CUBICSPLINEPOINTS);
+      }
 
       m_SplineSegments.push_back(splineSegment);
    }
@@ -933,11 +993,15 @@ HRESULT CCubicSpline::UpdateSpline()
    // See http://www.physics.arizona.edu/~restrepo/475A/Notes/sourcea/node35.html
 
    if ( !m_bUpdateSpline )
+   {
       return S_OK;
+   }
 
    HRESULT hr = CreateSplineSegments();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CollectionIndexType nPoints = m_SplineSegments.size() + 1;
 
@@ -1116,9 +1180,13 @@ HRESULT CCubicSpline::CheckValid()
    CollectionIndexType nPoints;
    m_Points->get_Count(&nPoints);
    if ( nPoints < 2 )
+   {
       return Error(IDS_E_CUBICSPLINEPOINTS,IID_ICubicSpline,COGO_E_CUBICSPLINEPOINTS);
+   }
    else
+   {
       return S_OK;
+   }
 }
 
 HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoint2d* *pNewPoint)
@@ -1129,11 +1197,15 @@ HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoin
 
    HRESULT hr = CheckValid();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = UpdateSpline();
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // First we have to determine if the point is before or after the spline
    // This is accomplished by setting up coordinate systems at the start and end

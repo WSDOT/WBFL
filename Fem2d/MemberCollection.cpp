@@ -96,7 +96,7 @@ STDMETHODIMP CMemberCollection::Create(MemberIDType id, JointIDType startJoint, 
       std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMember))) );
       if (!st.second)
       {
-         ATLASSERT(0); // insert failed - better check why
+         ATLASSERT(false); // insert failed - better check why
          return E_POINTER;
       }
    }

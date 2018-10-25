@@ -186,6 +186,8 @@ public:
    Float64 GetKL() const;
    Float64 Getfpt() const;
 
+   Float64 GetSdMoment() const;
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
    #if defined _UNITTEST
@@ -205,6 +207,8 @@ protected:
 
    mutable Float64 m_dfpSR;
    mutable Float64 m_dfpCR;
+
+   mutable Float64 m_Msd;
 
    mutable Float64 m_KL;
    mutable Float64 m_fpt;

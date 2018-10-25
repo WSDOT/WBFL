@@ -42,8 +42,8 @@
 // This object is designed to be a regular data member of an agent
 // and serve as a wrapper class for the real IBroker interface
 //
-// Using the DECLARE_AGENT_DATA and IMPLEMENT_AGENT_DATA #define's given
-// below, no code changes have to be made to an agent to implement
+// Using the DECLARE_EAF_AGENT_DATA, EAF_AGENT_INIT, and EAF_AGENT_SET_BROKER
+// #define's given below, no code changes have to be made to an agent to implement
 // this class. Simply use these macros
 class EAFCLASS CEAFInterfaceCache : public IBroker
 {
@@ -56,7 +56,7 @@ public:
    STDMETHOD_(ULONG,AddRef)();
    STDMETHOD_(ULONG,Release)();
    STDMETHOD(QueryInterface)(REFIID riid,void** ppv);
-   STDMETHOD(GetInterface)(REFIID riid,void** ppv);
+   STDMETHOD(GetInterface)(REFIID riid,IUnknown** ppUnk);
    STDMETHOD(Reset)();
    STDMETHOD(ShutDown)();
 
@@ -68,28 +68,36 @@ private:
    Interfaces m_Interfaces;
 };
 
-#if defined NO_INTERFACE_CACHE
-#define DECLARE_AGENT_DATA \
-   IBroker* m_pBroker; \
-   StatusGroupIDType m_StatusGroupID;
+// DECLARE_EAF_AGENT_DATA - add this macro to your IAgent implementation class
+// EAF_AGENT_INIT - add this macro to your IAgent::Init method
+// EAF_AGENT_SET_BROKER - add this macro to your IAgent::SetBroker method
 
-#define AGENT_SET_BROKER(broker) m_pBroker = broker
-#define AGENT_INIT     GET_IFACE(IEAFStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
-#define AGENT_CLEAR_INTERFACE_CACHE m_pBroker = NULL
+// add this macro your implementation of the IAgent::Init method
+#define EAF_AGENT_INIT     GET_IFACE(IEAFStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
+
+// NOTE: Agents must hold a weak reference to the broker. Strong references create a circular reference
+// and neither the broker or the agents will get destroyed when an application shuts down.
+
+#if defined NO_INTERFACE_CACHE
+#define DECLARE_EAF_AGENT_DATA \
+   IBroker* m_pBroker; \
+   StatusGroupIDType m_StatusGroupID
+
+#define EAF_AGENT_SET_BROKER(broker) m_pBroker = broker
+#define EAF_AGENT_CLEAR_INTERFACE_CACHE m_pBroker = NULL
 
 #else
 
 // declares the requirement data components for an agent
 // In the private data area of the agent class declairation add
 // DECLARE_AGENT_DATA
-#define DECLARE_AGENT_DATA \
+#define DECLARE_EAF_AGENT_DATA \
    IBroker* m_pBroker; \
    CEAFInterfaceCache m_InterfaceCache; \
    StatusGroupIDType m_StatusGroupID
 
-#define AGENT_SET_BROKER(broker) m_InterfaceCache.SetBroker(broker); m_pBroker = &m_InterfaceCache
-#define AGENT_INIT     GET_IFACE(IEAFStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
-#define AGENT_CLEAR_INTERFACE_CACHE  m_InterfaceCache.ClearCache(); m_InterfaceCache.SetBroker(NULL); m_pBroker = NULL
+#define EAF_AGENT_SET_BROKER(broker) m_InterfaceCache.SetBroker(broker); m_pBroker = &m_InterfaceCache
+#define EAF_AGENT_CLEAR_INTERFACE_CACHE  m_InterfaceCache.ClearCache(); m_InterfaceCache.SetBroker(NULL); m_pBroker = NULL
 
 
 #endif // NO_INTERFACE_CACHE

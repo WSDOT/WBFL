@@ -66,11 +66,7 @@ public:
 
    //------------------------------------------------------------------------
    // constructor
-   grGraphXY(const sysINumericFormatToolBase& rXAxisFormat, const sysINumericFormatToolBase& rYAxisFormat);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   grGraphXY(const grGraphXY& rOther);
+   grGraphXY(sysNumericFormatTool& rXAxisFormat, sysNumericFormatTool& rYAxisFormat);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -214,11 +210,11 @@ public:
 
    //------------------------------------------------------------------------
    // Set numeric formatting for x axis
-   void SetXAxisValueFormat(const sysINumericFormatToolBase& format);
+   void SetXAxisValueFormat(sysNumericFormatTool& format);
 
    //------------------------------------------------------------------------
    // Get numeric formatting for x axis
-   const sysINumericFormatToolBase* GetXAxisValueFormat() const;
+   const sysNumericFormatTool* GetXAxisValueFormat() const;
 
    void SetXAxisScale(grAxisXY::AxisScale scale);
    grAxisXY::AxisScale GetXAxisScale() const;
@@ -227,11 +223,11 @@ public:
 
    //------------------------------------------------------------------------
    // Set numeric formatting for y axis
-   void SetYAxisValueFormat(const sysINumericFormatToolBase& format);
+   void SetYAxisValueFormat(sysNumericFormatTool& format);
 
    //------------------------------------------------------------------------
    // Get numeric formatting for y axis
-   const sysINumericFormatToolBase* GetYAxisValueFormat() const;
+   const sysNumericFormatTool* GetYAxisValueFormat() const;
 
    //------------------------------------------------------------------------
    // set the title for the Y axis
@@ -380,6 +376,11 @@ public:
    void GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth);
    void SetMinimumZoomBounds(Float64 Height, Float64 Width);
 
+   // Set/Get the minimum size of the graph. The graph plotting space will be no smaller
+   // than these values regardless of the size of the data sets
+   void SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ymax);
+   void GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax);
+
 protected:
    // GROUP: DATA MEMBERS
    // GROUP: LIFECYCLE
@@ -455,6 +456,8 @@ private:
 
    Float64 m_MinZoomHeight;
    Float64 m_MinZoomWidth;
+
+   Float64 m_Xmin, m_Xmax, m_Ymin, m_Ymax;
 
    // GROUP: LIFECYCLE
    grGraphXY();
