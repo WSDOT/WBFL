@@ -12,14 +12,17 @@
 		<Platform
 			Name="Win32"
 		/>
+		<Platform
+			Name="x64"
+		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory=".\$(ConfigurationName)"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -33,9 +36,9 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Embedding WBFL.manifest into $(TargetPath)"
-				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(OutDir)\WBFL.manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep"
-				AdditionalDependencies="$(OutDir)\WBFL.manifest"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 				Outputs="$(IntDir)\mt2.dep"
 			/>
 			<Tool
@@ -49,13 +52,13 @@
 				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
 				OutputDirectory=""
-				HeaderFileName="$(SolutionDir)Include\$(TargetName).h"
-				InterfaceIdentifierFileName="$(SolutionDir)Include\$(TargetName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\;..\..\Include;&quot;..\..\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,9 +67,9 @@
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
 				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -78,7 +81,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="_DEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -123,14 +126,124 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="2"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
+				Outputs="$(IntDir)\mt2.dep"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				OutputDirectory=""
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;WBFL_DEBUG"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="false"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir)"
+				ModuleDefinitionFile=".\LBAMLoadCombiner.def"
+				GenerateDebugInformation="true"
+				GenerateMapFile="true"
+				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				EmbedManifest="false"
+				InputResourceManifests=" "
+				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
+				RegistrarScriptFile=""
+				ComponentFileName="$(TargetName).dll"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\Debug/LBAMLoadCombiner.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory=".\$(ConfigurationName)"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -145,9 +258,9 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Embedding WBFL.manifest into $(TargetPath)"
-				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(OutDir)\WBFL.manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep"
-				AdditionalDependencies="$(OutDir)\WBFL.manifest"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 				Outputs="$(IntDir)\mt2.dep"
 			/>
 			<Tool
@@ -161,8 +274,8 @@
 				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
 				OutputDirectory=""
-				HeaderFileName="$(SolutionDir)Include\$(TargetName).h"
-				InterfaceIdentifierFileName="$(SolutionDir)Include\$(TargetName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -171,16 +284,16 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\;..\..\Include;&quot;..\..\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
 				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 			/>
@@ -191,7 +304,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -241,14 +354,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
 				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
-			Name="Profile|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
-			IntermediateDirectory=".\$(ConfigurationName)"
+			Name="Release|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -263,9 +375,127 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Embedding WBFL.manifest into $(TargetPath)"
-				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(OutDir)\WBFL.manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep"
-				AdditionalDependencies="$(OutDir)\WBFL.manifest"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
+				Outputs="$(IntDir)\mt2.dep"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				OutputDirectory=""
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="false"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir)"
+				GenerateManifest="true"
+				EnableUAC="true"
+				ModuleDefinitionFile=".\LBAMLoadCombiner.def"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+				AllowIsolation="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles=" "
+				EmbedManifest="false"
+				InputResourceManifests=" "
+				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
+				ComponentFileName="$(TargetName).dll"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\Release/LBAMLoadCombiner.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Profile|Win32"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="2"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 				Outputs="$(IntDir)\mt2.dep"
 			/>
 			<Tool
@@ -279,8 +509,8 @@
 				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
 				OutputDirectory=""
-				HeaderFileName="$(SolutionDir)Include\$(TargetName).h"
-				InterfaceIdentifierFileName="$(SolutionDir)Include\$(TargetName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -289,16 +519,16 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\;..\..\Include;&quot;..\..\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="stdafx.h"
 				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
-				AssemblerListingLocation=".\Profile/"
-				ObjectFile=".\Profile/"
-				ProgramDataBaseFileName=".\Profile/"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -310,7 +540,7 @@
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -361,7 +591,126 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description=""
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Profile|x64"
+			OutputDirectory="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
+			ConfigurationType="2"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
+			UseOfMFC="2"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Embedding WBFL.$(PlatformName).$(ConfigurationName).manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(SolutionDir)RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest -outputresource:&quot;$(TargetPath);#2&quot;&#x0D;&#x0A;date/T &gt; $(IntDir)\mt2.dep&#x0D;&#x0A;"
+				AdditionalDependencies="$(OutDir)\WBFL.$(PlatformName).$(ConfigurationName).manifest"
+				Outputs="$(IntDir)\mt2.dep"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
+				TargetEnvironment="3"
+				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
+				OutputDirectory=""
+				HeaderFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(PlatformName)\$(TargetName)_i.c"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="..\;..\..\Include;..\..\Include\$(PlatformName);&quot;..\..\Include\$(ConfigurationName)&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
+				RuntimeLibrary="2"
+				RuntimeTypeInfo="true"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation="$(IntDir)\"
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(PlatformName)\$(ConfigurationName)\"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				RegisterOutput="false"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(OutDir)"
+				GenerateManifest="true"
+				EnableUAC="true"
+				ModuleDefinitionFile=".\LBAMLoadCombiner.def"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="17"
+				AllowIsolation="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles=" "
+				EmbedManifest="false"
+				InputResourceManifests=" "
+				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
+				ComponentFileName="$(TargetName).dll"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile=".\Release/LBAMLoadCombiner.bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
 				CommandLine=""
 			/>
 		</Configuration>
@@ -386,6 +735,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -395,7 +753,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -417,6 +793,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -426,7 +811,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -452,6 +855,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+						AdditionalIncludeDirectories="\ARP\Lib"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -461,7 +873,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+						AdditionalIncludeDirectories="\ARP\Lib"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCResourceCompilerTool"
+						PreprocessorDefinitions=""
+						AdditionalIncludeDirectories="\ARP\Lib"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -483,6 +913,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -492,7 +931,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -514,6 +971,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -523,7 +989,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -545,6 +1029,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -554,7 +1047,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -576,6 +1087,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -585,7 +1105,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -607,6 +1145,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -616,7 +1163,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -638,6 +1203,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -647,7 +1221,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -669,6 +1261,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -678,7 +1279,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -700,6 +1319,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -709,7 +1337,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -731,6 +1377,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -740,7 +1395,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -762,6 +1435,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -771,7 +1453,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -793,6 +1493,15 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -802,7 +1511,25 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -825,6 +1552,16 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Release|Win32"
 					>
 					<Tool
@@ -835,7 +1572,27 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Release|x64"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Profile|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Profile|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -863,6 +1620,16 @@
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Performing registration"
+						CommandLine="echo on&#x0D;&#x0A;copy $(InputPath) $(ProjectDir)..\htmlhelp\LbamLoadCombiner.hh&#x0D;&#x0A;"
+						Outputs="$(ProjectDir)..\htmlhelp\LbamLoadCombiner.hh"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"

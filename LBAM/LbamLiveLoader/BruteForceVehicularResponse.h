@@ -177,7 +177,7 @@ private:
    // ------------------
    _bstr_t                          m_CachedStage;
    LiveLoadModelType                m_CachedLiveLoadModel;
-   long                             m_CachedVehicleIndex;
+   VehicleIndexType                 m_CachedVehicleIndex;
    VehicularLoadConfigurationType   m_CachedVehConfiguration;
    VARIANT_BOOL                     m_CachedDoApplyImpact;
 

@@ -350,7 +350,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, ILongArray* 
 }
 
 // Make sure maximum value is in res1
-void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,long engineID)
+void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,CollectionIndexType engineIdx)
 {
    CHRException hr;
 
@@ -422,11 +422,11 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* r
       Float64 xl, xr, yl, yr, zl, zr;
       if (ldo)
       {
-         m_ControllingEngine[ipoi].Left = engineID;
+         m_ControllingEngine[ipoi].Left = engineIdx;
 
          if (rdo)
          {
-            m_ControllingEngine[ipoi].Right = engineID;
+            m_ControllingEngine[ipoi].Right = engineIdx;
 
             // replace res1's right and left
             sr2->GetResult(&xl,&yl,&zl,&xr,&yr,&zr);
@@ -444,7 +444,7 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* r
       else if (rdo)
       {
          // right only
-         m_ControllingEngine[ipoi].Right = engineID;
+         m_ControllingEngine[ipoi].Right = engineIdx;
 
          sr2->GetResult(&xl,&yl,&zl,&xr,&yr,&zr);
          sr1->put_XRight(xl);

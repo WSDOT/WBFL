@@ -99,15 +99,15 @@ public:
                                      /*[in]*/IUnitServer* pUnitServer);
 
 private:
-	STDMETHOD(CreatePOI)(/*[in]*/long ID, /*[in]*/MemberType Type, /*[in]*/long memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);
+	STDMETHOD(CreatePOI)(/*[in]*/PoiIDType ID, /*[in]*/MemberType Type, /*[in]*/MemberIDType memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);
 
    void AddLoadCase(ILoadCases* loadCases, BSTR name, BSTR description);
    void ApplyTypicalLoadFactors(ILoadCombination* loadCombo, bool Strength4);
    void ApplyTypicalServiceLoadFactors(ILoadCombination* loadCombo);
    void ApplyTypicalLiveLoadFactors(ILoadCombination* loadCombo, Float64 factor);
    void ApplyTUCRSHLoadFactors(ILoadCombination* loadCombo, Float64 gradientFactor);
-   void CreateSegmentLoad(int mbrID,MemberType mbrType,IEnumSegmentItem* enum_segments,IDistributedLoads* loads,BSTR stage,BSTR lgName,Float64 unitWgt,Float64 E);
-   void CreatePoiAlongSuperstructure(Float64 location, long id, ISuperstructureMembers* pSsms, IPOI** pPoi);
+   void CreateSegmentLoad(MemberIDType mbrID,MemberType mbrType,IEnumSegmentItem* enum_segments,IDistributedLoads* loads,BSTR stage,BSTR lgName,Float64 unitWgt,Float64 E);
+   void CreatePoiAlongSuperstructure(Float64 location, PoiIDType id, ISuperstructureMembers* pSsms, IPOI** pPoi);
    
    
    };

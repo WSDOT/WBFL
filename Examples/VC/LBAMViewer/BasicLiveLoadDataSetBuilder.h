@@ -16,7 +16,7 @@
 class BasicLiveLoadDataSetBuilder : public iDataSetBuilder, public iReactionReportBuilder
 {
 public:
-	BasicLiveLoadDataSetBuilder(LiveLoadModelType llmType, long llIndex, 
+	BasicLiveLoadDataSetBuilder(LiveLoadModelType llmType, VehicleIndexType llIndex, 
                                llResponseType respType, ILBAMModel* model, 
                                IBasicVehicularResponse* pResponse);
 
@@ -37,12 +37,12 @@ public:
    // iReactionReportBuilder
    virtual void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                     CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                                    std::ostream& pos);
+                                    std::_tostream& pos);
 
 
    // indicate whether a truck placement is assocatiated with data set
    virtual bool HasTruckPlacement();
-   virtual void GetTruckInfo(LiveLoadModelType* modelType, long* vehicleIndex, ILiveLoadConfiguration** placement);
+   virtual void GetTruckInfo(LiveLoadModelType* modelType, VehicleIndexType* vehicleIndex, ILiveLoadConfiguration** placement);
 
 private:
    void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
@@ -59,7 +59,7 @@ private:
    void InitializePlacement();
 
    LiveLoadModelType                m_LlmType;
-   long                             m_LlIndex;
+   VehicleIndexType                             m_LlIndex;
    CComPtr<ILBAMModel>              m_Model;
    CComPtr<IBasicVehicularResponse> m_Response;
    CComPtr<ILiveLoadConfiguration>  m_Placement;

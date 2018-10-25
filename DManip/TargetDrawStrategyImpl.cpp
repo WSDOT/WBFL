@@ -54,12 +54,12 @@ CTargetDrawStrategyImpl::~CTargetDrawStrategyImpl()
 
 }
 
-STDMETHODIMP_(void) CTargetDrawStrategyImpl::SetRadius(long radius)
+STDMETHODIMP_(void) CTargetDrawStrategyImpl::SetRadius(LONG radius)
 {
    m_Radius = radius;
 }
 
-STDMETHODIMP_(long) CTargetDrawStrategyImpl::GetRadius()
+STDMETHODIMP_(LONG) CTargetDrawStrategyImpl::GetRadius()
 {
    return m_Radius;
 }

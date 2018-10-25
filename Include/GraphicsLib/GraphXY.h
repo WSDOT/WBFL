@@ -88,20 +88,20 @@ public:
    //------------------------------------------------------------------------
    // Creates a new data series in the graph.  Returns a cookie used to
    // reference this data series at a later time.
-   Uint32 CreateDataSeries();
-   Uint32 CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor);
+   IndexType CreateDataSeries();
+   IndexType CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor);
 
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
-   void AddPoint(Uint32 cookie,const gpPoint2d& rPoint);
+   void AddPoint(IndexType cookie,const gpPoint2d& rPoint);
 
    //------------------------------------------------------------------------
    // Adds a collection of points to the graph.
-   void AddPoints(Uint32 cookie,const std::vector<gpPoint2d>& vPoints);
+   void AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints);
 
    //------------------------------------------------------------------------
    // Removes all the points from the graph
-   void ClearPoints(Uint32 cookie);
+   void ClearPoints(IndexType cookie);
 
    //------------------------------------------------------------------------
    // Clears all data from the graph
@@ -109,11 +109,11 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the point of points in the graph
-   Int32 GetPointCount(Uint32 cookie) const;
+   IndexType GetPointCount(IndexType cookie) const;
 
    //------------------------------------------------------------------------
    // Removes the data series from the graph.
-   void RemoveDataSeries(Uint32 cookie);
+   void RemoveDataSeries(IndexType cookie);
 
    //------------------------------------------------------------------------
    // Returns the output rectangle
@@ -154,11 +154,11 @@ public:
 
    //------------------------------------------------------------------------
    // Return the title size in points
-   Int32 GetTitleSize();
+   LONG GetTitleSize();
 
    //------------------------------------------------------------------------
    // Set the title size in points
-   void SetTitleSize(Int32 size);
+   void SetTitleSize(LONG size);
 
    //------------------------------------------------------------------------
    // Return the graph subtitle
@@ -170,27 +170,27 @@ public:
 
    //------------------------------------------------------------------------
    // Return the Subtitle size in points
-   Int32 GetSubtitleSize();
+   LONG GetSubtitleSize();
 
    //------------------------------------------------------------------------
    // Set the Subtitle size in points
-   void SetSubtitleSize(Int32 size);
+   void SetSubtitleSize(LONG size);
 
    //------------------------------------------------------------------------
    // set size in points of titles for x and y axis'
-   void SetAxisTitleSize(Int32 size);
+   void SetAxisTitleSize(LONG size);
 
    //------------------------------------------------------------------------
    // set size in points of titles for x and y axis'
-   Int32 GetAxisTitleSize();
+   LONG GetAxisTitleSize();
 
    //------------------------------------------------------------------------
    // set size in points of subtitles for x and y axis'
-   void SetAxisSubtitleSize(Int32 size);
+   void SetAxisSubtitleSize(LONG size);
 
    //------------------------------------------------------------------------
    // set size in points of subtitles for x and y axis'
-   Int32 GetAxisSubtitleSize();
+   LONG GetAxisSubtitleSize();
 
    //------------------------------------------------------------------------
    // Set the title for the X axis
@@ -242,35 +242,35 @@ public:
 
    //------------------------------------------------------------------------
    // Get the number of minor tics on the x axis
-   Int32 GetXAxisNumberOfMinorTics();
+   LONG GetXAxisNumberOfMinorTics();
 
    //------------------------------------------------------------------------
    // Set the number of minor tics on the x axis
-   void SetXAxisNumberOfMinorTics(Int32 num);
+   void SetXAxisNumberOfMinorTics(LONG num);
 
    //------------------------------------------------------------------------
    // Get the number of minor tics on the y axis
-   Int32 GetYAxisNumberOfMinorTics();
+   LONG GetYAxisNumberOfMinorTics();
 
    //------------------------------------------------------------------------
    // Set the number of minor tics on the y axis.
-   void SetYAxisNumberOfMinorTics(Int32 num);
+   void SetYAxisNumberOfMinorTics(LONG num);
 
    //------------------------------------------------------------------------
    // Get the number of Major tics on the x axis
-   Int32 GetXAxisNumberOfMajorTics();
+   LONG GetXAxisNumberOfMajorTics();
 
    //------------------------------------------------------------------------
    // Set the number of Major tics on the x axis
-   void SetXAxisNumberOfMajorTics(Int32 num);
+   void SetXAxisNumberOfMajorTics(LONG num);
 
    //------------------------------------------------------------------------
    // Get the number of Major tics on the y axis
-   Int32 GetYAxisNumberOfMajorTics();
+   LONG GetYAxisNumberOfMajorTics();
 
    //------------------------------------------------------------------------
    // Set the number of Major tics on the y axis.
-   void SetYAxisNumberOfMajorTics(Int32 num);
+   void SetYAxisNumberOfMajorTics(LONG num);
 
    //------------------------------------------------------------------------
    // Sets/Gets the angle from the X-axis for the text in 10ths of a degree
@@ -332,7 +332,7 @@ public:
    // Set the pen style for a dataset
    // nPenStyle, nWidth and crColor are defined the same as for the 
    // CreatePen Windows api call.
-   void SetPenStyle(Uint32 cookie, int nPenStyle, int nWidth, COLORREF crColor);
+   void SetPenStyle(IndexType cookie, int nPenStyle, int nWidth, COLORREF crColor);
 
    //------------------------------------------------------------------------
    // Set the pen style for the overlay grid
@@ -343,7 +343,7 @@ public:
 
    //------------------------------------------------------------------------
    // Sets the label that will be displayed in the legend
-   void SetDataLabel(Uint32 cookie,LPCTSTR lpszLabel);
+   void SetDataLabel(IndexType cookie,LPCTSTR lpszLabel);
 
    //------------------------------------------------------------------------
    // Get a point mapper for drawing into the client area of the graph
@@ -395,7 +395,7 @@ private:
       DataSeries Series;
    };
 
-   typedef std::map<Uint32,GraphData> GraphDataMap;
+   typedef std::map<IndexType,GraphData> GraphDataMap;
    GraphDataMap m_GraphDataMap;
 
    gpRect2d m_WorldRect;
@@ -425,16 +425,16 @@ private:
 
    std::_tstring m_GraphTitle;
    std::_tstring m_GraphSubtitle;
-   Int32    m_GraphTitleSize;
-   Int32    m_GraphSubtitleSize;
-   Int32    m_LegendFontSize;
+   LONG    m_GraphTitleSize;
+   LONG    m_GraphSubtitleSize;
+   LONG    m_LegendFontSize;
 
    COLORREF m_ClientAreaColor;
 
    // metrics for drawing graph - don't need to copy since they are 
    // updated on every draw.
-   Int32    m_TitleLoc;
-   Int32    m_SubtitleLoc;
+   LONG    m_TitleLoc;
+   LONG    m_SubtitleLoc;
 
    static const Float64 m_RightBorderFraction;
 

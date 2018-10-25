@@ -109,7 +109,7 @@ void CTestLoadCombination::Test()
    TRY_TEST( pLoadCombination->get_LoadCombinationType(&lct), S_OK );
    TRY_TEST( lct, ldctService);
 
-   long cnt;
+   CollectionIndexType cnt;
    TRY_TEST( pLoadCombination->get_LoadCaseFactorCount(&cnt), S_OK );
    TRY_TEST(cnt, 0);
 

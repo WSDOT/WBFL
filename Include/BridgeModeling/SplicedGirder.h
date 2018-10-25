@@ -96,8 +96,8 @@ public:
 
    // GROUP: OPERATIONS
    SegmentIndexType GetNumSegments() const;
-   Uint16 GetNumSplices() const;
-   Float64 GetSpliceLocation(Uint16 splice) const;
+   CollectionIndexType GetNumSplices() const;
+   Float64 GetSpliceLocation(CollectionIndexType splice) const;
 
    //------------------------------------------------------------------------
    void PlanView(HDC hDC,const grlibPointMapper& mapper) const;
@@ -250,11 +250,11 @@ public:
    // and the next highest number of strands is returned, or the max number of
    // strands is returned if nStrands i greater than max. Zero is returned if
    // the strand count is modifed successfully.
-   StrandIndexType SetNumPTStrands(Uint32 ductIndex, StrandIndexType nStrands );
+   StrandIndexType SetNumPTStrands(DuctIndexType ductIndex, StrandIndexType nStrands );
 
    //------------------------------------------------------------------------
    // Returns the number of PT strands in a specified duct.
-   StrandIndexType GetNumPTStrands( Uint32 ductIndex ) const;
+   StrandIndexType GetNumPTStrands( DuctIndexType ductIndex ) const;
 
    //------------------------------------------------------------------------
    // Returns the total number of PT strands.
@@ -262,17 +262,17 @@ public:
 
    //------------------------------------------------------------------------
    // returns the number of ducts with strand in it
-   Uint32 GetNumDucts() const;
+   DuctIndexType GetNumDucts() const;
 
    //------------------------------------------------------------------------
    // Returns the slope of a duct
-   Float64 GetDuctSlope(Float64 x,Uint32 ductIndex) const;
+   Float64 GetDuctSlope(Float64 x,DuctIndexType ductIndex) const;
 
    //------------------------------------------------------------------------
    // Returns the dimensions that locate the duct (defines the parabola)
-   void GetDuctControlPoints(Uint32 ductIndex,gpPoint2d* pe1,gpPoint2d* pe2);
+   void GetDuctControlPoints(DuctIndexType ductIndex,gpPoint2d* pe1,gpPoint2d* pe2);
 
-   Float64 GetDuctDiameter(Uint32 ductIndex) const;
+   Float64 GetDuctDiameter(DuctIndexType ductIndex) const;
 
    // GROUP: ACCESS
 
@@ -316,7 +316,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the size of the closure pour
-   Float64 GetClosurePourSize(Uint16 splice) const;
+   Float64 GetClosurePourSize(CollectionIndexType splice) const;
 
    //------------------------------------------------------------------------
    // Indicates if the ducts are grouted. If the ducts are grouted then

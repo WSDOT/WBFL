@@ -54,8 +54,8 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void Init(long id,Float64 location,BSTR bstrRemovalStage);
-   void Init(long id,Float64 location,BSTR bstrRemovalStage,IPier* pier);
+   void Init(IDType id,Float64 location,BSTR bstrRemovalStage);
+   void Init(IDType id,Float64 location,BSTR bstrRemovalStage,IPier* pier);
 
    STDMETHOD(Clone)(ITemporaryPierItem* *clone);
 
@@ -90,7 +90,7 @@ public:
 
 // ITemporaryPierItem
 public:
-	STDMETHOD(get_ID)(/*[out, retval]*/ long* id);
+	STDMETHOD(get_ID)(/*[out, retval]*/ IDType* id);
 	STDMETHOD(get_Location)(/*[out, retval]*/ Float64* location);
 	STDMETHOD(put_Location)(/*[in]*/ Float64 location);
 	STDMETHOD(get_RemovalStage)(/*[out, retval]*/ BSTR* bstrRemovalStage);
@@ -111,7 +111,7 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 protected:
-   long m_ID;
+   IDType m_ID;
    CComBSTR m_bstrRemovalStage;
    Float64 m_Location; // location from the start of the bridge
    CComPtr<IPier> m_Pier; // this is the temporary pier object

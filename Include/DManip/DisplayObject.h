@@ -41,8 +41,8 @@ typedef enum SelectionType
 
 interface iDisplayObject : public IUnknown
 {
-   STDMETHOD_(void,SetID)(long id) PURE;
-   STDMETHOD_(long,GetID)() PURE;
+   STDMETHOD_(void,SetID)(IDType id) PURE;
+   STDMETHOD_(IDType,GetID)() PURE;
 
    STDMETHOD_(void,SetItemData)(void* pVoid,bool bDelete) PURE;
    STDMETHOD_(void,GetItemData)(void** ppVoid) PURE;
@@ -78,10 +78,10 @@ interface iDisplayObject : public IUnknown
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
    STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) PURE;
    STDMETHOD_(CString,GetToolTipText)() PURE;
-   STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) PURE;
-   STDMETHOD_(long,GetMaxTipWidth)() PURE;
-   STDMETHOD_(void,SetTipDisplayTime)(long iTime) PURE;
-   STDMETHOD_(long,GetTipDisplayTime)() PURE;
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) PURE;
+   STDMETHOD_(INT,GetMaxTipWidth)() PURE;
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) PURE;
+   STDMETHOD_(INT,GetTipDisplayTime)() PURE;
 
    // Interface Events
    // Called by the framework when UI events occur that are directed

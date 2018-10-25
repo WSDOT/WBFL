@@ -112,16 +112,16 @@ public:
 
    //------------------------------------------------------------------------
    // Get number of patterns in zone
-   Uint32 GetNumPatterns() const;
+   CollectionIndexType GetNumPatterns() const;
 
    //------------------------------------------------------------------------
    // Get a pointer to the ith pattern - zero based index
-   bmfLrPattern* GetPattern(Uint32 idx);
+   bmfLrPattern* GetPattern(CollectionIndexType idx);
 
    //------------------------------------------------------------------------
    // Add a new pattern - returns the number of patterns added thusfar.
    // Takes ownership of the pattern
-   Uint32 AddPattern( bmfLrPattern* pPattern);
+   CollectionIndexType AddPattern( bmfLrPattern* pPattern);
 
    // GROUP: INQUIRY
 

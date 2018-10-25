@@ -297,7 +297,7 @@ public:
    //------------------------------------------------------------------------
    // ListenerCount
    // Returns the number of listeners registered with this broadcaster.
-   virtual Int32 ListenerCount() const =0;
+   virtual CollectionIndexType ListenerCount() const =0;
 
    //------------------------------------------------------------------------
    // BeginDamage

@@ -55,12 +55,12 @@ void rkComposite::AddBeam(const rkRoarkBeam& beam)
    EI = beam.GetEI();
 }
 
-long rkComposite::GetBeamCount() const
+CollectionIndexType rkComposite::GetBeamCount() const
 {
    return m_Beams.size();
 }
 
-const rkRoarkBeam* rkComposite::GetBeam(long index) const
+const rkRoarkBeam* rkComposite::GetBeam(CollectionIndexType index) const
 {
    return m_Beams[index].get();
 }

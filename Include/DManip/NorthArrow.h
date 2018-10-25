@@ -39,8 +39,8 @@ interface iNorthArrow : public iDisplayObject
    STDMETHOD_(void,SetDirection)(Float64 angle) PURE;
    STDMETHOD_(Float64,GetDirection)() PURE;
 
-   STDMETHOD_(void,SetSize)(long size) PURE;
-   STDMETHOD_(long,GetSize)() PURE;
+   STDMETHOD_(void,SetSize)(LONG size) PURE;
+   STDMETHOD_(LONG,GetSize)() PURE;
 };
 
 #endif // INCLUDED_NORTHARROW_H_

@@ -445,7 +445,7 @@ public:
             events->OnTemporaryPierItemAdded(idx);
 		}
 	}
-	VOID Fire_OnTemporaryPierItemRemoved(long ID)
+	VOID Fire_OnTemporaryPierItemRemoved(IDType ID)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -468,7 +468,7 @@ class CProxyDTemporaryPierItemEvents : public IConnectionPointImpl<T, &IID_ITemp
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnTemporaryPierChanged(LONG ID)
+	VOID Fire_OnTemporaryPierChanged(IDType ID)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -546,7 +546,7 @@ public:
             events->OnStageDescriptionChanged(Stage);
 		}
 	}
-	VOID Fire_OnStageAdded(LONG idx)
+	VOID Fire_OnStageAdded(StageIndexType idx)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -562,7 +562,7 @@ public:
             events->OnStageAdded(idx);
 		}
 	}
-	VOID Fire_OnStageRemoved(LONG idx, BSTR Name)
+	VOID Fire_OnStageRemoved(StageIndexType idx, BSTR Name)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -578,7 +578,7 @@ public:
             events->OnStageRemoved(idx,Name);
 		}
 	}
-	VOID Fire_OnStageMoved(BSTR Name, LONG from, LONG to)
+	VOID Fire_OnStageMoved(BSTR Name, StageIndexType from, StageIndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -663,7 +663,7 @@ class CProxyDColumnSpacingEvents : public IConnectionPointImpl<T, &IID_IColumnSp
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnColumnCountChanged(LONG newVal)
+	VOID Fire_OnColumnCountChanged(ColumnIndexType newVal)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

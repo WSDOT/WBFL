@@ -294,7 +294,6 @@ bool sysStructuredLoadXml::Property(LPCTSTR name, Uint16* value)
    return false;
 }
 
-
 bool sysStructuredLoadXml::Property(LPCTSTR name, Int32* value)
 {
    ASSERTVALID;
@@ -328,6 +327,50 @@ bool sysStructuredLoadXml::Property(LPCTSTR name, Uint32* value)
       if (prop_name==inputname)
       {
          Uint32 val;
+         if (m_LineParser.GetValue(&val))
+         {
+            *value = val;
+            ReadNext();
+            return true;
+         }
+      }
+   }
+   return false;
+}
+
+bool sysStructuredLoadXml::Property(LPCTSTR name, Int64* value)
+{
+   ASSERTVALID;
+   // ask parser if a Property was last parsed item
+   if (m_LineParser.GetType()==sysLineParseXml::Property)
+   {
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
+      if (prop_name==inputname)
+      {
+         Int64 val;
+         if (m_LineParser.GetValue(&val))
+         {
+            *value = val;
+            ReadNext();
+            return true;
+         }
+      }
+   }
+   return false;
+}
+
+bool sysStructuredLoadXml::Property(LPCTSTR name, Uint64* value)
+{
+   ASSERTVALID;
+   // ask parser if a Property was last parsed item
+   if (m_LineParser.GetType()==sysLineParseXml::Property)
+   {
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
+      if (prop_name==inputname)
+      {
+         Uint64 val;
          if (m_LineParser.GetValue(&val))
          {
             *value = val;

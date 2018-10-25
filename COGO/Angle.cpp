@@ -156,7 +156,7 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
       // String is of the format [+|-]ddd.ddd[R|L]
       // check for R or L
       std::_tstring stmp = tokizer[0];
-      int endloc = stmp.length()-1;
+      std::_tstring::size_type endloc = stmp.length()-1;
       TCHAR end = stmp[endloc];
       Float64 rlfactor=1.;
       if (end == _T('R') || end == _T('r') || end == _T('L') || end == _T('l') )

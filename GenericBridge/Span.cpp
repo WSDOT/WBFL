@@ -214,7 +214,7 @@ STDMETHODIMP CSpan::get_GirderLineLength(GirderIndexType gdrIdx,Float64* length)
    CComPtr<ICogoModel> cogoModel;
    m_pBridge->get_CogoModel(&cogoModel);
 
-   long gdrLineID;
+   CogoElementKey gdrLineID;
    ::GB_GetGirderLineId(m_Index,gdrIdx,&gdrLineID);
 
    CComPtr<ILineSegmentCollection> lineSegments;

@@ -273,8 +273,8 @@ STDMETHODIMP CLBAMModelEnveloper::get_Engines(IUnkArray* *pVal)
    if (FAILED(hr))
       return hr;
 
-   long cnt = m_Engines.size();
-   for (long im=0; im<cnt; im++)
+   CollectionIndexType cnt = m_Engines.size();
+   for (CollectionIndexType im=0; im<cnt; im++)
    {
      
       hr = unka->Add(m_Engines[im].m_T);

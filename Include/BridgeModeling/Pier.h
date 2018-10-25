@@ -139,13 +139,13 @@ public:
    // Method:      SetID
    // Description: Changes the identifier of the pier
    // Return:      None
-   void SetID(Int32 id);
+   void SetID(PierIDType id);
 
    //------------------------------------------------------------------------
    // Method:      GetID
    // Description: 
    // Return:      Returns the pier's identifier
-   Int32 GetID() const;
+   PierIDType GetID() const;
 
    //------------------------------------------------------------------------
    // Method:      SetConnection
@@ -250,7 +250,7 @@ protected:
 
 private:
    // DATA MEMBERS
-   Int32 m_ID;
+   PierIDType m_ID;
    bmfBridge* m_pBridge;
    bmfSpan*   m_pLeftSpan;
    bmfSpan*   m_pRightSpan;

@@ -35,6 +35,7 @@ m_Description(strDescription), m_bRemoveAfterEdit(false)
 {
    m_StatusGroupID = statusGroupID;
    m_CallbackID    = callbackID;
+   m_ID = INVALID_ID;
 }
 
 void CEAFStatusItem::SetID(StatusItemIDType id)

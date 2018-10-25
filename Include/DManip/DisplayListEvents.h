@@ -27,9 +27,9 @@
 
 interface iDisplayListEvents : public IUnknown
 {
-   STDMETHOD_(void,OnDisplayObjectAdded)(long listID,iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,OnDisplayObjectRemoved)(long listID,long doID) PURE;
-   STDMETHOD_(void,OnDisplayObjectsCleared)(long listID) PURE;
+   STDMETHOD_(void,OnDisplayObjectAdded)(IDType listID,iDisplayObject* pDO) PURE;
+   STDMETHOD_(void,OnDisplayObjectRemoved)(IDType listID,SIZE_T doID) PURE;
+   STDMETHOD_(void,OnDisplayObjectsCleared)(IDType listID) PURE;
 };
 
 #endif // INCLUDED_DISPLAYLISTEVENTS_H_

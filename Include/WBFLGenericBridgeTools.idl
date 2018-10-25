@@ -39,6 +39,7 @@ import "WBFLSections.idl";
 import "WBFLCogo.idl";
 //import "WBFLGenericBridge.idl";
 
+
 cpp_quote("#include <WBFLGenericBridge.h>")
 cpp_quote("#define GBMT_E_UNKNOWNDECKTYPE             MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
 cpp_quote("#define GBMT_E_GIRDERSECTION               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")

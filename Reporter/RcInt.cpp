@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptRcInt::rptRcInt(Int32 MyInt) :
+rptRcInt::rptRcInt(Int64 MyInt) :
 rptReportContent()
 {
    m_TheInt = MyInt;
@@ -48,7 +48,7 @@ rptReportContent()
 }
 
 
-rptRcInt::rptRcInt(Int32 MyInt, const std::_tstring& HyperTarget) :
+rptRcInt::rptRcInt(Int64 MyInt, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
    m_TheInt = MyInt;
@@ -97,7 +97,7 @@ void rptRcInt::Accept( rptRcVisitor& MyVisitor )
 //
 // stream to the paragraph stream
 //
-rptRcInt* rptRcInt::Sv(Int32 MyInt)
+rptRcInt* rptRcInt::Sv(Int64 MyInt)
 {
    std::auto_ptr<rptRcInt> tmp( new rptRcInt(MyInt) );
    tmp->m_Width= m_Width;
@@ -106,12 +106,12 @@ rptRcInt* rptRcInt::Sv(Int32 MyInt)
 //
 // set and get the integer value
 //
-Int32 rptRcInt::GetVal()
+Int64 rptRcInt::GetVal()
 {
    return m_TheInt;
 }
 
-void rptRcInt::SetVal(Int32 MyInt)
+void rptRcInt::SetVal(Int64 MyInt)
 {
    m_TheInt = MyInt;
 }

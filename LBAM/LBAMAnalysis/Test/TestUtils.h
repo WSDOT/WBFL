@@ -100,7 +100,7 @@ static void DumpDeflectionResults(std::_tofstream& os, ILongArray* pois , CComPt
       res->GetResult( &ldx, &ldy, &lrz, &rdx, &rdy, &rrz);
 
       // print in diagram form
-      long pid;
+      PoiIDType pid;
       pois->get_Item(i,&pid);
       os<< pid<<", "<<poi_locs[i]<<", "<< ldx<<", "<<ldy<<", "<<lrz<<", "<< rdx<<", "<<rdy<<", "<<rrz<< std::endl;
    }
@@ -122,7 +122,7 @@ static void DumpSupportDeflectionResults(std::_tofstream& os, ILongArray* pois ,
       Float64 dx, dy, rz;
       res->GetResult( &dx, &dy, &rz);
 
-      long pid;
+      PoiIDType pid;
       pois->get_Item(i,&pid);
       os<< pid <<", "<< dx<<", "<<dy<<", "<<rz<< std::endl;
    }
@@ -146,7 +146,7 @@ static void DumpReactionResults(std::_tofstream& os, ILongArray* pois , CComPtr<
       Float64 fx, fy, mz;
       res->GetResult(&fx, &fy, &mz);
 
-      long pid;
+      PoiIDType pid;
       pois->get_Item(i, &pid);
       os<< pid<<", "<< fx<<", "<<fy<<", "<<mz<< std::endl;
    }
@@ -164,7 +164,7 @@ static void DumpStressResults(std::_tofstream& os, ILongArray* pois , CComPtr<IS
       CComPtr<ISectionStressResult> res;
       pres->get_Item(i,&res);
 
-      long pid;
+      PoiIDType pid;
       pois->get_Item(i,&pid);
 
       CollectionIndexType num_left, num_right;

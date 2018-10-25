@@ -62,7 +62,7 @@ public:
       (*factory)->AddRef();
    }
 
-   STDMETHOD_(void,AddSocket)(long id,IPoint2d* pos,iSocket** socket)
+   STDMETHOD_(void,AddSocket)(IDType id,IPoint2d* pos,iSocket** socket)
    {
       CComPtr<iSocket> pNewSocket;
       m_pSocketFactory->CreateSocket(id,pos,&pNewSocket);
@@ -73,7 +73,7 @@ public:
       (*socket)->AddRef();
    }
 
-   STDMETHOD_(void,GetSocket)(long key,AccessType access,iSocket** socket)
+   STDMETHOD_(void,GetSocket)(IDType key,AccessType access,iSocket** socket)
    {
       GetSocket_Private(key,access,socket);
    }
@@ -99,12 +99,12 @@ public:
       }
    }
 
-   STDMETHOD_(long,GetSocketCount)()
+   STDMETHOD_(CollectionIndexType,GetSocketCount)()
    {
       return m_Sockets.size();
    }
 
-   STDMETHOD_(void,RemoveSocket)(long key,AccessType access)
+   STDMETHOD_(void,RemoveSocket)(IDType key,AccessType access)
    {
       CComPtr<iSocket> pSocket;
       SocketContainer::iterator iter = GetSocket_Private(key,access,&pSocket);
@@ -138,7 +138,7 @@ public:
       }
    }
 
-   STDMETHOD_(void,Connect)(long key,AccessType access,iPlug* plug,DWORD* pdwCookie)
+   STDMETHOD_(void,Connect)(IDType key,AccessType access,iPlug* plug,DWORD* pdwCookie)
    {
       CComPtr<iSocket> pSocket;
       GetSocket(key,access,&pSocket);
@@ -148,7 +148,7 @@ public:
       }
    }
 
-   STDMETHOD_(void,Disconnect)(long key,AccessType access,DWORD dwCookie)
+   STDMETHOD_(void,Disconnect)(IDType key,AccessType access,DWORD dwCookie)
    {
       CComPtr<iSocket> pSocket;
       GetSocket(key,access,&pSocket);
@@ -163,17 +163,18 @@ protected:
 private:
    CComPtr<iSocketFactory> m_pSocketFactory;
 
-   SocketContainer::iterator GetSocket_Private(long key,AccessType access,iSocket** socket)
+   SocketContainer::iterator GetSocket_Private(IDType key,AccessType access,iSocket** socket)
    {
       *socket = NULL;
       if ( access == atByIndex )
       {
-         if ( key < 0 || (long)m_Sockets.size() <= key )
+         IndexType index = (IndexType)key;
+         if ( index < 0 || m_Sockets.size() <= index )
             return m_Sockets.end();
 
-         (*socket) = m_Sockets[key];
+         (*socket) = m_Sockets[index];
          (*socket)->AddRef();
-         return m_Sockets.begin() + key;
+         return m_Sockets.begin() + index;
       }
       else
       {

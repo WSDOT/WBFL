@@ -121,7 +121,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the number of transactions in the macro.
-   int GetTxnCount();
+   CollectionIndexType GetTxnCount();
 
 protected:
    // GROUP: DATA MEMBERS

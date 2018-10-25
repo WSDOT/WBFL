@@ -199,7 +199,7 @@ BOOL CLBAMViewerDoc::OnOpenDocument(LPCTSTR lpszPathName)
    hr = pLoad->Open(CComBSTR(lpszPathName));
    if (FAILED(hr))
    {
-      AfxMessageBox("Error Opening File - Probably doesn't exist", MB_OK||MB_ICONEXCLAMATION);
+      AfxMessageBox(_T("Error Opening File - Probably doesn't exist"), MB_OK||MB_ICONEXCLAMATION);
       return FALSE;
    }
 
@@ -222,7 +222,7 @@ BOOL CLBAMViewerDoc::OnOpenDocument(LPCTSTR lpszPathName)
    }
    else
    {
-      // MessageBox("No Stages exist for LBAM. There must be at least one","Error", MB_OK||MB_ICONEXCLAMATION);
+      // MessageBox(_T("No Stages exist for LBAM. There must be at least one"),_T("Error"), MB_OK||MB_ICONEXCLAMATION);
       return FALSE;
    }
 

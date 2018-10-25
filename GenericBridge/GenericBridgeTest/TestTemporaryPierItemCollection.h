@@ -49,8 +49,8 @@ END_COM_MAP()
 // ITemporaryPierItemCollectionEvents
 public:
    STDMETHOD(OnTemporaryPierItemChanged)(/*[in]*/ ITemporaryPierItem* tpi);
-   STDMETHOD(OnTemporaryPierItemAdded)(/*[in]*/ long idx);
-   STDMETHOD(OnTemporaryPierItemRemoved)(/*[in]*/ long id);
+   STDMETHOD(OnTemporaryPierItemAdded)(/*[in]*/ IDType id);
+   STDMETHOD(OnTemporaryPierItemRemoved)(/*[in]*/ IDType id);
 
 private:
    bool m_bTestState;

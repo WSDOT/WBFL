@@ -169,7 +169,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the number of listeners registered with this object.
-   Int32 ListenerCount() const;
+   CollectionIndexType ListenerCount() const;
 
    //------------------------------------------------------------------------
    // Returns true if in the damaged state.

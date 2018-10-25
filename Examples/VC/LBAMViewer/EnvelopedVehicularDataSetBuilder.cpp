@@ -20,7 +20,7 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 
 EnvelopedVehicularDataSetBuilder::EnvelopedVehicularDataSetBuilder(LiveLoadModelType llmType, 
-                                                                   long vehicleIndex, llResponseType respType,
+                                                                   VehicleIndexType vehicleIndex, llResponseType respType,
                                                                    IEnvelopedVehicularResponse* response):
 m_pVehicularResponse(response),
 m_LlmType(llmType),
@@ -53,7 +53,7 @@ void EnvelopedVehicularDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblAr
 CString EnvelopedVehicularDataSetBuilder::GetDescription()
 {
    CString tmp;
-   tmp.Format("Enveloped Live Load Response For %s %d", LL_NAMES[m_LlmType], m_VehicleIndex);
+   tmp.Format(_T("Enveloped Live Load Response For %s %d"), LL_NAMES[m_LlmType], m_VehicleIndex);
 
    return tmp;
 }
@@ -121,12 +121,12 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
       if (iopt == 0)
       {
          optimization = ( currRt==CLBAMViewerDoc::rtFy ? optMinimize : optMaximize);
-         str.Format("Env. %s %d - Max", LL_NAMES[m_LlmType], m_VehicleIndex);
+         str.Format(_T("Env. %s %d - Max"), LL_NAMES[m_LlmType], m_VehicleIndex);
       }
       else
       {
          optimization = ( currRt==CLBAMViewerDoc::rtFy ? optMaximize : optMinimize);
-         str.Format("Env. %s %d - Min", LL_NAMES[m_LlmType], m_VehicleIndex);
+         str.Format(_T("Env. %s %d - Min"), LL_NAMES[m_LlmType], m_VehicleIndex);
       }
 
       // create dataset 
@@ -272,11 +272,11 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(ILongArray* poiList, 
       CComQIPtr<iSymbolLegendEntry> entry(fac);
 
       entry->put_Color(color);
-      entry->put_SymbolCharacterCode(47+isp);
+      entry->put_SymbolCharacterCode(DWORD(47+isp));
       entry->put_DoDrawLine(TRUE);
 
       CString str;
-      str.Format("Env. %s %d", LL_NAMES[m_LlmType], m_VehicleIndex);
+      str.Format(_T("Env. %s %d"), LL_NAMES[m_LlmType], m_VehicleIndex);
       CComBSTR bstr(str);
       entry->put_Name(bstr);
 
@@ -351,7 +351,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(ILongArray* poiList, 
 
 void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                        CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                       std::ostream& os)
+                                       std::_tostream& os)
 {
    HRESULT hr;
    bool is_force; // force or deflection
@@ -371,52 +371,52 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportli
          ATLASSERT(0);
    }
 
-   os<<C_R<<"------------------------------------------"<<C_R;
+   os<<C_R<<_T("------------------------------------------")<<C_R;
 
-   os<<(is_force?"Reactions":"Support Deflections")<<" for Enveloped Vehicular Live Load: ";
+   os<<(is_force?_T("Reactions"):_T("Support Deflections"))<<_T(" for Enveloped Vehicular Live Load: ");
    switch (m_LlmType)
    {
    case lltNone:
-      os <<"No Truck";
+      os <<_T("No Truck");
       break;
    case lltDeflection:
-      os <<"Deflection Truck";
+      os <<_T("Deflection Truck");
       break;
    case lltDesign:
-      os <<"Design Truck";
+      os <<_T("Design Truck");
       break;
    case lltPedestrian:
-      os <<"Pedestrian Truck";
+      os <<_T("Pedestrian Truck");
       break;
    case lltFatigue:
-      os <<"Fatigue Truck";
+      os <<_T("Fatigue Truck");
       break;
    case lltPermit:
-      os <<"Permit Truck";
+      os <<_T("Permit Truck");
       break;
    case lltSpecial:
-      os <<"Special Truck";
+      os <<_T("Special Truck");
       break;
    default:
       _ASSERT(0);
    }
 
-   os <<C_R<<" Vehicle Index = "<<m_VehicleIndex;
+   os <<C_R<<_T(" Vehicle Index = ")<<m_VehicleIndex;
 
    // deal with vehicle type
-   std::string strvlc;
+   std::_tstring strvlc;
    VehicularLoadConfigurationType config_type = GetConfigType(m_RespType, strvlc);
 
-   os<<" Config = "<<strvlc<<" - Enveloped"<< C_R;
+   os<<_T(" Config = ")<<strvlc<<_T(" - Enveloped")<< C_R;
 
-   os<<" Results for Stage: "<<(const char*)CString(currStg)<<C_R<<C_R;
+   os<<_T(" Results for Stage: ")<<(const TCHAR*)CString(currStg)<<C_R<<C_R;
 
    if (is_force)
-      os<<"Support        Rx         Ry           Mz"<<C_R;
+      os<<_T("Support        Rx         Ry           Mz")<<C_R;
    else
-      os<<"Support        Dx         Dy           Rz"<<C_R;
+      os<<_T("Support        Dx         Dy           Rz")<<C_R;
 
-   os<<"------- ------------ ------------ ------------"<<C_R;
+   os<<_T("------- ------------ ------------ ------------")<<C_R;
 
    // get results
    CComPtr<ILiveLoadModelResults> fx_min, fy_min, fz_min;
@@ -461,9 +461,9 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportli
       hr = fz_min->GetResult(i, &rz, &null_config);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i,&spt);
-      os<<(i==0?"Min":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
+      os<<(i==0?_T("Min"):_T("   "))<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
 
    CComPtr<ILiveLoadModelResults> fx_max, fy_max, fz_max;
@@ -502,9 +502,9 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportli
       hr = fz_max->GetResult(i, &rz, &null_config);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i,&spt);
-      os<<(i==0?"Max":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
+      os<<(i==0?_T("Max"):_T("   "))<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
 
 }

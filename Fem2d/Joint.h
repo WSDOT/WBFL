@@ -57,7 +57,7 @@ public:
 
    // IMPORTANT!!!
    // OnCreate must be called once and only once by creator.
-   void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, long ID, Float64 x=0.0, Float64 y=0.0);
+   void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, JointIDType ID, Float64 x=0.0, Float64 y=0.0);
 
    // IStructuredStorage - sort of
    STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
@@ -100,8 +100,8 @@ private:
 
 private:
    // data members used for fe solution
-   long   m_CondensedDOF[NumDof];         // Condensed DOF numbers
-   long   m_GlobalDOF[NumDof];            // Global DOF numbers
+   LONG   m_CondensedDOF[NumDof];         // Condensed DOF numbers
+   LONG   m_GlobalDOF[NumDof];            // Global DOF numbers
    Float64 m_jntLoad[NumDof];              // Joint loads
    Float64 m_dispLoad[NumDof];             // Joint displacement load
    bool   m_dispLoadApplied;              //  was applied?
@@ -118,9 +118,9 @@ private:
 private:
    void Link(CMember* pel);
    void Setup();
-   void InitModel(long nGDOF,long nCDOF,long &nGDOFused,long &nCDOFused);
-   long  GetGlobalDOF(long dof) const;
-   long  GetCondensedDOF(long dof) const;
+   void InitModel(LONG nGDOF,LONG nCDOF,LONG &nGDOFused,LONG &nCDOFused);
+   LONG  GetGlobalDOF(LONG dof) const;
+   LONG  GetCondensedDOF(LONG dof) const;
 
    void ClearLoads();
    void ApplyLoad(CJointLoad *ld);

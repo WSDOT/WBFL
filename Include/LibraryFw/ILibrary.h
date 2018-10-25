@@ -200,11 +200,11 @@ public:
    // INQUIRY
    //------------------------------------------------------------------------
    // Get the number of entries in the library
-   virtual int GetCount( ) const=0;
+   virtual CollectionIndexType GetCount( ) const=0;
 
    //------------------------------------------------------------------------
    // Returns the minimum number of required library entires
-   virtual int GetMinCount() const = 0;
+   virtual CollectionIndexType GetMinCount() const = 0;
 
    //------------------------------------------------------------------------
    // Get a const pointer to an entry by index

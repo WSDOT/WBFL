@@ -76,7 +76,7 @@ public:
    // Description: Explicit c'tor
    // Return:      N/A
    bmfGirderPath(bmfSpan* pSpan, 
-                 Int32 girderIdx,  // zero based index
+                 GirderIndexType girderIdx,  // zero based index
                  Float64 startOffset,
                  bmfMeasuredWhere startWhere,
                  bmfMeasuredHow startHow,
@@ -138,7 +138,7 @@ public:
 
    bmfGirder* GetGirder() const;
 
-   Int32 GetGirderIdx() const;
+   GirderIndexType GetGirderIdx() const;
 
    // ACCESS
 
@@ -160,7 +160,7 @@ protected:
 
 private:
    // DATA MEMBERS
-   Int32 m_GirderIdx;      // Index of associated girder
+   GirderIndexType m_GirderIdx;      // Index of associated girder
 
    Float64 m_OffsetStart;  // Offset from alignment at start of span
    bmfMeasuredWhere m_OffsetStartWhere; // Place where offset is measured
@@ -173,10 +173,10 @@ private:
    bmfSpan* m_pSpan;  // Associated span
    std::auto_ptr<bmfGirder> m_pGirder; // Associated Girder
 
-   Int32 m_StartBrgPnt;    // Id of cogo point at cl girder, cl bearing
-   Int32 m_StartGirderPnt; // Id of cogo point at cl girder, end of girder
-   Int32 m_EndBrgPnt;      // Id of cogo point at cl girder, cl bearing
-   Int32 m_EndGirderPnt;   // Id of cogo point at cl girder, end of girder
+   IDType m_StartBrgPnt;    // Id of cogo point at cl girder, cl bearing
+   IDType m_StartGirderPnt; // Id of cogo point at cl girder, end of girder
+   IDType m_EndBrgPnt;      // Id of cogo point at cl girder, cl bearing
+   IDType m_EndGirderPnt;   // Id of cogo point at cl girder, end of girder
 
    // LIFECYCLE
    bmfGirderPath(const bmfGirderPath&);

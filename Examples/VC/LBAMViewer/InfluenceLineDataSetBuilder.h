@@ -14,7 +14,7 @@
 class InfluenceLineDataSetBuilder : public iDataSetBuilder  
 {
 public:
-	InfluenceLineDataSetBuilder(long poiID, IInfluenceLineResponse* response);
+	InfluenceLineDataSetBuilder(PoiIDType poiID, IInfluenceLineResponse* response);
 	virtual ~InfluenceLineDataSetBuilder();
 
    // iDataSetBuilder
@@ -30,7 +30,7 @@ public:
    virtual CString GetDescription()
    {
       CString tmp;
-      tmp.Format("Influence Line Response for POI %d", m_PoiId);
+      tmp.Format(_T("Influence Line Response for POI %d"), m_PoiId);
       return tmp;
    }
 
@@ -38,7 +38,7 @@ public:
 private:
 	InfluenceLineDataSetBuilder();
 
-   long m_PoiId;
+   PoiIDType m_PoiId;
    CComQIPtr<IInfluenceLineResponse> m_pInfluenceLineResponse;
 
 };

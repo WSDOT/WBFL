@@ -61,7 +61,7 @@ bamLoadFactoryImp::~bamLoadFactoryImp()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bamLoad* bamLoadFactoryImp::DoCreateConcForceY(Int32 elementId,
+bamLoad* bamLoadFactoryImp::DoCreateConcForceY(IDType elementId,
                                           bamElementType type,
                                           Float64 location,
                                           Float64 p,
@@ -76,7 +76,7 @@ bamLoad* bamLoadFactoryImp::DoCreateConcForceY(Int32 elementId,
                            direction);
 } // DoCreateConcForceY
 
-bamLoad* bamLoadFactoryImp::DoCreateUnifForceY(Int32 elementId,
+bamLoad* bamLoadFactoryImp::DoCreateUnifForceY(IDType elementId,
                                           bamElementType type,
                                           Float64 start,
                                           Float64 end,
@@ -93,7 +93,7 @@ bamLoad* bamLoadFactoryImp::DoCreateUnifForceY(Int32 elementId,
                            direction);
 } // DoCreateUnifForceY
 
-bamLoad* bamLoadFactoryImp::DoCreateConcMomentZ(Int32 elementId,
+bamLoad* bamLoadFactoryImp::DoCreateConcMomentZ(IDType elementId,
                                                 bamElementType type,
                                                 Float64 location,
                                                 Float64 m,

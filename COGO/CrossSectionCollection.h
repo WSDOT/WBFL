@@ -101,12 +101,12 @@ public:
 	STDMETHOD(Clear)();
    STDMETHOD(CreateCrossSection)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ ICrossSection* *objCS);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out, retval]*/ ICrossSection* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ long idx,/*[in]*/ ICrossSection* pVal);
-//	STDMETHOD(get_Count)(/*[out, retval]*/ long *pVal);
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ ICrossSection* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ ICrossSection* pVal);
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(Add)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 cpo, /*[in]*/ Float64 left,/*[in]*/ Float64 right,/*[out,retval]*/ICrossSection* *cs);
 	STDMETHOD(AddEx)(/*[in]*/ ICrossSection* csect);
-	STDMETHOD(Remove)(/*[in]*/ long idx);
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
 	STDMETHOD(CrownSlope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope);
 	STDMETHOD(LeftCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
 	STDMETHOD(RightCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
@@ -126,8 +126,8 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
    HRESULT GetCrossSectionData(VARIANT varStation,Float64* pCPO,Float64* pLeft,Float64* pRight);
-   void Advise(ICrossSection* cs,DWORD* pdwCookie);
-   void Unadvise(long idx);
+   void AdviseElement(ICrossSection* cs,DWORD* pdwCookie);
+   void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
 
    CComPtr<ICrossSectionFactory> m_Factory;

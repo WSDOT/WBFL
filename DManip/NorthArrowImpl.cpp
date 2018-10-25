@@ -106,7 +106,7 @@ STDMETHODIMP_(void) CNorthArrowImpl::Draw(CDC* pDC)
 
    UINT nFlag = pDC->SetTextAlign(TA_TOP | TA_CENTER);
    CSize extents = pDC->GetTextExtent("North");
-   long size = 125*extents.cx/100;
+   LONG size = 125*extents.cx/100;
 
    CRect rClient = pView->GetViewRect();
 
@@ -122,8 +122,8 @@ STDMETHODIMP_(void) CNorthArrowImpl::Draw(CDC* pDC)
 
    CPoint center = box.CenterPoint();
 
-   long ox = size/2;
-   long oy = size/2;
+   LONG ox = size/2;
+   LONG oy = size/2;
 
    Float64 c = cos(m_Direction);
    Float64 s = sin(m_Direction);
@@ -190,7 +190,7 @@ STDMETHODIMP_(CRect) CNorthArrowImpl::GetBoundingBox()
    CSize extents(0,0);
 
    // Find the edges of the text block
-   long top, left, right, bottom;
+   LONG top, left, right, bottom;
    top    = p.y;
    bottom = p.y + extents.cy;
    left   = p.x - extents.cx/2;
@@ -276,12 +276,12 @@ STDMETHODIMP_(Float64) CNorthArrowImpl::GetDirection()
    return m_Direction;
 }
 
-STDMETHODIMP_(void) CNorthArrowImpl::SetSize(long size)
+STDMETHODIMP_(void) CNorthArrowImpl::SetSize(LONG size)
 {
    m_Size = size;
 }
 
-STDMETHODIMP_(long) CNorthArrowImpl::GetSize()
+STDMETHODIMP_(LONG) CNorthArrowImpl::GetSize()
 {
    return m_Size;
 }

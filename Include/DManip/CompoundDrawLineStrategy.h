@@ -31,8 +31,8 @@
 interface iCompoundDrawLineStrategy : public iDrawLineStrategy
 {
    STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) PURE;
-   STDMETHOD_(void,RemoveStrategy)(long index) PURE;
-   STDMETHOD_(long,Count)() PURE;
+   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) PURE;
+   STDMETHOD_(CollectionIndexType,Count)() PURE;
 };
 
 #endif // INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_

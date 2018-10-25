@@ -45,7 +45,7 @@ static char THIS_FILE[] = __FILE__;
 //======================== LIFECYCLE  =======================================
 bmfSplicedGirderTemplate::bmfSplicedGirderTemplate(const std::_tstring& name,
                                                    const bmfGirderProfile* pProfile,
-                                                   Uint16 nSplices,
+                                                   CollectionIndexType nSplices,
                                                    Float64* segmentLength,
                                                    Float64* closurePourSize,
                                                    const matConcreteEx* pConc,
@@ -61,7 +61,7 @@ m_pStrand( pStrand ),
 m_pPTStrand( pPTStrand )
 {
    m_nSplices = nSplices;
-   for ( Uint16 splice = 0; splice < nSplices; splice++ )
+   for ( CollectionIndexType splice = 0; splice < nSplices; splice++ )
    {
       m_ClosurePourSize[splice]  = closurePourSize[splice];
       m_SegmentLength[splice]    = segmentLength[splice];
@@ -105,7 +105,7 @@ SegmentIndexType bmfSplicedGirderTemplate::GetNumSegments() const
    return GetNumSplices() + 1;
 }
 
-Uint16 bmfSplicedGirderTemplate::GetNumSplices() const
+CollectionIndexType bmfSplicedGirderTemplate::GetNumSplices() const
 {
    return m_nSplices;
 }
@@ -209,12 +209,12 @@ const bmfDucts& bmfSplicedGirderTemplate::GetDucts() const
    return m_Ducts;
 }
 
-void bmfSplicedGirderTemplate::SetClosurePourSize(Uint16 splice,Float64 size)
+void bmfSplicedGirderTemplate::SetClosurePourSize(CollectionIndexType splice,Float64 size)
 {
    m_ClosurePourSize[splice] = size;
 }
 
-Float64 bmfSplicedGirderTemplate::GetClosurePourSize(Uint16 splice) const
+Float64 bmfSplicedGirderTemplate::GetClosurePourSize(CollectionIndexType splice) const
 {
    return m_ClosurePourSize[splice];
 }

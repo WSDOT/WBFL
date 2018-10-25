@@ -31,7 +31,7 @@
 class bamConcForceYImp : public bamConcForceY
 {
 public:
-   bamConcForceYImp(Int32 elementId,
+   bamConcForceYImp(IDType elementId,
                 bamElementType type,
                 Float64 location,
                 Float64 p,
@@ -46,7 +46,7 @@ protected:
 class bamUnifForceYImp : public bamUnifForceY
 {
 public:
-   bamUnifForceYImp(Int32 elementId,
+   bamUnifForceYImp(IDType elementId,
                 bamElementType type,
                 Float64 start,
                 Float64 end,
@@ -62,7 +62,7 @@ protected:
 class bamConcMomentZImp : public bamConcMomentZ
 {
 public:
-   bamConcMomentZImp(Int32 elementId,
+   bamConcMomentZImp(IDType elementId,
                      bamElementType type,
                      Float64 location,
                      Float64 m,

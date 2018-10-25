@@ -56,12 +56,12 @@ HRESULT CSocketImpl::FinalConstruct()
    return m_Position.CoCreateInstance(CLSID_Point2d);
 }
 
-STDMETHODIMP_(void) CSocketImpl::SetID(long id)
+STDMETHODIMP_(void) CSocketImpl::SetID(IDType id)
 {
    m_ID = id;
 }
 
-STDMETHODIMP_(long) CSocketImpl::GetID()
+STDMETHODIMP_(IDType) CSocketImpl::GetID()
 {
    return m_ID;
 }

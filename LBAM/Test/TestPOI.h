@@ -55,10 +55,10 @@ END_COM_MAP()
 
 public:
    STDMETHOD(OnPOIChanged)(/*[in]*/IPOI* POI, ChangeType change);
-   STDMETHOD(OnPOIRenamed)(/*[in]*/long oldId, long newId);
+   STDMETHOD(OnPOIRenamed)(/*[in]*/PoiIDType oldId, PoiIDType newId);
 
    STDMETHOD(OnPOIsChanged)(/*[in]*/IPOI* POI, ChangeType change);
-   STDMETHOD(OnPOIsRenamed)(/*[in]*/long oldId, long newId);
+   STDMETHOD(OnPOIsRenamed)(/*[in]*/PoiIDType oldId, PoiIDType newId);
    STDMETHOD(OnPOIsAdded)(/*[in]*/IPOI* POI);
    STDMETHOD(OnPOIsBeforeRemove)(/*[in]*/IPOI* POI);
 

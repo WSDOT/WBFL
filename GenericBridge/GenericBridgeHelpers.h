@@ -44,15 +44,15 @@
 #define LOCATION_OFFSET        10
 #define SIDE_OFFSET             1
 
-extern const long g_AlignmentKey;
-extern const long g_CLBridgeKey;
+extern const CogoElementKey g_AlignmentKey;
+extern const CogoElementKey g_CLBridgeKey;
 
-HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal);
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal);
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal);
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,long* pVal);
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,long* pVal);
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,long* pVal);
+HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,CogoElementKey* pVal);
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal);
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal);
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoElementKey* pVal);
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoElementKey* pVal);
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoElementKey* pVal);
 HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2d* *left,IPoint2d* *right);
 
 //long GB_GetGirderLineIndex(IGenericBridge* pBridge,ISuperstructureMemberCollection* members);

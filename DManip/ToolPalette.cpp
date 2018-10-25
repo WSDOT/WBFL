@@ -82,11 +82,11 @@ void CToolPalette::AddTool(iTool* tool)
    m_ctrlToolTip.AddTool(pWnd,tool->GetToolTipText(),rTool,tool->GetID());
 }
 
-void CToolPalette::GetTool(long idx,iTool** tool)
+void CToolPalette::GetTool(CollectionIndexType idx,iTool** tool)
 {
    *tool = 0;
 
-   if ( idx < 0 || (long)m_Tools.size() <= idx )
+   if ( idx < 0 || m_Tools.size() <= idx )
       return; // Index is out of range
 
    CComPtr<iTool> t = m_Tools[idx];
@@ -94,7 +94,7 @@ void CToolPalette::GetTool(long idx,iTool** tool)
    (*tool)->AddRef();
 }
 
-void CToolPalette::FindTool(UINT id,iTool** tool)
+void CToolPalette::FindTool(IDType id,iTool** tool)
 {
    (*tool) = 0;
    ToolContainer::iterator iter;
@@ -111,9 +111,9 @@ void CToolPalette::FindTool(UINT id,iTool** tool)
 
 }
 
-void CToolPalette::RemoveTool(long idx)
+void CToolPalette::RemoveTool(CollectionIndexType idx)
 {
-   if ( idx < 0 || (long)m_Tools.size() <= idx )
+   if ( idx < 0 || m_Tools.size() <= idx )
       return; // Index is out of range
 
    CComPtr<iTool> tool = m_Tools[idx];
@@ -126,7 +126,7 @@ void CToolPalette::RemoveTool(long idx)
    pWnd->DestroyWindow();
 }
 
-void CToolPalette::RemoveTool(UINT id)
+void CToolPalette::RemoveTool(IDType id)
 {
    ToolContainer::iterator iter;
    for ( iter = m_Tools.begin(); iter != m_Tools.end(); iter++ )

@@ -796,11 +796,11 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
 
    std::auto_ptr<gmPolygon> polygon( circseg.CreatePolygon() );
 
-   long nPoints = sizeof(px)/sizeof(Float64);
-   long cPoints = polygon->GetNumPoints();
+   CollectionIndexType nPoints = sizeof(px)/sizeof(Float64);
+   CollectionIndexType cPoints = polygon->GetNumPoints();
    TRY_TESTME(cPoints == nPoints); // nPoints polypoints
    gmPolyPointIter iter(polygon.get());
-   long i = 0;
+   CollectionIndexType i = 0;
    for ( iter.Begin(); iter; iter.Next() )
    {
       const gpPoint2d* p = iter.CurrentPoint();

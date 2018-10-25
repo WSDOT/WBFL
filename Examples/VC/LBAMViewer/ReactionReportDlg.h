@@ -23,7 +23,7 @@ public:
 	//}}AFX_DATA
 
 
-   std::ostringstream m_Stream;
+   std::_tostringstream m_Stream;
 
 // Overrides
 	// ClassWizard generated virtual function overrides

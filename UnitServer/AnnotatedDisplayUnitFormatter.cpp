@@ -253,7 +253,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
    }
 
    // compute length of character string
-   int nChar;
+   size_t nChar;
    nChar = (v1 == 0) ? 1 : (int)log10((Float64)v1) + 1;
    nChar += width;
    nChar += _tcslen(m_bstrSeperator);

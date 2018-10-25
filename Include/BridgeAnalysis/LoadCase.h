@@ -35,24 +35,24 @@ class bamBridgeModel;
 class bamLoadCase
 {
 public:
-   bamLoadCase(Int32 id);
+   bamLoadCase(IDType id);
    virtual ~bamLoadCase();
 
-   Int32 GetID();
+   IDType GetID();
 
-   Int32 AddLoad(bamLoad* pLoad);
-   void RemoveLoad(Int32 loadIdx);
+   CollectionIndexType AddLoad(bamLoad* pLoad);
+   void RemoveLoad(CollectionIndexType loadIdx);
 
    virtual void Apply();
    virtual void Remove();
 
-   Int32 GetLoadCount() const;
+   CollectionIndexType GetLoadCount() const;
 
    void Enable();
    void Disable();
    bool IsEnabled() const;
 
-   Int32 GetID() const;
+   IDType GetID() const;
 
    bamBridgeModel& GetBridgeModel();
 
@@ -68,7 +68,7 @@ public:
    typedef LoadContainer::iterator LoadIterator;
 
 private:
-   Int32 m_ID;
+   IDType m_ID;
    bool m_Enabled;
 
    // :COMPILER: rab 11.17.96 : Supressed warning

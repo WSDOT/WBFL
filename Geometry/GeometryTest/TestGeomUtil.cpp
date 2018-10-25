@@ -689,14 +689,14 @@ void CTestGeomUtil::Test2d()
    p3->Move(-30,5);
    p4->Move(0,0);
    VARIANT_BOOL bContains;
-   TRY_TEST( util2d->DoesLineContainPoint(NULL,p3,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineContainPoint(l1,NULL,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,NULL),         E_POINTER );
+   TRY_TEST( util2d->DoesLineContainPoint(NULL,p3,1.0e-6,&bContains), E_INVALIDARG );
+   TRY_TEST( util2d->DoesLineContainPoint(l1,NULL,1.0e-6,&bContains), E_INVALIDARG );
+   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,1.0e-6,NULL),         E_POINTER );
 
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_TRUE );
 
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p4,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineContainPoint(l1,p4,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_FALSE );
 
    //
@@ -708,20 +708,20 @@ void CTestGeomUtil::Test2d()
    seg1->putref_EndPoint(p2);
    p3->Move(-30,5);
    p4->Move(0,0);
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(NULL,p3,&bContains),   E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,NULL,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,NULL),         E_POINTER );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(NULL,p3,1.0e-6,&bContains),   E_INVALIDARG );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,NULL,1.0e-6,&bContains), E_INVALIDARG );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,1.0e-6,NULL),         E_POINTER );
 
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_TRUE );
 
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p4,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p4,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_FALSE );
 
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p1,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p1,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_TRUE );
 
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p2,&bContains), S_OK );
+   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p2,1.0e-6,&bContains), S_OK );
    TRY_TEST( bContains, VARIANT_TRUE );
 
    //

@@ -20,7 +20,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-BasicLiveLoadDataSetBuilder::	BasicLiveLoadDataSetBuilder(LiveLoadModelType llmType, long llIndex, 
+BasicLiveLoadDataSetBuilder::	BasicLiveLoadDataSetBuilder(LiveLoadModelType llmType, VehicleIndexType llIndex, 
                                                           llResponseType respType,
                                                           ILBAMModel* model, IBasicVehicularResponse* response):
 m_LlmType(llmType),
@@ -45,7 +45,7 @@ bool BasicLiveLoadDataSetBuilder::HasTruckPlacement()
    return m_IsTruck;
 }
 
-void BasicLiveLoadDataSetBuilder::GetTruckInfo(LiveLoadModelType* modelType, long* vehicleIndex, ILiveLoadConfiguration** placement)
+void BasicLiveLoadDataSetBuilder::GetTruckInfo(LiveLoadModelType* modelType, VehicleIndexType* vehicleIndex, ILiveLoadConfiguration** placement)
 {
    ATLASSERT(m_IsTruck);
 
@@ -73,7 +73,7 @@ void BasicLiveLoadDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
 CString BasicLiveLoadDataSetBuilder::GetDescription()
 {
    CString tmp;
-   tmp.Format("Basic Live Load Response For %s %d", LL_NAMES[m_LlmType], m_LlIndex);
+   tmp.Format(_T("Basic Live Load Response For %s %d"), LL_NAMES[m_LlmType], m_LlIndex);
 
    return tmp;
 }
@@ -100,7 +100,7 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
    entry->put_DoDrawLine(TRUE);
 
    CString tmp;
-   tmp.Format("%s %d", LL_NAMES[m_LlmType], m_LlIndex);
+   tmp.Format(_T("%s %d"), LL_NAMES[m_LlmType], m_LlIndex);
    CComBSTR btmp(tmp);
    entry->put_Name(btmp);
 
@@ -181,11 +181,11 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblA
       CComQIPtr<iSymbolLegendEntry> entry(fac);
 
       entry->put_Color(color);
-      entry->put_SymbolCharacterCode(47+isp);
+      entry->put_SymbolCharacterCode(DWORD(47+isp));
       entry->put_DoDrawLine(TRUE);
 
       CString tmp;
-      tmp.Format("%s %d - SP %d", LL_NAMES[m_LlmType], m_LlIndex, isp);
+      tmp.Format(_T("%s %d - SP %d"), LL_NAMES[m_LlmType], m_LlIndex, isp);
       CComBSTR btmp(tmp);
       entry->put_Name(btmp);
 
@@ -260,7 +260,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(ILongArray* poiList, IDblA
 
 void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                        CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                       std::ostream& os)
+                                       std::_tostream& os)
 {
    HRESULT hr;
    os<<C_R<<"------------------------------------------"<<C_R;
@@ -313,7 +313,7 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, B
    os <<C_R<<" Vehicle Index = "<<m_LlIndex;
 
    // deal with vehicle type
-   std::string strvlc;
+   std::_tstring strvlc;
    VehicularLoadConfigurationType config_type = GetConfigType(m_RespType, strvlc);
 
    os<<" Config = "<<strvlc<< C_R;
@@ -349,14 +349,14 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, B
       return;
    }
 
-   os<<" Results for Stage: "<<(const char*)CString(currStg)<<C_R<<C_R;
+   os<<_T(" Results for Stage: ")<<(const TCHAR*)CString(currStg)<<C_R<<C_R;
 
    if (is_force)
-      os<<"Support        Rx         Ry           Mz"<<C_R;
+      os<<_T("Support        Rx         Ry           Mz")<<C_R;
    else
-      os<<"Support        Dx         Dy           Rz"<<C_R;
+      os<<_T("Support        Dx         Dy           Rz")<<C_R;
 
-   os<<"------- ------------ ------------ ------------"<<C_R;
+   os<<_T("------- ------------ ------------ ------------")<<C_R;
 
    // clone current placement so we don't fire events when changing values
    CComPtr<ILiveLoadConfiguration> config;
@@ -392,7 +392,7 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, B
       hr = result->GetResult(&rx, &ry, &rz);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i, &spt);
       os<<(i==0?"Min":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
@@ -423,7 +423,7 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(ILongArray* supportlist, B
       hr = result->GetResult(&rx, &ry, &rz);
       PROCESS_HR(hr);
 
-      long spt;
+      IDType spt;
       supportlist->get_Item(i,&spt);
       os<<(i==0?"Max":"   ")<<std::setw(4)<<spt<<std::fixed<<std::setprecision(2)<<std::setw(13)<<rx<<std::setw(13)<<ry<<std::setw(13)<<rz<<C_R;
    }
@@ -497,7 +497,7 @@ void BasicLiveLoadDataSetBuilder::InitializePlacement()
       // set up initial variable axle spacing
       AxleIndexType var_spc_idx;
       vehicular_load->get_VariableAxle(&var_spc_idx);
-      if (0 <= var_spc_idx)
+      if ( var_spc_idx != INVALID_INDEX )
       {
          // truck has variable axle spacing - initialize spacing to minimum
          double min_var_spc;

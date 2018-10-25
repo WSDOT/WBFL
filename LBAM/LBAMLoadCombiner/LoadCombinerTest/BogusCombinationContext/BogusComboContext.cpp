@@ -27,9 +27,17 @@
 #include "stdafx.h"
 
 #if defined _DEBUG
-#include "Debug\BogusCombinationContext.h"
+#if defined _WIN64
+#include "x64\Debug\BogusCombinationContext.h"
 #else
-#include "Release\BogusCombinationContext.h"
+#include "Win32\Debug\BogusCombinationContext.h"
+#endif
+#else
+#if defined _WIN64
+#include "x64\Release\BogusCombinationContext.h"
+#else
+#include "Win32\Release\BogusCombinationContext.h"
+#endif
 #endif
 
 #include "BogusComboContext.h"
@@ -716,7 +724,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(BSTR LoadGroup, ILongArray* POIs,
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -734,7 +742,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(BSTR LoadGroup, ILongArray* 
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -752,7 +760,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(BSTR LoadGroup, ILongArray* PO
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -770,7 +778,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(BSTR LoadGroup, ILong
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -788,7 +796,7 @@ STDMETHODIMP CBogusComboContext::ComputeStresses(BSTR LoadGroup, ILongArray* POI
 	if (results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -807,7 +815,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(ILongArray* POIs, BSTR stage, Liv
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -825,7 +833,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(ILongArray* POIs, BSTR stage
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -843,7 +851,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(ILongArray* POIs, BSTR stage, 
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -861,7 +869,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(ILongArray* POIs, BST
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    BenchMarkIterator it = m_BenchMarks.find(poi);
@@ -887,7 +895,7 @@ STDMETHODIMP CBogusComboContext::ComputeForces(ILongArray* POIs, BSTR stage, Res
 	if (Results == NULL)
 		return E_POINTER;
 
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    OptimizationType optmization;
@@ -909,7 +917,7 @@ STDMETHODIMP CBogusComboContext::ComputeDeflections(ILongArray* POIs, BSTR stage
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    OptimizationType optmization;
@@ -931,7 +939,7 @@ STDMETHODIMP CBogusComboContext::ComputeReactions(ILongArray* POIs, BSTR stage, 
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    OptimizationType optmization;
@@ -953,7 +961,7 @@ STDMETHODIMP CBogusComboContext::ComputeSupportDeflections(ILongArray* POIs, BST
 	if (Results == NULL)
 		return E_POINTER;
 		
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    OptimizationType optmization;
@@ -975,7 +983,7 @@ STDMETHODIMP CBogusComboContext::ComputeStresses(ILongArray* POIs, BSTR stage, I
 	if (results == NULL)
 		return E_POINTER;
 
-   long poi;
+   PoiIDType poi;
    POIs->get_Item(0,&poi);
 
    OptimizationType optmization;
@@ -1014,7 +1022,7 @@ STDMETHODIMP CBogusComboContext::GetActiveLoadGroups(IBstrArray* *loadGroups)
 	return S_OK;
 }
 // IGetCombinationFactors
-STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(LONG POI, BSTR stage, LoadCombinationType type, Float64 * minLoadModifier, Float64 * maxLoadModifier)
+STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(PoiIDType poi, BSTR stage, LoadCombinationType type, Float64 * minLoadModifier, Float64 * maxLoadModifier)
 {
 	if (minLoadModifier == NULL)
 		return E_POINTER;
@@ -1022,7 +1030,7 @@ STDMETHODIMP CBogusComboContext::GetPOICombinationFactors(LONG POI, BSTR stage, 
 	if (maxLoadModifier == NULL)
 		return E_POINTER;
 
-   BenchMarkIterator it = m_BenchMarks.find(POI);
+   BenchMarkIterator it = m_BenchMarks.find(poi);
    if (it!=m_BenchMarks.end())
    {
       return it->second.GetCombinationFactors(stage, type, minLoadModifier, maxLoadModifier);
@@ -1047,25 +1055,25 @@ STDMETHODIMP CBogusComboContext::GetSupportCombinationFactors(SupportIDType supp
 	return E_FAIL;
 }
 // IAnalysisPOIs
-STDMETHODIMP CBogusComboContext::get_SpanPoiIncrement(LONG * pVal)
+STDMETHODIMP CBogusComboContext::get_SpanPoiIncrement(PoiIDType * pVal)
 {
 	if (pVal == NULL)
 		return E_POINTER;
 		
 	return E_NOTIMPL;
 }
-STDMETHODIMP CBogusComboContext::put_SpanPoiIncrement(LONG pVal)
+STDMETHODIMP CBogusComboContext::put_SpanPoiIncrement(PoiIDType pVal)
 {
 	return E_NOTIMPL;
 }
-STDMETHODIMP CBogusComboContext::get_CantileverPoiIncrement(LONG * pVal)
+STDMETHODIMP CBogusComboContext::get_CantileverPoiIncrement(PoiIDType * pVal)
 {
 	if (pVal == NULL)
 		return E_POINTER;
 		
 	return E_NOTIMPL;
 }
-STDMETHODIMP CBogusComboContext::put_CantileverPoiIncrement(LONG pVal)
+STDMETHODIMP CBogusComboContext::put_CantileverPoiIncrement(PoiIDType pVal)
 {
 	return E_NOTIMPL;
 }
@@ -1078,16 +1086,12 @@ STDMETHODIMP CBogusComboContext::GetSuperstructurePois(BSTR stage, ILongArray* *
 		return E_POINTER;
 
    // get poi id's from list of benchmarks
-   long siz = m_BenchMarks.size();
-
    CComPtr<ILongArray> pois;
    pois.CoCreateInstance(CLSID_LongArray);
 
-   long i=0;
    for (BenchMarkIterator it=m_BenchMarks.begin(); it!=m_BenchMarks.end(); it++)
    {
       pois->Add(it->first);
-      i++;
    }
 
    *poiIDs = pois.Detach();
@@ -1309,7 +1313,7 @@ STDMETHODIMP CBogusComboContext::Clone(ILoadCombinations * * __MIDL_0048)
 }
 
 // IGetStressPoints
-STDMETHODIMP CBogusComboContext::GetStressPointsAtPOI(LONG poiID, BSTR stage, IStressPoints * * LeftStressPoints, IStressPoints * * RightStressPoints)
+STDMETHODIMP CBogusComboContext::GetStressPointsAtPOI(PoiIDType poiID, BSTR stage, IStressPoints * * LeftStressPoints, IStressPoints * * RightStressPoints)
 {
 	if (LeftStressPoints == NULL)
 		return E_POINTER;

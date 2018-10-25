@@ -84,7 +84,7 @@ void CTestPOI::Test()
    // first test a poi by itself
    CComPtr<IPOI> ppoi;
    TRY_TEST(ppoi.CoCreateInstance( CLSID_POI ), S_OK );
-   long id;
+   PoiIDType id;
    Float64 d;
    TRY_TEST( ppoi->get_ID(&id), S_OK );
    TRY_TEST( id, -1 );
@@ -340,7 +340,7 @@ STDMETHODIMP CTestPOI::OnPOIChanged(IPOI* POI, ChangeType change)
    return S_OK;
 }
 
-STDMETHODIMP CTestPOI::OnPOIRenamed(long oldID, long newID)
+STDMETHODIMP CTestPOI::OnPOIRenamed(PoiIDType oldID, PoiIDType newID)
 {
    m_csPOIFired = true;
 
@@ -359,7 +359,7 @@ STDMETHODIMP CTestPOI::OnPOIsChanged(IPOI* POI, ChangeType change)
    return S_OK;
 }
 
-STDMETHODIMP CTestPOI::OnPOIsRenamed(long oldId, long newId)
+STDMETHODIMP CTestPOI::OnPOIsRenamed(PoiIDType oldId, PoiIDType newId)
 {
    m_csPOIFired = true;
 

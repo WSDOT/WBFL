@@ -90,7 +90,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor - Creates an envelope object.
-   bamEnvelope(Int32 id);
+   bamEnvelope(IDType id);
 
    //------------------------------------------------------------------------
    // Copy constructor - Creates an envelope object that is a copy of
@@ -115,12 +115,12 @@ public:
    //------------------------------------------------------------------------
    // Adds a loading id to the list of loadings to be considered in the
    // envelope.
-   void AddLoading(Int32 loadingId);
+   void AddLoading(IDType loadingId);
 
    //------------------------------------------------------------------------
    // Adds multiple loading ids to the list of loadings to be considered in
    // the envelope.
-   void AddLoading(std::vector<Int32>& loadingIds);
+   void AddLoading(std::vector<IDType>& loadingIds);
 
    //------------------------------------------------------------------------
    // Associates a bridge model with this envelope. Called by the framework
@@ -136,28 +136,28 @@ public:
    //------------------------------------------------------------------------
    // Does the enveloping operation. Called by the framework. Do not call 
    // this method directly.
-   void DoEnvelope(Int32 poi) const;
+   void DoEnvelope(PoiIDType poi) const;
 
-   void DoEnvelopeSectionStress(Int32 poi,Int32 srid) const;
+   void DoEnvelopeSectionStress(PoiIDType poi,CollectionIndexType srid) const;
 
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
    // Returns the envelope's identifier
-   Int32 GetID() const;
+   IDType GetID() const;
 
    //------------------------------------------------------------------------
    // Sets the envelope's identifier.
-   void SetID(Int32 id);
+   void SetID(IDType id);
 
    //------------------------------------------------------------------------
    // Sets the loading identifier and enables enveloping for the extreme 
    // value type.
-   void SetLoadingIds(Int32 minLoadingId,Int32 maxLoadingId);
+   void SetLoadingIds(IDType minLoadingId,IDType maxLoadingId);
    
    //------------------------------------------------------------------------
    // Returns the loading identifier for the extreme value type.
-   Int32 GetLoadingId(bamEnvelope::ExtremeValueType ev) const;
+   IDType GetLoadingId(bamEnvelope::ExtremeValueType ev) const;
 
    // GROUP: INQUIRY
 
@@ -177,14 +177,14 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   Int32 m_Id;  // Not a loading Id, this is the envelope identifier
+   IDType m_Id;  // Not a loading Id, this is the envelope identifier
    bamBridgeModel* m_pBridgeModel;
 
    // loading Id's for envelope
-   Int32 m_MinId;
-   Int32 m_MaxId;
+   IDType m_MinId;
+   IDType m_MaxId;
 
-   typedef std::vector<Int32> LoadingContainer;
+   typedef std::vector<IDType> LoadingContainer;
    typedef LoadingContainer::const_iterator ConstLoadingIterator;
    LoadingContainer m_Loadings;
 
@@ -195,8 +195,8 @@ private:
    void DoEnvelopeSectionStress() const;
    void DoEnvelopeReactions() const;
 
-   void DoEnvelopeSectionResults(Int32 poi) const;
-   void DoEnvelopeSectionStress(Int32 poi) const;
+   void DoEnvelopeSectionResults(PoiIDType poi) const;
+   void DoEnvelopeSectionStress(PoiIDType poi) const;
    void DoEnvelopeSectionStress(const bamPointOfInterest& poi,const bamSectionResults& srMin,const bamSectionResults& srMax,const bamStressPoint& sp) const;
 
    // GROUP: ACCESS

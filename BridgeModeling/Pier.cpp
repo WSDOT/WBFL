@@ -102,7 +102,7 @@ bool bmfPier::operator == (const bmfPier& p)
 
 //======================== OPERATIONS =======================================
 
-void bmfPier::SetID(Int32 id)
+void bmfPier::SetID(PierIDType id)
 {
    m_ID = id;
 } // SetID
@@ -116,7 +116,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
 {
    WATCHX( bmf, BMF_LEVEL_DRAW, "Drawing pier " << GetID() );
 
-   Int32 dx,dy;
+   LONG dx,dy;
    POINT p;
    HPEN hClPierPen;
    HPEN hBearingPen;
@@ -156,7 +156,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
    p_span = GetLeftSpan();
    if ( p_span )
    {
-      Int32 num_girders;
+      GirderIndexType num_girders;
       Float64 spacing;
       bmfMeasuredHow how;
       bmfMeasuredWhere where;
@@ -170,7 +170,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
    p_span = GetRightSpan();
    if ( p_span )
    {
-      Int32 num_girders;
+      GirderIndexType num_girders;
       Float64 spacing;
       bmfMeasuredHow how;
       bmfMeasuredWhere where;
@@ -277,7 +277,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
       alignment->LocatePoint( CComVariant(GetStation()), omtAlongDirection, 0.00, CComVariant(0.00), &pnt );
       mapper.WPtoDP( pnt, &dx, &dy );
       TCHAR label[10]; // arbitrary label size... I doubt we will ever exceed it
-      _itot_s( GetID()+1, label, 10, 10 ); // Add one because we have a zero-based index
+      _i64tot_s( GetID()+1, label, 10, 10 ); // Add one because we have a zero-based index
       std::_tstring message( _T("Pier ") );
       message += label;
 
@@ -293,7 +293,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
       Int32 intang = (Int32)(ccw_angle_from_east * (float)(180./M_PI)*10);
 
       UINT old_align = ::SetTextAlign( hDC, TA_BOTTOM | TA_CENTER );
-      grGraphTool::TextOutRotated(hDC, dx, dy, intang, message.c_str(), message.length(), 8);
+      grGraphTool::TextOutRotated(hDC, dx, dy, intang, message.c_str(), (LONG)message.length(), 8);
    } // show_label
 
    // Cleanup dc
@@ -538,7 +538,7 @@ gpRect2d bmfPier::GetBoundingBox() const
    p_span = GetLeftSpan();
    if ( p_span )
    {
-      Int32 num_girders;
+      GirderIndexType num_girders;
       Float64 spacing;
       bmfMeasuredHow how;
       bmfMeasuredWhere where;
@@ -549,7 +549,7 @@ gpRect2d bmfPier::GetBoundingBox() const
    p_span = GetRightSpan();
    if ( p_span )
    {
-      Int32 num_girders;
+      GirderIndexType num_girders;
       Float64 spacing;
       bmfMeasuredHow how;
       bmfMeasuredWhere where;
@@ -604,7 +604,7 @@ gpRect2d bmfPier::GetBoundingBox() const
 }
 
 //======================== INQUIRY    =======================================
-Int32 bmfPier::GetID() const
+PierIDType bmfPier::GetID() const
 {
    return m_ID;
 } // GetID

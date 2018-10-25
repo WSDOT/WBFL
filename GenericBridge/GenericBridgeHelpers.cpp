@@ -33,10 +33,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const long g_AlignmentKey = 0;
-const long g_CLBridgeKey  = 1;
+const CogoElementKey g_AlignmentKey = 0;
+const CogoElementKey g_CLBridgeKey  = 1;
 
-HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal)
+HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -49,7 +49,7 @@ HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndT
    return S_OK;
 }
 
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal)
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -62,7 +62,7 @@ HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,Pos
    return S_OK;
 }
 
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long* pVal)
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -75,7 +75,7 @@ HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,
    return S_OK;
 }
 
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,long* pVal)
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -84,7 +84,7 @@ HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,long* pVal)
    return S_OK;
 }
 
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,long* pVal)
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -104,7 +104,7 @@ HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2
    CComPtr<IPointCollection> points;
    cogoModel->get_Points(&points);
 
-   long id;
+   CogoElementKey id;
    cogoInfo->get_PierPointID(pierIdx,pptLeft,&id);
    points->get_Item(id,left);
 
@@ -114,7 +114,7 @@ HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2
    return S_OK;
 }
 
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,long* pVal)
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoElementKey* pVal)
 {
    *pVal = -1*( (spanIdx+1)*PIER_ID_OFFSET 
                +(gdrIdx+1)*GIRDER_ID_OFFSET

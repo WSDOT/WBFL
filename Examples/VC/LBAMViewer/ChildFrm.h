@@ -26,10 +26,10 @@ public:
 // Operations
 public:
    void ClearDataSetBuilders(bool doUpdate);
-   void AddDataSetBuilder(long key, iDataSetBuilder* bldr, bool doUpdate);
-   void RemoveDataSetBuilder(long key, bool doUpdate);
-   long GetNumDataSetBuilders();
-   iDataSetBuilder* GetDataSetBuilder(long idx);
+   void AddDataSetBuilder(IndexType key, iDataSetBuilder* bldr, bool doUpdate);
+   void RemoveDataSetBuilder(IndexType key, bool doUpdate);
+   IndexType GetNumDataSetBuilders();
+   iDataSetBuilder* GetDataSetBuilder(IndexType idx);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -75,12 +75,12 @@ protected:
     //}}AFX_DISPATCH
  
 private:
-   typedef std::map<long,iDataSetBuilder*>     DataSetBuilderContainer;
+   typedef std::map<IndexType,iDataSetBuilder*>     DataSetBuilderContainer;
    typedef DataSetBuilderContainer::iterator   DataSetBuilderIterator;
    typedef DataSetBuilderContainer::value_type DataSetBuilderValueType;
    DataSetBuilderContainer  m_DataSetBuilders;
 
-   std::map<long,long> m_PlacementCookies;
+   std::map<IndexType,DWORD> m_PlacementCookies;
 
    bool m_EventBlocker;
 };

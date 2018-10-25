@@ -158,7 +158,7 @@ void bmfSlab::PlanView(HDC hDC, const grlibPointMapper& mapper) const
    ::MoveToEx( hDC, pnt1.x, pnt1.y, NULL );
    for ( Int16 i = 0; i < nChords; i++ )
    {
-      Int32 dx, dy;
+      LONG dx, dy;
       Float64 station = start_station + i*station_step;
 
       CComPtr<IDirection> normal;
@@ -191,9 +191,9 @@ void bmfSlab::PlanView(HDC hDC, const grlibPointMapper& mapper) const
    start_brg->Clone(&skew_dir);
 
    ::MoveToEx( hDC, pnt2.x, pnt2.y, NULL );
-   for ( long i = 0; i < nChords; i++ )
+   for ( Int16 i = 0; i < nChords; i++ )
    {
-      Int32 dx, dy;
+      LONG dx, dy;
       Float64 station = start_station + i*station_step;
 
       CComPtr<IDirection> normal;
@@ -357,7 +357,7 @@ Float64 bmfSlab::GetWidth() const
 Float64 bmfSlab::FrameWidth(const bmfSpan* pSpan) const
 {
    Float64 frame_width; // width between exterior girders
-   Int32 girder_line_count;
+   GirderIndexType girder_line_count;
    Float64 spacing;
    bmfMeasuredWhere where;
    bmfMeasuredHow how;
@@ -444,7 +444,7 @@ void bmfSlab::UpdateGeometry() const
 
    Float64 first_pier_station;
    Float64 last_pier_station;
-   Int32 girder_line_count;
+   GirderIndexType girder_line_count;
    Float64 frame_width; // width between exterior girders
    Float64 offset_to_edge_of_slab;
    Float64 spacing;

@@ -67,7 +67,7 @@ public:
 
    static void UnregisterListener(lrfrVersionMgrListener* pListener);
 
-   static Int32 ListenerCount();
+   static CollectionIndexType ListenerCount();
 
    //------------------------------------------------------------------------
    // Sets the current version of the LRFR specification.  Returns the prevous

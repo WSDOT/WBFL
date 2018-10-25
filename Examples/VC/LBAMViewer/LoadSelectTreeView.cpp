@@ -30,35 +30,35 @@ static char THIS_FILE[] = __FILE__;
 
 #define COLOR_MASK RGB(255,255,255)
 
-void InitializeItemData(CTreeCtrl* pTree, HTREEITEM item, unsigned long& lastIndex)
+void InitializeItemData(CTreeCtrl* pTree, HTREEITEM item, IndexType& lastIndex)
 {
          pTree->SetItemData(item, ++lastIndex);
          pTree->SetItemState(item, INDEXTOSTATEIMAGEMASK(1), TVIS_STATEIMAGEMASK);
 }
 
-CString GetPoiDescription(long poi_id, MemberType poi_mt, long poi_mbrid, double poi_location)
+CString GetPoiDescription(PoiIDType poi_id, MemberType poi_mt, MemberIDType poi_mbrid, double poi_location)
 {
    CString mbrname;
    switch (poi_mt)
    {
    case mtSpan:
-      mbrname = "Span";
+      mbrname = _T("Span");
       break;
    case mtSupport:
-      mbrname = "Support";
+      mbrname = _T("Support");
       break;
    case mtTemporarySupport:
-      mbrname = "TemporarySupport";
+      mbrname = _T("TemporarySupport");
       break;
    case mtSuperstructureMember:
-      mbrname = "SuperstructureMember";
+      mbrname = _T("SuperstructureMember");
       break;
    default:
       ATLASSERT(0);
    }
 
    CString descr;
-   descr.Format("POI %d - %s %d at %f", poi_id, mbrname, poi_mbrid, poi_location);
+   descr.Format(_T("POI %d - %s %d at %f"), poi_id, mbrname, poi_mbrid, poi_location);
 
    return descr;
 }
@@ -71,7 +71,7 @@ public:
    m_Response(response)
    {;}
 
-   iDataSetBuilder* Create(long PoiID)
+   iDataSetBuilder* Create(PoiIDType PoiID)
    {
       return new InfluenceLineDataSetBuilder(PoiID, m_Response);
    }
@@ -165,35 +165,35 @@ void CLoadSelectTreeView::OnInitialUpdate()
 
    // Add top-level folders
    // Load Groups
-   HTREEITEM hitm = tree.InsertItem("Load Groups", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   HTREEITEM hitm = tree.InsertItem(_T("Load Groups"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateLoadGroups( pVdoc, &tree, hitm);
 
    // Live Loads
-   hitm = tree.InsertItem("Live Loads", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   hitm = tree.InsertItem(_T("Live Loads"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateLiveLoads( pVdoc, &tree, hitm);
 
    // Load Cases
-   hitm = tree.InsertItem("Load Cases", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   hitm = tree.InsertItem(_T("Load Cases"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateLoadCases( pVdoc, &tree, hitm);
 
    // Load Combinations
-   hitm = tree.InsertItem("Load Combinations", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   hitm = tree.InsertItem(_T("Load Combinations"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateLoadCombinations( pVdoc, &tree, hitm);
 
    // Influence Lines
-   HTREEITEM hinfl = tree.InsertItem("Influence Lines", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   HTREEITEM hinfl = tree.InsertItem(_T("Influence Lines"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hinfl, -1);
 
    // at pois
-   hitm = tree.InsertItem("POIs", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, hinfl);
+   hitm = tree.InsertItem(_T("POIs"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, hinfl);
    tree.SetItemData(hitm, -1);
 
    CComPtr<IInfluenceLineResponse> influence_response;
@@ -203,19 +203,19 @@ void CLoadSelectTreeView::OnInitialUpdate()
    UpdatePoiDependentTree( pVdoc, &tree, hitm, m_InfluenceLineImages, inf_bb);
 
    // at supports
-   hitm = tree.InsertItem("Supports", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, hinfl);
+   hitm = tree.InsertItem(_T("Supports"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, hinfl);
    tree.SetItemData(hitm, -1);
 
    UpdateSupportInfluence( pVdoc, &tree, hitm);
 
    // Contraflexure
-   hitm = tree.InsertItem("Contraflexure Response", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   hitm = tree.InsertItem(_T("Contraflexure Response"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateContraflexure( pVdoc, &tree, hitm);
 
    // Model Properties
-   hitm = tree.InsertItem("Structural Properties", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
+   hitm = tree.InsertItem(_T("Structural Properties"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx );
    tree.SetItemData(hitm, -1);
 
    UpdateProperties( pVdoc, &tree, hitm);
@@ -258,7 +258,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Deflection(&deflection_llm);
    if ( LiveLoadModelHasData(deflection_llm) )
    {
-      hitm = pTree->InsertItem("Deflection", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Deflection"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltDeflection, deflection_llm, pVDoc, pTree, hitm);
@@ -268,7 +268,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Design(&design_llm);
    if ( LiveLoadModelHasData(design_llm) )
    {
-      hitm = pTree->InsertItem("Design", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Design"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltDesign, design_llm, pVDoc, pTree, hitm);
@@ -278,7 +278,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Fatigue(&fatigue_llm);
    if ( LiveLoadModelHasData(fatigue_llm) )
    {
-      hitm = pTree->InsertItem("Fatigue", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Fatigue"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltFatigue, fatigue_llm, pVDoc, pTree, hitm);
@@ -288,7 +288,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Permit(&permit_llm);
    if ( LiveLoadModelHasData(permit_llm) )
    {
-      hitm = pTree->InsertItem("Permit", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Permit"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltPermit, permit_llm, pVDoc, pTree, hitm);
@@ -298,7 +298,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Pedestrian(&pedestrian_llm);
    if ( LiveLoadModelHasData(pedestrian_llm) )
    {
-      hitm = pTree->InsertItem("Pedestrian", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Pedestrian"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltPedestrian, pedestrian_llm, pVDoc, pTree, hitm);
@@ -308,7 +308,7 @@ void CLoadSelectTreeView::UpdateLiveLoads(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    hr = liveload->get_Special(&special_llm);
    if ( LiveLoadModelHasData(special_llm) )
    {
-      hitm = pTree->InsertItem("Special", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+      hitm = pTree->InsertItem(_T("Special"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
       pTree->SetItemData(hitm, -1);
 
       UpdateLiveLoadModel(lltSpecial, special_llm, pVDoc, pTree, hitm);
@@ -325,13 +325,13 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
    ATLASSERT(SUCCEEDED(hr));
 
    // truck + lane
-   HTREEITEM llmtl_itm = pTree->InsertItem(CString("LiveLoadModel Truck+Lane Envelope"), m_LiveLoadModelTLImages.ImageIdx , m_LiveLoadModelTLImages.SelectedImageIdx , parent);
+   HTREEITEM llmtl_itm = pTree->InsertItem(CString(_T("LiveLoadModel Truck+Lane Envelope")), m_LiveLoadModelTLImages.ImageIdx , m_LiveLoadModelTLImages.SelectedImageIdx , parent);
    LiveLoadModelDataSetBuilder* llmtl_bldr = new LiveLoadModelDataSetBuilder(llmType, llrTruckLaneCombo, llm_response);
    InitializeItemData(pTree, llmtl_itm, m_LastIndex);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, llmtl_bldr));
 
    // truck only
-   HTREEITEM llmto_itm = pTree->InsertItem(CString("LiveLoadModel Truck Only Envelope"), m_LiveLoadModelTOImages.ImageIdx , m_LiveLoadModelTOImages.SelectedImageIdx , parent);
+   HTREEITEM llmto_itm = pTree->InsertItem(CString(_T("LiveLoadModel Truck Only Envelope")), m_LiveLoadModelTOImages.ImageIdx , m_LiveLoadModelTOImages.SelectedImageIdx , parent);
    LiveLoadModelDataSetBuilder* llmto_bldr = new LiveLoadModelDataSetBuilder(llmType, llrTruckOnly, llm_response);
    InitializeItemData(pTree, llmto_itm, m_LastIndex);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, llmto_bldr));
@@ -371,7 +371,7 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
       hr = vehicular_load->get_Configuration(&vl_config);
       ATLASSERT(SUCCEEDED(hr));
 
-      HTREEITEM crenvtl_itm = pTree->InsertItem(CString("Enveloped Truck+Lane Response"), m_EnvelopeTruckLaneImages.ImageIdx , m_EnvelopeTruckLaneImages.SelectedImageIdx , vl_itm);
+      HTREEITEM crenvtl_itm = pTree->InsertItem(CString(_T("Enveloped Truck+Lane Response")), m_EnvelopeTruckLaneImages.ImageIdx , m_EnvelopeTruckLaneImages.SelectedImageIdx , vl_itm);
       EnvelopedVehicularDataSetBuilder* envtrl_bldr = new EnvelopedVehicularDataSetBuilder(llmType, ivl, llrTruckLaneCombo, env_response);
       InitializeItemData(pTree, crenvtl_itm, m_LastIndex);
       m_TreeItems.insert(TreeItemValueType(m_LastIndex, envtrl_bldr));
@@ -384,12 +384,12 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
          CLBAMViewerDoc* pVdoc = dynamic_cast<CLBAMViewerDoc*>(pDoc);
          ATLASSERT(pVdoc);
 
-         HTREEITEM crenv_itm = pTree->InsertItem(CString("Enveloped Truck Response"), m_EnvelopeTruckImages.ImageIdx , m_EnvelopeTruckImages.SelectedImageIdx , vl_itm);
+         HTREEITEM crenv_itm = pTree->InsertItem(CString(_T("Enveloped Truck Response")), m_EnvelopeTruckImages.ImageIdx , m_EnvelopeTruckImages.SelectedImageIdx , vl_itm);
          EnvelopedVehicularDataSetBuilder* envtr_bldr = new EnvelopedVehicularDataSetBuilder(llmType, ivl, llrTruckOnly, env_response);
          InitializeItemData(pTree, crenv_itm, m_LastIndex);
          m_TreeItems.insert(TreeItemValueType(m_LastIndex, envtr_bldr));
 
-         HTREEITEM cre_itm = pTree->InsertItem(CString("Truck Response"), m_TruckImages.ImageIdx , m_TruckImages.SelectedImageIdx , vl_itm);
+         HTREEITEM cre_itm = pTree->InsertItem(CString(_T("Truck Response")), m_TruckImages.ImageIdx , m_TruckImages.SelectedImageIdx , vl_itm);
          InitializeItemData(pTree, cre_itm, m_LastIndex);
          BasicLiveLoadDataSetBuilder* tr_bldr = new BasicLiveLoadDataSetBuilder(llmType, ivl, llrTruckOnly,
                                                     pVDoc->m_pModel, bv_response);
@@ -399,7 +399,7 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
       // Lane Only
       if (vl_config==vlcDefault || vl_config==vlcTruckPlusLane || vl_config==vlcTruckLaneEnvelope  || vl_config==vlcLaneOnly)
       {
-         HTREEITEM crln_itm = pTree->InsertItem(CString("Lane Response"), m_LaneImages.ImageIdx , m_LaneImages.SelectedImageIdx , vl_itm);
+         HTREEITEM crln_itm = pTree->InsertItem(CString(_T("Lane Response")), m_LaneImages.ImageIdx , m_LaneImages.SelectedImageIdx , vl_itm);
          InitializeItemData(pTree, crln_itm, m_LastIndex);
          BasicLiveLoadDataSetBuilder* ln_bldr = new BasicLiveLoadDataSetBuilder(llmType, ivl, llrLaneOnly,
                                                     pVDoc->m_pModel, bv_response);
@@ -407,7 +407,7 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
       }
 
       // Truck/Lane response
-      HTREEITEM cr_itm = pTree->InsertItem(CString("Truck+Lane Response"), m_TruckLaneImages.ImageIdx , m_TruckLaneImages.SelectedImageIdx , vl_itm);
+      HTREEITEM cr_itm = pTree->InsertItem(CString(_T("Truck+Lane Response")), m_TruckLaneImages.ImageIdx , m_TruckLaneImages.SelectedImageIdx , vl_itm);
       InitializeItemData(pTree, cr_itm, m_LastIndex);
 
       BasicLiveLoadDataSetBuilder* tl_bldr = new BasicLiveLoadDataSetBuilder(llmType, ivl, llrTruckLaneCombo,
@@ -420,7 +420,7 @@ void CLoadSelectTreeView::UpdateLiveLoadModel(LiveLoadModelType llmType, ILiveLo
       ATLASSERT(SUCCEEDED(hr));
       if (!IsZero(sw_load))
       {
-         HTREEITEM crs_itm = pTree->InsertItem(CString("Sidewalk Response"), m_PedestrianImages.ImageIdx , m_PedestrianImages.SelectedImageIdx , vl_itm);
+         HTREEITEM crs_itm = pTree->InsertItem(CString(_T("Sidewalk Response")), m_PedestrianImages.ImageIdx , m_PedestrianImages.SelectedImageIdx , vl_itm);
          InitializeItemData(pTree, crs_itm, m_LastIndex);
          BasicLiveLoadDataSetBuilder* s_bldr = new BasicLiveLoadDataSetBuilder(llmType, ivl, llrSidewalkOnly,
                                                     pVDoc->m_pModel, bv_response);
@@ -439,7 +439,7 @@ void CLoadSelectTreeView::UpdateContraflexure(CLBAMViewerDoc* pVDoc,CTreeCtrl* p
    hr = Spans->get_Count(&nSpans);
    if (nSpans != 0)
    {
-      CString lg( "Contraflexure Response" );
+      CString lg( _T("Contraflexure Response") );
       HTREEITEM hitm = pTree->InsertItem(lg, m_ContraflexureImages.ImageIdx , m_ContraflexureImages.SelectedImageIdx , parent);
 
       m_LastIndex++;
@@ -567,40 +567,40 @@ void CLoadSelectTreeView::UpdateProperties(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTr
    ATLASSERT(pgcs!=NULL);
 
    // area
-   HTREEITEM hitm = pTree->InsertItem("EAForce", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   HTREEITEM hitm = pTree->InsertItem(_T("EAForce"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    PropertyDataSetBuilder* bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptEAForce, pgcs);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, bdr) );
 
-   hitm = pTree->InsertItem("EADefl", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("EADefl"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptEADefl, pgcs);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, bdr) );
 
    // EI
-   hitm = pTree->InsertItem("EIForce", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("EIForce"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptEIForce, pgcs);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, bdr) );
 
-   hitm = pTree->InsertItem("EIDefl", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("EIDefl"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptEIDefl, pgcs);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, bdr) );
 
    // Depth
-   hitm = pTree->InsertItem("Depth", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("Depth"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptDepth, pgcs);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, bdr) );
 
    // Thermal Coefficient
-   hitm = pTree->InsertItem("Thermal Coefficient", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("Thermal Coefficient"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    bdr = new PropertyDataSetBuilder(PropertyDataSetBuilder::ptThermal, pgcs);
@@ -610,13 +610,13 @@ void CLoadSelectTreeView::UpdateProperties(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTr
    CComQIPtr<IGetStressPoints> pgsp(lg_response);
    ATLASSERT(pgcs!=NULL);
 
-   hitm = pTree->InsertItem("Sa - Axial Stress Coefficient", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("Sa - Axial Stress Coefficient"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    StressPointDataSetBuilder* spbdr = new StressPointDataSetBuilder(StressPointDataSetBuilder::stSa, pgsp);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, spbdr) );
 
-   hitm = pTree->InsertItem("Sm - Moment Stress Coefficient", m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("Sm - Moment Stress Coefficient"), m_PropertyImages.ImageIdx , m_PropertyImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    spbdr = new StressPointDataSetBuilder(StressPointDataSetBuilder::stSm, pgsp);
@@ -626,85 +626,85 @@ void CLoadSelectTreeView::UpdateProperties(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTr
    CComQIPtr<IGetDistributionFactors> pgdf(lg_response); // highly suspicious
    ATLASSERT(pgdf!=NULL);
 
-   hitm = pTree->InsertItem("Distribution Factors", m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
+   hitm = pTree->InsertItem(_T("Distribution Factors"), m_FolderImages.ImageIdx ,m_FolderImages.SelectedImageIdx, parent );
    pTree->SetItemData(hitm, -1);
 
    // a new level
    parent = hitm;
 
-   hitm = pTree->InsertItem("GPMSgl - Positive moment, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GPMSgl - Positive moment, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    DistributionFactorDataSetBuilder* dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGPMSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GPMMul - Positive moment, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GPMMul - Positive moment, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGPMMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GNMSgl - Negative moment, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GNMSgl - Negative moment, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGNMSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GNMMul - Negative moment, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GNMMul - Negative moment, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGNMMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GVSgl - Shear, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GVSgl - Shear, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGVSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GVMul - Shear, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GVMul - Shear, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGVMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GDSgl - Deflection, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GDSgl - Deflection, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGDSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GDMul - Deflection, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GDMul - Deflection, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGDMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GTSgl - Rotation, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GTSgl - Rotation, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGTSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("GTMul - Rotation, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("GTMul - Rotation, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGTMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("dtGRSgl - Reaction, Single lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("dtGRSgl - Reaction, Single lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGRSgl, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("dtGRMul - Reaction, Multiple lane", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("dtGRMul - Reaction, Multiple lane"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGRMul, pgdf);
    m_TreeItems.insert(TreeItemValueType(m_LastIndex, dfbdr) );
 
-   hitm = pTree->InsertItem("dtGFat - Fatigue, all cases", m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
+   hitm = pTree->InsertItem(_T("dtGFat - Fatigue, all cases"), m_DfImages.ImageIdx , m_DfImages.SelectedImageIdx , parent);
    m_LastIndex++;
    InitializeItemData(pTree, hitm, m_LastIndex);
    dfbdr = new DistributionFactorDataSetBuilder(DistributionFactorDataSetBuilder::dtGFat, pgdf);
@@ -774,7 +774,7 @@ void CLoadSelectTreeView::UpdateSupportInfluence(CLBAMViewerDoc* pVDoc, CTreeCtr
       for (SupportIndexType suppno=0; suppno<nSupports; suppno++)
       {
          CString sn;
-         sn.Format("Support %d", suppno);
+         sn.Format(_T("Support %d"), suppno);
          HTREEITEM hitm = pTree->InsertItem(sn, m_InfluenceLineImages.ImageIdx , m_InfluenceLineImages.SelectedImageIdx , parent);
 
          m_LastIndex++;
@@ -817,7 +817,7 @@ void CLoadSelectTreeView::UpdateSupportInfluence(CLBAMViewerDoc* pVDoc, CTreeCtr
             CString cstg(estage);
 
             CString sn;
-            sn.Format("Temporary Support %d (Removed in %s)", ts_id, cstg);
+            sn.Format(_T("Temporary Support %d (Removed in %s)"), ts_id, cstg);
             HTREEITEM hitm = pTree->InsertItem(sn, m_InfluenceLineImages.ImageIdx , m_InfluenceLineImages.SelectedImageIdx , parent);
 
             m_LastIndex++;
@@ -980,7 +980,7 @@ void CLoadSelectTreeView::OnSelchanged(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
    // get information about item selected
-   long efsel = pNMTreeView->itemNew.lParam;
+   LPARAM efsel = pNMTreeView->itemNew.lParam;
 
 	*pResult = 0;
 }
@@ -1002,7 +1002,7 @@ void CLoadSelectTreeView::OnLButtonDown(UINT nFlags, CPoint point)
 			bBase = (nHF & TVHT_ONITEMSTATEICON);
          if (bBase)
          {
-            long efsel = tree.GetItemData( hItem );
+            long efsel = (long)tree.GetItemData( hItem );
             if (efsel != -1)
             {
                // selection data is in our frame

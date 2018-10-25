@@ -66,10 +66,10 @@ public:
    // OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void CreateStorage(Int32 loadingId);
+   virtual void CreateStorage(IDType loadingId);
 
    //------------------------------------------------------------------------
-   virtual void DestroyStorage(Int32 loadingId);
+   virtual void DestroyStorage(IDType loadingId);
 
    //------------------------------------------------------------------------
    virtual bamSectionResults ReadSectionResults(const bamSectionResultsKey& key) const;

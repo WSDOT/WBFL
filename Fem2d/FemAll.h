@@ -29,6 +29,7 @@
 #pragma once
 
 #include <string>
+#include <WBFLTypes.h>
 
 // This include file has stuff that is needed by all fem files
 
@@ -44,7 +45,7 @@ enum MbrType    {mtPinPin,mtPinFix,mtFixPin,mtFixFix};
 typedef MbrType MbrType;
 
 
-inline CComBSTR CreateErrorMsg1(UINT nid, long someInt)
+inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -54,7 +55,7 @@ inline CComBSTR CreateErrorMsg1(UINT nid, long someInt)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg2(UINT nid, long someInt1, long someInt2)
+inline CComBSTR CreateErrorMsg2(UINT nid, CollectionIndexType someInt1, CollectionIndexType someInt2)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);

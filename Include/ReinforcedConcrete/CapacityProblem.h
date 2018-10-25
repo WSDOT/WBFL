@@ -280,25 +280,25 @@ public:
    // AddConcrete
    // Adds a concrete material to the problem. Returns a key that can be used
    // to get it later.
-   Int32 AddConcrete(const matConcrete& concrete);
+   CollectionIndexType AddConcrete(const matConcrete& concrete);
 
    //------------------------------------------------------------------------
    // GetConcrete
    // Gets a concrete material from the problem.
-   const matConcrete& GetConcrete(Int32 concreteIdx) const;
+   const matConcrete& GetConcrete(CollectionIndexType concreteIdx) const;
 
    //------------------------------------------------------------------------
    // GetNumConcretes
    // Gets number of concrete materials in the problem. Can use this to iterate
    // around GetConcrete.
-   Int32 GetNumConcretes() const;
+   CollectionIndexType GetNumConcretes() const;
 
    //------------------------------------------------------------------------
    // SetBaseConcreteMaterial
    // Sets the concrete material for which n factors are based on.
    // (defaults to Material 0)
-   void SetBaseConcreteMaterial(Int32 concreteIdx);
-   Int32 GetBaseConcreteMaterial() const;
+   void SetBaseConcreteMaterial(CollectionIndexType concreteIdx);
+   CollectionIndexType GetBaseConcreteMaterial() const;
 
    //------------------------------------------------------------------------
    // AddMildSteel
@@ -306,7 +306,7 @@ public:
    // DoCreateMildSteelMaterialModel() to create the stress strain curve and 
    // then stores the material model in a library.  Returns a key which can be
    // used to identify this material when creating elements.
-   Int32 AddMildSteel(const matMetal& steel);
+   CollectionIndexType AddMildSteel(const matMetal& steel);
 
    //------------------------------------------------------------------------
    // AddStrand
@@ -314,28 +314,28 @@ public:
    // DoCreateStrandMaterialModel() to create the stress strain curve and 
    // then stores the material model in a library.  Returns a key which can
    // be used to identify this material when creating elements.
-   Int32 AddStrand(const matPsStrand& strand);
+   CollectionIndexType AddStrand(const matPsStrand& strand);
 
    //------------------------------------------------------------------------
    // RemoveMaterial
    // Removes a material (concrete, mild steel,  or strand) from the problem.
    // Returns true if the material was successfully removed,  otherwise false.
-   bool RemoveMaterial(Int32 id);
+   bool RemoveMaterial(CollectionIndexType id);
 
    //------------------------------------------------------------------------
    // MildSteelMaterialCount
    // Returns the number of mild steel materials in the problem.
-   Int32 MildSteelMaterialCount() const;
+   CollectionIndexType MildSteelMaterialCount() const;
 
    //------------------------------------------------------------------------
    // StrandMaterialCount
    // Returns the number of strand materials in the problem.
-   Int32 StrandMaterialCount() const;
+   CollectionIndexType StrandMaterialCount() const;
 
    //------------------------------------------------------------------------
    // MaterialCount
    // Returns the total number of materials in the problem.
-   Int32 MaterialCount() const;
+   CollectionIndexType MaterialCount() const;
 
    //------------------------------------------------------------------------
    // AddConcreteElement
@@ -343,7 +343,7 @@ public:
    // used to identify this element.  Throws a rcaXRcCapProbError exception
    // with reason code MaterialNotFound, if the element could not be created.
    // This version allows specification of the n factor explicitely - real n from material is not used
-   Int32 AddConcreteElement(const gmIShape& shape, Int32 concreteKey, Float64 nFactor);
+   CollectionIndexType AddConcreteElement(const gmIShape& shape, CollectionIndexType concreteKey, Float64 nFactor);
 
    //------------------------------------------------------------------------
    // AddConcreteElement
@@ -351,7 +351,7 @@ public:
    // used to identify this element.  Throws a rcaXRcCapProbError exception
    // with reason code MaterialNotFound, if the element could not be created.
    // For this version, the n factor is calculated from the concrete materials in the model.
-   Int32 AddConcreteElement(const gmIShape& shape, Int32 concreteKey);
+   CollectionIndexType AddConcreteElement(const gmIShape& shape, CollectionIndexType concreteKey);
 
    //------------------------------------------------------------------------
    // AddReinforcementElement
@@ -361,28 +361,28 @@ public:
    // not be created. The initial strain should be equal to the difference 
    // between the strain in the concrete and the strain in the rebar element
    // after losses have occurred.
-   Int32 AddReinforcementElement(const gmIShape& shape, Int32 matId, Float64 initStrain = 0.);
+   CollectionIndexType AddReinforcementElement(const gmIShape& shape, CollectionIndexType matId, Float64 initStrain = 0.);
 
    //------------------------------------------------------------------------
    // RemoveElement
    // Removes an element from the problem.  Returns true if the element was 
    // successfully removed,  otherwise false.
-   bool DestroyElement(Int32 id);
+   bool DestroyElement(CollectionIndexType id);
 
    //------------------------------------------------------------------------
    // ConcreteElementCount
    // Returns the number of concrete elements in the problem.
-   Int32 ConcreteElementCount() const;
+   CollectionIndexType ConcreteElementCount() const;
 
    //------------------------------------------------------------------------
    // ReinforcementElementCount
    // Returns the number of reinforcement elements in the problem.
-   Int32 ReinforcementElementCount() const;
+   CollectionIndexType ReinforcementElementCount() const;
 
    //------------------------------------------------------------------------
    // ElementCount
    // Returns the total number of elements in the problem.
-   Int32 ElementCount() const;
+   CollectionIndexType ElementCount() const;
 
    //------------------------------------------------------------------------
    // SetNeutralAxisLocation
@@ -437,7 +437,7 @@ public:
    // with reason code ElementNotFound,  will be thrown.
    Float64 GetStrain( const gpPoint2d& p ) const;
    Float64 GetStrain( Float64 x, Float64 y) const;
-   Float64 GetStrain( Int32 elId ) const;
+   Float64 GetStrain( CollectionIndexType elId ) const;
 
    //------------------------------------------------------------------------
    // GetSectionForcesEx
@@ -501,7 +501,7 @@ public:
    // Returns the area of concrete on the given side of the clipLine for the given
    // concrete material.
    // This area is multiplied by the N factor of all concretes in the model.
-   Float64 GetClippedConcreteArea(Int32 concreteIdx, const gpLine2d& clipLine, gpLine2d::Side) const;
+   Float64 GetClippedConcreteArea(CollectionIndexType concreteIdx, const gpLine2d& clipLine, gpLine2d::Side) const;
    
    //------------------------------------------------------------------------
    // GetConcreteArea
@@ -611,7 +611,7 @@ protected:
    //------------------------------------------------------------------------
    // GetNextAvailableKey
    // Returns the next avialable unique item key for this class
-   Int32 GetNextAvailableKey();
+   CollectionIndexType GetNextAvailableKey();
 
    //------------------------------------------------------------------------
    // OnGeometryChange
@@ -632,8 +632,8 @@ private:
 
    // first some typedefs...
    typedef boost::shared_ptr<matYieldStressStrainCurve> MatCurvePtr;
-   typedef std::pair<Uint32, MatCurvePtr>               MatCurveEntry;
-   typedef std::map<Uint32,MatCurvePtr>                 MatCurveContainer;
+   typedef std::pair<CollectionIndexType, MatCurvePtr>               MatCurveEntry;
+   typedef std::map<CollectionIndexType,MatCurvePtr>                 MatCurveContainer;
    typedef MatCurveContainer::iterator                  MatCurveIterator;
    typedef MatCurveContainer::const_iterator            ConstMatCurveIterator;
 
@@ -643,20 +643,20 @@ private:
    typedef ConcreteContainer::const_iterator        ConstConcreteIterator;
 
    typedef boost::shared_ptr<rcaConcreteElement> ConcElementPtr;
-   typedef std::pair<Uint32, ConcElementPtr>     ConcElementEntry;
-   typedef std::map<Uint32,ConcElementPtr>       ConcElementContainer;
+   typedef std::pair<CollectionIndexType, ConcElementPtr>     ConcElementEntry;
+   typedef std::map<CollectionIndexType,ConcElementPtr>       ConcElementContainer;
    typedef ConcElementContainer::iterator        ConcElementIterator;
    typedef ConcElementContainer::const_iterator  ConstConcElementIterator;
 
    typedef boost::shared_ptr<rcaReinforcementElement> ReinfElementPtr;
-   typedef std::pair<Uint32, ReinfElementPtr>         ReinfElementEntry;
-   typedef std::map<Uint32,ReinfElementPtr>           ReinfElementContainer;
+   typedef std::pair<CollectionIndexType, ReinfElementPtr>         ReinfElementEntry;
+   typedef std::map<CollectionIndexType,ReinfElementPtr>           ReinfElementContainer;
    typedef ReinfElementContainer::iterator            ReinfElementIterator;
    typedef ReinfElementContainer::const_iterator      ConstReinfElementIterator;
 
    // next, the real data...
    ConcreteContainer     m_ConcreteContainer;
-   Int32                 m_BaseConcrete;
+   CollectionIndexType   m_BaseConcrete;
    MatCurveContainer     m_MsCurveContainer;
    MatCurveContainer     m_PsCurveContainer;
    ConcElementContainer  m_ConcElementContainer;
@@ -665,7 +665,7 @@ private:
    gpLine2d  m_NeutralAxisLocation;
    Float64   m_FurthestDistance; // farthest distance from na to edge of section
    Float64   m_MaxCompressiveStrain; // max strain at farthest fiber
-   Int32     m_LastKey;  // last key used for items (material,rebar,etc...)
+   CollectionIndexType m_LastKey;  // last key used for items (material,rebar,etc...)
    mutable Float64   m_CbOffset; // distance from n.a. to compression block.
    mutable etBiaxialBeamStrain m_BeamStrain; // beam strain function
    mutable Float64 m_CompArea; // area of compression block

@@ -51,31 +51,31 @@ STDMETHODIMP CCogoInfo::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CCogoInfo::get_GirderLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx,long *pVal)
+STDMETHODIMP CCogoInfo::get_GirderLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoElementKey *pVal)
 {
    CHECK_RETVAL(pVal);
    return ::GB_GetGirderLineId(spanIdx,gdrIdx,pVal);
 }
 
-STDMETHODIMP CCogoInfo::get_PierGirderIntersectionPointID(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long *pVal)
+STDMETHODIMP CCogoInfo::get_PierGirderIntersectionPointID(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey *pVal)
 {
    CHECK_RETVAL(pVal);
    return ::GB_GetPierGirderPointId(pierIdx,gdrIdx,posType,pVal);
 }
 
-STDMETHODIMP CCogoInfo::get_BearingGirderIntersectionPointID(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,long *pVal)
+STDMETHODIMP CCogoInfo::get_BearingGirderIntersectionPointID(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey *pVal)
 {
    CHECK_RETVAL(pVal);
    return ::GB_GetBearingGirderPointId(pierIdx,gdrIdx,posType,pVal);
 }
 
-STDMETHODIMP CCogoInfo::get_GirderEndPointID(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,long* pVal)
+STDMETHODIMP CCogoInfo::get_GirderEndPointID(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,CogoElementKey* pVal)
 {
    CHECK_RETVAL(pVal);
    return ::GB_GetGirderEndPointId(spanIdx,gdrIdx,endType,pVal);
 }
 
-STDMETHODIMP CCogoInfo::get_PierPointID(PierIndexType pierIdx, PierPointType pointType, long *pVal)
+STDMETHODIMP CCogoInfo::get_PierPointID(PierIndexType pierIdx, PierPointType pointType, CogoElementKey *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -123,14 +123,14 @@ STDMETHODIMP CCogoInfo::get_PierPointID(PierIndexType pierIdx, PierPointType poi
    return hr;
 }
 
-STDMETHODIMP CCogoInfo::get_AlignmentKey(long* alignmentKey)
+STDMETHODIMP CCogoInfo::get_AlignmentKey(CogoElementKey* alignmentKey)
 {
    CHECK_RETVAL(alignmentKey);
    *alignmentKey = g_AlignmentKey;
    return S_OK;
 }
 
-STDMETHODIMP CCogoInfo::get_CLBridgeKey(long* clBridgeKey)
+STDMETHODIMP CCogoInfo::get_CLBridgeKey(CogoElementKey* clBridgeKey)
 {
    CHECK_RETVAL(clBridgeKey);
    *clBridgeKey = g_CLBridgeKey;

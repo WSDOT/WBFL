@@ -65,7 +65,7 @@ bmfBundlePattern& bmfBundlePattern::operator= (const bmfBundlePattern& rOther)
 }
 
 //======================== OPERATIONS =======================================
-void bmfBundlePattern::AddBundle(Float64 offset,Uint32 maxStrands)
+void bmfBundlePattern::AddBundle(Float64 offset,StrandIndexType maxStrands)
 {
    PRECONDITION( offset > 0 );
 
@@ -77,12 +77,12 @@ void bmfBundlePattern::AddBundle(Float64 offset,Uint32 maxStrands)
    ASSERTVALID;
 }
 
-Uint32 bmfBundlePattern::GetBundleCount() const
+CollectionIndexType bmfBundlePattern::GetBundleCount() const
 {
    return m_Bundles.size();
 }
 
-Float64 bmfBundlePattern::GetBundleOffset(Uint32 idx) const
+Float64 bmfBundlePattern::GetBundleOffset(CollectionIndexType idx) const
 {
    PRECONDITION( idx < m_Bundles.size() );
 
@@ -90,12 +90,12 @@ Float64 bmfBundlePattern::GetBundleOffset(Uint32 idx) const
    return bd.Offset;
 }
 
-Float64 bmfBundlePattern::GetBundleHeight(Uint32 idx) const
+Float64 bmfBundlePattern::GetBundleHeight(CollectionIndexType idx) const
 {
    PRECONDITION( idx < m_Bundles.size() );
 
    Float64 height = 0.0;
-   for ( Uint32 i = 0; i < (idx+1); i++ )
+   for ( CollectionIndexType i = 0; i < (idx+1); i++ )
    {
       const BundleData& bd = m_Bundles[i];
       height += bd.Offset;
@@ -104,7 +104,7 @@ Float64 bmfBundlePattern::GetBundleHeight(Uint32 idx) const
    return height;
 }
 
-Uint32 bmfBundlePattern::GetMaxStrandCount(Uint32 idx) const
+StrandIndexType bmfBundlePattern::GetMaxStrandCount(CollectionIndexType idx) const
 {
    PRECONDITION( idx < m_Bundles.size() );
 
@@ -112,7 +112,7 @@ Uint32 bmfBundlePattern::GetMaxStrandCount(Uint32 idx) const
    return bd.MaxStrands;
 }
 
-void bmfBundlePattern::RemoveBundle(Uint32 idx)
+void bmfBundlePattern::RemoveBundle(CollectionIndexType idx)
 {
    PRECONDITION( idx < m_Bundles.size() );
 
@@ -128,23 +128,23 @@ void bmfBundlePattern::RemoveAllBundles()
    ASSERTVALID;
 }
 
-gpPoint2d bmfBundlePattern::GetCenterOfGravity(Uint32 nStrands) const
+gpPoint2d bmfBundlePattern::GetCenterOfGravity(StrandIndexType nStrands) const
 {
    Float64 height  = 0.0;
    Float64 sum_nsh = 0.0; // sum of #strands used in the i_th bundle * height of the bundle
-   Uint32 cStrandsRemaining = nStrands;
+   StrandIndexType cStrandsRemaining = nStrands;
 
    #if defined _DEBUG
    // We are going to do a little extra work in the debug version just
    // to make sure this method is correct.
-   Uint32 cSumMaxStrands = 0;
+   StrandIndexType cSumMaxStrands = 0;
    #endif // _DEBUG
 
    std::vector<BundleData>::const_iterator iter;
    for ( iter = m_Bundles.begin(); cStrandsRemaining > 0 && iter < m_Bundles.end(); iter++ )
    {
       const BundleData& bd = *iter;
-      Uint32 cStrandsUsedInThisBundle = _cpp_min( bd.MaxStrands, cStrandsRemaining );
+      StrandIndexType cStrandsUsedInThisBundle = _cpp_min( bd.MaxStrands, cStrandsRemaining );
 
       height += bd.Offset;
       sum_nsh += height * cStrandsUsedInThisBundle;
@@ -185,10 +185,10 @@ gpPoint2d bmfBundlePattern::GetCenterOfGravity(Uint32 nStrands) const
    return cg;
 }
 
-Uint32 bmfBundlePattern::GetBundleIdx(Uint32 iStrand) const
+CollectionIndexType bmfBundlePattern::GetBundleIdx(StrandIndexType iStrand) const
 {
-   Uint32 cStrands = 0;
-   for ( Uint32 i = 0; i < GetBundleCount(); i++ )
+   StrandIndexType cStrands = 0;
+   for ( StrandIndexType i = 0; i < GetBundleCount(); i++ )
    {
       if ( cStrands <= iStrand && iStrand < (cStrands+GetMaxStrandCount(i)) )
          return i;

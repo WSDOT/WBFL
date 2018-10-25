@@ -48,8 +48,8 @@ std::_tstring rptHtmlUnitTagFormat::Format(const std::_tstring& tag)
    std::_tstring fmt;
    bool bSupOn = false;
    bool bSubOn = false;
-   Int16 len = tag.length();
-   for ( Int16 i = 0; i < len; i++ )
+   CollectionIndexType len = tag.length();
+   for ( CollectionIndexType i = 0; i < len; i++ )
    {
       if ( tag[i] == _T('^') )
       {

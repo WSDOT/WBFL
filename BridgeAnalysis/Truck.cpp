@@ -85,18 +85,18 @@ void bamTruck::AddAxle(Float64 wgt, bamAxleSpacing& space)
 
 //======================== ACCESS     =======================================
 
-Float64 bamTruck::GetAxleWeight(Int32 axleIndex)
+Float64 bamTruck::GetAxleWeight(AxleIndexType axleIndex)
 {
 	return m_AxleWeight[axleIndex];
 }
 
-Float64 bamTruck::GetAxleSpacing(Int32 axleIndex)
+Float64 bamTruck::GetAxleSpacing(AxleIndexType axleIndex)
 {
    bamAxleSpacing s = m_AxleSpacing[axleIndex];
 	return s.GetMinSpacing();
 }
 
-Int32 bamTruck::GetNumAxles()
+AxleIndexType bamTruck::GetNumAxles()
 {
    return m_AxleWeight.size();
 }

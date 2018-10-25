@@ -35,11 +35,21 @@
 #include <initguid.h>
 
 #if defined _DEBUG
-#include "Debug\BogusCombinationContext.h"
-#include "Debug\BogusCombinationContext_i.c"
+#if defined _WIN64
+#include "x64\Debug\BogusCombinationContext.h"
+#include "x64\Debug\BogusCombinationContext_i.c"
 #else
-#include "Release\BogusCombinationContext.h"
-#include "Release\BogusCombinationContext_i.c"
+#include "Win32\Debug\BogusCombinationContext.h"
+#include "Win32\Debug\BogusCombinationContext_i.c"
+#endif
+#else
+#if defined _WIN64
+#include "x64\Release\BogusCombinationContext.h"
+#include "x64\Release\BogusCombinationContext_i.c"
+#else
+#include "Win32\Release\BogusCombinationContext.h"
+#include "Win32\Release\BogusCombinationContext_i.c"
+#endif
 #endif
 
 #include "BogusComboContext.h"

@@ -35,21 +35,22 @@
 #pragma once
 
 #include <map>
-#include "femall.h"
+#include "FemAll.h"
+
 
 // Manages results for a model component.
 // Three degrees of freedom
-template <long TNForceDof, long TNDispDof>
+template <LONG TNForceDof, LONG TNDispDof>
 class Result
 {
 public:
 
-   Result(long id):
+   Result(LoadCaseIDType id):
    m_LoadingID(id)
    {
    }
 
-   Result(long id,Float64 *force,Float64 *disp):
+   Result(LoadCaseIDType id,Float64 *force,Float64 *disp):
    m_LoadingID(id)
    {
       SetActions(force, disp);
@@ -73,31 +74,31 @@ public:
    {
    }
 
-   long GetID() const
+   LoadCaseIDType GetID() const
    {
       return m_LoadingID;
    }
 
    // Gets are zero-based
-   Float64 GetForce(long dof) const
+   Float64 GetForce(LONG dof) const
    {
       ATLASSERT(dof<TNForceDof); // "Bounds Error"
       return m_Force[dof];
    }
 
-   void SetForce(long dof, Float64 force) 
+   void SetForce(LONG dof, Float64 force) 
    {
       ATLASSERT(dof<TNForceDof); // "Bounds Error"
       m_Force[dof] = force;
    }
 
-   Float64 GetDisplacement(long dof) const
+   Float64 GetDisplacement(LONG dof) const
    {
       ATLASSERT(dof<TNDispDof); // "Bounds Error"
       return m_Disp[dof];
    }
 
-   void SetDisplacement(long dof, Float64 disp) 
+   void SetDisplacement(LONG dof, Float64 disp) 
    {
       ATLASSERT(dof<TNDispDof); // "Bounds Error"
       m_Disp[dof] = disp;
@@ -108,12 +109,12 @@ public:
       if (this!=&rOther)
       {
          m_LoadingID = rOther.m_LoadingID;
-         for (long i=0; i<TNForceDof; i++)
+         for (LONG i=0; i<TNForceDof; i++)
          {
             m_Force[i] = rOther.m_Force[i];
          }
 
-         for (long j=0; j<TNDispDof; j++)
+         for (LONG j=0; j<TNDispDof; j++)
          {
             m_Disp[j] = rOther.m_Disp[j];
          }
@@ -122,7 +123,7 @@ public:
       return *this;
    }
 private:
-   long m_LoadingID;
+   LoadCaseIDType m_LoadingID;
    Float64 m_Force[TNForceDof];
    Float64 m_Disp[TNDispDof];
 };
@@ -131,11 +132,11 @@ template<class TResult>
 class ResultArray
 {
 public:
-   ResultArray(long id) : m_ID(id) {;}
+   ResultArray(IDType id) : m_ID(id) {;}
 
-   long GetID() const { return m_ID; };
+   IDType GetID() const { return m_ID; };
 
-   TResult* Find( long resultId)
+   TResult* Find( IDType resultId)
    {
       ResultVecIterator it( m_ResultVec.find(resultId) );
       if (it!=m_ResultVec.end())
@@ -161,22 +162,22 @@ public:
 
    // Remove
    // returns number removed
-   long Remove(long resultID)
+   CollectionIndexType Remove(IDType resultID)
    {
-      int n = m_ResultVec.erase(resultID);
+      CollectionIndexType n = m_ResultVec.erase(resultID);
       return n;
    }
 
-   const TResult* operator [] (long idx) const // indexed by load case id!!
+   const TResult* operator [] (IDType id) const // indexed by load case id!!
    {
-      return this->Find(idx);
+      return this->Find(id);
    }
 
    bool operator == (const ResultArray &array) const { return (m_ID == array.m_ID); };
 private:
    ResultArray();
-   long m_ID; // jnt, mbr, or poi id.
-   typedef std::map<long,TResult> ResultVec;
+   IDType m_ID; // jnt, mbr, or poi id.
+   typedef std::map<IDType,TResult> ResultVec;
    typedef typename ResultVec::iterator ResultVecIterator;
    typedef typename ResultVec::const_iterator ConstResultVecIterator;
    ResultVec m_ResultVec;

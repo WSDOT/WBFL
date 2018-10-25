@@ -100,7 +100,7 @@ public:
 public:
    STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval);
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);
-   STDMETHOD(get_Count)(/*[out, retval]*/ Uint32* retval);
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval);
    STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup);
    STDMETHOD(Clear)();
    STDMETHOD(Remove)(BSTR bstrGroup);

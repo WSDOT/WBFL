@@ -49,8 +49,8 @@ interface iPlugEvents : public IUnknown
 interface iSocket : public IUnknown
 {
 public:
-   STDMETHOD_(void,SetID)(long id) PURE;
-   STDMETHOD_(long,GetID)() PURE;
+   STDMETHOD_(void,SetID)(IDType id) PURE;
+   STDMETHOD_(IDType,GetID)() PURE;
    STDMETHOD_(void,SetPosition)(IPoint2d* pos) PURE;
    STDMETHOD_(void,GetPosition)(IPoint2d* *pos) PURE;
    STDMETHOD_(void,Move)(ISize2d* offset) PURE;
@@ -68,7 +68,7 @@ public:
 interface iSocketFactory : public IUnknown
 {
 public:
-   STDMETHOD_(void,CreateSocket)(long id,IPoint2d* pos,iSocket** socket) PURE;
+   STDMETHOD_(void,CreateSocket)(IDType id,IPoint2d* pos,iSocket** socket) PURE;
 };
 
 interface iConnectable : public IUnknown
@@ -77,17 +77,17 @@ public:
    STDMETHOD_(void,SetSocketFactory)(iSocketFactory* factory) PURE;
    STDMETHOD_(void,GetSocketFactory)(iSocketFactory** factory) PURE;
 
-   STDMETHOD_(void,AddSocket)(long id,IPoint2d* pos,iSocket** socket) PURE;
-   STDMETHOD_(void,GetSocket)(long key,AccessType access,iSocket** socket) PURE;
+   STDMETHOD_(void,AddSocket)(IDType id,IPoint2d* pos,iSocket** socket) PURE;
+   STDMETHOD_(void,GetSocket)(IDType key,AccessType access,iSocket** socket) PURE;
    STDMETHOD_(void,FindSocket)(IRect2d* rect,iSocket** socket) PURE;
-   STDMETHOD_(long,GetSocketCount)() PURE;
-   STDMETHOD_(void,RemoveSocket)(long key,AccessType access) PURE;
+   STDMETHOD_(CollectionIndexType,GetSocketCount)() PURE;
+   STDMETHOD_(void,RemoveSocket)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,RemoveAllSockets)() PURE;
 
    STDMETHOD_(void,DrawSockets)(CDC* pDC,iCoordinateMap* pMap) PURE;
 
-   STDMETHOD_(void,Connect)(long key,AccessType access,iPlug* plug,DWORD* pdwCookie) PURE;
-   STDMETHOD_(void,Disconnect)(long key,AccessType access,DWORD dwCookie) PURE;
+   STDMETHOD_(void,Connect)(IDType key,AccessType access,iPlug* plug,DWORD* pdwCookie) PURE;
+   STDMETHOD_(void,Disconnect)(IDType key,AccessType access,DWORD dwCookie) PURE;
 };
 
 interface iConnector : public IUnknown

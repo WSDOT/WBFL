@@ -228,7 +228,7 @@ STDMETHODIMP_(void) CLineImpl::GetEndPoints(CPoint* pStart,CPoint* pEnd)
    CComPtr<iCoordinateMap> map;
    dispMgr->GetCoordinateMap(&map);
 
-   long lx, ly;
+   LONG lx, ly;
    map->WPtoLP(start,&lx,&ly);
    pStart->x = lx;
    pStart->y = ly;

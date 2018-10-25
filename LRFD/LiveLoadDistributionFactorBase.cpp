@@ -1040,7 +1040,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
 
 lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorBase::DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes) const
 {
-   GirderIndexType nl = (numLanes==TwoOrMoreLoadedLanes) ? m_Nl : 1;
+   Uint32 nl = (numLanes==TwoOrMoreLoadedLanes) ? m_Nl : 1;
 
    // Pick adjacent girder if needed
    GirderIndexType gdr = m_GdrNum;
@@ -1459,7 +1459,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
          sume += e;
       }
 
-      sume *= cur_nl * lrfdUtility::GetMultiplePresenceFactor(cur_nl);
+      sume *= lrfdUtility::GetMultiplePresenceFactor(cur_nl);
 
       if (sume > sume_max)
       {
@@ -1480,7 +1480,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
 
    rmData.m = lrfdUtility::GetMultiplePresenceFactor(ln_ctrl);
    rmData.mg = rmData.m * (((Float64)ln_ctrl)/((Float64)nb) + Xext*sume/sumx2);
-   rmData.Nb = nb;
+   rmData.Nb = (Float64)nb;
    rmData.Nl = ln_ctrl;
 
    return rmData;

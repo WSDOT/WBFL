@@ -304,7 +304,7 @@ gmIShape* gmCompositeShape::GetShape(Uint32 key)
       return -0;
 }
 
-Uint32 gmCompositeShape::GetNumShapes() const
+CollectionIndexType gmCompositeShape::GetNumShapes() const
 {
    return m_ShapeContainer.size();
 }

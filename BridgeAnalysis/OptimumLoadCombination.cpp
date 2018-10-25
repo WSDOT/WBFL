@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bamOptimumLoadCombination::bamOptimumLoadCombination(Int32 id,
+bamOptimumLoadCombination::bamOptimumLoadCombination(IDType id,
                                                      bamOptimumType type,
                                                      bamOptimumVariable variable) :
 bamLoadCombination(id)
@@ -66,7 +66,7 @@ bamOptimumLoadCombination::~bamOptimumLoadCombination()
 #define _MinFactor(a) ( (a).first )
 #define _MaxFactor(a) ( (a).second )
 
-bamSectionResults bamOptimumLoadCombination::CombineSectionResults( Int32 poiId )
+bamSectionResults bamOptimumLoadCombination::CombineSectionResults( PoiIDType poiId )
 {
    bamSectionResults combined_results;
 
@@ -76,7 +76,7 @@ bamSectionResults bamOptimumLoadCombination::CombineSectionResults( Int32 poiId 
    while ( begin != end )
    {
       bamSectionResults current_results;
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       LoadFactors loadFactors = (*begin++).second;
 
       current_results = GetSectionResults( bamSectionResultsKey( poiId, loadingId ) );
@@ -120,7 +120,7 @@ bamSectionResults bamOptimumLoadCombination::CombineSectionResults( Int32 poiId 
    return combined_results;
 }
 
-bamSectionStress bamOptimumLoadCombination::CombineSectionStress( Int32 poiId, Int32 spIdx )
+bamSectionStress bamOptimumLoadCombination::CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx )
 {
    bamSectionStress combined_results;
 
@@ -130,7 +130,7 @@ bamSectionStress bamOptimumLoadCombination::CombineSectionStress( Int32 poiId, I
    while ( begin != end )
    {
       bamSectionStress current_results;
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       LoadFactors loadFactors = (*begin++).second;
 
       current_results = GetSectionStress( bamSectionStressKey( poiId, spIdx, loadingId ) );
@@ -160,7 +160,7 @@ bamSectionStress bamOptimumLoadCombination::CombineSectionStress( Int32 poiId, I
    return combined_results;
 }
 
-bamReaction bamOptimumLoadCombination::CombineReactions( Int32 supportId )
+bamReaction bamOptimumLoadCombination::CombineReactions( SupportIDType supportId )
 {
    bamReaction combo_reaction;
 
@@ -170,7 +170,7 @@ bamReaction bamOptimumLoadCombination::CombineReactions( Int32 supportId )
    while ( begin != end )
    {
       bamReaction current_reaction;
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       LoadFactors loadFactors = (*begin++).second;
 
       current_reaction = GetReaction( bamReactionKey(supportId,loadingId) );
@@ -225,7 +225,7 @@ Float64 bamOptimumLoadCombination::GetMultiplier() const
    return m_Multiplier;
 }
 
-void bamOptimumLoadCombination::AddLoading(Int32 loadingId,Float64 minFactor,Float64 maxFactor)
+void bamOptimumLoadCombination::AddLoading(IDType loadingId,Float64 minFactor,Float64 maxFactor)
 {
    m_LoadEntries.insert( LoadEntry( loadingId, LoadFactors(minFactor,maxFactor) ) );
 }
@@ -251,7 +251,7 @@ bamOptimumVariable bamOptimumLoadCombination::GetOptimizationVariable() const
 }
 
 //======================== ACCESS     =======================================
-void bamOptimumLoadCombination::GetLoadings(std::vector<Int32>& loadingIds) const
+void bamOptimumLoadCombination::GetLoadings(std::vector<IDType>& loadingIds) const
 {
    ConstLoadEntryIterator i;
    for ( i = m_LoadEntries.begin(); i != m_LoadEntries.end(); i++ )

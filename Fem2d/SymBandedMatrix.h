@@ -43,37 +43,37 @@ public:
    class SymBandedSolverException
    {
    public:
-      SymBandedSolverException(long dof):
+      SymBandedSolverException(LONG dof):
       m_OffendingDof(dof)
       {}
-      long m_OffendingDof;
+      LONG m_OffendingDof;
    };
 
 // Data Members
 protected:
-   long m_Size;
-   long m_BandWidth;
+   LONG m_Size;
+   LONG m_BandWidth;
    Float64 **m_ppMatrix;
    Float64* m_pData; // our memory
 
 // Constructors/Destructor
 public:
-   SymBandedMatrix(long size, long bandWidth);
+   SymBandedMatrix(LONG size, LONG bandWidth);
    SymBandedMatrix();
    virtual ~SymBandedMatrix();
 
-   void Resize(long size, long bw);
+   void Resize(LONG size, LONG bw);
    void Zero(); // zero out all elements
 
 // Member Functions
 private:
    void Clear();
    // map row, col to storage
-   void MapIndex(long row, long col, long* pi, long *pj) const
+   void MapIndex(LONG row, LONG col, LONG* pi, LONG *pj) const
    {
       ATLASSERT(row>=0 && col>=0);
-      long ti=row;
-      long tj=col-row;
+      LONG ti=row;
+      LONG tj=col-row;
       if (tj<0)
       {
          // on lower triangle - transpose
@@ -90,14 +90,14 @@ public:
    void    Factor();
    void SymBandedMatrix::Solve(Float64 *F);
 
-   long    NumRows() const;
-   long    NumColumns() const;
-   long    BandWidth() const;
+   LONG    NumRows() const;
+   LONG    NumColumns() const;
+   LONG    BandWidth() const;
 
    // accessor functions
-   Float64 operator()(long row,long col) const
+   Float64 operator()(LONG row,LONG col) const
    {
-      long i, j;
+      LONG i, j;
       MapIndex(row,col, &i, &j);
       if (j<m_BandWidth)
          return m_ppMatrix[i][j];
@@ -105,17 +105,17 @@ public:
          return 0.0;
    }
 
-   void SumVal(long row,long col, Float64& val)
+   void SumVal(LONG row,LONG col, Float64& val)
    {
-      long i, j;
+      LONG i, j;
       MapIndex(row,col, &i, &j);
       ATLASSERT(j<m_BandWidth); // can't set value beyond stated bandwidth
       m_ppMatrix[i][j] += val;
    }
 
-   void SetVal(long row,long col, Float64& val)
+   void SetVal(LONG row,LONG col, Float64& val)
    {
-      long i, j;
+      LONG i, j;
       MapIndex(row,col, &i, &j);
       ATLASSERT(j<m_BandWidth); // can't set value beyond stated bandwidth
       m_ppMatrix[i][j] = val;

@@ -86,20 +86,20 @@ void bmfLrLayout::SetGirder(const bmfGirder* pGirder)
 }
 
 
-Uint32 bmfLrLayout::GetNumZones() const
+ZoneIndexType bmfLrLayout::GetNumZones() const
 {
    ASSERTVALID;
    return m_ZoneVec.size();
 }
 
-bmfLrZone* bmfLrLayout::GetZone(Uint32 zoneNum) const
+bmfLrZone* bmfLrLayout::GetZone(ZoneIndexType zoneNum) const
 {
    ASSERTVALID;
    PRECONDITION (zoneNum<m_ZoneVec.size());
    return m_ZoneVec[zoneNum].get();
 }
 
-Uint32 bmfLrLayout::AddZone(bmfLrZone* pZone)
+ZoneIndexType bmfLrLayout::AddZone(bmfLrZone* pZone)
 {
    // zone belongs to us now
    pZone->SetLayout(this);
@@ -120,16 +120,16 @@ bmfLrLayout::RebarInstanceList bmfLrLayout::GetRebarsAtCut(Float64 cutLocation) 
       if ((*i)->IsInZone(cutLocation,&nearest_end))
       {
          // cut location is in zone, need to add bar instances to list
-         Uint32 num_pats = (*i)->GetNumPatterns();
-         for (Uint32 j=0; j<num_pats; j++)
+         CollectionIndexType num_pats = (*i)->GetNumPatterns();
+         for (CollectionIndexType j=0; j<num_pats; j++)
          {
             const bmfLrPattern* pPat = (*i)->GetPattern(j);
             CHECK(pPat!=0);
             const matRebar* pmat = pPat->GetRebar();
             CHECK(pmat!=0);
 
-            Uint32 num_bars = pPat->GetNumBars();
-            for (Uint32 k=0; k<num_bars; k++)
+            CollectionIndexType num_bars = pPat->GetNumBars();
+            for (CollectionIndexType k=0; k<num_bars; k++)
             {
                gpPoint2d pt = pPat->GetBarLocation(k);
 

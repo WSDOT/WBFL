@@ -67,12 +67,12 @@ void CReportBuilderManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& 
    m_RptBuilders.insert( std::make_pair( strName, pRptBuilder ) );
 }
 
-Uint32 CReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
+CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    if ( bIncludeHidden )
       return m_RptBuilders.size();
 
-   Uint32 nReportBuilders = 0;
+   CollectionIndexType nReportBuilders = 0;
    RptBuilderContainer::const_iterator iter;
    for ( iter = m_RptBuilders.begin(); iter != m_RptBuilders.end(); iter++ )
    {
@@ -188,7 +188,7 @@ boost::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWN
    return pBrowser;
 }
 
-Int16 CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
+INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
    // flags will be used in the future to control attribues of the dialog
    AFX_MANAGE_STATE(AfxGetStaticModuleState());

@@ -225,7 +225,43 @@ void sysStructuredSaveXml::Property(LPCTSTR name, Uint32 value)
    try
    {
       indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
+      if ( value == Uint32_Max )
+         *m_pOStream << "<"<<name<<">"<<-1<<"</"<<name<<">"<<std::endl;
+      else
+         *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXml::Property(LPCTSTR name, Int64 value)
+{
+   ASSERTVALID;
+
+   try
+   {
+      indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
       *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
+   }
+   catch(...)
+   {
+      THROW(sysXStructuredSave,BadWrite);
+   }
+}
+
+void sysStructuredSaveXml::Property(LPCTSTR name, Uint64 value)
+{
+   ASSERTVALID;
+
+   try
+   {
+      indent_stream(*m_pOStream, m_Level*INDENT+INDENT);
+      if ( value == Uint64_Max )
+         *m_pOStream << "<"<<name<<">"<<-1<<"</"<<name<<">"<<std::endl;
+      else
+         *m_pOStream << "<"<<name<<">"<<value<<"</"<<name<<">"<<std::endl;
    }
    catch(...)
    {

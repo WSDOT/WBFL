@@ -213,7 +213,7 @@ InfluenceLoadLocation::InfluenceLoadLocation(Float64 globalX, MemberIDType mbrId
    m_LocationType(iflSingle),
    m_FemMemberID(mbrId),
    m_FemMemberLoc(mbrLoc),
-   m_FemLoadCaseID(-1)
+   m_FemLoadCaseID(INVALID_ID)
    {;}
 
 // for container life
@@ -260,12 +260,12 @@ PoiMap::~PoiMap()
 
 
    // virtual functions to get poi results from underlying fem model
-void PoiMap::GetDeflection(long lgId, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
+void PoiMap::GetDeflection(LoadGroupIDType lgId, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
 {
    ATLASSERT(0); // should not ask for this from search-only poi
 }
 
-void PoiMap::GetForce(long lgId, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
+void PoiMap::GetForce(LoadGroupIDType lgId, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
 {
    ATLASSERT(0); // should not ask for this from search-only poi
 }

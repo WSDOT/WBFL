@@ -55,7 +55,7 @@ class DblRegion: public std::vector<Float64>
 public:
    void AddLocation(Float64 loc)
    {
-      int size = this->size();
+      CollectionIndexType size = this->size();
       if (size==0)
       {
          push_back(loc);

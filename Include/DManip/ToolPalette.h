@@ -65,10 +65,10 @@ public:
 
 public:
    void AddTool(iTool* tool);
-   void GetTool(long idx,iTool** pTool);
-   void FindTool(UINT id,iTool** pTool);
-   void RemoveTool(long idx);
-   void RemoveTool(UINT id);
+   void GetTool(IndexType idx,iTool** pTool);
+   void FindTool(IDType id,iTool** pTool);
+   void RemoveTool(IndexType idx);
+   void RemoveTool(IDType id);
 
 // Implementation
 protected:

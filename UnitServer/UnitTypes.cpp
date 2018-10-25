@@ -300,7 +300,7 @@ HRESULT CUnitTypes::InitDefaultUnits()
 STDMETHODIMP::CUnitTypes::get_Count(CollectionIndexType* retval)
 {
    CHECK_RETVAL(retval);
-   CollectionIndexType count;
+   long count;
    IUnitTypeCollection::get_Count(&count);
    (*retval) = count;
    return S_OK;
@@ -312,18 +312,20 @@ STDMETHODIMP CUnitTypes::get_Item(VARIANT Index, IUnitType** retval)
 
    HRESULT hr = S_OK;
 
-   if ( Index.vt == VT_I2 || Index.vt == VT_I4 || Index.vt == VT_UI2 || Index.vt == VT_UI4 )
+   if ( Index.vt == VT_I2 || Index.vt == VT_I4 || Index.vt == VT_I8 || Index.vt == VT_UI2 || Index.vt == VT_UI4 || Index.vt == VT_UI8 )
    {
-      Uint32 idx;
+      IndexType idx;
       switch(Index.vt )
       {
-      case VT_I2:    idx = Index.iVal;   break;
-      case VT_I4:    idx = Index.lVal;   break;
-      case VT_UI2:   idx = Index.uiVal;   break;
-      case VT_UI4:   idx = Index.ulVal;   break;
+      case VT_I2:    idx = (IndexType)Index.iVal;   break;
+      case VT_I4:    idx = (IndexType)Index.lVal;   break;
+      case VT_I8:    idx = (IndexType)Index.llVal;  break;
+      case VT_UI2:   idx = (IndexType)Index.uiVal;  break;
+      case VT_UI4:   idx = (IndexType)Index.ulVal;  break;
+      case VT_UI8:   idx = (IndexType)Index.ullVal; break;
       }
 
-      if ( idx < 0 || m_coll.size() <= idx )
+      if ( idx == INVALID_INDEX || m_coll.size() <= idx )
          return E_INVALIDARG;
 
       CComVariant& var = m_coll[idx];

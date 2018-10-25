@@ -89,7 +89,7 @@ public:
       StrandPoint(const PatternPoint& p) { Point = p.Point; bCanDebond = p.bCanDebond; FillSequence = -1; bHasStrand = false; bIsDebonded = false; }
       bool operator==(const StrandPoint& rOther) const
       { return FillSequence == rOther.FillSequence && bHasStrand == rOther.bHasStrand && bIsDebonded == rOther.bIsDebonded; }
-      Uint32 FillSequence;
+      StrandIndexType FillSequence;
       bool bHasStrand;
       bool bIsDebonded;
    };

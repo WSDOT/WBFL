@@ -362,19 +362,19 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
          hr = force_res->GetResult(ipoi, &left_force, &left_config, &right_force, &right_config);
 
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long left_engine_id  = m_ControllingEngine[ipoi].Left;
-         long right_engine_id = m_ControllingEngine[ipoi].Right;
+         CollectionIndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
+         CollectionIndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
-         m_pEnveloper->GetEngine(left_engine_id,  &left_engine);
-         m_pEnveloper->GetEngine(right_engine_id, &right_engine);
+         m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
+         m_pEnveloper->GetEngine(right_engine_idx, &right_engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> left_response, right_response;
          hr = left_engine->get_ConcurrentLoadCombinationResponse(&left_response);
          hr = right_engine->get_ConcurrentLoadCombinationResponse(&right_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          POIs->get_Item(ipoi, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -436,12 +436,12 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(ILongArray* pois,
       for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long left_engine_id  = m_ControllingEngine[poiIdx].Left;
-         long right_engine_id = m_ControllingEngine[poiIdx].Right;
+         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
-         m_pEnveloper->GetEngine(left_engine_id,  &left_engine);
-         m_pEnveloper->GetEngine(right_engine_id, &right_engine);
+         m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
+         m_pEnveloper->GetEngine(right_engine_idx, &right_engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> left_response, right_response;
          hr = left_engine->get_ConcurrentLoadCombinationResponse(&left_response);
@@ -518,19 +518,19 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(ILongArray* pois, B
       for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long left_engine_id  = m_ControllingEngine[poiIdx].Left;
-         long right_engine_id = m_ControllingEngine[poiIdx].Right;
+         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
-         m_pEnveloper->GetEngine(left_engine_id,  &left_engine);
-         m_pEnveloper->GetEngine(right_engine_id, &right_engine);
+         m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
+         m_pEnveloper->GetEngine(right_engine_idx, &right_engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> left_response, right_response;
          hr = left_engine->get_ConcurrentLoadCombinationResponse(&left_response);
          hr = right_engine->get_ConcurrentLoadCombinationResponse(&right_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          pois->get_Item(poiIdx, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -603,16 +603,16 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(ILongArray* pois,
       for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long engine_id = m_ControllingEngineReactions[poiIdx];
+         CollectionIndexType engine_idx = m_ControllingEngineReactions[poiIdx];
 
          CComPtr<ILBAMAnalysisEngine> engine;
-         m_pEnveloper->GetEngine(engine_id,  &engine);
+         m_pEnveloper->GetEngine(engine_idx,  &engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> concurrent_response;
          hr = engine->get_ConcurrentLoadCombinationResponse(&concurrent_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          pois->get_Item(poiIdx, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -665,16 +665,16 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(ILongArray* 
       for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long engine_id = m_ControllingEngineReactions[poiIdx];
+         CollectionIndexType engine_idx = m_ControllingEngineReactions[poiIdx];
 
          CComPtr<ILBAMAnalysisEngine> engine;
-         m_pEnveloper->GetEngine(engine_id,  &engine);
+         m_pEnveloper->GetEngine(engine_idx,  &engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> concurrent_response;
          hr = engine->get_ConcurrentLoadCombinationResponse(&concurrent_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          pois->get_Item(poiIdx, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -727,19 +727,19 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(ILongArray* pois, BSTR
       for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         long left_engine_id  = m_ControllingEngine[poiIdx].Left;
-         long right_engine_id = m_ControllingEngine[poiIdx].Right;
+         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
-         m_pEnveloper->GetEngine(left_engine_id,  &left_engine);
-         m_pEnveloper->GetEngine(right_engine_id, &right_engine);
+         m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
+         m_pEnveloper->GetEngine(right_engine_idx, &right_engine);
 
          CComPtr<IConcurrentLoadCombinationResponse> left_response, right_response;
          hr = left_engine->get_ConcurrentLoadCombinationResponse(&left_response);
          hr = right_engine->get_ConcurrentLoadCombinationResponse(&right_response);
 
          // compute results one poi at a time
-         long poi_id;
+         PoiIDType poi_id;
          pois->get_Item(poiIdx, &poi_id);
          single_poi->put_Item(0, poi_id);
 
@@ -797,7 +797,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(ILongArray* pois, BSTR
 
 // Make sure maximum value is in res1
 void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCombinationSectionResults* res1, ILoadCombinationSectionResults* res2,
-                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, long engineID)
+                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx)
 {
    CHRException hr;
 
@@ -842,11 +842,11 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
 
       if (ldo)
       {
-         m_ControllingEngine[ipoi].Left = engineID;
+         m_ControllingEngine[ipoi].Left = engineIdx;
 
          if (rdo)
          {
-            m_ControllingEngine[ipoi].Right = engineID;
+            m_ControllingEngine[ipoi].Right = engineIdx;
 
             // replace res1's right and left
             hr = res1->SetResult(ipoi, lval2, lconf2, rval2, rconf2);
@@ -860,7 +860,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
       else if (rdo)
       {
          // right only
-         m_ControllingEngine[ipoi].Right = engineID;
+         m_ControllingEngine[ipoi].Right = engineIdx;
 
          hr = res1->SetResult(ipoi, lval1, lconf1, rval2, rconf2);
       }
@@ -869,7 +869,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
 
 
 void CLoadCombinationResponseAgg::EnvelopeLoadCombinationResults(ILoadCombinationResults* res1, ILoadCombinationResults* res2,
-                                    VARIANT_BOOL computeConfig, OptimizationType optimization,long engineID)
+                                    VARIANT_BOOL computeConfig, OptimizationType optimization,CollectionIndexType engineIdx)
 {
    CHRException hr;
 
@@ -902,7 +902,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationResults(ILoadCombinatio
 
       if (did)
       {
-         m_ControllingEngineReactions.push_back(engineID);
+         m_ControllingEngineReactions.push_back(engineIdx);
          hr = res1->SetResult(ipoi, val2, conf2);
       }
    }

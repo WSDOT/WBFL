@@ -126,7 +126,7 @@ void bmfLrSplicedGirderFlexiZone::GetZoneLocation(Float64* zoneStart, Float64* z
 
    Float64 start_loc=0.0;
    // add up previous segment and closure pour lengths
-   for (Int16 seg=0; seg<m_Segment; seg++)
+   for (SegmentIndexType seg=0; seg<m_Segment; seg++)
    {
       start_loc += pgird->GetSegmentLength(seg);
       start_loc += pgird->GetClosurePourSize(seg);

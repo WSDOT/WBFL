@@ -32,8 +32,8 @@ class sysEngNotationData
 {
 public:
    Float64 value;
-   Int16 nDigits;
-   Int16 sigDigits; // if 0, treat nDigits as the number of decimal points
+   int nDigits;
+   int sigDigits; // if 0, treat nDigits as the number of decimal points
                     // otherwise, treat nDigits as the number of significant
                     // digits
 };
@@ -52,6 +52,6 @@ public:
 SYSSTRUCTTPL std::_Smanip<sysEngNotationData>;
 typedef std::_Smanip<sysEngNotationData> eng_notation_manip;
 
-SYSFUNC eng_notation_manip eng_notation(Float64 value,Int16 nDigits,Int16 sigDigits = 0);
+SYSFUNC eng_notation_manip eng_notation(Float64 value,int nDigits,int sigDigits = 0);
 
 #endif

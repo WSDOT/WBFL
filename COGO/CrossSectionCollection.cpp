@@ -118,13 +118,13 @@ STDMETHODIMP CCrossSectionCollection::putref_Item(CollectionIndexType idx,ICross
    CSType& cst = m_coll[idx];
    CComVariant& var = cst.second; // Variant holding IDispatch to CrossSection
 
-   Unadvise(idx); // Unadvise from the current element
+   UnadviseElement(idx); // Unadvise from the current element
 
    var = pVal; // Associate new CrossSection with this variant
 
    // Advise
    DWORD dwCookie;
-   Advise(pVal,&dwCookie);
+   AdviseElement(pVal,&dwCookie);
 
    // Update the cookie
    cst.first = dwCookie;
@@ -134,16 +134,19 @@ STDMETHODIMP CCrossSectionCollection::putref_Item(CollectionIndexType idx,ICross
    return S_OK;
 }
 
-//STDMETHODIMP CCrossSectionCollection::get_Count(long *pVal)
-//{
-//}
+STDMETHODIMP CCrossSectionCollection::get_Count(CollectionIndexType *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_coll.size();
+   return S_OK;
+}
 
 STDMETHODIMP CCrossSectionCollection::AddEx(ICrossSection* csect)
 {
    CHECK_IN(csect);
 
    DWORD dwCookie;
-   Advise(csect,&dwCookie);
+   AdviseElement(csect,&dwCookie);
    m_coll.push_back( std::make_pair(dwCookie,CComVariant(csect)));
    std::sort(m_coll.begin(),m_coll.end(),SortCrossSections());
 
@@ -177,12 +180,12 @@ STDMETHODIMP CCrossSectionCollection::Add(VARIANT varStation, Float64 cpo, Float
    return AddEx(newCS);
 }
 
-STDMETHODIMP CCrossSectionCollection::Remove(long idx)
+STDMETHODIMP CCrossSectionCollection::Remove(CollectionIndexType idx)
 {
-   if ( idx < 0 || (long)m_coll.size() <= idx )
+   if ( idx < 0 || m_coll.size() <= idx )
       return E_INVALIDARG;
 
-   Unadvise(idx);
+   UnadviseElement(idx);
    m_coll.erase(m_coll.begin() + idx );
    Fire_OnCrossSectionRemoved();
    return S_OK;
@@ -396,9 +399,9 @@ STDMETHODIMP CCrossSectionCollection::Save(IStructuredSave2* pSave)
    CHECK_IN(pSave);
 
    pSave->BeginUnit(CComBSTR("CrossSections"),1.0);
-   long count = m_coll.size();
+   CollectionIndexType count = m_coll.size();
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       pSave->put_Property(CComBSTR("CrossSection"),m_coll[i].second);
    }
@@ -512,7 +515,7 @@ HRESULT CCrossSectionCollection::GetCrossSectionData(VARIANT varStation,Float64*
    return S_OK;
 }
 
-void CCrossSectionCollection::Advise(ICrossSection* cs,DWORD* pdwCookie)
+void CCrossSectionCollection::AdviseElement(ICrossSection* cs,DWORD* pdwCookie)
 {
    CComPtr<ICrossSection> pCP(cs);
    HRESULT hr = pCP.Advise(GetUnknown(), IID_ICrossSectionEvents, pdwCookie );
@@ -526,7 +529,7 @@ void CCrossSectionCollection::Advise(ICrossSection* cs,DWORD* pdwCookie)
    InternalRelease(); // Break circular reference
 }
 
-void CCrossSectionCollection::Unadvise(long idx)
+void CCrossSectionCollection::UnadviseElement(CollectionIndexType idx)
 {
    //
    // Disconnection from connection CrossSection
@@ -552,9 +555,9 @@ void CCrossSectionCollection::Unadvise(long idx)
 
 void CCrossSectionCollection::UnadviseAll()
 {
-   for ( long i = 0; i < (long)m_coll.size(); i++ )
+   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
    {
-      Unadvise(i);
+      UnadviseElement(i);
    }
 }
 

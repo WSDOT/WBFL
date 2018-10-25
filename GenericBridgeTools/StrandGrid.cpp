@@ -251,7 +251,7 @@ STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/ILongArray* fill)
    {
       if (gridPointIdx < (GridIndexType)nGridPoints)
       {
-         StrandIndexType nStrandsAtGridPoint;
+         IDType nStrandsAtGridPoint; // should be index type but must be ID Type because of LongArray
          fill->get_Item(gridPointIdx, &nStrandsAtGridPoint);
 
          if ( 0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2 )
@@ -397,7 +397,7 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndex(/*[in]*/ StrandIndexType strand
 
    HRESULT hr = S_OK;
 
-   if ( strandIndex < 0 || (StrandIndexType)m_StrandToGridMap.size() <= strandIndex)
+   if ( strandIndex == INVALID_INDEX || m_StrandToGridMap.size() <= strandIndex)
    {
       hr = E_INVALIDARG;
    }
@@ -433,7 +433,7 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/ILongArray* fill, /*[
    GridIndexType fillIdx;
    for( fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      StrandIndexType nStrandsAtGridPoint;
+      IDType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -591,7 +591,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/ILongArray* fill, /*[ou
    GridIndexType fillIdx;
    for(fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      StrandIndexType nStrandsAtGridPoint;
+      IDType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
      
@@ -640,7 +640,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/ILongArray* fill, /*[out,retv
    StrandIndexType nStrands = 0;
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      StrandIndexType nStrandsAtGridPoint;
+      IDType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -689,7 +689,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/ILongArray* fill, /*[out,
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
       const GridPoint2d& gpoint = m_GridPoints[fillIdx];
-      StrandIndexType nStrandsAtGridPoint;
+      IDType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -760,7 +760,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/ILongArray* fill, /*[out]*/Float64* c
 
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
-      StrandIndexType nStrandsAtGridPoint;
+      IDType nStrandsAtGridPoint;
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -826,7 +826,7 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/ILongArray* fill, /*[o
          Float64 old_x = gpoint.dPointX;
          Float64 old_y = gpoint.dPointY;
 
-         StrandIndexType nStrandsAtGridPoint;
+         IDType nStrandsAtGridPoint;
          fill->get_Item(fillIdx, &nStrandsAtGridPoint);
          ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
@@ -1093,7 +1093,7 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 
    ValidateGrid();
 
-   if ( grdIndex < 0 || (GridIndexType)m_GridPoints.size() <= grdIndex )
+   if ( grdIndex == INVALID_INDEX || m_GridPoints.size() <= grdIndex )
    {
       ATLASSERT(0);
       return E_INVALIDARG;
@@ -1249,7 +1249,7 @@ STDMETHODIMP CStrandGrid::IsExteriorStrandDebondedInRow(/*[in]*/ RowIndexType ro
    if (FAILED(hr))
       return hr;
 
-   if ( rowIndex < 0 || (RowIndexType)m_Rows.size() <= rowIndex )
+   if ( rowIndex == INVALID_INDEX || (RowIndexType)m_Rows.size() <= rowIndex )
       return E_INVALIDARG;
 
    // advance the iterator
@@ -1321,7 +1321,7 @@ STDMETHODIMP CStrandGrid::GetDebondAtLeftSection(/*[in]*/SectionIndexType sectio
 {
    // find section from left end
    CHECK_RETOBJ(strandIndexes);
-   if ( sectionIdx < 0 || (SectionIndexType)m_LeftSections.size() <= sectionIdx )
+   if ( sectionIdx == INVALID_INDEX || m_LeftSections.size() <= sectionIdx )
       return E_INVALIDARG;
 
    // loop over the sections until the iterator is at the correct position
@@ -1342,7 +1342,7 @@ STDMETHODIMP CStrandGrid::GetDebondAtRightSection(/*[in]*/SectionIndexType secti
 {
    // find section from right end
    CHECK_RETOBJ(strandIndexes);
-   if ( sectionIdx < 0 || (SectionIndexType)m_RightSections.size() <= sectionIdx )
+   if ( sectionIdx == INVALID_INDEX || m_RightSections.size() <= sectionIdx )
       return E_INVALIDARG;
 
    // reverse loop over the sections until the iterator is at the correct position

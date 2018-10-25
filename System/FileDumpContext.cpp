@@ -112,6 +112,18 @@ dbgDumpContext& dbgFileDumpContext::operator<<(Uint32 n)
    return *this;
 }
 
+dbgDumpContext& dbgFileDumpContext::operator<<(Int64 n)
+{
+   m_os << n;
+   return *this;
+}
+
+dbgDumpContext& dbgFileDumpContext::operator<<(Uint64 n)
+{
+   m_os << n;
+   return *this;
+}
+
 dbgDumpContext& dbgFileDumpContext::operator<<(Float32 n)    
 {
    m_os << n;

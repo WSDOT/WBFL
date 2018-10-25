@@ -519,8 +519,8 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
 void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span)
 {
    CHECK(ColNo<m_NumColumns);
-   CHECK(ColNo+(span<0?0:span)-1<m_NumColumns);
-   CHECK(span>=-1);
+   CHECK(ColNo+(span==SKIP_CELL?0:span)-1<m_NumColumns);
+   //CHECK(span>=-1);
 
    if(ColNo<m_NumColumns) 
    {
@@ -547,7 +547,7 @@ void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, Column
 void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span)
 {
    CHECK(ColNo<m_NumColumns);
-   CHECK(span>=-1);
+   //CHECK(span>=-1);
 
    if(ColNo<m_NumColumns) 
    {
@@ -648,7 +648,7 @@ RowIndexType rptRcTable::GetNumberOfStripedRows()
 
 bool rptRcTable::IsStripedRow(RowIndexType row) const
 {
-   int stripeGroup = (row-m_NumberOfHeaderRows)/m_NumberOfStripedRows;
+   RowIndexType stripeGroup = (row-m_NumberOfHeaderRows)/m_NumberOfStripedRows;
    return m_bStripeRows && (stripeGroup % 2 != 0);
 }
 

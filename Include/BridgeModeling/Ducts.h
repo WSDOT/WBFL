@@ -96,25 +96,25 @@ public:
    void AddDuct(const bmfDuct& duct);
    void RemoveDuct(long index);
    void RemoveAllDucts();
-   long GetDuctCount() const;
-   bmfDuct& GetDuct(long index);
-   const bmfDuct& GetDuct(long index) const;
-   gpPoint2d GetDuctLocation(long index,Float64 x) const;
-   Float64 GetDuctDiameter(long index) const;
+   DuctIndexType GetDuctCount() const;
+   bmfDuct& GetDuct(DuctIndexType index);
+   const bmfDuct& GetDuct(DuctIndexType index) const;
+   gpPoint2d GetDuctLocation(DuctIndexType index,Float64 x) const;
+   Float64 GetDuctDiameter(DuctIndexType index) const;
 
-   Uint32 GetMaxStrands() const;
+   StrandIndexType GetMaxStrands() const;
 
    gpPoint2d GetPTCG(Float64 x) const;
 
-   void SetNumStrands(Uint32 ductIndex,Uint32 nStrands);
-   Uint32 GetNumStrands(Uint32 ductIndex) const;
-   Uint32 GetNumStrands() const;
+   void SetNumStrands(DuctIndexType ductIndex,StrandIndexType nStrands);
+   StrandIndexType GetNumStrands(DuctIndexType ductIndex) const;
+   StrandIndexType GetNumStrands() const;
 
    void SetGirder(bmfGirder* m_pGirder);
 
-   Float64 GetDuctSlope(Float64 x,Uint32 ductIndex) const;
+   Float64 GetDuctSlope(Float64 x,DuctIndexType ductIndex) const;
 
-   void GetDuctControlPoints(Uint32 ductIndex,gpPoint2d* pe1,gpPoint2d* pe2) const;
+   void GetDuctControlPoints(DuctIndexType ductIndex,gpPoint2d* pe1,gpPoint2d* pe2) const;
 
 protected:
    // GROUP: DATA MEMBERS

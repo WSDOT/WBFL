@@ -50,8 +50,8 @@ public:
    void SetDisplayObject(iDisplayObject* pParent);
 
    // iDisplayObject implementation
-   virtual void Do_SetID(long id);
-   virtual long Do_GetID();
+   virtual void Do_SetID(IDType id);
+   virtual IDType Do_GetID();
 
    virtual void Do_SetItemData(void* pVoid,bool bDelete);
    virtual void Do_GetItemData(void** ppVoid);
@@ -81,10 +81,10 @@ public:
    // Tool Tips
    virtual void Do_SetToolTipText(LPCTSTR lpszToolTipText);
    virtual CString Do_GetToolTipText();
-   virtual void Do_SetMaxTipWidth(long maxWidth);
-   virtual long Do_GetMaxTipWidth();
-   virtual void Do_SetTipDisplayTime(long iTime);
-   virtual long Do_GetTipDisplayTime();
+   virtual void Do_SetMaxTipWidth(INT maxWidth);
+   virtual INT Do_GetMaxTipWidth();
+   virtual void Do_SetTipDisplayTime(INT iTime);
+   virtual INT Do_GetTipDisplayTime();
 
 
    // Interface Events
@@ -128,7 +128,7 @@ public:
 
 
 protected:
-   long m_ID;
+   IDType m_ID;
    BOOL m_bIsVisible;
    iDisplayObject* m_pParent;
    CComPtr<iGravityWellStrategy> m_pGravityWellStrategy;
@@ -136,8 +136,8 @@ protected:
    CComPtr<iDropSite> m_pDropSite;
    BOOL m_bSelected;
    CString m_strToolTipText;
-   long m_MaxToolTipWidth;
-   long m_ToolTipDisplayTime;
+   INT m_MaxToolTipWidth;
+   INT m_ToolTipDisplayTime;
    SelectionType m_SelectionType;
    CComPtr<IRect2d> m_ReusableRect;
 

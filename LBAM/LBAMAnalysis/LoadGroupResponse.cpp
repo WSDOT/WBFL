@@ -360,7 +360,7 @@ STDMETHODIMP CLoadGroupResponse::OnSpansReverse()
 }
 STDMETHODIMP CLoadGroupResponse::OnPOIsChanged(/*[in]*/IPOI* poi, ChangeType change)
 {
-   long id;
+   PoiIDType id;
    HRESULT hr = poi->get_ID(&id);
    if (FAILED(hr))
       return hr;
@@ -375,7 +375,7 @@ STDMETHODIMP CLoadGroupResponse::OnPOIsRenamed(PoiIDType oldID, PoiIDType newID)
 }
 STDMETHODIMP CLoadGroupResponse::OnPOIsAdded(/*[in]*/IPOI* poi)
 {
-   long id;
+   PoiIDType id;
    HRESULT hr = poi->get_ID(&id);
    if (FAILED(hr))
       return hr;
@@ -385,7 +385,7 @@ STDMETHODIMP CLoadGroupResponse::OnPOIsAdded(/*[in]*/IPOI* poi)
 }
 STDMETHODIMP CLoadGroupResponse::OnPOIsBeforeRemove(/*[in]*/IPOI* poi)
 {
-   long id;
+   PoiIDType id;
    HRESULT hr = poi->get_ID(&id);
    if (FAILED(hr))
       return hr;
@@ -1109,7 +1109,7 @@ void CLoadGroupResponse::CAnalysisController::SetLoadGroupAsActive(BSTR loadGrou
 IBstrArray* CLoadGroupResponse::CAnalysisController::GetActiveLoadGroups()
 {
    // get active loadgroup names
-   long ttlsize = m_LoadGroups.size();
+   CollectionIndexType ttlsize = m_LoadGroups.size();
    CComPtr<IBstrArray> names;
    names.CoCreateInstance(CLSID_BstrArray);
    names->Reserve(ttlsize);
@@ -1149,7 +1149,7 @@ void CLoadGroupResponse::ValidateInfluenceCalc(BSTR stage)
          m_CachedSupportDeflectionInfluenceLines.clear();
 
          // clear out loadings in fem model
-         long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+         StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
          CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
          rfemModel.ClearInfluenceLoads();
@@ -2119,7 +2119,7 @@ STDMETHODIMP CLoadGroupResponse::get_IsPOIInContraflexureZone(PoiIDType poiID, B
 ////// ILiveLoadNegativeMomentRegion
 ///////////////////////////////////////////////////////////////
 
-STDMETHODIMP CLoadGroupResponse::get_IsPOIInNegativeLiveLoadMomentZone(long poiID, BSTR stage, InZoneType* isInZone)
+STDMETHODIMP CLoadGroupResponse::get_IsPOIInNegativeLiveLoadMomentZone(PoiIDType poiID, BSTR stage, InZoneType* isInZone)
 {
    CHECK_RETVAL(isInZone);
 
@@ -2131,7 +2131,7 @@ STDMETHODIMP CLoadGroupResponse::get_IsPOIInNegativeLiveLoadMomentZone(long poiI
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
 
       rfemModel.IsPOIInNegativeLiveLoadMomentZone(poiID, isInZone);
@@ -2156,7 +2156,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeNegativeMomentRegions(BSTR stage, IDblAr
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
 
       rfemModel.GetNegativeMomentRegions(locations);
@@ -2183,7 +2183,7 @@ STDMETHODIMP CLoadGroupResponse::SaveFem2D(BSTR Stage, IStructuredSave2* pSave)
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(Stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(Stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2204,13 +2204,13 @@ STDMETHODIMP CLoadGroupResponse::SaveFem2D(BSTR Stage, IStructuredSave2* pSave)
 ////// IAnalysisPOIs
 ///////////////////////////////////////////////////////////////
 
-STDMETHODIMP CLoadGroupResponse::get_SpanPoiIncrement(long *pVal)
+STDMETHODIMP CLoadGroupResponse::get_SpanPoiIncrement(PoiIDType *pVal)
 {
    *pVal = m_MinSpanPoiIncrement;
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::put_SpanPoiIncrement(long newVal)
+STDMETHODIMP CLoadGroupResponse::put_SpanPoiIncrement(PoiIDType newVal)
 {
    if (newVal != m_MinSpanPoiIncrement)
    {
@@ -2222,14 +2222,14 @@ STDMETHODIMP CLoadGroupResponse::put_SpanPoiIncrement(long newVal)
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::get_CantileverPoiIncrement(long *pVal)
+STDMETHODIMP CLoadGroupResponse::get_CantileverPoiIncrement(PoiIDType *pVal)
 {
    *pVal = m_MinCantileverPoiIncrement;
 
    return S_OK;
 }
 
-STDMETHODIMP CLoadGroupResponse::put_CantileverPoiIncrement(long newVal)
+STDMETHODIMP CLoadGroupResponse::put_CantileverPoiIncrement(PoiIDType newVal)
 {
    if (newVal != m_MinCantileverPoiIncrement)
    {
@@ -2250,7 +2250,7 @@ STDMETHODIMP CLoadGroupResponse::GetSuperstructurePois(BSTR stage, ILongArray* *
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2273,7 +2273,7 @@ STDMETHODIMP CLoadGroupResponse::GetPoiInfo(BSTR stage, PoiIDType poiID, MemberT
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2310,7 +2310,7 @@ STDMETHODIMP CLoadGroupResponse::GetActiveLoadGroups(IBstrArray* *pVal)
 ///////////////////////////////////////////////////////////////
 // IGetSegmentCrossSections
 ///////////////////////////////////////////////////////////////
-STDMETHODIMP CLoadGroupResponse::GetSegmentCrossSectionAtPOI(/*[in]*/long poiID, /*[in]*/BSTR stage, /*[out]*/ISegmentCrossSection* *leftCs,  /*[out]*/ISegmentCrossSection* *rightCs)
+STDMETHODIMP CLoadGroupResponse::GetSegmentCrossSectionAtPOI(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/ISegmentCrossSection* *leftCs,  /*[out]*/ISegmentCrossSection* *rightCs)
 {
    try
    {
@@ -2318,7 +2318,7 @@ STDMETHODIMP CLoadGroupResponse::GetSegmentCrossSectionAtPOI(/*[in]*/long poiID,
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2335,7 +2335,7 @@ STDMETHODIMP CLoadGroupResponse::GetSegmentCrossSectionAtPOI(/*[in]*/long poiID,
 ///////////////////////////////////////////////////////////////
 // IGetStressPointss
 ///////////////////////////////////////////////////////////////
-STDMETHODIMP CLoadGroupResponse::GetStressPointsAtPOI(/*[in]*/long poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs)
+STDMETHODIMP CLoadGroupResponse::GetStressPointsAtPOI(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs)
 {
    try
    {
@@ -2343,7 +2343,7 @@ STDMETHODIMP CLoadGroupResponse::GetStressPointsAtPOI(/*[in]*/long poiID, /*[in]
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2395,7 +2395,7 @@ STDMETHODIMP CLoadGroupResponse::GetSupportDistributionFactor(SupportIDType supp
       ValidateModels();
 
       // get stage sequencing
-      long stg_idx = m_AnalysisController.CheckedStageOrder(Stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(Stage);
 
       // get fem model for this stage
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
@@ -2411,11 +2411,11 @@ STDMETHODIMP CLoadGroupResponse::GetSupportDistributionFactor(SupportIDType supp
 
 
 
-void CLoadGroupResponse::CacheInfluenceLines(long poiID, BSTR stage,ResultsOrientation orientation)
+void CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,ResultsOrientation orientation)
 {
    try
    {
-      long stg_idx = m_AnalysisController.CheckedStageOrder(stage);
+      StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
       CAnalysisModel& rfemModel = *(m_Models[stg_idx]);
 
       CComPtr<IInfluenceLine> ilFx[2], ilFy[2], ilMz[2], ilDx[2], ilDy[2], ilRz[2];

@@ -95,10 +95,10 @@ public:
 	STDMETHOD(IntersectLineWithLineSegment)(/*[in]*/ ILine2d* pLine,/*[in]*/ ILineSegment2d* pSeg,/*[out,retval]*/ IPoint2d** ppPoint);
 	STDMETHOD(SegSegIntersect)(/*[in]*/ ILineSegment2d* pSeg1,/*[in]*/ ILineSegment2d* pSeg2,/*[out,retval]*/ IPoint2d** ppPoint);
    STDMETHOD(LineLineIntersect)(/*[in]*/ILine2d* l1, /*[in]*/ILine2d *l2, /*[out,retval]*/IPoint2d **ppPoint);
-	STDMETHOD(DivideLineSegment)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ long nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
+	STDMETHOD(DivideLineSegment)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ IndexType nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
 	STDMETHOD(DivideArc)(/*[in]*/ IPoint2d* pStart,/*[in]*/ IPoint2d* pCenter,/*[in]*/ IPoint2d* pEnd,/*[in]*/ long nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
-	STDMETHOD(DoesLineSegmentContainPoint)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(DoesLineContainPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
+	STDMETHOD(DoesLineSegmentContainPoint)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ IPoint2d* pPoint,/*[in]*/Float64 tolerance,/*[out,retval]*/ VARIANT_BOOL* pbResult);
+	STDMETHOD(DoesLineContainPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[in]*/Float64 tolerance,/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(AreLinesColinear)(/*[in]*/ ILine2d* pLine1,/*[in]*/ ILine2d* pLine2,/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(CreateNormalLineThroughPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ ILine2d** ppLine);
    STDMETHOD(CreateParallelLine)(/*[in]*/ ILine2d* pLine,/*[in]*/ Float64 dist,/*[out,retval]*/ILine2d** ppLine);
@@ -108,7 +108,7 @@ public:
    STDMETHOD(Magnitude)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ Float64* pMag);
 	STDMETHOD(Distance)(/*[in]*/ IPoint2d* p1,/*[in]*/ IPoint2d* p2,/*[out,retval]*/ Float64* dist);
 	STDMETHOD(Angle)(/*[in]*/ IPoint2d* pStart,/*[in]*/ IPoint2d* pCenter,/*[in]*/ IPoint2d* pEnd,/*[out,retval]*/ Float64* angle);
-	STDMETHOD(GenerateCircle)(/*[in]*/ long nPoints,/*[in]*/ IPoint2d* center,/*[in]*/ Float64 radius, /*[in]*/ Float64 initAngle,/*[out,retval]*/ IPoint2dCollection** points);
+	STDMETHOD(GenerateCircle)(/*[in]*/ IndexType nPoints,/*[in]*/ IPoint2d* center,/*[in]*/ Float64 radius, /*[in]*/ Float64 initAngle,/*[out,retval]*/ IPoint2dCollection** points);
 	STDMETHOD(LineCircleIntersect)(/*[in]*/ ILine2d *line,/*[in]*/ ICircle* circle,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2,/*[out,retval]*/ short* nIntersect);
 	STDMETHOD(CircleCircleIntersect)(/*[in]*/ ICircle* circle1,/*[in]*/ ICircle* circle2,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2,/*[out,retval]*/ short* nIntersect);
 

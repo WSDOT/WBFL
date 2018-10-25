@@ -42,7 +42,7 @@ bamSectionResultsKey::bamSectionResultsKey()
 {
 }
 
-bamSectionResultsKey::bamSectionResultsKey(Int32 poi,Int32 loadingId) :
+bamSectionResultsKey::bamSectionResultsKey(PoiIDType poi,IDType loadingId) :
 m_LoadingId( loadingId ),
 m_Poi( poi )
 {
@@ -89,22 +89,22 @@ bool bamSectionResultsKey::operator==(const bamSectionResultsKey& rOther) const
 
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void bamSectionResultsKey::LoadingId(Int32 loadingId)
+void bamSectionResultsKey::LoadingId(IDType loadingId)
 {
    m_LoadingId = loadingId;
 }
 
-Int32 bamSectionResultsKey::LoadingId() const
+IDType bamSectionResultsKey::LoadingId() const
 {
    return m_LoadingId;
 }
 
-void bamSectionResultsKey::PointOfInterest(Int32 poi)
+void bamSectionResultsKey::PointOfInterest(PoiIDType poi)
 {
    m_Poi = poi;
 }
 
-Int32 bamSectionResultsKey::PointOfInterest() const
+PoiIDType bamSectionResultsKey::PointOfInterest() const
 {
    return m_Poi;
 }

@@ -150,7 +150,7 @@ STDMETHODIMP_(CPoint) CPointDisplayObjectImpl::GetPosition()
    CComPtr<iCoordinateMap> map;
    pDispMgr->GetCoordinateMap(&map);
 
-   long lx,ly;
+   LONG lx,ly;
    map->WPtoLP(m_Position,&lx,&ly);
 
    CPoint p(lx,ly);

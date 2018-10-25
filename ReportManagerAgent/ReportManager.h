@@ -72,7 +72,7 @@ public:
 public:
    virtual void AddReportBuilder(CReportBuilder* pReportBuilder);
    virtual void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder);
-   virtual Uint32 GetReportBuilderCount(bool bIncludeHidden) const;
+   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden) const;
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName);
    virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
    virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
@@ -86,6 +86,6 @@ public:
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
    virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
    virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
-   virtual Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual INT_PTR DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
 };
 

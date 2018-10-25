@@ -230,8 +230,8 @@ bool Example1::Run(dbgDumpContext& os,int solverType)
 void Example1::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
 
    // rectangular shape
    gmRectangle my_rect(gpPoint2d(0,0), 0.3556, 0.6096);
@@ -301,8 +301,8 @@ bool Example2::Run(dbgDumpContext& os,int solverType)
 void Example2::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
 
    // rectangular shape
    gmRectangle my_rect(gpPoint2d(0,0), 0.3556, 0.7112);
@@ -380,8 +380,8 @@ bool Example3::Run(dbgDumpContext& os,int solverType)
 void Example3::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
 
    // slab
    gmRectangle my_slab(gpPoint2d(0,-0.05715), 1.9812, 0.1143);
@@ -461,8 +461,8 @@ bool Example4::Run(dbgDumpContext& os,int solverType)
 void Example4::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
 
    // slab
    gmRectangle my_slab(gpPoint2d(0,-0.0889), 0.762, 0.1778);
@@ -536,8 +536,8 @@ bool Example5::Run(dbgDumpContext& os,int solverType)
 void Example5::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 psid = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType psid = m_pProblem->AddStrand(*pstrand_mat);
 
    // girder
    gmRectangle my_gird(gpPoint2d(0,0), 0.6096, 0.7620);
@@ -610,9 +610,9 @@ bool Example6::Run(dbgDumpContext& os,int solverType)
 void Example6::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
-   Int32 psid = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType psid = m_pProblem->AddStrand(*pstrand_mat);
 
    // girder
    gmRectangle my_gird(gpPoint2d(0,0), 0.6096, 0.7620);
@@ -654,9 +654,9 @@ bool Example7::Run(dbgDumpContext& os,int solverType)
 void Example7::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
-   Int32 psid = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType psid = m_pProblem->AddStrand(*pstrand_mat);
 
    // girder
    gmRectangle my_gird(gpPoint2d(0,0), 0.6096, 0.7620);
@@ -687,9 +687,9 @@ bool Example8::Run(dbgDumpContext& os,int solverType)
 void Example8::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
-   Int32 psid = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType psid = m_pProblem->AddStrand(*pstrand_mat);
 
    // bottom rebar - use a circlular shape for strand
    gmCircle bot_strand(gpPoint2d(0,-0.62992), 0.0202663);
@@ -727,9 +727,9 @@ void Example9::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* 
 {
    std::auto_ptr<matConcrete> p_my_conc( pconc_mat->CreateClone() );
    p_my_conc->SetFc(0);
-   Int32 conc_idx = m_pProblem->AddConcrete(*p_my_conc);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
-   Int32 psid = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*p_my_conc);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType psid = m_pProblem->AddStrand(*pstrand_mat);
 
    // girder
    gmRectangle my_gird(gpPoint2d(0,0), 0.6096, 0.7620);
@@ -771,9 +771,9 @@ bool Example10::Run(dbgDumpContext& os,int solverType)
 void Example10::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 conc_idx = m_pProblem->AddConcrete(*pconc_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
-   Int32 strandCookie = m_pProblem->AddStrand(*pstrand_mat);
+   CollectionIndexType conc_idx = m_pProblem->AddConcrete(*pconc_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType strandCookie = m_pProblem->AddStrand(*pstrand_mat);
 
    Float64 radius = pstrand_mat->GetNominalDiameter()/2.0;
 
@@ -842,9 +842,9 @@ void Example10::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand*
       gpPoint2d(-0.0249175,1.28615)
    };
 
-   int cStraight = sizeof(straight_strands)/sizeof(gpPoint2d);
-   int cHarped   = sizeof(harped_strands)/sizeof(gpPoint2d);
-   for ( int i = 0; i < cStraight; i++ )
+   CollectionIndexType cStraight = sizeof(straight_strands)/sizeof(gpPoint2d);
+   CollectionIndexType cHarped   = sizeof(harped_strands)/sizeof(gpPoint2d);
+   for ( CollectionIndexType i = 0; i < cStraight; i++ )
    {
       gmCircle barShape( straight_strands[i],radius );
       gmCircle holeShape(straight_strands[i],radius);
@@ -854,7 +854,7 @@ void Example10::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand*
       m_pProblem->AddConcreteElement( holeShape, conc_idx, 1.0 );
    }
 
-   for ( int i = 0; i < cHarped; i++ )
+   for ( CollectionIndexType i = 0; i < cHarped; i++ )
    {
       gmCircle barShape( harped_strands[i],radius );
       gmCircle holeShape(harped_strands[i],radius);
@@ -929,9 +929,9 @@ bool Example11::Run(dbgDumpContext& os,int solverType)
 void Example11::Build(matConcrete* pgird_mat, matConcrete* pslab_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
 
-   Int32 slab_idx = m_pProblem->AddConcrete(*pslab_mat);
-   Int32 gird_idx = m_pProblem->AddConcrete(*pgird_mat);
-   Int32 msid = m_pProblem->AddMildSteel(*prebar_mat);
+   CollectionIndexType slab_idx = m_pProblem->AddConcrete(*pslab_mat);
+   CollectionIndexType gird_idx = m_pProblem->AddConcrete(*pgird_mat);
+   CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
 
    // slab
    gmRectangle my_slab(gpPoint2d(0,-0.0889), 0.762, 0.1778);

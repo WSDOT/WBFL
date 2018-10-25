@@ -344,9 +344,9 @@ STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage,
 
       CComPtr<ILongArray> vsuppids;
       hr = vsuppids.CoCreateInstance(CLSID_LongArray);
-      long size = suppids.size();
+      CollectionIndexType size = suppids.size();
       vsuppids->Reserve(size);
-      for (long i=0; i<size; i++)
+      for (CollectionIndexType i=0; i<size; i++)
       {
          vsuppids->Add(suppids[i]);
       }
@@ -2075,7 +2075,7 @@ void CLBAMFactory::ApplyTUCRSHLoadFactors(ILoadCombination* loadCombo, Float64 g
    }
 }
 
-void CLBAMFactory::CreateSegmentLoad(int mbrID,MemberType mbrType,IEnumSegmentItem* enum_segments,IDistributedLoads* loads,BSTR stage,BSTR lgName,Float64 unitWgt,Float64 E)
+void CLBAMFactory::CreateSegmentLoad(MemberIDType mbrID,MemberType mbrType,IEnumSegmentItem* enum_segments,IDistributedLoads* loads,BSTR stage,BSTR lgName,Float64 unitWgt,Float64 E)
 {
    CHRException hr;
 
@@ -2257,7 +2257,7 @@ HRESULT AddPOI(IPOIs* pPOIs, IPOI* pPOI)
    hr = pPOIs->Add(pPOI);
    if (hr==WCC_E_NAME_ALREADY_EXISTS)
    {
-      long id;
+      PoiIDType id;
       hr = pPOI->get_ID(&id);
 
       // poi already exists - remove it and add ours
@@ -2335,7 +2335,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, ILongArray*
          }
       #endif
 
-      long array_size = poi_list.size();
+      CollectionIndexType array_size = poi_list.size();
 
       // Create safe arrays that are to be returned.
       CComPtr<ILongArray> poi_ids;
@@ -2347,7 +2347,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, ILongArray*
       hr = poi_locs->Reserve(array_size);
 
       // copy ids and locations into safearrays
-      long i=0;
+      CollectionIndexType i=0;
       for (PoiListIterator it= poi_list.begin(); it!=poi_list.end(); it++)
       {
          PoiLoc& rpl = *it;
@@ -2369,7 +2369,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, ILongArray*
 	return S_OK;
 }
 
-void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, long id, ISuperstructureMembers* pSsms, IPOI** pPoi)
+void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISuperstructureMembers* pSsms, IPOI** pPoi)
 {
    CHRException hr;
 
@@ -2431,7 +2431,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, long id, ISuperstr
    }
 }
 
-STDMETHODIMP CLBAMFactory::CreatePOI(long ID, MemberType Type, long memberID, Float64 Location, IPOI** newPOI)
+STDMETHODIMP CLBAMFactory::CreatePOI(PoiIDType ID, MemberType Type, MemberIDType memberID, Float64 Location, IPOI** newPOI)
 {
    CHECK_RETOBJ(newPOI);
 

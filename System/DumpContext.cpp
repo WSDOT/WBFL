@@ -81,13 +81,7 @@ dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(bool n)
-{
-   OutputDebugString( n ? TEXT("True") : TEXT("False") );
-   return *this;
-}
-
-dbgDumpContext& dbgDumpContext::operator<<(int n)
+dbgDumpContext& dbgDumpContext::operator<<(DWORD n)
 {
    TCHAR buffer[BUFSIZE];
    _stprintf_s( buffer, TEXT("%d"), n );
@@ -95,11 +89,9 @@ dbgDumpContext& dbgDumpContext::operator<<(int n)
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(unsigned int n)
+dbgDumpContext& dbgDumpContext::operator<<(bool n)
 {
-   TCHAR buffer[BUFSIZE];
-   _stprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
-   OutputDebugString( buffer );
+   OutputDebugString( n ? TEXT("True") : TEXT("False") );
    return *this;
 }
 
@@ -122,7 +114,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint16 n)
 dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
 {
    TCHAR buffer[BUFSIZE];
-   _stprintf_s( buffer, BUFSIZE, TEXT("%ld"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%I32d"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -130,7 +122,23 @@ dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
 dbgDumpContext& dbgDumpContext::operator<<(Uint32 n)
 {
    TCHAR buffer[BUFSIZE];
-   _stprintf_s( buffer, BUFSIZE, TEXT("%lu"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%I32u"), n );
+   OutputDebugString( buffer );
+   return *this;
+}
+
+dbgDumpContext& dbgDumpContext::operator<<(Int64 n)
+{
+   TCHAR buffer[BUFSIZE];
+   _stprintf_s( buffer, BUFSIZE, TEXT("%I64d"), n );
+   OutputDebugString( buffer );
+   return *this;
+}
+
+dbgDumpContext& dbgDumpContext::operator<<(Uint64 n)
+{
+   TCHAR buffer[BUFSIZE];
+   _stprintf_s( buffer, BUFSIZE, TEXT("%I64u"), n );
    OutputDebugString( buffer );
    return *this;
 }

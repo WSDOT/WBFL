@@ -48,21 +48,21 @@ class BAMCLASS bamLinearLoadCombination : public bamLoadCombination
 {
 public:
    // LIFECYCLE
-   bamLinearLoadCombination(Int32 id);
+   bamLinearLoadCombination(IDType id);
    bamLinearLoadCombination(const bamLinearLoadCombination& rOther);
    virtual ~bamLinearLoadCombination(); 
 
    // OPERATORS
    // OPERATIONS
-   void AddLoading(Int32 loadingId,Float64 loadFactor);
+   void AddLoading(IDType loadingId,Float64 loadFactor);
    void SetMultiplier(Float64 multiplier);
 
-   virtual bamSectionResults CombineSectionResults( Int32 poiId );
-   virtual bamSectionStress CombineSectionStress( Int32 poiId, Int32 spIdx );
-   virtual bamReaction CombineReactions( Int32 supportId );
+   virtual bamSectionResults CombineSectionResults( PoiIDType poiId );
+   virtual bamSectionStress CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx );
+   virtual bamReaction CombineReactions( SupportIDType supportId );
 
    // ACCESS
-   virtual void GetLoadings(std::vector<Int32>& loadingIds) const;
+   virtual void GetLoadings(std::vector<IDType>& loadingIds) const;
 
    // INQUIRY
 
@@ -81,10 +81,10 @@ private:
    Float64 m_Multiplier;
 
 #pragma warning( disable : 4251 )
-   typedef std::map<Int32, Float64> LoadEntryContainer;
+   typedef std::map<IDType, Float64> LoadEntryContainer;
    typedef LoadEntryContainer::iterator LoadEntryIterator;
    typedef LoadEntryContainer::const_iterator ConstLoadEntryIterator;
-   typedef std::pair<Int32,Float64> LoadEntry;
+   typedef std::pair<IDType,Float64> LoadEntry;
    LoadEntryContainer m_LoadEntries;
 
    // LIFECYCLE

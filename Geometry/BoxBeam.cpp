@@ -320,17 +320,17 @@ HRESULT CBoxBeam::UpdateShape()
          x1 = 0;
          y1 = m_H3;
 
-         x2 = m_W3/2 - m_F1;
+         x2 = m_W3/2 - m_F2;
          y2 = y1;
 
-         x3 = x2 + m_F1;
-         y3 = y2 + m_F1;
+         x3 = x2 + m_F2;
+         y3 = y2 + m_F2;
 
          x4 = x3;
-         y4 = m_H3 + m_H2 - m_F2;
+         y4 = m_H3 + m_H2 - m_F1;
 
-         x5 = x4 - m_F2;
-         y5 = y4 + m_F2;
+         x5 = x4 - m_F1;
+         y5 = y4 + m_F1;
 
          inner->AddPoint(x1,y1);
          inner->AddPoint(x2,y2);

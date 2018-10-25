@@ -49,17 +49,17 @@ class  Matrix
 {
 // Data Members
 protected:
-   long m_NRows;
-   long m_NCols;
+   LONG m_NRows;
+   LONG m_NCols;
    Float64 **m_ppMatrix;
 
 // Constructors/Destructor
 public:
-   Matrix(long nr,long nc);
+   Matrix(LONG nr,LONG nc);
    Matrix();
    virtual ~Matrix();
 
-   void Resize(long nr,long nc);
+   void Resize(LONG nr,LONG nc);
    friend std::_tostream& operator<< ( std::_tostream& os, const Matrix& m );
 
 
@@ -68,27 +68,27 @@ private:
    void Clear();
 
 public:
-   void    GetSize(long &nr,long &nc) const;
-   void    SetElement(long r,long c,Float64 val);
-   Float64  GetElement(long r,long c) const;
-   void    Multiply(const Matrix *b,Matrix *c,long mode = AB);
-   long    NumRows() const;
-   long    NumColumns() const;
+   void    GetSize(LONG &nr,LONG &nc) const;
+   void    SetElement(LONG r,LONG c,Float64 val);
+   Float64  GetElement(LONG r,LONG c) const;
+   void    Multiply(const Matrix *b,Matrix *c,LONG mode = AB);
+   LONG    NumRows() const;
+   LONG    NumColumns() const;
    void Zero();
 
    void operator = (const Matrix &m);
    void operator += (const Matrix &m);
    void operator -= (const Matrix &m);
-   Float64 operator()(long i,long j) const;
-   Float64 &operator()(long i,long j);
+   Float64 operator()(LONG i,LONG j) const;
+   Float64 &operator()(LONG i,LONG j);
 };
 
 class  Vector : public Matrix
 {
 public:
    Vector(long nr) : Matrix(nr,1) {};
-   Float64 operator()(long i) const;
-   Float64 &operator()(long i);
+   Float64 operator()(LONG i) const;
+   Float64 &operator()(LONG i);
 };
 
 

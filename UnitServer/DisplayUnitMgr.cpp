@@ -159,12 +159,12 @@ STDMETHODIMP CDisplayUnitMgr::get_Item(BSTR bstrGroup,IDisplayUnitGroup** retval
 //   // Implemented by ATL
 //   return S_OK;
 //}
-STDMETHODIMP CDisplayUnitMgr::get_Count(Uint32* retval)
+STDMETHODIMP CDisplayUnitMgr::get_Count(CollectionIndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;
    IDisplayUnitGroupCollection::get_Count(&count);
-   *retval = (Uint32)count;
+   *retval = count;
    return S_OK;
 }
 

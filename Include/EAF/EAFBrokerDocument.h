@@ -142,7 +142,7 @@ protected:
 
    /// populates a menu with the names of the reports
    void PopulateReportMenu(CEAFMenu* pReportMenu);
-   UINT_PTR GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport);
+   UINT GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport);
    CollectionIndexType GetReportIndex(UINT nID,bool bQuickReport);
    virtual void CreateReportView(CollectionIndexType rptIdx,bool bPrompt); // does nothing by default
    void OnReport(UINT nID);

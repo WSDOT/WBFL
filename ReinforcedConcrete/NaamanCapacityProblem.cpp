@@ -113,8 +113,8 @@ bool rcaNaamanCapacityProblem::TestMe(dbgLog& rlog)
                       ::ConvertToSysUnits(60.,unitMeasure::KSI));
    
    rcaNaamanCapacityProblem prob;
-   Int32 conc_idx = prob.AddConcrete(conc_4000);
-   Int32 rebar_idx = prob.AddMildSteel(rebar_60);
+   CollectionIndexType conc_idx = prob.AddConcrete(conc_4000);
+   CollectionIndexType rebar_idx = prob.AddMildSteel(rebar_60);
 
    //   Offset = 10
    //             .

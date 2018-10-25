@@ -86,6 +86,8 @@ public:
    dbgDumpContext& operator<<(Uint16 n);
    dbgDumpContext& operator<<(Int32 n);
    dbgDumpContext& operator<<(Uint32 n);
+   dbgDumpContext& operator<<(Int64 n);
+   dbgDumpContext& operator<<(Uint64 n);
    dbgDumpContext& operator<<(Float32 n);    
    dbgDumpContext& operator<<(Float64 n);
    dbgDumpContext& operator<<(Float80 n);

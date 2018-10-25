@@ -104,33 +104,33 @@ public:
    //
    // maxStrands is the maximum number of strands allowed in this bundle. 
    // This parameter is ignored in the last bundle.
-   void AddBundle(Float64 offset,Uint32 maxStrands);
+   void AddBundle(Float64 offset,StrandIndexType maxStrands);
 
    //------------------------------------------------------------------------
    // Returns the number of bundles.
-   Uint32 GetBundleCount() const;
+   CollectionIndexType GetBundleCount() const;
 
    //------------------------------------------------------------------------
    // Returns the offset from the specified bundle to the bundle immedately
    // below it, or the offset to the bottom of the girder in the case of
    // the first bundle.
-   Float64 GetBundleOffset(Uint32 idx) const;
+   Float64 GetBundleOffset(CollectionIndexType idx) const;
 
    //------------------------------------------------------------------------
    // Returns the height(offset) of the specified bundle from the bottom of
    // the girder.
-   Float64 GetBundleHeight(Uint32 idx) const;
+   Float64 GetBundleHeight(CollectionIndexType idx) const;
 
    //------------------------------------------------------------------------
    // Returns the maximum number of strands that can be added to the 
    // specified bundle.
-   Uint32 GetMaxStrandCount(Uint32 idx) const;
+   StrandIndexType GetMaxStrandCount(CollectionIndexType idx) const;
 
    //------------------------------------------------------------------------
    // Removes a bundle from the pattern.  If bundles exist above the specified
    // bundle,  they are moved down such that bundle idx+1 is located at the
    // offset for bundle idx+1 above bundle idx-1.
-   void RemoveBundle(Uint32 idx);
+   void RemoveBundle(CollectionIndexType idx);
 
    //------------------------------------------------------------------------
    // Removes all bundles from the bundle pattern.
@@ -141,11 +141,11 @@ public:
    //
    // If nStrands exceeds the total number of strands for the strand bundles,
    // the extra strands are assumed to be located in the last bundle.
-   gpPoint2d GetCenterOfGravity(Uint32 nStrands) const;
+   gpPoint2d GetCenterOfGravity(StrandIndexType nStrands) const;
 
    //------------------------------------------------------------------------
    // Returns the index of the strand bundle given the index of a strand
-   Uint32 GetBundleIdx(Uint32 iStrand) const;
+   CollectionIndexType GetBundleIdx(StrandIndexType iStrand) const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -169,7 +169,7 @@ private:
    typedef struct tagBundleData
    {
       Float64 Offset;
-      Uint32 MaxStrands;
+      StrandIndexType MaxStrands;
    } BundleData;
    std::vector<BundleData> m_Bundles;
 

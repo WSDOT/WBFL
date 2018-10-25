@@ -55,31 +55,31 @@ interface iDisplayMgr : public IUnknown
 
    // Display List Management
    STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) PURE;
-   STDMETHOD_(void,GetDisplayList)(long idx,iDisplayList** list) PURE;
-   STDMETHOD_(void,FindDisplayList)(long id,iDisplayList** list) PURE;
-   STDMETHOD_(long,GetDisplayListCount)() PURE;
-   STDMETHOD_(void,RemoveDisplayList)(long key,AccessType access) PURE;
+   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list) PURE;
+   STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) PURE;
+   STDMETHOD_(CollectionIndexType,GetDisplayListCount)() PURE;
+   STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,ClearDisplayLists)() PURE;
 
    // Display Object Management
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,long key,AccessType access) PURE;
-   STDMETHOD_(void,FindDisplayObject)(long id,long listKey,AccessType access,iDisplayObject** dispObj) PURE;
+   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,IDType key,AccessType access) PURE;
+   STDMETHOD_(void,FindDisplayObject)(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj) PURE;
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,DisplayObjectContainer* dispObjs) PURE;
    STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs) PURE;
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(long doKey,AccessType doAccess,long dlKey,AccessType dlAccess) PURE;
+   STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) PURE;
    STDMETHOD_(void,ClearDisplayObjects)() PURE;
-   STDMETHOD_(void,ClearDisplayObjects)(long key,AccessType access) PURE;
-   STDMETHOD_(long,GetDisplayObjectCount)() PURE;
-   STDMETHOD_(long,GetDisplayObjectFactoryCount)() PURE;
+   STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) PURE;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() PURE;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)() PURE;
    STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) PURE;
-   STDMETHOD_(void,GetDisplayObjectFactory)(long idx, iDisplayObjectFactory** factory) PURE;
+   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory) PURE;
 
    // Selecting and Selections
    STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) PURE;
    STDMETHOD_(void,SelectObjects)(CRect r) PURE;
    STDMETHOD_(void,ClearSelectedObjects)() PURE;
-   STDMETHOD_(void,ClearSelectedObjectsByList)(long key,AccessType access,BOOL bInclusive) PURE;
+   STDMETHOD_(void,ClearSelectedObjectsByList)(IDType key,AccessType access,BOOL bInclusive) PURE;
    STDMETHOD_(void,GetSelectedObjects)(DisplayObjectContainer* selObjs) PURE;
    STDMETHOD_(void,SelectAll)(BOOL bSelect) PURE;
 
@@ -122,7 +122,7 @@ interface iDisplayMgr : public IUnknown
 
    // Tool Tips
    STDMETHOD_(BOOL,OnNeedToolTipText)(UINT id,NMHDR* pNMHDR,LRESULT* pResult) PURE;
-   STDMETHOD_(int,OnToolHitTest)(CPoint point,TOOLINFO* pTI) PURE;
+   STDMETHOD_(INT_PTR,OnToolHitTest)(CPoint point,TOOLINFO* pTI) PURE;
 
    // OLE Drag/Drop Events
  	STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) PURE;

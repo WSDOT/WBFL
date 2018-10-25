@@ -47,7 +47,7 @@ public:
 	//}}AFX_DATA
 
    void OnStatusItemAdded(CEAFStatusItem* pNewItem);
-   void OnStatusItemRemoved(long id);
+   void OnStatusItemRemoved(StatusItemIDType id);
 
 
 // Overrides

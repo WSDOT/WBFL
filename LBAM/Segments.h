@@ -110,7 +110,7 @@ private:
 
 // data members               cookie
    typedef CAdapt<CComPtr<ISegmentItem>> ValueType;
-   typedef std::pair< SegmentIndexType, ValueType > StoredType; 
+   typedef std::pair< DWORD, ValueType > StoredType; 
    typedef std::vector<StoredType> VectorType;
    typedef VectorType::iterator  VectorIteratorType;
    typedef std::map< CComBSTR, VectorType > ContainerType;

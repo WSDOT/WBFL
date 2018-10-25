@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTemporarySupportEvents
-UINT CTemporarySupportEvents::ms_Format = ::RegisterClipboardFormat("TemporarySupports");
+UINT CTemporarySupportEvents::ms_Format = ::RegisterClipboardFormat(_T("TemporarySupports"));
 
 CTemporarySupportEvents::CTemporarySupportEvents(CLBAMViewerDoc* pDoc)
 {
@@ -45,7 +45,7 @@ STDMETHODIMP_(void) CTemporarySupportEvents::XDisplayObjectEvents::OnDragMoved(i
    METHOD_PROLOGUE(CTemporarySupportEvents,DisplayObjectEvents);
 
    // Move the support and the display object
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
 /*
    WBFLFem2d::IModelPtr model = pThis->m_pDoc->m_Model;
    WBFLFem2d::ITemporarySupportPtr jnt = model->TemporarySupports->Find(id);
@@ -82,7 +82,7 @@ STDMETHODIMP_(bool) CTemporarySupportEvents::XDisplayObjectEvents::OnLButtonDblC
    METHOD_PROLOGUE(CTemporarySupportEvents,DisplayObjectEvents);
 
    // TemporarySupport got double clicked on... Display its editing dialog
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pThis->EditTemporarySupport(id);
 
    return true;
@@ -162,7 +162,7 @@ STDMETHODIMP_(bool) CTemporarySupportEvents::XDisplayObjectEvents::OnMouseWheel(
 STDMETHODIMP_(bool) CTemporarySupportEvents::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    METHOD_PROLOGUE(CTemporarySupportEvents,DisplayObjectEvents);
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
 
    switch(nChar)
    {
@@ -201,14 +201,14 @@ STDMETHODIMP_(BOOL) CTemporarySupportEvents::XDragData::PrepareForDrag(iDisplayO
 {
    pSink->CreateFormat(ms_Format);
 
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pSink->Write(ms_Format,&id,sizeof(id));
    return TRUE;
 }
 
 STDMETHODIMP_(void) CTemporarySupportEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
 {
-   long id;
+   IDType id;
    pSource->PrepareFormat(ms_Format);
    pSource->Read(ms_Format,&id,sizeof(id));
    pDO->SetID(id);
@@ -216,7 +216,7 @@ STDMETHODIMP_(void) CTemporarySupportEvents::XDragData::OnDrop(iDisplayObject* p
 
 
 
-void CTemporarySupportEvents::EditTemporarySupport(long jntID)
+void CTemporarySupportEvents::EditTemporarySupport(IDType jntID)
 {
 /*
    WBFLFem2d::IModelPtr model = m_pDoc->m_Model;
@@ -256,7 +256,7 @@ void CTemporarySupportEvents::EditTemporarySupport(long jntID)
    }
 }
 
-void CTemporarySupportEvents::DeleteTemporarySupport(long jntID)
+void CTemporarySupportEvents::DeleteTemporarySupport(IDType jntID)
 {
 /*
    WBFLFem2d::IModelPtr model = m_pDoc->m_Model;
@@ -269,6 +269,6 @@ void CTemporarySupportEvents::DeleteTemporarySupport(long jntID)
    else
    {
 */
-      AfxMessageBox("The support can't be deleted because it has members connected to it");
+      AfxMessageBox(_T("The support can't be deleted because it has members connected to it"));
   
 }

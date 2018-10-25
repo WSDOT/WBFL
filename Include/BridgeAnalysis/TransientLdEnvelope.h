@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bamTransientLdEnvelope(Int32 id);
+   bamTransientLdEnvelope(IDType id);
 
    //------------------------------------------------------------------------
    // Copy constructor

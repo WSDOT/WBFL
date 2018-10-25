@@ -85,7 +85,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bamLrfdLoadCombination(Int32 id,
+   bamLrfdLoadCombination(IDType id,
                           lrfdTypes::LimitState ls,
                           bamOptimumType type = otMaximum,
                           bamOptimumVariable variable = ovMz );
@@ -101,31 +101,31 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual bamSectionResults CombineSectionResults( Int32 poiId );
+   virtual bamSectionResults CombineSectionResults( PoiIDType poiId );
    
    //------------------------------------------------------------------------
-   virtual bamSectionStress CombineSectionStress( Int32 poiId, Int32 spIdx );
+   virtual bamSectionStress CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx );
    
    //------------------------------------------------------------------------
-   virtual bamReaction CombineReactions( Int32 supportId );
+   virtual bamReaction CombineReactions( SupportIDType supportId );
 
    //------------------------------------------------------------------------
-   void SetDCLoading(Int32 lcid);
+   void SetDCLoading(IDType lcid);
 
    //------------------------------------------------------------------------
-   Int32 GetDCLoading() const;
+   IDType GetDCLoading() const;
 
    //------------------------------------------------------------------------
-   void SetDWLoading(Int32 lcid);
+   void SetDWLoading(IDType lcid);
 
    //------------------------------------------------------------------------
-   Int32 GetDWLoading() const;
+   IDType GetDWLoading() const;
 
    //------------------------------------------------------------------------
-   void SetLLIMLoading(Int32 lcid);
+   void SetLLIMLoading(IDType lcid);
 
    //------------------------------------------------------------------------
-   Int32 GetLLIMLoading() const;
+   IDType GetLLIMLoading() const;
 
    //------------------------------------------------------------------------
    void SetLiveLoadDistFactors(Float64 gFx,Float64 gFy,Float64 gMz,
@@ -159,7 +159,7 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   virtual void GetLoadings(std::vector<Int32>& loadingIds) const;
+   virtual void GetLoadings(std::vector<IDType>& loadingIds) const;
 
    // GROUP: INQUIRY
 
@@ -184,9 +184,9 @@ private:
    Float64 m_gDy;
    Float64 m_gRz;
 
-   Int32 m_lcidDC;
-   Int32 m_lcidDW;
-   Int32 m_lcidLLIM;
+   IDType m_lcidDC;
+   IDType m_lcidDW;
+   IDType m_lcidLLIM;
 
    lrfdLoadModifier m_LoadModifier;
 

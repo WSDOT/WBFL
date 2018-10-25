@@ -52,8 +52,8 @@ public:
    CLBAMViewerDoc* m_pDoc;
 
 private:
-   void EditTemporarySupport(long jntID);
-   void DeleteTemporarySupport(long jntID);
+   void EditTemporarySupport(IDType jntID);
+   void DeleteTemporarySupport(IDType jntID);
 };
 
 /////////////////////////////////////////////////////////////////////////////

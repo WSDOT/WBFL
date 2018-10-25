@@ -33,7 +33,7 @@ void CEditTruckPosition::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxDouble(pDX, m_TruckPosition, -1.e+031, 1.e+031);
 	DDX_Text(pDX, IDC_VARIABLE_AXLE, m_VariableAxleSpacing);
 	DDX_Check(pDX, IDC_APPLY_IMPACT, m_ApplyImpact);
-	DDX_CBIndex(pDX, IDC_PIVOT_AXLE, m_PivotAxleIndex);
+	DDX_CBIndex(pDX, IDC_PIVOT_AXLE, (int&)m_PivotAxleIndex);
 
 	//}}AFX_DATA_MAP
 
@@ -88,10 +88,10 @@ void CEditTruckPosition::OnRadioReverse()
 BOOL CEditTruckPosition::OnInitDialog() 
 {
    CComboBox* pCB = (CComboBox*)GetDlgItem(IDC_PIVOT_AXLE);
-   for ( int i = 0; i < m_nAxles; i++ )
+   for ( AxleIndexType i = 0; i < m_nAxles; i++ )
    {
       CString str;
-      str.Format("%d",i);
+      str.Format(_T("%d"),i);
       pCB->AddString(str);
    }
 

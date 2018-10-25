@@ -95,12 +95,12 @@ public:
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of points which define the segments of the function.
-   virtual Uint32 GetNumPoints() const;
+   virtual CollectionIndexType GetNumPoints() const;
 
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(Uint32 pnum) const;
+   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const;
 
    //------------------------------------------------------------------------
    // GetPoints
@@ -116,7 +116,7 @@ public:
    // AddPoint
    // Adds a new point to the the end of the function. Returns the total number of 
    // points in the function including the new point.
-   Uint32 AddPoint(const gpPoint2d& point);
+   CollectionIndexType AddPoint(const gpPoint2d& point);
 
    //------------------------------------------------------------------------
    // Intersect
@@ -153,7 +153,8 @@ private:
    //------------------------------------------------------------------------
    // Optimize evaluations by assuming that the last segment evaluated was 
    // close the the next evaluation. Segment counting is one-based.
-   mutable Uint32 m_LastSegment;
+   mutable CollectionIndexType m_LastSegment;
+
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -41,7 +41,7 @@ import "WBFLUnitServer.idl";
 
 cpp_quote("#include <WBFLUnitServer.h>")
 
-typedef Int64 CogoElementKey;
+typedef IDType CogoElementKey;
 
 cpp_quote("#define COGO_E_POINTNOTFOUND                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
 cpp_quote("#define COGO_E_POINTALREADYDEFINED          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")

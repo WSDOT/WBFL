@@ -39,7 +39,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptRcUnsigned::rptRcUnsigned(Uint32 MyUs) :
+rptRcUnsigned::rptRcUnsigned(Uint64 MyUs) :
 rptReportContent()
 {
    m_TheUnsigned = MyUs;
@@ -47,7 +47,7 @@ rptReportContent()
 }
 
 
-rptRcUnsigned::rptRcUnsigned(Uint32 MyUs, const std::_tstring& HyperTarget) :
+rptRcUnsigned::rptRcUnsigned(Uint64 MyUs, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
    m_TheUnsigned = MyUs;
@@ -95,7 +95,7 @@ void rptRcUnsigned::Accept( rptRcVisitor& MyVisitor )
 //
 // stream to the paragraph stream
 //
-rptRcUnsigned* rptRcUnsigned::Sv(Uint32 MyUs)
+rptRcUnsigned* rptRcUnsigned::Sv(Uint64 MyUs)
 {
    rptRcUnsigned* tmp = new rptRcUnsigned(MyUs);
    tmp->m_Width= m_Width;
@@ -104,12 +104,12 @@ rptRcUnsigned* rptRcUnsigned::Sv(Uint32 MyUs)
 //
 // set and get the integer value
 //
-Uint32 rptRcUnsigned::GetVal()
+Uint64 rptRcUnsigned::GetVal()
 {
    return m_TheUnsigned;
 }
 
-void rptRcUnsigned::SetVal(Uint32 MyUs)
+void rptRcUnsigned::SetVal(Uint64 MyUs)
 {
    m_TheUnsigned = MyUs;
 }

@@ -280,7 +280,7 @@ LONG grDimension::GetApproxVerticalHeight(HDC hDC) const
 {
    LONG ref_hgt = m_Label.GetLineHeight(hDC);
    LONG apr_hgt = (LONG)CalcVerticalDimHeight(m_SpaceFactor, ref_hgt);
-   LONG txt_hgt = ref_hgt * m_Label.GetNumLines();
+   LONG txt_hgt = ref_hgt * (LONG)m_Label.GetNumLines();
    return max(apr_hgt,txt_hgt);
 }
 

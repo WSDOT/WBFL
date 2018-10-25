@@ -123,7 +123,7 @@ bool gpPolygon2d::ReplacePoint(Uint32 key,const gpPoint2d& p)
    }
 }
 
-Uint32 gpPolygon2d::GetNumPoints() const
+CollectionIndexType gpPolygon2d::GetNumPoints() const
 {
    return m_PointContainer.size();
 }
@@ -469,7 +469,7 @@ gpPolygon2d* gpPolygon2d::CreateClippedPolygon(const gpLine2d& line, gpLine2d::S
                   // of this Polygon
 
    // If the polyPolygon isn't at least a triangle, just get the heck outta here.
-   Uint32 num_points = this->GetNumPoints();
+   CollectionIndexType num_points = this->GetNumPoints();
    if ( num_points  < 3 )
       return 0;
 
@@ -607,7 +607,7 @@ bool gpPolygon2d::Contains(const gpPoint2d& pnt) const
    // G. Steven Gipson
    // Adv. Eng. Software, 1986, Vol. 8, No. 2
 
-   int num_points = GetNumPoints();
+   CollectionIndexType num_points = GetNumPoints();
    if (num_points<3)
       return false;   // points and lines can't contain anything.
 
@@ -778,7 +778,7 @@ Float64 gpPolygon2d::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side si
    
 }
 
-void gpPolygon2d::Reserve(Uint32 size)
+void gpPolygon2d::Reserve(CollectionIndexType size)
 {
    m_PointContainer.reserve(size);
 }

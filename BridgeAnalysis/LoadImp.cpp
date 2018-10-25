@@ -32,7 +32,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bamConcForceYImp::bamConcForceYImp(Int32 elementId,
+bamConcForceYImp::bamConcForceYImp(IDType elementId,
                            bamElementType type,
                            Float64 location,
                            Float64 p,
@@ -55,7 +55,7 @@ bamLoader* bamConcForceYImp::CreateLoader()
 
 ///////////////////////////////////////////////////////////////////////
 
-bamUnifForceYImp::bamUnifForceYImp(Int32 elementId,
+bamUnifForceYImp::bamUnifForceYImp(IDType elementId,
                            bamElementType type,
                            Float64 start,
                            Float64 end,
@@ -79,7 +79,7 @@ bamLoader* bamUnifForceYImp::CreateLoader()
 
 ///////////////////////////////////////////////////////////////////////
 
-bamConcMomentZImp::bamConcMomentZImp(Int32 elementId,
+bamConcMomentZImp::bamConcMomentZImp(IDType elementId,
                                      bamElementType type,
                                      Float64 location,
                                      Float64 m,

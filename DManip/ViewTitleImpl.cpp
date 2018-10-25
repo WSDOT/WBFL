@@ -112,7 +112,7 @@ STDMETHODIMP_(void) CViewTitleImpl::Draw(CDC* pDC)
    CStringArray strArray;
    GetTextLines(strArray);
 
-   for ( int i = strArray.GetSize()-1; 0 <= i; i-- )
+   for ( INT_PTR i = strArray.GetSize()-1; 0 <= i; i-- )
    {
       CString str = strArray.GetAt(i);
       CSize size = pDC->GetOutputTextExtent(str);
@@ -172,7 +172,7 @@ STDMETHODIMP_(CRect) CViewTitleImpl::GetBoundingBox()
    }
 
    // Find the edges of the text block
-   long top, left, right, bottom;
+   int top, left, right, bottom;
    top    = p.y;
    bottom = p.y + extents.cy;
    left   = p.x - extents.cx/2;

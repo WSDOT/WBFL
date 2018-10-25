@@ -164,7 +164,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get # of lines in label
-   Uint16 GetNumLines() const;
+   IndexType GetNumLines() const;
 
    //------------------------------------------------------------------------
    // Get Height, in world coordinates of a single line in the label

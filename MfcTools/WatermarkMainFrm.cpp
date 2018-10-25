@@ -59,7 +59,7 @@ CWatermarkMainFrame::CWatermarkMainFrame(LPCTSTR lpszResourceName)
 {
 	// TODO: add member initialization code here
    m_nIDResource = 0;
-   int nChar = _tcslen(lpszResourceName)+1;
+   CollectionIndexType nChar = _tcslen(lpszResourceName)+1;
    m_lpszResourceName = new TCHAR[nChar];
    _tcscpy_s( m_lpszResourceName, nChar, lpszResourceName );
 }

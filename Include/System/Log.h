@@ -141,15 +141,15 @@ public:
 
    //------------------------------------------------------------------------
    // Get total number of entries in log
-   Int32 GetNumEntries() const;
+   size_t GetNumEntries() const;
 
    //------------------------------------------------------------------------
    // Get number of failed tests in log
-   Int32 GetNumErrors() const;
+   size_t GetNumErrors() const;
 
    //------------------------------------------------------------------------
    // Get number of tests of a given type
-   Int32 GetTestCount(EntryType type) const;
+   size_t GetTestCount(EntryType type) const;
 
    //------------------------------------------------------------------------
    // Dump Only Entries of a certain type
@@ -171,10 +171,10 @@ public:
    dbgLog& operator<<(bool n);
    dbgLog& operator<<(Int16 n);
    dbgLog& operator<<(Uint16 n);
-   dbgLog& operator<<(int n);
-   dbgLog& operator<<(unsigned int n);
    dbgLog& operator<<(Int32 n);
    dbgLog& operator<<(Uint32 n);
+   dbgLog& operator<<(Int64 n);
+   dbgLog& operator<<(Uint64 n);
    dbgLog& operator<<(Float32 n);    
    dbgLog& operator<<(Float64 n);
    dbgLog& operator<<(Float80 n);
@@ -214,7 +214,7 @@ private:
    dbgDumpContext m_DefDumpCtx; // Use this if one is not supplied.
    dbgDumpContext* m_pDumpCtx;
 
-   Int32    m_NumErrors;
+   size_t    m_NumErrors;
 
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------

@@ -50,7 +50,7 @@ STDMETHODIMP CTransactionMgr::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ITransactionMgr
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (CollectionIndexType i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -236,25 +236,25 @@ STDMETHODIMP CTransactionMgr::get_RepeatName(BSTR *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::get_TransactionCount(long *pVal)
+STDMETHODIMP CTransactionMgr::get_TransactionCount(CollectionIndexType *pVal)
 {
    *pVal = m_TxnHistory.size();
 	return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::get_UndoCount(long *pVal)
+STDMETHODIMP CTransactionMgr::get_UndoCount(CollectionIndexType *pVal)
 {
    *pVal = m_UndoHistory.size();
 	return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::PeekTransaction(long idx, ITransaction* *txn)
+STDMETHODIMP CTransactionMgr::PeekTransaction(CollectionIndexType idx, ITransaction* *txn)
 {
-   if ( idx < 0 || (long)m_TxnHistory.size() <= idx )
+   if ( idx < 0 || m_TxnHistory.size() <= idx )
       return E_INVALIDARG;
 
    TxnContainer::iterator iter = m_TxnHistory.begin();
-   for ( long i = 0; i < idx; i++ )
+   for ( CollectionIndexType i = 0; i < idx; i++ )
       iter++;
 
    TxnType item = *iter;
@@ -264,13 +264,13 @@ STDMETHODIMP CTransactionMgr::PeekTransaction(long idx, ITransaction* *txn)
    return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::PeekUndo(long idx, ITransaction* *txn)
+STDMETHODIMP CTransactionMgr::PeekUndo(CollectionIndexType idx, ITransaction* *txn)
 {
-   if ( idx < 0 || (long)m_UndoHistory.size() <= idx )
+   if ( idx < 0 || m_UndoHistory.size() <= idx )
       return E_INVALIDARG;
 
    TxnContainer::iterator iter = m_UndoHistory.begin();
-   for ( long i = 0; i < idx; i++ )
+   for ( CollectionIndexType i = 0; i < idx; i++ )
       iter++;
 
    TxnType item = *iter;
@@ -342,7 +342,7 @@ STDMETHODIMP CTransactionMgr::ExecuteMacro()
    CComPtr<IMacroTransaction> macro = m_Macros.back();
    m_Macros.pop_back();
    
-   long count;
+   CollectionIndexType count;
    macro->get_Count(&count);
 
    if ( count == 0 )

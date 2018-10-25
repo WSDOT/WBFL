@@ -43,6 +43,7 @@ COPYRIGHT
 #include <Private\WBFLPackage.h>
 
 #include <atlbase.h> // for using ATL CComPtr<>, etc
+#include <WBFLTypes.h>
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 

@@ -30,7 +30,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bamLoadCase::bamLoadCase(Int32 id)
+bamLoadCase::bamLoadCase(IDType id)
 {
    m_ID = id;
    m_Enabled = true;
@@ -42,12 +42,12 @@ bamLoadCase::~bamLoadCase()
 {
 }
 
-Int32 bamLoadCase::GetID()
+IDType bamLoadCase::GetID()
 {
    return m_ID;
 }
 
-Int32 bamLoadCase::AddLoad(bamLoad* pLoad)
+CollectionIndexType bamLoadCase::AddLoad(bamLoad* pLoad)
 {
    pLoad->SetLoadCase(this);
    m_Loads.push_back(boost::shared_ptr<bamLoad>(pLoad));
@@ -55,7 +55,7 @@ Int32 bamLoadCase::AddLoad(bamLoad* pLoad)
    return m_Loads.size() - 1;
 }
 
-void bamLoadCase::RemoveLoad(Int32 loadIdx)
+void bamLoadCase::RemoveLoad(CollectionIndexType loadIdx)
 {
    // Erase the load. All loads after that point will be moved
    // one position to the left.
@@ -84,7 +84,7 @@ void bamLoadCase::Remove()
    }
 }
 
-Int32 bamLoadCase::GetLoadCount() const
+CollectionIndexType bamLoadCase::GetLoadCount() const
 {
    return m_Loads.size();
 }
@@ -104,7 +104,7 @@ bool bamLoadCase::IsEnabled() const
    return m_Enabled;
 }
 
-Int32 bamLoadCase::GetID() const
+IDType bamLoadCase::GetID() const
 {
    return m_ID;
 }

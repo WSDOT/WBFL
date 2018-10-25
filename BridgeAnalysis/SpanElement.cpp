@@ -38,7 +38,7 @@ bamSpanElement::bamSpanElement(const bamSpanElementInfo& rSpanElementInfo)
    CHECKX( false, _T("Don't use this c'tor yet"));
 }
 
-bamSpanElement::bamSpanElement(Int32 id,Float64 ax,Float64 iz,Float64 mode,Float64 density)
+bamSpanElement::bamSpanElement(SpanIDType id,Float64 ax,Float64 iz,Float64 mode,Float64 density)
 {
    m_pModel = 0;
 
@@ -57,7 +57,7 @@ bamSpanElement::~bamSpanElement()
 {
 }
 
-Int32 bamSpanElement::GetID() const
+SpanIDType bamSpanElement::GetID() const
 {
    return m_ID;
 }
@@ -207,8 +207,8 @@ bamLoad* bamSpanElement::GetSelfWeightLoad()
 void bamSpanElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
 {
    Float64 wx,wy;
-   Int32 dx,dy;
-   Int32 x1, x2;
+   LONG dx,dy;
+   LONG x1, x2;
    HPEN hOldPen,hPen;
 
    hPen = CreatePen(PS_SOLID,3,m_Color);
@@ -227,7 +227,7 @@ void bamSpanElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
 
    TCHAR buffer[50];
    _stprintf_s(buffer,50,_T("%f"),Length());
-   ::TextOut(hDC,(x1+x2)/2, dy + 10,buffer,_tcslen(buffer));
+   ::TextOut(hDC,(x1+x2)/2, dy + 10,buffer,(int)_tcslen(buffer));
 
    ::SelectObject(hDC,hOldPen);
    ::DeleteObject(hPen);

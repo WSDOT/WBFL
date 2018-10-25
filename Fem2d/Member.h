@@ -117,9 +117,9 @@ private:
    public:
       JointKeeper(CMember* m_pMember);
       bool PutStartJoint(JointIDType id);
-      long GetStartJoint();
+      JointIDType GetStartJoint();
       bool PutEndJoint(JointIDType id);
-      long GetEndJoint();
+      JointIDType GetEndJoint();
       void GetJoints(CJoint** pstart, CJoint** pEnd);
       Float64 GetLength();
       Float64 GetAngle();
@@ -156,10 +156,10 @@ protected:
    void GetGlobalJntForces(JointIDType jntId,Float64 *force);
    void ComputeResults();
    MbrType GetMemberType();
-   long GetNumDOF() const;
-   long GetNumJoints() const;
-   long GetCondensedDOF(long dof);
-   Float64 GetKglobal(long DOFi,long DOFj);
+   LONG GetNumDOF() const;
+   LONG GetNumJoints() const;
+   LONG GetCondensedDOF(LONG dof);
+   Float64 GetKglobal(LONG DOFi,LONG DOFj);
    void GetFglobal(Float64 *f);
 
    void ApplyLoad(MbrLoad *load);

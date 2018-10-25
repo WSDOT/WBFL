@@ -259,8 +259,8 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
 void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   UINT nPlugins = pPluginMgr->GetPluginCount();
-   for (UINT idx = 0; idx < nPlugins; idx++ )
+   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);
@@ -271,8 +271,8 @@ void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   UINT nPlugins = pPluginMgr->GetPluginCount();
-   for (UINT idx = 0; idx < nPlugins; idx++ )
+   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);

@@ -106,7 +106,7 @@ public:
    // Description: Creates a new span element with one segment. The
    //              span element is not connected to support elements.
    // Return:      None
-   void CreateSpanElement(Int32 spanElementId,
+   void CreateSpanElement(SpanIDType spanElementId,
                           Float64 area,
                           Float64 izz,
                           Float64 e,
@@ -115,25 +115,25 @@ public:
    // Method:      ConnectSpanElement
    // Description: Connects a span element to support elements
    // Return:      None
-   void ConnectSpanElement(Int32 spanElementId,
-                           Int32 startPierId,
-                           Int32 endPierId);
+   void ConnectSpanElement(SpanIDType spanElementId,
+                           SupportIDType startPierId,
+                           SupportIDType endPierId);
 
    // Method:      RemoveSpanElement
    // Description: Removes a span element from the model
    // Return:      None
-   void RemoveSpanElement(Int32 spanElementId);
+   void RemoveSpanElement(SpanIDType spanElementId);
 
    // Method:      GetSpanElementCount
    // Description: Returns the number of span elements in the model
    // Return:      Number of span elements in the model.
-   Int32 GetSpanElementCount() const;
+   CollectionIndexType GetSpanElementCount() const;
 
    // Method:      EnumSpanElements
    // Description: Enumerates up to count span element id's. If count
    //              is zero, all id's are enumerated
    // Return:      None
-   void EnumSpanElements(Int32** ppSpanElementId,Int32 count = 0) const;
+   void EnumSpanElements(SpanIDType** ppSpanElementId,SpanIndexType count = 0) const;
 
    // Method:      GetSpanElementInfo
    // Description: Fills out the span element info struct
@@ -145,7 +145,7 @@ public:
    // Method:      CreateSupportElement - Form 1
    // Description: Creates a simple support element.
    // Return:      None
-   void CreateSupportElement(Int32 supportElementId,
+   void CreateSupportElement(SupportIDType supportElementId,
                              Float64 location,
                              bamSupportFixity fixity);
 
@@ -172,18 +172,18 @@ public:
    // Method:      RemoveSupportElement
    // Description: Removes a support element from the model
    // Return:      None
-   void RemoveSupportElement(Int32 supportElementId);
+   void RemoveSupportElement(SupportIDType supportElementId);
 
    // Method:      GetSupportElementCount
    // Description: Returns the number of support elements in the model
    // Return:      Number of support elements
-   Int32 GetSupportElementCount() const;
+   CollectionIndexType GetSupportElementCount() const;
 
    // Method:      EnumSupportElements
    // Description: Enumerates up to count support element id's. If count
    //              is zero, all id's are enumerated
    // Return:      None
-   void EnumSupportElements(Int32** ppSupportElementId,Int32 count = 0) const;
+   void EnumSupportElements(SupportIDType** ppSupportElementId,CollectionIndexType count = 0) const;
 /*
    // Method:      GetSupportElementInfo
    // Description: Fills out the support element info struct
@@ -234,7 +234,7 @@ public:
    // Method:      CreateLoadCase
    // Description: Creates a new load case
    // Return:      Loading identifier
-   void CreateLoadCase(Int32 id);
+   void CreateLoadCase(IDType id);
 
    // Method:      CreateDeadLoadCase
    // Description: Creates a new dead load case.  Dead load case
@@ -242,63 +242,63 @@ public:
    //              all span and support elements, except for those
    //              provided in the exclude list
    // Return:      Loading identifier
-   void CreateDeadLoadCase(Int32 id,
+   void CreateDeadLoadCase(IDType id,
                            bamElementExcludeInfo* pExcludeList = 0, // elements to be excluded
-                           Int32 excludeCount = 0); // # of elements in the exclude list
+                           CollectionIndexType excludeCount = 0); // # of elements in the exclude list
 
    // Method:      RemoveLoadCase
    // Description: Removes a load case from the model
    // Return:      None
-   void RemoveLoadCase(Int32 loadCaseId);
+   void RemoveLoadCase(IDType loadCaseId);
 
    // Method:      RemoveLoad
    // Description: Removes a load from a load case
    // Return:      None
-   void RemoveLoad(Int32 loadCaseId, Int32 loadIdx);
+   void RemoveLoad(IDType loadCaseId, CollectionIndexType loadIdx);
 
    // Method:      GetLoadCaseCount
    // Description: Returns the number of load cases in the model
    // Return:      Number of load cases
-   Int32 GetLoadCaseCount() const;
+   CollectionIndexType GetLoadCaseCount() const;
 
    // Method:      EnumLoadCases
    // Description: Enumerates up to count load case id's. If count
    //              is zero, all id's are enumerated
    // Return:      None
-   void EnumLoadCases(Int32** ppLoadCaseId,Int32 count = 0) const;
+   void EnumLoadCases(IDType** ppLoadCaseId,CollectionIndexType count = 0) const;
 
    // Method:      GetLoadCount
    // Description: Returns the number of loads in a load case
    // Return:      Number of loads
-   Int32 GetLoadCount(Int32 loadCaseId) const;
+   CollectionIndexType GetLoadCount(IDType loadCaseId) const;
 
    // Method:      EnableLoadCase
    // Description: Enables a load case.
    // Return:      None
-   void EnableLoadCase(Int32 loadCaseId);
+   void EnableLoadCase(IDType loadCaseId);
 
    // Method:      DisableLoadCase
    // Description: Disables a load case. Disabled load cases are
    //              ignored during analysis
    // Return:      None
-   void DisableLoadCase(Int32 loadCaseId);
+   void DisableLoadCase(IDType loadCaseId);
 
    // Method:      IsLoadCaseEnabled
    // Description: Tests the state of a load case
    // Return:      true if the load case is enabled
-   bool IsLoadCaseEnabled(Int32 loadCaseId) const;
+   bool IsLoadCaseEnabled(IDType loadCaseId) const;
 
    // Method:      GetLoadingCount
    // Description: Returns the count of all loadings, including
    //              load cases, load combinations, and live load envelopes.
    // Return:      Loading count
-   Int32 GetLoadingCount() const;
+   CollectionIndexType GetLoadingCount() const;
 
    // Method:      EnumLoadings
    // Description: Enumerates up to count loading id's. If count
    //              is zero, all id's are enumerated
    // Return:      None
-   void EnumLoadings(Int32** ppLoadingId,Int32 count = 0) const;
+   void EnumLoadings(IDType** ppLoadingId,CollectionIndexType count = 0) const;
 
    //===== Envelopes =====
 
@@ -306,47 +306,47 @@ public:
    // Description: Adds an envelope to the model
    // Return:      A unique envelope identifier
    void AddEnvelope(const bamEnvelope& rEnvelope);
-   void RemoveEnvelope(Int32 id);
-   const bamEnvelope* GetEnvelope(Int32 id) const;
+   void RemoveEnvelope(IDType id);
+   const bamEnvelope* GetEnvelope(IDType id) const;
 
    //===== Load Combinations =====
 
    void AddLoadCombination(const bamLoadCombination& rLoadCombination);
-   void RemoveLoadCombination(Int32 id);
-   const bamLoadCombination* GetLoadCombination(Int32 id) const;
+   void RemoveLoadCombination(IDType id);
+   const bamLoadCombination* GetLoadCombination(IDType id) const;
 
    //===== Live Load =====
 
    void AddLiveLoad(const bamLiveLoad& ll);
-   void RemoveLiveLoad(Int32 id);
-   const bamLiveLoad* GetLiveLoad(Int32 id) const;
+   void RemoveLiveLoad(IDType id);
+   const bamLiveLoad* GetLiveLoad(IDType id) const;
 
    //===== Points Of Interest =====
 
    // Method:      AddPointOfInterest - Form 1
    // Description: Adds a point of interest using an absolute location.
    // Return:      None
-   void AddPointOfInterest(Int32 poi,Float64 absLoc);
+   void AddPointOfInterest(PoiIDType poi,Float64 absLoc);
 
    // Method:      AddPointOfInterest - Form 2
    // Description: Adds a point of interest offset from the start
    //              of a span element
    // Return:      None
-   void AddPointOfInterest(Int32 poi,Int32 spanElementId,Float64 offset);
+   void AddPointOfInterest(PoiIDType poi,SpanIDType spanElementId,Float64 offset);
 
    // Method:      GeneratePointsOfInterest
    // Description: Generates points of interest on a span element
    // Return:      None
-   void GeneratePointsOfInterest(Int32 startPoi, // Starting poi id
-                                 Int32 nPoi,     // Number of poi to generate
-                                 Int32 spanElementId, // Span element id
-                                 Int32 poiInc = 1); // poi increment
+   void GeneratePointsOfInterest(PoiIDType startPoi, // Starting poi id
+                                 CollectionIndexType nPoi,     // Number of poi to generate
+                                 SpanIDType spanElementId, // Span element id
+                                 PoiIDType poiInc = 1); // poi increment
 
    // Method:      GetPointOfInterest
    // Description: Gets the point of interest description
    // Return:      None
-   void GetPointOfInterest(Int32 poi, // point of interest id
-                           Int32& spanElementId, // span element id 
+   void GetPointOfInterest(PoiIDType poi, // point of interest id
+                           SpanIDType& spanElementId, // span element id 
                            Float64& offset, // offset from start of span
                            Float64& absLoc // absolute location
                            ) const;
@@ -354,24 +354,24 @@ public:
    // Method:      GetPointOfInterestCount
    // Description: Retuns the number of points of interest
    // Return:      Point of interest count
-   Int32 GetPointOfInterestCount() const;
+   CollectionIndexType GetPointOfInterestCount() const;
 
    // Method:      EnumPointsOfInterest
    // Description: Enumerates up to count point of interest id's. If count
    //              is zero, all id's are enumerated
    // Return:      None
-   void EnumPointsOfInterest(Int32** ppPoi,Int32 count) const;
+   void EnumPointsOfInterest(PoiIDType** ppPoi,CollectionIndexType count) const;
 
-   const bamPointOfInterest* GetPointOfInterest(Int32 id) const;
-   bamPointOfInterest* GetPointOfInterest(Int32 id);
+   const bamPointOfInterest* GetPointOfInterest(PoiIDType id) const;
+   bamPointOfInterest* GetPointOfInterest(PoiIDType id);
 
    //===== Stress Points =====
 
    // Method:      AddStressPoint
    // Description: Attaches a stress point to a point of interest
    // Return:      None
-   void AddStressPoint(Int32 poi,Int32 idx,Float64 S);
-   void RemoveStressPoint(Int32 poi,Int32 idx);
+   void AddStressPoint(PoiIDType poi,CollectionIndexType idx,Float64 S);
+   void RemoveStressPoint(PoiIDType poi,CollectionIndexType idx);
 
 
 
@@ -433,11 +433,11 @@ public:
    Float64 GetGravitionalAcceleration() const;
 
    Float64 GetBridgeLength() const;
-   Float64 GetSpanLength(Int32 spanId) const;
+   Float64 GetSpanLength(SpanIDType spanId) const;
 
-   const bamSpanElement* GetSpanElement(Int32 spanElementId) const;
-   const bamSupportElement* GetSupportElement(Int32 supportElementId) const;
-   const bamLoadCase* GetLoadCase(Int32 loadCaseId) const;
+   const bamSpanElement* GetSpanElement(SpanIDType spanElementId) const;
+   const bamSupportElement* GetSupportElement(SupportIDType supportElementId) const;
+   const bamLoadCase* GetLoadCase(LoadCaseIDType loadCaseId) const;
 
 protected:
    // DATA MEMBERS
@@ -454,21 +454,21 @@ protected:
    virtual void DoBuildModel();
    virtual void DoBeginLoadCase(bamLoadCase& lc);
    virtual void DoAnalyze();
-   virtual void DoCollectResults(Int32 poiId,bamSectionResults& sr);
-   virtual void DoCollectReactions(Int32 supportId,bamReaction& reaction);
+   virtual void DoCollectResults(PoiIDType poiId,bamSectionResults& sr);
+   virtual void DoCollectReactions(SupportIDType supportId,bamReaction& reaction);
    virtual void DoEndLoadCase();
    virtual void DoCleanup();
 
    virtual bamLoadFactory* CreateLoadFactory() = 0;
 
-   void AbsLocationToRelLocation(Float64 absLoc,Int32& spanIdx,Float64& offset) const;
-   void RelLocationToAbsLocation(Int32 spanIdx,Float64 offset,Float64& absLoc) const;
+   void AbsLocationToRelLocation(Float64 absLoc,SpanIDType& spanId,Float64& offset) const;
+   void RelLocationToAbsLocation(SpanIDType spanId,Float64 offset,Float64& absLoc) const;
 
    // ACCESS
-   bamSpanElement* GetSpanElement(Int32 spanElementId);
-   bamSupportElement* GetSupportElement(Int32 supportElementId);
-   bamLoadCase* GetLoadCase(Int32 loadCaseId);
-   bamLoadCombination* GetLoadCombination(Int32 id);
+   bamSpanElement* GetSpanElement(SpanIDType spanElementId);
+   bamSupportElement* GetSupportElement(SupportIDType supportElementId);
+   bamLoadCase* GetLoadCase(IDType loadCaseId);
+   bamLoadCombination* GetLoadCombination(IDType id);
 
    void WriteSectionResults(const bamSectionResultsKey& key,const bamSectionResults& sr);
    void WriteSectionStress(const bamSectionStressKey& key,const bamSectionStress& sr);
@@ -495,27 +495,27 @@ private:
 
    std::auto_ptr<bamLiveLoadSolver>  m_pSolver;
 
-   typedef std::map<Int32, boost::shared_ptr<bamSpanElement> > SpanElementContainer;
+   typedef std::map<SpanIDType, boost::shared_ptr<bamSpanElement> > SpanElementContainer;
    typedef SpanElementContainer::iterator SpanElementIterator;
    typedef SpanElementContainer::const_iterator ConstSpanElementIterator;
 
-   typedef std::map<Int32, boost::shared_ptr<bamSupportElement> > SupportElementContainer;
+   typedef std::map<SupportIDType, boost::shared_ptr<bamSupportElement> > SupportElementContainer;
    typedef SupportElementContainer::iterator SupportElementIterator;
    typedef SupportElementContainer::const_iterator ConstSupportElementIterator;
 
-   typedef std::map<Int32, bamLiveLoad> LiveLoadContainer;
+   typedef std::map<IDType, bamLiveLoad> LiveLoadContainer;
    typedef LiveLoadContainer::iterator LiveLoadIterator;
    typedef LiveLoadContainer::const_iterator ConstLiveLoadIterator;
    
-   typedef std::map<Int32, boost::shared_ptr<bamLoadCase> > LoadCaseContainer;
+   typedef std::map<IDType, boost::shared_ptr<bamLoadCase> > LoadCaseContainer;
    typedef LoadCaseContainer::iterator LoadCaseIterator;
    typedef LoadCaseContainer::const_iterator ConstLoadCaseIterator;
 
-   typedef std::map<Int32, boost::shared_ptr<bamLoadCombination> > LoadCombinationContainer;
+   typedef std::map<IDType, boost::shared_ptr<bamLoadCombination> > LoadCombinationContainer;
    typedef LoadCombinationContainer::iterator LoadCombinationIterator;
    typedef LoadCombinationContainer::const_iterator ConstLoadCombinationIterator;
 
-   typedef std::map<Int32, boost::shared_ptr<bamEnvelope> > EnvelopeContainer;
+   typedef std::map<IDType, boost::shared_ptr<bamEnvelope> > EnvelopeContainer;
    typedef EnvelopeContainer::iterator EnvelopeIterator;
    typedef EnvelopeContainer::const_iterator ConstEnvelopeIterator;
 
@@ -543,12 +543,12 @@ private:
    bamBridgeModel& operator = (const bamBridgeModel& /*bamBridgeModel*/);  // Remove to enable assignment
 
    // OPERATIONS
-   void AddPointOfInterest(Int32 poiId,Int32 spanId,Float64 distFromStart,Float64 absLoc);
-   const bamPointOfInterest& StorePointOfInterest(Int32 poi,Int32 spanId,Float64 offset,Float64 absLoc);
+   void AddPointOfInterest(PoiIDType poiId,SpanIDType spanId,Float64 distFromStart,Float64 absLoc);
+   const bamPointOfInterest& StorePointOfInterest(PoiIDType poi,SpanIDType spanId,Float64 offset,Float64 absLoc);
    void OnNewPointOfInterest(const bamPointOfInterest& poi);
-   void OnNewStressPoint(const bamPointOfInterest& poi,Int32 spid);
+   void OnNewStressPoint(const bamPointOfInterest& poi,CollectionIndexType spid);
 
-   Int32 AddLoad(Int32 loadCaseId,bamLoad* pLoad);
+   CollectionIndexType AddLoad(IDType loadCaseId,bamLoad* pLoad);
    void StoreSpanElement(bamSpanElement* pSpanElement);
    void StoreSupportElement(bamSupportElement* pSupportElement);
    void StoreLoadCase(bamLoadCase* pLoadCase);
@@ -574,13 +574,13 @@ private:
    friend bamLoadCombination; // Needs access to WriteResults and WriteReactions
    friend bamEnvelope; // Needs access to WriteResults and WriteReactions
 
-   bool IsValidSpanId(Int32 spanId) const;
-   bool IsValidSupportId(Int32 supportId) const;
-   bool IsValidLoadCaseId(Int32 id) const;
-   bool IsValidLoadCombinationId(Int32 id) const;
-   bool IsValidLiveLoadId(Int32 id) const;
-   bool IsValidEnvelopeId(Int32 id) const;
-   bool IsLoadingIdUsed(Int32 id) const;
+   bool IsValidSpanId(SpanIDType spanId) const;
+   bool IsValidSupportId(SupportIDType supportId) const;
+   bool IsValidLoadCaseId(LoadCaseIDType id) const;
+   bool IsValidLoadCombinationId(LoadCombinationIDType id) const;
+   bool IsValidLiveLoadId(IDType id) const;
+   bool IsValidEnvelopeId(IDType id) const;
+   bool IsLoadingIdUsed(LoadIDType id) const;
 
 public:
    // GROUP: DEBUG
@@ -607,8 +607,8 @@ public:
 inline void bamBridgeModel::DoBuildModel()     {}
 inline void bamBridgeModel::DoBeginLoadCase(bamLoadCase& /*lc*/)  {}
 inline void bamBridgeModel::DoAnalyze()        {}
-inline void bamBridgeModel::DoCollectResults(Int32 poiId,bamSectionResults&) {}
-inline void bamBridgeModel::DoCollectReactions(Int32 supportId,bamReaction&) {}
+inline void bamBridgeModel::DoCollectResults(PoiIDType poiId,bamSectionResults&) {}
+inline void bamBridgeModel::DoCollectReactions(SupportIDType supportId,bamReaction&) {}
 inline void bamBridgeModel::DoEndLoadCase()    {}
 
 // Keeps STL happy

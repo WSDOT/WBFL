@@ -264,7 +264,7 @@ static HRESULT TestContainer(TListen* pMe)
    TRY_TEST( pcnt1->Find(103,&pss3t) , S_OK );
    TRY_TEST(pss3t.IsEqualObject(pss3), true);
    
-   long nm, nmt(106);
+   IDType nm, nmt(106);
    TRY_TEST( pcnt1->RemoveByIndex(6,&nm) , S_OK );
    TEST_CONTAINER_FIRED();
    TRY_TEST(nm, nmt);

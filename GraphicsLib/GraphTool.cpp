@@ -50,9 +50,9 @@ grGraphTool::~grGraphTool()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-bool grGraphTool::TextOutRotated(HDC hDC, Int32 x, Int32 y, Int32 rotation, 
-                                 LPCTSTR lpszText, Int32 textlen, 
-                                 Int32 nPointSize, LPCTSTR lpszFacename)
+bool grGraphTool::TextOutRotated(HDC hDC, LONG x, LONG y, LONG rotation, 
+                                 LPCTSTR lpszText, LONG textlen, 
+                                 LONG nPointSize, LPCTSTR lpszFacename)
 {
    if (textlen<=0) return true;
 
@@ -70,8 +70,8 @@ bool grGraphTool::TextOutRotated(HDC hDC, Int32 x, Int32 y, Int32 rotation,
       UINT old_align = GetTextAlign(hDC);
       if ( (old_align&DT_CENTER) !=0 )
       {
-         Int32 left  = textlen/2;
-         Int32 right = textlen-left;
+         LONG left  = textlen/2;
+         LONG right = textlen-left;
          SetTextAlign(hDC, DT_RIGHT | DT_BOTTOM );
          ::TextOut(hDC, x, y, lpszText, left);
          lpszText+=left;
@@ -95,7 +95,7 @@ bool grGraphTool::TextOutRotated(HDC hDC, Int32 x, Int32 y, Int32 rotation,
    return true;
 }
 
-HFONT grGraphTool::CreateRotatedFont(HDC hDC, Int32 rotation, Int32 nPointSize, LPCTSTR lpszFaceName)
+HFONT grGraphTool::CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCTSTR lpszFaceName)
 {
    CHECK(hDC!=NULL);
 
@@ -124,7 +124,7 @@ HFONT grGraphTool::CreateRotatedFont(HDC hDC, Int32 rotation, Int32 nPointSize, 
 
 
 void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 originalMax,
-                        Int32& numberOfSegments,
+                        CollectionIndexType& numberOfSegments,
                         Float64& niceMin, Float64& niceMax,
                         Float64& niceIncrement)
 {
@@ -132,11 +132,11 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
    // the mess, but it works
 
    Float64 exponent, factor, scale_fac, test_scale, adjusted_min, adjusted_max; 
-   Int32  nmin, nmax, need;
+   LONG  nmin, nmax, need;
    bool  is_defseg;
 
    const Float64  tol = 1.0e-09;
-   const Int32 nscale = 9;
+   const CollectionIndexType nscale = 9;
    const Float64 prturb = 1.1;
    const Float64 supply[nscale] = {25.0, 20.0, 15.0, 10.0, 5.0, 2.5, 2.0, 1.0, 0.5 };
 
@@ -145,10 +145,12 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 
 //  may need to perturb values to make reasonable graph
 
-   if (niceMin == niceMax)
+   if (IsEqual(niceMin,niceMax))
    {
-       if (niceMin == 0.0)
+       if (IsZero(niceMin))
+       {
            niceMax = 1.0;
+       }
        else
        {
            niceMin = niceMin/prturb;
@@ -176,7 +178,9 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
       is_defseg = true;
    }
    else
+   {
       is_defseg = false;
+   }
 
 //     get down to business
 
@@ -185,14 +189,14 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 
 //     test each scale and keep the largest one that works
 
-   for (Int32 i=0; i<nscale; i++)
+   for (CollectionIndexType i=0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
-       nmin = (Int32)floor(niceMin/test_scale);
-       nmax = (Int32)ceil(niceMax/test_scale);
+       nmin = (LONG)floor(niceMin/test_scale);
+       nmax = (LONG)ceil(niceMax/test_scale);
        need = nmax - nmin;
 
-       if (need <= numberOfSegments)
+       if (need <= (int)numberOfSegments)
        {
            scale_fac = test_scale;
            adjusted_min = nmin*scale_fac;
@@ -242,7 +246,7 @@ void grGraphTool::DrawRect(HDC hDC, const grlibPointMapper& mapper, const gpRect
 
    const int num_points=5;
    POINT device_points[num_points]; // closed rect
-   long   dx,dy;
+   LONG  dx,dy;
 
    gpPoint2d top_left = rect.TopLeft();
    gpPoint2d bottom_right = rect.BottomRight();

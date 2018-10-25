@@ -3,7 +3,7 @@
 
 interface iSupportDrawStrategy : public IUnknown
 {
-   STDMETHOD_(void,SetSupport)(ISupport* jnt, long supportID) PURE;
+   STDMETHOD_(void,SetSupport)(ISupport* jnt, IDType supportID) PURE;
 };
 
 #endif // INCLUDED_SUPPORTDRAWSTRATEGY_H_

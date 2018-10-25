@@ -44,17 +44,17 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-long round_to_nearest_whole_number(Float64 x)
+LONG round_to_nearest_whole_number(Float64 x)
 {
    // :WARNING: rab 11.15.96 : Possible loss of data
    // :METHOD: round_to_nearest_whole_number()
    //
    // ceil and floor return Float64. These return values must
-   // be cast to long. Float64s are 8 byte and longs are 4 byte
+   // be cast to LONG. Float64s are 8 byte and longs are 4 byte
    // this could result in a possible loss of data. (Though I've
    // never experienced it)
 
-   return  long((x - long(x)) > 0.5) ? (long)ceil(x) : (long)floor(x);
+   return  LONG((x - LONG(x)) > 0.5) ? (LONG)ceil(x) : (LONG)floor(x);
 } // round_to_nearest_whole_number
 
 //////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ CMappingImpl::~CMappingImpl()
    // calls to PrepareDC and CleanUpDC. This is not good form.
    if (!m_Stack.empty())
    {
-      int siz = m_Stack.size();
+      CollectionIndexType siz = m_Stack.size();
       ATLASSERT(0);
    }
 }
@@ -226,7 +226,7 @@ STDMETHODIMP_(void) CMappingImpl::GetWorldOrg(IPoint2d* *wOrg)
    (*wOrg)->AddRef();
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetLogicalOrg(long lx,long ly)
+STDMETHODIMP_(void) CMappingImpl::SetLogicalOrg(LONG lx,LONG ly)
 {
    m_LogicalOriginX = lx;
    m_LogicalOriginY = ly;
@@ -234,13 +234,13 @@ STDMETHODIMP_(void) CMappingImpl::SetLogicalOrg(long lx,long ly)
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetLogicalOrg(long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::GetLogicalOrg(LONG* lx,LONG* ly)
 {
    *lx = m_LogicalOriginX;
    *ly = m_LogicalOriginY;
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetLogicalExt(long lx,long ly)
+STDMETHODIMP_(void) CMappingImpl::SetLogicalExt(LONG lx,LONG ly)
 {
    m_OriginalLogicalExtentX = lx;
    m_OriginalLogicalExtentY = ly;
@@ -248,13 +248,13 @@ STDMETHODIMP_(void) CMappingImpl::SetLogicalExt(long lx,long ly)
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetLogicalExt(long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::GetLogicalExt(LONG* lx,LONG* ly)
 {
    *lx = m_OriginalLogicalExtentX;
    *ly = m_OriginalLogicalExtentY;
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetAdjustedLogicalExt(long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::GetAdjustedLogicalExt(LONG* lx,LONG* ly)
 {
    *lx = m_LogicalExtentX;
    *ly = m_LogicalExtentY;
@@ -339,7 +339,7 @@ STDMETHODIMP_(void) CMappingImpl::WPtoMP(IPoint2d* wp,Float64* mx,Float64* my)
    WPtoMP(wx,wy,mx,my);
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoLP(Float64 wx,Float64 wy,long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::WPtoLP(Float64 wx,Float64 wy,LONG* lx,LONG* ly)
 {
    if (m_WorldExtentX == 0)
    {
@@ -364,7 +364,7 @@ STDMETHODIMP_(void) CMappingImpl::WPtoLP(Float64 wx,Float64 wy,long* lx,long* ly
    }
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoLP(IPoint2d* wp,long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::WPtoLP(IPoint2d* wp,LONG* lx,LONG* ly)
 {
    Float64 x,y;
    wp->get_X(&x);
@@ -373,7 +373,7 @@ STDMETHODIMP_(void) CMappingImpl::WPtoLP(IPoint2d* wp,long* lx,long* ly)
    WPtoLP( x, y, lx, ly );
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoWP(long lx,long ly,Float64* wx,Float64* wy)
+STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy)
 {
    if (m_LogicalExtentX == 0)
    {
@@ -394,7 +394,7 @@ STDMETHODIMP_(void) CMappingImpl::LPtoWP(long lx,long ly,Float64* wx,Float64* wy
    }
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoWP(long lx,long ly,IPoint2d** wp)
+STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,IPoint2d** wp)
 {
    Float64 wx,wy;
    LPtoWP(lx,ly,&wx,&wy);
@@ -408,25 +408,25 @@ STDMETHODIMP_(void) CMappingImpl::LPtoWP(long lx,long ly,IPoint2d** wp)
    (*wp)->AddRef();
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoTP(Float64 wx,Float64 wy,long* tx,long* ty)
+STDMETHODIMP_(void) CMappingImpl::WPtoTP(Float64 wx,Float64 wy,LONG* tx,LONG* ty)
 {
    // two-step conversion
-   long lx, ly;
+   LONG lx, ly;
    WPtoLP(wx, wy, &lx, &ly);
 
    LPtoTP(lx, ly, tx, ty);
 }
 
-STDMETHODIMP_(void) CMappingImpl::TPtoWP(long tx,long ty,Float64* wx,Float64* wy)
+STDMETHODIMP_(void) CMappingImpl::TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy)
 {
    // two-step conversion
-   long lx, ly;
+   LONG lx, ly;
    TPtoLP(tx, ty, &lx, &ly);
 
    LPtoWP(lx, ly, wx, wy);
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoTP(long lx,long ly,long* tx,long* ty)
+STDMETHODIMP_(void) CMappingImpl::LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty)
 {
    ATLASSERT(!m_Stack.empty());
    StackFrame& item = m_Stack.front();
@@ -435,7 +435,7 @@ STDMETHODIMP_(void) CMappingImpl::LPtoTP(long lx,long ly,long* tx,long* ty)
    *ty = round_to_nearest_whole_number( item.m_TextCoordMapperY.GetA(ly) );
 }
 
-STDMETHODIMP_(void) CMappingImpl::TPtoLP(long tx,long ty,long* lx,long* ly)
+STDMETHODIMP_(void) CMappingImpl::TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly)
 {
    ATLASSERT(!m_Stack.empty());
    StackFrame& item = m_Stack.front();
@@ -446,9 +446,10 @@ STDMETHODIMP_(void) CMappingImpl::TPtoLP(long tx,long ty,long* lx,long* ly)
 
 STDMETHODIMP_(CSize) CMappingImpl::GetTextWindowExtent()
 {
-   long lox, loy;
+   LONG lox, loy;
    LPtoTP(0, 0, &lox, &loy);
-   long lex, ley;
+
+   LONG lex, ley;
    LPtoTP(m_OriginalLogicalExtentX, m_OriginalLogicalExtentY, &lex, &ley);
 
    return CSize( abs(lex-lox), abs(ley-loy) );

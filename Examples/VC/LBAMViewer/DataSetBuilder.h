@@ -31,7 +31,7 @@ public:
    }
 
    // get truck data - can only be called if HasTruckPlacement returns true
-   virtual void GetTruckInfo(LiveLoadModelType* modelType, long* vehicleIndex, ILiveLoadConfiguration** config)
+   virtual void GetTruckInfo(LiveLoadModelType* modelType, VehicleIndexType* vehicleIndex, ILiveLoadConfiguration** config)
    {
       ATLASSERT(0);
    }

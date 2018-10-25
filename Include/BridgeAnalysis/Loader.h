@@ -74,8 +74,8 @@ protected:
    virtual void ApplyToSupportElement() = 0;
 
    // ACCESS
-   bamSpanElement* GetSpanElement(Int32 spanElementId);
-   bamSupportElement* GetSupportElement(Int32 supportElementId);
+   bamSpanElement* GetSpanElement(SpanIDType spanElementId);
+   bamSupportElement* GetSupportElement(SupportIDType supportElementId);
 
    // INQUIRY
 

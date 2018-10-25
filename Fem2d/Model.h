@@ -208,9 +208,9 @@ private:
    MbrResultContainer     m_MbrResults;
    PoiResultContainer     m_PoiResults;
 
-   long m_BandWidth;
-   long m_NumGlobalDOF;
-   long m_NumCondensedDOF;
+   LONG m_BandWidth;
+   LONG m_NumGlobalDOF;
+   LONG m_NumCondensedDOF;
    SymBandedMatrix m_K; // Global stiffness matrix
    Float64 *m_pF;  // Global Force Vector
 
@@ -244,8 +244,8 @@ private:
    void Compute();
    void ComputeLoadings();
    void FemAnalysis();
-   long ComputeBandWidth();
-   void BandSolve(long mode,long neq,long band,Float64 **KBand,Float64 *FBand);
+   LONG ComputeBandWidth();
+   void BandSolve(LONG mode,LONG neq,LONG band,Float64 **KBand,Float64 *FBand);
    void AllocateKGlobal();
    void AllocateFGlobal();
    void FreeFGlobal();
@@ -268,12 +268,12 @@ private:
    void RemoveAllPoiResults();
    void RemovePoiResults(PoiIDType poi);
 
-   void GetJointFromDof(long dof, JointIDType* joint, long* jdof);
+   void GetJointFromDof(LONG dof, JointIDType* joint, LONG* jdof);
    HRESULT DealWithExceptions();
 
 #if defined _DEBUG
    void CheckSolution();
-   Float64 GetKij(long I,long J);
+   Float64 GetKij(LONG I,LONG J);
 #endif
 };
 

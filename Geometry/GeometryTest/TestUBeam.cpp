@@ -660,7 +660,7 @@ void CTestUBeam::TestIShape()
    TRY_TEST( cPoints, 16);
 
    coll->get__Enum(&Enum);
-   Enum->Next(cPoints,&points[0],&fetched);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    points[0]->get_X(&x);

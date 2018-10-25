@@ -355,7 +355,7 @@ public:
    typedef ItemType                              ItemType;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef std::pair< Uint32, CAdapt<CComPtr<ItemType>>>          StoredType; // <cookie, pointer>
+   typedef std::pair< DWORD, CAdapt<CComPtr<ItemType>>>          StoredType; // <cookie, pointer>
 
 protected:
    // some virtual methods for dealing with adding and 
@@ -678,7 +678,7 @@ public:
    typedef ItemType                                      ItemType;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef typename std::pair< Uint32, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   typedef typename std::pair< DWORD, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
 
 protected:
    // some virtual methods for allowing parents to deal with adding and 
@@ -742,7 +742,7 @@ public:
 	{
       HRESULT hr;
 
-      if ( index < 0 || (IndexType)m_coll.size() < index ) // ok to insert at end of collection
+      if ( index < 0 || m_coll.size() < index ) // ok to insert at end of collection
          return E_INVALIDARG;
 
       CHECK_IN(pVal);
@@ -925,7 +925,7 @@ public:
    STDMETHOD(Clear)()
    {
       // can't use a standard for loop since we are erasing as we iterate
-      Uint32 idx=0;
+      IndexType idx=0;
       bool go = true;
       while (go)
       {
@@ -1387,7 +1387,7 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////
 // CComLongKeyedCollection
-template <class T, class ItemType, class EnumType, const IID* piidenum,class IndexType>
+template <class T, class ItemType, class EnumType, const IID* piidenum,class KeyType>
 class  CComLongKeyedCollection : public T
 {
 public:
@@ -1396,10 +1396,10 @@ public:
    typedef ItemType                                      ItemType;
    // Store a cookie along with interface pointer to facilitate dealing with connection points
    // Could have externalized this to make more extensible
-   typedef typename std::pair< unsigned long, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
+   typedef typename std::pair< DWORD, CAdapt<CComPtr<ItemType>>> StoredType; // <cookie, pointer>
 
 protected:
-   typedef typename std::map<long, StoredType>  ContainerType;
+   typedef typename std::map<KeyType, StoredType>  ContainerType;
    typedef typename ContainerType::iterator     ContainerIteratorType;
    typedef typename ContainerType::value_type   ContainerValueType;
    ContainerType m_coll;
@@ -1422,11 +1422,11 @@ protected:
    virtual HRESULT OnBeforeAdd ( StoredType* pVal) {return S_OK;}
    virtual HRESULT OnAfterAdd ( StoredType* pVal) {return S_OK;}
    virtual HRESULT OnBeforeRemove ( StoredType* pVal) {return S_OK;}
-   virtual HRESULT OnAfterRemove (long ID) {return S_OK;}
+   virtual HRESULT OnAfterRemove (KeyType key) {return S_OK;}
 
 public:
    // count
-	STDMETHOD(get_Count)(IndexType* pcount)
+	STDMETHOD(get_Count)(CollectionIndexType* pcount)
 	{
       CHECK_RETVAL(pcount);
 
@@ -1438,7 +1438,7 @@ public:
 	STDMETHOD(Add)(ItemType* pVal)
 	{
       CHECK_IN(pVal);
-      long id;
+      KeyType id;
       HRESULT hr;
       hr = pVal->get_ID(&id);
 		if (FAILED(hr))
@@ -1513,10 +1513,10 @@ public:
 
 
 public:
-   STDMETHOD(RemoveByID)(/*[in]*/long id)
+   STDMETHOD(RemoveByKey)(/*[in]*/KeyType key)
    {
       // erase by id
-      ContainerIteratorType it( m_coll.find(id) );
+      ContainerIteratorType it( m_coll.find(key) );
       if (it!=m_coll.end())
       {
          // must release element before erasing it
@@ -1526,16 +1526,16 @@ public:
 		   {
             m_coll.erase(it);
          }
-         OnAfterRemove(id);
+         OnAfterRemove(key);
          return S_OK;
       }
 
       return E_FAIL;
    }
 
-   STDMETHOD(RemoveByIndex)(/*[in]*/IndexType Index,/*[out]*/long* ID)
+   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType Index,/*[out]*/KeyType* key)
    {
-      CHECK_RETVAL(ID);
+      CHECK_RETVAL(key);
 
       // erase by index
       if ( !IsValidIndex(Index,m_coll) )
@@ -1546,12 +1546,12 @@ public:
       {
          // zero-based access
          ContainerIteratorType it( m_coll.begin() );
-         for (IndexType i=0; i<Index; i++)
+         for (CollectionIndexType i=0; i<Index; i++)
          {
             it++;
          }
 
-         *ID = it->first;
+         *key = it->first;
 
   		   HRESULT hr = S_OK;
          hr = OnBeforeRemove(&(it->second));
@@ -1559,19 +1559,19 @@ public:
 		   {
             m_coll.erase(it);
          }
-          OnAfterRemove(*ID);
+          OnAfterRemove(*key);
       }
 
 	   return S_OK;
    }
 
-	STDMETHOD(Find)(long ID, /*[out, retval]*/ ItemType* *pVal)
+	STDMETHOD(Find)(KeyType key, /*[out, retval]*/ ItemType* *pVal)
    {
       CHECK_RETOBJ(pVal);
 
       HRESULT hrResult = S_OK;
 
-      ContainerIteratorType it( m_coll.find(ID) );
+      ContainerIteratorType it( m_coll.find(key) );
       if (it!=m_coll.end())
       {
          CComPtr<ItemType> pi;
@@ -1596,7 +1596,7 @@ public:
    }
 
 
-   STDMETHOD(get_Item)(IndexType idx, /*[out, retval]*/ ItemType* *pVal)
+   STDMETHOD(get_Item)(CollectionIndexType idx, /*[out, retval]*/ ItemType* *pVal)
    {
       CHECK_RETOBJ(pVal);
 
@@ -1637,7 +1637,7 @@ public:
       ContainerIteratorType itend( m_coll.end() );
       for (; it != itend; it++)
       {
-         long id = it->first;
+         SIZE_T id = it->first;
   		   HRESULT hr = S_OK;
          hr = OnBeforeRemove( &(it->second) );
 		   if (FAILED(hr))
@@ -1653,7 +1653,7 @@ public:
    }
 /////////////
 // Classes for local C++ clients
-   ItemType* Find(long id)
+   ItemType* Find(KeyType id)
    {
       ContainerIteratorType it( m_coll.find(id) );
       if (it!=m_coll.end())

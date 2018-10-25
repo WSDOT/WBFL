@@ -147,7 +147,7 @@ private:
    IConcurrentLoadCombinationResponse* m_pConcurrentLoadCombinationResponse;
 
    // get stress points in a predictable manner
-   HRESULT GetStressPoints(long poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps);
+   HRESULT GetStressPoints(PoiIDType poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps);
 
    // For performance, we cache the active loadgroups in each loadcase
    // and only those loadcases and factors that are active for each loadcombination.

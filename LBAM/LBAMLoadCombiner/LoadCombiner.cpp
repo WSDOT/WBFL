@@ -250,7 +250,7 @@ STDMETHODIMP CLoadCombiner::InitializeProgressMonitor(IProgressMonitor * newVal,
 }
 
 
-HRESULT CLoadCombiner::GetStressPoints(long poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps)
+HRESULT CLoadCombiner::GetStressPoints(PoiIDType poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps)
 {
    CHECK_IN(stage);
    CHECK_RETOBJ(leftSps);

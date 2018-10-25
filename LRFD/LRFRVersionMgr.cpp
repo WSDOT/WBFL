@@ -129,7 +129,7 @@ void lrfrVersionMgr::UnregisterListener(lrfrVersionMgrListener* pListener)
    }
 }
 
-Int32 lrfrVersionMgr::ListenerCount()
+CollectionIndexType lrfrVersionMgr::ListenerCount()
 {
    return ms_Listeners.size();
 }

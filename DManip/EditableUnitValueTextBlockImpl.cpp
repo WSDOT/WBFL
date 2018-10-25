@@ -181,13 +181,13 @@ STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::OnDataChanged()
 
 //////////////////////////////////
 // iDisplayObject Implementation
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetID(long id)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetID(IDType id)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    dispObj->SetID(id);
 }
 
-STDMETHODIMP_(long) CEditableUnitValueTextBlockImpl::GetID()
+STDMETHODIMP_(IDType) CEditableUnitValueTextBlockImpl::GetID()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    return dispObj->GetID();
@@ -321,25 +321,25 @@ STDMETHODIMP_(CString) CEditableUnitValueTextBlockImpl::GetToolTipText()
    return dispObj->GetToolTipText();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetMaxTipWidth(long maxWidth)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetMaxTipWidth(INT maxWidth)
 { 
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    dispObj->SetMaxTipWidth(maxWidth);
 }
 
-STDMETHODIMP_(long) CEditableUnitValueTextBlockImpl::GetMaxTipWidth()
+STDMETHODIMP_(INT) CEditableUnitValueTextBlockImpl::GetMaxTipWidth()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    return dispObj->GetMaxTipWidth();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetTipDisplayTime(long iTime)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetTipDisplayTime(INT iTime)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    return dispObj->SetTipDisplayTime(iTime);
 }
 
-STDMETHODIMP_(long) CEditableUnitValueTextBlockImpl::GetTipDisplayTime()
+STDMETHODIMP_(INT) CEditableUnitValueTextBlockImpl::GetTipDisplayTime()
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    return dispObj->GetTipDisplayTime();
@@ -480,12 +480,12 @@ STDMETHODIMP_(UINT) CEditableUnitValueTextBlockImpl::GetTextAlign()
    return m_EditableTextBlock->GetTextAlign();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetAngle(long angle)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetAngle(LONG angle)
 {
    m_EditableTextBlock->SetAngle(angle);
 }
 
-STDMETHODIMP_(long) CEditableUnitValueTextBlockImpl::GetAngle()
+STDMETHODIMP_(LONG) CEditableUnitValueTextBlockImpl::GetAngle()
 {
    return m_EditableTextBlock->GetAngle();
 }

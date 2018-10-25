@@ -90,7 +90,7 @@ public:
    static void UnregisterListener(unitSysUnitsMgrListener* pListener);
 
    //------------------------------------------------------------------------
-   static Int32 ListenerCount();
+   static CollectionIndexType ListenerCount();
 
    // GROUP: ACCESS
 

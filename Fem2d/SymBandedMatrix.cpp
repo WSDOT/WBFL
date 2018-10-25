@@ -33,7 +33,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-SymBandedMatrix::SymBandedMatrix(long size, long bw)
+SymBandedMatrix::SymBandedMatrix(LONG size, LONG bw)
 {
    m_Size = 0;
    m_BandWidth=0;
@@ -55,7 +55,7 @@ SymBandedMatrix::~SymBandedMatrix()
    Clear();
 }
 
-void SymBandedMatrix::Resize(long size, long bw)
+void SymBandedMatrix::Resize(LONG size, LONG bw)
 {
    ATLASSERT(m_Size >= 0);
    ATLASSERT(m_BandWidth >= 0);
@@ -73,7 +73,7 @@ void SymBandedMatrix::Resize(long size, long bw)
       // allocate entire matrix in a single chunk rather than multiple allocations
       m_pData =    new Float64[m_Size*m_BandWidth];
 
-      for (long i=0; i<m_Size; i++)
+      for (LONG i=0; i<m_Size; i++)
          m_ppMatrix[i] = m_pData+(i*m_BandWidth);
    }
 }
@@ -84,7 +84,7 @@ void SymBandedMatrix::Zero()
    ATLASSERT(m_ppMatrix!=0);
 
    Float64* p = m_pData;
-   for (long i=0; i<m_Size*m_BandWidth; i++)
+   for (LONG i=0; i<m_Size*m_BandWidth; i++)
    {
        *p= 0.0;
        ++p;
@@ -100,24 +100,24 @@ void SymBandedMatrix::Clear()
    }
 }
 
-long SymBandedMatrix::NumRows() const
+LONG SymBandedMatrix::NumRows() const
 {
    return m_Size;
 }
 
-long SymBandedMatrix::NumColumns() const
+LONG SymBandedMatrix::NumColumns() const
 {
    return m_Size;
 }
 
-long SymBandedMatrix::BandWidth() const
+LONG SymBandedMatrix::BandWidth() const
 {
    return m_BandWidth;
 }
 
 std::_tostream& operator<< ( std::_tostream& os, SymBandedMatrix& m )
 {
-   long i,j;
+   LONG i,j;
 
    os << std::showpoint<< std::scientific << std::setw(10) << std::setprecision(3);
 
@@ -155,7 +155,7 @@ void SymBandedMatrix::Factor()
   pivot numbers, but may provide garbage solutions to ill-conditioned matrices.
 */
 
-	long nrs, nr, n, mr, m, i, j, k, l;
+	LONG nrs, nr, n, mr, m, i, j, k, l;
 	Float64 pivot, cp;
 
 	nrs = m_Size - 1;
@@ -198,9 +198,9 @@ void SymBandedMatrix::Solve(Float64 *F)
 	/* foward elimination of F */
 	/*******************************/
 
-	long nrs = m_Size - 1;
-	long nr = m_Size;
-   long mr, i, k, l, m, n;
+	LONG nrs = m_Size - 1;
+	LONG nr = m_Size;
+   LONG mr, i, k, l, m, n;
    Float64 cp, cd;
 
    for (n = 1;n <= nrs;n++)

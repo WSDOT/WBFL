@@ -68,7 +68,7 @@ bmfGirderPath::bmfGirderPath()
 } // GirderPath
 
 bmfGirderPath::bmfGirderPath(bmfSpan* pSpan, 
-                           Int32 girderIdx,
+                           GirderIndexType girderIdx,
                            Float64 startOffset,
                            bmfMeasuredWhere startWhere,
                            bmfMeasuredHow startHow,
@@ -122,7 +122,7 @@ void bmfGirderPath::Draw(HDC hDC,const grlibPointMapper& mapper) const
    points->get_Item(m_StartGirderPnt,&start_pnt);
    points->get_Item(m_EndGirderPnt,  &end_pnt);
 
-   Int32 dx, dy;
+   LONG dx, dy;
 
    mapper.WPtoDP(start_pnt, &dx, &dy);
    ::MoveToEx(hDC,dx,dy,NULL);
@@ -245,7 +245,7 @@ bmfGirder* bmfGirderPath::GetGirder() const
    return m_pGirder.get();
 }
 
-Int32 bmfGirderPath::GetGirderIdx() const
+GirderIndexType bmfGirderPath::GetGirderIdx() const
 {
    return m_GirderIdx;
 }
@@ -603,9 +603,9 @@ void bmfGirderPath::ClearCogoPoints()
 
 void bmfGirderPath::SetCogoPointIDs()
 {
-   long spanID = m_pSpan->GetID();
+   SpanIDType spanID = m_pSpan->GetID();
 
-   long baseID = 10000*(spanID+1) + 100*(m_GirderIdx+1);
+   SpanIDType baseID = 10000*(spanID+1) + 100*(m_GirderIdx+1);
 
    m_StartGirderPnt = -1*(baseID + 1);
    m_StartBrgPnt    = -1*(baseID + 2);

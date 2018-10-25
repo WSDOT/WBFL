@@ -99,7 +99,7 @@ void CTestTemporaryPierItemCollection::Test()
    TRY_TEST(tempPiers->get_Item(3,NULL),E_POINTER);
    TRY_TEST(tempPiers->get_Item(3,&tempPierItem),S_OK);
 
-   long id;
+   IDType id;
    tempPierItem->get_ID(&id);
    TRY_TEST(id,14);
 
@@ -234,13 +234,13 @@ STDMETHODIMP CTestTemporaryPierItemCollection::OnTemporaryPierItemChanged(ITempo
    return S_OK;
 }
 
-STDMETHODIMP CTestTemporaryPierItemCollection::OnTemporaryPierItemAdded(long idx)
+STDMETHODIMP CTestTemporaryPierItemCollection::OnTemporaryPierItemAdded(IDType id)
 {
    Pass();
    return S_OK;
 }
 
-STDMETHODIMP CTestTemporaryPierItemCollection::OnTemporaryPierItemRemoved(long id)
+STDMETHODIMP CTestTemporaryPierItemCollection::OnTemporaryPierItemRemoved(IDType id)
 {
    Pass();
    return S_OK;

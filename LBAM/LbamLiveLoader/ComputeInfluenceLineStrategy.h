@@ -30,7 +30,7 @@
 class iComputeInfluenceLineStrategy
 {
 public:
-   virtual HRESULT ComputeInfluenceLine(long poiID, BSTR stage, ForceEffectType effect, 
+   virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)=0;
 
    // returns -1.0 if sign convention flips results for left/right faces, 1.0 if not
@@ -48,7 +48,7 @@ public:
       ATLASSERT(response!=NULL);
    }
 
-   virtual HRESULT ComputeInfluenceLine(long poiID, BSTR stage, ForceEffectType effect, 
+   virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       return m_Response->ComputeForceInfluenceLine(poiID, stage, effect, m_Orientation, lftInflLine, rgtInflLine);
@@ -76,7 +76,7 @@ public:
       ATLASSERT(response!=NULL);
    }
 
-   virtual HRESULT ComputeInfluenceLine(long poiID, BSTR stage, ForceEffectType effect, 
+   virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       return m_Response->ComputeDeflectionInfluenceLine(poiID, stage, effect, lftInflLine, rgtInflLine);
@@ -101,7 +101,7 @@ public:
       ATLASSERT(response!=NULL);
    }
 
-   virtual HRESULT ComputeInfluenceLine(long poiID, BSTR stage, ForceEffectType effect, 
+   virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       // no left/right for reactions
@@ -128,7 +128,7 @@ public:
       ATLASSERT(response!=NULL);
    }
 
-   virtual HRESULT ComputeInfluenceLine(long poiID, BSTR stage, ForceEffectType effect, 
+   virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       // no left/right for support defl's

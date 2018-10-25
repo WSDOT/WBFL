@@ -78,7 +78,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bamOptimumLoadCombination(Int32 id, 
+   bamOptimumLoadCombination(IDType id, 
                              bamOptimumType type = otMaximum,
                              bamOptimumVariable variable = ovMz );
 
@@ -93,11 +93,11 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual bamSectionResults CombineSectionResults( Int32 poiId );
-   virtual bamSectionStress CombineSectionStress( Int32 poiId, Int32 spIdx );
+   virtual bamSectionResults CombineSectionResults( PoiIDType poiId );
+   virtual bamSectionStress CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx );
 
    //------------------------------------------------------------------------
-   virtual bamReaction CombineReactions( Int32 supportId );
+   virtual bamReaction CombineReactions( SupportIDType supportId );
 
    //------------------------------------------------------------------------
    virtual bamLoadCombination* Clone() const;
@@ -109,7 +109,7 @@ public:
    Float64 GetMultiplier() const;
 
    //------------------------------------------------------------------------
-   void AddLoading(Int32 loadingId,Float64 minFactor,Float64 maxFactor);
+   void AddLoading(IDType loadingId,Float64 minFactor,Float64 maxFactor);
 
    //------------------------------------------------------------------------
    void SetOptimizationType(bamOptimumType type);
@@ -126,7 +126,7 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   virtual void GetLoadings(std::vector<Int32>& loadingIds) const;
+   virtual void GetLoadings(std::vector<IDType>& loadingIds) const;
 
    // GROUP: INQUIRY
 
@@ -155,8 +155,8 @@ private:
 
 #pragma warning( disable : 4251 )
    typedef std::pair<Float64,Float64> LoadFactors;
-   typedef std::pair<Int32,LoadFactors> LoadEntry;
-   typedef std::map<Int32,LoadFactors> LoadEntryContainer;
+   typedef std::pair<IDType,LoadFactors> LoadEntry;
+   typedef std::map<IDType,LoadFactors> LoadEntryContainer;
    typedef LoadEntryContainer::iterator LoadEntryIterator;
    typedef LoadEntryContainer::const_iterator ConstLoadEntryIterator;
    LoadEntryContainer m_LoadEntries;

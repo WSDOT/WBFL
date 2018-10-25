@@ -135,16 +135,16 @@ public:
 
    //------------------------------------------------------------------------
    // Get number of zones of lr along the girder
-   virtual Uint32 GetNumZones() const;
+   virtual ZoneIndexType GetNumZones() const;
 
    //------------------------------------------------------------------------
    // Get a specific zone
-   virtual bmfLrZone* GetZone(Uint32 zoneNum) const;
+   virtual bmfLrZone* GetZone(ZoneIndexType zoneNum) const;
 
    //------------------------------------------------------------------------
    // Add a zone. Returns the total number of zones after the add.
    // Takes ownership of pointer, so pointer must be on heap
-   virtual Uint32 AddZone(bmfLrZone* pZone);
+   virtual ZoneIndexType AddZone(bmfLrZone* pZone);
 
    // GROUP: INQUIRY
 

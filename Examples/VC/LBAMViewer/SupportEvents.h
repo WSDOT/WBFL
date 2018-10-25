@@ -52,8 +52,8 @@ public:
    CLBAMViewerDoc* m_pDoc;
 
 private:
-   void EditSupport(long jntID);
-   void DeleteSupport(long jntID);
+   void EditSupport(IDType jntID);
+   void DeleteSupport(IDType jntID);
 };
 
 /////////////////////////////////////////////////////////////////////////////

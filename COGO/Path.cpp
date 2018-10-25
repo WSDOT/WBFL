@@ -150,13 +150,13 @@ STDMETHODIMP CPath::putref_Item(CollectionIndexType idx, IPathElement *pVal)
    PathType& at = m_coll[idx];
    CComVariant& var = at.second; // Variant holding IUnknown to PathElement
 
-   Unadvise(idx); // Unadvise from the current element
+   UnadviseElement(idx); // Unadvise from the current element
 
    var = pVal; // Associate new PathElement with this variant
 
    // Advise
    DWORD dwCookie;
-   Advise(pVal,&dwCookie);
+   AdviseElement(pVal,&dwCookie);
 
    // Update the cookie
    at.first = dwCookie;
@@ -193,7 +193,7 @@ STDMETHODIMP CPath::Insert(CollectionIndexType idx, IPathElement* element)
       return E_INVALIDARG;
 
    DWORD dwCookie;
-   Advise(element,&dwCookie);
+   AdviseElement(element,&dwCookie);
    m_coll.insert(m_coll.begin() + idx,std::make_pair(dwCookie,CComVariant(element)) );
    Fire_OnPathChanged(this);
    return S_OK;
@@ -255,7 +255,7 @@ STDMETHODIMP CPath::Remove(VARIANT varKey)
       if ( index < 0 || (long)m_coll.size() <= index )
          return E_INVALIDARG;
 
-      Unadvise(index);
+      UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
    }
    else if ( varKey.vt == VT_UNKNOWN || varKey.vt == VT_DISPATCH )
@@ -292,7 +292,7 @@ STDMETHODIMP CPath::Remove(VARIANT varKey)
               spline  != NULL && ls.IsEqualObject(dispVal)                 ||
               hc      != NULL && hc.IsEqualObject(dispVal) )
          {
-            Unadvise(iter - m_coll.begin());
+            UnadviseElement(iter - m_coll.begin());
             m_coll.erase(iter);
             bRemoved = true;
             break; // exit the loop
@@ -742,7 +742,7 @@ STDMETHODIMP CPath::putref_PointFactory(IPoint2dFactory* factory)
 
 //////////////////////////////////////////////////////////
 // Helpers
-void CPath::Advise(IPathElement* element,DWORD* pdwCookie)
+void CPath::AdviseElement(IPathElement* element,DWORD* pdwCookie)
 {
    HRESULT hr = AtlAdvise(element,GetUnknown(),IID_IPathElementEvents,pdwCookie);
    if ( FAILED(hr) )
@@ -755,22 +755,22 @@ void CPath::Advise(IPathElement* element,DWORD* pdwCookie)
    InternalRelease(); // Break circular reference
 }
 
-void CPath::Unadvise(long idx)
+void CPath::UnadviseElement(CollectionIndexType idx)
 {
    //
    // Disconnection from connection CrossSection
    //
-   std::pair<CogoElementKey,CComVariant>& p = m_coll[idx];
+   std::pair<IDType,CComVariant>& p = m_coll[idx];
    if ( p.first == 0 )
       return;
 
-   CogoElementKey dwCookie = p.first;
+   DWORD dwCookie = (DWORD)p.first;
    CComVariant& var = p.second;
 
    InternalAddRef(); // Counteract InternalRelease() in Advise
 
    // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IPathElementEvents, (DWORD)dwCookie );
+   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IPathElementEvents, dwCookie );
    ATLASSERT(SUCCEEDED(hr));
 
    p.first = 0;
@@ -778,9 +778,9 @@ void CPath::Unadvise(long idx)
 
 void CPath::UnadviseAll()
 {
-   for ( long i = 0; i < (long)m_coll.size(); i++ )
+   for ( CollectionIndexType i = 0; i < m_coll.size(); i++ )
    {
-      Unadvise(i);
+      UnadviseElement(i);
    }
 }
 
@@ -2701,9 +2701,9 @@ STDMETHODIMP CPath::Save(IStructuredSave2* pSave)
    pSave->BeginUnit(CComBSTR("Path"),1.0);
    
    pSave->BeginUnit(CComBSTR("PathElements"),1.0);
-   long count = m_coll.size();
+   CollectionIndexType count = m_coll.size();
    pSave->put_Property(CComBSTR("Count"),CComVariant(count));
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       pSave->put_Property(CComBSTR("PathElement"),m_coll[i].second);
    }

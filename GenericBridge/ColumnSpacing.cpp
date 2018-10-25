@@ -385,7 +385,7 @@ STDMETHODIMP CColumnSpacing::Remove(ColumnIndexType columnIdx,ColumnIndexType nR
    ColumnIndexType nRemainingColumns = nCurrColumns - nRemove;
 
    // Determine the index of the last spacing to be removed
-   long nLastSpaceIdx = nSpaceIdx + nRemove;
+   SpacingIndexType nLastSpaceIdx = nSpaceIdx + nRemove;
 
    // remove columns
    m_SpacingData.m_Spacing.erase(m_SpacingData.m_Spacing.begin()+nSpaceIdx,m_SpacingData.m_Spacing.begin()+nLastSpaceIdx);
@@ -420,7 +420,7 @@ STDMETHODIMP CColumnSpacing::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("UniformSpacing"),CComVariant(m_UniformSpacing));
 
    pSave->BeginUnit(CComBSTR("Columns"),1.0);
-   long nColumns = m_Columns.size();
+   ColumnIndexType nColumns = m_Columns.size();
    pSave->put_Property(CComBSTR("NumColumns"),CComVariant(nColumns));
    std::vector<CComPtr<IColumn> >::iterator iter;
    for ( iter = m_Columns.begin(); iter != m_Columns.end(); iter++ )
@@ -434,7 +434,7 @@ STDMETHODIMP CColumnSpacing::Save(IStructuredSave2* pSave)
    pSave->BeginUnit(CComBSTR("SpacingData"),1.0);
    pSave->put_Property(CComBSTR("LeftOverhang"), CComVariant(m_SpacingData.m_Overhang[0]));
    pSave->put_Property(CComBSTR("RightOverhang"),CComVariant(m_SpacingData.m_Overhang[1]));
-   long nSpaces = m_SpacingData.m_Spacing.size();
+   SpacingIndexType nSpaces = m_SpacingData.m_Spacing.size();
    pSave->put_Property(CComBSTR("NumSpaces"),CComVariant(nSpaces));
 
    std::vector<Float64>::iterator it;
@@ -467,10 +467,10 @@ STDMETHODIMP CColumnSpacing::Load(IStructuredLoad2* pLoad)
    m_UniformSpacing = var.dblVal;
 
    pLoad->BeginUnit(CComBSTR("Columns"));
-   long nColumns;
+   ColumnIndexType nColumns;
    pLoad->get_Property(CComBSTR("NumColumns"),&var);
    nColumns = var.lVal;
-   for ( long i = 0; i < nColumns; i++ )
+   for ( ColumnIndexType i = 0; i < nColumns; i++ )
    {
       CComObject<CColumn>* pColumn;
       CComObject<CColumn>::CreateInstance(&pColumn);
@@ -492,10 +492,10 @@ STDMETHODIMP CColumnSpacing::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("RightOverhang"),&var);
    m_SpacingData.m_Overhang[1] = var.dblVal;
 
-   long nSpaces;
+   SpacingIndexType nSpaces;
    pLoad->get_Property(CComBSTR("NumSpaces"),&var);
    nSpaces = var.lVal;
-   for ( long j = 0; j < nSpaces; j++ )
+   for ( SpacingIndexType j = 0; j < nSpaces; j++ )
    {
       pLoad->get_Property(CComBSTR("Space"),&var);
       Float64 space = var.dblVal;

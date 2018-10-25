@@ -133,7 +133,7 @@ void CTestProfile::Test1()
    //
    // Test Count
    //
-   long count;
+   CollectionIndexType count;
    TRY_TEST(profile->get_Count(NULL),E_POINTER);
    TRY_TEST(profile->get_Count(&count),S_OK);
    TRY_TEST(count,3);
@@ -374,9 +374,9 @@ void CTestProfile::Test2()
 
    // shift the crown point offset to +5
    CComPtr<ICrossSection> cs;
-   long count;
+   CollectionIndexType count;
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -395,7 +395,7 @@ void CTestProfile::Test2()
    TestElevation(profile, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -427,7 +427,7 @@ void CTestProfile::Test2()
 
    // shift the crown point offset to +5, keep the slopes the same
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -510,9 +510,9 @@ void CTestProfile::Test3()
 
    // shift the crown point offset to +5
    CComPtr<ICrossSection> cs;
-   long count;
+   CollectionIndexType count;
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -531,7 +531,7 @@ void CTestProfile::Test3()
    TestElevation(profile, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -563,7 +563,7 @@ void CTestProfile::Test3()
 
    // shift the crown point offset to +5, keep the slopes the same
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -660,9 +660,9 @@ void CTestProfile::Test4()
 
    // shift the crown point offset to +5
    CComPtr<ICrossSection> cs;
-   long count;
+   CollectionIndexType count;
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -681,7 +681,7 @@ void CTestProfile::Test4()
    TestElevation(profile, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -713,7 +713,7 @@ void CTestProfile::Test4()
 
    // shift the crown point offset to +5, keep the slopes the same
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -808,9 +808,9 @@ void CTestProfile::Test5()
 
    // shift the crown point offset to +5
    CComPtr<ICrossSection> cs;
-   long count;
+   CollectionIndexType count;
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -829,7 +829,7 @@ void CTestProfile::Test5()
    TestElevation(profile, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -861,7 +861,7 @@ void CTestProfile::Test5()
 
    // shift the crown point offset to +5, keep the slopes the same
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -963,9 +963,9 @@ void CTestProfile::Test6()
 
    // shift the crown point offset to +5
    CComPtr<ICrossSection> cs;
-   long count;
+   CollectionIndexType count;
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -984,7 +984,7 @@ void CTestProfile::Test6()
    TestElevation(profile, 15,ElevJ);
 
    // shift the crown point offset back to -5 and reverse all of the crown slopes
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);
@@ -1016,7 +1016,7 @@ void CTestProfile::Test6()
 
    // shift the crown point offset to +5, keep the slopes the same
    sections->get_Count(&count);
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       cs.Release();
       sections->get_Item(i,&cs);

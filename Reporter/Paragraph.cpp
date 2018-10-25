@@ -132,7 +132,7 @@ rptParagraph& rptParagraph::operator<< (Int8 value)
 
 rptParagraph& rptParagraph::operator<< (Int16 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int32)value ) );
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -140,7 +140,15 @@ rptParagraph& rptParagraph::operator<< (Int16 value)
 
 rptParagraph& rptParagraph::operator<< (Int32 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int32)value ) );
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
+   p_rc->SetParent( this );
+   m_ContentVec.push_back( p_rc );
+   return *this;
+}
+
+rptParagraph& rptParagraph::operator<< (Int64 value)
+{
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -148,7 +156,7 @@ rptParagraph& rptParagraph::operator<< (Int32 value)
 
 rptParagraph& rptParagraph::operator<< (Uint8 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc(new rptRcUnsigned( (Uint32)value ));
+   boost::shared_ptr<rptReportContent> p_rc(new rptRcUnsigned( (Uint64)value ));
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -156,7 +164,7 @@ rptParagraph& rptParagraph::operator<< (Uint8 value)
 
 rptParagraph& rptParagraph::operator<< (Uint16 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint32)value ) );
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -164,7 +172,15 @@ rptParagraph& rptParagraph::operator<< (Uint16 value)
 
 rptParagraph& rptParagraph::operator<< (Uint32 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint32)value ) );
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
+   p_rc->SetParent( this );
+   m_ContentVec.push_back( p_rc );
+   return *this;
+}
+
+rptParagraph& rptParagraph::operator<< (Uint64 value)
+{
+   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;

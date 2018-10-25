@@ -31,7 +31,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bamLoad::bamLoad(Int32 elementId,
+bamLoad::bamLoad(IDType elementId,
                bamElementType type,
                bamLoadDirection direction)
 {
@@ -90,7 +90,7 @@ bool bamLoad::IsEqual(const bamLoad& /*other*/) const
    return true;
 }
 
-Int32 bamLoad::GetElementId() const
+IDType bamLoad::GetElementId() const
 {
    return m_ElementId;
 }
@@ -126,7 +126,7 @@ bool bamLoad::TestMe(dbgLog& rlog)
 
 ///////////////////////////////////////////////////////////////////////
 
-bamConcForceY::bamConcForceY(Int32 elementId,
+bamConcForceY::bamConcForceY(IDType elementId,
                        bamElementType type,
                        Float64 location,
                        Float64 p,
@@ -189,7 +189,7 @@ bool bamConcForceY::TestMe(dbgLog& rlog)
 
 ///////////////////////////////////////////////////////////////////////
 
-bamUnifForceY::bamUnifForceY(Int32 elementId,
+bamUnifForceY::bamUnifForceY(IDType elementId,
                        bamElementType type,
                        Float64 start,
                        Float64 end,
@@ -259,7 +259,7 @@ bool bamUnifForceY::TestMe(dbgLog& rlog)
 
 ///////////////////////////////////////////////////////////////////////
 
-bamConcMomentZ::bamConcMomentZ(Int32 elementId,
+bamConcMomentZ::bamConcMomentZ(IDType elementId,
                                bamElementType type,
                                Float64 location,
                                Float64 m,

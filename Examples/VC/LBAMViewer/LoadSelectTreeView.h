@@ -15,7 +15,7 @@ class iDataSetBuilder;
 class iDataSetBuilderBuilder 
 {
 public:
-   virtual iDataSetBuilder* Create(long PoiID)=0;
+   virtual iDataSetBuilder* Create(PoiIDType PoiID)=0;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,8 @@ private:
    // graph curves when selected
    void ClearTreeItems();
 
-   unsigned long m_LastIndex;
-   typedef std::map<long, iDataSetBuilder*> TreeItemContainer;
+   IndexType m_LastIndex;
+   typedef std::map<IndexType, iDataSetBuilder*> TreeItemContainer;
    typedef TreeItemContainer::iterator   TreeItemIterator;
    typedef TreeItemContainer::value_type TreeItemValueType;
    TreeItemContainer m_TreeItems;

@@ -45,7 +45,7 @@ public:
             events->OnPOIChanged(me,type);
 		}
 	}
-	VOID Fire_OnPOIRenamed(LONG oldID, LONG newID)
+	VOID Fire_OnPOIRenamed(PoiIDType oldID, PoiIDType newID)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -84,7 +84,7 @@ public:
             events->OnPOIsChanged(poi,change);
 		}
 	}
-	VOID Fire_OnPOIsRenamed(LONG oldID, LONG newID)
+	VOID Fire_OnPOIsRenamed(PoiIDType oldID, PoiIDType newID)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

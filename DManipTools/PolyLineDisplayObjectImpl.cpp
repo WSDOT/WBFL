@@ -116,12 +116,12 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::put_Width(long width)
 }
 
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(long index, IPoint2d** pVal)
+STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(CollectionIndexType index, IPoint2d** pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
    (*pVal) = 0;
-   if ( index < 0 || (long)m_Container.size() <= index )
+   if ( index < 0 || m_Container.size() <= index )
       return E_FAIL;
 
    ContainerItem ppt = m_Container[index];
@@ -129,7 +129,7 @@ STDMETHODIMP CPolyLineDisplayObjectImpl::GetPoint(long index, IPoint2d** pVal)
 
 }
 
-STDMETHODIMP_(long) CPolyLineDisplayObjectImpl::get_NumberOfPoints()
+STDMETHODIMP_(CollectionIndexType) CPolyLineDisplayObjectImpl::get_NumberOfPoints()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -143,11 +143,11 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::AddPoint(IPoint2d *pVal)
    m_Container.push_back(ContainerItem(pVal));
 }
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(long index, IPoint2d *pVal)
+STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(CollectionIndexType index, IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if (index<0 || index>(long)m_Container.size()+1)
+   if (index<0 || index>m_Container.size()+1)
       return E_INVALIDARG;
 
    if (index==m_Container.size())
@@ -163,11 +163,11 @@ STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(long index, IPoint2d *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CPolyLineDisplayObjectImpl::RemovePoint(long index)
+STDMETHODIMP CPolyLineDisplayObjectImpl::RemovePoint(CollectionIndexType index)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   if (index<0 || index>(long)m_Container.size()-1)
+   if (index<0 || index>m_Container.size()-1)
       return E_INVALIDARG;
 
       ContainerIterator it = m_Container.begin();
@@ -241,8 +241,8 @@ void CPolyLineDisplayObjectImpl::ClearDisplayObjects()
    if (m_NumDos>0)
    {
       // first go through all connectable display objects and disconnect sockets
-      long cnt =  m_pDisplayObject->GetDisplayObjectCount();
-      for (long ic=0; ic<cnt; ic++)
+      CollectionIndexType cnt =  m_pDisplayObject->GetDisplayObjectCount();
+      for (CollectionIndexType ic=0; ic<cnt; ic++)
       {
          CComPtr<iDisplayObject> pdo;
          m_pDisplayObject->GetDisplayObject(ic,atByIndex,&pdo);

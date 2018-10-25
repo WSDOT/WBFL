@@ -16,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ReactionInfluenceDataSetBuilder::ReactionInfluenceDataSetBuilder(long supportId, IInfluenceLineResponse* response):
+ReactionInfluenceDataSetBuilder::ReactionInfluenceDataSetBuilder(SupportIDType supportId, IInfluenceLineResponse* response):
 m_SupportId(supportId),
 m_pInfluenceLineResponse(response)
 {
@@ -46,7 +46,7 @@ void ReactionInfluenceDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArr
    entry->put_DoDrawLine(TRUE);
 
    CString str;
-   str.Format("React Infl %d",m_SupportId);
+   str.Format(_T("React Infl %d"),m_SupportId);
    CComBSTR btmp(str);
    entry->put_Name(btmp);
 
@@ -81,7 +81,7 @@ void ReactionInfluenceDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArr
 
    if (hr==LBAMA_E_SUPPORT_NOT_EXIST)
    {
-      ::AfxMessageBox("Temporary Support Does not Exist in this stage");
+      ::AfxMessageBox(_T("Temporary Support Does not Exist in this stage"));
       throw hr;
    }
 

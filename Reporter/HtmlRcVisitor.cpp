@@ -222,7 +222,8 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
          pTable->GetCellSpans(rowno, colno, &row_span, &col_span);
 
          // only output cell information if not a skipped spanning cell
-         if ( 0 < row_span && 0 <= col_span )
+         //if ( 0 < row_span && 0 <= col_span )
+         if ( row_span != SKIP_CELL && col_span != SKIP_CELL )
          {
             rptParagraph& rpar = (*pTable)(rowno,colno);
 

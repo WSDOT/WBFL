@@ -119,7 +119,7 @@ STDMETHODIMP CPlane3d::ThroughLineEx(ILine2d *pLine, IPoint3d *pPnt)
       pPnt->get_Y(&y);
       CreatePoint(x,y,NULL,&pnt2d);
       VARIANT_BOOL bIsPointOnLine;
-      util->DoesLineContainPoint(pLine,pnt2d,&bIsPointOnLine);
+      util->DoesLineContainPoint(pLine,pnt2d,1e-6,&bIsPointOnLine);
       if ( bIsPointOnLine == VARIANT_TRUE )
          return Error(IDS_E_POINTONLINE,IID_IPlane3d,GEOMETRY_E_POINTONLINE);
    }

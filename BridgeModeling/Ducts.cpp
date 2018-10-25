@@ -104,24 +104,24 @@ void bmfDucts::RemoveAllDucts()
    m_Ducts.clear();
 }
 
-long bmfDucts::GetDuctCount() const
+DuctIndexType bmfDucts::GetDuctCount() const
 {
    return m_Ducts.size();
 }
 
-const bmfDuct& bmfDucts::GetDuct(long index) const
+const bmfDuct& bmfDucts::GetDuct(DuctIndexType index) const
 {
-   CHECK( 0 <= index && index < (long)m_Ducts.size() );
+   CHECK( 0 <= index && index < m_Ducts.size() );
    return m_Ducts[index];
 }
 
-bmfDuct& bmfDucts::GetDuct(long index)
+bmfDuct& bmfDucts::GetDuct(DuctIndexType index)
 {
-   CHECK( 0 <= index && index < (long)m_Ducts.size() );
+   CHECK( 0 <= index && index < m_Ducts.size() );
    return m_Ducts[index];
 }
 
-gpPoint2d bmfDucts::GetDuctLocation(long index,Float64 z) const
+gpPoint2d bmfDucts::GetDuctLocation(DuctIndexType index,Float64 z) const
 {
    const bmfDuct& duct = GetDuct(index);
    Float64 length = m_pGirder->GetLength();
@@ -132,15 +132,15 @@ gpPoint2d bmfDucts::GetDuctLocation(long index,Float64 z) const
    return gpPoint2d(x,y);
 }
 
-Float64 bmfDucts::GetDuctDiameter(long index) const
+Float64 bmfDucts::GetDuctDiameter(DuctIndexType index) const
 {
    const bmfDuct& duct = GetDuct(index);
    return duct.GetDuctDiameter();
 }
 
-Uint32 bmfDucts::GetMaxStrands() const
+StrandIndexType bmfDucts::GetMaxStrands() const
 {
-   Uint32 max = 0;
+   StrandIndexType max = 0;
    std::vector<bmfDuct>::const_iterator iter;
    for ( iter = m_Ducts.begin(); iter != m_Ducts.end(); iter++ )
    {
@@ -156,7 +156,7 @@ void bmfDucts::SetGirder(bmfGirder* pGirder)
    m_pGirder = pGirder;
 }
 
-void bmfDucts::SetNumStrands(Uint32 ductIndex,Uint32 nStrands)
+void bmfDucts::SetNumStrands(DuctIndexType ductIndex,StrandIndexType nStrands)
 {
    CHECK( 0 <= ductIndex && ductIndex < m_Ducts.size() );
 
@@ -164,7 +164,7 @@ void bmfDucts::SetNumStrands(Uint32 ductIndex,Uint32 nStrands)
    duct.SetNumStrands(nStrands);
 }
 
-Uint32 bmfDucts::GetNumStrands(Uint32 ductIndex) const
+StrandIndexType bmfDucts::GetNumStrands(DuctIndexType ductIndex) const
 {
    CHECK( 0 <= ductIndex && ductIndex < m_Ducts.size() );
 
@@ -172,9 +172,9 @@ Uint32 bmfDucts::GetNumStrands(Uint32 ductIndex) const
    return duct.GetNumStrands();
 }
 
-Uint32 bmfDucts::GetNumStrands() const
+StrandIndexType bmfDucts::GetNumStrands() const
 {
-   Uint32 nStrands = 0;
+   StrandIndexType nStrands = 0;
    std::vector<bmfDuct>::const_iterator iter;
    for ( iter = m_Ducts.begin(); iter != m_Ducts.end(); iter++ )
    {
@@ -189,12 +189,12 @@ gpPoint2d bmfDucts::GetPTCG(Float64 x) const
 {
    gpPoint2d YA(0,0);
    Float64 length = m_pGirder->GetLength();
-   Uint32 nStrands = 0;
+   StrandIndexType nStrands = 0;
    std::vector<bmfDuct>::const_iterator iter;
    for ( iter = m_Ducts.begin(); iter != m_Ducts.end(); iter++ )
    {
       const bmfDuct& duct = *iter;
-      Uint32 ns = duct.GetNumStrands();
+      StrandIndexType ns = duct.GetNumStrands();
       gpPoint2d Y;
       duct.GetTendonCG(x,length,&Y.X(),&Y.Y());
 
@@ -212,14 +212,14 @@ gpPoint2d bmfDucts::GetPTCG(Float64 x) const
    return YA;
 }
 
-Float64 bmfDucts::GetDuctSlope(Float64 x,Uint32 ductIndex) const
+Float64 bmfDucts::GetDuctSlope(Float64 x,DuctIndexType ductIndex) const
 {
    const bmfDuct& duct = GetDuct(ductIndex);
    Float64 length = m_pGirder->GetLength();
    return duct.GetDuctSlope(x,length);
 }
 
-void bmfDucts::GetDuctControlPoints(Uint32 ductIndex,gpPoint2d* pe1,gpPoint2d* pe2) const
+void bmfDucts::GetDuctControlPoints(DuctIndexType ductIndex,gpPoint2d* pe1,gpPoint2d* pe2) const
 {
    const bmfDuct& duct = GetDuct(ductIndex);
 

@@ -54,7 +54,7 @@ public:
    // Method:      LoadCombination
    // Description: Explicit c'tor
    // Return:      N/A
-   bamLoadCombination(Int32 id);
+   bamLoadCombination(IDType id);
    bamLoadCombination(const bamLoadCombination& rOther);
 
    // Method:      ~LoadCombination
@@ -68,12 +68,12 @@ public:
    // Method:      GetID
    // Description: 
    // Return:      Returns the loading id
-   Int32 GetID() const;
-   void SetID(Int32 id);
+   IDType GetID() const;
+   void SetID(IDType id);
 
-   virtual bamSectionResults CombineSectionResults( Int32 poiId ) = 0;
-   virtual bamSectionStress CombineSectionStress( Int32 poiId, Int32 spIdx ) = 0;
-   virtual bamReaction CombineReactions( Int32 supportId ) = 0;
+   virtual bamSectionResults CombineSectionResults( PoiIDType poiId ) = 0;
+   virtual bamSectionStress CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx ) = 0;
+   virtual bamReaction CombineReactions( SupportIDType supportId ) = 0;
 
    void SetBridgeModel(bamBridgeModel* pModel);
    bamBridgeModel& GetBridgeModel() const;
@@ -81,7 +81,7 @@ public:
    virtual bamLoadCombination* Clone() const = 0;
 
    // ACCESS
-   virtual void GetLoadings(std::vector<Int32>& loadingIds) const = 0;
+   virtual void GetLoadings(std::vector<IDType>& loadingIds) const = 0;
 
    // INQUIRY
 
@@ -96,7 +96,7 @@ protected:
 
 private:
    // DATA MEMBERS
-   Int32 m_ID;
+   IDType m_ID;
    bamBridgeModel* m_pBridgeModel;
 
    // LIFECYCLE

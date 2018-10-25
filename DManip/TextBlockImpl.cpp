@@ -96,7 +96,7 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
 //   pDC->FillRgn(&rgn,&brush);
 //   // End of debug code
 
-   long lx,ly;
+   LONG lx,ly;
    GetPositionInLogicalSpace(&lx,&ly);
 
 
@@ -114,7 +114,7 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
    COLORREF bgColor = pDC->SetBkColor(m_BgColor);
    COLORREF fgColor = pDC->SetTextColor(m_FgColor);
 
-   for ( int i = 0; i < strArray.GetSize(); i++ )
+   for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
       CSize size = pDC->GetOutputTextExtent(str);
@@ -147,14 +147,14 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    CComPtr<iCoordinateMap> pMapper;
    pDM->GetCoordinateMap(&pMapper);
 
-   long lx,ly;
+   LONG lx,ly;
    GetPositionInLogicalSpace(&lx,&ly);
 
    CStringArray strArray;
    GetTextLines(strArray);
    
    CSize extents(0,0);
-   for ( int i = 0; i < strArray.GetSize(); i++ )
+   for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
       CSize size = pMapper->GetTextExtent(m_Font,str);
@@ -171,7 +171,7 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    }
 
    // Find the edges of the text block
-   long top, left, right, bottom;
+   LONG top, left, right, bottom;
    CPoint crotate; // center of rotation
    if ( (m_TextAlign&TA_BOTTOM)==TA_BOTTOM || 
         (m_TextAlign&TA_BASELINE)==TA_BASELINE)
@@ -212,7 +212,7 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    CPoint tr(box.right,box.top);
    CPoint bl(box.left,box.bottom);
    CPoint br(box.right,box.bottom);
-   long langle = GetAngle(); // in 10ths of a degree
+   LONG langle = GetAngle(); // in 10ths of a degree
    Float64 angle = langle*M_PI/1800.;
 
    Float64 c = cos(angle);
@@ -279,13 +279,13 @@ STDMETHODIMP_(UINT) CTextBlockImpl::GetTextAlign()
    return m_TextAlign;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetAngle(long angle)
+STDMETHODIMP_(void) CTextBlockImpl::SetAngle(LONG angle)
 {
    m_Font.lfEscapement  = angle;
    m_Font.lfOrientation = angle;
 }
 
-STDMETHODIMP_(long) CTextBlockImpl::GetAngle()
+STDMETHODIMP_(LONG) CTextBlockImpl::GetAngle()
 {
    return m_Font.lfEscapement;
 }
@@ -395,7 +395,7 @@ void CTextBlockImpl::GetPositionInWorldSpace(Float64* wx,Float64* wy)
    pMapper->MPtoWP(m_Position,wx,wy);
 }
 
-void CTextBlockImpl::GetPositionInLogicalSpace(long* lx,long* ly)
+void CTextBlockImpl::GetPositionInLogicalSpace(LONG* lx,LONG* ly)
 {
    CComPtr<iDisplayList> pDL;
    GetDisplayList(&pDL);
@@ -431,9 +431,9 @@ void CTextBlockImpl::CreateFont(CFont& font,CDC* pDC)
    angle *= 1800/M_PI; // convert to angle degrees (in 10ths of a degree)
 
    LOGFONT lfFont = m_Font;
-   long text_angle = lfFont.lfEscapement;
+   LONG text_angle = lfFont.lfEscapement;
 
-   text_angle += (long)angle;
+   text_angle += (LONG)angle;
 
    text_angle = (900 < text_angle  && text_angle  < 2700 ) ? text_angle-1800  : text_angle;
 

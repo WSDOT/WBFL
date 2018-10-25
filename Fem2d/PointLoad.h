@@ -52,7 +52,7 @@ public:
 	{
 	}
 
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, long ID, long memberID=-1, Float64 location=0.0, Float64 Fx=0.0, Float64 Fy=0.0, Float64 Mz=0.0, Fem2dLoadOrientation orientation=lotMember);
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Float64 location=0.0, Float64 Fx=0.0, Float64 Fy=0.0, Float64 Mz=0.0, Fem2dLoadOrientation orientation=lotMember);
 
    // IStructuredStorage - sort of
    STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);

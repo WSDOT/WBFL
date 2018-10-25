@@ -93,7 +93,7 @@ public:
    // Default constructor
    // NOTE: this class must have a valid matRebar* in order to work properly.
    bmfLrRowPattern(const matRebar* pRebar, gpPoint2d anchor, Orientation orient,
-                   Uint32 numBars, Float64 spacing);
+                   CollectionIndexType numBars, Float64 spacing);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -108,15 +108,15 @@ public:
 
    //------------------------------------------------------------------------
    // Get number of bars in pattern
-   virtual Uint32 GetNumBars() const;
+   virtual CollectionIndexType GetNumBars() const;
 
    //------------------------------------------------------------------------
    // Get the ith bar location. zero-based
-   virtual gpPoint2d GetBarLocation(Uint32 barNum) const;
+   virtual gpPoint2d GetBarLocation(CollectionIndexType barNum) const;
 
    //------------------------------------------------------------------------
    // Set number of bars in pattern
-   void SetNumBars(Uint32 numBars);
+   void SetNumBars(CollectionIndexType numBars);
 
    //------------------------------------------------------------------------
    // Get pattern anchor point
@@ -157,7 +157,7 @@ private:
    // GROUP: DATA MEMBERS
    Float64     m_BarSpacing;
    gpPoint2d   m_AnchorPoint;
-   Uint32      m_NumBars;
+   CollectionIndexType      m_NumBars;
    Orientation m_Orientation;
 
 

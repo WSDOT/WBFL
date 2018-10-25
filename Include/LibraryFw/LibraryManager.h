@@ -111,7 +111,7 @@ public:
    // Add a new library to the list. The library manager takes ownership of 
    // the pointer and will delete it. Hence, you must create the library on
    // the heap.
-   Uint32 AddLibrary(libILibrary* pLibrary);
+   CollectionIndexType AddLibrary(libILibrary* pLibrary);
 
    // GROUP: ACCESS
    //------------------------------------------------------------------------
@@ -124,16 +124,16 @@ public:
 
    //------------------------------------------------------------------------
    // Get the identifier name of a library based on its index
-   std::_tstring GetLibraryIdName(Uint32 index) const;
+   std::_tstring GetLibraryIdName(CollectionIndexType index) const;
 
    //------------------------------------------------------------------------
    // Get the display name of a library based on its index
-   std::_tstring GetLibraryDisplayName(Uint32 index) const;
+   std::_tstring GetLibraryDisplayName(CollectionIndexType index) const;
 
    //------------------------------------------------------------------------
    // Get a pointer to a library based on its index
-   libILibrary* GetLibrary(Uint32 index);
-   const libILibrary* GetLibrary(Uint32 index) const;
+   libILibrary* GetLibrary(CollectionIndexType index);
+   const libILibrary* GetLibrary(CollectionIndexType index) const;
 
    //------------------------------------------------------------------------
    // Get a pointer to a library based on its display name
@@ -171,9 +171,9 @@ public:
    // GROUP: INQUIRY
    //------------------------------------------------------------------------
    // Get number of libraries in manager
-   Uint32 GetLibraryCount() const;
+   CollectionIndexType GetLibraryCount() const;
 
-   bool IsDepreciated(Uint32 idx) const;
+   bool IsDepreciated(CollectionIndexType idx) const;
 
    sysTime GetTimeStamp() const;
 

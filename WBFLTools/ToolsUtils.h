@@ -107,6 +107,9 @@ inline void GetTypeNameFromVariant(VARIANT& rvar, _bstr_t* name)
    case VT_UI4:
       *name = _bstr_t("VT_UI4");
       break;
+   case VT_UI8:
+      *name = _bstr_t("VT_UI8");
+      break;
    case VT_INT:
       *name = _bstr_t("VT_INT");
       break;

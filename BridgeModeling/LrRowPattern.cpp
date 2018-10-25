@@ -47,7 +47,7 @@ m_Orientation(HCenter)
 }
 
 bmfLrRowPattern::bmfLrRowPattern(const matRebar* pRebar, gpPoint2d anchor, Orientation orient,
-                                 Uint32 numBars, Float64 spacing):
+                                 CollectionIndexType numBars, Float64 spacing):
 bmfLrPattern(pRebar),
 m_BarSpacing(0.0),
 m_NumBars(0),
@@ -68,12 +68,12 @@ bmfLrPattern* bmfLrRowPattern::CreateClone() const
    return new bmfLrRowPattern( *this );
 }
 
-Uint32 bmfLrRowPattern::GetNumBars() const
+CollectionIndexType bmfLrRowPattern::GetNumBars() const
 {
    return m_NumBars;
 }
 
-gpPoint2d bmfLrRowPattern::GetBarLocation(Uint32 barNum) const
+gpPoint2d bmfLrRowPattern::GetBarLocation(CollectionIndexType barNum) const
 {
    ASSERTVALID;
    PRECONDITION(barNum<m_NumBars);
@@ -119,7 +119,7 @@ gpPoint2d bmfLrRowPattern::GetBarLocation(Uint32 barNum) const
    return point;
 }
 
-void bmfLrRowPattern::SetNumBars(Uint32 numBars)
+void bmfLrRowPattern::SetNumBars(CollectionIndexType numBars)
 {
    m_NumBars = numBars;
 }

@@ -77,11 +77,11 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   rptRcUnsigned(Uint32 MyVal=0);
+   rptRcUnsigned(Uint64 MyVal=0);
 
    //------------------------------------------------------------------------
    // Constructor with HyperLink
-   rptRcUnsigned(Uint32 MyVal, const std::_tstring& HyperTarget);
+   rptRcUnsigned(Uint64 MyVal, const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -110,15 +110,15 @@ public:
 
    //------------------------------------------------------------------------
    // stream the value only into to paragraph stream
-   rptRcUnsigned* Sv(Uint32 Myint);
+   rptRcUnsigned* Sv(Uint64 Myint);
 
    //------------------------------------------------------------------------
    // Get the integer value
-   Uint32 GetVal();
+   Uint64 GetVal();
 
    //------------------------------------------------------------------------
    // Set the integer value
-   void SetVal(Uint32 MyInt);
+   void SetVal(Uint64 MyInt);
 
    //------------------------------------------------------------------------
    // Get the number of characters that the int is to fit in. The purpose
@@ -148,7 +148,7 @@ private:
    // GROUP: DATA MEMBERS
    //------------------------------------------------------------------------
    // The unsigned value
-   Uint32 m_TheUnsigned;
+   Uint64 m_TheUnsigned;
    //------------------------------------------------------------------------
    // Field width for value
    Int32 m_Width;

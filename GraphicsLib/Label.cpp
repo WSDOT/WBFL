@@ -41,7 +41,7 @@ CLASS
 // free function to parse a string with std::endl's in it and return them into a vector of strings
 std::vector<std::_tstring> ParseLabel(const std::_tstring& label);
 std::_tstring UnParseLabel(const std::vector<std::_tstring> labels);
-void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt);
+void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, LONG pointSize, SIZE* psiz, LONG* pline_hgt);
 
 //======================== LIFECYCLE  =======================================
 grLabel::grLabel()
@@ -80,7 +80,7 @@ grLabel& grLabel::operator= (const grLabel& rOther)
 
 void grLabel::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   int siz = m_Labels.size();
+   IndexType siz = m_Labels.size();
    if (siz>0)
    {
       HFONT new_font = grGraphTool::CreateRotatedFont(hDC, 0, m_PointSize);
@@ -97,9 +97,9 @@ void grLabel::Draw(HDC hDC, const grlibPointMapper& mapper) const
       mapper.WPtoDP(wbox.Left(), wbox.Top(), &dvx, &dvy);
       dvy += tm.tmAscent;
 
-      for (int i=0; i<siz; i++)
+      for (IndexType i=0; i<siz; i++)
       {
-         ::TextOut( hDC, dvx, dvy, m_Labels[i].c_str(), m_Labels[i].size());
+         ::TextOut( hDC, dvx, dvy, m_Labels[i].c_str(), (int)m_Labels[i].size());
          dvy += line_hgt;
       }
 
@@ -234,7 +234,7 @@ gpSize2d grLabel::GetSize(HDC hDC, const grlibPointMapper& mapper) const
    return tmp;
 }
 
-Uint16 grLabel::GetNumLines() const
+IndexType grLabel::GetNumLines() const
 {
    return m_Labels.size();
 }
@@ -310,9 +310,11 @@ void grLabel::Dump(dbgDumpContext& os) const
    os << "Dump for grLabel" << endl;
    os << "  m_HookPoint :"<< endl; 
    m_HookPoint.Dump(os);
-   int siz = m_Labels.size();
-   for (int i=0; i<siz; i++)
+   IndexType siz = m_Labels.size();
+   for (IndexType i=0; i<siz; i++)
+   {
       os << " m_Labels["<<i<<"] = "<<m_Labels[i]<<endl;
+   }
    os << "  m_HorizPos  = " <<m_HorizPos << endl; 
    os << "  m_VertPos   = " <<m_VertPos << endl;  
    os << "  m_PointSize = " <<m_PointSize<<endl;
@@ -340,8 +342,8 @@ std::_tstring UnParseLabel(const std::vector<std::_tstring> labels)
    // loop through vector and rebuild original label
    std::_tstring tmp;
    std::_tostringstream os;
-   int siz = labels.size();
-   for (int i=0; i<siz; i++)
+   IndexType siz = labels.size();
+   for (IndexType i=0; i<siz; i++)
    {
       os << labels[i];
       if (i!=siz-1)
@@ -350,7 +352,7 @@ std::_tstring UnParseLabel(const std::vector<std::_tstring> labels)
    return os.str();
 }
 
-void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt)
+void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, LONG pointSize, SIZE* psiz, LONG* pline_hgt)
 {
    HFONT new_font = grGraphTool::CreateRotatedFont(hDC, 0, pointSize);
    HGDIOBJ old_font = ::SelectObject(hDC, new_font);
@@ -360,11 +362,11 @@ void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 poin
    *pline_hgt = 0;
 
    // max width
-   int siz = labels.size();
-   for (int i=0; i<siz; i++)
+   IndexType siz = labels.size();
+   for (IndexType i=0; i<siz; i++)
    {
       SIZE tsiz;
-      ::GetTextExtentPoint32(hDC,labels[i].c_str(), labels[i].size(), &tsiz);
+      ::GetTextExtentPoint32(hDC,labels[i].c_str(), (int)labels[i].size(), &tsiz);
 
       psiz->cx = max(psiz->cx, tsiz.cx);
    }
@@ -375,7 +377,7 @@ void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 poin
       TEXTMETRIC tm;
       GetTextMetrics(hDC, &tm);
       *pline_hgt = tm.tmHeight + tm.tmExternalLeading;
-      psiz->cy = *pline_hgt * siz;
+      psiz->cy = *pline_hgt * (LONG)siz;
    }
 
    ::SelectObject(hDC,old_font);

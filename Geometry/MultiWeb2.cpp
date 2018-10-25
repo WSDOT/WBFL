@@ -732,7 +732,7 @@ STDMETHODIMP CMultiWeb2::get_WebLocation(WebIndexType webIdx,Float64* location)
    Float64 W;
    get_TopFlangeWidth(&W);
 
-   long nExteriorWebs, nInteriorWebs;
+   WebIndexType nExteriorWebs, nInteriorWebs;
    nInteriorWebs = m_WebCount - 2;
    if ( nInteriorWebs < 0 )
       nInteriorWebs = 0;
@@ -788,7 +788,7 @@ STDMETHODIMP CMultiWeb2::get_TopFlangeWidth(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   long nExteriorWebs, nInteriorWebs;
+   WebIndexType nExteriorWebs, nInteriorWebs;
    nInteriorWebs = m_WebCount - 2;
    if ( nInteriorWebs < 0 )
       nInteriorWebs = 0;
@@ -801,7 +801,7 @@ STDMETHODIMP CMultiWeb2::get_TopFlangeWidth(Float64 *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CMultiWeb2::get_AvgWebWidth(CollectionIndexType webIdx,Float64 *pVal)
+STDMETHODIMP CMultiWeb2::get_AvgWebWidth(WebIndexType webIdx,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 

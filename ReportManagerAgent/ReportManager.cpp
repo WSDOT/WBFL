@@ -94,7 +94,7 @@ void CReportManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReport
    m_RptMgr.AddReportBuilder(pReportBuilder);
 }
 
-Uint32 CReportManager::GetReportBuilderCount(bool bIncludeHidden) const
+CollectionIndexType CReportManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    return m_RptMgr.GetReportBuilderCount(bIncludeHidden);
 }
@@ -164,7 +164,7 @@ boost::shared_ptr<CReportBrowser> CReportManager::CreateReportBrowser(HWND hwndP
    return m_RptMgr.CreateReportBrowser(hwndParent,pRptSpec);
 }
 
-Int16 CReportManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
+INT_PTR CReportManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
    return m_RptMgr.DisplayReportDialog(flags,pRptSpec);
 }

@@ -70,8 +70,8 @@ public:
    // Description: Performs a live load analysis for the given live load
    // Return:      None
    virtual void Solve(bamLiveLoad& ll) = 0;
-   virtual void Solve(bamLiveLoad& ll,Int32 poi) = 0;
-   virtual void SolveStress(bamLiveLoad& ll,Int32 poi,Int32 spid) = 0;
+   virtual void Solve(bamLiveLoad& ll,PoiIDType poi) = 0;
+   virtual void SolveStress(bamLiveLoad& ll,PoiIDType poi,CollectionIndexType spid) = 0;
 
    // Method:      SetBridgeModel
    // Description: Associates the bridge model with this solver.

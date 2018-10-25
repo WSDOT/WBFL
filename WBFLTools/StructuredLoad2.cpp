@@ -417,6 +417,33 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             pVal->ulVal = ul;
             pVal->vt = VT_UI4;
          }
+         else if (_bstr_t("VT_UI8") == bsvt)
+         {
+            // variant_t's don't deal with unsigned longs well
+            unsigned long long ull;
+            try
+            {
+               long lul = (long)vval;
+               if (lul<0)
+                  throw;
+               else
+                  ull = lul;
+            }
+            catch(...) 
+            {
+               // variant couldn't parse, so try brute force
+               _bstr_t bval(vval);
+               TCHAR* sv = (TCHAR*)bval; 
+               //TCHAR** ev = &sv + bval.length();
+               unsigned long long uval = _tcstoul(sv,NULL,10);
+               if (uval==0 && *sv != _T('0') )
+                  THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
+
+               ull = uval;
+            } 
+            pVal->ullVal = ull;
+            pVal->vt = VT_UI8;
+         }
          else if (_bstr_t("VT_BOOL") == bsvt)
          {
             pVal->boolVal = (bool)vval?VARIANT_TRUE:VARIANT_FALSE;

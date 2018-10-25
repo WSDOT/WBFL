@@ -41,7 +41,7 @@ public:
 private:
    HCURSOR m_hOriginalCursor;
    HCURSOR m_hOverCursor;
-   UINT m_TimerID;
+   UINT_PTR m_TimerID;
    UINT m_uElapse;
    CRgn m_Rgn;
    HWND m_hwnd;
@@ -54,7 +54,7 @@ private:
    void SetOverCursor();
    void ResetCursor();
 
-   static VOID CALLBACK TimerProc(HWND hwnd,UINT uMsg,UINT idEvent,DWORD dwTime);
+   static VOID CALLBACK TimerProc(HWND hwnd,UINT uMsg,UINT_PTR idEvent,DWORD dwTime);
    static BOOL HitTest(CPoint point);
    static void VerifyCursor();
    static void Done();

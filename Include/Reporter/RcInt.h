@@ -59,6 +59,7 @@ LOG
    rdp : 04.11.1997 : Created file
 *****************************************************************************/
 
+
 class REPORTERCLASS rptRcInt : public rptReportContent
 {
 public:
@@ -66,11 +67,11 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   rptRcInt(Int32 MyVal=0);
+   rptRcInt(Int64 MyVal=0);
 
    //------------------------------------------------------------------------
    // Constructor with HyperLink
-   rptRcInt(Int32 MyVal, const std::_tstring& HyperTarget);
+   rptRcInt(Int64 MyVal, const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -97,15 +98,15 @@ public:
 
    //------------------------------------------------------------------------
    // stream the value only into to paragraph stream
-   rptRcInt* Sv(Int32 Myint);
+   rptRcInt* Sv(Int64 Myint);
 
    //------------------------------------------------------------------------
    // Get the integer value
-   Int32 GetVal();
+   Int64 GetVal();
 
    //------------------------------------------------------------------------
    // Set the integer value
-   void SetVal(Int32 MyInt);
+   void SetVal(Int64 MyInt);
    //
    //------------------------------------------------------------------------
    // Get the number of characters that the int is to fit in. The purpose
@@ -139,7 +140,7 @@ private:
    // GROUP: DATA MEMBERS
    //------------------------------------------------------------------------
    // The integer value
-   Int32 m_TheInt;
+   Int64 m_TheInt;
    //------------------------------------------------------------------------
    // The width
    Int32 m_Width;

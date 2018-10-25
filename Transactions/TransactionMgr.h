@@ -92,10 +92,10 @@ public:
 	STDMETHOD(Clear)();
 	STDMETHOD(ClearUndoHistory)();
 	STDMETHOD(ClearTransactionHistory)();
-   STDMETHOD(PeekTransaction)(/*[in]*/ long idx,/*[out,retval]*/ ITransaction* *txn);
-   STDMETHOD(PeekUndo)(/*[in]*/ long idx,/*[out,retval]*/ ITransaction* *txn);
-	STDMETHOD(get_UndoCount)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(get_TransactionCount)(/*[out, retval]*/ long *pVal);
+   STDMETHOD(PeekTransaction)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ ITransaction* *txn);
+   STDMETHOD(PeekUndo)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ ITransaction* *txn);
+	STDMETHOD(get_UndoCount)(/*[out, retval]*/ CollectionIndexType *pVal);
+	STDMETHOD(get_TransactionCount)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(get_RepeatName)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(get_RedoName)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(get_UndoName)(/*[out, retval]*/ BSTR *pVal);

@@ -119,7 +119,25 @@ STDMETHODIMP CStrSave::put_Property( LPCTSTR name, VARIANT newVal)
          break;
 
       case VT_UI4:
-         m_StrSave.Property( name, newVal.ulVal );
+         if ( newVal.ulVal == INVALID_INDEX )
+            m_StrSave.Property( name, -1 );
+         else
+            m_StrSave.Property( name, (Uint32)newVal.ulVal );
+         break;
+
+      case VT_I8:
+         m_StrSave.Property( name, newVal.llVal );
+         break;
+
+      case VT_UI8:
+         if ( newVal.ullVal == INVALID_INDEX )
+            m_StrSave.Property(name,-1);
+         else
+            m_StrSave.Property( name, (Uint64)newVal.ullVal );
+         break;
+
+      case VT_UINT:
+         m_StrSave.Property( name, (UINT)newVal.uintVal );
          break;
 
       case VT_BOOL:

@@ -63,9 +63,17 @@ extern CComModule _Module;
 #include "..\..\LBAMUtils.h"
 
 #if defined _DEBUG
-#include "BogusCombinationContext/Debug/BogusCombinationContext.h"
+#if defined _WIN64
+#include "BogusCombinationContext/x64/Debug/BogusCombinationContext.h"
 #else
-#include "BogusCombinationContext/Release/BogusCombinationContext.h"
+#include "BogusCombinationContext/Win32/Debug/BogusCombinationContext.h"
+#endif
+#else
+#if defined _WIN64
+#include "BogusCombinationContext/x64/Release/BogusCombinationContext.h"
+#else
+#include "BogusCombinationContext/Win32/Release/BogusCombinationContext.h"
+#endif
 #endif
 
 //{{AFX_INSERT_LOCATION}}

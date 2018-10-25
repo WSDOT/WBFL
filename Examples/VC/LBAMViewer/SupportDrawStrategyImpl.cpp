@@ -27,7 +27,7 @@ END_INTERFACE_MAP()
 DELEGATE_CUSTOM_INTERFACE(CSupportDrawStrategyImpl,DrawPointStrategy);
 DELEGATE_CUSTOM_INTERFACE(CSupportDrawStrategyImpl,Strategy);
 
-STDMETHODIMP_(void) CSupportDrawStrategyImpl::XStrategy::SetSupport(ISupport* support, long supportID)
+STDMETHODIMP_(void) CSupportDrawStrategyImpl::XStrategy::SetSupport(ISupport* support, IDType supportID)
 {
    METHOD_PROLOGUE(CSupportDrawStrategyImpl,Strategy)
 

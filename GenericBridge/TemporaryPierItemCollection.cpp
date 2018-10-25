@@ -150,7 +150,7 @@ HRESULT CTemporaryPierItemCollection::OnBeforeRemove( StoredType* pVal )
    return S_OK;
 }
 
-HRESULT CTemporaryPierItemCollection::OnAfterRemove(long id)
+HRESULT CTemporaryPierItemCollection::OnAfterRemove(IDType id)
 {
    Fire_OnTemporaryPierItemRemoved(id);
    return S_OK;
@@ -159,7 +159,7 @@ HRESULT CTemporaryPierItemCollection::OnAfterRemove(long id)
 /////////////////////////////////////////////////////////////////////
 // ITemporaryPierItemCollection
 
-STDMETHODIMP CTemporaryPierItemCollection::Add(long id,Float64 location,BSTR bstrReleaseStage)
+STDMETHODIMP CTemporaryPierItemCollection::Add(IDType id,Float64 location,BSTR bstrReleaseStage)
 {
    CComPtr<IStageCollection> stages;
    m_pBridge->get_Stages(&stages);
@@ -179,18 +179,23 @@ STDMETHODIMP CTemporaryPierItemCollection::Add(long id,Float64 location,BSTR bst
 
 STDMETHODIMP CTemporaryPierItemCollection::RemoveByIndex(CollectionIndexType index)
 {
-   long id;
+   IDType id;
    return PersistentTPICollImpl::RemoveByIndex(index,&id);
 }
 
-STDMETHODIMP CTemporaryPierItemCollection::RemoveByID(long id)
+STDMETHODIMP CTemporaryPierItemCollection::RemoveByID(IDType id)
 {
-   return PersistentTPICollImpl::RemoveByID(id);
+   return PersistentTPICollImpl::RemoveByKey(id);
 }
 
 STDMETHODIMP CTemporaryPierItemCollection::Clear()
 {
    return PersistentTPICollImpl::Clear();
+}
+
+STDMETHODIMP CTemporaryPierItemCollection::Find(IDType id,ITemporaryPierItem** pVal)
+{
+   return PersistentTPICollImpl::Find(id,pVal);
 }
 
 STDMETHODIMP CTemporaryPierItemCollection::get__EnumTemporaryPierItems(IEnumTemporaryPierItems* *enumTemporaryPierItems)

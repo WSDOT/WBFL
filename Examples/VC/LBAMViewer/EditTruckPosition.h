@@ -23,11 +23,11 @@ public:
 	double	m_TruckPosition;
 	double	m_VariableAxleSpacing;
 	BOOL	m_ApplyImpact;
-	int		m_PivotAxleIndex;
+	AxleIndexType m_PivotAxleIndex;
 	//}}AFX_DATA
 
    void Init( double position, TruckDirectionType direction, 
-              bool is_var, double varspcg, double minVarspcg, double maxVarspcg, VARIANT_BOOL applyImpact,long nAxles,long pivotAxleIndex)
+              bool is_var, double varspcg, double minVarspcg, double maxVarspcg, VARIANT_BOOL applyImpact,AxleIndexType nAxles,AxleIndexType pivotAxleIndex)
    {
       m_nAxles              = nAxles;
       m_PivotAxleIndex      = pivotAxleIndex;
@@ -44,7 +44,7 @@ public:
    TruckDirectionType m_Direction;
    double             m_MinVarspcg;
    double             m_MaxVarspcg;
-   long               m_nAxles;
+   AxleIndexType      m_nAxles;
 
 // Overrides
 	// ClassWizard generated virtual function overrides

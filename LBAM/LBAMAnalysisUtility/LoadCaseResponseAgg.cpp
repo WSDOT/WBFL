@@ -41,12 +41,12 @@ static char THIS_FILE[] = __FILE__;
 // comparision functions
 static bool MaxCmp(Float64 val1, Float64 val2)
 {
-   return val2>val1;
+   return val2>val1 && !IsEqual(val1,val2);
 }
 
 static bool MinCmp(Float64 val1, Float64 val2)
 {
-   return val2<val1;
+   return val2<val1 && !IsEqual(val1,val2);
 }
 
 
@@ -350,7 +350,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR loadCase, ILongArray* PO
 }
 
 // Make sure maximum value is in res1
-void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,long engineID)
+void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,CollectionIndexType engineIdx)
 {
    CHRException hr;
 
@@ -422,11 +422,11 @@ void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res
       Float64 xl, xr, yl, yr, zl, zr;
       if (ldo)
       {
-         m_ControllingEngine[ipoi].Left = engineID;
+         m_ControllingEngine[ipoi].Left = engineIdx;
 
          if (rdo)
          {
-            m_ControllingEngine[ipoi].Right = engineID;
+            m_ControllingEngine[ipoi].Right = engineIdx;
 
             // replace res1's right and left
             sr2->GetResult(&xl,&yl,&zl,&xr,&yr,&zr);
@@ -444,7 +444,7 @@ void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res
       else if (rdo)
       {
          // right only
-         m_ControllingEngine[ipoi].Right = engineID;
+         m_ControllingEngine[ipoi].Right = engineIdx;
 
          sr2->GetResult(&xl,&yl,&zl,&xr,&yr,&zr);
          sr1->put_XRight(xl);

@@ -112,14 +112,14 @@ grGraphXY& grGraphXY::operator= (const grGraphXY& rOther)
 }
 
 //======================== OPERATIONS =======================================
-Uint32 grGraphXY::CreateDataSeries()
+IndexType grGraphXY::CreateDataSeries()
 {
    return CreateDataSeries(_T(""),PS_SOLID,1,RGB(0,0,0));
 }
 
-Uint32 grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor)
+IndexType grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor)
 {
-   Uint32 cookie = m_GraphDataMap.size();
+   IndexType cookie = m_GraphDataMap.size();
 
    GraphData gd;
    gd.Label = lpszLabel;
@@ -130,7 +130,7 @@ Uint32 grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, 
    return cookie;
 }
 
-void grGraphXY::AddPoint(Uint32 cookie,const gpPoint2d& rPoint)
+void grGraphXY::AddPoint(IndexType cookie,const gpPoint2d& rPoint)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -141,7 +141,7 @@ void grGraphXY::AddPoint(Uint32 cookie,const gpPoint2d& rPoint)
    }
 }
 
-void grGraphXY::AddPoints(Uint32 cookie,const std::vector<gpPoint2d>& vPoints)
+void grGraphXY::AddPoints(IndexType cookie,const std::vector<gpPoint2d>& vPoints)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -152,7 +152,7 @@ void grGraphXY::AddPoints(Uint32 cookie,const std::vector<gpPoint2d>& vPoints)
    }
 }
 
-void grGraphXY::ClearPoints(Uint32 cookie)
+void grGraphXY::ClearPoints(IndexType cookie)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -169,7 +169,7 @@ void grGraphXY::ClearData()
 }
 
 
-Int32 grGraphXY::GetPointCount(Uint32 cookie) const
+IndexType grGraphXY::GetPointCount(IndexType cookie) const
 {
    GraphDataMap::const_iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -181,7 +181,7 @@ Int32 grGraphXY::GetPointCount(Uint32 cookie) const
    return 0;
 }
 
-void grGraphXY::RemoveDataSeries(Uint32 cookie)
+void grGraphXY::RemoveDataSeries(IndexType cookie)
 {
    m_GraphDataMap.erase( cookie );
    SetBroken();
@@ -209,14 +209,14 @@ void grGraphXY::Draw(HDC hDC)
 void grGraphXY::DrawBackground(HDC hDC)
 {
    // fill the client area with a color
-   Int32 dw, dh, dcx, dcy;
+   LONG dw, dh, dcx, dcy;
    m_PointMapper.GetDeviceExt(&dw, &dh);
    m_PointMapper.GetDeviceOrg(&dcx, &dcy);
    RECT c_rect;
-   c_rect.left = dcx-(Int32)ceil(dw/2.);
-   c_rect.top  = dcy-(Int32)ceil(dh/2.);
-   c_rect.right = dcx+(Int32)ceil(dw/2.);
-   c_rect.bottom = dcy+(Int32)ceil(dh/2.);
+   c_rect.left = dcx-(LONG)ceil(dw/2.);
+   c_rect.top  = dcy-(LONG)ceil(dh/2.);
+   c_rect.right = dcx+(LONG)ceil(dw/2.);
+   c_rect.bottom = dcy+(LONG)ceil(dh/2.);
 
    // logic taken here from CDC::FillSolidRect
    COLORREF bg = ::SetBkColor(hDC, m_ClientAreaColor);
@@ -231,16 +231,16 @@ void grGraphXY::DrawBackground(HDC hDC)
       DrawLegend( hDC );
 
    // draw the title and subtitle
-   Int32 tx;
+   LONG tx;
    ::SetTextAlign(hDC, TA_CENTER | TA_BASELINE);
    tx = (m_OutputRect.left+m_OutputRect.right)/2;
 
    grGraphTool::TextOutRotated(hDC, tx, m_TitleLoc, 0,
-                      m_GraphTitle.c_str(), m_GraphTitle.size(),
+                      m_GraphTitle.c_str(), (LONG)m_GraphTitle.size(),
                       m_GraphTitleSize);
 
    grGraphTool::TextOutRotated(hDC, tx, m_SubtitleLoc, 0,
-                      m_GraphSubtitle.c_str(), m_GraphSubtitle.size(),
+                      m_GraphSubtitle.c_str(), (LONG)m_GraphSubtitle.size(),
                       m_GraphSubtitleSize);
 }
 
@@ -261,12 +261,12 @@ void grGraphXY::SetTitle(const std::_tstring& title)
    m_GraphTitle = title.c_str();
 }
 
-Int32 grGraphXY::GetTitleSize()
+LONG grGraphXY::GetTitleSize()
 {
    return m_GraphTitleSize;
 }
 
-void grGraphXY::SetTitleSize(Int32 size)
+void grGraphXY::SetTitleSize(LONG size)
 {
    m_GraphTitleSize = size;
 }
@@ -281,34 +281,34 @@ void grGraphXY::SetSubtitle(const std::_tstring& subtitle)
     m_GraphSubtitle = subtitle.c_str();
 }
 
-Int32 grGraphXY::GetSubtitleSize()
+LONG grGraphXY::GetSubtitleSize()
 {
    return m_GraphSubtitleSize;
 }
 
-void grGraphXY::SetSubtitleSize(Int32 size)
+void grGraphXY::SetSubtitleSize(LONG size)
 {
    m_GraphSubtitleSize = size;
 }
 
-void grGraphXY::SetAxisTitleSize(Int32 size)
+void grGraphXY::SetAxisTitleSize(LONG size)
 {
    m_XAxis.SetTitleFontSize(size);
    m_YAxis.SetTitleFontSize(size);
 }
 
-Int32 grGraphXY::GetAxisTitleSize()
+LONG grGraphXY::GetAxisTitleSize()
 {
    return m_XAxis.GetTitleFontSize();
 }
 
-void grGraphXY::SetAxisSubtitleSize(Int32 size)
+void grGraphXY::SetAxisSubtitleSize(LONG size)
 {
    m_XAxis.SetSubtitleFontSize(size);
    m_YAxis.SetSubtitleFontSize(size);
 }
 
-Int32 grGraphXY::GetAxisSubtitleSize()
+LONG grGraphXY::GetAxisSubtitleSize()
 {
    return m_XAxis.GetSubtitleFontSize();
 }
@@ -374,22 +374,22 @@ std::_tstring grGraphXY::GetYAxisSubtitle()
    return m_YAxis.GetSubtitleText();
 }
 
-Int32 grGraphXY::GetXAxisNumberOfMinorTics()
+LONG grGraphXY::GetXAxisNumberOfMinorTics()
 {
    return m_XAxis.GetNumberOfMinorTics();
 }
 
-void grGraphXY::SetXAxisNumberOfMinorTics(Int32 num)
+void grGraphXY::SetXAxisNumberOfMinorTics(LONG num)
 {
    m_XAxis.SetNumberOfMinorTics(num);
 }
 
-Int32 grGraphXY::GetYAxisNumberOfMinorTics()
+LONG grGraphXY::GetYAxisNumberOfMinorTics()
 {
    return m_YAxis.GetNumberOfMinorTics();
 }
 
-void grGraphXY::SetYAxisNumberOfMinorTics(Int32 num)
+void grGraphXY::SetYAxisNumberOfMinorTics(LONG num)
 {
    m_YAxis.SetNumberOfMinorTics(num);
 }
@@ -414,7 +414,7 @@ const sysINumericFormatToolBase* grGraphXY::GetYAxisValueFormat() const
    return  m_YAxis.GetValueFormat();
 }
 
-void grGraphXY::SetPenStyle(Uint32 cookie, int nPenStyle, int nWidth, COLORREF crColor)
+void grGraphXY::SetPenStyle(IndexType cookie, int nPenStyle, int nWidth, COLORREF crColor)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -433,7 +433,7 @@ void grGraphXY::SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor)
    m_GridPenData.Width = nWidth;
 }
 
-void grGraphXY::SetDataLabel(Uint32 cookie,LPCTSTR lpszLabel)
+void grGraphXY::SetDataLabel(IndexType cookie,LPCTSTR lpszLabel)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -549,10 +549,10 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    // if there is not any data points, then make the world 1x1
    if ( m_GraphDataMap.size() == 0 )
    {
-      m_WorldRect.Left()   = 0;
-      m_WorldRect.Right()  = 1;
-      m_WorldRect.Top()    = 0;
-      m_WorldRect.Bottom() = 1;
+      m_WorldRect.Left()   = 0.0;
+      m_WorldRect.Right()  = 1.0;
+      m_WorldRect.Top()    = 0.0;
+      m_WorldRect.Bottom() = 1.0;
    }
 
    // make sure zero is in Y range if requested
@@ -591,7 +591,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       client_right = m_WorldRect.Right();
       CHECK(client_left!=client_right);
       Float64 wid = client_right-client_left;
-      Int32 numtic = GetXAxisNumberOfMajorTics() - 1;
+      LONG numtic = GetXAxisNumberOfMajorTics() - 1;
       if (0 < numtic)
       {
          inc = wid/numtic;
@@ -615,7 +615,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       client_bottom = m_WorldRect.Bottom();
       CHECK(client_top!=client_bottom);
       Float64 wid = client_bottom-client_top;
-      Int32 numtic = GetYAxisNumberOfMajorTics() - 1;
+      LONG numtic = GetYAxisNumberOfMajorTics() - 1;
       if (0 < numtic)
       {
          inc = wid/numtic;
@@ -638,13 +638,13 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    SIZE size;
    ::GetTextExtentPoint32(hDC,_T("AA"),2,&size);
 
-   Int32 title_size = labs(size.cy);
+   LONG title_size = labs(size.cy);
 
    HFONT subtitle_font = grGraphTool::CreateRotatedFont(hDC, 0, m_GraphSubtitleSize);
    ::SelectObject(hDC, subtitle_font);
    ::GetTextExtentPoint32(hDC,_T("AA"),2,&size);
 
-   Int32 subtitle_size = labs(size.cy);
+   LONG subtitle_size = labs(size.cy);
 
    // clean up fonts
    ::SelectObject(hDC, old_font);
@@ -655,14 +655,14 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    m_TitleLoc    = m_OutputRect.top + 3*title_size/2;
    m_SubtitleLoc = m_TitleLoc       + 3*subtitle_size/2;
 
-   Int32 out_height = abs(m_OutputRect.top-m_OutputRect.bottom);
-   Int32 out_width  = abs(m_OutputRect.left-m_OutputRect.right);
+   LONG out_height = abs(m_OutputRect.top-m_OutputRect.bottom);
+   LONG out_width  = abs(m_OutputRect.left-m_OutputRect.right);
 
    // determine device client rect size by subtracting out space for axis' and borders
-   Int32 bottom_border = m_XAxis.GetThickness(hDC) + out_height/100;
-   Int32 left_border   = m_YAxis.GetThickness(hDC) + out_height/100;
-   Int32 top_border    = m_SubtitleLoc + subtitle_size/2 - m_OutputRect.top;
-   Int32 right_border  = (Int32)(m_RightBorderFraction * out_width);
+   LONG bottom_border = m_XAxis.GetThickness(hDC) + out_height/100;
+   LONG left_border   = m_YAxis.GetThickness(hDC) + out_height/100;
+   LONG top_border    = m_SubtitleLoc + subtitle_size/2 - m_OutputRect.top;
+   LONG right_border  = (LONG)(m_RightBorderFraction * out_width);
 
    // Setup legend area
    int nLegendItems = UpdateLegendMetrics(hDC);
@@ -785,7 +785,7 @@ void grGraphXY::DrawAxes(HDC hDC)
       // draw a grid along major x and y tic lines
 
       // x axis grid
-      Int32   ldx, ldy, rdx, rdy;
+      LONG   ldx, ldy, rdx, rdy;
       Float64 curr_val = left_val + x_increment;
       while (curr_val <= right_val)
       {
@@ -816,7 +816,7 @@ void grGraphXY::DrawAxes(HDC hDC)
       // don't draw grid, but do draw a horizontal line along Y=0
       if ( (top_val>0 && bot_val<0) || (top_val<0 && bot_val>0))
       {
-         Int32   ldx, ldy, rdx, rdy;
+         LONG   ldx, ldy, rdx, rdy;
 
          m_PointMapper.WPtoDP(left_val,  0., &ldx, &ldy);
          m_PointMapper.WPtoDP(right_val, 0., &rdx, &rdy);
@@ -878,10 +878,10 @@ void grGraphXY::DrawLegend(HDC hDC)
       ::DeleteObject(pen);
 
       SIZE text_size;
-      ::GetTextExtentPoint32(hDC,gd.Label.c_str(),gd.Label.length(),&text_size);
+      ::GetTextExtentPoint32(hDC,gd.Label.c_str(),(LONG)gd.Label.length(),&text_size);
 
       grGraphTool::TextOutRotated(hDC, x+2*m_LegendBorder+m_LegendSymbolLength, y + text_size.cy/2, 0,
-                                 gd.Label.c_str(),gd.Label.length(),
+                                 gd.Label.c_str(),(LONG)gd.Label.length(),
                                  m_LegendFontSize);
 
       col++;
@@ -909,22 +909,22 @@ void grGraphXY::SetFixed()
 
 //======================== ACCESS     =======================================
 
-Int32 grGraphXY::GetXAxisNumberOfMajorTics()
+LONG grGraphXY::GetXAxisNumberOfMajorTics()
 {
    return m_XAxis.GetNumberOfMajorTics();
 }
 
-void grGraphXY::SetXAxisNumberOfMajorTics(Int32 num)
+void grGraphXY::SetXAxisNumberOfMajorTics(LONG num)
 {
    m_XAxis.SetNumberOfMajorTics(num);
 }
 
-Int32 grGraphXY::GetYAxisNumberOfMajorTics()
+LONG grGraphXY::GetYAxisNumberOfMajorTics()
 {
    return m_YAxis.GetNumberOfMajorTics();
 }
 
-void grGraphXY::SetYAxisNumberOfMajorTics(Int32 num)
+void grGraphXY::SetYAxisNumberOfMajorTics(LONG num)
 {
    m_YAxis.SetNumberOfMajorTics(num);
 }
@@ -981,7 +981,7 @@ int grGraphXY::UpdateLegendMetrics(HDC hDC)
          nItems++;
 
          SIZE item_size;
-         ::GetTextExtentPoint32(hDC,gd.Label.c_str(),gd.Label.length(),&item_size);
+         ::GetTextExtentPoint32(hDC,gd.Label.c_str(),(LONG)gd.Label.length(),&item_size);
 
          cx = max(cx,item_size.cx);
          cy = max(cy,item_size.cy);

@@ -9,7 +9,7 @@ public:
    // build report for reactions - uses CEdit returns
    virtual void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                     CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                                    std::ostream& pos)=0;
+                                    std::_tostream& pos)=0;
 };
 
 #endif

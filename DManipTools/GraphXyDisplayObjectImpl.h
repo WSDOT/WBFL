@@ -70,13 +70,13 @@ public:
    STDMETHOD_(void,put_GraphBounds)(IRect2d* newVal);
    STDMETHOD_(void,get_Title)(BSTR *pVal);
    STDMETHOD_(void,put_Title)(BSTR newVal);
-   STDMETHOD_(void,DataCount)(long *pVal);
+   STDMETHOD_(void,DataCount)(CollectionIndexType *pVal);
    STDMETHOD_(void,AddData)(iGraphXyDataProvider* dataSet);
-   STDMETHOD_(HRESULT,GetData)(long idx, iGraphXyDataProvider** dataSet);
+   STDMETHOD_(HRESULT,GetData)(CollectionIndexType idx, iGraphXyDataProvider** dataSet);
    STDMETHOD_(HRESULT,Commit)();
    STDMETHOD_(HRESULT,ClearData)();
-   STDMETHOD_(void,get_NumberOfMajorIncrements)(long *pVal);
-   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(long newVal);
+   STDMETHOD_(void,get_NumberOfMajorIncrements)(CollectionIndexType *pVal);
+   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(CollectionIndexType newVal);
    STDMETHOD_(void,get_DoDisplayAxisValues)(BOOL *pVal);
    STDMETHOD_(void,put_DoDisplayAxisValues)(BOOL newVal);
    STDMETHOD_(void,get_DoDisplayGrid)(BOOL *pVal);
@@ -92,7 +92,7 @@ public:
    CComBSTR         m_Title;
    BOOL     m_DoDisplayAxisValues;
    BOOL     m_DoDisplayGrid;
-   long             m_NumberOfMajorIncrements;
+   CollectionIndexType m_NumberOfMajorIncrements;
 
    typedef CComPtr<iGraphXyDataProvider> DataSetHolder;
    typedef std::vector< DataSetHolder >  DataSetCollection;

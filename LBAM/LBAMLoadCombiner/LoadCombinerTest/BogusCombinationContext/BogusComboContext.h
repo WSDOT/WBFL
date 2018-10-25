@@ -54,7 +54,7 @@ public:
    {
    };
 
-   long GetPoiID()
+   PoiIDType GetPoiID()
    {
       return m_PoiId;
    }
@@ -412,7 +412,7 @@ private:
    CComPtr<ILoadCombination> m_LoadCombo2;
    CComPtr<ILoadCombination> m_LoadCombo3;
 
-   typedef std::map<long, ComboBenchMark> BenchMarkMap;
+   typedef std::map<PoiIDType, ComboBenchMark> BenchMarkMap;
    typedef BenchMarkMap::iterator         BenchMarkIterator;
 
    BenchMarkMap m_BenchMarks;

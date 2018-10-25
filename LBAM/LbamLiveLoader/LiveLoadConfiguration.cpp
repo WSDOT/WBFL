@@ -85,7 +85,7 @@ STDMETHODIMP CLiveLoadConfiguration::get_VehicleIndex(VehicleIndexType *pVal)
 
 STDMETHODIMP CLiveLoadConfiguration::put_VehicleIndex(VehicleIndexType newVal)
 {
-   if (newVal<0)
+   if (newVal == INVALID_INDEX)
    {
       return E_INVALIDARG;
    }
@@ -532,15 +532,15 @@ STDMETHODIMP CLiveLoadConfiguration::Save(IStructuredSave2 * psave)
          return hr;
 
       {
-         CollectionIndexType nAxles;
+         AxleIndexType nAxles;
          hr = m_AxleConfig->get_Count(&nAxles);
          hr = psave->put_Property(CComBSTR("AxleConfigCount"),_variant_t(nAxles));
          if (FAILED(hr))
             return hr;
 
-         for (AxleIndexType axleIdx = 0; axleIdx < (AxleIndexType)nAxles; axleIdx++)
+         for (AxleIndexType axleIdx = 0; axleIdx < nAxles; axleIdx++)
          {
-            CollectionIndexType appliedAxleIdx;;
+            IDType appliedAxleIdx; // index is stored as an ID type in LongArray
             hr = m_AxleConfig->get_Item(axleIdx, &appliedAxleIdx);
             hr = psave->put_Property(CComBSTR("Axle"),_variant_t(appliedAxleIdx));
             if (FAILED(hr))

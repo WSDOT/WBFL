@@ -71,15 +71,15 @@ protected:
    // OPERATORS
    // OPERATIONS
    void AddBeam(rkRoarkBeam* beam);
-   void AddReaction(Float64 P,Int32 supportId);
+   void AddReaction(Float64 P,PierIDType supportId);
    void FlushBeams();
    void FlushReactions();
 
    bamBridgeModel* DoClone() const;
    void DeepCopy(bamBridgeModel* pModel) const;
 
-   virtual void DoCollectResults(Int32 poiId,bamSectionResults& results);
-   virtual void DoCollectReactions(Int32 supportId,bamReaction& reaction);
+   virtual void DoCollectResults(PoiIDType poiId,bamSectionResults& results);
+   virtual void DoCollectReactions(PierIDType supportId,bamReaction& reaction);
 
    bamLoadFactory* CreateLoadFactory();
 
@@ -88,7 +88,7 @@ protected:
 
 private:
    // DATA MEMBERS
-   typedef std::vector<std::pair<Int32,Float64> > ReactionContainer;
+   typedef std::vector<std::pair<SupportIDType,Float64> > ReactionContainer;
    typedef std::vector<boost::shared_ptr<rkRoarkBeam> > BeamContainer;
    typedef BeamContainer::iterator BeamIterator;
 

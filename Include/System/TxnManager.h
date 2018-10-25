@@ -126,11 +126,11 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the number of executed transactions
-   Int16 GetTxnCount() const;
+   CollectionIndexType GetTxnCount() const;
 
    //------------------------------------------------------------------------
    // Returns the number of transactions that have been undone.
-   Int16 GetUndoCount() const;
+   CollectionIndexType GetUndoCount() const;
 
    //------------------------------------------------------------------------
    // Writes a log of all the transactions that have been done to a

@@ -100,14 +100,14 @@ public:
 
 		return S_OK;
 	}
-	STDMETHOD(get_Count)(LONG * pVal)
+	STDMETHOD(get_Count)(CollectionIndexType * pVal)
 	{
 		if (pVal == NULL)
 			return E_POINTER;
 			
 		return E_NOTIMPL;
 	}
-	STDMETHOD(get_Item)(LONG index, IPShape * * pVal)
+	STDMETHOD(get_Item)(CollectionIndexType index, IPShape * * pVal)
 	{
 		if (pVal == NULL)
 			return E_POINTER;

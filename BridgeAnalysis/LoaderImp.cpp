@@ -58,7 +58,7 @@ void bamBridgeModelLoader::AddBeam(rkRoarkBeam* pBeam)
    GetBridgeModel()->AddBeam(pBeam);
 }
 
-void bamBridgeModelLoader::AddReaction(Float64 P,Int32 supportId)
+void bamBridgeModelLoader::AddReaction(Float64 P,PierIDType supportId)
 {
    GetBridgeModel()->AddReaction(P,supportId);
 }

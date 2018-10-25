@@ -83,7 +83,7 @@ public:
    // Default constructor
    bmfSplicedGirderTemplate(const std::_tstring& name, // girder name
                             const bmfGirderProfile* pProfile, // girder shape is expected to be gmIPrecastBeam
-                            Uint16 nSplices, // number of splace joints
+                            CollectionIndexType nSplices, // number of splace joints
                             Float64* segmentLength, // array of segment lengths (left and middle segment only)
                             Float64* closurePourSize, // width of closure pour
                             const matConcreteEx* pConc,
@@ -119,7 +119,7 @@ public:
    virtual bmfGirderTemplate* CreateClone() const;
 
    SegmentIndexType GetNumSegments() const;
-   Uint16 GetNumSplices() const;
+   CollectionIndexType GetNumSplices() const;
 
    //------------------------------------------------------------------------
    void SetStrandPattern( SegmentIndexType segment,const bmfStrandPattern& rPattern );
@@ -167,10 +167,10 @@ public:
    const matPsStrand* GetPTStrand() const;
 
    //------------------------------------------------------------------------
-   void SetClosurePourSize(Uint16 splice,Float64 size);
+   void SetClosurePourSize(CollectionIndexType splice,Float64 size);
 
    //------------------------------------------------------------------------
-   Float64 GetClosurePourSize(Uint16 splice) const;
+   Float64 GetClosurePourSize(CollectionIndexType splice) const;
 
    //------------------------------------------------------------------------
    void SetDuct(const bmfDucts& ducts);
@@ -206,7 +206,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   Uint16 m_nSplices;
+   CollectionIndexType m_nSplices;
    Float64 m_SegmentLength[2];
    Float64 m_ClosurePourSize[2];
    const matConcreteEx* m_pConc;

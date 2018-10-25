@@ -44,7 +44,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rcaConcreteElement::rcaConcreteElement(const gmIShape& rShape, Int32 concreteKey, 
+rcaConcreteElement::rcaConcreteElement(const gmIShape& rShape, CollectionIndexType concreteKey, 
                                        Float64 nFactor,
                                        const rcaCapacityProblem& rProblem):
 m_pShape(rShape.CreateClone()),
@@ -56,7 +56,7 @@ m_pProblem(&rProblem)
    PRECONDITION(nFactor>0);
 }
 
-rcaConcreteElement::rcaConcreteElement(const gmIShape& rShape, Int32 concreteKey, 
+rcaConcreteElement::rcaConcreteElement(const gmIShape& rShape, CollectionIndexType concreteKey, 
                                        const rcaCapacityProblem& rProblem):
 m_pShape(rShape.CreateClone()),
 m_ConcreteKey(concreteKey),
@@ -171,7 +171,7 @@ Float64 rcaConcreteElement::GetFc() const
    return m_pProblem->GetConcrete(m_ConcreteKey).GetFc();
 }
 
-Int32 rcaConcreteElement::GetConcreteIdx() const
+CollectionIndexType rcaConcreteElement::GetConcreteIdx() const
 {
    ASSERTVALID;
    return m_ConcreteKey;
@@ -183,7 +183,7 @@ Float64 rcaConcreteElement::GetN() const
    if (!m_IsNSpecified)
    {
       // n not specified - must get it from capacity problem's materials
-      Int32 base_mat = m_pProblem->GetBaseConcreteMaterial();
+      CollectionIndexType base_mat = m_pProblem->GetBaseConcreteMaterial();
       if (base_mat!=m_ConcreteKey)
       {
          Float64 Eme = m_pProblem->GetConcrete(m_ConcreteKey).GetE();

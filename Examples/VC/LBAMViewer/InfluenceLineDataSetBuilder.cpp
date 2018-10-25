@@ -16,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-InfluenceLineDataSetBuilder::InfluenceLineDataSetBuilder(long poiID, IInfluenceLineResponse* response):
+InfluenceLineDataSetBuilder::InfluenceLineDataSetBuilder(PoiIDType poiID, IInfluenceLineResponse* response):
 m_PoiId(poiID),
 m_pInfluenceLineResponse(response)
 {
@@ -42,7 +42,7 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       fet = fetMz;
    else if ( responseType==CLBAMViewerDoc::rtStress)
    {
-      ::AfxMessageBox("Stress Results Not Available for Influence Lines");
+      ::AfxMessageBox(_T("Stress Results Not Available for Influence Lines"));
       return;
    }
    else
@@ -83,7 +83,7 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       entry->put_SymbolCharacterCode(249);
       entry->put_DoDrawLine(TRUE);
 
-      CComBSTR btmp("Influence - Left Face");
+      CComBSTR btmp(_T("Influence - Left Face"));
       entry->put_Name(btmp);
 
       CComPtr<iDataSet2d> dataset;
@@ -143,7 +143,7 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       entry->put_SymbolCharacterCode(233);
       entry->put_DoDrawLine(TRUE);
 
-      CComBSTR btmp("Influence - Right Face");
+      CComBSTR btmp(_T("Influence - Right Face"));
       entry->put_Name(btmp);
 
       CComPtr<iDataSet2d> dataset;

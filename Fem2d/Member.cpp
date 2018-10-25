@@ -176,7 +176,7 @@ STDMETHODIMP CMember::Save(/*[in]*/ IStructuredSave2 *psave)
       if (FAILED(hr))
          return hr;
 
-      long jnt = m_JointKeeper.GetStartJoint();
+      JointIDType jnt = m_JointKeeper.GetStartJoint();
       hr = psave->put_Property(CComBSTR("StartJoint"),CComVariant(jnt));
       if (FAILED(hr))
          return hr;
@@ -843,12 +843,12 @@ void CMember::ComputeJointDisplacementForce(Vector* pdf)
 
 void CMember::GetGlobalJntForces(JointIDType jntId,Float64 *force)
 {
-   long i,count,start,end;
+   LONG i,count,start,end;
    Vector Rglobal(6);
 
    m_TransMatrix.Multiply(&m_Rlocal,&Rglobal,ATB);
 
-   start = jntId*TotalDOF/NumJoints;
+   start = (LONG)jntId*TotalDOF/NumJoints;
    end = start + TotalDOF/NumJoints;
 
    for (i = start, count = 0; i < end; i++, count++)
@@ -1171,19 +1171,19 @@ void CMember::AssembleF()
    }
 }
 
-long CMember::GetNumDOF() const
+LONG CMember::GetNumDOF() const
 {
    return TotalDOF;
 }
 
-long CMember::GetNumJoints() const
+LONG CMember::GetNumJoints() const
 {
    return NumJoints;
 }
 
-long CMember::GetCondensedDOF(long dof)
+LONG CMember::GetCondensedDOF(LONG dof)
 {
-   long retval;
+   LONG retval;
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
@@ -1195,7 +1195,7 @@ long CMember::GetCondensedDOF(long dof)
    return retval;
 }
 
-Float64 CMember::GetKglobal(long DOFi,long DOFj)
+Float64 CMember::GetKglobal(LONG DOFi,LONG DOFj)
 {
    return m_Kglobal(DOFi,DOFj);
 }
@@ -1299,7 +1299,7 @@ bool CMember::JointKeeper::PutStartJoint(JointIDType id)
       return false;
 }
 
-long CMember::JointKeeper::GetStartJoint()
+JointIDType CMember::JointKeeper::GetStartJoint()
 {
    return m_StartJoint;
 }
@@ -1316,7 +1316,7 @@ bool CMember::JointKeeper::PutEndJoint(JointIDType id)
       return false;
 }
 
-long CMember::JointKeeper::GetEndJoint()
+JointIDType CMember::JointKeeper::GetEndJoint()
 {
    return m_EndJoint;
 }
@@ -1415,7 +1415,7 @@ void CMember::JointKeeper::Compute()
 
 CComBSTR CMember::JointDoesntExistError(Fem2dMbrEndType end)
 {
-   long jntid;
+   JointIDType jntid;
    if (end==metStart)
       jntid = m_JointKeeper.GetStartJoint();
    else

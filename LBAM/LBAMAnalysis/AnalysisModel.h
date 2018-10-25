@@ -124,7 +124,7 @@ public:
    void IsPOIInNegativeLiveLoadMomentZone(PoiIDType poiID, InZoneType* isInZone);
    void GetNegativeMomentRegions(IDblArray* *locations);
 
-   bool GetSuperstructureMemberForGlobalX(Float64 xLoc, long* ssmId, Float64* ssmXLoc);
+   bool GetSuperstructureMemberForGlobalX(Float64 xLoc, CollectionIndexType* ssmIdx, Float64* ssmXLoc);
 
    // save fem model to persistence
    void SaveModel(IStructuredSave2* Save);
@@ -197,11 +197,11 @@ private:
    ElementLayoutMap     m_TemporarySupportElements;
 
    // nodes and supports
-   typedef std::vector<long>           IdList;
+   typedef std::vector<IDType>         IdList;
    typedef IdList::iterator            IdListIterator;
-   typedef std::map<long, long>        IdMap;
+   typedef std::map<IDType, IDType>    IdMap;
    typedef IdMap::iterator             IdMapIterator;
-   typedef std::set<long>              IdSet;
+   typedef std::set<IDType>            IdSet;
    typedef IdSet::iterator             IdSetIterator;
 
    IdList    m_SupportNodes;             // nodes at bottoms of supports
@@ -230,12 +230,12 @@ private:
 
    // influence-related private functions
    void GenerateInfluenceLoadLocations();
-   void ComputeInfluenceLoadLocation(MemberType lbmbrType, long lbmbrID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet );
+   void ComputeInfluenceLoadLocation(MemberType lbmbrType, MemberIDType lbmbrID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet );
 
    // cached data for contraflexure computation
    CComPtr<IDblArray> m_ContraflexureLocations;
    // pois where contraflexure locations are
-   std::vector<long> m_ContraflexurePOIs;
+   std::vector<PoiIDType> m_ContraflexurePOIs;
 
    void GenerateContraflexurePOIs();
    void ComputeContraflexureLocations();

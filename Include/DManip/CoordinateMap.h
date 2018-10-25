@@ -39,22 +39,22 @@ interface iCoordinateMap : public IUnknown
    STDMETHOD_(void,WPtoMP)(IPoint2d* wp,Float64* mx,Float64* my) PURE;
 
    // World point to Logical Point conversions
-   STDMETHOD_(void,WPtoLP)(Float64 wx,Float64 wy,long* lx,long* ly) PURE;
-   STDMETHOD_(void,WPtoLP)(IPoint2d* wp,long* lx,long* ly) PURE;
+   STDMETHOD_(void,WPtoLP)(Float64 wx,Float64 wy,LONG* lx,LONG* ly) PURE;
+   STDMETHOD_(void,WPtoLP)(IPoint2d* wp,LONG* lx,LONG* ly) PURE;
 
-   STDMETHOD_(void,LPtoWP)(long lx,long ly,Float64* wx,Float64* wy) PURE;
-   STDMETHOD_(void,LPtoWP)(long lx,long ly,IPoint2d** wp) PURE;
+   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,Float64* wx,Float64* wy) PURE;
+   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,IPoint2d** wp) PURE;
 
    // conversion to Text space. This space is always isometrically mapped.
    //  -The origin of this space is at the Logical Origin
    //  -Each text unit is a twip, or 1/20 of a point.(Because a point 
    //   is 1/72 inch, a twip is 1/1440 inch.) 
    //  -Positive X is to the right positive Y is up on the device.
-   STDMETHOD_(void,WPtoTP)(Float64 wx,Float64 wy,long* tx,long* ty) PURE;
-   STDMETHOD_(void,TPtoWP)(long tx,long ty,Float64* wx,Float64* wy) PURE;
+   STDMETHOD_(void,WPtoTP)(Float64 wx,Float64 wy,LONG* tx,LONG* ty) PURE;
+   STDMETHOD_(void,TPtoWP)(LONG tx,LONG ty,Float64* wx,Float64* wy) PURE;
 
-   STDMETHOD_(void,LPtoTP)(long lx,long ly,long* tx,long* ty) PURE;
-   STDMETHOD_(void,TPtoLP)(long tx,long ty,long* lx,long* ly) PURE;
+   STDMETHOD_(void,LPtoTP)(LONG lx,LONG ly,LONG* tx,LONG* ty) PURE;
+   STDMETHOD_(void,TPtoLP)(LONG tx,LONG ty,LONG* lx,LONG* ly) PURE;
 
    // Get size of window in text space coordinates (twips)
    // This window is the size of the logical extents.

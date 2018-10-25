@@ -114,7 +114,7 @@ static void GetOptForceMulDf(ForceEffectType effect, OptimizationType optimizati
    }
 }
 
-void ForceDistributionFactorStrategy::GetOptimalDfs(long poiID, BSTR Stage, ForceEffectType effect,
+void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage, ForceEffectType effect,
                                                     DistributionFactorType distributionType,
                                                     Float64* leftFactor, DistributionFactorType* usedLeftDistributionType,
                                                     Float64* rightFactor, DistributionFactorType* usedRightDistributionType)
@@ -248,7 +248,7 @@ static void GetConcForceMulDf(OptimizationType optimization,
    *rightMzFactor = right_momentdf;
 }
 
-void ForceDistributionFactorStrategy::GetConcurrentDfs(long poiID, BSTR Stage, 
+void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Stage, 
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFxFactor, Float64* leftFyFactor, Float64* leftMzFactor, 
                                                        Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor)
@@ -355,7 +355,7 @@ static void GetDeflectionMulDf(ForceEffectType forceEffect, IDistributionFactor*
    }
 }
 
-void DeflectionDistributionFactorStrategy::GetOptimalDfs(long poiID, BSTR Stage, ForceEffectType effect,
+void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage, ForceEffectType effect,
                                                                   DistributionFactorType distributionType,
                                                                   Float64* leftFactor, DistributionFactorType* usedLeftDistributionType,
                                                                   Float64* rightFactor, DistributionFactorType* usedRightDistributionType)
@@ -469,7 +469,7 @@ static void GetConcDeflectionMulDf(IDistributionFactor* left_df, IDistributionFa
    *rightMzFactor = right_rotdf;
 }
 
-void DeflectionDistributionFactorStrategy::GetConcurrentDfs(long poiID, BSTR Stage, 
+void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID, BSTR Stage, 
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFxFactor, Float64* leftFyFactor, Float64* leftMzFactor, 
                                                        Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor)
@@ -550,7 +550,7 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(long poiID, BSTR Sta
 // Reaction strategy
 ///////////////////////////////////////////////////////
 // optimal effects
-void ReactionDistributionFactorStrategy::GetOptimalDfs(long sptID, BSTR Stage, ForceEffectType effect,
+void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR Stage, ForceEffectType effect,
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFactor, DistributionFactorType* usedLeftDistributionType,
                                                        Float64* rightFactor, DistributionFactorType* usedRightDistributionType)
@@ -648,7 +648,7 @@ static void GetConcReactionMulDf(IDistributionFactor* Df,
    *rightMzFactor = fac;
 }
 
-void ReactionDistributionFactorStrategy::GetConcurrentDfs(long sptID, BSTR Stage,
+void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, BSTR Stage,
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFxFactor, Float64* leftFyFactor, Float64* leftMzFactor, 
                                                        Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor)
@@ -728,7 +728,7 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(long sptID, BSTR Stage
 // SupportDeflection strategy
 ///////////////////////////////////////////////////////
 // optimal effects
-void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(long sptID, BSTR Stage, ForceEffectType effect,
+void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR Stage, ForceEffectType effect,
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFactor, DistributionFactorType* usedLeftDistributionType,
                                                        Float64* rightFactor, DistributionFactorType* usedRightDistributionType)
@@ -809,7 +809,7 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(long sptID, BSTR
 }
 
 
-void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(long sptID, BSTR Stage,
+void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, BSTR Stage,
                                                        DistributionFactorType distributionType,
                                                        Float64* leftFxFactor, Float64* leftFyFactor, Float64* leftMzFactor, 
                                                        Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor)

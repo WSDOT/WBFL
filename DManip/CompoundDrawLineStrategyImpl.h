@@ -62,8 +62,8 @@ public:
 // iCompoundLineDrawStrategy
 public:
    STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy);
-   STDMETHOD_(void,RemoveStrategy)(long index);
-   STDMETHOD_(long,Count)();
+   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index);
+   STDMETHOD_(CollectionIndexType,Count)();
 
 private:
    typedef std::vector<CComPtr<iDrawLineStrategy> > Strategies;

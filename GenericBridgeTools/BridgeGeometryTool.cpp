@@ -72,7 +72,7 @@ STDMETHODIMP CBridgeGeometryTool::Point(IGenericBridge* bridge,SpanIndexType spa
    CComPtr<ICogoInfo> cogoinfo;
    bridge->get_CogoInfo(&cogoinfo);
 
-   long startID, endID;
+   CogoElementKey startID, endID;
    cogoinfo->get_GirderEndPointID(spanIdx,gdrIdx,etStart,&startID);
    cogoinfo->get_GirderEndPointID(spanIdx,gdrIdx,etEnd,  &endID);
 
@@ -122,7 +122,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,SpanIn
    CComPtr<ICogoInfo> cogoinfo;
    bridge->get_CogoInfo(&cogoinfo);
 
-   long startID, endID;
+   CogoElementKey startID, endID;
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx,   gdrIdx, qcbAfter,  &startID);
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1, gdrIdx, qcbBefore, &endID);
 
@@ -161,7 +161,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderLineBearing(IGenericBridge* bridge,SpanI
    CComPtr<ICogoInfo> cogoinfo;
    bridge->get_CogoInfo(&cogoinfo);
 
-   long startID, endID;
+   CogoElementKey startID, endID;
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx,   gdrIdx, qcbAfter,  &startID);
    cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1, gdrIdx, qcbBefore, &endID);
 
@@ -264,7 +264,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderLinePoint(IGenericBridge* bridge,Float64
 
    CComPtr<ICogoInfo> cogoinfo;
    bridge->get_CogoInfo(&cogoinfo);
-   long startPointID, endPointID;
+   CogoElementKey startPointID, endPointID;
    PierIndexType prevPierIdx = spanIndex;
    PierIndexType nextPierIdx = prevPierIdx+1;
    cogoinfo->get_PierGirderIntersectionPointID(prevPierIdx, gdrIdx, qcbAfter,  &startPointID);
@@ -642,7 +642,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
       PierIndexType prev_pier = spanIdx;
       PierIndexType next_pier = spanIdx+1;
 
-      long id;
+      CogoElementKey id;
       cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
       CComPtr<IPoint2d> p1;
       points->get_Item(id,&p1);
@@ -729,7 +729,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
          if ( ::InRange(prev_pier_station,station,next_pier_station) )
          {
-            long id;
+            CogoElementKey id;
             cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
             CComPtr<IPoint2d> p1;
             points->get_Item(id,&p1);
@@ -991,7 +991,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangFromGirder(IGenericBridge* bridge,
    PierIndexType prev_pier = spanIdx;
    PierIndexType next_pier = prev_pier+1;
 
-   long id;
+   CogoElementKey id;
    cogoInfo->get_PierGirderIntersectionPointID(prev_pier,gdrIdx,qcbAfter,&id);
    CComPtr<IPoint2d> p1;
    points->get_Item(id,&p1);
@@ -1061,7 +1061,7 @@ HRESULT CBridgeGeometryTool::GetPierLine(IGenericBridge* bridge,PierIndexType pi
    CComPtr<IPointCollection> points;
    cogoModel->get_Points(&points);
 
-   long leftPntID, rightPntID;
+   CogoElementKey leftPntID, rightPntID;
    cogoInfo->get_PierPointID(pierIdx,pptLeft, &leftPntID);
    cogoInfo->get_PierPointID(pierIdx,pptRight,&rightPntID);
 

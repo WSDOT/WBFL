@@ -15,7 +15,7 @@
 class EnvelopedVehicularDataSetBuilder : public iDataSetBuilder, public iReactionReportBuilder
 {
 public:
-	EnvelopedVehicularDataSetBuilder(LiveLoadModelType llmType, long vehicleIndex, 
+	EnvelopedVehicularDataSetBuilder(LiveLoadModelType llmType, VehicleIndexType vehicleIndex, 
                                     llResponseType respType, IEnvelopedVehicularResponse* response);
 	virtual ~EnvelopedVehicularDataSetBuilder();
 
@@ -34,7 +34,7 @@ public:
    // iReactionReportBuilder
    virtual void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                                     CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                                    std::ostream& pos);
+                                    std::_tostream& pos);
 
 private:
    void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
@@ -49,7 +49,7 @@ private:
 
    CComQIPtr<IEnvelopedVehicularResponse> m_pVehicularResponse;
    LiveLoadModelType                      m_LlmType;
-   long                                   m_VehicleIndex;
+   VehicleIndexType                                   m_VehicleIndex;
    llResponseType                         m_RespType;
 };
 

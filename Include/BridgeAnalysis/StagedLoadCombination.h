@@ -101,7 +101,7 @@ public:
    //------------------------------------------------------------------------
    // Add a loading to the combination.  All models added to this combination
    // must have a loading with this id.
-   void AddLoading(Int32 loadingId);
+   void AddLoading(IDType loadingId);
 
    //------------------------------------------------------------------------
    // Add a bridge model whose results will be combined with the results
@@ -109,13 +109,13 @@ public:
    void AddModel(bamBridgeModel* pModel);
 
    //------------------------------------------------------------------------
-   virtual bamSectionResults CombineSectionResults( Int32 poiId );
+   virtual bamSectionResults CombineSectionResults( PoiIDType poiId );
 
    //------------------------------------------------------------------------
-   virtual bamSectionStress CombineSectionStress( Int32 poiId, Int32 spIdx );
+   virtual bamSectionStress CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx );
 
    //------------------------------------------------------------------------
-   virtual bamReaction CombineReactions( Int32 supportId );
+   virtual bamReaction CombineReactions( PierIDType supportId );
 
    //------------------------------------------------------------------------
    virtual bamLoadCombination* Clone() const;
@@ -123,7 +123,7 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   virtual void GetLoadings(std::vector<Int32>& loadingIds) const;
+   virtual void GetLoadings(std::vector<IDType>& loadingIds) const;
 
    // GROUP: INQUIRY
 
@@ -144,7 +144,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::vector<Int32> m_Loads;
+   std::vector<IDType> m_Loads;
    std::vector<bamBridgeModel*> m_Models;
 
    // GROUP: LIFECYCLE

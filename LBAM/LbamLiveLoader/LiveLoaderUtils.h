@@ -193,7 +193,7 @@ inline HRESULT LLSectionToStressResults(ILongArray* POIs, BSTR stage, ILiveLoadM
          return hr;
 
       // compute results one poi at a time
-      long poi_id;
+      PoiIDType poi_id;
       POIs->get_Item(ipoi,&poi_id);
       single_poi->put_Item(0, poi_id);
 

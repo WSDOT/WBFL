@@ -38,7 +38,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-Matrix::Matrix(long nr,long nc)
+Matrix::Matrix(LONG nr,LONG nc)
 {
    m_NRows = 0;
    m_NCols = 0;
@@ -58,9 +58,9 @@ Matrix::~Matrix()
    Clear();
 }
 
-void Matrix::Resize(long nr,long nc)
+void Matrix::Resize(LONG nr,LONG nc)
 {
-   long i;
+   LONG i;
 
    Clear();
    m_NRows = nr;
@@ -72,7 +72,7 @@ void Matrix::Resize(long nr,long nc)
 
 void Matrix::Clear()
 {
-   long i;
+   LONG i;
 
    if (m_ppMatrix)
       {
@@ -85,42 +85,42 @@ void Matrix::Clear()
 
 void Matrix::Zero()
 {
-   for (long i = 0; i < m_NRows; i++)
-      for (long j = 0; j < m_NCols; j++)
+   for (LONG i = 0; i < m_NRows; i++)
+      for (LONG j = 0; j < m_NCols; j++)
          m_ppMatrix[i][j]=0.0;
 }
 
-void Matrix::GetSize(long &nr,long &nc) const
+void Matrix::GetSize(LONG &nr,LONG &nc) const
 {
    nr = m_NRows;
    nc = m_NCols;
 }
 
-void Matrix::SetElement(long r,long c,Float64 val)
+void Matrix::SetElement(LONG r,LONG c,Float64 val)
 {
    (*this)(r,c) = val;
 }
 
-Float64 Matrix::GetElement(long r,long c) const
+Float64 Matrix::GetElement(LONG r,LONG c) const
 {
    return (*this)(r,c);
 }
 
-long Matrix::NumRows() const
+LONG Matrix::NumRows() const
 {
    return m_NRows;
 }
 
-long Matrix::NumColumns() const
+LONG Matrix::NumColumns() const
 {
    return m_NCols;
 }
 
-void Matrix::Multiply(const Matrix *m,Matrix *r,long mode)
+void Matrix::Multiply(const Matrix *m,Matrix *r,LONG mode)
 {
-   long i,j,k;
+   LONG i,j,k;
    Float64 v;
-   long left, middle, right;
+   LONG left, middle, right;
 
    // left and right are the dimension of r.
    // middle is the common dimension for both matrices.
@@ -159,7 +159,7 @@ void Matrix::Multiply(const Matrix *m,Matrix *r,long mode)
             {
             // Get matrix indices... Remember the matrix is not really
             // transposed. But the loop counters are setup as if it is.
-            long r1,c1,r2,c2;
+            LONG r1,c1,r2,c2;
             if ( (mode == AB) || (mode == ABT) )
                {
                r1 = i;
@@ -192,7 +192,7 @@ void Matrix::Multiply(const Matrix *m,Matrix *r,long mode)
 
 void Matrix::operator += (const Matrix &m)
 {
-   long i,j;
+   LONG i,j;
 
    for (i = 0; i < m_NRows; i++)
       {
@@ -206,7 +206,7 @@ void Matrix::operator += (const Matrix &m)
 
 void Matrix::operator = (const Matrix &m)
 {
-   long i,j;
+   LONG i,j;
    ATLASSERT(m_NRows==m.m_NRows);
    ATLASSERT(m_NCols==m.m_NCols);
 
@@ -222,7 +222,7 @@ void Matrix::operator = (const Matrix &m)
 
 void Matrix::operator -= (const Matrix &m)
 {
-   long i,j;
+   LONG i,j;
 
    for (i = 0; i < m_NRows; i++)
       {
@@ -233,12 +233,12 @@ void Matrix::operator -= (const Matrix &m)
       }
 }
 
-Float64 Matrix::operator()(long i,long j) const
+Float64 Matrix::operator()(LONG i,LONG j) const
 {
    return m_ppMatrix[i][j];
 }
 
-Float64 &Matrix::operator() (long i,long j)
+Float64 &Matrix::operator() (LONG i,LONG j)
 {
    return m_ppMatrix[i][j];
 }
@@ -246,7 +246,7 @@ Float64 &Matrix::operator() (long i,long j)
 
 std::_tostream& operator << (std::_tostream &os,const Matrix &m)
 {
-   long i,j;
+   LONG i,j;
 
    for (i = 0; i < m.m_NRows; i++)
    {
@@ -262,12 +262,12 @@ std::_tostream& operator << (std::_tostream &os,const Matrix &m)
 }
 
 
-Float64 Vector::operator()(long i) const
+Float64 Vector::operator()(LONG i) const
 {
    return m_ppMatrix[i][0];
 }
 
-Float64 &Vector::operator() (long i)
+Float64 &Vector::operator() (LONG i)
 {
    return m_ppMatrix[i][0];
 }

@@ -52,17 +52,17 @@ bamBruteForceSolver::~bamBruteForceSolver()
 
 void bamBruteForceSolver::Solve(bamLiveLoad& ll)
 {
-   Int32 pointOfInterestCount;
-   Int32* poi_list;
+   CollectionIndexType pointOfInterestCount;
+   PoiIDType* poi_list;
    const bamBridgeModel* p_model = m_pBridgeModel;
 
    // Get the poi's.  We are going to place every axle of the
    // truck on the poi's
    pointOfInterestCount = p_model->GetPointOfInterestCount();
-   poi_list = new Int32[pointOfInterestCount];
+   poi_list = new PoiIDType[pointOfInterestCount];
    p_model->EnumPointsOfInterest(&poi_list,pointOfInterestCount);
 
-   for (Int32 poiIdx = 0; poiIdx < pointOfInterestCount; poiIdx++)
+   for (CollectionIndexType poiIdx = 0; poiIdx < pointOfInterestCount; poiIdx++)
    {
       Solve(ll,poi_list[poiIdx]);
    }
@@ -71,7 +71,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll)
    delete [] poi_list;
 }
 
-void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
+void bamBruteForceSolver::Solve(bamLiveLoad& ll,PoiIDType poi)
 {
    LOG("Analyzing poi " << poi);
 
@@ -80,11 +80,11 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
    Float64 axlePosition;
    Float64 truckPosition;
    Float64 pivotOffset;
-   Int32 load_case_id = 0;
-   Int32 moment_load_case_id;
-   Int32 shear_load_case_id1;
-   Int32 shear_load_case_id2;
-   Int32 spanElementId;
+   IDType load_case_id = 0;
+   IDType moment_load_case_id;
+   IDType shear_load_case_id1;
+   IDType shear_load_case_id2;
+   SpanIDType spanElementId;
    Float64 offset;
    Float64 absLoc;
    Float64 lane_impact;
@@ -101,9 +101,9 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
    bamLoadFactory& factory = my_model->GetLoadFactory();
 
    // Use the envelope feature to get the extreme force effects
-   Int32 envelope_id = load_case_id++;
-   Int32 env_min = load_case_id++;
-   Int32 env_max = load_case_id++;
+   IDType envelope_id = load_case_id++;
+   IDType env_min = load_case_id++;
+   IDType env_max = load_case_id++;
    bamTransientLdEnvelope envelope(envelope_id);
 
    // Run the trucks up and down the bridge, generating load cases
@@ -121,7 +121,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
       LOG(_T("****************************************************"));
       LOG(_T("Point of Interest = ") << poi << _T(" Span = ") << spanElementId << _T(" Offset = ") << offset );
 
-      for (Int32 pivotAxle = 0; pivotAxle < ll.GetNumAxles(); pivotAxle++ )
+      for (AxleIndexType pivotAxle = 0; pivotAxle < ll.GetNumAxles(); pivotAxle++ )
       {
          ll.GetAxle(pivotAxle,pivotOffset,axleWeight);
          if (direction == 1)
@@ -165,7 +165,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
          factory.CreateUnifForceY(shear_load_case_id2,spanElementId,etSpan,start,end, -ll.GetLaneLoad() * lane_impact ,true);
 
          // Apply axle loads
-         for (Int32 axle = 0; axle < ll.GetNumAxles(); axle++)
+         for (AxleIndexType axle = 0; axle < ll.GetNumAxles(); axle++)
          {
             ll.GetAxle(axle,axleOffset,axleWeight);
 
@@ -229,7 +229,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
       bamSectionResultsKey from_key( poi, e->GetLoadingId( (bamEnvelope::ExtremeValueType)(i) ) );
       sr = my_model->ReadSectionResults( from_key );
       
-      Int32 llid = (i == bamEnvelope::Min ? ll.GetMinLoadingId() : ll.GetMaxLoadingId() );
+      IDType llid = (i == bamEnvelope::Min ? ll.GetMinLoadingId() : ll.GetMaxLoadingId() );
       bamSectionResultsKey to_key( poi, llid );
       WriteSectionResults( to_key, sr );
 
@@ -267,8 +267,8 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
    Float64 axleWeight;
    Float64 axlePosition;
    Float64 truckPosition;
-   Int32 left_lc_id = 1;
-   Int32 right_lc_id = 2;
+   IDType left_lc_id = 1;
+   IDType right_lc_id = 2;
 
    Float64 lane_impact;
    Float64 truck_impact;
@@ -276,7 +276,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
 
    const bamBridgeModel* p_model = m_pBridgeModel;
 
-   Int16 spanElementId = 0;
+   SpanIDType spanElementId = 0;
    const bamSpanElement* pSE = p_model->GetSpanElement( spanElementId );
    span_length = pSE->Length();
 
@@ -289,7 +289,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
    bamLoadFactory& factory = my_model->GetLoadFactory();
 
    // Use the envelope feature to get the extreme force effects
-   Int32 envelope_id = 0;
+   IDType envelope_id = 0;
    Int32 env_min = 4;
    Int32 env_max = 5;
    bamTransientLdEnvelope envelope(envelope_id);
@@ -304,7 +304,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
 
    // Apply the truck load
    truckPosition = ll.GetMinLength();
-   for (Int32 axle = 0; axle < ll.GetNumAxles(); axle++)
+   for (AxleIndexType axle = 0; axle < ll.GetNumAxles(); axle++)
    {
       ll.GetAxle(axle,axleOffset,axleWeight);
       axlePosition = truckPosition - axleOffset;
@@ -339,7 +339,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
 
    // Apply the truck load
    truckPosition = span_length - ll.GetMinLength();
-   for (long axle = 0; axle < ll.GetNumAxles(); axle++)
+   for (AxleIndexType axle = 0; axle < ll.GetNumAxles(); axle++)
    {
       ll.GetAxle(axle,axleOffset,axleWeight);
       axleOffset *= -1; // reverse direction
@@ -380,10 +380,10 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
    LOG(_T("********************************************************"));
    LOG(_T("Live Load Reactions"));
 
-   Int32 support_count;
-   Int32* support_list;
+   CollectionIndexType support_count;
+   PierIDType* support_list;
    support_count = my_model->GetSupportElementCount();
-   support_list = new Int32[support_count];
+   support_list = new PierIDType[support_count];
    my_model->EnumSupportElements(&support_list,support_count);
 
    for ( Int16 j = bamEnvelope::Min; j <= bamEnvelope::Max; j++ )
@@ -391,7 +391,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
       LOG(_T(""));
       LOG(_T("Extreme Value Type : ") << (j == bamEnvelope::Min ? _T("Min") : _T("Max") ));
       LOG(_T("Support Fx Fy Mz"));
-      for (Int32 supportIdx = 0; supportIdx < support_count; supportIdx++)
+      for (SupportIndexType supportIdx = 0; supportIdx < support_count; supportIdx++)
       {
          bamReactionKey from_key( support_list[supportIdx], e->GetLoadingId( (bamEnvelope::ExtremeValueType)(j) ) );
          bamReaction reaction = my_model->ReadReaction( from_key );
@@ -406,7 +406,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
    delete[] support_list;
 }
 
-void bamBruteForceSolver::SolveStress(bamLiveLoad& ll,Int32 poi,Int32 spid)
+void bamBruteForceSolver::SolveStress(bamLiveLoad& ll,PoiIDType poi,CollectionIndexType spid)
 {
    const bamPointOfInterest* pPoi = m_pBridgeModel->GetPointOfInterest( poi );
    bamStressPoint find_me;

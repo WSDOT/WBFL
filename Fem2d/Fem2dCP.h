@@ -53,7 +53,7 @@ public:
 		return S_OK;
 	
 	}
-	HRESULT Fire_OnLoadingChanged(LONG loadingID)
+	HRESULT Fire_OnLoadingChanged(LoadCaseIDType loadingID)
 	{
 		CComVariant varResult;
 		T* pT = static_cast<T*>(this);

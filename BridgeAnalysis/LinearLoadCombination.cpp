@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 
 //======================== LIFECYCLE  =======================================
 
-bamLinearLoadCombination::bamLinearLoadCombination(Int32 id) :
+bamLinearLoadCombination::bamLinearLoadCombination(IDType id) :
 bamLoadCombination(id)
 {
    m_Multiplier = 1.0;
@@ -59,9 +59,9 @@ bamLinearLoadCombination::~bamLinearLoadCombination()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void bamLinearLoadCombination::AddLoading(Int32 loadingId,Float64 loadFactor)
+void bamLinearLoadCombination::AddLoading(IDType loadingId,Float64 loadFactor)
 {
-   m_LoadEntries.insert( std::pair<Int32,Float64>(loadingId,loadFactor) );
+   m_LoadEntries.insert( std::pair<IDType,Float64>(loadingId,loadFactor) );
 }
 
 void bamLinearLoadCombination::SetMultiplier(Float64 multiplier)
@@ -69,7 +69,7 @@ void bamLinearLoadCombination::SetMultiplier(Float64 multiplier)
    m_Multiplier = multiplier;
 }
 
-bamSectionResults bamLinearLoadCombination::CombineSectionResults( Int32 poiId )
+bamSectionResults bamLinearLoadCombination::CombineSectionResults( PoiIDType poiId )
 {
    bamSectionResults combo_results;
 
@@ -78,7 +78,7 @@ bamSectionResults bamLinearLoadCombination::CombineSectionResults( Int32 poiId )
 
    while ( begin != end )
    {
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       sysSectionValue loadFactor = (*begin++).second;
 
       bamSectionResultsKey key( poiId, loadingId );
@@ -91,7 +91,7 @@ bamSectionResults bamLinearLoadCombination::CombineSectionResults( Int32 poiId )
    return combo_results;
 }
 
-bamSectionStress bamLinearLoadCombination::CombineSectionStress( Int32 poiId, Int32 spIdx )
+bamSectionStress bamLinearLoadCombination::CombineSectionStress( PoiIDType poiId, CollectionIndexType spIdx )
 {
    bamSectionStress sect_stress;
    LoadEntryIterator begin = m_LoadEntries.begin();
@@ -99,7 +99,7 @@ bamSectionStress bamLinearLoadCombination::CombineSectionStress( Int32 poiId, In
 
    while ( begin != end )
    {
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       Float64 loadFactor = (*begin++).second;
 
       bamSectionStressKey key( poiId, spIdx, loadingId );
@@ -112,7 +112,7 @@ bamSectionStress bamLinearLoadCombination::CombineSectionStress( Int32 poiId, In
    return sect_stress;
 }
 
-bamReaction bamLinearLoadCombination::CombineReactions( Int32 supportId )
+bamReaction bamLinearLoadCombination::CombineReactions( SupportIDType supportId )
 {
    bamReaction combo_reactions;
 
@@ -121,7 +121,7 @@ bamReaction bamLinearLoadCombination::CombineReactions( Int32 supportId )
 
    while ( begin != end )
    {
-      Int32 loadingId = (*begin).first;
+      IDType loadingId = (*begin).first;
       Float64 loadFactor = (*begin++).second;
 
       bamReactionKey key( supportId, loadingId );
@@ -136,7 +136,7 @@ bamReaction bamLinearLoadCombination::CombineReactions( Int32 supportId )
 }
 
 //======================== ACCESS     =======================================
-void bamLinearLoadCombination::GetLoadings(std::vector<Int32>& loadingIds) const
+void bamLinearLoadCombination::GetLoadings(std::vector<IDType>& loadingIds) const
 {
    ConstLoadEntryIterator i;
    for ( i = m_LoadEntries.begin(); i != m_LoadEntries.end(); i++ )

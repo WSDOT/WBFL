@@ -50,7 +50,7 @@ STDMETHODIMP CARPNotice::Show(VARIANT_BOOL bGiveChoice,LicenseType lt,Acceptance
    CLegalWiz wiz( pWnd, lt == ltAROSL ? IDR_AROSL : IDR_ARLOSL );
    wiz.GiveChoice( bGiveChoice );
    wiz.ShowLegalNoticeAgain( m_bShowAgain );
-   int result = wiz.DoModal();
+   INT_PTR result = wiz.DoModal();
    m_bShowAgain = wiz.ShowLegalNoticeAgain();
 
    *accept = ( result == IDCANCEL ) ? atReject : atAccept;

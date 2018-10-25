@@ -575,9 +575,9 @@ private:
       void OnInfluenceCalcUpdated(BSTR stage);
       void OnContraflexureCalcUpdated(BSTR stage);
 
-      typedef std::set<long>         IntegerList;
+      typedef std::set<IDType>       IntegerList;
       typedef IntegerList::iterator  IntegerListIterator;
-      typedef std::set<_bstr_t>     NameList;
+      typedef std::set<_bstr_t>      NameList;
       typedef NameList::iterator     NameListIterator;
 
       // accessor functions which help to determine what to do with changes
@@ -601,7 +601,7 @@ private:
 
       // event handling functions that catch fine-grained information about changes to 
       // load groups and pois
-      void AddPOIEvent(long id, EventType event)
+      void AddPOIEvent(PoiIDType id, EventType event)
       {
          IntegerEventListIterator it = m_POIsEvents.find(id);
          if (it != m_POIsEvents.end())
@@ -634,7 +634,7 @@ private:
       typedef NameEventList::iterator        NameEventListIterator;
       NameEventList m_LoadGroupsEvents;
 
-      typedef std::map<long, EventType>   IntegerEventList;
+      typedef std::map<IDType, EventType>   IntegerEventList;
       typedef IntegerEventList::iterator  IntegerEventListIterator;
       IntegerEventList m_POIsEvents;
    };
