@@ -144,6 +144,7 @@ STDMETHODIMP CProgressMonitorWindow::Show(BSTR msg,HWND hParent)
    // create and show our modeless dialog
    CString cmsg(msg);
    m_pDlg->Create( IDD_PROGRESSMONITORDLG, &m_wndParent );
+   m_pDlg->SetWindowPos(&CWnd::wndTopMost,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
    m_pDlg->m_MessageCtl.SetWindowText(cmsg);
 
    if (m_IsFileOpen)

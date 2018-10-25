@@ -21,20 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
-#define INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
 #pragma once
 
-// This is a master include file for the Graphics Library Package
-#if defined(BUILDGRLIB)
-	#error Do not use this header file in the Graphics Library Package
-   #error It is for external users only
-#endif
+#include <GraphicsLib\GraphicsLibExp.h>
 
-#include <GraphicsLib\PointMapper.h>
-#include <GraphicsLib\AxisXY.h>
-#include <GraphicsLib\GraphXY.h>
-#include <GraphicsLib\GraphTool.h>
-#include <GraphicsLib\GraphColor.h>
+class GRCLASS grGraphColor
+{
+public:
+   grGraphColor();
+   grGraphColor(IndexType nGraphs);
 
-#endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
+   void SetGraphCount(IndexType nGraphs);
+   void SetHueRange(Float64 minHue,Float64 maxHue); // a value between 0 and 360
+   void SetSaturation(Float64 saturation); // a value between 0 and 1
+   void SetLightness(Float64 lightness); // a value between 0 and 1
+
+   // number of colors before repeating
+   // note that repeat colors are shifted in the hue range so that
+   // no two same colors are used (e.g. every time red is used
+   // it will be a different shade)
+   void SetColorPerBandCount(IndexType nColorsPerBand);
+
+   COLORREF GetColor(IndexType index);
+
+private:
+   bool m_bInitialized;
+   void Init();
+   void ComputeColorParameters();
+
+   IndexType m_nGraphs;
+   Float64 m_MinHue;
+   Float64 m_MaxHue;
+   Float64 m_Saturation;
+   Float64 m_Lightness;
+   IndexType m_nColorBands;
+   IndexType m_ColorsPerBand;
+   Float64 m_BandHueStep;
+};
+
+
+

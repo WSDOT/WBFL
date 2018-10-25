@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// GraphicsLib - Utility library graphics
+// MfcTools - Extension library for MFC
 // Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -20,21 +20,39 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
-#define INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
 #pragma once
 
-// This is a master include file for the Graphics Library Package
-#if defined(BUILDGRLIB)
-	#error Do not use this header file in the Graphics Library Package
-   #error It is for external users only
-#endif
+#include "resource.h"
 
-#include <GraphicsLib\PointMapper.h>
-#include <GraphicsLib\AxisXY.h>
-#include <GraphicsLib\GraphXY.h>
-#include <GraphicsLib\GraphTool.h>
-#include <GraphicsLib\GraphColor.h>
+// CChoiceDlg dialog
 
-#endif // INCLUDED_GRAPHICSLIB_GRAPHICSLIB_H_
+class CRBChoiceDlg : public CDialog
+{
+	DECLARE_DYNAMIC(CRBChoiceDlg)
+
+public:
+	CRBChoiceDlg(CWnd* pParent = NULL);   // standard constructor
+	virtual ~CRBChoiceDlg();
+
+// Dialog Data
+	enum { IDD = IDD_RB_CHOICE };
+
+   BOOL m_bCancel;
+   CString m_Title;
+   CString m_Question;
+   CString m_Responses;
+   int m_Choice;
+
+   CString m_HelpFile;
+   UINT m_HelpID;
+
+protected:
+   CStatic m_Icon;
+
+   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+	DECLARE_MESSAGE_MAP()
+public:
+   virtual BOOL OnInitDialog();
+   void OnHelp();
+};
