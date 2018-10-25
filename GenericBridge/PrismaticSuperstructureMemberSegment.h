@@ -23,7 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ThickenedFlangeBulbTeeSegment.h : Declaration of the CSegment
+// PrismaticSuperstructureMemberSegment.h : Declaration of the CPrismaticSuperstructureMemberSegment
 
 #pragma once
 
@@ -31,36 +31,33 @@
 #include "ItemDataManager.h"
 
 /////////////////////////////////////////////////////////////////////////////
-// CThickenedFlangeBulbTeeSegment
-class ATL_NO_VTABLE CThickenedFlangeBulbTeeSegment : 
+// CPrismaticSuperstructureMemberSegment
+class ATL_NO_VTABLE CPrismaticSuperstructureMemberSegment : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<CThickenedFlangeBulbTeeSegment, &CLSID_ThickenedFlangeBulbTeeSegment>,
+//   public CComRefCountTracer<CPrismaticSuperstructureMemberSegment,CComObjectRootEx<CComSingleThreadModel> >,
+	public CComCoClass<CPrismaticSuperstructureMemberSegment, &CLSID_PrismaticSuperstructureMemberSegment>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CThickenedFlangeBulbTeeSegment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IThickenedFlangeBulbTeeSegment,
+   public IObjectSafetyImpl<CPrismaticSuperstructureMemberSegment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+   public IPrismaticSuperstructureMemberSegment,
    public IItemData,
    public IStructuredStorage2
 {
-   friend CThickenedFlangeBulbTeeSegment; // for easy cloning
+   friend CPrismaticSuperstructureMemberSegment; // for easy cloning
 public:
-   CThickenedFlangeBulbTeeSegment()
+   CPrismaticSuperstructureMemberSegment()
 	{
-      m_pSSMbr       = NULL;
-      m_pPrevSegment = NULL;
-      m_pNextSegment = NULL;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
 
-DECLARE_REGISTRY_RESOURCEID(IDR_THICKENEDFLANGEBULBTEESEGMENT)
+DECLARE_REGISTRY_RESOURCEID(IDR_PRISMATICSUPERSTRUCTUREMEMBERSEGMENT)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CThickenedFlangeBulbTeeSegment)
-	COM_INTERFACE_ENTRY(IThickenedFlangeBulbTeeSegment)
+BEGIN_COM_MAP(CPrismaticSuperstructureMemberSegment)
+	COM_INTERFACE_ENTRY(IPrismaticSuperstructureMemberSegment)
    COM_INTERFACE_ENTRY(ISuperstructureMemberSegment)
 	COM_INTERFACE_ENTRY(ISegment)
 	COM_INTERFACE_ENTRY(IItemData)
@@ -71,11 +68,10 @@ END_COM_MAP()
 
 private:
    IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
+
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
    ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
    ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
-
-   Float64 m_FlangeThickening;
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
@@ -88,7 +84,7 @@ private:
    std::vector<ShapeData> m_Shapes;
 
    Float64 m_HaunchDepth[2];
-
+   
    CItemDataManager m_ItemDataMgr;
 
 // ISupportsErrorInfo
@@ -106,7 +102,7 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment);
    STDMETHOD(get_NextSegment)(ISegment** segment);
 	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection);
-	STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
@@ -114,15 +110,15 @@ public:
 	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
    STDMETHOD(get_HaunchDepth)(EndType endType,Float64* pVal);
    STDMETHOD(put_HaunchDepth)(EndType endType,Float64 val);
-   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64* pVal);
+   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64 *pVal);
 
-// IThickenedFlangeBulbTeeSegment
+// IPrismaticSuperstructureMemberSegment
 public:
-   STDMETHOD(put_FlangeThickening)(Float64 flangeThickening);
 	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial);
    STDMETHOD(get_ShapeCount)(IndexType* nShapes);
    STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material);
    STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material);
+
 
 // IItemData
 public:
@@ -138,6 +134,4 @@ public:
 
 private:
    Float64 GetSuperstructureMemberLength();
-   Float64 GetFlangeThickening(Float64 distAlongSegment);
 };
-

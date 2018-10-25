@@ -72,7 +72,7 @@ private:
 
    typedef std::pair<EndType,std::pair<CComBSTR,ReleaseType> > MemberReleaseDataType;
 
-   std::vector<CComPtr<ISegment>> m_Segments;
+   std::vector<CComPtr<ISuperstructureMemberSegment>> m_Segments;
 
    ReleaseType m_Release[2];
    StageIndexType m_ReleaseStageIndex[2];
@@ -88,9 +88,9 @@ public:
 // ISuperstructureMember
 public:
    STDMETHOD(get_ID)(GirderIDType* pID);
-	STDMETHOD(AddSegment)(/*[in]*/ ISegment* segment);
-	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISegment* *pVal);
-   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISegment** ppSeg);
+	STDMETHOD(AddSegment)(/*[in]*/ ISuperstructureMemberSegment* segment);
+	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISuperstructureMemberSegment* *pVal);
+   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISuperstructureMemberSegment** ppSeg);
    STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 Xs,Float64* pXg);
 	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal);
 	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release);

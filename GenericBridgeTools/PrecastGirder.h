@@ -51,6 +51,7 @@ public:
       m_HPMeasure = hpmFractionOfGirderLength;
       m_EndHPMeasure = hpmFractionOfGirderLength;
       m_HPReference = hprEndOfGirder;
+      m_EndHPReference = hprEndOfGirder;
       m_HPStart = 0.0;
       m_HP1 = 0.4;
       m_HP2 = 0.4;
@@ -78,7 +79,7 @@ BEGIN_COM_MAP(CPrecastGirder)
 END_COM_MAP()
 
 private:
-   ISegment* m_pSegment; // weak reference to the superstructure member segment for this girder
+   ISuperstructureMemberSegment* m_pSegment; // weak reference to the superstructure member segment for this girder
    CComPtr<IStrandMover> m_pStrandMover;
    CComPtr<IStrandFillTool> m_StrandFillTool;
 
@@ -159,7 +160,7 @@ public:
 
 // IPrecastGirder
 public:
-	STDMETHOD(Initialize)(ISegment* segment,IStrandMover* strandMover);
+	STDMETHOD(Initialize)(ISuperstructureMemberSegment* segment,IStrandMover* strandMover);
 
 	STDMETHOD(putref_StrandMover)(/*[in]*/IStrandMover* pStrandMover);
 	STDMETHOD(get_StrandMover)(/*[out,retval]*/IStrandMover** ppStrandMover);

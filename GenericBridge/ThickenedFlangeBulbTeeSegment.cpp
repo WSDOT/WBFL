@@ -118,35 +118,59 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderLine(IGirderLine** girder
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_PrevSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pPrevSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
+   m_pPrevSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pPrevSegment = pMySeg;
+      return hr;
+   }
+   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrevSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pPrevSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pPrevSegment )
+   {
+      return m_pPrevSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_NextSegment(ISegment* segment)
 {
    CHECK_IN(segment);
-   m_pNextSegment = segment;
+   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
+   m_pNextSegment = NULL;
+   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
+   if ( FAILED(hr) )
+   {
+      m_pNextSegment = pMySeg;
+      return hr;
+   }
+   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
    return S_OK;
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_NextSegment(ISegment** segment)
 {
    CHECK_RETVAL(segment);
-   *segment = m_pNextSegment;
-   if ( *segment )
-      (*segment)->AddRef();
-
-   return S_OK;
+   if ( m_pNextSegment )
+   {
+      return m_pNextSegment->QueryInterface(segment);
+   }
+   else
+   {
+      *segment = NULL;
+      return E_FAIL;
+   }
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Length(Float64 *pVal)
@@ -174,7 +198,9 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    hr = get_PrimaryShape(distAlongSegment,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // create our section object
    CComPtr<ICompositeSectionEx> section;
@@ -189,14 +215,18 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    
    Float64 Ebg = 0;
    if ( m_Shapes.front().BGMaterial )
+   {
       m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+   }
 
    Float64 Dfg = 0;
    m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
    
    Float64 Dbg = 0;
    if ( m_Shapes.front().BGMaterial )
+   {
       m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+   }
 
    section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
@@ -211,19 +241,27 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
 
       Float64 Efg = 0;
       if ( shapeData.FGMaterial )
+      {
          shapeData.FGMaterial->get_E(stageIdx,&Efg);
+      }
 
       Float64 Ebg;
       if ( shapeData.BGMaterial )
+      {
          shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+      }
 
       Float64 Dfg = 0;
       if ( shapeData.FGMaterial )
+      {
          shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+      }
 
       Float64 Dbg = 0;
       if ( shapeData.BGMaterial )
+      {
          shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+      }
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
@@ -441,13 +479,17 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_ShapeCount(IndexType* nShapes)
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_ForegroundMaterial(IndexType index,IMaterial* *material)
 {
    if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(material);
    (*material) = m_Shapes[index].FGMaterial;
 
    if ( *material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }
@@ -455,13 +497,17 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_ForegroundMaterial(IndexType in
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BackgroundMaterial(IndexType index,IMaterial* *material)
 {
    if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(material);
    (*material) = m_Shapes[index].BGMaterial;
 
    if ( *material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }

@@ -54,6 +54,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CFlangedSplicedGirderSegment)
 	COM_INTERFACE_ENTRY(ISplicedGirderSegment)
+   COM_INTERFACE_ENTRY(ISuperstructureMemberSegment)
 	COM_INTERFACE_ENTRY(ISegment)
    COM_INTERFACE_ENTRY(IObjectSafety)
 	COM_INTERFACE_ENTRY(IItemData)

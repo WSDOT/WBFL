@@ -73,8 +73,8 @@ private:
    IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
 
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISegment* m_pPrevSegment; // weak reference to previous segment
-   ISegment* m_pNextSegment; // weak reference to next segment
+   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
+   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
@@ -107,6 +107,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(TEndBlockSegmentImpl)
 	COM_INTERFACE_ENTRY(T_IEndBlockSegment)
+   COM_INTERFACE_ENTRY(ISuperstructureMemberSegment)
 	COM_INTERFACE_ENTRY(ISegment)
 	COM_INTERFACE_ENTRY(IItemData)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
@@ -200,35 +201,38 @@ public:
    STDMETHOD(putref_PrevSegment)(ISegment* segment)
    {
       CHECK_IN(segment);
-      m_pPrevSegment = segment;
-      return S_OK;
+      ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
+      m_pPrevSegment = NULL;
+      HRESULT hr = segment->QueryInterface(&m_pPrevSegment);
+      if ( FAILED(hr) )
+      {
+         m_pPrevSegment = pMySeg;
+      }
+      return hr;
    }
 
    STDMETHOD(get_PrevSegment)(ISegment** segment)
    {
       CHECK_RETVAL(segment);
-      *segment = m_pPrevSegment;
-      if ( *segment )
-         (*segment)->AddRef();
-
-      return S_OK;
+      return m_pPrevSegment->QueryInterface(segment);
    }
 
    STDMETHOD(putref_NextSegment)(ISegment* segment)
    {
-      CHECK_IN(segment);
-      m_pNextSegment = segment;
-      return S_OK;
+      ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
+      m_pNextSegment = NULL;
+      HRESULT hr = segment->QueryInterface(&m_pNextSegment);
+      if ( FAILED(hr) )
+      {
+         m_pNextSegment = pMySeg;
+      }
+      return hr;
    }
 
    STDMETHOD(get_NextSegment)(ISegment** segment)
    {
       CHECK_RETVAL(segment);
-      *segment = m_pNextSegment;
-      if ( *segment )
-         (*segment)->AddRef();
-
-      return S_OK;
+      return m_pNextSegment->QueryInterface(segment);
    }
 
    STDMETHOD(get_Length)(Float64 *pVal)
@@ -298,14 +302,18 @@ public:
       
       Float64 Ebg = 0;
       if ( m_Shapes.front().BGMaterial )
+      {
          m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+      }
 
       Float64 Dfg = 0;
       m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
       
       Float64 Dbg = 0;
       if ( m_Shapes.front().BGMaterial )
+      {
          m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+      }
 
       section->AddSection(newShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
@@ -320,19 +328,27 @@ public:
 
          Float64 Efg = 0;
          if ( shapeData.FGMaterial )
+         {
             shapeData.FGMaterial->get_E(stageIdx,&Efg);
+         }
 
          Float64 Ebg;
          if ( shapeData.BGMaterial )
+         {
             shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+         }
 
          Float64 Dfg = 0;
          if ( shapeData.FGMaterial )
+         {
             shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+         }
 
          Float64 Dbg = 0;
          if ( shapeData.BGMaterial )
+         {
             shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+         }
 
          CComPtr<IShape> shape;
          shapeData.Shape->Clone(&shape);
@@ -447,7 +463,9 @@ public:
    STDMETHOD(put_Orientation)(Float64 orientation)
    {
       if ( IsEqual(m_Orientation,orientation) )
+      {
          return S_OK;
+      }
 
       m_Orientation = orientation;
       return S_OK;
@@ -515,13 +533,17 @@ public:
    STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material)
    {
       if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      {
          return E_INVALIDARG;
+      }
 
       CHECK_RETVAL(material);
       (*material) = m_Shapes[index].FGMaterial;
 
       if ( *material )
+      {
          (*material)->AddRef();
+      }
 
       return S_OK;
    }
@@ -529,13 +551,17 @@ public:
    STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material)
    {
       if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      {
          return E_INVALIDARG;
+      }
 
       CHECK_RETVAL(material);
       (*material) = m_Shapes[index].BGMaterial;
 
       if ( *material )
+      {
          (*material)->AddRef();
+      }
 
       return S_OK;
    }

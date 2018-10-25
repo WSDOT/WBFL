@@ -68,15 +68,15 @@ public:
 protected:
    virtual HRESULT DealWithMyExceptions()
    {
-      try
-      {
+      //try
+      //{
          // Assume that whatever got thrown means that our model and results are no good
          ClearModels();
-      }
-      catch(...)
-      {
-         ATLASSERT(false); // ClearModels should not throw
-      } // just make sure no exceptions escape 
+      //}
+      //catch(...)
+      //{
+      //   ATLASSERT(false); // ClearModels should not throw
+      //} // just make sure no exceptions escape 
 
       return DealWithExceptions(this, IID_ILoadGroupResponse);
    }

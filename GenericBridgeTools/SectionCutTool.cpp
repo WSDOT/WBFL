@@ -488,7 +488,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       GirderIDType ssmbrID;
       ssmbr->get_ID(&ssmbrID);
 
-      CComPtr<ISegment> firstSegment;
+      CComPtr<ISuperstructureMemberSegment> firstSegment;
       ssmbr->get_Segment(0,&firstSegment);
 
       CComPtr<IGirderLine> firstGirderLine;
@@ -506,7 +506,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       Float64 distFromStartOfSSMbr = station - firstStationValue;
 
       SegmentIndexType segIdx;
-      CComPtr<ISegment> segment;
+      CComPtr<ISuperstructureMemberSegment> segment;
       Float64 dist_along_segment;
       ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&dist_along_segment,&segIdx,&segment);
 
@@ -738,7 +738,7 @@ STDMETHODIMP CSectionCutTool::CreateGirderSectionBySSMbr(IGenericBridge* bridge,
 
    Float64 Xs;
    SegmentIndexType segIdx;
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
    return CreateGirderSectionBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,sectionPropMethod,section);
@@ -804,7 +804,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
       Float64 endDist = 0;
       for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
       {
-         CComPtr<ISegment> segment;
+         CComPtr<ISuperstructureMemberSegment> segment;
          ssMbr->get_Segment(segIdx,&segment);
 
          CComPtr<IGirderLine> girderLine;
@@ -944,7 +944,7 @@ STDMETHODIMP CSectionCutTool::CreateGirderShapeBySSMbr(IGenericBridge* bridge,Gi
 
    Float64 Xs;
    SegmentIndexType segIdx;
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
    return CreateGirderShapeBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,stageIdx,ppShape);
@@ -1190,7 +1190,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IGirderLine> girderLine;
@@ -1796,7 +1796,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ISegment> segment;
+   CComPtr<ISuperstructureMemberSegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
    CComPtr<IShape> primary_shape;

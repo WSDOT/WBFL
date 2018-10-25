@@ -118,6 +118,7 @@ public:
    // Adds a new point to the the end of the function. Returns the total number of 
    // points in the function including the new point.
    CollectionIndexType AddPoint(const gpPoint2d& point);
+   CollectionIndexType AddPoint(Float64 X,Float64 Y);
 
    //------------------------------------------------------------------------
    // Intersect

@@ -104,6 +104,26 @@ public:
    //------------------------------------------------------------------------
    Float64 GetKg() const;
 
+
+   //------------------------------------------------------------------------
+   virtual bool TestRangeOfApplicability(Location loc) const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Int_1_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Int_2_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Ext_2_Strength() const;
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
@@ -131,25 +151,6 @@ protected:
 
    //------------------------------------------------------------------------
    virtual void MakeAssignment(const lrfdLldfTypeAEKIJ& rOther);
-
-   //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

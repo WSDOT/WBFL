@@ -85,8 +85,8 @@ public:
 protected:
    IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISegment* m_pPrevSegment; // weak reference to previous segment
-   ISegment* m_pNextSegment; // weak reference to next segment
+   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
+   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
@@ -196,24 +196,34 @@ public:
    STDMETHOD(putref_PrevSegment)(ISegment* segment)
    {
       CHECK_IN(segment);
-
    #if defined _DEBUG
       CComQIPtr<ISplicedGirderSegment> prevSegment(segment);
       ATLASSERT(prevSegment); // all segments must be spliced girder segments
    #endif
-
-      m_pPrevSegment = segment;
+      ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
+      m_pPrevSegment = NULL;
+      HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
+      if ( FAILED(hr) )
+      {
+         m_pPrevSegment = pMySeg;
+         return hr;
+      }
+      m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
       return S_OK;
    }
 
    STDMETHOD(get_PrevSegment)(ISegment** segment)
    {
       CHECK_RETVAL(segment);
-      *segment = m_pPrevSegment;
-      if ( *segment )
-         (*segment)->AddRef();
-
-      return S_OK;
+      if ( m_pPrevSegment )
+      {
+         return m_pPrevSegment->QueryInterface(segment);
+      }
+      else
+      {
+         *segment = NULL;
+         return E_FAIL;
+      }
    }
 
    STDMETHOD(putref_NextSegment)(ISegment* segment)
@@ -225,18 +235,30 @@ public:
       ATLASSERT(nextSegment); // all segments must be spliced girder segments
    #endif
 
-      m_pNextSegment = segment;
+      ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
+      m_pNextSegment = NULL;
+      HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
+      if ( FAILED(hr) )
+      {
+         m_pNextSegment = pMySeg;
+         return hr;
+      }
+      m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
       return S_OK;
    }
 
    STDMETHOD(get_NextSegment)(ISegment** segment)
    {
       CHECK_RETVAL(segment);
-      *segment = m_pNextSegment;
-      if ( *segment )
-         (*segment)->AddRef();
-
-      return S_OK;
+      if ( m_pNextSegment )
+      {
+         return m_pNextSegment->QueryInterface(segment);
+      }
+      else
+      {
+         *segment = NULL;
+         return E_FAIL;
+      }
    }
 
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal)
@@ -929,7 +951,7 @@ protected:
       Float64 slopeParabola;
 
       // Find the first segment in the girder
-      CComPtr<ISegment> segment1;
+      CComPtr<ISuperstructureMemberSegment> segment1;
       m_pSSMbr->get_Segment(0,&segment1);
       CComQIPtr<ISplicedGirderSegment> firstSegment(segment1);
 
@@ -939,10 +961,13 @@ protected:
       CComPtr<ISplicedGirderSegment> nextSegment;
       do
       {
-         CComPtr<ISegment> ps;
-         CComPtr<ISegment> ns;
-         currSegment->get_PrevSegment(&ps);
-         currSegment->get_NextSegment(&ns);
+         CComPtr<ISegment> prevSeg;
+         CComPtr<ISegment> nextSeg;
+         currSegment->get_PrevSegment(&prevSeg);
+         currSegment->get_NextSegment(&nextSeg);
+
+         CComQIPtr<ISuperstructureMemberSegment> ps(prevSeg);
+         CComQIPtr<ISuperstructureMemberSegment> ns(nextSeg);
 
          SegmentVariationType prevVariationType,variationType,nextVariationType;
          Float64 prev_segment_length, segment_length, next_segment_length;
@@ -1358,8 +1383,9 @@ protected:
       *pXgpStart = 0; // start at zero
 
       // sum the layout length of all the previous segments
-      CComPtr<ISegment> prevSegment;
-      get_PrevSegment(&prevSegment);
+      CComPtr<ISegment> segment;
+      get_PrevSegment(&segment);
+      CComQIPtr<ISuperstructureMemberSegment> prevSegment(segment);
       while ( prevSegment )
       {
          CComPtr<IGirderLine> girderLine;

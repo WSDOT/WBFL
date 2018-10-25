@@ -309,8 +309,8 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
          CComPtr<ISuperstructureMember> ssmbr;
          bridge->CreateSuperstructureMember(gdrLineID,locationType,&ssmbr);
 
-         CComPtr<IPrismaticSegment> segment;
-         segment.CoCreateInstance(CLSID_PrismaticSegment);
+         CComPtr<IPrismaticSuperstructureMemberSegment> segment;
+         segment.CoCreateInstance(CLSID_PrismaticSuperstructureMemberSegment);
 
          // segment material
          CComPtr<IMaterial> material;

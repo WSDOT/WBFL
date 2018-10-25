@@ -343,7 +343,6 @@ void CModel::ClearAnalysis()
 // generic function to deal with exceptions caught in compute functions
 HRESULT CModel::DealWithExceptions()
 {
-
    // now try to make sense out of what got thrown
    try
    {
@@ -366,7 +365,8 @@ HRESULT CModel::DealWithExceptions()
       // could make up a custom message here, but we don't know what happened so why try?
       // the main point is not to let the exception out into the com world
       ATLASSERT(false);
-      return E_FAIL;
+      //return E_FAIL;
+      throw;
    }
 }
 
