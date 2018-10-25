@@ -256,7 +256,7 @@ STDMETHODIMP CLBAMFactory::CreateSimpleModel(IDblArray* SpanLengths, Float64 E, 
 	return S_OK;
 }
 
-STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage, ILongArray* *supportIDs)
+STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage, IIDArray* *supportIDs)
 {
    CHECK_IN(pModel);
    CHECK_IN(stage);
@@ -342,8 +342,8 @@ STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage,
          }
       }
 
-      CComPtr<ILongArray> vsuppids;
-      hr = vsuppids.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> vsuppids;
+      hr = vsuppids.CoCreateInstance(CLSID_IDArray);
       CollectionIndexType size = suppids.size();
       vsuppids->Reserve(size);
       for (CollectionIndexType i=0; i<size; i++)
@@ -2119,7 +2119,7 @@ void CLBAMFactory::CreateSegmentLoad(MemberIDType mbrID,MemberType mbrType,IEnum
 }
 
 
-STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, long startID, long Increment, long* lastVal)
+STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, PoiIDType startID, PoiIDType Increment, PoiIDType* lastVal)
 {
 	CHECK_IN(Model);
    CHECK_RETVAL(lastVal);
@@ -2159,7 +2159,7 @@ STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, long 
       Float64 left_oh;
       hr = pssms->get_Offset(&left_oh);
 
-      long curr_id = startID-1;
+      PoiIDType curr_id = startID-1;
 
       if (left_oh>0.0)
       {
@@ -2184,7 +2184,7 @@ STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, long 
 
          Float64 curinc = 0.0;
 
-         for (long iinc=0; iinc<Increment+1; iinc++)
+         for (PoiIDType iinc=0; iinc<Increment+1; iinc++)
          {
             curr_id++;
 
@@ -2268,7 +2268,7 @@ HRESULT AddPOI(IPOIs* pPOIs, IPOI* pPOI)
    return hr;
 }
 
-STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, ILongArray* *pPoiIDs, IDblArray* *pPoiLocations)
+STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *pPoiIDs, IDblArray* *pPoiLocations)
 {
 	CHECK_IN(pModel);
    CHECK_RETOBJ(pPoiIDs);
@@ -2338,8 +2338,8 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, ILongArray*
       CollectionIndexType array_size = poi_list.size();
 
       // Create safe arrays that are to be returned.
-      CComPtr<ILongArray> poi_ids;
-      hr = poi_ids.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> poi_ids;
+      hr = poi_ids.CoCreateInstance(CLSID_IDArray);
       hr = poi_ids->Reserve(array_size);
 
       CComPtr<IDblArray> poi_locs;

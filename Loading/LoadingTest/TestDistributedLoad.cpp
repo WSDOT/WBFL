@@ -64,7 +64,7 @@ void CTestDistributedLoad::Test()
    ldLoadDirection dir;
    TRY_TEST( pDistributedLoad->get_Direction(&dir), S_OK );
    TRY_TEST( dir, ldldFy);
-   long i;
+   MemberIDType i;
    TRY_TEST( pDistributedLoad->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
 
@@ -87,7 +87,7 @@ void CTestDistributedLoad::Test()
 
    TRY_TEST( pDistributedLoad->put_MemberID(3), S_OK );
    TEST_LOAD_FIRED();
-   long l;
+   MemberIDType l;
    TRY_TEST( pDistributedLoad->get_MemberID(&l), S_OK );
    TRY_TEST( l, 3 );
 

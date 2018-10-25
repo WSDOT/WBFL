@@ -1552,6 +1552,8 @@ library WBFLLBAM
       HRESULT TopRelease([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpstring("property TopRelease"),helpcontext(IDH_TemporarySupport_TopRelease)] 
       HRESULT TopRelease([in] VARIANT_BOOL newVal);
+      [propget, helpstring("property OmitReaction")] HRESULT OmitReaction([out,retval]VARIANT_BOOL* pbOmit);
+      [propput, helpstring("property OmitReaction")] HRESULT OmitReaction([in]VARIANT_BOOL bOmit);
 	};
 
 	[
@@ -1605,7 +1607,9 @@ library WBFLLBAM
 		[helpstring("method Clear - Remove all TemporarySupports"),helpcontext(IDH_TemporarySupports_Clear)] 
         HRESULT Clear();
 		[helpstring("method Clone"),helpcontext(IDH_TemporarySupports_Clone)] 
-        HRESULT Clone(ITemporarySupports** clone);
+      HRESULT Clone(ITemporarySupports** clone);
+      [helpstring("method Find")]
+      HRESULT Find([in]SupportIDType tsID,[out,retval]ITemporarySupport** ppTS);
 	};
 
 
@@ -2949,23 +2953,17 @@ library WBFLLBAM
 		[propget, helpstring("property SuperstructureMembers"),helpcontext(IDH_Model_SuperstructureMembers)] 
 		HRESULT SuperstructureMembers([out, retval] ISuperstructureMembers* *pVal);
 
-//		[propputref, helpstring("property SuperstructureMembers"),helpcontext(IDH_Model_SuperstructureMembers)] 
-//		HRESULT SuperstructureMembers([in] ISuperstructureMembers* newVal);
-
 		[helpstring("method Clone"),helpcontext(IDH_Model_Clone)] 
 		HRESULT Clone([out,retval] ILBAMModel** clone);
 
 		[propget, helpstring("property Supports"),helpcontext(IDH_Model_Supports)] 
 		HRESULT Supports([out, retval] ISupports* *pVal);
 
-//		[propputref, helpstring("property Supports"),helpcontext(IDH_Model_Supports)] 
-//		HRESULT Supports([in] ISupports* newVal);
-
 		[propget, helpstring("property Spans"),helpcontext(IDH_Model_Spans)] 
 		HRESULT Spans([out, retval] ISpans* *pVal);
 
-//		[propputref, helpstring("property Spans"),helpcontext(IDH_Model_Spans)] 
-//		HRESULT Spans([in] ISpans* newVal);
+      [propget, helpstring("property TemporarySupports")]
+      HRESULT TemporarySupports([out,retval]ITemporarySupports** ppVal);
 
 		[helpstring("method Clear"),helpcontext(IDH_Model_Clear)] 
 		HRESULT Clear();
@@ -2973,14 +2971,8 @@ library WBFLLBAM
 		[propget, helpstring("property POIs"),helpcontext(IDH_Model_POIs)] 
 		HRESULT POIs([out, retval] IPOIs* *pVal);
 		
-//      [propputref, helpstring("property POIs"),helpcontext(IDH_Model_POIs)] 
-//		HRESULT POIs([in] IPOIs* newVal);
-		
       [propget, helpstring("property Stages"),helpcontext(IDH_Model_Stages)] 
 		HRESULT Stages([out, retval] IStages* *pVal);
-
-//		[propputref, helpstring("property Stages"),helpcontext(IDH_Model_Stages)] 
-//		HRESULT Stages([in] IStages* newVal);
 
 		[helpstring("method RemoveStage"),helpcontext(IDH_Model_RemoveStage)] 
 		HRESULT RemoveStage(BSTR stage);
@@ -3000,50 +2992,26 @@ library WBFLLBAM
 		[propget, helpstring("property PointLoads"),helpcontext(IDH_Model_PointLoads)] 
 		HRESULT PointLoads([out, retval] IPointLoads* *pVal);
 
-//		[propputref, helpstring("property PointLoads"),helpcontext(IDH_Model_PointLoads)] 
-//		HRESULT PointLoads([in] IPointLoads* newVal);
-
 		[propget, helpstring("property DistributedLoads"),helpcontext(IDH_Model_DistributedLoads)] 
 		HRESULT DistributedLoads([out, retval] IDistributedLoads* *pVal);
-
-//		[propputref, helpstring("property DistributedLoads"),helpcontext(IDH_Model_DistributedLoads)] 
-//		HRESULT DistributedLoads([in] IDistributedLoads* newVal);
 
 		[propget, helpstring("property TemperatureLoads"),helpcontext(IDH_Model_TemperatureLoads)] 
 		HRESULT TemperatureLoads([out, retval] ITemperatureLoads* *pVal);
 
-//		[propputref, helpstring("property TemperatureLoads"),helpcontext(IDH_Model_TemperatureLoads)] 
-//		HRESULT TemperatureLoads([in] ITemperatureLoads* newVal);
-
 		[propget, helpstring("property SettlementLoads"),helpcontext(IDH_Model_SettlementLoads)] 
 		HRESULT SettlementLoads([out, retval] ISettlementLoads* *pVal);
-
-//		[propputref, helpstring("property SettlementLoads"),helpcontext(IDH_Model_SettlementLoads)] 
-//		HRESULT SettlementLoads([in] ISettlementLoads* newVal);
 
 		[propget, helpstring("property StrainLoads"),helpcontext(IDH_Model_StrainLoads)] 
 		HRESULT StrainLoads([out, retval] IStrainLoads* *pVal);
 
-//		[propputref, helpstring("property StrainLoads"),helpcontext(IDH_Model_StrainLoads)] 
-//		HRESULT StrainLoads([in] IStrainLoads* newVal);
-
 		[propget, helpstring("property LoadGroups"),helpcontext(IDH_Model_LoadGroups)] 
 		HRESULT LoadGroups([out, retval] ILoadGroups* *pVal);
-
-//		[propputref, helpstring("property LoadGroups"),helpcontext(IDH_Model_LoadGroups)] 
-//		HRESULT LoadGroups([in] ILoadGroups* newVal);
 
 		[propget, helpstring("property LoadCases"),helpcontext(IDH_Model_LoadCases)] 
 		HRESULT LoadCases([out, retval] ILoadCases* *pVal);
 
-//		[propputref, helpstring("property LoadCases"),helpcontext(IDH_Model_LoadCases)] 
-//		HRESULT LoadCases([in] ILoadCases* newVal);
-
 		[propget, helpstring("property LoadCombinations"),helpcontext(IDH_Model_LoadCombinations)] 
 		HRESULT LoadCombinations([out, retval] ILoadCombinations* *pVal);
-
-//		[propputref, helpstring("property LoadCombinations"),helpcontext(IDH_Model_LoadCombinations)] 
-//		HRESULT LoadCombinations([in] ILoadCombinations* newVal);
 
 		[helpstring("method ComputeLocation"),helpcontext(IDH_Model_ComputeLocation)] 
 		HRESULT ComputeLocation([in]MemberIDType mbrID, [in]MemberType mbrType, [in]Float64 mbrLocation, [out]Float64* Xloc, [out]Float64* Yloc);
@@ -3051,14 +3019,8 @@ library WBFLLBAM
 		[propget, helpstring("property LiveLoad"),helpcontext(IDH_Model_LiveLoad)] 
       HRESULT LiveLoad([out, retval] ILiveLoad* *pVal);
 
-//		[propputref, helpstring("property LiveLoad"),helpcontext(IDH_Model_LiveLoad)] 
-//      HRESULT LiveLoad([in] ILiveLoad* newVal);
-
 		[propget, helpstring("property DistributionFactors"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT DistributionFactors([out, retval] IDistributionFactors* *pVal);
-
-//		[propputref, helpstring("property DistributionFactors"),helpcontext(IDH_Model_ComputeLocation)] 
-//      HRESULT DistributionFactors([in] IDistributionFactors* newVal);
 
 	   [propget, helpstring("property StructuredStorage - Return IStructuredStorage2 Interface"),helpcontext(IDH_Model_ComputeLocation)] 
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);

@@ -70,7 +70,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::InterfaceSupportsErrorInfo(REFIID riid
 }
 
 // ILoadCombinationResponse
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, ILongArray* POIs, BSTR Stage, ResultsOrientation orientation, 
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IIDArray* POIs, BSTR Stage, ResultsOrientation orientation, 
                                                        ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                        VARIANT_BOOL includeLiveLoad, VARIANT_BOOL includeImpact, VARIANT_BOOL computeConfig,
                                                        ILoadCombinationSectionResults** pResults)
@@ -137,7 +137,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IL
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                              ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                              VARIANT_BOOL includeLiveLoad, VARIANT_BOOL includeImpact,  VARIANT_BOOL computeConfig,
                                                              ILoadCombinationSectionResults** pResults)
@@ -201,7 +201,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                            ResultsSummationType summ, ForceEffectType effect, 
                                                            OptimizationType optimization, 
                                                            VARIANT_BOOL includeLiveLoad, VARIANT_BOOL includeImpact,  VARIANT_BOOL computeConfig,
@@ -261,7 +261,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                            ResultsSummationType summ, ForceEffectType effect, 
                                                            OptimizationType optimization, 
                                                            VARIANT_BOOL includeLiveLoad, VARIANT_BOOL includeImpact,  VARIANT_BOOL computeConfig,
@@ -321,7 +321,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                           ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                           VARIANT_BOOL includeLiveLoad,VARIANT_BOOL includeImpact,   VARIANT_BOOL computeConfig,
                                                           ILoadCombinationStressResults** pResults)
@@ -347,8 +347,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
       hr = force_res->get_Count(&num_pois);
       hr = results->Reserve(num_pois);
 
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 
@@ -409,7 +409,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
 
 ///////////////////////////////////////////////////////////////////////
 // IConcurrentLoadCombinationResponse
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(ILongArray* pois, 
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(IIDArray* pois, 
                                                         BSTR stage, 
                                                         ResultsOrientation orientation, 
                                                         ILoadCombinationResultConfiguration* config, 
@@ -426,8 +426,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(ILongArray* pois,
    {
 
       // we are going to need an array for POI-by-POI computations below
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 
@@ -495,7 +495,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(ILongArray* pois,
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(ILongArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, ISectionResult3Ds* *pResults)
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, ISectionResult3Ds* *pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -508,8 +508,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(ILongArray* pois, B
    {
 
       // we are going to need an array for POI-by-POI computations below
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 
@@ -577,7 +577,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(ILongArray* pois, B
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(ILongArray* pois, 
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(IIDArray* pois, 
                                                            BSTR stage, 
                                                            ILoadCombinationResultConfiguration* config, 
                                                            IResult3Ds* *pResults)
@@ -593,8 +593,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(ILongArray* pois,
    {
 
       // we are going to need an array for POI-by-POI computations below
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 
@@ -642,7 +642,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(ILongArray* pois,
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(ILongArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, IResult3Ds* *pResults)
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(IIDArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, IResult3Ds* *pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -655,8 +655,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(ILongArray* 
    {
 
       // we are going to need an array for POI-by-POI computations below
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 
@@ -704,7 +704,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(ILongArray* 
    return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(ILongArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, ISectionStressResults* *pResults)
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, ILoadCombinationResultConfiguration* config, ISectionStressResults* *pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -717,8 +717,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(ILongArray* pois, BSTR
    {
 
       // we are going to need an array for POI-by-POI computations below
-      CComPtr<ILongArray> single_poi;
-      hr = single_poi.CoCreateInstance(CLSID_LongArray);
+      CComPtr<IIDArray> single_poi;
+      hr = single_poi.CoCreateInstance(CLSID_IDArray);
 
       hr = single_poi->ReDim(1);
 

@@ -118,9 +118,8 @@ public:
       // count number of falses and create array of inactive axles
       AxleIndexType count = std::count(m_AppliedAxles.begin(), m_AppliedAxles.end(), AxleOff);
 
-      CComPtr<ILongArray> inactive_axles;
-      inactive_axles.CoCreateInstance(CLSID_LongArray);
-
+      CComPtr<IIndexArray> inactive_axles;
+      inactive_axles.CoCreateInstance(CLSID_IndexArray);
       if (count>0)
          inactive_axles->Reserve(count);
 
@@ -237,35 +236,35 @@ END_COM_MAP()
 
 // IEnvelopedVehicularResponse
 public: 
-	STDMETHOD(ComputeForces)(/*[in]*/ILongArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                            /*[in]*/VehicleIndexType vehicleIndex, /*[in]*/ResultsOrientation orientation, 
                            /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                            /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                            /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
                            /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeDeflections)(/*[in]*/ILongArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                  /*[in]*/VehicleIndexType vehicleIndex, 
                                  /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                  /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                  /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
                                  /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeReactions)(/*[in]*/ILongArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                /*[in]*/VehicleIndexType vehicleIndex, 
                                /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
                                /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/ILongArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                /*[in]*/VehicleIndexType vehicleIndex, 
                                /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
                                /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeStresses)(/*[in]*/ILongArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                               /*[in]*/VehicleIndexType vehicleIndex, 
                               /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration,
@@ -303,7 +302,7 @@ private:
    long                                     m_ProgressCookie;
 
 
-	STDMETHOD(ComputeResponse)(/*[in]*/ILongArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeResponse)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                               /*[in]*/VehicleIndexType vehicleIndex, 
                               /*[in]*/ForceEffectType effect,
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration,

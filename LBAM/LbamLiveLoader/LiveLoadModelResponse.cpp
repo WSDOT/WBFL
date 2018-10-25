@@ -276,7 +276,7 @@ STDMETHODIMP CLiveLoadModelResponse::InitializeProgressMonitor(IProgressMonitor 
    return S_OK;
 }
 
-STDMETHODIMP CLiveLoadModelResponse::ComputeForces(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type, ResultsOrientation orientation, 
+STDMETHODIMP CLiveLoadModelResponse::ComputeForces(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type, ResultsOrientation orientation, 
                                                    ForceEffectType effect, OptimizationType optimization, 
                                                    VehicularLoadConfigurationType vehConfiguration, 
                                                    VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, 
@@ -376,7 +376,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeForces(ILongArray* poiIDs, BSTR stag
    return hr;
 }
 
-STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type,
+STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type,
                                                         ForceEffectType effect, OptimizationType optimization, 
                                                         VehicularLoadConfigurationType vehConfiguration, 
                                                         VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, 
@@ -466,7 +466,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(ILongArray* poiIDs, BSTR
 }
 
 
-STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(ILongArray* supportIDs, BSTR stage, LiveLoadModelType type,
+STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(IIDArray* supportIDs, BSTR stage, LiveLoadModelType type,
                                                       ForceEffectType effect, OptimizationType optimization, 
                                                       VehicularLoadConfigurationType vehConfiguration, 
                                                       VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, 
@@ -552,7 +552,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(ILongArray* supportIDs, BS
    return hr;
 }
 
-STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(ILongArray* supportIDs, BSTR stage, LiveLoadModelType type,
+STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(IIDArray* supportIDs, BSTR stage, LiveLoadModelType type,
                                                       ForceEffectType effect, OptimizationType optimization, 
                                                       VehicularLoadConfigurationType vehConfiguration, 
                                                       VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, 
@@ -639,7 +639,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(ILongArray* suppo
 }
 
 
-STDMETHODIMP CLiveLoadModelResponse::ComputeStresses(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type,
+STDMETHODIMP CLiveLoadModelResponse::ComputeStresses(IIDArray* poiIDs, BSTR stage, LiveLoadModelType type,
                                                    ForceEffectType effect, OptimizationType optimization, 
                                                    VehicularLoadConfigurationType vehConfiguration, 
                                                    VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, 

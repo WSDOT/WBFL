@@ -81,7 +81,7 @@ public:
    STDMETHOD(putref_EnvelopedVehicularRepsonse)(/*[in]*/ IEnvelopedVehicularResponse* pResponse);
 
 // ILiveLoadModelResponse
-	STDMETHOD(ComputeForces)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
+	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                             /*[in]*/ResultsOrientation orientation, /*[in]*/ForceEffectType effect, 
                             /*[in]*/OptimizationType optimization, 
                             /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
@@ -89,7 +89,7 @@ public:
                             /*[in]*/VARIANT_BOOL computePlacement,
                             /*[out]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeDeflections)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
+	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                 /*[in]*/ForceEffectType effect, 
                                 /*[in]*/OptimizationType optimization, 
                                 /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
@@ -97,7 +97,7 @@ public:
                                 /*[in]*/VARIANT_BOOL computePlacement,
                                 /*[out]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeReactions)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
+	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                /*[in]*/ForceEffectType effect, 
                                /*[in]*/OptimizationType optimization, 
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
@@ -105,7 +105,7 @@ public:
                                /*[in]*/VARIANT_BOOL computePlacement,
                                /*[out]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                /*[in]*/ForceEffectType effect, 
                                /*[in]*/OptimizationType optimization, 
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
@@ -113,7 +113,7 @@ public:
                                /*[in]*/VARIANT_BOOL computePlacement,
                                /*[out]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeStresses)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
+	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                               /*[in]*/ForceEffectType effect, 
                               /*[in]*/OptimizationType optimization, 
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration, 

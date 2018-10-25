@@ -170,7 +170,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(nStrands == 15, true);
 
    TRY_TEST(strand_filler->GetMaxStrandFill(NULL),E_POINTER);
-   CComPtr<ILongArray> fill_array;
+   CComPtr<IIndexArray> fill_array;
    TRY_TEST(strand_filler->GetMaxStrandFill(&fill_array),S_OK);
 
    TRY_TEST(strand_filler->put_StrandFill(fill_array),S_OK);
@@ -197,8 +197,8 @@ void CTestStrandPattern::Test()
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
 
-   CComPtr<ILongArray> new_array;
-   new_array.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> new_array;
+   new_array.CoCreateInstance(CLSID_IndexArray);
    TRY_TEST(strand_filler->put_StrandFill(new_array),S_OK);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 0, true);
@@ -572,7 +572,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(l1, 3.0);
 
    fill_array.Release();
-   IDType item;
+   IndexType item;
    TRY_TEST(strand_filler->GetDebondAtLeftSection(0, &fill_array),S_OK);
    TRY_TEST(fill_array->get_Count(&count),S_OK);
    TRY_TEST(count,1);

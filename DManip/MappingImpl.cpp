@@ -113,6 +113,7 @@ STDMETHODIMP_(void) CMappingImpl::PrepareDC(CDC* dc)
    item.m_pDC = dc;
 
    // use himetric since we have a handy conversion built into our dc
+//   CSize size(5000,5000);  // value is arbitrary, but large for more accuracy
    CSize size(m_OriginalLogicalExtentX,m_OriginalLogicalExtentY);  // value is arbitrary, but large for more accuracy
    dc->LPtoHIMETRIC(&size); // returns size in 0.01 millimeters
 
@@ -120,20 +121,24 @@ STDMETHODIMP_(void) CMappingImpl::PrepareDC(CDC* dc)
    Float64 twips_x = ((Float64)size.cx / 100) / 0.017639;
    Float64 twips_y = ((Float64)size.cy / 100) / 0.017639;
 
+//   item.m_TextCoordMapperX.SetCoordinateMap(0.0, m_LogicalOriginX, twips_x, m_LogicalOriginX+5000);
    item.m_TextCoordMapperX.SetCoordinateMap(0.0, m_LogicalOriginX, twips_x, m_LogicalOriginX+m_OriginalLogicalExtentX);
 
-   if ( 0 < m_LogicalExtentY )
+   if (m_LogicalExtentY >0)
    {
       // logical y is up
+//      item.m_TextCoordMapperY.SetCoordinateMap(0.0, m_LogicalOriginY, twips_y, m_LogicalOriginY+5000);
       item.m_TextCoordMapperY.SetCoordinateMap(0.0, m_LogicalOriginY, twips_y, m_LogicalOriginY+m_OriginalLogicalExtentY);
    }
    else
    {
       // logical y is down
+//      item.m_TextCoordMapperY.SetCoordinateMap(0.0, m_LogicalOriginY, twips_y, m_LogicalOriginY-5000);
       item.m_TextCoordMapperY.SetCoordinateMap(0.0, m_LogicalOriginY, twips_y, m_LogicalOriginY-m_OriginalLogicalExtentY);
    }
    
    m_Stack.push_back(item);
+//   TRACE("CMappingImpl::Push DC %d print = %d\n",m_Stack.size(), dc->IsPrinting());
 }
 
 STDMETHODIMP_(void) CMappingImpl::CleanUpDC(CDC* dc)
@@ -493,33 +498,31 @@ void CMappingImpl::UpdateLogicalExtents()
    }
    else if ( m_MappingMode == DManip::Isotropic )
    {
-      // prevent divide by zero issues
-      if (!IsZero(m_WorldExtentX) && !IsZero(m_WorldExtentX) && m_OriginalLogicalExtentY != 0 )
+      // compute aspect ratio of logical and world extents
+      Float64 larat = fabs((Float64)m_OriginalLogicalExtentX/(Float64)m_OriginalLogicalExtentY);
+      Float64 warat = fabs(m_WorldExtentX/m_WorldExtentY);
+
+      // adjust aspect ratio of logical space to match world
+      if (warat>larat)
       {
-         // compute aspect ratio of logical and world extents
-         Float64 logical_aspect_ratio = fabs((Float64)m_OriginalLogicalExtentX/(Float64)m_OriginalLogicalExtentY);
-         Float64 world_aspect_ratio   = fabs(m_WorldExtentX/m_WorldExtentY);
+         // world is too wide - must adjust y only
+         m_LogicalExtentX = m_OriginalLogicalExtentX;
 
-         // adjust aspect ratio of logical space to match world
-         if (logical_aspect_ratio < world_aspect_ratio)
-         {
-            // world is too wide - must adjust y only
-            m_LogicalExtentX = m_OriginalLogicalExtentX;
+         Float64 yneeded =  (Float64)abs(m_OriginalLogicalExtentX)/warat;
 
-            Float64 yneeded =  (Float64)abs(m_OriginalLogicalExtentX)/world_aspect_ratio;
+         // retain sign always
+         m_LogicalExtentY = (m_OriginalLogicalExtentY <0.0 ? -1:1) * 
+                            round_to_nearest_whole_number(yneeded);
+      }
+      else 
+      {
+         // world is too narrow - must adjust x only
+         m_LogicalExtentY = m_OriginalLogicalExtentY;
 
-            // retain sign always
-            m_LogicalExtentY = BinarySign(m_OriginalLogicalExtentY)*round_to_nearest_whole_number(yneeded);
-         }
-         else 
-         {
-            // world is too narrow - must adjust x only
-            m_LogicalExtentY = m_OriginalLogicalExtentY;
+         Float64 xneeded = (Float64)abs(m_OriginalLogicalExtentY) * warat;
 
-            Float64 xneeded = (Float64)abs(m_OriginalLogicalExtentY) * world_aspect_ratio;
-
-            m_LogicalExtentX = BinarySign(m_OriginalLogicalExtentX)*round_to_nearest_whole_number(xneeded);
-         }
+         m_LogicalExtentX = (m_OriginalLogicalExtentX <0.0 ? -1:1) * 
+                            round_to_nearest_whole_number(xneeded);
       }
    }
 

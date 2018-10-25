@@ -35,32 +35,16 @@
 #endif // _MSC_VER > 1000
 
 #if defined _DEBUG
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "StorageTest\x64\VBA_Debug\StorageTest.h"
-#else
-#include "StorageTest\Win32\VBA_Debug\StorageTest.h"
-#endif
-#else
 #if defined _WIN64
 #include "StorageTest\x64\Debug\StorageTest.h"
 #else
 #include "StorageTest\Win32\Debug\StorageTest.h"
-#endif
-#endif
-#else
-#if defined VBA_BUILD
-#if defined _WIN64
-#include "StorageTest\x64\VBA_Release\StorageTest.h"
-#else
-#include "StorageTest\Win32\VBA_Release\StorageTest.h"
 #endif
 #else
 #if defined _WIN64
 #include "StorageTest\x64\Release\StorageTest.h"
 #else
 #include "StorageTest\Win32\Release\StorageTest.h"
-#endif
 #endif
 #endif
 

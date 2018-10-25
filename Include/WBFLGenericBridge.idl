@@ -1640,7 +1640,7 @@ library WBFLGenericBridge
 	interface ITemporaryPierItemCollection : IUnknown
 	{
 		[propget, helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType idx, [out, retval] ITemporaryPierItem** pVal);
+      HRESULT Item([in]IDType id, [out, retval] ITemporaryPierItem** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval); 

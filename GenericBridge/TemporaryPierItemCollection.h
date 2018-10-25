@@ -33,7 +33,7 @@
 #include "GenericBridgeCP.h"
 
 class CTemporaryPierItemCollection;
-typedef CComLongKeyedCollection<ITemporaryPierItemCollection, ITemporaryPierItem, IEnumTemporaryPierItems, &IID_IEnumTemporaryPierItems,IDType> TPICollImpl;
+typedef CComIDKeyedCollection<ITemporaryPierItemCollection, ITemporaryPierItem, IEnumTemporaryPierItems, &IID_IEnumTemporaryPierItems,IDType> TPICollImpl;
 typedef CPersistentCollection<CTemporaryPierItemCollection, TPICollImpl,IndexType> PersistentTPICollImpl;
 
 /////////////////////////////////////////////////////////////////////////////
@@ -100,9 +100,9 @@ public:
 
 // ITemporaryPierItemCollection
 public:
-//   STDMETHOD(get_Item)(/*[in]*/PierIndexType idx, /*[out, retval]*/ ITemporaryPierItem** pVal);
+//   STDMETHOD(get_Item)(/*[in]*/IDType id, /*[out, retval]*/ ITemporaryPierItem** pVal);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval); 
-//   STDMETHOD(get_Count)(/*[out, retval]*/ PierIndexType *pVal);
+   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
    STDMETHOD(get__EnumTemporaryPierItems)(/*[out, retval]*/ IEnumTemporaryPierItems* *pVal);
    STDMETHOD(Add)(/*[in]*/ IDType id,/*[in]*/ Float64 location,/*[in]*/ BSTR bstrRemovalStage);
    STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index);

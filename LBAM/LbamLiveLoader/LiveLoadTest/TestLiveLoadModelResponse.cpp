@@ -45,7 +45,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateASimpleLBAM(ILBAMModel** model);
 
-inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, long mbrId, MemberType mType, Float64 ldVal)
+inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, MemberIDType mbrId, MemberType mType, Float64 ldVal)
 {
    CComPtr<IDistributedLoad> dl;
    TRY_TEST( dl.CoCreateInstance(CLSID_DistributedLoad), S_OK);
@@ -109,12 +109,12 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const PoiIDType NUMPOIS=10;
-   CComPtr<ILongArray> poiIDs;
-   poiIDs.CoCreateInstance(CLSID_LongArray);
-   for (PoiIDType poiID = 0; poiID < NUMPOIS; poiID++)
+   const CollectionIndexType NUMPOIS=10;
+   CComPtr<IIDArray> poiIDs;
+   poiIDs.CoCreateInstance(CLSID_IDArray);
+   for (CollectionIndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
    {
-      poiIDs->Add(poiID);
+      poiIDs->Add((PoiIDType)poiIdx);
    }
 
    // compute enveloped results for all pois
@@ -123,18 +123,18 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
                                        vlcType, doApplyImpact, doApplyDistribution, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<ILongArray> singlePOI;
-   singlePOI.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> singlePOI;
+   singlePOI.CoCreateInstance(CLSID_IDArray);
    singlePOI->ReDim(1);
 
-   for (PoiIDType poiID = 0; poiID < NUMPOIS; poiID++)
+   for (CollectionIndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
    {
-      singlePOI->put_Item(0,poiID);
+      singlePOI->put_Item(0,(PoiIDType)poiIdx);
 
       // get enveloped value - with optimal configuration
       Float64 left_val, right_val;
       CComPtr<ILiveLoadConfiguration> left_config, right_config;
-      TRY_TEST(results->GetResult(poiID, &left_val, &left_config, &right_val, &right_config), S_OK);
+      TRY_TEST(results->GetResult(poiIdx, &left_val, &left_config, &right_val, &right_config), S_OK);
 
       // compute result using config and basic engine
       // left config first,
@@ -150,7 +150,7 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
       // compare response
 //      TRY_TEST(IsEqual(vleft,  left_val), true);
 
-      os <<"L"<<std::setw(5) << poiID
+      os <<"L"<<std::setw(5) << poiIdx
          <<std::setw(16)<< left_val
          <<std::setw(16)<< right_val<<std::endl;
 
@@ -168,7 +168,7 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
          // compare response
 //         TRY_TEST(IsEqual(vright, right_val), true);
 
-         os <<"R"<<std::setw(5) << poiID
+         os <<"R"<<std::setw(5) << poiIdx
             <<std::setw(16)<< left_val
             <<std::setw(16)<< right_val<<std::endl;
       }
@@ -340,7 +340,7 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    lcdc->AddLoadGroup(lgn_br);
 
    // add some pois
-   long last_val;
+   PoiIDType last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 4, &last_val), S_OK);
 
 

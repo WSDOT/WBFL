@@ -31,8 +31,8 @@
 #include <WBFLComCollections.h>
 
 class CPOIs;
-typedef  CComLongKeyedCollection<IPOIs, IPOI, IEnumPOI, &IID_IEnumPOI,PoiIDType> POICollImpl;
-typedef CPersistentCollection<CPOIs, POICollImpl,IndexType> PersistentPOICollImpl;
+typedef  CComIDKeyedCollection<IPOIs, IPOI, IEnumPOI, &IID_IEnumPOI,CollectionIndexType> POICollImpl;
+typedef CPersistentCollection<CPOIs, POICollImpl,CollectionIndexType> PersistentPOICollImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPOIs
@@ -80,14 +80,14 @@ END_CONNECTION_POINT_MAP()
 // IPOIs
 public:
 	STDMETHOD(Clone)(/*[out, retval]*/ IPOIs** clone);
-   STDMETHOD(RemoveByID)(PoiIDType ID);
+   //STDMETHOD(get_Item)(CollectionIndexType idx,IPOI** ppPOI);
 
 protected:
    // implementations of virtual functions for collection
    virtual HRESULT OnBeforeAdd( StoredType* pVal);
    virtual HRESULT OnAfterAdd( StoredType* pVal);
    virtual HRESULT OnBeforeRemove ( StoredType* pVal);
-   virtual HRESULT OnAfterRemove( PoiIDType key);
+   virtual HRESULT OnAfterRemove( PoiIDType id);
 
 public:
    virtual void FinalRelease();

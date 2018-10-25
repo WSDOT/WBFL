@@ -153,9 +153,9 @@ const libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName) const
    return 0;
 }
 
-Uint32 libLibraryManager::GetIndex(LPCTSTR displayName) const
+CollectionIndexType libLibraryManager::GetIndex(LPCTSTR displayName) const
 {
-   Uint32 idx=0;
+   CollectionIndexType idx=0;
    std::_tstring name(displayName);
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
@@ -163,7 +163,7 @@ Uint32 libLibraryManager::GetIndex(LPCTSTR displayName) const
          return idx;
       idx++;
    }
-   return -1;
+   return INVALID_INDEX;
 }
 
 

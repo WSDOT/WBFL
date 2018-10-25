@@ -75,7 +75,7 @@ void CTestUsingBogusContext::Test()
 
    // get list of pois from context
    CComQIPtr<IAnalysisPOIs> anpois(plclc);
-   CComPtr<ILongArray> pois;
+   CComPtr<IIDArray> pois;
    CComPtr<IDblArray> bogus;
    anpois->GetSuperstructurePois(CComBSTR("Stage 1"), &pois, &bogus);
 

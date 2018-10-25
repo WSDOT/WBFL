@@ -51,7 +51,7 @@ STDMETHODIMP CTemperatureLoad::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CTemperatureLoad::get_MemberID(long *pVal)
+STDMETHODIMP CTemperatureLoad::get_MemberID(MemberIDType *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_MemberID;
@@ -59,7 +59,7 @@ STDMETHODIMP CTemperatureLoad::get_MemberID(long *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CTemperatureLoad::put_MemberID(long newVal)
+STDMETHODIMP CTemperatureLoad::put_MemberID(MemberIDType newVal)
 {
 	if (newVal<0)
       return E_INVALIDARG;
@@ -161,7 +161,7 @@ STDMETHODIMP CTemperatureLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_MemberID = var.lVal;
+      m_MemberID = var.iVal;
       var.Clear();
 
       hr = pload->get_Property(CComBSTR("TTop"),&var);

@@ -78,6 +78,7 @@ END_CONNECTION_POINT_MAP()
 
 // ITemporarySupports
    STDMETHOD(Clone)(/*[out]*/ITemporarySupports** clone);
+   STDMETHOD(Find)(SupportIDType tsID,ITemporarySupport** ppTS);
 
 // ITemporarySupportEvents
    STDMETHOD(OnTemporarySupportChanged)(/*[in]*/ITemporarySupport* TemporarySupport, BSTR stage, /*[in]*/ChangeType change);
@@ -140,7 +141,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      SupportIDType cnt=0;
+      SupportIndexType cnt=0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt);

@@ -88,15 +88,15 @@ library WBFLLBAMUtility
 		[helpstring("method CreateSimpleModel - Simple factory method to create an LBAM model"), helpcontext(IDH_LBAMFactory_CreateSimpleModel)] 
       HRESULT CreateSimpleModel([in]IDblArray* SpanLengths, [in]Float64 E, [in]Float64 A, [in]Float64 I, [in]Float64 Depth, [out,retval]ILBAMModel** newModel);
 		[helpstring("method GetSupportIDsForStage"), helpcontext(IDH_LBAMFactory_GetSupportIDsForStage)] 
-      HRESULT GetSupportIDsForStage([in]ILBAMModel* pModel, [in]BSTR stage, [out, retval]ILongArray* *supportIDs);
+      HRESULT GetSupportIDsForStage([in]ILBAMModel* pModel, [in]BSTR stage, [out, retval]IIDArray* *supportIDs);
       [helpstring("method MapLoadCaseToLoadGroup"), helpcontext(IDH_LBAMFactory_MapLoadGroupToLoadCase)] 
       HRESULT MapLoadGroupToLoadCase([in]ILBAMModel* pModel,[in] BSTR lgName,[in] BSTR lgDesc,[in] BSTR lcName);
       [helpstring("method CreateSelfWeightDeadLoad"),helpcontext(IDH_LBAMFactory_CreateSelfWeightDeadLoad)]
       HRESULT CreateSelfWeightDeadLoad([in]ILBAMModel* pModel, [in]BSTR stage, [in]BSTR lgName, [in]Float64 unitWgt, [in]Float64 E);
 		[helpstring("method GeneratePOIsOnSuperstructure"), helpcontext(IDH_LBAMFactory_GeneratePOIsOnSuperstructure)] 
-      HRESULT GeneratePOIsOnSuperstructure([in]ILBAMModel* Model, [in]long startID, [in]long Increment, [out,retval]long* lastVal);
+      HRESULT GeneratePOIsOnSuperstructure([in]ILBAMModel* Model, [in]PoiIDType startID, [in]PoiIDType Increment, [out,retval]PoiIDType* lastVal);
 		[helpstring("method GetSuperstructurePOIs - In sorted ordr"), helpcontext(IDH_LBAMFactory_GetSuperstructurePOIs)] 
-      HRESULT GetSuperstructurePOIs([in]ILBAMModel* Model, [out]ILongArray* *PoiIDs, [out]IDblArray* *PoiLocations);
+      HRESULT GetSuperstructurePOIs([in]ILBAMModel* Model, [out]IIDArray* *PoiIDs, [out]IDblArray* *PoiLocations);
 	};
 
 	[

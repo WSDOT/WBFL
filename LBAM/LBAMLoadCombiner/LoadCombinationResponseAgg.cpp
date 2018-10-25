@@ -49,7 +49,7 @@ const Float64 ZERO_TOL=1.0e-10;
 class LoadCombinationEngineBase
 {
    public:
-   LoadCombinationEngineBase(ILongArray* POIs, BSTR Stage, 
+   LoadCombinationEngineBase(IIDArray* POIs, BSTR Stage, 
                              ResultsSummationType summ, LoadCombinationType lmType, 
                              IGetCombinationFactors* ifactors, bool createConfig, bool isPOIs ):
    m_CreateConfig(createConfig)
@@ -105,7 +105,7 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
 {
    public:
 
-   LoadCombinationEngine(ILongArray* POIs, BSTR Stage, 
+   LoadCombinationEngine(IIDArray* POIs, BSTR Stage, 
                          ResultsSummationType summ, LoadCombinationType lmType, 
                          IGetCombinationFactors* ifactors, bool createConfig, bool isPOIs ):
    LoadCombinationEngineBase(POIs, Stage,  summ, lmType, ifactors, createConfig, isPOIs )
@@ -224,7 +224,7 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
 {
    public:
 
-   SectionLoadCombinationEngine(ILongArray* POIs, BSTR Stage, 
+   SectionLoadCombinationEngine(IIDArray* POIs, BSTR Stage, 
                          ResultsSummationType summ, LoadCombinationType lmType, 
                          IGetCombinationFactors* ifactors, bool createConfig, bool doFlip ):
    LoadCombinationEngineBase(POIs, Stage,  summ, lmType, ifactors, createConfig, true )
@@ -386,7 +386,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::InterfaceSupportsErrorInfo(REFIID riid
 }
 
 // ILoadCombinationResponse
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, ILongArray* POIs, BSTR Stage, ResultsOrientation orientation, 
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IIDArray* POIs, BSTR Stage, ResultsOrientation orientation, 
                                                        ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                        VARIANT_BOOL includeLiveLoad,  VARIANT_BOOL includeImpact, VARIANT_BOOL computeConfig,
                                                        ILoadCombinationSectionResults** pResults)
@@ -482,7 +482,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, IL
    }
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                              ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                              VARIANT_BOOL includeLiveLoad,  VARIANT_BOOL includeImpact, VARIANT_BOOL computeConfig,
                                                              ILoadCombinationSectionResults** pResults)
@@ -566,7 +566,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
    }
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                            ResultsSummationType summ, ForceEffectType effect, 
                                                            OptimizationType optimization, 
                                                            VARIANT_BOOL includeLiveLoad,  VARIANT_BOOL includeImpact, VARIANT_BOOL computeConfig,
@@ -651,7 +651,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
    }
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                            ResultsSummationType summ, ForceEffectType effect, 
                                                            OptimizationType optimization, 
                                                            VARIANT_BOOL includeLiveLoad, VARIANT_BOOL includeImpact,  VARIANT_BOOL computeConfig,
@@ -736,7 +736,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
    }
 }
 
-STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, ILongArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, IIDArray* POIs, BSTR Stage,
                                                           ResultsSummationType summ, ForceEffectType effect, OptimizationType optimization, 
                                                           VARIANT_BOOL includeLiveLoad,  VARIANT_BOOL includeImpact, VARIANT_BOOL computeConfig,
                                                           ILoadCombinationStressResults** pResults)

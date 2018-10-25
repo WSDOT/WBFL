@@ -78,13 +78,13 @@ HRESULT CTestOverhang::Test()
    hr = pctx->putref_Model(psm);
 
    // request results for tenth points in spans 0 and 1
-   CComPtr<ILongArray> poilist;
-   poilist.CoCreateInstance(CLSID_LongArray);
-   for (long i=0; i<11; i++)
+   CComPtr<IIDArray> poilist;
+   poilist.CoCreateInstance(CLSID_IDArray);
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (int i=0; i<11; i++)
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -175,15 +175,15 @@ HRESULT CTestOverhang::Test()
    os <<std::endl<<"Supports"<<std::endl;
 
    // lists of supports for stage 1 and 2 are different since temp support is gone in stage 2
-   CComPtr<ILongArray> sptlist_stg1;
-   sptlist_stg1.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> sptlist_stg1;
+   sptlist_stg1.CoCreateInstance(CLSID_IDArray);
    sptlist_stg1->Add(0);
    sptlist_stg1->Add(1);
    sptlist_stg1->Add(2);
    sptlist_stg1->Add(TS_ID);
 
-   CComPtr<ILongArray> sptlist_stg2;
-   sptlist_stg2.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> sptlist_stg2;
+   sptlist_stg2.CoCreateInstance(CLSID_IDArray);
    sptlist_stg2->Add(0);
    sptlist_stg2->Add(1);
    sptlist_stg2->Add(2);
@@ -239,8 +239,8 @@ HRESULT CTestOverhang::Test()
    DumpReactionResults( os, sptlist_stg2, pforces);
 
 
-   CComPtr<ILongArray> suplist;
-   suplist.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> suplist;
+   suplist.CoCreateInstance(CLSID_IDArray);
    suplist->Add(20005);
    pStresss = NULL;
    hr = plgr->ComputeStresses(_bstr_t("Distributed Loads"), suplist, _bstr_t("Stage 1"), rsIncremental, &pStresss);
@@ -355,7 +355,7 @@ HRESULT CTestOverhang::Test()
 }
 
 
-void CTestOverhang::GetSSPoiLocs(ILongArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
+void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
 {
    HRESULT hr;
    // first determine locations of span and superstructuremember ends
