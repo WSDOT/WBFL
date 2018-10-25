@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,7 +50,8 @@ public:
 //   m_LiveLoadModelType(lltNone),
    m_LiveLoadFactor(0.0),
    m_ItemData(0),
-   m_LoadCombinationType(lctUserDefined)
+   m_LoadCombinationType(lctUserDefined),
+   m_LiveLoadModelApplicationType(llmaSum)
 	{
 	}
 
@@ -106,13 +107,16 @@ public:
 	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
 	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
 	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(get_LiveLoadModelApplicationType)(/*[out, retval]*/ LiveLoadModelApplicationType *pVal);
+	STDMETHOD(put_LiveLoadModelApplicationType)(/*[in]*/ LiveLoadModelApplicationType newVal);
 
 protected:
    CComBSTR            m_Name;
    CComBSTR            m_Description;
    CComVariant         m_ItemData;
-   Float64              m_LiveLoadFactor;
-   LoadCombinationType m_LoadCombinationType;
+   Float64             m_LiveLoadFactor;
+   LoadCombinationType          m_LoadCombinationType;
+   LiveLoadModelApplicationType m_LiveLoadModelApplicationType;
 
    std::vector<LiveLoadModelType> m_LiveLoadModelTypes;
 

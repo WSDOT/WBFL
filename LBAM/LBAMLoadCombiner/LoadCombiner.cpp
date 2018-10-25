@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -451,6 +451,9 @@ void CLoadCombiner::ValidateLoadCombinations()
 
       // set up factors for live load
       hr = load_combo->get_LiveLoadFactor(&(rcombo_data.m_LiveLoadFactor));
+
+      // live load model application type
+      hr = load_combo->get_LiveLoadModelApplicationType(&(rcombo_data.m_LiveLoadModelApplicationType));
 
       CollectionIndexType count;
       hr = load_combo->GetLiveLoadModelCount(&count);

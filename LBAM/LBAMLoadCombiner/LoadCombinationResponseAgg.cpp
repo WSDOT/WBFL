@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -366,6 +366,103 @@ private:
    int m_Flip; // flip for force and deflection results
 };
 
+//////////////////////////////////////////////////////////////////
+// Comparison functions used for enveloping live load model responses
+//////////////////////////////////////////////////////////////////
+
+inline bool CompareMax(Float64 newv, Float64 oldv)
+{
+   return newv>oldv;
+}
+
+inline bool CompareMin(Float64 newv, Float64 oldv)
+{
+   return newv<oldv;
+}
+
+// Single values
+static void ComputeLlmMax(CollectionIndexType numPois, bool (*Compare)(Float64, Float64), 
+                       ILiveLoadModelResults* newResults, ILiveLoadModelResults* envResults)
+{
+   CHRException hr;
+   // Perform comparison of new results with previously enveloped results
+   for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+   {
+      // pull out new result to compare with
+      Float64 new_result;
+      CComPtr<ILiveLoadConfiguration> new_config;
+      hr = newResults->GetResult(poiIdx, &new_result, &new_config);
+
+      // old result 
+      Float64 old_result;
+      CComPtr<ILiveLoadConfiguration> old_config;
+      hr = envResults->GetResult(poiIdx, &old_result, &old_config);
+
+      // perform comparison and replace result if we have a new max
+      if (Compare(new_result, old_result))
+      {
+         hr = envResults->SetResult(poiIdx, new_result, new_config);
+      }
+   }
+}
+
+// section values
+static void ComputeLlmMax(CollectionIndexType numPois, bool (*leftCompare)(Float64, Float64), bool (*rightCompare)(Float64, Float64), 
+                          ILiveLoadModelSectionResults* newResults, ILiveLoadModelSectionResults* envResults)
+{
+   CHRException hr;
+   // Perform comparison of new results with previously enveloped results
+   for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+   {
+      // pull out new result to compare with
+      Float64 new_left_result, new_right_result;
+      CComPtr<ILiveLoadConfiguration> new_left_config, new_right_config;
+      hr = newResults->GetResult(poiIdx, &new_left_result, &new_left_config, &new_right_result, &new_right_config);
+
+      // old result 
+      Float64 old_left_result, old_right_result;
+      CComPtr<ILiveLoadConfiguration> old_left_config, old_right_config;
+      hr = envResults->GetResult(poiIdx, &old_left_result, &old_left_config, &old_right_result, &old_right_config);
+
+      bool new_max_occurred=false;
+      Float64 left_result, right_result;
+      CComPtr<ILiveLoadConfiguration> left_config, right_config;
+
+      // left side
+      if (leftCompare(new_left_result, old_left_result))
+      {
+         new_max_occurred = true;
+         left_result = new_left_result;
+         left_config = new_left_config;
+      }
+      else
+      {
+         left_result = old_left_result;
+         left_config = old_left_config;
+      }
+
+      // right side
+      if (rightCompare(new_right_result, old_right_result))
+      {
+         new_max_occurred = true;
+         right_result = new_right_result;
+         right_config = new_right_config;
+      }
+      else
+      {
+         right_result = old_right_result;
+         right_config = old_right_config;
+      }
+
+      // only need to update if a new maximum occured
+      if (new_max_occurred)
+      {
+         hr = envResults->SetResult(poiIdx,left_result, left_config, right_result, right_config);
+      }
+   }
+}
+
+
 ///////////////////////////////////////////
 // CLoadCombinationResponseAgg
 ///////////////////////////////////////////
@@ -402,7 +499,6 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
 
       // make sure our combination table is up to date
       m_pCombiner->Validate();
-
 
       // get cached information for combo
       CLoadCombiner::LoadCombinationIterator lcit( m_pCombiner->m_LoadCombinations.find( CLoadCombiner::NameHolder(loadCombination) ) );
@@ -445,28 +541,95 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
       {
          std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
          std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
-         for ( ; iter != iterend; iter++ )
+
+         if (rcombo_data.m_LiveLoadModelApplicationType==llmaSum)
          {
-            LiveLoadModelType llt = *iter;
-            if ( llt == lltNone )
-               continue;
+            // Sum LLM values
+            for ( ; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
 
-            CComPtr<ILiveLoadModelSectionResults> liveload_results;
-            hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeForces(POIs, Stage, llt, orientation, 
-                                                        effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
-                                                        &liveload_results);
+               CComPtr<ILiveLoadModelSectionResults> liveload_results;
+               hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeForces(POIs, Stage, llt, orientation, 
+                                                           effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                           &liveload_results);
+               CollectionIndexType ll_size;
+               hr = liveload_results->get_Count(&ll_size);
+
+               CMB_HANDLE_CANCEL_PROGRESS();
+
+               if (ll_size>0)  // it's possible that no live load results exist for the given ll model
+               {
+                  CollectionIndexType poisiz;
+                  hr = POIs->get_Count(&poisiz);
+                  ATLASSERT(ll_size==poisiz);
+
+                  lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+               }
+            }
+         }
+         else
+         {
+            // Results of live load models are enveloped. 
+            CComPtr<ILiveLoadModelSectionResults> env_liveload_results;
+
+            // set up our comparison function
+            bool (*fleft_compare)(Float64, Float64);
+            bool (*fright_compare)(Float64, Float64);
+            if (optimization==optMaximize)
+            {
+               fleft_compare  = &CompareMax;
+               fright_compare = &CompareMin;
+            }
+            else
+            {
+               fleft_compare  = &CompareMin;
+               fright_compare = &CompareMax;
+            }
+
+            CollectionIndexType num_pois;
+            POIs->get_Count(&num_pois);
+
+            bool first=true;
+            for (; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
+
+               if (first)
+               {
+                  // First time through - just copy value
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeForces(POIs, Stage, llt, orientation, 
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &env_liveload_results);
+                  first = false;
+               }
+               else
+               {
+                  // Envelope results
+                  CComPtr<ILiveLoadModelSectionResults> liveload_results;
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeForces(POIs, Stage, llt, orientation, 
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &liveload_results);
+
+                  ComputeLlmMax(num_pois, fleft_compare, fright_compare, liveload_results, env_liveload_results);
+               }
+
+               CMB_HANDLE_CANCEL_PROGRESS();
+            }
+
+            // Factor and store enveloped llm results
             CollectionIndexType ll_size;
-            hr = liveload_results->get_Count(&ll_size);
-
-            CMB_HANDLE_CANCEL_PROGRESS();
+            hr = env_liveload_results->get_Count(&ll_size);
 
             if (ll_size>0)  // it's possible that no live load results exist for the given ll model
             {
-               CollectionIndexType poisiz;
-               hr = POIs->get_Count(&poisiz);
-               ATLASSERT(ll_size==poisiz);
+               ATLASSERT(ll_size==num_pois);
 
-               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, env_liveload_results);
             }
          }
       }
@@ -540,25 +703,91 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       {
          std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
          std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
-         for ( ; iter != iterend; iter++ )
+
+         if (rcombo_data.m_LiveLoadModelApplicationType==llmaSum)
          {
-            LiveLoadModelType llt = *iter;
-            if (llt == lltNone )
-               continue;
+            // Sum LLM values
+            for ( ; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if (llt == lltNone )
+                  continue;
 
-            CComPtr<ILiveLoadModelSectionResults> liveload_results;
-            hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeDeflections(POIs, Stage, llt,
-                                                        effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
-                                                        &liveload_results);
+               CComPtr<ILiveLoadModelSectionResults> liveload_results;
+               hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeDeflections(POIs, Stage, llt,
+                                                           effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                           &liveload_results);
 
-            CMB_HANDLE_CANCEL_PROGRESS();
+               CMB_HANDLE_CANCEL_PROGRESS();
 
-            lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+            }
+         }
+         else
+         {
+            // Results of live load models are enveloped. 
+            CComPtr<ILiveLoadModelSectionResults> env_liveload_results;
+
+            // set up our comparison function
+            bool (*fleft_compare)(Float64, Float64);
+            bool (*fright_compare)(Float64, Float64);
+            if (optimization==optMaximize)
+            {
+               fleft_compare  = &CompareMax;
+               fright_compare = &CompareMin;
+            }
+            else
+            {
+               fleft_compare  = &CompareMin;
+               fright_compare = &CompareMax;
+            }
+
+            CollectionIndexType num_pois;
+            POIs->get_Count(&num_pois);
+
+            bool first=true;
+            for (; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
+
+               if (first)
+               {
+                  // First time through - just copy value
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeDeflections(POIs, Stage, llt,
+                                                           effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                           &env_liveload_results);
+                  first = false;
+               }
+               else
+               {
+                  // Envelope results
+                  CComPtr<ILiveLoadModelSectionResults> liveload_results;
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeDeflections(POIs, Stage, llt,
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &liveload_results);
+
+                  ComputeLlmMax(num_pois, fleft_compare, fright_compare, liveload_results, env_liveload_results);
+               }
+
+               CMB_HANDLE_CANCEL_PROGRESS();
+            }
+
+            // Factor and store enveloped llm results
+            CollectionIndexType ll_size;
+            hr = env_liveload_results->get_Count(&ll_size);
+
+            if (ll_size>0)  // it's possible that no live load results exist for the given ll model
+            {
+               ATLASSERT(ll_size==num_pois);
+
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, env_liveload_results);
+            }
          }
       }
 
       return lc_engine.m_Results.CopyTo(pResults);
-
    }
    catch(...)
    {
@@ -625,20 +854,85 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       {
          std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
          std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
-         for (; iter != iterend; iter++ )
+
+         if (rcombo_data.m_LiveLoadModelApplicationType==llmaSum)
          {
-            LiveLoadModelType llt = *iter;
-            if ( llt == lltNone )
-               continue;
+            // Results of live load models are summed
+            for (; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
 
-            CComPtr<ILiveLoadModelResults> liveload_results;
-            hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeReactions(POIs, Stage, llt,
-                                                        effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
-                                                        &liveload_results);
+               CComPtr<ILiveLoadModelResults> liveload_results;
+               hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeReactions(POIs, Stage, llt,
+                                                           effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                           &liveload_results);
 
-            CMB_HANDLE_CANCEL_PROGRESS();
+               CMB_HANDLE_CANCEL_PROGRESS();
 
-            lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+            }
+         }
+         else
+         {
+            // Results of live load models are enveloped. 
+            CComPtr<ILiveLoadModelResults> env_liveload_results;
+
+            // set up our comparison function
+            bool (*fcompare)(Float64, Float64);
+            if (optimization==optMaximize)
+            {
+               fcompare  = &CompareMax;
+            }
+            else
+            {
+               fcompare  = &CompareMin;
+            }
+
+            CollectionIndexType num_pois;
+            POIs->get_Count(&num_pois);
+
+            bool first=true;
+            for (; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
+
+               if (first)
+               {
+                  // First time through - just copy value
+                  CComPtr<ILiveLoadModelResults> liveload_results;
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeReactions(POIs, Stage, llt,
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &env_liveload_results);
+                  first = false;
+               }
+               else
+               {
+                  // Envelope results
+                  CComPtr<ILiveLoadModelResults> liveload_results;
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeReactions(POIs, Stage, llt,
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &liveload_results);
+
+                  ComputeLlmMax(num_pois, fcompare, liveload_results, env_liveload_results);
+               }
+
+               CMB_HANDLE_CANCEL_PROGRESS();
+            }
+
+            // Factor and store enveloped llm results
+            CollectionIndexType ll_size;
+            hr = env_liveload_results->get_Count(&ll_size);
+
+            if (ll_size>0)  // it's possible that no live load results exist for the given ll model
+            {
+               ATLASSERT(ll_size==num_pois);
+
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, env_liveload_results);
+            }
          }
       }
 
@@ -710,20 +1004,76 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       {
          std::vector<LiveLoadModelType>::iterator iter( rcombo_data.m_LiveLoadModels.begin() );
          std::vector<LiveLoadModelType>::iterator iterend( rcombo_data.m_LiveLoadModels.end() );
-         for ( ; iter != iterend; iter++ )
+
+         if (rcombo_data.m_LiveLoadModelApplicationType==llmaSum)
          {
-            LiveLoadModelType llt = *iter;
-            if ( llt == lltNone )
-               continue;
+            // Results of live load models are summed
+            for ( ; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
 
-            CComPtr<ILiveLoadModelResults> liveload_results;
-            hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeSupportDeflections(POIs, Stage, llt,
-                                                        effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
-                                                        &liveload_results);
+               CComPtr<ILiveLoadModelResults> liveload_results;
+               hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeSupportDeflections(POIs, Stage, llt,
+                                                           effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                           &liveload_results);
 
-            CMB_HANDLE_CANCEL_PROGRESS();
+               CMB_HANDLE_CANCEL_PROGRESS();
 
-            lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+               lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, liveload_results);
+            }
+         }
+         else
+         {
+            // Results of live load models are enveloped. 
+            CComPtr<ILiveLoadModelResults> env_liveload_results;
+
+            // set up our comparison function
+            bool (*fcompare)(Float64, Float64);
+            if (optimization==optMaximize)
+            {
+               fcompare  = &CompareMax;
+            }
+            else
+            {
+               fcompare  = &CompareMin;
+            }
+
+            CollectionIndexType num_pois;
+            POIs->get_Count(&num_pois);
+
+            bool first=true;
+            for (; iter != iterend; iter++ )
+            {
+               LiveLoadModelType llt = *iter;
+               if ( llt == lltNone )
+                  continue;
+
+               if (first)
+               {
+                  // First time through - just copy value
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeSupportDeflections(POIs, Stage, llt,
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &env_liveload_results);
+                  first = false;
+               }
+               else
+               {
+                  // Envelope results
+                  CComPtr<ILiveLoadModelResults> liveload_results;
+                  hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeSupportDeflections(POIs, Stage, llt,
+                                                              effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
+                                                              &liveload_results);
+
+                  ComputeLlmMax(num_pois, fcompare, liveload_results, env_liveload_results);
+               }
+
+               CMB_HANDLE_CANCEL_PROGRESS();
+            }
+
+            // Factor and store enveloped llm results
+            lc_engine.CombineLiveLoad(rcombo_data.m_LiveLoadFactor, optimization, env_liveload_results);
          }
       }
 

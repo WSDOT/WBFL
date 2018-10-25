@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -90,6 +90,7 @@
 
 #include "FShapeBarrier.h"
 #include "SidewalkBarrier.h"
+#include "GenericBarrier.h"
 
 #include "Connection.h"
 
@@ -135,6 +136,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_BoxBeamSection,CBoxBeamSection)
    OBJECT_ENTRY(CLSID_FShapeBarrier,CFShapeBarrier)
    OBJECT_ENTRY(CLSID_SidewalkBarrier,CSidewalkBarrier)
+   OBJECT_ENTRY(CLSID_GenericBarrier,CGenericBarrier)
    OBJECT_ENTRY(CLSID_Connection,CConnection)
    OBJECT_ENTRY(CLSID_LinearTendonSegment,CLinearTendonSegment)
    OBJECT_ENTRY(CLSID_Tendon,CTendon)

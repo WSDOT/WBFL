@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,19 +46,7 @@ class ATL_NO_VTABLE CSidewalkBarrier :
    public IObjectSafetyImpl<CSidewalkBarrier,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-   CSidewalkBarrier()
-	{
-      m_Configuration = 0;
-      m_ConnectionWidth = 0;
-      m_bExteriorStructurallyContinuous = VARIANT_FALSE;
-      m_bSidewalkStructurallyContinuous = VARIANT_FALSE;
-      m_bInteriorStructurallyContinuous = VARIANT_FALSE;
-      m_SidewalkPosition = swpBetweenBarriers;
-      m_idxExteriorBarrier = 0;
-      m_idxSidewalk = 1;
-      m_idxInteriorBarrier = 2;
-	}
-
+   CSidewalkBarrier();
    HRESULT FinalConstruct();
    void FinalRelease();
 
@@ -68,10 +56,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CSidewalkBarrier)
 	COM_INTERFACE_ENTRY(ISidewalkBarrier)
-	COM_INTERFACE_ENTRY(IBarrier)
-
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 
 //   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
@@ -84,23 +69,17 @@ BEGIN_CONNECTION_POINT_MAP(CSidewalkBarrier)
 END_CONNECTION_POINT_MAP()
 
 private:
-   CComPtr<ICompositeShape> m_CompShape;
-   CComPtr<IShape> m_ExtBarrier;
-   CComPtr<IShape> m_IntBarrier;
+   CComPtr<IBarrier> m_ExtBarrier;
+   CComPtr<IBarrier> m_IntBarrier;
+   CComPtr<IPolyShape>   m_SidewalkShape;
    SidewalkPositionType m_SidewalkPosition;
    Float64 m_H1, m_H2, m_W;
    int m_Configuration;
    TrafficBarrierOrientation m_Orientation;
-   Float64 m_ConnectionWidth;
    VARIANT_BOOL m_bInteriorStructurallyContinuous;
    VARIANT_BOOL m_bSidewalkStructurallyContinuous;
    VARIANT_BOOL m_bExteriorStructurallyContinuous;
 
-   int m_idxExteriorBarrier;
-   int m_idxSidewalk;
-   int m_idxInteriorBarrier;
-
-   CComPtr<IMaterial> m_Material;
    CComPtr<IPath> m_Path;
 
    // ISupportsErrorInfo
@@ -109,29 +88,31 @@ public:
 
 // ISidewalkBarrier
 public:
-	STDMETHOD(put_Barrier1)(/*[in]*/IShape* shape,/*[in]*/Float64 connectionWidth);
-	STDMETHOD(put_Barrier2)(/*[in]*/IShape* shape,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 w,/*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition,/*[in]*/Float64 connectionWidth);
-	STDMETHOD(put_Barrier3)(/*[in]*/IShape* extShape,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 w,/*[in]*/IShape* intShape,/*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition,/*[in]*/Float64 connectionWidth);
+	STDMETHOD(put_Barrier1)(/*[in]*/IBarrier* extBarrier,/*[in]*/TrafficBarrierOrientation orientation);
+	STDMETHOD(put_Barrier2)(/*[in]*/IBarrier* extBarrier,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 swWidth,
+                           /*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition);
+	STDMETHOD(put_Barrier3)(/*[in]*/IBarrier* extBarrier,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 swWidth,
+                           /*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition,
+                           /*[in]*/IBarrier* intBarrier);
+   STDMETHOD(get_HasSidewalk)(/*[out,retval]*/VARIANT_BOOL *bHasSw);
+   STDMETHOD(get_HasInteriorBarrier)(/*[out,retval]*/VARIANT_BOOL *bHasIb);
    STDMETHOD(get_SidewalkWidth)(/*[out,retval]*/Float64* width);
-   STDMETHOD(get_ExteriorBarrierShape)(/*[out,retval]*/ IShape** shape);
+   STDMETHOD(get_ExteriorBarrier)(/*[out,retval]*/ IBarrier** barr);
+   STDMETHOD(get_InteriorBarrier)(/*[out,retval]*/ IBarrier** barr);
    STDMETHOD(get_SidewalkShape)(/*[out,retval]*/ IShape** shape);
-   STDMETHOD(get_InteriorBarrierShape)(/*[out,retval]*/ IShape** shape);
+   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape);
+   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape);
+	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path);
+	STDMETHOD(put_Path)(/*[in]*/ IPath* path);
    STDMETHOD(put_IsInteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
    STDMETHOD(put_IsSidewalkStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
 	STDMETHOD(put_IsExteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-
-// IBarrier
-public:
-   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape);
-   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape);
-	STDMETHOD(get_Material)(/*[out,retval]*/ IMaterial** material);
-	STDMETHOD(putref_Material)(/*[in]*/ IMaterial* material);
-	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path);
-	STDMETHOD(put_Path)(/*[in]*/ IPath* path);
-   STDMETHOD(get_ConnectionWidth)(/*[in]*/ Float64 location,/*[out,retval]*/Float64* width);
-   STDMETHOD(get_IsStructurallyContinuous)(/*[out,retval]*/VARIANT_BOOL* pbContinuous);
-	STDMETHOD(put_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-   STDMETHOD(Clone)(/*[out,retval]*/IBarrier** barrier);
+	STDMETHOD(get_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL* pbContinuous);
+	STDMETHOD(get_SidewalkPosition)(/*[out,retval]*/ SidewalkPositionType* posType);
+	STDMETHOD(get_ExteriorCurbWidth)(/*[out,retval]*/ Float64* curbWidth);
+	STDMETHOD(get_CurbWidth)(/*[out,retval]*/ Float64* curbWidth);
+	STDMETHOD(get_OverlayToeWidth)(/*[out]*/ Float64* toeWidth);
+   STDMETHOD(Clone)(/*[out,retval]*/ISidewalkBarrier** clone);
 
 // IStructuredStorage2
 public:

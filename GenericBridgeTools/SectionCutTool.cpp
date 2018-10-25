@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -100,11 +100,7 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierShape(IGenericBridge* bridge,Floa
    Float64 elev;
    profile->Elevation(CComVariant(station),Left_deck_offset,&elev);
 
-   CComPtr<IPoint2d> deckPoint;
-   deckPoint.CoCreateInstance(CLSID_Point2d);
-   deckPoint->Move(Left_deck_offset,elev);
-
-   CComPtr<IBarrier> barrier;
+   CComPtr<ISidewalkBarrier> barrier;
    bridge->get_LeftBarrier(&barrier);
 
    CComPtr<IShape> barrier_shape;
@@ -113,7 +109,7 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierShape(IGenericBridge* bridge,Floa
    barrier_shape->Clone(shape);
 
    CComQIPtr<IXYPosition> position(*shape);
-   position->put_LocatorPoint(lpHookPoint,deckPoint);
+   position->Offset(Left_deck_offset, elev);
 
    return S_OK;
 }
@@ -136,11 +132,7 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierShape(IGenericBridge* bridge,Flo
    Float64 elev;
    profile->Elevation(CComVariant(station),right_deck_offset,&elev);
 
-   CComPtr<IPoint2d> deckPoint;
-   deckPoint.CoCreateInstance(CLSID_Point2d);
-   deckPoint->Move(right_deck_offset,elev);
-
-   CComPtr<IBarrier> barrier;
+   CComPtr<ISidewalkBarrier> barrier;
    bridge->get_RightBarrier(&barrier);
 
    CComPtr<IShape> barrier_shape;
@@ -149,7 +141,7 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierShape(IGenericBridge* bridge,Flo
    barrier_shape->Clone(shape);
 
    CComQIPtr<IXYPosition> position(*shape);
-   position->put_LocatorPoint(lpHookPoint,deckPoint);
+   position->Offset(right_deck_offset,elev);
 
    return S_OK;
 }
@@ -172,14 +164,10 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    Float64 elev;
    profile->Elevation(CComVariant(station),left_deck_offset,&elev);
 
-   CComPtr<IPoint2d> HP;
-   HP.CoCreateInstance(CLSID_Point2d);
-   HP->Move(left_deck_offset,elev);
-
-   CComPtr<IBarrier> left_barrier;
+   CComPtr<ISidewalkBarrier> left_barrier;
    bridge->get_LeftBarrier(&left_barrier);
 
-   CComPtr<IBarrier> barrier;
+   CComPtr<ISidewalkBarrier> barrier;
    left_barrier->Clone(&barrier);
 
    // returns the whole railing system shape including sidewalk and interior railing
@@ -197,10 +185,14 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    }
 
    CComQIPtr<IXYPosition> position(shape);
-   position->put_LocatorPoint(lpHookPoint,HP);
+   position->Offset(left_deck_offset,elev);
+
+   // use material for exterior barrier as materior for entire section
+   CComPtr<IBarrier> ext_barrier;
+   barrier->get_ExteriorBarrier(&ext_barrier);
 
    CComPtr<IMaterial> material;
-   barrier->get_Material(&material);
+   ext_barrier->get_Material(&material);
 
    Float64 E,density;
    material->get_E(&E);
@@ -238,14 +230,10 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    Float64 elev;
    profile->Elevation(CComVariant(station),right_deck_offset,&elev);
 
-   CComPtr<IPoint2d> HP;
-   HP.CoCreateInstance(CLSID_Point2d);
-   HP->Move(right_deck_offset,elev);
-
-   CComPtr<IBarrier> right_barrier;
+   CComPtr<ISidewalkBarrier> right_barrier;
    bridge->get_RightBarrier(&right_barrier);
 
-   CComPtr<IBarrier> barrier;
+   CComPtr<ISidewalkBarrier> barrier;
    right_barrier->Clone(&barrier);
 
    // returns the whole railing system shape including sidewalk and interior railing
@@ -262,10 +250,14 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    }
 
    CComQIPtr<IXYPosition> position(shape);
-   position->put_LocatorPoint(lpHookPoint,HP);
+   position->Offset(right_deck_offset,elev);
+
+   // use material for exterior barrier as materior for entire section
+   CComPtr<IBarrier> ext_barrier;
+   barrier->get_ExteriorBarrier(&ext_barrier);
 
    CComPtr<IMaterial> material;
-   barrier->get_Material(&material);
+   ext_barrier->get_Material(&material);
 
    Float64 E,density;
    material->get_E(&E);

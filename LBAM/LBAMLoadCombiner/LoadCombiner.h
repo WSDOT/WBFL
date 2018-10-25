@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Load Combiner - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -168,6 +168,7 @@ private:
    struct ComboData
    {
       Float64              m_LiveLoadFactor;
+      LiveLoadModelApplicationType m_LiveLoadModelApplicationType;
       std::vector<LiveLoadModelType> m_LiveLoadModels;
 
       LoadCombinationType m_LoadCombinationType;

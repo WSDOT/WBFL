@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,7 @@
 
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitudinal Bridge Analysis Model
-// Copyright © 1999-2011  Washington State Department of Transportation
+// Copyright © 1999-2012  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,6 +91,7 @@
 #define IDH_InZoneType                                               1510013
 #define IDH_LoadCombinationType                                      1510014
 #define IDH_ChangeScopeType                                          1510015
+#define IDH_LiveLoadModelApplicationType                             1510016
 
 
 // Objects
@@ -164,6 +165,7 @@
 #define IDH_DistributionFactor_GVSgl                                     1520067
 #define IDH_DistributionFactor_OnDistibutionFactorChanged                1520068
 #define IDH_DistributionFactor_SetG                                      1520069
+#define IDH_DistributionFactor_GPedestrian                               1520070
 
 #define IDH_DistributionFactors                                          1520071
 #define IDH_DistributionFactors_Add                                      1520072
@@ -277,6 +279,7 @@
 #define IDH_LoadCombination_OnLoadCombinationRenamed                     1520176
 #define IDH_LoadCombination_RemoveLoadCaseFactor                         1520177
 #define IDH_LoadCombination_SetLoadCaseFactor                            1520178
+#define IDH_LoadCombination_LiveLoadModelApplicationType                 1520194
 
 #define IDH_LoadCombinations                                             1520179
 #define IDH_LoadCombinations_Add                                         1520180

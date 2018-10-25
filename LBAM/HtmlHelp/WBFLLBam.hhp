@@ -1107,6 +1107,9 @@ Samples\LBAMDumper.htm
 Objects\LBAM_Utility\LRFDFactory\ConfigureLoadCombinations.htm
 Objects\LBAM_Utility\LRFDFactory\CreateSelfWeightDeadLoad.htm
 Objects\LBAM_Utility\LRFDFactory\ConfigureLiveLoad.htm
+Objects\LBAM_Model\DistributionFactor\GPedestrian.htm
+Objects\LBAM_Model\LoadCombination\LiveLoadModelApplicationType.htm
+Constants\LiveLoadModelApplicationType.htm
 Objects\LBAM_Analysis_Utility\LBAMModelEnveloper\AddModel.htm
 Objects\LBAM_Model\LoadCombination\GetLiveLoadModel_Method_(LoadCombination_Object).htm
 Objects\LBAM_Model\LoadCombination\RemoveLiveLoadModel_Method_(LoadCombination_Object).htm
