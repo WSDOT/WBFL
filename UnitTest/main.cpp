@@ -150,9 +150,20 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
    else
    {
       // dll failed to load
-      ost<<_T("Error Loading DLL: ")<< dllname<<std::endl;
+      ost<<_T("Error Loading DLL: ")<< dllname;
+      DWORD dwError = GetLastError();
+      LPSTR messageBuffer = nullptr;
+      size_t size = FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+         NULL, dwError, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
+
+
+      ost << _T(" Error ") << dwError << _T(" ") << messageBuffer << std::endl;
+
       rlog << ost.str();
       rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
+
+      //Free the buffer.
+      LocalFree(messageBuffer);
    }
 
    rlog << _T("**** End Testing DLL: ")<< dllname <<_T(" ****")<<endl;

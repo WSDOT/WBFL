@@ -25,6 +25,7 @@
 
 #include <Stability\StabilityExp.h>
 #include <Stability\Results.h>
+#include <WBFLGenericBridgeTools\AlternativeTensileStressCalculator.h>
 
 /*****************************************************************************
 CLASS 
@@ -79,25 +80,15 @@ public:
    // Array indicies are [HaulingSlope enum][ImpactDirection enum][Direction enum (Wind)][Corner enum]
    Float64 Mcr[2][3][2][4];        // cracking moment
    Float64 ThetaCrack[2][3][2][4]; // rotation angle causing cracking
-
-   // Array indices are [HaulingSlope num][ImpactDirection enum][Direction enum (Wind)]
-   stbTypes::Corner CrackedFlange[2][3][2]; // indicates the flange and corner that is cracked (TOP_LEFT, etc)
-   Float64 FScr[2][3][2]; // factor of safety against cracking
-
+   Float64 FScr[2][3][2][4]; // factor of safety against cracking
    // Array indicies are [HaulingSlope enum]
-   Float64 FScrMin[2];
-   stbTypes::ImpactDirection FScrImpactDirection[2];
-   stbTypes::WindDirection FScrWindDirection[2];
-   stbTypes::Corner FScrCorner[2];
+   Float64 FScrMin[2]; // controlling FScr... least of all FScr[][][][]
+   stbTypes::ImpactDirection FScrImpactDirection[2]; // impact direction for FScrMin
+   stbTypes::WindDirection FScrWindDirection[2]; // wind direction for FScrMin
+   stbTypes::Corner FScrCorner[2]; // corner for FScrMin
 
    // Array indicies are [HaulingSlope enum][Impact][Wind Direction]
-   bool bSectionHasRebar[2][3][2]; // true if there is sufficient bonded reinforcement at this section to use the higher allowable tension limit
-   Float64 Yna[2][3][2];
-   Float64 NAslope[2][3][2];
-   Float64 AreaTension[2][3][2];
-   Float64 T[2][3][2];
-   Float64 AsProvided[2][3][2];
-   Float64 AsRequired[2][3][2];
+   gbtAlternativeTensileStressRequirements altTensionRequirements[2][3][2];
 };
 
 
@@ -114,12 +105,16 @@ class STABILITYCLASS stbHaulingResults : public stbResults
 public:
    stbHaulingResults();
 
+   bool bRotationalStability[2][3][2]; // if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). 
+
+   bool HasRotationalStablity() const;
+   bool HasRolloverStability() const;
+   bool IsStable() const; // returns true only if all cases are stable, otherwise false
+
    Float64 MotWind; // lateral overturning moment due to wind
-   Float64 MroWind; // lateral roll over moemnt due to wind
 
    Float64 Wcf;   // total centrifugal force (applied at Dra)
    Float64 MotCF; // lateral overturning moment due to centrifugal force
-   Float64 MroCF; // lateral roll over moemnt due to centrifugal force
 
    Float64 ZoCF;   // lateral deflection of center of gravity for for centrifugal force applied laterally
 
@@ -157,17 +152,15 @@ public:
    IndexType FScrAnalysisPointIndex[2];  // analysis point index associated with the minimum factor of safety against cracking
    stbTypes::ImpactDirection FScrImpactDirection[2]; // impact direction associated with the minimum factor of safety against cracking
    stbTypes::WindDirection FScrWindDirection[2];   // wind direction associated with the minimum factor of safety against cracking
+   stbTypes::Corner FScrCorner[2]; // corner associated with the minimum factor of safety against cracking
 
-   // Array indicies [HaulingSlope enum][ImpactDirection enum][Side Enum (wind)]
-   Float64 ThetaMax[2][3][2];    // maximum tilt angle of the cracked section
-   Float64 FsFailure[2][3][2];   // factor of safety against failure
-   Float64 AdjFsFailure[2][3][2];// adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr)
-   stbTypes::ImpactDirection FSfImpactDirection[2]; // impact direction associated with the minimum factor of safety against failure
-   stbTypes::WindDirection FSfWindDirection[2];   // wind direction associated with the minimum factor of safety against failure
-   Float64 MinFsFailure[2];         // minimum factor of safety against failure
-   Float64 MinAdjFsFailure[2];      // corrosponding adjusted minimum factor of safety against failure
-
-   Float64 ThetaRollover[2][3][2]; // tilt angle that causes roll over
+   bool bCrackedAtRollover;
+   bool bLeftRolloverStability[2][3][2]; // if true, lateral forces alone cause rollover about the left tire
+   Float64 LeftThetaRollover[2][3][2]; // rollover at left tire
+   bool bRightRolloverStability[2][3][2]; // if true, lateral forces alone cause rollover about the right tire
+   Float64 RightThetaRollover[2][3][2]; // rollover at right tire
+   bool bRolloverStability[2][3][2]; // there is a rollover instability
+   Float64 ThetaRollover[2][3][2]; // minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW
    Float64 FsRollover[2][3][2];    // factor of safety against roll over
    stbTypes::ImpactDirection FSroImpactDirection[2];  // impact direction direction associated with the minimum factor of safety against rollover
    stbTypes::WindDirection FSroWindDirection[2];    // wind direction direction associated with the minimum factor of safety against rollover

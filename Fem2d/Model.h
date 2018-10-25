@@ -149,7 +149,7 @@ private:
    CComPtr<Loadings> m_pLoadings;
    CComPtr<POIs>     m_pPOIs;
 
-   Float64 m_Tolerance;
+   Float64 m_ForceEquilibriumTolerance, m_MomentEquilibriumTolerance;
 
    CComBSTR m_Name;
 
@@ -165,6 +165,10 @@ public:
 	STDMETHOD(get_Joints)(/*[out, retval]*/ IFem2dJointCollection* *pVal) override;
 	STDMETHOD(get_Results)(/*[out, retval]*/ IFem2dModelResultsForScriptingClients* *pVal) override;
 	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
+   STDMETHOD(put_ForceEquilibriumTolerance)(/*[in]*/Float64 tol);
+   STDMETHOD(get_ForceEquilibriumTolerance)(/*[out, retval]*/Float64* tol);
+   STDMETHOD(put_MomentEquilibriumTolerance)(/*[in]*/Float64 tol);
+   STDMETHOD(get_MomentEquilibriumTolerance)(/*[out, retval]*/Float64* tol);
 
 // IFem2dModelResultsForScriptingClients
    STDMETHOD(ComputeJointDeflections)(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal) override;
@@ -276,8 +280,10 @@ private:
    void StiffnessAnalysis();
 
    // Misc Functions
-   void SetEquilibriumCheckTolerance(Float64 tol) {m_Tolerance = tol;}
-   Float64 GetEquilibriumCheckTolerance() const {return m_Tolerance;}
+   void SetForceEquilibriumCheckTolerance(Float64 tol) { m_ForceEquilibriumTolerance = tol; }
+   Float64 GetForceEquilibriumCheckTolerance() const { return m_ForceEquilibriumTolerance; }
+   void SetMomentEquilibriumCheckTolerance(Float64 tol) { m_MomentEquilibriumTolerance = tol; }
+   Float64 GetMomentEquilibriumCheckTolerance() const { return m_MomentEquilibriumTolerance; }
 
    void ClearAnalysis();
    void InitModel();

@@ -176,24 +176,36 @@ void stbHaulingCheckArtifact::GetControllingCompressionCase(stbTypes::HaulingSlo
    *pCD = CD;
 }
 
-bool stbHaulingCheckArtifact::Passed() const
+bool stbHaulingCheckArtifact::Passed(bool bIgnoreConfigurationLimits) const
 {
-   return ( Passed(stbTypes::CrownSlope) && Passed(stbTypes::Superelevation) && PassedClearSpan() && PassedLeadingOverhang() && PassedMaxWeight() ? true : false);
+   bool bPassed = ( Passed(stbTypes::CrownSlope) && Passed(stbTypes::Superelevation) ? true : false);
+   if (!bIgnoreConfigurationLimits)
+   {
+      bPassed = bPassed && PassedClearSpan() && PassedLeadingOverhang() && PassedMaxWeight();
+   }
+   return bPassed;
 }
 
 bool stbHaulingCheckArtifact::Passed(stbTypes::HaulingSlope slope) const
 {
-   return (PassedCrackingCheck(slope) && PassedFailureCheck(slope) && PassedRolloverCheck(slope) && PassedStressCheck(slope));
+   for (int i = 0; i < 3; i++)
+   {
+      stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+      for (int w = 0; w < 2; w++)
+      {
+         stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+         if (!m_Results.bRotationalStability[slope][impact][wind] || !m_Results.bRolloverStability[slope][impact][wind])
+         {
+            return false;
+         }
+      }
+   }
+   return (PassedCrackingCheck(slope) && PassedRolloverCheck(slope) && PassedStressCheck(slope));
 }
 
 bool stbHaulingCheckArtifact::PassedCrackingCheck(stbTypes::HaulingSlope slope) const
 {
    return m_Criteria.MinFScr < m_Results.MinFScr[slope];
-}
-
-bool stbHaulingCheckArtifact::PassedFailureCheck(stbTypes::HaulingSlope slope) const
-{
-   return m_Criteria.MinFSf < m_Results.MinFsFailure[slope];
 }
 
 bool stbHaulingCheckArtifact::PassedRolloverCheck(stbTypes::HaulingSlope slope) const
@@ -290,7 +302,7 @@ bool stbHaulingCheckArtifact::PassedTensionCheck(stbTypes::HaulingSlope slope) c
 
 Float64 stbHaulingCheckArtifact::GetAllowableTension(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const
 {
-   if ( sectionResult.bSectionHasRebar[slope][impact][wind] && 0 <= sectionResult.AsRequired[slope][impact][wind] )
+   if ( sectionResult.altTensionRequirements[slope][impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[slope][impact][wind].AsRequired )
    {
       return m_Criteria.AllowableTensionWithRebar[slope];
    }

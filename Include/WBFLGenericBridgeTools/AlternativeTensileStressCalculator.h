@@ -28,8 +28,7 @@
 #include <Material\Concrete.h>
 #include <WBFLGeometry.h>
 #include <GeometricPrimitives\Primitives3d.h>
-
-interface IRebarSection;
+#include <WBFLGenericBridge.h>
 
 /*****************************************************************************
 CLASS 
@@ -38,47 +37,39 @@ CLASS
    Utility class for dealing with alternative tensile stress in casting yard and at lifting
 *****************************************************************************/
 
-class WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressCalculator
+struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
 {
-public:
-   gbtAlternativeTensileStressCalculator(const matConcrete& concrete,Float64 fy,bool bLimitBarStress,Float64 fsMax);
+   // Input
+   Float64 fy;
+   bool bLimitBarStress;
+   Float64 fsMax;
+   matConcrete::Type concreteType;
+   Float64 fc;
+   bool bHasFct;
+   Float64 Fct;
+   Float64 density;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gbtAlternativeTensileStressCalculator()
-   {;}
+   CComPtr<IShape> shape;
+   CComPtr<IRebarSection> rebarSection;
+   gpPoint3d pntTopLeft;
+   gpPoint3d pntTopRight;
+   gpPoint3d pntBottomLeft;
+   gpPoint3d pntBottomRight;
 
-   void SetReinforcementYieldStrength(Float64 fy);
-   Float64 GetReinforcementYieldStrength() const;
+   // Output
+   CComPtr<IShape> tensionArea;
+   Float64 Yna;
+   Float64 NAslope;
+   Float64 AreaTension;
+   Float64 T;
+   Float64 AsProvided;
+   Float64 AsRequired;
+   bool bIsAdequateRebar;
 
-   // if true, the stress in the mild reinforcement is limited to the bar stress limit, otherwise it is not.
-   void LimitBarStress(bool bLimit);
-   bool LimitBarStress() const;
-
-   // set/get the bar stress limit
-   void SetBarStressLimit(Float64 fsMax);
-   Float64 GetBarStressLimit() const;
-
-   void SetConcrete(const matConcrete& concrete);
-   const matConcrete& GetConcrete() const;
-
-   // shape must be in centroidal/stress point coordinates
-   void ComputeAlternativeStressRequirements(IShape* pShape,IRebarSection* pRebarSection,
-                                                const gpPoint3d& pntTopLeft,const gpPoint3d& pntTopRight,const gpPoint3d& pntBotLeft,const gpPoint3d& pntBotRight,
-                                                Float64 *pYna, Float64* pNAslope, Float64 *pAreaTens, Float64 *pT, 
-                                                Float64 *pAsProvd, Float64 *pAsReqd, bool* pbIsAdequateRebar);
-
-   static void ComputeReqdFcTens(Float64 lambda,Float64 ft, // stress demand
-                          Float64 rcsT, bool rcsBfmax, Float64 rcsFmax, Float64 rcsTalt, // allowable stress coeff's
-                          Float64* pFcNo,Float64* pFcWithRebar);
-
-private:
-   gbtAlternativeTensileStressCalculator(); // no default constructor
-
-   Float64 m_fy;
-
-   bool m_bLimitBarStress;
-   Float64 m_fsMax;
-
-   matConcrete m_Concrete;
+   gbtAlternativeTensileStressRequirements();
+   gbtAlternativeTensileStressRequirements(const gbtAlternativeTensileStressRequirements& other);
+   void operator=(const gbtAlternativeTensileStressRequirements& other);
 };
+
+void WBFLGENERICBRIDGETOOLSFUNC gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirements* pRequirements);
+

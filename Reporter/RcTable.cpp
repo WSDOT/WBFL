@@ -82,10 +82,10 @@ rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
 
    for ( ColumnIndexType i = 0; i < NumColumns; i++)
    {
-      m_TableData.push_back( ColumnVector() );
+      m_TableData.emplace_back( /*ColumnVector()*/ );
       // push the header row onto the table and set the parent of the 
       // header row cells to be the table itself.
-      m_TableData[i].push_back( rptTableCellParagraph() );
+      m_TableData[i].emplace_back( /*rptTableCellParagraph()*/ );
       rptParagraph& rp = m_TableData[i][0];
       rp.SetParent(this);
 
@@ -166,7 +166,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
    {
       for (RowIndexType row = nRows; row <= RowNo; row++)
       {
-         m_TableData[ColNo].push_back( rptTableCellParagraph() );
+         m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
 
          if ( IsStripedRow(row) )
             m_TableData[ColNo].back().SetParent(m_pStripeRowColumnStyles+ColNo);
@@ -399,7 +399,7 @@ void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoRe
 
    for ( RowIndexType i = 0; i < nRows; i++ )
    {
-      m_TableData[ColNo].push_back( rptTableCellParagraph() );
+      m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
       rptParagraph& rploc = m_TableData[ColNo].back();
 
       if ( IsStripedRow(i) )
@@ -436,7 +436,7 @@ void rptRcTable::PutSectionValueColumn(ColumnIndexType colNo,
    RowIndexType row = 0;
    for ( i = vValues.begin(); i != vValues.end(); i++ )
    {
-      m_TableData[colNo].push_back( rptTableCellParagraph() );
+      m_TableData[colNo].emplace_back( /*rptTableCellParagraph()*/ );
       rptParagraph& rploc = m_TableData[colNo].back();
 
       if ( IsStripedRow(row) )
@@ -479,7 +479,7 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
 
    for (RowIndexType i = 0; i<nRows; i++)
    {
-      m_TableData[ColNo].push_back( rptTableCellParagraph() );
+      m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
       rptParagraph& rploc = m_TableData[ColNo].back();
       
       if ( IsStripedRow(i) )
@@ -518,7 +518,7 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
 
    for (RowIndexType i = 0; i<nRows; i++)
    {
-      m_TableData[ColNo].push_back( rptTableCellParagraph() );
+      m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
       rptParagraph& rploc = m_TableData[ColNo].back();
 
       if ( IsStripedRow(i) )
@@ -614,7 +614,7 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
       {
          if ( (RowIndexType)m_TableData[i].size() <= j )
          {
-            m_TableData[i].push_back(rptTableCellParagraph());
+            m_TableData[i].emplace_back(/*rptTableCellParagraph()*/);
          }
 
          m_TableData[i][j].SetStyleName(MyStyleName);
@@ -622,7 +622,7 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
    }
 }
 
-void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span)
+void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span, bool bSkipSpannedCells)
 {
    CHECK(ColNo<m_NumColumns);
    CHECK(ColNo+(span==SKIP_CELL?1:span)-1<m_NumColumns);
@@ -632,25 +632,44 @@ void rptRcTable::SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, Column
    {
       // check if row entry has been allocated. if not, push default paragraphs
       // on as a placeholder
-      RowIndexType nRows = m_TableData[ColNo].size();
-      if (nRows-m_NumberOfHeaderRows <= RowNo)
+      ColumnIndexType cEnd = ColNo + (span == SKIP_CELL ? 1 : span);
+      for ( ColumnIndexType c = ColNo; c < cEnd; c++)
       {
-         for (RowIndexType i=nRows; i<=RowNo; i++)
+         RowIndexType nRows = m_TableData[c].size();
+         if (nRows-m_NumberOfHeaderRows <= RowNo)
          {
-            m_TableData[ColNo].push_back( rptTableCellParagraph() );
+            for (RowIndexType i=nRows; i<=RowNo; i++)
+            {
+               bool bIsStripedRow = IsStripedRow(i);
+               m_TableData[c].emplace_back(/*rptTableCellParagraph()*/);
 
-            if ( IsStripedRow(i) )
-               m_TableData[ColNo].back().SetParent(m_pStripeRowColumnStyles+ColNo);
-            else
-               m_TableData[ColNo].back().SetParent(m_pColumnStyles+ColNo);
+               if (bIsStripedRow)
+               {
+                  m_TableData[c].back().SetParent(m_pStripeRowColumnStyles + c);
+               }
+               else
+               {
+                  m_TableData[c].back().SetParent(m_pColumnStyles + c);
+               }
+            }
          }
       }
 
       m_TableData[ColNo][RowNo].m_ColSpan = span;
+
+      if (bSkipSpannedCells && span != SKIP_CELL)
+      {
+         ColumnIndexType endSkipping = ColNo + span;
+         for (ColumnIndexType i = ColNo+1; i < endSkipping && i < m_NumColumns; i++)
+         {
+            ASSERT(m_TableData[i][RowNo].m_ColSpan != SKIP_CELL); // if this fires, the current cell is already skipped... you have overlapping spanning regions
+            m_TableData[i][RowNo].m_ColSpan = SKIP_CELL;
+         }
+      }
    }
 }
 
-void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span)
+void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span,bool bSkipSpannedCells)
 {
    CHECK(ColNo<m_NumColumns);
    //CHECK(span>=-1);
@@ -660,20 +679,90 @@ void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexT
       // check if row entry has been allocated. if not, push default paragraphs
       // on as a placeholder
       RowIndexType nRows = m_TableData[ColNo].size();
-      if (nRows-m_NumberOfHeaderRows <= RowNo)
+      RowIndexType endRow = RowNo + (span == SKIP_CELL ? 0 : span);
+      if (nRows-m_NumberOfHeaderRows <= endRow)
       {
-         for (RowIndexType i=nRows; i<=RowNo; i++)
+         for (RowIndexType i = nRows; i <= endRow; i++)
          {
-            m_TableData[ColNo].push_back( rptTableCellParagraph() );
+            m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
 
-            if ( IsStripedRow(i) )
-               m_TableData[ColNo].back().SetParent(m_pStripeRowColumnStyles+ColNo);
+            if (IsStripedRow(i))
+            {
+               m_TableData[ColNo].back().SetParent(m_pStripeRowColumnStyles + ColNo);
+            }
             else
-               m_TableData[ColNo].back().SetParent(m_pColumnStyles+ColNo);
+            {
+               m_TableData[ColNo].back().SetParent(m_pColumnStyles + ColNo);
+            }
          }
       }
 
       m_TableData[ColNo][RowNo].m_RowSpan = span;
+      if (bSkipSpannedCells && span != SKIP_CELL)
+      {
+         for (RowIndexType r = RowNo + 1; r < endRow; r++)
+         {
+            m_TableData[ColNo][r].m_RowSpan = SKIP_CELL;
+         }
+      }
+   }
+}
+
+void rptRcTable::SetRowColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType rowSpan, ColumnIndexType colSpan, bool bSkipSpannedCells)
+{
+   CHECK(ColNo < m_NumColumns);
+   CHECK(ColNo + (colSpan == SKIP_CELL ? 1 : colSpan) - 1 < m_NumColumns);
+   //CHECK(span>=-1);
+
+   if (ColNo < m_NumColumns)
+   {
+      // check if row entry has been allocated. if not, push default paragraphs
+      // on as a placeholder
+      RowIndexType nRows = m_TableData[ColNo].size();
+      if (nRows - m_NumberOfHeaderRows <= RowNo)
+      {
+         for (RowIndexType i = nRows; i <= RowNo; i++)
+         {
+            bool bIsStripedRow = IsStripedRow(i);
+            ColumnIndexType jEnd = (colSpan == SKIP_CELL ? 1 : colSpan);
+            for (ColumnIndexType j = 0; j < jEnd; j++)
+            {
+               m_TableData[ColNo + j].emplace_back(/*rptTableCellParagraph()*/);
+
+               if (bIsStripedRow)
+               {
+                  m_TableData[ColNo + j].back().SetParent(m_pStripeRowColumnStyles + ColNo + j);
+               }
+               else
+               {
+                  m_TableData[ColNo + j].back().SetParent(m_pColumnStyles + ColNo + j);
+               }
+            }
+         }
+      }
+
+      m_TableData[ColNo][RowNo].m_RowSpan = rowSpan;
+      m_TableData[ColNo][RowNo].m_ColSpan = colSpan;
+   
+      if (bSkipSpannedCells && colSpan != SKIP_CELL)
+      {
+         ColumnIndexType endColumnSkipping = ColNo + colSpan;
+         RowIndexType endRowSkipping = RowNo + (rowSpan == SKIP_CELL ? 0 : rowSpan);
+         for (ColumnIndexType c = ColNo + 1; c < endColumnSkipping && c < m_NumColumns; c++)
+         {
+            m_TableData[c][RowNo].m_ColSpan = SKIP_CELL; // skip remaining cells on the primary row in this skip range
+         }
+
+         // for all the remaining rows, skip the entire column span
+         for (RowIndexType r = RowNo + 1; r < endRowSkipping; r++)
+         {
+            for (ColumnIndexType c = ColNo; c < endColumnSkipping && c < m_NumColumns; c++)
+            {
+               m_TableData[c][r].m_RowSpan = SKIP_CELL;
+               m_TableData[c][r].m_ColSpan = SKIP_CELL;
+            }
+         }
+      }
    }
 }
 
@@ -693,7 +782,7 @@ void rptRcTable::GetCellSpans(RowIndexType RowNo, ColumnIndexType ColNo, RowInde
    {
       for (RowIndexType i=nRows; i<=RowNo; i++)
       {
-         m_TableData[ColNo].push_back( rptTableCellParagraph() );
+         m_TableData[ColNo].emplace_back( /*rptTableCellParagraph()*/ );
 
          if ( IsStripedRow(i) )
             m_TableData[ColNo].back().SetParent(m_pStripeRowColumnStyles+ColNo);
@@ -716,8 +805,10 @@ void rptRcTable::SetNumberOfHeaderRows(RowIndexType nrows)
       {
          for (RowIndexType row = 0; row < m_NumberOfHeaderRows; row++ )
          {
-            if ( (RowIndexType)m_TableData[col].size() <= row )
-               m_TableData[col].push_back(rptTableCellParagraph());
+            if ((RowIndexType)m_TableData[col].size() <= row)
+            {
+               m_TableData[col].emplace_back(/*rptTableCellParagraph()*/);
+            }
 
             m_TableData[col][row].SetStyleName( m_pColumnStyles[col].GetStyleName() );
          }
@@ -931,14 +1022,14 @@ void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
       RowIndexType nHeaderRows = GetNumberOfHeaderRows();
       for ( RowIndexType j = 0; j < nHeaderRows; j++ )
       {
-         m_TableData[i].push_back( rptTableCellParagraph() );
+         m_TableData[i].emplace_back( /*rptTableCellParagraph()*/ );
          m_TableData[i][j].SetStyleName( m_TableData[0][j].GetStyleName() );
       }
 
       RowIndexType nRows = GetNumberOfRows();
       for ( RowIndexType j = nHeaderRows; j < nRows; j++ )
       {
-         m_TableData[i].push_back( rptTableCellParagraph() );
+         m_TableData[i].emplace_back( /*rptTableCellParagraph()*/ );
          if ( IsStripedRow(j) )
          {
             m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);

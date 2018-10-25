@@ -140,7 +140,11 @@ public:
 	STDMETHOD(get_Supports)(/*[out, retval]*/ ISupports* *pVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ ILBAMModel** clone) override;
 	STDMETHOD(get_SuperstructureMembers)(/*[out, retval]*/ ISuperstructureMembers* *pVal) override;
-	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
+   STDMETHOD(put_ForceEquilibriumTolerance)(/*[in]*/Float64 tol);
+   STDMETHOD(get_ForceEquilibriumTolerance)(/*[out, retval]*/Float64* tol);
+   STDMETHOD(put_MomentEquilibriumTolerance)(/*[in]*/Float64 tol);
+   STDMETHOD(get_MomentEquilibriumTolerance)(/*[out, retval]*/Float64* tol);
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
 
    // The following methods were in the ILBAMModel interface at one time. They were
    // removed because they present a nightmare for event handling.
@@ -293,6 +297,9 @@ protected:
    DWORD                            m_LiveLoadCookie;
    CComPtr<IDistributionFactors>    m_DistributionFactors;
    DWORD                            m_DistributionFactorsCookie;
+
+   Float64 m_ForceEquilibriumTolerance;
+   Float64 m_MomentEquilibriumTolerance;
 
 private:
    // local private members

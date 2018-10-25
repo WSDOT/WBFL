@@ -63,7 +63,8 @@ CModel::CModel()
    m_NumCondensedDOF = -1;
    m_NumGlobalDOF    = -1;
 
-   SetEquilibriumCheckTolerance(EPS);
+   SetForceEquilibriumCheckTolerance(EPS);
+   SetMomentEquilibriumCheckTolerance(EPS);
 
    m_ModelDirty = true;
 }
@@ -139,7 +140,32 @@ STDMETHODIMP CModel::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-static const Float64 MY_VER=2.0;
+STDMETHODIMP CModel::put_ForceEquilibriumTolerance(Float64 tol)
+{
+   m_ForceEquilibriumTolerance = tol;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::get_ForceEquilibriumTolerance(Float64* tol)
+{
+   CHECK_RETVAL(tol);
+   *tol = m_ForceEquilibriumTolerance;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::put_MomentEquilibriumTolerance(Float64 tol)
+{
+   m_MomentEquilibriumTolerance = tol;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::get_MomentEquilibriumTolerance(Float64* tol)
+{
+   CHECK_RETVAL(tol);
+   *tol = m_MomentEquilibriumTolerance;
+   return S_OK;
+}
+static const Float64 MY_VER=3.0;
 
 // IStructuredStorage2
 STDMETHODIMP CModel::Load(/*[in]*/ IStructuredLoad2 *pload)
@@ -173,13 +199,32 @@ STDMETHODIMP CModel::Load(/*[in]*/ IStructuredLoad2 *pload)
          m_Name = var.bstrVal;
       }
 
-      CComVariant vardbl;
-      vardbl.vt = VT_R8;
-      hr = pload->get_Property(CComBSTR("EquilibriumTolerance"),&vardbl);
-      if (FAILED(hr))
-         return hr;
+      if (ver < 3)
+      {
+         CComVariant vardbl;
+         vardbl.vt = VT_R8;
+         hr = pload->get_Property(CComBSTR("EquilibriumTolerance"), &vardbl);
+         if (FAILED(hr))
+            return hr;
 
-      m_Tolerance = vardbl.dblVal;
+         m_ForceEquilibriumTolerance = vardbl.dblVal;
+         m_MomentEquilibriumTolerance = m_ForceEquilibriumTolerance;
+      }
+      else
+      {
+         CComVariant vardbl;
+         vardbl.vt = VT_R8;
+         hr = pload->get_Property(CComBSTR("ForceEquilibriumTolerance"), &vardbl);
+         if (FAILED(hr))
+            return hr;
+
+         m_ForceEquilibriumTolerance = vardbl.dblVal;
+
+         hr = pload->get_Property(CComBSTR("MomentEquilibriumTolerance"), &vardbl);
+         if (FAILED(hr))
+            return hr;
+         m_MomentEquilibriumTolerance = vardbl.dblVal;
+      }
 
       // joints
       hr = m_pJoints->Load(CComBSTR("Joints"), 1.0, pload);
@@ -226,7 +271,17 @@ STDMETHODIMP CModel::Save(/*[in]*/ IStructuredSave2 *psave)
       if (FAILED(hr))
          return hr;
 
-      hr = psave->put_Property(CComBSTR("EquilibriumTolerance"),CComVariant(m_Tolerance));
+      // removed in version 3
+      //hr = psave->put_Property(CComBSTR("EquilibriumTolerance"),CComVariant(m_Tolerance));
+      //if (FAILED(hr))
+      //   return hr;
+
+      // added in version 3
+      hr = psave->put_Property(CComBSTR("ForceEquilibriumTolerance"), CComVariant(m_ForceEquilibriumTolerance));
+      if (FAILED(hr))
+         return hr;
+
+      hr = psave->put_Property(CComBSTR("MomentEquilibriumTolerance"), CComVariant(m_MomentEquilibriumTolerance));
       if (FAILED(hr))
          return hr;
 
@@ -1791,14 +1846,15 @@ void CModel::SolveDeflectionsClassical()
 void CModel::CheckEquilibrium()
 {
 
-   Float64 tol = GetEquilibriumCheckTolerance();
+   Float64 forceTol = GetForceEquilibriumCheckTolerance();
+   Float64 momentTol = GetMomentEquilibriumCheckTolerance();
 
    JointIterator j( m_pJoints->begin() );
    JointIterator jend( m_pJoints->end() );
    while(j != jend)
    {
       CJoint *jnt = *(j++);
-      if (!jnt->IsEquilibriumSatisfied(tol))
+      if (!jnt->IsEquilibriumSatisfied(forceTol,momentTol))
       {
          JointIDType id;
          jnt->get_ID(&id);
@@ -1813,7 +1869,7 @@ void CModel::CheckEquilibrium()
    while(i != iend )
    {
       CMember *ele = *(i++);
-      if (!ele->IsEquilibriumSatisfied(tol))
+      if (!ele->IsEquilibriumSatisfied(forceTol, momentTol))
       {
          MemberIDType id;
          ele->get_ID(&id);
@@ -1828,7 +1884,7 @@ void CModel::CheckEquilibrium()
 
 void CModel::CheckSolution()
 {
-   Float64 tol = GetEquilibriumCheckTolerance();
+   Float64 tol = GetForceEquilibriumCheckTolerance();
    Float64  error;
    long l,m;
 

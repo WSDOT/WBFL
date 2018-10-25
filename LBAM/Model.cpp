@@ -181,6 +181,9 @@ HRESULT CModel::FinalConstruct( )
    if (FAILED(hr))
       return hr;
 
+   m_ForceEquilibriumTolerance = 0.1;
+   m_MomentEquilibriumTolerance = 0.1;
+
    return S_OK;
 }
 
@@ -855,6 +858,31 @@ STDMETHODIMP CModel::putref_DistributionFactors(IDistributionFactors *newVal)
 	return S_OK;
 }
 
+STDMETHODIMP CModel::put_ForceEquilibriumTolerance(Float64 tol)
+{
+   m_ForceEquilibriumTolerance = tol;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::get_ForceEquilibriumTolerance(Float64* tol)
+{
+   CHECK_RETVAL(tol);
+   *tol = m_ForceEquilibriumTolerance;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::put_MomentEquilibriumTolerance(Float64 tol)
+{
+   m_MomentEquilibriumTolerance = tol;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::get_MomentEquilibriumTolerance(Float64* tol)
+{
+   CHECK_RETVAL(tol);
+   *tol = m_MomentEquilibriumTolerance;
+   return S_OK;
+}
 
 STDMETHODIMP CModel::get_StructuredStorage(IStructuredStorage2 **pVal)
 {
@@ -864,7 +892,7 @@ STDMETHODIMP CModel::get_StructuredStorage(IStructuredStorage2 **pVal)
 
 
 // IStructuredStorage2
-static const Float64 MY_VER=2.0;
+static const Float64 MY_VER=3.0;
 
 STDMETHODIMP CModel::Load(IStructuredLoad2 * pload)
 {
@@ -1133,6 +1161,16 @@ STDMETHODIMP CModel::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
+      if (2 < ver)
+      {
+         var.Clear();
+         hr = pload->get_Property(_bstr_t("ForceEquilibriumTolerance"), &var);
+         m_ForceEquilibriumTolerance = var.dblVal;
+
+         hr = pload->get_Property(_bstr_t("MomentEquilibriumTolerance"), &var);
+         m_MomentEquilibriumTolerance = var.dblVal;
+      }
+
    }
 
    VARIANT_BOOL eb;
@@ -1173,6 +1211,10 @@ STDMETHODIMP CModel::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("StrainLoads"),_variant_t(m_StrainLoads));
       hr = psave->put_Property(CComBSTR("LiveLoad"),_variant_t(m_LiveLoad));
       hr = psave->put_Property(CComBSTR("DistributionFactors"),_variant_t(m_DistributionFactors));
+
+      hr = psave->put_Property(CComBSTR("ForceEquilibriumTolerance"), _variant_t(m_ForceEquilibriumTolerance)); // added in ver 3
+      hr = psave->put_Property(CComBSTR("MomentEquilibriumTolerance"), _variant_t(m_MomentEquilibriumTolerance)); // added in ver 3
+
       hr = psave->EndUnit();
    }
    catch(...)

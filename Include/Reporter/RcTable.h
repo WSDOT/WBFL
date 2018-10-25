@@ -229,15 +229,19 @@ public:
    // span==1 is the default
    // span==0 will case it to span all following columns
    // span==SKIP_CELL will cause the cell at this location not to be generated
-   void SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span);
+   // if bSkipSpannedCells is true, all columns from ColNo+1 to ColNo+span-1 are filled with SKIP_CELL
+   void SetColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, ColumnIndexType span, bool bSkipSpannedCells=true);
 
    //------------------------------------------------------------------------
    // Set number of Columns to right that a given cell will span 
    // span==1 is the default
    // span==0 will case it to span all following rows
    // span == SKIP_CELL will cause the cell at this location not to be generated
-   void SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span);
+   // if bSkipSpannedCells is true, all rows from RolNo+1 to RolNo+span-1 are filled with SKIP_CELL
+   void SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType span, bool bSkipSpannedCells=true);
 
+   // Use this to span rows and columns together
+   void SetRowColumnSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType rowSpan, ColumnIndexType colSpan, bool bSkipSpannedCells = true);
    //------------------------------------------------------------------------
    // Set column and row spans for a given cell
    void GetCellSpans(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType* pRowSpan, ColumnIndexType* pColSpan);

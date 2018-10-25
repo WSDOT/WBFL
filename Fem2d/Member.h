@@ -169,7 +169,7 @@ protected:
    void GetInternalForces(Float64 loc,Fem2dMbrFaceType face,Float64 *force);
    void GetDeflection(Float64 loc,Float64 *disp);
 
-   bool IsEquilibriumSatisfied(Float64 tolerance);
+   bool IsEquilibriumSatisfied(Float64 forceTolerance,Float64 momentTolerance);
 
    long GetReleaseTypeFlag(Fem2dMbrReleaseType releaseType);
    bool IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType);
