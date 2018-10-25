@@ -72,7 +72,7 @@ BOOL CAddPointLoadDlg::OnInitDialog()
       CString strID;
       LoadCaseIDType ID;
       loading->get_ID(&ID);
-      strID.Format("%d",ID);
+      strID.Format(_T("%d"),ID);
       pLoadings->AddString(strID);
    }
 

@@ -43,6 +43,9 @@ public:
    CString m_Responses;
    int m_Choice;
 
+   CString m_HelpFile;
+   UINT m_HelpID;
+
 protected:
    CStatic m_Icon;
 
@@ -51,4 +54,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
    virtual BOOL OnInitDialog();
+   void OnHelp();
 };

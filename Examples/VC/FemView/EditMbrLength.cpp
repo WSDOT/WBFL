@@ -56,7 +56,7 @@ STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnChanged(iDisplayObje
    CComQIPtr<iEditableTextBlock,&IID_iEditableTextBlock> edTextBlock(textBlock);
    CString strText = edTextBlock->GetEditedText();
 
-   double length = atof(strText);
+   double length = _tstof(strText);
 
    // Compute the new coordinates of the member end joint.
    long mbrID = pDO->GetID();

@@ -193,7 +193,7 @@ void CFEA2DView::BuildJointDisplayObjects()
       joint->get_Y(&y);
 
       CString strToolTipText;
-      strToolTipText.Format("Joint %d (%f,%f)",ID,x,y);
+      strToolTipText.Format(_T("Joint %d (%f,%f)"),ID,x,y);
       jointRep->SetToolTipText(strToolTipText);
 
       pDL->AddDisplayObject(jointRep);
@@ -297,7 +297,7 @@ void CFEA2DView::BuildMemberDisplayObjects()
 
       CString strToolTip;
       pMbr->get_ID(&mbrID);
-      strToolTip.Format("Member %d",mbrID);
+      strToolTip.Format(_T("Member %d"),mbrID);
       mbrRep->SetToolTipText(strToolTip);
 
       CMemberDropSite* pDropSite = new CMemberDropSite(pDoc);
@@ -444,7 +444,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
          loadRep->SetID(loadID);
 
          CString strToolTipText;
-         strToolTipText.Format("Loading %d Load %d",loadcaseID,loadID);
+         strToolTipText.Format(_T("Loading %d Load %d"),loadcaseID,loadID);
          loadRep->SetToolTipText(strToolTipText);
 
          pDL->AddDisplayObject(loadRep);
@@ -504,7 +504,7 @@ DROPEFFECT CFEA2DView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoi
 
 void CFEA2DView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
 {
-   AfxMessageBox("OnDropped");
+   AfxMessageBox(_T("OnDropped"));
 }
 //
 //void CFEA2DView::OnChanged(IDisplayMgr* pDM,IDisplayList* pDL,IDisplayObject* pDO)
@@ -597,7 +597,7 @@ void CFEA2DView::OnViewZoom()
 
 void CFEA2DView::OnViewSetScale() 
 {
-   AfxMessageBox("Setting scale to 2");
+   AfxMessageBox(_T("Setting scale to 2"));
    CComPtr<iDisplayMgr> dispMgr;
    GetDisplayMgr(&dispMgr);
    Zoom(2);
@@ -655,7 +655,7 @@ void CFEA2DView::OnLoadsCreateLoading()
       }
       catch (...)
       {
-         AfxMessageBox("Error creating loading");
+         AfxMessageBox(_T("Error creating loading"));
       }
    }
 }
@@ -687,7 +687,7 @@ void CFEA2DView::OnLoadsAddPointLoad()
       }
       catch(...)
       {
-         AfxMessageBox("Failed to create load");
+         AfxMessageBox(_T("Failed to create load"));
       }
    }
 }

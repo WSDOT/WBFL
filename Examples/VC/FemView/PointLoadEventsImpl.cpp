@@ -15,7 +15,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-UINT CPointLoadEventsImpl::ms_Format = ::RegisterClipboardFormat("PointLoadData");
+UINT CPointLoadEventsImpl::ms_Format = ::RegisterClipboardFormat(_T("PointLoadData"));
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointLoadEventsImpl
