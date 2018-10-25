@@ -43,10 +43,15 @@ class ATL_NO_VTABLE CLinearCrossBeam :
 public:
 	CLinearCrossBeam()
 	{
+      m_bIsLXBDirty = true;
+      m_bIsUXBDirty = true;
+      m_bIsBXBDirty = true;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
+
+   void Invalidate();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_LINEARCROSSBEAM)
 
@@ -66,6 +71,14 @@ private:
    Float64 m_X1, m_X2, m_X3, m_X4;
    Float64 m_W1, m_W2;
    CComPtr<IRebarLayout> m_RebarLayout;
+
+   bool m_bIsLXBDirty;
+   bool m_bIsUXBDirty;
+   bool m_bIsBXBDirty;
+   CComPtr<IPoint2dCollection> m_LXBProfile;
+   CComPtr<IPoint2dCollection> m_UXBProfile;
+   CComPtr<IPoint2dCollection> m_BXBProfile;
+
 
 // ISupportsErrorInfo
 public:

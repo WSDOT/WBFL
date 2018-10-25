@@ -38,8 +38,8 @@ CLASS
    lrfrVersionMgr
 ****************************************************************************/
 
-
-lrfrVersionMgr::Version lrfrVersionMgr::ms_Version = lrfrVersionMgr::FirstEdition2008;
+// Make the default, the most current version
+lrfrVersionMgr::Version lrfrVersionMgr::ms_Version = (lrfrVersionMgr::Version)((int)lrfrVersionMgr::LastVersion-1);
 bool lrfrVersionMgr::ms_IsDamaged = false;
 
 lrfrVersionMgr::Listeners lrfrVersionMgr::ms_Listeners;
@@ -91,55 +91,83 @@ lrfrVersionMgr::Version lrfrVersionMgr::GetVersion()
    return ms_Version;
 }
 
-std::_tstring lrfrVersionMgr::GetCodeString()
+LPCTSTR lrfrVersionMgr::GetCodeString()
 {
    return _T("The Manual for Bridge Evaluation");
 }
 
-std::_tstring lrfrVersionMgr::GetVersionString()
+LPCTSTR lrfrVersionMgr::GetVersionString(bool bAbbreviated)
 {
-   return GetVersionString(ms_Version);
+   return GetVersionString(ms_Version,bAbbreviated);
 }
 
-std::_tstring lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version)
+LPCTSTR lrfrVersionMgr::GetVersionString(lrfrVersionMgr::Version version,bool bAbbreviated)
 {
-   std::_tstring strVersion;
    switch( version )
    {
    case FirstEdition2008:
-      strVersion = _T("First Edition 2008");
-      break;
+      return (bAbbreviated ? _T("LRFR2008") : _T("First Edition 2008"));
 
    case FirstEditionWith2010Interims:
-      strVersion = _T("First Edition 2008, with 2010 interim provisions");
-      break;
+      return (bAbbreviated ? _T("LRFR2010") : _T("First Edition 2008, with 2010 interim provisions"));
 
    case SecondEdition2011:
-      strVersion = _T("Second Edition 2011");
-      break;
+      return (bAbbreviated ? _T("LRFR2011") : _T("Second Edition 2011"));
       
    case SecondEditionWith2011Interims:
-      strVersion = _T("Second Edition 2011, with 2011 interim provisions");
-      break;
+      return (bAbbreviated ? _T("LRFR2011i") : _T("Second Edition 2011, with 2011 interim provisions"));
 
    case SecondEditionWith2013Interims:
-      strVersion = _T("Second Edition 2011, with 2011-2013 interim provisions");
-      break;
+      return (bAbbreviated ? _T("LRFR2013") : _T("Second Edition 2011, with 2011-2013 interim provisions"));
 
    case SecondEditionWith2014Interims:
-      strVersion = _T("Second Edition 2011, with 2011-2014 interim provisions");
-      break;
+      return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2014 interim provisions"));
 
    case SecondEditionWith2015Interims:
-      strVersion = _T("Second Edition 2011, with 2011-2015 interim provisions");
-      break;
+      return (bAbbreviated ? _T("LRFR2015") : _T("Second Edition 2011, with 2011-2015 interim provisions"));
 
    default:
-      strVersion = _T("Unknown");
       ASSERT(false);
+      return _T("LRFR2008");
    }
+}
 
-   return strVersion;
+lrfrVersionMgr::Version lrfrVersionMgr::GetVersion(LPCTSTR strAbbrev)
+{
+   std::_tstring strSpecVersion(strAbbrev);
+   if(strSpecVersion == _T("LRFR2008"))
+   {
+      return lrfrVersionMgr::FirstEdition2008;
+   }
+   else if(strSpecVersion == _T("LRFR2010"))
+   {
+      return lrfrVersionMgr::FirstEditionWith2010Interims;
+   }
+   else if (strSpecVersion == _T("LRFR2011"))
+   {
+      return lrfrVersionMgr::SecondEdition2011;
+   }
+   else if (strSpecVersion == _T("LRFR2011i"))
+   {
+      return lrfrVersionMgr::SecondEditionWith2011Interims;
+   }
+   else if (strSpecVersion == _T("LRFR2013"))
+   {
+      return lrfrVersionMgr::SecondEditionWith2013Interims;
+   }
+   else if (strSpecVersion == _T("LRFR2014"))
+   {
+      return lrfrVersionMgr::SecondEditionWith2014Interims;
+   }
+   else if (strSpecVersion == _T("LRFR2015"))
+   {
+      return lrfrVersionMgr::SecondEditionWith2015Interims;
+   }
+   else
+   {
+      ATLASSERT(false);
+      throw 0;
+   }
 }
 
 void lrfrVersionMgr::RegisterListener(lrfrVersionMgrListener* pListener)
@@ -172,7 +200,7 @@ bool lrfrVersionMgr::AssertValid()
 
 void lrfrVersionMgr::Dump(dbgDumpContext& os)
 {
-   os << GetVersionString().c_str() << endl;
+   os << GetVersionString(false) << endl;
 }
 #endif // _DEBUG
 #if defined _UNITTEST

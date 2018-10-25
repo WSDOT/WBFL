@@ -45,6 +45,8 @@ CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CProgressDlg)
 	m_Message = _T("Working...");
 	//}}AFX_DATA_INIT
+   m_pwndFocus = NULL;
+   m_pwndCapture = NULL;
 }
 
 CProgressDlg::~CProgressDlg()
@@ -62,6 +64,25 @@ void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROGRESS, m_ProgressBar);
 	DDX_Text(pDX, IDC_MESSAGE, m_Message);
 	//}}AFX_DATA_MAP
+}
+
+void CProgressDlg::GrabInput()
+{
+   m_pwndFocus = GetFocus();
+   m_pwndCapture = GetCapture();
+}
+
+void CProgressDlg::ReleaseInput()
+{
+   if ( m_pwndFocus )
+   {
+      m_pwndFocus->SetFocus();
+   }
+
+   if ( m_pwndCapture )
+   {
+      m_pwndCapture->SetCapture();
+   }
 }
 
 void CProgressDlg::UpdateMessage(LPCTSTR msg)
@@ -100,7 +121,7 @@ void CProgressDlg::PumpMessage()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    MSG msg;
-   while (::PeekMessage(&msg,NULL,NULL,NULL, PM_NOREMOVE) )
+   while (::PeekMessage(&msg,GetSafeHwnd(),0,0,PM_NOREMOVE) )
    {
       AfxGetThread()->PumpMessage();
    }

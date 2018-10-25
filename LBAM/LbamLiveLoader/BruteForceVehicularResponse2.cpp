@@ -1319,10 +1319,15 @@ void CBruteForceVehicularResponse2::ConfigureAxleSpacings()
 {
    CHRException hr;
 
+   Float64 model_length;
+   hr = m_SupportLocations->get_TotalLength(&model_length); // do this before either of the two "return" statements below... causes the live load support locations to be updated for the actual model
+
    m_AxleSpacings.clear();
 
    if ( !m_IsTruck )
+   {
       return;
+   }
 
    if ( !m_Truck.IsVariableAxle() )
    {
@@ -1332,22 +1337,20 @@ void CBruteForceVehicularResponse2::ConfigureAxleSpacings()
    }
 
 
-   Float64 model_length;
-   hr = m_SupportLocations->get_TotalLength(&model_length);
 
    Float64 min_spc = m_Truck.GetMinVariableAxleSpacing();
    Float64 max_spc = m_Truck.GetMaxVariableAxleSpacing();
 
-   if (max_spc<=min_spc)
+   if (max_spc <= min_spc)
    {
       THROW_LBAMLL(INVALID_VAR_SPACING);
    }
 
    // make sure superstructure is longer than min spacing length
-   if (model_length>min_spc)
+   if (min_spc < model_length)
    {
       // Set max spacing so that it does not exceed length of bridge
-      if (max_spc>model_length)
+      if (model_length < max_spc)
       {
          max_spc = model_length;
       }
@@ -1365,7 +1368,7 @@ void CBruteForceVehicularResponse2::ConfigureAxleSpacings()
 
       long num_spacings;
       Float64 delta;
-      if (truck_delta<span_delta)
+      if (truck_delta < span_delta)
       {
          delta        = truck_delta;
          num_spacings = m_VariableAxleSpacings;
@@ -1379,7 +1382,7 @@ void CBruteForceVehicularResponse2::ConfigureAxleSpacings()
 
       // fill up the spacing array
       Float64 spac = min_spc;
-      for (long is=0; is<num_spacings; is++)
+      for (long is = 0; is < num_spacings; is++)
       {
          m_AxleSpacings.push_back(spac);
          spac += delta;

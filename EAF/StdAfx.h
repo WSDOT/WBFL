@@ -59,6 +59,7 @@ extern CComModule _Module;
 #include <WBFLAtlExt.h>
 
 #include <EAF\EAFTypes.h>
+#include <EAF\EAFResources.h>
 
 #include <comcat.h>
 

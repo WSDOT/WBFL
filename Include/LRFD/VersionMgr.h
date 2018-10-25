@@ -142,19 +142,24 @@ public:
 
    //------------------------------------------------------------------------
    // Returns "AASHTO LRFD Bridge Design Specification"
-   static std::_tstring GetCodeString();
+   static LPCTSTR GetCodeString();
 
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
-   static std::_tstring GetVersionString();
+   static LPCTSTR GetVersionString(bool bAbbreviated=false);
 
    //------------------------------------------------------------------------
-   // Returns the current version of the specification as a string.
-   static std::_tstring GetVersionString(lrfdVersionMgr::Version version);
+   // Returns the current version of the specification as a string. 
+   // If bAbbreviated is true, the appreviated string is returned
+   static LPCTSTR GetVersionString(lrfdVersionMgr::Version version,bool bAbbreviated=false);
 
    //------------------------------------------------------------------------
    // Returns the current unit of the specification as a string.
-   static std::_tstring GetUnitString();
+   static LPCTSTR GetUnitString();
+
+   //------------------------------------------------------------------------
+   // returns the version enum value from the abbreviated version string
+   static Version GetVersion(LPCTSTR strAbbrev);
 
 
    // GROUP: INQUIRY

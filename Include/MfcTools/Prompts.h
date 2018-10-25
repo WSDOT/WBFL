@@ -52,4 +52,12 @@ public:
 // This function prompts the user with a question. The use has to select one or more items from a list
 // of options. lpszOptions is a \n separated list of options.  defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
-std::vector<int> MFCTOOLSFUNC AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator=NULL,const std::vector<int>& defOptions=std::vector<int>(),BOOL bCancelButton=FALSE,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);
+std::vector<int> MFCTOOLSFUNC AfxMultiChoice(LPCTSTR lpszTitle,
+                                             LPCTSTR lpszQuestion,
+                                             LPCTSTR lpszOptions,
+                                             CMultiChoiceValidator* pValidator=NULL,
+                                             const std::vector<int>& defOptions=std::vector<int>(),
+                                             BOOL bCancelButton=FALSE,
+                                             BOOL bCheckList=FALSE,
+                                             LPCTSTR lpszHelpFile=NULL,
+                                             UINT helpID=0);

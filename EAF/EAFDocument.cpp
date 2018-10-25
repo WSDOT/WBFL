@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "resource.h"
 #include "BackDoor.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFDocument.h>
 #include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>

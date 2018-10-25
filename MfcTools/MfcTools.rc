@@ -64,8 +64,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,38
- PRODUCTVERSION 4,0,0,38
+ FILEVERSION 4,0,0,39
+ PRODUCTVERSION 4,0,0,39
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -83,12 +83,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "MfcTools DLL"
-            VALUE "FileVersion", "4.0.0.38"
+            VALUE "FileVersion", "4.0.0.39"
             VALUE "InternalName", "MfcTools"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "MfcTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.38"
+            VALUE "ProductVersion", "4.0.0.39"
         END
     END
     BLOCK "VarFileInfo"
@@ -179,7 +179,8 @@ BEGIN
     ICON            "",IDC_QUESTIONMARK,7,7,20,20
     LTEXT           "Static",IDC_QUESTION,44,7,265,35
     PUSHBUTTON      "Help",IDHELP,7,162,50,14
-    LISTBOX         IDC_LIST,7,51,302,103,LBS_MULTIPLESEL | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST,7,51,302,101,LBS_MULTIPLESEL | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_CHECKLIST,7,51,302,101,LBS_SORT | LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_RB_CHOICE DIALOGEX 0, 0, 318, 158

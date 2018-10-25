@@ -19,40 +19,41 @@
 // along with this program; if not, write to the Washington State Department of 
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <EAF\EAFExp.h>
+#include <EAF\EAFStatusBar.h>
 
-
-
-class EAFCLASS CEAFCommandLineInfo : public CCommandLineInfo
+class EAFCLASS CEAFAutoCalcStatusBar : public CEAFStatusBar
 {
 public:
-   CEAFCommandLineInfo();
-   virtual ~CEAFCommandLineInfo();
+	CEAFAutoCalcStatusBar();
+	virtual ~CEAFAutoCalcStatusBar();
 
-   UINT m_nParams;
-   BOOL  m_bUsageMessage; // set to TRUE if a usage message is required (/?)
-   BOOL  m_bCommandLineMode; // set this to TRUE if this is a batch run
-   BOOL  m_bError; // set this to TRUE if there is a problem with the command line and the application
-                   // needs to display the command line usage message and exit
-   BOOL m_bTargetApp;
+   virtual void GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount);
 
-   virtual void ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast);
+   int GetAutoCalcPaneIndex();
 
-   void SetErrorInfo(LPCTSTR strError);
+   virtual void Reset();
 
-   virtual CString GetUsageMessage();
-   virtual CString GetErrorMessage();
-   virtual CString GetTargetApp();
+   void AutoCalcEnabled( bool bEnable );
 
-   CEAFCommandLineInfo& operator=(const CEAFCommandLineInfo& other);
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CEAFAutoCalcStatusBar)
+	//}}AFX_VIRTUAL
 
+	// Generated message map functions
 protected:
-   // Prevent accidental copying and assignment
-   CEAFCommandLineInfo(const CEAFCommandLineInfo&);
+	//{{AFX_MSG(CEAFAutoCalcStatusBar)
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
+	//}}AFX_MSG
 
-   CString m_strErrorMsg;
-   CString m_strTargetApp; // name of EAF Application Plugin that is to process the command line options
+
+private:
+   int m_AutoCalcPaneIdx;
+
+	DECLARE_MESSAGE_MAP()
 };

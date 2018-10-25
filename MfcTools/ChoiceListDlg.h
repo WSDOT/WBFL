@@ -22,10 +22,8 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include "resource.h"
-#include <MFCTools\Prompts.h>
-
 // CChoiceListDlg dialog
+class CMultiChoiceValidator;
 
 class CChoiceListDlg : public CDialog
 {
@@ -38,6 +36,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_CHOICELIST };
 
+   BOOL m_bCheckList;
    BOOL m_bCancel;
    CString m_Title;
    CString m_Question;
@@ -52,6 +51,7 @@ public:
 protected:
    CStatic m_Icon;
    CListBox m_List;
+   CCheckListBox m_CheckList;
 
    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 

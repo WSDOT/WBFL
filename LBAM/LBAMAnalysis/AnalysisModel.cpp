@@ -3985,7 +3985,7 @@ void CAnalysisModel::LayoutSpanNodes(ISuperstructureMembers* pMembers, ISpans* p
 
       hr = span->get_Length(&span_length);
 
-      if (span_length <= m_LayoutTolerance*2)
+      if ( ::IsLE(span_length,0.0) )
       {
          THROW_LBAMA(SPAN_LENGTH_MUST_BE_GT_ZERO);
       }
@@ -4109,7 +4109,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
 
       hr = pmbr->get_Length(&mbr_length);
 
-      if (mbr_length <= m_LayoutTolerance)
+      if (::IsLE(mbr_length,0.0))
       {
          THROW_LBAMA(MEMBER_LENGTH_MUST_BE_GT_ZERO);
       }
@@ -4155,7 +4155,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
          }
 
 
-         if (segment_length <= m_LayoutTolerance)
+         if ( ::IsLE(segment_length,0.0) )
          {
             CComBSTR msg(::CreateErrorMsg1L(IDS_E_SEGMENT_LENGTH_MUST_BE_GT_ZERO, segmentIdx));
             CComBSTR msg2(::CreateErrorMsg1L(IDS_SUPERSTRUCTUREMEMBER_INFO, mbrIdx));
@@ -4374,7 +4374,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
       Float64 leftyloc = lefty->GetLoc();
       Float64 rightyloc = righty->GetLoc();
       Float64 diff = rightyloc - leftyloc;
-      if (diff <= layoutTolerance)
+      if ( ::IsLE(diff,0.0) )
       {
          // We have two nodes that are too close together - one needs to go
          // Use node type to determine which one to blast

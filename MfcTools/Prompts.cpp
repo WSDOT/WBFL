@@ -40,9 +40,9 @@ BOOL AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault,CStr
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CQuestionDlg dlg;
-   dlg.m_Title = lpszTitle;
+   dlg.m_Title    = lpszTitle;
    dlg.m_Question = lpszQuestion;
-   dlg.m_Answer = lpszDefault;
+   dlg.m_Answer   = lpszDefault;
    if ( dlg.DoModal() == IDOK )
    {
       strAnswer = dlg.m_Answer;
@@ -57,13 +57,13 @@ int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int d
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CChoiceDlg dlg;
-   dlg.m_bCancel = bCancelButton;
-   dlg.m_Title = lpszTitle;
-   dlg.m_Question = lpszQuestion;
+   dlg.m_bCancel   = bCancelButton;
+   dlg.m_Title     = lpszTitle;
+   dlg.m_Question  = lpszQuestion;
    dlg.m_Responses = lpszResponses;
-   dlg.m_Choice = defChoice;
-   dlg.m_HelpFile = lpszHelpFile;
-   dlg.m_HelpID = helpID;
+   dlg.m_Choice    = defChoice;
+   dlg.m_HelpFile  = lpszHelpFile;
+   dlg.m_HelpID    = helpID;
 
    if ( dlg.DoModal() == IDOK )
    {
@@ -80,13 +80,13 @@ int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CRBChoiceDlg dlg;
-   dlg.m_bCancel = bCancelButton;
-   dlg.m_Title = lpszTitle;
-   dlg.m_Question = lpszQuestion;
+   dlg.m_bCancel   = bCancelButton;
+   dlg.m_Title     = lpszTitle;
+   dlg.m_Question  = lpszQuestion;
    dlg.m_Responses = lpszResponses;
-   dlg.m_Choice = defChoice;
-   dlg.m_HelpFile = lpszHelpFile;
-   dlg.m_HelpID = helpID;
+   dlg.m_Choice    = defChoice;
+   dlg.m_HelpFile  = lpszHelpFile;
+   dlg.m_HelpID    = helpID;
 
    if ( dlg.DoModal() == IDOK )
    {
@@ -98,18 +98,19 @@ int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int
    }
 }
 
-std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator,const std::vector<int>& defChoices,BOOL bCancelButton,LPCTSTR lpszHelpFile,UINT helpID)
+std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator,const std::vector<int>& defChoices,BOOL bCancelButton,BOOL bCheckList,LPCTSTR lpszHelpFile,UINT helpID)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CChoiceListDlg dlg;
-   dlg.m_bCancel = bCancelButton;
-   dlg.m_Title = lpszTitle;
-   dlg.m_Question = lpszQuestion;
-   dlg.m_Options = lpszOptions;
-   dlg.m_Choices = defChoices;
-   dlg.m_HelpFile = lpszHelpFile;
-   dlg.m_HelpID = helpID;
+   dlg.m_bCheckList = bCheckList;
+   dlg.m_bCancel    = bCancelButton;
+   dlg.m_Title      = lpszTitle;
+   dlg.m_Question   = lpszQuestion;
+   dlg.m_Options    = lpszOptions;
+   dlg.m_Choices    = defChoices;
+   dlg.m_HelpFile   = lpszHelpFile;
+   dlg.m_HelpID     = helpID;
    dlg.m_pValidator = pValidator;
 
    if ( dlg.DoModal() == IDOK )

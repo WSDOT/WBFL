@@ -39,8 +39,9 @@ CLASS
 ****************************************************************************/
 
 
-lrfdVersionMgr::Version lrfdVersionMgr::ms_Version = lrfdVersionMgr::SecondEditionWith2002Interims;
-lrfdVersionMgr::Units   lrfdVersionMgr::ms_Units   = lrfdVersionMgr::SI;
+// Make the default, the most current version
+lrfdVersionMgr::Version lrfdVersionMgr::ms_Version = (lrfdVersionMgr::Version)((int)lrfdVersionMgr::LastVersion-1);
+lrfdVersionMgr::Units   lrfdVersionMgr::ms_Units   = lrfdVersionMgr::US;
 bool lrfdVersionMgr::ms_IsDamaged = false;
 
 typedef std::list<lrfdVersionMgrListener*,std::allocator<lrfdVersionMgrListener*> > Listeners;
@@ -131,115 +132,182 @@ lrfdVersionMgr::Units lrfdVersionMgr::GetUnits()
    return ms_Units;
 }
 
-std::_tstring lrfdVersionMgr::GetCodeString()
+LPCTSTR lrfdVersionMgr::GetCodeString()
 {
    return _T("AASHTO LRFD Bridge Design Specification");
 }
 
-std::_tstring lrfdVersionMgr::GetVersionString()
+LPCTSTR lrfdVersionMgr::GetVersionString(bool bAbbreviated)
 {
-   return lrfdVersionMgr::GetVersionString(ms_Version);
+   return lrfdVersionMgr::GetVersionString(ms_Version,bAbbreviated);
 }
 
-std::_tstring lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version)
+LPCTSTR lrfdVersionMgr::GetVersionString(lrfdVersionMgr::Version version,bool bAbbreviated)
 {
-   std::_tstring strVersion;
    switch( version )
    {
    case FirstEdition1994:
-      strVersion = _T("First Edition 1994");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd1994") : _T("First Edition 1994"));
 
    case FirstEditionWith1996Interims:
-      strVersion = _T("First Edition 1994 with 1996 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd1996") : _T("First Edition 1994 with 1996 interim provisions"));
 
    case FirstEditionWith1997Interims:
-      strVersion = _T("First Edition 1994 with 1996 - 1997 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd1997") : _T("First Edition 1994 with 1996 - 1997 interim provisions"));
 
    case SecondEdition1998:
-      strVersion = _T("Second Edition 1998");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd1998") : _T("Second Edition 1998"));
 
    case SecondEditionWith1999Interims:
-      strVersion = _T("Second Edition 1998 with 1999 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd1999") : _T("Second Edition 1998 with 1999 interim provisions"));
 
    case SecondEditionWith2000Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2000 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2000") : _T("Second Edition 1998 with 1999 - 2000 interim provisions"));
 
    case SecondEditionWith2001Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2001 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2001") : _T("Second Edition 1998 with 1999 - 2001 interim provisions"));
 
    case SecondEditionWith2002Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2002 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2002") : _T("Second Edition 1998 with 1999 - 2002 interim provisions"));
 
    case SecondEditionWith2003Interims:
-      strVersion = _T("Second Edition 1998 with 1999 - 2003 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2003") : _T("Second Edition 1998 with 1999 - 2003 interim provisions"));
 
    case ThirdEdition2004:
-      strVersion = _T("Third Edition 2004");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2004") : _T("Third Edition 2004"));
 
    case ThirdEditionWith2005Interims:
-      strVersion = _T("Third Edition 2004 with 2005 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2005") : _T("Third Edition 2004 with 2005 interim provisions"));
 
    case ThirdEditionWith2006Interims:
-      strVersion = _T("Third Edition 2004 with 2005 - 2006 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2006") : _T("Third Edition 2004 with 2005 - 2006 interim provisions"));
 
       // NOTE: 4th is not spelled out in the official name of the 4th edition, but
       // it is spelled out in all other editions. That is why 4th is used here
       // instead of fourth
    case FourthEdition2007:
-      strVersion = _T("4th Edition 2007");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2007") : _T("4th Edition 2007"));
 
    case FourthEditionWith2008Interims:
-      strVersion = _T("4th Edition 2007 with 2008 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2008") : _T("4th Edition 2007 with 2008 interim provisions"));
 
    case FourthEditionWith2009Interims:
-      strVersion = _T("4th Edition 2007 with 2008 - 2009 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2009") : _T("4th Edition 2007 with 2008 - 2009 interim provisions"));
 
    case FifthEdition2010:
-      strVersion = _T("Fifth Edition 2010");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2010") : _T("Fifth Edition 2010"));
 
    case SixthEdition2012:
-      strVersion = _T("Sixth Edition 2012");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2012") : _T("Sixth Edition 2012"));
 
    case SixthEditionWith2013Interims:
-      strVersion = _T("Sixth Edition 2012 with 2013 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2013") : _T("Sixth Edition 2012 with 2013 interim provisions"));
 
    case SeventhEdition2014:
-      strVersion = _T("Seventh Edition 2014");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2014") : _T("Seventh Edition 2014"));
 
    case SeventhEditionWith2015Interims:
-      strVersion = _T("Seventh Edition 2014 with 2015 interim provisions");
-      break;
+      return (bAbbreviated ? _T("AashtoLrfd2015") : _T("Seventh Edition 2014 with 2015 interim provisions"));
 
    default:
-      strVersion = _T("Unknown");
       ASSERT(false);
+      return _T("Unknown");
    }
-
-   return strVersion;
 }
 
-std::_tstring lrfdVersionMgr::GetUnitString()
+LPCTSTR lrfdVersionMgr::GetUnitString()
 {
    return ( ms_Units == SI ? _T("SI Units") : _T("Customary U.S. Units")) ;
+}
+
+lrfdVersionMgr::Version lrfdVersionMgr::GetVersion(LPCTSTR strAbbrev)
+{
+   std::_tstring tmp(strAbbrev);
+   if(tmp==_T("AashtoLrfd2015"))
+   {
+      return lrfdVersionMgr::SeventhEditionWith2015Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2014"))
+   {
+      return lrfdVersionMgr::SeventhEdition2014;
+   }
+   else if(tmp==_T("AashtoLrfd2013"))
+   {
+      return lrfdVersionMgr::SixthEditionWith2013Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2012"))
+   {
+      return lrfdVersionMgr::SixthEdition2012;
+   }
+   else if(tmp==_T("AashtoLrfd2010"))
+   {
+      return lrfdVersionMgr::FifthEdition2010;
+   }
+   else if(tmp==_T("AashtoLrfd2009"))
+   {
+      return lrfdVersionMgr::FourthEditionWith2009Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2008"))
+   {
+      return lrfdVersionMgr::FourthEditionWith2008Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2007"))
+   {
+      return lrfdVersionMgr::FourthEdition2007;
+   }
+   else if(tmp==_T("AashtoLrfd2006"))
+   {
+      return lrfdVersionMgr::ThirdEditionWith2006Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2005"))
+   {
+      return lrfdVersionMgr::ThirdEditionWith2005Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2004"))
+   {
+      return lrfdVersionMgr::ThirdEdition2004;
+   }
+   else if(tmp==_T("AashtoLrfd2003"))
+   {
+      return lrfdVersionMgr::SecondEditionWith2003Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2002"))
+   {
+      return lrfdVersionMgr::SecondEditionWith2002Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2001"))
+   {
+      return lrfdVersionMgr::SecondEditionWith2001Interims;
+   }
+   else if(tmp==_T("AashtoLrfd2000"))
+   {
+      return lrfdVersionMgr::SecondEditionWith2000Interims;
+   }
+   else if(tmp==_T("AashtoLrfd1999"))
+   {
+      return lrfdVersionMgr::SecondEditionWith1999Interims;
+   }
+   else if(tmp==_T("AashtoLrfd1998"))
+   {
+      return lrfdVersionMgr::SecondEdition1998;
+   }
+   else if(tmp==_T("AashtoLrfd1997"))
+   {
+      return lrfdVersionMgr::FirstEditionWith1997Interims;
+   }
+   else if(tmp==_T("AashtoLrfd1996"))
+   {
+      return lrfdVersionMgr::FirstEditionWith1996Interims;
+   }
+   else if (tmp==_T("AashtoLrfd1994"))
+   {
+      return lrfdVersionMgr::FirstEdition1994;
+   }
+   else
+   {
+      ATLASSERT(false);
+      throw 0;
+   }
 }
 
 void lrfdVersionMgr::RegisterListener(lrfdVersionMgrListener* pListener)
@@ -274,7 +342,7 @@ bool lrfdVersionMgr::AssertValid()
 
 void lrfdVersionMgr::Dump(dbgDumpContext& os)
 {
-   os << GetVersionString().c_str() << endl;
+   os << GetVersionString(false) << endl;
 }
 #endif // _DEBUG
 #if defined _UNITTEST

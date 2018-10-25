@@ -1600,7 +1600,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             Float64 x,y,z;
             pntCG->Location(&x,&y,&z);
             ATLASSERT(IsEqual(Xg,z));
-            ATLASSERT(y < 0); // below top of girder
+            ATLASSERT(y <= 0); // below top of girder
 
             // if Etendon is zero, the tendon is not installed yet
             // Model the hole for the duct. Model this hole for gross, transformed and net properties
@@ -1947,7 +1947,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          Float64 x,y,z;
          pntCG->Location(&x,&y,&z);
          ATLASSERT(IsEqual(Xg,z));
-         ATLASSERT(y < 0); // tendon must be below top of girder
+         ATLASSERT(y <= 0); // tendon must be below top of girder
 
          // Tendon is not installed in this stage
          if ( IsZero(Etendon) )

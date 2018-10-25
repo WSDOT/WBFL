@@ -24,6 +24,7 @@
 
 #pragma once
 #include <EAF\EAFExp.h>
+#include <EAF\EAFDocument.h>
 
 // EAFAutoCalcDoc.h : header file
 //
@@ -39,15 +40,21 @@ public:
 	CEAFAutoCalcDocMixin();
 	virtual ~CEAFAutoCalcDocMixin();
 
-   void SetDocument(CDocument* pDoc);
+   void SetDocument(CEAFDocument* pDoc);
+   virtual void CreateAcceleratorKeys();
+   virtual void RemoveAcceleratorKeys();
 
 
    virtual bool IsAutoCalcEnabled() const = 0;
    virtual void EnableAutoCalc(bool bEnable) = 0;
 
+   void OnAutoCalc();
+   void OnUpdateAutoCalc(CCmdUI* pCmdUI);
+
+
    void OnUpdateNow();
 	void OnUpdateUpdateNow(CCmdUI* pCmdUI);
 
 private:
-   CDocument* m_pDocument;
+   CEAFDocument* m_pDocument;
 };

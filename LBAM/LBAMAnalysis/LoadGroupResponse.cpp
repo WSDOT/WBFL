@@ -1630,26 +1630,6 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
          hr = supportIDs->get_Item(supportIDIdx, &supportID);
 
          SupportIndexType tempSupportIdx = m_AnalysisController.GetTemporarySupportIndex(supportID);
-         if ( tempSupportIdx != INVALID_INDEX )
-         {
-            StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
-
-            StageIndexType thisStageIdx = m_AnalysisController.CheckedStageOrder(Stage);
-            if ( tempSupportRemovalStageIdx <= thisStageIdx )
-            {
-               // this support is a temporary support and it has already been removed... report
-               // its cumulative and incremental reaction as zero
-
-               // create results object and add it to the collection
-               CComObject<CResult3D>* presult;
-               hr = CComObject<CResult3D>::CreateInstance(&presult);
-
-               CComPtr<IResult3D> the_result(presult);
-               hr = the_results->Add(the_result);
-               the_result->Sum(0,0,0);
-               continue; // next support
-            }
-         }
 
          // create results object and add it to the collection
          CComObject<CResult3D>* presult;
@@ -1664,6 +1644,19 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
+
+            if ( tempSupportIdx != INVALID_INDEX )
+            {
+               StageIndexType tempSupportRemovalStageIdx = m_AnalysisController.TemporarySupportRemovalStageIndex(tempSupportIdx);
+
+               if ( tempSupportRemovalStageIdx <= tempSupportLoadInfo.m_StageIdx )
+               {
+                  // this support is a temporary support and it has already been removed... report
+                  // its cumulative and incremental reaction as zero
+                  continue; // next support
+               }
+            }
+
             boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute the load group results

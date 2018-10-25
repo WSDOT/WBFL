@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,38
- PRODUCTVERSION 4,0,0,38
+ FILEVERSION 4,0,0,39
+ PRODUCTVERSION 4,0,0,39
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "WBFL Fem2d Module\0"
-            VALUE "FileVersion", "4.0.0.38\0"
+            VALUE "FileVersion", "4.0.0.39\0"
             VALUE "InternalName", "Fem2d\0"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -80,7 +80,7 @@ BEGIN
             VALUE "OriginalFilename", "Fem2d.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.38\0"
+            VALUE "ProductVersion", "4.0.0.39\0"
             VALUE "SpecialBuild", "\0"
         END
     END

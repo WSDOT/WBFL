@@ -26,7 +26,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include <EAF\EAFResources.h>
 #include <EAF\EAFPluginCommandManager.h>
 
 #ifdef _DEBUG
@@ -72,14 +71,20 @@ CEAFPluginCommandManager::~CEAFPluginCommandManager()
 
 UINT CEAFPluginCommandManager::ReserveCommandIDRange(UINT nCommands)
 {
-   if ( 0xDFFF <= CEAFPluginCommandManager::ms_MaxID )
+   if ( 0xDFFF < CEAFPluginCommandManager::ms_MaxID )
+   {
       return -1; // out of room.... all the command IDs given to us by MFC have been used up
+   }
 
    UINT nActualCommands;
-   if ( 0xDFFF <= CEAFPluginCommandManager::ms_NextID + nCommands )
-      nActualCommands = 0xDFFF - CEAFPluginCommandManager::ms_NextID; // requesting more than we have left
+   if ( CEAFPluginCommandManager::ms_MaxID <= (CEAFPluginCommandManager::ms_NextID + nCommands) )
+   {
+      nActualCommands = CEAFPluginCommandManager::ms_MaxID - CEAFPluginCommandManager::ms_NextID; // requesting more than we have left
+   }
    else
+   {
       nActualCommands = nCommands;
+   }
 
    m_nBaseID = CEAFPluginCommandManager::ms_NextID;
    m_nCommands = nActualCommands;
@@ -110,27 +115,29 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
    ATLASSERT(m_nBaseID   != INVALID_ID);
    ATLASSERT(m_nCommands != INVALID_ID);
 
+   if ( pCallback == NULL )
+   {
+      // plug-in commands without an associated callback cannot be in the plugin command mapping range
+      ATLASSERT(nPluginCmdID < CEAFPluginCommandManager::ms_MinID || CEAFPluginCommandManager::ms_MaxID < nPluginCmdID);
+
+      // no callback, nothing to map... pretend it was added
+      *pMappedID = nPluginCmdID;
+      return TRUE;
+   }
+
    if ( GetMappedCommandID(nPluginCmdID,pCallback,pMappedID) )
    {
+      // command was already mapped
       return TRUE;
    }
 
    // command callback was not previously added... add it now
+   *pMappedID = m_nNextID++; // generate the next command ID for the menus
 
-   if ( IsInStandardRange(nPluginCmdID) || pCallback == NULL )
+   if ( m_nBaseID+m_nCommands < *pMappedID )
    {
-      *pMappedID = nPluginCmdID; // using default MFC message routing, so don't alter the command ID
-      pCallback = NULL;
-   }
-   else
-   {
-      *pMappedID = m_nNextID++; // generate the next command ID for the menus
-
-      if ( m_nBaseID+m_nCommands < *pMappedID )
-      {
-         ATLASSERT(FALSE); // command ID exceeds max value reserved for our range
-         return FALSE;
-      }
+      ATLASSERT(FALSE); // command ID exceeds max value reserved for our range
+      return FALSE;
    }
 
    CCallbackItem callbackItem;
@@ -143,7 +150,14 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
 
 BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedCmdID)
 {
+   if ( pCallback == NULL )
+   {
+      *pMappedCmdID = nPluginCmdID;
+      return TRUE;
+   }
+
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
+
 
    BOOST_FOREACH(CallbackEntry callbackEntry,m_Callbacks)
    {
@@ -157,6 +171,7 @@ BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandC
       }
    }
 
+   *pMappedCmdID = nPluginCmdID;
    return FALSE;
 }
 
@@ -178,7 +193,7 @@ BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCm
    }
 
    (*ppCallback) = NULL;
-   return FALSE;
+   return TRUE;
 }
 
 void CEAFPluginCommandManager::RemoveCommandCallback(UINT nMappedID)
@@ -220,7 +235,11 @@ bool CEAFPluginCommandManager::IsInStandardRange(UINT nPluginCmdID)
 {
    // Command IDs in this range are handled by MFC with standard
    // command processors.
-   return (0xE000 <= nPluginCmdID && nPluginCmdID <= 0xEFFF) // command ID from plugin is in the range of standard command processed by MFC
+   bool bIsMFCCommand = (0xE000 <= nPluginCmdID && nPluginCmdID <= 0xEFFF) ? true : false;
+   UINT eafReservedCommandBase = EAF_RESERVED_COMMAND_BASE;
+   UINT eafFirstUserCommand = EAF_FIRST_USER_COMMAND;
+   bool bIsEAFCommand = (eafReservedCommandBase <= nPluginCmdID && nPluginCmdID < eafFirstUserCommand);
+   return bIsMFCCommand // command ID from plugin is in the range of standard command processed by MFC
           ||
-          (nPluginCmdID < EAF_FIRST_USER_COMMAND); // command ID from plugin is in the range of standard commands processed by EAF
+          bIsEAFCommand; // command ID from plugin is in the range of standard commands processed by EAF
 }

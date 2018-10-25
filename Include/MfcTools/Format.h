@@ -37,15 +37,19 @@ inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncl
    std::_tstring str = format_tool.AsString( value );
    CString strDimension;
    if ( bIncludeUnitTag )
+   {
       strDimension.Format(_T("%s %s"),str.c_str(),indirectMeasure.UnitOfMeasure.UnitTag().c_str());
+   }
    else
+   {
       strDimension.Format(_T("%s"),str.c_str());
+   }
 
    strDimension.TrimLeft();
    return strDimension;
 }
 
-CString MFCTOOLSFUNC  FormatOffset(Float64 offset,const unitmgtLengthData& indirectMeasure,bool bIncludeUnitTag = true);
+CString MFCTOOLSFUNC FormatOffset(Float64 offset,const unitmgtLengthData& indirectMeasure,bool bIncludeUnitTag = true);
 CString MFCTOOLSFUNC FormatScalar(Float64 value,const unitmgtScalar& indirectMeasure);
 CString MFCTOOLSFUNC FormatPercentage(Float64 value,bool bIncludeUnitTag = true);
 CString MFCTOOLSFUNC FormatStation(const unitStationFormat& format,Float64 value);

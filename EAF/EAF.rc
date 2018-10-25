@@ -156,8 +156,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,38
- PRODUCTVERSION 4,0,0,38
+ FILEVERSION 4,0,0,39
+ PRODUCTVERSION 4,0,0,39
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -175,12 +175,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.0.0.38"
+            VALUE "FileVersion", "4.0.0.39"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.38"
+            VALUE "ProductVersion", "4.0.0.39"
         END
     END
     BLOCK "VarFileInfo"
@@ -565,6 +565,10 @@ BEGIN
     EAFID_MANAGE_APP_PLUGINS "Manage Application Plugins\n"
     EAFID_REPORT_MENU_DISPLAY_MODE "Change Report Menu Display Mode\n"
     EAFID_OPTIONS_HINTS     "Change user interface hint options\nHint Options"
+    EAFID_INDICATOR_AUTOCALC_ON "AutoCalc : On"
+    EAFID_INDICATOR_AUTOCALC_OFF "AutoCalc : Off"
+    EAFID_TOGGLE_AUTOCALC     "Toggles AutoCalc mode.\nAutoCalc"
+    EAFID_AUTOCALC_UPDATENOW    "Update all views, reports, and graphs\nUpdate Now (F5)"
 END
 
 STRINGTABLE 
@@ -579,8 +583,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_FATAL_MSG_SAVE      """%1\n\nPGSuper is going to shut down!\n\nWould you like to attempt to save your project first?\n\n%2"""
-    IDS_FATAL_MSG_NOSAVE    """%1\n\nPGSuper is going to shut down!\n\n%2"""
+    IDS_FATAL_MSG_SAVE      """%1\n\nThe application is going to shut down!\n\nWould you like to attempt to save your project first?\n\n%2"""
+    IDS_FATAL_MSG_NOSAVE    """%1\n\nThe application is going to shut down!\n\n%2"""
 END
 
 STRINGTABLE 

@@ -163,6 +163,9 @@ STDMETHODIMP CParabolicTendonSegment::get_Position(TendonMeasure measure,Float64
    Float64 x = parabolaX.Evaluate(z);
    Float64 y = parabolaY.Evaluate(z);
 
+   x = IsZero(x) ? 0 : x;
+   z = IsZero(z) ? 0 : z;
+
    CComPtr<IPoint3d> p;
    p.CoCreateInstance(CLSID_Point3d);
    p->Move(x,y,z);
