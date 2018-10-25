@@ -27,6 +27,6 @@
 
 #include <MfcTools\MfcToolsExp.h>
 
-void MFCTOOLSFUNC MultiLineTextOut(CDC* pDC,int x,int y,const char* lpszText);
+void MFCTOOLSFUNC MultiLineTextOut(CDC* pDC,int x,int y,LPCTSTR lpszText);
 
 #endif // INCLUDED_MFCTOOLS_TEXT_H_

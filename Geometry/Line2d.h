@@ -70,6 +70,7 @@ private:
 // ILine2d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Clone)(/*[out,retval]*/ILine2d** ppLine);
 	STDMETHOD(Reverse)();
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle);
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy,/*[in]*/ Float64 angle);

@@ -71,7 +71,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   sysXStructuredSave( Reason reason, const char* file, Int16 line);
+   sysXStructuredSave( Reason reason, LPCTSTR file, Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -114,7 +114,7 @@ public:
    // reason is the reason code returned by GetReason(),
    // filename is the filename returned by GetFile(),  and
    // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::string* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -136,7 +136,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Reason m_Reason;
-   std::string m_ExtendedMessage;
+   std::_tstring m_ExtendedMessage;
 
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------

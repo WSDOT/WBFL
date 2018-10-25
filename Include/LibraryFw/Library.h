@@ -80,7 +80,7 @@ public:
    // idName must be a unique name (to other libraries added to a manager) and
    // must not contain any whitespace.
    // displayName is a name fit to be displayed by an editor
-   libLibrary(const char* idName, const char* displayName, bool bIsDepreciated = false):
+   libLibrary(LPCTSTR idName, LPCTSTR displayName, bool bIsDepreciated = false):
    m_IdName( idName ),
    m_DisplayName(displayName),
    m_bIsDepreciated(bIsDepreciated)
@@ -115,7 +115,7 @@ public:
    // Add a new default entry with the given name. Returns false if 
    // unsuccessful, which likely means that an entry with the same name
    // already exists.
-   bool NewEntry(const char* key)
+   bool NewEntry(LPCTSTR key)
    {
       if ( IsReservedName(key) )
          return false;
@@ -138,7 +138,7 @@ public:
    //------------------------------------------------------------------------
    // Add an entry based on another. key must be unique. Returns false if
    // failed.
-   bool AddEntry( const T& rNewValue, const char* key, bool bAddRef = false )
+   bool AddEntry( const T& rNewValue, LPCTSTR key, bool bAddRef = false )
    {
       if ( IsReservedName(key) )
          return false;
@@ -167,7 +167,7 @@ public:
    // Create a clone of an existing entry (named key) and create a new entry
    // named newkey. key must be in the library and newkey must not. 
    // Returns false if unsuccessful.
-   bool CloneEntry(const char* key, const char* newkey)
+   bool CloneEntry(LPCTSTR key, LPCTSTR newkey)
    {
       if ( IsReservedName(newkey) )
          return false;
@@ -184,7 +184,7 @@ public:
          // target entry exists already - return false
          return false;
       }
-      else if (std::string(key)==std::string(newkey))
+      else if (std::_tstring(key)==std::_tstring(newkey))
       {
          // can't clone yourself
          return false;
@@ -202,7 +202,7 @@ public:
 
    //------------------------------------------------------------------------
    // Open the editing interface for the given entry. 
-   libILibrary::EntryEditOutcome EditEntry( const char* key )
+   libILibrary::EntryEditOutcome EditEntry( LPCTSTR key )
    {
       T* pentry = LookupEntryPrv(key);
       if (!pentry)
@@ -219,8 +219,8 @@ public:
             // entry to be the same as another item in the library. The only safe thing to
             // do is to abort the edit. This may piss some folks off though.
             
-            std::string nam = pentry->GetName();
-            if (nam!=std::string(key))
+            std::_tstring nam = pentry->GetName();
+            if (nam!=std::_tstring(key))
             {
                hint |= LibraryHints::EntryRenamed;
 
@@ -255,7 +255,7 @@ public:
    // Return a pointer to an entry based on its key. Returns zero if failed.
    // NOTE: this call causes a call to AddRef() for the given entry. You must
    //       call Release() on the entry when you are done with it.
-   const T*  LookupEntry( const char* key) const
+   const T*  LookupEntry( LPCTSTR key) const
    {
       EntryListConstIterator tmp = m_EntryList.find(key);
       if (tmp != m_EntryList.end() )
@@ -269,7 +269,7 @@ public:
 
    //------------------------------------------------------------------------
    // get the key of an existing entry in the library
-   bool GetEntryKey( const T& rValue, std::string& rkey ) const
+   bool GetEntryKey( const T& rValue, std::_tstring& rkey ) const
    {
       // linear search to compare pointers
       for (EntryListConstIterator it = m_EntryList.begin(); it!=m_EntryList.end(); it++)
@@ -285,7 +285,7 @@ public:
 
    //------------------------------------------------------------------------
    // Update an existing entry by copying another to it.
-   bool UpdateEntry( const T& rNewValue, const char* key )
+   bool UpdateEntry( const T& rNewValue, LPCTSTR key )
    {
       T* pentry = LookupEntryPrv(key);
       if (!pentry || pentry==&rNewValue)
@@ -297,7 +297,7 @@ public:
       {
          // copy new entry over top of existing - keep existing name though
          *pentry = rNewValue;
-         std::string onam = pentry->GetName();
+         std::_tstring onam = pentry->GetName();
          if (onam != key)
             pentry->SetName(key);
 
@@ -309,7 +309,7 @@ public:
 
    //------------------------------------------------------------------------
    // Rename an entry
-   bool RenameEntry( const char* oldKey, const char* newKey)
+   bool RenameEntry( LPCTSTR oldKey, LPCTSTR newKey)
    {
       if ( IsReservedName(newKey) )
          return false;
@@ -346,7 +346,7 @@ public:
 
    //------------------------------------------------------------------------
    // Remove an entry. 
-   libILibrary::EntryRemoveOutcome RemoveEntry( const char* key )
+   libILibrary::EntryRemoveOutcome RemoveEntry( LPCTSTR key )
    {
       EntryListIterator tmp = m_EntryList.find(key);
       if (tmp != m_EntryList.end() )
@@ -378,13 +378,13 @@ public:
    bool SaveMe(sysIStructuredSave* pSave)
    {
       // not much data for a library
-      pSave->BeginUnit("LIBRARY", 1.0);
-      pSave->Property("LIBRARY_ID_NAME", m_IdName.c_str());
-      pSave->Property("LIBRARY_DISPLAY_NAME", m_DisplayName.c_str());
+      pSave->BeginUnit(_T("LIBRARY"), 1.0);
+      pSave->Property(_T("LIBRARY_ID_NAME"), m_IdName.c_str());
+      pSave->Property(_T("LIBRARY_DISPLAY_NAME"), m_DisplayName.c_str());
       for (EntryListIterator it = m_EntryList.begin(); it!=m_EntryList.end(); it++)
       {
-         pSave->BeginUnit("LIBRARY_ENTRY",1.0);
-         pSave->Property("ENTRY_KEY", (*it).first.c_str());
+         pSave->BeginUnit(_T("LIBRARY_ENTRY"),1.0);
+         pSave->Property(_T("ENTRY_KEY"), (*it).first.c_str());
 
          (*it).second->SaveMe(pSave);
 
@@ -399,18 +399,18 @@ public:
    bool LoadMe(sysIStructuredLoad* pLoad)
    {
       // load library and its entries
-      if (pLoad->BeginUnit("LIBRARY"))
+      if (pLoad->BeginUnit(_T("LIBRARY")))
       {
          if (pLoad->GetVersion()==1.0)
          {
-            if (pLoad->Property("LIBRARY_ID_NAME", &m_IdName))
+            if (pLoad->Property(_T("LIBRARY_ID_NAME"), &m_IdName))
             {
-               if (pLoad->Property("LIBRARY_DISPLAY_NAME", &m_DisplayName))
+               if (pLoad->Property(_T("LIBRARY_DISPLAY_NAME"), &m_DisplayName))
                {
-                  std::string key;
-                  while (pLoad->BeginUnit("LIBRARY_ENTRY"))
+                  std::_tstring key;
+                  while (pLoad->BeginUnit(_T("LIBRARY_ENTRY")))
                   {
-                     if (pLoad->Property("ENTRY_KEY", &key))
+                     if (pLoad->Property(_T("ENTRY_KEY"), &key))
                      {
                         // allocate a new item
                         LibItem itm(new T);
@@ -459,21 +459,21 @@ public:
 
    //------------------------------------------------------------------------
    // Change the display name of the library.
-   void SetDisplayName(const char* name)
+   void SetDisplayName(LPCTSTR name)
    {
       m_DisplayName = name;
    }
 
    //------------------------------------------------------------------------
    // Get the name of the library
-   std::string GetDisplayName() const
+   std::_tstring GetDisplayName() const
    {
       return m_DisplayName;
    }
 
    //------------------------------------------------------------------------
    // Get the idenfication name of the library
-   std::string GetIdName() const
+   std::_tstring GetIdName() const
    {
       return m_IdName;
    }
@@ -486,7 +486,7 @@ public:
       rList.clear();
       for (EntryListConstIterator it = m_EntryList.begin(); it!=m_EntryList.end(); it++)
       {
-         rList.push_back(std::string((*it).first));
+         rList.push_back(std::_tstring((*it).first));
       }
    }
 
@@ -519,7 +519,7 @@ public:
    // Get a const pointer to an entry by index
    // Returns NULL if out of range and asserts
    // DOES NOT INCREASE REFERENCE COUNT!
-   const libLibraryEntry* GetEntry(const char* key) const
+   const libLibraryEntry* GetEntry(LPCTSTR key) const
    {
       const libLibraryEntry* pent = LookupEntry(key);
       if (pent!=0)
@@ -530,7 +530,7 @@ public:
 
    //------------------------------------------------------------------------
    // See if an entry exists in the library
-   bool IsEntry(const char* key) const 
+   bool IsEntry(LPCTSTR key) const 
    {
       const T* pent = LookupEntry(key);
       if (pent!=0)
@@ -540,7 +540,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the number of references to this entry
-   Uint32 GetEntryRefCount(const char* key) const
+   Uint32 GetEntryRefCount(LPCTSTR key) const
    {
       const T* pent = LookupEntry(key);
       if (pent!=0)
@@ -557,7 +557,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns true if entry can be edited
-   virtual bool IsEditingEnabled(const char* key) const
+   virtual bool IsEditingEnabled(LPCTSTR key) const
    {
       const T* pent = LookupEntry(key);
       if (pent!=0)
@@ -574,7 +574,7 @@ public:
 
    //------------------------------------------------------------------------
    // set flag which enables entry to be edited
-   virtual void EnableEditing(const char* key, bool enable) 
+   virtual void EnableEditing(LPCTSTR key, bool enable) 
    {
       T* pent = LookupEntryPrv(key);
       if (pent!=0)
@@ -595,22 +595,22 @@ public:
 
    //------------------------------------------------------------------------
    // Generate a name that's guaranteed not to be in the library
-   std::string GetUniqueEntryName() const 
+   std::_tstring GetUniqueEntryName() const 
    {
       // name will be in the form on "Unnamednn" where nn is some number.
       bool unique=false;
-      std::stringstream sstr;
+      std::_tostringstream sstr;
       for (int i=0; true; i++)
       {
-         std::ostringstream sstr;
-         sstr << "New Entry-"<<i;
+         std::_tostringstream sstr;
+         sstr << _T("New Entry-") <<i;
          const T* pent = LookupEntry(sstr.str().c_str());
          if (pent==0)
             return sstr.str();
          else
             pent->Release();
       }
-      return "Error"; // power failure will happen before we ever get here.
+      return _T("Error"); // power failure will happen before we ever get here.
    }
 
    //------------------------------------------------------------------------
@@ -618,7 +618,7 @@ public:
    // The type of newentry is checked to make sure it is correct and will 
    // ASSERT if it is not.
    // Returns false if newkey is not a unique name
-   virtual bool  AddEntry(const libLibraryEntry& newentry, const char* newkey)
+   virtual bool  AddEntry(const libLibraryEntry& newentry, LPCTSTR newkey)
    {
       const T* pent = dynamic_cast<const T*>(&newentry);
       if (pent==0)
@@ -636,7 +636,7 @@ public:
    //------------------------------------------------------------------------
    // Factory function to create an external polymorphic clone of a library entry. 
    // You are responsible for deleting it.
-   virtual libLibraryEntry* CreateEntryClone(const char* key) const
+   virtual libLibraryEntry* CreateEntryClone(LPCTSTR key) const
    {
       const T* pent = LookupEntry(key);
       if (pent!=0)
@@ -648,19 +648,19 @@ public:
          return 0;
    }
 
-   std::set<std::string> GetReservedNamesList() const
+   std::set<std::_tstring> GetReservedNamesList() const
    {
       return m_ReservedNamesList;
    }
 
-   void AddReservedName(const char* strName)
+   void AddReservedName(LPCTSTR strName)
    {
       m_ReservedNamesList.insert( strName );
    }
 
-   bool IsReservedName(const char* strName) const
+   bool IsReservedName(LPCTSTR strName) const
    {
-      std::set<std::string>::const_iterator found = m_ReservedNamesList.find(strName);
+      std::set<std::_tstring>::const_iterator found = m_ReservedNamesList.find(strName);
       return (found == m_ReservedNamesList.end() ? false : true);
    }
 
@@ -678,19 +678,19 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_IdName;
-   std::string m_DisplayName;
+   std::_tstring m_IdName;
+   std::_tstring m_DisplayName;
    bool m_bIsDepreciated;
    libLibraryManager* m_pLibraryManager;
 
    typedef boost::shared_ptr<T>         LibItem;
-   typedef typename std::map<std::string, LibItem >        EntryList;
+   typedef typename std::map<std::_tstring, LibItem >        EntryList;
    typedef typename EntryList::iterator                    EntryListIterator;
    typedef typename EntryList::const_iterator              EntryListConstIterator;
 
    EntryList m_EntryList;
 
-   std::set<std::string> m_ReservedNamesList;
+   std::set<std::_tstring> m_ReservedNamesList;
 
 
    // GROUP: LIFECYCLE
@@ -707,7 +707,7 @@ private:
 
    //------------------------------------------------------------------------
    // Return a non-const pointer to an entry based on its key. Returns zero if failed
-   T*  LookupEntryPrv( const char* key)
+   T*  LookupEntryPrv( LPCTSTR key)
    {
       // if the name is on the reserved list, get outta here
       if ( IsReservedName(key) )
@@ -730,14 +730,14 @@ public:
    // Dumps the contents of the object to the given dump context.
    virtual void Dump(dbgDumpContext& os) const
    {
-      os << "Dump for libLibrary: " << m_IdName << endl;
-      os << "  Display Name      = "<< m_DisplayName<<endl;
-      os << "  m_pLibraryManager = " << m_pLibraryManager << endl;
-      os << "  Library Entries: " << m_EntryList.size() << endl;
+      os << _T("Dump for libLibrary: ") << m_IdName << endl;
+      os << _T("  Display Name      = ") << m_DisplayName<<endl;
+      os << _T("  m_pLibraryManager = ") << m_pLibraryManager << endl;
+      os << _T("  Library Entries: ") << m_EntryList.size() << endl;
 
       for (EntryListConstIterator it = m_EntryList.begin(); it!=m_EntryList.end(); it++)
       {
-         os << "Dump for Entry: "<< (*it).first << endl;
+         os << _T("Dump for Entry: ") << (*it).first << endl;
          (*it).second->Dump(os);
       }
 

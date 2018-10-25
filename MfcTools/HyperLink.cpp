@@ -526,7 +526,7 @@ void CHyperLink::ReportError(int nError)
         default:                      str.Format(_T("Unknown Error (%d) occurred."), nError); break;
     }
 
-	str = "Can't open link:\n\n" + str;
+	str = _T("Can't open link:\n\n") + str;
 	AfxMessageBox(str, MB_ICONEXCLAMATION | MB_OK);
 }
 
@@ -534,6 +534,8 @@ void CHyperLink::ReportError(int nError)
 // As seen in the August, 1997 Windows Developer's Journal.
 HINSTANCE CHyperLink::GotoURL(LPCTSTR url, int showcmd)
 {
+   USES_CONVERSION;
+
     TCHAR key[MAX_PATH + MAX_PATH];	
 
     // First try ShellExecute()
@@ -549,7 +551,7 @@ HINSTANCE CHyperLink::GotoURL(LPCTSTR url, int showcmd)
                 TCHAR *pos;
                 pos = _tcsstr(key, _T("\"%1\""));
                 if (pos == NULL) {                     // No quotes found
-                    pos = strstr(key, _T("%1"));       // Check for %1, without quotes
+                    pos = _tcsstr(key, _T("%1"));       // Check for %1, without quotes
                     if (pos == NULL)                   // No parameter at all...
                         pos = key+lstrlen(key)-1;
                     else
@@ -560,7 +562,7 @@ HINSTANCE CHyperLink::GotoURL(LPCTSTR url, int showcmd)
 
                 lstrcat(pos, _T(" "));
                 lstrcat(pos, url);
-                result = (HINSTANCE) WinExec(key,showcmd);
+                result = (HINSTANCE) WinExec(T2A(key),showcmd);
             }
         }
 	}

@@ -73,10 +73,10 @@ public:
    static bool IsWarnPopupEnabled();
 
 protected:
-   static void Watch( const char *group, const char *msg,
-                      const char *fname, Uint32 line );
-   static void Warn( const char *group, const char *msg,
-                     const char *fname, Uint32 line );
+   static void Watch( LPCTSTR group, LPCTSTR msg,
+                      LPCTSTR fname, Uint32 line );
+   static void Warn( LPCTSTR group, LPCTSTR msg,
+                     LPCTSTR fname, Uint32 line );
 
 public:
     struct Flags
@@ -88,30 +88,30 @@ public:
 private:
     static bool bWarnPopup;
 
-    static void Message( const char *type,
-                         const char *group, const char *msg,
-                         const char *fname, Uint32 line, bool bPopup );
-    static void Output( const char *msg );
+    static void Message( LPCTSTR type,
+                         LPCTSTR group, LPCTSTR msg,
+                         LPCTSTR fname, Uint32 line, bool bPopup );
+    static void Output( LPCTSTR msg );
 };
 
 
 class SYSCLASS dbgMessage
 {
 public:
-   static void Precondition(const char* s,const char* file, Int32 line);
-   static void Check(const char* s,const char* file, Int32 line);
-   static void AssertValidFailed(const char* s,const char* file, Int32 line);
+   static void Precondition(LPCTSTR s,LPCTSTR file, Int32 line);
+   static void Check(LPCTSTR s,LPCTSTR file, Int32 line);
+   static void AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line);
 };
 
 
 #undef PRECONDITION
 #undef PRECONDITIONX
-#define PRECONDITION(p) PRECONDITIONX(p,#p)
+#define PRECONDITION(p) PRECONDITIONX(p,_T(#p))
 
 #if defined __PRECONDITION
 
 #define PRECONDITIONX(p,s)   \
-   if(!(p)) { dbgMessage::Precondition(s,__FILE__,__LINE__);}
+   if(!(p)) { dbgMessage::Precondition(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -121,12 +121,12 @@ public:
 
 #undef CHECK
 #undef CHECKX
-#define CHECK(p) CHECKX(p,#p)
+#define CHECK(p) CHECKX(p,_T(#p))
 
 #if defined __CHECK
 
 #define CHECKX(p,s)   \
-   if(!(p)) { dbgMessage::Check(s,__FILE__,__LINE__);}
+   if(!(p)) { dbgMessage::Check(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -137,12 +137,12 @@ public:
 
 #undef ASSERTVALID
 #undef ASSERTVALIDX
-#define ASSERTVALID ASSERTVALIDX("")
+#define ASSERTVALID ASSERTVALIDX( _T("") )
 
 #if defined __ASSERTVALID
 
 #define ASSERTVALIDX(s) \
-   if (!AssertValid()) { dbgMessage::AssertValidFailed(s,__FILE__,__LINE__);}
+   if (!AssertValid()) { dbgMessage::AssertValidFailed(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -167,11 +167,11 @@ public:
 class qual dbgDiagGroup##g : private dbgDiagBase                           \
 {                                                                          \
 public:                                                                    \
-    static void Watch( Uint8 level, const char *msg,                       \
-                       const char *fname, Uint32 line );                   \
+    static void Watch( Uint8 level, LPCTSTR msg,                       \
+                       LPCTSTR fname, Uint32 line );                   \
                                                                            \
-    static void Warn( Uint8 level, const char *msg,                        \
-                      const char *fname, Uint32 line );                    \
+    static void Warn( Uint8 level, LPCTSTR msg,                        \
+                      LPCTSTR fname, Uint32 line );                    \
                                                                            \
     static void Enable(Uint8 enabled)                                      \
                     { Flags.Enabled = Uint8(enabled ? 1 : 0); }            \
@@ -182,7 +182,7 @@ public:                                                                    \
                                                                            \
 private:                                                                   \
      static Flags Flags;                                                   \
-     static char *Name;                                                    \
+     static LPTSTR Name;                                                    \
 }
 
 #define DIAG_DECLARE_GROUP(g)                                              \
@@ -190,21 +190,21 @@ DECLARE_DIAG_GROUP(g,DIAG_IMPORT);
 
 #define DIAG_DEFINE_GROUP(g,e,l)                                           \
 DECLARE_DIAG_GROUP(g,DIAG_EXPORT);                                         \
-void dbgDiagGroup##g::Watch( Uint8 level, const char *msg,                 \
-                             const char *fname, Uint32 line )              \
+void dbgDiagGroup##g::Watch( Uint8 level, LPCTSTR msg,                 \
+                             LPCTSTR fname, Uint32 line )              \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
           dbgDiagBase::Watch( Name, msg, fname, line );                    \
 }                                                                          \
                                                                            \
-void dbgDiagGroup##g::Warn( Uint8 level, const char *msg,                  \
-                            const char *fname, Uint32 line )               \
+void dbgDiagGroup##g::Warn( Uint8 level, LPCTSTR msg,                  \
+                            LPCTSTR fname, Uint32 line )               \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
           dbgDiagBase::Warn( Name, msg, fname, line );                     \
 }                                                                          \
                                                                            \
-char *dbgDiagGroup##g::Name = #g;                                          \
+LPTSTR dbgDiagGroup##g::Name = _T(#g);                                          \
 dbgDiagBase::Flags dbgDiagGroup##g::Flags = { (e), (l) }
 
 #define DIAG_ENABLE(g,s)            dbgDiagGroup##g::Enable(s)
@@ -239,9 +239,9 @@ DECLARE_DIAG_GROUP(Def, SYSCLASS);
     #define WATCH(m)                    WATCHX(Def,0,m)
     #define WATCHX(g,l,m)\
             {\
-                std::ostringstream Out; \
+                std::_tostringstream Out; \
                 Out << m << std::ends;\
-                dbgDiagGroup##g::Watch(l,Out.str().c_str(),__FILE__,__LINE__);\
+                dbgDiagGroup##g::Watch(l,Out.str().c_str(),_T(__FILE__),__LINE__);\
             }
 #else
     #define WATCH(m)                    __noop
@@ -253,9 +253,9 @@ DECLARE_DIAG_GROUP(Def, SYSCLASS);
     #define WARNX(g,c,l,m)\
             if(c)\
             {\
-                std::ostringstream Out; \
+                std::_tostringstream Out; \
                 Out << m << std::ends;\
-                dbgDiagGroup##g::Warn(l,Out.str().c_str(),__FILE__,__LINE__);\
+                dbgDiagGroup##g::Warn(l,Out.str().c_str(),_T(__FILE__),__LINE__);\
             }
 #else
     #define WARN(c,m)                   __noop

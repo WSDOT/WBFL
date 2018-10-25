@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-CXShutDown::CXShutDown(const char* msg,Int32 reason,bool bAttemptSave,const char* file, Int16 line) :
+CXShutDown::CXShutDown(LPCTSTR msg,Int32 reason,bool bAttemptSave,LPCTSTR file, Int16 line) :
 CException(TRUE),
 m_Message(msg),
 m_Reason(reason),
@@ -62,7 +62,7 @@ Int32 CXShutDown::GetReason() const
    return m_Reason;
 }
 
-void CXShutDown::GetErrorMessage(std::string* pMsg) const
+void CXShutDown::GetErrorMessage(std::_tstring* pMsg) const
 {
    *pMsg = m_Message;
 }
@@ -70,7 +70,7 @@ void CXShutDown::GetErrorMessage(std::string* pMsg) const
 BOOL CXShutDown::GetErrorMessage( LPTSTR lpszError,INT nChar, UINT nMaxError, PUINT pnHelpContext)
 {
    UINT max = min(nMaxError, m_Message.size());
-   strncpy_s(lpszError,nChar,m_Message.c_str(),max);
+   _tcsncpy_s(lpszError,nChar,m_Message.c_str(),max);
    return TRUE;
 }
 
@@ -79,7 +79,7 @@ bool CXShutDown::AttemptSave() const
    return m_bAttemptSave;
 }
 
-std::string CXShutDown::GetFile() const
+std::_tstring CXShutDown::GetFile() const
 {
    return m_File;
 }

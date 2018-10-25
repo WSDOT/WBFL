@@ -87,9 +87,10 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
 
                          Float64 rh,      // relative humidity
                          Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
 }
 
@@ -246,6 +247,7 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_Final() const
    Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation + elastic shortening
                 + GetDeltaFptr() // change in loss due to temporary strand removal
                 + ElasticGainDueToDeckPlacement()
+                + ElasticGainDueToSIDL()
                 + TimeDependentLosses(); // total lump sum time dependent losses
 
    if ( m_TempStrandUsage != tsPretensioned )
@@ -333,7 +335,7 @@ void lrfdApproximateLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
-      throw lrfdXPsLosses(lrfdXPsLosses::Specification,__FILE__,__LINE__);
+      throw lrfdXPsLosses(lrfdXPsLosses::Specification,_T(__FILE__),__LINE__);
 
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
@@ -396,9 +398,13 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
          m_dfpTH = ::ConvertToSysUnits( m_dfpTH, unitMeasure::KSI );
       }
 
-      // Elastic gain due to deck and superimposed dead loads
-      m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+      // Elastic gain due to deck placement
+      m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig);
       m_dfpED = (m_Ep/m_Ec)*m_DeltaFcd1;
+
+      // Elastic gain due to superimposed dead loads
+      m_DeltaFcd2 = -1*(m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+      m_dfpSIDL = (m_Ep/m_Ec)*m_DeltaFcd2;
    }
 }
 

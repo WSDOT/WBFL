@@ -131,7 +131,7 @@ END_COM_MAP()
    STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point);
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)();
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
    STDMETHOD_(long,GetMaxTipWidth)();

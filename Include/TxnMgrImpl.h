@@ -36,7 +36,7 @@ public:
 	{
 	}
 
-   void Init(T* pTarget,const char* strName)
+   void Init(T* pTarget,LPCTSTR strName)
    {
       m_pTarget = pTarget;
       m_bstrName = strName;
@@ -134,7 +134,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,ValueType newVal);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ValueType oldVal,ValueType newVal)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ValueType oldVal,ValueType newVal)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -167,7 +167,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,ValueType1 newVal1,ValueType2 newVal2);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -202,7 +202,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,ValueType1 newVal1,ValueType2 newVal2,ValueType3 newVal3);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2,ValueType3 oldVal3,ValueType3 newVal3)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2,ValueType3 oldVal3,ValueType3 newVal3)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -240,7 +240,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,ValueType1 newVal1,ValueType2 newVal2,ValueType3 newVal3,ValueType4 newVal4);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2,ValueType3 oldVal3,ValueType3 newVal3,ValueType4 oldVal4,ValueType4 newVal4)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ValueType1 oldVal1,ValueType1 newVal1,ValueType2 oldVal2,ValueType2 newVal2,ValueType3 oldVal3,ValueType3 newVal3,ValueType4 oldVal4,ValueType4 newVal4)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -281,7 +281,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,IndexType index,ValueType newVal);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ValueType oldVal,IndexType index,ValueType newVal)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ValueType oldVal,IndexType index,ValueType newVal)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -318,7 +318,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*ActionFunc)(T* pThis);
 
-void Init(T* pTarget,const char* strName,ActionFunc doFunc,ActionFunc undoFunc)
+void Init(T* pTarget,LPCTSTR strName,ActionFunc doFunc,ActionFunc undoFunc)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_DoFunc = doFunc;
@@ -348,7 +348,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*ActionFunc)(T* pThis,ValueType& newVal);
 
-void Init(T* pTarget,const char* strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType& param)
+void Init(T* pTarget,LPCTSTR strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType& param)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_DoFunc = doFunc;
@@ -380,7 +380,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*ActionFunc)(T* pThis,ValueType1& newVal1,ValueType2& newVal2);
 
-void Init(T* pTarget,const char* strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType1& param1,ValueType2& param2)
+void Init(T* pTarget,LPCTSTR strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType1& param1,ValueType2& param2)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_DoFunc = doFunc;
@@ -414,7 +414,7 @@ public CTransactionImpl<T,bUndoable,bRepeatable,plibid>
 public:
    typedef HRESULT (*ActionFunc)(T* pThis,ValueType1& newVal1,ValueType2& newVal2,ValueType3& newVal3);
 
-void Init(T* pTarget,const char* strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType1& param1,ValueType2& param2,ValueType3& param3)
+void Init(T* pTarget,LPCTSTR strName,ActionFunc doFunc,ActionFunc undoFunc,ValueType1& param1,ValueType2& param2,ValueType3& param3)
    {
       CTransactionImpl<T,bUndoable,bRepeatable,plibid>::Init(pTarget,strName);
       m_DoFunc = doFunc;

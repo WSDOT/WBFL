@@ -48,7 +48,7 @@ rptReportContent()
 }
 
 
-rptRcInt::rptRcInt(Int32 MyInt, const std::string& HyperTarget) :
+rptRcInt::rptRcInt(Int32 MyInt, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
    m_TheInt = MyInt;

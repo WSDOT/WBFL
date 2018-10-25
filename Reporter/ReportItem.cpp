@@ -81,8 +81,8 @@ rptReportItem& rptReportItem::operator = (const rptReportItem& rOther)
 //======================== OPERATIONS =======================================
 void rptReportItem::SetParent( rptReportItem* pParent)
 {
-   CHECKX(m_pParent==0,"Bad style to set parent while another exists");
-   CHECKX(pParent,"Don't set parent to null pointer - use Clear instead");
+   CHECKX(m_pParent==0,_T("Bad style to set parent while another exists"));
+   CHECKX(pParent,_T("Don't set parent to null pointer - use Clear instead"));
    m_pParent = pParent;
 }
 
@@ -113,7 +113,7 @@ rptStyleName rptReportItem::GetStyleName() const
       // no style locally - ask parent.
 
       rptReportItem* myp = GetpParent();
-      CHECKX(myp,"Child must have parent to get style");
+      CHECKX(myp,_T("Child must have parent to get style"));
 
       return  myp->GetStyleName();
    }

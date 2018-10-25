@@ -163,7 +163,7 @@ STDMETHODIMP CRebar::put_E(Float64 E)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditETxn;
       CComObject<CEditETxn>* pTxn;
       CComObject<CEditETxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"E",&PutE,m_E,E);
+      pTxn->Init(this,_T("E"),&PutE,m_E,E);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -192,7 +192,7 @@ STDMETHODIMP CRebar::put_Density(Float64 w)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditDensityTxn;
       CComObject<CEditDensityTxn>* pTxn;
       CComObject<CEditDensityTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"E",&PutDensity,m_Density,w);
+      pTxn->Init(this,_T("E"),&PutDensity,m_Density,w);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -221,7 +221,7 @@ STDMETHODIMP CRebar::put_Name(BSTR name)
       typedef CEditValueTransaction<CRebar,BSTR,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditNameTxn;
       CComObject<CEditNameTxn>* pTxn;
       CComObject<CEditNameTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Name",&PutName,m_Name,name);
+      pTxn->Init(this,_T("Name"),&PutName,m_Name,name);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -250,7 +250,7 @@ STDMETHODIMP CRebar::put_UltimateStrength(Float64 fpu)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditUltimateStrengthTxn;
       CComObject<CEditUltimateStrengthTxn>* pTxn;
       CComObject<CEditUltimateStrengthTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Ultimate Strength",&PutUltimateStrength,m_fpu,fpu);
+      pTxn->Init(this,_T("Ultimate Strength"),&PutUltimateStrength,m_fpu,fpu);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -279,7 +279,7 @@ STDMETHODIMP CRebar::put_YieldStrength(Float64 fpy)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditYieldStrengthTxn;
       CComObject<CEditYieldStrengthTxn>* pTxn;
       CComObject<CEditYieldStrengthTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Yield Strength",&PutYieldStrength,m_fpy,fpy);
+      pTxn->Init(this,_T("Yield Strength"),&PutYieldStrength,m_fpy,fpy);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -308,7 +308,7 @@ STDMETHODIMP CRebar::put_NominalDiameter(Float64 db)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditNominalDiameterTxn;
       CComObject<CEditNominalDiameterTxn>* pTxn;
       CComObject<CEditNominalDiameterTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Nominal Diameter",&PutNominalDiameter,m_db,db);
+      pTxn->Init(this,_T("Nominal Diameter"),&PutNominalDiameter,m_db,db);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -337,7 +337,7 @@ STDMETHODIMP CRebar::put_NominalArea(Float64 Ab)
       typedef CEditValueTransaction<CRebar,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditNominalAreaTxn;
       CComObject<CEditNominalAreaTxn>* pTxn;
       CComObject<CEditNominalAreaTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Nominal Area",&PutNominalArea,m_Ab,Ab);
+      pTxn->Init(this,_T("Nominal Area"),&PutNominalArea,m_Ab,Ab);
 
       return m_TxnMgr->Execute(pTxn);
    }

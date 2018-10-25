@@ -49,7 +49,7 @@ public:
       CComQIPtr<IUnit> pUnit( var.punkVal );
       CComBSTR bstrTag;
       pUnit->get_Tag( &bstrTag );
-      return (wcscmp( m_bstrTarget, bstrTag ) == 0);
+      return (_tcscmp( m_bstrTarget, bstrTag ) == 0);
    }
 
 private:

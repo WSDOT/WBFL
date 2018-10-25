@@ -80,12 +80,12 @@ public:
    rptChapter();
 
    //------------------------------------------------------------------------
-   rptChapter(const std::string& name);
+   rptChapter(const std::_tstring& name);
 
    //------------------------------------------------------------------------
    // chapter with fully defined style and page layout.
    //
-   rptChapter(const std::string& name, const rptStyleName& rStyleName, 
+   rptChapter(const std::_tstring& name, const rptStyleName& rStyleName, 
               const rptPageLayout& rLayout);
 
    //------------------------------------------------------------------------
@@ -138,10 +138,10 @@ public:
    ChapterParagraphIterator End();
 
    //------------------------------------------------------------------------
-   const char* GetName() const;
+   LPCTSTR GetName() const;
 
    //------------------------------------------------------------------------
-   void SetName(const char* name);
+   void SetName(LPCTSTR name);
 
 
    // GROUP: INQUIRY
@@ -170,7 +170,7 @@ private:
 
    //------------------------------------------------------------------------
    // Name of the chapter
-   std::string m_Name;
+   std::_tstring m_Name;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

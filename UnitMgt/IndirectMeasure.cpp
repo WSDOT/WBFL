@@ -39,7 +39,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
-   Name("Default"),
+   Name(_T("Default")),
    ComponentDim( unitMeasure::Millimeter ),
    XSectionDim( unitMeasure::Millimeter ),
    SpanLength( unitMeasure::Meter ),
@@ -75,7 +75,7 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
 }
 
 unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOther) :
-   Name("Default"),
+   Name(_T("Default")),
    ComponentDim( unitMeasure::Millimeter ),
    XSectionDim( unitMeasure::Millimeter ),
    SpanLength( unitMeasure::Meter ),
@@ -172,44 +172,44 @@ bool unitmgtIndirectMeasure::AssertValid() const
 
 // Template helper function for Dump
 template <class T>
-void dump_it(dbgDumpContext& os,const char* label,const T& unit)
+void dump_it(dbgDumpContext& os,LPCTSTR label,const T& unit)
 {
    os << label << endl;
-   os << '\t' << "Unit of Measure : " << unit.UnitOfMeasure.UnitTag() << endl;
-   os << '\t' << "Zeroness        : " << unit.Tol            << endl;
+   os << _T('\t') << _T("Unit of Measure : ") << unit.UnitOfMeasure.UnitTag() << endl;
+   os << _T('\t') << _T("Zeroness        : ") << unit.Tol            << endl;
 }
 
 void unitmgtIndirectMeasure::Dump(dbgDumpContext& os) const
 {
-   os << "Name = " << Name << endl;
-   dump_it(os,"ComponentDim",    ComponentDim );
-   dump_it(os,"XSectionDim",     XSectionDim  );
-   dump_it(os,"SpanLength",      SpanLength   );
-   dump_it(os,"AlignmentLength", AlignmentLength   );
-   dump_it(os,"Displacement",    Displacement );
-   dump_it(os,"Area",            Area         );
-   dump_it(os,"MomentOfInertia", MomentOfInertia);
-   dump_it(os,"SectModulus",     SectModulus  );
-   dump_it(os,"Stress",          Stress       );
-   dump_it(os,"SmallStress",     SmallStress  );
-   dump_it(os,"AvOverS",         AvOverS      );
-   dump_it(os,"ModE",            ModE         );
-   dump_it(os,"GeneralForce",    GeneralForce );
-   dump_it(os,"Tonnage",         Tonnage );
-   dump_it(os,"Shear",           Shear        );
-   dump_it(os,"Moment",          Moment       );
-   dump_it(os,"SmallMoment",     SmallMoment  );
-   dump_it(os,"Angle",           Angle        );
-   dump_it(os,"RadAngle",        RadAngle     );
-   dump_it(os,"Density",         Density      );
-   dump_it(os,"MassPerLength",   MassPerLength);
-   dump_it(os,"ForcePerLength",  ForcePerLength);
-   dump_it(os,"MomentPerAngle",  MomentPerAngle);
-   dump_it(os,"Time",            Time         );
-   dump_it(os,"Time2",           Time2        );
-   dump_it(os,"PerLength",       PerLength    );
-   dump_it(os,"ForceLength2",    ForceLength2 );
-   dump_it(os,"SqrtPressure",    SqrtPressure );
+   os << _T("Name = ") << Name << endl;
+   dump_it(os,_T("ComponentDim"),    ComponentDim );
+   dump_it(os,_T("XSectionDim"),     XSectionDim  );
+   dump_it(os,_T("SpanLength"),      SpanLength   );
+   dump_it(os,_T("AlignmentLength"), AlignmentLength   );
+   dump_it(os,_T("Displacement"),    Displacement );
+   dump_it(os,_T("Area"),            Area         );
+   dump_it(os,_T("MomentOfInertia"), MomentOfInertia);
+   dump_it(os,_T("SectModulus"),     SectModulus  );
+   dump_it(os,_T("Stress"),          Stress       );
+   dump_it(os,_T("SmallStress"),     SmallStress  );
+   dump_it(os,_T("AvOverS"),         AvOverS      );
+   dump_it(os,_T("ModE"),            ModE         );
+   dump_it(os,_T("GeneralForce"),    GeneralForce );
+   dump_it(os,_T("Tonnage"),         Tonnage );
+   dump_it(os,_T("Shear"),           Shear        );
+   dump_it(os,_T("Moment"),          Moment       );
+   dump_it(os,_T("SmallMoment"),     SmallMoment  );
+   dump_it(os,_T("Angle"),           Angle        );
+   dump_it(os,_T("RadAngle"),        RadAngle     );
+   dump_it(os,_T("Density"),         Density      );
+   dump_it(os,_T("MassPerLength"),   MassPerLength);
+   dump_it(os,_T("ForcePerLength"),  ForcePerLength);
+   dump_it(os,_T("MomentPerAngle"),  MomentPerAngle);
+   dump_it(os,_T("Time"),            Time         );
+   dump_it(os,_T("Time2"),           Time2        );
+   dump_it(os,_T("PerLength"),       PerLength    );
+   dump_it(os,_T("ForceLength2"),    ForceLength2 );
+   dump_it(os,_T("SqrtPressure"),    SqrtPressure );
 
 }
 

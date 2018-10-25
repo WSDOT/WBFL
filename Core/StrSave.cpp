@@ -160,6 +160,13 @@ STDMETHODIMP CStrSave::get_ParentVersion(Float64 *pVal)
 	return S_OK;
 }
 
+STDMETHODIMP CStrSave::get_ParentUnit(BSTR* pParentUnit)
+{
+   USES_CONVERSION;
+   *pParentUnit = T2BSTR(m_StrSave.GetParentUnit().c_str());
+   return S_OK;
+}
+
 STDMETHODIMP CStrSave::EndUnit()
 {
    try 
@@ -227,7 +234,7 @@ HRESULT CStrSave::HandleException2(sysXStructuredSave& e)
    return E_FAIL;
 }
 
-//HRESULT CStrSave::Open(/*[in]*/ LPCSTR strFileName)
+//HRESULT CStrSave::Open(/*[in]*/ LPCTSTR strFileName)
 //{
 //   _bstr_t bstrFileName(strFileName);
 //   if ( !m_File.open( bstrFileName, false ) )
@@ -248,7 +255,7 @@ HRESULT CStrSave::HandleException2(sysXStructuredSave& e)
 //	return S_OK;
 //}
 //
-//HRESULT CStrSave::BeginUnit(/*[in]*/ LPCSTR strUnit,/*[in]*/ Float64 ver)
+//HRESULT CStrSave::BeginUnit(/*[in]*/ LPCTSTR strUnit,/*[in]*/ Float64 ver)
 //{
 //   try
 //   {
@@ -297,7 +304,7 @@ HRESULT CStrSave::HandleException2(sysXStructuredSave& e)
 //	return S_OK;
 //}
 //
-//HRESULT CStrSave::put_Property(/*[in]*/ LPCSTR strPropName, /*[in]*/ VARIANT newVal)
+//HRESULT CStrSave::put_Property(/*[in]*/ LPCTSTR strPropName, /*[in]*/ VARIANT newVal)
 //{
 //   try
 //   {

@@ -88,6 +88,7 @@ private:
 // ILineSegment3d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Clone)(/*[out,retval]*/ILineSegment3d** ppClone);
    STDMETHOD(ThroughPoints)(/*[in]*/ IPoint3d* p1, /*[in]*/ IPoint3d* p2);
 	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize);
 	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz);

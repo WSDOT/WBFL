@@ -42,14 +42,14 @@ CLASS
 //======================== LIFECYCLE  =======================================
 
 
-rptReport::rptReport(const std::string& rReportName):
-rptReportLayoutItem("Default", rptPageLayout())
+rptReport::rptReport(const std::_tstring& rReportName):
+rptReportLayoutItem(_T("Default"), rptPageLayout())
 {
    m_ReportName = rReportName;
 }
 
 
-rptReport::rptReport(const std::string& rReportName,
+rptReport::rptReport(const std::_tstring& rReportName,
                      const rptStyleName& rStyleName,
                      const rptPageLayout& rLayout):
 rptReportLayoutItem(rStyleName, rLayout)

@@ -75,7 +75,7 @@ CONNECTION_POINT_ENTRY(IID_IDisplayUnitMgrEvents)
 END_CONNECTION_POINT_MAP()
 
 private:
-   std::map<std::string,DWORD> m_GroupCookies;
+   std::map<std::_tstring,DWORD> m_GroupCookies;
    CComPtr<IUnitServer> m_pUnitServer;
 
    void UnadviseDisplayUnitGroup(IDisplayUnitGroup* pGroup);

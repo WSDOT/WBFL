@@ -39,7 +39,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-mathXRootFinder2dFailed::mathXRootFinder2dFailed(Reason reason,const char* file,Int16 line) :
+mathXRootFinder2dFailed::mathXRootFinder2dFailed(Reason reason,LPCTSTR file,Int16 line) :
 sysXBase(file,line)
 {
    m_Reason = reason;
@@ -150,7 +150,7 @@ Float64 mathRootFinder2d::FindRoot(const mathFunction2d& f,Float64 xNearest,
    }
    else
    {
-      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,__FILE__,__LINE__);
+      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,_T(__FILE__),__LINE__);
       mx.Throw();
       return 0;
    }
@@ -179,7 +179,7 @@ evaluated for any x <= xmin.
    }
    else
    {
-      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,__FILE__,__LINE__);
+      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,_T(__FILE__),__LINE__);
       mx.Throw();
       return 0;
    }
@@ -208,7 +208,7 @@ evaluated for any x >= xmax.
    }
    else
    {
-      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,__FILE__,__LINE__);
+      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,_T(__FILE__),__LINE__);
       mx.Throw();
       return 0;
    }

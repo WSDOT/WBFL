@@ -77,7 +77,8 @@ public:
                          Float64 rh, // relative humidity
 
                          Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateLosses
                          );
 
    lrfdLosses(const lrfdLosses& rOther);
@@ -250,6 +251,7 @@ public:
    virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const;
    virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const;
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
+   virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
@@ -260,6 +262,7 @@ public:
    virtual Float64 TemporaryStrand_BeforeTemporaryStrandRemoval() const;
    virtual Float64 TemporaryStrand_AfterTemporaryStrandRemoval() const;
    virtual Float64 TemporaryStrand_AfterDeckPlacement() const;
+   virtual Float64 TemporaryStrand_AfterSIDL() const;
    virtual Float64 TemporaryStrand_Final() const;
 
    //------------------------------------------------------------------------
@@ -272,6 +275,7 @@ public:
    virtual Float64 TemporaryStrand_ElasticShorteningLosses() const;
 
    Float64 ElasticGainDueToDeckPlacement() const;
+   Float64 ElasticGainDueToSIDL() const;
 
 
    virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const = 0;
@@ -338,7 +342,12 @@ public:
    // Change in stress at level of permanent strand due to deck placement
    Float64 GetDeltaFcd1() const;
 
+   //------------------------------------------------------------------------
+   // Change in stress at level of permanent strand due to superimposed dead loads
+   Float64 GetDeltaFcd2() const;
+
 protected:
+   bool m_bValidateParameters;
    mutable bool m_IsDirty;
    void Init();
 
@@ -406,6 +415,7 @@ protected:
    mutable Float64 m_dfpES[2]; // elastic shrinkage
 
    mutable Float64 m_dfpED; // elastic gain due to deck placement
+   mutable Float64 m_dfpSIDL; // elastic gain due to superimposed dead loads
 
    // post tension losses
    mutable Float64 m_dfpp; // change in stress in perm strand due to pt
@@ -428,6 +438,7 @@ protected:
    mutable Float64 m_Ptr;   // force in temp strand at time of removal
 
    mutable Float64 m_DeltaFcd1; // change in stress at level of permanent strand due to deck placement
+   mutable Float64 m_DeltaFcd2; // change in stress at level of permanent strand due to superimposed dead loads
 
    mutable Float64 m_dfpF;  // friction loss 
    mutable Float64 m_dfpFT; // total friction loss 

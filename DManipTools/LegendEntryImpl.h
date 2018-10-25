@@ -65,8 +65,8 @@ public:
    STDMETHOD_(void,ReadDragData)(iDragDataSource* pSource, UINT cfFormat);
 
 // iSymbolLegendEntry 
-   STDMETHOD_(void,get_SymbolFontFace)(char* *pVal);
-   STDMETHOD_(void,put_SymbolFontFace)(const char* newVal);
+   STDMETHOD_(void,get_SymbolFontFace)(LPTSTR *pVal);
+   STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal);
    STDMETHOD_(long,get_SymbolSize)();
    STDMETHOD_(void,put_SymbolSize)(long code);
    STDMETHOD_(DWORD,get_SymbolCharacterCode)();

@@ -307,10 +307,10 @@ bool gmCircle::AssertValid() const
 
 void gmCircle::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmCircle ***"<<endl;
+   os << _T("*** Dump for gmCircle ***")<<endl;
    gmShapeImp::Dump( os );
-   os << "  Hook Point      = ("<<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
-   os << "  Radius          =  "<<m_Radius  <<endl;
+   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Radius          =  ")<<m_Radius  <<endl;
 }
 #endif // _DEBUG
 

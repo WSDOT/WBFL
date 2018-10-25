@@ -59,47 +59,47 @@ CForeignDragDropFSMState::~CForeignDragDropFSMState()
 void CForeignDragDropFSMState::Do(CForeignDragDropFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Do",fsm.GetState().StateName());
+   fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
 DROPEFFECT CForeignDragDropFSMState::DragEnter(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Default implementation
-   fsm.FSMError("DragEnter",fsm.GetState().StateName());
+   fsm.FSMError(_T("DragEnter"),fsm.GetState().StateName());
    return DROPEFFECT_NONE;
 }
 
 void CForeignDragDropFSMState::DragLeave(CForeignDragDropFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("DragLeave",fsm.GetState().StateName());
+   fsm.FSMError(_T("DragLeave"),fsm.GetState().StateName());
 }
 
 DROPEFFECT CForeignDragDropFSMState::DragOver(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Default implementation
-   fsm.FSMError("DragOver",fsm.GetState().StateName());
+   fsm.FSMError(_T("DragOver"),fsm.GetState().StateName());
    return DROPEFFECT_NONE;
 }
 
 DROPEFFECT CForeignDragDropFSMState::DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point)
 {
    // Default implementation
-   fsm.FSMError("DragScroll",fsm.GetState().StateName());
+   fsm.FSMError(_T("DragScroll"),fsm.GetState().StateName());
    return DROPEFFECT_NONE;
 }
 
 BOOL CForeignDragDropFSMState::Drop(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
 {
    // Default implementation
-   fsm.FSMError("Drop",fsm.GetState().StateName());
+   fsm.FSMError(_T("Drop"),fsm.GetState().StateName());
    return FALSE;
 }
 
 DROPEFFECT CForeignDragDropFSMState::DropEx(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
 {
    // Default implementation
-   fsm.FSMError("DropEx",fsm.GetState().StateName());
+   fsm.FSMError(_T("DropEx"),fsm.GetState().StateName());
    return DROPEFFECT_NONE;
 }
 

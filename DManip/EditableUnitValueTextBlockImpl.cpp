@@ -65,7 +65,7 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
    m_EditableTextBlock->RegisterEventSink(this);
    m_EditableTextBlock->SetFormat(etbfNumeric);
    CString str;
-   str.Format("%f",m_Value);
+   str.Format(_T("%f"),m_Value);
    m_EditableTextBlock->SetText(str);
 
    m_pctlUnitTag = new CStatic;
@@ -309,7 +309,7 @@ STDMETHODIMP_(SelectionType) CEditableUnitValueTextBlockImpl::GetSelectionType()
    return dispObj->GetSelectionType();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetToolTipText(LPCSTR lpszToolTipText)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_EditableTextBlock);
    dispObj->SetToolTipText(lpszToolTipText);
@@ -490,10 +490,10 @@ STDMETHODIMP_(long) CEditableUnitValueTextBlockImpl::GetAngle()
    return m_EditableTextBlock->GetAngle();
 }
 
-STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetText(LPCSTR lpszText)
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetText(LPCTSTR lpszText)
 {
    // Convert the inbound string to a value... inbound value is in base units
-   m_Value = atof(lpszText);
+   m_Value = _wtof(lpszText);
    CString strText = GetText(); // converts it to a display string
 
    m_EditableTextBlock->SetText(strText); // update the real display object
@@ -572,7 +572,7 @@ STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetValue(Float64 value)
 {
    m_Value = value;
    CString strValue;
-   strValue.Format("%f",value);
+   strValue.Format(_T("%f"),value);
    SetText(strValue);
 }
 
@@ -597,7 +597,7 @@ STDMETHODIMP_(Float64) CEditableUnitValueTextBlockImpl::GetEditedValue()
    }
    else
    {
-      editedValue = atof(m_EditableTextBlock->GetEditedText()); // value in display units (without unit tag)
+      editedValue = _wtof(m_EditableTextBlock->GetEditedText()); // value in display units (without unit tag)
    }
 
    // Convert back to base units

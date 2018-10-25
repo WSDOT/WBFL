@@ -73,7 +73,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor 
-   rptOutputReportVisitor(std::ostream* pMyOstream/*, const rptUnitLibrary& MyLib */);
+   rptOutputReportVisitor(std::_tostream* pMyOstream/*, const rptUnitLibrary& MyLib */);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -97,7 +97,7 @@ protected:
    // GROUP: DATA MEMBERS
    //------------------------------------------------------------------------
    // Ostream that visitor will send output to
-   std::ostream* m_pOstream;
+   std::_tostream* m_pOstream;
    //------------------------------------------------------------------------
    // Snapshot of the units to be used in generating the report output
    //rptUnitSnapShot* m_pUnitSnapShot;

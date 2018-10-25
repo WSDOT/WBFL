@@ -61,7 +61,7 @@ CWatermarkMainFrame::CWatermarkMainFrame(LPCTSTR lpszResourceName)
    m_nIDResource = 0;
    int nChar = _tcslen(lpszResourceName)+1;
    m_lpszResourceName = new TCHAR[nChar];
-   strcpy_s( m_lpszResourceName, nChar, lpszResourceName );
+   _tcscpy_s( m_lpszResourceName, nChar, lpszResourceName );
 }
 
 CWatermarkMainFrame::~CWatermarkMainFrame()

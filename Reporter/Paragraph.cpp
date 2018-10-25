@@ -106,7 +106,7 @@ rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
 }
 
    
-rptParagraph& rptParagraph::operator << (const std::string& str)
+rptParagraph& rptParagraph::operator << (const std::_tstring& str)
 {
    boost::shared_ptr<rptReportContent> rcp( new rptRcString(str) );
    rcp->SetParent(this);
@@ -114,7 +114,7 @@ rptParagraph& rptParagraph::operator << (const std::string& str)
    return *this;
 }
 
-rptParagraph& rptParagraph::operator << (const char* str)
+rptParagraph& rptParagraph::operator << (LPCTSTR str)
 {
    boost::shared_ptr<rptReportContent> rcp( new rptRcString(str) );
    rcp->SetParent(this);
@@ -124,7 +124,7 @@ rptParagraph& rptParagraph::operator << (const char* str)
 
 rptParagraph& rptParagraph::operator<< (Int8 value)
 {
-   boost::shared_ptr<rptReportContent> rcp(new rptRcString(std::string(1,value)));
+   boost::shared_ptr<rptReportContent> rcp(new rptRcString(std::_tstring(1,value)));
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -229,7 +229,7 @@ void rptParagraph::MakeAssignment(const rptParagraph& rOther)
 
 
 //======================== ACCESS     =======================================
-const char* rptParagraph::GetName() const
+LPCTSTR rptParagraph::GetName() const
 {
    if (!m_Name.empty())
       return m_Name.c_str();
@@ -237,9 +237,9 @@ const char* rptParagraph::GetName() const
       return 0;
 }
 
-void rptParagraph::SetName(const char* name)
+void rptParagraph::SetName(LPCTSTR name)
 {
-   m_Name.assign( name ? name : "" );
+   m_Name.assign( name ? name : _T("") );
 }
 
 

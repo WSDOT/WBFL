@@ -86,13 +86,13 @@ public:
    // Rotation in tenth degrees
    static bool TextOutRotated(HDC hDC, Int32 x, Int32 y, Int32 rotation, 
                                LPCTSTR lpszText, Int32 textlen, 
-                               Int32 nPointSize, LPCTSTR lpszFacename="Arial");
+                               Int32 nPointSize, LPCTSTR lpszFacename=_T("Arial"));
 
    //------------------------------------------------------------------------
    // Create a ready to go font. Must be deleted with DeleteObject() after use.
    // Rotation in tenth degrees
    static HFONT CreateRotatedFont(HDC hDC, Int32 rotation,  
-                                  Int32 nPointSize, LPCTSTR lpszFaceName="Arial");
+                                  Int32 nPointSize, LPCTSTR lpszFaceName=_T("Arial"));
 
    //------------------------------------------------------------------------
    // A 'nice' range calculation function. You input an original Min and Max

@@ -89,7 +89,7 @@ public:
    // Creates a new data series in the graph.  Returns a cookie used to
    // reference this data series at a later time.
    Uint32 CreateDataSeries();
-   Uint32 CreateDataSeries(const char* lpszLabel,int nPenStyle, int nWidth, COLORREF crColor);
+   Uint32 CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor);
 
    //------------------------------------------------------------------------
    // Adds an individual point to the graph.
@@ -146,11 +146,11 @@ public:
 
    //------------------------------------------------------------------------
    // Return the graph title
-   std::string GetTitle();
+   std::_tstring GetTitle();
 
    //------------------------------------------------------------------------
    // Set the graph title
-   void SetTitle(const std::string& title);
+   void SetTitle(const std::_tstring& title);
 
    //------------------------------------------------------------------------
    // Return the title size in points
@@ -162,11 +162,11 @@ public:
 
    //------------------------------------------------------------------------
    // Return the graph subtitle
-   std::string GetSubtitle();
+   std::_tstring GetSubtitle();
 
    //------------------------------------------------------------------------
    // Set the graph subtitle
-   void SetSubtitle(const std::string& subtitle);
+   void SetSubtitle(const std::_tstring& subtitle);
 
    //------------------------------------------------------------------------
    // Return the Subtitle size in points
@@ -194,19 +194,19 @@ public:
 
    //------------------------------------------------------------------------
    // Set the title for the X axis
-   void SetXAxisTitle(const std::string& title);
+   void SetXAxisTitle(const std::_tstring& title);
 
    //------------------------------------------------------------------------
    // Return the title for the X axis
-   std::string GetXAxisTitle();
+   std::_tstring GetXAxisTitle();
 
    //------------------------------------------------------------------------
    // Set the subtitle for the X axis
-   void SetXAxisSubtitle(const std::string& subtitle);
+   void SetXAxisSubtitle(const std::_tstring& subtitle);
 
    //------------------------------------------------------------------------
    // Return the subtitle for the x axis
-   std::string GetXAxisSubtitle();
+   std::_tstring GetXAxisSubtitle();
 
    //------------------------------------------------------------------------
    // Set numeric formatting for x axis
@@ -226,19 +226,19 @@ public:
 
    //------------------------------------------------------------------------
    // set the title for the Y axis
-   void SetYAxisTitle(const std::string& title);
+   void SetYAxisTitle(const std::_tstring& title);
 
    //------------------------------------------------------------------------
    // Get the title for the Y axis
-   std::string GetYAxisTitle();
+   std::_tstring GetYAxisTitle();
 
    //------------------------------------------------------------------------
    // Set the subtitle for the Y axis
-   void SetYAxisSubtitle(const std::string& subtitle);
+   void SetYAxisSubtitle(const std::_tstring& subtitle);
 
    //------------------------------------------------------------------------
    // Get the title for the Y axis
-   std::string GetYAxisSubtitle();
+   std::_tstring GetYAxisSubtitle();
 
    //------------------------------------------------------------------------
    // Get the number of minor tics on the x axis
@@ -337,7 +337,7 @@ public:
 
    //------------------------------------------------------------------------
    // Sets the label that will be displayed in the legend
-   void SetDataLabel(Uint32 cookie,const char* lpszLabel);
+   void SetDataLabel(Uint32 cookie,LPCTSTR lpszLabel);
 
    //------------------------------------------------------------------------
    // Get a point mapper for drawing into the client area of the graph
@@ -384,7 +384,7 @@ private:
 
    struct GraphData
    {
-      std::string Label;
+      std::_tstring Label;
       PenData Pen;
       DataSeries Series;
    };
@@ -416,8 +416,8 @@ private:
    bool m_bDrawLegend;
    PenData m_GridPenData;
 
-   std::string m_GraphTitle;
-   std::string m_GraphSubtitle;
+   std::_tstring m_GraphTitle;
+   std::_tstring m_GraphSubtitle;
    Int32    m_GraphTitleSize;
    Int32    m_GraphSubtitleSize;
    Int32    m_LegendFontSize;

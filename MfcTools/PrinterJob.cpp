@@ -53,7 +53,7 @@ BOOL CALLBACK EXPORT _GfxAbortProc( HDC, int )
 CPrinterJob::CPrinterJob()
 {
 	pParent = NULL;
-	strTitle = "Print Job";
+	strTitle = _T("Print Job");
 	bAlreadyAskedPageOpt = false;
 }
 
@@ -205,7 +205,7 @@ void CPrinterJob::OnFilePrint(bool direct)
 		CString csFormat, cs, strTemp;
 		AfxGetMainWnd()->EnableWindow(FALSE);
 		CPrintStatus dlgPrintStatus(pParent);
-		cs.Format("Printing %s in progress ..", strTitle);
+		cs.Format(_T("Printing %s in progress .."), strTitle);
 		dlgPrintStatus.SetWindowText(cs);
 		
 		dlgPrintStatus.GetDlgItemText(IDC_TEXT1, csFormat);
@@ -271,14 +271,14 @@ void CPrinterJob::OnFilePrint(bool direct)
 			{
 				DWORD tckS = tck%60;
 				tck /= 60;
-				strTemp.Format("%d minutes, %d seconds", tck, tckS);
+				strTemp.Format(_T("%d minutes, %d seconds"), tck, tckS);
 			}
 			else
 			{
 				if (iPageTot > 1)
 				{
-					if (tck > 0) strTemp.Format("%d seconds", tck);
-					else strTemp = "??";
+					if (tck > 0) strTemp.Format(_T("%d seconds"), tck);
+					else strTemp = _T("??");
 				}
 			}
 

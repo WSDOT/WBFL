@@ -327,7 +327,7 @@ bool gmPolygon::AssertValid() const
 
 void gmPolygon::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmPolygon" << endl;
+   os << _T("Dump for gmPolygon") << endl;
    m_PolygonImp.Dump(os);
    gmShapeImp::Dump( os );
 }
@@ -497,7 +497,7 @@ bool gmPolyPointIter::AssertValid() const
 
 void gmPolyPointIter::Dump(dbgDumpContext& os) const
 {
-   os<< "Dump for gmPolyPointIter"<<endl;
+   os<< _T("Dump for gmPolyPointIter") <<endl;
    m_Iterator.Dump(os);
 }
 

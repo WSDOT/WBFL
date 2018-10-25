@@ -88,9 +88,11 @@ private:
 // ILineSegment2d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Clone)(/*[out,retval]*/ILineSegment2d** ppClone);
    STDMETHOD(ThroughPoints)(/*[in]*/ IPoint2d* p1, /*[in]*/ IPoint2d* p2);
 	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
 	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
+   STDMETHOD(Offset2)(/*[in]*/ Float64 distance);
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle);
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);

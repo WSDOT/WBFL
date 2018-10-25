@@ -114,13 +114,13 @@ bool lrfdTxdotLldfMultiWeb::TestRangeOfApplicability(Location loc) const
       return true;
 
    if ( 6 < m_Nl )
-      THROW_DF( lrfdXRangeOfApplicability, NumLanes, "Excessive number of lanes. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
 
 //   if ( !IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2) )
 //      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Skew corrections are not defined for this girder type. See 4.6.2.2.2e");
 
    if ( GetNb() < 4 )
-      THROW_DF(lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range (4<=Ng). See Table 4.6.2.2.3a-1");
+      THROW_DF(lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range (4<=Ng). See Table 4.6.2.2.3a-1"));
 
    return true;
 }

@@ -58,7 +58,7 @@ BEGIN_COM_MAP(CRectSelectTaskImpl)
 END_COM_MAP()
 
    // CRectSelectTask methods (from CRectSelectFSM)
-	STDMETHOD_(void,FSMError)(const char* t,const char* s);
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
 	STDMETHOD_(void,SelectObjects)();
    STDMETHOD_(void,ClearRect)();
 	STDMETHOD_(void,TrackRect)();

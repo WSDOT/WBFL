@@ -29,6 +29,7 @@
 #include "LineSegment2d.h"
 #include "Point2d.h"
 #include "Helper.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -154,6 +155,29 @@ STDMETHODIMP CLineSegment2d::RotateEx(IPoint2d *pCenter, Float64 angle)
    return Rotate(x,y,angle);
 }
 
+STDMETHODIMP CLineSegment2d::Offset2(Float64 distance)
+{
+   Float64 sx,sy;
+   m_pStart->Location(&sx,&sy);
+
+   Float64 ex,ey;
+   m_pEnd->Location(&ex,&ey);
+
+   Float64 dx = ex - sx;
+   Float64 dy = ey - sy;
+   Float64 length = sqrt(dx*dx + dy*dy);
+
+   Float64 x = 0;
+   Float64 y = 0;
+   if ( !IsZero(length) )
+   {
+      x = -distance*dy/length;
+      y =  distance*dx/length;
+   }
+
+   return Offset(x,y);
+}
+
 STDMETHODIMP CLineSegment2d::Offset(Float64 dx, Float64 dy)
 {
    EventsOff();
@@ -189,6 +213,23 @@ STDMETHODIMP CLineSegment2d::ThroughPoints(IPoint2d* p1, IPoint2d* p2)
       return hr;
 
    Fire_OnLineSegmentChanged(this);
+   return S_OK;
+}
+
+STDMETHODIMP CLineSegment2d::Clone(ILineSegment2d** ppClone)
+{
+   CHECK_RETOBJ(ppClone);
+   CComObject<CLineSegment2d>* pClone;
+   CComObject<CLineSegment2d>::CreateInstance(&pClone);
+   (*ppClone) = pClone;
+   (*ppClone)->AddRef();
+
+   CComPtr<IPoint2d> start,end;
+   m_pStart->Clone(&start);
+   m_pEnd->Clone(&end);
+
+   pClone->ThroughPoints(start,end);
+
    return S_OK;
 }
 

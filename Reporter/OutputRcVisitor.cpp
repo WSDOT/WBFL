@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptOutputRcVisitor::rptOutputRcVisitor(std::ostream* pMyOstream)
+rptOutputRcVisitor::rptOutputRcVisitor(std::_tostream* pMyOstream)
 {
    m_pOstream = pMyOstream;
 }
@@ -297,7 +297,7 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
       break;  
 
    default:
-      CHECKX(0,"Error - Bad Symbol Type");
+      CHECKX(0,_T("Error - Bad Symbol Type"));
    }
 
    return symlet;

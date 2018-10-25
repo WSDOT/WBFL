@@ -147,7 +147,7 @@
 //		delete[] pvars;
 //	
 //	}
-//	VOID Fire_GetIDsOfNames(GUID * riid, CHAR * * rgszNames, UINT cNames, ULONG lcid, LONG * rgdispid)
+//	VOID Fire_GetIDsOfNames(GUID * riid, LPTSTR  * rgszNames, UINT cNames, ULONG lcid, LONG * rgdispid)
 //	{
 //		T* pT = static_cast<T*>(this);
 //		int nConnectionIndex;

@@ -190,7 +190,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    log.CoCreateInstance(CLSID_WBFLErrorLog);
    DWORD cookie;
    log->Open(CComBSTR("GeneralSectionSolver.log"),&cookie);
-   std::ostringstream os;
+   std::_tostringstream os;
    os << "Neutral Axis Location: " << LENGTH(Yna) << std::endl;
    Float64 _dir;
    v->get_Direction(&_dir);

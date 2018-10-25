@@ -159,24 +159,26 @@ STDMETHODIMP CPathElement::Clone(IPathElement* *clone)
       {
          CComQIPtr<ILineSegment2d> ls(m_Value);
          CComPtr<ILineSegment2d> cloneLS;
-         cloneLS.CoCreateInstance(CLSID_LineSegment2d);
-
-         CComPtr<IPoint2d> start;
-         CComPtr<IPoint2d> end;
-         ls->get_StartPoint(&start);
-         ls->get_EndPoint(&end);
-
-         CComPtr<IPoint2d> cloneStart;
-         CComPtr<IPoint2d> cloneEnd;
-         cloneLS->get_StartPoint(&cloneStart);
-         cloneLS->get_EndPoint(&cloneEnd);
-
-         cloneStart->MoveEx(start);
-         cloneEnd->MoveEx(end);
+         ls->Clone(&cloneLS);
 
          CComQIPtr<IUnknown,&IID_IUnknown> disp(cloneLS);
          (*clone)->putref_Value(disp);
       }
+      break;
+
+   case petCubicSpline:
+      {
+         CComQIPtr<ICubicSpline> spline(m_Value);
+         CComPtr<ICubicSpline> cloneSpline;
+         spline->Clone(&cloneSpline);
+
+         CComQIPtr<IUnknown,&IID_IUnknown> disp(cloneSpline);
+         (*clone)->putref_Value(disp);
+      }
+      break;
+
+   default:
+      ATLASSERT(false); // should never get here
       break;
    }
 

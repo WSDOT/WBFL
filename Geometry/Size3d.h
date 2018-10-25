@@ -73,6 +73,7 @@ private:
 
 // ISize3d
 public:
+   STDMETHOD(Clone)(/*[out,retval]*/ISize3d** clone);
    STDMETHOD(Dimensions)(/*[out]*/Float64* pDx,/*[out]*/Float64* pDy,/*[out]*/Float64* pDz);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Scale)(/*[in]*/ Float64 factor);

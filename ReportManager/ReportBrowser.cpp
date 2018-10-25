@@ -39,7 +39,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-void to_upper( std::string::iterator begin,std::string::iterator end)
+void to_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
 {
    while ( begin != end )
    {
@@ -48,15 +48,15 @@ void to_upper( std::string::iterator begin,std::string::iterator end)
    }
 }
 
-std::string filename_to_URL(const std::string& fname)
+std::_tstring filename_to_URL(const std::_tstring& fname)
 {
    //turn into an internet-looking url
-   std::string filename(fname);
+   std::_tstring filename(fname);
    int pos;
-   while((pos=filename.find("\\")) != std::string::npos)
-      filename.replace(pos,1,"/");
+   while((pos=filename.find( _T("\\") )) != std::_tstring::npos)
+      filename.replace(pos,1,_T("/"));
 
-   filename = "file://" + filename;
+   filename = _T("file://") + filename;
    return filename;
 }
 
@@ -98,7 +98,7 @@ CReportBrowser::~CReportBrowser()
 
 void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRefresh)
 {
-   std::ofstream ofile( m_Filename.c_str() );
+   std::_tofstream ofile( m_Filename.c_str() );
    ATLASSERT( ofile.is_open() == true );
 
    Uint32 logPixX;
@@ -149,7 +149,7 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
    UpdateReport(pReport,false);
 
    if (new_file)
-      m_pWebBrowser->Navigate( TEXT(m_Filename.c_str()), 0,0,0,0);
+      m_pWebBrowser->Navigate( m_Filename.c_str(), 0,0,0,0);
    else
       m_pWebBrowser->Refresh();
 
@@ -166,7 +166,7 @@ boost::shared_ptr<rptReport> CReportBrowser::GetReport()
    return m_pReport;
 }
 
-std::string CReportBrowser::GetReportTitle()
+std::_tstring CReportBrowser::GetReportTitle()
 {
    return m_pRptSpec->GetReportTitle();
 }
@@ -266,20 +266,20 @@ void CReportBrowser::Forward()
 
 void CReportBrowser::NavigateAnchor(long id)
 {
-   std::string filename = filename_to_URL(m_Filename);
+   std::_tstring filename = filename_to_URL(m_Filename);
    CString anc;
-   anc.Format("%s#_%d",filename.c_str(),id);
+   anc.Format(_T("%s#_%d"),filename.c_str(),id);
    m_pWebBrowser->Navigate(anc,0,0,0,0);
 }
 
 void CReportBrowser::MakeFilename()
 {
-   char temp_path[ _MAX_PATH ];
-   char temp_file[ _MAX_PATH ];
+   TCHAR temp_path[ _MAX_PATH ];
+   TCHAR temp_file[ _MAX_PATH ];
    bool should_delete = true;
 
    if ( ::GetTempPath( _MAX_PATH, temp_path ) == 0 )
-      strcpy_s(temp_path,_MAX_PATH,"C:\\"); // Couldn't establish a temp path, just use the root drive.
+      _tcscpy_s(temp_path,_MAX_PATH,_T("C:\\")); // Couldn't establish a temp path, just use the root drive.
 
    //
    // Make sure the temp path actually exists
@@ -289,26 +289,28 @@ void CReportBrowser::MakeFilename()
    CFileFind finder;
    BOOL bExist;
    CString path(temp_path);
-   if ( path[path.GetLength()-1] != '\\' )
-      path += "\\";
-   path += "*.*";
+   if ( path[path.GetLength()-1] != _T('\\') )
+      path += _T("\\");
+
+   path += _T("*.*");
+
    bExist = finder.FindFile(path);
    if ( !bExist )
-      strcpy_s( temp_path,_MAX_PATH, "C:\\" );
+      _tcscpy_s( temp_path,_MAX_PATH, _T("C:\\") );
 
    // This creates a file called "temp_file".TMP
-   if ( ::GetTempFileName( temp_path, "tmp", 0, temp_file ) == 0 )
+   if ( ::GetTempFileName( temp_path, _T("tmp"), 0, temp_file ) == 0 )
    {
       // We could not get a temp name, so just use this default
       // (Use a tmp extension so it is in the same format as the one
       //  the OS would have created for us)
-      strcpy_s( temp_file, _MAX_PATH, "wbfl_report.tmp" );
+      _tcscpy_s( temp_file, _MAX_PATH, _T("wbfl_report.tmp") );
       should_delete = false;
    }
 
    // Replace the TMP extension with HTM
    m_Filename.assign( temp_file );
-   m_Filename.replace( m_Filename.end() - 3, m_Filename.end(), "HTM" );
+   m_Filename.replace( m_Filename.end() - 3, m_Filename.end(), _T("HTM") );
 
    // We don't want the file Windows created for us
    if ( should_delete )
@@ -321,43 +323,43 @@ void CReportBrowser::MakeFilename()
 TweakIESettings::TweakIESettings()
 {
    CRegKey hkSoftware, hkMicrosoft, hkIE, hkMain, hkPageSetup;
-   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,"Software");
+   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,_T("Software"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkMicrosoft.Open(hkSoftware,"Microsoft");
+   result = hkMicrosoft.Open(hkSoftware,_T("Microsoft"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkIE.Open(hkMicrosoft,"Internet Explorer");
+   result = hkIE.Open(hkMicrosoft,_T("Internet Explorer"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkMain.Open(hkIE,"Main");
+   result = hkMain.Open(hkIE,_T("Main"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkPageSetup.Open(hkIE,"PageSetup");
+   result = hkPageSetup.Open(hkIE,_T("PageSetup"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   char strPrint[10];
+   TCHAR strPrint[10];
    DWORD dwCount = 10;
-   result = hkMain.QueryStringValue("Print_Background",strPrint,&dwCount);
+   result = hkMain.QueryStringValue(_T("Print_Background"),strPrint,&dwCount);
    bool bDeletePrint = (result != ERROR_SUCCESS);
 
-   char strFooter[256];
+   TCHAR strFooter[256];
    dwCount = 256;
-   result = hkPageSetup.QueryStringValue("footer",strFooter,&dwCount);
+   result = hkPageSetup.QueryStringValue(_T("footer"),strFooter,&dwCount);
    bool bDeleteFooter = (result != ERROR_SUCCESS);
 
-   char strHeader[256];
+   TCHAR strHeader[256];
    dwCount = 256;
-   result = hkPageSetup.QueryStringValue("header",strHeader,&dwCount);
+   result = hkPageSetup.QueryStringValue(_T("header"),strHeader,&dwCount);
    bool bDeleteHeader = (result != ERROR_SUCCESS);
 
-   result = hkMain.SetStringValue("Print_Background","yes");
+   result = hkMain.SetStringValue(_T("Print_Background"),_T("yes"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkPageSetup.SetStringValue("footer","&b&b&d");
+   result = hkPageSetup.SetStringValue(_T("footer"),_T("&b&b&d"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkPageSetup.SetStringValue("header","&w&bPage &p of &P");
+   result = hkPageSetup.SetStringValue(_T("header"),_T("&w&bPage &p of &P"));
    ATLASSERT(result == ERROR_SUCCESS);
 
    m_bDeletePrint  = bDeletePrint;
@@ -372,39 +374,39 @@ TweakIESettings::TweakIESettings()
 TweakIESettings::~TweakIESettings()
 {
    CRegKey hkSoftware, hkMicrosoft, hkIE, hkMain, hkPageSetup;
-   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,"Software");
+   LONG result = hkSoftware.Open(HKEY_CURRENT_USER,_T("Software"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkMicrosoft.Open(hkSoftware,"Microsoft");
+   result = hkMicrosoft.Open(hkSoftware,_T("Microsoft"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkIE.Open(hkMicrosoft,"Internet Explorer");
+   result = hkIE.Open(hkMicrosoft,_T("Internet Explorer"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkMain.Open(hkIE,"Main");
+   result = hkMain.Open(hkIE,_T("Main"));
    ATLASSERT(result == ERROR_SUCCESS);
 
-   result = hkPageSetup.Open(hkIE,"PageSetup");
+   result = hkPageSetup.Open(hkIE,_T("PageSetup"));
    ATLASSERT(result == ERROR_SUCCESS);
 
    if ( m_bDeletePrint )
-      result = hkMain.DeleteValue("Print_Background");
+      result = hkMain.DeleteValue(_T("Print_Background"));
    else
-      result = hkMain.SetStringValue("Print_Background",m_strPrint);
+      result = hkMain.SetStringValue(_T("Print_Background"),m_strPrint);
 
    ATLASSERT(result == ERROR_SUCCESS);
 
    if ( m_bDeleteFooter )
-      result = hkPageSetup.DeleteValue("footer");
+      result = hkPageSetup.DeleteValue(_T("footer"));
    else
-      result = hkPageSetup.SetStringValue("footer",m_strFooter);
+      result = hkPageSetup.SetStringValue(_T("footer"),m_strFooter);
 
    ATLASSERT(result == ERROR_SUCCESS);
 
    if ( m_bDeleteHeader )
-      result = hkPageSetup.DeleteValue("header");
+      result = hkPageSetup.DeleteValue(_T("header"));
    else
-      result = hkPageSetup.SetStringValue("header",m_strHeader);
+      result = hkPageSetup.SetStringValue(_T("header"),m_strHeader);
 
    ATLASSERT(result == ERROR_SUCCESS);
 }

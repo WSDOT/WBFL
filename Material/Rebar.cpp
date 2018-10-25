@@ -40,7 +40,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 matRebar::matRebar() :
-m_Name("Unknown")
+m_Name(_T("Unknown"))
 {
    m_Shape     = Circle;
    m_Dimension = 0.0;
@@ -50,7 +50,7 @@ m_Name("Unknown")
    m_ModE      = 0.0;
 }
 
-matRebar::matRebar(const std::string& name,
+matRebar::matRebar(const std::_tstring& name,
                    Float64 fpu,
                    Float64 fpy,
                    Float64 modE,

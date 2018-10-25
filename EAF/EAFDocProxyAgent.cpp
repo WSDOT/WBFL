@@ -592,17 +592,17 @@ bool CEAFDocProxyAgent::CanRepeat()
    return m_pDoc->CanRepeat();
 }
 
-std::string CEAFDocProxyAgent::UndoName()
+std::_tstring CEAFDocProxyAgent::UndoName()
 {
    return m_pDoc->UndoName();
 }
 
-std::string CEAFDocProxyAgent::RedoName()
+std::_tstring CEAFDocProxyAgent::RedoName()
 {
    return m_pDoc->RedoName();
 }
 
-std::string CEAFDocProxyAgent::RepeatName()
+std::_tstring CEAFDocProxyAgent::RepeatName()
 {
    return m_pDoc->RepeatName();
 }
@@ -628,7 +628,7 @@ CString CEAFDocProxyAgent::GetName()
    return m_LogFileName;
 }
 
-void CEAFDocProxyAgent::LogMessage( const char* lpszMsg )
+void CEAFDocProxyAgent::LogMessage( LPCTSTR lpszMsg )
 {
    if ( !IsLogFileOpen() )
       OpenLogFile();

@@ -72,7 +72,7 @@ public:
    // Mark the Beginning of a structured data chunk. This call must be always
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
-   virtual void BeginUnit(const char* name, Float64 version=0)=0;
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0)=0;
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
@@ -89,31 +89,31 @@ public:
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(const char* name, const char* value)=0;
+   virtual void Property(LPCTSTR name, LPCTSTR value)=0;
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(const char* name, Float64 value)=0;
+   virtual void Property(LPCTSTR name, Float64 value)=0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int16 value)=0;
+   virtual void Property(LPCTSTR name, Int16 value)=0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint16 value)=0;
+   virtual void Property(LPCTSTR name, Uint16 value)=0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int32 value)=0;
+   virtual void Property(LPCTSTR name, Int32 value)=0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint32 value)=0;
+   virtual void Property(LPCTSTR name, Uint32 value)=0;
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(const char* name, bool value)=0;
+   virtual void Property(LPCTSTR name, bool value)=0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

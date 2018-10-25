@@ -156,6 +156,11 @@ Float64 mathPwLinearFunction2dUsingPoints::Evaluate(Float64 x) const
    return yval;
 }
 
+mathFunction2d* mathPwLinearFunction2dUsingPoints::Clone() const
+{
+   return new mathPwLinearFunction2dUsingPoints(m_Points);
+}
+
 math1dRange mathPwLinearFunction2dUsingPoints::GetRange() const
 {
    ASSERTVALID;
@@ -341,16 +346,16 @@ bool mathPwLinearFunction2dUsingPoints::AssertValid() const
 
 void mathPwLinearFunction2dUsingPoints::Dump(dbgDumpContext& os) const
 {
-   os << "Start Dump for mathPwLinearFunction2dUsingPoints"<<endl;
+   os << _T("Start Dump for mathPwLinearFunction2dUsingPoints") <<endl;
    mathPwLinearFunction2d::Dump( os );
    Uint32 siz = GetNumPoints();
-   os << "Number of Points = "<<siz<<endl;
+   os << _T("Number of Points = ") <<siz<<endl;
    for (Uint32 i=0; i<siz; i++)
    {
-      os <<i<<"  ("<< m_Points[i].X()<<", "<<m_Points[i].Y()<<")"<<endl;
+      os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<<endl;
    }
-   os << "m_LastSegment = "<< m_LastSegment <<endl;
-   os << "End Dump for mathPwLinearFunction2dUsingPoints"<<endl;
+   os << _T("m_LastSegment = ")<< m_LastSegment <<endl;
+   os << _T("End Dump for mathPwLinearFunction2dUsingPoints")<<endl;
 }
 #endif // _DEBUG
 

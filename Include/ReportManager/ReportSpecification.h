@@ -38,23 +38,23 @@
 class REPORTMANAGERCLASS CReportSpecification  
 {
 public:
-	CReportSpecification(const char* strReportName);
+	CReportSpecification(LPCTSTR strReportName);
 	virtual ~CReportSpecification();
 
    // report name = "Details Report"
-   std::string GetReportName() const;
+   std::_tstring GetReportName() const;
 
    // report title = "Details Report for Span 1, Girder A"
    // default returns the report name
-   virtual std::string GetReportTitle() const;
+   virtual std::_tstring GetReportTitle() const;
 
-   void AddChapter(const char* strName,const char* strKey,Uint16 level);
+   void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
    std::vector<CChapterInfo> GetChapterInfo() const;
 
    virtual HRESULT Validate() const;
 
 private:
-   std::string m_ReportName;
+   std::_tstring m_ReportName;
    std::vector<CChapterInfo> m_Chapters; /// chapter info for the chapters that are used in the report and the level at which to report
 };
 

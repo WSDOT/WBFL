@@ -85,7 +85,7 @@ public:
    //   </UNIT_NAME>                 // an EndUnit
    //   <NAME>value</>               // a Property
    //
-   LineType ParseLine(const std::string& line);
+   LineType ParseLine(const std::_tstring& line);
 
    //------------------------------------------------------------------------
    // Tell the parser that the last line parsed was the end of file
@@ -94,7 +94,7 @@ public:
    //------------------------------------------------------------------------
    // Dump state as a text string. This is primarily to be used for
    // error handling.
-   virtual std::string GetStateDump() const;
+   virtual std::_tstring GetStateDump() const;
    
    
    // GROUP: ACCESS
@@ -104,12 +104,12 @@ public:
 
    //------------------------------------------------------------------------
    // Get the name of the line just parsed. Returns null string if none
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    // Get the value of the line just parsed. For BeginUnits, this is the version.
    // Returns false if there was a problem parsing the Property.
-   bool GetValue(std::string* value);
+   bool GetValue(std::_tstring* value);
    bool GetValue(Float64* value);
    bool GetValue(Int16* value);
    bool GetValue(Uint16* value);
@@ -129,10 +129,10 @@ protected:
 private:
    // GROUP: DATA MEMBERS
 
-   std::string m_Line;  // the line
+   std::_tstring m_Line;  // the line
    LineType    m_Type;
-   std::string m_Name;
-   std::string m_Value;
+   std::_tstring m_Name;
+   std::_tstring m_Value;
 
    // GROUP: LIFECYCLE
 

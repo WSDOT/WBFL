@@ -121,7 +121,7 @@ public:
       m_ppMatrix[i][j] = val;
    }
 
-   friend std::ostream& operator<< ( std::ostream& os, SymBandedMatrix& m );
+   friend std::_tostream& operator<< ( std::_tostream& os, SymBandedMatrix& m );
 
 };
 

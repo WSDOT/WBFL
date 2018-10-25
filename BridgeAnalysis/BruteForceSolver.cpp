@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #if defined _DEBUG
-dbgFileDumpContext bamBruteForceSolver::ms_Log("BruteForceDump.txt");
+dbgFileDumpContext bamBruteForceSolver::ms_Log(_T("BruteForceDump.txt"));
 #define LOG(x) bamBruteForceSolver::ms_Log << x << endl
 #else
 #define LOG(x)
@@ -109,7 +109,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
    // Run the trucks up and down the bridge, generating load cases
    for (Int32 direction = 0; direction < 2; direction++)
    {
-      LOG("Direction = " << (direction == 0 ? "Forward" : "Backwards"));
+      LOG(_T("Direction = ") << (direction == 0 ? _T("Forward") : _T("Backwards")));
 
       p_model->GetPointOfInterest(poi, spanElementId, offset, absLoc);
 
@@ -118,8 +118,8 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
 
       truckPosition = absLoc;
 
-      LOG("****************************************************");
-      LOG("Point of Interest = " << poi << " Span = " << spanElementId << " Offset = " << offset );
+      LOG(_T("****************************************************"));
+      LOG(_T("Point of Interest = ") << poi << _T(" Span = ") << spanElementId << _T(" Offset = ") << offset );
 
       for (Int32 pivotAxle = 0; pivotAxle < ll.GetNumAxles(); pivotAxle++ )
       {
@@ -132,14 +132,14 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
 
          moment_load_case_id = load_case_id++;
          my_model->CreateLoadCase(moment_load_case_id);
-         LOG("Moment Load Case = " << moment_load_case_id);
+         LOG(_T("Moment Load Case = ") << moment_load_case_id);
          envelope.AddLoading( moment_load_case_id );
 
          shear_load_case_id1 = load_case_id++;
          my_model->CreateLoadCase(shear_load_case_id1);
          shear_load_case_id2 = load_case_id++;
          my_model->CreateLoadCase(shear_load_case_id2 );
-         LOG("Shear Load Cases = " << shear_load_case_id1 << "," << shear_load_case_id2);
+         LOG(_T("Shear Load Cases = ") << shear_load_case_id1 << _T(",") << shear_load_case_id2);
          envelope.AddLoading( shear_load_case_id1 );
          envelope.AddLoading( shear_load_case_id2 );
 
@@ -153,15 +153,15 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
          fra = offset / span_length;
          start = ( direction == 0 ) ? 0.0 : fra;
          end   = ( direction == 0 ) ? fra : 1.0;
-         LOG("Shear Lane Load for load case " << shear_load_case_id1);
-         LOG("   Start = " << start );
-         LOG("   End   = " << end );
+         LOG(_T("Shear Lane Load for load case ") << shear_load_case_id1);
+         LOG(_T("   Start = ") << start );
+         LOG(_T("   End   = ") << end );
          factory.CreateUnifForceY(shear_load_case_id1,spanElementId,etSpan,start,end, -ll.GetLaneLoad() * lane_impact ,true);
          start = ( direction == 0 ) ? fra : 0.0;
          end   = ( direction == 0 ) ? 1.0 : fra;
-         LOG("Shear Lane Load for load case " << shear_load_case_id2);
-         LOG("   Start = " << start );
-         LOG("   End   = " << end );
+         LOG(_T("Shear Lane Load for load case ") << shear_load_case_id2);
+         LOG(_T("   Start = ") << start );
+         LOG(_T("   End   = ") << end );
          factory.CreateUnifForceY(shear_load_case_id2,spanElementId,etSpan,start,end, -ll.GetLaneLoad() * lane_impact ,true);
 
          // Apply axle loads
@@ -189,7 +189,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
             {
                // Axle is on the bridge
                //TRACE("POI = %u dir = %u PivotAxle = %u Axle = %u Axle Position = %f Axle Weight %f\n",poi,direction,pivotAxle,axle,axlePosition,axleWeight);
-               LOG("Pivot Axle = " << pivotAxle << " Axle Position = " << axlePosition << " Axle Weight = " << axleWeight);
+               LOG(_T("Pivot Axle = ") << pivotAxle << _T(" Axle Position = ") << axlePosition << _T(" Axle Weight = ") << axleWeight);
                factory.CreateConcForceY(moment_load_case_id,spanElementId,etSpan,axlePosition, -axleWeight * truck_impact, false);
                factory.CreateConcForceY(shear_load_case_id1,spanElementId,etSpan,axlePosition, -axleWeight * truck_impact, false);
                factory.CreateConcForceY(shear_load_case_id2,spanElementId,etSpan,axlePosition, -axleWeight * truck_impact, false);
@@ -197,7 +197,7 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
 
          } // end of loop : axle
 
-         LOG( " " );
+         LOG( _T(" ") );
       } // end of loop : pivot axle
    } // end of loop : direction
 
@@ -207,22 +207,22 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
    my_model->AddEnvelope(envelope);
    const bamEnvelope* e = my_model->GetEnvelope( envelope_id );
 
-   LOG("Envelope loading id's");
-   LOG( "Min Envelope : " << e->GetLoadingId( bamEnvelope::Min ) );
-   LOG( "Max Envelope : " << e->GetLoadingId( bamEnvelope::Max ) );
+   LOG(_T("Envelope loading id's"));
+   LOG(_T( "Min Envelope : ") << e->GetLoadingId( bamEnvelope::Min ) );
+   LOG( _T("Max Envelope : ") << e->GetLoadingId( bamEnvelope::Max ) );
 
    // Do the structural analysis
    my_model->Analyze();
 
    // Collect results for the cloned model and write them
    // into the original model.
-   LOG("********************************************************");
-   LOG("Live Load Envelopes");
+   LOG(_T("********************************************************"));
+   LOG(_T("Live Load Envelopes"));
 
    for ( Int16 i = bamEnvelope::Min; i <= bamEnvelope::Max; i++ )
    {
-      LOG("");
-      LOG("Extreme Value Type : " << (i == bamEnvelope::Min ? "Min" : "Max" ));
+      LOG(_T(""));
+      LOG(_T("Extreme Value Type : ") << (i == bamEnvelope::Min ? _T("Min") : _T("Max") ));
 
       bamSectionResults sr;
 
@@ -233,14 +233,14 @@ void bamBruteForceSolver::Solve(bamLiveLoad& ll,Int32 poi)
       bamSectionResultsKey to_key( poi, llid );
       WriteSectionResults( to_key, sr );
 
-      LOG("Loading " << to_key.LoadingId());
-      LOG("POI     " << to_key.PointOfInterest());
-      LOG("Fx      " << sr.Fx());
-      LOG("Fy      " << sr.Fy());
-      LOG("Mz      " << sr.Mz());
-      LOG("Dx      " << sr.Dx());
-      LOG("Dy      " << sr.Dy());
-      LOG("Rz      " << sr.Rz());
+      LOG(_T("Loading ") << to_key.LoadingId());
+      LOG(_T("POI     ") << to_key.PointOfInterest());
+      LOG(_T("Fx      ") << sr.Fx());
+      LOG(_T("Fy      ") << sr.Fy());
+      LOG(_T("Mz      ") << sr.Mz());
+      LOG(_T("Dx      ") << sr.Dx());
+      LOG(_T("Dy      ") << sr.Dy());
+      LOG(_T("Rz      ") << sr.Rz());
 
       // For this poi, get the bamPointOfInterest object.  
       // Iterate over each stress point, moving the results from one
@@ -296,7 +296,7 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
 
    // Put the truck at the left end of the span (maximum left reaction)
    my_model->CreateLoadCase(left_lc_id);
-   LOG("Left Reaction Load Case = " << left_lc_id);
+   LOG(_T("Left Reaction Load Case = ") << left_lc_id);
    envelope.AddLoading( left_lc_id );
       
    // Apply lane load
@@ -320,18 +320,18 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
       if (IsZero(axlePosition) || (0 < axlePosition && axlePosition < my_model->GetSpanLength(spanElementId)) || IsEqual(axlePosition,my_model->GetSpanLength(spanElementId)))
       {
          // Axle is on the bridge
-         LOG("Axle Position = " << axlePosition << " Axle Weight = " << axleWeight);
+         LOG(_T("Axle Position = ") << axlePosition << _T(" Axle Weight = ") << axleWeight);
          factory.CreateConcForceY(left_lc_id,spanElementId,etSpan,axlePosition, -axleWeight * truck_impact, false);
       } // end of if
 
    } // end of loop : axle
 
-   LOG( " " );
+   LOG( _T(" ") );
 
 
    // Put the truck at the right end of the span (maximum right reaction)
    my_model->CreateLoadCase(right_lc_id);
-   LOG("Right Reaction Load Case = " << right_lc_id);
+   LOG(_T("Right Reaction Load Case = ") << right_lc_id);
    envelope.AddLoading( right_lc_id );
       
    // Apply lane load
@@ -356,29 +356,29 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
       if (IsZero(axlePosition) || (0 < axlePosition && axlePosition < my_model->GetSpanLength(spanElementId)) || IsEqual(axlePosition,my_model->GetSpanLength(spanElementId)))
       {
          // Axle is on the bridge
-         LOG("Axle Position = " << axlePosition << " Axle Weight = " << axleWeight);
+         LOG(_T("Axle Position = ") << axlePosition << _T(" Axle Weight = ") << axleWeight);
          factory.CreateConcForceY(right_lc_id,spanElementId,etSpan,axlePosition, -axleWeight * truck_impact, false);
       } // end of if
 
    } // end of loop : axle
 
-   LOG( " " );
+   LOG( _T(" ") );
 
    // Create and envelope and stick it in the model
    envelope.SetLoadingIds(env_min,env_max);
    my_model->AddEnvelope(envelope);
    const bamEnvelope* e = my_model->GetEnvelope( envelope_id );
 
-   LOG("Envelope loading id's");
-   LOG( "Min Envelope : " << e->GetLoadingId( bamEnvelope::Min ) );
-   LOG( "Max Envelope : " << e->GetLoadingId( bamEnvelope::Max ) );
+   LOG(_T("Envelope loading id's"));
+   LOG( _T("Min Envelope : ") << e->GetLoadingId( bamEnvelope::Min ) );
+   LOG( _T("Max Envelope : ") << e->GetLoadingId( bamEnvelope::Max ) );
 
    // Do the structural analysis
    my_model->Analyze();
 
    // Get reactions that corrospond to the extreme force effects.
-   LOG("********************************************************");
-   LOG("Live Load Reactions");
+   LOG(_T("********************************************************"));
+   LOG(_T("Live Load Reactions"));
 
    Int32 support_count;
    Int32* support_list;
@@ -388,16 +388,16 @@ void bamBruteForceSolver::SolveReactions(bamLiveLoad& ll)
 
    for ( Int16 j = bamEnvelope::Min; j <= bamEnvelope::Max; j++ )
    {
-      LOG("");
-      LOG("Extreme Value Type : " << (j == bamEnvelope::Min ? "Min" : "Max" ));
-      LOG("Support Fx Fy Mz");
+      LOG(_T(""));
+      LOG(_T("Extreme Value Type : ") << (j == bamEnvelope::Min ? _T("Min") : _T("Max") ));
+      LOG(_T("Support Fx Fy Mz"));
       for (Int32 supportIdx = 0; supportIdx < support_count; supportIdx++)
       {
          bamReactionKey from_key( support_list[supportIdx], e->GetLoadingId( (bamEnvelope::ExtremeValueType)(j) ) );
          bamReaction reaction = my_model->ReadReaction( from_key );
          bamReactionKey to_key( support_list[supportIdx], (j==bamEnvelope::Min?ll.GetMinLoadingId():ll.GetMaxLoadingId()) );
 
-         LOG(supportIdx << " " << reaction.Fx() << " " << reaction.Fy() << " " << reaction.Mz() );
+         LOG(supportIdx << _T(" ") << reaction.Fx() << _T(" ") << reaction.Fy() << _T(" ") << reaction.Mz() );
 
          WriteReaction( to_key, reaction );
       }

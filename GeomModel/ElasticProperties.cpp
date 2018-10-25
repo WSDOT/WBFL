@@ -249,7 +249,7 @@ void gmElasticProperties::SetCoordinateSystem(gmElasticProperties::CoordSystemTy
          break;
       }
       default:
-         CHECKX(0,"Bad coordinate type");
+         CHECKX(0, _T("Bad coordinate type"));
    }
 
    m_Properties.SetCoordinateSystem(pct);
@@ -283,7 +283,7 @@ gmElasticProperties::CoordSystemType gmElasticProperties::GetCoordinateSystem() 
          break;
       }
       default:
-         CHECKX(0,"Bad coordinate type");
+         CHECKX(0,_T("Bad coordinate type"));
    }
 
    return epct;
@@ -331,10 +331,10 @@ bool gmElasticProperties::AssertValid() const
 
 void gmElasticProperties::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmElasticProperties" << endl;
-   os << "Start Dump of implementation m_Properties:"<<endl;
+   os << _T("Dump for gmElasticProperties") << endl;
+   os << _T("Start Dump of implementation m_Properties:")<<endl;
    m_Properties.Dump(os);
-   os << "End Dump of implementation m_Properties:"<<endl;
+   os << _T("End Dump of implementation m_Properties:")<<endl;
 }
 
 #endif // _DEBUG

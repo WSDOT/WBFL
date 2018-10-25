@@ -75,7 +75,7 @@ public:
    matConcreteEx();
 
    //------------------------------------------------------------------------
-   matConcreteEx(const std::string& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE);
+   matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE);
 
    //------------------------------------------------------------------------
    // Copy constructor

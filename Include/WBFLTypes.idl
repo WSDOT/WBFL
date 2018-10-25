@@ -21,8 +21,25 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-import "oaidl.idl";
-import "ocidl.idl";
+cpp_quote("#if defined UNICODE || defined _UNICODE")
+cpp_quote("#define _tstring wstring")
+cpp_quote("#define _tostringstream wostringstream ")
+cpp_quote("#define _tistringstream wistringstream ")
+cpp_quote("#define _tifstream wifstream")
+cpp_quote("#define _tofstream wofstream")
+cpp_quote("#define _tostream wostream")
+cpp_quote("#define _tistream wistream")
+cpp_quote("#define _tcout wcout")
+cpp_quote("#else")
+cpp_quote("#define _tstring string")
+cpp_quote("#define _tostringstream ostringstream")
+cpp_quote("#define _tistringstream istringstream")
+cpp_quote("#define _tifstream ifstream")
+cpp_quote("#define _tofstream ofstream")
+cpp_quote("#define _tostream ostream")
+cpp_quote("#define _tistream istream")
+cpp_quote("#define _tcout cout")
+cpp_quote("#endif")
 
 cpp_quote("#include <limits.h>")
 cpp_quote("#include <float.h>")

@@ -70,7 +70,7 @@ CComModule _Module;
    p##_class->Test(); \
    p##_class->Release()
 
-int main(int argc, char* argv[])
+int main(int argc, LPTSTR argv[])
 {
   ::CoInitialize(NULL);
    {

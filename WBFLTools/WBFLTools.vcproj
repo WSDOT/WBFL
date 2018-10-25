@@ -25,7 +25,8 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -46,15 +47,21 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				TargetEnvironment="1"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				OutputDirectory=""
+				HeaderFileName="$(SolutionDir)Include\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(TargetName)_i.c"
 				ValidateParameters="true"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;_USRDLL"
 				RuntimeLibrary="2"
@@ -88,6 +95,9 @@
 				ModuleDefinitionFile=".\WBFLTools.def"
 				ProgramDatabaseFile=".\Release/WBFLTools.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TurnOffAssemblyGeneration="false"
@@ -136,7 +146,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -157,11 +167,12 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="..\Include;&quot;$(SolutionDir)RegFreeCOM\$(ConfigurationName)\&quot;"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				TargetEnvironment="1"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				OutputDirectory=""
+				HeaderFileName="$(SolutionDir)Include\$(TargetName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(TargetName)_i.c"
 				ValidateParameters="true"
 			/>
 			<Tool

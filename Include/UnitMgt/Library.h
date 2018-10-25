@@ -46,15 +46,15 @@
 // as well.  The exception must be instantiated first so that it is
 // declared as exported.
 
-UNITMGTTPL unitmgtXEntryNotFoundT<  std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure>;
-UNITMGTTPL unitmgtLibraryT<         std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure>;
-UNITMGTTPL unitmgtLibraryIterT<     std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure>;
-UNITMGTTPL unitmgtConstLibraryIterT<std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure>;
+UNITMGTTPL unitmgtXEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure>;
+UNITMGTTPL unitmgtLibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure>;
+UNITMGTTPL unitmgtLibraryIterT<     std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure>;
+UNITMGTTPL unitmgtConstLibraryIterT<std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure>;
 
-typedef unitmgtLibraryT<         std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure> unitmgtLibrary;
-typedef unitmgtLibraryIterT<     std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure> unitmgtLibraryIter;
-typedef unitmgtConstLibraryIterT<std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure> unitmgtConstLibraryIter;
-typedef unitmgtXEntryNotFoundT<  std::basic_string<char, std::char_traits<char>, std::allocator<char> >, unitmgtIndirectMeasure> unitmgtEntryNotFound;
+typedef unitmgtLibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure> unitmgtLibrary;
+typedef unitmgtLibraryIterT<     std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure> unitmgtLibraryIter;
+typedef unitmgtConstLibraryIterT<std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure> unitmgtConstLibraryIter;
+typedef unitmgtXEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, unitmgtIndirectMeasure> unitmgtEntryNotFound;
 
 // INLINE METHODS
 //

@@ -56,6 +56,7 @@ HRESULT CUBeam2::FinalConstruct()
    m_W6 = 0.00;
    m_W7 = 0.00;
    m_C1 = 0.00;
+   m_bUseOutlineOnly = VARIANT_FALSE;
 
    CreatePoint( 0.00, 0.00, NULL, &m_pHookPoint );
    HRESULT hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
@@ -189,10 +190,10 @@ HRESULT CUBeam2::UpdateShape()
       Float64 p5_y =  m_D1;
 
       Float64 p6_x =  -m_W2/2 + m_W6;
-      Float64 p6_y =  m_D1;
+      Float64 p6_y =  p5_y;
 
       Float64 p7_x =  p6_x + m_W7;
-      Float64 p7_y =  m_D1 - m_D6;
+      Float64 p7_y =  p6_y - m_D6;
 
       Float64 p8_x =  p7_x + (IsZero(slope) ? 0 : (m_D1 - m_D6 - m_D2 - m_D3)/slope);
       Float64 p8_y =  m_D2 + m_D3;
@@ -242,16 +243,36 @@ HRESULT CUBeam2::UpdateShape()
       }
 
       m_pShape->AddPoint( p5_x, p5_y);
-      m_pShape->AddPoint( p6_x, p6_y);
-      m_pShape->AddPoint( p7_x, p7_y);
-      m_pShape->AddPoint( p8_x, p8_y);
-      m_pShape->AddPoint( p9_x, p9_y);
 
-      // mirror points
-      m_pShape->AddPoint(-p9_x, p9_y);
-      m_pShape->AddPoint(-p8_x, p8_y);
-      m_pShape->AddPoint(-p7_x, p7_y);
-      m_pShape->AddPoint(-p6_x, p6_y); 
+      // Using the outline of the shape only
+      // place the inner points along the top edge of the shape
+      if (m_bUseOutlineOnly == VARIANT_TRUE)
+      {
+         m_pShape->AddPoint( p6_x, p6_y);
+         m_pShape->AddPoint( p7_x, p6_y);
+         m_pShape->AddPoint( p8_x, p6_y);
+         m_pShape->AddPoint( p9_x, p6_y);
+
+         // mirror points
+         m_pShape->AddPoint(-p9_x, p6_y);
+         m_pShape->AddPoint(-p8_x, p6_y);
+         m_pShape->AddPoint(-p7_x, p6_y);
+         m_pShape->AddPoint(-p6_x, p6_y); 
+      }
+      else
+      {
+         m_pShape->AddPoint( p6_x, p6_y);
+         m_pShape->AddPoint( p7_x, p7_y);
+         m_pShape->AddPoint( p8_x, p8_y);
+         m_pShape->AddPoint( p9_x, p9_y);
+
+         // mirror points
+         m_pShape->AddPoint(-p9_x, p9_y);
+         m_pShape->AddPoint(-p8_x, p8_y);
+         m_pShape->AddPoint(-p7_x, p7_y);
+         m_pShape->AddPoint(-p6_x, p6_y); 
+      }
+
       m_pShape->AddPoint(-p5_x, p5_y);
 
       if (is_chamfer)
@@ -672,6 +693,23 @@ STDMETHODIMP CUBeam2::get_WebSpacing(Float64* spacing)
    return S_OK;
 }
 
+STDMETHODIMP CUBeam2::put_UseOutlineOnly(VARIANT_BOOL bUseOutlineOnly)
+{
+   MakeDirty();
+
+   m_bUseOutlineOnly = bUseOutlineOnly;
+
+   return S_OK;
+}
+
+STDMETHODIMP CUBeam2::get_UseOutlineOnly(VARIANT_BOOL* pUseOutlineOnly)
+{
+   CHECK_RETVAL(pUseOutlineOnly);
+
+   *pUseOutlineOnly = m_bUseOutlineOnly;
+   return S_OK;
+}
+
 STDMETHODIMP CUBeam2::get_HookPoint(IPoint2d** hookPnt)
 {
    CHECK_RETOBJ(hookPnt);
@@ -775,6 +813,7 @@ STDMETHODIMP CUBeam2::Clone(IShape** pClone)
    pTheClone->put_W6( m_W6 );
    pTheClone->put_W7( m_W7 );
    pTheClone->put_C1( m_C1 );
+   pTheClone->put_UseOutlineOnly(m_bUseOutlineOnly);
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,NULL,&hookPnt);
@@ -932,7 +971,7 @@ STDMETHODIMP CUBeam2::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("UBeam2"),2.0);
+   pSave->BeginUnit(CComBSTR("UBeam2"),3.0);
    pSave->put_Property(CComBSTR("D1"),CComVariant(m_D1));
    pSave->put_Property(CComBSTR("D2"),CComVariant(m_D2));
    pSave->put_Property(CComBSTR("D3"),CComVariant(m_D3));
@@ -947,6 +986,7 @@ STDMETHODIMP CUBeam2::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("W6"),CComVariant(m_W6));
    pSave->put_Property(CComBSTR("W7"),CComVariant(m_W7));
    pSave->put_Property(CComBSTR("C1"),CComVariant(m_C1)); // C1 added in version 2.0
+   pSave->put_Property(CComBSTR("UseOutlineOnly"),CComVariant(m_bUseOutlineOnly)); // added in version 3.0
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
    pSave->EndUnit();
@@ -1016,6 +1056,15 @@ STDMETHODIMP CUBeam2::Load(IStructuredLoad2* pLoad)
       m_C1 = 0.0;
    }
 
+   if ( 3.0 <= version )
+   {
+      pLoad->get_Property(CComBSTR("UseOutlineOnly"),&var);
+      m_bUseOutlineOnly = var.boolVal;
+   }
+   else
+   {
+      m_bUseOutlineOnly = VARIANT_FALSE;
+   }
 
    pLoad->get_Property(CComBSTR("Rotation"),&var);
    m_Rotation = var.dblVal;

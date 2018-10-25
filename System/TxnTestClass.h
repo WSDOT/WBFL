@@ -31,8 +31,8 @@ public:
    virtual bool Execute();
    virtual void Undo();
    virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::ostream& os) const;
-   virtual std::string Name() const;
+   virtual void Log(std::_tostream& os) const;
+   virtual std::_tstring Name() const;
    virtual bool IsUndoable();
    virtual bool IsRepeatable();
 };
@@ -43,8 +43,8 @@ public:
    testNotUndoableTxn();
    virtual bool Execute();
    virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::ostream& os) const;
-   virtual std::string Name() const;
+   virtual void Log(std::_tostream& os) const;
+   virtual std::_tstring Name() const;
    virtual bool IsUndoable();
    virtual bool IsRepeatable();
 };
@@ -56,8 +56,8 @@ public:
    virtual bool Execute();
    virtual void Undo();
    virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::ostream& os) const;
-   virtual std::string Name() const;
+   virtual void Log(std::_tostream& os) const;
+   virtual std::_tstring Name() const;
    virtual bool IsUndoable();
    virtual bool IsRepeatable();
 };

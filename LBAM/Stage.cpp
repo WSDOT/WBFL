@@ -126,7 +126,7 @@ STDMETHODIMP CStage::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t name(var);
-      m_Name = (const char*)name;
+      m_Name = (LPCTSTR)name;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("Description"),&var);
@@ -134,7 +134,7 @@ STDMETHODIMP CStage::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t description(var);
-      m_Description = (const char*)description;
+      m_Description = (LPCTSTR)description;
    }
 
    VARIANT_BOOL eb;

@@ -113,7 +113,7 @@ STDMETHODIMP CDistributedLoad::put_MemberID(long id)
       typedef CEditValueTransaction<CDistributedLoad,long,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load Member ID",&PutMemberID,m_MemberID, id);
+      pTxn->Init(this,_T("Distributed Load Member ID"),&PutMemberID,m_MemberID, id);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -142,7 +142,7 @@ STDMETHODIMP CDistributedLoad::put_StartLocation(Float64 start)
       typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load StartLocation",&PutStartLocation,m_StartLocation, start);
+      pTxn->Init(this,_T("Distributed Load Start Location"),&PutStartLocation,m_StartLocation, start);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -171,7 +171,7 @@ STDMETHODIMP CDistributedLoad::put_EndLocation(Float64 end)
       typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load End Location",&PutEndLocation,m_EndLocation, end);
+      pTxn->Init(this,_T("Distributed Load End Location"),&PutEndLocation,m_EndLocation, end);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -200,7 +200,7 @@ STDMETHODIMP CDistributedLoad::put_Orientation(ldLoadOrientation orientation)
       typedef CEditValueTransaction<CDistributedLoad,ldLoadOrientation,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load Orientation",&PutOrientation,m_Orientation, orientation);
+      pTxn->Init(this,_T("Distributed Load Orientation"),&PutOrientation,m_Orientation, orientation);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -229,7 +229,7 @@ STDMETHODIMP CDistributedLoad::put_Direction(ldLoadDirection direction)
       typedef CEditValueTransaction<CDistributedLoad,ldLoadDirection,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load Direction",&PutDirection,m_Direction, direction);
+      pTxn->Init(this,_T("Distributed Load Direction"),&PutDirection,m_Direction, direction);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -258,7 +258,7 @@ STDMETHODIMP CDistributedLoad::put_WStart(Float64 wStart)
       typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load Start Load",&PutWStart,m_WStart, wStart);
+      pTxn->Init(this,_T("Distributed Load Start Load"),&PutWStart,m_WStart, wStart);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -287,7 +287,7 @@ STDMETHODIMP CDistributedLoad::put_WEnd(Float64 wEnd)
       typedef CEditValueTransaction<CDistributedLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Distributed Load End Load",&PutWEnd,m_WEnd, wEnd);
+      pTxn->Init(this,_T("Distributed Load End Load"),&PutWEnd,m_WEnd, wEnd);
 
       return m_TxnMgr->Execute(pTxn);
    }

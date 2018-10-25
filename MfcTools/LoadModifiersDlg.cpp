@@ -57,7 +57,7 @@ CLoadModifiersDlg::~CLoadModifiersDlg()
 {
 }
 
-void CLoadModifiersDlg::SetHelpData(const char* pszHelpFile,DWORD nd,DWORD nr,DWORD ni)
+void CLoadModifiersDlg::SetHelpData(LPCTSTR pszHelpFile,DWORD nd,DWORD nr,DWORD ni)
 {
    m_HelpFile = pszHelpFile;
    m_HelpID[0] = nd;
@@ -114,22 +114,22 @@ void CLoadModifiersDlg::Init()
 
    m_psh.dwFlags |= PSH_HASHELP | PSH_NOAPPLYNOW;
 
-   m_pDuctilityPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage("Non-ductile",
-                                                                              "Conventional design",
-                                                                              "Enhanced ductility",
-                                                                              'D') );
+   m_pDuctilityPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Non-ductile"),
+                                                                              _T("Conventional design"),
+                                                                              _T("Enhanced ductility"),
+                                                                              _T('D')) );
    AddPage( m_pDuctilityPage.get() );
 
-   m_pRedundancyPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage("Non-redundant",
-                                                                               "Conventional levels of redundancy",
-                                                                               "Exceptional levels of redundancy",
-                                                                               'R') );
+   m_pRedundancyPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Non-redundant"),
+                                                                               _T("Conventional levels of redundancy"),
+                                                                               _T("Exceptional levels of redundancy"),
+                                                                               _T('R')) );
    AddPage( m_pRedundancyPage.get() );
 
-   m_pImportancePage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage("Important",
-                                                                               "Typical",
-                                                                               "Not important",
-                                                                               'I') );
+   m_pImportancePage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Important"),
+                                                                               _T("Typical"),
+                                                                               _T("Not important"),
+                                                                               _T('I')) );
    AddPage( m_pImportancePage.get() );
 }
 
@@ -154,15 +154,15 @@ BOOL CLoadModifiersDlg::OnInitDialog()
    int idx;
 
    idx = GetPageIndex( m_pDuctilityPage.get() );
-	tcItem.pszText = "Ductility";
+	tcItem.pszText = _T("Ductility");
 	GetTabControl()->SetItem(idx, &tcItem );
 
    idx = GetPageIndex( m_pRedundancyPage.get() );
-	tcItem.pszText = "Redundancy";
+	tcItem.pszText = _T("Redundancy");
 	GetTabControl()->SetItem(idx, &tcItem );
    
    idx = GetPageIndex( m_pImportancePage.get() );
-	tcItem.pszText = "Importance";
+	tcItem.pszText = _T("Importance");
 	GetTabControl()->SetItem(idx, &tcItem );
 	
 	return bResult;

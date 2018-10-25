@@ -277,7 +277,7 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IEnumPaths> enumPaths;
    get__EnumPaths(&enumPaths);
    CComPtr<IPath> Path;
@@ -370,7 +370,7 @@ HRESULT CPathCollection::PathKeyError(CogoElementKey key,UINT nHelpString,HRESUL
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CPathCollection,&CLSID_PathCollection>::Error(oleMsg, IID_IPathCollection, hRes);

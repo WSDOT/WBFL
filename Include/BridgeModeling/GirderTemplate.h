@@ -73,7 +73,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bmfGirderTemplate(const std::string& name,const bmfGirderProfile* pProfile);
+   bmfGirderTemplate(const std::_tstring& name,const bmfGirderProfile* pProfile);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -102,10 +102,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    const bmfGirderProfile* GetProfile() const;
@@ -125,7 +125,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    const bmfGirderProfile* m_pProfile;
 
    // GROUP: LIFECYCLE

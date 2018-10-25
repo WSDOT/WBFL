@@ -66,7 +66,7 @@ class unitmgtXEntryNotFoundT : public sysXBase
 {
 public:
    // GROUP: LIFECYCLE
-   unitmgtXEntryNotFoundT(const K& key,const char* file, Int16 line) :
+   unitmgtXEntryNotFoundT(const K& key,LPCTSTR file, Int16 line) :
        sysXBase(file,line),
        m_Key( key )
        {
@@ -216,7 +216,7 @@ public:
       std::map<K,V>::iterator i = m_Map.find( key );
       if ( i == m_Map.end() )
       {
-         throw unitmgtXEntryNotFoundT<K,V>( key, __FILE__, __LINE__ );
+         throw unitmgtXEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
       }
       
       return (*i).second;
@@ -228,7 +228,7 @@ public:
       std::map<K,V>::const_iterator i = m_Map.find( key );
       if ( i == m_Map.end() )
       {
-         throw unitmgtXEntryNotFoundT<K,V>( key, __FILE__, __LINE__ );
+         throw unitmgtXEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
       }
       
       return (*i).second;

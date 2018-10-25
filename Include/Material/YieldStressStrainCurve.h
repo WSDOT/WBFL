@@ -75,7 +75,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor. Initializes the stress strain curve with the supplied parameters.
-   matYieldStressStrainCurve(const std::string& name,
+   matYieldStressStrainCurve(const std::_tstring& name,
                              Float64 E,
                              Float64 tensYieldStress,
                              Float64 compYieldStress,

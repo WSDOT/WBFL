@@ -46,11 +46,11 @@ CLASS
 // a mapping list for fonts for html
 // Note: This list is dependent of the order of the enum FontType in 
 //       ReportingUtils.h - If you touch one, you bust the other
-static const char * HtmlFontList[] = { "Times",      // - default (pot luck)
-                                       "Times",      // - typically times new roman
-                                       "Arial",      // - arial
-                                       "Courier New",    // - fixed pitch - courier
-                                       "Symbol"};    // - symbol font (not portable)
+static LPCTSTR  HtmlFontList[] = { _T("Times"),      // - default (pot luck)
+                                        _T("Times"),      // - typically times new roman
+                                        _T("Arial"),      // - arial
+                                        _T("Courier New"),    // - fixed pitch - courier
+                                        _T("Symbol")};    // - symbol font (not portable)
 
 
 
@@ -71,9 +71,9 @@ rptHtmlHelper::rptHtmlHelper()
 //------------------------------------------------------------------------
 //
 // Get stylistic information to put into HTML style block.
-std::string rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
+std::_tstring rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
 {
-   std::stringstream ms;
+   std::_tostringstream ms;
 
    ms << "font-size: "<<MyStyle.GetFontSize()<<"pt; ";
 
@@ -122,39 +122,39 @@ std::string rptHtmlHelper::GetStyleString(const rptRiStyle& MyStyle)
    // family is last in list because of a 'feature' in IE
    ms << "font-family: " << HtmlFontList[MyStyle.GetFontType()] << "; ";
 
-   return std::string(ms.str());
+   return std::_tstring(ms.str());
 }
 //------------------------------------------------------------------------
 //
 // Get page layout information to put into HTML style block.
-std::string rptHtmlHelper::GetPageLayoutString(const rptPageLayout& MyLayout)
+std::_tstring rptHtmlHelper::GetPageLayoutString(const rptPageLayout& MyLayout)
 {
-   std::stringstream ms;
+   std::_tostringstream ms;
    ms<< "margin-left: "<< MyLayout.GetLeftMargin() <<"in; "
      << "margin-right: "<< MyLayout.GetRightMargin() <<"in;";
 
 // top margin is of little use for screen documents
 //   << "margin-top: "<< MyLayout.GetTopMargin() <<"in;";
 
-   return std::string(ms.str());
+   return std::_tstring(ms.str());
 }
 
 // a list of useable html elements.
 
-void rptHtmlHelper::VisitFontLibrary(std::ostream& os)
+void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
 {
-   std::ostringstream osPrint, osScreen, osBoth;
+   std::_tostringstream osPrint, osScreen, osBoth;
 
-   osPrint << "@media print" << std::endl;
-   osPrint << "{" << std::endl;
-   osPrint << "THEAD {display: table-header-group;}" << std::endl;
-   osPrint << "TFOOT {display: table-footer-group;}" << std::endl;
+   osPrint << _T("@media print") << std::endl;
+   osPrint << _T("{") << std::endl;
+   osPrint << _T("THEAD {display: table-header-group;}") << std::endl;
+   osPrint << _T("TFOOT {display: table-footer-group;}") << std::endl;
 
-   osScreen << "@media screen" << std::endl;
-   osScreen << "{" << std::endl;
+   osScreen << _T("@media screen") << std::endl;
+   osScreen << _T("{") << std::endl;
 
-   osBoth << "@media screen,print" << std::endl;
-   osBoth << "{" << std::endl;
+   osBoth << _T("@media screen,print") << std::endl;
+   osBoth << _T("{") << std::endl;
 
    // clear out the existing map if there is one
    m_StyleElementMap.clear();
@@ -164,7 +164,7 @@ void rptHtmlHelper::VisitFontLibrary(std::ostream& os)
 
    // write out the beginning of the style block
    os << std::endl;
-   os << " <STYLE TYPE=\"text/css\">" << std::endl;
+   os << _T(" <STYLE TYPE=\"text/css\">") << std::endl;
 
    // get a vector of all named styles in library
    std::vector<rptStyleName> svec;
@@ -172,7 +172,7 @@ void rptHtmlHelper::VisitFontLibrary(std::ostream& os)
 
    int numels = svec.size();
 
-   std::string ss;
+   std::_tstring ss;
 
    // cycle over all styles add to style-element map and write out style-element mapping
    for (int i=0; i<numels; i++)
@@ -180,75 +180,75 @@ void rptHtmlHelper::VisitFontLibrary(std::ostream& os)
       const rptRiStyle& style = plib->GetNamedStyle( svec[i] );
 
       ss = GetStyleString(style);
-      std::string mystr = svec[i];
-      std::stringstream ms;
-      ms << "S" << i;
-      m_StyleElementMap.insert( std::pair<std::string, std::string> (mystr, ms.str()));
+      std::_tstring mystr = svec[i];
+      std::_tostringstream ms;
+      ms << _T("S") << i;
+      m_StyleElementMap.insert( std::pair<std::_tstring, std::_tstring> (mystr, ms.str()));
       if (i==0) // body text
       {
-         os << "   "<< "BODY" << " {  background: white; " << ss << 
-            " display: block; }"<< std::endl;
+         os << _T("   ") << _T("BODY") << _T(" {  background: white; ") << ss << 
+            _T(" display: block; }") << std::endl;
 
-         os << "   "<< "P" << " {  background: white; " << ss << 
-            " display: block}"<< std::endl;
+         os << _T("   ") << _T("P") << _T(" {  background: white; ") << ss << 
+            _T(" display: block}") << std::endl;
       }
       else
       {
          if ( style.GetMediaType() == rptRiStyle::Print )
          {
             // style only applies to print
-            osPrint << "/* "<< mystr << " */" << std::endl;
-            osPrint << "   "<< "P."<< ms.str() << " {" << ss << 
-               " display: block" <<
-               " margin-top: -1; margin-bottom: -2}"<< std::endl;
+            osPrint << _T("/* ") << mystr << _T(" */") << std::endl;
+            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
+               _T(" display: block") <<
+               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
 
-            osScreen << "/* "<< mystr << " */" << std::endl;
-            osScreen << "   "<< "P."<< ms.str() << " {display: none}; " << std::endl;
+            osScreen << _T("/* ") << mystr << _T(" */") << std::endl;
+            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {display: none}; ") << std::endl;
          }
          else if ( style.GetMediaType() == rptRiStyle::Screen )
          {
             // style only applies to screen
-            osScreen << "/* "<< mystr << " */" << std::endl;
-            osScreen << "   "<< "P."<< ms.str() << " {" << ss << 
-               " display: block" <<
-               " margin-top: -1; margin-bottom: -2}"<< std::endl;
+            osScreen << _T("/* ") << mystr << _T(" */") << std::endl;
+            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
+               _T(" display: block") <<
+               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
 
-            osPrint << "/* "<< mystr << " */" << std::endl;
-            osPrint << "   "<< "P."<< ms.str() << " {display: none}; " << std::endl;
+            osPrint << _T("/* ") << mystr << _T(" */") << std::endl;
+            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {display: none}; ") << std::endl;
          }
          else
          {
             // style applies to both
-            osBoth << "/* "<< mystr << " */" << std::endl;
-            osBoth << "   "<< "P."<< ms.str() << " {" << ss << 
-               " display: block" <<
-               " margin-top: -1; margin-bottom: -2}"<< std::endl;
+            osBoth << _T("/* ") << mystr << _T(" */") << std::endl;
+            osBoth << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << 
+               _T(" display: block") <<
+               _T(" margin-top: -1; margin-bottom: -2}") << std::endl;
          }
       }
    }
 
-   osPrint << "}" << std::endl;
-   osScreen << "}" << std::endl;
-   osBoth << "}" << std::endl;
+   osPrint << _T("}") << std::endl;
+   osScreen << _T("}") << std::endl;
+   osBoth << _T("}") << std::endl;
 
    os << osPrint.str() << std::endl;
    os << osScreen.str() << std::endl;
    os << osBoth.str() << std::endl;
 
    // end of style block
-   os << " </STYLE>" << std::endl;
+   os << _T(" </STYLE>") << std::endl;
    m_DidVisit = true;
 }
 
-std::string rptHtmlHelper::GetElementName(const rptStyleName& rstyleName) const
+std::_tstring rptHtmlHelper::GetElementName(const rptStyleName& rstyleName) const
 {
    StyleElementMap::const_iterator it = m_StyleElementMap.find(rstyleName);
    if (it != m_StyleElementMap.end() )
       return (*it).second;
    else
    {
-      CHECKX(0,"Failed to find library entry");
-      return "BODY";
+      CHECKX(0,_T("Failed to find library entry"));
+      return _T("BODY");
    }
 }
 

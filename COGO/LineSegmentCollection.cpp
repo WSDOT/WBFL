@@ -296,7 +296,7 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
 
    (*clone)->putref_Factory(m_Factory);
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IEnumLineSegments> enumLS;
    get__EnumLineSegments(&enumLS);
    CComPtr<ILineSegment2d> ls;
@@ -423,7 +423,7 @@ HRESULT CLineSegmentCollection::LineSegKeyError(CogoElementKey key,UINT nHelpStr
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CLineSegmentCollection,&CLSID_LineSegmentCollection>::Error(oleMsg, IID_ILineSegmentCollection, hRes);

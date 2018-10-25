@@ -45,7 +45,7 @@ public:
 	CInplaceEditFSMState();
 	virtual ~CInplaceEditFSMState();
 
-	virtual const char* StateName() const = 0;
+	virtual LPCTSTR StateName() const = 0;
 
    // Events
 	virtual void Do(CInplaceEditFSM& fsm);
@@ -59,7 +59,7 @@ public:
 class CInplaceEditFSMDoneState : public CInplaceEditFSMState
 {
 public:
-   virtual const char* StateName() const { return "Done"; }
+   virtual LPCTSTR StateName() const { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -68,7 +68,7 @@ public:
 class CInplaceEditFSMCancelledState : public CInplaceEditFSMState
 {
 public:
-   virtual const char* StateName() const { return "Cancelled"; }
+   virtual LPCTSTR StateName() const { return _T("Cancelled"); }
 };
 
 //----------------------------------------------
@@ -77,7 +77,7 @@ public:
 class CInplaceEditFSMEnteringTextState : public CInplaceEditFSMState
 {
 public:
-   virtual const char* StateName() const { return "EnteringText"; }
+   virtual LPCTSTR StateName() const { return _T("EnteringText"); }
    virtual void LButtonDown(CInplaceEditFSM& fsm);
 	virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM& fsm);
 };
@@ -88,7 +88,7 @@ public:
 class CInplaceEditFSMStartState : public CInplaceEditFSMState
 {
 public:
-   virtual const char* StateName() const { return "Start"; }
+   virtual LPCTSTR StateName() const { return _T("Start"); }
    virtual void Do(CInplaceEditFSM& fsm);
 };
 

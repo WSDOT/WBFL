@@ -79,7 +79,7 @@ public:
    virtual SelectionType Do_GetSelectionType();
 
    // Tool Tips
-   virtual void Do_SetToolTipText(LPCSTR lpszToolTipText);
+   virtual void Do_SetToolTipText(LPCTSTR lpszToolTipText);
    virtual CString Do_GetToolTipText();
    virtual void Do_SetMaxTipWidth(long maxWidth);
    virtual long Do_GetMaxTipWidth();

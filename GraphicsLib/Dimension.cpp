@@ -69,7 +69,7 @@ m_AdditionalOffset(0)
    m_Label.SetPointSize(8);
 }
 
-grDimension::grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::string& label):
+grDimension::grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::_tstring& label):
 m_PointA(pointA),
 m_PointB(pointB),
 m_VPos(Above),
@@ -217,12 +217,12 @@ void grDimension::GetHookPoints(gpPoint2d* pointA, gpPoint2d* pointB) const
    *pointB = m_PointB;
 }
 
-void grDimension::SetLabel(const std::string& label)
+void grDimension::SetLabel(const std::_tstring& label)
 {
    m_Label.SetLabel(label);
 }
 
-std::string grDimension::GetLabel() const
+std::_tstring grDimension::GetLabel() const
 {
    return m_Label.GetLabel();
 }
@@ -670,7 +670,7 @@ void DrawArrow(HDC hDC, const grlibPointMapper& mapper,
    } 
    */
    SIZE siz;
-   ::GetTextExtentPoint32(hDC,"oo", 2, &siz);
+   ::GetTextExtentPoint32(hDC,_T("oo"), 2, &siz);
    siz.cy/=6;
    siz.cx/=2;
 

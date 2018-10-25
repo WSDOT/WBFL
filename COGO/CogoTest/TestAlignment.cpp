@@ -82,7 +82,7 @@ void CTestAlignment::Test()
 
    // add it to the Alignment
    TRY_TEST(alignment->AddEx(NULL),E_INVALIDARG);
-   TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE);
+   //TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE); // alignment/paths are now valid path element types
    TRY_TEST(alignment->AddEx(point), S_OK);
 
    // create a horz curve
@@ -172,7 +172,7 @@ void CTestAlignment::Test()
    TRY_TEST(alignment->Insert(1,element),S_OK);
 
    TRY_TEST(alignment->InsertEx(1,NULL),E_INVALIDARG);
-   TRY_TEST(alignment->InsertEx(1,alignment),COGO_E_PATHELEMENTTYPE);
+   //TRY_TEST(alignment->InsertEx(1,alignment),COGO_E_PATHELEMENTTYPE); // alignment/path are now valid path elements
    TRY_TEST(alignment->InsertEx(-1,point),E_INVALIDARG);
    TRY_TEST(alignment->InsertEx(100,point),E_INVALIDARG);
    TRY_TEST(alignment->InsertEx(1,point),S_OK);

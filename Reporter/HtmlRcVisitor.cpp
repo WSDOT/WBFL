@@ -64,7 +64,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 
-rptHtmlRcVisitor::rptHtmlRcVisitor(std::ostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY):
+rptHtmlRcVisitor::rptHtmlRcVisitor(std::_tostream* pMyOstream, const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper, Uint32 logPixelsX, Uint32 logPixelsY):
    rptOutputRcVisitor(pMyOstream),
    m_Helper(rmyHelper),
    m_LogPixelsX(logPixelsX),
@@ -86,27 +86,27 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
 {
    HyperStart(pString); // deal with hyperlinks
 
-   std::string str = pString->GetString();
+   std::_tstring str = pString->GetString();
 
    // "strings that look like <this>" would report as
    // "strings that look like " if we don't replace < and > with their HTML equivalent
 
-   std::string::size_type pos;
-   while( (pos = str.find("<")) != std::string::npos )
+   std::_tstring::size_type pos;
+   while( (pos = str.find( _T("<") )) != std::_tstring::npos )
    {
-      str.replace(pos,1,"&lt;");
+      str.replace(pos,1,_T("&lt;"));
    }
 
-   while( (pos = str.find(">")) != std::string::npos )
+   while( (pos = str.find(_T(">"))) != std::_tstring::npos )
    {
-      str.replace(pos,1,"&gt;");
+      str.replace(pos,1,_T("&gt;"));
    }
 
    if ( 0 < str.size() )
    {
       if ( pString->NoWrap() )
       {
-         *m_pOstream<< "<span style=\"white-space: nowrap\">" << str << "</span>";
+         *m_pOstream<< _T("<span style=\"white-space: nowrap\">") << str << _T("</span>");
       }
       else
       {
@@ -115,7 +115,7 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
    }
    else
    {
-      *m_pOstream << "&nbsp;";
+      *m_pOstream << _T("&nbsp;");
    }
 
    HyperEnd(pString);
@@ -149,21 +149,21 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    switch (align)
    {
    case rptRiStyle::RIGHT:
-      *m_pOstream << "<DIV STYLE=\"text-align: right\">" <<std::endl;
+      *m_pOstream << _T("<DIV STYLE=\"text-align: right\">") <<std::endl;
       break;
    case rptRiStyle::CENTER:
-      *m_pOstream << "<DIV STYLE=\"text-align: center\">" <<std::endl;
+      *m_pOstream << _T("<DIV STYLE=\"text-align: center\">") <<std::endl;
       break;
    }
 
    // table setup
-   *m_pOstream << "<TABLE BORDER="<< out_pixels<<" RULES=ALL CELLSPACING="<<in_pixels
-               << " CELLPADDING="<<cell_pad_pixels;
+   *m_pOstream << _T("<TABLE BORDER=")<< out_pixels<<_T(" RULES=ALL CELLSPACING=")<<in_pixels
+               << _T(" CELLPADDING=")<<cell_pad_pixels;
 
    if ( 0 < table_width_px )
-      *m_pOstream <<" WIDTH=\""<<table_width_px;
+      *m_pOstream <<_T(" WIDTH=\"")<<table_width_px;
    
-   *m_pOstream << "\">";
+   *m_pOstream << _T("\">");
       
    *m_pOstream << std::endl;
 
@@ -177,7 +177,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    bool is_cap = !(cap.IsEmpty() && label.IsEmpty());
    if (is_cap)
    {
-      *m_pOstream << "<CAPTION>";
+      *m_pOstream << _T("<CAPTION>");
 
       if (!cap.IsEmpty())
          // visit the caption paragraph
@@ -187,7 +187,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
           // visit the label paragraph
          label.Accept(my_visitor);
 
-      *m_pOstream << "</CAPTION>"<<std::endl;
+      *m_pOstream << _T("</CAPTION>")<<std::endl;
    }
 
    RowIndexType num_head_rows = pTable->GetNumberOfHeaderRows();
@@ -198,20 +198,20 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       if (rowno == 0)
       {
          bHeading = true;
-         *m_pOstream << "<THEAD>"<<std::endl; // first row is start of header row
+         *m_pOstream << _T("<THEAD>")<<std::endl; // first row is start of header row
       }
       
       if (num_head_rows == rowno)
       {
          // first row of body
-         *m_pOstream << "</THEAD>"<<std::endl;
+         *m_pOstream << _T("</THEAD>")<<std::endl;
 
-         *m_pOstream << "<TBODY>"<<std::endl; // first row is start of header row
+         *m_pOstream << _T("<TBODY>")<<std::endl; // first row is start of header row
          bHeading = false;
       }
 
       // row information
-      *m_pOstream << "<TR>";
+      *m_pOstream << _T("<TR>");
 
       for (ColumnIndexType colno=0; colno<num_cols; colno++)
       {
@@ -226,63 +226,63 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
          {
             rptParagraph& rpar = (*pTable)(rowno,colno);
 
-            std::string styleName = rpar.GetStyleName();
+            std::_tstring styleName = rpar.GetStyleName();
             rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
             rptRiStyle style = plib->GetNamedStyle(styleName);
             rptRiStyle::AlignmentType align = style.GetAlignment();
             rptRiStyle::VerticalAlignmentType valign = style.GetVerticalAlignment();
-            std::string strAlign;
+            std::_tstring strAlign;
             switch(align)
             {
             case rptRiStyle::RIGHT:
-               strAlign = "RIGHT";
+               strAlign = _T("RIGHT");
                break;
             case rptRiStyle::LEFT:
-               strAlign = "LEFT";
+               strAlign = _T("LEFT");
                break;
             case rptRiStyle::CENTER:
-               strAlign = "CENTER";
+               strAlign = _T("CENTER");
                break;
             }
 
-            std::string strVAlign;
+            std::_tstring strVAlign;
             switch(valign)
             {
             case rptRiStyle::BASELINE:
-               strVAlign = "BASELINE";
+               strVAlign = _T("BASELINE");
                break;
             case rptRiStyle::TOP:
-               strVAlign = "TOP";
+               strVAlign = _T("TOP");
                break;
             case rptRiStyle::MIDDLE:
-               strVAlign = "MIDDLE";
+               strVAlign = _T("MIDDLE");
                break;
             case rptRiStyle::BOTTOM:
-               strVAlign = "BOTTOM";
+               strVAlign = _T("BOTTOM");
                break;
             }
 
-            std::string startTag( bHeading ? "<TH " : "<TD ");
-            std::string endTag( bHeading ? "</TH>" : "</TD>");
+            std::_tstring startTag( bHeading ? _T("<TH ") : _T("<TD ") );
+            std::_tstring endTag( bHeading ? _T("</TH>") : _T("</TD>"));
             if (row_span==1 && col_span==1)
             {
-               *m_pOstream<<startTag << "ALIGN="<<strAlign<<" VALIGN="<<strVAlign;
+               *m_pOstream << startTag << _T("ALIGN=") << strAlign << _T(" VALIGN=") << strVAlign;
                if ( 0 < column_width_px )
-                  *m_pOstream << startTag << "WIDTH=\""<<column_width_px<<"\"";
+                  *m_pOstream << startTag << _T("WIDTH=\"") << column_width_px << _T("\"");
                
             }
             else
             {
                // don't write width if colspan or rowpan is set
-               *m_pOstream<<startTag << "ALIGN="<<strAlign<<" VALIGN="<<strVAlign<<" ROWSPAN="<<row_span<<" COLSPAN="<<col_span;
+               *m_pOstream<<startTag << _T("ALIGN=") << strAlign<< _T(" VALIGN=")<<strVAlign<<_T(" ROWSPAN=")<<row_span<<_T(" COLSPAN=")<<col_span;
             }
 
             if ( bHeading || pTable->IsStripedRow(rowno) )
             {
-               *m_pOstream << " BGCOLOR=\"" << rptRiStyle::GetColorCode( style.GetBGColor() ) << "\"";
+               *m_pOstream << _T(" BGCOLOR=\"") << rptRiStyle::GetColorCode( style.GetBGColor() ) << ("\"");
             }
 
-            *m_pOstream << ">";
+            *m_pOstream << _T(">");
             // visit the paragraph cells in the row
             rpar.Accept(my_visitor);
 
@@ -290,17 +290,17 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
          }
       }
 
-      *m_pOstream << "</TR>"<<std::endl;
+      *m_pOstream << _T("</TR>") <<std::endl;
 
    }
       // get out of table mode
-      *m_pOstream << "</TBODY>"<<std::endl;
-      *m_pOstream << "</TABLE>"<<std::endl;
+      *m_pOstream << _T("</TBODY>")<<std::endl;
+      *m_pOstream << _T("</TABLE>")<<std::endl;
 
    // close off alignment
    if (align==rptRiStyle::CENTER || align==rptRiStyle::RIGHT)
    {
-      *m_pOstream << "</DIV>"<<std::endl;
+      *m_pOstream << _T("</DIV>")<<std::endl;
    }
 
 }
@@ -316,9 +316,9 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    for (Uint16 i=0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
-         *m_pOstream << "<BR>"<<std::endl;
+         *m_pOstream << _T("<BR>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_PAGE)
-         *m_pOstream << "<DIV STYLE=\"page-break-after: always\"><BR></DIV>"<<std::endl;
+         *m_pOstream << _T("<DIV STYLE=\"page-break-after: always\"><BR></DIV>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::TAB)
          ;
          // TODO: figure out how to implement tabs
@@ -326,7 +326,7 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
          //       add levels of indenting to tables.
 
       else
-         CHECKX(0,"Bad FlowModifier type");
+         CHECKX(0,_T("Bad FlowModifier type"));
    }
 }
 
@@ -342,36 +342,36 @@ void rptHtmlRcVisitor::VisitRcFontModifier(rptRcFontModifier* my_m)
    {
    case rptRiStyle::BOLD:
       if (mst==rptRcFontModifier::ON)
-         *m_pOstream << "<SPAN STYLE=\"font-weight: bold;\">";
+         *m_pOstream << _T("<SPAN STYLE=\"font-weight: bold;\">");
       else
-         *m_pOstream << "</SPAN>";
+         *m_pOstream << _T("</SPAN>");
       break;
    case rptRiStyle::ITALIC:
       if (mst==rptRcFontModifier::ON)
-         *m_pOstream << "<SPAN STYLE=\"font-style: italic;\">";
+         *m_pOstream << _T("<SPAN STYLE=\"font-style: italic;\">");
       else
-         *m_pOstream << "</SPAN>";
+         *m_pOstream << _T("</SPAN>");
       break;
    case rptRiStyle::UNDERLINE:
       if (mst==rptRcFontModifier::ON)
-         *m_pOstream << "<SPAN STYLE=\"text-decoration: underline;\">";
+         *m_pOstream << _T("<SPAN STYLE=\"text-decoration: underline;\">");
       else
-         *m_pOstream << "</SPAN>";
+         *m_pOstream << _T("</SPAN>");
       break;
    case rptRiStyle::SUBSCRIPT:
       if (mst==rptRcFontModifier::ON)
-         *m_pOstream << "<SUB>";
+         *m_pOstream << _T("<SUB>");
       else
-         *m_pOstream << "</SUB>";
+         *m_pOstream << _T("</SUB>");
       break;
    case rptRiStyle::SUPERSCRIPT:
       if (mst==rptRcFontModifier::ON)
-         *m_pOstream << "<SUP>";
+         *m_pOstream << _T("<SUP>");
       else
-         *m_pOstream << "</SUP>";
+         *m_pOstream << _T("</SUP>");
       break;
    default:
-      CHECKX(0,"Bad FontModifier");
+      CHECKX(0,_T("Bad FontModifier"));
       break;
    }
 }
@@ -384,7 +384,7 @@ void rptHtmlRcVisitor::VisitRcFontModifier(rptRcFontModifier* my_m)
 void rptHtmlRcVisitor::VisitRcColor(rptRcColor* my_m)
 {
    rptRiStyle::FontColor my_color = my_m->GetFontColor();
-   *m_pOstream << "<SPAN STYLE=\"color:" << rptRiStyle::GetColorCode(my_color) << "\">";
+   *m_pOstream << _T("<SPAN STYLE=\"color:") << rptRiStyle::GetColorCode(my_color) << _T("\">");
 }
 
 
@@ -394,7 +394,7 @@ void rptHtmlRcVisitor::VisitRcColor(rptRcColor* my_m)
 //
 void rptHtmlRcVisitor::VisitRcHyperTarget(rptRcHyperTarget* my_m)
 {
-   *m_pOstream << "<A NAME=\""<< my_m->GetTargetName() << "\"></A>";
+   *m_pOstream << _T("<A NAME=\"")<< my_m->GetTargetName() << _T("\"></A>");
 }
 
 //------------------------------------------------------------------------
@@ -403,82 +403,82 @@ void rptHtmlRcVisitor::VisitRcHyperTarget(rptRcHyperTarget* my_m)
 //
 void rptHtmlRcVisitor::VisitRcImage(rptRcImage* pImage)
 {
-   std::string file_name = pImage->GetFileName();
-   std::string picture_description = pImage->GetPictureDescription();
-   std::string align = "bottom";
+   std::_tstring file_name = pImage->GetFileName();
+   std::_tstring picture_description = pImage->GetPictureDescription();
+   std::_tstring align = _T("bottom");
    switch( pImage->GetImageAlignment() )
    {
    case rptRcImage::Baseline:
-      align = "baseline";
+      align = _T("baseline");
       break;
 
    case rptRcImage::Middle:
-      align = "middle";
+      align = _T("middle");
       break;
 
    case rptRcImage::Subscript:
-      align = "sub";
+      align = _T("sub");
       break;
 
    case rptRcImage::Superscript:
-      align = "super";
+      align = _T("super");
       break;
 
    case rptRcImage::TextTop:
-      align = "text-top";
+      align = _T("text-top");
       break;
 
    case rptRcImage::TextBottom:
-      align = "text-bottom";
+      align = _T("text-bottom");
       break;
 
    case rptRcImage::Top:
-      align = "top";
+      align = _T("top");
       break;
 
    case rptRcImage::Bottom:
-      align = "bottom";
+      align = _T("bottom");
       break;
    }
 
-   std::string align_style = "style=\"vertical-align:";
+   std::_tstring align_style = _T("style=\"vertical-align:");
    align_style += align;
-   align_style += "\"";
+   align_style += _T("\"");
 
 
-   std::string flt = "none";
+   std::_tstring flt = _T("none");
    switch( pImage->GetImageFloat() )
    {
    case rptRcImage::Left:
-      flt = "left";
+      flt = _T("left");
       break;
 
    case rptRcImage::Right:
-      flt = "right";
+      flt = _T("right");
       break;
 
    case rptRcImage::None:
-      flt = "none";
+      flt = _T("none");
       break;
    }
 
-   std::string float_style = "style=\"float:";
+   std::_tstring float_style = _T("style=\"float:");
    float_style += flt;
-   float_style += "\"";
+   float_style += _T("\"");
 
    if(!file_name.empty())
    {
-      *m_pOstream << "<img " 
-                  << align_style << " " 
-                  << float_style << " "
-                  << "src=\"" << file_name << "\"";
+      *m_pOstream << _T("<img ") 
+                  << align_style << _T(" ") 
+                  << float_style << _T(" ")
+                  << _T("src=\"") << file_name << _T("\"");
 
       if ( !picture_description.empty() )
       {
-         *m_pOstream << " alt=\"" << picture_description << "\"";
+         *m_pOstream << _T(" alt=\"") << picture_description << _T("\"");
       }
 
-      *m_pOstream << "/>" << std::endl;
+      *m_pOstream << _T("/>") << std::endl;
    }
 }
 
@@ -497,9 +497,9 @@ void rptHtmlRcVisitor::VisitRcSymbol(rptRcSymbol* pSymbol)
 
    // get the roman equivalent for the symbol
 
-   char symlet = GetRomanForGreek(sym);
+   TCHAR symlet = GetRomanForGreek(sym);
 
-   *m_pOstream << "<SPAN STYLE=\"font-family: Symbol\">" << (char)symlet << "</SPAN>";
+   *m_pOstream << _T("<SPAN STYLE=\"font-family: Symbol\">") << (TCHAR)symlet << _T("</SPAN>");
 }
 
 //------------------------------------------------------------------------
@@ -518,7 +518,7 @@ void rptHtmlRcVisitor::VisitRcDateTime(rptRcDateTime* my_d)
    }
    // if both are requested stream out a space
    if (my_d->IsPrintDateEnabled()&&my_d->IsPrintTimeEnabled())
-      *m_pOstream << " ";
+      *m_pOstream << _T(" ");
 
    if (my_d->IsPrintTimeEnabled())
    {
@@ -537,17 +537,17 @@ void rptHtmlRcVisitor::VisitRcInt(rptRcInt* pInt)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
    // if width, fill with zeros
    int my_width = pInt->GetWidth();
    if (my_width > 0)
    {
       my_stm.width(my_width);
-      my_stm.fill('0');
+      my_stm.fill( _T('0') );
    }
 
-   my_stm << "<span style=\"white-space: nowrap\">" << pInt->GetVal() << "</span>";
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pInt->GetVal() << _T("</span>");
 
    // send the finished string up the pipe
 
@@ -565,14 +565,14 @@ void rptHtmlRcVisitor::VisitRcUnsigned(rptRcUnsigned* pUs)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
    // if width, fill with zeros
    int my_width = pUs->GetWidth();
    if (my_width > 0)
    {
       my_stm.width(my_width);
-      my_stm.fill('0');
+      my_stm.fill(_T('0'));
    }
 
    my_stm << pUs->GetVal();
@@ -591,9 +591,9 @@ void rptHtmlRcVisitor::VisitRcScalar(rptRcScalar* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
-   my_stm << "<span style=\"white-space: nowrap\">" << pRC->AsString() << "</span>";
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pRC->AsString() << _T("</span>");
 
    // send the finished string up the pipe
    *m_pOstream << my_stm.str().c_str();
@@ -608,7 +608,7 @@ void rptHtmlRcVisitor::VisitRcUnitTag(rptRcUnitTag* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
    my_stm << rptHtmlUnitTagFormat::Format(pRC->AsString());
 
@@ -625,10 +625,10 @@ void rptHtmlRcVisitor::VisitRcUnitValue(rptRcUnitValue* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
    if ( pRC->GetValue() < 0 )
-      my_stm << "<span style=\"white-space: nowrap\">" << rptHtmlUnitTagFormat::Format(pRC->AsString()) << "</span>";
+      my_stm << _T("<span style=\"white-space: nowrap\">") << rptHtmlUnitTagFormat::Format(pRC->AsString()) << _T("</span>");
    else
       my_stm << rptHtmlUnitTagFormat::Format(pRC->AsString());
 
@@ -645,13 +645,13 @@ void rptHtmlRcVisitor::VisitRcSectionValue(rptRcSectionValue* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
-   my_stm << "<span style=\"white-space: nowrap\">" << rptHtmlUnitTagFormat::Format(pRC->AsString(0)) << "</span>";
+   my_stm << _T("<span style=\"white-space: nowrap\">") << rptHtmlUnitTagFormat::Format(pRC->AsString(0)) << _T("</span>");
 
    if ( pRC->IsDualValued() )
    {
-      my_stm << "<BR>" << "<span style=\"white-space: nowrap\">" << rptHtmlUnitTagFormat::Format(pRC->AsString(1)) << "</span>";
+      my_stm << _T("<BR>") << _T("<span style=\"white-space: nowrap\">") << rptHtmlUnitTagFormat::Format(pRC->AsString(1)) << _T("</span>");
    }
 
    // send the finished string up the pipe
@@ -667,12 +667,12 @@ void rptHtmlRcVisitor::VisitRcSectionScalar(rptRcSectionScalar* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
-   my_stm << "<span style=\"white-space: nowrap\">" << pRC->AsString(0) << "</span>";
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pRC->AsString(0) << _T("</span>");
    if ( pRC->IsDualValued() )
    {
-      my_stm << "<BR>" << "<span style=\"white-space: nowrap\">" << pRC->AsString(1) << "</span>";
+      my_stm << _T("<BR>") << _T("<span style=\"white-space: nowrap\">") << pRC->AsString(1) << _T("</span>");
    }
 
    // send the finished string up the pipe
@@ -688,9 +688,9 @@ void rptHtmlRcVisitor::VisitRcStation(rptRcStation* pRC)
    //
    // set up an ostream to toss value into
    //
-   std::ostringstream my_stm;
+   std::_tostringstream my_stm;
 
-   my_stm << "<span style=\"white-space: nowrap\">" << pRC->AsString() << "</span>";
+   my_stm << _T("<span style=\"white-space: nowrap\">") << pRC->AsString() << _T("</span>");
 
    // send the finished string up the pipe
    *m_pOstream << my_stm.str().c_str();
@@ -743,7 +743,7 @@ Uint16 rptHtmlRcVisitor::BorderToPixels( rptRiStyle::BorderStyle BStyle)
       return 1;
 
    default:
-      CHECKX(0,"Bad BorderStyle");
+      CHECKX(0,_T("Bad BorderStyle"));
       return 1;
    }
 }
@@ -752,13 +752,13 @@ Uint16 rptHtmlRcVisitor::BorderToPixels( rptRiStyle::BorderStyle BStyle)
 void rptHtmlRcVisitor::HyperStart(const rptReportContent* pC)
 {
    if (pC->IsHyperLink())
-      *m_pOstream << "<A href=\"#"<<pC->GetHyperTarget()<<"\">";
+      *m_pOstream << _T("<A href=\"#")<<pC->GetHyperTarget()<<_T("\">");
 }
 
 void rptHtmlRcVisitor::HyperEnd(const rptReportContent* pC)
 {
    if (pC->IsHyperLink())
-      *m_pOstream << "</A>";
+      *m_pOstream << _T("</A>");
 }
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================

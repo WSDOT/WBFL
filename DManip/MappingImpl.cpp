@@ -454,7 +454,7 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextWindowExtent()
    return CSize( abs(lex-lox), abs(ley-loy) );
 }
  
-STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(const LOGFONT& font, LPCSTR lpszText)
+STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(const LOGFONT& font, LPCTSTR lpszText)
 {
    if (m_Stack.empty())
    {

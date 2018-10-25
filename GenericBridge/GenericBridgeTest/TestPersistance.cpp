@@ -205,13 +205,13 @@ bool CTestPersistance::TestBridge(IGenericBridge* bridge)
    // might have to resort to less memory intensive methods.
    try
    {
-      std::string x1;
-      std::ifstream if1("bridge.xml");
+      std::_tstring x1;
+      std::_tifstream if1("bridge.xml");
       std::getline(if1, x1);
       std::getline(if1, x1); // second line is the data
 
-      std::string x2;
-      std::ifstream if2("bridge2.xml");
+      std::_tstring x2;
+      std::_tifstream if2("bridge2.xml");
       std::getline(if2, x2);
       std::getline(if2, x2);
 

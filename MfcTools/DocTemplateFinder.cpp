@@ -37,30 +37,30 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // funtion to make sure directories are \ terminated
-void TerminateDirList(std::vector<std::string>* list);
+void TerminateDirList(std::vector<std::_tstring>* list);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
 mfcDocTemplateFinder::mfcDocTemplateFinder():
 m_Mode(mfcDocTemplateFinder::SmallIconMode),
-m_Suffix("tmp"),
-m_DefaultName("Blank Document"),
-m_DefaultFile("Normal"),
+m_Suffix(_T("tmp")),
+m_DefaultName(_T("Blank Document")),
+m_DefaultFile(_T("Normal")),
 m_HIcon(0),
 m_pDocTemplateDialog(new CDocTemplateDialog(NULL)) 
 {
 
 }
 
-mfcDocTemplateFinder::mfcDocTemplateFinder(const std::vector<std::string>& directoryList, 
-                                     const std::string& suffix,
+mfcDocTemplateFinder::mfcDocTemplateFinder(const std::vector<std::_tstring>& directoryList, 
+                                     const std::_tstring& suffix,
                                      ListMode mode):
 m_DirectoryList(directoryList),
 m_Suffix(suffix),
 m_Mode(mode),
-m_DefaultName("Blank Document"),
-m_DefaultFile("Normal"),
+m_DefaultName(_T("Blank Document")),
+m_DefaultFile(_T("Normal")),
 m_HIcon(0),
 m_pDocTemplateDialog(new CDocTemplateDialog(NULL)) 
 {
@@ -84,36 +84,36 @@ bool mfcDocTemplateFinder::OmitDefaultFile() const
    return m_pDocTemplateDialog->m_bOmitDefaultFile;
 }
 
-void mfcDocTemplateFinder::SetDirectoryList(const std::vector<std::string>& directoryList)
+void mfcDocTemplateFinder::SetDirectoryList(const std::vector<std::_tstring>& directoryList)
 {
    m_DirectoryList = directoryList;
 
    TerminateDirList(&m_DirectoryList);
 }
 
-void mfcDocTemplateFinder::GetDirectoryList(std::vector<std::string>* directoryList) const
+void mfcDocTemplateFinder::GetDirectoryList(std::vector<std::_tstring>* directoryList) const
 {
    *directoryList = m_DirectoryList;
 }
 
-void mfcDocTemplateFinder::SetFileSuffix(const std::string& suffix)
+void mfcDocTemplateFinder::SetFileSuffix(const std::_tstring& suffix)
 {
    m_Suffix = suffix;
 }
 
-std::string mfcDocTemplateFinder::GetFileSuffix()
+std::_tstring mfcDocTemplateFinder::GetFileSuffix()
 {
    return m_Suffix;
 }
 
-void mfcDocTemplateFinder::SetDefaultFileName(const std::string& defaultName, const std::string& defaultFile)
+void mfcDocTemplateFinder::SetDefaultFileName(const std::_tstring& defaultName, const std::_tstring& defaultFile)
 {
-   ASSERT(std::string::npos==defaultName.find('.'));
+   ASSERT(std::_tstring::npos==defaultName.find('.'));
    m_DefaultName = defaultName;
    m_DefaultFile = defaultFile;
 }
 
-void mfcDocTemplateFinder::GetDefaultFileName(std::string* pdefaultName, std::string* pdefaltFile)const
+void mfcDocTemplateFinder::GetDefaultFileName(std::_tstring* pdefaultName, std::_tstring* pdefaltFile)const
 {
    *pdefaultName = m_DefaultName;
    *pdefaltFile  = m_DefaultFile;
@@ -140,7 +140,7 @@ HICON mfcDocTemplateFinder::GetIcon() const
    return m_HIcon;
 }
 
-mfcDocTemplateFinder::GetTemplateFileResult mfcDocTemplateFinder::GetTemplateFile(std::string& fileName)
+mfcDocTemplateFinder::GetTemplateFileResult mfcDocTemplateFinder::GetTemplateFile(std::_tstring& fileName)
 {
 
    // create a tab list and build it
@@ -173,12 +173,12 @@ mfcDocTemplateFinder::GetTemplateFileResult mfcDocTemplateFinder::GetTemplateFil
 
    if (st==IDOK)
    {
-      std::string tmp = m_pDocTemplateDialog->GetSelectedFile();
+      std::_tstring tmp = m_pDocTemplateDialog->GetSelectedFile();
       if (tmp.size())
       {
          if (tmp == m_DefaultName)
          {
-            fileName = m_DefaultFile + std::string(".") + m_Suffix;
+            fileName = m_DefaultFile + std::_tstring(_T(".")) + m_Suffix;
             return DefaultFileSelected;
          }
          else
@@ -227,34 +227,34 @@ void mfcDocTemplateFinder::BuildTabList(TabList& tab_list)
    // directory structure
 
    // add a General tab regardless of what happens
-   mfcTemplateTabHelper general("General", m_Suffix);
-   tab_list.insert(TabListEntry("general", general)); // use lower case for keys
+   mfcTemplateTabHelper general(_T("General"), m_Suffix);
+   tab_list.insert(TabListEntry(_T("general"), general)); // use lower case for keys
 
    // if no directories in list, have General tab list files in same directory as 
    // executable
    if (m_DirectoryList.size()==0)
    {
-      char cdir[MAX_PATH];
+      TCHAR cdir[MAX_PATH];
       ::GetCurrentDirectory(MAX_PATH, cdir);
-      TabListIterator it = tab_list.find("general");
+      TabListIterator it = tab_list.find(_T("general"));
       ASSERT(it!=tab_list.end());
       it->second.AddSubDirectory(cdir);
    }
    else
       // build tabs based on directory list
    {
-      for (std::vector<std::string>::iterator it=m_DirectoryList.begin();
+      for (std::vector<std::_tstring>::iterator it=m_DirectoryList.begin();
            it!=m_DirectoryList.end(); it++)
       {
          // find all subdirectories in each directory and create a tab for them
          CFileFind finder;
          BOOL is_file;
-         CString dirnam = CString(it->c_str()) + CString("*.*");
+         CString dirnam = CString(it->c_str()) + CString(_T("*.*"));
          is_file = finder.FindFile(dirnam);
          if (is_file)
          {
             // add directory to general tab
-            TabListIterator itt = tab_list.find("general");
+            TabListIterator itt = tab_list.find(_T("general"));
             ASSERT(itt!=tab_list.end());
             itt->second.AddSubDirectory(it->c_str());
          }
@@ -269,7 +269,7 @@ void mfcDocTemplateFinder::BuildTabList(TabList& tab_list)
                // see if any files with template file suffix exist in the directory
                CFileFind template_finder;
                BOOL is_templatefile;
-               CString filspec = fulnam + CString("\\*.") + CString(m_Suffix.c_str());
+               CString filspec = fulnam + CString(_T("\\*.")) + CString(m_Suffix.c_str());
                is_templatefile = template_finder.FindFile(filspec);
 
                // add tab only if template files exist in this subdirectory
@@ -280,18 +280,18 @@ void mfcDocTemplateFinder::BuildTabList(TabList& tab_list)
                   subdirnam.MakeLower();  // convert all names to lower case for compares
 
                   // see if subdirectory is already a tab. if not, add it
-                  TabListIterator itt = tab_list.find(std::string(subdirnam));
+                  TabListIterator itt = tab_list.find(std::_tstring(subdirnam));
                   if(itt!=tab_list.end())
                   {
                      // already a tab for this directory - add it to the list
-                     itt->second.AddSubDirectory(std::string(fulnam));
+                     itt->second.AddSubDirectory(std::_tstring(fulnam));
                   }
                   else
                   {
                      // add a new tab
-                     mfcTemplateTabHelper tabr(std::string(tabnam), m_Suffix);
-                     tabr.AddSubDirectory(std::string(fulnam));
-                     tab_list.insert(TabListEntry(std::string(subdirnam), tabr));
+                     mfcTemplateTabHelper tabr(std::_tstring(tabnam), m_Suffix);
+                     tabr.AddSubDirectory(std::_tstring(fulnam));
+                     tab_list.insert(TabListEntry(std::_tstring(subdirnam), tabr));
                   }
                }
             }
@@ -313,15 +313,15 @@ bool mfcDocTemplateFinder::TestMe(dbgLog& rlog)
 }
 #endif // _UNITTEST
 
-void TerminateDirList(std::vector<std::string>* list)
+void TerminateDirList(std::vector<std::_tstring>* list)
 {
-   for (std::vector<std::string>::iterator it=list->begin(); 
+   for (std::vector<std::_tstring>::iterator it=list->begin(); 
         it!=list->end(); it++)
    {
       int siz = it->size();
       ASSERT(siz);  // null name in directory - no no
       // this is about the ugliest looking piece of code i've written
-      if((*it)[siz-1] != '\\')
-         (*it) += "\\";
+      if((*it)[siz-1] != _T('\\')) 
+         (*it) += _T("\\");
    }
 }

@@ -74,7 +74,7 @@ static long GetNumCols(long numRows, long Size)
 
 /////////////////////////////////////////////////////////////////////////////
 // CLegendDisplayObject
-UINT CLegendDisplayObject::ms_cfFormat = ::RegisterClipboardFormat("ManipTools.LegendDisplayObject");
+UINT CLegendDisplayObject::ms_cfFormat = ::RegisterClipboardFormat(_T("ManipTools.LegendDisplayObject"));
 
 
 STDMETHODIMP CLegendDisplayObject::InterfaceSupportsErrorInfo(REFIID riid)
@@ -108,7 +108,7 @@ HRESULT CLegendDisplayObject::FinalConstruct()
 
    // start with 8 pt font
    CFont font;
-   font.CreatePointFont(80,"Arial");
+   font.CreatePointFont(80,_T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 80;
    m_Font.lfWeight = FW_NORMAL;
@@ -907,12 +907,12 @@ bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
 
       CMenu menu;
       menu.CreatePopupMenu();
-      menu.AppendMenu(MF_STRING|MF_DISABLED, 0, "Select Number of Rows");
+      menu.AppendMenu(MF_STRING|MF_DISABLED, 0, _T("Select Number of Rows"));
 
       for (long it=1; it<=nrows; it++)
       {
          CString str;
-         str.Format("%d", it);
+         str.Format(_T("%d"), it);
          UINT iFlags = MF_STRING | MF_ENABLED;
          menu.AppendMenu( iFlags, CMENU_BASE + it, str);
       }
@@ -920,7 +920,7 @@ bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
       // need to create a new window in this gui thread in order to catch menu
       // messages
       m_pMessageCatcher = std::auto_ptr<CLegendMessageCatcher>(new CLegendMessageCatcher(this));
-      m_pMessageCatcher->Create(NULL, "MessageCatcher\0", WS_DISABLED, CRect(), view, NULL);
+      m_pMessageCatcher->Create(NULL, _T("MessageCatcher\0"), WS_DISABLED, CRect(), view, NULL);
 
       menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, m_pMessageCatcher.get());
 

@@ -244,7 +244,7 @@ Float64 &Matrix::operator() (long i,long j)
 }
 
 
-std::ostream& operator << (std::ostream &os,const Matrix &m)
+std::_tostream& operator << (std::_tostream &os,const Matrix &m)
 {
    long i,j;
 

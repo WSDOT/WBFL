@@ -82,7 +82,7 @@ gmSection* bmfTrafficBarrier::CreateSection() const
 }
 
 //======================== ACCESS     =======================================
-std::string bmfTrafficBarrier::GetName() const
+std::_tstring bmfTrafficBarrier::GetName() const
 {
    return m_pTpl->GetName();
 }

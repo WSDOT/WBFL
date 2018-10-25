@@ -282,13 +282,13 @@ void PoiMap::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influence
    ATLASSERT(0); // should not ask for this from search-only poi
 }
 
-std::string PoiMap::GetDescription() const
+std::_tstring PoiMap::GetDescription() const
 {
-   std::ostringstream os;
-   os<< "Base PoiMap ID = "<<m_LBAMPoiID<<" MemberType = "<<long(m_LBAMMemberType)<<
-        " Member ID = "<<m_LBAMMemberID<<"LBAMMemberLocation = "<<m_LBAMPoiLocation<<
-        " Global X = "<<m_GlobalX<<" Internally Generated = "<<(m_InternallyGenerated ? "True ": "False ")<<
-        " MemberLocationType = "<<long(m_MemberLocationType);
+   std::_tostringstream os;
+   os<< _T("Base PoiMap ID = ")<<m_LBAMPoiID<<_T(" MemberType = ")<<long(m_LBAMMemberType)<<
+        _T(" Member ID = ")<<m_LBAMMemberID<<_T("LBAMMemberLocation = ")<<m_LBAMPoiLocation<<
+        _T(" Global X = ")<<m_GlobalX<<_T(" Internally Generated = ")<<(m_InternallyGenerated ? _T("True "): _T("False "))<<
+        _T(" MemberLocationType = ")<<long(m_MemberLocationType);
 
    return os.str();
 }
@@ -567,10 +567,10 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
 }
 
 
-std::string PoiMapToFemPoi::GetDescription() const
+std::_tstring PoiMapToFemPoi::GetDescription() const
 {
-   std::ostringstream os;
-   os<< "PoiMapToFemPoi: POI ID = "<<m_FemPoiID<<" FemMbrLoc = "<<m_FemMbrLoc<<PoiMap::GetDescription()<<std::endl;
+   std::_tostringstream os;
+   os<< _T("PoiMapToFemPoi: POI ID = ")<<m_FemPoiID<<_T(" FemMbrLoc = ")<<m_FemMbrLoc<<PoiMap::GetDescription()<<std::endl;
    return os.str();
 }
 
@@ -720,10 +720,10 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
 
 
 
-std::string PoiMapToFemMbr::GetDescription() const
+std::_tstring PoiMapToFemMbr::GetDescription() const
 {
-   std::ostringstream os;
-   os<< "PoiMapToFemMbr: Left Mbr ID = "<<m_LftMbrID<<" Right Mbr ID = "<<m_RgtMbrID<<PoiMap::GetDescription()<<std::endl;
+   std::_tostringstream os;
+   os<< _T("PoiMapToFemMbr: Left Mbr ID = ")<<m_LftMbrID<<_T(" Right Mbr ID = ")<<m_RgtMbrID<<PoiMap::GetDescription()<<std::endl;
    return os.str();
 }
 

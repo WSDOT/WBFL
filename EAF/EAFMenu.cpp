@@ -291,13 +291,13 @@ BOOL CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCall
 int CEAFMenu::GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const
 {
    const CMenu* pMenu = GetMenu();
-   return pMenu->GetMenuStringA(nIDItem,lpString,nMaxCount,nFlags);
+   return pMenu->GetMenuString(nIDItem,lpString,nMaxCount,nFlags);
 }
 
 int CEAFMenu::GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const
 {
    const CMenu* pMenu = GetMenu();
-   return pMenu->GetMenuStringA(nIDItem,rString,nFlags);
+   return pMenu->GetMenuString(nIDItem,rString,nFlags);
 }
 
 BOOL CEAFMenu::SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback)
@@ -335,7 +335,7 @@ void CEAFMenu::DestroyMenu(CEAFMenu* pPopupMenu)
    }
 }
 
-UINT CEAFMenu::FindMenuItem(const char* strTargetMenu)
+UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
 {
    CMenu* pMenu = GetMenu();
 

@@ -40,7 +40,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CReportDescription::CReportDescription(const char* strReportName) :
+CReportDescription::CReportDescription(LPCTSTR strReportName) :
 m_ReportName(strReportName)
 {
 
@@ -51,7 +51,7 @@ CReportDescription::~CReportDescription()
 
 }
 
-const char* CReportDescription::GetReportName() const
+LPCTSTR CReportDescription::GetReportName() const
 {
    return m_ReportName.c_str();
 }

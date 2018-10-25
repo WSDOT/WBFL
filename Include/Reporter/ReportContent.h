@@ -90,11 +90,11 @@ public:
 
    //------------------------------------------------------------------------
    // If content is a hyperlink - return target string
-   std::string GetHyperTarget() const;
+   std::_tstring GetHyperTarget() const;
 
    //------------------------------------------------------------------------
    // Make report content a hyperlink and point it to HyperTarget
-   void SetHyperLink(const std::string& HyperTarget);
+   void SetHyperLink(const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Accept a visitor

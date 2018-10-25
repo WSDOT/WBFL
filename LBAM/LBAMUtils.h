@@ -37,8 +37,8 @@
 
 #define THROW_HR(hr) { ATLASSERT(0); throw hr;}
 // short-hand version if consistent naming conventions are used
-#define THROW_LBAM(errNam) { /*ATLASSERT(0);*/ throw CComException(__FILE__,__LINE__, IDS_E_##errNam, LBAM_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(0);*/ throw CComException(__FILE__,__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAM(errNam) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAM_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
 
 #define CHECK_MEMBERTYPE(mbrType) if (mbrType<mtUndefined || mbrType>mtSuperstructureMember) return E_INVALIDARG;
 
@@ -51,28 +51,28 @@ inline CComBSTR CreateLBAMContextMsg(MemberType lbamMbrType, MemberIDType lbamMb
    case mtSpan:
       {
          TCHAR format[]=_T("Span %d.");
-         int cOut = sprintf_s( msg, 48, format, lbamMbrId);
+         int cOut = _stprintf_s( msg, 48, format, lbamMbrId);
          ATLASSERT( cOut < 48 );
       }
       break;
    case mtSuperstructureMember:
       {
          TCHAR format[]=_T("SuperstructureMember %d.");
-         int cOut = sprintf_s( msg, 48, format, lbamMbrId);
+         int cOut = _stprintf_s( msg, 48, format, lbamMbrId);
          ATLASSERT( cOut < 48 );
       }
       break;
    case mtSupport:
       {
          TCHAR format[]=_T("Support %d.");
-         int cOut = sprintf_s( msg, 48, format, lbamMbrId);
+         int cOut = _stprintf_s( msg, 48, format, lbamMbrId);
          ATLASSERT( cOut < 48 );
       }
       break;
    case mtTemporarySupport:
       {
          TCHAR format[]=_T("TemporarySupport %d.");
-         int cOut = sprintf_s( msg, 48, format, lbamMbrId);
+         int cOut = _stprintf_s( msg, 48, format, lbamMbrId);
          ATLASSERT( cOut < 48 );
       }
       break;

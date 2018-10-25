@@ -44,5 +44,7 @@
 #include <MfcTools\Prompts.h>
 #include <MfcTools\HyperLink.h>
 #include <MfcTools\VersionInfo.h>
+#include <MfcTools\CacheEdit.h>
+#include <MfcTools\CacheComboBox.h>
 
 #endif //  INCLUDED_MFCTOOLS_MFCTOOLS_H_

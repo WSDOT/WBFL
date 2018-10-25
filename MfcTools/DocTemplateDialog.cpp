@@ -187,7 +187,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
    for(TabListIterator it=m_pTabList->begin(); it!=m_pTabList->end(); it++)
    {
       i++;
-      char buf[MAX_PATH];
+      TCHAR buf[MAX_PATH];
 
       mfcTemplateTabHelper& tab_helper = (*it).second;
 
@@ -195,13 +195,13 @@ BOOL CDocTemplateDialog::OnInitDialog()
       tab_helper.GetFileList(&file_list);
       if ( 0 < file_list.size() )
       {
-         if ((*it).first=="general")
+         if ((*it).first == _T("general") )
          {
             igen = i-1;
          }
 
-         std::string tmp = tab_helper.GetName();
-         strcpy_s(buf, MAX_PATH, tmp.c_str());
+         std::_tstring tmp = tab_helper.GetName();
+         _tcscpy_s(buf, MAX_PATH, tmp.c_str());
          TabCtrlItem.pszText = buf;
          TabCtrlItem.lParam = (long)&((*it).first); // store pointer to key
          TabCtrlItem.mask = TCIF_TEXT|TCIF_PARAM;
@@ -224,7 +224,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
    TC_ITEM  tab_item;
    tab_item.mask = TCIF_PARAM;
    VERIFY(m_TabCtrl.GetItem(igen,&tab_item));
-   std::string* pstr = (std::string*)tab_item.lParam;
+   std::_tstring* pstr = (std::_tstring*)tab_item.lParam;
    ASSERT(pstr);
 
    // select this tab for display
@@ -280,7 +280,7 @@ void CDocTemplateDialog::OnSelchangeFileViewTab(NMHDR* pNMHDR, LRESULT* pResult)
       TC_ITEM  tab_item;
       tab_item.mask = TCIF_PARAM;
       VERIFY(m_TabCtrl.GetItem(nt,&tab_item));
-      std::string* pstr = (std::string*)tab_item.lParam;
+      std::_tstring* pstr = (std::_tstring*)tab_item.lParam;
       ASSERT(pstr);
 
       // select this tab for display
@@ -292,7 +292,7 @@ void CDocTemplateDialog::OnSelchangeFileViewTab(NMHDR* pNMHDR, LRESULT* pResult)
 	*pResult = 0;
 }
 
-void CDocTemplateDialog::SelectTab(const std::string& key)
+void CDocTemplateDialog::SelectTab(const std::_tstring& key)
 {
    // fill list control
    m_FileListCtrl.DeleteAllItems();
@@ -310,7 +310,7 @@ void CDocTemplateDialog::SelectTab(const std::string& key)
       mfcTemplateTabHelper::TabDisplayFileList file_list;
       m_pSelectedTabHelper->GetFileList(&file_list);
 
-      char buf[MAX_PATH];
+      TCHAR buf[MAX_PATH];
       int i=0;
       LV_ITEM lvi;
       lvi.mask = LVIF_TEXT | LVIF_IMAGE;
@@ -320,9 +320,9 @@ void CDocTemplateDialog::SelectTab(const std::string& key)
 	   lvi.iImage = 0;
 
       // if this is the general tab, put in default file name
-      if ("general"==key && !m_bOmitDefaultFile)
+      if (_T("general") == key && !m_bOmitDefaultFile)
       {
-         strcpy_s(buf,MAX_PATH, m_DefaultFile.c_str());
+         _tcscpy_s(buf,MAX_PATH, m_DefaultFile.c_str());
          lvi.pszText = buf;
 		   m_FileListCtrl.InsertItem(&lvi);
          i++;
@@ -331,7 +331,7 @@ void CDocTemplateDialog::SelectTab(const std::string& key)
 
       for(mfcTemplateTabHelper::TabDisplayFileIterator its=file_list.begin(); its!=file_list.end(); its++)
       {
-         strcpy_s(buf,MAX_PATH,its->m_FileName);
+         _tcscpy_s(buf,MAX_PATH,its->m_FileName);
 
 		   lvi.iItem = i;
 		   lvi.pszText = buf;
@@ -402,24 +402,24 @@ void CDocTemplateDialog::UpdateListViewMode()
    }
 }
 
-void CDocTemplateDialog::SetDefaultFile(const std::string& filename)
+void CDocTemplateDialog::SetDefaultFile(const std::_tstring& filename)
 {
    m_DefaultFile = filename;
 }
 
 
-void CDocTemplateDialog::SetSelectedFile(const std::string& file)
+void CDocTemplateDialog::SetSelectedFile(const std::_tstring& file)
 {
    ASSERT(file.size());
    m_OkButton.EnableWindow(TRUE);
    m_CurrentlySelectedFile = file;
-   std::string tmp("Selected File: ");
+   std::_tstring tmp(_T("Selected File: "));
 
    // deal with default file
    if (file != m_DefaultFile)
    {
       ASSERT(m_pSelectedTabHelper);
-      m_CurrentlySelectedFile = std::string(m_pSelectedTabHelper->GetFilePath(m_CurrentlySelectedFile));
+      m_CurrentlySelectedFile = std::_tstring(m_pSelectedTabHelper->GetFilePath(m_CurrentlySelectedFile));
       tmp += m_CurrentlySelectedFile;
    }
    else
@@ -433,10 +433,10 @@ void CDocTemplateDialog::ClearSelectedFile()
 {
    m_OkButton.EnableWindow(FALSE);
    m_CurrentlySelectedFile.erase();
-   m_FileSelected.SetWindowText("No File Selected");
+   m_FileSelected.SetWindowText(_T("No File Selected"));
 }
 
-std::string CDocTemplateDialog::GetSelectedFile() const 
+std::_tstring CDocTemplateDialog::GetSelectedFile() const 
 {
    return m_CurrentlySelectedFile;
 }
@@ -449,7 +449,7 @@ void CDocTemplateDialog::OnClickFileListctrl(NMHDR* pNMHDR, LRESULT* pResult)
 
    if ( idx != -1)
    {
-      SetSelectedFile(std::string(m_FileListCtrl.GetItemText(idx,0)));
+      SetSelectedFile(std::_tstring(m_FileListCtrl.GetItemText(idx,0)));
    }
 
 	*pResult = 0;
@@ -463,7 +463,7 @@ void CDocTemplateDialog::OnDblclkFileListctrl(NMHDR* pNMHDR, LRESULT* pResult)
 
    if ( idx != -1)
    {
-      SetSelectedFile(std::string(m_FileListCtrl.GetItemText(idx,0)));
+      SetSelectedFile(std::_tstring(m_FileListCtrl.GetItemText(idx,0)));
 
       // select file and bail
       EndDialog(IDOK);

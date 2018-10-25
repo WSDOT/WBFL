@@ -413,14 +413,14 @@ SYSFUNC sysSectionAction operator/(const sysSectionAction& a,const sysSectionAct
    return sa;
 }
 
-SYSFUNC std::ostream& operator<<(std::ostream& os,const sysSectionAction& a)
+SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionAction& a)
 {
-   os << "Fx = " << a.Fx() << std::endl;
-   os << "Fy = " << a.Fy() << std::endl;
-   os << "Mz = " << a.Mz() << std::endl;
-   os << "Dx = " << a.Dx() << std::endl;
-   os << "Dy = " << a.Dy() << std::endl;
-   os << "Rz = " << a.Rz();
+   os << _T("Fx = ") << a.Fx() << std::endl;
+   os << _T("Fy = ") << a.Fy() << std::endl;
+   os << _T("Mz = ") << a.Mz() << std::endl;
+   os << _T("Dx = ") << a.Dx() << std::endl;
+   os << _T("Dy = ") << a.Dy() << std::endl;
+   os << _T("Rz = ") << a.Rz();
 
    return os;
 }

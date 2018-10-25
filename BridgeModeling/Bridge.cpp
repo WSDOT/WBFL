@@ -167,7 +167,7 @@ const bmfSpan* bmfBridge::GetSpan(Int32 spanId) const
 {
    SpanContainer::const_iterator iter = m_Spans.find( spanId );
 
-   CHECKX( iter != m_Spans.end(), "Span not found" );
+   CHECKX( iter != m_Spans.end(), _T("Span not found") );
 
    return (*iter).second.get();
 } // GetSpan
@@ -176,7 +176,7 @@ bmfSpan* bmfBridge::GetSpan(Int32 spanId)
 {
    SpanContainer::const_iterator iter = m_Spans.find( spanId );
 
-   CHECKX( iter != m_Spans.end(), "Span not found" );
+   CHECKX( iter != m_Spans.end(), _T("Span not found") );
 
    return (*iter).second.get();
 } // GetSpan
@@ -289,7 +289,7 @@ bmfPier* bmfBridge::GetPier(Int32 pierId) const
 {
    PierContainer::const_iterator iter = m_Piers.find( pierId );
 
-   CHECKX( iter != m_Piers.end(), "Pier not found" );
+   CHECKX( iter != m_Piers.end(), _T("Pier not found") );
 
    return (*iter).second.get();
 } // GetPier
@@ -421,7 +421,7 @@ void bmfBridge::PlanView(HDC hDC,RECT& rect,UINT settings) const
    bool bLabelAlignment = (settings & BMF_PV_LABEL_ALIGNMENT)!=0;
    bool bLabelPiers     = (settings & BMF_PV_LABEL_PIERS)!=0;
 
-   CHECKX(!bScale,"Scales not set up");
+   CHECKX(!bScale,_T("Scales not set up"));
    bScale=false;
 
    grlibPointMapper::MapMode mapmode;
@@ -457,7 +457,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
          m_Station = station;
       else
       {
-         CHECKX(0,"Failed to build Section Shape");
+         CHECKX(0,_T("Failed to build Section Shape"));
          return false;
       }
    }
@@ -468,7 +468,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
    bool bDrawLabels     = (settings & BMF_CS_LABEL_GIRDERS)!=0;
    bool bShowDimensions = (settings & BMF_CS_SHOW_DIMENSIONS)!=0;
 
-   CHECKX(!bScale,"Scales not set up");
+   CHECKX(!bScale,_T("Scales not set up"));
    bScale=false;
 
    // Set up point mapper for device.
@@ -503,7 +503,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
       if (siz>1)
       {
          // place dimension for girder spacing
-         std::ostringstream osmsg;
+         std::_tostringstream osmsg;
          girder_dimension.SetHookPoints(m_GirderBottoms[0], m_GirderBottoms[siz-1]);
          girder_dimension.SetVerticalDimensionPos(grDimension::Below);
          girder_dimension.SetSpaceFactor(0.5);
@@ -529,7 +529,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
          girder_dimension.SetLabel(osmsg.str());
 
          // overhang dimension (left overhang)
-         std::ostringstream osdlmsg;
+         std::_tostringstream osdlmsg;
          left_overhang_dimension.SetHookPoints(m_SlabLeftTop, gpPoint2d(m_GirderBottoms[0].X(),m_SlabLeftTop.Y()));
          left_overhang_dimension.SetHorizontalDimensionPos(grDimension::Right);
          dist = m_GirderBottoms[0].X()-m_SlabLeftTop.X();
@@ -538,7 +538,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
          left_overhang_dimension.SetLabel(osdlmsg.str());
 
          // overhang dimension (right overhang)
-         std::ostringstream osdrmsg;
+         std::_tostringstream osdrmsg;
          right_overhang_dimension.SetHookPoints(gpPoint2d(m_GirderBottoms[m_GirderBottoms.size()-1].X(),m_SlabRightTop.Y()),m_SlabRightTop);
          right_overhang_dimension.SetHorizontalDimensionPos(grDimension::Left);
          dist = m_SlabRightTop.X() - m_GirderBottoms[m_GirderBottoms.size()-1].X();
@@ -547,7 +547,7 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
          right_overhang_dimension.SetLabel(osdrmsg.str());
 
          // roadway dimension
-         std::ostringstream strRoadwayDim;
+         std::_tostringstream strRoadwayDim;
          Float64 width = GetRoadwayWidth(station);
          width = ::ConvertFromSysUnits(width,rlen_units.UnitOfMeasure);
          strRoadwayDim << width << " " << rlen_units.UnitOfMeasure.UnitTag();
@@ -640,9 +640,9 @@ bool bmfBridge::DrawSection(HDC hDC, RECT& rect, Float64 station, UINT settings,
       {
          CHECK(_CrtCheckMemory());
 
-         std::string message;
+         std::_tstring message;
          message.erase();
-         message = (char)(i) + 'A';
+         message = (TCHAR)(i) + 'A';
          mapper.WPtoDP(m_GirderBottoms[i].X(),m_GirderBottoms[i].Y(), &dvx, &dvy);
          dvy+=1;
          ::TextOut( hDC, dvx, dvy, message.c_str(), message.size() );
@@ -798,9 +798,9 @@ bmfPierFactory* bmfBridge::SetPierFactory(bmfPierFactory* pFactory)
 //======================== INQUIRY    =======================================
 
 #if defined _DEBUG
-void bmfBridge::DumpGirder(Int32 spanId,Int32 gdrPathIdx,const char* fname)
+void bmfBridge::DumpGirder(Int32 spanId,Int32 gdrPathIdx,LPCTSTR fname)
 {
-   std::ofstream ofile( fname );
+   std::_tofstream ofile( fname );
 
    if ( !fname )
       return;
@@ -822,7 +822,7 @@ void bmfBridge::DumpGirder(Int32 spanId,Int32 gdrPathIdx,const char* fname)
 void bmfBridge::MakeCopy(const bmfBridge& rOther)
 {
    // :TODO: Implement
-   CHECKX(false,"Copying of bmfBridge objects is not implemented");
+   CHECKX(false,_T("Copying of bmfBridge objects is not implemented"));
 #pragma Reminder("Sink alignment events")
 }
 
@@ -840,9 +840,9 @@ void bmfBridge::DoDrawPlanView(HDC hDC,const grlibPointMapper& mapper,
                                bool bLabelGirders, bool bLabelAlignment, 
                                bool bLabelPiers) const
 {
-   WATCHX( bmf, BMF_LEVEL_DRAW, "Drawing plan view of bridge" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("Drawing plan view of bridge") );
 
-   WATCHX( bmf, BMF_LEVEL_DRAW, "Drawing piers" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("Drawing piers") );
    PierContainer::const_iterator begin = m_Piers.begin();
    PierContainer::const_iterator end   = m_Piers.end();
    while ( begin != end )
@@ -851,7 +851,7 @@ void bmfBridge::DoDrawPlanView(HDC hDC,const grlibPointMapper& mapper,
       pier->Draw( hDC, mapper, bLabelPiers );
    }
 
-   WATCHX( bmf, BMF_LEVEL_DRAW, "Drawing spans" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("Drawing spans") );
    SpanContainer::const_iterator start = m_Spans.begin();
    SpanContainer::const_iterator finish = m_Spans.end();
    while ( start != finish )
@@ -860,7 +860,7 @@ void bmfBridge::DoDrawPlanView(HDC hDC,const grlibPointMapper& mapper,
       span->PlanView( hDC, mapper, bLabelAlignment, bLabelGirders );
    }
 
-   WATCHX( bmf, BMF_LEVEL_DRAW, "Drawing slab" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("Drawing slab") );
    if ( m_pSlab.get() != 0 )
       m_pSlab->PlanView( hDC, mapper );
 
@@ -980,14 +980,14 @@ bool bmfBridge::BuildSectionShape(Float64 station) const
    m_GirderBottoms.clear();
 
    // figure out which span we're in
-   WATCHX( bmf, BMF_LEVEL_DRAW, "determining span at section" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("determining span at section") );
    const bmfSpan* pspan = GetSpanAtStation(station);
    CHECK(pspan);
    if (!pspan)
       return false;
 
    // get slab thickness and other values
-   WATCHX( bmf, BMF_LEVEL_DRAW, "determining slab geometry" );
+   WATCHX( bmf, BMF_LEVEL_DRAW, _T("determining slab geometry") );
    // this check  will probably go away for non-slab bridges
    CHECK(m_pSlab.get());
    bool is_slab = m_pSlab.get()!=0;

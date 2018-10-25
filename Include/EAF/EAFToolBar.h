@@ -51,8 +51,8 @@ public:
    // the command is processed by MFC command routing.
    BOOL LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback);
    BOOL LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback);
-   BOOL AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,IEAFCommandCallback* pCallback);
-   BOOL InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCSTR lpszString,IEAFCommandCallback* pCallback);
+   BOOL AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCTSTR lpszStrings,IEAFCommandCallback* pCallback);
+   BOOL InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCTSTR lpszString,IEAFCommandCallback* pCallback);
    void RemoveButtons(IEAFCommandCallback* pCallback);
    BOOL DeleteButton(int nIndex);
 

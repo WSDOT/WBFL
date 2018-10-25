@@ -248,7 +248,7 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
    matStressStrainCurve::StrainState state;
 
    // Test a grade 250 strand
-   matPsStrand Gr1725("",
+   matPsStrand Gr1725(_T(""),
                      matPsStrand::Gr1725,
                      matPsStrand::LowRelaxation,
                      matPsStrand::D1270,
@@ -281,7 +281,7 @@ bool matPsStrandCurve::TestMe(dbgLog& rlog)
    //
    // Test a grade 270 strand
    //
-   matPsStrand Gr1860("",
+   matPsStrand Gr1860(_T(""),
                      matPsStrand::Gr1860,
                      matPsStrand::LowRelaxation,
                      matPsStrand::D1270,

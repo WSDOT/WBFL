@@ -103,7 +103,7 @@ public:
    Float64 GetStation(bool bConvert = false) const;
 
    //------------------------------------------------------------------------
-   std::string AsString() const;
+   std::_tstring AsString() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

@@ -62,7 +62,7 @@ public:
 
    //------------------------------------------------------------------------
    // constructor
-   rptRcHyperTarget(const std::string YourTarget)
+   rptRcHyperTarget(const std::_tstring YourTarget)
    {
       m_TheTarget = YourTarget;
    }
@@ -98,7 +98,7 @@ public:
    //
    //------------------------------------------------------------------------
    // get the target name
-   std::string GetTargetName() const {return std::string(m_TheTarget); }
+   std::_tstring GetTargetName() const {return std::_tstring(m_TheTarget); }
    // GROUP: INQUIRY
 
 protected:
@@ -113,7 +113,7 @@ private:
    // GROUP: DATA MEMBERS
    //------------------------------------------------------------------------
    // The target name
-   std::string m_TheTarget;
+   std::_tstring m_TheTarget;
 
    // GROUP: LIFECYCLE
 

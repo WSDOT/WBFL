@@ -688,7 +688,7 @@ void bamBridgeModel::AddStressPoint(Int32 poi,Int32 idx,Float64 S)
 
 void bamBridgeModel::RemoveStressPoint(Int32 poi,Int32 idx)
 {
-   CHECKX(false,"Not implemented");
+   CHECKX(false,_T("Not implemented"));
 }
 
 bamLoadFactory& bamBridgeModel::GetLoadFactory()

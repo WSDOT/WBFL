@@ -247,6 +247,9 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,IStation** station)
    switch( varStation.vt )
    {
    case VT_UNKNOWN:
+      if ( varStation.punkVal == NULL )
+         return E_INVALIDARG;
+
       varStation.punkVal->QueryInterface(&objStation);
       if ( objStation.p == NULL )
          return E_INVALIDARG;
@@ -255,6 +258,9 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,IStation** station)
       break;
 
    case VT_DISPATCH:
+      if ( varStation.pdispVal == NULL )
+         return E_INVALIDARG;
+
       varStation.pdispVal->QueryInterface(&objStation);
       if ( objStation.p == NULL )
          return E_INVALIDARG;
@@ -457,12 +463,12 @@ void cogoUtil::GetBrgParts(Float64 brgVal,NSDirectionType *pnsDir, long *pDeg, l
 }
 
 
-HRESULT cogoUtil::ParseAngleTags(std::string& strTag,std::string* strDegTag,std::string* strMinTag,std::string* strSecTag)
+HRESULT cogoUtil::ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag)
 {
-   std::string::size_type posFirst = strTag.find(",");
-   std::string::size_type posSecond = strTag.find(",",posFirst+1);
+   std::_tstring::size_type posFirst = strTag.find(_T(","));
+   std::_tstring::size_type posSecond = strTag.find(_T(","),posFirst+1);
 
-   if (posFirst == std::string::npos || posSecond == std::string::npos )
+   if (posFirst == std::_tstring::npos || posSecond == std::_tstring::npos )
       return E_INVALIDARG;
 
    strDegTag->assign(strTag,0,posFirst);

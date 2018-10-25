@@ -55,7 +55,7 @@ void StrStorageDataMap<T>::BeginUnit(LPCTSTR desc,LPCTSTR unit,double version)
 }
 
 template <class T>
-void StrStorageDataMap<T>::Property(LPCSTR propName,StrDataType sdt,void* ptr)
+void StrStorageDataMap<T>::Property(LPCTSTR propName,StrDataType sdt,void* ptr)
 {
    StrStorageData<T> prop;
    prop.m_Name = propName;
@@ -107,10 +107,6 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
       VARIANT var;
       ::VariantInit( &var );
       var.vt = get_vartype( pData->m_SDT );
-      LPTSTR lptStr;
-      LPSTR lpStr;
-      LPOLESTR lpOleStr;
-      std::string stdStr;
       switch( pData->m_SDT )
       {
       case SDT_I2:
@@ -139,52 +135,27 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
          break;
 
       case SDT_LPTSTR:
-         lptStr = *(LPTSTR*)(pData->m_pData);
-         var.bstrVal = ::SysAllocString((LPOLESTR)lptStr);
+         var.bstrVal = _bstr_t((LPTSTR)pData->m_pData);
          hr = pSave->put_Property( pData->m_Name.c_str(), var );
-         ::SysFreeString(var.bstrVal);
          break;
 
       case SDT_LPSTR:
-         {
-         lpStr = *(LPSTR*)(pData->m_pData);
-         OLECHAR* oleStr;
-         int length = strlen(lpStr)+1;
-         oleStr = new OLECHAR[length];
-         size_t retval;
-         mbstowcs_s( &retval, oleStr, length, lpStr, length );
-         oleStr[length-1] = 0;
-         var.bstrVal = ::SysAllocString(oleStr);
-         delete[] oleStr;
+         var.bstrVal = _bstr_t(*(LPSTR*)(pData->m_pData));
          hr = pSave->put_Property( pData->m_Name.c_str(), var );
-         ::SysFreeString(var.bstrVal);
-         }
          break;
 
       case SDT_LPOLESTR:
-         lpOleStr = *(LPOLESTR*)(pData->m_pData);
-         var.bstrVal = ::SysAllocString( lpOleStr );
+         var.bstrVal = _bstr_t((LPOLESTR)(pData->m_pData));
          hr = pSave->put_Property( pData->m_Name.c_str(), var );
-         ::SysFreeString(var.bstrVal);
          break;
 
       case SDT_STDSTRING:
-         {
-         stdStr = (*(std::string*)(pData->m_pData)).c_str();
-         OLECHAR* oleStr;
-         oleStr = new OLECHAR[stdStr.size()+1];
-         size_t retval;
-         mbstowcs_s( &retval, oleStr, stdStr.size()+1, stdStr.c_str(), stdStr.size() );
-         oleStr[stdStr.size()] = 0;
-         var.bstrVal = ::SysAllocString(oleStr);
-         delete[] oleStr;
+         var.bstrVal = _bstr_t( ((std::_tstring*)pData->m_pData)->c_str() );
          hr = pSave->put_Property( pData->m_Name.c_str(), var );
-         ::SysFreeString(var.bstrVal);
-         }
          break;
 
       case SDT_BSTR:
-         var.bstrVal = ::SysAllocString( *(BSTR*)(pData->m_pData) );
+         var.bstrVal = _bstr_t( *(BSTR*)(pData->m_pData) );
          hr = pSave->put_Property( pData->m_Name.c_str(), var );
          break;
 
@@ -208,7 +179,7 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
    {
       if ( pProgress )
       {
-         std::string msg("Saving ");
+         std::_tstring msg(_T("Saving "));
          msg += pData->m_Description;
          pProgress->UpdateMessage( msg.c_str() );
       }
@@ -282,8 +253,8 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
          {
          hr = pLoad->get_Property( pData->m_Name.c_str(), &var );
          _bstr_t bstr(var.bstrVal);
-         pData->m_pData = (char*)new char[bstr.length()];
-         strcpy_s((char*)(pData->m_pData),bstr.length(),bstr);
+         pData->m_pData = (TCHAR*)new TCHAR[bstr.length()];
+         _tcscpy_s((TCHAR*)(pData->m_pData),bstr.length(),bstr);
          }
          break;
 
@@ -291,8 +262,8 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
          {
          hr = pLoad->get_Property( pData->m_Name.c_str(), &var );
          _bstr_t bstr(var.bstrVal);
-         pData->m_pData = (char*)new char[bstr.length()];
-         strcpy_s((char*)(pData->m_pData),bstr.length(),bstr);
+         pData->m_pData = (TCHAR*)new TCHAR[bstr.length()];
+         _tcscpy_s((TCHAR*)(pData->m_pData),bstr.length(),bstr);
          }
          break;
 
@@ -309,8 +280,8 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
       case SDT_STDSTRING:
          {
          hr = pLoad->get_Property( pData->m_Name.c_str(), &var );
-         std::string* pStr = new std::string( _bstr_t(var.bstrVal) );
-         *(std::string*)(pData->m_pData) = *pStr;
+         std::_tstring* pStr = new std::_tstring( _bstr_t(var.bstrVal) );
+         *(std::_tstring*)(pData->m_pData) = *pStr;
          delete pStr;
          }
          break;
@@ -341,7 +312,7 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
    {
       if ( pProgress )
       {
-         std::string msg("Loading ");
+         std::_tstring msg(_T("Loading "));
          msg += pData->m_Description;
          pProgress->UpdateMessage( msg.c_str() );
       }

@@ -64,19 +64,19 @@ bool TestLib(dbgLog& rlog)
    TESTME_PROLOGUE("Library Persistence");
    // create some libaries, fill them with data to save
    typedef libLibrary<libConcreteMaterial,0> LibType;
-   LibType* psav1 = new LibType("CONC_LIB1", "Concrete Library 1");
+   LibType* psav1 = new LibType(_T("CONC_LIB1"), _T("Concrete Library 1"));
    libConcreteMaterial mat;
    TRY_TESTME(mat.GetRefCount()==0);
    TRY_TESTME(psav1->IsEmpty());
-   psav1->AddEntry(mat, "Item1");
-   psav1->NewEntry("Item2");
-   psav1->NewEntry("Item3");
-   psav1->CloneEntry("Item3", "Item4");
+   psav1->AddEntry(mat, _T("Item1"));
+   psav1->NewEntry(_T("Item2"));
+   psav1->NewEntry(_T("Item3"));
+   psav1->CloneEntry(_T("Item3"), _T("Item4"));
 
-   LibType* psav2 = new LibType("CONC_LIB2", "Concrete Library 2");
-   psav2->NewEntry("Item21");
-   psav2->NewEntry("Item22");
-   psav2->NewEntry("Item23");
+   LibType* psav2 = new LibType(_T("CONC_LIB2"), _T("Concrete Library 2"));
+   psav2->NewEntry(_T("Item21"));
+   psav2->NewEntry(_T("Item22"));
+   psav2->NewEntry(_T("Item23"));
 
    // add libaries to be saved to a library manager
    libLibraryManager saveman;
@@ -89,30 +89,30 @@ bool TestLib(dbgLog& rlog)
    libKeyListType list;
    psav1->KeyList(list);
    TRY_TESTME(list.size()==4);
-   TRY_TESTME(psav1->GetDisplayName()=="Concrete Library 1");
-   TRY_TESTME(psav1->GetIdName()=="CONC_LIB1");
-   std::string tmp;
-   const libConcreteMaterial* pmat = psav1->LookupEntry("Item1");
+   TRY_TESTME(psav1->GetDisplayName()==_T("Concrete Library 1"));
+   TRY_TESTME(psav1->GetIdName()==_T("CONC_LIB1"));
+   std::_tstring tmp;
+   const libConcreteMaterial* pmat = psav1->LookupEntry(_T("Item1"));
    PRECONDITION(pmat);
    psav1->GetEntryKey(*pmat, tmp);
-   TRY_TESTME(tmp=="Item1");
+   TRY_TESTME(tmp==_T("Item1"));
    TRY_TESTME(&saveman==psav1->GetLibraryManager());
-   TRY_TESTME(psav1->IsEntry("Item1"));
-   TRY_TESTME(!psav1->IsEntry("BogusItem"));
-   TRY_TESTME(psav1->RemoveEntry("Item1")==libILibrary::RemReferenced);
+   TRY_TESTME(psav1->IsEntry(_T("Item1")));
+   TRY_TESTME(!psav1->IsEntry(_T("BogusItem")));
+   TRY_TESTME(psav1->RemoveEntry(_T("Item1"))==libILibrary::RemReferenced);
    pmat->Release();
-   TRY_TESTME(psav1->RemoveEntry("Item1")==libILibrary::RemOk);
+   TRY_TESTME(psav1->RemoveEntry(_T("Item1"))==libILibrary::RemOk);
    TRY_TESTME(psav1->GetCount()==3);
-   TRY_TESTME(psav1->RemoveEntry("BogusItem")==libILibrary::RemNotFound);
-   TRY_TESTME(psav1->RenameEntry("Item2","RenamedItem2"));
-   TRY_TESTME(psav1->IsEntry("RenamedItem2"));
-   TRY_TESTME(!psav1->IsEntry("Item2"));
-   psav1->SetDisplayName("Concrete Libarary 1 - Renamed");
-   TRY_TESTME(psav1->GetDisplayName()=="Concrete Libarary 1 - Renamed");
-   mat.SetName("New Material Name");
+   TRY_TESTME(psav1->RemoveEntry(_T("BogusItem"))==libILibrary::RemNotFound);
+   TRY_TESTME(psav1->RenameEntry(_T("Item2"),_T("RenamedItem2")));
+   TRY_TESTME(psav1->IsEntry(_T("RenamedItem2")));
+   TRY_TESTME(!psav1->IsEntry(_T("Item2")));
+   psav1->SetDisplayName(_T("Concrete Libarary 1 - Renamed"));
+   TRY_TESTME(psav1->GetDisplayName()==_T("Concrete Libarary 1 - Renamed"));
+   mat.SetName(_T("New Material Name"));
    mat.SetFc(123.456);
-   TRY_TESTME(psav1->UpdateEntry(mat,"Item3"));
-   const libConcreteMaterial* pmat3 = psav1->LookupEntry("Item3");
+   TRY_TESTME(psav1->UpdateEntry(mat,_T("Item3")));
+   const libConcreteMaterial* pmat3 = psav1->LookupEntry(_T("Item3"));
    PRECONDITION(pmat3);
    TRY_TESTME(pmat3->GetFc()==123.456);
    TRY_TESTME(pmat3->GetRefCount()==1);
@@ -120,7 +120,7 @@ bool TestLib(dbgLog& rlog)
 
    // save manager and libraries and close stream
    {
-      std::ofstream os("TestLib.xml");
+      std::_tofstream os(_T("TestLib.xml"));
       sysStructuredSaveXml save;
       save.BeginSave(&os);
       saveman.SaveMe(&save);
@@ -128,8 +128,8 @@ bool TestLib(dbgLog& rlog)
    }
 
    // create a new librarymanager with empty libraries to load
-   LibType* pload1 = new LibType("CONC_LIB1", "Concrete Library 1"); // note id's must match above
-   LibType* pload2 = new LibType("CONC_LIB2", "Concrete Library 2");
+   LibType* pload1 = new LibType(_T("CONC_LIB1"), _T("Concrete Library 1")); // note id's must match above
+   LibType* pload2 = new LibType(_T("CONC_LIB2"), _T("Concrete Library 2"));
    libLibraryManager loadman;
    loadman.AddLibrary(pload1);
    loadman.AddLibrary(pload2);
@@ -137,7 +137,7 @@ bool TestLib(dbgLog& rlog)
    // load it up
    try
    {
-      std::ifstream is("TestLib.xml");
+      std::_tifstream is(_T("TestLib.xml"));
       sysStructuredLoadXml load;
       load.BeginLoad(&is);
       loadman.LoadMe(&load);
@@ -145,9 +145,9 @@ bool TestLib(dbgLog& rlog)
    }
    catch(const sysXStructuredLoad& rex)
    {
-      std::string msg;
+      std::_tstring msg;
       rex.GetErrorMessage(&msg);
-      std::cout << msg << std::endl;
+      std::_tcout << msg << std::endl;
    }
 
    // dump loaded one

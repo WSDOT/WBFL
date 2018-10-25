@@ -48,7 +48,7 @@ public:
       CComQIPtr<IDisplayUnitGroup> pDUG( var.pdispVal );
       CComBSTR bstrGroup;
       pDUG->get_Name( &bstrGroup );
-      return (wcscmp( m_bstrTarget, bstrGroup ) == 0);
+      return (_tcscmp( m_bstrTarget, bstrGroup ) == 0);
    }
 
 private:
@@ -77,10 +77,10 @@ void CDisplayUnitMgr2::UnadviseDisplayUnitGroup(IDisplayUnitGroup* pGroup)
    // Get the lookup key
    CComBSTR bstrKey;
    pGroup->get_Name(&bstrKey);
-   std::string strKey( OLE2A(bstrKey) );
+   std::_tstring strKey( OLE2T(bstrKey) );
 
    // Lookup the cookie
-   std::map<std::string,DWORD>::iterator found;
+   std::map<std::_tstring,DWORD>::iterator found;
    found = m_GroupCookies.find( strKey );
    ATLASSERT( found != m_GroupCookies.end() );
 
@@ -117,7 +117,7 @@ HRESULT CDisplayUnitMgr2::BadDisplayUnitGroupError(BSTR name)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), IDS_E_BADDISPLAYUNITGROUP, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, W2T(name) );
+   int cOut = _stprintf_s( msg, str, W2T(name) );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CDisplayUnitMgr2>::Error(oleMsg,IDH_E_BADDISPLAYUNITGROUP, GetHelpFile(), IID_IDisplayUnitMgr2, UNITS_E_BADDISPLAYUNITGROUP);
@@ -199,7 +199,7 @@ STDMETHODIMP CDisplayUnitMgr2::Add(BSTR bstrGroup,BSTR bstrUnitType,IDisplayUnit
       TCHAR str[256];
       ::LoadString( _Module.GetModuleInstance(), IDS_E_BADUNITTYPE, str, 256);
       TCHAR msg[256];
-      int cOut = sprintf_s( msg, 256, str, W2T(bstrUnitType) );
+      int cOut = _stprintf_s( msg, 256, str, W2T(bstrUnitType) );
       _ASSERTE( cOut < 256 );
       CComBSTR oleMsg(msg);
       return CComCoClass<CDisplayUnitMgr2>::Error(oleMsg,IDH_E_BADUNITTYPE, GetHelpFile(),IID_IDisplayUnitMgr2,UNITS_E_BADUNITTYPE);
@@ -217,7 +217,7 @@ STDMETHODIMP CDisplayUnitMgr2::Add(BSTR bstrGroup,BSTR bstrUnitType,IDisplayUnit
 
    // Hookup to the connection point
    DWORD dwCookie;
-   std::string strKey( OLE2A(bstrGroup) );
+   std::_tstring strKey( OLE2T(bstrGroup) );
    CComPtr<IDisplayUnitGroup> pCP(pNewGroup);
    pCP.Advise( GetUnknown(), IID_IDisplayUnitGroupEvents, &dwCookie );
    m_GroupCookies.insert( std::make_pair(strKey,dwCookie) );

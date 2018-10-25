@@ -35,8 +35,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-bool contains_alpha(const std::string& s);
-bool parse_station(const std::string& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ);
+bool contains_alpha(const std::_tstring& s);
+bool parse_station(const std::_tstring& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ);
 
 /****************************************************************************
 CLASS
@@ -77,7 +77,7 @@ unitStationFormat& unitStationFormat::operator= (const unitStationFormat& rOther
 }
 
 //======================== OPERATIONS =======================================
-Float64 unitStationFormat::FromString(const std::string& station) const
+Float64 unitStationFormat::FromString(const std::_tstring& station) const
 {
    Float64 x,y,z;
    Int16 nSepDigits = (m_UnitOfMeasure == Meter) ? 3 : 2;
@@ -87,7 +87,7 @@ Float64 unitStationFormat::FromString(const std::string& station) const
    return (x * (m_UnitOfMeasure==Meter?1000.:100.)) + y + z;
 }
 
-std::string unitStationFormat::AsString(Float64 station) const
+std::_tstring unitStationFormat::AsString(Float64 station) const
 {
    int sign = BinarySign(station);
    station = fabs(station);
@@ -111,7 +111,7 @@ std::string unitStationFormat::AsString(Float64 station) const
       value = ::ConvertFromSysUnits( station, unitMeasure::Feet );
    }
 
-   char buffer[65];
+   TCHAR buffer[65];
    Float64 shifter = pow(10.0,plus_seperator);
    Int16   num_full_stations = (Int16)floor(value/shifter);
    Float64 num_fra_station   = value - num_full_stations*shifter;
@@ -130,7 +130,7 @@ std::string unitStationFormat::AsString(Float64 station) const
 
    Int16   width = plus_seperator + num_decimal_places + 1;
 
-   sprintf_s(buffer,65,"%s%d+%0*.*f",(sign<0?"-":""),num_full_stations,width,num_decimal_places,num_fra_station);
+   _stprintf_s(buffer,65,_T("%s%d+%0*.*f"),(sign<0?_T("-"):_T("")),num_full_stations,width,num_decimal_places,num_fra_station);
    return buffer;
 }
 
@@ -146,7 +146,7 @@ unitStationFormat::UnitOfMeasure unitStationFormat::GetUnitOfMeasure() const
 }
 
 //======================== INQUIRY    =======================================
-bool unitStationFormat::IsValidString(const std::string& station) const
+bool unitStationFormat::IsValidString(const std::_tstring& station) const
 {
    Float64 x,y,z;
    Int16 nSepDigits = (m_UnitOfMeasure == Meter) ? 3 : 2;
@@ -162,8 +162,8 @@ bool unitStationFormat::AssertValid() const
 
 void unitStationFormat::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for unitStationFormat" << endl;
-   os << "Unit of Measure = " << ((m_UnitOfMeasure == Meter) ? "meter" : "feet") 
+   os << _T("Dump for unitStationFormat") << endl;
+   os << _T("Unit of Measure = ") << ((m_UnitOfMeasure == Meter) ? _T("meter") : _T("feet")) 
       << endl;
 }
 #endif // _DEBUG
@@ -231,9 +231,9 @@ unitStationFormats::~unitStationFormats()
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
 
-bool contains_alpha(const std::string& s)
+bool contains_alpha(const std::_tstring& s)
 {
-   std::string::const_iterator i;
+   std::_tstring::const_iterator i;
    for ( i = s.begin(); i != s.end(); i++ )
    {
       if ( isalpha(*i) )
@@ -243,21 +243,21 @@ bool contains_alpha(const std::string& s)
    return false;
 }
 
-bool parse_station(const std::string& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ)
+bool parse_station(const std::_tstring& station,Int16 nSepDigits,Float64* pX,Float64* pY,Float64* pZ)
 {
    // Quick check.
    if ( station.length() == 0 )
       return false;
 
    // The station string is assumed to be in the format x+y.z
-   std::string x;
-   std::string y;
-   std::string z;
+   std::_tstring x;
+   std::_tstring y;
+   std::_tstring z;
 
    //
    // Get all the characters to the left of the '+' sign
    //
-   std::string::size_type plus_pos = station.find('+');
+   std::_tstring::size_type plus_pos = station.find(_T('+'));
    if ( plus_pos < 1 || plus_pos == station.npos )
       return false; // no digits before the + or the + was not found.
 
@@ -270,7 +270,7 @@ bool parse_station(const std::string& station,Int16 nSepDigits,Float64* pX,Float
    //
    // Get all the characters between the '+' and the '.'
    //
-   std::string::size_type dot_pos = station.find('.');
+   std::_tstring::size_type dot_pos = station.find('.');
    if ( dot_pos < plus_pos ||
         dot_pos == station.length() ||
         dot_pos == station.npos )
@@ -302,13 +302,13 @@ bool parse_station(const std::string& station,Int16 nSepDigits,Float64* pX,Float
 
    // The string seems to be in proper format... Convert the string
    // representation of x, y, and z to numbers.
-   std::istringstream is_x(x);
+   std::_tistringstream is_x(x);
    is_x >> *pX;
 
-   std::istringstream is_y(y);
+   std::_tistringstream is_y(y);
    is_y >> *pY;
 
-   std::istringstream is_z(z);
+   std::_tistringstream is_z(z);
    is_z >> *pZ;
 
    // Z has to be made a decimal

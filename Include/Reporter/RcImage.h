@@ -91,7 +91,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor
-   rptRcImage(const std::string& fileName,Align align=Baseline,Float flt=None);
+   rptRcImage(const std::_tstring& fileName,Align align=Baseline,Float flt=None);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -119,16 +119,16 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   std::string GetFileName() const;
+   std::_tstring GetFileName() const;
 
    //------------------------------------------------------------------------
-   void SetFileName(const std::string& fileName);
+   void SetFileName(const std::_tstring& fileName);
 
    //------------------------------------------------------------------------
-   std::string GetPictureDescription() const;
+   std::_tstring GetPictureDescription() const;
 
    //------------------------------------------------------------------------
-   void SetPictureDescription(const std::string& PictureDescription);
+   void SetPictureDescription(const std::_tstring& PictureDescription);
 
    void SetImageAlignment(Align a);
    Align GetImageAlignment() const;
@@ -159,8 +159,8 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_FileName;
-   std::string m_PictureDescription;
+   std::_tstring m_FileName;
+   std::_tstring m_PictureDescription;
    Align m_Align;
    Float m_Float;
 

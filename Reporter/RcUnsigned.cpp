@@ -47,7 +47,7 @@ rptReportContent()
 }
 
 
-rptRcUnsigned::rptRcUnsigned(Uint32 MyUs, const std::string& HyperTarget) :
+rptRcUnsigned::rptRcUnsigned(Uint32 MyUs, const std::_tstring& HyperTarget) :
 rptReportContent()
 {
    m_TheUnsigned = MyUs;

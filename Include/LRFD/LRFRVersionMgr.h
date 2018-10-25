@@ -80,11 +80,11 @@ public:
 
    //------------------------------------------------------------------------
    // Returns "The Manual for Bridge Evaluation"
-   static std::string GetCodeString();
+   static std::_tstring GetCodeString();
 
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
-   static std::string GetVersionString();
+   static std::_tstring GetVersionString();
 
 
    // GROUP: INQUIRY

@@ -49,7 +49,7 @@ public:
    HRESULT LoadPluginData(IStructuredLoad* pStrLoad);
 
 private:
-   std::vector<std::string> m_MissingPluginData; // holds the entire unit data block
+   std::vector<std::_tstring> m_MissingPluginData; // holds the entire unit data block
                                                  // for plugin data that is in the file, but
                                                  // the plugin wasn't created
 

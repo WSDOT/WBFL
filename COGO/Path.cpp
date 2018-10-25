@@ -206,24 +206,44 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
    CComQIPtr<IHorzCurve> curve(dispElement);
    CComQIPtr<ILineSegment2d> ls(dispElement);
    CComQIPtr<ICubicSpline> spline(dispElement);
+   CComQIPtr<IPath> path(dispElement);
 
-   if ( point == NULL && curve == NULL && ls == NULL && spline == NULL)
+   if ( point == NULL && curve == NULL && ls == NULL && spline == NULL && path == NULL )
       return Error(IDS_E_PATHELEMENTTYPE,IID_IPath,COGO_E_PATHELEMENTTYPE);
 
-   CComObject<CPathElement>* pElement;
-   CComObject<CPathElement>::CreateInstance(&pElement);
-   CComPtr<IPathElement> element = pElement;
-
-   if ( point )
+   if ( path )
    {
-      element->putref_Value(dispElement);
+      CollectionIndexType nElements;
+      path->get_Count(&nElements);
+      for ( CollectionIndexType idx = 0; idx < nElements; idx++ )
+      {
+         CComPtr<IPathElement> element;
+         path->get_Item(idx,&element);
+
+         HRESULT hr = Insert(m_coll.size(),element);
+         if ( FAILED(hr) )
+            return hr;
+      }
    }
    else
    {
-      element->putref_Value(dispElement);
+      CComObject<CPathElement>* pElement;
+      CComObject<CPathElement>::CreateInstance(&pElement);
+      CComPtr<IPathElement> element = pElement;
+
+      if ( point )
+      {
+         element->putref_Value(dispElement);
+      }
+      else
+      {
+         element->putref_Value(dispElement);
+      }
+
+      return Insert(idx,pElement);
    }
 
-   return Insert(idx,pElement);
+   return S_OK;
 }
 
 STDMETHODIMP CPath::Remove(VARIANT varKey)
@@ -621,6 +641,66 @@ STDMETHODIMP CPath::Intersect(ILine2d* line,IPoint2d* pNearest,IPoint2d** point)
    return S_OK;
 }
 
+STDMETHODIMP CPath::get_Length(Float64* pLength)
+{
+   CHECK_RETVAL(pLength);
+
+   CComPtr<IPath> path;
+   HRESULT hr = CreateConnectedPath(&path);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 length = 0;
+   CComPtr<IEnumPathElements> enumPath;
+   path->get__EnumPathElements(&enumPath);
+   CComPtr<IPathElement> element;
+   while ( enumPath->Next(1,&element,NULL) != S_FALSE )
+   {
+      PathElementType type;
+      element->get_Type(&type);
+
+      CComPtr<IUnknown> unk;
+      element->get_Value(&unk);
+
+      Float64 l;
+      switch( type )
+      {
+      case petHorzCurve:
+         {
+            CComQIPtr<IHorzCurve> hc(unk);
+            hc->get_TotalLength(&l);
+            break;
+         }
+
+      case petLineSegment:
+         {
+            CComQIPtr<ILineSegment2d> ls(unk);
+            ls->get_Length(&l);
+            break;
+         }
+
+      case petCubicSpline:
+         {
+            CComQIPtr<ICubicSpline> spline(unk);
+            spline->get_Length(&l);
+            break;
+         }
+
+      case petPoint: // drop through (connected paths don't have point elements)
+      default:
+         ATLASSERT(false);
+         l = 0;
+         break;
+      }
+
+      length += l;
+      element.Release();
+   }
+
+   *pLength = length;
+   return S_OK;
+}
+
 STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
 {
    CHECK_RETOBJ(pVal);
@@ -684,7 +764,7 @@ void CPath::Unadvise(long idx)
    if ( p.first == 0 )
       return;
 
-   DWORD dwCookie = p.first;
+   CogoElementKey dwCookie = p.first;
    CComVariant& var = p.second;
 
    InternalAddRef(); // Counteract InternalRelease() in Advise
@@ -1956,15 +2036,18 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
       CComPtr<IPoint2d> p;
       m_GeomUtil->LineLineIntersect(line,line2,&p);
 
-      bool bBeforeStart = cogoUtil::IsPointBeforeStart(start,end,p);
-      bool bAfterEnd    = cogoUtil::IsPointAfterEnd(start,end,p);
-      if ( start->SameLocation(p) == S_OK ||
-           end->SameLocation(p)   == S_OK ||
-           (bBeforeStart && bProjectBack) || 
-           (bAfterEnd && bProjectAhead)   || 
-           (!bBeforeStart && !bAfterEnd) )
+      if ( p )
       {
-         points->Add(p);
+         bool bBeforeStart = cogoUtil::IsPointBeforeStart(start,end,p);
+         bool bAfterEnd    = cogoUtil::IsPointAfterEnd(start,end,p);
+         if ( start->SameLocation(p) == S_OK ||
+              end->SameLocation(p)   == S_OK ||
+              (bBeforeStart && bProjectBack) || 
+              (bAfterEnd && bProjectAhead)   || 
+              (!bBeforeStart && !bAfterEnd) )
+         {
+            points->Add(p);
+         }
       }
    }
    else if ( type == petHorzCurve )
@@ -2497,6 +2580,7 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
    m_Profile->Clone(&cloneProfile);
    (*path)->putref_Profile(cloneProfile);
 
+
    ElementContainer elements = GetAllElements();
    ElementContainer::iterator iter;
    for ( iter = elements.begin(); iter < elements.end(); iter++ )
@@ -2568,6 +2652,20 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
 
 
       path_element.Release();
+   }
+
+   // if none of the elements contribute to the sub-path, create a sub-path with
+   // a point at the start and end of the sub-path range.
+   CollectionIndexType nElements;
+   (*path)->get_Count(&nElements);
+   if ( nElements == 0 )
+   {
+      CComPtr<IPoint2d> p1, p2;
+      LocatePoint(start,omtNormal,0.0,CComVariant(0.0),&p1);
+      LocatePoint(end,  omtNormal,0.0,CComVariant(0.0),&p2);
+
+      SavePathElement(*path,p1);
+      SavePathElement(*path,p2);
    }
 
    return S_OK;
@@ -2883,20 +2981,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
    else if ( start <= lsStart && lsEnd <= end )
    {
       // entire line segment is between the start and end... create a clone because the line segment is part of the sub-path
-      CComPtr<ILineSegment2d> clone;
-      clone.CoCreateInstance(CLSID_LineSegment2d);
-
-      CComPtr<IPoint2d> cloneStart, cloneEnd;
-
-      locate->PointOnLine(lsStartPoint,lsEndPoint,start - lsStart, 0.00, &cloneStart);
-      locate->PointOnLine(lsStartPoint,lsEndPoint,end   - lsStart, 0.00, &cloneEnd);
-
-      clone->putref_StartPoint(cloneStart);
-      clone->putref_EndPoint(cloneEnd);
-
-      (*ppLineSegment) = clone;
-      (*ppLineSegment)->AddRef();
-      return S_OK;
+      return pLS->Clone(ppLineSegment);
    }
    else
    {
@@ -2936,8 +3021,17 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
          clone->putref_EndPoint(cloneEnd);
       }
 
-      (*ppLineSegment) = clone;
-      (*ppLineSegment)->AddRef();
+      Float64 length;
+      clone->get_Length(&length);
+      if ( IsZero(length) )
+      {
+         // this line segment is not part of the sub-path
+         (*ppLineSegment) = NULL;
+      }
+      else
+      {
+         clone.CopyTo(ppLineSegment);
+      }
       return S_OK;
    }
 
@@ -3396,3 +3490,91 @@ HRESULT CPath::SavePathElement(IPath* pPath,IUnknown* pUnk)
 
    return S_OK;
 }
+
+
+#if defined _DEBUG
+void CPath::DumpPathElements()
+{
+   ElementContainer elements = GetAllElements();
+   ElementContainer::iterator iter;
+   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   {
+      ElementContainer::value_type& item = *iter;
+      CComPtr<IPathElement> path_element(item.second.m_T);
+
+      PathElementType type;
+      path_element->get_Type(&type);
+      CComPtr<IUnknown> punk;
+      path_element->get_Value(&punk);
+
+      switch(type)
+      {
+      case petPoint:
+         {
+            CComQIPtr<IPoint2d> point(punk);
+            DumpPathElement(point);
+         }
+         break;
+
+      case petLineSegment:
+         {
+            CComQIPtr<ILineSegment2d> ls(punk);
+            DumpPathElement(ls);
+         }
+         break;
+
+      case petHorzCurve:
+         {
+            CComQIPtr<IHorzCurve> hc(punk);
+            DumpPathElement(hc);
+         }
+         break;
+
+      case petCubicSpline:
+         {
+            CComQIPtr<ICubicSpline> spline(punk);
+            DumpPathElement(spline);
+         }
+         break;
+
+      default:
+         ATLASSERT(false); // should never get here
+         break;
+      }
+
+      path_element.Release();
+   }
+}
+
+void CPath::DumpPathElement(IPoint2d* pPoint)
+{
+   Float64 x,y;
+   pPoint->Location(&x,&y);
+   ATLTRACE2("Point (%f,%f)\n",x,y);
+}
+
+void CPath::DumpPathElement(ILineSegment2d* pLS)
+{
+   CComPtr<IPoint2d> pntStart,pntEnd;
+   pLS->get_StartPoint(&pntStart);
+   pLS->get_EndPoint(&pntEnd);
+
+   Float64 sx,sy;
+   pntStart->Location(&sx,&sy);
+
+   Float64 ex,ey;
+   pntEnd->Location(&ex,&ey);
+
+   ATLTRACE2("Line Segment (%f,%f) (%f,%f)\n",sx,sy,ex,ey);
+}
+
+void CPath::DumpPathElement(IHorzCurve* pHC)
+{
+   ATLTRACE2("HorzCurve\n");
+}
+
+void CPath::DumpPathElement(ICubicSpline* pSpine)
+{
+   ATLTRACE2("Spline\n");
+}
+#endif

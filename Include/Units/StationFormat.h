@@ -93,11 +93,11 @@ public:
    // Returns the station as a floating point number in system units.
    // If station is ill-formed, an unitXUnit exception will
    // be thrown.
-   Float64 FromString(const std::string& station) const;
+   Float64 FromString(const std::_tstring& station) const;
 
    //------------------------------------------------------------------------
    // Returns a string that represents <i>station</i> in station format.
-   std::string AsString(Float64 station) const;
+   std::_tstring AsString(Float64 station) const;
 
    // GROUP: ACCESS
 
@@ -118,7 +118,7 @@ public:
    // is x+yy.zzzz (basically the same as for Meter, except the number if
    // digits between the + and . is exactly two).  x, y, and z must be
    // digits 0-9.
-   bool IsValidString(const std::string& station) const;
+   bool IsValidString(const std::_tstring& station) const;
 
    // GROUP: DEBUG
 #if defined _DEBUG

@@ -371,7 +371,7 @@ void CAnalysisModel::GetReaction(LoadGroupIDType loadGroupID, SupportIDType supp
    catch (CComException& re)
    {
       _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw re;
    }
 }
@@ -418,7 +418,7 @@ void CAnalysisModel::GetSupportDeflection(LoadGroupIDType loadGroupID, SupportID
    catch (CComException& re)
    {
       _bstr_t msg=CreateErrorMsg1S(IDS_STAGE_CONTEXT, m_Stage);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw re;
    }
 }
@@ -624,7 +624,7 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
          {
             CComBSTR msg =CreateErrorMsg1L(IDS_E_TEMPSUPPORT_NOT_EXIST,mbrId);
             // don't use THROW_LBAMA_MSG macro because this is not always an error. (the macro contains an ATLASSERT).
-            throw CComException(__FILE__,__LINE__, msg, LBAMA_E_TEMPSUPPORT_NOT_EXIST, IDH_E_TEMPSUPPORT_NOT_EXIST);
+            throw CComException(_T(__FILE__),__LINE__, msg, LBAMA_E_TEMPSUPPORT_NOT_EXIST, IDH_E_TEMPSUPPORT_NOT_EXIST);
          }
          else
          {
@@ -1360,7 +1360,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_DISTR_LOAD, loadGroup);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 }
@@ -1562,7 +1562,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_STRAIN_LOAD, loadGroup);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 }
@@ -1667,7 +1667,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_TEMPERATURE_LOAD, loadGroup);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 }
@@ -1756,7 +1756,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
    {
       // add some more information
       _bstr_t msg =CreateErrorMsg1S(IDS_E_GENERATING_SETTLEMENT_LOAD, loadGroup);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 }
@@ -2187,7 +2187,7 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 
@@ -2207,7 +2207,7 @@ void CAnalysisModel::CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType su
       {
          // location not found. add some context and rethrow
          _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-         re.AppendToMessage((char*)msg);
+         re.AppendToMessage((LPTSTR)msg);
          throw;
       }
 
@@ -2252,7 +2252,7 @@ void CAnalysisModel::CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, 
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 
@@ -2296,7 +2296,7 @@ void CAnalysisModel::CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmIdx, F
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 
@@ -2327,7 +2327,7 @@ void CAnalysisModel::CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFO, poiID);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 
@@ -3766,7 +3766,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
          TCHAR str[256];
          ::LoadString( _Module.GetModuleInstance(), IDS_E_NO_SEGMENT_FOR_MEMBER, str, 256);
          TCHAR msg[256];
-         int cOut = sprintf_s( msg, 256, str, mbrIdx, bstg);
+         int cOut = _stprintf_s( msg, 256, str, mbrIdx, bstg);
          ATLASSERT( cOut < 256 );
          THROW_LBAMA_MSG(NO_SEGMENT_FOR_MEMBER, msg);
       }
@@ -3810,7 +3810,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
          catch (CComException& re)
          {
             _bstr_t msg1(::CreateErrorMsg2L(IDS_SS_SEGMENT_INFO, mbrIdx, segmentIdx));
-            re.AppendToMessage( (char*)msg1);
+            re.AppendToMessage( (LPTSTR)msg1);
             throw re;
          }
 
@@ -4327,7 +4327,7 @@ void CAnalysisModel::LayoutTemporarySupportNodes( SpanIndexType spanIdx, Float64
       {
          // add some more info to error message
          _bstr_t msg(::CreateErrorMsg2L(IDS_TEMPSUPPORT_INFO, tempSupportID, spanIdx));
-         re.AppendToMessage((char*)msg);
+         re.AppendToMessage((LPTSTR)msg);
          throw re;
       }
    }
@@ -4414,7 +4414,7 @@ void CAnalysisModel::LayoutSupportNodes( SupportIDType supportID, ISupports* pSu
       {
          // add some more info to error message
          _bstr_t msg(::CreateErrorMsg1L(IDS_SUPPORT_INFO, supportID));
-         re.AppendToMessage((char*)msg);
+         re.AppendToMessage((LPTSTR)msg);
          throw re;
       }
    }
@@ -4470,7 +4470,7 @@ void LayoutSupportSegments(BSTR stage, IFilteredSegmentCollection* pFilteredSegs
       catch (CComException& re)
       {
          _bstr_t msg1(::CreateErrorMsg1L(IDS_SEGMENT_INFO, iseg));
-         re.AppendToMessage( (char*)msg1);
+         re.AppendToMessage( (LPTSTR)msg1);
          throw re;
       }
 
@@ -4647,7 +4647,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    {
       // location not found. add some context and rethrow
       _bstr_t msg =CreateErrorMsg1L(IDS_POI_INFLUENCELOCATION,poiID);
-      re.AppendToMessage((char*)msg);
+      re.AppendToMessage((LPTSTR)msg);
       throw;
    }
 
@@ -4695,7 +4695,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    for (InfluenceLoadSetIterator it=m_InfluenceLoadSet.begin(); it!=m_InfluenceLoadSet.end(); it++)
    {
       InfluenceLoadLocation& ifl = *it;
-      const char* side[] = {"Single","Left  ","Right "};
+      LPCTSTR side[] = {"Single","Left  ","Right "};
       ATLTRACE(_T("Member Location Global %f, %s, ID = %dMbrLoc = %f, Lc = %d\n"), ifl.m_GlobalX, side[ifl.m_LocationType], ifl.m_FemMemberId, ifl.m_FemMemberLoc, ifl.m_FemLcId);
    }
 #endif

@@ -166,7 +166,7 @@ const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType C
 
    // check if row entry has been allocated. If it has not, then assert out
    // We can't grow the table becase this is a const method
-   CHECKX( RowNo < (RowIndexType)m_TableData[ColNo].size(), "The specified row has not been allocated" );
+   CHECKX( RowNo < (RowIndexType)m_TableData[ColNo].size(), _T("The specified row has not been allocated"));
 
    return m_TableData[ColNo][RowNo];
 }
@@ -405,7 +405,7 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
 // Put a string column
 //
 void rptRcTable::PutStringColumn(ColumnIndexType ColNo, 
-                                 const std::vector<std::string>& StringVec)
+                                 const std::vector<std::_tstring>& StringVec)
 {
    CHECK(ColNo<m_NumColumns);
 

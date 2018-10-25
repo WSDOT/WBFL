@@ -1,5 +1,5 @@
-Build started at  July 30, 2010  11:09:23
-Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.3.0.4.exe
+Build started at  November 17, 2010  15:29:52
+Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.3.1.0.exe
 Creating Package
      File 'ArpMacros.vsmacros' in package.
      File 'AnalysisResultsManager.cpp' in package.
@@ -55,7 +55,6 @@ Creating Package
      File 'resource.h' in package.
      File 'stdafx.cpp' in package.
      File 'stdafx.h' in package.
-     File 'targetver.h' in package.
      File 'BridgeGeometry.cpp' in package.
      File 'BridgeGeometry.def' in package.
      File 'BridgeGeometry.idl' in package.
@@ -72,7 +71,6 @@ Creating Package
      File 'resource.h' in package.
      File 'stdafx.cpp' in package.
      File 'stdafx.h' in package.
-     File 'targetver.h' in package.
      File 'AlignmentObserver.cpp' in package.
      File 'AlignmentObserver.h' in package.
      File 'Bridge.cpp' in package.
@@ -1093,7 +1091,6 @@ Creating Package
      File 'main.cpp' in package.
      File 'stdafx.cpp' in package.
      File 'stdafx.h' in package.
-     File 'targetver.h' in package.
      File 'dllmain.cpp' in package.
      File 'dllmain.h' in package.
      File 'ProgressDlg.cpp' in package.
@@ -1115,7 +1112,6 @@ Creating Package
      File 'SysAgent.cpp' in package.
      File 'SysAgent.h' in package.
      File 'SysAgent.rgs' in package.
-     File 'targetver.h' in package.
      File 'Cogo.def' in package.
      File 'CogoAngle.cpp' in package.
      File 'CogoDirection.cpp' in package.
@@ -4738,6 +4734,7 @@ Creating Package
      File 'AutoLib.h' in package.
      File 'BisectionRootFinder2d.h' in package.
      File 'BrentsRootFinder2d.h' in package.
+     File 'CompositeFunction2d.h' in package.
      File 'CoordMapper1d.h' in package.
      File 'CubicSolver.h' in package.
      File 'FixedPointIteration.h' in package.
@@ -4747,6 +4744,7 @@ Creating Package
      File 'MathExp.h' in package.
      File 'MathLib.h' in package.
      File 'NumericIntegrator2d.h' in package.
+     File 'Polynomial2d.h' in package.
      File 'PwLinearFunction2d.h' in package.
      File 'PwLinearFunction2dUsingPoints.h' in package.
      File 'QuadraticSolver.h' in package.
@@ -4755,6 +4753,8 @@ Creating Package
      File 'UnitTest.h' in package.
      File 'MathEx.h' in package.
      File 'AutoLib.h' in package.
+     File 'CacheComboBox.h' in package.
+     File 'CacheEdit.h' in package.
      File 'choosedirdlg.h' in package.
      File 'CogoDDX.h' in package.
      File 'CustomDDX.h' in package.
@@ -4980,6 +4980,7 @@ Creating Package
      File 'WBFLTransactions.idl' in package.
      File 'WBFLTypes.idl' in package.
      File 'WbflUnitServer.idl' in package.
+     File 'WBFLVersion.h' in package.
      File 'Readme.txt' in package.
      File 'WBFL_Source.pfw' in package.
      File 'Axle.cpp' in package.
@@ -7541,6 +7542,7 @@ Creating Package
      File '1dRange.cpp' in package.
      File 'BisectionRootFinder2d.cpp' in package.
      File 'BrentsRootFinder2d.cpp' in package.
+     File 'CompositeFunction2d.cpp' in package.
      File 'CoordMapper1d.cpp' in package.
      File 'CubicSolver.cpp' in package.
      File 'FixedPointIteration.cpp' in package.
@@ -7551,6 +7553,7 @@ Creating Package
      File 'Math.rc' in package.
      File 'Math.vcproj' in package.
      File 'NumericIntegrator2d.cpp' in package.
+     File 'Polynomial2d.cpp' in package.
      File 'PwLinearFunction2d.cpp' in package.
      File 'PwLinearFunction2dUsingPoints.cpp' in package.
      File 'QuadraticSolver.cpp' in package.
@@ -7558,6 +7561,8 @@ Creating Package
      File 'RootFinder2d.cpp' in package.
      File 'TrapezoidalRuleIntegrator.cpp' in package.
      File 'UnitTest.cpp' in package.
+     File 'CacheComboBox.cpp' in package.
+     File 'CacheEdit.cpp' in package.
      File 'ChoiceDlg.cpp' in package.
      File 'ChoiceDlg.h' in package.
      File 'choosedirdlg.cpp' in package.
@@ -8193,10 +8198,8 @@ Creating Package
      File 'UnconfinedConcrete.h' in package.
      File 'UnconfinedConcrete.rgs' in package.
      File 'ReadMe.txt' in package.
-     File 'BuildWBFLManifest.bat' in package.
      File 'Test.bat' in package.
      File 'WBFL.manifest' in package.
-     File 'BuildWBFLManifest.bat' in package.
      File 'Test.bat' in package.
      File 'WBFL.manifest' in package.
      File 'CapacityProblem.cpp' in package.
@@ -8298,7 +8301,6 @@ Creating Package
      File 'resource.h' in package.
      File 'StdAfx.cpp' in package.
      File 'StdAfx.h' in package.
-     File 'targetver.h' in package.
      File 'TitlePageBuilder.cpp' in package.
      File 'WBCmdGroup.h' in package.
      File 'webbrowser.cpp' in package.
@@ -9550,4 +9552,4 @@ Creating EXE
      Creating data section...
      Appending Data Section
      Appending File Groups
-Build completed at  July 30, 2010  11:09:53
+Build completed at  November 17, 2010  15:30:36

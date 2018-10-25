@@ -113,8 +113,8 @@ public:
 protected:
    long m_ID;
    CComBSTR m_bstrRemovalStage;
-   Float64 m_Location;
-   CComPtr<IPier> m_Pier;
+   Float64 m_Location; // location from the start of the bridge
+   CComPtr<IPier> m_Pier; // this is the temporary pier object
    DWORD m_dwCookie;
 
    IGenericBridge* m_pBridge;

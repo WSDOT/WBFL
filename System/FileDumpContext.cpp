@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-dbgFileDumpContext::dbgFileDumpContext(const std::string& fname):
+dbgFileDumpContext::dbgFileDumpContext(const std::_tstring& fname):
 dbgDumpContext(),
 m_os(fname.c_str())
 {
@@ -52,13 +52,13 @@ dbgFileDumpContext::~dbgFileDumpContext()
 }
 
 //======================== OPERATORS  =======================================
-dbgDumpContext& dbgFileDumpContext::operator<<(const std::string& s)
+dbgDumpContext& dbgFileDumpContext::operator<<(const std::_tstring& s)
 {
    m_os << s;
    return *this;
 }
 
-dbgDumpContext& dbgFileDumpContext::operator<<(const char* s)
+dbgDumpContext& dbgFileDumpContext::operator<<(LPCTSTR s)
 {
    m_os << s;
    return *this;
@@ -72,7 +72,7 @@ dbgDumpContext& dbgFileDumpContext::operator<<(char c)
 
 dbgDumpContext& dbgFileDumpContext::operator<<(bool n)
 {
-   m_os << (n ? "True" : "False");
+   m_os << (n ? _T("True") : _T("False"));
    return *this;
 }
 
@@ -142,12 +142,12 @@ dbgDumpContext& dbgFileDumpContext::operator<<(const sysSectionValue& n)
    return *this;
 }
 
-std::ostream& dbgFileDumpContext::GetStream()
+std::_tostream& dbgFileDumpContext::GetStream()
 {
    return m_os;
 }
 
-dbgFileDumpContext::operator std::ostream&()
+dbgFileDumpContext::operator std::_tostream&()
 {
    return GetStream();
 }

@@ -65,8 +65,8 @@ inline CComBSTR GetHelpFile()
 // macros to help error processing
 // short-hand version if consistent naming conventions are used
 #define THROW_LBAMA(errNam) { THROW_LBAMA_NOA(errNam);}
-#define THROW_LBAMA_NOA(errNam)      { throw CComException(__FILE__,__LINE__, IDS_E_##errNam, LBAMA_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMA_MSG(errNam, msg) { throw CComException(__FILE__,__LINE__, msg, LBAMA_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMA_NOA(errNam)      { throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMA_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMA_MSG(errNam, msg) { throw CComException(_T(__FILE__),__LINE__, msg, LBAMA_E_##errNam, IDH_E_##errNam);}
 
 
 //{{AFX_INSERT_LOCATION}}

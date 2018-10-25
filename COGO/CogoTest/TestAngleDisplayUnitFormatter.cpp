@@ -61,16 +61,16 @@ void CTestAngleDisplayUnitFormatter::Test()
    CComBSTR bstrTest;
    TRY_TEST(fmtr->Format(0.0,NULL,NULL),E_POINTER);
    TRY_TEST(fmtr->Format(0.0,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("0° 00\' 00.00\" L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("0° 00\' 00.00\" L")), 0);
 
    TRY_TEST(fmtr->Format(PI_OVER_2,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("90° 00\' 00.00\" L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("90° 00\' 00.00\" L")), 0);
 
    TRY_TEST(fmtr->Format(-M_PI/4,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("45° 00\' 00.00\" R")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("45° 00\' 00.00\" R")), 0);
 
    TRY_TEST(fmtr->Format(-M_PI/4,NULL,&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("45 00 00.00 R")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("45 00 00.00 R")), 0);
 
    // test Signed angles
    VARIANT_BOOL bValue;
@@ -79,10 +79,10 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST( bValue, VARIANT_FALSE );
    TRY_TEST( fmtr->put_Signed(VARIANT_TRUE), S_OK );
    TRY_TEST(fmtr->Format(PI_OVER_2,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("90° 00\' 00.00\"")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("90° 00\' 00.00\"")), 0);
 
    TRY_TEST(fmtr->Format(-M_PI/4,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("-45° 00\' 00.00\"")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("-45° 00\' 00.00\"")), 0);
 
    // test condensed format
    TRY_TEST( fmtr->get_CondensedFormat(NULL),E_POINTER);
@@ -90,13 +90,13 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST( bValue, VARIANT_FALSE );
    TRY_TEST(fmtr->put_CondensedFormat(VARIANT_TRUE),S_OK);
    TRY_TEST(fmtr->Format(-M_PI/4,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("-45°")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("-45°")), 0);
 
    TRY_TEST(fmtr->Format(M_PI/4 + (1.0/60.0)*M_PI/180.0 ,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("45° 01\' 00.00\"")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("45° 01\' 00.00\"")), 0);
 
    TRY_TEST(fmtr->Format(4*M_PI + (1.0/60.0)*M_PI/180.0 ,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("720° 01\' 00.00\"")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("720° 01\' 00.00\"")), 0);
 
    TRY_TEST( fmtr->get_UsesTag(NULL), E_POINTER );
    TRY_TEST( fmtr->get_UsesTag(&bValue), S_OK );
@@ -109,10 +109,10 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),COGO_E_BADFORMATTAG);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("d,m,s"),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("45d 00m 00.00s L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("45d 00m 00.00s L")), 0);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("deg,min,sec"),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("45deg 00min 00.00sec L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("45deg 00min 00.00sec L")), 0);
 
    // Format Specifiers
    //TRY_TEST( fmtr->FormatSpecifiers(-1,3,tjRight,nftScientific,1.0), E_INVALIDARG );
@@ -145,10 +145,10 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST( IsEqual(dblValue, 1.0), true );
 
    TRY_TEST(fmtr->Format(3*M_PI/4 + (1.0/60.0)*M_PI/180.0 + (1.1/3600.0)*M_PI/180.0 ,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("135° 01\' 0001.100\" L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("135° 01\' 0001.100\" L")), 0);
 
    TRY_TEST(fmtr->Format(0.1,CComBSTR("°,\',\""),&bstrTest),S_OK);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("0° 00\' 0000.000\" L")), 0);
+   TRY_TEST( _tcscmp(bstrTest,CComBSTR("0° 00\' 0000.000\" L")), 0);
 
    /// Test Events
    fmtr->put_Signed(VARIANT_FALSE);

@@ -93,7 +93,7 @@ void TestSimpleTwoSpan::Test()
    TRY_TEST(pengine->get_BasicVehicularResponse(&basic_response), S_OK);
 
    // dump results to a file
-   std::ofstream os("TestSimpleTwoSpan.txt");
+   std::_tofstream os("TestSimpleTwoSpan.txt");
 
    for (long is=0; is<1; is++)
    {

@@ -34,7 +34,7 @@
       http://www.tu-chemnitz.de/~marme/programs/tokenizer/index.html
       on 6/24/99. 
 
-      Replace vector<char> version with std::string's to match current version
+      Replace vector<char> version with std::_tstring's to match current version
       of standard library
 
    */
@@ -46,9 +46,9 @@
 #include <istream>
 
 
-typedef std::string Token;
-typedef std::string Delimiter;
-typedef std::string TString;
+typedef std::_tstring Token;
+typedef std::_tstring Delimiter;
+typedef std::_tstring TString;
 typedef TString::iterator TIter;
 
 // Currently, tokenizing is implemented on strings only. 
@@ -74,8 +74,8 @@ public:
     
     // Constructor; takes a set of delimiters.
     sysTokenizer();
-    sysTokenizer(const char *OneDel);
-    sysTokenizer(const char **Token_Del);
+    sysTokenizer(LPCTSTR OneDel);
+    sysTokenizer(LPCTSTR *Token_Del);
 
     // Destructor
     ~sysTokenizer();
@@ -103,18 +103,18 @@ public:
     size_type max_size() const;
     bool empty() const;
     
-    void push_back(const char *CString);
-    void push_back(const std::string& str);
+    void push_back(LPCTSTR CString);
+    void push_back(const std::_tstring& str);
 
     // Utilities for dealing with tokens once they are identified
     // parse a null-terminated string to a float. return false if not a number.
-    static bool ParseDouble(const char* lpszText, Float64* d);
-    static bool ParseLong(const char* lpszText, long* d);
+    static bool ParseDouble(LPCTSTR lpszText, Float64* d);
+    static bool ParseLong(LPCTSTR lpszText, long* d);
 
     
 private:
-    TString CS_to_TS(const char *CS);
-    char *TS_to_CS(TString &Vec);
+    TString CS_to_TS(LPCTSTR CS);
+    LPTSTR TS_to_CS(TString &Vec);
     
     Token find_next_token(TString &TS, TIter &Ti);
     
@@ -128,7 +128,7 @@ inline bool operator < (const sysTokenizer &T1, const sysTokenizer &T2)
 
 inline std::istream & operator >> (std::istream &is, sysTokenizer &T)
 {
-    std::string vec;
+    std::_tstring vec;
 
     for(char c = 0; is && c != '\n'; is.get(c))
         if(c != '\n' && c > 0) vec += c;

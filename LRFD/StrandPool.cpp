@@ -118,7 +118,7 @@ bool lrfdStrandPool::AssertValid() const
 
 void lrfdStrandPool::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for lrfdStrandPool" << endl;
+   os << _T("Dump for lrfdStrandPool") << endl;
 }
 #endif // _DEBUG
 
@@ -135,10 +135,10 @@ void lrfdStrandPool::Dump(dbgDumpContext& os) const
 //======================== LIFECYCLE  =======================================
 
 #define NEW_US_STRAND(name,grade,type,size,fpu,fpy,e,d,a) \
-ms_USStrand.insert( std::make_pair(hash(grade,type,size), boost::shared_ptr<matPsStrand>(new matPsStrand(name,grade,type,size,::ConvertToSysUnits(fpu,unitMeasure::KSI), ::ConvertToSysUnits(fpy, unitMeasure::KSI), ::ConvertToSysUnits(e, unitMeasure::KSI), ::ConvertToSysUnits(d,unitMeasure::Inch), ::ConvertToSysUnits(a, unitMeasure::Inch2) ) ) ) );
+ms_USStrand.insert( std::make_pair(hash(grade,type,size), boost::shared_ptr<matPsStrand>(new matPsStrand(_T(name),grade,type,size,::ConvertToSysUnits(fpu,unitMeasure::KSI), ::ConvertToSysUnits(fpy, unitMeasure::KSI), ::ConvertToSysUnits(e, unitMeasure::KSI), ::ConvertToSysUnits(d,unitMeasure::Inch), ::ConvertToSysUnits(a, unitMeasure::Inch2) ) ) ) );
 
 #define NEW_SI_STRAND(name,grade,type,size,fpu,fpy,e,d,a) \
-ms_SIStrand.insert( std::make_pair(hash(grade,type,size), boost::shared_ptr<matPsStrand>(new matPsStrand(name,grade,type,size,::ConvertToSysUnits(fpu,unitMeasure::MPa), ::ConvertToSysUnits(fpy, unitMeasure::MPa), ::ConvertToSysUnits(e, unitMeasure::MPa), ::ConvertToSysUnits(d,unitMeasure::Millimeter), ::ConvertToSysUnits(a, unitMeasure::Millimeter2) ) ) ) );
+ms_SIStrand.insert( std::make_pair(hash(grade,type,size), boost::shared_ptr<matPsStrand>(new matPsStrand(_T(name),grade,type,size,::ConvertToSysUnits(fpu,unitMeasure::MPa), ::ConvertToSysUnits(fpy, unitMeasure::MPa), ::ConvertToSysUnits(e, unitMeasure::MPa), ::ConvertToSysUnits(d,unitMeasure::Millimeter), ::ConvertToSysUnits(a, unitMeasure::Millimeter2) ) ) ) );
 
 lrfdStrandPool::lrfdStrandPool()
 { 
@@ -385,7 +385,7 @@ bool lrfdStrandIter::AssertValid() const
 
 void lrfdStrandIter::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for lrfdStrandIter" << endl;
+   os << _T("Dump for lrfdStrandIter") << endl;
 }
 
 #endif // _DEBUG
@@ -461,7 +461,7 @@ bool lrfdStrandPool::TestMe(dbgLog& rlog)
 
          for ( cSize = nSize; cSize < sizeof(size)/sizeof(matPsStrand::Size); cSize++ )
          {
-            rlog << "Grade = " << grade << " Type = " << type << " Size = " << size[cSize] << endl;
+            rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Size = ") << size[cSize] << endl;
             hashval = hash( grade, type, size[cSize] );
             pStrand = pPool->GetStrand( hashval );
             TRY_TESTME( pStrand != 0 );
@@ -508,7 +508,7 @@ bool lrfdStrandIter::TestMe(dbgLog& rlog)
             TRY_TESTME( pStrand != 0 );
 
             rlog << pStrand->GetName() << endl;
-            rlog << "Grade = " << grade << " Type = " << type << " Size = " << pStrand->GetSize() << endl;
+            rlog << _T("Grade = ") << grade << _T(" Type = ") << type << _T(" Size = ") << pStrand->GetSize() << endl;
 
             TRY_TESTME( pStrand->GetGrade() == grade );
             TRY_TESTME( pStrand->GetType()  == type );

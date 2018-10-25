@@ -55,7 +55,7 @@ HRESULT CViewTitleImpl::FinalConstruct()
    m_strText = "";
 
    CFont font;
-   font.CreatePointFont(120,"Arial");
+   font.CreatePointFont(120,_T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 120;
    m_Font.lfQuality = ANTIALIASED_QUALITY;
@@ -161,7 +161,7 @@ STDMETHODIMP_(CRect) CViewTitleImpl::GetBoundingBox()
       CSize size = pMapper->GetTextExtent(m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = pMapper->GetTextExtent(m_Font,"ABCDEFG\0");
+         size = pMapper->GetTextExtent(m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -209,7 +209,7 @@ STDMETHODIMP_(void) CViewTitleImpl::GetBoundingBox(IRect2d** wrect)
    (*wrect)->AddRef();
 }
 
-STDMETHODIMP_(void) CViewTitleImpl::SetText(LPCSTR lpszText)
+STDMETHODIMP_(void) CViewTitleImpl::SetText(LPCTSTR lpszText)
 {
    if ( m_strText == CString(lpszText) )
       return;
@@ -257,7 +257,7 @@ void CViewTitleImpl::GetTextLines(CStringArray& strArray)
    int length = strText.GetLength();
    while ( true )
    {
-      int next_position = strText.Find("\n",position);
+      int next_position = strText.Find(_T("\n"),position);
       if ( next_position == -1 )
       {
          strArray.Add(strText.Mid(position));

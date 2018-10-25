@@ -106,7 +106,7 @@ private:
    CComBSTR JointDoesntExistError(Fem2dMbrEndType end);
 
 #if defined DUMP_KMATRIX
-   std::ofstream m_logfile;
+   std::_tofstream m_logfile;
 #endif
 
 private:

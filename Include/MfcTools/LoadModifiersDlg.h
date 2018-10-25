@@ -43,9 +43,9 @@ class MFCTOOLSCLASS CLoadModifiersDlg : public CPropertySheet
 // Construction
 public:
 	CLoadModifiersDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-	CLoadModifiersDlg(LPCTSTR pszCaption = "Load Modifiers", CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	CLoadModifiersDlg(LPCTSTR pszCaption = _T("Load Modifiers"), CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 
-   void SetHelpData(const char* pszHelpFile,DWORD nd,DWORD nr,DWORD ni);
+   void SetHelpData(LPCTSTR pszHelpFile,DWORD nd,DWORD nr,DWORD ni);
 
    // levels on modifers are as follows:
    //  0 == High

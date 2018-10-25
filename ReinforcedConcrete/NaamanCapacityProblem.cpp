@@ -102,12 +102,12 @@ bool rcaNaamanCapacityProblem::TestMe(dbgLog& rlog)
 
    // The purpose of this test is to determine of the Effective Compressive Area
    // is being computed correctly.
-   matConcrete conc_4000("4ksi Concrete",
+   matConcrete conc_4000(_T("4ksi Concrete"),
                           ::ConvertToSysUnits(4.,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matMetal  rebar_60("60ksi Rebar", 
+   matMetal  rebar_60(_T("60ksi Rebar"), 
                       ::ConvertToSysUnits(490.,unitMeasure::PCF),
                       ::ConvertToSysUnits(29000.,unitMeasure::KSI),
                       ::ConvertToSysUnits(60.,unitMeasure::KSI));
@@ -215,7 +215,7 @@ Float64 rcaNaamanCapacityProblem::DoCalculateCompressionBlockBoundary()
          }
          catch(mathXRootFinder2dFailed&)
          {
-            rcaXRcCapProbError ex(rcaXRcCapProbError::InvalidProblemRep, __FILE__, __LINE__);
+            rcaXRcCapProbError ex(rcaXRcCapProbError::InvalidProblemRep, _T(__FILE__), __LINE__);
             ex.Throw();
          }
 
@@ -270,6 +270,11 @@ Float64 rcaNaamanCapacityProblem::Evaluate(Float64 x) const
    return cla - m_TargetArea;
 }
 
+mathFunction2d* rcaNaamanCapacityProblem::Clone() const
+{
+   ASSERT(false); // this method should never be called
+   return NULL;
+}
 
 void rcaNaamanCapacityProblem::Init()
 {

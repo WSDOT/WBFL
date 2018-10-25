@@ -75,7 +75,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bmfTrafficBarrierTemplate(const std::string& name,
+   bmfTrafficBarrierTemplate(const std::_tstring& name,
                              const gmTrafficBarrier* pTB,
                              const matConcreteEx* pConc);
 
@@ -100,10 +100,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    void SetTrafficBarrierShape(const gmTrafficBarrier* pTB);
@@ -141,7 +141,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    const gmTrafficBarrier* m_pTB;
    const matConcreteEx* m_pConc;
 

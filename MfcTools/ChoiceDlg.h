@@ -37,6 +37,7 @@ public:
 // Dialog Data
 	enum { IDD = IDD_CHOICE };
 
+   BOOL m_bCancel;
    CString m_Title;
    CString m_Question;
    CString m_Responses;

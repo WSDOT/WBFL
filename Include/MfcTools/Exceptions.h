@@ -28,7 +28,7 @@
 #include <MfcTools\XShutDown.h>
 #include <MfcTools\XUnwind.h>
 
-#define THROW_SHUTDOWN(msg,reason,save) throw( new CXShutDown(msg,reason,save,__FILE__,__LINE__) )
-#define THROW_UNWIND(msg,reason)        throw( new CXUnwind(msg,reason,__FILE__,__LINE__) )
+#define THROW_SHUTDOWN(msg,reason,save) throw( new CXShutDown(msg,reason,save,_T(__FILE__),__LINE__) )
+#define THROW_UNWIND(msg,reason)        throw( new CXUnwind(msg,reason,_T(__FILE__),__LINE__) )
 
 #endif // INCLUDED_MFCTOOLS_EXCEPTIONS_H_

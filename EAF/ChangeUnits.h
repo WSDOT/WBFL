@@ -32,7 +32,7 @@ class txnChangeUnits : public txnTransaction
 {
 public:
    txnChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits);
-   virtual std::string Name() const;
+   virtual std::_tstring Name() const;
    virtual txnTransaction* CreateClone() const;
    virtual bool Execute();
    virtual void Undo();

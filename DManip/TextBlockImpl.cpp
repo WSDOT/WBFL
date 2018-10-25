@@ -54,10 +54,10 @@ HRESULT CTextBlockImpl::FinalConstruct()
 {
    m_TextAlign = TA_TOP | TA_LEFT;
    m_Position.CoCreateInstance(CLSID_Point2d);
-   m_strText = "";
+   m_strText = _T("");
 
    CFont font;
-   font.CreatePointFont(80,"Arial");
+   font.CreatePointFont(80,_T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 80;
    m_Font.lfQuality = ANTIALIASED_QUALITY;
@@ -160,7 +160,7 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
       CSize size = pMapper->GetTextExtent(m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = pMapper->GetTextExtent(m_Font,"ABCDEFG\0");
+         size = pMapper->GetTextExtent(m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -290,7 +290,7 @@ STDMETHODIMP_(long) CTextBlockImpl::GetAngle()
    return m_Font.lfEscapement;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetText(LPCSTR lpszText)
+STDMETHODIMP_(void) CTextBlockImpl::SetText(LPCTSTR lpszText)
 {
    if ( m_strText == CString(lpszText) )
       return;
@@ -367,7 +367,7 @@ void CTextBlockImpl::GetTextLines(CStringArray& strArray)
    int length = strText.GetLength();
    while ( true )
    {
-      int next_position = strText.Find("\n",position);
+      int next_position = strText.Find(_T("\n"),position);
       if ( next_position == -1 )
       {
          strArray.Add(strText.Mid(position));

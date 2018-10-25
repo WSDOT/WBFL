@@ -56,31 +56,31 @@ CRectSelectFSMState::~CRectSelectFSMState()
 void CRectSelectFSMState::Do(CRectSelectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Do",fsm.GetState().StateName());
+   fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
 void CRectSelectFSMState::MouseDown(CRectSelectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseDown",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
 void CRectSelectFSMState::MouseUp(CRectSelectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseUp",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
 void CRectSelectFSMState::MouseMove(CRectSelectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseMove",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
 void CRectSelectFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("KeyPress",fsm.GetState().StateName());
+   fsm.FSMError(_T("KeyPress"),fsm.GetState().StateName());
 }
 
 // States and State Transitions

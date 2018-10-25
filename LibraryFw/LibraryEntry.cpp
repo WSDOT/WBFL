@@ -53,7 +53,7 @@ libLibraryEntry::libLibraryEntry(const libLibraryEntry& rOther)
 
 libLibraryEntry::~libLibraryEntry()
 {
-   CHECKX(!m_RefCnt,"Can't kill entry until all references are gone");
+   CHECKX(!m_RefCnt,_T("Can't kill entry until all references are gone"));
    Clean();
 }
 
@@ -69,13 +69,13 @@ libLibraryEntry& libLibraryEntry::operator= (const libLibraryEntry& rOther)
 }
 
 //======================== OPERATIONS =======================================
-void libLibraryEntry::SetName(const char* name)
+void libLibraryEntry::SetName(LPCTSTR name)
 {
    m_Name.erase();
    m_Name = name;
 }
 
-std::string libLibraryEntry::GetName() const
+std::_tstring libLibraryEntry::GetName() const
 {
    return m_Name;
 }
@@ -104,7 +104,7 @@ Uint32 libLibraryEntry::AddRef() const
 
 Uint32 libLibraryEntry::Release() const
 {
-   CHECKX(m_RefCnt>0,"Reference count cannot be negative");
+   CHECKX(m_RefCnt>0,_T("Reference count cannot be negative"));
 
    // just some safety code for release builds
    if ( m_RefCnt == 0 )
@@ -197,11 +197,11 @@ bool libLibraryEntry::AssertValid() const
 
 void libLibraryEntry::Dump(dbgDumpContext& os) const
 {
-   os << " Dump for libLibraryEntry" << endl;
-   os << "  m_Name             : " << m_Name << endl;
-   os << "  m_pLibrary         : " << (long)m_pLibrary << endl;
-   os << "  m_RefCnt           : " << m_RefCnt << endl;
-   os << "  m_IsEditingEnabled : " << m_IsEditingEnabled << endl;
+   os << _T(" Dump for libLibraryEntry") << endl;
+   os << _T("  m_Name             : ") << m_Name << endl;
+   os << _T("  m_pLibrary         : ") << (long)m_pLibrary << endl;
+   os << _T("  m_RefCnt           : ") << m_RefCnt << endl;
+   os << _T("  m_IsEditingEnabled : ") << m_IsEditingEnabled << endl;
 }
 #endif // _DEBUG
 

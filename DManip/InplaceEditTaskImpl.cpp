@@ -146,7 +146,7 @@ STDMETHODIMP_(DROPEFFECT) CInplaceEditTaskImpl::OnDropEx(COleDataObject* pDataOb
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CInplaceEditTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

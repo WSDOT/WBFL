@@ -35,8 +35,8 @@ interface iDataPointDrawStrategy : public IUnknown
 {
    // name of font face for symbol
    // "Symbol" is the default
-   STDMETHOD_(void,get_SymbolFontFace)(char* *pVal) PURE;
-   STDMETHOD_(void,put_SymbolFontFace)(const char* newVal) PURE;
+   STDMETHOD_(void,get_SymbolFontFace)(LPTSTR *pVal) PURE;
+   STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal) PURE;
 
    // character font size in 1/10 points
    STDMETHOD_(long,get_SymbolSize)() PURE;

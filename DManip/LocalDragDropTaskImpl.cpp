@@ -209,7 +209,7 @@ STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::OnDropEx(COleDataObject* pData
    return DropEx(pDataObject,dropEffect,dropList,point);
 }
 
-STDMETHODIMP_(void) CLocalDragDropTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CLocalDragDropTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

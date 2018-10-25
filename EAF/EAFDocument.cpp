@@ -367,18 +367,18 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
    return pView;
 }
 
-void CEAFDocument::FailSafeLogMessage(const char* msg)
+void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
 {
    CString strLogFile = EAFGetApp()->m_pszExeName;
-   strLogFile += ".log";
+   strLogFile += _T(".log");
 
-   std::ofstream ofile(strLogFile);
+   std::_tofstream ofile(strLogFile);
    sysTime now;
    now.PrintDate(true);
-   ofile << "Log opened " << now << std::endl;
+   ofile << _T("Log opened ") << now << std::endl;
 
    CString strExe = EAFGetApp()->m_pszAppName;
-   strExe += ".exe";
+   strExe += _T(".exe");
    
    CVersionInfo verInfo;
    if ( verInfo.Load(strExe) )
@@ -386,16 +386,16 @@ void CEAFDocument::FailSafeLogMessage(const char* msg)
       CString strProduct = verInfo.GetProductName();
       CString strVersion = verInfo.GetProductVersionAsString();
 
-      ofile << strProduct.LockBuffer() << " Version " << strVersion.LockBuffer() << std::endl;
+      ofile << strProduct.LockBuffer() << _T(" Version ") << strVersion.LockBuffer() << std::endl;
    }
    else
    {
-      ofile << "Product Version Information not available" << std::endl;
+      ofile << _T("Product Version Information not available") << std::endl;
    }
 
    ofile << msg << std::endl;
 
-   ofile << "Log closed" << now << std::endl;
+   ofile << _T("Log closed") << now << std::endl;
    ofile.close();
 }
 
@@ -423,7 +423,7 @@ void CEAFDocument::InitFailMessage()
    CString msg, msg1, msg2;
 
    CString strLogFile = EAFGetApp()->m_pszExeName;
-   strLogFile += ".log";
+   strLogFile += _T(".log");
 
    AfxFormatString1(msg1, IDS_E_BADINSTALL, EAFGetApp()->m_pszExeName );
    AfxFormatString1( msg2, IDS_E_PROBPERSISTS, strLogFile );
@@ -480,7 +480,7 @@ void CEAFDocument::UnloadDocumentPlugins()
 void CEAFDocument::OnUpdateViewStatusCenter(CCmdUI* pCmdUI)
 {
    CString str;
-   str.Format("%s Status Center",m_pStatusCenterDlg->IsWindowVisible() ? "Hide" : "Show");
+   str.Format(_T("%s Status Center"),m_pStatusCenterDlg->IsWindowVisible() ? _T("Hide") : _T("Show"));
    pCmdUI->SetText(str);
 }
 
@@ -503,7 +503,7 @@ BOOL CEAFDocument::OnNewDocument()
 
    // update the mainframe
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->UpdateFrameTitle("Untitled");
+   pMainFrame->UpdateFrameTitle(_T("Untitled"));
    pMainFrame->EnableModifiedFlag( IsModified() );
 
    return TRUE;
@@ -575,7 +575,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
 	   if (dwAttrib & FILE_ATTRIBUTE_READONLY)
       {
          CString msg;
-         msg.Format("Cannot save file. The file %s is read-only. Please try to save again to a different file.", lpszPathName);
+         msg.Format(_T("Cannot save file. The file %s is read-only. Please try to save again to a different file."), lpszPathName);
          AfxMessageBox(msg );
          return FALSE;
       }
@@ -583,12 +583,12 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
       // Create a backup copy of the last good save.
       // Backup filename is orginial filename, except the first
       // letter is a ~.
-      int idx = strBackup.ReverseFind( '\\' ); // look for last '\'. 
+      int idx = strBackup.ReverseFind( _T('\\') ); // look for last '\'. 
                                                // This is one character before the 
                                                // beginning of the filename
       ASSERT( idx != -1 ); // '\' wasn't found
       idx++;
-      strBackup.SetAt(idx,'~');
+      strBackup.SetAt(idx,_T('~'));
 
       bDidCopy = ::CopyFile( lpszPathName, strBackup, FALSE );
       if ( !bDidCopy && AfxMessageBox(IDS_E_UNSAFESAVE,MB_YESNO) == IDNO )
@@ -649,12 +649,12 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
 void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
 {
    CString msg;
-   msg.Format("%s\n%s%s%s\n%s\n%s%s\n%s%s%s%s",
-              "An error occured while recovering your last successful save.",
-              "It is highly likely that the file ", lpszPathName, " is corrupt.",
-              "To recover from this error,",
-              "   1. Delete ", lpszPathName,
-              "   2. Rename ", lpszBackup, " to ", lpszPathName);
+   msg.Format(_T("%s\n%s%s%s\n%s\n%s%s\n%s%s%s%s"),
+              _T("An error occured while recovering your last successful save."),
+              _T("It is highly likely that the file "), lpszPathName, _T(" is corrupt."),
+              _T("To recover from this error,"),
+              _T("   1. Delete "), lpszPathName,
+              _T("   2. Rename "), lpszBackup, _T(" to "), lpszPathName);
    
    AfxMessageBox(msg);
 }
@@ -662,12 +662,12 @@ void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBacku
 void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
 {
    CString msg;
-   msg.Format("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s",
-              "An error occured while recovering your last successful save.",
-              "It is highly likely that the file ", lpszPathName, " no longer exists.",
-              "To recover from this error,",
-              "   1. If ", lpszPathName, " exists, delete it.",
-              "   2. Rename ", lpszBackup, " to ", lpszPathName);
+   msg.Format(_T("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s"),
+              _T("An error occured while recovering your last successful save."),
+              _T("It is highly likely that the file "), lpszPathName, _T(" no longer exists."),
+              _T("To recover from this error,"),
+              _T("   1. If "), lpszPathName, _T(" exists, delete it."),
+              _T("   2. Rename "), lpszBackup, _T(" to "), lpszPathName);
    
    AfxMessageBox(msg);
 }
@@ -850,7 +850,7 @@ HRESULT CEAFDocument::ConvertTheDocument(LPCTSTR lpszPathName, CString* realFile
 
 void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
-   AfxMessageBox("Error converting document");
+   AfxMessageBox(_T("Error converting document"));
 }
 
 CString CEAFDocument::GetRootNodeName()
@@ -858,7 +858,7 @@ CString CEAFDocument::GetRootNodeName()
    CEAFApp* pApp = EAFGetApp();
    CString str = pApp->m_pszAppName;
    str.Trim();
-   str.Replace(" ","");
+   str.Replace(_T(" "),_T(""));
    return str;
 }
 
@@ -957,12 +957,12 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 
 void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
-   AfxMessageBox("Error opening document");
+   AfxMessageBox(_T("Error opening document"));
 }
 
 void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
-   AfxMessageBox("Error saving document");
+   AfxMessageBox(_T("Error saving document"));
 }
 
 CEAFStatusCenter& CEAFDocument::GetStatusCenter()
@@ -1015,17 +1015,17 @@ bool CEAFDocument::CanRepeat()
    return txnTxnManager::GetInstance()->CanRepeat();
 }
 
-std::string CEAFDocument::UndoName()
+std::_tstring CEAFDocument::UndoName()
 {
    return txnTxnManager::GetInstance()->UndoName();
 }
 
-std::string CEAFDocument::RedoName()
+std::_tstring CEAFDocument::RedoName()
 {
    return txnTxnManager::GetInstance()->RedoName();
 }
 
-std::string CEAFDocument::RepeatName()
+std::_tstring CEAFDocument::RepeatName()
 {
    return txnTxnManager::GetInstance()->RepeatName();
 }
@@ -1051,12 +1051,12 @@ void CEAFDocument::OnUpdateUndo(CCmdUI* pCmdUI)
    {
       pCmdUI->Enable(TRUE);
       CString strCommand;
-      strCommand.Format("Undo %s\tCtrl+Z",UndoName().c_str());
+      strCommand.Format(_T("Undo %s\tCtrl+Z"),UndoName().c_str());
       pCmdUI->SetText(strCommand);
    }
    else
    {
-      pCmdUI->SetText("Undo\tCtrl+Z");
+      pCmdUI->SetText(_T("Undo\tCtrl+Z"));
       pCmdUI->Enable(FALSE);
    }
 }
@@ -1073,12 +1073,12 @@ void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI)
    {
       pCmdUI->Enable(TRUE);
       CString strCommand;
-      strCommand.Format("Redo %s\tCtrl+Y",RedoName().c_str());
+      strCommand.Format(_T("Redo %s\tCtrl+Y"),RedoName().c_str());
       pCmdUI->SetText(strCommand);
    }
    else
    {
-      pCmdUI->SetText("Redo\tCtrl+Y");
+      pCmdUI->SetText(_T("Redo\tCtrl+Y"));
       pCmdUI->Enable(FALSE);
    }
 }

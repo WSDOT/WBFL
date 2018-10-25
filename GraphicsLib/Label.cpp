@@ -39,9 +39,9 @@ CLASS
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 // free function to parse a string with std::endl's in it and return them into a vector of strings
-std::vector<std::string> ParseLabel(const std::string& label);
-std::string UnParseLabel(const std::vector<std::string> labels);
-void GetLabelSize(HDC hDC, const std::vector<std::string>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt);
+std::vector<std::_tstring> ParseLabel(const std::_tstring& label);
+std::_tstring UnParseLabel(const std::vector<std::_tstring> labels);
+void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt);
 
 //======================== LIFECYCLE  =======================================
 grLabel::grLabel()
@@ -49,7 +49,7 @@ grLabel::grLabel()
    Init();
 } 
 
-grLabel::grLabel(const gpPoint2d& point, const std::string& label)
+grLabel::grLabel(const gpPoint2d& point, const std::_tstring& label)
 {
    Init();
    m_HookPoint = point;
@@ -151,12 +151,12 @@ void grLabel::SetLocation(const gpPoint2d& point, HorizPosition hpos, VertPositi
    m_VertPos = vpos;
 }
 
-void grLabel::SetLabel(const std::string& label)
+void grLabel::SetLabel(const std::_tstring& label)
 {
    m_Labels = ParseLabel(label);
 }
 
-std::string grLabel::GetLabel() const
+std::_tstring grLabel::GetLabel() const
 {
    return UnParseLabel(m_Labels);
 }
@@ -319,27 +319,27 @@ void grLabel::Dump(dbgDumpContext& os) const
 }
 #endif // _DEBUG
 
-std::vector<std::string> ParseLabel(const std::string& label)
+std::vector<std::_tstring> ParseLabel(const std::_tstring& label)
 {
-   std::vector<std::string> label_list;
-   std::string tmp;
-   std::string::size_type start_loc = 0;
-   std::string::size_type end_loc = 0;
+   std::vector<std::_tstring> label_list;
+   std::_tstring tmp;
+   std::_tstring::size_type start_loc = 0;
+   std::_tstring::size_type end_loc = 0;
    do {
-      end_loc = label.find("\n", start_loc); // find an std::endl
+      end_loc = label.find(_T("\n"), start_loc); // find an std::endl
       tmp = label.substr(start_loc, end_loc);
       label_list.push_back(tmp);
       start_loc = end_loc+1;
-   } while (end_loc!= std::string::npos);
+   } while (end_loc!= std::_tstring::npos);
 
    return label_list;
 }
 
-std::string UnParseLabel(const std::vector<std::string> labels)
+std::_tstring UnParseLabel(const std::vector<std::_tstring> labels)
 {
    // loop through vector and rebuild original label
-   std::string tmp;
-   std::ostringstream os;
+   std::_tstring tmp;
+   std::_tostringstream os;
    int siz = labels.size();
    for (int i=0; i<siz; i++)
    {
@@ -350,7 +350,7 @@ std::string UnParseLabel(const std::vector<std::string> labels)
    return os.str();
 }
 
-void GetLabelSize(HDC hDC, const std::vector<std::string>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt)
+void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, Uint32 pointSize, SIZE* psiz, LONG* pline_hgt)
 {
    HFONT new_font = grGraphTool::CreateRotatedFont(hDC, 0, pointSize);
    HGDIOBJ old_font = ::SelectObject(hDC, new_font);

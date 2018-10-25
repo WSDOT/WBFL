@@ -1139,7 +1139,7 @@ void CInfluenceLine::TraceInfluenceLine(InfluenceSideType side)
    for (ConstInfluencePointIterator it=container.begin(); it!=container.end(); it++)
    {
       const InflPoint& ifl = *it;
-      const char* side[] = {"Single","Left  ","Right "};
+      LPCTSTR side[] = {"Single","Left  ","Right "};
       ATLTRACE(_T("%4d Location Global %f, %s, Value = %f\n"), i, ifl.m_Location, side[ifl.m_LocationType], ifl.m_Value);
       i++;
    }

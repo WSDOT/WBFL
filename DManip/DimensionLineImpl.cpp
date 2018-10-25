@@ -767,7 +767,7 @@ void CDimensionLineImpl::UpdateTextBlock()
       util->Distance(start,end,&dist);
 
       CString strDist;
-      strDist.Format("%f",dist);
+      strDist.Format(_T("%f"),dist);
 
       m_pTextBlock->SetText(strDist);
    }

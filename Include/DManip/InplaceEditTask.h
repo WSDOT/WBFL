@@ -37,7 +37,7 @@ interface iInplaceEditTask : public IUnknown
 	STDMETHOD_(void,InitTask)() PURE;
    STDMETHOD_(void,NotifyEditable)() PURE;
    STDMETHOD_(BOOL,ValidateData)() PURE;
-   STDMETHOD_(void,FSMError)(const char* t,const char* s) PURE;
+   STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
 };
 
 #endif // !defined(AFX_InplaceEditTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

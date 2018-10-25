@@ -40,9 +40,9 @@ txnChangeUnits::txnChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafT
    m_UnitMode[1] = newUnits;
 }
 
-std::string txnChangeUnits::Name() const
+std::_tstring txnChangeUnits::Name() const
 {
-   return "Change Units";
+   return _T("Change Units");
 }
 
 txnTransaction* txnChangeUnits::CreateClone() const

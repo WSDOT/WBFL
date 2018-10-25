@@ -74,7 +74,7 @@ public:
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   mathXNumericIntegrator2dFailed(Reason reason,const char* file,Int16 line);
+   mathXNumericIntegrator2dFailed(Reason reason,LPCTSTR file,Int16 line);
 
    //------------------------------------------------------------------------
    // Default constructor

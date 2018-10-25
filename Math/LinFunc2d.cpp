@@ -79,6 +79,11 @@ Float64 mathLinFunc2d::Evaluate(Float64 x) const
    return m_Slope * x + m_Yintercept;
 }
 
+mathFunction2d* mathLinFunc2d::Clone() const
+{
+   return new mathLinFunc2d(*this);
+}
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================

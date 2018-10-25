@@ -220,7 +220,7 @@ private:
 #endif
 
 #if defined _DEBUG
-   std::ofstream logfile;
+   std::_tofstream logfile;
 #endif
 
 // public methods for C++ clients in this server

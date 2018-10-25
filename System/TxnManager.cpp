@@ -164,9 +164,9 @@ bool txnTxnManager::CanRepeat() const
    return retval;
 } // CanRedo
 
-std::string txnTxnManager::UndoName() const
+std::_tstring txnTxnManager::UndoName() const
 {
-   std::string name("");
+   std::_tstring name(_T(""));
 
    if (m_TxnHistory.empty())
       return name;
@@ -179,9 +179,9 @@ std::string txnTxnManager::UndoName() const
 
 }
 
-std::string txnTxnManager::RedoName() const
+std::_tstring txnTxnManager::RedoName() const
 {
-   std::string name("");
+   std::_tstring name(_T(""));
 
    if ( !m_UndoHistory.empty() )
    {
@@ -192,9 +192,9 @@ std::string txnTxnManager::RedoName() const
    return name;
 }
 
-std::string txnTxnManager::RepeatName() const
+std::_tstring txnTxnManager::RepeatName() const
 {
-   std::string name("");
+   std::_tstring name(_T(""));
 
    if ( !m_TxnHistory.empty() )
    {
@@ -215,7 +215,7 @@ Int16 txnTxnManager::GetUndoCount() const
    return m_UndoHistory.size();
 }
 
-void txnTxnManager::WriteTransactionLog(std::ostream& os) const
+void txnTxnManager::WriteTransactionLog(std::_tostream& os) const
 {
    TxnConstIterator begin = m_TxnHistory.begin();
    TxnConstIterator end   = m_TxnHistory.end();
@@ -279,12 +279,12 @@ txnTxnManager::~txnTxnManager()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void txnTxnManager::WriteLogIntroduction(std::ostream& /*os*/) const
+void txnTxnManager::WriteLogIntroduction(std::_tostream& /*os*/) const
 {
    // Do nothing
 }
 
-void txnTxnManager::WriteLogConclusion(std::ostream& /*os*/) const
+void txnTxnManager::WriteLogConclusion(std::_tostream& /*os*/) const
 {
    // Do nothing
 }
@@ -399,14 +399,14 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    // Add a repeatable txn
    pMgr->Execute( txn1 );
    TRY_TESTME( pMgr->CanRepeat()    == true ); // now there is one repeatable txn
-   TRY_TESTME( pMgr->RepeatName()   == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
 
    // Repeat the last txn
    pMgr->Repeat();
    TRY_TESTME( pMgr->CanRepeat()    == true );
-   TRY_TESTME( pMgr->RepeatName()   == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->RepeatName()   == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->GetTxnCount()  == 4 );
    TRY_TESTME( pMgr->GetUndoCount() == 0 );
    TRY_TESTME( pMgr->IsRedoMode()   == false );
@@ -418,10 +418,10 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->CanRepeat() == true );
 
    // Undo the last txn
-   TRY_TESTME( pMgr->UndoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
    pMgr->Undo();
    pMgr->Undo();
-   TRY_TESTME( pMgr->UndoName()     == std::string("Not Repeatable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Not Repeatable Txn")) );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == true );
    TRY_TESTME( pMgr->CanRepeat()    == false );
@@ -431,9 +431,9 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->IsRepeatMode() == false );
 
    // Redo the last undo
-   TRY_TESTME( pMgr->RedoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->RedoName()     == std::_tstring(_T("Undoable Txn")) );
    pMgr->Redo();
-   TRY_TESTME( pMgr->UndoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == true );
    TRY_TESTME( pMgr->CanRepeat()    == false );
@@ -445,7 +445,7 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    // Add a non-undoable txn followed by an undoable txn
    pMgr->Execute( txn3 );
    pMgr->Execute( txn1 );
-   TRY_TESTME( pMgr->UndoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == false );
    TRY_TESTME( pMgr->CanRepeat()    == true );
@@ -457,7 +457,7 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    // Undo the last txn, the next txn is not-undoable, but there is another
    // undoable one farther up the stack so undo should be enabled.
    pMgr->Undo();
-   TRY_TESTME( pMgr->UndoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
    TRY_TESTME( pMgr->CanUndo()      == true );
    TRY_TESTME( pMgr->CanRedo()      == true );
    TRY_TESTME( pMgr->CanRepeat()    == false );
@@ -499,7 +499,7 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->GetUndoCount() == 5 );
    TRY_TESTME( pMgr->IsRedoMode()   == false );
    TRY_TESTME( pMgr->IsRepeatMode() == true );
-   TRY_TESTME( pMgr->UndoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->UndoName()     == std::_tstring(_T("Undoable Txn")) );
 
    // Clear the undo history, but keep the txn history
    pMgr->ClearUndoHistory();
@@ -520,7 +520,7 @@ bool txnTxnManager::TestMe(dbgLog& rlog)
    TRY_TESTME( pMgr->GetUndoCount() == 1 );
    TRY_TESTME( pMgr->IsRedoMode()   == true );
    TRY_TESTME( pMgr->IsRepeatMode() == false );
-   TRY_TESTME( pMgr->RedoName()     == std::string("Undoable Txn") );
+   TRY_TESTME( pMgr->RedoName()     == std::_tstring(_T("Undoable Txn")) );
 
    // Clear everything out
    pMgr->Clear();

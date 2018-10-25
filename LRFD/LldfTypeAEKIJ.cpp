@@ -143,7 +143,7 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
          ExteriorMomentEquationRule(bSISpec,true);
 
          if ( GetNb() < 3 )
-            THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. See Table 4.6.2.2.2b-1");
+            THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
       }
       else
       {
@@ -155,17 +155,17 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
               lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEditionWith1996Interims )
          {
             if ( nb < 4 )
-               THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. See Table 4.6.2.2.2b-1");
+               THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
          }
          else
          {
             if ( nb < 3 )
-               THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. See Table 4.6.2.2.2b-1");
+               THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
 
             // Skew corrections only apply for Nb >= 4.  We can't use this method to
             // compute distribution factors if we have 3 beams and skews.
             if ( nb == 3 && (m_bSkewMoment || m_bSkewShear) )
-               THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. See Table 4.6.2.2.2e-1");
+               THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2e-1"));
          }
       }
    }
@@ -177,7 +177,7 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
 
    Float64 skew_max = ::ConvertToSysUnits( 60.0, unitMeasure::Degree );
    if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Excessive skew angle. See Table 4.6.2.2.2e-1");
+      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2e-1"));
 
    return true;
 }
@@ -661,7 +661,7 @@ bool lrfdLldfTypeAEKIJ::InteriorMomentEquationRule(bool bSISpec, bool doThrow) c
          Float64 Kgmax = ::ConvertToSysUnits( bSISpec ? 3e12 : 7000000., bSISpec ? unitMeasure::Millimeter4 : unitMeasure::Inch4);
          if ( !InRange( Kgmin, m_Kg, Kgmax ) )
          {
-            THROW_DF( lrfdXRangeOfApplicability, LongStiffness, "Longitudinal Stiffness Parameter (Kg) is out of range. See Table 4.6.2.2.2b-1");
+            THROW_DF( lrfdXRangeOfApplicability, LongStiffness, _T("Longitudinal Stiffness Parameter (Kg) is out of range. See Table 4.6.2.2.2b-1"));
          }
       }
    }
@@ -678,22 +678,22 @@ bool lrfdLldfTypeAEKIJ::InteriorShearEquationRule(bool bSISpec, bool doThrow) co
    if (SpGreaterThan16_Rule(bSISpec))
    {
       assert(!doThrow); // max spacing should be checked before here - we should never throw
-      THROW_DF(lrfdXRangeOfApplicability, Spacing, "Beam spacing is out of range -too large. See Table 4.6.2.2.2b-1");
+      THROW_DF(lrfdXRangeOfApplicability, Spacing, _T("Beam spacing is out of range -too large. See Table 4.6.2.2.2b-1"));
    }
 
    Float64 smin = ::ConvertToSysUnits( bSISpec ? 1100. : 3.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    if ( m_Savg < smin )
-      THROW_DF(lrfdXRangeOfApplicability, Spacing, "Beam spacing is out of range -too small. See Table 4.6.2.2.2b-1");
+      THROW_DF(lrfdXRangeOfApplicability, Spacing, _T("Beam spacing is out of range -too small. See Table 4.6.2.2.2b-1"));
 
    Float64 tsmin = ::ConvertToSysUnits( bSISpec ? 100. : 4.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Inch);
    Float64 tsmax = ::ConvertToSysUnits( bSISpec ? 300. : 12., bSISpec ? unitMeasure::Millimeter : unitMeasure::Inch);
    if ( !InRange( tsmin, m_ts, tsmax ) )
-      THROW_DF(lrfdXRangeOfApplicability,SlabDepth, "Slab depth is out of range. See Table 4.6.2.2.2b-1");
+      THROW_DF(lrfdXRangeOfApplicability,SlabDepth, _T("Slab depth is out of range. See Table 4.6.2.2.2b-1"));
 
    Float64 lmin = ::ConvertToSysUnits( bSISpec ? 6000. : 20., bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    Float64 lmax = ::ConvertToSysUnits( bSISpec ? 73000. : 240., bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    if ( !InRange( lmin, m_L, lmax ) )
-      THROW_DF( lrfdXRangeOfApplicability,SpanLength, "Span length is out of range. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability,SpanLength, _T("Span length is out of range. See Table 4.6.2.2.2b-1"));
 
 
    return true;
@@ -725,7 +725,7 @@ bool lrfdLldfTypeAEKIJ::DeRule(bool bSISpec, bool doThrow) const
    Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
    if (!InRange( demin, de_raw, demax ) )
    {
-      THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, "Curb offset (de) is out of range. See Table 4.6.2.2.2d-1");
+      THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
    }
    else
       return true;

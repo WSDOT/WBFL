@@ -67,7 +67,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor. Initializes the object with the supplied parameters.
-   matMetal(const std::string& name,
+   matMetal(const std::_tstring& name,
             Float64 density,
             Float64 modE,
             Float64 yieldStress,
@@ -78,7 +78,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor.  Creates an elastic-perfectly plastic material.
-   matMetal(const std::string& name,
+   matMetal(const std::_tstring& name,
             Float64 density,
             Float64 modE,
             Float64 yieldStress);
@@ -115,10 +115,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    void SetDensity(Float64 density);
@@ -223,7 +223,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    Float64 m_Density;
    Float64 m_ModE;
    Float64 m_YieldStress;

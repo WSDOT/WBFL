@@ -96,7 +96,7 @@ public:
 
    //------------------------------------------------------------------------
    // Initializes the object with the supplied parameters.
-   matPsStrand(const std::string& name,Grade grade,Type type,Size size,
+   matPsStrand(const std::_tstring& name,Grade grade,Type type,Size size,
                Float64 fpu, Float64 fpy, Float64 modE,
                Float64 d, Float64 a);
 
@@ -127,10 +127,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    void SetGrade(Grade grade);
@@ -180,6 +180,8 @@ public:
    //------------------------------------------------------------------------
    Float64 GetE() const;
 
+   static std::_tstring GetSize(matPsStrand::Size size,bool bUnitsUS);
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
 #if defined _DEBUG
@@ -215,7 +217,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    Grade       m_Grade;
    Type        m_Type;
    Size        m_Size;

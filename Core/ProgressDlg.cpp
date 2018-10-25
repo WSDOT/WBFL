@@ -109,9 +109,9 @@ void CProgressDlg::PumpMessage()
 void CProgressDlg::OnCancel()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState()); // want App state so that the dialog has the correc title
-   if ( AfxMessageBox("Are you sure you want to cancel?",MB_YESNO | MB_ICONQUESTION) == IDYES )
+   if ( AfxMessageBox(_T("Are you sure you want to cancel?"),MB_YESNO | MB_ICONQUESTION) == IDYES )
    {
-      UpdateMessage("Cancelling...");
+      UpdateMessage(_T("Cancelling..."));
       m_bContinue = FALSE;
       m_Cancel.EnableWindow(FALSE); // doesn't need to be enabled any longer
    }

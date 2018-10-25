@@ -31,13 +31,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void DDX_String( CDataExchange* pDX, int nIDC, std::string& str )
+void DDX_String( CDataExchange* pDX, int nIDC, std::_tstring& str )
 {
 	HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
 	if ( pDX->m_bSaveAndValidate )
 	{
 		int nLen = ::GetWindowTextLength( hWndCtrl ) + 1;
-      char* text = new char[ nLen ];
+      LPTSTR text = new TCHAR[ nLen ];
 		::GetWindowText( hWndCtrl, text, nLen );
       str.assign( text );
       delete[] text;
@@ -48,7 +48,7 @@ void DDX_String( CDataExchange* pDX, int nIDC, std::string& str )
 	}
 }
 
-void DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value)
+void DDX_LBString(CDataExchange* pDX, int nIDC, std::_tstring& value)
 {
    HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 	if (pDX->m_bSaveAndValidate)
@@ -66,7 +66,7 @@ void DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value)
 		else
 		{
 			// no selection
-         value = std::string();
+         value = std::_tstring();
 		}
 	}
 	else
@@ -81,7 +81,7 @@ void DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value)
 	}
 }
 
-void DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::string& value)
+void DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::_tstring& value)
 {
 	HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 	if (pDX->m_bSaveAndValidate)
@@ -106,7 +106,7 @@ void DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::string& value)
 	}
 }
 
-void DDX_CBString( CDataExchange* pDX, int nIDC, std::string& str )
+void DDX_CBString( CDataExchange* pDX, int nIDC, std::_tstring& str )
 {
    HWND hWnd = pDX->PrepareCtrl( nIDC );
    if ( pDX->m_bSaveAndValidate )
@@ -117,7 +117,7 @@ void DDX_CBString( CDataExchange* pDX, int nIDC, std::string& str )
          len = 255;
 
       // Get length
-      char* buffer = new char[len+1];
+      LPTSTR buffer = new TCHAR[len+1];
       ::GetWindowText( hWnd, buffer, len+1 );
       str = buffer;
       delete[] buffer;
@@ -134,7 +134,7 @@ void DDX_CBString( CDataExchange* pDX, int nIDC, std::string& str )
    }
 }
 
-void DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::string& str)
+void DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::_tstring& str)
 {
 	HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 	if (pDX->m_bSaveAndValidate)
@@ -159,7 +159,7 @@ void DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::string& str)
 	}
 }
 
-void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::string& str)
+void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::_tstring& str)
 {
 	HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 	if (pDX->m_bSaveAndValidate)
@@ -189,10 +189,10 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::string& str)
             if ( len < 0 )
                len = 255;
 
-            char* buffer = new char[len+1];
+            LPTSTR buffer = new TCHAR[len+1];
             ::SendMessage(hWndCtrl, CB_GETLBTEXT, (WPARAM)i, (LPARAM)buffer); 
 
-            std::string strText(buffer);
+            std::_tstring strText(buffer);
             if ( strText == str )
             {
 			      // select it
@@ -236,7 +236,7 @@ void DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str)
             if ( len < 0 )
                len = 255;
 
-            char* buffer = new char[len+1];
+            LPTSTR buffer = new TCHAR[len+1];
             ::SendMessage(hWndCtrl, CB_GETLBTEXT, (WPARAM)i, (LPARAM)buffer); 
 
             CString strText(buffer);
@@ -264,7 +264,7 @@ void DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value)
    if(value<0.0)
    {
       pDX->PrepareEditCtrl(nIDC);
-	   AfxMessageBox("Please enter non-negative number!", MB_ICONEXCLAMATION);
+	   AfxMessageBox(_T("Please enter non-negative number!"), MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
 }
@@ -280,7 +280,7 @@ void DDV_GreaterThanZero(CDataExchange* pDX, int nIDC,Float64 value)
    if( !(value > 0.0) )
    {
       pDX->PrepareEditCtrl(nIDC);
-	   AfxMessageBox("Please enter a number that is greater than zero!", MB_ICONEXCLAMATION);
+	   AfxMessageBox(_T("Please enter a number that is greater than zero!"), MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
 }
@@ -333,6 +333,21 @@ void DDX_Percentage(CDataExchange* pDX,int nIDC,Float64& value)
    }
 }
 
+void DDX_Fractional(CDataExchange* pDX,int nIDC,Float64& value)
+{
+   Float64 v;
+   if ( pDX->m_bSaveAndValidate )
+   {
+      DDX_Text(pDX,nIDC,v);
+      value = -v/100;
+   }
+   else
+   {
+      v = -100*value;
+      DDX_Text(pDX,nIDC,v);
+   }
+}
+
 
 void DDV_LimitOrMore(CDataExchange* pDX,int nIDC,Float64 value,Float64 min)
 {
@@ -345,7 +360,7 @@ void DDV_LimitOrMore(CDataExchange* pDX,int nIDC,Float64 value,Float64 min)
    {
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
-      msg.Format("Please enter a number that is equal to or greater than %f",min);
+      msg.Format(_T("Please enter a number that is equal to or greater than %f"),min);
       AfxMessageBox( msg, MB_ICONEXCLAMATION );
 	   pDX->Fail();
    }
@@ -356,19 +371,19 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    if ( !pDX->m_bSaveAndValidate )
       return;
 
-   std::string strLower;
-   std::string strUpper;
+   std::_tstring strLower;
+   std::_tstring strUpper;
 
    bool bPassedLower = false;
    if ( lower == mfcDDV::LT )
    {
-      strLower = "greater than";
+      strLower = _T("greater than");
       if ( min < value )
          bPassedLower = true;
    }
    else
    {
-      strLower = "greater than or equal to";
+      strLower = _T("greater than or equal to");
       if ( IsLE(min,value) )
          bPassedLower = true;
    }
@@ -376,13 +391,13 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    bool bPassedUpper = false;
    if ( upper == mfcDDV::GT )
    {
-      strUpper = "less than";
+      strUpper = _T("less than");
       if ( value < max )
          bPassedUpper = true;
    }
    else
    {
-      strUpper = "less than or equal to";
+      strUpper = _T("less than or equal to");
       if ( IsGE(value,max) )
          bPassedUpper = true;
    }
@@ -390,7 +405,7 @@ void DDV_Range(CDataExchange* pDX, mfcDDV::LowerBound lower,mfcDDV::UpperBound u
    if ( !bPassedLower || !bPassedUpper )
    {
       CString msg;
-      msg.Format("Please enter a number that is %s %f and %s %f",min,strLower.c_str(),strUpper.c_str(),max);
+      msg.Format(_T("Please enter a number that is %s %f and %s %f"),min,strLower.c_str(),strUpper.c_str(),max);
       AfxMessageBox( msg, MB_ICONEXCLAMATION );
 	   pDX->Fail();
    }

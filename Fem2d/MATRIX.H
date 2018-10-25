@@ -60,7 +60,7 @@ public:
    virtual ~Matrix();
 
    void Resize(long nr,long nc);
-   friend std::ostream& operator<< ( std::ostream& os, const Matrix& m );
+   friend std::_tostream& operator<< ( std::_tostream& os, const Matrix& m );
 
 
 // Member Functions

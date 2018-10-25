@@ -133,7 +133,8 @@ public:
                          Float64 rh, // relative humidity
 
                          Float64 ti,   // Time until prestress transfer
-                         Float64 shippingLosses // time dependent loss at shipping or % of final time dependent loss if < 0
+                         Float64 shippingLosses, // time dependent loss at shipping or % of final time dependent loss if < 0
+                         bool bValidateParameters
                          );
 
    //------------------------------------------------------------------------

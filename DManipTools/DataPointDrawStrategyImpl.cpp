@@ -55,16 +55,16 @@ END_INTERFACE_MAP()
 DELEGATE_CUSTOM_INTERFACE(CDataPointDrawStrategyImpl,DrawPointStrategy);
 DELEGATE_CUSTOM_INTERFACE(CDataPointDrawStrategyImpl,Strategy);
 
-STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::get_SymbolFontFace(char* *pVal)
+STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::get_SymbolFontFace(LPTSTR *pVal)
 {
    METHOD_PROLOGUE(CDataPointDrawStrategyImpl,Strategy);
 
    int nChar = pThis->m_FontFace.GetLength()+1;
-   *pVal = new char[nChar];
-   strcpy_s(*pVal, nChar, pThis->m_FontFace);
+   *pVal = new TCHAR[nChar];
+   _tcscpy_s(*pVal, nChar, pThis->m_FontFace);
 }
 
-STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::put_SymbolFontFace(const char* newVal)
+STDMETHODIMP_(void) CDataPointDrawStrategyImpl::XStrategy::put_SymbolFontFace(LPCTSTR newVal)
 {
    METHOD_PROLOGUE(CDataPointDrawStrategyImpl,Strategy);
 

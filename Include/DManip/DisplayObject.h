@@ -76,7 +76,7 @@ interface iDisplayObject : public IUnknown
 
    // Tool Tips
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText) PURE;
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) PURE;
    STDMETHOD_(CString,GetToolTipText)() PURE;
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) PURE;
    STDMETHOD_(long,GetMaxTipWidth)() PURE;

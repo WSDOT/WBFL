@@ -61,7 +61,7 @@ CTestFourStage::~CTestFourStage()
 HRESULT CTestFourStage::Test()
 {
    // dump results to a file
-   std::ofstream os("FourStage.txt");
+   std::_tofstream os("FourStage.txt");
 
    // build a model and attach it to our load group response object
 

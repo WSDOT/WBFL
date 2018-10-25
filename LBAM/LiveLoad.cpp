@@ -35,10 +35,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // live load names. Note that this sequence must match the enums in LiveLoadModelType
-static const char* LL_NAMES[]={"Deflection","Design","Pedestrian","Fatigue","Permit","Special",
-"LegalRoutineRating","LegalSpecialRating","PermitRoutineRating","PermitSpecialRating"};
+static LPCTSTR LL_NAMES[]={_T("Deflection"),_T("Design"),_T("Pedestrian"),_T("Fatigue"),_T("Permit"),_T("Special"),
+_T("LegalRoutineRating"),_T("LegalSpecialRating"),_T("PermitRoutineRating"),_T("PermitSpecialRating")};
 
-static const int NUM_LLM = sizeof(LL_NAMES)/sizeof(const char*);
+static const int NUM_LLM = sizeof(LL_NAMES)/sizeof(LPCTSTR);
 
 /////////////////////////////////////////////////////////////////////////////
 // CLiveLoad

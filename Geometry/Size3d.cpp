@@ -119,6 +119,19 @@ STDMETHODIMP CSize3d::get_StructuredStorage(IStructuredStorage2* *pStg)
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
+STDMETHODIMP CSize3d::Clone(ISize3d** clone)
+{
+   CHECK_RETOBJ(clone);
+   CComObject<CSize3d>* pClone;
+   CComObject<CSize3d>::CreateInstance(&pClone);
+   pClone->m_Dx = m_Dx;
+   pClone->m_Dy = m_Dy;
+   pClone->m_Dz = m_Dz;
+   (*clone) = pClone;
+   (*clone)->AddRef();
+   return S_OK;
+}
+
 STDMETHODIMP CSize3d::Dimensions(Float64* pDx,Float64* pDy,Float64* pDz)
 {
    CHECK_RETVAL(pDx);

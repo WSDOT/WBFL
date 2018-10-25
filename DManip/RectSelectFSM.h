@@ -45,7 +45,7 @@ public:
 	CRectSelectFSMState();
 	virtual ~CRectSelectFSMState();
 
-	virtual const char* StateName() const = 0;
+	virtual LPCTSTR StateName() const = 0;
 	virtual void Do(CRectSelectFSM& fsm);
 	virtual void MouseDown(CRectSelectFSM& fsm);
 	virtual void MouseUp(CRectSelectFSM& fsm);
@@ -59,7 +59,7 @@ public:
 class CRectSelectFSMDoneState : public CRectSelectFSMState
 {
 public:
-   virtual const char* StateName() const { return "Done"; }
+   virtual LPCTSTR StateName() const { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -68,7 +68,7 @@ public:
 class CRectSelectFSMWaitingForSecondPointState : public CRectSelectFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForSecondPoint"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForSecondPoint"); }
    virtual void MouseMove(CRectSelectFSM& fsm);
    virtual void MouseUp(CRectSelectFSM& fsm);
    virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm);
@@ -80,7 +80,7 @@ public:
 class CRectSelectFSMStartState : public CRectSelectFSMState
 {
 public:
-   virtual const char* StateName() const { return "Start"; }
+   virtual LPCTSTR StateName() const { return _T("Start"); }
    virtual void Do(CRectSelectFSM& fsm);
 };
 

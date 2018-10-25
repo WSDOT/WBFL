@@ -29,12 +29,12 @@
 #include <Units\SysUnits.h>
 #include <limits>
 
-void MFCTOOLSFUNC DDX_String(CDataExchange* pDX,int nIDC, std::string& str);
-void MFCTOOLSFUNC DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value);
-void MFCTOOLSFUNC DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::string& value);
-void MFCTOOLSFUNC DDX_CBString(CDataExchange* pDX,int nIDC, std::string& str);
-void MFCTOOLSFUNC DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::string& str);
-void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::string& str);
+void MFCTOOLSFUNC DDX_String(CDataExchange* pDX,int nIDC, std::_tstring& str);
+void MFCTOOLSFUNC DDX_LBString(CDataExchange* pDX, int nIDC, std::_tstring& value);
+void MFCTOOLSFUNC DDX_LBStringExact(CDataExchange* pDX, int nIDC, std::_tstring& value);
+void MFCTOOLSFUNC DDX_CBString(CDataExchange* pDX,int nIDC, std::_tstring& str);
+void MFCTOOLSFUNC DDX_CBStringExact(CDataExchange* pDX, int nIDC, std::_tstring& str);
+void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, std::_tstring& str);
 void MFCTOOLSFUNC DDX_CBStringExactCase(CDataExchange* pDX, int nIDC, CString& str);
 
 void MFCTOOLSFUNC DDV_NonNegativeDouble(CDataExchange* pDX, int nIDC,Float64 value);
@@ -45,6 +45,7 @@ void MFCTOOLSFUNC DDX_Check_Bool(CDataExchange* pDX, int nIDC, bool& value);
 void MFCTOOLSFUNC DDX_Text(CDataExchange* pDX, int nIDC, Uint16& value);
 
 void MFCTOOLSFUNC DDX_Percentage(CDataExchange* pDX,int nIDC,Float64& value);
+void MFCTOOLSFUNC DDX_Fractional(CDataExchange* pDX,int nIDC,Float64& value);
 
 class MFCTOOLSCLASS mfcDDV
 {
@@ -65,7 +66,7 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
    if ( pDX->m_bSaveAndValidate )
    {
       CString strText;
-      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowTextA(strText);
+      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowText(strText);
       strText.Trim();
       CString strKeyword = CString(lpszKeyword).Left(3);
       if ( strText.GetLength() == 0 || strKeyword.CompareNoCase(strText.Left(3)) == 0 )
@@ -92,7 +93,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
    if ( pDX->m_bSaveAndValidate )
    {
       CString strText;
-      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowTextA(strText);
+      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowText(strText);
       strText.Trim();
       CString strKeyword = CString(lpszKeyword).Left(3);
       if ( strText.GetLength() == 0 || strKeyword.CompareNoCase(strText.Left(3)) == 0 )
@@ -130,7 +131,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, bool b
    if( !(limit < value) )
    {
       CString msg;
-      msg.Format("Please enter a number that is greater than %f %s", 
+      msg.Format(_T("Please enter a number that is greater than %f %s"), 
                  ::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
@@ -151,7 +152,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, bool bUnitM
    if( !IsEqual(value,limit) && value < limit )
    {
       CString msg;
-      msg.Format("Please enter a number that is at least %f %s", 
+      msg.Format(_T("Please enter a number that is at least %f %s"), 
                  ::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
@@ -172,7 +173,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, bool bUni
    if( !(value < limit) )
    {
       CString msg;
-      msg.Format("Please enter a number that is less than %f %s", 
+      msg.Format(_T("Please enter a number that is less than %f %s"), 
                  ::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
@@ -193,7 +194,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, bool bUnitM
    if( !IsEqual(limit,value) && limit < value )
    {
       CString msg;
-      msg.Format("Please enter a number that is not more than %f %s", 
+      msg.Format(_T("Please enter a number that is not more than %f %s"), 
                  ::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
@@ -214,7 +215,7 @@ void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, bool bUnitMo
    if(  value < min || max < value )
    {
       CString msg;
-      msg.Format("Please enter a number in the range %f to %f %s", 
+      msg.Format(_T("Please enter a number in the range %f to %f %s"), 
                  ::ConvertFromSysUnits( min, displayUnit ), 
                  ::ConvertFromSysUnits( max, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
@@ -283,7 +284,7 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, bo
       Float64 f = ::ConvertFromSysUnits( data, displayUnit );
       DDX_Text( pDX, nIDC, f );
 
-      std::string tag = displayUnit.UnitTag();
+      std::_tstring tag = displayUnit.UnitTag();
       DDX_String( pDX, nIDCTag, tag );
 	}
 }
@@ -297,7 +298,7 @@ void DDX_Tag(CDataExchange* pDX, int nIDCTag, bool bUnitModeSI, const U& usDispl
 	}
 	else
 	{
-      std::string tag = displayUnit.UnitTag();
+      std::_tstring tag = displayUnit.UnitTag();
       DDX_String( pDX, nIDCTag, tag );
 	}
 }
@@ -355,7 +356,7 @@ void DDX_Tag(CDataExchange* pDX, int nIDCTag, const U& umIndirectMeasure )
 	}
 	else
 	{
-      std::string tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
+      std::_tstring tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
       DDX_String( pDX, nIDCTag, tag );
 	}
 }
@@ -375,7 +376,7 @@ void DDX_UnitValue( CDataExchange* pDX, int nIDC, Float64& data, const U& umIndi
       CString strValue;
       if (data!=Float64_Inf) // Infinite values create a blank line
       {
-         strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
          strValue.TrimLeft();
       }
       DDX_Text( pDX, nIDC, strValue );
@@ -396,7 +397,7 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
       CString strValue;
       if (data!=Float64_Inf) // Infinite values create a blank line
       {
-         strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
          strValue.TrimLeft();
       }
       DDX_Text( pDX, nIDC, strValue );
@@ -409,6 +410,9 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
 template <class U>
 void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data, const U& umIndirectMeasure )
 {
+   std::_tstring tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
+   DDX_String( pDX, nIDCTag, tag );
+
 	if ( pDX->m_bSaveAndValidate )
 	{
       CString strOffset;
@@ -421,7 +425,7 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
       if ( cDir == 'L')
          sign = -1;
       
-      data = atof(strOffset);
+      data = _tstof(strOffset);
       data = ::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure);
       data *= sign;
 	}
@@ -429,23 +433,20 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
 	{
       CString strOffset;
       if ( data < 0 )
-         strOffset.Format("%*.*f L",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f L"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
       else if ( 0 < data )
-         strOffset.Format("%*.*f R",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f R"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
       else
-         strOffset.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
 
       strOffset.TrimLeft();
 
       DDX_Text( pDX, nIDC, strOffset );
-
-      std::string tag = umIndirectMeasure.UnitOfMeasure.UnitTag();
-      DDX_String( pDX, nIDCTag, tag );
 	}
 }
 
 template <class T,class U>
-void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is greater than %f %s" )
+void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is greater than %f %s") )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -466,7 +467,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T lim
 }
 
 template <class T,class U>
-void DDV_UnitValueLimitOrMore(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is at least %f %s" )
+void DDV_UnitValueLimitOrMore(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is at least %f %s") )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -487,7 +488,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, int nIDC, T& value, T limit, c
 }
 
 template <class T,class U>
-void DDV_UnitValueLessThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is less than %f %s" )
+void DDV_UnitValueLessThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is less than %f %s") )
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -510,7 +511,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit,
 
 
 template <class T,class U>
-void DDV_UnitValueLimitOrLess(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, const char* message="Please enter a number that is not more than %f %s")
+void DDV_UnitValueLimitOrLess(CDataExchange* pDX, int nIDC, T& value, T limit, const U& umIndirectMeasure, LPCTSTR message=_T("Please enter a number that is not more than %f %s"))
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -572,7 +573,7 @@ void DDV_UnitValueRange(CDataExchange* pDX, int nIDC, T& value, T min, T max, co
    {
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
-      msg.Format("Please enter a number in the range %f to %f %s", 
+      msg.Format(_T("Please enter a number in the range %f to %f %s"), 
                  ::ConvertFromSysUnits( min, umIndirectMeasure.UnitOfMeasure ), 
                  ::ConvertFromSysUnits( max, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );

@@ -64,8 +64,8 @@ inline CComBSTR GetHelpFile()
 // macros to help error processing
 // short-hand version if consistent naming conventions are used
 #define THROW_LBAMC(errNam) { ATLASSERT(0); THROW_LBAMC_NOA(errNam);}
-#define THROW_LBAMC_NOA(errNam) { throw CComException(__FILE__,__LINE__, IDS_E_##errNam, LBAMC_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMC_MSG(errNam, msg) { ATLASSERT(0); throw CComException(__FILE__,__LINE__, msg, LBAMC_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMC_NOA(errNam) { throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMC_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMC_MSG(errNam, msg) { ATLASSERT(0); throw CComException(_T(__FILE__),__LINE__, msg, LBAMC_E_##errNam, IDH_E_##errNam);}
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

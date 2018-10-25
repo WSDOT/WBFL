@@ -73,9 +73,9 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   CXUnwind(const char* msg,   // The error message
+   CXUnwind(LPCTSTR msg,   // The error message
             Int32 reason,      // A reason code
-            const char* file,  // File where the exception occured
+            LPCTSTR file,  // File where the exception occured
             Int16 line         // Line number where the exception occured
             );
 
@@ -92,7 +92,7 @@ public:
    virtual Int32 GetReason() const;
 
    //------------------------------------------------------------------------
-   virtual void GetErrorMessage(std::string* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const;
 
    //------------------------------------------------------------------------
    // overload mfc error message
@@ -100,7 +100,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the filename where the exceptions thrown from.
-   std::string GetFile() const;
+   std::_tstring GetFile() const;
 
    //------------------------------------------------------------------------
    // Returns the line number where the exception was thrown from.
@@ -120,9 +120,9 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Int32 m_Reason;
-   std::string m_Message;
+   std::_tstring m_Message;
    bool m_bAttemptSave;
-   std::string m_File;
+   std::_tstring m_File;
    Int16 m_Line;
 
    // GROUP: LIFECYCLE

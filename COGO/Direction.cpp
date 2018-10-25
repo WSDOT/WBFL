@@ -254,24 +254,24 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
    USES_CONVERSION;
 
    CHECK_IN(bstrDir);
-   std::string strDir(OLE2A(bstrDir));
+   std::_tstring strDir(OLE2T(bstrDir));
 
-   char cY;
+   TCHAR cY;
    long deg;
    long min;
    Float64 sec;
-   char cX;
+   TCHAR cX;
    
    // Trim the whitespace off both ends
-   std::string::size_type last_leading_space   = strDir.find_first_not_of(" ");
-   if ( last_leading_space == std::string::npos )
+   std::_tstring::size_type last_leading_space   = strDir.find_first_not_of(_T(" "));
+   if ( last_leading_space == std::_tstring::npos )
       return BadDirectionString();
 
-   std::string::size_type cChar;
+   std::_tstring::size_type cChar;
    cChar = last_leading_space;  // number of characters to remove
    strDir.erase( 0, cChar );
 
-   std::string::size_type first_trailing_space = strDir.find_last_not_of(" ");
+   std::_tstring::size_type first_trailing_space = strDir.find_last_not_of(_T(" "));
    cChar = strDir.length() - first_trailing_space - 1;
    strDir.erase( first_trailing_space+1, cChar );
 
@@ -280,7 +280,7 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
    // nParts = 3 ->  N dd E
    // nParts = 4 ->  N dd mm E
    // nParts = 5 ->  N dd mm ss.s E
-   short nParts = std::count( strDir.begin(), strDir.end(), ' ' ) + 1;
+   short nParts = std::count( strDir.begin(), strDir.end(), _T(' ') ) + 1;
    ATLASSERT( nParts > 0 );
    if ( nParts < 3 || 5 < nParts )
       return BadDirectionString();
@@ -292,33 +292,33 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
    // Get N/S part. Make sure it is an N or an S, and there
    // is a space following it.
    cY = toupper( strDir[0] );
-   if ( cY != 'N' && cY != 'S' || strDir[1] != ' ')
+   if ( cY != _T('N') && cY != _T('S') || strDir[1] != _T(' ') )
       return BadDirectionString();
 
-   NSDirectionType nsDir = (cY == 'N' ? nsNorth : nsSouth);
+   NSDirectionType nsDir = (cY == _T('N') ? nsNorth : nsSouth);
 
    // Get the E/W part. Make sure it is an E or a W, and there
    // is a space following it.
    cX = toupper( strDir[strDir.size()-1] );
-   if ( cX != 'E' && cX != 'W' || strDir[strDir.size()-2] != ' ')
+   if ( cX != _T('E') && cX != _T('W') || strDir[strDir.size()-2] != _T(' ') )
       return BadDirectionString();
 
-   EWDirectionType ewDir = (cX == 'E' ? ewEast : ewWest);
+   EWDirectionType ewDir = (cX == _T('E') ? ewEast : ewWest);
 
    //
    // Get the degrees
    //
-   std::string::size_type pos;
-   pos = strDir.find_first_of(' ');
+   std::_tstring::size_type pos;
+   pos = strDir.find_first_of( _T(' ') );
    strDir.erase( 0, pos+1 );
-   pos = strDir.find_first_of(' ');
-   std::string strDeg( strDir, 0, pos );
+   pos = strDir.find_first_of( _T(' ') );
+   std::_tstring strDeg( strDir, 0, pos );
    strDir.erase( 0, pos+1 );
-   deg = atoi( strDeg.c_str() ); 
+   deg = _ttoi( strDeg.c_str() ); 
 
    // If the value of deg is zero, make sure that "0" or "00" were
    // in the string and not some other value that atoi evalutes to zero
-   if ( deg == 0 && (strDeg != "0" && strDeg != "00") )
+   if ( deg == 0 && (strDeg != _T("0") && strDeg != _T("00")) )
       return BadDirectionString();
 
    if ( 90 < deg )
@@ -330,12 +330,12 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
    if ( 4 <= nParts )
    {
       // get the minutes part
-      pos = strDir.find_first_of(' ');
-      std::string strMin( strDir, 0, pos );
+      pos = strDir.find_first_of( _T(' ') );
+      std::_tstring strMin( strDir, 0, pos );
       strDir.erase( 0, pos + 1 );
-      min = atoi( strMin.c_str() );
+      min = _ttoi( strMin.c_str() );
 
-      if ( min == 0 && (strMin != "0" && strMin != "00") )
+      if ( min == 0 && (strMin != _T("0") && strMin != _T("00") ) )
          return BadDirectionString();
 
       if ( 59 < min )
@@ -344,11 +344,11 @@ STDMETHODIMP CDirection::FromString(BSTR bstrDir)
       if ( nParts == 5 )
       {
          // get the seconds part
-         pos = strDir.find_first_of( ' ' );
-         std::string strSec( strDir, 0, pos );
-         sec = atof( strSec.c_str() );
+         pos = strDir.find_first_of( _T(' ') );
+         std::_tstring strSec( strDir, 0, pos );
+         sec = _tstof( strSec.c_str() );
 
-         if ( IsZero(sec) && strSec[0] != '0' )
+         if ( IsZero(sec) && strSec[0] != _T('0') )
             return BadDirectionString();
 
          if ( 60.0 <= sec )
@@ -386,6 +386,17 @@ STDMETHODIMP CDirection::FromAzimuth(long Degree, long Minute, Float64 Second)
    return S_OK;
 }
 
+STDMETHODIMP CDirection::FromVariant(VARIANT varDirection)
+{
+   CComPtr<IDirection> dir;
+   HRESULT hr = cogoUtil::DirectionFromVariant(varDirection,&dir);
+   if ( FAILED(hr) )
+      return hr;
+
+   dir->get_Value(&m_Direction);
+   return S_OK;
+}
+
 STDMETHODIMP CDirection::AngleBetween(IDirection* dir,IAngle** pVal)
 {
    CHECK_IN(dir);
@@ -395,6 +406,8 @@ STDMETHODIMP CDirection::AngleBetween(IDirection* dir,IAngle** pVal)
    dir->get_Value(&val);
 
    Float64 angle = m_Direction - val;
+   if ( IsZero(angle) )
+      angle = 0;
 
    CComObject<CAngle>* pAngle;
    CComObject<CAngle>::CreateInstance(&pAngle);

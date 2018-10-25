@@ -43,7 +43,7 @@ class LIBRARYFWCLASS libLibraryManager;
 
 // MISCELLANEOUS
 //
-#define libKeyListType std::vector< std::string >
+#define libKeyListType std::vector< std::_tstring >
 typedef libKeyListType::iterator libKeyListIterator;
 
 
@@ -96,19 +96,19 @@ public:
 
    //------------------------------------------------------------------------
    // See if an entry exists in the library. Return false if not.
-   virtual bool IsEntry(const char* key) const=0;
+   virtual bool IsEntry(LPCTSTR key) const=0;
 
    //------------------------------------------------------------------------
    // Get the number of references to this entry
-   virtual Uint32 GetEntryRefCount(const char* key) const=0;
+   virtual Uint32 GetEntryRefCount(LPCTSTR key) const=0;
 
    //------------------------------------------------------------------------
    // Returns true if entry can be edited
-   virtual bool IsEditingEnabled(const char* key) const=0;
+   virtual bool IsEditingEnabled(LPCTSTR key) const=0;
 
    //------------------------------------------------------------------------
    // set flag which enables entry to be edited
-   virtual void EnableEditing(const char* key, bool enable)=0;
+   virtual void EnableEditing(LPCTSTR key, bool enable)=0;
 
    //------------------------------------------------------------------------
    // set flag which enables all entries in the library to be edited
@@ -116,25 +116,25 @@ public:
 
    //------------------------------------------------------------------------
    // Add a new default entry with the given name. Returns false if unsuccessful.
-   virtual bool NewEntry(const char* key)=0;
+   virtual bool NewEntry(LPCTSTR key)=0;
 
    //------------------------------------------------------------------------
    // Create a clone of an existing entry (named key) and create a new entry
    // named newkey. key must be in the library and newkey must not. 
    // Returns false if unsuccessful.
-   virtual bool CloneEntry(const char* key, const char* newkey)=0;
+   virtual bool CloneEntry(LPCTSTR key, LPCTSTR newkey)=0;
 
    //------------------------------------------------------------------------
    // Create a polymorphic clone of a library entry into this library. 
    // The type of newentry is checked to make sure it is correct and will 
    // ASSERT if it is not.
    // Returns false if newkey is not a unique name
-   virtual bool  AddEntry(const libLibraryEntry& rnewentry, const char* newkey)=0;
+   virtual bool  AddEntry(const libLibraryEntry& rnewentry, LPCTSTR newkey)=0;
 
    //------------------------------------------------------------------------
    // Factory function to create an external polymorphic clone of a library entry. 
    // You are responsible for deleting it.
-   virtual libLibraryEntry* CreateEntryClone(const char* key) const=0;
+   virtual libLibraryEntry* CreateEntryClone(LPCTSTR key) const=0;
 
    //------------------------------------------------------------------------
    // Open the editing interface for the given entry. Returns the following
@@ -148,11 +148,11 @@ public:
                                           // edits retained.
                            
    //------------------------------------------------------------------------
-   virtual EntryEditOutcome EditEntry( const char* key )=0;
+   virtual EntryEditOutcome EditEntry( LPCTSTR key )=0;
 
    //------------------------------------------------------------------------
    // Rename an entry
-   virtual bool RenameEntry( const char* oldKey, const char* newKey)=0;
+   virtual bool RenameEntry( LPCTSTR oldKey, LPCTSTR newKey)=0;
 
    //------------------------------------------------------------------------
    // Remove an entry. Returns the following possble values:
@@ -162,7 +162,7 @@ public:
                                             // cannot be removed
 
    //------------------------------------------------------------------------
-   virtual EntryRemoveOutcome RemoveEntry( const char* key )=0;
+   virtual EntryRemoveOutcome RemoveEntry( LPCTSTR key )=0;
 
    //------------------------------------------------------------------------
    // Remove all entries. Will assert if entries have outstanding references
@@ -178,19 +178,19 @@ public:
 
    //------------------------------------------------------------------------
    // Change the display name of the library.
-   virtual void SetDisplayName(const char* name)=0;
+   virtual void SetDisplayName(LPCTSTR name)=0;
 
    //------------------------------------------------------------------------
    // Get the display name of the library
-   virtual std::string GetDisplayName() const=0;
+   virtual std::_tstring GetDisplayName() const=0;
 
    //------------------------------------------------------------------------
    // Get the identification name of the library
-   virtual std::string GetIdName() const=0;
+   virtual std::_tstring GetIdName() const=0;
 
    //------------------------------------------------------------------------
    // Generate a name that's guaranteed not to be in the library
-   virtual std::string GetUniqueEntryName() const=0; 
+   virtual std::_tstring GetUniqueEntryName() const=0; 
 
    // ACCESS
    //------------------------------------------------------------------------
@@ -210,7 +210,7 @@ public:
    // Get a const pointer to an entry by index
    // Returns NULL if out of range and asserts
    // DOES NOT INCREASE REFERENCE COUNT!
-   virtual const libLibraryEntry* GetEntry(const char* key) const =0;
+   virtual const libLibraryEntry* GetEntry(LPCTSTR key) const =0;
 
 
    //------------------------------------------------------------------------
@@ -221,9 +221,9 @@ public:
    // Returns true if this is an old library that is no longer used
    virtual bool IsDepreciated() const = 0;
 
-   virtual std::set<std::string> GetReservedNamesList() const = 0;
-   virtual void AddReservedName(const char* strName) = 0;
-   virtual bool IsReservedName(const char* strName) const = 0;
+   virtual std::set<std::_tstring> GetReservedNamesList() const = 0;
+   virtual void AddReservedName(LPCTSTR strName) = 0;
+   virtual bool IsReservedName(LPCTSTR strName) const = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

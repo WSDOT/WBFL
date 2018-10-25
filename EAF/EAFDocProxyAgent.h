@@ -238,16 +238,16 @@ public:
    virtual bool CanUndo();
    virtual bool CanRedo();
    virtual bool CanRepeat();
-   virtual std::string UndoName();
-   virtual std::string RedoName();
-   virtual std::string RepeatName();
+   virtual std::_tstring UndoName();
+   virtual std::_tstring RedoName();
+   virtual std::_tstring RepeatName();
    virtual CollectionIndexType GetTxnCount();
    virtual CollectionIndexType GetUndoCount();
 
 // IEAFProjectLog
 public:
    virtual CString GetName();
-   virtual void LogMessage( const char* lpszMsg );
+   virtual void LogMessage( LPCTSTR lpszMsg );
    virtual void Destroy();
 
 protected:

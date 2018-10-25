@@ -307,7 +307,7 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t name(var);
-      m_Name = (const char*)name;
+      m_Name = (LPCTSTR)name;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("Description"),&var);
@@ -315,7 +315,7 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t desc(var);
-      m_Description = (const char*)desc;
+      m_Description = (LPCTSTR)desc;
 
       hr = pload->get_Property(_bstr_t("ItemData"),&m_ItemData);
       if (FAILED(hr))
@@ -337,7 +337,7 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
             return hr;
 
          _bstr_t lgname(var);
-         m_LoadGroups.push_back((const char*)lgname);
+         m_LoadGroups.push_back((LPCTSTR)lgname);
       }
    }
 

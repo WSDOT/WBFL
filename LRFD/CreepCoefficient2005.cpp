@@ -274,7 +274,7 @@ void lrfdCreepCoefficient2005::Update() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
-      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,__FILE__,__LINE__);
+      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
 
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
    

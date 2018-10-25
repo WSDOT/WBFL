@@ -97,9 +97,10 @@ lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where l
                          Float64 rh, // relative humidity
 
                          Float64 ti,   // Time until prestress transfer
-                         Float64 shipping
+                         Float64 shipping,
+                         bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,false)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,false,bValidateParameters)
 {
    m_Shipping = shipping;
 }

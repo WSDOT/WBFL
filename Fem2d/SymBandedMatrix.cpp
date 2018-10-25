@@ -115,7 +115,7 @@ long SymBandedMatrix::BandWidth() const
    return m_BandWidth;
 }
 
-std::ostream& operator<< ( std::ostream& os, SymBandedMatrix& m )
+std::_tostream& operator<< ( std::_tostream& os, SymBandedMatrix& m )
 {
    long i,j;
 

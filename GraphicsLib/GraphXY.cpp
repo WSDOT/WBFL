@@ -113,10 +113,10 @@ grGraphXY& grGraphXY::operator= (const grGraphXY& rOther)
 //======================== OPERATIONS =======================================
 Uint32 grGraphXY::CreateDataSeries()
 {
-   return CreateDataSeries("",PS_SOLID,1,RGB(0,0,0));
+   return CreateDataSeries(_T(""),PS_SOLID,1,RGB(0,0,0));
 }
 
-Uint32 grGraphXY::CreateDataSeries(const char* lpszLabel,int nPenStyle, int nWidth, COLORREF crColor)
+Uint32 grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidth, COLORREF crColor)
 {
    Uint32 cookie = m_GraphDataMap.size();
 
@@ -250,12 +250,12 @@ void grGraphXY::DrawDataSeries(HDC hDC)
 
 //======================== ACCESS     =======================================
 
-std::string grGraphXY::GetTitle()
+std::_tstring grGraphXY::GetTitle()
 {
    return m_GraphTitle;
 }
 
-void grGraphXY::SetTitle(const std::string& title)
+void grGraphXY::SetTitle(const std::_tstring& title)
 {
    m_GraphTitle = title.c_str();
 }
@@ -270,12 +270,12 @@ void grGraphXY::SetTitleSize(Int32 size)
    m_GraphTitleSize = size;
 }
 
-std::string grGraphXY::GetSubtitle()
+std::_tstring grGraphXY::GetSubtitle()
 {
    return m_GraphSubtitle;
 }
 
-void grGraphXY::SetSubtitle(const std::string& subtitle)
+void grGraphXY::SetSubtitle(const std::_tstring& subtitle)
 {
     m_GraphSubtitle = subtitle.c_str();
 }
@@ -332,43 +332,43 @@ void grGraphXY::SetYAxisLabelAngle(LONG angle)
    m_YAxis.SetValueAngle(angle);
 }
 
-void grGraphXY::SetXAxisTitle(const std::string& title)
+void grGraphXY::SetXAxisTitle(const std::_tstring& title)
 {
    m_XAxis.SetTitleText(title);
 }
 
-std::string grGraphXY::GetXAxisTitle()
+std::_tstring grGraphXY::GetXAxisTitle()
 {
    return m_XAxis.GetTitleText();
 }
 
-void grGraphXY::SetXAxisSubtitle(const std::string& subtitle)
+void grGraphXY::SetXAxisSubtitle(const std::_tstring& subtitle)
 {
    m_XAxis.SetSubtitleText(subtitle);
 }
 
-std::string grGraphXY::GetXAxisSubtitle()
+std::_tstring grGraphXY::GetXAxisSubtitle()
 {
    return m_XAxis.GetSubtitleText();
 }
 
-void grGraphXY::SetYAxisTitle(const std::string& title)
+void grGraphXY::SetYAxisTitle(const std::_tstring& title)
 {
    m_YAxis.SetTitleText(title);
 }
 
-std::string grGraphXY::GetYAxisTitle()
+std::_tstring grGraphXY::GetYAxisTitle()
 {
    return m_YAxis.GetTitleText();
 }
 
-void grGraphXY::SetYAxisSubtitle(const std::string& subtitle)
+void grGraphXY::SetYAxisSubtitle(const std::_tstring& subtitle)
 {
    m_YAxis.SetSubtitleText(subtitle);
 
 }
 
-std::string grGraphXY::GetYAxisSubtitle()
+std::_tstring grGraphXY::GetYAxisSubtitle()
 {
    return m_YAxis.GetSubtitleText();
 }
@@ -432,7 +432,7 @@ void grGraphXY::SetGridPenStyle(int nPenStyle, int nWidth, COLORREF crColor)
    m_GridPenData.Width = nWidth;
 }
 
-void grGraphXY::SetDataLabel(Uint32 cookie,const char* lpszLabel)
+void grGraphXY::SetDataLabel(Uint32 cookie,LPCTSTR lpszLabel)
 {
    GraphDataMap::iterator found = m_GraphDataMap.find(cookie);
    if ( found != m_GraphDataMap.end() )
@@ -587,7 +587,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       }
       else
       {
-         CHECKX(0,"Number of tics must be >0");
+         CHECKX(0,_T("Number of tics must be >0"));
          inc = wid;
       }
       m_XAxis.SetForcedAxisRange(client_left, client_right, inc);
@@ -611,7 +611,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       }
       else
       {
-         CHECKX(0,"Number of tics must be >0");
+         CHECKX(0,_T("Number of tics must be >0"));
          inc = wid;
       }
       m_YAxis.SetForcedAxisRange(client_top, client_bottom, inc);
@@ -625,13 +625,13 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    HFONT title_font = grGraphTool::CreateRotatedFont(hDC, 0, m_GraphTitleSize);
    HGDIOBJ old_font = ::SelectObject(hDC, title_font);
    SIZE size;
-   ::GetTextExtentPoint32(hDC,"AA",2,&size);
+   ::GetTextExtentPoint32(hDC,_T("AA"),2,&size);
 
    Int32 title_size = labs(size.cy);
 
    HFONT subtitle_font = grGraphTool::CreateRotatedFont(hDC, 0, m_GraphSubtitleSize);
    ::SelectObject(hDC, subtitle_font);
-   ::GetTextExtentPoint32(hDC,"AA",2,&size);
+   ::GetTextExtentPoint32(hDC,_T("AA"),2,&size);
 
    Int32 subtitle_size = labs(size.cy);
 

@@ -115,6 +115,8 @@ public:
    { return m_Path->Intersect(line,pNearest,point); }
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset)
    { return m_Path->Offset(point,distance,offset); }
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength)
+   { return m_Path->get_Length(pLength); }
 	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory)
    { return m_Path->get_PointFactory(factory); }
 	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory)
@@ -143,6 +145,7 @@ public:
 	STDMETHOD(Normal)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ IStation* *station,/*[out]*/ Float64* offset); 
    STDMETHOD(CreateSubPath)(/*[in]*/VARIANT varStartStation,/*[in]*/VARIANT varEndStation,/*[out,retval]*/IPath** path);
+   STDMETHOD(GetDirection)(VARIANT varStation, BSTR bstrOrientation,IDirection** direction);
 
 // IStructuredStorage2
 public:

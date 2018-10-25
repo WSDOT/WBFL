@@ -33,9 +33,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "targetver.h"
-
-
 #include <Private\WBFLPackage.h>
 
 #ifndef _AFX_NO_OLE_SUPPORT

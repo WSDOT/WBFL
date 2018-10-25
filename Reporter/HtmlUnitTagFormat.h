@@ -66,7 +66,7 @@ public:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   static std::string Format(const std::string& tag);
+   static std::_tstring Format(const std::_tstring& tag);
    // GROUP: ACCESS
    // GROUP: INQUIRY
 

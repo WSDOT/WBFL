@@ -41,7 +41,7 @@ import "WBFLUnitServer.idl";
 
 cpp_quote("#include <WBFLUnitServer.h>")
 
-typedef Int32 CogoElementKey;
+typedef Int64 CogoElementKey;
 
 cpp_quote("#define COGO_E_POINTNOTFOUND                MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
 cpp_quote("#define COGO_E_POINTALREADYDEFINED          MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
@@ -176,6 +176,7 @@ library WBFLCogo
         [helpstring("method Normalize"),helpcontext(IDH_Angle_Normalize)] HRESULT Normalize();
         [helpstring("method FromDMS"),helpcontext(IDH_Angle_FromDMS)] HRESULT FromDMS([in] long deg,[in] long min,[in] Float64 sec);
         [helpstring("method FromString"),helpcontext(IDH_Angle_FromString)] HRESULT FromString([in] BSTR bstrAngle);
+        [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varAngle);
         [helpstring("method Increment"),helpcontext(IDH_Angle_Increment)] HRESULT Increment([in] VARIANT varAngle,[out,retval] IAngle* *pVal);
         [helpstring("method IncrementBy"),helpcontext(IDH_Angle_IncrementBy)] HRESULT IncrementBy([in] VARIANT varAngle);
         [helpstring("method Clone"),helpcontext(IDH_Angle_Clone)] HRESULT Clone([out,retval] IAngle* *clone);
@@ -209,6 +210,7 @@ library WBFLCogo
         [helpstring("method FromString"),helpcontext(IDH_Direction_FromString)] HRESULT FromString([in] BSTR bstrDir);
         [helpstring("method FromDMS"),helpcontext(IDH_Direction_FromDMS)] HRESULT FromDMS([in] NSDirectionType ns,[in] long Degree,[in] long Minute, [in] Float64 Second, [in] EWDirectionType ew);
         [helpstring("method FromAzimuth"),helpcontext(IDH_Direction_FromAzimuth)] HRESULT FromAzimuth([in] long Degree, [in] long Minute, [in] Float64 Second);
+        [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varDirection);
 		  [helpstring("method AngleBetween"),helpcontext(IDH_Direction_AngleBetween)] HRESULT AngleBetween([in] IDirection* dir,[out,retval]IAngle** pVal);
         [helpstring("method Clone"),helpcontext(IDH_Direction_Clone)] HRESULT Clone([out,retval] IDirection* *clone);
 
@@ -491,6 +493,8 @@ library WBFLCogo
 	]
 	interface IStation : IUnknown
 	{
+      [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varStation);
+      [helpstring("method Increment")] HRESULT Increment([in] Float64 value);
 		[propget, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([out, retval] Float64 *pVal);
 		[propput, helpstring("property Value"), helpcontext(IDH_Station_Value)] HRESULT Value([in] Float64 newVal);
       [helpstring("method FromString"), helpcontext(IDH_Station_FromString)] HRESULT FromString([in] BSTR station,[in] UnitModeType unitMode);
@@ -1198,6 +1202,7 @@ library WBFLCogo
 		[helpstring("method ProjectPoint"), helpcontext(IDH_Alignment_ProjectPoint)] HRESULT ProjectPoint([in] IPoint2d* point,[out,retval] IPoint2d* *newPoint); 
 		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] Float64* distance,[out] Float64* offset); 
 		[helpstring("method Intersect")] HRESULT Intersect([in] ILine2d* line,[in]IPoint2d* pNearest,[out,retval]IPoint2d** point);
+      [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* pLength);
 		[propget, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory* *factory); 
 		[propputref, helpstring("property PointFactory"), helpcontext(IDH_Alignment_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory); 
         [propget, restricted, helpstring("property _EnumPathElements"), helpcontext(IDH_Alignment__EnumPathElements)] HRESULT _EnumPathElements([out, retval] IEnumPathElements** pVal);  
@@ -1326,6 +1331,7 @@ library WBFLCogo
 		[helpstring("method Normal"), helpcontext(IDH_Alignment_Normal)] HRESULT Normal([in] VARIANT varStation,[out,retval] IDirection* *dir); 
 		[helpstring("method Offset"), helpcontext(IDH_Alignment_Offset)] HRESULT Offset([in] IPoint2d* point,[out] IStation* *station,[out] Float64* offset); 
 		[helpstring("method CreateSubPath"),/*helpcontext(IDH_Alignment_CreateSubPath)*/] HRESULT CreateSubPath([in]VARIANT varStartStation,[in]VARIANT varEndStation,[out,retval]IPath** path);
+      [helpstring("method GetDirection")] HRESULT GetDirection([in] VARIANT varStation, [in] BSTR bstrOrientation,[out,retval] IDirection** direction);
 	};
 
    [
@@ -1478,7 +1484,8 @@ library WBFLCogo
       [helpstring("method Arc"),helpcontext(IDH_IDivide_Arc)] HRESULT Arc([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey vertexID, [in] CogoElementKey toID,[in] long nParts);
       [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey fromID, [in] CogoElementKey toID,[in] long nParts);
       [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in]CogoElementKey firstID,[in] CogoElementKey idInc, [in] CogoElementKey lineID,[in] long nParts);
-	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] CogoElementKey firstID, [in] CogoElementKey idInc, [in] CogoElementKey curveID, [in] long nParts);
+	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in]CogoElementKey firstID, [in] CogoElementKey idInc, [in] CogoElementKey curveID, [in] long nParts);
+      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]CogoElementKey firstID,[in]CogoElementKey idInc,[in] CogoElementKey pathID,[in] long nParts,[in] Float64 start,[in] Float64 end);
    };
    [
       object,
@@ -1494,6 +1501,7 @@ library WBFLCogo
       [helpstring("method BetweenPoints"),helpcontext(IDH_IDivide_BetweenPoints)] HRESULT BetweenPoints([in] IPoint2d* from, [in] IPoint2d* to,[in] long nParts,[out,retval] IPoint2dCollection** points);
       [helpstring("method LineSegment"),helpcontext(IDH_IDivide_LineSegment)] HRESULT LineSegment([in] ILineSegment2d* seg,[in] long nParts,[out,retval]IPoint2dCollection** points);
 	   [helpstring("method HorzCurve"),helpcontext(IDH_IDivide_HorzCurve)] HRESULT HorzCurve([in] IHorzCurve* curve, [in] long nParts, [out,retval] IPoint2dCollection** points);
+      [helpstring("method Path"),helpcontext(IDH_IDivide_Path)] HRESULT Path([in]IPath* pPath,[in] long nParts,[in] Float64 start,[in] Float64 end,[out,retval]IPoint2dCollection** points);
    };
 
    [
@@ -1525,6 +1533,26 @@ library WBFLCogo
       [helpstring("method Cross"),helpcontext(IDH_ITangent_Cross)] HRESULT Cross([in] IPoint2d* center1, [in] Float64 radius1,[in] IPoint2d* center2, [in] Float64 radius2, [in] TangentSignType sign, [out] IPoint2d** t1,[out] IPoint2d** t2);
 	  [helpstring("method Point"),helpcontext(IDH_ITangent_Point)] HRESULT Point([in] IPoint2d* center, [in] Float64 radius,[in] IPoint2d* point, [in] TangentSignType sign, [out] IPoint2d** tangent);
    };
+	[
+		object,
+		uuid(AF7FCB40-3E8B-45BE-B8E9-AC8ADF4DDB81),
+	
+		helpstring("ICogoEngine Interface"),
+		pointer_default(unique)
+	]
+	interface ICogoEngine : IUnknown
+	{
+      [propget, helpstring("property Intersect"),helpcontext(IDH_CogoModel_Intersect)] HRESULT Intersect([out, retval] IIntersect2* *pVal);
+      [propget, helpstring("property Locate"),helpcontext(IDH_CogoModel_Locate)] HRESULT Locate([out, retval] ILocate2* *pVal);
+      [propget, helpstring("property Measure"),helpcontext(IDH_CogoModel_Measure)] HRESULT Measure([out, retval] IMeasure2* *pVal);
+      [propget, helpstring("property Project"),helpcontext(IDH_CogoModel_Project)] HRESULT Project([out, retval] IProject2* *pVal);
+      [propget, helpstring("property Divide"),helpcontext(IDH_CogoModel_Divide)] HRESULT Divide([out, retval] IDivide2* *pVal);
+      [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent2* *pVal);
+      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
+      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
+      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
+      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
+	};
    [
        object,
        uuid(B9E4933C-5E73-11D5-8C32-006097C68A9C),
@@ -1563,31 +1591,11 @@ library WBFLCogo
       [propget, helpstring("property AlignmentFactory"),helpcontext(IDH_CogoModel_AlignmentFactory)] HRESULT AlignmentFactory([out,retval]IPathFactory** factory);
       [propputref, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([in]IPathFactory* factory);
       [propget, helpstring("property PathFactory"),helpcontext(IDH_CogoModel_PathFactory)] HRESULT PathFactory([out,retval]IPathFactory** factory);
+      [propget, helpstring("property Engine")/*,helpcontext(IDH_CogoModel_Engine)*/] HRESULT Engine([out,retval]ICogoEngine** engine);
       [helpstring("property Clone"), helpcontext(IDH_CogoModel_Clone)] HRESULT Clone([out,retval] ICogoModel* *clone);
 
       [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
-	[
-		object,
-		uuid(AF7FCB40-3E8B-45BE-B8E9-AC8ADF4DDB81),
-	
-		helpstring("ICogoEngine Interface"),
-		pointer_default(unique)
-	]
-	interface ICogoEngine : IUnknown
-	{
-      [propget, helpstring("property Intersect"),helpcontext(IDH_CogoModel_Intersect)] HRESULT Intersect([out, retval] IIntersect2* *pVal);
-      [propget, helpstring("property Locate"),helpcontext(IDH_CogoModel_Locate)] HRESULT Locate([out, retval] ILocate2* *pVal);
-      [propget, helpstring("property Measure"),helpcontext(IDH_CogoModel_Measure)] HRESULT Measure([out, retval] IMeasure2* *pVal);
-      [propget, helpstring("property Project"),helpcontext(IDH_CogoModel_Project)] HRESULT Project([out, retval] IProject2* *pVal);
-      [propget, helpstring("property Divide"),helpcontext(IDH_CogoModel_Divide)] HRESULT Divide([out, retval] IDivide2* *pVal);
-      [propget, helpstring("property Tangent"),helpcontext(IDH_CogoModel_Tangent)] HRESULT Tangent([out, retval] ITangent2* *pVal);
-      [propputref, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([in]IPoint2dFactory* factory);
-      [propget, helpstring("property PointFactory"),helpcontext(IDH_CogoModel_PointFactory)] HRESULT PointFactory([out,retval]IPoint2dFactory** factory);
-      [propputref, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([in]ILineSegment2dFactory* factory);
-      [propget, helpstring("property LineSegmentFactory"),helpcontext(IDH_CogoModel_LineSegmentFactory)] HRESULT LineSegmentFactory([out,retval]ILineSegment2dFactory** factory);
-	};
-
 
    [
        object,

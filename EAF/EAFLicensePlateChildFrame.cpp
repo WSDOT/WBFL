@@ -279,7 +279,7 @@ void CEAFLicensePlateChildFrame::SetBackground(UINT BitMapID)
    }
    else 
    {
-      CHECKX(0,"Invalid bitmap id");
+      CHECKX(0,_T("Invalid bitmap id"));
       m_IsBitmap = false;
    }
 

@@ -267,7 +267,7 @@ STDMETHODIMP CHorzCurveCollection::Clone(IHorzCurveCollection* *clone)
    CComPtr<IEnumHorzCurves> enumHC;
    get__EnumHorzCurves(&enumHC);
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IHorzCurve> hc;
    while ( enumHC->Next(1,&hc,NULL) != S_FALSE )
    {
@@ -408,7 +408,7 @@ HRESULT CHorzCurveCollection::HorzCurveKeyError(CogoElementKey key,UINT nHelpStr
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return Error(oleMsg, IID_IHorzCurveCollection, hRes);

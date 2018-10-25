@@ -97,7 +97,7 @@ rptPageLayout* rptReportLayoutItem::GetpPageLayout()
       // no PageLayout locally - ask parent.
 
       rptReportLayoutItem* myp = dynamic_cast<rptReportLayoutItem*>(GetpParent());
-      CHECKX(myp,"Child must have parent of type ReportLayoutItem to get PageLayout");
+      CHECKX(myp,_T("Child must have parent of type ReportLayoutItem to get PageLayout"));
 
       return  myp->GetpPageLayout();
    }

@@ -39,9 +39,9 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
-bool SimpleFloatParse(const char* lpszText, Float64& d);
-typedef std::string::size_type Sst;
-#define npos std::string::npos
+bool SimpleFloatParse(LPCTSTR lpszText, Float64& d);
+typedef std::_tstring::size_type Sst;
+#define npos std::_tstring::npos
 
 //======================== LIFECYCLE  =======================================
 sysLineParseXml::sysLineParseXml():
@@ -56,11 +56,11 @@ sysLineParseXml::~sysLineParseXml()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-sysLineParseXml::LineType sysLineParseXml::ParseLine(const std::string& line)
+sysLineParseXml::LineType sysLineParseXml::ParseLine(const std::_tstring& line)
 {
    m_Line = line;
    m_Type =  sysLineParseXml::Unknown;
-   m_Value="";
+   m_Value= _T("");
 
    // start parsing the line. we have four basic possibilities:
    //   <UNIT_NAME version="1.0">    // a BeginUnit
@@ -68,30 +68,33 @@ sysLineParseXml::LineType sysLineParseXml::ParseLine(const std::string& line)
    //   </UNIT_NAME>                 // an EndUnit
    //   <NAME>"VALUE"</NAME>         // a Property
 
-   if (m_Line.empty()) return sysLineParseXml::Unknown;
-   if (m_Line[0]!='<') return sysLineParseXml::Unknown;
+   if (m_Line.empty()) 
+      return sysLineParseXml::Unknown;
 
-   if (m_Line[1]=='/')
+   if (m_Line[0] != _T('<') ) 
+      return sysLineParseXml::Unknown;
+
+   if (m_Line[1] == _T('/') )
    {
       // we probably have an EndUnit
-      Sst pos = m_Line.find(">",1);
+      Sst pos = m_Line.find(_T(">"),1);
       if (pos==npos) return sysLineParseXml::Unknown;
       if (pos>2)
          // save name in value location if name is given.
          m_Value = m_Line.substr(2,pos-2);
       else
-         m_Value = "";
+         m_Value = _T("");
 
       return m_Type = sysLineParseXml::EndUnit;
    }
    else
    {
       // we either have a Property or a BeginUnit (or ???)
-      Sst pos = m_Line.find("</",1);
+      Sst pos = m_Line.find(_T("</"),1);
       if (pos!=npos)
       {
          // we probably have a Property
-         Sst apos = m_Line.find(">",1);
+         Sst apos = m_Line.find(_T(">"),1);
          if (apos==npos)
             return sysLineParseXml::Unknown;
          else if (apos!=pos+2)
@@ -106,11 +109,11 @@ sysLineParseXml::LineType sysLineParseXml::ParseLine(const std::string& line)
       else
       {
          // we probably have a BeginUnit
-         Sst apos = m_Line.find(">",1);
+         Sst apos = m_Line.find(_T(">"),1);
          if (apos==npos)
             return sysLineParseXml::Unknown;
 
-         Sst bpos = m_Line.find(" version=\"",1);
+         Sst bpos = m_Line.find(_T(" version=\""),1);
          if (bpos!=npos)
          {
             // have BeginUnit with version
@@ -121,12 +124,12 @@ sysLineParseXml::LineType sysLineParseXml::ParseLine(const std::string& line)
          else
          {
             // may have BeginUnit with no version - check for blanks.
-            Sst cpos = m_Line.find(" ",1);
+            Sst cpos = m_Line.find(_T(" "),1);
             if (bpos!=npos)
                return sysLineParseXml::Unknown;
 
             m_Name  = m_Line.substr(1,apos-1);
-            m_Value = "0";  // no version given
+            m_Value = _T("0");  // no version given
             return m_Type = sysLineParseXml::BeginUnit;
          }
       }
@@ -138,13 +141,13 @@ sysLineParseXml::LineType sysLineParseXml::GetType() const
    return m_Type;
 }
 
-std::string sysLineParseXml::GetName() const
+std::_tstring sysLineParseXml::GetName() const
 {
    CHECK(m_Type!=sysLineParseXml::Unknown);
    return m_Name;
 }
 
-bool sysLineParseXml::GetValue(std::string* value)
+bool sysLineParseXml::GetValue(std::_tstring* value)
 {
    CHECK(m_Type!=sysLineParseXml::Unknown);
 
@@ -174,7 +177,7 @@ bool sysLineParseXml::GetValue(Int16* value)
       return false;
 
    Int16 l;
-   std::istringstream is(m_Value);
+   std::_tistringstream is(m_Value);
 
    is >> l;
    if (is)
@@ -192,7 +195,7 @@ bool sysLineParseXml::GetValue(Uint16* value)
       return false;
 
    Uint16 l;
-   std::istringstream is(m_Value);
+   std::_tistringstream is(m_Value);
 
    is >> l;
    if (is)
@@ -210,7 +213,7 @@ bool sysLineParseXml::GetValue(Int32* value)
       return false;
 
    Int32 l;
-   std::istringstream is(m_Value);
+   std::_tistringstream is(m_Value);
 
    is >> l;
    if (is)
@@ -228,7 +231,7 @@ bool sysLineParseXml::GetValue(Uint32* value)
       return false;
 
    Uint32 l;
-   std::istringstream is(m_Value);
+   std::_tistringstream is(m_Value);
 
    is >> l;
    if (is)
@@ -245,12 +248,12 @@ bool sysLineParseXml::GetValue(bool* value)
    if (m_Value.empty())
       return false;
 
-   if (m_Value=="1")
+   if (m_Value == _T("1") )
    {
       *value = true;
       return true;
    }
-   else if (m_Value=="0")
+   else if (m_Value == _T("0") )
    {
       *value = false;
       return true;
@@ -258,14 +261,14 @@ bool sysLineParseXml::GetValue(bool* value)
    return false;
 }
 
-std::string sysLineParseXml::GetStateDump() const
+std::_tstring sysLineParseXml::GetStateDump() const
 {
-   std::ostringstream os;
-   os << "Dump for sysLineParseXml"<< std::endl;
-   os << "   m_Line  = "<< m_Line  << std::endl;
-   os << "   m_Type = "<< m_Type   << std::endl;
-   os << "   m_Name = "<< m_Name   << std::endl;
-   os << "   m_Value = "<< m_Value << std::endl;
+   std::_tostringstream os;
+   os << _T("Dump for sysLineParseXml") << std::endl;
+   os << _T("   m_Line  = ") << m_Line  << std::endl;
+   os << _T("   m_Type = ") << m_Type   << std::endl;
+   os << _T("   m_Name = ") << m_Name   << std::endl;
+   os << _T("   m_Value = ") << m_Value << std::endl;
    return os.str();
 }
 
@@ -297,7 +300,7 @@ bool sysLineParseXml::AssertValid() const
 
 void sysLineParseXml::Dump(dbgDumpContext& os) const
 {
-   std::string tmp;
+   std::_tstring tmp;
    tmp = GetStateDump();
    os << tmp << endl;
 }
@@ -314,21 +317,21 @@ bool sysLineParseXml::TestMe(dbgLog& rlog)
 }
 #endif // _UNITTEST
 
-bool SimpleFloatParse(const char* lpszText, Float64& d)
+bool SimpleFloatParse(LPCTSTR lpszText, Float64& d)
 {
 	CHECK(lpszText != 0);
-	while (*lpszText == ' ' || *lpszText == '\t')
+	while (*lpszText == _T(' ') || *lpszText == _T('\t') )
 		lpszText++;
 
-	char chFirst = lpszText[0];
-   char* stopstr;
-	d = strtod(lpszText, &stopstr);
-	if (d == 0.0 && chFirst != '0')
+	TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+	d = _tcstod(lpszText, &stopstr);
+	if (d == 0.0 && chFirst != _T('0') )
 		return false;   // could not convert
-	while (*stopstr == ' ' || *stopstr == '\t')
+	while (*stopstr == _T(' ') || *stopstr == _T('\t') )
 		stopstr++;
 
-	if (*stopstr != '\0')
+	if (*stopstr != _T('\0') )
 		return false;   // not terminated properly
 
 	return true;

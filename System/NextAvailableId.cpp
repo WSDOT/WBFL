@@ -68,7 +68,7 @@ Int32 sysNextAvailableId::ReserveNextId()
 
 void sysNextAvailableId::ReserveSequence(Int32 startId,Int32 endId)
 {
-   PRECONDITIONX(startId < endId,"Start must be less than end");
+   PRECONDITIONX(startId < endId,_T("Start must be less than end"));
 
    if ( IsUsed(startId) || IsUsed(endId) )
    {
@@ -76,7 +76,7 @@ void sysNextAvailableId::ReserveSequence(Int32 startId,Int32 endId)
       // :METHOD: NextAvailableId::ReserveSequence()
       //
       // Part of the requested sequence is used.
-      CHECKX(false,"Part of the requested sequence is used");
+      CHECKX(false,_T("Part of the requested sequence is used"));
    }
 
    UsingId( endId );

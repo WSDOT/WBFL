@@ -49,7 +49,7 @@ inline CComBSTR CreateErrorMsg1(UINT nid, long someInt)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, someInt);
+   int cOut = _stprintf_s( msg, 256, str, someInt);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -59,7 +59,7 @@ inline CComBSTR CreateErrorMsg2(UINT nid, long someInt1, long someInt2)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, someInt1, someInt2);
+   int cOut = _stprintf_s( msg, 256, str, someInt1, someInt2);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }

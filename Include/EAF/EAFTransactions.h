@@ -50,9 +50,9 @@ interface IEAFTransactions : IUnknown
    virtual bool CanUndo() = 0;
    virtual bool CanRedo() = 0;
    virtual bool CanRepeat() = 0;
-   virtual std::string UndoName() = 0;
-   virtual std::string RedoName() = 0;
-   virtual std::string RepeatName() = 0;
+   virtual std::_tstring UndoName() = 0;
+   virtual std::_tstring RedoName() = 0;
+   virtual std::_tstring RepeatName() = 0;
    virtual CollectionIndexType GetTxnCount() = 0;
    virtual CollectionIndexType GetUndoCount() = 0;
 };

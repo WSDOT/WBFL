@@ -40,7 +40,7 @@
 // MISCELLANEOUS
 //
 // public typedef for style names
-typedef std::string rptStyleName;
+typedef std::_tstring rptStyleName;
 
 // typedefs for private stl stuff - should go in class, but templates won't allow it
 //typedef std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>, std::allocator<rptRiStyle> > StyleMap;

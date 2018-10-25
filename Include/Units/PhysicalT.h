@@ -28,7 +28,8 @@
 // SYSTEM INCLUDES
 //
 #include <string>
-#include <system\checks.h>
+#include <System\Checks.h>
+#include <System\DumpContext.h>
 #include <MathEx.h>
 
 // PROJECT INCLUDES
@@ -74,7 +75,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor.
-   unitPhysicalT( Float64 pre, Float64 cf, Float64 post, const std::string& tag) :
+   unitPhysicalT( Float64 pre, Float64 cf, Float64 post, const std::_tstring& tag) :
       m_PreTerm( pre ), m_ConvFactor( cf ), m_PostTerm( post ), m_UnitTag( tag )
       {
          CHECK( cf != 0.0 );
@@ -121,7 +122,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag.
-   std::string UnitTag() const { return m_UnitTag; }
+   std::_tstring UnitTag() const { return m_UnitTag; }
 
    //------------------------------------------------------------------------
    // Returns the mass dimensionality.
@@ -214,7 +215,7 @@ private:
    Float64 m_PreTerm;
    Float64 m_ConvFactor;
    Float64 m_PostTerm;
-   std::string m_UnitTag;
+   std::_tstring m_UnitTag;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

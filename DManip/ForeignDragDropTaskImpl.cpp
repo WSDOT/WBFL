@@ -193,7 +193,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDropEx(COleDataObject* pDa
    return bRetVal;
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CForeignDragDropTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

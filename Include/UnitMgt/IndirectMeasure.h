@@ -149,7 +149,7 @@ class UNITMGTCLASS unitmgtIndirectMeasure
 {
 public:
    // GROUP: DATA MEMBERS
-   std::string               Name;
+   std::_tstring               Name;
 
    unitStationFormat         StationFormat; 
 

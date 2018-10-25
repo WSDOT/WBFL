@@ -81,9 +81,9 @@ public:
    virtual bool CanUndo();
    virtual bool CanRedo();
    virtual bool CanRepeat();
-   virtual std::string UndoName();
-   virtual std::string RedoName();
-   virtual std::string RepeatName();
+   virtual std::_tstring UndoName();
+   virtual std::_tstring RedoName();
+   virtual std::_tstring RepeatName();
    virtual CollectionIndexType GetTxnCount();
    virtual CollectionIndexType GetUndoCount();
 
@@ -127,7 +127,7 @@ public:
    /// Use this method to log a message when
    /// the during application start-up
    /// Writes message to file named ("AppName.log")
-   virtual void FailSafeLogMessage(const char* msg);
+   virtual void FailSafeLogMessage(LPCTSTR msg);
 
    // returns the main menu object
    CEAFMenu* GetMainMenu();

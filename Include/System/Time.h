@@ -98,7 +98,7 @@ public:
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Write times:
-    SYSCLASS friend std::ostream  &  operator << ( std::ostream  &, const sysTime  & );
+    SYSCLASS friend std::_tostream  &  operator << ( std::_tostream  &, const sysTime  & );
 
 
     // Boolean operators.
@@ -123,7 +123,7 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // return a string representation of the time
-    std::string AsString() const;
+    std::_tstring AsString() const;
 
    //------------------------------------------------------------------------
     // compare with a time

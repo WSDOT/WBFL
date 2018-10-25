@@ -236,12 +236,12 @@ bool gmTriangle::AssertValid() const
 
 void gmTriangle::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmTriangle ***"<<endl;
+   os << _T("*** Dump for gmTriangle ***")<<endl;
    gmShapeImp::Dump( os );
-   os << "  (Height, Width) = ("<<m_Height<<", "<<m_Width<<")"<<endl;
-   os << "  Hook Point      = ("<<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
-   os << "  Offset          =  "<<m_Offset<<endl;
-   os << "  Rotation        =  "<<m_Rotation<<endl;
+   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<<endl;
+   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Offset          =  ")<<m_Offset<<endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
 }
 #endif // _DEBUG
 

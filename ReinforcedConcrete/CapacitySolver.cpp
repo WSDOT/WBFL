@@ -198,7 +198,7 @@ rcaCapacitySolution rcaCapacitySolver::SolveUniaxial(rcaCapacityProblem& problem
    }
    catch(rcaXRcCapProbError)
    {
-      rcaXCapacitySolverError ex("Couldn't find the plastic centroid",rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(_T("Couldn't find the plastic centroid"),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
 
@@ -262,20 +262,20 @@ rcaCapacitySolution rcaCapacitySolver::SolveUniaxial(rcaCapacityProblem& problem
    }
    catch(mathXRootFinder2dFailed& e)
    {
-      std::string msg;
+      std::_tstring msg;
       e.GetErrorMessage( &msg );
-      std::ostrstream os;
+      std::_tostringstream os;
       os << "mathXRootFinder2dFailed - Reason = " << msg << " File : " << e.GetFile() << " Line : " << e.GetLine() << std::endl << std::ends;
-      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
    catch(rcaXRcCapProbError& e)
    {
-      std::string msg;
+      std::_tstring msg;
       e.GetErrorMessage( &msg, 0 );
-      std::ostrstream os;
+      std::_tostringstream os;
       os << "rcaXRcCapProbError - Reason = " << msg << " File : " << e.GetFile() << " Line : " << e.GetLine() << std::endl << std::ends;
-      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
 
@@ -343,7 +343,7 @@ rcaCapacitySolution rcaCapacitySolver::Solve(rcaCapacityProblem& problem) const
       }
    catch(rcaXRcCapProbError)
    {
-      rcaXCapacitySolverError ex("Couldn't find the plastic centroid",rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(_T("Couldn't find the plastic centroid"),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
 
@@ -419,20 +419,20 @@ rcaCapacitySolution rcaCapacitySolver::Solve(rcaCapacityProblem& problem) const
    }
    catch(mathXRootFinder2dFailed& e)
    {
-      std::string msg;
+      std::_tstring msg;
       e.GetErrorMessage( &msg );
-      std::ostrstream os;
+      std::_tostringstream os;
       os << "mathXRootFinder2dFailed - Reason = " << msg << " File : " << e.GetFile() << " Line : " << e.GetLine() << std::endl << std::ends;
-      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
    catch(rcaXRcCapProbError& e)
    {
-      std::string msg;
+      std::_tstring msg;
       e.GetErrorMessage( &msg, 0 );
-      std::ostrstream os;
+      std::_tostringstream os;
       os << "rcaXRcCapProbError - Reason = " << msg << " File : " << e.GetFile() << " Line : " << e.GetLine() << std::endl << std::ends;
-      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,__FILE__,__LINE__);
+      rcaXCapacitySolverError ex(os.str(),rcaXCapacitySolverError::ProblemRepError,_T(__FILE__),__LINE__);
       ex.Throw();
    }
 
@@ -557,6 +557,11 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
 }
 }
 
+mathFunction2d* rcaCapacitySolver::Clone() const
+{
+   ASSERT(false); // should never be called
+   return NULL;
+}
 
 void rcaCapacitySolver::SetAxialForce(Float64 f)
 {

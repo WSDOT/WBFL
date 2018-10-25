@@ -35,7 +35,7 @@ inline CComBSTR CreateErrorMsgStr1(UINT nid, BSTR someStr)
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
    CComBSTR bs(someStr);
-   int cOut = sprintf_s( msg, str, OLE2T(bs));
+   int cOut = _stprintf_s( msg, str, OLE2T(bs));
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -48,7 +48,7 @@ inline CComBSTR CreateErrorMsgStr2(UINT nid, BSTR someStr1, BSTR someStr2)
    TCHAR msg[256];
    CComBSTR bs1(someStr1);
    CComBSTR bs2(someStr2);
-   int cOut = sprintf_s( msg, str, OLE2T(bs1),OLE2T(bs2));
+   int cOut = _stprintf_s( msg, str, OLE2T(bs1),OLE2T(bs2));
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -59,13 +59,13 @@ inline LPCOLESTR GetHelpFile()
    return OLESTR("WBFLTools.chm");
 }
 
-inline bool find_replace_all(std::string* ptarget, const std::string& find, const std::string& replace)
+inline bool find_replace_all(std::_tstring* ptarget, const std::_tstring& find, const std::_tstring& replace)
 {
    bool ret=false;
-   std::string::size_type spos=0;
-   std::string::size_type epos;
+   std::_tstring::size_type spos=0;
+   std::_tstring::size_type epos;
    
-   while ( (epos=ptarget->find(find,spos)) != std::string::npos)
+   while ( (epos=ptarget->find(find,spos)) != std::_tstring::npos)
    {
       ret=true;
       ptarget->replace(epos,find.size(),replace);
@@ -94,6 +94,9 @@ inline void GetTypeNameFromVariant(VARIANT& rvar, _bstr_t* name)
       break;
    case VT_I4:
       *name = _bstr_t("VT_I4");
+      break;
+   case VT_I8:
+      *name = _bstr_t("VT_I8");
       break;
    case VT_BOOL:
       *name = _bstr_t("VT_BOOL");

@@ -94,7 +94,7 @@ void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
    for ( Int32 idx = first_idx; idx < last_idx; idx++ )
    {
       bmfGirderPath* pGirderPath = GetGirderPath( idx );
-      CHECKX( pGirderPath != 0, "Error finding girder path" );
+      CHECKX( pGirderPath != 0, _T("Error finding girder path") );
 
       pGirderPath->BuildGirder( pTpl );
       DoInitGirder( pGirderPath->GetGirder() );
@@ -104,7 +104,7 @@ void bmfSpan::CreateGirder(bmfGirderTemplate* pTpl,Int32 gdrPathIdx)
 bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx)
 {
    bmfGirderPath* pGirderPath = GetGirderPath( gdrPathIdx );
-   CHECKX( pGirderPath != 0, "Error getting girder path");
+   CHECKX( pGirderPath != 0, _T("Error getting girder path"));
 
    return pGirderPath->GetGirder();
 }
@@ -112,7 +112,7 @@ bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx)
 const bmfGirder* bmfSpan::GetGirder(Int32 gdrPathIdx) const
 {
    bmfGirderPath* pGirderPath = GetGirderPath( gdrPathIdx );
-   CHECKX( pGirderPath != 0, "Error getting girder path");
+   CHECKX( pGirderPath != 0, _T("Error getting girder path"));
 
    return pGirderPath->GetGirder();
 }
@@ -311,9 +311,9 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
 //      mapper.WPtoDP( 0.5*(start_pnt.X() + end_pnt.X()),
 //                     0.5*(start_pnt.Y() + end_pnt.Y()),
 //                     &dx, &dy);
-//      char label[10];
+//      TCHAR label[10];
 //      _itoa( GetID()+1, label, 10 ); // Add 1 because we have a zero-based index
-//      std::string message("Span ");
+//      std::_tstring message("Span ");
 //      message += label;
 //      message += " - ";
 //      message += GetBearing().AsBearingString();
@@ -356,8 +356,8 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
          Float64 x = sx + 0.25*(ex-sx);
          Float64 y = sy + 0.25*(ey-sy);
          mapper.WPtoDP( x, y, &dx, &dy);
-         std::string message;
-         message = (char)((char)(girderIdx) + 'A');
+         std::_tstring message;
+         message = (TCHAR)((TCHAR)(girderIdx) + 'A');
 
          // cw = clockwise, ccw = counter clockwise
          CComPtr<IDirection> brg;

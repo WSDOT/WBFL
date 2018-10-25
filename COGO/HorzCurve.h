@@ -229,6 +229,11 @@ public:
       return dist;
    }
 
+   virtual mathFunction2d* Clone() const
+   {
+      return new CEntrySpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
+   }
+
 private:
    CHorzCurve* m_pCurve;
    CComPtr<IGeomUtil2d> m_GeomUtil;
@@ -269,6 +274,11 @@ public:
       return dist;
    }
 
+   virtual mathFunction2d* Clone() const
+   {
+      return new CExitSpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
+   }
+
 private:
    CHorzCurve* m_pCurve;
    CComPtr<IGeomUtil2d> m_GeomUtil;
@@ -297,6 +307,11 @@ public:
          m_GeomUtil->ShortestDistanceToPoint(m_Line,point_on_curve,&dist);
 
          return dist;
+      }
+
+      virtual mathFunction2d* Clone() const
+      {
+         return new CLineIntersectFunction(m_pCurve,m_Line,m_GeomUtil);
       }
 
 private:
@@ -328,6 +343,11 @@ public:
          dir->get_Value(&angle);
 
          return m_Angle - angle;
+      }
+
+      virtual mathFunction2d* Clone() const
+      {
+         return new CParallelLineFunction(m_pCurve,m_Line,m_GeomUtil);
       }
 
 private:

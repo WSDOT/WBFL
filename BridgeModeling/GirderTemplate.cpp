@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bmfGirderTemplate::bmfGirderTemplate(const std::string& name,const bmfGirderProfile* pProfile) :
+bmfGirderTemplate::bmfGirderTemplate(const std::_tstring& name,const bmfGirderProfile* pProfile) :
 m_Name( name ),
 m_pProfile( pProfile )
 {
@@ -69,12 +69,12 @@ bmfGirderTemplate& bmfGirderTemplate::operator= (const bmfGirderTemplate& rOther
 
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void bmfGirderTemplate::SetName(const std::string& name)
+void bmfGirderTemplate::SetName(const std::_tstring& name)
 {
    m_Name = name;
 }
 
-std::string bmfGirderTemplate::GetName() const
+std::_tstring bmfGirderTemplate::GetName() const
 {
    return m_Name;
 }

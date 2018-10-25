@@ -25,6 +25,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -45,13 +46,13 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(ProjectName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(ProjectName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -137,6 +138,8 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -157,16 +160,21 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				AdditionalIncludeDirectories="$(SolutionDir)RegFreeCOM\$(ConfigurationName)\"
+				AdditionalIncludeDirectories="$(SolutionDir)Include"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="$(SolutionDir)Include\$(ProjectName).h"
+				InterfaceIdentifierFileName="$(SolutionDir)Include\$(ProjectName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="NDEBUG;_WINDOWS;_AFXEXT;BUILDDMANIPLIB;WIN32;_ATL_NO_UUIDOF"
 				RuntimeLibrary="2"
@@ -203,6 +211,9 @@
 				ModuleDefinitionFile=".\DManip.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"

@@ -126,6 +126,24 @@ STDMETHODIMP CPoint2dCollection::get__Enum(IEnumPoint2d** ppenum)
    return get__EnumElements(ppenum);
 }
 
+STDMETHODIMP CPoint2dCollection::Clone(IPoint2dCollection** clone)
+{
+   CHECK_RETOBJ(clone);
+   CComObject<CPoint2dCollection>* pClone;
+   CComObject<CPoint2dCollection>::CreateInstance(&pClone);
+
+   for (iterator it= begin(); it != end(); it++)
+   {
+      CComPtr<IPoint2d> p = it->second;
+      CComPtr<IPoint2d> pntClone;
+      p->Clone(&pntClone);
+      pClone->Add(pntClone);
+   }
+   (*clone) = pClone;
+   (*clone)->AddRef();
+   return S_OK;
+}
+
 STDMETHODIMP CPoint2dCollection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

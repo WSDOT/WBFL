@@ -42,8 +42,8 @@
 //
 #undef THROW_MSG
 #undef THROW_IDS
-#define THROW_MSG(msg,hr,helpid) throw CComException(__FILE__, __LINE__, msg, hr, helpid );
-#define THROW_IDS(msgID,hr,helpid) throw CComException(__FILE__,__LINE__, msgID, hr, helpid);
+#define THROW_MSG(msg,hr,helpid) throw CComException(_T(__FILE__), __LINE__, msg, hr, helpid );
+#define THROW_IDS(msgID,hr,helpid) throw CComException(_T(__FILE__),__LINE__, msgID, hr, helpid);
 
 /*****************************************************************************
 CLASS 
@@ -79,7 +79,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor.  Supply the file and line number where the 
    // exception occured and a message.
-   CComException(const char* file, long line, BSTR msg, HRESULT hr, DWORD helpid) :
+   CComException(const TCHAR* file, long line, BSTR msg, HRESULT hr, DWORD helpid) :
    m_File( file ),
    m_Line( line ),
    m_HR(hr),
@@ -88,7 +88,7 @@ public:
    {
    }
 
-   CComException(const char* file, long line, const char* msg, HRESULT hr, DWORD helpid) :
+   CComException(const TCHAR* file, long line, const char* msg, HRESULT hr, DWORD helpid) :
    m_File( file ),
    m_Line( line ),
    m_HR(hr),
@@ -97,7 +97,7 @@ public:
    {
    }
 
-   CComException(const char* file, long line, UINT msgID,             HRESULT hr, DWORD helpid) :
+   CComException(const TCHAR* file, long line, UINT msgID,             HRESULT hr, DWORD helpid) :
    m_File( file ),
    m_Line( line ),
    m_HR(hr),
@@ -151,7 +151,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the name of the file where the exception was originally thrown.
-   const char* GetFile() const throw()
+   const TCHAR* GetFile() const throw()
    {
       return m_File.c_str();
    }
@@ -173,7 +173,7 @@ public:
 
    //------------------------------------------------------------------------
    // Add more information to the error message
-   void AppendToMessage(const char* msg)
+   void AppendToMessage(const TCHAR* msg)
    {
       CComBSTR app(msg);
       m_Msg += app;
@@ -221,7 +221,7 @@ protected:
 private:
    CComException(); // no default constructor
    // GROUP: DATA MEMBERS
-   std::string m_File;
+   std::wstring m_File;
    long        m_Line;
    HRESULT     m_HR;
    DWORD       m_HelpID;
@@ -287,7 +287,7 @@ inline CComBSTR CreateErrorMsg1S(UINT nid, BSTR bmsg)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, bmsg);
+   int cOut = _stprintf_s( msg, str, bmsg);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -297,7 +297,7 @@ inline CComBSTR CreateErrorMsg2S(UINT nid, BSTR bmsg1, BSTR bmsg2)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, bmsg1, bmsg2);
+   int cOut = _stprintf_s( msg, str, bmsg1, bmsg2);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -307,7 +307,7 @@ inline CComBSTR CreateErrorMsg1L(UINT nid, long someInt)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, someInt);
+   int cOut = _stprintf_s( msg, str, someInt);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -317,7 +317,7 @@ inline CComBSTR CreateErrorMsg2L(UINT nid, long someInt1, long someInt2)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, someInt1, someInt2);
+   int cOut = _stprintf_s( msg, str, someInt1, someInt2);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }
@@ -327,7 +327,7 @@ inline CComBSTR CreateErrorMsg1D(UINT nid, double someDouble)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, someDouble);
+   int cOut = _stprintf_s( msg, str, someDouble);
    ATLASSERT( cOut < 256 );
    return CComBSTR(msg);
 }

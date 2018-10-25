@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
-	: CDialog(""),
+	: CDialog(_T("")),
    m_StatusCenter(statusCenter)
 {
 	//{{AFX_DATA_INIT(CStatusCenterDlg)
@@ -88,8 +88,8 @@ BOOL CStatusCenterDlg::OnInitDialog()
    pListCtrl->GetClientRect(&r);
 
    int k = 8;
-   pListCtrl->InsertColumn(0,"Level",LVCFMT_LEFT,r.Width()/k);
-   pListCtrl->InsertColumn(1,"Description",LVCFMT_LEFT,r.Width() - r.Width()/k);
+   pListCtrl->InsertColumn(0,_T("Level"),LVCFMT_LEFT,r.Width()/k);
+   pListCtrl->InsertColumn(1,_T("Description"),LVCFMT_LEFT,r.Width() - r.Width()/k);
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -101,9 +101,9 @@ void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
 
    eafTypes::StatusSeverityType severity = m_StatusCenter.GetSeverity(pNewItem->GetCallbackID());
 
-   CString strSeverityType[] = { "Info", "Warn", "Error" };
+   CString strSeverityType[] = { _T("Info"), _T("Warn"), _T("Error") };
    CString strSeverity;
-   strSeverity.Format("%s",strSeverityType[severity]);
+   strSeverity.Format(_T("%s"),strSeverityType[severity]);
    int idx = pListCtrl->InsertItem(pNewItem->GetID(),strSeverity);
    VERIFY( pListCtrl->SetItemText(idx,1,pNewItem->GetDescription().c_str()) );
    VERIFY( pListCtrl->SetItemData(idx,pNewItem->GetID()) );

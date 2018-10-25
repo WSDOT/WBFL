@@ -58,7 +58,7 @@ BEGIN_COM_MAP(CInplaceEditTaskImpl)
 END_COM_MAP()
 
    // CInplaceEditTask methods (from CInplaceEditFSM)
-	STDMETHOD_(void,FSMError)(const char* t,const char* s);
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
 	STDMETHOD_(void,InitTask)();
    STDMETHOD_(BOOL,ValidateData)();
    STDMETHOD_(void,NotifyEditable)();

@@ -122,7 +122,7 @@ public:
 
    //------------------------------------------------------------------------
    // Override base class method
-   virtual std::string AsString() const;
+   virtual std::_tstring AsString() const;
 
 private:
    bool m_bEnglish;

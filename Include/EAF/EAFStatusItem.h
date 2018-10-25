@@ -54,7 +54,7 @@ COPYRIGHT
 class EAFCLASS CEAFStatusItem
 {
 public:
-   CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,const char* strDescription);
+   CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,LPCTSTR strDescription);
 
    // Called by the framework to assign a unique identifier
    // to the status item. Don't call this method
@@ -67,7 +67,7 @@ public:
    bool RemoveAfterEdit();
    void RemoveAfterEdit(bool bRemoveAfterEdit);
 
-   const std::string& GetDescription() const;
+   const std::_tstring& GetDescription() const;
    StatusCallbackIDType GetCallbackID() const;
 
    virtual bool IsEqual(CEAFStatusItem* pOther) = 0;
@@ -77,5 +77,5 @@ private:
    StatusGroupIDType m_StatusGroupID;
    StatusCallbackIDType m_CallbackID;
    bool m_bRemoveAfterEdit;
-   std::string m_Description;
+   std::_tstring m_Description;
 };

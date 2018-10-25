@@ -63,7 +63,7 @@ public:
    STDMETHOD(Close)(/*[in]*/ DWORD dwCookie);
 
 private:
-   std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;
+   std::vector<boost::shared_ptr<std::_tofstream> > m_LogFiles;
 };
 
 #endif //__ERRORLOG_H_

@@ -218,7 +218,7 @@ HRESULT CUnitServerImp::BadUnitTagError(BSTR name)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), IDS_E_BADUNITTAG, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, W2T(name) );
+   int cOut = _stprintf_s( msg, 256, str, W2T(name) );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return Error(oleMsg,IDH_E_BADUNITTAG, GetHelpFile(), IID_IUnitServer, UNITS_E_BADUNITTAG);

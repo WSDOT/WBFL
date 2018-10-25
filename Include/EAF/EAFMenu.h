@@ -75,7 +75,7 @@ public:
 
    void DestroyMenu(CEAFMenu* pMenu);
 
-   UINT FindMenuItem(const char* strTargetMenu);
+   UINT FindMenuItem(LPCTSTR strTargetMenu);
 
    BOOL TrackPopupMenu(UINT nFlags,int x,int y,CWnd* pWnd,LPCRECT lpRect = 0);
 

@@ -158,7 +158,7 @@ public:
    // GROUP: INQUIRY
 
 #if defined _DEBUG
-   virtual void Dump(std::ostream& os);
+   virtual void Dump(std::_tostream& os);
 #endif // _DEBUG
 
 protected:

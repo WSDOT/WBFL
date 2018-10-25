@@ -75,7 +75,7 @@ public:
    //------------------------------------------------------------------------
    // construct with an ostream and a pointer to a unitsnapshot. this class does
    // not own, and will not delete, the unitsnapshot pointer
-   rptOutputChapterVisitor(std::ostream* pMyOstream/*, const rptUnitSnapShot* MypUnitSnapShot*/)
+   rptOutputChapterVisitor(std::_tostream* pMyOstream/*, const rptUnitSnapShot* MypUnitSnapShot*/)
    {
       m_pOstream = pMyOstream;
       //m_pUnitSnapShot = MypUnitSnapShot;
@@ -93,7 +93,7 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   std::ostream* m_pOstream;
+   std::_tostream* m_pOstream;
    //const rptUnitSnapShot* m_pUnitSnapShot;
 
    // GROUP: LIFECYCLE

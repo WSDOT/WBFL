@@ -502,12 +502,12 @@ bool gmCircularSegment::AssertValid() const
 
 void gmCircularSegment::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmCircularSegment ***"<<endl;
+   os << _T("*** Dump for gmCircularSegment ***")<<endl;
    gmShapeImp::Dump( os );
-   os << "  Hook Point      = (" <<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
-   os << "  Center Point    = (" << m_Center.X() << ", " << m_Center.Y() << ")" << endl;
-   os << "  Radius          = " << m_Radius      << endl;
-   os << "  Mid-ordinate    = " << m_MidOrdinate << endl;
+   os << _T("  Hook Point      = (") <<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Center Point    = (") << m_Center.X() << _T(", ") << m_Center.Y() <<_T(")") << endl;
+   os << _T("  Radius          = ") << m_Radius      << endl;
+   os << _T("  Mid-ordinate    = ") << m_MidOrdinate << endl;
 }
 #endif // _DEBUG
 

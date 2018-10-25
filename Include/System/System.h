@@ -33,6 +33,7 @@
 #endif
 
 #include <WBFLTypes.h>
+#include <WBFLDebug.h>
 #include <System\Checks.h>
 #include <System\Date.h>
 #include <System\DllTest.h>

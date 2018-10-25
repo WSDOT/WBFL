@@ -81,7 +81,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor with HyperLink
-   rptRcUnsigned(Uint32 MyVal, const std::string& HyperTarget);
+   rptRcUnsigned(Uint32 MyVal, const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Copy constructor

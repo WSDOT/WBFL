@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(Reason reason,Float64 last,const char* file,Int16 line) :
+mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(Reason reason,Float64 last,LPCTSTR file,Int16 line) :
 sysXBase(file,line)
 {
    m_Reason = reason;
@@ -143,7 +143,7 @@ Float64 mathFixedPointIteration::Solve(const mathFunction2d& eval,Float64 xo,Flo
       x = x1;
    }
 
-   mathXFixedPointIterationFailed mx(mathXFixedPointIterationFailed::MaxIterExceeded,x,__FILE__,__LINE__);
+   mathXFixedPointIterationFailed mx(mathXFixedPointIterationFailed::MaxIterExceeded,x,_T(__FILE__),__LINE__);
    mx.Throw();
    return x;
 }

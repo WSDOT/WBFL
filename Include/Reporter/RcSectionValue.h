@@ -99,7 +99,7 @@ public:
    // Returns the report content as a string.  The value is converted to the
    // correct unit of measure and the unit tag is appedned to the string if 
    // required. idx = 0 for first value, idx = 1 for second value
-   virtual std::string AsString(int idx) const;
+   virtual std::_tstring AsString(int idx) const;
 
    // GROUP: ACCESS
 
@@ -127,7 +127,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag for the output unit of measure.
-   virtual std::string GetUnitTag() const = 0;
+   virtual std::_tstring GetUnitTag() const = 0;
 
    //------------------------------------------------------------------------
    // Sets the output format

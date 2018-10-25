@@ -65,8 +65,8 @@ public:
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   // Default constructor - dump to std::cout
-   dbgFileDumpContext(const std::string& fname);
+   // Default constructor - dump to std::_tcout
+   dbgFileDumpContext(const std::_tstring& fname);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -76,8 +76,8 @@ public:
    //------------------------------------------------------------------------
    // 
    // Inserters for various built-ins
-   virtual dbgDumpContext& operator<<(const std::string& s);
-   virtual dbgDumpContext& operator<<(const char* s);
+   virtual dbgDumpContext& operator<<(const std::_tstring& s);
+   virtual dbgDumpContext& operator<<(LPCTSTR s);
    dbgDumpContext& operator<<(char c);    
    dbgDumpContext& operator<<(bool n);
    //dbgDumpContext& operator<<(int n);
@@ -98,8 +98,8 @@ public:
 
    //------------------------------------------------------------------------
    // Return a reference to an ostream that we can stream to.
-   std::ostream& GetStream();
-   operator std::ostream&();
+   std::_tostream& GetStream();
+   operator std::_tostream&();
    
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -114,7 +114,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::ofstream m_os;
+   std::_tofstream m_os;
 
    // GROUP: LIFECYCLE
 

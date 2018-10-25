@@ -48,7 +48,7 @@ public:
       CComQIPtr<IDisplayUnit> pDU( var.punkVal );
       CComBSTR bstrUnitTag;
       pDU->get_UnitTag( &bstrUnitTag );
-      return (wcscmp( m_bstrTarget, bstrUnitTag ) == 0);
+      return (_tcscmp( m_bstrTarget, bstrUnitTag ) == 0);
    }
 
 private:
@@ -101,10 +101,10 @@ void CDisplayUnitGroup::UnadviseDisplayUnit(IDisplayUnit* pDisplayUnit)
    // Get the lookup key
    CComBSTR bstrKey;
    pDisplayUnit->get_UnitTag(&bstrKey);
-   std::string strKey( OLE2A(bstrKey) );
+   std::_tstring strKey( OLE2T(bstrKey) );
 
    // Lookup the cookie
-   std::map<std::string,DWORD>::iterator found;
+   std::map<std::_tstring,DWORD>::iterator found;
    found = m_DisplayUnitCookies.find( strKey );
    ATLASSERT( found != m_DisplayUnitCookies.end() );
 
@@ -152,7 +152,7 @@ HRESULT CDisplayUnitGroup::BadUnitTagError(BSTR bstrTag)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), IDS_E_BADUNITTAG, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, W2T(bstrTag) );
+   int cOut = _stprintf_s( msg, str, W2T(bstrTag) );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CDisplayUnitGroup>::Error(oleMsg, IDH_E_BADUNITTAG, GetHelpFile(), IID_IDisplayUnitGroup, UNITS_E_BADUNITTAG);
@@ -232,7 +232,7 @@ STDMETHODIMP CDisplayUnitGroup::Add(BSTR bstrUnitTag,UnitSystemType unitSystem,I
 
    // Hookup to the connection point
    DWORD dwCookie;
-   std::string strKey( OLE2A(bstrUnitTag) );
+   std::_tstring strKey( OLE2T(bstrUnitTag) );
    CComPtr<IDisplayUnit> pCP(newDispUnit);
    pCP.Advise( GetUnknown(), IID_IDisplayUnitEvents, &dwCookie );
    m_DisplayUnitCookies.insert( std::make_pair(strKey,dwCookie) );

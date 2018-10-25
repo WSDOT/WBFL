@@ -125,7 +125,7 @@ protected:
    bool m_bIsNewReport;   // true while calls are coming from OnInitialUpdate
    bool m_bUpdateInProgress; // true if the report is being generated/updated
 
-   std::string m_ErrorMsg;
+   std::_tstring m_ErrorMsg;
 
    static bool ms_bIsUpdatingReport; // true while the report content is being updated
 
@@ -137,7 +137,7 @@ protected:
    virtual void CreateEditButton();
 
 private:
-   std::vector<std::string> GetReportNames();
-   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::string& strRptName);
+   std::vector<std::_tstring> GetReportNames();
+   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
    boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
 };

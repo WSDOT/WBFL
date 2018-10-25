@@ -121,11 +121,11 @@ sysSectionValue& sysSectionValue::operator/=(Float64 val)
 }
 
 //======================== OPERATIONS =======================================
-std::string sysSectionValue::AsString() const
+std::_tstring sysSectionValue::AsString() const
 {
-   std::ostringstream os;
+   std::_tostringstream os;
    if ( !IsEqual( Left(), Right() ) )
-      os << Left() << "\\" << Right();
+      os << Left() << _T("\\") << Right();
    else
       os << Left();
 
@@ -206,10 +206,10 @@ SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue
                           a.Right() / b.Right() );
 }
 
-SYSFUNC std::ostream& operator<<(std::ostream& os,const sysSectionValue& a)
+SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a)
 {
    if ( !IsEqual( a.Left(), a.Right() ) )
-      os << a.Left() << "\\" << a.Right();
+      os << a.Left() << _T("\\") << a.Right();
    else
       os << a.Left();
 

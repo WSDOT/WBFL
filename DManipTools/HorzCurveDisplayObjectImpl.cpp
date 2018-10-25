@@ -37,7 +37,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CHorzCurveDisplayObjectImpl
-UINT CHorzCurveDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat("ManipTools.HorzCurveDisplayObject");
+UINT CHorzCurveDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("ManipTools.HorzCurveDisplayObject"));
 
 
 CHorzCurveDisplayObjectImpl::CHorzCurveDisplayObjectImpl()
@@ -66,7 +66,7 @@ HRESULT CHorzCurveDisplayObjectImpl::FinalConstruct()
 
    // start with 8 pt font
    CFont font;
-   font.CreatePointFont(80,"Arial");
+   font.CreatePointFont(80,_T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 80;
    m_Font.lfWeight = FW_NORMAL;

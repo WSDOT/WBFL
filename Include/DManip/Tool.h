@@ -29,7 +29,7 @@ interface iTool : public IUnknown
 {
    STDMETHOD_(void,SetID)(UINT id) PURE;
    STDMETHOD_(UINT,GetID)() PURE; // Resource Identifier
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszText) PURE;
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetToolTipText)() PURE;
 };
 

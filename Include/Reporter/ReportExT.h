@@ -120,13 +120,13 @@ public:
 
    //------------------------------------------------------------------------
    // Report with fully defined style and page layout.
-   rptReportExT(const std::string& rReportName = "") :
+   rptReportExT(const std::_tstring& rReportName = _T("")) :
       rptReport(rReportName)
       {
       }
 
    //------------------------------------------------------------------------
-   rptReportExT(const std::string& rReportName,
+   rptReportExT(const std::_tstring& rReportName,
                 const rptStyleName& rStyleName,
                 const rptPageLayout& rLayout) :
    rptReport( rReportName, rStyleName, rLayout )

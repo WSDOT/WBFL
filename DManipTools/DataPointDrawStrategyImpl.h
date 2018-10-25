@@ -36,8 +36,8 @@ public:
    DECLARE_INTERFACE_MAP()
 
    BEGIN_INTERFACE_PART(Strategy,iDataPointDrawStrategy)
-      STDMETHOD_(void,get_SymbolFontFace)(char* *pVal);
-      STDMETHOD_(void,put_SymbolFontFace)(const char* newVal);
+      STDMETHOD_(void,get_SymbolFontFace)(LPTSTR *pVal);
+      STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal);
       // character font size in 1/10 points
       STDMETHOD_(long,get_SymbolSize)();
       STDMETHOD_(void,put_SymbolSize)(long code);

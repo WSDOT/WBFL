@@ -69,6 +69,7 @@ public:
    STDMETHOD(Clone)(/*[out,retval]*/ IAngle* *clone);
    STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IAngle* *pVal);
    STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle);
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varAngle);
 	STDMETHOD(FromString)(/*[in]*/ BSTR bstrAngle);
 	STDMETHOD(FromDMS)(/*[in]*/ long deg,/*[in]*/ long min,/*[in]*/ Float64 sec);
 	STDMETHOD(Normalize)();

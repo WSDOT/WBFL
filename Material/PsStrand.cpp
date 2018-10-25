@@ -41,7 +41,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 matPsStrand::matPsStrand() :
-m_Name("Unknown")
+m_Name(_T("Unknown"))
 {
    m_Grade    = Gr1725;
    m_Type     = LowRelaxation;
@@ -53,7 +53,7 @@ m_Name("Unknown")
    m_ModE     = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
 }
 
-matPsStrand::matPsStrand(const std::string& name,Grade grade,Type type,Size size,
+matPsStrand::matPsStrand(const std::_tstring& name,Grade grade,Type type,Size size,
                          Float64 fpu,Float64 fpy,Float64 modE,
                          Float64 d, Float64 a) :
 m_Name( name )
@@ -128,12 +128,12 @@ bool matPsStrand::operator!=(const matPsStrand& rOther) const
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
 
-void matPsStrand::SetName(const std::string& name)
+void matPsStrand::SetName(const std::_tstring& name)
 {
    m_Name = name;
 }
 
-std::string matPsStrand::GetName() const
+std::_tstring matPsStrand::GetName() const
 {
    return m_Name;
 }
@@ -158,6 +158,54 @@ matPsStrand::Type matPsStrand::GetType() const
    return m_Type;
 }
 
+std::_tstring matPsStrand::GetSize(matPsStrand::Size size,bool bUnitsUS)
+{
+   std::_tstring sz;
+   switch( size )
+   {
+   case matPsStrand::D635:
+      sz = ( bUnitsUS ? _T("1/4\"") : _T("6.35mm") );
+      break;
+
+   case matPsStrand::D794:
+      sz = ( bUnitsUS ? _T("5/16\"") : _T("7.94mm") );
+      break;
+
+   case matPsStrand::D953:
+      sz = ( bUnitsUS ? _T("3/8\"") : _T("9.53mm") );
+      break;
+
+   case matPsStrand::D1111:
+      sz = ( bUnitsUS ? _T("7/16\"") : _T("11.11mm") );
+      break;
+
+   case matPsStrand::D1270:
+      sz = ( bUnitsUS ? _T("1/2\"") : _T("12.70mm") );
+      break;
+
+   case matPsStrand::D1320:
+      sz = ( bUnitsUS ? _T("1/2\" Special (0.52\")") : _T("1/2\" Special (13.20mm)") );
+      break;
+
+   case matPsStrand::D1524:
+      sz = ( bUnitsUS ? _T("0.6\"") : _T("15.24mm") );
+      break;
+
+   case matPsStrand::D1575:
+      sz = ( bUnitsUS ? _T("0.62\"") : _T("15.75mm") );
+      break;
+
+   case matPsStrand::D1778:
+      sz = ( bUnitsUS ? _T("0.7\"") : _T("17.78mm") );
+      break;
+
+   default:
+      ASSERT(false); // should never get here (unless there is a new strand type)
+   }
+
+   return sz;
+}
+
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
@@ -180,7 +228,7 @@ bool matPsStrand::AssertValid() const
 
 void matPsStrand::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for matPsStrand" << endl;
+   os << _T("Dump for matPsStrand") << endl;
 }
 #endif // _DEBUG
 

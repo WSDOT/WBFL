@@ -42,6 +42,6 @@ void MFCTOOLSFUNC DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayU
 void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit );
 void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const unitStationFormat& unitStation );
 void MFCTOOLSFUNC DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const unitLength& usDisplayUnit, const unitLength& siDisplayUnit );
-void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::string& strOrientation);
+void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation);
 
 #endif // INCLUDED_MFCTOOLS_COGODDX_H_

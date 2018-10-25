@@ -41,11 +41,11 @@
 #undef THROW_EX
 #if defined _DEBUG
 // debug bug version breaks with an assert before throwing
-#define THROW(ex,code)          {ASSERT(false); throw ex(ex::code, __FILE__, __LINE__ );}
-#define THROW_EX(ex,code,extra) {ASSERT(false); throw ex(ex::code,extra,__FILE__,__LINE__);}
+#define THROW(ex,code)          {ASSERT(false); throw ex(ex::code, _T(__FILE__), __LINE__ );}
+#define THROW_EX(ex,code,extra) {ASSERT(false); throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
 #else
-#define THROW(ex,code)          {throw ex(ex::code, __FILE__, __LINE__ );}
-#define THROW_EX(ex,code,extra) {throw ex(ex::code,extra,__FILE__,__LINE__);}
+#define THROW(ex,code)          {throw ex(ex::code, _T(__FILE__), __LINE__ );}
+#define THROW_EX(ex,code,extra) {throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
 #endif // _DEBUG
 
 /*****************************************************************************
@@ -76,7 +76,7 @@ public:
    //------------------------------------------------------------------------
    // Default constructor.  Supply the file and line number where the 
    // exception occured.
-   sysXBase(const char* file, Int32 line);
+   sysXBase(LPCTSTR file, Int32 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -121,12 +121,12 @@ public:
    // reason is the reason code returned by GetReason(),
    // filename is the filename returned by GetFile(),  and
    // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::string* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const;
 
    //------------------------------------------------------------------------
    // Returns the name of the file where the exception was originally thrown.
    // This method will not throw an exception.
-   const char* GetFile() const throw();
+   LPCTSTR GetFile() const throw();
 
    //------------------------------------------------------------------------
    // Returns the line number from where the exceptino was originally thrown.
@@ -156,7 +156,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_File;
+   std::_tstring m_File;
    Int32       m_Line;
 
    // GROUP: LIFECYCLE

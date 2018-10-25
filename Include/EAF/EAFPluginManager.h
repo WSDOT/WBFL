@@ -105,7 +105,7 @@ public:
 
       if ( FAILED(hr) )
       {
-         AfxMessageBox("Failed to create the component category manager");
+         AfxMessageBox(_T("Failed to create the component category manager"));
          return FALSE;
       }
 
@@ -131,9 +131,9 @@ public:
          {
             LPOLESTR pszCLSID;
             ::StringFromCLSID(clsid[i],&pszCLSID);
-            CString strState = pApp->GetProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Enabled"));
+            CString strState = pApp->GetProfileString(_T("Plugins"),OLE2T(pszCLSID),_T("Enabled"));
 
-            if ( bAlwaysAttemptToLoad || strState.CompareNoCase("Enabled") == 0 )
+            if ( bAlwaysAttemptToLoad || strState.CompareNoCase(_T("Enabled")) == 0 )
             {
                CComPtr<T> plugin;
                plugin.CoCreateInstance(clsid[i]);
@@ -149,10 +149,10 @@ public:
                      LPOLESTR pszUserType;
                      OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
                      CString strMsg;
-                     strMsg.Format("Failed to load %s plug in\n\nWould you like to disable this plug in?",OLE2A(pszUserType));
+                     strMsg.Format(_T("Failed to load %s plug in\n\nWould you like to disable this plug in?"),OLE2T(pszUserType));
                      if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
                      {
-                        pApp->WriteProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Disabled"));
+                        pApp->WriteProfileString(_T("Plugins"),OLE2T(pszCLSID),_T("Disabled"));
                      }
                   }
                }
@@ -160,7 +160,7 @@ public:
                {
                   CString str = plugin->GetName();
                   CString strMsg;
-                  strMsg.Format("Loading %s",str);
+                  strMsg.Format(_T("Loading %s"),str);
                   CEAFSplashScreen::SetText(strMsg);
 
                   m_Plugins.insert(std::make_pair(clsid[i],plugin));
@@ -182,14 +182,14 @@ public:
          CComPtr<T> plugin = iter->second;
          CString str = plugin->GetName();
          CString strMsg;
-         strMsg.Format("Initializing %s",str);
+         strMsg.Format(_T("Initializing %s"),str);
          CEAFSplashScreen::SetText(strMsg);
 
          if ( !plugin->Init(m_pParent) )
             return FALSE;
       }
 
-      CEAFSplashScreen::SetText("");
+      CEAFSplashScreen::SetText(_T(""));
 
       return TRUE;
    }

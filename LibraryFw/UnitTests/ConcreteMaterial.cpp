@@ -77,13 +77,13 @@ libConcreteMaterial& libConcreteMaterial::operator= (const libConcreteMaterial& 
 //======================== OPERATIONS =======================================
 bool libConcreteMaterial::SaveMe(sysIStructuredSave* pSave)
 {
-   pSave->BeginUnit("ConcreteMaterialEntry", 1.0);
+   pSave->BeginUnit(_T("ConcreteMaterialEntry"), 1.0);
 
-   pSave->Property("Name",this->GetName().c_str());
-   pSave->Property("Density", m_D);
-   pSave->Property("Fc", m_Fc);
-   pSave->Property("Ec", m_Ec);
-   pSave->Property("AggregateSize",m_AggSize);
+   pSave->Property(_T("Name"),this->GetName().c_str());
+   pSave->Property(_T("Density"), m_D);
+   pSave->Property(_T("Fc"), m_Fc);
+   pSave->Property(_T("Ec"), m_Ec);
+   pSave->Property(_T("AggregateSize"),m_AggSize);
 
    pSave->EndUnit();
 
@@ -92,27 +92,27 @@ bool libConcreteMaterial::SaveMe(sysIStructuredSave* pSave)
 
 bool libConcreteMaterial::LoadMe(sysIStructuredLoad* pLoad)
 {
-   if(pLoad->BeginUnit("ConcreteMaterialEntry"))
+   if( pLoad->BeginUnit(_T("ConcreteMaterialEntry")) )
    {
       if (pLoad->GetVersion()!=1.0)
          THROW_LOAD(BadVersion,pLoad);
 
-      std::string name;
-      if(pLoad->Property("Name",&name))
+      std::_tstring name;
+      if(pLoad->Property(_T("Name"),&name))
          this->SetName(name.c_str());
       else
          THROW_LOAD(InvalidFileFormat,pLoad);
 
-      if(!pLoad->Property("Density", &m_D))
+      if(!pLoad->Property(_T("Density"), &m_D))
          THROW_LOAD(InvalidFileFormat,pLoad);
 
-      if(!pLoad->Property("Fc", &m_Fc))
+      if(!pLoad->Property(_T("Fc"), &m_Fc))
          THROW_LOAD(InvalidFileFormat,pLoad);
 
-      if(!pLoad->Property("Ec", &m_Ec))
+      if(!pLoad->Property(_T("Ec"), &m_Ec))
          THROW_LOAD(InvalidFileFormat,pLoad);
 
-      if(!pLoad->Property("AggregateSize", &m_AggSize))
+      if(!pLoad->Property(_T("AggregateSize"), &m_AggSize))
          THROW_LOAD(InvalidFileFormat,pLoad);
 
       if(!pLoad->EndUnit())

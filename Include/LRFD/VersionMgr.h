@@ -136,15 +136,15 @@ public:
 
    //------------------------------------------------------------------------
    // Returns "AASHTO LRFD Bridge Design Specification"
-   static std::string GetCodeString();
+   static std::_tstring GetCodeString();
 
    //------------------------------------------------------------------------
    // Returns the current version of the specification as a string.
-   static std::string GetVersionString();
+   static std::_tstring GetVersionString();
 
    //------------------------------------------------------------------------
    // Returns the current unit of the specification as a string.
-   static std::string GetUnitString();
+   static std::_tstring GetUnitString();
 
 
    // GROUP: INQUIRY

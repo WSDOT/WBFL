@@ -39,7 +39,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-unitXUnit::unitXUnit(Reason reason,const char* file,Int16 line) :
+unitXUnit::unitXUnit(Reason reason,LPCTSTR file,Int16 line) :
 sysXBase(file,line),
 m_Reason( reason )
 {

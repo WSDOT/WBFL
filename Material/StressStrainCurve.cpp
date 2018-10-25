@@ -39,7 +39,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 matXStressStrainEvalError::matXStressStrainEvalError(Reason reason,
-                                                     const char* file,
+                                                     LPCTSTR file,
                                                      Int16 line) :
 sysXBase( file, line ),
 m_Reason( reason )
@@ -115,7 +115,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 matStressStrainCurve::matStressStrainCurve() :
-m_Name( "Unknown" ),
+m_Name( _T("Unknown") ),
 m_FractureStrain( 0 ),
 m_FractureStress( 0 ),
 m_CrushingStrain( 0 ),
@@ -124,7 +124,7 @@ m_CrushingStress( 0 )
    ASSERTVALID;
 }
 
-matStressStrainCurve::matStressStrainCurve(const std::string& name,
+matStressStrainCurve::matStressStrainCurve(const std::_tstring& name,
                                            Float64 fractureStrain,
                                            Float64 fractureStress,
                                            Float64 crushingStrain,
@@ -160,12 +160,12 @@ matStressStrainCurve& matStressStrainCurve::operator= (const matStressStrainCurv
 
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void matStressStrainCurve::SetName(const std::string& name)
+void matStressStrainCurve::SetName(const std::_tstring& name)
 {
    m_Name = name;
 }
 
-std::string matStressStrainCurve::GetName() const
+std::_tstring matStressStrainCurve::GetName() const
 {
    return m_Name;
 }

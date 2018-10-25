@@ -206,7 +206,7 @@ void CProgressMonitorDlg::Close()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    m_HasCancel = VARIANT_TRUE;
-   m_CancelBtn.SetWindowText("Close");
+   m_CancelBtn.SetWindowText(_T("Close"));
    m_CancelBtn.ShowWindow(SW_SHOW);
    m_Cursor = LoadCursor(NULL,IDC_ARROW); // set cursor to normal arrow
 }

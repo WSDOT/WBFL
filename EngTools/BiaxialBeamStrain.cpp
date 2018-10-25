@@ -284,7 +284,7 @@ bool etBiaxialBeamStrain::TestMe()
    if(!IsEqual(bs.GetXStrainLocation(-.56667,-4.,flag),-4.,.001)) return false;
    if(!IsEqual(bs.GetYStrainLocation(0.23333, 4.,flag), 4.,.001)) return false;
 
-//   bs.Dump(std::cout);
+//   bs.Dump(std::_tcout);
 
    return true;
 }

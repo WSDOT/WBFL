@@ -133,7 +133,7 @@ void bamUnifForceYLoaderImp::ApplyToSpanElement()
 
 void bamUnifForceYLoaderImp::ApplyToSupportElement()
 {
-   CHECKX( false, "Not yet supported");
+   CHECKX( false, _T("Not yet supported"));
 }
 
 ///////////////////////////////////////////////////////////////////////

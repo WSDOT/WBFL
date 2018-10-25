@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptOutputReportVisitor::rptOutputReportVisitor(std::ostream* pMyOstream/*, 
+rptOutputReportVisitor::rptOutputReportVisitor(std::_tostream* pMyOstream/*, 
                                              const rptUnitLibrary& MyUnitLibrary*/ )
 {
    m_pOstream = pMyOstream;

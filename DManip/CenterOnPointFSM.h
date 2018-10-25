@@ -45,9 +45,9 @@ public:
 	CCenterOnPointFSMState();
 	virtual ~CCenterOnPointFSMState();
 
-	virtual const char* StateName() const = 0;
+	virtual LPCTSTR StateName() const = 0;
 	virtual void Do(CCenterOnPointFSM& fsm);
-	virtual void Float64Click(CCenterOnPointFSM& fsm);
+	virtual void DoubleClick(CCenterOnPointFSM& fsm);
 	virtual void MouseDown(CCenterOnPointFSM& fsm);
 	virtual void MouseUp(CCenterOnPointFSM& fsm);
 	virtual void MouseMove(CCenterOnPointFSM& fsm);
@@ -60,7 +60,7 @@ public:
 class CCenterOnPointFSMDoneState : public CCenterOnPointFSMState
 {
 public:
-   virtual const char* StateName() const { return "Done"; }
+   virtual LPCTSTR StateName() const { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -69,10 +69,10 @@ public:
 class CCenterOnPointFSMWaitingForPointState : public CCenterOnPointFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForPoint"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForPoint"); }
    virtual void MouseMove(CCenterOnPointFSM& fsm);
    virtual void MouseDown(CCenterOnPointFSM& fsm);
-   virtual void Float64Click(CCenterOnPointFSM& fsm);
+   virtual void DoubleClick(CCenterOnPointFSM& fsm);
 	virtual void EscKey(CCenterOnPointFSM& fsm);
 };
 
@@ -82,7 +82,7 @@ public:
 class CCenterOnPointFSMStartState : public CCenterOnPointFSMState
 {
 public:
-   virtual const char* StateName() const { return "Start"; }
+   virtual LPCTSTR StateName() const { return _T("Start"); }
    virtual void Do(CCenterOnPointFSM& fsm);
 };
 
@@ -97,7 +97,7 @@ public:
 
    // Event Functions
    void Do() {m_pState->Do(*this);}
-   void Float64Click() {m_pState->Float64Click(*this);}
+   void DoubleClick() {m_pState->DoubleClick(*this);}
    void MouseDown()   {m_pState->MouseDown(*this); }
    void MouseUp()     {m_pState->MouseUp(*this); }
    void MouseMove()   {m_pState->MouseMove(*this); }

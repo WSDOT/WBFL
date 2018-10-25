@@ -72,8 +72,8 @@ enum Reason { ProblemRepError,             // There is a problem w/ the problem
    //------------------------------------------------------------------------
    // Default constructor.  Supply the file and line number where the 
    // exception occured.
-   rcaXCapacitySolverError(Reason reason, const char* file, Int16 line);
-   rcaXCapacitySolverError(const std::string &reinterpMsg,Reason reason, const char* file, Int16 line);
+   rcaXCapacitySolverError(Reason reason, const TCHAR* file, Int16 line);
+   rcaXCapacitySolverError(const std::wstring &reinterpMsg,Reason reason, const TCHAR* file, Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -114,7 +114,7 @@ enum Reason { ProblemRepError,             // There is a problem w/ the problem
    // MaterialNotFound	    "Material not found"
    // ElementNotFound	    "Element not found"
    // InvalidProblemRep	    "The problem representation is invalid"
-   void GetErrorMessage(std::string* pMsg,Int32 reserved) const;
+   void GetErrorMessage(std::wstring* pMsg,Int32 reserved) const;
 
 
    // GROUP: ACCESS
@@ -148,7 +148,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Reason m_Reason;
-   std::string m_ReinterpertMsg;
+   std::_tstring m_ReinterpertMsg;
 
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------

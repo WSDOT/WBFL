@@ -25,7 +25,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="0"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -48,8 +48,8 @@
 				Name="VCMIDLTool"
 				AdditionalIncludeDirectories="..\Include;&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\&quot;"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="..\Include\$(ProjectName).h"
+				InterfaceIdentifierFileName="..\Include\$(ProjectName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -135,7 +135,8 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="true"
-			CharacterSet="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -158,13 +159,16 @@
 				Name="VCMIDLTool"
 				AdditionalIncludeDirectories="..\Include;&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\&quot;"
 				TypeLibraryName="$(OutDir)\$(TargetName).tlb"
-				HeaderFileName="..\Include\$(ConfigurationName)\$(ProjectName).h"
-				InterfaceIdentifierFileName="..\Include\$(ConfigurationName)\$(ProjectName)_i.c"
+				HeaderFileName="..\Include\$(ProjectName).h"
+				InterfaceIdentifierFileName="..\Include\$(ProjectName)_i.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="1"
-				InlineFunctionExpansion="1"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;,..\..\boost_1_37_0"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;_ATL_NO_UUIDOF"
 				StringPooling="true"
@@ -202,6 +206,9 @@
 				EnableUAC="true"
 				ModuleDefinitionFile=".\ReportManagerAgent.def"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"

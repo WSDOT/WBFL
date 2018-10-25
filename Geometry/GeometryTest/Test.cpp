@@ -83,7 +83,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-int main(int argc, char* argv[])
+int main(int argc, LPTSTR argv[])
 {
    ::CoInitialize(NULL);
 

@@ -111,7 +111,7 @@ private:
    HRESULT DrawGraph(Float64 t, Float64 l, Float64 r, Float64 b);
    HRESULT GetCurveBoundary(Float64* t, Float64* l, Float64* r, Float64* b);
    HRESULT DrawAxisLine(Float64 startX, Float64 startY, Float64 endX, Float64 endY, UINT width=1);
-   HRESULT DrawString(std::string& string, Float64 wx, Float64 wy, UINT textAlign);
+   HRESULT DrawString(std::_tstring& string, Float64 wx, Float64 wy, UINT textAlign);
 };
 
 #endif //__GRAPHXYDISPLAYOBJECT_H_

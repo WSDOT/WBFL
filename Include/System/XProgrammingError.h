@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   sysXProgrammingError(Reason reason, const char* file, Int32 line);
+   sysXProgrammingError(Reason reason, LPCTSTR file, Int32 line);
 
    //------------------------------------------------------------------------
    // Copy constructor

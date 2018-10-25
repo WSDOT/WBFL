@@ -77,7 +77,7 @@ public:
    static void ShowSplashScreen(CWnd* pParent,BOOL bShowUntilClosed);
 
    // Sets the text in the rectangle defined in the splash screen information
-   static void SetText(const char* strText);
+   static void SetText(LPCTSTR strText);
 
    // close the splash screen next time the timer times out
    static void CloseOnNextTimeout();

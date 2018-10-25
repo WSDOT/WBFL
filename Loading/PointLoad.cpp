@@ -88,7 +88,7 @@ STDMETHODIMP CPointLoad::put_MemberID(long id)
       typedef CEditValueTransaction<CPointLoad,long,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Point Load Member ID",&PutMemberID,m_MemberID,id);
+      pTxn->Init(this,_T("Point Load Member ID"),&PutMemberID,m_MemberID,id);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -117,7 +117,7 @@ STDMETHODIMP CPointLoad::put_Location(Float64 location)
       typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Point Load Location",&PutLocation,m_Location,location);
+      pTxn->Init(this,_T("Point Load Location"),&PutLocation,m_Location,location);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -146,7 +146,7 @@ STDMETHODIMP CPointLoad::put_Fx(Float64 fx)
       typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Point Load Fx",&PutFx,m_Fx, fx);
+      pTxn->Init(this,_T("Point Load Fx"),&PutFx,m_Fx, fx);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -175,7 +175,7 @@ STDMETHODIMP CPointLoad::put_Fy(Float64 fy)
       typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Point Load Fy",&PutFy,m_Fy, fy);
+      pTxn->Init(this,_T("Point Load Fy"),&PutFy,m_Fy, fy);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -204,7 +204,7 @@ STDMETHODIMP CPointLoad::put_Mz(Float64 mz)
       typedef CEditValueTransaction<CPointLoad,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Point Load Mz",&PutMz,m_Mz, mz);
+      pTxn->Init(this,_T("Point Load Mz"),&PutMz,m_Mz, mz);
 
       return m_TxnMgr->Execute(pTxn);
    }

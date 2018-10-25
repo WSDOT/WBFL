@@ -69,7 +69,7 @@ public:
    // Method:      Connection
    // Description: Default c'tor
    // Return:      N/A
-   bmfConnection(const std::string& name,
+   bmfConnection(const std::_tstring& name,
                  Float64 brgOffset,
                  bmfMeasuredHow how_brg,
                  Float64 gdrEndSize,
@@ -113,7 +113,7 @@ public:
    Float64 GetGirderEndSize() const;
    bmfMeasuredHow GetHowGirderEndSizeIsMeasured() const;
 
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    // INQUIRY
 
@@ -127,7 +127,7 @@ protected:
 
 private:
    // DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    Float64 m_BearingOffset;
    Float64 m_GirderEndSize;
    bmfMeasuredHow m_BearingHow;

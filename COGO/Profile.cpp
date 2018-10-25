@@ -970,7 +970,7 @@ void CProfile::Unadvise(long idx)
    if ( p.first == 0 )
       return;
 
-   DWORD dwCookie = p.first;
+   CogoElementKey dwCookie = p.first;
    CComVariant& var = p.second;
 
    InternalAddRef(); // Counteract InternalRelease() in Advise

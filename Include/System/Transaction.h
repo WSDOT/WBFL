@@ -89,14 +89,14 @@ public:
 
    //------------------------------------------------------------------------
    // Writes the name of the transaction to a stream
-   virtual void Log(std::ostream& os) const;
+   virtual void Log(std::_tostream& os) const;
 
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction. This is useful for Undo/Redo menu
    // commands.
-   virtual std::string Name() const = 0;
+   virtual std::_tstring Name() const = 0;
 
    // GROUP: INQUIRY
 

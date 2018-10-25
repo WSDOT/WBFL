@@ -296,6 +296,22 @@ STDMETHODIMP CLine2d::Reverse()
    return S_OK;
 }
 
+STDMETHODIMP CLine2d::Clone(ILine2d** ppLine)
+{
+   CHECK_RETVAL(ppLine);
+   CComObject<CLine2d>* pLine;
+   CComObject<CLine2d>::CreateInstance(&pLine);
+
+   pLine->m_pN.Release();
+   m_pN->Clone(&pLine->m_pN);
+   pLine->m_C = m_C;
+
+   (*ppLine) = pLine;
+   (*ppLine)->AddRef();
+
+   return S_OK;
+}
+
 STDMETHODIMP CLine2d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

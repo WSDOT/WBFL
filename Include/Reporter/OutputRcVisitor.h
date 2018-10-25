@@ -75,7 +75,7 @@ public:
 
    //------------------------------------------------------------------------
    // constructor
-   rptOutputRcVisitor(std::ostream* pMyOstream);
+   rptOutputRcVisitor(std::_tostream* pMyOstream);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -88,7 +88,7 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   std::ostream* m_pOstream;
+   std::_tostream* m_pOstream;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

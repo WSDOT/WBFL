@@ -278,7 +278,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
 
    (*clone)->putref_Factory(m_Factory);
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IEnumPoint2d> enumPoints;
    get__EnumPoints(&enumPoints);
    CComPtr<IPoint2d> point;
@@ -485,7 +485,7 @@ HRESULT CPointCollection::PointKeyError(CogoElementKey key,UINT nHelpString,HRES
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return Error(oleMsg, IID_IPointCollection, hRes);

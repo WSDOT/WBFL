@@ -110,7 +110,7 @@ CEAFDocTemplate* CEAFTemplateGroup::GetDocTemplate()
    return m_pDocTemplate;
 }
 
-void CEAFTemplateGroup::SetGroupName(LPCSTR name)
+void CEAFTemplateGroup::SetGroupName(LPCTSTR name)
 {
    m_GroupName = name;
 }

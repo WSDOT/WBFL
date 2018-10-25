@@ -93,6 +93,7 @@ public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ IPath* *clone);
    STDMETHOD(get__EnumPathElements)(/*[out, retval]*/ IEnumPathElements** pVal);  
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength);
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point);
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset); 
 	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint);
@@ -201,6 +202,14 @@ private:
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
 
    HRESULT DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOffset);
+
+#if defined _DEBUG
+   void DumpPathElements();
+   void DumpPathElement(IPoint2d* pPoint);
+   void DumpPathElement(ILineSegment2d* pLS);
+   void DumpPathElement(IHorzCurve* pHC);
+   void DumpPathElement(ICubicSpline* pSpine);
+#endif
 };
 
 #endif //__PATH_H_

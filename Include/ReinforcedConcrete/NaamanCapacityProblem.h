@@ -149,6 +149,8 @@ private:
    // area as a function of compression block offset.
    Float64 Evaluate(Float64 x) const;
 
+   mathFunction2d* Clone() const;
+
    void Init();
    void Clean();
 

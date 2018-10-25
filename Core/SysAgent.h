@@ -99,10 +99,10 @@ private:
    Int16 m_cProgressRef; // progress thread ref count
    std::vector<int> m_ProgressMsgMarker; // index into m_Messages where the first message for
                                          // a progress window instance begins
-   std::vector<std::string> m_Messages;
+   std::vector<std::_tstring> m_Messages;
 
    BOOL m_bEndLines;
-   std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;
+   std::vector<boost::shared_ptr<std::_tofstream> > m_LogFiles;
 
    CWnd* m_pActiveWnd;
 };

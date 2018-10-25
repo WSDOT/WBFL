@@ -196,7 +196,7 @@ STDMETHODIMP_(void) CRectSelectTaskImpl::TrackRect()
    }
 }
 
-STDMETHODIMP_(void) CRectSelectTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CRectSelectTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

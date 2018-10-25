@@ -53,12 +53,12 @@ CNorthArrowImpl::~CNorthArrowImpl()
 
 HRESULT CNorthArrowImpl::FinalConstruct()
 {
-   m_strText = "";
+   m_strText = _T("");
    m_Direction = PI_OVER_2;
    m_Size = 50;
 
    CFont font;
-   font.CreatePointFont(80,"Arial");
+   font.CreatePointFont(80,_T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 80;
    m_Font.lfQuality = ANTIALIASED_QUALITY;
@@ -228,7 +228,7 @@ STDMETHODIMP_(void) CNorthArrowImpl::GetBoundingBox(IRect2d** wrect)
    (*wrect)->AddRef();
 }
 
-STDMETHODIMP_(void) CNorthArrowImpl::SetText(LPCSTR lpszText)
+STDMETHODIMP_(void) CNorthArrowImpl::SetText(LPCTSTR lpszText)
 {
    if ( m_strText == CString(lpszText) )
       return;

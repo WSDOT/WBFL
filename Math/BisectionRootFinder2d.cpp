@@ -68,7 +68,7 @@ Float64 mathBisectionRootFinder2d::FindRootInRange(const mathFunction2d& eval,
       // Ensure that the root is bracketed
       if (fa*fb > 0.0) 
       {
-         mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,__FILE__,__LINE__);
+         mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::BracketFailed,_T(__FILE__),__LINE__);
          mx.Throw();
       }
 
@@ -103,12 +103,12 @@ Float64 mathBisectionRootFinder2d::FindRootInRange(const mathFunction2d& eval,
    }
    catch (mathXEvalError e) 
    {
-      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::RootNotPresent,__FILE__,__LINE__);
+      mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::RootNotPresent,_T(__FILE__),__LINE__);
       mx.Throw();
    }
 
    // too many iters
-   mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::MaxIterExceeded,__FILE__,__LINE__);
+   mathXRootFinder2dFailed mx(mathXRootFinder2dFailed::MaxIterExceeded,_T(__FILE__),__LINE__);
    mx.Throw();
    return 0; // pacify the compiler
 }

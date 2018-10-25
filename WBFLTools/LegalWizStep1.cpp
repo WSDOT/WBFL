@@ -89,6 +89,8 @@ BOOL CLegalWizStep1::OnSetActive()
 
 BOOL CLegalWizStep1::OnInitDialog() 
 {
+   USES_CONVERSION;
+
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    HMODULE hMod = AfxGetResourceHandle();
    HRSRC hResInfo;
@@ -99,15 +101,18 @@ BOOL CLegalWizStep1::OnInitDialog()
 
    if ( hResInfo == 0 )
       DWORD dwError = GetLastError();
+
    DWORD dwSize = SizeofResource( hMod, hResInfo );
    HGLOBAL hResData = LoadResource( hMod, hResInfo );
    LPVOID pVoid = LockResource( hResData );
 
-   char* pText = new char[dwSize];
+   LPSTR pText = new char[dwSize];
+
    memcpy((void*)pText,pVoid,dwSize);
+
    pText[dwSize-1] = 0;
 
-   m_Text = pText;
+   m_Text = A2T(pText);
 
    delete[] pText;
 	

@@ -308,6 +308,8 @@ STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayObject(long doKey,AccessType d
 
 STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects()
 {
+   m_SelectedObjects.clear();
+
    // Clears all display objects from all display list
    DisplayListContainer::iterator iter;
    for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
@@ -315,8 +317,6 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects()
       CComPtr<iDisplayList> pDL = *iter;
       pDL->Clear();
    }
-
-   ClearSelectedObjects();
 }
 
 STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects(long key,AccessType access)

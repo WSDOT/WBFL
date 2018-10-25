@@ -73,7 +73,7 @@ static char THIS_FILE[] = __FILE__;
 
 CComModule _Module;
 
-int main(int argc, char* argv[])
+int main(int argc, LPTSTR argv[])
 {
    ::CoInitialize(NULL);
 

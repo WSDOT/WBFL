@@ -35,8 +35,8 @@ testUndoableTxn::testUndoableTxn() {}
 bool testUndoableTxn::Execute() { WATCH("testUndoableTxn::Execute()"); return true; }
 void testUndoableTxn::Undo() { WATCH("Undoing testUndoableTxn"); }
 txnTransaction* testUndoableTxn::CreateClone() const { return new testUndoableTxn; }
-void testUndoableTxn::Log(std::ostream& os) const { os << Name() << std::endl; }
-std::string testUndoableTxn::Name() const { return "Undoable Txn"; }
+void testUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
+std::_tstring testUndoableTxn::Name() const { return _T("Undoable Txn"); }
 bool testUndoableTxn::IsUndoable() { return true; }
 bool testUndoableTxn::IsRepeatable() { return true; }
 
@@ -44,8 +44,8 @@ bool testUndoableTxn::IsRepeatable() { return true; }
 testNotUndoableTxn::testNotUndoableTxn() : txnTransaction() {}
 bool testNotUndoableTxn::Execute() { WATCH("testNotUndoableTxn::Execute()"); return true;}
 txnTransaction* testNotUndoableTxn::CreateClone() const { return new testNotUndoableTxn; }
-void testNotUndoableTxn::Log(std::ostream& os) const { os << Name() << std::endl; }
-std::string testNotUndoableTxn::Name() const { return "Not Undoable Txn"; }
+void testNotUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
+std::_tstring testNotUndoableTxn::Name() const { return _T("Not Undoable Txn"); }
 bool testNotUndoableTxn::IsUndoable() { return false; }
 bool testNotUndoableTxn::IsRepeatable() { return true; }
 
@@ -53,7 +53,7 @@ testNotRepeatableTxn::testNotRepeatableTxn() : txnTransaction() {}
 bool testNotRepeatableTxn::Execute() { WATCH("testNotRepeatableTxn::Execute()"); return true; }
 void testNotRepeatableTxn::Undo() { WATCH("Undoing testNotRepeatableTxn"); }
 txnTransaction* testNotRepeatableTxn::CreateClone() const { return new testNotRepeatableTxn; }
-void testNotRepeatableTxn::Log(std::ostream& os) const { os << Name() << std::endl; }
-std::string testNotRepeatableTxn::Name() const { return "Not Repeatable Txn"; }
+void testNotRepeatableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
+std::_tstring testNotRepeatableTxn::Name() const { return _T("Not Repeatable Txn"); }
 bool testNotRepeatableTxn::IsUndoable() { return true; }
 bool testNotRepeatableTxn::IsRepeatable() { return false; }

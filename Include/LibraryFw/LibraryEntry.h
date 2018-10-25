@@ -94,11 +94,11 @@ public:
 
    //------------------------------------------------------------------------
    // Change the name of the entry
-   void SetName(const char* name);
+   void SetName(LPCTSTR name);
 
    //------------------------------------------------------------------------
    // Get the name of the entry
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    // Set a pointer back to our library
@@ -159,7 +159,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string       m_Name;
+   std::_tstring       m_Name;
    const libILibrary* m_pLibrary;
    mutable Uint32 m_RefCnt;
    bool              m_IsEditingEnabled;
