@@ -45,6 +45,7 @@ private:
    static void TestRectangularBeam();
    static void TestTeeBeam1();
    static void TestTeeBeam2();
+   static void TestTeeBeam3();
 };
 
 #endif // !defined(AFX_CrackedSectionSolverTest_H__69A6DB73_8BC5_4D0E_B0E6_50ACD5E81A11__INCLUDED_)

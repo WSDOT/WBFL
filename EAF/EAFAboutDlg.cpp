@@ -158,8 +158,11 @@ void CEAFAboutDlg::OnMoreInfo()
    {
       CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
+
+      UINT pluginIdx = m_AppList.GetItemData(idx);
       CComPtr<IEAFComponentInfo> component;
-      pComponentInfoMgr->GetPlugin(idx,&component);
+      pComponentInfoMgr->GetPlugin(pluginIdx,&component);
+
       component->OnMoreInfo();
       OnAppListSelChanged();
    }

@@ -39,10 +39,8 @@ static char THIS_FILE[] = __FILE__;
 
 
 CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CProgressDlg::IDD, pParent),
-   m_hMainWnd(NULL)
+	: CDialog(CProgressDlg::IDD, pParent)
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    m_bContinue = TRUE;
 	//{{AFX_DATA_INIT(CProgressDlg)
 	m_Message = _T("Working...");
@@ -68,15 +66,18 @@ void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 
 void CProgressDlg::UpdateMessage(LPCTSTR msg)
 {
+   // don't update the message if we are cancelling
+   if ( !m_bContinue )
+      return;
+
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    CWnd* pWnd = GetDlgItem(IDC_MESSAGE);
    pWnd->SetWindowText(msg);
+   PumpMessage();
 }
 
 BEGIN_MESSAGE_MAP(CProgressDlg, CDialog)
 	//{{AFX_MSG_MAP(CProgressDlg)
-	ON_WM_DESTROY()
-	ON_WM_KEYDOWN()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -84,21 +85,20 @@ END_MESSAGE_MAP()
 // CProgressDlg message handlers
 BOOL CProgressDlg::Continue()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    PumpMessage();
    return m_bContinue;
 }
 
 void CProgressDlg::ResetContinueState()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    PumpMessage();
    m_bContinue = TRUE;
+   m_Cancel.EnableWindow(TRUE);
 }
 
 void CProgressDlg::PumpMessage()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
+   AFX_MANAGE_STATE(AfxGetStaticModuleState());
    MSG msg;
    while (::PeekMessage(&msg,NULL,NULL,NULL, PM_NOREMOVE) )
    {
@@ -108,9 +108,16 @@ void CProgressDlg::PumpMessage()
 
 void CProgressDlg::OnCancel()
 {
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-   m_bContinue = FALSE;
-   CDialog::OnCancel();
+   AFX_MANAGE_STATE(AfxGetAppModuleState()); // want App state so that the dialog has the correc title
+   if ( AfxMessageBox("Are you sure you want to cancel?",MB_YESNO | MB_ICONQUESTION) == IDYES )
+   {
+      UpdateMessage("Cancelling...");
+      m_bContinue = FALSE;
+      m_Cancel.EnableWindow(FALSE); // doesn't need to be enabled any longer
+   }
+
+   // Don't call into the baseclass... the window will be destroyed a bit later
+   //CDialog::OnCancel();
 }
 
 BOOL CProgressDlg::OnInitDialog() 
@@ -118,41 +125,8 @@ BOOL CProgressDlg::OnInitDialog()
    CDialog::OnInitDialog();
 
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
-   // disable the main window
-   if (m_hMainWnd==0)
-   {
-      // for some reason, only the first call to this function succeeds. 
-      // later calls fail so...
-   	AFX_MANAGE_STATE(AfxGetAppModuleState());
-      CWnd* pwnd = ::AfxGetMainWnd();
-      ASSERT(pwnd!=0);
-      m_hMainWnd = pwnd->GetSafeHwnd();
-      ASSERT(m_hMainWnd!=0);
-   }
-
-   ::EnableWindow(m_hMainWnd, FALSE);
-
    m_Animate.Open(IDR_ANIMATE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
-}
-
-void CProgressDlg::OnDestroy() 
-{
-	AFX_MANAGE_STATE(AfxGetStaticModuleState());
-   // re-enable the main application window
-   ASSERT(m_hMainWnd);
-   ::EnableWindow(m_hMainWnd, TRUE);
-   ::SetActiveWindow(m_hMainWnd);
-
-
-	CDialog::OnDestroy();
-}
-
-void CProgressDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
-{
-   // Gobble up all key down events
-	//CDialog::OnKeyDown(nChar, nRepCnt, nFlags);
 }

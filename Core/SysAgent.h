@@ -30,7 +30,7 @@
 // SysAgent.h : header file
 //
 
-#include "ProgressDlg.h"
+#include "ProgressThread.h"
 #include <boost\shared_ptr.hpp>
 
 #include <vector>
@@ -95,9 +95,8 @@ public:
 
 private:
    IBroker* m_pBroker;
-   CProgressDlg m_ProgressDlg;
+   CProgressThread* m_pThread;
    Int16 m_cProgressRef;
-   BOOL m_bCancelEnabled;
 
    BOOL m_bEndLines;
    std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;

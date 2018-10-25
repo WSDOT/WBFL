@@ -80,6 +80,8 @@ public:
    virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
+   void SetHelpFileName(LPCTSTR lpszHelpFile);
+
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
    CEAFAppPluginManager* GetAppPluginManager();
    CEAFPluginCommandManager* GetPluginCommandManager();
@@ -184,6 +186,8 @@ protected:
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
 
+   CString m_strHelpFile;
+
    CString m_LastError;
 
    CString m_TipFilePath;
@@ -210,7 +214,7 @@ private:
 
    CString m_strWindowPlacementFormat;
 
-   CEAFCommandLineInfo m_CommandLineInfo;
+   CEAFCommandLineInfo* m_pCommandLineInfo;
 
 	DECLARE_MESSAGE_MAP()
 

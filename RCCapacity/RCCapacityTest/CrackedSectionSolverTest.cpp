@@ -60,6 +60,7 @@ void CCrackedSectionSolverTest::Test()
    TestRectangularBeam();
    TestTeeBeam1();
    TestTeeBeam2();
+   TestTeeBeam3();
 }
 
 void CCrackedSectionSolverTest::TestRectangularBeam()
@@ -167,7 +168,7 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    solver->putref_Section(section);
 
    CComPtr<ICrackedSectionSolution> solution;
-   TRY_TEST( SUCCEEDED(solver->Solve(&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0,&solution)), true);
 
    CComPtr<IPoint2d> pntCG;
    solution->get_CG(&pntCG);
@@ -281,7 +282,7 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    solver->putref_Section(section);
 
    CComPtr<ICrackedSectionSolution> solution;
-   TRY_TEST( SUCCEEDED(solver->Solve(&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0,&solution)), true);
 
    CComPtr<IPoint2d> pntCG;
    solution->get_CG(&pntCG);
@@ -395,7 +396,7 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    solver->putref_Section(section);
 
    CComPtr<ICrackedSectionSolution> solution;
-   TRY_TEST( SUCCEEDED(solver->Solve(&solution)), true);
+   TRY_TEST( SUCCEEDED(solver->Solve(0,&solution)), true);
 
    CComPtr<IPoint2d> pntCG;
    solution->get_CG(&pntCG);
@@ -403,4 +404,123 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,52.15599),true);
+}
+
+void CCrackedSectionSolverTest::TestTeeBeam3()
+{
+   // Tee beam with neutral axis in beam
+   CHRException hr;
+
+   CComPtr<IUnitServer> unit_server;
+   unit_server.CoCreateInstance(CLSID_UnitServer);
+   
+   // base units of kip and ksi
+   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
+   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
+   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+
+   // Get a general section
+   CComPtr<IGeneralSection> section;
+   TRY_TEST(section.CoCreateInstance(CLSID_GeneralSection), S_OK);
+
+   //
+   // materials
+   //
+ 
+   // concrete
+   CComPtr<IUnconfinedConcrete> slab_concrete;
+   slab_concrete.CoCreateInstance(CLSID_UnconfinedConcrete);
+   CComQIPtr<ISupportUnitServer> sus_slab(slab_concrete);
+   sus_slab->putref_UnitServer(unit_server);
+   slab_concrete->put_fc(4.0); // 4 KSI concrete
+
+   CComPtr<IUnconfinedConcrete> beam_concrete;
+   beam_concrete.CoCreateInstance(CLSID_UnconfinedConcrete);
+   CComQIPtr<ISupportUnitServer> sus_beam(beam_concrete);
+   sus_beam->putref_UnitServer(unit_server);
+   beam_concrete->put_fc(10.0); // 10 KSI concrete
+
+   // rebar
+   CComPtr<IRebarModel> rebar;
+   rebar.CoCreateInstance(CLSID_RebarModel);
+   rebar->Init(60.,29000., 0.11);
+
+   //
+   // shapes
+   //
+
+   // slab
+   Float64 Wtf = 48;
+   Float64 Ttf = 8;
+   CComPtr<IRectangle> slab;
+   slab.CoCreateInstance(CLSID_Rect);
+   slab->put_Height(Ttf);
+   slab->put_Width(Wtf);
+
+   // main beam
+   Float64 H = 100;
+   Float64 W = 20;
+   CComPtr<IRectangle> beam;
+   beam.CoCreateInstance(CLSID_Rect);
+   beam->put_Height(H);
+   beam->put_Width(W);
+
+   // move bottom center of beam to (0,0)
+   CComQIPtr<IXYPosition> posBeam(beam);
+   CComPtr<IPoint2d> pntBC;
+   posBeam->get_LocatorPoint(lpBottomCenter,&pntBC);
+   pntBC->Move(0,0);
+   posBeam->put_LocatorPoint(lpBottomCenter,pntBC);
+
+   // move bottom center of slab to top center of beam
+   CComPtr<IPoint2d> pntTC;
+   posBeam->get_LocatorPoint(lpTopCenter,&pntTC);
+
+   CComQIPtr<IXYPosition> posSlab(slab);
+   posSlab->put_LocatorPoint(lpBottomCenter,pntTC);
+
+   pntTC.Release();
+   posSlab->get_LocatorPoint(lpTopCenter,&pntTC);
+
+   // 2 - #10 rebar @ 2" from top
+   Float64 radius = sqrt(2*1.27/M_PI);
+   CComPtr<ICircle> bar1;
+   bar1.CoCreateInstance(CLSID_Circle);
+   bar1->put_Radius(radius);
+   CComPtr<IPoint2d> center;
+   bar1->get_Center(&center);
+   Float64 Y;
+   pntTC->get_Y(&Y);
+   center->Move(0,Y-2);
+
+   CComQIPtr<IShape> shape1(slab);
+   CComQIPtr<IShape> shape2(beam);
+   CComQIPtr<IShape> shape3(bar1);
+
+   CComQIPtr<IStressStrain> material1(slab_concrete);
+   CComQIPtr<IStressStrain> material2(beam_concrete);
+   CComQIPtr<IStressStrain> material3(rebar);
+
+   section->AddShape(shape1,material1,NULL,0); // slab
+   section->AddShape(shape2,material2,NULL,0); // beam
+   section->AddShape(shape3,material3,NULL,0); // rebar
+
+   CComPtr<ICrackedSectionSolver> solver;
+   TRY_TEST(solver.CoCreateInstance(CLSID_CrackedSectionSolver),S_OK);
+
+   solver->put_Slices(10);
+   //solver->put_SliceGrowthFactor(3);
+   solver->put_CGTolerance(0.001);
+   solver->putref_Section(section);
+
+   CComPtr<ICrackedSectionSolution> solution;
+   TRY_TEST( SUCCEEDED(solver->Solve(M_PI,&solution)), true);
+
+   CComPtr<IPoint2d> pntCG;
+   solution->get_CG(&pntCG);
+
+   Float64 y;
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y,-11.781458),true);
 }

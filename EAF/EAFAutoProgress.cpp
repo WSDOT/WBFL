@@ -24,7 +24,6 @@
 
 #include "stdafx.h"
 #include <EAF\EAFAutoProgress.h>
-#include <WBFLCore.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -37,13 +36,13 @@ CLASS
    CEAFAutoProgress
 ****************************************************************************/
 
-CEAFAutoProgress::CEAFAutoProgress(IProgress* pProgress,UINT nDelay)
+CEAFAutoProgress::CEAFAutoProgress(IProgress* pProgress,UINT nDelay,DWORD dwMask)
 {
    m_pProgress = pProgress;
 
    m_bCreated = false;
 
-   CreateProgressWindow(PW_NOCANCEL | PW_NOGAUGE, nDelay );
+   CreateProgressWindow(dwMask, nDelay );
 }
 
 CEAFAutoProgress::~CEAFAutoProgress()

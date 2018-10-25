@@ -66,6 +66,8 @@ public:
    void SetMenuBitmap(const CBitmap* pBmp);
    const CBitmap* GetMenuBitmap();
 
+   virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
+
 private:
    std::string m_Name;
    bool m_bHidden;

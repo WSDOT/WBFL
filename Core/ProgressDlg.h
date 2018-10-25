@@ -69,13 +69,10 @@ public:
 // Implementation
 protected:
    BOOL m_bContinue;
-   HWND m_hMainWnd;
 
 	// Generated message map functions
 	//{{AFX_MSG(CProgressDlg)
 	virtual BOOL OnInitDialog();
-	afx_msg void OnDestroy();
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	//}}AFX_MSG
    virtual void OnCancel();
 	DECLARE_MESSAGE_MAP()

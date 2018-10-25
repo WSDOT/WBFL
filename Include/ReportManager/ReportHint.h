@@ -21,38 +21,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TitlePageBuilder.cpp: implementation of the CTitlePageBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
+#pragma once
 
-#include "stdafx.h"
-#include "ReportManager.h"
-#include <ReportManager\TitlePageBuilder.h>
+#include <ReportManager\ReportManagerExp.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CTitlePageBuilder::CTitlePageBuilder()
+class REPORTMANAGERCLASS CReportHint
 {
-
-}
-
-CTitlePageBuilder::~CTitlePageBuilder()
-{
-
-}
-
-bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec)
-{
-   // be conservative... assume report title pages needs updating
-   // Override this method if you want an different outcome
-   return true;
-}
-
+public:
+	CReportHint();
+	virtual ~CReportHint();
+};

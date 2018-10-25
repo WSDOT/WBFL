@@ -34,6 +34,7 @@
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
+#include <ReportManager\ReportHint.h>
 
 class rptChapter;
 
@@ -49,6 +50,7 @@ public:
    virtual bool Select() const = 0; // return true if this chapter is to be selected by default
    virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const = 0;
    virtual CChapterBuilder* Clone() const = 0;
+   virtual bool NeedsUpdate(CReportHint* pHint,CReportSpecification* pRptSpec,Uint16 level) const;
 };
 
 #endif // !defined(AFX_CHAPTERBUILDER_H__9B2BF99A_0562_4755_8CA3_C657F931390E__INCLUDED_)

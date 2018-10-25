@@ -78,7 +78,7 @@ public:
 
 // Implementation
 public:
-   virtual void UpdateNow();
+   virtual void UpdateNow(CReportHint* pHint);
 
 protected:
 	virtual ~CEAFReportView();
@@ -108,7 +108,12 @@ protected:
    virtual void EditReport();
    virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
    virtual void CreateReportSpecification(CollectionIndexType rptIdx,bool bCreateDefaultReport);
-   virtual HRESULT UpdateReportBrowser();
+   virtual HRESULT UpdateReportBrowser(CReportHint* pHint);
+
+   // Translate an MFC OnUpdate hint into a CReportHint object that will be passed into
+   // the report build and chapter builders to determine if the report needs to be updated
+   virtual CReportHint* TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint);
+
 
 protected:
    boost::shared_ptr<CReportBrowser> m_pReportBrowser;

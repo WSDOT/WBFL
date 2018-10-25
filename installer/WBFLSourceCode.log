@@ -1,5 +1,5 @@
-Build started at  April 30, 2010  11:44:36
-Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.2.0.6.exe
+Build started at  June 07, 2010  08:30:52
+Output Package: C:\ARP_INSTALLER\Install_WBFL_Source_3.2.1.0.exe
 Creating Package
      File 'ArpMacros.vsmacros' in package.
      File 'AnalysisResultsManager.cpp' in package.
@@ -1098,6 +1098,8 @@ Creating Package
      File 'dllmain.h' in package.
      File 'ProgressDlg.cpp' in package.
      File 'ProgressDlg.h' in package.
+     File 'ProgressThread.cpp' in package.
+     File 'ProgressThread.h' in package.
      File 'ReadMe.txt' in package.
      File 'Core.rc2' in package.
      File 'Working.avi' in package.
@@ -4857,6 +4859,7 @@ Creating Package
      File 'ReportBuilder.h' in package.
      File 'ReportBuilderManager.h' in package.
      File 'ReportDescription.h' in package.
+     File 'ReportHint.h' in package.
      File 'ReportManager.h' in package.
      File 'ReportManagerExp.h' in package.
      File 'ReportSpecification.h' in package.
@@ -8281,6 +8284,7 @@ Creating Package
      File 'ReportDescription.cpp' in package.
      File 'ReportDlg.cpp' in package.
      File 'ReportDlg.h' in package.
+     File 'ReportHint.cpp' in package.
      File 'ReportManager.cpp' in package.
      File 'ReportManager.def' in package.
      File 'ReportManager.h' in package.
@@ -9546,4 +9550,4 @@ Creating EXE
      Creating data section...
      Appending Data Section
      Appending File Groups
-Build completed at  April 30, 2010  11:45:04
+Build completed at  June 07, 2010  08:31:30

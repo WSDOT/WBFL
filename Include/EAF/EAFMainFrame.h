@@ -165,7 +165,7 @@ protected:
    afx_msg void OnHelp();
    afx_msg void OnViewToolBar();
    afx_msg void OnUpdateViewToolBar(CCmdUI* pCmdUI);
-   afx_msg void OnToolBarMenuSelected(UINT id);
+   afx_msg void OnToolbarMenuSelected(UINT id);
 	//}}AFX_MSG
    afx_msg BOOL OnToolTipText(UINT nID,NMHDR* pTTTStruct,LRESULT* pResult);
    afx_msg BOOL OnToolbarDropDown(UINT nID,NMHDR* pnmhdr,LRESULT* plr);
@@ -178,8 +178,6 @@ protected:
    friend CEAFDocument;
 
 private:
-   void OnToolbarMenuSelected(UINT id);
-
    void DockControlBarLeftOf(CToolBar* Bar,CToolBar* LeftOf);
    std::vector<BOOL> GetToolBarStates();
    std::vector<CString> GetToolBarNames();

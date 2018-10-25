@@ -145,7 +145,13 @@ void CEAFAutoCalcReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHi
 void CEAFAutoCalcReportView::UpdateNow()
 {
    // Update is forced by the user
-   CEAFReportView::UpdateNow();
+   CEAFReportView::UpdateNow(NULL);
+}
+
+void CEAFAutoCalcReportView::UpdateNow(CReportHint* pHint)
+{
+   // Update is forced by the user
+   CEAFReportView::UpdateNow(pHint);
 }
 
 void CEAFAutoCalcReportView::EditReport()
@@ -169,9 +175,9 @@ void CEAFAutoCalcReportView::EditReport()
    }
 }
 
-HRESULT CEAFAutoCalcReportView::UpdateReportBrowser()
+HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(CReportHint* pHint)
 {
-   HRESULT hr = CEAFReportView::UpdateReportBrowser();
+   HRESULT hr = CEAFReportView::UpdateReportBrowser(pHint);
 
    CEAFLicensePlateChildFrame* pParent = GetLpFrame();
    if ( FAILED(hr) )

@@ -52,3 +52,8 @@ const char* CChapterBuilder::GetKey() const
 {
    return GetName();
 }
+
+bool CChapterBuilder::NeedsUpdate(CReportHint* pHint,CReportSpecification* pRptSpec,Uint16 level) const
+{
+   return true;
+}

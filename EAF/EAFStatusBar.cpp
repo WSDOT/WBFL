@@ -95,8 +95,13 @@ BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
    GetStatusIndicators(&pIndicators,&m_nIndicators);
    bResult = SetIndicators(pIndicators,m_nIndicators);
 
-   SetPaneStyle( GetStatusPaneIndex(), SBPS_NORMAL | SBT_OWNERDRAW );
-   SetPaneStyle( GetModifiedPaneIndex(), SBPS_DISABLED );
+   int idx = GetStatusPaneIndex();
+   if ( 0 <= idx )
+      SetPaneStyle( idx, SBPS_NORMAL | SBT_OWNERDRAW );
+
+   idx = GetModifiedPaneIndex();
+   if ( 0 <= idx )
+      SetPaneStyle( idx, SBPS_DISABLED );
 
    for ( int i = 0; i < m_nIndicators; i++ )
    {
@@ -111,7 +116,9 @@ BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
 void CEAFStatusBar::EnableModifiedFlag(BOOL bEnable)
 {
    UINT style = (bEnable ? SBPS_NORMAL : SBPS_DISABLED) | SBPS_NOBORDERS;
-   SetPaneStyle(GetModifiedPaneIndex(), style );
+   int idx = GetModifiedPaneIndex();
+   if ( 0 <= idx )
+      SetPaneStyle(idx, style );
 }
 
 int CEAFStatusBar::GetPaneCount()

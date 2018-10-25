@@ -147,6 +147,8 @@ void rptHtmlHelper::VisitFontLibrary(std::ostream& os)
 
    osPrint << "@media print" << std::endl;
    osPrint << "{" << std::endl;
+   osPrint << "THEAD {display: table-header-group;}" << std::endl;
+   osPrint << "TFOOT {display: table-footer-group;}" << std::endl;
 
    osScreen << "@media screen" << std::endl;
    osScreen << "{" << std::endl;

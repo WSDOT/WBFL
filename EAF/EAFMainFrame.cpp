@@ -64,7 +64,7 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
 
    ON_COMMAND(ID_VIEW_TOOLBAR, OnViewToolBar)
    ON_UPDATE_COMMAND_UI(ID_VIEW_TOOLBAR, OnUpdateViewToolBar)
-   ON_COMMAND_RANGE(EAF_TOOLBAR_MENU_BASE, EAF_TOOLBAR_MENU_BASE+EAF_TOOLBAR_MENU_COUNT, OnToolBarMenuSelected)
+   ON_COMMAND_RANGE(EAF_TOOLBAR_MENU_BASE, EAF_TOOLBAR_MENU_BASE+EAF_TOOLBAR_MENU_COUNT, OnToolbarMenuSelected)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -906,7 +906,10 @@ void CEAFMainFrame::OnUpdateViewToolBar(CCmdUI* pCmdUI)
 
 void CEAFMainFrame::OnToolbarMenuSelected(UINT id)
 {
-   Uint16 idx = id - EAF_TOOLBAR_MENU_BASE;
+   ATLASSERT(EAF_TOOLBAR_MENU_BASE <= id && id < EAF_TOOLBAR_MENU_BASE + EAF_TOOLBAR_MENU_COUNT);
+   UINT base = EAF_TOOLBAR_MENU_BASE;
+   UINT idx = id - base;
+   ATLASSERT(idx < EAF_TOOLBAR_MENU_COUNT);
    ToggleToolBarState( idx );
 }
 
@@ -1042,12 +1045,6 @@ void CEAFMainFrame::ToggleToolBarState(UINT idx)
       BOOL bIsVisible = tbInfo.m_pMFCToolBar->IsWindowVisible();
       ShowControlBar( tbInfo.m_pMFCToolBar, !bIsVisible, FALSE );
    }
-}
-
-void CEAFMainFrame::OnToolBarMenuSelected(UINT id)
-{
-   Uint16 idx = id - EAF_TOOLBAR_MENU_BASE;
-   ToggleToolBarState( idx );
 }
 
 CEAFMenu* CEAFMainFrame::CreateMainMenu()

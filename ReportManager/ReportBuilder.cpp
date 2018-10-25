@@ -126,6 +126,25 @@ boost::shared_ptr<CReportSpecificationBuilder> CReportBuilder::GetReportSpecific
    return m_pRptSpecBuilder;
 }
 
+bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec)
+{
+   std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
+
+   if ( m_pTitlePageBuilder.get() != NULL && m_pTitlePageBuilder->NeedsUpdate(pHint,pRptSpec) )
+      return true;
+
+   std::vector<CChapterInfo>::iterator iter;
+   for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
+   {
+      CChapterInfo chInfo = *iter;
+      boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
+      if ( pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
+         return true;
+   }
+
+   return false;
+}
+
 boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
    boost::shared_ptr<rptReport> pReport( new rptReport(pRptSpec->GetReportName()) );
