@@ -48,26 +48,35 @@ LPCTSTR matCEBFIPConcrete::GetCementType(CementType type)
    return _T("UNKNOWN");
 }
 
-Float64 matCEBFIPConcrete::GetS(CementType type)
+void matCEBFIPConcrete::GetModelParameters(CementType cementType,Float64* pS,Float64* pBetaSC)
 {
-   // See CEBFIP 2.1.6.1
-   if ( type == RS )
-      return 0.20;
-   else if ( type == N )
-      return 0.25;
-   else if ( type == R )
-      return 0.25;
-   else if ( type == SL )
-      return 0.38;
-
-   ATLASSERT(false); // is there a new cement type?
-   return 0.25;
+   // See CEBFIP 2.1.6.1 and 2.1.6.4.4
+   if ( cementType == RS )
+   {
+      *pS = 0.20;
+      *pBetaSC = 8;
+   }
+   else if ( cementType == N || cementType == R )
+   {
+      *pS = 0.25;
+      *pBetaSC = 5;
+   }
+   else if ( cementType == SL )
+   {
+      *pS = 0.38;
+      *pBetaSC = 4;
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new cement type?
+   }
 }
 
 Float64 matCEBFIPConcrete::ComputeFc28(Float64 fc,Float64 age,CementType type)
 {
    // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
-   Float64 s = GetS(type);
+   Float64 s, betaSc;
+   GetModelParameters(type,&s,&betaSc);
    Float64 beta = exp(s*(1.0 - sqrt(28./age)));
    Float64 fc28 = fc/beta;
    return fc28;
@@ -76,7 +85,8 @@ Float64 matCEBFIPConcrete::ComputeFc28(Float64 fc,Float64 age,CementType type)
 Float64 matCEBFIPConcrete::ComputeEc28(Float64 Ec,Float64 age,CementType type)
 {
    // CEB-FIP Eqn. 2.1-57, solved for Ec at 28 days
-   Float64 s = GetS(type);
+   Float64 s, betaSc;
+   GetModelParameters(type,&s,&betaSc);
    Float64 beta = exp(s*(1.0 - sqrt(28./age)));
    Float64 Ec28 = Ec/sqrt(beta);
    return Ec28;
@@ -84,13 +94,12 @@ Float64 matCEBFIPConcrete::ComputeEc28(Float64 Ec,Float64 age,CementType type)
 
 matCEBFIPConcrete::matCEBFIPConcrete(LPCTSTR name) :
 matConcreteBase(name),
-m_CementType(matCEBFIPConcrete::N),
-m_S(0.25),
 m_Fc28(0),
 m_Ec28(0),
 m_bUserEc(false),
 m_bIsValid(false)
 {
+   GetModelParameters(matCEBFIPConcrete::N,&m_S,&m_BetaSc);
 }
 
 matCEBFIPConcrete::matCEBFIPConcrete(const matCEBFIPConcrete& rOther) :
@@ -100,23 +109,8 @@ matConcreteBase(rOther)
    m_Fc28     = rOther.m_Fc28;
    m_Ec28     = rOther.m_Ec28;
    m_bUserEc  = rOther.m_bUserEc;
-   m_CementType = rOther.m_CementType;
    m_S        = rOther.m_S;
-}
-
-void matCEBFIPConcrete::SetCementType(matCEBFIPConcrete::CementType type)
-{
-   if ( m_CementType != type )
-   {
-      m_CementType = type;
-      m_S = GetS(m_CementType);
-      m_bIsValid = false;
-   }
-}
-
-matCEBFIPConcrete::CementType matCEBFIPConcrete::GetCementType() const
-{
-   return m_CementType;
+   m_BetaSc   = rOther.m_BetaSc;
 }
 
 void matCEBFIPConcrete::SetS(Float64 s)
@@ -131,6 +125,20 @@ void matCEBFIPConcrete::SetS(Float64 s)
 Float64 matCEBFIPConcrete::GetS() const
 {
    return m_S;
+}
+
+void matCEBFIPConcrete::SetBetaSc(Float64 betaSc)
+{
+   if ( !IsEqual(m_BetaSc,betaSc) )
+   {
+      m_BetaSc = betaSc;
+      m_bIsValid = false;
+   }
+}
+
+Float64 matCEBFIPConcrete::GetBetaSc() const
+{
+   return m_BetaSc;
 }
 
 void matCEBFIPConcrete::SetFc28(Float64 fc)
@@ -197,6 +205,29 @@ void matCEBFIPConcrete::SetEc28(Float64 Ec,Float64 t)
    m_Ec28 = Ec/sqrt(exp(m_S*(1 - sqrt(28/age))));
 
    m_bIsValid = false;
+}
+
+Float64 matCEBFIPConcrete::ComputeFc28(Float64 fc,Float64 age,Float64 s)
+{
+   // CEB-FIP Eqn. 2.1-54, solved for f'c at 28 days
+   // age is in days
+   Float64 fc28 = fc/exp(s*(1.0 - sqrt(28./age)));
+   return fc28;
+}
+
+Float64 matCEBFIPConcrete::ComputeEc28(Float64 ec,Float64 age,Float64 s)
+{
+   // CEB-FIP Equation 2.1-57, rearranged to solve for Ec28
+   // age must be in days
+   Float64 Ec28 = ec/sqrt(exp(s*(1 - sqrt(28/age))));
+   return Ec28;
+}
+
+void matCEBFIPConcrete::ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pS)
+{
+   // Solving CEB-FIP Equation 2.1-54 for S
+   // t1 and t2 in days
+   *pS = log(fc1/fc2)/(sqrt(28/t2) - sqrt(28/t1));
 }
 
 Float64 matCEBFIPConcrete::GetFc(Float64 t) const
@@ -305,32 +336,6 @@ Float64 matCEBFIPConcrete::GetH() const
    return h;
 }
 
-Float64 matCEBFIPConcrete::GetBetaSC() const
-{
-   // returns Beta-SC for use in CEB-FIP Eqn. 2.1-76
-   Float64 beta;
-   switch(m_CementType)
-   {
-   case RS:
-      beta = 8;
-      break;
-
-   case N:
-   case R:
-      beta = 5;
-      break;
-
-   case SL:
-      beta = 4;
-      break;
-
-   default:
-      ATLASSERT(false); // is there a new cement type?
-   }
-
-   return beta;
-}
-
 Float64 matCEBFIPConcrete::GetBetaRH() const
 {
    // returns Beta-RH for use in CEB-FIP Eqn. 2.1-75
@@ -354,9 +359,8 @@ Float64 matCEBFIPConcrete::GetBetaRH() const
 
 Float64 matCEBFIPConcrete::GetEpsilonS() const
 {
-   Float64 betaSC = GetBetaSC();
    Float64 fc28 = ::ConvertFromSysUnits(m_Fc28,unitMeasure::MPa); // must be in MPa for CEB-FIP equations
-   Float64 es_fcm = (160 + 10*betaSC*(9 - fc28/10))*1E-6; // CEB-FIP Eqn 2.1-76
+   Float64 es_fcm = (160 + 10*m_BetaSc*(9 - fc28/10))*1E-6; // CEB-FIP Eqn 2.1-76
    return es_fcm;
 }
 

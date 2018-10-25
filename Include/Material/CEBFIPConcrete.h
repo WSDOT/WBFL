@@ -45,7 +45,7 @@ public:
    };
 
    static LPCTSTR GetCementType(CementType type);
-   static Float64 GetS(CementType type);
+   static void GetModelParameters(CementType cement,Float64* pS,Float64* pBetaSC);
 
    // Computes what the 28 day strength needs to be for a concrete strength
    // fc occuring at concrete age for the specified cement type
@@ -54,13 +54,13 @@ public:
 
    matCEBFIPConcrete(LPCTSTR name = _T("Unknown"));
 
-   // Set/Get the cement type. Setting the cement type will set the S parameter
-   void SetCementType(CementType type);
-   CementType GetCementType() const;
-
    // Set/Get the s parameter
    void SetS(Float64 s);
    Float64 GetS() const;
+
+   // Set/Get the betaSc parameter
+   void SetBetaSc(Float64 betaSc);
+   Float64 GetBetaSc() const;
 
    // Set/Get the 28 day concrete strength
    void SetFc28(Float64 fc);
@@ -84,6 +84,15 @@ public:
    // based on the current values of s for the given
    // value of Ec and the time that that modulus occurs
    void SetEc28(Float64 Ec,Float64 t);
+
+   // Computes what the 28 day strength needs to be for a concrete strength
+   // fc occuring at concrete age with parameter s
+   static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 s);
+   static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 s);
+
+   // Computes the value for S giving a concrete strength (fc1) at at age of t1,
+   // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days)
+   static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pS);
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -111,7 +120,6 @@ public:
    Float64 GetH() const;
 
    // Shrinkage Parameters
-   Float64 GetBetaSC() const;
    Float64 GetBetaRH() const;
    Float64 GetEpsilonS() const;
    Float64 GetNotionalShrinkageCoefficient() const;
@@ -134,8 +142,8 @@ protected:
 private:
    Float64 m_Fc28;
    Float64 m_Ec28;
-   CementType m_CementType;
    Float64 m_S;
+   Float64 m_BetaSc;   // Beta-SC for use in CEB-FIP Eqn. 2.1-76
    bool m_bUserEc;
 
    mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)

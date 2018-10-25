@@ -66,7 +66,7 @@ CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
 	// We need to find out what the startup and file position parameters are
 	// If startup does not exist, we assume that the Tips on startup is checked TRUE.
 	CEAFApp* pApp = EAFGetApp();
-	m_bStartup = pApp->GetProfileInt(m_strSection, szIntStartup, 0);
+	m_bStartup = pApp->GetProfileInt(szSection, szIntStartup, m_bStartup);
 	UINT iFilePos = pApp->GetProfileInt(m_strSection, szIntFilePos, 0);
 
 	// Now try to open the tips file
@@ -192,7 +192,7 @@ void CTipDlg::OnOK()
 	
     // Update the startup information stored in the INI file
 	CEAFApp* pApp = EAFGetApp();
-	pApp->WriteProfileInt(m_strSection, szIntStartup, m_bStartup);
+	pApp->WriteProfileInt(szSection, szIntStartup, m_bStartup);
 }
 
 BOOL CTipDlg::OnInitDialog()
