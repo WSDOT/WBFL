@@ -30,6 +30,7 @@
 #include "RCSolution.h"
 #include "RCSolutionEx.h"
 
+Float64 Alpha1(Float64 fc,IUnitServer* pUnitServer,SpecUnitType unitType);
 Float64 Beta1(Float64 fc,IUnitServer* pUnitServer,SpecUnitType unitType);
 Float64 GetStrain(Float64 ec,Float64 d,Float64 c,Float64 fpe,Float64 Eps);
 void CreateSolution(Float64 Mn,Float64 c,Float64 fps,Float64 Cflange,Float64 Cweb,Float64 T,Float64 Yflange,Float64 Yweb,VARIANT_BOOL bIsOverReinforced,IRCSolution** solution);

@@ -42,6 +42,7 @@ interface iPolyLineDisplayObject : public iDisplayObject
 {
    STDMETHOD_(void,Commit)() PURE;
    STDMETHOD_(CollectionIndexType,get_NumberOfPoints)() PURE;
+   STDMETHOD_(void,AddPoints)(IPoint2dCollection* points) PURE;
    STDMETHOD_(void,AddPoint)(IPoint2d* point) PURE;
    STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point) PURE;
    STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point) PURE;

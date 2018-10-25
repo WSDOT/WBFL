@@ -300,7 +300,7 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
       // first, the string must be long enough to hold the correct number of digits
       CollectionIndexType pos = (pChar - pBuffer);
       CollectionIndexType min_length = pos + nDigOffset + 2;
-      if ( nChar < min_length )
+      if ( nChar < (int)min_length )
       {
          hr = E_BADSTATIONSTRING;
          goto CleanUp;

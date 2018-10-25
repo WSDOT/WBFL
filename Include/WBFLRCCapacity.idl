@@ -313,7 +313,7 @@ library WBFLRCCapacity
 	]
 	interface IRCSolver2 : IUnknown
 	{
-		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] IRCSolution* *solution);
+		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method Solve")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] IRCSolutionEx* *solution);
 	};
 	[
 		object,
@@ -393,6 +393,30 @@ library WBFLRCCapacity
 		[propget, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
 		[propput, helpcontext(IDH_ILRFDSolver_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
    };
+
+
+   [
+      object,
+      uuid(F5972D37-5F5D-41d7-B1F7-960430DE2367),
+      oleautomation,
+      helpstring("ILRFDSolver2 Interface"),
+      helpcontext(IDH_ILRFDSolver2),
+      pointer_default(unique)
+   ]
+   interface ILRFDSolver2 : IRCSolver
+   {
+      [propput, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([in] Float64 tolerance);
+      [propget, helpcontext(IDH_ILRFDSolver2_Tolerance),helpstring("property Tolerance")] HRESULT Tolerance([out,retval] Float64* tolerance);
+      [propputref, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_ILRFDSolver2_StrandModel),helpstring("property StrandModel")] HRESULT StrandModel([out,retval] IStressStrain* *model);
+      [propputref, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([in] IStressStrain* model);
+      [propget, helpcontext(IDH_ILRFDSolver2_RebarModel),helpstring("property RebarModel")] HRESULT RebarModel([out,retval] IStressStrain* *model);
+      [propput, helpcontext(IDH_ILRFDSolver2_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([in] SpecUnitType unitMode);
+      [propget, helpcontext(IDH_ILRFDSolver2_UnitMode),helpstring("property UnitMode")] HRESULT UnitMode([out,retval] SpecUnitType* unitMode);
+		[propget, helpcontext(IDH_ILRFDSolver2_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([out, retval] VARIANT_BOOL *pVal);
+		[propput, helpcontext(IDH_ILRFDSolver2_IsCflangeOverhangOnly),helpstring("property IsCflangeOverhangOnly")] HRESULT IsCflangeOverhangOnly([in] VARIANT_BOOL newVal);
+   };
+
    [
       object,
       uuid(B73E6FE9-0498-48f5-9057-513403A0E776),
@@ -934,6 +958,22 @@ library WBFLRCCapacity
 		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
 	};
 
+	[
+		uuid(D08B042B-0B5D-4a7a-A5E0-8EC204078438),
+		oleautomation,
+		helpstring("ILRFDPrestressFormula Interface"),
+		helpcontext(IDH_IPowerFormula),
+		pointer_default(unique)
+	]
+	interface ILRFDPrestressFormula : IUnknown
+	{
+      [propput] HRESULT Fpu([in]Float64 fpu);
+      [propget] HRESULT Fpu([out,retval]Float64* pFpu);
+      [propput] HRESULT Eps([in]Float64 Eps);
+		[propget,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([out,retval]ProductionMethodType* type);
+		[propput,helpcontext(IDH_IPowerFormula_ProductionMethod),helpstring("property ProductionMethod")]HRESULT ProductionMethod([in]ProductionMethodType type);
+	};
+
 
 	[
 		uuid(4239F42F-055D-418a-B42A-D2A3DB540D69),
@@ -984,6 +1024,18 @@ library WBFLRCCapacity
 	coclass PSPowerFormula
 	{
 		[default] interface IPowerFormula;
+		interface IStressStrain;
+      interface ISupportUnitServer;
+      interface IStructuredStorage2;
+	};
+	[
+		uuid(F3C1A16E-C1F0-4d60-93F2-4017A0472B7C),
+      helpcontext(IDH_IPSPowerFormula),
+		helpstring("LRFDPrestressFormula Class")
+	]
+	coclass LRFDPrestressFormula
+	{
+		[default] interface ILRFDPrestressFormula;
 		interface IStressStrain;
       interface ISupportUnitServer;
       interface IStructuredStorage2;
@@ -1054,7 +1106,21 @@ library WBFLRCCapacity
       [default] interface ILRFDSolver;
 		interface IRCSolver;
 	};
-	[
+
+   [
+      uuid(8AE96CF8-F16B-4488-904B-1F7B27E0C125),
+      helpcontext(IDH_ILRFDSolver2),
+		helpstring("LRFDSolver2 Class")
+	]
+	coclass LRFDSolver2
+	{
+      [default] interface ILRFDSolver2;
+		interface IRCSolver;
+		interface IRCSolver2;
+		interface IRCSolver2Ex;
+	};
+
+   [
 		uuid(267BF7DB-1E9F-43e7-95AF-157776848D60),
       helpcontext(IDH_ILFDSolver),
 		helpstring("LFDSolver Class")

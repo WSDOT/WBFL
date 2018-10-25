@@ -68,6 +68,36 @@ lrfdConcreteUtil::~lrfdConcreteUtil()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
+Float64 lrfdConcreteUtil::GetNWCDensityLimit()
+{
+   Float64 limit;
+   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+   {
+      limit = ::ConvertToSysUnits(135.0,unitMeasure::LbfPerFeet3);
+   }
+   else
+   {
+      limit = ::ConvertToSysUnits(2150.0,unitMeasure::KgPerMeter3);
+   }
+
+   return limit;
+}
+
+Float64 lrfdConcreteUtil::GetLWCDensityLimit()
+{
+   Float64 limit;
+   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US )
+   {
+      limit = ::ConvertToSysUnits(120.0,unitMeasure::LbfPerFeet3);
+   }
+   else
+   {
+      limit = ::ConvertToSysUnits(1925.0,unitMeasure::KgPerMeter3);
+   }
+
+   return limit;
+}
+
 Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
 {
    Float64 Fc;          // fc in spec units

@@ -83,6 +83,16 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
+   // Returns the minimum density for concrete to be considered normal weight
+   // per LRFD 5.2
+   static Float64 GetNWCDensityLimit();
+
+   //------------------------------------------------------------------------
+   // Returns the maximum density for concrete to be considered light weight
+   // per LRFD 5.2
+   static Float64 GetLWCDensityLimit();
+
+   //------------------------------------------------------------------------
    // Returns the modulus of elasticity of concrete.  The modulus of elasticity
    // is computed in accordance with equation 5.4.2.4-1.
    // If density is out of range, a lrfdXModE exception is thrown.

@@ -79,17 +79,22 @@ Float64 cogoUtil::NormalizeAngle(Float64 angle)
    // if angle is a large number, figure out how many 2PI's there are
    // and subtract out that number.
    int scale = (int)abs(angle / TWO_PI);
-   if ( scale > 1 )
+   if ( 1 < scale )
+   {
       angle -= (scale*TWO_PI);
+   }
 
    do
    {
       if ( angle < 0 )
+      {
          angle += TWO_PI;
+      }
 
       if ( angle >= TWO_PI )
+      {
          angle -= TWO_PI;
-
+      }
    } while ( angle < 0 || TWO_PI <= angle );
 
    return angle;
@@ -109,9 +114,13 @@ void cogoUtil::Inverse(IPoint2d* p1,IPoint2d* p2,Float64* pDist,IDirection** ppD
    Float64 dir  = atan2(dy,dx);
 
    if (IsZero(dir))
+   {
       dir = 0.0;
+   }
    else if ( dir < 0 )
+   {
       dir += TWO_PI;
+   }
 
    CreateDirection(dir,ppDir);
 }
@@ -141,7 +150,9 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
    case VT_UNKNOWN:
       varAngle.punkVal->QueryInterface(&objAngle);
       if ( objAngle == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       objAngle->QueryInterface(angle);
       break;
@@ -149,7 +160,9 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
    case VT_DISPATCH:
       varAngle.pdispVal->QueryInterface(&objAngle);
       if ( objAngle == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       objAngle->QueryInterface(angle);
       break;
@@ -174,7 +187,9 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
       {
          CComVariant var;
          if ( FAILED(::VariantChangeType(&var,&varAngle,0,VT_R8)))
+         {
             return E_INVALIDARG;
+         }
 
          CComObject<CAngle>* pAngle;
          CComObject<CAngle>::CreateInstance(&pAngle);
@@ -195,7 +210,9 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
    case VT_UNKNOWN:
       varDir.punkVal->QueryInterface(&objDir);
       if ( objDir == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       objDir->QueryInterface(dir);
       break;
@@ -203,7 +220,9 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
    case VT_DISPATCH:
       varDir.pdispVal->QueryInterface(&objDir);
       if ( objDir == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       objDir->QueryInterface(dir);
       break;
@@ -228,7 +247,9 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
       {
          CComVariant var;
          if ( FAILED(::VariantChangeType(&var,&varDir,0,VT_R8)))
+         {
             return E_INVALIDARG;
+         }
 
          CComObject<CDirection>* pDir;
          CComObject<CDirection>::CreateInstance(&pDir);
@@ -259,9 +280,13 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** s
       }
 
       if ( bClone )
+      {
          objStation->Clone(station);
+      }
       else
+      {
          objStation->QueryInterface(station);
+      }
       break;
 
    case VT_DISPATCH:
@@ -277,9 +302,13 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** s
       }
 
       if ( bClone )
+      {
          objStation->Clone(station);
+      }
       else
+      {
          objStation->QueryInterface(station);
+      }
       break;
 
    case VT_BSTR:
@@ -378,12 +407,10 @@ bool cogoUtil::IsEqual(IPoint2d* p1,IPoint2d* p2)
    ATLASSERT( p1 != 0 && p2 != 0 );
 
    Float64 x1,y1;
-   p1->get_X(&x1);
-   p1->get_Y(&y1);
+   p1->Location(&x1,&y1);
 
    Float64 x2,y2;
-   p2->get_X(&x2);
-   p2->get_Y(&y2);
+   p2->Location(&x2,&y2);
 
    return IsZero(x1-x2) && IsZero(y1-y2);
 }
@@ -391,11 +418,8 @@ bool cogoUtil::IsEqual(IPoint2d* p1,IPoint2d* p2)
 void cogoUtil::CopyPoint(IPoint2d* to,IPoint2d* from)
 {
    Float64 x,y;
-   from->get_X(&x);
-   from->get_Y(&y);
-
-   to->put_X(x);
-   to->put_Y(y);
+   from->Location(&x,&y);
+   to->Move(x,y);
 }
 
 HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir,Float64 offset,IPoint2dFactory* pFactory,IPoint2d** ppoint)
@@ -406,8 +430,7 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir
    Float64 y;
    Float64 dir;
 
-   from->get_X(&x);
-   from->get_Y(&y);
+   from->Location(&x,&y);
 
    objDir->get_Value(&dir);
 
@@ -488,13 +511,21 @@ void cogoUtil::GetBrgParts(Float64 brgVal,NSDirectionType *pnsDir, long *pDeg, l
    *pewDir = InRange( 0., brgVal, PI_OVER_2 ) || InRange( 1.5*M_PI, brgVal, TWO_PI) ? ewEast : ewWest;
 
    if ( InRange( 0.0, brgVal, PI_OVER_2 ) )
+   {
       dir = PI_OVER_2 - brgVal;
+   }
    else if ( InRange(PI_OVER_2,brgVal,M_PI) )
+   {
       dir = brgVal - PI_OVER_2;
+   }
    else if ( InRange(M_PI,brgVal,3*PI_OVER_2) )
+   {
       dir = 3*PI_OVER_2 - brgVal;
+   }
    else
+   {
       dir = brgVal - 3*PI_OVER_2;
+   }
 
    cogoUtil::ToDMS( dir, pDeg, pMin, pSec );
 }
@@ -506,7 +537,9 @@ HRESULT cogoUtil::ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,
    std::_tstring::size_type posSecond = strTag.find(_T(","),posFirst+1);
 
    if (posFirst == std::_tstring::npos || posSecond == std::_tstring::npos )
+   {
       return E_INVALIDARG;
+   }
 
    strDegTag->assign(strTag,0,posFirst);
    strMinTag->assign(strTag,posFirst+1,posSecond-posFirst-1);
@@ -519,7 +552,9 @@ bool cogoUtil::IsEqual(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
 {
    CComPtr<IAlignment> alignment;
    if ( pProfile )
+   {
       pProfile->get_Alignment(&alignment);
+   }
 
    return IsEqual(alignment,pSta1,pSta2);
 }
@@ -528,7 +563,9 @@ bool cogoUtil::IsEqual(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
 {
    CComPtr<IStationEquationCollection> equations;
    if ( pAlignment )
+   {
       pAlignment->get_StationEquations(&equations);
+   }
 
    return IsEqual(equations,pSta1,pSta2);
 }
@@ -550,7 +587,9 @@ bool cogoUtil::IsEqual(IStationEquationCollection* pEquations,IStation* pSta1,IS
       pSta2->GetStation(&zoneIdx2,&sta2);
 
       if ( zoneIdx1 != zoneIdx2 )
+      {
          return false;
+      }
 
       return ::IsEqual(sta1,sta2);
    }
@@ -563,7 +602,9 @@ Float64 cogoUtil::Distance(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
 {
    CComPtr<IAlignment> alignment;
    if ( pProfile )
+   {
       pProfile->get_Alignment(&alignment);
+   }
 
    return Distance(alignment,pSta1,pSta2);
 }
@@ -572,7 +613,9 @@ Float64 cogoUtil::Distance(IAlignment* pAlignment,IStation* pSta1,IStation* pSta
 {
    CComPtr<IStationEquationCollection> equations;
    if ( pAlignment )
+   {
       pAlignment->get_StationEquations(&equations);
+   }
 
    return Distance(equations,pSta1,pSta2);
 }
@@ -606,7 +649,9 @@ Int8 cogoUtil::Compare(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
 {
    CComPtr<IAlignment> alignment;
    if ( pProfile )
+   {
       pProfile->get_Alignment(&alignment);
+   }
 
    return Compare(alignment,pSta1,pSta2);
 }
@@ -615,7 +660,9 @@ Int8 cogoUtil::Compare(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
 {
    CComPtr<IStationEquationCollection> equations;
    if ( pAlignment )
+   {
       pAlignment->get_StationEquations(&equations);
+   }
 
    return Compare(equations,pSta1,pSta2);
 }
@@ -649,7 +696,9 @@ Float64 cogoUtil::GetNormalizedStationValue(IProfile* pProfile,IStation* pSta)
 {
    CComPtr<IAlignment> alignment;
    if ( pProfile )
+   {
       pProfile->get_Alignment(&alignment);
+   }
 
    return GetNormalizedStationValue(alignment,pSta);
 }
@@ -658,7 +707,9 @@ Float64 cogoUtil::GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSt
 {
    CComPtr<IStationEquationCollection> equations;
    if ( pAlignment )
+   {
       pAlignment->get_StationEquations(&equations);
+   }
 
    return GetNormalizedStationValue(equations,pSta);
 }
@@ -686,11 +737,52 @@ Float64 cogoUtil::GetNormalizedStationValue(IStationEquationCollection* pEquatio
    return -99999;
 }
 
+void cogoUtil::IncrementStationBy(IProfile* pProfile,IStation* pStation,Float64 dist)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+   {
+      pProfile->get_Alignment(&alignment);
+   }
+   IncrementStationBy(alignment,pStation,dist);
+}
+
+void cogoUtil::IncrementStationBy(IAlignment* pAlignment,IStation* pStation,Float64 dist)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+   {
+      pAlignment->get_StationEquations(&equations);
+   }
+
+   IncrementStationBy(equations,pStation,dist);
+}
+
+void cogoUtil::IncrementStationBy(IStationEquationCollection* pEquations,IStation* pStation,Float64 dist)
+{
+   if ( pEquations )
+   {
+      pEquations->IncrementBy(pStation,dist);
+   }
+   else
+   {
+      ZoneIndexType zoneIdx;
+      Float64 station;
+      pStation->GetStation(&zoneIdx,&station);
+
+      ATLASSERT(zoneIdx == INVALID_INDEX);
+      station += dist;
+      pStation->SetStation(zoneIdx,station);
+   }
+}
+
 void cogoUtil::CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta)
 {
    CComPtr<IAlignment> alignment;
    if ( pProfile )
+   {
       pProfile->get_Alignment(&alignment);
+   }
 
    return CreateStation(alignment,normalizedStation,pSta);
 }
@@ -699,7 +791,9 @@ void cogoUtil::CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IS
 {
    CComPtr<IStationEquationCollection> equations;
    if ( pAlignment )
+   {
       pAlignment->get_StationEquations(&equations);
+   }
 
    return CreateStation(equations,normalizedStation,pSta);
 }

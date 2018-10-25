@@ -281,7 +281,7 @@ STDMETHODIMP CNLSolver::Solve(IRCBeam *rcbeam, IRCSolution **solution)
    return S_OK;
 }
 
-STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,IRCSolution* *solution)
+STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,IRCSolutionEx* *solution)
 {
    CHECK_IN(rcbeam);
    CHECK_RETOBJ(solution);
@@ -289,12 +289,10 @@ STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,IRCSolution* *solution)
    CComPtr<IRCBeam2Ex> rcbeam2;
    RCBeam2ToRCBeam2Ex(rcbeam,&rcbeam2);
 
-   CComPtr<IRCSolutionEx> solution_ex;
-	HRESULT hr = Solve(rcbeam2,&solution_ex);
+	HRESULT hr = Solve(rcbeam2,solution);
    if ( FAILED(hr) )
       return hr;
 
-   CopySolution(solution_ex,solution);
    return S_OK;
 }
 

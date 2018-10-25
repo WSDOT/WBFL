@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.LRFDPrestressFormula.1 = s 'LRFDPrestressFormula Class'
+	{
+		CLSID = s '{F3C1A16E-C1F0-4d60-93F2-4017A0472B7C}'
+	}
+	WBFLRCCapacity.LRFDPrestressFormula = s 'LRFDPrestressFormula Class'
+	{
+		CLSID = s '{F3C1A16E-C1F0-4d60-93F2-4017A0472B7C}'
+		CurVer = s 'WBFLRCCapacity.LRFDPrestressFormula.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F3C1A16E-C1F0-4d60-93F2-4017A0472B7C} = s 'LRFDPrestressFormula Class'
+		{
+			ProgID = s 'WBFLRCCapacity.LRFDPrestressFormula.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.LRFDPrestressFormula'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

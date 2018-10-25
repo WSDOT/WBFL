@@ -117,7 +117,12 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
 
    // command callback was not previously added... add it now
 
-   if ( pCallback )
+   if ( IsInStandardRange(nPluginCmdID) || pCallback == NULL )
+   {
+      *pMappedID = nPluginCmdID; // using default MFC message routing, so don't alter the command ID
+      pCallback = NULL;
+   }
+   else
    {
       *pMappedID = m_nNextID++; // generate the next command ID for the menus
 
@@ -126,10 +131,6 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
          ATLASSERT(FALSE); // command ID exceeds max value reserved for our range
          return FALSE;
       }
-   }
-   else
-   {
-      *pMappedID = nPluginCmdID; // using default MFC message routing, so don't alter the command ID
    }
 
    CCallbackItem callbackItem;
@@ -213,4 +214,11 @@ std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(IEAFCommandCallb
 void CEAFPluginCommandManager::Clear()
 {
    m_Callbacks.clear();
+}
+
+bool CEAFPluginCommandManager::IsInStandardRange(UINT nPluginCmdID)
+{
+   // Command IDs in this range are handled by MFC with standard
+   // command processors.
+   return (0xE000 <= nPluginCmdID &&  nPluginCmdID <= 0xEFFF);
 }

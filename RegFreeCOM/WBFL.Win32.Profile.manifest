@@ -1381,7 +1381,10 @@
       <comClass clsid="{68AF9D7E-A0B7-4174-8304-37E595725480}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="Tendon"></comClass>
-      <comClass clsid="{505D6372-B76F-4D91-9013-E71E3D17C4F6}"
+     <comClass clsid="{1E340B6E-CE7A-4982-B5CB-B1948A334707}"
+               tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+               description="TendonPointModifier"></comClass>
+     <comClass clsid="{505D6372-B76F-4D91-9013-E71E3D17C4F6}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="TendonCollection"></comClass>
       <comClass clsid="{9AC4752D-388F-4536-ABB6-B13933322915}"
@@ -1541,7 +1544,10 @@
       <comClass clsid="{75C05DC6-48F7-476B-B67A-ABD58180F9FB}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="PSPowerFormula Class"></comClass>
-      <comClass clsid="{9F2A88AB-C3AF-49AB-9685-47444F74C3DC}"
+     <comClass clsid="{F3C1A16E-C1F0-4d60-93F2-4017A0472B7C}"
+          tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+          description="LRFDPrestressFormula Class"></comClass>
+     <comClass clsid="{9F2A88AB-C3AF-49AB-9685-47444F74C3DC}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="RebarModel Class"></comClass>
       <comClass clsid="{030BB55E-DCE1-4BC2-9036-2D9F74A8A814}"
@@ -1559,7 +1565,10 @@
       <comClass clsid="{8B5C753D-82DC-46B8-9D89-6F28CFF9D3B8}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="LRFDSolver Class"></comClass>
-      <comClass clsid="{267BF7DB-1E9F-43E7-95AF-157776848D60}"
+     <comClass clsid="{8AE96CF8-F16B-4488-904B-1F7B27E0C125}"
+          tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
+          description="LRFDSolver2 Class"></comClass>
+     <comClass clsid="{267BF7DB-1E9F-43E7-95AF-157776848D60}"
                 tlbid="{61618484-C4D1-4821-97C1-021305157FE4}"
                 description="LFDSolver Class"></comClass>
       <comClass clsid="{F7F99D32-5E9E-4618-A858-ABE7089EE425}"

@@ -24,11 +24,11 @@
 // Command Identifiers
 // From MFC Tech Note 022, command identifiers should be in the range 0x8000 (32768) to 0xDFFF (57343)
 // EAF is going to reserve 256 command IDs
-#define EAF_RESERVED_COMMAND_BASE 0x8000 // (32868) base identifier for reserved commands
+#define EAF_RESERVED_COMMAND_BASE 0x8000 // (32768) base identifier for reserved commands
 
 // This is the first command ID that can be used by actual applications
 // that sub-class CEAFApp or CEAFPluginApp
-#define EAF_FIRST_USER_COMMAND (EAF_RESERVED_COMMAND_BASE+0x0100) // (33023) first command ID that can be used by sub-classes
+#define EAF_FIRST_USER_COMMAND (EAF_RESERVED_COMMAND_BASE+0x0100) // (33024) first command ID that can be used by sub-classes
 
 // Commands that EAFApp provides standard process for. This is like the way
 // CWinApp profiles standard processing for ID_FILE_NEW and ID_FILE_OPEN

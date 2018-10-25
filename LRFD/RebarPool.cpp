@@ -275,89 +275,89 @@ lrfdRebarPool::lrfdRebarPool()
 {
    // A615 (A615) Grade 60 must come first so we don't mess up
    // legacy rebar pool keys
-   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade60 );
-   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade60 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade60 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade60 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade60 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade60 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade60 ); 
-   NEW_BAR( "#10 (32M)", bs10, A615, Grade60 ); 
-   NEW_BAR( "#11 (36M)", bs11, A615, Grade60 ); 
-   NEW_BAR( "#14 (43M)", bs14, A615, Grade60 ); 
-   NEW_BAR( "#18 (57M)", bs18, A615, Grade60 ); 
+   NEW_BAR(  "#3", bs3,  A615, Grade60 );
+   NEW_BAR(  "#4", bs4,  A615, Grade60 ); 
+   NEW_BAR(  "#5", bs5,  A615, Grade60 ); 
+   NEW_BAR(  "#6", bs6,  A615, Grade60 ); 
+   NEW_BAR(  "#7", bs7,  A615, Grade60 ); 
+   NEW_BAR(  "#8", bs8,  A615, Grade60 ); 
+   NEW_BAR(  "#9", bs9,  A615, Grade60 ); 
+   NEW_BAR( "#10", bs10, A615, Grade60 ); 
+   NEW_BAR( "#11", bs11, A615, Grade60 ); 
+   NEW_BAR( "#14", bs14, A615, Grade60 ); 
+   NEW_BAR( "#18", bs18, A615, Grade60 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade40 );
-   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade40 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade40 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade40 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade40 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade40 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade40 ); 
-   NEW_BAR( "#10 (32M)", bs10, A615, Grade40 ); 
-   NEW_BAR( "#11 (36M)", bs11, A615, Grade40 ); 
-   NEW_BAR( "#14 (43M)", bs14, A615, Grade40 ); 
-   NEW_BAR( "#18 (57M)", bs18, A615, Grade40 ); 
+   NEW_BAR(  "#3", bs3,  A615, Grade40 );
+   NEW_BAR(  "#4", bs4,  A615, Grade40 ); 
+   NEW_BAR(  "#5", bs5,  A615, Grade40 ); 
+   NEW_BAR(  "#6", bs6,  A615, Grade40 ); 
+   NEW_BAR(  "#7", bs7,  A615, Grade40 ); 
+   NEW_BAR(  "#8", bs8,  A615, Grade40 ); 
+   NEW_BAR(  "#9", bs9,  A615, Grade40 ); 
+   NEW_BAR( "#10", bs10, A615, Grade40 ); 
+   NEW_BAR( "#11", bs11, A615, Grade40 ); 
+   NEW_BAR( "#14", bs14, A615, Grade40 ); 
+   NEW_BAR( "#18", bs18, A615, Grade40 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade75 );
-   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade75 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade75 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade75 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade75 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade75 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade75 ); 
-   NEW_BAR( "#10 (32M)", bs10, A615, Grade75 ); 
-   NEW_BAR( "#11 (36M)", bs11, A615, Grade75 ); 
-   NEW_BAR( "#14 (43M)", bs14, A615, Grade75 ); 
-   NEW_BAR( "#18 (57M)", bs18, A615, Grade75 ); 
+   NEW_BAR(  "#3", bs3,  A615, Grade75 );
+   NEW_BAR(  "#4", bs4,  A615, Grade75 ); 
+   NEW_BAR(  "#5", bs5,  A615, Grade75 ); 
+   NEW_BAR(  "#6", bs6,  A615, Grade75 ); 
+   NEW_BAR(  "#7", bs7,  A615, Grade75 ); 
+   NEW_BAR(  "#8", bs8,  A615, Grade75 ); 
+   NEW_BAR(  "#9", bs9,  A615, Grade75 ); 
+   NEW_BAR( "#10", bs10, A615, Grade75 ); 
+   NEW_BAR( "#11", bs11, A615, Grade75 ); 
+   NEW_BAR( "#14", bs14, A615, Grade75 ); 
+   NEW_BAR( "#18", bs18, A615, Grade75 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade80 );
-   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade80 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade80 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade80 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade80 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade80 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade80 ); 
-   NEW_BAR( "#10 (32M)", bs10, A615, Grade80 ); 
-   NEW_BAR( "#11 (36M)", bs11, A615, Grade80 ); 
-   NEW_BAR( "#14 (43M)", bs14, A615, Grade80 ); 
-   NEW_BAR( "#18 (57M)", bs18, A615, Grade80 ); 
+   NEW_BAR(  "#3", bs3,  A615, Grade80 );
+   NEW_BAR(  "#4", bs4,  A615, Grade80 ); 
+   NEW_BAR(  "#5", bs5,  A615, Grade80 ); 
+   NEW_BAR(  "#6", bs6,  A615, Grade80 ); 
+   NEW_BAR(  "#7", bs7,  A615, Grade80 ); 
+   NEW_BAR(  "#8", bs8,  A615, Grade80 ); 
+   NEW_BAR(  "#9", bs9,  A615, Grade80 ); 
+   NEW_BAR( "#10", bs10, A615, Grade80 ); 
+   NEW_BAR( "#11", bs11, A615, Grade80 ); 
+   NEW_BAR( "#14", bs14, A615, Grade80 ); 
+   NEW_BAR( "#18", bs18, A615, Grade80 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A706, Grade60 );
-   NEW_BAR(  "#4 (13M)", bs4,  A706, Grade60 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A706, Grade60 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A706, Grade60 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A706, Grade60 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A706, Grade60 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A706, Grade60 ); 
-   NEW_BAR( "#10 (32M)", bs10, A706, Grade60 ); 
-   NEW_BAR( "#11 (36M)", bs11, A706, Grade60 ); 
-   NEW_BAR( "#14 (43M)", bs14, A706, Grade60 ); 
-   NEW_BAR( "#18 (57M)", bs18, A706, Grade60 ); 
+   NEW_BAR(  "#3", bs3,  A706, Grade60 );
+   NEW_BAR(  "#4", bs4,  A706, Grade60 ); 
+   NEW_BAR(  "#5", bs5,  A706, Grade60 ); 
+   NEW_BAR(  "#6", bs6,  A706, Grade60 ); 
+   NEW_BAR(  "#7", bs7,  A706, Grade60 ); 
+   NEW_BAR(  "#8", bs8,  A706, Grade60 ); 
+   NEW_BAR(  "#9", bs9,  A706, Grade60 ); 
+   NEW_BAR( "#10", bs10, A706, Grade60 ); 
+   NEW_BAR( "#11", bs11, A706, Grade60 ); 
+   NEW_BAR( "#14", bs14, A706, Grade60 ); 
+   NEW_BAR( "#18", bs18, A706, Grade60 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A706, Grade80 );
-   NEW_BAR(  "#4 (13M)", bs4,  A706, Grade80 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A706, Grade80 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A706, Grade80 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A706, Grade80 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A706, Grade80 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A706, Grade80 ); 
-   NEW_BAR( "#10 (32M)", bs10, A706, Grade80 ); 
-   NEW_BAR( "#11 (36M)", bs11, A706, Grade80 ); 
-   NEW_BAR( "#14 (43M)", bs14, A706, Grade80 ); 
-   NEW_BAR( "#18 (57M)", bs18, A706, Grade80 ); 
+   NEW_BAR(  "#3", bs3,  A706, Grade80 );
+   NEW_BAR(  "#4", bs4,  A706, Grade80 ); 
+   NEW_BAR(  "#5", bs5,  A706, Grade80 ); 
+   NEW_BAR(  "#6", bs6,  A706, Grade80 ); 
+   NEW_BAR(  "#7", bs7,  A706, Grade80 ); 
+   NEW_BAR(  "#8", bs8,  A706, Grade80 ); 
+   NEW_BAR(  "#9", bs9,  A706, Grade80 ); 
+   NEW_BAR( "#10", bs10, A706, Grade80 ); 
+   NEW_BAR( "#11", bs11, A706, Grade80 ); 
+   NEW_BAR( "#14", bs14, A706, Grade80 ); 
+   NEW_BAR( "#18", bs18, A706, Grade80 ); 
 
-   NEW_BAR(  "#3 (10M)", bs3,  A1035, Grade100 );
-   NEW_BAR(  "#4 (13M)", bs4,  A1035, Grade100 ); 
-   NEW_BAR(  "#5 (16M)", bs5,  A1035, Grade100 ); 
-   NEW_BAR(  "#6 (19M)", bs6,  A1035, Grade100 ); 
-   NEW_BAR(  "#7 (22M)", bs7,  A1035, Grade100 ); 
-   NEW_BAR(  "#8 (25M)", bs8,  A1035, Grade100 ); 
-   NEW_BAR(  "#9 (29M)", bs9,  A1035, Grade100 ); 
-   NEW_BAR( "#10 (32M)", bs10, A1035, Grade100 ); 
-   NEW_BAR( "#11 (36M)", bs11, A1035, Grade100 ); 
-   NEW_BAR( "#14 (43M)", bs14, A1035, Grade100 ); 
-   NEW_BAR( "#18 (57M)", bs18, A1035, Grade100 ); 
+   NEW_BAR(  "#3", bs3,  A1035, Grade100 );
+   NEW_BAR(  "#4", bs4,  A1035, Grade100 ); 
+   NEW_BAR(  "#5", bs5,  A1035, Grade100 ); 
+   NEW_BAR(  "#6", bs6,  A1035, Grade100 ); 
+   NEW_BAR(  "#7", bs7,  A1035, Grade100 ); 
+   NEW_BAR(  "#8", bs8,  A1035, Grade100 ); 
+   NEW_BAR(  "#9", bs9,  A1035, Grade100 ); 
+   NEW_BAR( "#10", bs10, A1035, Grade100 ); 
+   NEW_BAR( "#11", bs11, A1035, Grade100 ); 
+   NEW_BAR( "#14", bs14, A1035, Grade100 ); 
+   NEW_BAR( "#18", bs18, A1035, Grade100 ); 
 }
 
 //======================== OPERATORS  =======================================
@@ -374,10 +374,11 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type)
+lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type,matRebar::Size maxSize)
 {
    m_Grade = grade;
    m_Type  = type;
+   m_MaxBarSize = maxSize;
 
    // Make sure the rebarpool is up and running
    lrfdRebarPool* pPool = lrfdRebarPool::GetInstance();
@@ -429,15 +430,12 @@ void lrfdRebarIter::Begin()
    std::map< Int32, boost::shared_ptr<matRebar> >::const_iterator iter;
    for ( iter = pBars->begin(); iter != pBars->end(); iter++ )
    {
-      // The following two lines are from the original implementation.  When we upgraded to
-      // VC++ 6.0, the lrfdRebarPool::ms_Rebar container started loosing ownership of the
-      // of the matRebar objects.  This implementation seems to fix the problem.
-      //const std::pair< Int32, std::auto_ptr<matRebar> >& pair = *iter;
-      //const std::auto_ptr<matRebar>& AutoPtr = pair.second;
       const boost::shared_ptr<matRebar>& AutoPtr = iter->second;
       const matRebar* pRebar = AutoPtr.get();
-      if ( pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type )
+      if ( pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type && pRebar->GetSize() <= m_MaxBarSize )
+      {
          m_Bars.push_back( pRebar );
+      }
    }
 
    // sort by diameter to make list pretty
@@ -554,6 +552,7 @@ void lrfdRebarIter::MakeCopy(const lrfdRebarIter& rOther)
    m_End     = rOther.m_End;
    m_Grade   = rOther.m_Grade;
    m_Type    = rOther.m_Type;
+   m_MaxBarSize = rOther.m_MaxBarSize;
 }
 
 //======================== ACCESS     =======================================

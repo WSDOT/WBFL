@@ -157,22 +157,6 @@ STDMETHODIMP CParabolicTendonSegment::get_Position(TendonMeasure measure,Float64
 #pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
    CHECK_RETOBJ(cg);
 
-   Float64 x1,y1,z1;
-   m_Start->get_X(&x1);
-   m_Start->get_Y(&y1);
-   m_Start->get_Z(&z1);
-
-   Float64 x2,y2,z2;
-   m_End->get_X(&x2);
-   m_End->get_Y(&y2);
-   m_End->get_Z(&z2);
-
-   ATLASSERT( ::InRange(z1,z,z2) );
-
-   Float64 dx = x2-x1;
-   Float64 dy = y2-y1;
-   Float64 dz = z2-z1;
-
    mathPolynomial2d parabolaX = GetParabolaX();
    mathPolynomial2d parabolaY = GetParabolaY();
 

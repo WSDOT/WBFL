@@ -145,6 +145,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->HideMainFrameToolBar();
+   pMainFrame->HideMainFrameBackground();
 
    pEAFDoc->OnCreateFinalize();
 

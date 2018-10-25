@@ -43,12 +43,14 @@
 #include "RCBeam.h"
 #include "RCSolution.h"
 #include "LRFDSolver.h"
+#include "LRFDSolver2.h"
 #include "LFDSolver.h"
 #include "PCISolver.h"
 #include "NLSolver.h"
 #include "RCBeam2.h"
 #include "UnconfinedConcrete.h"
 #include "PSPowerFormula.h"
+#include "LRFDPrestressFormula.h"
 #include "RebarModel.h"
 #include "StrainHardenedRebarModel.h"
 #include "PCISolution.h"
@@ -88,12 +90,14 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_RCBeam, CRCBeam)
    OBJECT_ENTRY(CLSID_RCSolution, CRCSolution)
    OBJECT_ENTRY(CLSID_LRFDSolver, CLRFDSolver)
+   OBJECT_ENTRY(CLSID_LRFDSolver2, CLRFDSolver2)
    OBJECT_ENTRY(CLSID_LFDSolver, CLFDSolver)
    OBJECT_ENTRY(CLSID_PCISolver, CPCISolver)
    OBJECT_ENTRY(CLSID_NLSolver, CNLSolver)
    OBJECT_ENTRY(CLSID_RCBeam2, CRCBeam2)
    OBJECT_ENTRY(CLSID_UnconfinedConcrete, CUnconfinedConcrete)
    OBJECT_ENTRY(CLSID_PSPowerFormula, CPSPowerFormula)
+   OBJECT_ENTRY(CLSID_LRFDPrestressFormula, CLRFDPrestressFormula)
    OBJECT_ENTRY(CLSID_RebarModel, CRebarModel)
    OBJECT_ENTRY(CLSID_PCISolution, CPCISolution)
    OBJECT_ENTRY(CLSID_MixedSolver, CMixedSolver)

@@ -98,6 +98,13 @@ void CSolverTest::Test1()
 
    solution.Release();
 
+   CComPtr<ILRFDSolver2> lrfdSolver2;
+   hr = lrfdSolver2.CoCreateInstance(CLSID_LRFDSolver2);
+   hr = lrfdSolver2->Solve(beam,&solution);
+   CheckSolution(solution,0.12928927678176022,7519562.9114392512,4711351.9115628917,0,0.054947942632248094,0,4711351.9115664093,1825652517.0370178,VARIANT_FALSE);
+
+   solution.Release();
+
    CComPtr<ILFDSolver> lfdSolver;
    hr = lfdSolver.CoCreateInstance(CLSID_LFDSolver);
    hr = lfdSolver->Solve(beam,&solution);

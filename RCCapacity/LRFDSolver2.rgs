@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLRCCapacity.LRFDSolver2.1 = s 'LRFDSolver2 Class'
+	{
+		CLSID = s '{8AE96CF8-F16B-4488-904B-1F7B27E0C125}'
+	}
+	WBFLRCCapacity.LRFDSolver2 = s 'LRFDSolver2 Class'
+	{
+		CLSID = s '{8AE96CF8-F16B-4488-904B-1F7B27E0C125}'
+		CurVer = s 'WBFLRCCapacity.LRFDSolver2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {8AE96CF8-F16B-4488-904B-1F7B27E0C125} = s 'LRFDSolver2 Class'
+		{
+			ProgID = s 'WBFLRCCapacity.LRFDSolver2.1'
+			VersionIndependentProgID = s 'WBFLRCCapacity.LRFDSolver2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{61618484-C4D1-4821-97C1-021305157FE4}'
+		}
+	}
+}

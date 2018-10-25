@@ -51,17 +51,19 @@ void CGraphManager::ClearAll()
    m_GraphBuilders.clear();
 }
 
-void CGraphManager::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
+bool CGraphManager::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
    boost::shared_ptr<CGraphBuilder> p(pGraphBuilder);
-   m_GraphBuilders.insert( std::make_pair( strName, p ) );
+   std::pair<GraphBuilderContainer::iterator,bool> result = m_GraphBuilders.insert( std::make_pair( strName, p ) );
+   return result.second;
 }
 
-void CGraphManager::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool CGraphManager::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
-   m_GraphBuilders.insert( std::make_pair( strName, pGraphBuilder ) );
+   std::pair<GraphBuilderContainer::iterator,bool> result = m_GraphBuilders.insert( std::make_pair( strName, pGraphBuilder ) );
+   return result.second;
 }
 
 CollectionIndexType CGraphManager::GetGraphBuilderCount() const

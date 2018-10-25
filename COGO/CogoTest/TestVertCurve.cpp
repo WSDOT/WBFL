@@ -49,6 +49,7 @@ void CTestVertCurve::Test()
 {
    Test1();
    Test2();
+   Test3();
 }
 
 void CTestVertCurve::Test1()
@@ -339,7 +340,6 @@ void CTestVertCurve::Test1()
    TRY_TEST( TestIObjectSafety(CLSID_VertCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-
 void CTestVertCurve::Test2()
 {
    CComPtr<IAlignment> alignment;
@@ -468,6 +468,103 @@ void CTestVertCurve::Test2()
    point->get_Elevation(&elev);
    TRY_TEST(zoneIdx,2);
    TRY_TEST( IsEqual(sta,300.0), true );
+   TRY_TEST(IsEqual(elev,200.0),true);
+}
+
+void CTestVertCurve::Test3()
+{
+   // This is same as Test1, except that instead of PBG and PFG being points off the curve, 
+   // they are the BVC and EVC. We input grades instead of lengths (PVI gets computed)
+   CComPtr<IVertCurve> vc;
+   TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
+
+   vc->put_ComputeFromGradePoints(VARIANT_TRUE);
+
+   CComPtr<IProfilePoint> pbg, pfg;
+   pbg.CoCreateInstance(CLSID_ProfilePoint);
+   pfg.CoCreateInstance(CLSID_ProfilePoint);
+
+   // Sag curve
+   pbg->put_Station(CComVariant(100));
+   pbg->put_Elevation(100);
+   
+   pfg->put_Station(CComVariant(400));
+   pfg->put_Elevation(100);
+
+   TRY_TEST( vc->putref_PBG(pbg), S_OK );
+   TRY_TEST( vc->putref_PFG(pfg), S_OK );
+
+   TRY_TEST(vc->put_EntryGrade(-0.5),S_OK);
+   TRY_TEST(vc->put_ExitGrade(0.25),S_OK);
+
+   Float64 l1, l2;
+   TRY_TEST(vc->get_L1(NULL), E_POINTER);
+   TRY_TEST(vc->get_L1(&l1),  S_OK);
+   TRY_TEST(vc->get_L2(NULL), E_POINTER);
+   TRY_TEST(vc->get_L2(&l2),  S_OK);
+   TRY_TEST(IsEqual(l1,100.0),true);
+   TRY_TEST(IsEqual(l2,200.0),true);
+
+   Float64 L;
+   TRY_TEST( vc->get_Length(NULL), E_POINTER );
+   TRY_TEST( vc->get_Length(&L), S_OK );
+   TRY_TEST( IsEqual( L, 300.), true );
+
+   Float64 elev;
+   TRY_TEST( vc->Elevation(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Elevation(CComVariant(150),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,81.25), true );
+   TRY_TEST( vc->Elevation(CComVariant(200),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,75.0), true );
+   TRY_TEST( vc->Elevation(CComVariant(250),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,76.5625), true );
+
+   Float64 grade;
+   TRY_TEST( vc->Grade(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Grade(CComVariant(150),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,-0.25), true );
+   TRY_TEST( vc->Grade(CComVariant(200),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,0.0), true );
+   TRY_TEST( vc->Grade(CComVariant(250),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,0.0625), true );
+   TRY_TEST( vc->Grade(CComVariant(0),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,-0.50), true );
+   TRY_TEST( vc->Grade(CComVariant(600),&grade), S_OK );
+   TRY_TEST( IsEqual(grade, 0.25), true );
+
+   // high point at start
+   CComPtr<IProfilePoint> point;
+   CComPtr<IStation> station;
+   Float64 sta;
+   TRY_TEST( vc->get_HighPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_HighPoint(&point), S_OK );
+   point->get_Station(&station);
+   station->get_Value(&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST( IsEqual(sta,100.0), true );
+   TRY_TEST(IsEqual(elev,100.0),true);
+
+   // low point between ends
+   point.Release();
+   TRY_TEST( vc->get_LowPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_LowPoint(&point), S_OK );
+   station.Release();
+   point->get_Station(&station);
+   station->get_Value(&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST( IsEqual(sta,200.0), true );
+   TRY_TEST(IsEqual(elev,75.0),true);
+
+   // high point at end
+   pfg->put_Elevation(200);
+   vc->put_ExitGrade(0.75);
+   point.Release();
+   TRY_TEST( vc->get_HighPoint(&point), S_OK );
+   station.Release();
+   point->get_Station(&station);
+   station->get_Value(&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST( IsEqual(sta,400.0), true );
    TRY_TEST(IsEqual(elev,200.0),true);
 }
 

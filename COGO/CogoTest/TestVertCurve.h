@@ -44,6 +44,7 @@ public:
    static void Test();
    static void Test1();
    static void Test2();
+   static void Test3();
 
    void InitEventTest() { m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }

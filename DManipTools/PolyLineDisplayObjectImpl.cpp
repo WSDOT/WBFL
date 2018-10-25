@@ -140,6 +140,18 @@ STDMETHODIMP_(CollectionIndexType) CPolyLineDisplayObjectImpl::get_NumberOfPoint
    return m_Container.size();
 }
 
+STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::AddPoints(IPoint2dCollection* points)
+{
+   IndexType nPoints;
+   points->get_Count(&nPoints);
+   for ( IndexType idx = 0; idx < nPoints; idx++ )
+   {
+      CComPtr<IPoint2d> point;
+      points->get_Item(idx,&point);
+      AddPoint(point);
+   }
+}
+
 STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::AddPoint(IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())

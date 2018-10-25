@@ -31,8 +31,8 @@ DEFINE_GUID(IID_IGraphManager,
 0xfba71046, 0xc05, 0x4946, 0x83, 0xdd, 0x4c, 0x71, 0xa9, 0x73, 0xc1, 0x8d);
 interface IGraphManager : IUnknown
 {
-   virtual void AddGraphBuilder(CGraphBuilder* pRptBuilder) = 0;
-   virtual void AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder) = 0;
+   virtual bool AddGraphBuilder(CGraphBuilder* pRptBuilder) = 0;
+   virtual bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder) = 0;
    virtual CollectionIndexType GetGraphBuilderCount() const = 0;
    virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index) = 0;
    virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) = 0;

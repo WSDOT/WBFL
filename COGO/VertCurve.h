@@ -84,6 +84,8 @@ public:
 
 // IVertCurve
 public:
+   STDMETHOD(get_ComputeFromGradePoints)(/*[out,retval]*/VARIANT_BOOL* pvbCompute);
+   STDMETHOD(put_ComputeFromGradePoints)(/*[in]*/VARIANT_BOOL vbCompute);
    STDMETHOD(get_Profile)(IProfile* *pVal);
    STDMETHOD(putref_Profile)(IProfile* newVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
@@ -96,7 +98,9 @@ public:
 	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* elev);
 	STDMETHOD(get_HighPoint)(/*[out, retval]*/ IProfilePoint* *pVal);
 	STDMETHOD(get_LowPoint)(/*[out, retval]*/ IProfilePoint* *pVal);
+	STDMETHOD(put_ExitGrade)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_ExitGrade)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(put_EntryGrade)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_EntryGrade)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(get_PFG)(/*[out, retval]*/ IProfilePoint* *pVal);
@@ -124,17 +128,28 @@ public:
 	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp);
 
 private:
+   // if true, L1, L2, BVC, PVI, and EVC are computed from PBG, PFG, g1, and g2
+   // assuming BVC=PBG and EVC=PFG
+   VARIANT_BOOL m_vbComputeFromGrades;
+
    IProfile* m_pProfile; // weak reference
    CComPtr<IProfilePointFactory> m_Factory;
    CComPtr<IProfilePoint> m_PBG;
+   CComPtr<IProfilePoint> m_BVC;
    CComPtr<IProfilePoint> m_PVI;
+   CComPtr<IProfilePoint> m_EVC;
    CComPtr<IProfilePoint> m_PFG;
    DWORD m_dwPBG, m_dwPVI, m_dwPFG; // event cookies
    Float64 m_L1, m_L2; // Half-length of vert curve
+   Float64 m_g1, m_g2; // entry and exit grades
 
    HRESULT IsValid(); // return S_OK if the curve is valid
    void MyAdvise(IProfilePoint* pp,DWORD* pdwCookie);
    void MyUnadvise(IProfilePoint* pp,DWORD dwCookie);
+
+   bool m_bIsDirty;
+   void MakeDirty();
+   HRESULT Update();
 
    HRESULT ValidateStation(IProfilePoint* profilePoint);
    HRESULT ValidateStation(VARIANT varStation,IStation** station);

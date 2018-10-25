@@ -53,6 +53,7 @@ BEGIN_MESSAGE_MAP(CEAFMainFrame, CMDIFrameWnd)
 	//{{AFX_MSG_MAP(CEAFMainFrame)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 		//    DO NOT EDIT what you see in these blocks of generated code !
+   ON_WM_SIZE()
 	ON_WM_CREATE()
    ON_WM_CLOSE()
    ON_WM_DESTROY()
@@ -84,6 +85,7 @@ CEAFMainFrame::CEAFMainFrame()
    m_pStatusBar = NULL;
    m_pMainFrameToolBar = NULL;
    m_pMainMenu = NULL;
+   m_pBackgroundWnd = NULL;
 
    m_bShowToolTips = TRUE;
 
@@ -106,6 +108,11 @@ CEAFMainFrame::~CEAFMainFrame()
    {
       delete m_pMainMenu;
    }
+
+   //if ( m_pBackgroundWnd )
+   //{
+   //   delete m_pBackgroundWnd;
+   //}
 }
 
 CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
@@ -147,6 +154,36 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
    pToolBar->SetWindowText(AfxGetAppName());
 
    return pToolBar;
+}
+
+CEAFBackgroundWnd* CEAFMainFrame::CreateBackgroundWindow()
+{
+   return NULL;
+}
+
+void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
+{
+   CMDIFrameWnd::OnSize(nType,cx,cy);
+   if ( m_pBackgroundWnd )
+   {
+      // get the range of control bar IDs
+      UINT minID = UINT_MAX;
+      UINT maxID = 0;
+
+	   POSITION pos = m_listControlBars.GetHeadPosition();
+	   while (pos != NULL)
+	   {
+		   CControlBar* pBar = (CControlBar*)m_listControlBars.GetNext(pos);
+         UINT id = pBar->GetDlgCtrlID();
+         minID = Min(id,minID);
+         maxID = Max(id,maxID);
+	   }
+
+      CRect rect;
+      UINT bkID = m_pBackgroundWnd->GetDlgCtrlID();
+      RepositionBars(minID,maxID,bkID,CWnd::reposQuery,&rect);
+      m_pBackgroundWnd->SetWindowPos(NULL,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
+   }
 }
 
 int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -200,7 +237,15 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    // Load the state of the application toolbar
    LoadBarState( CString("Toolbars\\") + CString((LPCTSTR)IDS_TOOLBAR_STATE) );
 
+   // Main Menu
    m_pMainMenu = CreateMainMenu();
+
+   // Background Window
+   m_pBackgroundWnd = CreateBackgroundWindow();
+   if ( m_pBackgroundWnd )
+   {
+      m_pBackgroundWnd->Create(NULL,_T("Background"),WS_CHILD | WS_VISIBLE,rectDefault,this);
+   }
 
 	return 0;
 }
@@ -801,6 +846,22 @@ void CEAFMainFrame::ShowMainFrameToolBar()
    }
 
    ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
+}
+
+void CEAFMainFrame::HideMainFrameBackground()
+{
+   if ( m_pBackgroundWnd )
+   {
+      m_pBackgroundWnd->ShowWindow(SW_HIDE);
+   }
+}
+
+void CEAFMainFrame::ShowMainFrameBackGround()
+{
+   if ( m_pBackgroundWnd )
+   {
+      m_pBackgroundWnd->ShowWindow(SW_SHOW);
+   }
 }
 
 UINT CEAFMainFrame::GetNextToolBarID()

@@ -40,8 +40,8 @@ public:
 	virtual ~CGraphManager();
    virtual void ClearAll();  // deletes all graph builders
 
-   void AddGraphBuilder(CGraphBuilder* pBuilder);
-   void AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
+   bool AddGraphBuilder(CGraphBuilder* pBuilder);
+   bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
    CollectionIndexType GetGraphBuilderCount() const;
    boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
    boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);

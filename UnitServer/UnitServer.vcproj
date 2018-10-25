@@ -128,7 +128,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Copying OpenBridgeML"
+				CommandLine="xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(PlatformName)\$(ConfigurationName)\OpenBridgeMLD.dll $(OutDir)"
 			/>
 		</Configuration>
 		<Configuration
@@ -240,7 +241,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Copying OpenBridgeML"
+				CommandLine="xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(PlatformName)\$(ConfigurationName)\OpenBridgeMLD.dll $(OutDir)"
 			/>
 		</Configuration>
 		<Configuration
@@ -360,7 +362,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Copying OpenBridgeML"
+				CommandLine="xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(PlatformName)\$(ConfigurationName)\OpenBridgeML.dll $(OutDir)"
 			/>
 		</Configuration>
 		<Configuration
@@ -480,7 +483,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Copying OpenBridgeML"
+				CommandLine="xcopy /y/d \ARP\BridgeLink\RegFreeCOM\$(PlatformName)\$(ConfigurationName)\OpenBridgeML.dll $(OutDir)"
 			/>
 		</Configuration>
 		<Configuration
@@ -2054,6 +2058,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\OpenBridgeML.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -2820,10 +2828,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\UnitServerUtils.cpp"
-				>
-			</File>
-			<File
 				RelativePath="UnitSystem.cpp"
 				>
 				<FileConfiguration
@@ -3259,6 +3263,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\WBFLUnitServer\OpenBridgeML.h"
+				>
+			</File>
+			<File
 				RelativePath="Resource.h"
 				>
 			</File>
@@ -3288,10 +3296,6 @@
 			</File>
 			<File
 				RelativePath="UnitServerImp.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\WBFLUnitServer\UnitServerUtils.h"
 				>
 			</File>
 			<File

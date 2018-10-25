@@ -41,6 +41,7 @@
 #define IDH_Direction_FromAzimuth                              211
 #define IDH_Direction_AngleBetween                             212
 #define IDH_Direction_Clone                                    213
+#define IDH_Direction_Azimuth                                  214
 
 #define IDH_Point_OnPointChanged                         10001
 #define IDH_PointCollection_OnPointChanged               10002

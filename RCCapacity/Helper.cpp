@@ -37,6 +37,30 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+Float64 Alpha1(Float64 fc,IUnitServer* pUnitServer,SpecUnitType unitType)
+{
+   // convert fc to proper units
+   CComPtr<IUnitConvert> convert;
+   pUnitServer->get_UnitConvert(&convert);
+   convert->ConvertFromBaseUnits(fc,unitType == suSI ? CComBSTR("MPa") : CComBSTR("psi"),&fc);
+
+   Float64 fc_limit = (unitType == suSI ? 69. : 10000.);
+   Float64 fc_step  = (unitType == suSI ?  7. : 1000.);
+   
+   Float64 alpha1;
+   if ( fc < fc_limit )
+   {
+      alpha1 = 0.85;
+   }
+   else
+   {
+      alpha1 = 0.85 - 0.02*((fc - fc_limit)/fc_step);
+      alpha1 = Max(alpha1,0.75);
+   }
+
+   return alpha1;
+}
+
 Float64 Beta1(Float64 fc,IUnitServer* pUnitServer,SpecUnitType unitType)
 {
    // convert fc to proper units

@@ -691,6 +691,11 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
    return FALSE; // message was NOT handled, continue routing
 }
 
+CRecentFileList* CEAFApp::GetRecentFileList()
+{
+   return m_pRecentFileList;
+}
+
 CEAFDocTemplateRegistrar* CEAFApp::GetDocTemplateRegistrar()
 {
    return m_pDocTemplateRegistrar;

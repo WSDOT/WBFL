@@ -69,8 +69,8 @@ public:
 
 // IGraphManager
 public:
-   virtual void AddGraphBuilder(CGraphBuilder* pGraphBuilder);
-   virtual void AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
+   virtual bool AddGraphBuilder(CGraphBuilder* pGraphBuilder);
+   virtual bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
    virtual CollectionIndexType GetGraphBuilderCount() const;
    virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
    virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
