@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -45,6 +45,9 @@ static const Float64 ZTOL=1.0e-9;
 
 Beam::Beam(Float64 l,Float64 ea,Float64 ei,long leftBC,long rightBC)
 {
+   ATLASSERT(!IsZero(l));
+   ATLASSERT(!IsZero(ea));
+   ATLASSERT(!IsZero(ei));
    m_L  = l;
    m_EA = ea;
    m_EI = ei;

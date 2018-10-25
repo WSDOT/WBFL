@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -114,7 +114,7 @@ CString CEAFCommandLineInfo::GetUsageMessage()
    CString strOption1(_T("/? - Get command line options"));
    CString strOption2(_T("/help - Get command line options"));
    CString strOption3(_T("/<app options> filename - Opens the specified file and passes <app options> to the application associated with the file"));
-   CString strOption4(_T("/<appname> <app options> - Passes <app options> to the application specified with <appname> for processing"));
+   CString strOption4(_T("/App=<appname> <app options> - Passes <app options> to the application specified with <appname> for processing"));
 
    CString strMsg;
    strMsg.Format(_T("Usage:\n%s\n%s\n\nwhere <options> are:\n%s\n%s\n%s\n%s"),

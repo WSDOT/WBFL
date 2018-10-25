@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -342,6 +342,11 @@ STDMETHODIMP CModel::get_TemporarySupports(ITemporarySupports** ppVal)
    CComObject<CTemporarySupports>* pTempSupports;
    CComObject<CTemporarySupports>::CreateInstance(&pTempSupports);
    pTempSupports->QueryInterface(ppVal);
+
+#if defined _DEBUG
+   pTempSupports->m_bTestLocations = false; // don't test for uniqueness of locations when added temp support to this container
+                                            // See notes in TemporarySupports.h
+#endif
 
    CComPtr<IEnumSpan> enumSpans;
    m_Spans->get__EnumElements(&enumSpans);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -112,6 +112,11 @@ int CEAFApp::Run()
 
 BOOL CEAFApp::InitInstance()
 {
+   if (!CWinApp::InitInstance())
+   {
+      return FALSE;
+   }
+
    // Initialize OLE libraries
 	if (!SUCCEEDED(OleInitialize(nullptr)))
 	{
@@ -1652,7 +1657,7 @@ unitmgtIndirectMeasure init_si_units()
    im.Scalar.Precision = 3;
    im.Scalar.Format = sysNumericFormatTool::Fixed;
 
-   im.Percentage.Width = 6;
+   im.Percentage.Width = 7;
    im.Percentage.Precision = 2;
    im.Percentage.Format = sysNumericFormatTool::Fixed;
 
@@ -1704,7 +1709,7 @@ unitmgtIndirectMeasure init_english_units()
    im.Scalar.Precision = 3;
    im.Scalar.Format = sysNumericFormatTool::Fixed;
 
-   im.Percentage.Width = 6;
+   im.Percentage.Width = 7;
    im.Percentage.Precision = 2;
    im.Percentage.Format = sysNumericFormatTool::Fixed;
 

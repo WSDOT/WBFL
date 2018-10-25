@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,6 +39,7 @@ static char THIS_FILE[] = __FILE__;
 
 CMetaFileStatic::CMetaFileStatic()
 {
+   m_FirstSize = true;
 }
 
 CMetaFileStatic::~CMetaFileStatic()
@@ -85,6 +86,13 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
       ::DeleteEnhMetaFile(holdmeta);
    }
 
+   // Save original size for later use
+   if (m_FirstSize)
+   {
+      GetClientRect(&m_OriginalrcClient);
+      m_FirstSize = false;
+   }
+
    // load resource and set it to static
 
    HRSRC hResInfo = ::FindResource( hInstance, lpName, lpType );
@@ -111,14 +119,12 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
       LONG cxi = rclBounds.right - rclBounds.left;
       LONG cyi = rclBounds.bottom - rclBounds.top;
 
-      RECT rcClient;
-      GetClientRect(&rcClient);
-      LONG cxc = rcClient.right - rcClient.left;
-      LONG cyc = rcClient.bottom - rcClient.top;
+      LONG cxc = m_OriginalrcClient.right - m_OriginalrcClient.left;
+      LONG cyc = m_OriginalrcClient.bottom - m_OriginalrcClient.top;
 
       if ( flag == EMF_RATIO )
       {
-         if ( cyc/cyi < cxc/cxi )
+         if ( (Float64)cyc/cyi > (Float64)cxc/cxi )
          {
             flag = EMF_VRATIO;
          }
@@ -128,20 +134,22 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
          }
       }
 
+      Float64 aspectr = (Float64)cxi / cyi;
+
       LONG cx,cy;
       if ( flag == EMF_HRATIO )
       {
          // adjust the width of the control so the aspect ratio
          // of the control matches the image
-         cx = cyc*cxi/cyi;
+         cx = (LONG)(cyc * aspectr);
          cy = cyc;
       }
       else if ( flag == EMF_VRATIO )
       {
          // adjust the hieght of the control so the aspect ratio
          // of the control matches the image
-         cx = cxi;
-         cy = cyi*cxc/cxi;
+         cx = cxc;
+         cy = (LONG)(cxc / aspectr);
       }
       else if ( flag == EMF_RESIZE )
       {

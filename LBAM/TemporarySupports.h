@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,10 +51,20 @@ class ATL_NO_VTABLE CTemporarySupports :
 public:
 	CTemporarySupports()
 	{
+#if defined _DEBUG
+      m_bTestLocations = true;
+#endif
 	}
 
 	~CTemporarySupports()
 	{;}
+
+#if defined _DEBUG
+   bool m_bTestLocations; // when getting temporary supports from CModel::get_TemporarySupports, we put all temporary supports into the same container
+   // temporary support locations are relative to the start of the span where they occur. Our OnBeforeAdd method tests for duplicate locations.
+   // This test causes bad asserts to fire when this is a container of all temp supports. CModel::get_TemporarySupports sets m_bTestLocations to false
+   // so that these bad asserts don't fire;
+#endif
 
 DECLARE_REGISTRY_RESOURCEID(IDR_TEMPORARYSUPPORTS)
 
@@ -85,22 +95,25 @@ END_CONNECTION_POINT_MAP()
 
 public:
 // implementation of needed virtual functions
-   virtual HRESULT OnBeforeAdd ( TemporarySupportVectorImpl::StoredType* pVal)
+   virtual HRESULT OnBeforeAdd(TemporarySupportVectorImpl::StoredType* pVal)
    {
       CHECK_IN(pVal);
 
 #if defined _DEBUG
       // make sure we aren't adding a temporary support at the same location
       // where one was previously defined
-      Float64 location;
-      pVal->second.m_T->get_Location(&location);
-
-      for (iterator it = begin(); it != end(); it++)
+      if (m_bTestLocations)
       {
-         CComPtr<ITemporarySupport> ts = it->second;
-         Float64 loc;
-         ts->get_Location(&loc);
-         ATLASSERT(!IsEqual(loc, location));
+         Float64 location;
+         pVal->second.m_T->get_Location(&location);
+
+         for (iterator it = begin(); it != end(); it++)
+         {
+            CComPtr<ITemporarySupport> ts = it->second;
+            Float64 loc;
+            ts->get_Location(&loc);
+            ATLASSERT(!IsEqual(loc, location));
+         }
       }
 #endif
 
