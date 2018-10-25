@@ -1001,11 +1001,71 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath=".\AlignmentOffsetLayoutLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\Bridge.rgs"
+				>
+			</File>
+			<File
 				RelativePath=".\BridgeGeometry.rc"
 				>
 			</File>
 			<File
 				RelativePath=".\res\BridgeGeometry.rc2"
+				>
+			</File>
+			<File
+				RelativePath=".\BridgeGeometry.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\DeckBoundary.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\DiaphragmLine.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\EqualSpaceDiaphragmLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\GirderLine.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLine.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\PierLineCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleDeckBoundaryFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleGirderLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleDiaphragmLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SingleGirderLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\ThroughPointDiaphragmLineFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\UniformSpacingLayoutLineFactory.rgs"
 				>
 			</File>
 		</Filter>

@@ -125,6 +125,13 @@ Float64 matACI209Concrete::ComputeEc28(Float64 Ec,Float64 age,Float64 a,Float64 
    return Ec28;
 }
 
+void matACI209Concrete::ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB)
+{
+   // solving ACI209 equation 2-1 for Alpha and Beta
+   *pB = (t1*fc2 - t2*fc1)/(fc1*(t1-t2));
+   *pA = t2*(1.0 - (*pB));
+}
+
 void matACI209Concrete::SetFc28(Float64 fc,Float64 t)
 {
    Float64 age = GetAge(t);

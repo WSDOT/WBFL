@@ -2032,7 +2032,8 @@ bool CBruteForceVehicularResponse2::IsPoiAtSupport(BSTR stage,PoiIDType poiID)
    MemberType lbamMbrType;
    MemberIDType mbrID;
    Float64 mbrLocation;
-   analysisPOIs->GetPoiInfo(stage, poiID, &lbamMbrType, &mbrID, &mbrLocation);
+   HRESULT hr = analysisPOIs->GetPoiInfo(stage, poiID, &lbamMbrType, &mbrID, &mbrLocation);
+   ATLASSERT(SUCCEEDED(hr));
    IndexType targetSSMbrIdx = (IndexType)mbrID; // memberID is the member index
 
    CComPtr<ILBAMModel> model;
