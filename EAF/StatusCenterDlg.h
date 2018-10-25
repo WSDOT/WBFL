@@ -33,7 +33,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CStatusCenterDlg dialog
 
-class CStatusCenterDlg : public CDialog, public iStatusCenterEventSink
+class CStatusCenterDlg : public CDialog, public IEAFStatusCenterEventSink
 {
 // Construction
 public:

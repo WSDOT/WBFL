@@ -28,17 +28,26 @@
 
 class CEAFDocTemplate;
 
+// CEAFTemplateItem
+//
+// Represents a template for a new document. 
+// Template items are shown in the right hand side of the New dialog.
 class EAFCLASS CEAFTemplateItem : public CObject
 {
 public:
    CEAFTemplateItem();
    CEAFTemplateItem(LPCTSTR name,LPCTSTR path,HICON hIcon);
    virtual ~CEAFTemplateItem();
+
+   // Set/Get the name (usually the filename)
    virtual void SetName(LPCTSTR name);
    virtual CString GetName() const;
+
+   // Set/Get the icon to display
    virtual void SetIcon(HICON hIcon);
    virtual HICON GetIcon() const;
 
+   // Set/Get the path to the template file that is used to create a new document
    virtual void SetTemplateFilePath(LPCTSTR path);
    virtual CString GetTemplateFilePath() const;
 
@@ -50,25 +59,44 @@ protected:
    DECLARE_DYNAMIC(CEAFTemplateItem)
 };
 
+// CEAFTemplateGroup
+//
+// Represents a group of templates for creating new documents
+// Template groups are displayed on the left hand side of the New dialog
+// Template groups are in a tree structure and can be any level group.
+// Each level contains zero or more template items
 class EAFCLASS CEAFTemplateGroup : public CObject
 {
 public:
    CEAFTemplateGroup(CEAFDocTemplate* pDocTemplate);
    virtual ~CEAFTemplateGroup();
 
+   // Delete all template groups and template items
    void Clear();
 
+   // Returns the document template for this group of documents
    CEAFDocTemplate* GetDocTemplate();
 
+   // Get/Get the group name
    virtual void SetGroupName(LPCSTR name);
    virtual CString GetGroupName() const;
 
+   // Add a sub-group
    virtual void AddGroup(const CEAFTemplateGroup* pGroup);
+
+   // Returns the group count
    virtual CollectionIndexType GetGroupCount() const;
+
+   // Gets a sub-group by index
    virtual const CEAFTemplateGroup* GetGroup(CollectionIndexType grpIdx) const;
 
+   // Adds an item to this group
    virtual void AddItem(const CEAFTemplateItem* pItem);
+
+   // Returns the number of items in this group
    virtual CollectionIndexType GetItemCount() const;
+
+   // Returns a template item by index
    virtual const CEAFTemplateItem* GetItem(CollectionIndexType itemIdx) const;
 
 private:

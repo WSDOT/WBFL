@@ -26,4 +26,10 @@
 #include <EAF\EAFExp.h>
 #include <WBFLCore.h> // IBroker
 
+// Returns a pointer to the broker. Only call this method if you are using a document
+// type that is a desendent of CEAFBrokerDocument
 HRESULT EAFFUNC EAFGetBroker(IBroker** ppBroker);
+
+// Displays a dialog for enabling/disabling plugin components. catid is the component
+// category ID of the type of plugin to be managed.
+void EAFFUNC EAFManagePlugins(const CATID& catid,CWnd* pParent = NULL);

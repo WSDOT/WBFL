@@ -52,7 +52,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-class CMyStatusCenterEventSink : public iStatusCenterEventSink
+class CMyStatusCenterEventSink : public IEAFStatusCenterEventSink
 {
 public:
    CMyStatusCenterEventSink(CEAFDocument* pDoc)
@@ -149,7 +149,7 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
       return bResult;
 
    // Next, see if anyone registered callback commands
-   CComPtr<ICommandCallback> pCallback;
+   CComPtr<IEAFCommandCallback> pCallback;
    UINT nPluginCmdID;
    if ( m_pPluginCommandMgr->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
    {
@@ -159,25 +159,18 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
          return bResult;
    }
 
-   // Finally, see if the application plugin object handles it
-   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   if ( pTemplate )
-   {
-      CComPtr<IEAFAppPlugin> appPlugin;
-      pTemplate->GetPlugin(&appPlugin);
-
-      CCmdTarget* pCmdTarget = appPlugin->GetCommandTarget();
-      if ( pCmdTarget )
-         bResult = pCmdTarget->OnCmdMsg(nID,nCode,pExtra,pHandlerInfo);
-
-      if ( bResult )
-         return bResult;
-   }
+   // normal mfc command routing will get the message to the application plugin if it
+   // handles the command (See CEAFApp::OnCmdMsg)
 
    // the command wasn't handled here!
    return FALSE;
 }
 
+void CEAFDocument::OnUpdateError(const CString& errorMsg)
+{
+   CString my_string = errorMsg;
+   UpdateAllViews(0,EAF_HINT_UPDATEERROR,(CObject*)&my_string);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFDocument diagnostics
@@ -201,13 +194,21 @@ void CEAFDocument::Serialize(CArchive& ar)
 
 // CEAFDocument message handlers
 
-CEAFMenu* CEAFDocument::GetMenu()
+CEAFMenu* CEAFDocument::GetMainMenu()
 {
    return m_pMainMenu;
 }
 
+CEAFAcceleratorTable* CEAFDocument::GetAcceleratorTable()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
+   return pMainFrame->GetAcceleratorTable();
+}
+
 CEAFMenu* CEAFDocument::CreateMainMenu()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    return new CEAFMenu(AfxGetMainWnd(),GetPluginCommandManager());
 }
 
@@ -238,9 +239,12 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
    // This function is called from CEAFDocTemplate::OnCreateFinalize() and OnCloseDocument()
 
    if ( bIntegrate )
+   {
       InitMainMenu();
+   }
 
    // save toolbar state before they are removed
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CFrameWnd* pFrame = (CFrameWnd*)AfxGetMainWnd();
    if ( !bIntegrate )
       pFrame->SaveBarState(GetToolbarSectionName());
@@ -345,7 +349,7 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
    CView*                    pView      = pMainFrame->CreateOrActivateFrame(pTemplate);
-
+   
    // done with the create data, so NULL it out
    pMyTemplate->SetViewCreationData(NULL);
 
@@ -396,6 +400,16 @@ void CEAFDocument::SetModifiedFlag(BOOL bModified)
    pFrame->EnableModifiedFlag(IsModified());
 }
 
+void CEAFDocument::SetSaveMissingPluginDataFlag(BOOL bSaveDataFromMissingPlugins)
+{
+   GetDocPluginManager()->SetSaveMissingPluginDataFlag(bSaveDataFromMissingPlugins);
+}
+
+BOOL CEAFDocument::GetSaveMissingPluginDataFlag()
+{
+   return GetDocPluginManager()->GetSaveMissingPluginDataFlag();
+}
+
 void CEAFDocument::InitFailMessage()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
@@ -441,7 +455,9 @@ BOOL CEAFDocument::LoadDocumentPlugins()
    if ( catid == CLSID_NULL )
       return TRUE; // no plugins for this document type
 
-   if ( GetDocPluginManager()->LoadPlugins(catid) )
+   GetDocPluginManager()->SetCATID(catid);
+
+   if ( GetDocPluginManager()->LoadPlugins() )
    {
       GetDocPluginManager()->InitPlugins();
    }
@@ -479,6 +495,7 @@ BOOL CEAFDocument::OnNewDocument()
    OnStatusChanged();
 
    // update the mainframe
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pMainFrame->UpdateFrameTitle("Untitled");
    pMainFrame->EnableModifiedFlag( IsModified() );
@@ -517,6 +534,9 @@ BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
    // update the mainframe title
    if (bDocumentOpened == TRUE)
    {
+      SetPathName(lpszPathName);
+
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
       CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
       pMainFrame->UpdateFrameTitle(lpszPathName);
    }
@@ -596,7 +616,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
             // Opps... A file with the original name is gone, and we can't
             // rename the backup to the file with the orignal name.
             // Alert the user so he's not screwed.
-            OnErrorRemaningSaveBackup(lpszPathName,strBackup);
+            OnErrorRenamingSaveBackup(lpszPathName,strBackup);
          }
       }
 
@@ -615,6 +635,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
    OnStatusChanged();
 
    // update title frame
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pMainFrame->UpdateFrameTitle(lpszPathName);
 
@@ -634,7 +655,7 @@ void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBacku
    AfxMessageBox(msg);
 }
 
-void CEAFDocument::OnErrorRemaningSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
+void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup)
 {
    CString msg;
    msg.Format("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s",
@@ -657,6 +678,7 @@ void CEAFDocument::OnCloseDocument()
    {
       ATLASSERT(m_pMainMenu != NULL);
       IntegrateWithUI(FALSE);
+      GetPluginCommandManager()->Clear();
    }
 
    SaveDocumentSettings();
@@ -664,6 +686,7 @@ void CEAFDocument::OnCloseDocument()
    UnloadDocumentPlugins();
 
    // put the main frame toolbar back the way it was
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pMainFrame->ShowMainFrameToolBar();
 
@@ -709,6 +732,13 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          return FALSE;
       }
 
+      hr = OpenDocumentRootNode(pStrLoad);
+      if ( FAILED(hr) )
+      {
+         HandleOpenDocumentError( hr, lpszPathName );
+         return FALSE;
+      }
+
       hr = LoadTheDocument(pStrLoad);
       if ( FAILED(hr) )
       {
@@ -716,6 +746,23 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
          return FALSE;
       }
 
+      // If this document type supports plugins, load the plug in data
+      if ( GetDocumentPluginCATID() != CLSID_NULL )
+      {
+         hr = GetDocPluginManager()->LoadPluginData( pStrLoad );
+         if ( FAILED(hr) )
+         {
+            HandleOpenDocumentError( hr, lpszPathName );
+            return FALSE;
+         }
+      }
+
+      hr = CloseDocumentRootNode(pStrLoad);
+      if ( FAILED(hr) )
+      {
+         HandleOpenDocumentError( hr, lpszPathName );
+         return FALSE;
+      }
 
       // end unit wrapping entire file
       try
@@ -759,6 +806,35 @@ void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName 
    AfxMessageBox("Error converting document");
 }
 
+CString CEAFDocument::GetRootNodeName()
+{
+   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CString str = pApp->m_pszAppName;
+   str.Trim();
+   str.Replace(" ","");
+   return str;
+}
+
+HRESULT CEAFDocument::OpenDocumentRootNode(IStructuredSave* pStrSave)
+{
+   return pStrSave->BeginUnit(GetRootNodeName(),1.0);
+}
+
+HRESULT CEAFDocument::CloseDocumentRootNode(IStructuredSave* pStrSave)
+{
+   return pStrSave->EndUnit();
+}
+
+HRESULT CEAFDocument::OpenDocumentRootNode(IStructuredLoad* pStrLoad)
+{
+   return pStrLoad->BeginUnit(GetRootNodeName());
+}
+
+HRESULT CEAFDocument::CloseDocumentRootNode(IStructuredLoad* pStrLoad)
+{
+   return pStrLoad->EndUnit();
+}
+
 BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 {
    CComPtr<IStructuredSave> pStrSave;
@@ -782,7 +858,33 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
       return FALSE;
    }
 
+   hr = OpenDocumentRootNode( pStrSave );
+   if ( FAILED(hr) )
+   {
+      HandleSaveDocumentError( hr, lpszPathName );
+      return FALSE;
+   }
+
    hr = WriteTheDocument( pStrSave );
+   if ( FAILED(hr) )
+   {
+      HandleSaveDocumentError( hr, lpszPathName );
+      return FALSE;
+   }
+
+   // If this document type supports plugins, save the plug in data
+   if ( GetDocumentPluginCATID() != CLSID_NULL )
+   {
+      hr = GetDocPluginManager()->SavePluginData( pStrSave );
+      if ( FAILED(hr) )
+      {
+         HandleSaveDocumentError( hr, lpszPathName );
+         return FALSE;
+      }
+   }
+
+
+   hr = CloseDocumentRootNode( pStrSave );
    if ( FAILED(hr) )
    {
       HandleSaveDocumentError( hr, lpszPathName );
@@ -816,7 +918,7 @@ CEAFStatusCenter& CEAFDocument::GetStatusCenter()
 
 void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 {
-   UpdateAllViews(NULL,EAF_HINTS_UNITS_CHANGED,0);
+   UpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
 }
 
 void CEAFDocument::Execute(txnTransaction& rTxn)
@@ -929,6 +1031,7 @@ void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI)
 
 void CEAFDocument::OnStatusChanged()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pFrame = (CEAFMainFrame*)AfxGetMainWnd();
    pFrame->OnStatusChanged();
 }

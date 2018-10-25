@@ -34,6 +34,12 @@
 
 class CEAFApp;
 
+/////////////////////////////////////////////////////////////////////////////
+// IEAFAppPlugin
+//
+// This interface must be implemented by any object plugging into a
+// CEAFApp-based application
+
 // {78D5872C-663A-4920-B1A1-E2E2528D5E3F}
 DEFINE_GUID(IID_IEAFAppPlugin, 
 0x78d5872c, 0x663a, 0x4920, 0xb1, 0xa1, 0xe2, 0xe2, 0x52, 0x8d, 0x5e, 0x3f);
@@ -41,12 +47,29 @@ struct __declspec(uuid("{78D5872C-663A-4920-B1A1-E2E2528D5E3F}")) IEAFAppPlugin;
 
 interface IEAFAppPlugin : IUnknown
 {
+   // Called for self-initialization
    virtual BOOL Init(CEAFApp* pParent) = 0;
+
+   // Called when the application is about to terminat
    virtual void Terminate() = 0;
+
+   // Called to give this plugin the opportunity to integrate itself
+   // into the user interface. When bIntegrate is TRUE, add menus, commands, toolbars, etc
+   // when FALSE, remove what you added
+   virtual void IntegrateWithUI(BOOL bIntegrate) = 0;
+
+   // Creates a document template for use in MFC's Doc/View model
    virtual CEAFDocTemplate* CreateDocTemplate() = 0;
-   virtual CCmdTarget* GetCommandTarget() = 0;
+
+   // Returns the menu handle of a shared menu. Return NULL if this application does
+   // not use a shared menu
    virtual HMENU GetSharedMenuHandle() = 0;
+
+   // Returns the resource identifier for the document information string
+   // This is the string MFC uses to get document name, file extension, file filter, etc
    virtual UINT GetDocumentResourceID() = 0;
+
+   // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;
 };
 

@@ -29,10 +29,15 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFSplashScreen.h>
-
+#include <EAF\EAFAcceleratorTable.h>
+#include <EAF\EAFUtilities.h>
 
 #include <comcat.h>
-#include <vector>
+#include <map>
+
+bool operator<(REFIID a,REFIID b);
+
+// Generic template class for managing plugins
 
 template <typename T,typename P>
 class CEAFPluginManager
@@ -40,27 +45,44 @@ class CEAFPluginManager
 public:
 	CEAFPluginManager()
    {
+      m_CATID = CLSID_NULL;
+   }
+
+	CEAFPluginManager(const CATID& catid)
+   {
+      m_CATID = catid;
    }
 
 	virtual ~CEAFPluginManager()
    {
    }
 
+   virtual void SetCATID(const CATID& catid)
+   {
+      m_CATID = catid;
+   }
+
    virtual void SetParent(P* parent)
    {
       m_pParent = parent;
+      m_PluginAcceleratorTable.Init(m_pParent->GetPluginCommandManager());
    }
 
-   virtual BOOL AddPlugin(T* pPlugin)
+   virtual CEAFAcceleratorTable* GetAcceleratorTable()
+   {
+      return &m_PluginAcceleratorTable;
+   }
+
+   virtual BOOL AddPlugin(const CLSID& clsid,T* pPlugin)
    {
       if ( pPlugin == NULL )
          return FALSE;
 
-      m_Plugins.push_back(pPlugin);
+      m_Plugins.insert(std::make_pair(clsid,pPlugin));
       return TRUE;
    }
 
-	virtual BOOL LoadPlugins(const CATID& catid)
+	virtual BOOL LoadPlugins()
    {
       USES_CONVERSION;
 
@@ -81,9 +103,11 @@ public:
 
       const int nID = 1;
       CATID ID[nID];
-      ID[0] = catid;
+      ID[0] = m_CATID;
 
       pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
+
+      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
 
       // load plug-ins 5 at a time
       CLSID clsid[5]; 
@@ -92,25 +116,37 @@ public:
       {
          for ( ULONG i = 0; i < nFetched; i++ )
          {
-            CComPtr<T> plugin;
-            plugin.CoCreateInstance(clsid[i]);
+            LPOLESTR pszCLSID;
+            ::StringFromCLSID(clsid[i],&pszCLSID);
+            CString strState = pApp->GetProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Enabled"));
 
-            if ( plugin == NULL )
+            if ( strState.CompareNoCase("Enabled") == 0 )
             {
-               LPOLESTR pszUserType;
-               OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
-               CString strMsg;
-               strMsg.Format("Failed to load %s plug in",OLE2A(pszUserType));
-               AfxMessageBox(strMsg);
-            }
-            else
-            {
-               CString str = plugin->GetName();
-               CString strMsg;
-               strMsg.Format("Loading %s",str);
-               CEAFSplashScreen::SetText(strMsg);
+               CComPtr<T> plugin;
+               plugin.CoCreateInstance(clsid[i]);
 
-               m_Plugins.push_back(plugin);
+               if ( plugin == NULL )
+               {
+                  LPOLESTR pszUserType;
+                  OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
+                  CString strMsg;
+                  strMsg.Format("Failed to load %s plug in\n\nWould you like to disable this plug in?",OLE2A(pszUserType));
+                  if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
+                  {
+                     pApp->WriteProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Disabled"));
+                  }
+               }
+               else
+               {
+                  CString str = plugin->GetName();
+                  CString strMsg;
+                  strMsg.Format("Loading %s",str);
+                  CEAFSplashScreen::SetText(strMsg);
+
+                  m_Plugins.insert(std::make_pair(clsid[i],plugin));
+               }
+
+               ::CoTaskMemFree((void*)pszCLSID);
             }
          }
       }
@@ -120,10 +156,10 @@ public:
 
    virtual BOOL InitPlugins()
    {
-      std::vector<CComPtr<T>>::iterator iter;
+      Plugins::iterator iter;
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
-         CComPtr<T> plugin = *iter;
+         CComPtr<T> plugin = iter->second;
          CString str = plugin->GetName();
          CString strMsg;
          strMsg.Format("Initializing %s",str);
@@ -140,10 +176,10 @@ public:
 
    virtual void UnloadPlugins()
    {
-      std::vector<CComPtr<T>>::iterator iter;
+      Plugins::iterator iter;
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
-         CComPtr<T> plugin = *iter;
+         CComPtr<T> plugin = iter->second;
          plugin->Terminate();
       }
       m_Plugins.clear();
@@ -159,13 +195,28 @@ public:
       if ( m_Plugins.size() <= idx )
          return E_INVALIDARG;
 
-      (*ppPlugin) = m_Plugins[idx];
+      Plugins::iterator iter = m_Plugins.begin();
+      for ( UINT i = 0; i < idx; i++ )
+         iter++;
+
+      (*ppPlugin) = iter->second;
       (*ppPlugin)->AddRef();
       return S_OK;
    }
 
+   void ManagePlugins()
+   {
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+      CWnd* pWnd = AfxGetMainWnd();
+      EAFManagePlugins(m_CATID,pWnd);
+   }
+
 protected:
+   CATID m_CATID;
    P* m_pParent;
-   std::vector<CComPtr<T>> m_Plugins;
+   typedef std::map<CLSID,CComPtr<T>> Plugins;
+   Plugins m_Plugins;
+
+   CEAFAcceleratorTable m_PluginAcceleratorTable;
 };
 

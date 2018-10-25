@@ -30,6 +30,7 @@
 #include <EAF\EAFExp.h>
 #include <IReportManager.h>
 
+// Creation data that is needed by the report view to create the proper report
 struct EAFCLASS CEAFReportViewCreationData
 {
    CollectionIndexType m_RptIdx;

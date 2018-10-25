@@ -24,7 +24,6 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-#include "resource.h"
 
 // CEAFAboutDlg dialog
 
@@ -33,11 +32,8 @@ class EAFCLASS CEAFAboutDlg : public CDialog
 	DECLARE_DYNAMIC(CEAFAboutDlg)
 
 public:
-   CEAFAboutDlg(HICON hIcon = NULL,CWnd* pParent = NULL);   // standard constructor
+   CEAFAboutDlg(HICON hIcon = NULL,UINT nIDTemplate=0,CWnd* pParent = NULL);   // standard constructor
 	virtual ~CEAFAboutDlg();
-
-// Dialog Data
-	enum { IDD = IDD_ABOUTBOX };
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support

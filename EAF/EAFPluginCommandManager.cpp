@@ -26,6 +26,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
+#include <EAF\EAFResources.h>
 #include <EAF\EAFPluginCommandManager.h>
 
 #ifdef _DEBUG
@@ -40,7 +41,10 @@ static char THIS_FILE[]=__FILE__;
 
 CEAFPluginCommandManager::CEAFPluginCommandManager()
 {
-   m_nBaseID = 1;
+   // The maximum command id is 0xDFFF (57343), see MFC Tech Note 022
+   // This will give 5000 plug-in command IDs.
+   // The user can still change this by calling SetBaseCommandID
+   m_nBaseID = 57343 - 5000;
 }
 
 CEAFPluginCommandManager::~CEAFPluginCommandManager()
@@ -54,28 +58,37 @@ void CEAFPluginCommandManager::SetBaseCommandID(UINT nBaseID)
    m_nBaseID = nBaseID;
 }
 
-UINT CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,ICommandCallback* pCallback)
+BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedID)
 {
-   UINT nMappedID;
-   if ( GetMappedCommandID(nPluginCmdID,pCallback,&nMappedID) )
-      return nMappedID;
+   if ( GetMappedCommandID(nPluginCmdID,pCallback,pMappedID) )
+      return TRUE;
 
    // command callback was not previously added... add it now
 
    if ( pCallback )
-      nMappedID = m_nBaseID++; // generate the next command ID for the menus
+   {
+      *pMappedID = m_nBaseID++; // generate the next command ID for the menus
+
+      if ( 0xDFFF < *pMappedID )
+      {
+         ATLASSERT(FALSE); // command ID exceeds max value (See MFC tech note 022)
+         return FALSE;
+      }
+   }
    else
-      nMappedID = nPluginCmdID; // using default MFC message routing, so don't alter the command ID
+   {
+      *pMappedID = nPluginCmdID; // using default MFC message routing, so don't alter the command ID
+   }
 
    CCallbackItem callbackItem;
    callbackItem.nPluginCmdID = nPluginCmdID;
-   callbackItem.pCallback = pCallback;
-   m_Callbacks.insert( std::make_pair(nMappedID,callbackItem) );
+   callbackItem.pCallback    = pCallback;
+   m_Callbacks.insert( std::make_pair(*pMappedID,callbackItem) );
 
-   return nMappedID;
+   return TRUE;
 }
 
-BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,ICommandCallback* pCallback,UINT* pMappedCmdID)
+BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedCmdID)
 {
    CallbackContainer::iterator iter;
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
@@ -84,7 +97,7 @@ BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,ICommandCall
    {
       CCallbackItem callbackItem = (*iter).second;
 
-      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
+      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback.m_T);
       if ( pUnk1 == pUnk2 && nPluginCmdID == callbackItem.nPluginCmdID )
       {
          *pMappedCmdID = (*iter).first;
@@ -95,7 +108,7 @@ BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,ICommandCall
    return FALSE;
 }
 
-BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCmdID,ICommandCallback** ppCallback)
+BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCmdID,IEAFCommandCallback** ppCallback)
 {
    CallbackContainer::iterator found;
    found = m_Callbacks.find(nMappedID);
@@ -103,7 +116,7 @@ BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCm
    {
       CCallbackItem callbackItem = (*found).second;
       *pPluginCmdID = callbackItem.nPluginCmdID;
-      (*ppCallback) = callbackItem.pCallback;
+      (*ppCallback) = callbackItem.pCallback.m_T;
       if (*ppCallback)
          (*ppCallback)->AddRef();
 
@@ -124,7 +137,7 @@ void CEAFPluginCommandManager::RemoveCommandCallback(UINT nMappedID)
    }
 }
 
-std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(ICommandCallback* pCallback)
+std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(IEAFCommandCallback* pCallback)
 {
    std::vector<UINT> nMappedIDs;
 
@@ -135,7 +148,7 @@ std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(ICommandCallback
    {
       CCallbackItem callbackItem = (*iter).second;
 
-      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback);
+      CComQIPtr<IUnknown, &IID_IUnknown> pUnk2(callbackItem.pCallback.m_T);
 
       if ( pUnk1 == pUnk2 )
       {
@@ -144,4 +157,9 @@ std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(ICommandCallback
    }
 
    return nMappedIDs;
+}
+
+void CEAFPluginCommandManager::Clear()
+{
+   m_Callbacks.clear();
 }

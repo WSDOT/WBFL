@@ -56,7 +56,7 @@ public:
    void Move(POINT topLeft);
    void Size(SIZE size);
    void Print(bool bPrompt);
-   void Edit();
+   bool Edit(bool bUpdate = true); // returns false if the user cancelled the edit
    void Find();
    void SelectAll();
    void Refresh();

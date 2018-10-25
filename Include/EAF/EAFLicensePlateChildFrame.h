@@ -54,24 +54,10 @@ DESCRIPTION
      - Change the bitmap or text in the frame
    
 
-
-EXAMPLES
-   EXAMPLE
-   Example here, repeat as needed
-   END
-
 BUGS          
    For some unknown reason, the z order of the view/frame gets screwed up causing the 
    frame to get drawn over the top of your view windows. Hence, it is necessary to set 
    the WS_CLIPCHILDREN style for the view window.
-
-KEYWORDS
-   word1, word2, ..., wordn
-
-COPYRIGHT
-   Copyright (c) 1997
-   Washington State Department Of Transportation
-   All Rights Reserved
 *****************************************************************************/
 
 class EAFCLASS CEAFLicensePlateChildFrame : public CMDIChildWnd

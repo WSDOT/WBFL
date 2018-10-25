@@ -30,27 +30,22 @@
 class EAFCLASS CEAFAppPluginManager : public CEAFPluginManager<IEAFAppPlugin,CEAFApp>
 {
 public:
-
-   virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo)
+   virtual void IntegrateWithUI(BOOL bIntegrate)
    {
-      std::vector<CComPtr<IEAFAppPlugin>>::iterator iter;
+      Plugins::iterator iter;
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
-         CComPtr<IEAFAppPlugin> plugin = *iter;
-         CCmdTarget* pCmdTarget = plugin->GetCommandTarget();
-         if ( pCmdTarget != NULL && pCmdTarget->OnCmdMsg(nID,nCode,pExtra,pHandlerInfo) )
-            return TRUE;
+         CComPtr<IEAFAppPlugin> plugin = iter->second;
+         plugin->IntegrateWithUI(bIntegrate);
       }
-
-      return FALSE;
    }
 
    virtual BOOL RegisterDocTemplates(CWinApp* pApp)
    {
-      std::vector<CComPtr<IEAFAppPlugin>>::iterator iter;
+      Plugins::iterator iter;
       for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
-         CComPtr<IEAFAppPlugin> plugin = *iter;
+         CComPtr<IEAFAppPlugin> plugin = iter->second;
          CEAFDocTemplate* pDocTemplate = plugin->CreateDocTemplate();
          if ( pDocTemplate )
          {

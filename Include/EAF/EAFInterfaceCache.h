@@ -28,6 +28,7 @@
 #include <EAF\EAFTypes.h>
 #include <map>
 #include <WBFLCore.h>
+#include <EAF\EAFStatusCenter.h>
 
 // provides a localized interface cache so the agent doesn't
 // have to go to the broker over and over again to get an interface
@@ -72,7 +73,7 @@ private:
    StatusGroupIDType m_StatusGroupID;
 
 #define AGENT_SET_BROKER(broker) m_pBroker = broker
-#define AGENT_INIT     GET_IFACE(IStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
+#define AGENT_INIT     GET_IFACE(IEAFStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
 #define AGENT_CLEAR_INTERFACE_CACHE m_pBroker = NULL
 
 #else
@@ -86,7 +87,7 @@ private:
    StatusGroupIDType m_StatusGroupID
 
 #define AGENT_SET_BROKER(broker) m_InterfaceCache.SetBroker(broker); m_pBroker = &m_InterfaceCache
-#define AGENT_INIT     GET_IFACE(IStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
+#define AGENT_INIT     GET_IFACE(IEAFStatusCenter,pStatusCenter); m_StatusGroupID = pStatusCenter->CreateStatusGroupID()
 #define AGENT_CLEAR_INTERFACE_CACHE  m_InterfaceCache.ClearCache(); m_InterfaceCache.SetBroker(NULL); m_pBroker = NULL
 
 

@@ -236,12 +236,12 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity()
    return severity;
 }
 
-void CEAFStatusCenter::SinkEvents(iStatusCenterEventSink* pSink)
+void CEAFStatusCenter::SinkEvents(IEAFStatusCenterEventSink* pSink)
 {
    m_Sinks.insert(pSink);
 }
 
-void CEAFStatusCenter::UnSinkEvents(iStatusCenterEventSink* pSink)
+void CEAFStatusCenter::UnSinkEvents(IEAFStatusCenterEventSink* pSink)
 {
    Sinks::iterator found = m_Sinks.find(pSink);
    if ( found != m_Sinks.end() )
@@ -256,7 +256,7 @@ void CEAFStatusCenter::NotifyAdded(CEAFStatusItem* pNewItem)
    Sinks::iterator iter;
    for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
    {
-      iStatusCenterEventSink* pSink = *iter;
+      IEAFStatusCenterEventSink* pSink = *iter;
       pSink->OnStatusItemAdded(pNewItem);
    }
 }
@@ -269,7 +269,7 @@ void CEAFStatusCenter::NotifyRemoved(StatusItemIDType id)
    Sinks::iterator iter;
    for ( iter = m_Sinks.begin(); iter != m_Sinks.end(); iter++ )
    {
-      iStatusCenterEventSink* pSink = *iter;
+      IEAFStatusCenterEventSink* pSink = *iter;
       pSink->OnStatusItemRemoved(id);
    }
 }

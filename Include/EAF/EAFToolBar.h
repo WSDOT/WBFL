@@ -38,7 +38,7 @@
 class CEAFMainFrame;
 class CEAFDocument;
 class CEAFPluginCommandManager;
-interface ICommandCallback;
+interface IEAFCommandCallback;
 
 class EAFCLASS CEAFToolBar  
 {
@@ -49,10 +49,10 @@ public:
    // These 4 methods add buttons to toolbars. The pCallback is a pointer to the object
    // that gets called when the toolbar button is pressed. If pCallback is NULL, the
    // the command is processed by MFC command routing.
-   BOOL LoadToolBar(LPCTSTR lpszResourceName,ICommandCallback* pCallback);
-   BOOL LoadToolBar(UINT nIDResource,ICommandCallback* pCallback);
-   BOOL AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,ICommandCallback* pCallback);
-   void RemoveButtons(ICommandCallback* pCallback);
+   BOOL LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback);
+   BOOL LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback);
+   BOOL AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,IEAFCommandCallback* pCallback);
+   void RemoveButtons(IEAFCommandCallback* pCallback);
 
    DWORD GetOwnerID() const; // returns the key of the object creating this toolbar
    UINT GetToolBarID() const;   // returns the ID of this toolbar
@@ -68,7 +68,7 @@ public:
    BOOL HideButton(int nID,BOOL bHide=TRUE);
    BOOL GetItemRect(int nIndex,LPRECT lpRect);
    int CommandToIndex(UINT nID) const; // nID = the command id on the toolbar button
-   int CommandToIndex(UINT nPluginCmdID,ICommandCallback* pCallback) const; 
+   int CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const; 
    void SetButtonStyle(int nIndex,UINT nStyle);
    UINT GetButtonStyle(int nIndex) const;
 

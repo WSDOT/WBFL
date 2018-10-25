@@ -51,6 +51,7 @@ public:
 	//{{AFX_VIRTUAL(CEAFChildFrame)
 	public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle = WS_CHILD | WS_VISIBLE | WS_OVERLAPPEDWINDOW, const RECT& rect = rectDefault, CMDIFrameWnd* pParentWnd = NULL, CCreateContext* pContext = NULL);
+   virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) = 0;
 	protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	//}}AFX_VIRTUAL
@@ -69,11 +70,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
    virtual void OnUpdateFrameTitle(BOOL bAddToTitle);
-public:
-
-   // Must over-ride this method and call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before
-   // calling base class method
-   virtual BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) = 0;
 };
 
 /////////////////////////////////////////////////////////////////////////////

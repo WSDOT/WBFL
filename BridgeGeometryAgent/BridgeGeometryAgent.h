@@ -40,7 +40,8 @@ class ATL_NO_VTABLE CBridgeGeometryAgent :
 	public IConnectionPointContainerImpl<CBridgeGeometryAgent>,
    public CProxyIRoadwayDataEventSink<CBridgeGeometryAgent>,
    public IAgentEx,
-   public ICommandCallback,
+   public IAgentUIIntegration,
+   public IEAFCommandCallback,
    public IRoadwayData,
    public IRoadway,
    public IRoadwayDisplayBuilder
@@ -57,7 +58,8 @@ DECLARE_REGISTRY_RESOURCEID(IDR_BRIDGEGEOMETRYAGENT)
 
 BEGIN_COM_MAP(CBridgeGeometryAgent)
 	COM_INTERFACE_ENTRY(IAgentEx)
-   COM_INTERFACE_ENTRY(ICommandCallback)
+   COM_INTERFACE_ENTRY(IAgentUIIntegration)
+   COM_INTERFACE_ENTRY(IEAFCommandCallback)
    COM_INTERFACE_ENTRY(IRoadwayData)
    COM_INTERFACE_ENTRY(IRoadway)
    COM_INTERFACE_ENTRY(IRoadwayDisplayBuilder)
@@ -122,6 +124,10 @@ public:
 	STDMETHOD(Reset)();
 	STDMETHOD(ShutDown)();
    STDMETHOD(GetClassID)(CLSID* pCLSID);
+
+// IAgentUIIntegration
+public:
+   STDMETHOD(IntegrateWithUI)(BOOL bIntegrate);
 
 // IRoadway
 public:

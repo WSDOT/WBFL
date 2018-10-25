@@ -33,8 +33,12 @@
 class CWnd;
 class CEAFPluginCommandManager;
 class CEAFDocument;
-interface ICommandCallback;
+interface IEAFCommandCallback;
 
+// Wrapper class for MFC CMenu. Plug-ins cannot access CMenu objects directly because of the 
+// need to map plug-in command ID's which are not guarenteed to be unique into application
+// command IDs that must be unique. This class provides access to CMenu-like functions
+// while managing the command IDs
 class EAFCLASS CEAFMenu  
 {
 public:
@@ -42,27 +46,25 @@ public:
 	CEAFMenu(const CEAFMenu& rOther);
 	virtual ~CEAFMenu();
 
-   CEAFMenu& operator=(const CEAFMenu& rOther);
-
    UINT GetMenuItemCount() const;
 
    CEAFMenu* GetSubMenu(INT pos);
 
    CEAFMenu* CreatePopupMenu(INT pos,LPCTSTR lpszName);
-   BOOL LoadMenu( UINT nIDResource,ICommandCallback* pCallback );
-   BOOL LoadMenu(LPCTSTR lpszResourceName,ICommandCallback* pCallback );
+   BOOL LoadMenu( UINT nIDResource,IEAFCommandCallback* pCallback );
+   BOOL LoadMenu(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback );
 
-   BOOL AppendMenu(UINT nID,LPCTSTR lpszNewItem,ICommandCallback* pCallback);
-   BOOL InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, ICommandCallback* pCallback);
+   BOOL AppendMenu(UINT nID,LPCTSTR lpszNewItem,IEAFCommandCallback* pCallback);
+   BOOL InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCommandCallback* pCallback);
    void AppendSeparator();
    void InsertSeparator(UINT nPosition,UINT nFlags);
 
    int GetMenuString(UINT nIDItem,LPTSTR lpString,int nMaxCount,UINT nFlags) const;
    int GetMenuString(UINT nIDItem,CString& rString,UINT nFlags) const;
 
-   BOOL SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, ICommandCallback* pCallback);
+   BOOL SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback);
 
-   void RemoveMenu(UINT nPosition,UINT nFlags,ICommandCallback* pCallback);
+   void RemoveMenu(UINT nPosition,UINT nFlags,IEAFCommandCallback* pCallback);
 
    void DestroyMenu(CEAFMenu* pMenu);
 
@@ -71,15 +73,13 @@ public:
    BOOL TrackPopupMenu(UINT nFlags,int x,int y,CWnd* pWnd,LPCRECT lpRect = 0);
 
 private:
-   void MakeAssignment(const CEAFMenu& rOther);
-
    CEAFMenu();
    void Init(CWnd* pWnd,CEAFPluginCommandManager* pCmdMgr);
    
    CMenu* GetMenu();
    const CMenu* GetMenu() const;
 
-   void LoadMenu(CMenu* pMenu,ICommandCallback* pCallback);
+   void LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback);
    void CreateSubMenus(); // called by SetWindow to fill up m_Popups with the pop up menus for the main menu
 
    void AppendSeparator(CMenu* pMenu);

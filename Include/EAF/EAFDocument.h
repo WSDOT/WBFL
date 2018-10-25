@@ -35,7 +35,7 @@ class CEAFDocTemplate;
 class CEAFMainFrame;
 class CEAFPluginCommandManager;
 class CStatusCenterDlg;
-class iStatusCenterEventSink;
+class IEAFStatusCenterEventSink;
 class txnTransaction;
 class CMyStatusCenterEventSink;
 
@@ -89,10 +89,22 @@ public:
 
    virtual void SetModifiedFlag(BOOL bModified = TRUE);
 
+   // Sets/Gets the SaveMissingPluginDataFlag
+   // When reading a document file, if it contains data from a plugin that is not
+   // currently installed, the data for that plugin is saved in a temporary cache.
+   // If this flag is set, the data for the missing plugin is saved in the file,
+   // otherwise the data is not saved and it is lost forever.
+   virtual void SetSaveMissingPluginDataFlag(BOOL bSaveDataFromMissingPlugins = TRUE);
+   virtual BOOL GetSaveMissingPluginDataFlag();
+
+   // called by the framework when an unwind exception is thrown
+   // Calls UpdateAllViews with EAF_HINT_UPDATEERROR
+   virtual void OnUpdateError(const CString& errorMsg);
+
 protected:
 // Overrides
 	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEAFBrokerDocument)
+	//{{AFX_VIRTUAL(CEAFDocument)
 
 public:
 	virtual BOOL OnNewDocument();
@@ -117,31 +129,52 @@ public:
    /// Writes message to file named ("AppName.log")
    virtual void FailSafeLogMessage(const char* msg);
 
-   CEAFMenu* GetMenu();
-   
-   /// Called to initialize the main menu
-   virtual BOOL InitMainMenu();
+   // returns the main menu object
+   CEAFMenu* GetMainMenu();
 
-   /// called by the framework to create the main menu object
-   /// over-ride to create sub-classed types
-   virtual CEAFMenu* CreateMainMenu();
+   // returns the accelerator table
+   CEAFAcceleratorTable* GetAcceleratorTable();
 
-   CEAFPluginCommandManager* GetPluginCommandManager();
+   // returns the plug-in command manager
+   virtual CEAFPluginCommandManager* GetPluginCommandManager();
 
+   // returns the document plugin manager
    virtual CEAFDocPluginManager* GetDocPluginManager();
 
    // Called by the framework to give plug-ins an opportunity to integrated with the
    // user interface of the application. Plug-ins can add toolbars, menu items, and keyboard accelerators
    virtual void DoIntegrateWithUI(BOOL bIntegrate);
 
+   ///////////////////////////////////////////////////////////
+   // Toolbars
+
+   // Creates a new toolbar, returns the toolbar id
    UINT CreateToolBar(LPCTSTR lpszName);
+
+   // returns a toolbar for with an ID of toolbarID
    CEAFToolBar* GetToolBar(UINT toolbarID);
+
+   // destroys a previously created toolbar. the toolbar must have been created with CreateToolBar for this document
+   // the pointer can't be used after the toolbar is destroyed
    void DestroyToolBar(CEAFToolBar* pToolBar);
+
+   // destroys a toolbar by id
    void DestroyToolBar(UINT toolbarID);
 
+   //////////////////////////////////////////////////////////////
+   // Views
+
+   // registers a view with the doc/view model. returns a that is used to identify the view
    virtual long RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
+
+   // removes a previously created view
    virtual void RemoveView(long key);
+
+   // creates a view. pass optional creation data to the view through pData
    virtual CView* CreateView(long key,LPVOID pData=0);
+
+   //////////////////////////////////////////////////////////////
+   // Document Initialization
 
    /// called by the framework where there is an initialization failure
    virtual void InitFailMessage();
@@ -165,15 +198,29 @@ public:
    virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave) = 0;
    virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad) = 0;
 
+   // Called by OpenDocumentRootNode to get the root node name
+   // By default the root node name is pApp->m_pszAppName with all whitespace removed
+   virtual CString GetRootNodeName();
+
+   // Called before WriteTheDocument to write a root node BeginUnit block
+   virtual HRESULT OpenDocumentRootNode(IStructuredSave* pStrSave);
+   // Called after WriteTheDocument and after saving of plugin data to write a root node EndUnit block
+   virtual HRESULT CloseDocumentRootNode(IStructuredSave* pStrSave);
+
+   // Called before LoadTheDocument to read a root node BeginUnit block
+   virtual HRESULT OpenDocumentRootNode(IStructuredLoad* pStrLoad);
+   // Called after LoadTheDocument and after loading of plugin data to read a root node EndUnit block
+   virtual HRESULT CloseDocumentRootNode(IStructuredLoad* pStrLoad);
+
    virtual void OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBackup);
-   virtual void OnErrorRemaningSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup);
+   virtual void OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup);
 
    // The toolbar state for each document type is stored in the registry.
    // To keep them separate, each document type must supply a name for the toolbar section
    virtual CString GetToolbarSectionName() = 0;
 
 protected:
-   //{{AFX_MSG(CEAFStatusBar)
+   //{{AFX_MSG(CEAFDocument)
 	afx_msg void OnUpdateViewStatusCenter(CCmdUI* pCmdUI);
 	afx_msg void OnViewStatusCenter();
 	afx_msg void OnUndo();
@@ -182,25 +229,43 @@ protected:
 	afx_msg void OnUpdateRedo(CCmdUI* pCmdUI);
    //}}AFX_MSG
 
+   
+
+   /// called by the framework to create the main menu object
+   virtual CEAFMenu* CreateMainMenu();
+   /// Called to initialize the main menu
+   virtual BOOL InitMainMenu();
+
    // called by the framework when the status center status changes
    virtual void OnStatusChanged();
 
+   // called by the framework when the contents of the documents are to be deleted
    virtual void DeleteContents();
 
-   CEAFDocPluginManager m_DocPluginMgr;
-   virtual CATID GetDocumentPluginCATID(); /// over ride this method and return the CATID for your doc plugins
-   virtual BOOL LoadDocumentPlugins(); /// called by the framework to load EAFDocumentPlugin objects
-   virtual void UnloadDocumentPlugins(); /// called by the framework to remove EAFDocumentPlugin objects
+   /////////////////////////////////////////////////////////////////////
+   // Plugins
+
+   /// If you want to support plugins, over ride this method and return the CATID for your doc plugins
+   /// default returns CLSID_NULL. If you are supporting plugins and want to manage them, provide a
+   /// command handler that calls EAFManagerPlugins
+   virtual CATID GetDocumentPluginCATID(); 
+
+   /// called by the framework to load EAFDocumentPlugin objects
+   virtual BOOL LoadDocumentPlugins(); 
+
+   /// called by the framework to remove EAFDocumentPlugin objects
+   virtual void UnloadDocumentPlugins(); 
 
    DECLARE_MESSAGE_MAP()
 
 private:
    CEAFMenu* m_pMainMenu;
    CEAFPluginCommandManager* m_pPluginCommandMgr;
+   CEAFDocPluginManager m_DocPluginMgr;
 
    CEAFStatusCenter*    m_pStatusCenter;
    CStatusCenterDlg* m_pStatusCenterDlg;
-   iStatusCenterEventSink* m_pStatusCenterEventSink;
+   IEAFStatusCenterEventSink* m_pStatusCenterEventSink;
 
    BOOL m_bUIIntegrated; // true if UI intergration happened
 

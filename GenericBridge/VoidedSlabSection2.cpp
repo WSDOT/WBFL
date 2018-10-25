@@ -79,15 +79,43 @@ bool CVoidedSlabSection2::ValidateWebIndex(WebIndexType idx)
 
 void CVoidedSlabSection2::GetWebs(Float64* pIntWeb,Float64* pExtWeb)
 {
-   Float64 S, D, W;
+   // pIntWeb = width of one interior web
+   // pExtWeb = width of one exterior web
+
+   Float64 Si, Se, Di, De, W;
    CollectionIndexType N;
-   m_Beam->get_InteriorVoidSpacing(&S);
-   m_Beam->get_InteriorVoidDiameter(&D);
+   m_Beam->get_InteriorVoidSpacing(&Si);
+   m_Beam->get_InteriorVoidDiameter(&Di);
+   m_Beam->get_ExteriorVoidSpacing(&Se);
+   m_Beam->get_ExteriorVoidDiameter(&De);
    m_Beam->get_Width(&W);
    m_Beam->get_VoidCount(&N);
 
-   *pExtWeb = (W - D - (N-1)*S)/2;
-   *pIntWeb = S - D;
+   if ( N == 0 )
+   {
+      *pExtWeb = W/2;
+      *pIntWeb = 0;
+   }
+   else if ( N == 1 )
+   {
+      *pExtWeb = (W-De)/2;
+      *pIntWeb = 0;
+   }
+   else if ( N == 2 )
+   {
+      *pIntWeb = Se - De;
+      *pExtWeb = (W - Se - De)/2;
+   }
+   else if ( N == 3 )
+   {
+      *pIntWeb = Se - Di/2 - De/2;
+      *pExtWeb = (W - 2*Se - 2*De)/2;
+   }
+   else
+   {
+      *pIntWeb = Si - Di;
+      *pExtWeb = (W - 2*Se - (N-3)*Si - De)/2;
+   }
 }
 
 

@@ -34,8 +34,10 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFDocTemplate.h>
+#include <EAF\EAFMenu.h>
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFStatusBar.h>
+#include <EAF\EAFAcceleratorTable.h>
 #include <vector>
 
 // The following control bar id's are reserved by MFC. (see AFXRES.h)
@@ -75,6 +77,9 @@ public:
    BOOL DisableFailCreateMessage() const;
    void DisableFailCreateMessage(BOOL bDisable = TRUE);
 
+   CEAFMenu* GetMainMenu();
+   CEAFAcceleratorTable* GetAcceleratorTable();
+
    void HideMainFrameToolBar();
    void ShowMainFrameToolBar();
 
@@ -111,7 +116,12 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:  // control bar embedded members
+protected:  
+   // Factory method for creating the main frame main menu object
+   virtual CEAFMenu* CreateMainMenu();
+   CEAFMenu* m_pMainMenu;
+
+   // control bar embedded members
    CEAFStatusBar*  m_pStatusBar;
    CToolBar* m_pMainFrameToolBar;
    BOOL m_bDisableHideMainToolBar;

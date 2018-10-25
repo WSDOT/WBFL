@@ -44,8 +44,8 @@
 #define THROW(ex,code)          {ASSERT(false); throw ex(ex::code, __FILE__, __LINE__ );}
 #define THROW_EX(ex,code,extra) {ASSERT(false); throw ex(ex::code,extra,__FILE__,__LINE__);}
 #else
-#define THROW(ex,code)          throw ex(ex::code, __FILE__, __LINE__ )
-#define THROW_EX(ex,code,extra) throw ex(ex::code,extra,__FILE__,__LINE__)
+#define THROW(ex,code)          {throw ex(ex::code, __FILE__, __LINE__ );}
+#define THROW_EX(ex,code,extra) {throw ex(ex::code,extra,__FILE__,__LINE__);}
 #endif // _DEBUG
 
 /*****************************************************************************

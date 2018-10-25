@@ -95,15 +95,15 @@ STDMETHODIMP CEAFDocProxyAgent::RegInterfaces()
 {
    CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
 
-   pBrokerInit->RegInterface( IID_IViewRegistrar,    this );
-   pBrokerInit->RegInterface( IID_IMainMenu,         this );
-   pBrokerInit->RegInterface( IID_IToolBars,         this );
-   pBrokerInit->RegInterface( IID_IDocument,         this );
-//   pBrokerInit->RegInterface( IID_IAcceleratorTable, this );
-   pBrokerInit->RegInterface( IID_IDisplayUnits,     this );
-   pBrokerInit->RegInterface( IID_IStatusCenter,     this );
-   pBrokerInit->RegInterface( IID_ITransactions,    this );
-   pBrokerInit->RegInterface( IID_IProjectLog,        this );
+   pBrokerInit->RegInterface( IID_IEAFViewRegistrar,    this );
+   pBrokerInit->RegInterface( IID_IEAFMainMenu,         this );
+   pBrokerInit->RegInterface( IID_IEAFToolbars,         this );
+   pBrokerInit->RegInterface( IID_IEAFDocument,         this );
+   pBrokerInit->RegInterface( IID_IEAFAcceleratorTable, this );
+   pBrokerInit->RegInterface( IID_IEAFDisplayUnits,        this );
+   pBrokerInit->RegInterface( IID_IEAFStatusCenter,     this );
+   pBrokerInit->RegInterface( IID_IEAFTransactions,     this );
+   pBrokerInit->RegInterface( IID_IEAFProjectLog,       this );
 
    return S_OK;
 }
@@ -149,7 +149,7 @@ STDMETHODIMP CEAFDocProxyAgent::GetClassID(CLSID* pCLSID)
 }
 
 ///////////////////////////////////////////////////////
-// IViewRegistrar
+// IEAFViewRegistrar
 long CEAFDocProxyAgent::RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
    return m_pDoc->RegisterView(pFrameClass,pViewClass,hSharedMenu,maxViewCount);
@@ -166,14 +166,14 @@ CView* CEAFDocProxyAgent::CreateView(long key,LPVOID pData)
 }
 
 ///////////////////////////////////////////////////////
-// IMainMenu
+// IEAFMainMenu
 CEAFMenu* CEAFDocProxyAgent::GetMainMenu()
 {
-   return m_pDoc->GetMenu();
+   return m_pDoc->GetMainMenu();
 }
 
 ///////////////////////////////////////////////////////
-// IToolBars
+// IEAFToolbars
 UINT CEAFDocProxyAgent::CreateToolBar(LPCTSTR lpszName)
 {
    return m_pDoc->CreateToolBar(lpszName);
@@ -195,7 +195,24 @@ void CEAFDocProxyAgent::DestroyToolBar(UINT toolbarID)
 }
 
 ///////////////////////////////////////////////////////
-// IDocument
+// IEAFAcceleratorTable
+BOOL CEAFDocProxyAgent::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback)
+{
+   return m_pDoc->GetAcceleratorTable()->AddAccelKey(fVirt,key,cmd,pCallback);
+}
+
+BOOL CEAFDocProxyAgent::RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback)
+{
+   return m_pDoc->GetAcceleratorTable()->RemoveAccelKey(cmd,pCallback);
+}
+
+BOOL CEAFDocProxyAgent::RemoveAccelKey(BYTE fVirt,WORD key)
+{
+   return m_pDoc->GetAcceleratorTable()->RemoveAccelKey(fVirt,key);
+}
+
+///////////////////////////////////////////////////////
+// IEAFDocument
 BOOL CEAFDocProxyAgent::IsModified()
 {
    return m_pDoc->IsModified();
@@ -268,7 +285,7 @@ void CEAFDocProxyAgent::UpdateAllViews(CView* pSender,LPARAM lHint,CObject* pHin
 }
 
 ////////////////////////////////////////////////////////////////////////
-// IDisplayUnits
+// IEAFDisplayUnits
 //
 void CEAFDocProxyAgent::SetUnitMode(eafTypes::UnitMode unitMode)
 {
@@ -502,7 +519,7 @@ const unitmgtPressureData& CEAFDocProxyAgent::GetOverlayWeightUnit()
 }
 
 //////////////////////////////////////////////////////////////
-// IStatusCenter
+// IEAFStatusCenter
 StatusCallbackIDType CEAFDocProxyAgent::RegisterCallback(iStatusCallback* pCallback)
 {
    return m_pDoc->GetStatusCenter().RegisterCallbackItem(pCallback);
@@ -559,7 +576,7 @@ CollectionIndexType CEAFDocProxyAgent::Count()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
-// ITransactions
+// IEAFTransactions
 void CEAFDocProxyAgent::Execute(txnTransaction& rTxn)
 {
    m_pDoc->Execute(rTxn);
@@ -627,7 +644,7 @@ CollectionIndexType CEAFDocProxyAgent::GetUndoCount()
 
 
 //////////////////////////////////////////////////////////////////////////////////
-// IProjectLog implementation
+// IEAFProjectLog implementation
 CString CEAFDocProxyAgent::GetName()
 {
    if ( !IsLogFileOpen() )

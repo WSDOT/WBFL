@@ -21,59 +21,25 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
 #pragma once
 
-// EAFAutoCalcReportView.h : header file
+// EAFPluginPersist.h : header file
 //
+#include <WBFLCore.h>
 
-#include <EAF\EAFExp.h>
-#include <EAF\EAFReportView.h>
-#include <EAF\EAFAutoCalcView.h>
 
 /////////////////////////////////////////////////////////////////////////////
-// CEAFAutoCalcReportView view
-class EAFCLASS CEAFAutoCalcReportView : public CEAFReportView,
-                                        public CEAFAutoCalcViewMixin // mix-in class
+// IEAFPluginPersist
+//
+// This interface must be implemented if a plugin wants to persist data
+
+// {C4498B21-40DB-46a2-BB35-4FFA10978AAD}
+DEFINE_GUID(IID_IEAFPluginPersist, 
+0xc4498b21, 0x40db, 0x46a2, 0xbb, 0x35, 0x4f, 0xfa, 0x10, 0x97, 0x8a, 0xad);
+struct __declspec(uuid("{C4498B21-40DB-46a2-BB35-4FFA10978AAD}")) IEAFPluginPersist;// for __uuidof
+
+interface IEAFPluginPersist : IUnknown
 {
-protected:
-	CEAFAutoCalcReportView();           // protected constructor used by dynamic creation
-	DECLARE_DYNCREATE(CEAFAutoCalcReportView)
-
-// Attributes
-public:
-   
-// Operations
-public:
-   virtual bool DoResultsExist() const;
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CEAFAutoCalcReportView)
-	public:
-	virtual void OnInitialUpdate();
-	protected:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
-	//}}AFX_VIRTUAL
-
-// Implementation
-public:
-   virtual void UpdateNow();
-   virtual void EditReport();
-
-protected:
-	virtual ~CEAFAutoCalcReportView();
-#ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
-#endif
-
-   // Generated message map functions
-protected:
-	//{{AFX_MSG(CEAFAutoCalcReportView)
-	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser();
-
-	DECLARE_MESSAGE_MAP()
+   virtual HRESULT Save(IStructuredSave* pStrSave) = 0;
+   virtual HRESULT Load(IStructuredLoad* pStrLoad) = 0;
 };

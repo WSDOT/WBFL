@@ -25,8 +25,11 @@
 //
 
 #include "stdafx.h"
+#include <EAF\EAFResources.h>
 #include <EAF\EAFBrokerDocument.h>
 #include "EAFDocProxyAgent.h"
+#include <AgentTools.h>
+#include <IReportManager.h>
 
 #include <sstream> // for ostringstream
 
@@ -46,6 +49,7 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
+   m_bIsReportMenuPopulated = false;
 
    // The base class registers as a unit mode listener
    // However, the DocProxyAgent also registers as a listener
@@ -339,6 +343,7 @@ BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
    // provides the bridge between the MFC Doc/View architecture
    // and the WBFL Agent/Broker architecture.
 
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFMainFrame* pMainFrame = (CEAFMainFrame*)AfxGetMainWnd();
 
    CComObject<CEAFDocProxyAgent>* pDocProxyAgent;
@@ -404,4 +409,156 @@ void CEAFBrokerDocument::OnLogFileOpened()
 void CEAFBrokerDocument::OnLogFileClosing()
 {
    // Does nothing by default
+}
+
+BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) 
+{
+   if ( m_pBroker )
+   {
+      // Interrupt the normal command processing to handle reports
+      // The report menu items are dynamically generated and so are their IDs
+      // If the command code is in the range IDM_REPORT to IDM_REPORT+nReports a specific
+      // report name was selected from a menu. Send the message on to the OnReport handler
+      // and tell MFC that this message has been handled (return TRUE)
+      GET_IFACE(IReportManager,pReportMgr);
+      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
+      BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
+      BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
+
+      if ( bIsReport || bIsQuickReport )
+      {
+         if ( nCode == CN_UPDATE_COMMAND_UI )
+         {
+            CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
+            pCmdUI->Enable(TRUE);
+            return TRUE;
+         }
+         else if ( nCode == CN_COMMAND )
+         {
+            if ( bIsQuickReport )
+               OnQuickReport(nID);
+            else
+               OnReport(nID);
+
+            return TRUE;
+         }
+      }
+   }
+	
+	return CEAFDocument::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
+}
+
+void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
+{
+   if (m_bIsReportMenuPopulated)
+      return;
+
+   // remove any old reports and placeholders
+   UINT nItems = pReportMenu->GetMenuItemCount();
+   for ( UINT idx = 0; idx < nItems; idx++ )
+   {
+      pReportMenu->RemoveMenu(0,MF_BYPOSITION,NULL);
+   }
+
+   BuildReportMenu(pReportMenu,false);
+
+   m_bIsReportMenuPopulated = true;
+}
+
+void CEAFBrokerDocument::BuildReportMenu(CMenu* pMenu,bool bQuickReport)
+{
+   GET_IFACE(IReportManager,pReportMgr);
+   std::vector<std::string> rptNames = pReportMgr->GetReportNames();
+
+   UINT i = 0;
+   std::vector<std::string>::iterator iter;
+   for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
+   {
+      std::string rptName = *iter;
+      UINT_PTR nCmd = GetReportCommand(i,bQuickReport);
+      pMenu->AppendMenu(MF_STRING,nCmd,rptName.c_str());
+
+      const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
+      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL);
+
+      i++;
+
+      ASSERT(i <= EAF_REPORT_MENU_COUNT);
+   }
+}
+
+void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
+{
+   GET_IFACE(IReportManager,pReportMgr);
+   std::vector<std::string> rptNames = pReportMgr->GetReportNames();
+
+   UINT i = 0;
+   std::vector<std::string>::iterator iter;
+   for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
+   {
+      std::string rptName = *iter;
+      UINT_PTR nCmd = GetReportCommand(i,bQuickReport);
+      pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
+
+      const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
+      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL,NULL);
+
+      i++;
+
+      ASSERT(i <= EAF_REPORT_MENU_COUNT);
+   }
+}
+
+UINT_PTR CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport)
+{
+   UINT baseID = EAF_REPORT_MENU_BASE;
+
+   if ( !bQuickReport )
+   {
+      GET_IFACE(IReportManager,pReportMgr);
+      Uint32 nReports = pReportMgr->GetReportBuilderCount();
+
+      baseID += nReports + 1;
+   }
+
+   ASSERT(rptIdx + baseID <= EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT);
+   return (UINT_PTR)(rptIdx + baseID);
+}
+
+CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,bool bQuickReport)
+{
+   if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT < nID )
+      return INVALID_INDEX;
+
+   UINT baseID = EAF_REPORT_MENU_BASE;
+   if ( !bQuickReport )
+   {
+      GET_IFACE(IReportManager,pReportMgr);
+      Uint32 nReports = pReportMgr->GetReportBuilderCount();
+
+      baseID += nReports + 1;
+   }
+
+   return (CollectionIndexType)(nID - baseID);
+}
+
+void CEAFBrokerDocument::OnReport(UINT nID)
+{
+   // User picked a report from a menu.
+   // get the report index
+   CollectionIndexType rptIdx = GetReportIndex(nID,false);
+   CreateReportView(rptIdx,true);
+}
+
+void CEAFBrokerDocument::OnQuickReport(UINT nID)
+{
+   // User picked a report from a menu.
+   // This is a "quick report" so don't prompt
+   CollectionIndexType rptIdx = GetReportIndex(nID,true);
+   CreateReportView(rptIdx,false);
+}
+
+void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,bool bPrompt)
+{
+   // User must override this method to display the report
 }

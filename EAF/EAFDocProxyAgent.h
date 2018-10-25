@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EAFDocProxyAgent_H__F3E2AEF7_0B1E_41B3_979B_63CF96EB1B2F__INCLUDED_)
-#define AFX_EAFDocProxyAgent_H__F3E2AEF7_0B1E_41B3_979B_63CF96EB1B2F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <EAF\EAFApp.h>
 #include <EAF\EAFInterfaceCache.h>
@@ -46,13 +41,13 @@
 
 
 //////////////////////////////////////////////////////////////////////////////
-// CProxyIDisplayUnitsEventSink
+// CProxyIEAFDisplayUnitsEventSink
 template <class T>
-class CProxyIDisplayUnitsEventSink : public IConnectionPointImpl<T, &IID_IDisplayUnitsEventSink, CComDynamicUnkArray>
+class CProxyIEAFDisplayUnitsEventSink : public IConnectionPointImpl<T, &IID_IEAFDisplayUnitsEventSink, CComDynamicUnkArray>
 {
 public:
 
-//IDisplayUnitsEventSink : IUnknown
+//IEAFDisplayUnitsEventSink : IUnknown
 public:
 	HRESULT Fire_UnitsChanged(
       eafTypes::UnitMode newUnitsMode)
@@ -72,8 +67,8 @@ public:
 		{
 			if (*pp != NULL)
 			{
-				IDisplayUnitsEventSink* pIDisplayUnitsEventSink = reinterpret_cast<IDisplayUnitsEventSink*>(*pp);
-				ret = pIDisplayUnitsEventSink->OnUnitsChanged(newUnitsMode);
+				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
+				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanged(newUnitsMode);
 			}
 			pp++;
 		}
@@ -91,17 +86,18 @@ class ATL_NO_VTABLE CEAFDocProxyAgent :
    //public CComRefCountTracer<CEAFDocProxyAgent,CComObjectRootEx<CComSingleThreadModel> >,
    public CComCoClass<CEAFDocProxyAgent,&CLSID_EAFDocProxyAgent>,
    public IConnectionPointContainerImpl<CEAFDocProxyAgent>,
-   public CProxyIDisplayUnitsEventSink<CEAFDocProxyAgent>,
+   public CProxyIEAFDisplayUnitsEventSink<CEAFDocProxyAgent>,
    public iUnitModeListener,
    public IAgentEx,
-   public IViewRegistrar,
-   public IMainMenu,
-   public IToolBars,
-   public IDocument,
-   public IDisplayUnits,
-   public IStatusCenter,
-   public ITransactions,
-   public IProjectLog
+   public IEAFViewRegistrar,
+   public IEAFMainMenu,
+   public IEAFToolbars,
+   public IEAFAcceleratorTable,
+   public IEAFDocument,
+   public IEAFDisplayUnits,
+   public IEAFStatusCenter,
+   public IEAFTransactions,
+   public IEAFProjectLog
 {
 public:
 	CEAFDocProxyAgent();
@@ -110,19 +106,20 @@ public:
 BEGIN_COM_MAP(CEAFDocProxyAgent)
    COM_INTERFACE_ENTRY(IAgent)
    COM_INTERFACE_ENTRY(IAgentEx)
-   COM_INTERFACE_ENTRY(IViewRegistrar)
-   COM_INTERFACE_ENTRY(IMainMenu)
-   COM_INTERFACE_ENTRY(IToolBars)
-   COM_INTERFACE_ENTRY(IDocument)
-   COM_INTERFACE_ENTRY(IDisplayUnits)
-   COM_INTERFACE_ENTRY(IStatusCenter)
-   COM_INTERFACE_ENTRY(ITransactions)
-	COM_INTERFACE_ENTRY(IProjectLog)
+   COM_INTERFACE_ENTRY(IEAFViewRegistrar)
+   COM_INTERFACE_ENTRY(IEAFMainMenu)
+   COM_INTERFACE_ENTRY(IEAFToolbars)
+   COM_INTERFACE_ENTRY(IEAFAcceleratorTable)
+   COM_INTERFACE_ENTRY(IEAFDocument)
+   COM_INTERFACE_ENTRY(IEAFDisplayUnits)
+   COM_INTERFACE_ENTRY(IEAFStatusCenter)
+   COM_INTERFACE_ENTRY(IEAFTransactions)
+	COM_INTERFACE_ENTRY(IEAFProjectLog)
 	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
 
 BEGIN_CONNECTION_POINT_MAP(CEAFDocProxyAgent)
-   CONNECTION_POINT_ENTRY( IID_IDisplayUnitsEventSink )
+   CONNECTION_POINT_ENTRY( IID_IEAFDisplayUnitsEventSink )
 END_CONNECTION_POINT_MAP()
 
    void SetDocument(CEAFBrokerDocument* pDoc);
@@ -145,24 +142,31 @@ public:
 	STDMETHOD(ShutDown)();
    STDMETHOD(GetClassID)(CLSID* pCLSID);
 
-// IViewRegistrar
+// IEAFViewRegistrar
 public:
    virtual long RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
    virtual void RemoveView(long key);
    virtual CView* CreateView(long key,LPVOID pData=0);
 
-// IMainMenu
+// IEAFMainMenu
 public:
    virtual CEAFMenu* GetMainMenu();
 
-// IToolBars
+// IEAFToolbars
 public:
    virtual UINT CreateToolBar(LPCTSTR lpszName);
    virtual CEAFToolBar* GetToolBar(UINT toolbarID);
    virtual void DestroyToolBar(CEAFToolBar* pToolBar);
    virtual void DestroyToolBar(UINT toolbarID);
 
-// IDocument
+// IEAFAcceleratorTable
+public:
+   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback);
+   virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback);
+   virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key);
+
+
+// IEAFDocument
 public:
    virtual BOOL IsModified();
    virtual void SetModified(BOOL bModified);
@@ -172,7 +176,7 @@ public:
    virtual CString GetFileRoot();
    virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = NULL);
 
-// IDisplayUnits
+// IEAFDisplayUnits
 public:
    virtual void                            SetUnitMode(eafTypes::UnitMode unitMode);
 	virtual eafTypes::UnitMode              GetUnitMode();
@@ -208,7 +212,7 @@ public:
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit();
    virtual const unitmgtPressureData&       GetOverlayWeightUnit();
 
-// IStatusCenter
+// IEAFStatusCenter
 public:
    virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback);
    virtual StatusGroupIDType CreateStatusGroupID();
@@ -222,7 +226,7 @@ public:
    virtual eafTypes::StatusSeverityType GetSeverity();
    virtual CollectionIndexType Count();
 
-// ITransactions
+// IEAFTransactions
 public:
    virtual void Execute(txnTransaction& rTxn);
    virtual void Execute(txnTransaction* pTxn);
@@ -238,7 +242,7 @@ public:
    virtual CollectionIndexType GetTxnCount();
    virtual CollectionIndexType GetUndoCount();
 
-// IProjectLog
+// IEAFProjectLog
 public:
    virtual CString GetName();
    virtual void LogMessage( const char* lpszMsg );
@@ -255,5 +259,3 @@ protected:
    bool IsLogFileOpen();
    void OpenLogFile();
 };
-
-#endif // !defined(AFX_EAFDocProxyAgent_H__F3E2AEF7_0B1E_41B3_979B_63CF96EB1B2F__INCLUDED_)

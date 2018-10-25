@@ -40,12 +40,13 @@ static char THIS_FILE[] = __FILE__;
 
 
 CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
-	: CDialog(CStatusCenterDlg::IDD, AfxGetMainWnd()),
+	: CDialog(""),
    m_StatusCenter(statusCenter)
 {
 	//{{AFX_DATA_INIT(CStatusCenterDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    Create(CStatusCenterDlg::IDD,AfxGetMainWnd());
 
    m_StatusCenter.SinkEvents(this);

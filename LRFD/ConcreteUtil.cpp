@@ -542,7 +542,7 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
    catch (...)
    {
       // An exception should not be thrown
-      ;
+      TRY_TESTME(false);
    }
 
    density = 2560.; // this will cause an exception to be thrown
@@ -551,9 +551,10 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
       ModE(fc,density);
       ; // We shouldn't hit this code
    }
-   catch(const sysXProgrammingError& /*e*/)
+   catch(const sysXProgrammingError& e)
    {
       // Do nothing
+      TRY_TESTME(e.GetReasonCode() == sysXProgrammingError::ValueOutOfRange);
    }
    
    TESTME_EPILOG("lrfdConcreteUtil");
