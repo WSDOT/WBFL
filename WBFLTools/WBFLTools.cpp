@@ -43,6 +43,8 @@
 #include "ErrorLog.h"
 #include "ProgressMonitorWindow.h"
 #include "LngArray.h"
+#include "IDArray.h"
+#include "IndexArray.h"
 #include "DblArray.h"
 #include "BstrArray.h"
 #include "UnkArray.h"
@@ -57,6 +59,8 @@ OBJECT_ENTRY(CLSID_StructuredLoad2, CStructuredLoad2)
 OBJECT_ENTRY(CLSID_WBFLErrorLog, CErrorLog)
 OBJECT_ENTRY(CLSID_ProgressMonitorWindow, CProgressMonitorWindow)
 OBJECT_ENTRY(CLSID_LongArray, CLongArray)
+OBJECT_ENTRY(CLSID_IDArray, CIDArray)
+OBJECT_ENTRY(CLSID_IndexArray, CIndexArray)
 OBJECT_ENTRY(CLSID_DblArray, CDblArray)
 OBJECT_ENTRY(CLSID_BstrArray, CBstrArray)
 OBJECT_ENTRY(CLSID_UnkArray, CUnkArray)

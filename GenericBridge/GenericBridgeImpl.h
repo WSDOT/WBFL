@@ -119,8 +119,8 @@ private:
    CComPtr<IBridgeDeck> m_Deck;
    DWORD m_dwDeckCookie;
 
-   CComPtr<IBarrier> m_LeftBarrier;
-   CComPtr<IBarrier> m_RightBarrier;
+   CComPtr<ISidewalkBarrier> m_LeftBarrier;
+   CComPtr<ISidewalkBarrier> m_RightBarrier;
 
    CComPtr<ICogoInfo> m_CogoInfo;
    CComPtr<ICogoEngine> m_CogoEngine;
@@ -168,10 +168,10 @@ public:
 //	STDMETHOD(GetSuperstructureMemberSegment)(/*[in]*/ long spanIdx,/*[in]*/ long gdrLineIdx, /*[in]*/ Float64 dist, /*[out,retval]*/ ISegment** segment);
 //   STDMETHOD(SpanGirderToSegment)(/*[in]*/ long spanIdx,/*[in]*/ long gdrLineIdx, /*[in]*/ Float64 location,/*[out]*/ long* ssmbrIdx, /*[out]*/ long* segmentIdx, /*[out]*/ Float64* dist);
 //   STDMETHOD(SegmentToSpanGirder)(/*[in]*/ long gdrLineIdx, /*[in]*/ long ssmbrIdx,/*[in]*/ long segmentIdx, /*[in]*/ Float64 dist,/*[out]*/ long* spanIdx,/*[out]*/ Float64* location);
-	STDMETHOD(get_LeftBarrier)(/*[out,retval]*/ IBarrier** barrier);
-	STDMETHOD(putref_LeftBarrier)(/*[in]*/ IBarrier* barrier);
-	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ IBarrier** barrier);
-	STDMETHOD(putref_RightBarrier)(/*[in]*/ IBarrier* barrier);
+	STDMETHOD(get_LeftBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
+	STDMETHOD(putref_LeftBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
+	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
+	STDMETHOD(putref_RightBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
 
    STDMETHOD(UpdateBridgeModel)();
 

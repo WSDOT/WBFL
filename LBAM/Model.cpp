@@ -28,6 +28,8 @@
 #include "LBAMUtils.h"
 #include "LBAM.hh"
 
+#include "TemporarySupports.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -321,6 +323,36 @@ STDMETHODIMP CModel::putref_Supports(ISupports *newVal)
 //   FireModelChanged(cgtStiffness);
 
 	return S_OK;
+}
+
+STDMETHODIMP CModel::get_TemporarySupports(ITemporarySupports** ppVal)
+{
+   CHECK_RETOBJ(ppVal);
+   CComObject<CTemporarySupports>* pTempSupports;
+   CComObject<CTemporarySupports>::CreateInstance(&pTempSupports);
+   pTempSupports->QueryInterface(ppVal);
+
+   CComPtr<IEnumSpan> enumSpans;
+   m_Spans->get__EnumElements(&enumSpans);
+   CComPtr<ISpan> span;
+   while ( enumSpans->Next(1,&span,NULL) != S_FALSE )
+   {
+      CComPtr<ITemporarySupports> tss;
+      span->get_TemporarySupports(&tss);
+
+      CComPtr<IEnumTemporarySupport> enumTS;
+      tss->get__EnumElements(&enumTS);
+      CComPtr<ITemporarySupport> ts;
+      while ( enumTS->Next(1,&ts,NULL) != S_FALSE )
+      {
+         (*ppVal)->Add(ts);
+         ts.Release();
+      }
+
+      span.Release();
+   }
+
+   return S_OK;
 }
 
 STDMETHODIMP CModel::get_Spans(ISpans **pVal)

@@ -463,16 +463,26 @@ library WBFLGenericBridge
 	interface IBarrier : IUnknown
 	{
 	   [propget,helpstring("property Shape")] HRESULT Shape([out,retval] IShape** shape);
-	   [propget,helpstring("property StructuralShape")] HRESULT StructuralShape([out,retval] IShape** shape);
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval] IMaterial** material);
 	   [propputref,helpstring("property Material")] HRESULT Material([in] IMaterial* material);
-	   [propget,helpstring("property Path")] HRESULT Path([out,retval] IPath** path);
-	   [propput,helpstring("property Path")] HRESULT Path([in] IPath* path);
-	   [propget,helpstring("property ConnectionWidth")] HRESULT ConnectionWidth([in] Float64 location,[out,retval]Float64* width);
-	   [propget,helpstring("property IsStructurallyContinuous")] HRESULT IsStructurallyContinuous([out,retval]VARIANT_BOOL* pbContinuous);
-	   [propput,helpstring("property IsStructurallyContinuous")] HRESULT IsStructurallyContinuous([in]VARIANT_BOOL bContinuous);
+      // Distance from interior bound to curb measured inward
+	   [propget,helpstring("property CurbLocation")] HRESULT CurbLocation([out,retval]Float64* width);
+      // Barrier toes measured inward from interior/exterior outer shape bounds
+	   [propget,helpstring("property BarrierToeLocations")] HRESULT BarrierToeLocations([out] Float64* interiorToe,[out]Float64* exteriorToe);
 	   [helpstring("method Clone")] HRESULT Clone([out,retval]IBarrier** barrier);
 	};
+
+	[
+	   object,
+	   uuid(41B59BA7-844E-4f23-9056-B1ECCF6E7706),
+	   oleautomation,
+	   helpstring("IGenericBarrier"),
+	   pointer_default(unique)
+	]
+	interface IGenericBarrier : IBarrier
+	{
+	   [helpstring("property Init")] HRESULT Init([in] IShape* shape, [in]Float64 curbWidth, [in] Float64 interiorToe,[in]Float64 exteriorToe);
+	}
 
 	[
 	   object,
@@ -486,6 +496,7 @@ library WBFLGenericBridge
 	   [propput,helpstring("property Shape")] HRESULT Shape([in] ITrafficBarrier* shape);
 	}
 
+   // This is the railing system
 	[
 	   object,
 	   uuid(6ED29E23-2D11-4391-932A-6DEC77964D4B),
@@ -493,18 +504,33 @@ library WBFLGenericBridge
 	   helpstring("ISidewalkBarrier"),
 	   pointer_default(unique)
 	]
-	interface ISidewalkBarrier : IBarrier
+	interface ISidewalkBarrier : IUnknown
 	{
-		[propput,helpstring("property Barrier1")] HRESULT Barrier1([in]IShape* shape,[in]Float64 connectionWidth);
-		[propput,helpstring("property Barrier2")] HRESULT Barrier2([in]IShape* shape,[in]Float64 h1,[in]Float64 h2,[in]Float64 w,[in]TrafficBarrierOrientation orientation,[in] SidewalkPositionType swPosition,[in]Float64 connectionWidth);
-		[propput,helpstring("property Barrier3")] HRESULT Barrier3([in]IShape* extShape,[in]Float64 h1,[in]Float64 h2,[in]Float64 w,[in]IShape* intShape,[in]TrafficBarrierOrientation orientation,[in] SidewalkPositionType swPosition,[in]Float64 connectionWidth);
-		[propget,helpstring("property SidewalkWidth")] HRESULT SidewalkWidth([out,retval]Float64* width);
-		[propget,helpstring("property ExteriorBarrierShape")] HRESULT ExteriorBarrierShape([out,retval] IShape** shape);
+		[propput,helpstring("property Barrier1")] HRESULT Barrier1([in]IBarrier* extBarrier, [in]TrafficBarrierOrientation orientation);
+		[propput,helpstring("property Barrier2")] HRESULT Barrier2([in]IBarrier* extBarrier,[in]Float64 h1,[in]Float64 h2,[in]Float64 swWidth,
+                                                                 [in]TrafficBarrierOrientation orientation,[in] SidewalkPositionType swPosition);
+		[propput,helpstring("property Barrier3")] HRESULT Barrier3([in]IBarrier* extBarrier,[in]Float64 h1,[in]Float64 h2,[in]Float64 swWidth,
+                                                                 [in]TrafficBarrierOrientation orientation,[in] SidewalkPositionType swPosition,
+                                                                 [in]IBarrier* intBarrier);
+	   [propget,helpstring("property HasSidewalk")] HRESULT HasSidewalk([out,retval]VARIANT_BOOL* pbHasSidewalk);
+	   [propget,helpstring("property HasInteriorBarrier")] HRESULT HasInteriorBarrier([out,retval]VARIANT_BOOL* pbHasBarrier);
+		[propget,helpstring("property SidewalkWidth")] HRESULT SidewalkWidth([out,retval]Float64* swWidth);
+		[propget,helpstring("property Shape")] HRESULT Shape([out,retval] IShape** shape);
+	   [propget,helpstring("property StructuralShape")] HRESULT StructuralShape([out,retval] IShape** shape);
+		[propget,helpstring("property ExteriorBarrier")] HRESULT ExteriorBarrier([out,retval] IBarrier** barr);
+		[propget,helpstring("property InteriorBarrier")] HRESULT InteriorBarrier([out,retval] IBarrier** barr);
 		[propget,helpstring("property SidewalkShape")] HRESULT SidewalkShape([out,retval] IShape** shape);
-		[propget,helpstring("property InteriorBarrierShape")] HRESULT InteriorBarrierShape([out,retval] IShape** shape);
+	   [propget,helpstring("property Path")] HRESULT Path([out,retval] IPath** path);
+	   [propput,helpstring("property Path")] HRESULT Path([in] IPath* path);
 	   [propput,helpstring("property IsInteriorStructurallyContinuous")] HRESULT IsInteriorStructurallyContinuous([in]VARIANT_BOOL bContinuous);
 	   [propput,helpstring("property IsSidewalkStructurallyContinuous")] HRESULT IsSidewalkStructurallyContinuous([in]VARIANT_BOOL bContinuous);
 	   [propput,helpstring("property IsExteriorStructurallyContinuous")] HRESULT IsExteriorStructurallyContinuous([in]VARIANT_BOOL bContinuous);
+	   [propget,helpstring("property IsStructurallyContinuous")] HRESULT IsStructurallyContinuous([out, retval]VARIANT_BOOL* pbContinuous);
+		[propget,helpstring("property SidewalkPosition")] HRESULT SidewalkPosition([out,retval] SidewalkPositionType* posType);
+	   [propget,helpstring("property ExteriorCurbWidth")] HRESULT ExteriorCurbWidth([out,retval]Float64* width); // location of exterior curb only
+	   [propget,helpstring("property CurbWidth")] HRESULT CurbWidth([out,retval]Float64* width); // location of curb for total barrier
+	   [propget,helpstring("OverlayToeWidth")] HRESULT OverlayToeWidth([out,retval]Float64* toeWidth); // location where overlay butts to
+	   [helpstring("method Clone")] HRESULT Clone([out,retval]ISidewalkBarrier** clone);
     };
 
 	[
@@ -1640,7 +1666,7 @@ library WBFLGenericBridge
 	interface ITemporaryPierItemCollection : IUnknown
 	{
 		[propget, helpstring("property Item")] 
-      HRESULT Item([in]CollectionIndexType idx, [out, retval] ITemporaryPierItem** pVal);
+      HRESULT Item([in]IDType id, [out, retval] ITemporaryPierItem** pVal);
 
 		[propget, helpstring("returns an enumerator for the collection.")]
 		HRESULT _NewEnum([out, retval] IUnknown** retval); 
@@ -1847,10 +1873,10 @@ library WBFLGenericBridge
       [propget,helpstring("property CogoInfo")] HRESULT CogoInfo([out,retval] ICogoInfo* *cogoInfo);
 	  [propputref,helpstring("property Deck")] HRESULT Deck([in] IBridgeDeck* deck);
 	  [propget,helpstring("property Deck")] HRESULT Deck([out,retval] IBridgeDeck** deck);
-	  [propget, helpstring("property LeftBarrier")] HRESULT LeftBarrier([out,retval] IBarrier** barrier);
-	  [propputref, helpstring("property LeftBarrier")] HRESULT LeftBarrier([in] IBarrier* barrier);
-	  [propget, helpstring("property RightBarrier")] HRESULT RightBarrier([out,retval] IBarrier** barrier);
-	  [propputref, helpstring("property RightBarrier")] HRESULT RightBarrier([in] IBarrier* barrier);
+	  [propget, helpstring("property LeftBarrier")] HRESULT LeftBarrier([out,retval] ISidewalkBarrier** barrier);
+	  [propputref, helpstring("property LeftBarrier")] HRESULT LeftBarrier([in] ISidewalkBarrier* barrier);
+	  [propget, helpstring("property RightBarrier")] HRESULT RightBarrier([out,retval] ISidewalkBarrier** barrier);
+	  [propputref, helpstring("property RightBarrier")] HRESULT RightBarrier([in] ISidewalkBarrier* barrier);
 
      [] HRESULT UpdateBridgeModel();
 	};
@@ -2367,6 +2393,15 @@ library WBFLGenericBridge
 	};
 
 	[
+		uuid(9B910467-C7CE-4b56-B2C8-0CD47B73FBC2),
+		helpstring("GenericBarrier Class")
+	]
+	coclass GenericBarrier
+	{
+	   [default] interface IGenericBarrier;
+	};
+
+	[
 		uuid(0386B8E1-50E2-42bd-A93B-C2933F9BD1C0),
 		helpstring("FShapeBarrier Class")
 	]
@@ -2374,8 +2409,8 @@ library WBFLGenericBridge
 	{
 	   [default] interface IFShapeBarrier;
 	};
-
-	[
+   
+   [
 		uuid(8B5D872B-21C3-41f4-BFFB-A79E58CB9AC8),
 		helpstring("SidewalkBarrier Class")
 	]

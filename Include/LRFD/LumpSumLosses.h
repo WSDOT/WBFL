@@ -115,6 +115,7 @@ public:
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
    virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
+   virtual Float64 PermanentStrand_FinalWithLiveLoad() const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
    virtual Float64 TemporaryStrand_AfterTransfer() const;

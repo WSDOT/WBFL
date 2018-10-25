@@ -23,7 +23,7 @@ public:
 	virtual ~BasicLiveLoadDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                              COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
@@ -35,7 +35,7 @@ public:
    virtual CString GetDescription();
 
    // iReactionReportBuilder
-   virtual void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
+   virtual void BuildReactionReport(IIDArray* supportlist, BSTR currStg,
                                     CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                                     std::_tostream& pos);
 
@@ -45,11 +45,11 @@ public:
    virtual void GetTruckInfo(LiveLoadModelType* modelType, VehicleIndexType* vehicleIndex, ILiveLoadConfiguration** placement);
 
 private:
-   void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildForceDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
                            CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
-   void BuildStressDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildStressDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                             COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
@@ -59,7 +59,7 @@ private:
    void InitializePlacement();
 
    LiveLoadModelType                m_LlmType;
-   VehicleIndexType                             m_LlIndex;
+   VehicleIndexType                 m_LlIndex;
    CComPtr<ILBAMModel>              m_Model;
    CComPtr<IBasicVehicularResponse> m_Response;
    CComPtr<ILiveLoadConfiguration>  m_Placement;

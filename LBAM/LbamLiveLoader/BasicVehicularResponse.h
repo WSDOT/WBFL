@@ -68,19 +68,19 @@ END_COM_MAP()
 
 // IBasicVehicularResponse
 public:
-	STDMETHOD(ComputeForces)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation,
+	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation,
                             /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
 
-	STDMETHOD(ComputeDeflections)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage,
+	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
                                 /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
 
-	STDMETHOD(ComputeReactions)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage,
+	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
                                /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
 
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/ILongArray* supports, /*[in]*/BSTR stage,
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supports, /*[in]*/BSTR stage,
                                         /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
 
-	STDMETHOD(ComputeStresses)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage,
+	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
 public:
 // IDependOnVehicularAnalysisContext
@@ -96,7 +96,7 @@ public: // but not COM
                         ISupportLocations* supportLocations, IGetStressPoints* getStressPoints);
 
 private:
-	STDMETHOD(ComputeResponse)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage,
+	STDMETHOD(ComputeResponse)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
 
 

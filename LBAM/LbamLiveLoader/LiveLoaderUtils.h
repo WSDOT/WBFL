@@ -36,7 +36,6 @@
 #define THROW_LBAMLL_NOA(errNam) { throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMLL_E_##errNam, IDH_E_##errNam);}
 #define THROW_LBAMLL_MSG(errNam, msg) { ATLASSERT(0); throw CComException(_T(__FILE__),__LINE__, msg, LBAMLL_E_##errNam, IDH_E_##errNam);}
 
-#define THROW_HR(hr) { ATLASSERT(0); throw hr;}
 #define PROCESS_HR(hr) if (FAILED(hr)){ THROW_HR(hr) }
 
 // get the vehicular load from a model
@@ -152,7 +151,7 @@ inline VehicularLoadConfigurationType GetSelectedVehicularConfiguration(Vehicula
    }
 }
 
-inline HRESULT LLSectionToStressResults(ILongArray* POIs, BSTR stage, ILiveLoadModelSectionResults* forceRes, 
+inline HRESULT LLSectionToStressResults(IIDArray* POIs, BSTR stage, ILiveLoadModelSectionResults* forceRes, 
                                         IBasicVehicularResponse* basicResponse,
                                         ILiveLoadModelStressResults**pResults)
 {
@@ -172,8 +171,8 @@ inline HRESULT LLSectionToStressResults(ILongArray* POIs, BSTR stage, ILiveLoadM
    if (FAILED(hr))
       return hr;
 
-   CComPtr<ILongArray> single_poi;
-   hr = single_poi.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> single_poi;
+   hr = single_poi.CoCreateInstance(CLSID_IDArray);
    if (FAILED(hr))
       return hr;
 

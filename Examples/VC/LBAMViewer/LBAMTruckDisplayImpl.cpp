@@ -696,7 +696,7 @@ void CLBAMTruckDisplayImpl::CacheTruckParameters()
 
       // See if we are picking up any axles
       bool is_axle_config;
-      CComPtr<ILongArray> axle_config;
+      CComPtr<IIndexArray> axle_config;
       hr = m_Placement->get_AxleConfig(&axle_config);
       ATLASSERT(SUCCEEDED(hr));
 

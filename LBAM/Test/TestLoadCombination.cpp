@@ -133,6 +133,15 @@ void CTestLoadCombination::Test()
    TRY_TEST( pLoadCombination->get_LoadCombinationType(&lct), S_OK );
    TRY_TEST( lct, lctService);
 
+   LiveLoadModelApplicationType lmat;
+   TRY_TEST( pLoadCombination->get_LiveLoadModelApplicationType(&lmat), S_OK );
+   TRY_TEST( lmat, llmaSum);
+
+   TRY_TEST( pLoadCombination->put_LiveLoadModelApplicationType(llmaEnvelope), S_OK );
+   TEST_LoadCombination_FIRED();
+   TRY_TEST( pLoadCombination->get_LiveLoadModelApplicationType(&lmat), S_OK );
+   TRY_TEST( lmat, llmaEnvelope);
+
    CollectionIndexType cnt;
    TRY_TEST( pLoadCombination->get_LoadCaseFactorCount(&cnt), S_OK );
    TRY_TEST(cnt, 0);

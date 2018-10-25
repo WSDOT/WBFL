@@ -79,13 +79,13 @@ HRESULT CTestSpliced::Test()
    hr = pctx->putref_Model(psm);
 
    // request results for tenth points in spans 0 and 1
-   CComPtr<ILongArray> poilist;
-   poilist.CoCreateInstance(CLSID_LongArray);
-   for (long i=0; i<11; i++)
+   CComPtr<IIDArray> poilist;
+   poilist.CoCreateInstance(CLSID_IDArray);
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (int i=0; i<11; i++)
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -239,7 +239,7 @@ HRESULT CTestSpliced::Test()
 }
 
 
-void CTestSpliced::GetSSPoiLocs(ILongArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
+void CTestSpliced::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
 {
    HRESULT hr;
    // first determine locations of span and superstructuremember ends
@@ -506,9 +506,9 @@ ILBAMModel* CTestSpliced::CreateModel()
 
    // ssms
    loc = 0.0;
-   for (int i=0; i<=2; i++)
+   for (MemberIDType i=0; i<=2; i++)
    {
-      long poi_id = 300+i*2;
+      PoiIDType poi_id = PoiIDType(300+i*2);
       CComPtr<IPOI> pPOI0, pPOI1;
       TRY_TEST(pPOI0.CoCreateInstance( CLSID_POI ), S_OK );
       TRY_TEST( pPOI0->put_ID(poi_id), S_OK );

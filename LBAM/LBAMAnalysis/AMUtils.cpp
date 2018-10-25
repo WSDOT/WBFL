@@ -481,8 +481,14 @@ void PoiMapToFemPoi::GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl,
    // get results directly from fem poi
    PoiIDType fem_poi_id = GetFemPoiID();
 
-   results->ComputePOIForces(loadGroupID, fem_poi_id, mftLeft, fem_or, fxLeft, fyLeft, mzLeft);
-   results->ComputePOIForces(loadGroupID, fem_poi_id, mftRight, fem_or, fxRight, fyRight, mzRight);
+   HRESULT hr;
+   hr = results->ComputePOIForces(loadGroupID, fem_poi_id, mftLeft, fem_or, fxLeft, fyLeft, mzLeft);
+   if (FAILED(hr) )
+      THROW_HR(hr);
+
+   hr = results->ComputePOIForces(loadGroupID, fem_poi_id, mftRight, fem_or, fxRight, fyRight, mzRight);
+   if (FAILED(hr) )
+      THROW_HR(hr);
 }
 
 void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,

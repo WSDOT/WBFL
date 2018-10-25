@@ -96,7 +96,7 @@ public:
 	STDMETHOD(SegSegIntersect)(/*[in]*/ ILineSegment2d* pSeg1,/*[in]*/ ILineSegment2d* pSeg2,/*[out,retval]*/ IPoint2d** ppPoint);
    STDMETHOD(LineLineIntersect)(/*[in]*/ILine2d* l1, /*[in]*/ILine2d *l2, /*[out,retval]*/IPoint2d **ppPoint);
 	STDMETHOD(DivideLineSegment)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ IndexType nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
-	STDMETHOD(DivideArc)(/*[in]*/ IPoint2d* pStart,/*[in]*/ IPoint2d* pCenter,/*[in]*/ IPoint2d* pEnd,/*[in]*/ long nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
+	STDMETHOD(DivideArc)(/*[in]*/ IPoint2d* pStart,/*[in]*/ IPoint2d* pCenter,/*[in]*/ IPoint2d* pEnd,/*[in]*/ IndexType nSpaces,/*[out,retval]*/ IPoint2dCollection** ppPoints);
 	STDMETHOD(DoesLineSegmentContainPoint)(/*[in]*/ ILineSegment2d* pSeg,/*[in]*/ IPoint2d* pPoint,/*[in]*/Float64 tolerance,/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(DoesLineContainPoint)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint2d* pPoint,/*[in]*/Float64 tolerance,/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(AreLinesColinear)(/*[in]*/ ILine2d* pLine1,/*[in]*/ ILine2d* pLine2,/*[out,retval]*/ VARIANT_BOOL* pbResult);

@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.GenericBarrier.1 = s 'GenericBarrier Class'
+	{
+		CLSID = s '{9B910467-C7CE-4b56-B2C8-0CD47B73FBC2}'
+	}
+	WBFLGenericBridge.GenericBarrier = s 'GenericBarrier Class'
+	{
+		CLSID = s '{9B910467-C7CE-4b56-B2C8-0CD47B73FBC2}'
+		CurVer = s 'WBFLGenericBridge.GenericBarrier.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9B910467-C7CE-4b56-B2C8-0CD47B73FBC2} = s 'GenericBarrier Class'
+		{
+			ProgID = s 'WBFLGenericBridge.GenericBarrier.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.GenericBarrier'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

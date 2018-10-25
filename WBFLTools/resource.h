@@ -72,6 +72,8 @@
 #define IDD_LICENSEWIZ_1                133
 #define IDD_LICENSEWIZ_2                134
 #define IDR_DISCLAIMER                  135
+#define IDR_IDARRAY                     136
+#define IDR_INDEXARRAY                  137
 #define IDR_ERRORLOG                    150
 #define IDC_MESSAGE                     201
 #define IDC_PROGRESS1                   202

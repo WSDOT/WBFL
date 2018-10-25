@@ -43,13 +43,13 @@
 #define IDR_REBARFACTORY                113
 #define IDR_STRANDGRID                  114
 #define IDR_STRANDFILLTOOL              115
-
 #define IDS_E_UNKNOWNDECKTYPE           512
 #define IDS_E_GIRDERSECTION             513
 #define IDS_E_NODECK                    514
 #define IDS_E_COMPOSITEDECK             515
 #define IDS_E_MATERIAL                  516
 #define IDS_E_SHAPE                     517
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

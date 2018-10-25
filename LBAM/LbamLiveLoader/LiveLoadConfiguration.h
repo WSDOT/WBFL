@@ -96,8 +96,8 @@ public:
 	STDMETHOD(put_IsApplicable)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_DoApplyImpact)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(put_DoApplyImpact)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_AxleConfig)(/*[out, retval]*/ ILongArray* *pVal);
-	STDMETHOD(put_AxleConfig)(/*[in]*/ ILongArray* newVal);
+	STDMETHOD(get_AxleConfig)(/*[out, retval]*/ IIndexArray* *pVal);
+	STDMETHOD(put_AxleConfig)(/*[in]*/ IIndexArray* newVal);
 	STDMETHOD(get_VariableSpacing)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_VariableSpacing)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_TruckDirection)(/*[out, retval]*/ TruckDirectionType *pVal);
@@ -120,7 +120,7 @@ protected:
    VehicleIndexType               m_VehicleIndex;
    LiveLoadModelType              m_LiveLoadModelType;
 
-   CComPtr<ILongArray>             m_AxleConfig; // indicies of the axles that are actually used
+   CComPtr<IIndexArray>             m_AxleConfig; // indicies of the axles that are actually used
    Float64                         m_VariableSpacing;
    TruckDirectionType             m_TruckDirection;
    Float64                         m_TruckPosition;

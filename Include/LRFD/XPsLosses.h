@@ -75,6 +75,7 @@ public:
                                   // 0.5fpu. (See 5.9.5.4.4b)
                  fcOutOfRange,    // 28MPa(4KSI) <= f'c <= 70MPa(10KSI)
                  Specification,   // wrong specification version
+                 StrandType,      // wrong stand type
                  Unknown };
 
    // GROUP: LIFECYCLE

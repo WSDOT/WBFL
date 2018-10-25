@@ -188,10 +188,10 @@ library WBFLLBAMLiveLoader
       HRESULT VariableSpacing([in] Float64 newVal);
 		
       [propget, helpstring("property AxleConfig"),helpcontext(IDH_LiveLoadConfiguration_AxleConfig)] 
-      HRESULT AxleConfig([out, retval] ILongArray* *pVal);
+      HRESULT AxleConfig([out, retval] IIndexArray* *pVal);
 		
       [propput, helpstring("property AxleConfig"),helpcontext(IDH_LiveLoadConfiguration_AxleConfig)] 
-      HRESULT AxleConfig([in] ILongArray* newVal);
+      HRESULT AxleConfig([in] IIndexArray* newVal);
 		
       [propget, helpstring("property DoApplyImpact"),helpcontext(IDH_LiveLoadConfiguration_DoApplyImpact)] 
       HRESULT DoApplyImpact([out, retval] VARIANT_BOOL *pVal);
@@ -338,7 +338,7 @@ library WBFLLBAMLiveLoader
 	interface IEnvelopedVehicularResponse : IUnknown
 	{
 		[helpstring("method ComputeForces"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeForces)] 
-		HRESULT ComputeForces([in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		HRESULT ComputeForces([in]IIDArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
 		                      [in]VehicleIndexType vehicleIndex, [in]ResultsOrientation orientation, 
 					             [in]ForceEffectType effect, [in]OptimizationType optimization, 
 					    	       [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -346,7 +346,7 @@ library WBFLLBAMLiveLoader
 							       [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelSectionResults* *results);
 
 		[helpstring("method ComputeDeflections"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeDeflections)] 
-		HRESULT ComputeDeflections( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		HRESULT ComputeDeflections( [in]IIDArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
 		                            [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
 					    	             [in]VehicularLoadConfigurationType vehConfiguration, 
                                   [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
@@ -354,21 +354,21 @@ library WBFLLBAMLiveLoader
 
 
 		[helpstring("method ComputeReactions"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeReactions)] 
-		HRESULT ComputeReactions([in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		HRESULT ComputeReactions([in]IIDArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
 		                         [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
 					    	          [in]VehicularLoadConfigurationType vehConfiguration, 
                                [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
 							          [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelResults* *results);
 
 		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeSupportDeflections)] 
-		HRESULT ComputeSupportDeflections([in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		HRESULT ComputeSupportDeflections([in]IIDArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
 		                                  [in]VehicleIndexType vehicleIndex, [in]ForceEffectType effect, [in]OptimizationType optimization, 
 					    	                   [in]VehicularLoadConfigurationType vehConfiguration, 
                                         [in]VARIANT_BOOL applyImpact, [in]DistributionFactorType distributionType,
 							                   [in]VARIANT_BOOL computePlacements, [out,retval]ILiveLoadModelResults* *results);
 
 		[helpstring("method ComputeStresses"),helpcontext(IDH_EnvelopedVehicularResponse_ComputeStresses)] 
-		HRESULT ComputeStresses([in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+		HRESULT ComputeStresses([in]IIDArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
 		                        [in]VehicleIndexType vehicleIndex, 
 					               [in]ForceEffectType effect, [in]OptimizationType optimization, 
 					    	         [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -387,27 +387,27 @@ library WBFLLBAMLiveLoader
 	interface IBasicVehicularResponse : IUnknown 
 	{
 		[helpstring("method ComputeForces"),helpcontext(IDH_BasicVehicularResponse_ComputeForces)] 
-		HRESULT ComputeForces([in]ILongArray* poiIDs, [in]BSTR stage, [in]ResultsOrientation orientation, 
+		HRESULT ComputeForces([in]IIDArray* poiIDs, [in]BSTR stage, [in]ResultsOrientation orientation, 
 		                      [in]ILiveLoadConfiguration* config,
                             [out,retval]ISectionResult3Ds* *results);
 
 		[helpstring("method ComputeDeflections"),helpcontext(IDH_BasicVehicularResponse_ComputeDeflections)] 
-		HRESULT ComputeDeflections([in]ILongArray* poiIDs, [in]BSTR stage, 
+		HRESULT ComputeDeflections([in]IIDArray* poiIDs, [in]BSTR stage, 
 	                              [in]ILiveLoadConfiguration* config,
                                  [out,retval]ISectionResult3Ds* *results);
 
 		[helpstring("method ComputeReactions"),helpcontext(IDH_BasicVehicularResponse_ComputeReactions)] 
-		HRESULT ComputeReactions([in]ILongArray* supportIDs, [in]BSTR stage, 
+		HRESULT ComputeReactions([in]IIDArray* supportIDs, [in]BSTR stage, 
                                [in]ILiveLoadConfiguration* config,
                                [out,retval]IResult3Ds* *results);
 
 		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_BasicVehicularResponse_ComputeSupportDeflections)] 
-		HRESULT ComputeSupportDeflections([in]ILongArray* supportIDs, [in]BSTR stage, 
+		HRESULT ComputeSupportDeflections([in]IIDArray* supportIDs, [in]BSTR stage, 
                                         [in]ILiveLoadConfiguration* config,
                                         [out,retval]IResult3Ds* *results);
 
 		[helpstring("method ComputeStresses"),helpcontext(IDH_BasicVehicularResponse_ComputeStresses)] 
-		HRESULT ComputeStresses([in]ILongArray* poiIDs, [in]BSTR stage, 
+		HRESULT ComputeStresses([in]IIDArray* poiIDs, [in]BSTR stage, 
                               [in]ILiveLoadConfiguration* config,
                               [out,retval]ISectionStressResults* *results);
 	};
@@ -452,7 +452,7 @@ library WBFLLBAMLiveLoader
 	interface ILiveLoadModelResponse : IUnknown
 	{
 		[helpstring("method ComputeForces"),helpcontext(IDH_LiveLoadModelResponse_ComputeForces)] 
-      HRESULT ComputeForces( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+      HRESULT ComputeForces( [in]IIDArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
                              [in]ResultsOrientation orientation, [in]ForceEffectType effect, 
                              [in]OptimizationType optimization, 
                              [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -460,7 +460,7 @@ library WBFLLBAMLiveLoader
                              [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelSectionResults** results);
 
 		[helpstring("method ComputeDeflections"),helpcontext(IDH_LiveLoadModelResponse_ComputeDeflections)] 
-      HRESULT ComputeDeflections( [in]ILongArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+      HRESULT ComputeDeflections( [in]IIDArray* poiIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
                              [in]ForceEffectType effect, 
                              [in]OptimizationType optimization, 
                              [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -468,7 +468,7 @@ library WBFLLBAMLiveLoader
                              [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelSectionResults** results);
 
 		[helpstring("method ComputeReactions"),helpcontext(IDH_LiveLoadModelResponse_ComputeReactions)] 
-      HRESULT ComputeReactions( [in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+      HRESULT ComputeReactions( [in]IIDArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
                                 [in]ForceEffectType effect, 
                                 [in]OptimizationType optimization, 
                                 [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -476,7 +476,7 @@ library WBFLLBAMLiveLoader
                                 [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelResults** results);
 
 		[helpstring("method ComputeSupportDeflections"),helpcontext(IDH_LiveLoadModelResponse_ComputeSupportDeflections)] 
-      HRESULT ComputeSupportDeflections( [in]ILongArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
+      HRESULT ComputeSupportDeflections( [in]IIDArray* supportIDs, [in]BSTR stage, [in]LiveLoadModelType type, 
                                          [in]ForceEffectType effect, 
                                          [in]OptimizationType optimization, 
                                          [in]VehicularLoadConfigurationType vehConfiguration, 
@@ -484,7 +484,7 @@ library WBFLLBAMLiveLoader
                                          [in]VARIANT_BOOL computePlacement, [out,retval]ILiveLoadModelResults** results);
 
 		[helpstring("method ComputeStresses"),helpcontext(IDH_LiveLoadModelResponse_ComputeStresses)] 
-      HRESULT ComputeStresses( [in]ILongArray* poiIDs , [in]BSTR stage, [in]LiveLoadModelType type, 
+      HRESULT ComputeStresses( [in]IIDArray* poiIDs , [in]BSTR stage, [in]LiveLoadModelType type, 
                                [in]ForceEffectType effect, [in]OptimizationType optimization, 
                                [in]VehicularLoadConfigurationType vehConfiguration, 
                                [in]VARIANT_BOOL applyImpact, [in]VARIANT_BOOL applyDistribution,

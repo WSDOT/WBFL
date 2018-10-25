@@ -62,14 +62,14 @@ void CStrandFillTool::FinalRelease()
 
 /////////////////////////////////////////////////////////////
 // IStrandFillTool
-STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEndGridFiller,IStrandGridFiller* pHPGridFiller,StrandIndexType* pMaxStrandCount,ILongArray** ppStrandFill)
+STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEndGridFiller,IStrandGridFiller* pHPGridFiller,StrandIndexType* pMaxStrandCount,IIndexArray** ppStrandFill)
 {
    CHECK_IN(pEndGridFiller);
    CHECK_IN(pHPGridFiller);
    CHECK_RETVAL(pMaxStrandCount);
    CHECK_RETOBJ(ppStrandFill);
 
-   CComPtr<ILongArray> hp_fill, end_fill;
+   CComPtr<IIndexArray> hp_fill, end_fill;
    pEndGridFiller->GetMaxStrandFill(&end_fill);
    pHPGridFiller->GetMaxStrandFill(&hp_fill);
 
@@ -82,13 +82,13 @@ STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEnd
       return E_FAIL;
    }
 
-   CComPtr<ILongArray> array;
-   array.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIndexArray> array;
+   array.CoCreateInstance(CLSID_IndexArray);
    array->Reserve(num_hp);
    *pMaxStrandCount = 0;
    for ( CollectionIndexType i = 0; i < num_hp; i++ )
    {
-      IDType hp,end; // should be index type, but must be ID type because of LongArray data type
+      StrandIndexType hp,end;
       hp_fill->get_Item(i,&hp);
       end_fill->get_Item(i,&end);
       hp = max(hp,end);

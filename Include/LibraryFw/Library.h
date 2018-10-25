@@ -128,6 +128,7 @@ public:
          // doesn't exist - add a new one.
          LibItem apentry( new T() );
          apentry->SetName(key);
+         apentry->SetLibrary(this);
          m_EntryList.insert(EntryList::value_type(key, apentry));
          return true;
       }
@@ -154,6 +155,7 @@ public:
             apentry->AddRef();
 
          apentry->SetName(key);
+         apentry->SetLibrary(this);
 
          std::pair<EntryListIterator,bool> result;
          result = m_EntryList.insert(EntryList::value_type(key, apentry));
@@ -194,6 +196,7 @@ public:
          // copy
          LibItem apentry( new T(*pentry) );
          apentry->SetName(newkey);
+         apentry->SetLibrary(this);
          m_EntryList.insert(EntryList::value_type(newkey, apentry));
          return true;
       }
@@ -414,6 +417,7 @@ public:
                      {
                         // allocate a new item
                         LibItem itm(new T);
+                        itm->SetLibrary(this);
                         if (itm.get()==0)
                            THROW_LOAD(MemoryError,pLoad);
 
@@ -642,7 +646,9 @@ public:
       if (pent!=0)
       {
          pent->Release(); // balances the AddRef call in LookupEntry
-         return new T(*pent);
+         T* newEntry = new T(*pent);
+         newEntry->SetLibrary(this);
+         return newEntry;
       }
       else
          return 0;

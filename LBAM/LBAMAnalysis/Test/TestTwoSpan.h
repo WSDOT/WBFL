@@ -45,7 +45,7 @@ public:
 	virtual ~CTestTwoSpan();
 
 private:
-   void GetSSPoiLocs(ILongArray* poiList, ILBAMModel* pModel, std::vector<Float64>* poiLocs);
+   void GetSSPoiLocs(IIDArray* poiList, ILBAMModel* pModel, std::vector<Float64>* poiLocs);
 
 };
 

@@ -97,7 +97,7 @@ STDMETHODIMP CDistributedLoad::Clone(ldIDistributedLoad** clone)
 //	return S_OK;
 //}
 
-STDMETHODIMP CDistributedLoad::get_MemberID(long *pVal)
+STDMETHODIMP CDistributedLoad::get_MemberID(MemberIDType *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_MemberID;
@@ -105,12 +105,12 @@ STDMETHODIMP CDistributedLoad::get_MemberID(long *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CDistributedLoad::put_MemberID(long id)
+STDMETHODIMP CDistributedLoad::put_MemberID(MemberIDType id)
 {
    HRESULT hr;
    if ( m_TxnMgr )
    {
-      typedef CEditValueTransaction<CDistributedLoad,long,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
+      typedef CEditValueTransaction<CDistributedLoad,MemberIDType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CEditTxn;
       CComObject<CEditTxn>* pTxn;
       CComObject<CEditTxn>::CreateInstance(&pTxn);
       pTxn->Init(this,_T("Distributed Load Member ID"),&PutMemberID,m_MemberID, id);
@@ -335,7 +335,7 @@ STDMETHODIMP CDistributedLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_MemberID = var.lVal;
+      m_MemberID = var.iVal;
 
       var.Clear();
       hr = pload->get_Property(CComBSTR("Direction"),&var);
@@ -534,7 +534,7 @@ HRESULT CDistributedLoad::PutOrientation(CDistributedLoad* pThis,ldLoadOrientati
 	return S_OK;
 }
 
-HRESULT CDistributedLoad::PutMemberID(CDistributedLoad* pThis,long id)
+HRESULT CDistributedLoad::PutMemberID(CDistributedLoad* pThis,MemberIDType id)
 {
 	if (id < 0)
       return E_INVALIDARG;

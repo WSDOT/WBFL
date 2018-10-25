@@ -45,7 +45,7 @@ static char THIS_FILE[] = __FILE__;
 static void SetupSegment(ISegment* pseg, Float64 factor, bool IsColumn);
 static const long TS_ID=12;
 
-inline void GetSa(long poiID, BSTR stage, IGetSegmentCrossSection* igsp, Float64* leftVal, Float64* rightVal)
+inline void GetSa(PoiIDType poiID, BSTR stage, IGetSegmentCrossSection* igsp, Float64* leftVal, Float64* rightVal)
 {
    CComPtr<ISegmentCrossSection> ics_left, ics_right;
    TRY_TEST(igsp->GetSegmentCrossSectionAtPOI(poiID, stage, &ics_left, &ics_right), S_OK);
@@ -109,14 +109,14 @@ HRESULT CTestTwoSpan::Test()
    hr = pctx->putref_Model(lbamModel);
 
    // request results for tenth points in spans 0 and 1
-   CComPtr<ILongArray> poilist;
-   poilist.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> poilist;
+   poilist.CoCreateInstance(CLSID_IDArray);
    poilist->Reserve(22);
-   for (long i=0; i<11; i++)
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (long i=0; i<11; i++)
+   for (PoiIDType i=0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -206,15 +206,15 @@ HRESULT CTestTwoSpan::Test()
    os <<std::endl<<"Supports"<<std::endl;
 
    // lists of supports for stage 1 and 2 are different since temp support is gone in stage 2
-   CComPtr<ILongArray> sptlist_stg1;
-   sptlist_stg1.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray> sptlist_stg1;
+   sptlist_stg1.CoCreateInstance(CLSID_IDArray);
    sptlist_stg1->Add(0);
    sptlist_stg1->Add(1);
    sptlist_stg1->Add(2);
    sptlist_stg1->Add(TS_ID);
 
-   CComPtr<ILongArray>  sptlist_stg2;
-   sptlist_stg2.CoCreateInstance(CLSID_LongArray);
+   CComPtr<IIDArray>  sptlist_stg2;
+   sptlist_stg2.CoCreateInstance(CLSID_IDArray);
    sptlist_stg2->Add(0);
    sptlist_stg2->Add(1);
    sptlist_stg2->Add(2);
@@ -399,7 +399,7 @@ HRESULT CTestTwoSpan::Test()
 }
 
 
-void CTestTwoSpan::GetSSPoiLocs(ILongArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
+void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
 {
    HRESULT hr;
    // first determine locations of span and superstructuremember ends
@@ -631,7 +631,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
 
    // span 0
    Float64 loc = 0.0;
-   for (int i=101; i<112; i++)
+   for (PoiIDType i=101; i<112; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );
@@ -645,7 +645,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
 
    // span 1
    loc = 0.0;
-   for (int i=201; i<212; i++)
+   for (PoiIDType i=201; i<212; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );
@@ -668,7 +668,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
 
    // superstructuremember 1
    loc = 0.0;
-   for (int i=1001; i<1012; i++)
+   for (PoiIDType i=1001; i<1012; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );
@@ -682,7 +682,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
 
    // support 1
    loc = 0.0;
-   for (int i=2001; i<2012; i++)
+   for (PoiIDType i=2001; i<2012; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );
@@ -696,7 +696,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
 
    // temporary support 1
    loc = 0.0;
-   for (int i=3001; i<3012; i++)
+   for (PoiIDType i=3001; i<3012; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );

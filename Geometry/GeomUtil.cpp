@@ -377,7 +377,7 @@ STDMETHODIMP CGeomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces
    return S_OK;
 }
 
-STDMETHODIMP CGeomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,long nSpaces,IPoint2dCollection** ppPoints)
+STDMETHODIMP CGeomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,IndexType nSpaces,IPoint2dCollection** ppPoints)
 {
    CHECK_IN(pStart);
    CHECK_IN(pCenter);
@@ -417,7 +417,7 @@ STDMETHODIMP CGeomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* p
    CreatePoint(pStart,m_pPointFactory2d,&newStart);
    (*ppPoints)->Add( newStart );
 
-   for ( int i = 0; i < nSpaces-1; i++ )
+   for ( IndexType i = 0; i < nSpaces-1; i++ )
    {
       Float64 angle = dir + (i+1)*delta_angle;
       Float64 dx = radius * cos(angle);
