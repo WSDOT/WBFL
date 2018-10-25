@@ -165,12 +165,9 @@ public:
    // GROUP: INQUIRY
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   // Prevent accidental copying and assignment
+   mathPwLinearFunction2dUsingPoints(const mathPwLinearFunction2dUsingPoints&);
+   mathPwLinearFunction2dUsingPoints& operator=(const mathPwLinearFunction2dUsingPoints&);
 
 private:
    // GROUP: DATA MEMBERS

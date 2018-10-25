@@ -60,6 +60,7 @@ private:
 };
 
 #define USE_LINE(_line_) CSafeObjectUsage<ILine2d> _safety_##_line_ (_line_)
+#define USE_VECTOR(_vector_) CSafeObjectUsage<IVector2d> _safety_##_vector_ (_vector_)
 #define USE_LINESEGMENT(_line_) CSafeObjectUsage<ILineSegment2d> _safety_##_line_ (_line_)
 
 /////////////////////////////////////////////////////////////////////////////
@@ -97,6 +98,12 @@ HRESULT CBridgeGeometryTool::FinalConstruct()
    }
 
    hr = m_LineSegment2.CoCreateInstance(CLSID_LineSegment2d);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   hr = m_Vector.CoCreateInstance(CLSID_Vector2d);
    if ( FAILED(hr) )
    {
       return hr;
@@ -868,7 +875,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,Gi
    return GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,otherSSMbrID,pSpacing);
 }
 
-STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType otherSSMbrID,Float64* pSpacing)
+STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIndex,Float64 Xs,GirderIDType otherSSMbrID,Float64* pSpacing)
 {
    // Computes the perpendicular distance between the superstructure member (ssMbrID) at the a distance along this 
    // superstructure member (distFromStartOfSSMbr) and another superstructure member (otherSSMbrID)
@@ -884,7 +891,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
    ATLASSERT(ssmbr); // why? bad ssMbrID?
 
    CComPtr<ISuperstructureMemberSegment> segment;
-   ssmbr->get_Segment(segIdx,&segment);
+   ssmbr->get_Segment(segIndex,&segment);
    ATLASSERT(segment);
 
    CComPtr<IGirderLine> girderLine; // girderLine for this girder
@@ -910,17 +917,20 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
    // Get the girder line for the adjacent girder
    // We don't know which segment the normal line will intersect, so start with the
    // first one and work down the superstructure member
-   CComPtr<IGirderLine> otherGirderLine; // girderLine for the girder spacing is measured to
    CComPtr<ISuperstructureMember> otherSSMbr;
    bridge->get_SuperstructureMember(otherSSMbrID,&otherSSMbr);
 
    SegmentIndexType nSegments;
    otherSSMbr->get_SegmentCount(&nSegments);
    CComPtr<IPoint2d> pntOnOtherGirder;
-   for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
+
+   // Optimization: If there is a single segment, we can just use an infinite-length line to find intersection. Otherwise,
+   // we will need to find intersection with line segments
+   if (nSegments==1)
    {
       CComPtr<ISuperstructureMemberSegment> otherSegment;
-      otherSSMbr->get_Segment(segIdx,&otherSegment);
+      otherSSMbr->get_Segment(0, &otherSegment);
+      CComPtr<IGirderLine> otherGirderLine; // girderLine for the girder spacing is measured to
       otherSegment->get_GirderLine(&otherGirderLine);
 
       // Use m_Line2 for second girder line (doesn't really matter which end points we use)
@@ -931,13 +941,94 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
       m_Line2->ThroughPoints(p3,p4);
 
       // Intersect normal line and other girder line
-      if ( m_GeomUtil->LineLineIntersect(m_Line1,m_Line2,&pntOnOtherGirder) == S_OK )
+      HRESULT hr = m_GeomUtil->LineLineIntersect(m_Line1,m_Line2,&pntOnOtherGirder);
+      ATLASSERT(hr==S_OK);
+   }
+   else
+   {
+      // Loop over segments in adjacent girderline to find intersection
+      for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
       {
-         // point found
-         break;
+         CComPtr<ISuperstructureMemberSegment> otherSegment;
+         otherSSMbr->get_Segment(segIdx,&otherSegment);
+         CComPtr<IGirderLine> otherGirderLine; // girderLine for the girder spacing is measured to
+         otherSegment->get_GirderLine(&otherGirderLine);
+
+         // Use m_LineSegment1 for second girder line 
+         CComPtr<IPoint2d> ps, pe;
+         otherGirderLine->get_PierPoint(etStart,&ps);
+         otherGirderLine->get_PierPoint(etEnd,  &pe);
+
+         // Tricky: We must have a line segment that can intersect with our normal line. And, if there is a skew 
+         //         and we are at an end of the bridge, there is a chance that our normal will not intersect. So,
+         //         manipulate the end segments so they extend past the ends of the bridge. Let's make the segment
+         //         ~500x longer than current span length to achive this (arbitrary, but we need to keep precision)
+         if (segIdx==0)
+         {
+            // segment at start end, extend line seg in ps direction
+            Float64 len;
+            girderLine->get_SpanLength(&len);
+            ATLASSERT(len>0.0);
+            len *= 500.0;
+
+            Float64 xs, ys, xe, ye;
+            ps->get_X(&xs);
+            ps->get_Y(&ys);
+            pe->get_X(&xe);
+            pe->get_Y(&ye);
+            USE_VECTOR(m_Vector);
+            m_Vector->put_X(xs-xe);
+            m_Vector->put_Y(ys-ye);
+            m_Vector->Normalize(); // of length 1.0 in correct direction
+            Float64 xv,yv;
+            m_Vector->get_X(&xv);
+            m_Vector->get_Y(&yv);
+
+            ps->put_X(xs + xv*len);
+            ps->put_Y(ys + yv*len);
+         }
+
+         if (segIdx==nSegments-1)
+         {
+            // segment at end end, extend line seg in pe direction
+            Float64 len;
+            girderLine->get_SpanLength(&len);
+            ATLASSERT(len>0.0);
+            len *= 500.0;
+
+            Float64 xs, ys, xe, ye;
+            ps->get_X(&xs);
+            ps->get_Y(&ys);
+            pe->get_X(&xe);
+            pe->get_Y(&ye);
+            USE_VECTOR(m_Vector);
+            m_Vector->put_X(xe-xs);
+            m_Vector->put_Y(ye-ys);
+            m_Vector->Normalize(); // of length 1.0 in correct direction
+            Float64 xv,yv;
+            m_Vector->get_X(&xv);
+            m_Vector->get_Y(&yv);
+
+            pe->put_X(xe+xv*len);
+            pe->put_Y(ye+yv*len);
+         }
+
+         USE_LINESEGMENT(m_LineSegment1);
+         m_LineSegment1->ThroughPoints(ps,pe);
+
+         // Intersect normal line and other girder line
+         if ( m_GeomUtil->IntersectLineWithLineSegment(m_Line1,m_LineSegment1,&pntOnOtherGirder) == S_OK )
+         {
+            if ( pntOnOtherGirder != NULL )
+            {
+               // point found
+               break;
+            }
+         }
       }
    }
 
+   // Big problems if we couldn't find intersection. This will likely end in a bust
    if ( pntOnOtherGirder == NULL )
    {
       ATLASSERT(false); // point not found, and it should have been???

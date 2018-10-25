@@ -1189,6 +1189,20 @@ void CTestGeomUtil::Test2d()
    p3->Move(20,10);
    TRY_TEST( util2d->ShortestDistanceToPoint(l1,p3,&dist), S_OK );
    TRY_TEST( IsEqual(dist,7.071,0.001), true ); // Point on right side (+)
+
+   //
+   // Test PointInTriangle
+   p1->Move(5,5);
+   p2->Move(0,0);
+   p3->Move(20,0);
+   p4->Move(0,20);
+   VARIANT_BOOL bInTriangle;
+   TRY_TEST(util2d->PointInTriangle(p1,p2,p3,p4,&bInTriangle),S_OK);
+   TRY_TEST(bInTriangle,VARIANT_TRUE);
+   
+   p1->Move(30,30);
+   TRY_TEST(util2d->PointInTriangle(p1,p2,p3,p4,&bInTriangle),S_OK);
+   TRY_TEST(bInTriangle,VARIANT_FALSE);
 }
 
 void CTestGeomUtil::Test3d()

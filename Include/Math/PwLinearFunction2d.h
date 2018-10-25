@@ -103,24 +103,10 @@ public:
    // Returns all points for the line segments which make up the function.
    virtual std::vector<gpPoint2d> GetPoints() const=0;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   // Prevent accidental copying and assignment
+   mathPwLinearFunction2d(const mathPwLinearFunction2d&);
+   mathPwLinearFunction2d& operator=(const mathPwLinearFunction2d&);
 
 public:
    // GROUP: DEBUG

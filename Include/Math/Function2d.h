@@ -201,7 +201,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    // GROUP: LIFECYCLE
 

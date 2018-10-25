@@ -69,6 +69,7 @@ m_DoDrawAxis(true),
 m_DoDrawGrid(true),
 m_bDrawLegend(true),
 m_LegendBoarderType(lbCheckerBoarder),
+m_XAxisRangeForced(false),
 m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
@@ -555,6 +556,7 @@ void grGraphXY::MakeCopy(const grGraphXY& rOther)
 
    m_XAxis = rOther.m_XAxis;
    m_YAxis = rOther.m_YAxis;
+   m_XAxisRangeForced = rOther.m_XAxisRangeForced;
    m_XAxisNiceRange = rOther.m_XAxisNiceRange;
    m_YAxisNiceRange = rOther.m_YAxisNiceRange;
    m_GridPenData    = rOther.m_GridPenData;
@@ -628,14 +630,14 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    }
 
    // make sure that graph ranges are at least equal to the min zoom height and width.
-   if (m_WorldRect.Height()< m_MinZoomHeight)
+   if (m_WorldRect.Height() < m_MinZoomHeight)
    {
       Float64 cen = (m_WorldRect.Top() + m_WorldRect.Bottom())/2.0;
       m_WorldRect.Top()    = cen + m_MinZoomHeight/2.0;
       m_WorldRect.Bottom() = cen - m_MinZoomHeight/2.0;
    }
 
-   if (m_WorldRect.Width()< m_MinZoomWidth)
+   if (m_WorldRect.Width() < m_MinZoomWidth)
    {
       Float64 cen = (m_WorldRect.Right() + m_WorldRect.Left())/2.0;
       m_WorldRect.Right() = cen + m_MinZoomWidth/2.0;
@@ -652,6 +654,14 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    {
       m_WorldRect.Top()    = max(m_WorldRect.Top(),   m_Ymax);
       m_WorldRect.Bottom() = min(m_WorldRect.Bottom(),m_Ymin);
+   }
+
+   if ( IsXAxisRangeForced() )
+   {
+      Float64 left,right,inc;
+      m_XAxis.GetAxisRange(left,right,inc);
+      m_WorldRect.Left() = left;
+      m_WorldRect.Right() = right;
    }
 
    if ( m_bIsotropicAxes )
@@ -687,6 +697,10 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       {
          m_XAxis.SetNiceAxisRange(m_WorldRect.Left(), m_WorldRect.Right(),false);
          m_XAxis.GetAxisRange(client_left, client_right, inc);
+      }
+      else if ( IsXAxisRangeForced() )
+      {
+         m_XAxis.GetAxisRange(client_left,client_right,inc);
       }
       else
       {
@@ -1142,11 +1156,24 @@ bool grGraphXY::GetXAxisNiceRange() const
 void grGraphXY::SetXAxisNiceRange(bool nice)
 {
    m_XAxisNiceRange = nice;
+   m_XAxisRangeForced = false;
 
    if ( m_XAxisNiceRange && m_XAxis.GetScale() == grAxisXY::INTEGRAL )
    {
       m_XAxis.SetScale(grAxisXY::LINEAR); // can't have nice range and INTEGRAL
    }
+}
+
+void grGraphXY::SetXAxisForcedRange(Float64 leftVal, Float64 rightVal, Float64 increment)
+{
+   m_XAxisNiceRange = false;
+   m_XAxisRangeForced = true;
+   m_XAxis.SetForcedAxisRange(leftVal,rightVal,increment);
+}
+
+bool grGraphXY::IsXAxisRangeForced() const
+{
+   return m_XAxisRangeForced;
 }
 
 bool grGraphXY::GetYAxisNiceRange() const

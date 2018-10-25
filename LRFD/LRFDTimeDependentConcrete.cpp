@@ -580,6 +580,12 @@ void lrfdLRFDTimeDependentConcrete::Validate() const
          m_kf = 1/(0.67 + (fci/9.0));
       }
    }
+   else
+   {
+      Float64 fci = GetFc(m_TimeAtCasting + 28);
+      fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
+      m_kf = 5.0/(1.0+fci);
+   }
 }
 
 // Could be using lrfdConcreteUtil::ModE, except that creates a circular
@@ -797,10 +803,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::Ge
 
    Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
    pDetails->fci = fci;
-   fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-   Float64 kf = 5.0/(1.0 + fci);
 
-   fci = pDetails->fci;
    Float64 ktd;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
    {
@@ -816,11 +819,11 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::Ge
    
    Float64 ks = GetSizeFactorCreep(t,tla);
    Float64 ti = age_at_loading;
-   Float64 Y = m_CreepK1*m_CreepK2*m_Cu*ks*m_khc*kf*ktd*pow(ti,-0.118);
+   Float64 Y = m_CreepK1*m_CreepK2*m_Cu*ks*m_khc*m_kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;
-   pDetails->kf = kf;
+   pDetails->kf = m_kf;
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 
@@ -848,16 +851,16 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDTimeDependentConcrete::Ge
    Float64 fci = GetFc(m_TimeAtCasting + age_at_loading);
    pDetails->fci = fci;
    fci = ::ConvertFromSysUnits(fci,unitMeasure::KSI);
-   Float64 kf = 5.0/(1.0 + fci);
+   m_kf = 5.0/(1.0 + fci);
 
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fci)/(fci + 20) + maturity);
 
    Float64 ti = age_at_loading;
-   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
+   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*m_kf*ktd*pow(ti,-0.118);
 
    pDetails->kvs = ks;
    pDetails->khc = m_khc;
-   pDetails->kf = kf;
+   pDetails->kf = m_kf;
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 
