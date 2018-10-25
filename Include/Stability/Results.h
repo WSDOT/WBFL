@@ -42,7 +42,6 @@ public:
    Float64 Lr; // right overhang (leading overhang)
    Float64 Ls; // span length between supports
    Float64 Wg; // total weight of girder
-   Float64 Ytop; // location of the CG in girder section coordinates (measured down from the top of the girder)
 
    stbTypes::CalculationMethod XcgMethod;
    Float64 Xleft; // horizontal location of the CG with respect to the roll axis

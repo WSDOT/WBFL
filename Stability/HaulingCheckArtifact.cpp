@@ -290,7 +290,7 @@ bool stbHaulingCheckArtifact::PassedTensionCheck(stbTypes::HaulingSlope slope) c
 
 Float64 stbHaulingCheckArtifact::GetAllowableTension(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const
 {
-   if ( sectionResult.bSectionHasRebar[slope][impact][wind] )
+   if ( sectionResult.bSectionHasRebar[slope][impact][wind] && 0 <= sectionResult.AsRequired[slope][impact][wind] )
    {
       return m_Criteria.AllowableTensionWithRebar[slope];
    }

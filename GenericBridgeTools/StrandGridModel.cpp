@@ -691,6 +691,35 @@ STDMETHODIMP CStrandGridModel::GetNumStrandsInRow(StrandType strandType, Float64
    return hr;
 }
 
+STDMETHODIMP CStrandGridModel::GetUnadjustedStrandRowElevation(StrandType strandType, Float64 Xs, RowIndexType rowIdx, Float64* pElevation)
+{
+   HRESULT hr = S_OK;
+   switch (strandType)
+   {
+   case Straight:
+      hr = m_StraightGrid[etStart]->get_StrandRowElevation(rowIdx, pElevation);
+      break;
+
+   case Harped:
+   {
+      CComPtr<IStrandGridFiller> grid;
+      GetHarpedStrandGrid(Xs,&grid);
+      hr = grid->get_StrandRowElevation(rowIdx, pElevation);
+   }
+      break;
+
+   case Temporary:
+      hr = m_TempGrid[etStart]->get_StrandRowElevation(rowIdx, pElevation);
+      break;
+
+   default:
+      ATLASSERT(false);
+   }
+
+   return hr;
+}
+
+
 STDMETHODIMP CStrandGridModel::GetStrandsInRow(StrandType strandType, Float64 Xs,RowIndexType rowIdx, IIndexArray** ppStrandIndicies)
 {
    CHECK_RETOBJ(ppStrandIndicies);

@@ -70,9 +70,9 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-                         Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+                         const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -88,17 +88,25 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
 
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
+                         Float64 Msidl1, // Superimposed dead loads
+                         Float64 Msidl2,
 
                          Float64 Ag,    // Area of girder
-                         Float64 Ig,    // Moment of inertia of girder
+                         Float64 Ixx,    // Moment of inertia of girder
+                         Float64 Iyy,
+                         Float64 Ixy,
                          Float64 Ybg,   // Centroid of girder measured from bottom
-                         Float64 Ac,    // Area of the composite girder and deck
-                         Float64 Ic,    // Moment of inertia of composite
-                         Float64 Ybc,   // Centroid of composite measured from bottom
+                         Float64 Ac1,    // Area of the composite girder and deck
+                         Float64 Ic1,    // Moment of inertia of composite
+                         Float64 Ybc1,   // Centroid of composite measured from bottom
+                         Float64 Ac2,    // Area of the composite girder and deck
+                         Float64 Ic2,    // Moment of inertia of composite
+                         Float64 Ybc2,   // Centroid of composite measured from bottom
 
                          Float64 An,   // area of girder
-                         Float64 In,   // moment of inertia of girder
+                         Float64 Ixxn,   // moment of inertia of girder
+                         Float64 Iyyn,
+                         Float64 Ixyn,
                          Float64 Ybn,  // Centroid of girder measured from bottom
                          Float64 Acn,   // area of composite girder
                          Float64 Icn,   // moment of inertia of composite
@@ -111,7 +119,7 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          lrfdElasticShortening::FcgpComputationMethod method,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
 {
    Init();
 
@@ -270,9 +278,9 @@ void lrfdRefinedLossesTxDOT2013::UpdateLongTermLosses() const
    {
       m_dfpSR = shrinkage_losses( m_H, m_Fci, m_Ep );
 
-      m_Msd = m_Madlg + m_Msidl;
+      m_Msd = m_Madlg + m_Msidl1 + m_Msidl2;
 
-      m_DeltaFcd1 = -1 * m_Msd * m_epermFinal/m_Ig;
+      m_DeltaFcd1 = -1 * m_Msd * m_epermFinal.Y()/m_Ixx;
 
       m_dfpCR = creep_losses( m_H, m_Fci, m_Eci, m_Ep, m_ElasticShortening.PermanentStrand_Fcgp(), m_DeltaFcd1 );
 
@@ -317,7 +325,9 @@ void lrfdRefinedLossesTxDOT2013::UpdateElasticShortening() const
                             (m_TempStrandUsage == tsPretensioned ? m_ApsTemp : 0),
                             m_SectionProperties == sptGross ? true : false,
                             m_Ag,
-                            m_Ig,
+                            m_Ixx,
+                            m_Iyy,
+                            m_Ixy,
                             m_epermRelease,
                             m_etemp,
                             m_Mdlg,

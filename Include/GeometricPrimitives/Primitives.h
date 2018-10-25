@@ -419,6 +419,12 @@ GEOMFUNC bool operator!=(const gpPoint2d& lhs, const gpPoint2d& rhs);
 //------------------------------------------------------------------------
 GEOMFUNC std::_tostream& operator<<(std::_tostream& os,const gpPoint2d& p);
 
+GEOMFUNC gpPoint2d operator*(const gpPoint2d& p1, const gpPoint2d& p2);
+GEOMFUNC gpPoint2d operator*(Float64 K, const gpPoint2d& p);
+GEOMFUNC gpPoint2d operator*(const gpPoint2d& p, Float64 K);
+GEOMFUNC gpPoint2d operator/(Float64 K, const gpPoint2d& p);
+GEOMFUNC gpPoint2d operator/(const gpPoint2d& p, Float64 K);
+
 /*****************************************************************************
 CLASS 
    gpRect2d

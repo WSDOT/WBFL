@@ -323,8 +323,10 @@ void lrfdNoncompositeApproximateLosses2005::UpdateInitialLosses() const
                             true, // gross section properties
                             m_Ag,
                             m_Ig,
-                            m_eperm,
+                            m_Ig,
                             0,
+                            gpPoint2d(0,m_eperm),
+                            gpPoint2d(0,0),
                             m_Mdlg,
                             1.0,
                             m_Eci,

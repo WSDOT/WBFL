@@ -124,7 +124,7 @@ public:
       return S_OK;
    }
    
-   STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints)
+   STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints) override
    {
       CHECK_RETOBJ(ppPoints);
       CComPtr<IPoint2dCollection> points;
@@ -175,6 +175,14 @@ public:
 
       return points.CopyTo(ppPoints);
    }
+
+   STDMETHODIMP IgnoreBiaxialBending(BOOL* pIgnoreBiaxial) override
+   {
+      CHECK_RETVAL(pIgnoreBiaxial);
+      *pIgnoreBiaxial = false;
+      return S_OK;
+   }
+
 
    // 
    STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override

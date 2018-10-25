@@ -77,9 +77,9 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         Float64 epermFinal,
-                         Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         const gpPoint2d& epermFinal,
+                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -95,17 +95,25 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
 
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
-                         Float64 Msidl, // Superimposed dead loads
+                         Float64 Msidl1, // Superimposed dead loads
+                         Float64 Msidl2,
 
                          Float64 Ag,    // Area of girder
-                         Float64 Ig,    // Moment of inertia of girder
+                         Float64 Ixx,    // Moment of inertia of girder
+                         Float64 Iyy,
+                         Float64 Ixy,
                          Float64 Ybg,   // Centroid of girder measured from bottom
-                         Float64 Ac,    // Area of the composite girder and deck
-                         Float64 Ic,    // Moment of inertia of composite
-                         Float64 Ybc,   // Centroid of composite measured from bottom
+                         Float64 Ac1,    // Area of the composite girder and deck
+                         Float64 Ic1,    // Moment of inertia of composite
+                         Float64 Ybc1,   // Centroid of composite measured from bottom
+                         Float64 Ac2,    // Area of the composite girder and deck
+                         Float64 Ic2,    // Moment of inertia of composite
+                         Float64 Ybc2,   // Centroid of composite measured from bottom
 
                          Float64 An,    // Area of girder
-                         Float64 In,    // Moment of inertia of girder
+                         Float64 Ixxn,    // Moment of inertia of girder
+                         Float64 Iyyn,
+                         Float64 Ixyn,
                          Float64 Ybn,   // Centroid of girder measured from bottom
                          Float64 Acn,    // Area of the composite girder and deck
                          Float64 Icn,    // Moment of inertia of composite
@@ -116,7 +124,7 @@ lrfdApproximateLosses2005::lrfdApproximateLosses2005(Float64 x, // location alon
                          bool bIgnoreInitialRelaxation,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
 }
 
@@ -473,11 +481,14 @@ void lrfdApproximateLosses2005::UpdateLongTermLosses() const
       }
 
       // Elastic gain due to deck placement
-      m_DeltaFcd1 = m_Madlg*m_epermFinal/m_Ig;
+      Float64 mx = m_Madlg;
+      Float64 my = 0;
+      Float64 D = m_Ixx*m_Iyy - m_Ixy*m_Ixy;
+      m_DeltaFcd1 = (mx*m_Ixx + my*m_Ixy)*m_epermFinal.X() / D + (mx*m_Iyy + my*m_Ixy)*m_epermFinal.Y() / D; // biaxial on non-composite section
       m_dfpED = (m_Ep/m_Ec)*m_DeltaFcd1;
 
       // Elastic gain due to superimposed dead loads
-      m_DeltaFcd2 = m_Msidl*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic;
+      m_DeltaFcd2 = m_Msidl1*(m_Ybc1 - m_Ybg + m_epermFinal.Y()) / m_Ic1 + m_Msidl2*( m_Ybc2 - m_Ybg + m_epermFinal.Y() )/m_Ic2; // uniaxial on composite section
       m_dfpSIDL = (m_Ep/m_Ec)*m_DeltaFcd2;
    }
 }

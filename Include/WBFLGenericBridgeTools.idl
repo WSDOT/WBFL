@@ -333,6 +333,9 @@ library WBFLGenericBridgeTools
 	   [propget,helpstring("property StrandsInRow")] HRESULT StrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
 	   [propget,helpstring("property NumStrandsInRow")] HRESULT NumStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
 
+	   [propget,helpstring("property StrandRowElevation")] HRESULT StrandRowElevation([in]RowIndexType rowIdx,[out,retval]Float64* pElevation);
+
+
       // Ex methods are typically for testing a new fill.
       // they allow input of a temporary fill array. Internal fill array is not changed
 	   [helpstring("method GetStrandCountEx")] HRESULT GetStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* count);
@@ -434,6 +437,8 @@ library WBFLGenericBridgeTools
       [helpstring("method GetStrandRowCount")] HRESULT GetStrandRowCount([in]StrandType strandType, [in]Float64 Xs, [out, retval]RowIndexType* nRows);
       [helpstring("method GetNumStrandsInRow")] HRESULT GetNumStrandsInRow([in]StrandType strandType, [in]Float64 Xs, [in]RowIndexType rowIdx, [out, retval]StrandIndexType* nStrands);
       [helpstring("method GetStrandsInRow")] HRESULT GetStrandsInRow([in]StrandType strandType, [in]Float64 Xs, [in]RowIndexType rowIdx, [out, retval]IIndexArray** ppStrandIndicies);
+
+      [helpstring("method GetUnadjustedStrandRowElevation")] HRESULT GetUnadjustedStrandRowElevation([in]StrandType strandType, [in]Float64 Xs, [in]RowIndexType rowIdx, [out, retval]Float64* fElevation);
 
       // Debonded strands are not removed
       // Locations are adjusted by offsets

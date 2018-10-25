@@ -61,9 +61,9 @@ public:
               Float64 ApsPerm,  // area of permanent strand
               Float64 ApsTemp,  // area of TTS 
               Float64 aps,      // area of one strand
-              Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-              Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-              Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
+              const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
+              const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
+              const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
               TempStrandUsage usage, // temporary strand usage type
               Float64 anchorSet, // anchor set for post-tensioned temporary top strands
               Float64 wobble,    // wobble coefficient for post-tensioned temporary top strands
@@ -79,19 +79,27 @@ public:
 
               Float64 Mdlg,  // Dead load moment of girder only
               Float64 Madlg,  // Additional dead load on girder section
-              Float64 Msidl, // Superimposed dead loads
+              Float64 Msidl1, // Superimposed dead loads, stage 1
+              Float64 Msidl2, // Superimposed dead loads, stage 2
 
               // Transform/Gross properties
               Float64 Ag,    // Area of girder
-              Float64 Ig,    // Moment of inertia of girder
+              Float64 Ixx,    // Moment of inertia of girder
+              Float64 Iyy,
+              Float64 Ixy,
               Float64 Ybg,   // Centroid of girder measured from bottom
-              Float64 Ac,    // Area of the composite girder and deck
-              Float64 Ic,    // Moment of inertia of composite
-              Float64 Ybc,   // Centroid of composite measured from bottom
+              Float64 Ac1,   // area of composite girder, stage 1
+              Float64 Ic1,   // moment of inertia of composite, stage 1
+              Float64 Ybc1,  // Centroid of composite measured from bottom, stage 1
+              Float64 Ac2,   // area of composite girder, stage 2
+              Float64 Ic2,   // moment of inertia of composite, stage 2
+              Float64 Ybc2,  // Centroid of composite measured from bottom, stage 2
 
               // Net properties (use same values as gross for gross property analysis)
               Float64 An,    // Area of girder
-              Float64 In,    // Moment of inertia of girder
+              Float64 Inxx,    // Moment of inertia of girder
+              Float64 Inyy,
+              Float64 Inxy,
               Float64 Ybn,   // Centroid of girder measured from bottom
               Float64 Acn,    // Area of the composite girder and deck
               Float64 Icn,    // Moment of inertia of composite
@@ -188,78 +196,46 @@ public:
    // Strand Eccentricity
 
    // eccentricty of permanent strands on non-composite section at release
-   void SetEccPermanentRelease(Float64 epc);
-   Float64 GetEccPermanentRelease() const;
+   void SetEccPermanentRelease(const gpPoint2d& epc);
+   const gpPoint2d& GetEccPermanentRelease() const;
 
    // eccentricty of permanent strands on non-composite section at final
-   void SetEccPermanentFinal(Float64 epc);
-   Float64 GetEccPermanentFinal() const;
+   void SetEccPermanentFinal(const gpPoint2d& epc);
+   const gpPoint2d& GetEccPermanentFinal() const;
 
    // eccentricty of temporary strands on non-composite section
-   void SetEccTemporary(Float64 epc);
-   Float64 GetEccTemporary() const;
+   void SetEccTemporary(const gpPoint2d& epc);
+   const gpPoint2d& GetEccTemporary() const;
 
    // eccenticity of permanent strand on composite section (computed value)
    Float64 GetEccpc() const;
 
    // eccentricty of all strands on non-composite section (computed value)
-   Float64 GetEccpgRelease() const; 
-   Float64 GetEccpgFinal() const; 
+   gpPoint2d GetEccpgRelease() const; 
+   gpPoint2d GetEccpgFinal() const; 
 
    //------------------------------------------------------------------------
    // Section Properties
-
    void SetSectionPropertiesType(lrfdLosses::SectionPropertiesType props);
    SectionPropertiesType GetSectionPropertiesType() const;
 
-   // Area of non-composite section
-   void SetAg(Float64 Ag);
-   Float64 GetAg() const;
+   // Noncomposite properties... could be gross or transformed
+   void SetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy);
+   void GetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const;
 
-   // Moment of inertia of non-composite section
-   void SetIg(Float64 Ig);
-   Float64 GetIg() const;
+   // Net non-composite properites (if using gross section analysis, makes these equal to the noncomposite properties)
+   void SetNetNoncompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx, Float64 Iyy, Float64 Ixy);
+   void GetNetNoncompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx, Float64* pIyy, Float64* pIxy) const;
 
-   // Centroid, from bottom of non-composite section
-   void SetYbg(Float64 Ybg);
-   Float64 GetYbg() const;
+   // Composite properties... could be gross or transformed
+   void SetCompositeProperties1(Float64 Ag, Float64 Ybg, Float64 Ixx);
+   void GetCompositeProperties1(Float64* pAg, Float64* pYbg, Float64* pIxx) const;
+   void SetCompositeProperties2(Float64 Ag, Float64 Ybg, Float64 Ixx);
+   void GetCompositeProperties2(Float64* pAg, Float64* pYbg, Float64* pIxx) const;
 
-   // Area of composite section girder and deck
-   void SetAc(Float64 Ac);
-   Float64 GetAc() const;
-
-   // Moment of inertia of composite section
-   void SetIc(Float64 Ic);
-   Float64 GetIc() const;
-
-   // Centroid, from bottom of composite section
-   void SetYbc(Float64 Ybc);
-   Float64 GetYbc() const;
-
-
-   // Area of non-composite section
-   void SetAn(Float64 An);
-   Float64 GetAn() const;
-
-   // Moment of inertia of non-composite section
-   void SetIn(Float64 In);
-   Float64 GetIn() const;
-
-   // Centroid, from bottom of non-composite section
-   void SetYbn(Float64 Ybn);
-   Float64 GetYbn() const;
-
-   // Area of composite section girder and deck
-   void SetAcn(Float64 Acn);
-   Float64 GetAcn() const;
-
-   // Moment of inertia of composite section
-   void SetIcn(Float64 Icn);
-   Float64 GetIcn() const;
-
-   // Centroid, from bottom of composite section
-   void SetYbcn(Float64 Ybcn);
-   Float64 GetYbcn() const;
+   // Net composite properites (if using gross section analysis, makes these equal to the noncomposite properties)
+   void SetNetCompositeProperties(Float64 Ag, Float64 Ybg, Float64 Ixx);
+   void GetNetCompositeProperties(Float64* pAg, Float64* pYbg, Float64* pIxx) const;
 
    //------------------------------------------------------------------------
    // Moments due to external loads
@@ -273,8 +249,10 @@ public:
    Float64 GetAddlGdrMoment() const;
 
    // moment due to superimposed dead loads
-   void SetSidlMoment(Float64 Msidl);
-   Float64 GetSidlMoment() const;
+   void SetSidlMoment1(Float64 Msidl);
+   Float64 GetSidlMoment1() const;
+   void SetSidlMoment2(Float64 Msidl);
+   Float64 GetSidlMoment2() const;
 
    //------------------------------------------------------------------------
    // Post-tension related parameters
@@ -460,9 +438,9 @@ protected:
    matPsStrand::Type m_TypeTemp;
    matPsStrand::Grade m_GradeTemp;
    matPsStrand::Coating m_CoatingTemp;
-   Float64 m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
-   Float64 m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
-   Float64 m_etemp; // CG of temporary prestress 
+   gpPoint2d m_epermRelease; // CG of permanent prestress with respect to centroid of noncomposite section
+   gpPoint2d m_epermFinal; // CG of permanent prestress with respect to centroid of composite section
+   gpPoint2d m_etemp; // CG of temporary prestress 
    Float64 m_ApsPerm; // Area of permanent strands
    Float64 m_ApsTemp; // Area of temporary strands
    Float64 m_aps;     // Area of one strand
@@ -482,20 +460,28 @@ protected:
    Float64 m_AngleChange;
    Float64 m_Mdlg;  // Dead load moment of girder
    Float64 m_Madlg; // Additional dead load moment on girder section
-   Float64 m_Msidl; // Superimposed dead loads
+   Float64 m_Msidl1; // Superimposed dead loads
+   Float64 m_Msidl2; // Superimposed dead loads
    Float64 m_ti; // initial time
 
    // Transformed/Gross Properties
    Float64 m_Ag;    // Area of the girder
-   Float64 m_Ig;    // Moment of inertia of the girder
+   Float64 m_Ixx;    // Moment of inertia of the girder
+   Float64 m_Iyy;
+   Float64 m_Ixy;
    Float64 m_Ybg;   // Centroid of girder measured from bottom
-   Float64 m_Ac;    // Area of the composite girder and deck
-   Float64 m_Ic;    // Moment of inertia of composite
-   Float64 m_Ybc;   // Centroid of composite measured from bottom
+   Float64 m_Ac1;    // Area of the composite girder and deck
+   Float64 m_Ic1;    // Moment of inertia of composite
+   Float64 m_Ybc1;   // Centroid of composite measured from bottom
+   Float64 m_Ac2;    // Area of the composite girder and deck
+   Float64 m_Ic2;    // Moment of inertia of composite
+   Float64 m_Ybc2;   // Centroid of composite measured from bottom
 
    // Net Properties
    Float64 m_An;    // Area of the girder
-   Float64 m_In;    // Moment of inertia of the girder
+   Float64 m_Ixxn;    // Moment of inertia of the girder
+   Float64 m_Iyyn;
+   Float64 m_Ixyn;
    Float64 m_Ybn;   // Centroid of girder measured from bottom
    Float64 m_Acn;   // Area of the composite girder and deck
    Float64 m_Icn;   // Moment of inertia of composite
@@ -545,6 +531,7 @@ protected:
    mutable Float64 m_La; // length of anchor set zone
 
 };
+
 inline void lrfdLosses::SetFpjPermanent(Float64 fpj) { m_FpjPerm = fpj; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetFpjPermanent() const { return m_FpjPerm; }
 inline void lrfdLosses::SetFpjTemporary(Float64 fpj) { m_FpjTemp = fpj; m_IsDirty = true; }
@@ -583,38 +570,15 @@ inline matPsStrand::Coating lrfdLosses::GetTemporaryStrandCoating() const { retu
 
 inline void lrfdLosses::SetSectionPropertiesType(lrfdLosses::SectionPropertiesType props) { m_SectionProperties = props; m_IsDirty = true; }
 inline lrfdLosses::SectionPropertiesType lrfdLosses::GetSectionPropertiesType() const { return m_SectionProperties; }
-inline void lrfdLosses::SetAg(Float64 Ag) { m_Ag = Ag; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetAg() const { return m_Ag; }
-inline void lrfdLosses::SetIg(Float64 Ig) { m_Ig = Ig; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetIg() const { return m_Ig; }
-inline void lrfdLosses::SetYbg(Float64 Ybg) { m_Ybg = Ybg; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetYbg() const { return m_Ybg; }
-inline void lrfdLosses::SetAc(Float64 Ac) { m_Ac = Ac; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetAc() const { return m_Ac; }
-inline void lrfdLosses::SetIc(Float64 Ic) { m_Ic = Ic; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetIc() const { return m_Ic; }
-inline void lrfdLosses::SetYbc(Float64 Ybc) { m_Ybc = Ybc; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetYbc() const { return m_Ybc; }
-
-inline void lrfdLosses::SetAn(Float64 An) { m_An = An; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetAn() const { return m_An; }
-inline void lrfdLosses::SetIn(Float64 In) { m_In = In; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetIn() const { return m_In; }
-inline void lrfdLosses::SetYbn(Float64 Ybn) { m_Ybn = Ybn; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetYbn() const { return m_Ybn; }
-inline void lrfdLosses::SetAcn(Float64 Acn) { m_Acn = Acn; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetAcn() const { return m_Acn; }
-inline void lrfdLosses::SetIcn(Float64 Icn) { m_Icn = Icn; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetIcn() const { return m_Icn; }
-inline void lrfdLosses::SetYbcn(Float64 Ybcn) { m_Ybcn = Ybcn; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetYbcn() const { return m_Ybcn; }
 
 inline void lrfdLosses::SetGdrMoment(Float64 Mdlg) { m_Mdlg = Mdlg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGdrMoment() const { return m_Mdlg; }
 inline void lrfdLosses::SetAddlGdrMoment(Float64 Madlg) { m_Madlg = Madlg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetAddlGdrMoment() const { return m_Madlg; }
-inline void lrfdLosses::SetSidlMoment(Float64 Msidl) { m_Msidl = Msidl; m_IsDirty = true; }
-inline Float64 lrfdLosses::GetSidlMoment() const { return m_Msidl; }
+inline void lrfdLosses::SetSidlMoment1(Float64 Msidl) { m_Msidl1 = Msidl; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetSidlMoment1() const { return m_Msidl1; }
+inline void lrfdLosses::SetSidlMoment2(Float64 Msidl) { m_Msidl2 = Msidl; m_IsDirty = true; }
+inline Float64 lrfdLosses::GetSidlMoment2() const { return m_Msidl2; }
 
 inline void lrfdLosses::SetGirderLength(Float64 lg) { m_Lg = lg; m_IsDirty = true; }
 inline Float64 lrfdLosses::GetGirderLength() const {  return m_Lg; }

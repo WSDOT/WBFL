@@ -134,6 +134,9 @@ public:
    // returns the number of strands in a given row
 	STDMETHOD(get_NumStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
 
+   // returns unadjusted elevation of strand row
+	STDMETHOD(get_StrandRowElevation)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/Float64* pElevation) override;
+
    // returns the strand positions that are filled within a row
 	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** ppStrandIndicies) override;
 

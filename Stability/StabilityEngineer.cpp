@@ -116,7 +116,7 @@ void stbStabilityEngineer::PrepareResults(const stbIGirder* pGirder,const stbISt
 
    results.LateralSweep = pStabilityProblem->GetSweepTolerance()*Lg;
 
-   ComputeXcg(pGirder, results);
+   ComputeXcg(pGirder, pStabilityProblem, results);
 
    for ( IndexType i = 0; i < 3; i++ )
    {
@@ -163,7 +163,22 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    results.Ywind[stbTypes::ImpactUp]   = Ywind;
    results.Ywind[stbTypes::ImpactDown] = Ywind;
 
-   results.Yr = Yra - results.Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
+   Float64 Ll, Lr;
+   pStabilityProblem->GetSupportLocations(&Ll, &Lr);
+   Float64 leftSupportLoc = Ll;
+   Float64 rightSupportLoc = Lg - Lr;
+
+   Float64 Ytop1, Ytop2;
+   Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf;
+   pGirder->GetSectionProperties(leftSupportLoc, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtf, &Wbf);
+   Ytop1 = Ytop;
+   pGirder->GetSectionProperties(rightSupportLoc, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtf, &Wbf);
+   Ytop2 = Ytop;
+   
+   Ytop = Min(Ytop1, Ytop2);
+
+   //results.Yr = Yra - results.Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
+   results.Yr = Yra - Ytop; // location from the center of gravity from the roll axis (positive means roll center is above CG)
 
    Float64 Dra = fabs(results.Yr);  // adjusted distance between CG and roll axis (using fabs because distance is an absolute value)
    if ( bDirectCamber )
@@ -325,9 +340,6 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    Float64 Camber;
    pStabilityProblem->GetCamber(&bDirectCamber,&Camber);
 
-   // lateral eccentricity of prestress force... this value is constant so get it outside the loop
-   Float64 exps = pStabilityProblem->GetFpeLateralEccentricity();
-
    PoiIDType poiID = 0;
    IndexType analysisPointIdx = 0;
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
@@ -387,15 +399,16 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
       {
          stbTypes::StrandType strandType = (stbTypes::StrandType)s;
 
-         Float64 Fpe, Y;
-         pStabilityProblem->GetFpe(strandType, X, &Fpe, &Y);
+         Float64 Fpe, Xps, Yps;
+         pStabilityProblem->GetFpe(strandType, X, &Fpe, &Xps, &Yps);
       
          if (!IsZero(Fpe))
          {
-            Float64 eyps = Y - Ytop; // eccentricity of strands (positive values means ps force is above CG)
+            Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
+            Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
 
-            Float64 Mxps = Fpe*eyps;
-            Float64 Myps = Fpe*exps;
+            Float64 Mxps = -Fpe*eyps;
+            Float64 Myps = -Fpe*exps;
 
             for (int c = 0; c < 4; c++)
             {
@@ -782,9 +795,6 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       }
    }
 
-   // lateral eccentricity of prestress force... this value is constant so get it outside the loop
-   Float64 exps = pStabilityProblem->GetFpeLateralEccentricity();
-
    PoiIDType poiID = 0;
    CComQIPtr<IFem2dModelResults> femResults(model);
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
@@ -844,12 +854,13 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
       {
          stbTypes::StrandType strandType = (stbTypes::StrandType)s;
 
-         Float64 Fpe, Y;
-         pStabilityProblem->GetFpe(strandType,X,&Fpe,&Y);
-         Float64 eyps = Y - Ytop; // eccentricity of strands (positive values means ps force is above CG)
+         Float64 Fpe, Xps, Yps;
+         pStabilityProblem->GetFpe(strandType,X,&Fpe,&Xps,&Yps);
+         Float64 eyps = Ytop - Yps; // eccentricity of strands (positive values means ps force is below CG)
+         Float64 exps = Xleft - Xps; // lateral eccentricty of strands (positive values means ps force is left of the CG)
 
-         Float64 Mxps = Fpe*eyps;
-         Float64 Myps = Fpe*exps;
+         Float64 Mxps = -Fpe*eyps;
+         Float64 Myps = -Fpe*exps;
 
          for (int c = 0; c < 4; c++)
          {
@@ -1288,14 +1299,14 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       CComPtr<IFem2dJoint> jnt;
       joints->Create(jntID,X,0,&jnt);
 
-      if ( leftSupportJntID==INVALID_ID && IsEqual(X,leftSupportLoc) )
+      if ( leftSupportJntID==INVALID_ID && IsEqual(X,leftSupportLoc,tolerance) )
       {
          jnt->Support();
          jnt->ReleaseDof(jrtFx);
          jnt->ReleaseDof(jrtMz);
          leftSupportJntID = jntID;
       }
-      else if (rightSupportJntID==INVALID_ID &&  IsEqual(X,rightSupportLoc) )
+      else if (rightSupportJntID==INVALID_ID &&  IsEqual(X,rightSupportLoc,tolerance) )
       {
          jnt->Support();
          jnt->ReleaseDof(jrtMz);
@@ -1403,7 +1414,6 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    Float64 Wcf = 0;
    Float64 Wwind = 0;
    Float64 YwindWwind = 0;
-   Float64 ycgwg = 0;
    Float64 start = 0;
    LoadIDType loadID = 0;
    for (IndexType sectIdx = 0; sectIdx < nSections; sectIdx++)
@@ -1438,7 +1448,6 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       // and do it once after the this loop.
       Float64 wg = (wStart + wEnd)*Ls;
       Wg += wg;
-      ycgwg += (Ytop[stbTypes::Start] + Ytop[stbTypes::End])*wg;
 
       // Centrifugal force
       // cummulate the total centrifugal force
@@ -1569,8 +1578,6 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    }
 
    results.Wg = Wg / 2;
-   ycgwg /= 2;
-   results.Ytop = ycgwg / Wg;
 
    // divide by 2 to get total wind load (see note above)
    results.Wwind = Wwind / 2;
@@ -1587,14 +1594,11 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    // Apply self weight point loads
    LoadIDType ptLoadID = 0;
    Wg = 0;
-   ycgwg = 0;
    std::vector<std::pair<Float64,Float64>> vPointLoads = pGirder->GetAdditionalLoads();
-   std::vector<std::pair<Float64,Float64>>::const_iterator ptLoadIter(vPointLoads.begin());
-   std::vector<std::pair<Float64,Float64>>::const_iterator ptLoadIterEnd(vPointLoads.end());
-   for ( ; ptLoadIter != ptLoadIterEnd; ptLoadIter++ )
+   for ( const auto& ptLoad : vPointLoads )
    {
-      Float64 X = ptLoadIter->first;
-      Float64 P = ptLoadIter->second;
+      Float64 X = ptLoad.first;
+      Float64 P = ptLoad.second;
       MemberIDType mbrID = 0;
       Float64 Xmbr;
 
@@ -1620,13 +1624,9 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       swPointLoads->Create(ptLoadID++,mbrID,Xmbr,0,P,0,lotMember,&ptLoad);
 
       Wg += -P;
-      Float64 Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf;
-      pGirder->GetSectionProperties(X,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
-      ycgwg = Ytop*P;
    }
 
    // adjust total weight and vertical center of mass for point loads
-   results.Ytop = (results.Wg*results.Ytop + ycgwg)/(results.Wg + Wg);
    results.Wg += Wg;
 
    // Apply point loads due to lifting
@@ -1815,7 +1815,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 #endif
 }
 
-Float64 stbStabilityEngineer::ComputeXcg(const stbIGirder* pGirder, stbResults& results) const
+Float64 stbStabilityEngineer::ComputeXcg(const stbIGirder* pGirder, const stbIStabilityProblem* pStabilityProblem, stbResults& results) const
 {
    // Location of CG with respect to the roll axis, assuming the roll axis is at the middle of the girder (Wtop/2)
    SectionIndexType nSections = pGirder->GetSectionCount();
@@ -1835,14 +1835,29 @@ Float64 stbStabilityEngineer::ComputeXcg(const stbIGirder* pGirder, stbResults& 
          results.XcgMethod = stbTypes::Approximate;
          Float64 Xbar1 = fabs(Xcg1 - Max(Wtop1,Wbot1) / 2);
          Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
-         results.Xleft = (Xbar1 + Xbar2) / 2;
+
+         Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+         const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+         Float64 density = concrete.GetDensityForWeight();
+         Float64 unitWeight = density*g;
+
+         Float64 dL = pGirder->GetSectionLength(0);
+         Float64 Wg = unitWeight*dL*0.5*(Ag1 + Ag2);
+
+         results.Xleft = 0.5*(unitWeight*Ag1*Xbar1 + unitWeight*Ag2*Xbar2) / Wg;
       }
    }
    else
    {
       results.XcgMethod = stbTypes::Approximate;
-      Float64 xcg_dL = 0;
-      Float64 L = 0;
+      Float64 xcg_wg = 0;
+      Float64 Wg = 0;
+
+      Float64 g = unitSysUnitsMgr::GetGravitationalAcceleration();
+      const matConcreteEx& concrete = pStabilityProblem->GetConcrete();
+      Float64 density = concrete.GetDensityForWeight();
+      Float64 unitWeight = density*g;
+
       for (SectionIndexType sectIdx = 0; sectIdx < nSections; sectIdx++)
       {
          Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
@@ -1853,15 +1868,16 @@ Float64 stbStabilityEngineer::ComputeXcg(const stbIGirder* pGirder, stbResults& 
          pGirder->GetSectionProperties(sectIdx, stbTypes::End, &Ag2, &Ixx2, &Iyy2, &Ixy2, &Xcg2, &Ycg2, &Hg2, &Wtop2, &Wbot2);
          Float64 Xbar2 = fabs(Xcg2 - Max(Wtop2,Wbot2) / 2);
 
-         Float64 Xleft = 0.5*(Xbar1 + Xbar2);
+         Float64 Xleft = (unitWeight*Ag1*Xbar1 + unitWeight*Ag2*Xbar2);
 
          Float64 dL = pGirder->GetSectionLength(sectIdx);
+         xcg_wg += Xleft*dL;
 
-         xcg_dL += Xleft*dL;
-         L += dL;
+         Float64 wg = unitWeight*dL*(Ag1 + Ag2);
+         Wg += wg;
       }
 
-      results.Xleft = xcg_dL / L;
+      results.Xleft = xcg_wg / Wg;
    }
 
    return results.Xleft;
