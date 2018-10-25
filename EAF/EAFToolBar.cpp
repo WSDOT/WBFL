@@ -63,7 +63,9 @@ CEAFToolBar::~CEAFToolBar()
 BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback)
 {
    if ( !m_pToolBar->LoadToolBar(lpszResourceName) )
+   {
       return FALSE;
+   }
 
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
    int nButtons = tb.GetButtonCount();
@@ -74,7 +76,9 @@ BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCal
       UINT nID = tbButton.idCommand; // this is the ID that the plug supplied (not unique in the app)
       UINT nCmdID;// this command ID is unique in the app
       if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+      {
          return FALSE;
+      }
 
       tb.SetCmdID(i,nCmdID); // replace the comand ID on the button to be the unique one
    }
@@ -85,7 +89,9 @@ BOOL CEAFToolBar::LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCal
 BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
 {
    if ( !m_pToolBar->LoadToolBar(nIDResource) )
+   {
       return FALSE;
+   }
 
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
    int nButtons = tb.GetButtonCount();
@@ -96,7 +102,9 @@ BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
       UINT nID = tbButton.idCommand; // this is the ID that the plug supplied (not unique in the app)
       UINT nCmdID;// this command ID is unique in the app
       if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+      {
          return FALSE;
+      }
 
       tb.SetCmdID(i,nCmdID); // replace the comand ID on the button to be the unique one
    }
@@ -116,7 +124,9 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCTSTR lpsz
    {
       UINT nCmdID;
       if ( !m_pCmdMgr->AddCommandCallback(nIDs[i],pCallback,&nCmdID) )
+      {
          return FALSE;
+      }
 
       TBBUTTON tbButton;
       tbButton.iBitmap = nFirstNewImage  + i;
@@ -146,12 +156,14 @@ BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCTSTR lpszSt
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
-   int nFirstNewImage  = tb.AddBitmap(1,nBitmapID);
-   int nFirstNewString = tb.AddStrings(lpszString);
+   int nFirstNewImage  = (nBitmapID == -1 ? -1 : tb.AddBitmap(1,nBitmapID));
+   int nFirstNewString = (lpszString == NULL ? -1 : tb.AddStrings(lpszString));
 
    UINT nCmdID;
    if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+   {
         return FALSE;
+   }
 
    TBBUTTON tbButton;
    tbButton.iBitmap = nFirstNewImage;
@@ -163,7 +175,9 @@ BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCTSTR lpszSt
    tbButton.dwData = 0;
 
    if ( !tb.InsertButton(nIndex,&tbButton) )
+   {
       return FALSE;
+   }
 
    tb.AutoSize();
 
@@ -188,7 +202,13 @@ void CEAFToolBar::RemoveButtons(IEAFCommandCallback* pCallback)
 BOOL CEAFToolBar::DeleteButton(int nIndex)
 {
    if ( m_pToolBar )
-      return m_pToolBar->GetToolBarCtrl().DeleteButton(nIndex);
+   {
+      if ( m_pToolBar->GetToolBarCtrl().DeleteButton(nIndex) )
+      {
+         m_pToolBar->GetToolBarCtrl().AutoSize();
+         return TRUE;
+      }
+   }
 
    return FALSE;
 }
@@ -206,7 +226,9 @@ DWORD CEAFToolBar::GetOwnerID() const
 BOOL CEAFToolBar::IsWindowVisible()
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->IsWindowVisible();
+   }
 
    return FALSE;
 }
@@ -215,10 +237,14 @@ BOOL CEAFToolBar::HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide)
 {
    UINT nMappedCmdID; // unique command id
    if ( !m_pCmdMgr->GetMappedCommandID(nID,pCallback,&nMappedCmdID) )
+   {
       return FALSE;
+   }
 
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetToolBarCtrl().HideButton(nMappedCmdID,bHide);
+   }
 
    return FALSE;
 }
@@ -226,7 +252,9 @@ BOOL CEAFToolBar::HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide)
 BOOL CEAFToolBar::GetItemRect(int nIndex,LPRECT lpRect)
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetToolBarCtrl().GetItemRect(nIndex,lpRect);
+   }
 
    return FALSE;
 }
@@ -234,13 +262,17 @@ BOOL CEAFToolBar::GetItemRect(int nIndex,LPRECT lpRect)
 void CEAFToolBar::ClientToScreen(LPPOINT lpPoint) const
 {
    if ( m_pToolBar )
+   {
       m_pToolBar->GetToolBarCtrl().ClientToScreen(lpPoint);
+   }
 }
 
 void CEAFToolBar::ClientToScreen(LPRECT lpRect) const
 {
    if ( m_pToolBar )
+   {
       m_pToolBar->GetToolBarCtrl().ClientToScreen(lpRect);
+   }
 }
 
 void CEAFToolBar::SetItemID(int nIndex,UINT nID,IEAFCommandCallback* pCallback)
@@ -274,10 +306,14 @@ int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback
    // NOTE: MFC documentation says return type is UINT, but looking at the header file, it is an int
    UINT nMappedCmdID; // unique command id
    if ( !m_pCmdMgr->GetMappedCommandID(nPluginCmdID,pCallback,&nMappedCmdID) )
+   {
       return -1;
+   }
 
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetToolBarCtrl().CommandToIndex(nMappedCmdID);
+   }
 
    return -1;
 }
@@ -285,7 +321,9 @@ int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback
 DWORD CEAFToolBar::GetExtendedStyle()
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetToolBarCtrl().GetExtendedStyle();
+   }
 
    return 0;
 }
@@ -293,19 +331,27 @@ DWORD CEAFToolBar::GetExtendedStyle()
 void CEAFToolBar::SetExtendedStyle(DWORD dwStyleEx)
 {
    if ( m_pToolBar )
+   {
       m_pToolBar->SendMessage(TB_SETEXTENDEDSTYLE,0,(LPARAM)dwStyleEx);
+      m_pToolBar->GetToolBarCtrl().AutoSize();
+   }
 }
 
 void CEAFToolBar::SetButtonStyle(int nIndex,UINT nStyle)
 {
    if ( m_pToolBar )
+   {
       m_pToolBar->SetButtonStyle(nIndex,nStyle);
+      m_pToolBar->GetToolBarCtrl().AutoSize();
+   }
 }
 
 UINT CEAFToolBar::GetButtonStyle(int nIndex) const
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetButtonStyle(nIndex);
+   }
    
    return 0;
 }
@@ -313,7 +359,9 @@ UINT CEAFToolBar::GetButtonStyle(int nIndex) const
 CString CEAFToolBar::GetButtonText(int nIndex) const
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetButtonText(nIndex);
+   }
 
    return CString("");
 }
@@ -321,7 +369,10 @@ CString CEAFToolBar::GetButtonText(int nIndex) const
 BOOL CEAFToolBar::SetButtonText(int nIndex,LPCTSTR lpszText) const
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->SetButtonText(nIndex,lpszText);
+      m_pToolBar->GetToolBarCtrl().AutoSize();
+   }
 
    return FALSE;
 }
@@ -329,7 +380,9 @@ BOOL CEAFToolBar::SetButtonText(int nIndex,LPCTSTR lpszText) const
 BOOL CEAFToolBar::MoveButton(UINT nOldIndex,UINT nNewIndex)
 {
    if ( m_pToolBar )
+   {
       return m_pToolBar->GetToolBarCtrl().MoveButton(nOldIndex,nNewIndex);
+   }
 
    return FALSE;
 }
@@ -338,7 +391,9 @@ BOOL CEAFToolBar::CreateDropDownButton(UINT nPluginCmd,IEAFCommandCallback* pCal
 {
    // REF: http://www.codejock.com/support/articles/mfc/general/g_5.asp
    if ( !m_pToolBar )
+   {
       return FALSE;
+   }
 
    DWORD dwStyleEx = GetExtendedStyle();
    dwStyleEx |= TBSTYLE_EX_DRAWDDARROWS;
@@ -346,7 +401,9 @@ BOOL CEAFToolBar::CreateDropDownButton(UINT nPluginCmd,IEAFCommandCallback* pCal
 
    int idx = CommandToIndex(nPluginCmd,pCallback);
    if ( idx < 0 ) 
+   {
       return FALSE;
+   }
 
    DWORD dwStyle = GetButtonStyle(idx);
    dwStyle |= dwBtnStyle | BTNS_AUTOSIZE;
@@ -359,7 +416,9 @@ UINT CEAFToolBar::GetMappedID(UINT nPluginCmdID,IEAFCommandCallback* pCallback) 
 {
    UINT nMappedCmdID; // unique command id
    if ( !m_pCmdMgr->GetMappedCommandID(nPluginCmdID,pCallback,&nMappedCmdID) )
+   {
       return -1;
+   }
 
    return nMappedCmdID;
 }

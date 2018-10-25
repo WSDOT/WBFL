@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 // CEAFGraphView
 
 
-IMPLEMENT_DYNCREATE(CEAFGraphView, CView)
+IMPLEMENT_DYNCREATE(CEAFGraphView, CEAFView)
 
 CEAFGraphView::CEAFGraphView() :
 m_bIsPrinting(false)
@@ -58,7 +58,7 @@ CEAFGraphView::~CEAFGraphView()
 {
 }
 
-BEGIN_MESSAGE_MAP(CEAFGraphView, CView)
+BEGIN_MESSAGE_MAP(CEAFGraphView, CEAFView)
 	//{{AFX_MSG_MAP(CEAFGraphView)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT, OnUpdateFilePrint)
 	ON_UPDATE_COMMAND_UI(ID_FILE_PRINT_DIRECT, OnUpdateFilePrint)
@@ -98,12 +98,12 @@ void CEAFGraphView::OnDraw(CDC* pDC)
 void CEAFGraphView::AssertValid() const
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-	CView::AssertValid();
+	CEAFView::AssertValid();
 }
 
 void CEAFGraphView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	CEAFView::Dump(dc);
 }
 #endif //_DEBUG
 
@@ -123,7 +123,7 @@ void CEAFGraphView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 
 void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
-   CView::OnUpdate( pSender, lHint, pHint ); // base class
+   CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
    boost::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
    pBuilder->OnUpdate(pSender,lHint,pHint);
@@ -189,7 +189,7 @@ void CEAFGraphView::OnInitialUpdate()
          return;
       }
 
-      CView::OnInitialUpdate();
+      CEAFView::OnInitialUpdate();
    }
    catch(...)
    {
@@ -208,7 +208,7 @@ BOOL CEAFGraphView::OnPreparePrinting(CPrintInfo* pInfo)
    m_PrintRect = pInfo->m_rectDraw;
 
    if (DoPreparePrinting(pInfo))
-	   return CView::OnPreparePrinting(pInfo);
+	   return CEAFView::OnPreparePrinting(pInfo);
    else
       return FALSE;
 }

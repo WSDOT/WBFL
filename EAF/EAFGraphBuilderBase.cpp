@@ -79,7 +79,9 @@ int CEAFGraphBuilderBase::InitializeGraphController(CWnd* pParent,UINT nID)
    }
 
    if ( !CreateGraphController(pParent,nID) )
+   {
       return -1;
+   }
 
    return 0;
 }
@@ -92,9 +94,13 @@ CEAFGraphChildFrame* CEAFGraphBuilderBase::GetFrame()
 CEAFGraphView* CEAFGraphBuilderBase::GetView()
 {
    if ( m_pFrame )
+   {
       return m_pFrame->GetGraphView();
+   }
    else
+   {
       return NULL;
+   }
 }
 
 void CEAFGraphBuilderBase::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
@@ -141,19 +147,27 @@ void CEAFGraphBuilderBase::DrawGraph(CWnd* pGraphWnd,CDC* pDC)
 
       CString msg;
       if ( m_bUpdateError )
+      {
          AfxFormatString1(msg,IDS_E_UPDATE,m_ErrorMsg.c_str());
+      }
       else
+      {
          msg.LoadString(IDS_RESULTS_NOT_AVAILABLE);
+      }
 
       CFont font;
       CFont* pOldFont = NULL;
       if ( font.CreatePointFont(100,_T("Arial"),pDC) )
+      {
          pOldFont = pDC->SelectObject(&font);
+      }
 
       MultiLineTextOut(pDC,0,0,msg);
 
       if ( pOldFont )
+      {
          pDC->SelectObject(pOldFont);
+      }
    }
 }
 

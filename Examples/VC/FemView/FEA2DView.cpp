@@ -43,6 +43,7 @@ BEGIN_MESSAGE_MAP(CFEA2DView, CDisplayView)
 	ON_COMMAND(ID_VIEW_ZOOM, OnViewZoom)
 	ON_COMMAND(ID_VIEW_SETSCALE, OnViewSetScale)
 	ON_WM_MOUSEMOVE()
+   ON_WM_SIZE()
 	ON_COMMAND(ID_LOADS_CREATELOADING, OnLoadsCreateLoading)
 	ON_COMMAND(ID_LOADS_ADDPOINTLOAD, OnLoadsAddPointLoad)
 	ON_COMMAND(ID_VIEW_JOINTS, OnViewJoints)
@@ -784,4 +785,9 @@ BOOL CFEA2DView::OnPreparePrinting(CPrintInfo* pInfo)
    }
    else
       return FALSE;
+}
+
+void CFEA2DView::OnSize(UINT nType, int cx, int cy)
+{
+   OnViewScaleToFit();
 }

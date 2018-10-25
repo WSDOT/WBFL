@@ -73,6 +73,7 @@ protected:
 	afx_msg void OnUpdateViewMembers(CCmdUI* pCmdUI);
 	afx_msg void OnViewLoads();
 	afx_msg void OnUpdateViewLoads(CCmdUI* pCmdUI);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

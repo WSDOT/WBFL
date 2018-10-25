@@ -29,6 +29,7 @@
 
 #include <EAF\EAFExp.h>
 #include <IReportManager.h>
+#include <EAF\EAFView.h>
 
 class CReportButton;
 
@@ -61,7 +62,7 @@ struct EAFCLASS CEAFReportViewCreationData
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView view
-class EAFCLASS CEAFReportView : public CView
+class EAFCLASS CEAFReportView : public CEAFView
 {
 protected:
 	CEAFReportView();           // protected constructor used by dynamic creation

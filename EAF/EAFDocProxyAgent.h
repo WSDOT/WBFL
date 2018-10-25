@@ -146,6 +146,7 @@ public:
    virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
    virtual void RemoveView(long key);
    virtual CView* CreateView(long key,LPVOID pData=0);
+   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint);
 
 // IEAFMainMenu
 public:

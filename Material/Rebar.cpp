@@ -133,12 +133,8 @@ m_Name(_T("Unknown"))
    m_Size = bs3;
    m_Type = A615;
    m_Grade = Grade60;
-   int idx = TypeIndex(m_Type);
-   m_Fu = gs_Fu60[idx];
-   m_Fy = gs_Fy60[idx];
-   m_Es = gs_Es60[idx];
 
-   idx = SizeIndex(m_Size);
+   int idx = SizeIndex(m_Size);
    m_Dimension = gs_Diameter[idx];
    m_Area      = gs_Area[idx];
 }
@@ -153,41 +149,7 @@ m_Name( name )
    m_Type = type;
    m_Size = size;
 
-   int idx = TypeIndex(m_Type);
-   switch(m_Grade)
-   {
-   case matRebar::Grade40:
-      m_Fu = gs_Fu40[idx];
-      m_Fy = gs_Fy40[idx];
-      m_Es = gs_Es40[idx];
-      break;
-
-   case matRebar::Grade60:
-      m_Fu = gs_Fu60[idx];
-      m_Fy = gs_Fy60[idx];
-      m_Es = gs_Es60[idx];
-      break;
-
-   case matRebar::Grade75:
-      m_Fu = gs_Fu75[idx];
-      m_Fy = gs_Fy75[idx];
-      m_Es = gs_Es75[idx];
-      break;
-
-   case matRebar::Grade80:
-      m_Fu = gs_Fu80[idx];
-      m_Fy = gs_Fy80[idx];
-      m_Es = gs_Es80[idx];
-      break;
-
-   case matRebar::Grade100:
-      m_Fu = gs_Fu100[idx];
-      m_Fy = gs_Fy100[idx];
-      m_Es = gs_Es100[idx];
-      break;
-   }
-
-   idx = SizeIndex(m_Size);
+   int idx = SizeIndex(m_Size);
    m_Dimension = gs_Diameter[idx];
    m_Area      = gs_Area[idx];
 }
@@ -210,6 +172,108 @@ matRebar& matRebar::operator= (const matRebar& rOther)
    }
 
    return *this;
+}
+
+Float64 matRebar::GetUltimateStrength(Type type,Grade grade)
+{
+   Float64 value = -1;
+   int index = TypeIndex(type);
+   switch (grade)
+   {
+   case Grade40:
+      value = gs_Fu40[index];
+      break;
+
+   case Grade60:
+      value = gs_Fu60[index];
+      break;
+
+   case Grade75:
+      value = gs_Fu75[index];
+      break;
+
+   case Grade80:
+      value = gs_Fu80[index];
+      break;
+
+   case Grade100:
+      value = gs_Fu100[index];
+      break;
+
+   default:
+      ATLASSERT(false); // should not get here
+   }
+
+   ATLASSERT(0 < value);
+   return value;
+}
+
+Float64 matRebar::GetYieldStrength(Type type,Grade grade)
+{
+   Float64 value = -1;
+   int index = TypeIndex(type);
+   switch (grade)
+   {
+   case Grade40:
+      value = gs_Fy40[index];
+      break;
+
+   case Grade60:
+      value = gs_Fy60[index];
+      break;
+
+   case Grade75:
+      value = gs_Fy75[index];
+      break;
+
+   case Grade80:
+      value = gs_Fy80[index];
+      break;
+
+   case Grade100:
+      value = gs_Fy100[index];
+      break;
+
+   default:
+      ATLASSERT(false); // should not get here
+   }
+
+   ATLASSERT(0 < value);
+   return value;
+}
+
+Float64 matRebar::GetE(Type type,Grade grade)
+{
+   Float64 value = -1;
+   int index = TypeIndex(type);
+   switch (grade)
+   {
+   case Grade40:
+      value = gs_Es40[index];
+      break;
+
+   case Grade60:
+      value = gs_Es60[index];
+      break;
+
+   case Grade75:
+      value = gs_Es75[index];
+      break;
+
+   case Grade80:
+      value = gs_Es80[index];
+      break;
+
+   case Grade100:
+      value = gs_Es100[index];
+      break;
+
+   default:
+      ATLASSERT(false); // should not get here
+   }
+
+   ATLASSERT(0 < value);
+   return value;
 }
 
 //======================== OPERATIONS =======================================

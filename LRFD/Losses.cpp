@@ -555,7 +555,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
       UpdateLosses();
    }
 
-   return TemporaryStrand_RelaxationLossesBeforeTransfer() + TemporaryStrand_ElasticShorteningLosses();
+   return TemporaryStrand_RelaxationLossesBeforeTransfer();
 }
 
 Float64 lrfdLosses::TemporaryStrand_AtLifting() const
@@ -571,7 +571,7 @@ Float64 lrfdLosses::TemporaryStrand_AtLifting() const
    {
       loss = TemporaryStrand_AfterTransfer();
    }
-   else if ( m_TempStrandUsage == tsPTBeforeLifting )
+   else if ( m_TempStrandUsage == tsPTBeforeLifting || m_TempStrandUsage == tsPTAfterLifting )
    {
       loss = TemporaryStrand_AfterTemporaryStrandInstallation();
    }
@@ -617,10 +617,6 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
    {
       loss = TemporaryStrand_AfterTransfer();
    }
-   else
-   {
-      loss = FrictionLoss() + AnchorSetLoss() + GetDeltaFptAvg(); //m_dfpF + m_dfpA + m_dfptAvg;
-   }
 
    return loss;
 }
@@ -632,27 +628,7 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
       UpdateLosses();
    }
 
-   Float64 loss = 0;
-   switch ( m_TempStrandUsage )
-   {
-   case lrfdLosses::tsPretensioned:
-      loss = TemporaryStrand_AtShipping();
-      break;
-
-   case lrfdLosses::tsPTBeforeLifting:
-   case lrfdLosses::tsPTAfterLifting:
-      loss = TemporaryStrand_AtLifting() + TimeDependentLossesBeforeDeck();
-      break;
-
-   case lrfdLosses::tsPTBeforeShipping:
-      loss = TemporaryStrand_AtShipping();
-      break;
-
-   default:
-      CHECK(false);
-      break;
-   }
-
+   Float64 loss = TemporaryStrand_AtShipping();
    return loss;
 }
 

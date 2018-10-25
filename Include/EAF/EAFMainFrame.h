@@ -113,6 +113,10 @@ public:
    // called by the framework when the status center status changes
    virtual void OnStatusChanged();
 
+   void InitMDIChildWndEnum();
+   CMDIChildWnd* GetNextMDIChildWnd();
+   int GetCountMDIChildWnds();
+
 // Implementation
 public:
 	virtual ~CEAFMainFrame();
@@ -122,6 +126,9 @@ public:
 #endif
 
 protected:  
+   CWnd m_wndMDIClient;
+   CWnd* m_pWndCurrentChild;
+
    // Factory method for creating the main frame main menu object
    virtual CEAFMenu* CreateMainMenu();
    CEAFMenu* m_pMainMenu;

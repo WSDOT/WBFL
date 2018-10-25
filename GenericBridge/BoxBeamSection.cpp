@@ -40,10 +40,13 @@ static char THIS_FILE[] = __FILE__;
 // CBoxBeamSection
 HRESULT CBoxBeamSection::FinalConstruct()
 {
+   m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
+   m_CompositeShape.QueryInterface(&m_Shape);
+   m_CompositeShape.QueryInterface(&m_Position);
+
    m_Beam.CoCreateInstance(CLSID_BoxBeam);
-   m_Beam.QueryInterface(&m_Shape);
-   m_Beam.QueryInterface(&m_Position);
-   m_Beam.QueryInterface(&m_Composite);
+   CComQIPtr<IShape> shape(m_Beam);
+   m_CompositeShape->AddShape(shape,VARIANT_FALSE);
 
    return S_OK;
 }
@@ -94,14 +97,9 @@ STDMETHODIMP CBoxBeamSection::put_Beam(IBoxBeam* beam)
 
    m_Beam.Release();
    clone.QueryInterface(&m_Beam);
-
    m_Shape = clone;
 
-   m_Position.Release();
-   m_Shape.QueryInterface(&m_Position);
-
-   m_Composite.Release();
-   m_Shape.QueryInterface(&m_Composite);
+   m_CompositeShape->Replace(0,m_Shape);
 
    return S_OK;
 }
@@ -454,11 +452,11 @@ STDMETHODIMP CBoxBeamSection::Clone(IShape** pClone)
    CComObject<CBoxBeamSection>* clone;
    CComObject<CBoxBeamSection>::CreateInstance(&clone);
 
-   CComPtr<IBoxBeamSection> flanged_beam = clone;
+   CComPtr<IBoxBeamSection> section = clone;
+   section->put_Beam(m_Beam);
 
-   flanged_beam->put_Beam(m_Beam);
+   CComQIPtr<IShape> shape(section);
 
-   CComQIPtr<IShape> shape(flanged_beam);
    (*pClone) = shape;
    (*pClone)->AddRef();
 
@@ -480,57 +478,57 @@ STDMETHODIMP CBoxBeamSection::ClipIn(IRect2d* pRect,IShape** pShape)
 /////////////////////////////////////////////////////////////////////////////
 STDMETHODIMP CBoxBeamSection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
-   return m_Composite->get_StructuredStorage(pStg);
+   return m_CompositeShape->get_StructuredStorage(pStg);
 }
 
 STDMETHODIMP CBoxBeamSection::get_Shape(IShape* *pVal)
 {
-   return m_Composite->get_Shape(pVal);
+   return m_CompositeShape->get_Shape(pVal);
 }
 
 STDMETHODIMP CBoxBeamSection::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
 {
-   return m_Composite->get_Item(idx,pVal);
+   return m_CompositeShape->get_Item(idx,pVal);
 }
 
 STDMETHODIMP CBoxBeamSection::get__NewEnum(IUnknown* *pVal)
 {
-   return m_Composite->get__NewEnum(pVal);
+   return m_CompositeShape->get__NewEnum(pVal);
 }
 
 STDMETHODIMP CBoxBeamSection::get_Count(CollectionIndexType *pVal)
 {
-   return m_Composite->get_Count(pVal);
+   return m_CompositeShape->get_Count(pVal);
 }
 
 STDMETHODIMP CBoxBeamSection::Remove(CollectionIndexType idx)
 {
-   return m_Composite->Remove(idx);
+   return m_CompositeShape->Remove(idx);
 }
 
 STDMETHODIMP CBoxBeamSection::Clear()
 {
-   return m_Composite->Clear();
+   return m_CompositeShape->Clear();
 }
 
 STDMETHODIMP CBoxBeamSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
 {
-   return m_Composite->ReplaceEx(idx,pShapeItem);
+   return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
 STDMETHODIMP CBoxBeamSection::Replace(CollectionIndexType idx,IShape* pShape)
 {
-   return m_Composite->Replace(idx,pShape);
+   return m_CompositeShape->Replace(idx,pShape);
 }
 
 STDMETHODIMP CBoxBeamSection::AddShapeEx(ICompositeShapeItem* ShapeItem)
 {
-   return m_Composite->AddShapeEx(ShapeItem);
+   return m_CompositeShape->AddShapeEx(ShapeItem);
 }
 
 STDMETHODIMP CBoxBeamSection::AddShape(IShape* shape,VARIANT_BOOL bVoid)
 {
-   return m_Composite->AddShape(shape,bVoid);
+   return m_CompositeShape->AddShape(shape,bVoid);
 }
 
 // XYPosition

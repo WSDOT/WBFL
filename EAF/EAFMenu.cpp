@@ -30,6 +30,7 @@
 #include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFResources.h>
+#include <EAF\EAFChildFrame.h>
 
 #include <algorithm> // for std::find()
 
@@ -245,7 +246,7 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
       {
          CString strMenuItem;
          pMenu->GetMenuString( nID, strMenuItem, MF_BYCOMMAND );
-         AppendMenu(nID,strMenuItem,EAF_FIRST_USER_COMMAND <= nID ? pCallback : NULL);
+         AppendMenu(nID,strMenuItem,pCallback);
       }
    }
 }
@@ -340,6 +341,9 @@ BOOL CEAFMenu::InsertSeparator(UINT nPosition,UINT nFlags)
 BOOL CEAFMenu::RemoveMenu(UINT nPosition,UINT nFlags, IEAFCommandCallback* pCallback)
 {
    CMenu* pMenu = GetMenu();
+
+   INT offset = GetMenuItemOffset();
+   nPosition += offset;
 
    if ( nFlags == MF_BYCOMMAND)
    {
@@ -457,13 +461,17 @@ UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
 {
    CMenu* pMenu = GetMenu();
 
+   CString strTargetMenuItem(strTargetMenu);
+   strTargetMenuItem.Remove(L'&');
+
    INT offset = GetMenuItemOffset();
    UINT nItems = pMenu->GetMenuItemCount();
    for ( UINT menuPos = 0; menuPos < nItems; menuPos++ )
    {
       CString strMenu;
       pMenu->GetMenuString(menuPos,strMenu,MF_BYPOSITION);
-      if ( strMenu.Compare(strTargetMenu) == 0 )
+      strMenu.Remove(L'&');
+      if ( strMenu.Compare(strTargetMenuItem) == 0 )
       {
          return menuPos - offset;
       }
@@ -544,9 +552,11 @@ INT CEAFMenu::GetMenuItemOffset()
    // if the active frame is maximized, the window/system menu for that frame is added to the
    // the menu bar. This offsets all the menu items by one.
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
+   pMainFrame->InitMDIChildWndEnum();
+   CMDIChildWnd* pActiveFrame = pMainFrame->GetNextMDIChildWnd();
+   //CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
    INT offset = 0;
-   DWORD dwStyle = pActiveFrame->GetStyle();
+   DWORD dwStyle = (pActiveFrame ? pActiveFrame->GetStyle() : 0);
    if ( pActiveFrame && m_pWnd && (pActiveFrame->IsZoomed() || sysFlags<DWORD>::IsSet(dwStyle,WS_MAXIMIZE)) )
    {
       offset = 1;

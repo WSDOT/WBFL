@@ -396,7 +396,6 @@ private:
    mutable Float64 m_dfpSD;
    mutable Float64 m_dfpCD;
    mutable Float64 m_dfpR2;
-   mutable Float64 m_dfpLT;
 
    // hauling losses
    mutable Float64 m_dfpSRH[2];

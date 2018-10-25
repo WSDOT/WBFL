@@ -191,7 +191,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdRebarIter(matRebar::Grade grade = matRebar::Grade60,matRebar::Type type = matRebar::A615,matRebar::Size maxSize=matRebar::bsNone);
+   lrfdRebarIter(matRebar::Grade grade = matRebar::Grade60,matRebar::Type type = matRebar::A615,bool bTransverseBarsOnly=false);
 
    //------------------------------------------------------------------------
    lrfdRebarIter(const lrfdRebarIter& rOther);
@@ -288,7 +288,7 @@ private:
    std::vector< const matRebar* >::iterator m_Current;
    matRebar::Grade m_Grade;
    matRebar::Type m_Type;
-   matRebar::Size m_MaxBarSize;
+   bool m_bTransverseBarsOnly;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

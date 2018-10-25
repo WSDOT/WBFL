@@ -26,6 +26,7 @@
 #pragma once
 
 #include <DManip\DrawPointStrategy.h>
+#include <DManip\LineStyles.h>
 
 interface IShape;
 
@@ -33,10 +34,14 @@ interface iShapeDrawStrategy : public iDrawPointStrategy
 {
    STDMETHOD_(void,SetShape)(IShape* pShape) PURE;
    STDMETHOD_(void,GetShape)(IShape** ppShape) PURE;
+   STDMETHOD_(void,SetSolidLineStyle)(LineStyleType lineStyle) PURE;
+   STDMETHOD_(LineStyleType,GetSolidLineStyle)() PURE;
    STDMETHOD_(void,SetSolidLineColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetSolidLineColor)() PURE;
    STDMETHOD_(void,SetSolidFillColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetSolidFillColor)() PURE;
+   STDMETHOD_(void,SetVoidLineStyle)(LineStyleType lineStyle) PURE;
+   STDMETHOD_(LineStyleType,GetVoidLineStyle)() PURE;
    STDMETHOD_(void,SetVoidLineColor)(COLORREF crColor) PURE;
    STDMETHOD_(COLORREF,GetVoidLineColor)() PURE;
    STDMETHOD_(void,SetVoidFillColor)(COLORREF crColor) PURE;

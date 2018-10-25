@@ -632,7 +632,9 @@ void CDisplayView::ScaleToFit(bool reDraw)
    }
 
    if (reDraw)
+   {
       Invalidate();
+   }
 }
 
 void CDisplayView::CenterOnPoint(IPoint2d* wOrg, bool reDraw)

@@ -55,11 +55,16 @@ END_COM_MAP()
    // iShapeDrawStrategy Implementation
    STDMETHOD_(void,SetShape)(IShape* pShape);
    STDMETHOD_(void,GetShape)(IShape** ppShape);
+
+   STDMETHOD_(void,SetSolidLineStyle)(LineStyleType lineStyle);
+   STDMETHOD_(LineStyleType,GetSolidLineStyle)();
    STDMETHOD_(void,SetSolidLineColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetSolidLineColor)();
    STDMETHOD_(void,SetSolidFillColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetSolidFillColor)();
 
+   STDMETHOD_(void,SetVoidLineStyle)(LineStyleType lineStyle);
+   STDMETHOD_(LineStyleType,GetVoidLineStyle)();
    STDMETHOD_(void,SetVoidLineColor)(COLORREF crColor);
    STDMETHOD_(COLORREF,GetVoidLineColor)();
    STDMETHOD_(void,SetVoidFillColor)(COLORREF crColor);
@@ -78,6 +83,8 @@ END_COM_MAP()
    STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO, IRect2d** box);
 
 private:
+   LineStyleType m_SolidLineStyle;
+   LineStyleType m_VoidLineStyle;
    COLORREF m_SolidLineColor;
    COLORREF m_SolidFillColor;
    COLORREF m_VoidLineColor;
@@ -91,8 +98,10 @@ private:
    CComPtr<IRect2d> m_BoundingBox;
 
    void DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
+   void DrawShape(iDisplayObject* pDO,CDC* pDC,ICompositeShape* pCompositeShape,CPen& solidPen,CBrush& solidBrush,CPen& voidPen,CBrush& voidBrush);
    void DrawShape(iDisplayObject* pDO,CDC* pDC,IShape* pShape);
    void GetPointsInWorldSpace(iDisplayObject* pDO,IShape* pShape,IPoint2dCollection** pPoints);
+   void CreatePen(LineStyleType lineStyle,UINT width,COLORREF color,CPen& pen);
 };
 
 #endif // !defined(AFX_SHAPEDRAWSTRATEGYIMPL_H__9E3A6AF6_E734_11D4_8B83_006097C68A9C__INCLUDED_)

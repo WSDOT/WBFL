@@ -66,6 +66,7 @@ BEGIN_COM_MAP(CVoidedSlabSection2)
 END_COM_MAP()
 
 private:
+   CComPtr<ICompositeShape> m_CompositeShape; // beam is in position 0, slab is in position 1
    CComPtr<IVoidedSlab2> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
