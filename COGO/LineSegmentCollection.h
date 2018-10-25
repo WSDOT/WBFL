@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@
 
 
 class CLineSegmentCollection;
-typedef PersistentKeyedCollection<CLineSegmentCollection,ILineSegmentCollection,&IID_ILineSegmentCollection,CogoElementKey,ILineSegment2d> LineSegmentCollectionImpl;
+typedef PersistentKeyedCollection<CLineSegmentCollection,ILineSegmentCollection,&IID_ILineSegmentCollection,CogoObjectID,ILineSegment2d> LineSegmentCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLineSegmentCollection
@@ -88,18 +88,18 @@ END_CONNECTION_POINT_MAP()
 
 // ILineSegmentCollection
 public:
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
 	STDMETHOD(get_Factory)(/*[out,retval]*/ ILineSegment2dFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/ ILineSegment2dFactory* factory);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ ILineSegment2d* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ ILineSegment2d* newVal);
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ ILineSegment2d* *pVal);
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ ILineSegment2d* newVal);
    STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls);
-   STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ ILineSegment2d* newVal);
-   STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls);
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* newVal);
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
    STDMETHOD(Clear)();
-   STDMETHOD(FindKey)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoElementKey* key);
+   STDMETHOD(FindKey)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoObjectID* key);
    STDMETHOD(get__EnumKeys)(/*[out,retval]*/ IEnumKeys** ppenum);
    STDMETHOD(get__EnumLineSegments)(/*[out,retval]*/ IEnumLineSegments** ppenum);
    STDMETHOD(Clone)(/*[out,retval]*/ ILineSegmentCollection* *clone);
@@ -114,14 +114,14 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT LineSegNotFound(CogoElementKey key);
-   HRESULT LineSegAlreadyDefined(CogoElementKey key);
-   HRESULT LineSegKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT LineSegNotFound(CogoObjectID key);
+   HRESULT LineSegAlreadyDefined(CogoObjectID key);
+   HRESULT LineSegKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,ILineSegment2d* lineSeg);
-   void Unadvise(CogoElementKey key,ILineSegment2d* lineSeg);
+   void Advise(CogoObjectID key,ILineSegment2d* lineSeg);
+   void Unadvise(CogoObjectID key,ILineSegment2d* lineSeg);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 };
 
 #endif //__LINESEGMENTCOLLECTION_H_

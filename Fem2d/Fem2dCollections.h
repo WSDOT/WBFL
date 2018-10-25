@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,7 +91,7 @@ public:
 
          // insert new joint
          std::pair<ContainerIteratorType, bool> st;
-         st = m_coll.insert(ContainerValueType(id, item));
+         st = m_coll.insert(ContainerValueType(id, CComVariant(item)));
          if (!st.second)
          {
             ATLASSERT(0); // insert failed - better check why
@@ -126,7 +126,7 @@ public:
       // cycle though collection and save members
       for (ContainerIteratorType it= m_coll.begin(); it != m_coll.end(); it++)
       {
-         CComQIPtr<ItemType> item (it->second);
+         CComQIPtr<ItemType> item (it->second.punkVal);
          StoredType* pItem = dynamic_cast<StoredType*>(item.p);
          hr = pItem->Save(save);
          //hr = it->second->Save(save);

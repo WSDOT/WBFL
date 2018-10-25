@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,7 +48,9 @@ public:
    m_MemberID(-1),
    m_MemberType(mtUndefined),
    m_AxialStrain(0.0),
-   m_CurvatureStrain(0.0)
+   m_CurvatureStrain(0.0),
+   m_StartLocation(0.0),
+   m_EndLocation(0.0)
 	{
 	}
 
@@ -80,6 +82,10 @@ END_CONNECTION_POINT_MAP()
 // IStrainLoad
 public:
 	STDMETHOD(Clone)(/*[out,retval]*/IStrainLoad** clone);
+   STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(put_StartLocation)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_CurvatureStrain)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_CurvatureStrain)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_AxialStrain)(/*[out, retval]*/ Float64 *pVal);
@@ -94,6 +100,8 @@ protected:
    MemberIDType  m_MemberID;
    Float64       m_AxialStrain;
    Float64       m_CurvatureStrain;
+   Float64       m_StartLocation;
+   Float64       m_EndLocation;
 };
 
 #endif //__STRAINLOAD_H_

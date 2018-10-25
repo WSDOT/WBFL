@@ -2668,6 +2668,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\MathEx.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Math\MathExp.h"
 				>
 			</File>

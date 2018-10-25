@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -82,6 +82,7 @@ public:
 	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal);
    STDMETHOD(Increment)(/*[in]*/ Float64 value);
    STDMETHOD(FromVariant)(/*[in]*/ VARIANT varStation);
+   STDMETHOD(Distance)(IStation* station,Float64* pDist);
 
 // IStructuredStorage2
 public:

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -92,6 +92,8 @@ public:
                      ALPHA,    //   |
                      beta,     //   V
                      BETA,
+                     chi,
+                     CHI,
                      delta,
                      DELTA,
                      epsilon,
@@ -118,8 +120,8 @@ public:
                      PSI,
                      rho,
                      RHO,
-                     SIGMA,
                      sigma,
+                     SIGMA,
                      theta,
                      THETA,
                      QED,                     // Little triangle made of dots
@@ -214,7 +216,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcSymbol& rOther);
-   void MakeAssignment(const rptRcSymbol& rOther);
+   virtual void MakeAssignment(const rptRcSymbol& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

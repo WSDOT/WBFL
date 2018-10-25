@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,8 +76,7 @@ public:
                   Uint32 Nl, Float64 wLane,
                   Float64 d,Float64 L,
                   Float64 leftDe,Float64 rightDe,
-                  Float64 skewAngle1, Float64 skewAngle2,
-                  bool bMomentSkew, bool bShearSkew);
+                  Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -120,7 +119,7 @@ protected:
    void MakeCopy(const lrfdLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeBC& rOther);
+   virtual void MakeAssignment(const lrfdLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
    virtual bool TestRangeOfApplicability(Location loc) const;
@@ -231,8 +230,7 @@ public:
                        Float64 d,Float64 L,
                        Float64 leftDe,Float64 rightDe,
                        Float64 leftSlabOverhang,Float64 rightSlabOverhang,
-                       Float64 skewAngle1, Float64 skewAngle2,
-                       bool bMomentSkew, bool bShearSkew);
+                       Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -271,7 +269,7 @@ protected:
    void MakeCopy(const lrfdWsdotLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdWsdotLldfTypeBC& rOther);
+   virtual void MakeAssignment(const lrfdWsdotLldfTypeBC& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -334,6 +332,11 @@ DESCRIPTION
    3) The live load used to design the exterior beam must never be less than the live
       load used to design an interior beam.
 
+   4) For bridges with less than three girders in the cross section, assume the live load distribution
+      factors for flexural moment and shear are equal to the number of lanes divided by the number
+      of girders. Determine the number of lanes as required by AASHTO LRFD Bridge Design Specifications,
+      Article 3.6.1.1.1.
+
 COPYRIGHT
    Copyright © 1997-2001
    Washington State Department Of Transportation
@@ -355,8 +358,7 @@ public:
                   Float64 d,Float64 L,
                   Float64 leftDe,Float64 rightDe,
                   Float64 roadwayWidth,
-                  Float64 skewAngle1, Float64 skewAngle2,
-                  bool bMomentSkew, bool bShearSkew);
+                  Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -410,7 +412,7 @@ protected:
    void MakeCopy(const lrfdTxDotLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdTxDotLldfTypeBC& rOther);
+   virtual void MakeAssignment(const lrfdTxDotLldfTypeBC& rOther);
 
    // GROUP: ACCESS
    virtual bool DoApplySkew() const;

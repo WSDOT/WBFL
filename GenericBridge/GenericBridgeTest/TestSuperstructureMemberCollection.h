@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,37 +30,16 @@
 #ifndef INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_
 #define INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_
 
-class ATL_NO_VTABLE CTestSuperstructureMemberCollection :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ISuperstructureMemberCollectionEvents
+class CTestSuperstructureMemberCollection
 {
 public:
 	static void Test();
 	CTestSuperstructureMemberCollection();
 	virtual ~CTestSuperstructureMemberCollection();
 
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestSuperstructureMemberCollection)
-   COM_INTERFACE_ENTRY(ISuperstructureMemberCollectionEvents)
-END_COM_MAP()
-
-// ISuperstructureMemberCollectionEvents
-public:
-   STDMETHOD(OnSuperstructureMemberChanged)(ISuperstructureMember* mbr);
-   STDMETHOD(OnSuperstructureMemberAdded)(long idx);
-   STDMETHOD(OnSuperstructureMemberRemoved)(long idx);
-   STDMETHOD(OnSuperstructureMemberMoved)(long from,long to);
-   STDMETHOD(OnSuperstructureMemberCollectionChanged)(ISuperstructureMemberCollection* members);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
-
    static void TestDefaults();
    static void TestMethods();
-   static void TestEvents();
 };
 
 #endif // INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_

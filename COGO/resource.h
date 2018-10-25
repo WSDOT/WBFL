@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by COGO.rc
 //
 #define IDS_PROJNAME                    100
@@ -72,6 +72,8 @@
 #define IDS_E_POINTEVENTS               540
 #define IDS_E_CUBICSPLINEPOINTS         541
 #define IDS_E_POINTINCIRCLE             542
+#define IDS_E_NOINTERSECTIONFOUND       543
+#define IDS_E_NOINTERSECTION            543
 
 // Next default values for new objects
 // 

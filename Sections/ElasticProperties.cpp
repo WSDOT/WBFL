@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,7 +46,6 @@ STDMETHODIMP CElasticProperties::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IElasticPropertiesEx,
 		&IID_IElasticProperties,
 		&IID_IStructuredStorage2,
 	};
@@ -217,11 +216,14 @@ STDMETHODIMP CElasticProperties::TransformProperties(Float64 E,IShapeProperties*
 {
    CHECK_RETOBJ(props);
 
-   if ( E <= 0 )
-      return E_INVALIDARG;
-
    CComPtr<IShapeProperties> shapeProps;
    shapeProps.CoCreateInstance(CLSID_ShapeProperties);
+
+   *props = shapeProps;
+   (*props)->AddRef();
+
+   if ( E <= 0 )
+      return E_INVALIDARG;
 
    Float64   area;
    CComPtr<IPoint2d> centroid;
@@ -265,9 +267,6 @@ STDMETHODIMP CElasticProperties::TransformProperties(Float64 E,IShapeProperties*
 
    m_Props->get_Ybottom(&Ybottom);
    shapeProps->put_Ybottom(Ybottom);
-
-   *props = shapeProps;
-   (*props)->AddRef();
 
    return S_OK;
 }

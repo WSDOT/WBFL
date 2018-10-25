@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,29 +30,12 @@
 #ifndef INCLUDED_TESTCOLUMN_H_
 #define INCLUDED_TESTCOLUMN_H_
 
-class ATL_NO_VTABLE CTestColumn :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IColumnEvents
+class CTestColumn
 {
 public:
 	static void Test();
 	CTestColumn();
 	virtual ~CTestColumn();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestColumn)
-   COM_INTERFACE_ENTRY(IColumnEvents)
-END_COM_MAP()
-
-// IColumnEvents
-public:
-   STDMETHOD(OnColumnChanged)(IColumn* col);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTCOLUMN_H_

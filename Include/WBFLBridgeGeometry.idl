@@ -1,0 +1,663 @@
+// WBFLBridgeGeometry.idl : IDL source for BridgeGeometry
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (WBFLBridgeGeometry.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+import "WBFLTypes.idl";
+import "WBFLCogo.idl";
+
+cpp_quote("#define BRIDGEGEOMETRY_E_INITIALIZATION     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,512)")
+cpp_quote("#define BRIDGEGEOMETRY_E_INVALIDSTATION     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,513)")
+cpp_quote("#define BRIDGEGEOMETRY_E_ID                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
+
+// custom types
+typedef IDType  LineIDType;
+
+// forward declarations
+interface IBridgeGeometry;
+
+// enumerators
+typedef [public,helpstring("enum GirderLineType"),uuid(621DA6BE-19C3-49FE-9227-95F988D8A6BF)]
+enum
+{
+   glChord = 0, // straight line chord
+   glPath  = 1  // finite length path (curved)
+} GirderLineType;
+
+// un-comment after GenericBridge becomes obsolete
+typedef [public,helpstring("enum PierFaceType"),uuid(FC45D43A-BE9D-4725-8913-E2B2947CEC73)] 
+enum 
+{
+    pfBack = 0,
+    pfAhead = 1
+} PierFaceType;
+
+typedef [public,helpstring("enum DeckBoundaryEdgeType"),uuid(45561BA8-9178-4AEF-8B2B-C25BA2D09E1B)]
+enum
+{
+   setPier, // DeckBoundary edge defined by pier CL
+   setLayout // DeckBoundary edge defined by layout line
+} DeckBoundaryEdgeType;
+
+typedef [public,helpstring("enum MeasurementType"),uuid(A8F6552D-A5A9-40DB-9562-B33623CC9C31)] 
+enum 
+{
+    mtNormal = 0,
+    mtAlongItem = 1
+} MeasurementType;
+
+typedef [public,helpstring("enum MeasurementLocation"),uuid(A884BF5A-0C8F-4D89-BDA7-114E6944A9D0)] 
+enum 
+{
+    mlPierLine = 0,
+    mlCenterlineBearing = 1
+} MeasurementLocation;
+
+typedef [public,helpstring("enum EndType"),uuid(834FAD6D-79ED-4253-A49C-8B3CB270C899)] 
+enum 
+{
+   etStart = 0,
+   etEnd   = 1
+} EndType;
+
+[
+	object,
+	uuid(04086070-2A58-4557-A320-649C615652FA),
+	oleautomation,
+	nonextensible,
+	helpstring("IPierLine Interface"),
+	pointer_default(unique)
+]
+interface IPierLine : IUnknown
+{
+   [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out,retval] CogoObjectID* ID);
+   [propget, helpstring("property Station")] HRESULT Station([out, retval] IStation** pVal);
+   [propget, helpstring("property Direction")] HRESULT Direction([out, retval] IDirection** pVal);
+   [propget, helpstring("property Normal")] HRESULT Normal([out, retval] IDirection** pVal);
+   [propget, helpstring("property Skew")] HRESULT Skew([out, retval] IAngle** pVal);
+   [propget, helpstring("property Index")] HRESULT Index([out, retval] PierIndexType* pVal);
+   [propget, helpstring("property ID")] HRESULT ID([out, retval] PierIDType* pVal);
+   [propget, helpstring("property NextPier")] HRESULT NextPierLine([out, retval] IPierLine** pVal);
+   [propget, helpstring("property PrevPier")] HRESULT PrevPierLine([out, retval] IPierLine** pVal);
+
+   [propget,helpstring("property BearingOffset")] HRESULT BearingOffset([in]PierFaceType pierFace,[out,retval] Float64* brgOffset);
+   [propput,helpstring("property BearingOffset")] HRESULT BearingOffset([in]PierFaceType pierFace,[in] Float64 brgOffset);
+   [propget,helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace,[out,retval] MeasurementType* measure);
+   [propput,helpstring("property BearingOffsetMeasurementType")] HRESULT BearingOffsetMeasurementType([in]PierFaceType pierFace,[in] MeasurementType measure);
+   [propget,helpstring("property EndDistance")] HRESULT EndDistance([in]PierFaceType pierFace,[out,retval] Float64* endDist);
+   [propput,helpstring("property EndDistance")] HRESULT EndDistance([in]PierFaceType pierFace,[in] Float64 endDist);
+   [propget,helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace,[out,retval] MeasurementType* measure);
+   [propput,helpstring("property EndDistanceMeasurementType")] HRESULT EndDistanceMeasurementType([in]PierFaceType pierFace,[in] MeasurementType measure);
+   [propget,helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace,[out,retval] MeasurementLocation* measure);
+   [propput,helpstring("property EndDistanceMeasurementLocation")] HRESULT EndDistanceMeasurementLocation([in]PierFaceType pierFace,[in] MeasurementLocation measure);
+
+   [propget, helpstring("property AlignmentPoint")] HRESULT AlignmentPoint([out,retval] IPoint2d** ppPoint);
+   [propget, helpstring("property BridgePoint")] HRESULT BridgePoint([out,retval] IPoint2d** ppPoint);
+   [propget, helpstring("property LeftPoint")] HRESULT LeftPoint([out,retval] IPoint2d** ppPoint);
+   [propget, helpstring("property RightPoint")] HRESULT RightPoint([out,retval] IPoint2d** ppPoint);
+   [propget, helpstring("property Centerline")] HRESULT Centerline([out,retval]ILine2d** ppLine);
+
+   [helpstring("method GetBearingOffset")] HRESULT GetBearingOffset([in]PierFaceType pierFace,[in]IDirection* direction,[out,retval] Float64* brgOffset);
+};
+
+[
+   object,
+   uuid(2A1A7AE0-B7E1-46b7-A4A7-2532F92F1246),
+   helpstring("IEnumPierLines Interface"),
+   oleautomation,nonextensible,
+   hidden,restricted,
+   pointer_default(unique)
+]
+interface IEnumPierLines : IUnknown
+{
+   [helpstring("Clone")] HRESULT Clone([out] IEnumPierLines** ppenum);
+   [helpstring("Next")]  HRESULT Next([in] ULONG celt, [out] IPierLine** rgelt, [in,out] ULONG* pceltFetched);
+   [helpstring("Reset")] HRESULT Reset();
+   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
+};
+   
+[
+	object,
+	uuid(B97C82D3-EE60-4D92-B999-E6C915C49F83),
+	helpstring("IPierLineCollection Interface"),
+	pointer_default(unique)
+]
+interface IPierLineCollection : IUnknown
+{
+   [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
+   [propget, helpstring("property PierLine")] HRESULT PierLine([in] PierIndexType index, [out, retval] IPierLine* *pVal);
+   [propget, helpstring("property Count")] HRESULT Count([out,retval] PierIndexType* count);
+   [propget, helpstring("property PierLineIndex")] HRESULT PierLineIndex([in]IPierLine* pier,[out,retval]PierIndexType* index);
+   [propget, restricted, helpstring("property _EnumPiers")] HRESULT _EnumPiers([out,retval]IEnumPierLines* *enumPiers);
+   [helpstring("method FindPierLine")] HRESULT FindPierLine([in] PierIDType pierID, [out, retval] IPierLine* *pVal);
+};
+
+[
+   object,
+   uuid(D58BBF23-B486-417E-B55C-63D181068947),
+   helpstring("ILayoutLineFactory"),
+   pointer_default(unique)
+]
+interface ILayoutLineFactory : IUnknown
+{
+   [helpstring("method Create")] HRESULT Create([in]IBridgeGeometry* pBridge,[in]IPathCollection* pPaths);
+   [helpstring("method Reset")] HRESULT Reset();
+};
+
+[
+	object,
+	uuid(0A47CB63-C3CF-47DF-8F2F-5B72C83C02B8),
+	helpstring("IAlignmentOffsetLayoutLineFactory Interface"),
+	pointer_default(unique)
+]
+interface IAlignmentOffsetLayoutLineFactory : ILayoutLineFactory
+{
+   [propput,helpstring("property LayoutLineID")] HRESULT LayoutLineID([in]LineIDType ID);
+   [propget,helpstring("property LayoutLineID")] HRESULT LayoutLineID([out,retval]LineIDType* ID);
+   [propput,helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([in]LineIDType inc);
+   [propget,helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([out,retval]LineIDType* inc);
+   [propput,helpstring("property LayoutLineCount")] HRESULT LayoutLineCount([in]LineIDType nLayoutLines);
+   [propget,helpstring("property LayoutLineCount")] HRESULT LayoutLineCount([out,retval]LineIDType* nLayoutLines);
+   [propget,helpstring("property Offset")] HRESULT Offset([out,retval]Float64* offset);
+   [propput,helpstring("property Offset")] HRESULT Offset([in]Float64 offset);
+   [propget,helpstring("property OffsetIncrement")] HRESULT OffsetIncrement([out,retval]Float64* inc);
+   [propput,helpstring("property OffsetIncrement")] HRESULT OffsetIncrement([in]Float64 inc);
+   [propget,helpstring("property AlignmentID")] HRESULT AlignmentID([out,retval]CogoObjectID* ID);
+   [propput,helpstring("property AlignmentID")] HRESULT AlignmentID([in]CogoObjectID ID);
+};
+
+[
+   object,
+   uuid(64CC0388-9A1C-41D3-8324-D3EA44DC6CFF),
+   helpstring("ISimpleLayoutLineFactory Interface"),
+   pointer_default(unique)
+]
+interface ISimpleLayoutLineFactory : ILayoutLineFactory
+{
+   [helpstring("method AddPath")] HRESULT AddPath([in]LineIDType ID,[in]IPath* path);
+};
+
+[
+   object,
+   uuid(B34A9D24-9551-490A-A3C2-3C7CF6803D4C),
+   helpstring("IUniformSpacingLayoutLineFactory Interface"),
+   pointer_default(unique)
+]
+interface IUniformSpacingLayoutLineFactory : ILayoutLineFactory
+{
+   [propget,helpstring("AlignmentID")] HRESULT AlignmentID([out,retval]CogoObjectID* ID);
+   [propput,helpstring("AlignmentID")] HRESULT AlignmentID([in]CogoObjectID ID);
+   [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] PierIDType newVal);
+   [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] PierIDType newVal);
+   [propget, helpstring("property PierIDInc")] HRESULT PierIDInc([out, retval] PierIDType* pVal);
+   [propput, helpstring("property PierIDInc")] HRESULT PierIDInc([in] PierIDType newVal);
+   [propget, helpstring("property StartSpacingOffset")] HRESULT StartSpacingOffset([out, retval] Float64* pVal);
+   [propput, helpstring("property StartSpacingOffset")] HRESULT StartSpacingOffset([in] Float64 newVal);
+   [propget, helpstring("property EndSpacingOffset")] HRESULT EndSpacingOffset([out, retval] Float64* pVal);
+   [propput, helpstring("property EndSpacingOffset")] HRESULT EndSpacingOffset([in] Float64 newVal);
+   [propget, helpstring("property StartSpacing")] HRESULT StartSpacing([out, retval] IDblArray** pVal);
+   [propput, helpstring("property StartSpacing")] HRESULT StartSpacing([in] IDblArray* newVal);
+   [propget, helpstring("property EndSpacing")] HRESULT EndSpacing([out, retval] IDblArray** pVal);
+   [propput, helpstring("property EndSpacing")] HRESULT EndSpacing([in] IDblArray* newVal);
+   [propput,helpstring("property LayoutLineID")] HRESULT LayoutLineID([in]LineIDType ID);
+   [propget,helpstring("property LayoutLineID")] HRESULT LayoutLineID([out,retval]LineIDType* ID);
+   [propput,helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([in]LineIDType inc);
+   [propget,helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([out,retval]LineIDType* inc);
+};
+
+[
+   object,
+   uuid(F7A4B484-4C6B-4A36-B62C-FC216F09F033),
+   helpstring("IGirderLineFactory"),
+   pointer_default(unique)
+]
+interface IGirderLineFactory : IUnknown
+{
+   [helpstring("method Create")] HRESULT Create([in]IBridgeGeometry* pBridge,[out,retval]IUnkArray** ppArrayGirderLines);
+   [helpstring("method Reset")] HRESULT Reset();
+};
+
+[
+	object,
+	uuid(9BE02875-99F1-4529-B7F7-1235DF2FC010),
+	helpstring("ISingleGirderLineFactory Interface"),
+	pointer_default(unique)
+]
+interface ISingleGirderLineFactory : IGirderLineFactory
+{
+   [propget, helpstring("property GirderLineID")] HRESULT GirderLineID([out, retval] GirderIDType* pVal);
+   [propput, helpstring("property GirderLineID")] HRESULT GirderLineID([in] GirderIDType newVal);
+   [propget, helpstring("property LayoutLineID")] HRESULT LayoutLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property LayoutLineID")] HRESULT LayoutLineID([in] LineIDType newVal);
+   [propget, helpstring("property Type")] HRESULT Type([out, retval] GirderLineType* pVal);
+   [propput, helpstring("property Type")] HRESULT Type([in] GirderLineType newVal);
+   [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] PierIDType newVal);
+   [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] PierIDType newVal);
+   [propget, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([out,retval]MeasurementType* pVal);
+   [propput, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([in]MeasurementType newVal);
+   [propget, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([out,retval]MeasurementLocation* pVal);
+   [propput, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([in]MeasurementLocation newVal);
+   [propget, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([out,retval]MeasurementType* pVal);
+   [propput, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([in]MeasurementType newVal);
+   [propget, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([out,retval]MeasurementLocation* pVal);
+   [propput, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([in]MeasurementLocation newVal);
+};
+
+[
+	object,
+	uuid(4DCF9E5C-3035-4150-882E-7084796B93B5),
+	helpstring("ISimpleGirderLineFactory Interface"),
+	pointer_default(unique)
+]
+interface ISimpleGirderLineFactory : IGirderLineFactory
+{
+   [propget, helpstring("property GirderLineID")] HRESULT GirderLineID([out, retval] GirderIDType* pVal);
+   [propput, helpstring("property GirderLineID")] HRESULT GirderLineID([in] GirderIDType newVal);
+   [propget, helpstring("property GirderLineIDInc")] HRESULT GirderLineIDInc([out, retval] GirderIDType* pVal);
+   [propput, helpstring("property GirderLineIDInc")] HRESULT GirderLineIDInc([in] GirderIDType newVal);
+   [propget, helpstring("property LeftLayoutLineID")] HRESULT LeftLayoutLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property LeftLayoutLineID")] HRESULT LeftLayoutLineID([in] LineIDType newVal);
+   [propget, helpstring("property RightLayoutLineID")] HRESULT RightLayoutLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property RightLayoutLineID")] HRESULT RightLayoutLineID([in] LineIDType newVal);
+   [propget, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([out, retval] LineIDType* pVal);
+   [propput, helpstring("property LayoutLineIDInc")] HRESULT LayoutLineIDInc([in] LineIDType newVal);
+   [propget, helpstring("property Type")] HRESULT Type([out, retval] GirderLineType* pVal);
+   [propput, helpstring("property Type")] HRESULT Type([in] GirderLineType newVal);
+
+   // PierID where a GirderLines starts
+   [propget, helpstring("property StartPierID")] HRESULT StartPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property StartPierID")] HRESULT StartPierID([in] PierIDType newVal);
+
+   // PierID where the GirderLines end
+   [propget, helpstring("property EndPierID")] HRESULT EndPierID([out, retval] PierIDType* pVal);
+   [propput, helpstring("property EndPierID")] HRESULT EndPierID([in] PierIDType newVal);
+
+   // PierID increment. Non-continuous girder lines go from StartPierID to StartPierID+PierIDInc
+   // until the end pier is reached
+   [propget, helpstring("property PierIDInc")] HRESULT PierIDInc([out, retval] PierIDType* pVal);
+   [propput, helpstring("property PierIDInc")] HRESULT PierIDInc([in] PierIDType newVal);
+
+   // Continuous = GirderLine is continuous from StartPier to EndPier (PierIDInc is ignored)
+   [propget, helpstring("property Continuous")] HRESULT Continuous([out,retval] VARIANT_BOOL* pbContinuous);
+   [propput, helpstring("property Continuous")] HRESULT Continuous([in] VARIANT_BOOL bContinuous);
+
+   [propget, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([out,retval]MeasurementType* pVal);
+   [propput, helpstring("property StartMeasurementType")] HRESULT StartMeasurementType([in]MeasurementType newVal);
+   [propget, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([out,retval]MeasurementLocation* pVal);
+   [propput, helpstring("property StartMeasurementLocation")] HRESULT StartMeasurementLocation([in]MeasurementLocation newVal);
+
+   [propget, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([out,retval]MeasurementType* pVal);
+   [propput, helpstring("property EndMeasurementType")] HRESULT EndMeasurementType([in]MeasurementType newVal);
+   [propget, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([out,retval]MeasurementLocation* pVal);
+   [propput, helpstring("property EndMeasurementLocation")] HRESULT EndMeasurementLocation([in]MeasurementLocation newVal);
+};
+
+[
+	object,
+	uuid(EDD54A64-4F63-4DC0-B605-DAA4C63BDA64),
+	helpstring("IGirderLine Interface"),
+	pointer_default(unique)
+]
+interface IGirderLine : IUnknown
+{
+   [propget, helpstring("property ID")] HRESULT ID([out, retval] GirderIDType* pVal);
+   [propget, helpstring("property StartPier")] HRESULT StartPier([out, retval] IPierLine** pVal);
+   [propget, helpstring("property EndPier")] HRESULT EndPier([out, retval] IPierLine** pVal);
+   [propget, helpstring("property GirderLength")] HRESULT GirderLength([out,retval]Float64* pLength);
+   [propget, helpstring("property SpanLength")] HRESULT SpanLength([out,retval]Float64* pLength);
+   [propget, helpstring("property LayoutLength")] HRESULT LayoutLength([out,retval]Float64* pLength);
+   [propget, helpstring("property PierPoint")] HRESULT PierPoint([in]EndType endType,[out,retval]IPoint2d** ppPoint);
+   [propget, helpstring("property BearingPoint")] HRESULT BearingPoint([in]EndType endType,[out,retval]IPoint2d** ppPoint);
+   [propget, helpstring("property EndPoint")] HRESULT EndPoint([in]EndType endType,[out,retval]IPoint2d** ppPoint);
+   [helpstring("method GetEndPoints")] HRESULT GetEndPoints([out]IPoint2d** pntPier1,[out]IPoint2d** pntEnd1,[out]IPoint2d** pntBrg1,[out]IPoint2d** pntBrg2,[out]IPoint2d** pntEnd2,[out]IPoint2d** pntPier2);
+   [propget, helpstring("property Path")] HRESULT Path([out,retval]IPath** pVal);
+   [propget, helpstring("property Direction")] HRESULT Direction([out,retval]IDirection** ppDirection);
+   [propget, helpstring("property BearingOffset")] HRESULT BearingOffset([in]EndType endType,[out,retval]Float64* pBrgOffset);
+   [propget, helpstring("property EndDistance")] HRESULT EndDistance([in]EndType endType,[out,retval]Float64* pEndDist);
+};
+
+
+[
+   object,
+   uuid(B3979762-E72A-401B-AC03-28E953A222C2),
+   helpstring("IDiaphragmLineFactory"),
+   pointer_default(unique)
+]
+interface IDiaphragmLineFactory : IUnknown
+{
+   [helpstring("method Create")] HRESULT Create([in]IBridgeGeometry* pBridge,[out,retval]IUnkArray** ppArrayDiaphagmLines);
+   [helpstring("method Reset")] HRESULT Reset();
+};
+
+[
+   object,
+   uuid(56FB1927-B2C5-46AB-ABCC-DF68C619160C),
+   helpstring("ISingleDiaphragmLineFactory"),
+   pointer_default(unique)
+]
+interface ISingleDiaphragmLineFactory : IDiaphragmLineFactory
+{
+   [propput, helpstring("property AlignmentID")] HRESULT AlignmentID([in] CogoObjectID ID);
+   [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out,retval] CogoObjectID* ID);
+   [propput,helpstring("property Station")] HRESULT Station([in]Float64 station);
+   [propget,helpstring("property Station")] HRESULT Station([out,retval]Float64* pStation);
+   [propput,helpstring("property Orientation")] HRESULT Orientation([in] BSTR orientation);
+   [propget,helpstring("property Orientation")] HRESULT Orientation([out,retval] BSTR *orientation);
+   [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] LineIDType newVal);
+   [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+   [propget, helpstring("property Staggered")] HRESULT Staggered([out,retval] VARIANT_BOOL* bStaggered);
+   [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out,retval] GirderIDType* ID);
+   [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out,retval] GirderIDType* ID);
+};
+
+[
+   object,
+   uuid(E479B523-613F-4383-B555-2E749CAFABE8),
+   helpstring("IThroughPointDiaphragmLineFactory"),
+   pointer_default(unique)
+]
+interface IThroughPointDiaphragmLineFactory : IDiaphragmLineFactory
+{
+   [propput, helpstring("property Point")] HRESULT Point([in] IPoint2d* point);
+   [propget, helpstring("property Point")] HRESULT Point([out,retval] IPoint2d** point);
+   [propput,helpstring("property Direction")] HRESULT Direction([in]IDirection* direction);
+   [propget,helpstring("property Direction")] HRESULT Direction([out,retval]IDirection** direction);
+   [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] LineIDType newVal);
+   [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+   [propget, helpstring("property Staggered")] HRESULT Staggered([out,retval] VARIANT_BOOL* bStaggered);
+   [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out,retval] GirderIDType* ID);
+   [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out,retval] GirderIDType* ID);
+};
+
+[
+   object,
+   uuid(FD9086BA-9DEA-4AF0-BDF9-5E67E7E0A1D0),
+   helpstring("IEqualSpaceDiaphragmLineFactory"),
+   pointer_default(unique)
+]
+interface IEqualSpaceDiaphragmLineFactory : IDiaphragmLineFactory
+{
+   [propput, helpstring("property AlignmentID")] HRESULT AlignmentID([in] CogoObjectID ID);
+   [propget, helpstring("property AlignmentID")] HRESULT AlignmentID([out,retval] CogoObjectID* ID);
+   [propput,helpstring("property StartStation")] HRESULT StartStation([in]Float64 station);
+   [propget,helpstring("property StartStation")] HRESULT StartStation([out,retval]Float64* pStation);
+   [propput,helpstring("property EndStation")] HRESULT EndStation([in]Float64 station);
+   [propget,helpstring("property EndStation")] HRESULT EndStation([out,retval]Float64* pStation);
+   [propget, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([out, retval] LineIDType* pVal);
+   [propput, helpstring("property DiaphragmLineID")] HRESULT DiaphragmLineID([in] LineIDType newVal);
+   [propget, helpstring("property DiaphragmLineIDInc")] HRESULT DiaphragmLineIDInc([out, retval] LineIDType* pVal);
+   [propput, helpstring("property DiaphragmLineIDInc")] HRESULT DiaphragmLineIDInc([in] LineIDType newVal);
+   [propput, helpstring("property Divisor")] HRESULT Divisor([in] Int16 divisor);
+   [propget, helpstring("property Divisor")] HRESULT Divisor([out,retval] Int16* divisor);
+   [propput, helpstring("property Staggered")] HRESULT Staggered([in] VARIANT_BOOL bStaggered);
+   [propget, helpstring("property Staggered")] HRESULT Staggered([out,retval] VARIANT_BOOL* bStaggered);
+   [propput, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property LeftGirderLineID")] HRESULT LeftGirderLineID([out,retval] GirderIDType* ID);
+   [propput, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([in] GirderIDType ID);
+   [propget, helpstring("property RightGirderLineID")] HRESULT RightGirderLineID([out,retval] GirderIDType* ID);
+};
+
+[
+	object,
+	uuid(24885559-FABB-4327-B30D-B2EE5C95C5C1),
+	helpstring("IDiaphragmLine Interface"),
+	pointer_default(unique)
+]
+interface IDiaphragmLine : IUnknown
+{
+   [propget, helpstring("property ID")] HRESULT ID([out,retval]LineIDType* pVal);
+   [propget, helpstring("property Length")] HRESULT Length([in]GirderIDType gdrLineID,[out,retval]Float64* pLength);
+   [propget, helpstring("property Point")] HRESULT Point([in]GirderIDType gdrLineID,[in]EndType endType,[out,retval]IPoint2d** ppPoint);
+};
+
+[
+   object,
+   uuid(8FC6DE2C-969D-4F74-BD77-9355C1C4BEB6),
+   helpstring("IDeckBoundary Interface"),
+   pointer_default(unique)
+]
+interface IDeckBoundary : IUnknown
+{
+   [propget,helpstring("property Perimeter")] HRESULT Perimeter([in] CollectionIndexType nPointsPerSide,[out,retval] IPoint2dCollection** points);
+   [propget,helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] CollectionIndexType nPointsPerSide,[in] PierIDType startPierID, [in] PierIDType endPierID,[out,retval] IPoint2dCollection** points);
+   [propget,helpstring("property TransverseEdgePoints")] HRESULT TransverseEdgePoints([in] EndType endType,[out]IPoint2d** ppLeft,[out]IPoint2d** ppLeftBreak,[out]IPoint2d** ppRightBreak,[out]IPoint2d** ppRight);
+   [propget,helpstring("property LeftEdgePath")] HRESULT LeftEdgePath([in]VARIANT_BOOL vbLayoutLine,[out,retval]IPath** path);
+   [propget,helpstring("property RightEdgePath")] HRESULT RightEdgePath([in]VARIANT_BOOL vbLayoutLine,[out,retval]IPath** path);
+};
+
+[
+   object,
+   uuid(F89D246A-8F7D-4A27-A27E-DD73BE332087),
+   helpstring("IDeckBoundaryFactory Interface"),
+   pointer_default(unique)
+]
+interface IDeckBoundaryFactory : IUnknown
+{
+   [helpstring("method Create")] HRESULT Create([in]IBridgeGeometry* pBridge,[out,retval]IDeckBoundary** ppDeckBoundary);
+   [helpstring("method Reset")] HRESULT Reset();
+};
+
+[
+   object,
+   uuid(AA59EF93-7A3C-493A-BF37-B38B3644A653),
+   helpstring("ISimpleDeckBoundaryFactory Interface"),
+   pointer_default(unique)
+]
+interface ISimpleDeckBoundaryFactory : IDeckBoundaryFactory
+{
+   [propput, helpstring("property BackEdgeID")] HRESULT BackEdgeID([in] LineIDType ID);
+   [propget, helpstring("property BackEdgeID")] HRESULT BackEdgeID([out,retval] LineIDType* ID);
+   [propput, helpstring("property BackEdgeType")] HRESULT BackEdgeType([in] DeckBoundaryEdgeType edgeType);
+   [propget, helpstring("property BackEdgeType")] HRESULT BackEdgeType([out,retval] DeckBoundaryEdgeType* edgeType);
+   [propput, helpstring("property ForwardEdgeID")] HRESULT ForwardEdgeID([in] LineIDType ID);
+   [propget, helpstring("property ForwardEdgeID")] HRESULT ForwardEdgeID([out,retval] LineIDType* ID);
+   [propput, helpstring("property ForwardEdgeType")] HRESULT ForwardEdgeType([in] DeckBoundaryEdgeType edgeType);
+   [propget, helpstring("property ForwardEdgeType")] HRESULT ForwardEdgeType([out,retval] DeckBoundaryEdgeType* edgeType);
+   [propput, helpstring("property LeftEdgeID")] HRESULT LeftEdgeID([in] LineIDType ID);
+   [propget, helpstring("property LeftEdgeID")] HRESULT LeftEdgeID([out,retval] LineIDType* ID);
+   [propput, helpstring("property RightEdgeID")] HRESULT RightEdgeID([in] LineIDType ID);
+   [propget, helpstring("property RightEdgeID")] HRESULT RightEdgeID([out,retval] LineIDType* ID);
+   [propput, helpstring("property LeftEdgeBreakID")] HRESULT LeftEdgeBreakID([in] LineIDType ID);
+   [propget, helpstring("property LeftEdgeBreakID")] HRESULT LeftEdgeBreakID([out,retval] LineIDType* ID);
+   [propput, helpstring("property RightEdgeBreakID")] HRESULT RightEdgeBreakID([in] LineIDType ID);
+   [propget, helpstring("property RightEdgeBreakID")] HRESULT RightEdgeBreakID([out,retval] LineIDType* ID);
+   [propput, helpstring("property BreakLeftEdge")] HRESULT BreakLeftEdge([in] EndType end,[in] VARIANT_BOOL bBreak);
+   [propget, helpstring("property BreakLeftEdge")] HRESULT BreakLeftEdge([in] EndType end,[out,retval] VARIANT_BOOL* bBreak);
+   [propput, helpstring("property BreakRightEdge")] HRESULT BreakRightEdge([in] EndType end,[in] VARIANT_BOOL bBreak);
+   [propget, helpstring("property BreakRightEdge")] HRESULT BreakRightEdge([in] EndType end,[out,retval] VARIANT_BOOL* bBreak);
+};
+
+[
+	object,
+	uuid(CF09FA44-1095-4F63-B3DB-C4BA8617A98E),
+	oleautomation,
+	nonextensible,
+	helpstring("IBridgeGeometry Interface"),
+	pointer_default(unique)
+]
+interface IBridgeGeometry : IUnknown
+{
+   [propputref,helpstring("property CogoModel")] HRESULT CogoModel([in]ICogoModel* pCogoModel);
+   [propget,helpstring("property CogoModel")] HRESULT CogoModel([out,retval]ICogoModel** pCogoModel);
+   [propputref,helpstring("property Alignment")] HRESULT Alignment([in]CogoObjectID ID,[in]IAlignment* pAligment);
+   [propget,helpstring("property Alignment")] HRESULT Alignment([in]CogoObjectID ID,[out,retval]IAlignment** pAlignment);
+   [propput,helpstring("property BridgeAlignmentID")] HRESULT BridgeAlignmentID([in] CogoObjectID ID);
+   [propget,helpstring("property BridgeAlignmentID")] HRESULT BridgeAlignmentID([out,retval] CogoObjectID* ID);
+   [propget,helpstring("property BridgeAlignment")] HRESULT BridgeAlignment([out,retval] IAlignment** alignment);
+
+   [propput,helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([in]Float64 offset);
+   [propget,helpstring("property AlignmentOffset")] HRESULT AlignmentOffset([out,retval]Float64* offset);
+   [propget,helpstring("property BridgeLine")] HRESULT BridgeLine([out,retval]IPath** bridgeLine);
+
+   [helpstring("method CreateLayoutLines")] HRESULT CreateLayoutLines([in]ILayoutLineFactory* pFactory);
+   [helpstring("method FindLayoutLine")] HRESULT FindLayoutLine([in]LineIDType ID,[out,retval]IPath** path);
+   [propget, helpstring("property LayoutLineCount")] HRESULT LayoutLineCount([out,retval]CollectionIndexType* pVal);
+
+   [helpstring("method CreatePierLine")] HRESULT CreatePierLine([in] PierIDType ID, [in] CogoObjectID alignmentID,[in] VARIANT station, [in] BSTR orientation,[in]Float64 width, [in]Float64 offset, [out,retval]IPierLine** ppPier);
+   [helpstring("method GetPierLine")] HRESULT GetPierLine([in] PierIndexType idx, [out,retval]IPierLine** ppPier);
+   [helpstring("method FindPierLine")] HRESULT FindPierLine([in] PierIDType ID, [out,retval]IPierLine** ppPier);
+   [propget, helpstring("property PierLineCount")] HRESULT PierLineCount([out,retval]PierIndexType* pVal);
+
+   [helpstring("method CreateGirderLines")] HRESULT CreateGirderLines([in]IGirderLineFactory* pFactory);
+   [helpstring("method FindGirderLine")] HRESULT FindGirderLine([in]GirderIDType ID,[out,retval]IGirderLine** ppGirderLine);
+   [propget, helpstring("property GirderLineCount")] HRESULT GirderLineCount([out,retval]CollectionIndexType* pVal);
+
+   [helpstring("method CreateDiaphragmLines")] HRESULT CreateDiaphragmLines([in]IDiaphragmLineFactory* pFactory);
+   [helpstring("method FindDiaphragmLine")] HRESULT FindDiaphragmLine([in]LineIDType ID,[out,retval]IDiaphragmLine** ppDiaphragmLine);
+   [propget, helpstring("property DiaphragmLineCount")] HRESULT DiaphragmLineCount([out,retval]CollectionIndexType* pVal);
+
+   [helpstring("method CreateDeckBoundary")] HRESULT CreateDeckBoundary([in]IDeckBoundaryFactory* pFactory);
+   [propget,helpstring("property DeckBoundary")] HRESULT DeckBoundary([out,retval]IDeckBoundary** ppDeckBoundary);
+
+   [helpstring("method UpdateGeometry")] HRESULT UpdateGeometry();
+};
+
+[
+	uuid(3887C38E-D11E-4740-896B-D1DBA8F74BD7),
+	version(1.0),
+	helpstring("WBFLBridgeGeometry")
+]
+library WBFLBridgeGeometry
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(24D75303-8425-4590-913E-FF2908F65BD1),
+		helpstring("BridgeGeometry Class")
+	]
+	coclass BridgeGeometry
+	{
+		[default] interface IBridgeGeometry;
+	};
+	[
+		uuid(9865B17B-5E4C-430B-9020-A5D5EC999858),
+      noncreatable,
+      hidden,
+		helpstring("Pier Class")
+	]
+	coclass PierLine
+	{
+		[default] interface IPierLine;
+	};
+	[
+		uuid(66394ACF-2A3E-43EB-94EE-0E7CE50A8904),
+      noncreatable,
+      hidden,
+		helpstring("PierCollection Class")
+	]
+	coclass PierLineCollection
+	{
+		[default] interface IPierLineCollection;
+	};
+	[
+		uuid(6B593F0D-688B-48B2-BC03-5399D1BDAA1B),
+		helpstring("AlignmentOffsetLayoutLineFactory Class")
+	]
+	coclass AlignmentOffsetLayoutLineFactory
+	{
+		[default] interface IAlignmentOffsetLayoutLineFactory;
+	};
+   [
+      uuid(71E25E05-E16B-415C-9812-9A2F1EFD9A4B),
+      helpstring("SimpleLayoutLineFactory Class")
+   ]
+   coclass SimpleLayoutLineFactory
+   {
+      [default] interface ISimpleLayoutLineFactory;
+   };
+   [
+      uuid(4FA7EC00-ADFB-4F50-A9E6-0A3142090639),
+      helpstring("UniformSpacingLayoutLineFactory Class")
+   ]
+   coclass UniformSpacingLayoutLineFactory
+   {
+      [default] interface IUniformSpacingLayoutLineFactory;
+   };
+	[
+		uuid(189665C5-3B81-405B-B011-B78FF2036467),
+      noncreatable,
+		helpstring("GirderLine Class")
+	]
+	coclass GirderLine
+	{
+		[default] interface IGirderLine;
+	};
+	[
+		uuid(3F5A914A-73B6-43F6-A12B-D545B6B829CE),
+      noncreatable,
+		helpstring("DiaphragmLine Class")
+	]
+	coclass DiaphragmLine
+	{
+		[default] interface IDiaphragmLine;
+	};
+	[
+		uuid(E66BB224-9C23-47FE-836A-A59945BB46DE),
+      noncreatable,
+		helpstring("DeckBoundary Class")
+	]
+	coclass DeckBoundary
+	{
+		[default] interface IDeckBoundary;
+	};
+	[
+		uuid(FF6273A8-1037-4CCE-B494-F43459E65800),
+		helpstring("SingleGirderLineFactory Class")
+	]
+	coclass SingleGirderLineFactory
+	{
+		[default] interface ISingleGirderLineFactory;
+	};
+	[
+		uuid(055CA73B-DD1F-4BC0-A6E5-C13729C16243),
+		helpstring("SimpleGirderLineFactory Class")
+	]
+	coclass SimpleGirderLineFactory
+	{
+		[default] interface ISimpleGirderLineFactory;
+	};
+	[
+		uuid(FF0B7F56-329E-4DB3-BF9C-E076555C1EEE),
+		helpstring("EqualSpaceDiaphragmLineFactory Class")
+	]
+	coclass EqualSpaceDiaphragmLineFactory
+	{
+		[default] interface IEqualSpaceDiaphragmLineFactory;
+	};
+   [
+      uuid(17FE1E15-7E72-4F4E-AC48-37E1497D0806),
+      helpstring("SingleDiaphramgLineFactory Class")
+   ]
+   coclass SingleDiaphragmLineFactory
+   {
+		[default] interface ISingleDiaphragmLineFactory;
+   };
+   [
+      uuid(F95676E6-9741-49C0-A3A4-15D9627BDCD8),
+      helpstring("ThroughPointDiaphramgLineFactory Class")
+   ]
+   coclass ThroughPointDiaphragmLineFactory
+   {
+		[default] interface IThroughPointDiaphragmLineFactory;
+   };
+   [
+      uuid(132789EE-9C31-4D4D-8129-AD733BFA215B),
+      helpstring("SimpleDeckBoundaryFactory Class")
+   ]
+   coclass SimpleDeckBoundaryFactory
+   {
+		[default] interface ISimpleDeckBoundaryFactory;
+   };
+};

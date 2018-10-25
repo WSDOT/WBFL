@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -77,7 +77,9 @@ END_CONNECTION_POINT_MAP()
 
 // ISuperstructureMember
 public:
-	STDMETHOD(RemoveStage)(/*[in]*/BSTR stage);
+   STDMETHOD(get_LinkMember)(/*[out,retval]*/VARIANT_BOOL* pbIsLinkMember);
+   STDMETHOD(put_LinkMember)(/*[in]*/VARIANT_BOOL bIsLinkMember);
+   STDMETHOD(RemoveStage)(/*[in]*/BSTR stage);
 	STDMETHOD(get_IsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(Clone)(/*[out,retval]*/ISuperstructureMember** clone);
@@ -129,7 +131,12 @@ protected:
    CComBSTR          m_LeftReleaseRemovalStage;
    MemberReleaseType m_RightRelease;
    CComBSTR          m_RightReleaseRemovalStage;
-
+   VARIANT_BOOL m_bIsLinkMember; // if VARIANT_TRUE, this superstructure member is used as a link
+                                 // member between distinct parts of the superstructure. This would occur
+                                 // if you were modeling two simple spans with a gap between the spans
+                                 // such as would occur in a precast-prestressed girder bridge.
+                                 // The link members are needed to keep the LBAM and FEM models stable
+                                 // but they aren't part of the real structure so they don't get loaded.
 };
 
 #endif //__SUPERSTRUCTUREMEMBER_H_

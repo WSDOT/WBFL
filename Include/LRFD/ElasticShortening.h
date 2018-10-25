@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,10 +69,6 @@ class LRFDCLASS lrfdElasticShortening
 {
 public:
 
-   // Method to compute Fcgp: Use iterative (beam theory) method, or assume that
-   // stress in strands after transfer is 0.7*Fpu (TxDOT 2013 research).
-   enum FcgpComputationMethod {fcgpIterative, fcgp07Fpu };
-
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
@@ -95,15 +91,15 @@ public:
                          Float64 dfpR1Temp, // initial relaxation
                          Float64 ApsPerm,   // Area of permanent prestressing steel 
                          Float64 ApsTemp,   // Area of temporary prestressing steel
+                         bool    bGrossProperties, // true if using gross section properties
                          Float64 Ag,    // area of girder
                          Float64 Ig,    // moment of inertia of girder
                          Float64 ePerm, // eccentricity of permanent ps strands
                          Float64 eTemp, // eccentricity of temporary ps strands
                          Float64 Mdlg,  // Dead load moment of girder only
-                         Float64 K,
+                         Float64 K,     // coefficient for post-tension members (N-1)/(2N)
                          Float64 Eci,   // Modulus of elasticity of concrete at transfer
-                         Float64 Ep,    // Modulus of elasticity of prestressing steel
-                         FcgpComputationMethod method);
+                         Float64 Ep = lrfdPsStrand::GetModE());    // Modulus of elasticity of prestressing steel
 
    //------------------------------------------------------------------------
    // Copy c'tor
@@ -155,6 +151,9 @@ public:
    void    PermanentStrand_Eccentricty(Float64 e);
    Float64 PermanentStrand_Eccentricty() const;
 
+   void GrossProperties(bool bGrossProperties);
+   bool GrossProperties() const;
+
    void    Ag(Float64 Ag);
    Float64 Ag() const;
 
@@ -173,9 +172,6 @@ public:
    void    Coefficient(Float64 K);
    Float64 Coefficient() const;
 
-   void    lrfdElasticShortening::SetFcgpComputationMethod(FcgpComputationMethod m);
-   FcgpComputationMethod lrfdElasticShortening::GetFcgpComputationMethod() const;
-
    // GROUP: INQUIRY
 
 protected:
@@ -188,7 +184,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   void MakeAssignment( const lrfdElasticShortening& rOther );
+   virtual void MakeAssignment( const lrfdElasticShortening& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -206,13 +202,13 @@ private:
    Float64 m_dFpR1Perm; // Initial relaxation losses
    Float64 m_dFpR1Temp; // Initial relaxation losses
 
+   bool m_bGrossProperties;
    Float64 m_Ag;    // Area of the girder
    Float64 m_Ig;    // Moment of inertia of the girder
    Float64 m_Mdlg;  // Dead load moment of girder
    Float64 m_Eci;
    Float64 m_Ep;
    Float64 m_K; // Coefficient used for Post-tensioned members (N-1)/(2N)
-   FcgpComputationMethod m_FcgpMethod;
 
    mutable Float64 m_P;     // prestress force
    mutable Float64 m_dfESPerm; // Elastic shortening losses
@@ -248,6 +244,9 @@ inline Float64 lrfdElasticShortening::TemporaryStrand_Aps() const      { return 
 inline void    lrfdElasticShortening::PermanentStrand_Aps(Float64 Aps) { m_ApsPerm = Aps; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::PermanentStrand_Aps() const      { return m_ApsPerm; }
 
+inline void lrfdElasticShortening::GrossProperties(bool bGrossProperties) { m_bGrossProperties = bGrossProperties; m_bUpdate = true; }
+inline bool lrfdElasticShortening::GrossProperties() const { return m_bGrossProperties; }
+
 inline void    lrfdElasticShortening::Ag(Float64 Ag) { m_Ag = Ag; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::Ag() const     { return m_Ag; }
 
@@ -270,9 +269,6 @@ inline Float64 lrfdElasticShortening::Ep() const     { return m_Ep; }
 
 inline void    lrfdElasticShortening::Coefficient(Float64 K) { m_K = K; m_bUpdate = true; }
 inline Float64 lrfdElasticShortening::Coefficient() const    { return m_K; }
-
-inline void    lrfdElasticShortening::SetFcgpComputationMethod(FcgpComputationMethod m) { m_FcgpMethod = m; m_bUpdate = true; }
-inline lrfdElasticShortening::FcgpComputationMethod lrfdElasticShortening::GetFcgpComputationMethod() const    { return m_FcgpMethod; }
 
 // EXTERNAL REFERENCES
 //

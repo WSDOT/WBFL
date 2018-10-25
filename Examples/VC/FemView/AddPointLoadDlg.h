@@ -19,12 +19,12 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CAddPointLoadDlg)
 	enum { IDD = IDD_ADDPOINTLOAD };
-	Float64	m_Fx;
-	Float64	m_Fy;
-	LoadIDType		m_LoadingID;
-	Float64	m_Location;
+	double	m_Fx;
+	double	m_Fy;
+	IDType		m_LoadingID;
+	double	m_Location;
 	MemberIDType	m_MbrID;
-	Float64	m_Mz;
+	double	m_Mz;
 	//}}AFX_DATA
 
 

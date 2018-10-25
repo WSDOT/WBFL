@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -139,7 +139,7 @@ STDMETHODIMP CModel::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-static const Float64 MY_VER=1.0;
+static const Float64 MY_VER=2.0;
 
 // IStructuredStorage2
 STDMETHODIMP CModel::Load(/*[in]*/ IStructuredLoad2 *pload)
@@ -156,11 +156,22 @@ STDMETHODIMP CModel::Load(/*[in]*/ IStructuredLoad2 *pload)
    if (FAILED(hr))
       return hr;
 
-   if (ver!=MY_VER)
+   if (MY_VER < ver)
       return STRLOAD_E_BADVERSION;
 
    {
       // equilibrium tolerance
+      if ( 1 < ver )
+      {
+         CComVariant var;
+         var.vt = VT_BSTR;
+
+         hr = pload->get_Property(CComBSTR("Name"),&var);
+         if (FAILED(hr))
+            return hr;
+
+         m_Name = var.bstrVal;
+      }
 
       CComVariant vardbl;
       vardbl.vt = VT_R8;
@@ -211,6 +222,9 @@ STDMETHODIMP CModel::Save(/*[in]*/ IStructuredSave2 *psave)
 
    {
       // equilibrium tolerance
+      hr = psave->put_Property(CComBSTR("Name"),CComVariant(m_Name));
+      if (FAILED(hr))
+         return hr;
 
       hr = psave->put_Property(CComBSTR("EquilibriumTolerance"),CComVariant(m_Tolerance));
       if (FAILED(hr))
@@ -245,6 +259,17 @@ STDMETHODIMP CModel::Save(/*[in]*/ IStructuredSave2 *psave)
    return S_OK;
 }
 
+STDMETHODIMP CModel::put_Name(BSTR name)
+{
+   m_Name = name;
+   return S_OK;
+}
+
+STDMETHODIMP CModel::get_Name(BSTR* name)
+{
+   *name = m_Name.Copy();
+   return S_OK;
+}
 
 STDMETHODIMP CModel::get_Joints(IFem2dJointCollection **pVal)
 {
@@ -575,40 +600,32 @@ STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID,
    // are computed as-needed and then stored individually.
    try
    {
+      CheckLoadOrientation(orientation);
+
+      // compute any outdated member/joint results
+      Compute();
+
       const PoiResult* poiResult = 0;
 
-      // look in simple cache first
-      if ( m_SimplePOIResultCache.IsHit(poiID, lc) )
+      // first see if results have already been calculated
+      PoiResultIterator jit( m_PoiResults.find(poiID) );
+      if (jit != m_PoiResults.end())
       {
-         poiResult = &(m_SimplePOIResultCache.poiResult);
+         PoiResultArray* array = jit->second;
+         poiResult = array->Find(lc);
       }
-      else
+
+      if (0==poiResult)
       {
-         CheckLoadOrientation(orientation);
+         // result not in store - we need to go out and calculate it
+         poiResult = StorePoiResults(lc, poiID);
+      }
 
-         // compute any outdated member/joint results
-         Compute();
-
-         // first see if results have already been calculated
-         PoiResultIterator jit( m_PoiResults.find(poiID) );
-         if (jit != m_PoiResults.end())
-         {
-            PoiResultArray* array = jit->second;
-            poiResult = array->Find(lc);
-         }
-
-         if (0==poiResult)
-         {
-            // result not in store - we need to go out and calculate it
-            poiResult = StorePoiResults(lc, poiID);
-         }
-
-         // should have thrown by here if problem
-         if (poiResult==0)
-         {
-            ATLASSERT(0);
-            THROW_MSG("Logic error computing poi result CModel::ComputePOIDisplacements",E_FAIL, IDH_E_LOGIC_ERROR); 
-         }
+      // should have thrown by here if problem
+      if (poiResult==0)
+      {
+         ATLASSERT(0);
+         THROW_MSG("Logic error computing poi result CModel::ComputePOIDisplacements",E_FAIL, IDH_E_LOGIC_ERROR); 
       }
 
       // at this point, we have a result - map it to our return values
@@ -676,41 +693,34 @@ STDMETHODIMP CModel::ComputePOIForces(LoadCaseIDType lc, PoiIDType poiID, Fem2dM
 
    try
    {
+      CheckLoadOrientation(orientation);
+
+      // compute any outdated member/joint results
+      Compute();
+
       const PoiResult* poiResult = 0;
 
-      // look in simple cache first
-      if ( m_SimplePOIResultCache.IsHit(poiID, lc) )
+      // first see if results have already been calculated
+      PoiResultIterator jit( m_PoiResults.find(poiID) );
+      if (jit != m_PoiResults.end())
       {
-         poiResult = &(m_SimplePOIResultCache.poiResult);
+         PoiResultArray* array = jit->second;
+         poiResult = array->Find(lc);
       }
-      else
+
+      if (0 == poiResult)
       {
-         CheckLoadOrientation(orientation);
-
-         // compute any outdated member/joint results
-         Compute();
-
-         // first see if results have already been calculated
-         PoiResultIterator jit( m_PoiResults.find(poiID) );
-         if (jit != m_PoiResults.end())
-         {
-            PoiResultArray* array = jit->second;
-            poiResult = array->Find(lc);
-         }
-
-         if (0 == poiResult)
-         {
-            // result not in store - we need to go out and calculate it
-            poiResult = StorePoiResults(lc, poiID);
-         }
-
-         // should have thrown by here if problem
-         if (poiResult==0)
-         {
-            ATLASSERT(0);
-            THROW_MSG("Logic error computing poi result CModel::ComputePOIForces",E_FAIL,IDH_E_LOGIC_ERROR); 
-         }
+         // result not in store - we need to go out and calculate it
+         poiResult = StorePoiResults(lc, poiID);
       }
+
+      // should have thrown by here if problem
+      if (poiResult==0)
+      {
+         ATLASSERT(0);
+         THROW_MSG("Logic error computing poi result CModel::ComputePOIForces",E_FAIL,IDH_E_LOGIC_ERROR); 
+      }
+
 
       // at this point, we have a result - map it to our return values
       long offset;
@@ -1486,6 +1496,7 @@ void CModel::ComputeLoadings()
       CheckEquilibrium();
       StoreJntResults(lid);
       StoreMbrResults(lid);
+      StorePoiResults(lid); // compute results for existing poi's
       }
       catch(...)
       {
@@ -1765,6 +1776,7 @@ void CModel::CheckEquilibrium()
          JointIDType id;
          jnt->get_ID(&id);
          CComBSTR msg = CreateErrorMsg1(IDS_E_JOINT_EQUILIBRIUM_NOT_SATISFIED, id);
+         ATLASSERT(false);
          THROW_MSG(msg, FEM2D_E_JOINT_EQUILIBRIUM_NOT_SATISFIED, IDH_E_JOINT_EQUILIBRIUM_NOT_SATISFIED);
       }
    }
@@ -1779,6 +1791,7 @@ void CModel::CheckEquilibrium()
          MemberIDType id;
          ele->get_ID(&id);
          CComBSTR msg = CreateErrorMsg1(IDS_E_MEMBER_EQUILIBRIUM_NOT_SATISFIED, id);
+         ATLASSERT(false);
          THROW_MSG(msg, FEM2D_E_MEMBER_EQUILIBRIUM_NOT_SATISFIED, IDH_E_MEMBER_EQUILIBRIUM_NOT_SATISFIED);
       }
    }
@@ -1788,6 +1801,7 @@ void CModel::CheckEquilibrium()
 
 void CModel::CheckSolution()
 {
+   Float64 tol = GetEquilibriumCheckTolerance();
    Float64  error;
    long l,m;
 
@@ -1800,10 +1814,11 @@ void CModel::CheckSolution()
       }
       error -= m_pForig[l];
 
-      if (!IsZero(error,0.05))
+      if (!IsZero(error,tol))
       {
          // something's not right here
          CComBSTR msg = CreateErrorMsg1(IDS_E_SOLVING_GLOBAL_STIFFNESS, l);
+         ATLASSERT(false);
          THROW_MSG(msg, FEM2D_E_SOLVING_GLOBAL_STIFFNESS, IDH_E_SOLVING_GLOBAL_STIFFNESS);
       }
    }
@@ -1912,8 +1927,6 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
    }
 }
 
-// This function was very innefficent, but may be useful for later schemes
-/*
 void CModel::StorePoiResults(LoadCaseIDType lcase)
 {
 #if defined _DEBUG
@@ -2000,17 +2013,9 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
       }
    }
 }
-*/
 
 const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType poiid)
 {
-   // Simple, fast caching scheme for negative load case values. Found that LBAM functions for getting influence lines
-   // and functions to compute points of inflection made multiple sequential calls for same results, then no need to cache long term
-   if ( m_SimplePOIResultCache.IsHit(poiid, lcase) )
-   {
-      ATLASSERT(0); // outer code should prevent hits here
-      return &(m_SimplePOIResultCache.poiResult);
-   }
 
    // get poi and member
    CPOI *poi = m_pPOIs->Find(poiid);
@@ -2099,41 +2104,29 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
 #endif
 
    mbr->GetDeflection(poiloc,disp);
-
    PoiResult result(lcase,force,disp);
 
-   if (lcase > 0)
+   PoiResultIterator rit( m_PoiResults.find(poiid) );
+   PoiResultArray* parray = (rit == m_PoiResults.end()) ? 0 : rit->second;
+   if (!parray)
    {
-      // Positive load cases get long term caching
-
-      PoiResultIterator rit( m_PoiResults.find(poiid) );
-      PoiResultArray* parray = (rit == m_PoiResults.end()) ? 0 : rit->second;
-      if (!parray)
-      {
-         parray = new PoiResultArray(poiid);
-         m_PoiResults.insert(PoiResultContainer::value_type(poiid,parray));
-      }
-      
-      const PoiResult* cpres;
-      PoiResult* pres = parray->Find(lcase);
-      if (pres!=0)
-      {
-         *pres = result;
-         cpres = pres;
-      }
-      else
-      {
-         cpres = parray->Add(result);
-      }
-
-      return cpres;
+      parray = new PoiResultArray(poiid);
+      m_PoiResults.insert(PoiResultContainer::value_type(poiid,parray));
+   }
+   
+   const PoiResult* cpres;
+   PoiResult* pres = parray->Find(lcase);
+   if (pres!=0)
+   {
+      *pres = result;
+      cpres = pres;
    }
    else
    {
-      // Negative Load cases go in simple cache to avoid container overhead
-      m_SimplePOIResultCache.Update(poiid, lcase, result);
-      return &(m_SimplePOIResultCache.poiResult);
+      cpres = parray->Add(result);
    }
+
+   return cpres;
 }
 
 void CModel::RemoveAllResults()
@@ -2144,8 +2137,6 @@ void CModel::RemoveAllResults()
    m_MbrResults.clear();
    map_delete(m_PoiResults.begin(), m_PoiResults.end());
    m_PoiResults.clear();
-
-   m_SimplePOIResultCache.ClearCache();
 }
 
 void CModel::RemoveResults(LoadCaseIDType lcase)
@@ -2174,9 +2165,6 @@ void CModel::RemoveResults(LoadCaseIDType lcase)
    {
       st = pi->second->Remove(lcase);
    }
-
-   m_SimplePOIResultCache.ClearCache();
-
 }
 
 void CModel::RemovePoiResults(PoiIDType poiid)
@@ -2188,16 +2176,12 @@ void CModel::RemovePoiResults(PoiIDType poiid)
       PoiResultArray* array = jit->second;
       delete array;
    }
-
-   m_SimplePOIResultCache.ClearCache();
 }
 
 void CModel::RemoveAllPoiResults()
 {
    map_delete(m_PoiResults.begin(), m_PoiResults.end());
    m_PoiResults.clear();
-
-   m_SimplePOIResultCache.ClearCache();
 }
 
 void CModel::GetJointFromDof(LONG dof, JointIDType* joint, LONG* jdof)

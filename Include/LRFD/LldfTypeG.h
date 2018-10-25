@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,9 +76,8 @@ public:
                  Uint32 Nl, Float64 wLane,
                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                  Float64 leftDe,Float64 rightDe,
-                 Float64 PossionRatio,
-                 Float64 skewAngle1, Float64 skewAngle2,
-                 bool bMomentSkew, bool bShearSkew);
+                 Float64 PossionRatio, bool ignoreSkew,
+                 Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -117,6 +116,7 @@ protected:
    Float64 m_PoissonRatio;
    Float64 m_SkewAngle1;
    Float64 m_SkewAngle2;
+   bool    m_IgnoreSkew;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
@@ -125,7 +125,7 @@ protected:
    void MakeCopy(const lrfdLldfTypeG& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeG& rOther);
+   virtual void MakeAssignment(const lrfdLldfTypeG& rOther);
 
    //------------------------------------------------------------------------
    virtual bool TestRangeOfApplicability(Location loc) const;
@@ -218,9 +218,8 @@ public:
                  Uint32 Nl, Float64 wLane,
                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 b,Float64 d,
                  Float64 leftDe,Float64 rightDe,
-                 Float64 PossionRatio,
-                 Float64 skewAngle1, Float64 skewAngle2,
-                 bool bMomentSkew, bool bShearSkew);
+                 Float64 PossionRatio, bool ignoreSkew,
+                 Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -248,7 +247,7 @@ protected:
    void MakeCopy(const lrfdLldfTypeF& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeF& rOther);
+   virtual void MakeAssignment(const lrfdLldfTypeF& rOther);
 
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Int_1_Strength() const;
@@ -384,7 +383,7 @@ protected:
    void MakeCopy(const lrfdTxdotVoidedSlab& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdTxdotVoidedSlab& rOther);
+   virtual void MakeAssignment(const lrfdTxdotVoidedSlab& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -500,18 +499,15 @@ protected:
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Ext_2_Strength() const;
    //------------------------------------------------------------------------
-      
-   DFResult GetBaseShearDF_Ext_1_Strength() const;
    virtual DFResult GetShearDF_Ext_1_Strength() const;
    //------------------------------------------------------------------------
-   DFResult GetBaseShearDF_Ext_2_Strength() const;
    virtual DFResult GetShearDF_Ext_2_Strength() const;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxdotLldfAdjacentBox& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdTxdotLldfAdjacentBox& rOther);
+   virtual void MakeAssignment(const lrfdTxdotLldfAdjacentBox& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections Test - Test driver for Sections library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -527,7 +527,6 @@ void CTestElasticProperties::Test()
    // Test ISupportErrorInfo
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_ElasticProperties ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IElasticPropertiesEx ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IElasticProperties ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -538,8 +537,6 @@ void CTestElasticProperties::Test()
    TRY_TEST(pObjSafety.CoCreateInstance(CLSID_ElasticProperties), S_OK);
    DWORD dwDesiredOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA;
    DWORD dwSupportedOptions, dwEnabledOptions;
-   pObjSafety->GetInterfaceSafetyOptions(IID_IElasticPropertiesEx,&dwSupportedOptions,&dwEnabledOptions);
-   TRY_TEST( dwSupportedOptions, dwDesiredOptions );
    pObjSafety->GetInterfaceSafetyOptions(IID_IElasticProperties,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
    pObjSafety->GetInterfaceSafetyOptions(IID_IStructuredStorage2,&dwSupportedOptions,&dwEnabledOptions);

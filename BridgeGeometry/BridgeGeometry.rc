@@ -8,9 +8,9 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
-#include "targetver.h"
+#include <WBFLVersion.h>
 #endif
-#include "afxres.h"
+#include "winres.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -38,25 +38,15 @@ END
 2 TEXTINCLUDE 
 BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
+    "#include <WBFLVersion.h>\r\n"
     "#endif\r\n"
-    "#include ""afxres.h""\r\n"
+    "#include ""winres.h""\r\n"
     "\0"
 END
 
 3 TEXTINCLUDE 
 BEGIN
-    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
-    "#define _AFX_NO_OLE_RESOURCES\r\n"
-    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
-    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
-    "\r\n"
-    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
-    "LANGUAGE 9, 1\r\n"
-    "#pragma code_page(1252)\r\n"
-    "#include ""res\\BridgeGeometry.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
-    "#include ""afxres.rc""     // Standard components\r\n"
-    "#endif\r\n"
+    "1 TYPELIB ""WBFLBridgeGeometry.tlb""\r\n"
     "\0"
 END
 
@@ -69,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,4,0,0
- PRODUCTVERSION 3,4,0,0
+ FILEVERSION 3,5,0,0
+ PRODUCTVERSION 3,5,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -88,12 +78,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL Bridge Geoemtry Module"
-            VALUE "FileVersion", "3.4.0.0"
+            VALUE "FileVersion", "3.5.0.0"
             VALUE "InternalName", "WBFLBridgeGeometry"
-            VALUE "LegalCopyright", "Copyright © 1999-2010"
+            VALUE "LegalCopyright", "Copyright © 1999-2013"
             VALUE "OriginalFilename", "WBFLBridgeGeometry.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.4.0.0"
+            VALUE "ProductVersion", "3.5.0.0"
         END
     END
     BLOCK "VarFileInfo"
@@ -105,38 +95,41 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Dialog
+// REGISTRY
 //
 
-IDD_ALIGNMENT_HORIZONTAL DIALOGEX 0, 0, 283, 156
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
-CAPTION "Horizontal"
-FONT 8, "MS Shell Dlg", 400, 0, 0x0
-BEGIN
-    LTEXT           "Initial Direction",IDC_STATIC,7,7,48,8
-    EDITTEXT        IDC_INITIAL_DIRECTION,67,7,78,14,ES_AUTOHSCROLL
-    LTEXT           "(N|S hh [mm [ss.ss]] E|W)",IDC_STATIC,153,7,84,8
-    CTEXT           "Horizontal Control",IDC_STATIC,7,41,269,11,WS_BORDER,WS_EX_CLIENTEDGE
-END
-
+IDR_BRIDGEGEOMETRY      REGISTRY                "BridgeGeometry.rgs"
+IDR_BRIDGE              REGISTRY                "Bridge.rgs"
+IDR_PIERLINE                REGISTRY                "PierLine.rgs"
+IDR_PIERLINECOLLECTION      REGISTRY                "PierLineCollection.rgs"
+IDR_ALIGNMENTOFFSETLAYOUTLINEFACTORY REGISTRY                "AlignmentOffsetLayoutLineFactory.rgs"
+IDR_GIRDERLINE          REGISTRY                "GirderLine.rgs"
+IDR_DIAPHRAGMLINE       REGISTRY                "DiaphragmLine.rgs"
+IDR_SINGLEGIRDERLINEFACTORY REGISTRY                "SingleGirderLineFactory.rgs"
+IDR_SIMPLEGIRDERLINEFACTORY REGISTRY                "SimpleGirderLineFactory.rgs"
+IDR_EQUALSPACEDIAPHRAGMLINEFACTORY REGISTRY     "EqualSpaceDiaphragmLineFactory.rgs"
+IDR_SINGLEDIAPHRAGMLINEFACTORY REGISTRY         "SingleDiaphragmLineFactory.rgs"
+IDR_THROUGHPOINTDIAPHRAGMLINEFACTORY REGISTRY   "ThroughPointDiaphragmLineFactory.rgs"
+IDR_SIMPLEDECKBOUNDARYFACTORY   REGISTRY                "SimpleDeckBoundaryFactory.rgs"
+IDR_DECKBOUNDARY                REGISTRY                "DeckBoundary.rgs"
+IDR_UNIFORMSPACINGLAYOUTLINEFACTORY REGISTRY    "UniformSpacingLayoutLineFactory.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// DESIGNINFO
+// String Table
 //
 
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+STRINGTABLE 
 BEGIN
-    IDD_ALIGNMENT_HORIZONTAL, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 276
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 149
-    END
+    IDS_PROJNAME            "BridgeGeometry"
 END
-#endif    // APSTUDIO_INVOKED
+
+STRINGTABLE 
+BEGIN
+    IDS_E_INITIALIZATION    "Error initializing bridge geometry model. Only call this method once."
+    IDS_E_INVALIDSTATION    "Invalid station"
+    IDS_E_ID                "ID is invalid or is already in use"
+END
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -148,17 +141,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#define _AFX_NO_SPLITTER_RESOURCES
-#define _AFX_NO_OLE_RESOURCES
-#define _AFX_NO_TRACKER_RESOURCES
-#define _AFX_NO_PROPERTY_RESOURCES
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-LANGUAGE 9, 1
-#pragma code_page(1252)
-#include "res\BridgeGeometry.rc2"  // non-Microsoft Visual C++ edited resources
-#include "afxres.rc"     // Standard components
-#endif
+1 TYPELIB "WBFLBridgeGeometry.tlb"
 
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __EDGEPATHSTRATEGY_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CEdgePathStrategy
@@ -41,10 +40,7 @@ class ATL_NO_VTABLE CEdgePathStrategy :
    public IEdgePathStrategy,
    public IStructuredStorage2,
    public IOverhangPathStrategy,
-   public CProxyDOverhangPathStrategyEvents<CEdgePathStrategy>,
-   public IObjectSafetyImpl<CEdgePathStrategy,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IConnectionPointContainerImpl<CEdgePathStrategy>,
-   public IPathEvents
+   public IObjectSafetyImpl<CEdgePathStrategy,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
    CEdgePathStrategy()
@@ -56,10 +52,6 @@ public:
 
 private:
    CComPtr<IPath> m_Path;
-   DWORD m_dwPathCookie;
-
-   void Advise(IPath* path,DWORD* pdwCookie);
-   void Unadvise(IPath* path,DWORD dwCookie);
 
 public:
 DECLARE_REGISTRY_RESOURCEID(IDR_EDGEPATHSTRATEGY)
@@ -72,13 +64,7 @@ BEGIN_COM_MAP(CEdgePathStrategy)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPathEvents)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CEdgePathStrategy)
-	CONNECTION_POINT_ENTRY(IID_IOverhangPathStrategyEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
@@ -96,20 +82,6 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-// IPathEvents
-public:
-   STDMETHOD(OnPathChanged)(/*[in]*/ IPath* path)
-   {
-      Fire_OnStrategyChanged();
-      return S_OK;
-   }
-
-	STDMETHOD(OnProfileChanged)(/*[in]*/ IProfile* profile)
-   {
-      // do nothing... it doesn't matter if the profile changes
-      return S_OK;
-   }
 };
 
 #endif //__EDGEPATHSTRATEGY_H_

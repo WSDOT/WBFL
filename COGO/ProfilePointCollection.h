@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CProfilePointCollection;
-typedef PersistentKeyedCollection<CProfilePointCollection,IProfilePointCollection,&IID_IProfilePointCollection,CogoElementKey,IProfilePoint> ProfilePointCollectionImpl;
+typedef PersistentKeyedCollection<CProfilePointCollection,IProfilePointCollection,&IID_IProfilePointCollection,CogoObjectID,IProfilePoint> ProfilePointCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CProfilePointCollection
@@ -81,16 +81,16 @@ public:
 	STDMETHOD(get_Factory)(/*[out,retval]*/IProfilePointFactory* *factory);
    STDMETHOD(putref_Factory)(/*[in]*/IProfilePointFactory* factory);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp);
-	STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ IProfilePoint* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IProfilePoint* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IProfilePoint* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoElementKey* key);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+	STDMETHOD(FindKey)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* key);
+	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
 
 // IProfilePointEvents
 public:
@@ -99,14 +99,14 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT ProfilePointNotFound(CogoElementKey key);
-   HRESULT ProfilePointAlreadyDefined(CogoElementKey key);
-   HRESULT ProfilePointKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT ProfilePointNotFound(CogoObjectID key);
+   HRESULT ProfilePointAlreadyDefined(CogoObjectID key);
+   HRESULT ProfilePointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,IProfilePoint* pp);
-   void Unadvise(CogoElementKey key,IProfilePoint* pp);
+   void Advise(CogoObjectID key,IProfilePoint* pp);
+   void Unadvise(CogoObjectID key,IProfilePoint* pp);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IProfilePointFactory> m_Factory;
 };

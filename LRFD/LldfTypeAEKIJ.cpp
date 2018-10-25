@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,7 +52,7 @@ lrfdLldfTypeAEKIJ::lrfdLldfTypeAEKIJ(GirderIndexType gdr,Float64 Savg,const std:
                      Float64 skewAngle1, Float64 skewAngle2,
                      bool bSkewMoment,
                      bool bSkewShear) :
-lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,bSkewMoment,bSkewShear), 
+lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane), 
 m_bIgnoreDe(false)
 {
    m_LeftDe       = deLeft;
@@ -65,6 +65,8 @@ m_bIgnoreDe(false)
    m_eg          = eg;
    m_SkewAngle1  = skewAngle1;
    m_SkewAngle2  = skewAngle2;
+   m_bSkewMoment = bSkewMoment;
+   m_bSkewShear  = bSkewShear;
 
    m_Kg = n*(I + A * eg * eg );
 }
@@ -113,6 +115,8 @@ void lrfdLldfTypeAEKIJ::MakeCopy(const lrfdLldfTypeAEKIJ& rOther)
    m_eg          = rOther.m_eg;
    m_SkewAngle1  = rOther.m_SkewAngle1;
    m_SkewAngle2  = rOther.m_SkewAngle2;
+   m_bSkewMoment = rOther.m_bSkewMoment;
+   m_bSkewShear  = rOther.m_bSkewShear;
    m_Kg          = rOther.m_Kg;
    m_bIgnoreDe   = rOther.m_bIgnoreDe;
 }
@@ -126,9 +130,7 @@ void lrfdLldfTypeAEKIJ::MakeAssignment(const lrfdLldfTypeAEKIJ& rOther)
 bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
-   {
       return true;
-   }
 
    bool doThrow=true;
    bool bSISpec = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
@@ -141,9 +143,7 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
          ExteriorMomentEquationRule(bSISpec,true);
 
          if ( GetNb() < 3 )
-         {
             THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
-         }
       }
       else
       {
@@ -155,23 +155,17 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
               lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEditionWith1996Interims )
          {
             if ( nb < 4 )
-            {
                THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
-            }
          }
          else
          {
             if ( nb < 3 )
-            {
                THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2b-1"));
-            }
 
             // Skew corrections only apply for Nb >= 4.  We can't use this method to
             // compute distribution factors if we have 3 beams and skews.
             if ( nb == 3 && (m_bSkewMoment || m_bSkewShear) )
-            {
                THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. See Table 4.6.2.2.2e-1"));
-            }
          }
       }
    }
@@ -183,9 +177,7 @@ bool lrfdLldfTypeAEKIJ::TestRangeOfApplicability(Location loc) const
 
    Float64 skew_max = ::ConvertToSysUnits( 60.0, unitMeasure::Degree );
    if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
-   {
       THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2e-1"));
-   }
 
    return true;
 }
@@ -234,7 +226,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
       }
 
       GirderIndexType nb = GetNb();
-      if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
+      if ( lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::FirstEditionWith1997Interims && nb == 3 )
       {
          g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
          // controlling g is minimum of equation and lever rule
@@ -254,10 +246,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
 
@@ -313,7 +301,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
       }
 
       GirderIndexType nb = GetNb();
-      if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
+      if ( lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::FirstEditionWith1997Interims && nb == 3 )
       {
          g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
 
@@ -333,10 +321,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
 
@@ -353,10 +337,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_1_S
    g.mg = g.LeverRuleData.mg;
 
    skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -381,38 +361,18 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
       if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
       {
          Float64 de = ::ConvertFromSysUnits( de_raw, unitMeasure::Millimeter );
-
-         ATLASSERT( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEdition2014 );
-
-         if ( lrfdVersionMgr::FirstEdition1994 < lrfdVersionMgr::GetVersion()  )
-         {
+         if ( lrfdVersionMgr::GetVersion() > lrfdVersionMgr::FirstEdition1994 )
             e = 0.77 + de/2800.;
-         }
          else
-         {
             e = max( 0.77 + de/2800., 1.0);
-         }
       }
       else
       {
          Float64 de = ::ConvertFromSysUnits( de_raw, unitMeasure::Feet );
-
-         if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
-         {
-            if ( de < -1.0 )
-            {
-               de = -1.0;
-            }
-         }
-
-         if ( lrfdVersionMgr::FirstEdition1994 < lrfdVersionMgr::GetVersion()  )
-         {
+         if ( lrfdVersionMgr::GetVersion() > lrfdVersionMgr::FirstEdition1994 )
             e = 0.77 + de/9.1;
-         }
          else
-         {
             e = max( 0.77 + de/9.1, 1.0);
-         }
       }
 
       g.EqnData.e = e;
@@ -428,10 +388,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
          if (g.LeverRuleData.mg*skew < g.mg) // use lesser of lever rule and equation
          {
             g.ControllingMethod = LEVER_RULE;
-            if ( m_bSkewMoment )
-            {
-               g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-            }
             g.SkewCorrectionFactor = skew;
             g.mg = g.LeverRuleData.mg * skew;
          }
@@ -440,14 +396,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_S
    else
    {
       // lever rule was used for interior - override using exterior lever rule
+      Float64 skew = MomentSkewCorrectionFactor();
+
       g.ControllingMethod = LEVER_RULE;
       g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
-
-      Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
-      {
-         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-      }
       g.SkewCorrectionFactor = skew;
       g.mg = g.LeverRuleData.mg * skew;
    }
@@ -461,7 +413,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Int_1_St
 
    bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
 
-   if( (InteriorShearEquationRule(bSISpec, false)) && 3 < GetNb() )
+   if( (InteriorShearEquationRule(bSISpec, false)) && GetNb() > 3 )
    {
       // using spec equation
       g.ControllingMethod = SPEC_EQN;
@@ -489,10 +441,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Int_1_St
    }
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -505,7 +453,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeAEKIJ::GetShearDF_Int_2_S
 
    bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
 
-   if( ( InteriorShearEquationRule(bSISpec, false)) && 3 < GetNb() )
+   if( ( InteriorShearEquationRule(bSISpec, false)) && GetNb() > 3 )
    {
       // using spec equation
       g.ControllingMethod = SPEC_EQN;
@@ -534,10 +482,6 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeAEKIJ::GetShearDF_Int_2_S
    }
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -554,10 +498,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Ext_1_St
    g.mg = g.LeverRuleData.mg;
 
    skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -575,7 +515,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Ext_2_St
    g = lrfdLldfTypeAEKIJ::GetShearDF_Int_2_Strength();
 
    // Only apply e factor if equation was used for interior, and de and nb are in range
-   if (g.ControllingMethod & SPEC_EQN && DeRule(bSISpec,false) && 3 < GetNb() )
+   if (g.ControllingMethod & SPEC_EQN && DeRule(bSISpec,false) && GetNb() > 3)
    {
       Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
       Float64 e;
@@ -608,16 +548,12 @@ Float64 lrfdLldfTypeAEKIJ::MomentSkewCorrectionFactor() const
    Float64 skew;
 
    if (!m_bSkewMoment)
-   {
       return 1.0;
-   }
 
    // 4.6.2.2.2e - don't reduce moment if difference in skew is > 10 degree
    Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
    if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-   {
       return 1.0;
-   }
 
    Float64 avg_skew_angle = fabs(m_SkewAngle1 + m_SkewAngle2)/2.;
 
@@ -650,9 +586,7 @@ Float64 lrfdLldfTypeAEKIJ::MomentSkewCorrectionFactor() const
 
    // Skew angle is limited to 60 deg.
    if ( 60.0 < ::ConvertFromSysUnits(avg_skew_angle, unitMeasure::Degree) )
-   {
       avg_skew_angle = ::ConvertToSysUnits(60.0,unitMeasure::Degree);
-   }
 
    skew = 1. - c1*pow( tan(::ConvertFromSysUnits(avg_skew_angle,unitMeasure::Radian)), 1.5);
 
@@ -664,9 +598,7 @@ Float64 lrfdLldfTypeAEKIJ::ShearSkewCorrectionFactor() const
    Float64 skew;
 
    if (!m_bSkewShear)
-   {
       return 1.0;
-   }
 
    Float64 avg_skew_angle = fabs(m_SkewAngle1 + m_SkewAngle2)/2.;
 
@@ -714,7 +646,7 @@ bool lrfdLldfTypeAEKIJ::SpGreaterThan16_Rule(bool bSISpec) const
 {
    Float64 smax = ::ConvertToSysUnits( bSISpec ? 4900. : 16.0, bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
 
-   return smax < m_Savg;
+   return m_Savg > smax;
 }
 
 
@@ -751,23 +683,17 @@ bool lrfdLldfTypeAEKIJ::InteriorShearEquationRule(bool bSISpec, bool doThrow) co
 
    Float64 smin = ::ConvertToSysUnits( bSISpec ? 1100. : 3.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    if ( m_Savg < smin )
-   {
       THROW_DF(lrfdXRangeOfApplicability, Spacing, _T("Beam spacing is out of range -too small. See Table 4.6.2.2.2b-1"));
-   }
 
    Float64 tsmin = ::ConvertToSysUnits( bSISpec ? 100. : 4.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Inch);
    Float64 tsmax = ::ConvertToSysUnits( bSISpec ? 300. : 12., bSISpec ? unitMeasure::Millimeter : unitMeasure::Inch);
    if ( !InRange( tsmin, m_ts, tsmax ) )
-   {
       THROW_DF(lrfdXRangeOfApplicability,SlabDepth, _T("Slab depth is out of range. See Table 4.6.2.2.2b-1"));
-   }
 
    Float64 lmin = ::ConvertToSysUnits( bSISpec ? 6000. : 20., bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    Float64 lmax = ::ConvertToSysUnits( bSISpec ? 73000. : 240., bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
    if ( !InRange( lmin, m_L, lmax ) )
-   {
       THROW_DF( lrfdXRangeOfApplicability,SpanLength, _T("Span length is out of range. See Table 4.6.2.2.2b-1"));
-   }
 
 
    return true;
@@ -778,7 +704,10 @@ bool lrfdLldfTypeAEKIJ::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) c
    // same as for interior moment+
    if ( InteriorMomentEquationRule(bSISpec,doThrow) )
    {
-      return DeRule(bSISpec,doThrow);
+      // m_bIgnoreDe - this is an interpretation issue relating back to requirements.
+
+//      if(!m_bIgnoreDe)
+         return DeRule(bSISpec,doThrow);
    }
    else
    {
@@ -794,29 +723,12 @@ bool lrfdLldfTypeAEKIJ::DeRule(bool bSISpec, bool doThrow) const
    Float64 demax = ::ConvertToSysUnits( bSISpec ? 1700. : 5.5, bSISpec ? unitMeasure::Millimeter : unitMeasure::Feet);
 
    Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-
-   bool bBad_de = false;
-   if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
-   {
-      // begining with LRFD 7th Edition, 2014 de can be less than -1 feet (-300 mm) so only
-      // check the upper bound on the value.
-      //
-      // Note that if de < -1 feet, use -1 feet (see LRFD 4.6.2.2.2d)... also, do the mapping in the calling function
-      bBad_de = (demax < de_raw ? true : false);
-   }
-   else
-   {
-      bBad_de = InRange(demin,de_raw,demax) ? false : true;
-   }
-
-   if ( bBad_de )
+   if (!InRange( demin, de_raw, demax ) )
    {
       THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
    }
    else
-   {
       return true;
-   }
 }
 
 

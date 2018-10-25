@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -270,8 +270,19 @@ STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::DetermineDropEffect()
          if ( de > 0 )
          {
             // Payload can be dropped!
-            pDropSite->Highlite(&dc,TRUE);
-#pragma Reminder("The drop site needs to be unhighlighed when the mouse moves off of it")
+            CComPtr<iDropSite> currentDropSite;
+            m_pDispMgr->GetDropSite(&currentDropSite);
+            if ( currentDropSite && !pDropSite.IsEqualObject(currentDropSite) )
+            {
+               // if there is a current drop site, draw it in its normal stage
+               m_pDispMgr->HighliteDropSite(FALSE);
+            }
+
+            // Set the new drop site
+            m_pDispMgr->SetDropSite(pDropSite);
+
+            // draw in highlited stage
+            m_pDispMgr->HighliteDropSite(TRUE);
 
             found = true;
             break; // we found a drop site... get the heck outta here
@@ -283,6 +294,7 @@ STDMETHODIMP_(DROPEFFECT) CLocalDragDropTaskImpl::DetermineDropEffect()
    {
       // Cursor is not over a display object - relegate to the view
       m_pDispMgr->HighliteDropSite(FALSE);
+      m_pDispMgr->SetDropSite(NULL);
 
       // Ask the View if we can drop the payload on the canvas
       CDisplayView* pView = m_pDispMgr->GetView();

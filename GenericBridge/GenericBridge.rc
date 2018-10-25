@@ -55,8 +55,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,8,2,1
- PRODUCTVERSION 3,8,2,1
+ FILEVERSION 4,0,0,0
+ PRODUCTVERSION 4,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -74,15 +74,15 @@ BEGIN
             VALUE "Comments", "A member of Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "GenericBridge Module\0"
-            VALUE "FileVersion", "3.8.2.1\0"
+            VALUE "FileVersion", "4.0.0.0\0"
             VALUE "InternalName", "GenericBridge\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2016, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2013\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "GenericBridge.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "3.8.2.1\0"
+            VALUE "ProductVersion", "4.0.0.0\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -101,23 +101,13 @@ END
 //
 
 IDR_GENERICBRIDGE       REGISTRY DISCARDABLE    "GenericBridge.rgs"
-IDR_STAGE               REGISTRY DISCARDABLE    "Stage.rgs"
-IDR_STAGECOLLECTION     REGISTRY DISCARDABLE    "StageCollection.rgs"
-IDR_SPAN                REGISTRY DISCARDABLE    "Span.rgs"
-IDR_SPANCOLLECTION      REGISTRY DISCARDABLE    "SpanCollection.rgs"
 IDR_PIER                REGISTRY DISCARDABLE    "Pier.rgs"
 IDR_PIERCOLLECTION      REGISTRY DISCARDABLE    "PierCollection.rgs"
 IDR_LONGITUDINALPIERDESCRIPTION REGISTRY DISCARDABLE    "LongitudinalPierDescription.rgs"
-IDR_GIRDERSPACING       REGISTRY DISCARDABLE    "GirderSpacing.rgs"
-//IDR_ADAPTSTATION        REGISTRY DISCARDABLE    "AdaptStation.rgs"
 IDR_SUPERSTRUCTUREMEMBER REGISTRY DISCARDABLE    "SuperstructureMember.rgs"
 IDR_SEGMENT             REGISTRY DISCARDABLE    "Segment.rgs"
 IDR_SEGMENTITEM         REGISTRY DISCARDABLE    "SegmentItem.rgs"
 IDR_FILTEREDSEGMENTCOLLECTION REGISTRY DISCARDABLE    "FilteredSegmentCollection.rgs"
-IDR_SUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "SuperstructureMemberCollection.rgs"
-IDR_TEMPORARYPIERITEM   REGISTRY DISCARDABLE    "TemporaryPierItem.rgs"
-IDR_TEMPORARYPIERITEMCOLLECTION REGISTRY DISCARDABLE    "TemporaryPierItemCollection.rgs"
-IDR_COGOINFO            REGISTRY DISCARDABLE    "CogoInfo.rgs"
 IDR_COLUMN              REGISTRY DISCARDABLE    "Column.rgs"
 IDR_COLUMNSPACING       REGISTRY DISCARDABLE    "ColumnSpacing.rgs"
 IDR_CROSSBEAM           REGISTRY DISCARDABLE    "CrossBeam.rgs"
@@ -134,9 +124,10 @@ IDR_UGIRDERSECTION2     REGISTRY DISCARDABLE    "UGirderSection2.rgs"
 IDR_FILTEREDSUPERSTRUCTUREMEMBERCOLLECTION REGISTRY DISCARDABLE    "FilteredSuperstructureMemberCollection.rgs"
 IDR_FSHAPEBARRIER       REGISTRY DISCARDABLE    "FShapeBarrier.rgs"
 IDR_GENERICBARRIER      REGISTRY DISCARDABLE    "GenericBarrier.rgs"
-IDR_CONNECTION          REGISTRY DISCARDABLE    "Connection.rgs"
 IDR_LINEARTENDONSEGMENT REGISTRY DISCARDABLE    "LinearTendonSegment.rgs"
+IDR_PARABOLICTENDONSEGMENT REGISTRY DISCARDABLE    "ParabolicTendonSegment.rgs"
 IDR_TENDON              REGISTRY DISCARDABLE    "Tendon.rgs"
+IDR_OFFSETTENDON              REGISTRY DISCARDABLE    "OffsetTendon.rgs"
 IDR_TENDONCOLLECTION    REGISTRY DISCARDABLE    "TendonCollection.rgs"
 IDR_PRESTRESSINGSTRAND  REGISTRY DISCARDABLE    "PrestressingStrand.rgs"
 IDR_BULBTEE             REGISTRY DISCARDABLE    "BulbTeeSection.rgs"
@@ -155,6 +146,18 @@ IDR_DECKEDSLABBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "DeckedSlabBeamEndBlockSe
 IDR_BOXBEAMENDBLOCKSEGMENT REGISTRY DISCARDABLE "BoxBeamEndBlockSegment.rgs"
 IDR_DECKEDSLABBEAMSECTION REGISTRY DISCARDABLE "DeckedSlabBeamSection.rgs"
 IDR_UGIRDERSECTION2ENDBLOCKSEGMENT REGISTRY DISCARDABLE "UGirderSection2EndBlockSegment.rgs"
+IDR_FLANGEDSPLICEDGIRDERSEGMENT REGISTRY DISCARDABLE "FlangedSplicedGirderSegment.rgs"
+IDR_USPLICEDGIRDERSEGMENT REGISTRY DISCARDABLE "USplicedGirderSegment.rgs"
+IDR_REBAR               REGISTRY DISCARDABLE    "Rebar.rgs"
+IDR_REBARSECTIONITEM    REGISTRY DISCARDABLE    "RebarSectionItem.rgs"
+IDR_REBARSECTION        REGISTRY DISCARDABLE    "RebarSection.rgs"
+IDR_REBARROWPATTERN     REGISTRY DISCARDABLE    "RebarRowPattern.rgs"
+IDR_REBARLAYOUT         REGISTRY DISCARDABLE    "RebarLayout.rgs"
+IDR_REBARFACTORY        REGISTRY DISCARDABLE    "RebarFactory.rgs"
+IDR_BRIDGEDECKREBARLAYOUTITEM REGISTRY DISCARDABLE "BridgeDeckRebarLayoutItem.rgs"
+IDR_NMBRIDGEDECKREBARLAYOUTITEM REGISTRY DISCARDABLE "NegativeMomentBridgeDeckRebarLayoutItem.rgs"
+IDR_BRIDGEDECKREBARPATTERN REGISTRY DISCARDABLE "BridgeDeckRebarPattern.rgs"
+IDR_FIXEDLENGTHREBARLAYOUTITEM REGISTRY DISCARDABLE    "FixedLengthRebarLayoutItem.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

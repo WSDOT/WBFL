@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,8 +29,6 @@
 #define __SUPERSTRUCTUREMEMBER_H_
 
 #include "resource.h"       // main symbols
-#include "Segments.h"
-#include "GenericBridgeCP.h"
 #include "ItemDataManager.h"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -42,33 +40,18 @@ class ATL_NO_VTABLE CSuperstructureMember :
 	public ISupportErrorInfo,
    public ISuperstructureMember,
    public IItemData,
-   public ISegmentItemEvents,
-   public ISegmentMeasure,
    public IStructuredStorage2,
-   public CProxyDSuperstructureMemberEvents< CSuperstructureMember >,
-   public IConnectionPointContainerImpl<CSuperstructureMember>,
-   public IObjectSafetyImpl<CSuperstructureMember,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public CSegmentsOwner
+   public IObjectSafetyImpl<CSuperstructureMember,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
    CSuperstructureMember()
 	{
-      m_bIgnoreSegmentEvents = false;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
 
-   void SetBridge(IGenericBridge* pBridge);
-
-   void RenameStageReferences(BSTR bstrOldName,BSTR bstrNewName);
-   void AddDataForStage(BSTR bstrName);
-   void RemoveDataForStage(BSTR bstrName);
-
-   CSegments* GetSegments() { return m_pSegments; }
-
-   // Sets the length of the member without creating a transaction or event
-   void SetLengthSilent(Float64 length) { m_Length = length; }
+   void Init(GirderIDType id,LocationType locationType,IGenericBridge* pBridge);
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SUPERSTRUCTUREMEMBER)
@@ -81,71 +64,39 @@ BEGIN_COM_MAP(CSuperstructureMember)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(ISegmentItemEvents)
-   COM_INTERFACE_ENTRY(ISegmentMeasure)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CSuperstructureMember)
-   CONNECTION_POINT_ENTRY(IID_ISuperstructureMemberEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
+   GirderIDType m_ID;
    IGenericBridge* m_pBridge; // weak referece to bridge
 
    typedef std::pair<EndType,std::pair<CComBSTR,ReleaseType> > MemberReleaseDataType;
 
-   CSegments* m_pSegments;
-   bool m_bIgnoreSegmentEvents;
+   std::vector<CComPtr<ISegment>> m_Segments;
 
-   Float64 m_Length;
    ReleaseType m_Release[2];
-   CComBSTR m_bstrReleaseStage[2];
-   VARIANT_BOOL m_bAreSegmentsSymmetrical; 
-   VARIANT_BOOL m_bAreSegmentLengthsFractional;
+   StageIndexType m_ReleaseStageIndex[2];
+
+   LocationType m_LocationType;
 
    CItemDataManager m_ItemDataMgr;
-
-// virtual methods for CSegmentsOwner
-   virtual HRESULT SetUpConnection(ISegmentItem* pCp, unsigned long* pcookie);
-   virtual void BreakConnection(ISegmentItem* pCp, unsigned long cookie);
-   virtual void OnSegmentsChanged(CSegments* psegments);
-   virtual Float64 Length();
-
-   HRESULT AdviseSegmentItem(ISegmentItem* segItem,DWORD* pdwCookie);
-   HRESULT UnadviseSegmentItem(ISegmentItem* segItem,DWORD dwCookie);
 
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// ISegmentMeasure
-public:
-	STDMETHOD(IsFractional)();
-
 // ISuperstructureMember
 public:
-	STDMETHOD(ReverseSegments)();
-	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/ Float64 Location,/*[out]*/Float64* dist,/*[out]*/ ISegmentItem **ppSeg);
-	STDMETHOD(GetMemberSegments)(/*[out,retval]*/ IFilteredSegmentCollection **ppSeg);
-	STDMETHOD(RemoveSegments)();
-	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(CopySegmentTo)(/*[in]*/ CollectionIndexType fromIdx, /*[in]*/ CollectionIndexType toIdx);
-	STDMETHOD(MoveSegmentTo)(/*[in]*/ CollectionIndexType fromIdx,/*[in]*/ CollectionIndexType toIdx);
-	STDMETHOD(InsertSegment)(/*[in]*/ CollectionIndexType idx,/*[in]*/ ISegment* segment);
+   STDMETHOD(get_ID)(GirderIDType* pID);
 	STDMETHOD(AddSegment)(/*[in]*/ ISegment* segment);
-	STDMETHOD(get_AreSegmentLengthsFractional)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-   STDMETHOD(put_AreSegmentLengthsFractional)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_AreSegmentsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_AreSegmentsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_Segment)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISegment* *pVal);
-	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_SegmentLength)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ BSTR* strReleaseStage,/*[out]*/ ReleaseType* release);
-	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ BSTR strRemoveStage,/*[in]*/ ReleaseType release);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
-   STDMETHOD(Clone)(/*[out,retval]*/ISuperstructureMember** ppSSM);
+	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISegment* *pVal);
+   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 distFromStartOfSSMbr,Float64* distFromStartOfSegment,SegmentIndexType* pSegIdx,ISegment** ppSeg);
+   STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pDistFromStartOfSSMbr);
+	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal);
+	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release);
+	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release);
+   STDMETHOD(get_LocationType)(LocationType* pVal);
+   STDMETHOD(get_Bridge)(IGenericBridge** ppBridge);
 
 // IItemData
 public:
@@ -158,17 +109,6 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-// ISegmentItemEvents
-public:
-	STDMETHOD(OnSegmentItemChanged)(ISegmentItem* item)
-	{
-      if ( m_bIgnoreSegmentEvents )
-         return S_OK;
-
-      Fire_OnSuperstructureMemberChanged(this);
-      return S_OK;
-	}
 };
 
 #endif //__SUPERSTRUCTUREMEMBER_H_

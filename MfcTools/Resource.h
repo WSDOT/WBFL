@@ -34,7 +34,6 @@
 #define IDC_QUESTION                    1218
 #define IDC_ANSWER                      1219
 #define IDC_RESPONSE_CHOICES            1222
-#define IDC_BUTTON1                     1224
 #define IDS_E_BEARINGFMT                1301
 #define IDS_E_ANGLEFMT                  1302
 #define IDS_DDXFOLDER_TT_MODIFY         1303
@@ -52,7 +51,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1134
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1225
+#define _APS_NEXT_CONTROL_VALUE         1224
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

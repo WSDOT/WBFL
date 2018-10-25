@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,9 +35,23 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
 #define OVL_DECK 2
 #define NO_DECK  3
 
-void CreateBridge(const std::vector<Float64>& spanLengths,Float64 gdrSpacing,GirderIndexType nGirderLines,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
+struct SpanDefinition
+{
+   Float64 length; // span length (pier to pier)
+   std::pair<Float64,Float64> spacingOffset; // offset from bridge line to first girder (measured along cl-pier)
+   std::vector< std::pair<Float64,Float64> > girderSpacing; // spacing at start and end of span, measured along cl-pier
+};
+
+void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<Float64>& spanLengths,Float64 gdrSpacing,GirderIndexType nGirderLines,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
+void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDefinition>& spanDefinitions,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
+void CreateSplicedGirderBridge(IGenericBridge** ppBridge);
+void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* geometry,CogoObjectID alignmentID,PierIDType backPierID,PierIDType forwardPierID,IBridgeDeck** deck);
 void DimensionWFG(IFlangedGirderSection* fgs);
 void DimensionNUG(INUGirderSection* ngs);
 void DimensionUG(IUGirderSection* ngs);
+
+LineIDType GetGirderLayoutLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx);
+GirderIDType GetGirderLineID(SpanIndexType spanIdx,GirderIndexType gdrIdx);
+LineIDType GetGirderSegmentLineID(GirderIndexType gdrIdx,SegmentIndexType segIdx);
 
 #endif // INCLUDED_GENERICBRIDGETOOLSTEST_H_

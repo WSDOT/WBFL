@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,7 +30,6 @@
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
-#include "GenericBridgeToolsCP.h"
 
 class CFlexRebarLayoutItem;
 typedef CComVectorCollection<IFlexRebarLayoutItem,IRebarPattern,IEnumRebarPatterns,&IID_IEnumRebarPatterns,CollectionIndexType> PtrnColl;
@@ -61,7 +60,6 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CFlexRebarLayoutItem)
    COM_INTERFACE_ENTRY(IFlexRebarLayoutItem)
    COM_INTERFACE_ENTRY(IRebarLayoutItem)
-
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
@@ -86,7 +84,7 @@ public:
 
 // IFlexRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromGdrStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
 	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
 //	STDMETHOD(get_Count)(/*[out,retval]*/long* count);

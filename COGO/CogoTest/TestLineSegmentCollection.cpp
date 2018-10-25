@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -174,7 +174,7 @@ void CTestLineSegmentCollection::Test()
    //
    // Test FindKey
    //
-   CogoElementKey key;
+   CogoObjectID key;
    TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
    TRY_TEST(pColl->FindKey(ls4,NULL),E_POINTER);
    TRY_TEST(pColl->FindKey(ls4,&key),S_OK);
@@ -203,7 +203,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoElementKey target_key = 1;
+   CogoObjectID target_key = 1;
    while( pEnum->Next(1,&key,&fetched ) == S_OK )
    {
       TRY_TEST(key,target_key++);
@@ -307,7 +307,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_LineSegmentCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoElementKey key,ILineSegment2d* lineSeg)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID key,ILineSegment2d* lineSeg)
 {
 //   MessageBox(NULL,"LineSegmentChanged","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -316,7 +316,7 @@ STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoElementKey key
    return S_OK;
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoElementKey key,ILineSegment2d* lineSeg)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID key,ILineSegment2d* lineSeg)
 {
 //   MessageBox(NULL,"LineSegmentAdded","Event",MB_OK);
    if ( key == m_expectedKey )
@@ -325,7 +325,7 @@ STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoElementKey key,I
    return S_OK;
 }
 
-STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoElementKey key)
+STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID key)
 {
 //   MessageBox(NULL,"LineSegmentRemoved","Event",MB_OK);
    if ( key == m_expectedKey )

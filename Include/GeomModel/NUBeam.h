@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -332,7 +332,7 @@ public:
    // Returns the minimum top flange thickness
    virtual Float64 GetMinTopFlangeThickness() const;
 
-   virtual Int32 GetNumberOfMatingSurfaces() const;
+   virtual MatingSurfaceIndexType GetNumberOfMatingSurfaces() const;
    virtual Float64 GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const;
    virtual Float64 GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const;
    virtual void GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const;
@@ -380,7 +380,7 @@ protected:
    void MakeCopy(const gmNUBeam& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const gmNUBeam& rOther);
+   virtual void MakeAssignment(const gmNUBeam& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

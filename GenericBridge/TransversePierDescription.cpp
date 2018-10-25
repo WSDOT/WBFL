@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,65 +43,29 @@ HRESULT CTransversePierDescription::FinalConstruct()
    CComObject<CCrossBeam>* pCrossBeam;
    CComObject<CCrossBeam>::CreateInstance(&pCrossBeam);
    m_CrossBeam = pCrossBeam;
-   AdviseChild(m_CrossBeam,IID_ICrossBeamEvents,&m_dwCrossBeamCookie);
 
    CComObject<CColumnSpacing>* pColumnSpacing;
    CComObject<CColumnSpacing>::CreateInstance(&pColumnSpacing);
    m_ColumnSpacing = pColumnSpacing;
-   AdviseChild(m_ColumnSpacing,IID_IColumnSpacingEvents,&m_dwColumnSpacingCookie);
 
    pCrossBeam->SetColumnSpacing(pColumnSpacing);
-
-   AdviseColumns();
 
    return S_OK;
 }
 
 void CTransversePierDescription::FinalRelease()
 {
-   UnadviseColumns();
-   UnadviseChild(m_CrossBeam,IID_ICrossBeamEvents,m_dwCrossBeamCookie);
-   UnadviseChild(m_ColumnSpacing,IID_IColumnSpacingEvents,m_dwColumnSpacingCookie);
-
    m_CrossBeam.Release();
    m_ColumnSpacing.Release();
 }
 
-STDMETHODIMP CTransversePierDescription::Clone(ITransversePierDescription* *clone)
-{
-   CComObject<CTransversePierDescription>* pClone;
-   CComObject<CTransversePierDescription>::CreateInstance(&pClone);
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   CComPtr<IColumnSpacing> cloneColumnSpacing;
-   dynamic_cast<CColumnSpacing*>(m_ColumnSpacing.p)->Clone(&cloneColumnSpacing);
-
-   CComPtr<ICrossBeam> cloneCrossBeam;
-   dynamic_cast<CCrossBeam*>(m_CrossBeam.p)->Clone(&cloneCrossBeam);
-
-   dynamic_cast<CCrossBeam*>(cloneCrossBeam.p)->SetColumnSpacing(dynamic_cast<CColumnSpacing*>(cloneColumnSpacing.p));
-
-   pClone->SetItems(cloneColumnSpacing,cloneCrossBeam);
-
-   return S_OK;
-}
-
 void CTransversePierDescription::SetItems(IColumnSpacing* pSpacing,ICrossBeam* pCrossBeam)
 {
-   UnadviseColumns();
-   UnadviseChild(m_CrossBeam,IID_ICrossBeamEvents,m_dwCrossBeamCookie);
-   UnadviseChild(m_ColumnSpacing,IID_IColumnSpacingEvents,m_dwColumnSpacingCookie);
-
    m_CrossBeam.Release();
    m_ColumnSpacing.Release();
 
    m_CrossBeam     = pCrossBeam;
    m_ColumnSpacing = pSpacing;
-
-   AdviseColumns();
-   AdviseChild(m_CrossBeam,IID_ICrossBeamEvents,&m_dwCrossBeamCookie);
-   AdviseChild(m_ColumnSpacing,IID_IColumnSpacingEvents,&m_dwColumnSpacingCookie);
 }
 
 void CTransversePierDescription::SetBridge(IGenericBridge* pBridge)
@@ -125,61 +89,6 @@ STDMETHODIMP CTransversePierDescription::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
-}
-
-HRESULT CTransversePierDescription::AdviseChild(IUnknown* punk,REFIID riid,DWORD* pdwCookie)
-{
-   HRESULT hr;
-   CComQIPtr<IConnectionPointContainer> pCPC(punk);
-   CComPtr<IConnectionPoint> pCP;
-   hr = pCPC->FindConnectionPoint(riid,&pCP);
-   ATLASSERT(SUCCEEDED(hr));
-
-   hr = pCP->Advise(GetUnknown(),pdwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-   InternalRelease(); // Break circual reference
-   return S_OK;
-}
-
-HRESULT CTransversePierDescription::UnadviseChild(IUnknown* punk,REFIID riid,DWORD dwCookie)
-{
-   InternalAddRef(); // Counter act call to InternalRelease in AdviseChild
-   CComQIPtr<IConnectionPointContainer> pCPC(punk);
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint(riid,&pCP);
-
-   pCP->Unadvise(dwCookie);
-
-   return S_OK;
-}
-
-void CTransversePierDescription::AdviseColumns()
-{
-   ColumnIndexType nColumns;
-   m_ColumnSpacing->get_ColumnCount(&nColumns);
-   for ( ColumnIndexType i = 0; i < nColumns; i++ )
-   {
-      CComPtr<IColumn> column;
-      get_Column(i,&column);
-
-      DWORD dwCookie;
-      AdviseChild(column,IID_IColumnEvents,&dwCookie);
-
-      m_ColumnCookies.push_back(std::make_pair(dwCookie,column));
-   }
-}
-
-void CTransversePierDescription::UnadviseColumns()
-{
-   std::vector<std::pair<DWORD,CComPtr<IColumn> > >::iterator iter;
-   for ( iter = m_ColumnCookies.begin(); iter != m_ColumnCookies.end(); iter++ )
-   {
-      std::pair<DWORD,CComPtr<IColumn> >& item = *iter;
-      UnadviseChild(item.second,IID_IColumnEvents,item.first);
-   }
-
-   m_ColumnCookies.clear();
 }
 
 /////////////////////////////////////////////////////////////////////////////

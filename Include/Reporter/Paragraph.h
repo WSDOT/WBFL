@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -182,7 +182,7 @@ protected:
    
    //------------------------------------------------------------------------
    // utility function to be used for assignment
-   void MakeAssignment(const rptParagraph& rOther);
+   virtual void MakeAssignment(const rptParagraph& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

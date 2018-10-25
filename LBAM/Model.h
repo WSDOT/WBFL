@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -112,6 +112,9 @@ END_CONNECTION_POINT_MAP()
 
 // ILBAMModel
 public:
+   STDMETHOD(get_Name)(BSTR* name);
+   STDMETHOD(put_Name)(BSTR name);
+
 	STDMETHOD(get_DistributionFactors)(/*[out, retval]*/ IDistributionFactors* *pVal);
 	STDMETHOD(get_LiveLoad)(/*[out, retval]*/ ILiveLoad* *pVal);
 	STDMETHOD(ComputeLocation)(/*[in]*/MemberIDType mbrID, /*[in]*/MemberType mbrType, /*[in]*/Float64 mbrLocation, /*[out]*/Float64* Xloc, /*[out]*/Float64* Yloc);
@@ -258,6 +261,7 @@ public:
 
 
 protected:
+   CComBSTR                         m_Name;
    CComPtr<IStrainLoads>            m_StrainLoads;
    DWORD                            m_StrainLoadsCookie;
    CComPtr<ISettlementLoads>        m_SettlementLoads;

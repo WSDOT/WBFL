@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -326,7 +326,7 @@ library WBFLLBAM
    cttSuperstructureMembersReverse      = 20006,
    cttSuperstructureMembersOffset       = 20007,
    cttModel                             = 21001,
-   cttSegmentCrossSection                      = 22001,
+   cttSegmentCrossSection               = 22001,
    cttSupport                           = 23001,
    cttSupportsAdded                     = 24001,
    cttSupportsChanged                   = 24002,
@@ -788,6 +788,10 @@ library WBFLLBAM
 		HRESULT IsSymmetrical([in] VARIANT_BOOL newVal);
 		[helpstring("method RemoveStage"),helpcontext(IDH_SuperstructureMember_RemoveStage)] 
 		HRESULT RemoveStage([in]BSTR stage);
+      [propget, helpstring("property LinkMember")]
+      HRESULT LinkMember([out,retval]VARIANT_BOOL* pbIsLinkMember);
+      [propput, helpstring("property LinkMember")]
+      HRESULT LinkMember([in]VARIANT_BOOL bIsLinkMember);
 	};
 
     [
@@ -1338,22 +1342,18 @@ library WBFLLBAM
 		HRESULT GRMul([out, retval] Float64 *pVal);
 		[propput, helpstring("property GRMul - Distribution factor for reactions - multiple lanes loaded"),helpcontext(IDH_DistributionFactor_GRMul)] 
 		HRESULT GRMul([in] Float64 newVal);
-		[helpstring("GetGFat - Distribution factors for fatigue loads, moment and shear"),helpcontext(IDH_DistributionFactor_GFat)] 
-		HRESULT GetGFat([out] Float64 *pMom, [out] Float64 *pShear);
-		[helpstring("SetGFat - Distribution factor for fatigue loads, moment and shear"),helpcontext(IDH_DistributionFactor_GFat)] 
-		HRESULT SetGFat([in] Float64 gMom,[in] Float64 gShear);
+		[propget, helpstring("property GFat - Distribution factor for fatigue loads - used to calculate stresses"),helpcontext(IDH_DistributionFactor_GFat)] 
+		HRESULT GFat([out, retval] Float64 *pVal);
+		[propput, helpstring("property GFat - Distribution factor for fatigue loads - used to calculate stresses"),helpcontext(IDH_DistributionFactor_GFat)] 
+		HRESULT GFat([in] Float64 newVal);
 		[propget, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
 		HRESULT GPedestrian([out, retval] Float64 *pVal);
 		[propput, helpstring("property GPedestrian - Distribution factor for pedestrian live loads - used for all cases"),helpcontext(IDH_DistributionFactor_GPedestrian)] 
 		HRESULT GPedestrian([in] Float64 newVal);
 		[helpstring("method SetG"),helpcontext(IDH_DistributionFactor_SetG)] 
-		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, 
-                   [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, 
-                   [in] Float64 FatM, [in] Float64 FatV, [in]Float64 Pedes);
+		HRESULT SetG([in] Float64 PMSgl, [in] Float64 PMMul, [in] Float64 NMSgl, [in] Float64 NMMul, [in] Float64 VSgl, [in] Float64 VMul, [in] Float64 DSgl, [in] Float64 DMul, [in] Float64 RSgl, [in] Float64 RMul, [in]Float64 TSgl, [in]Float64 TMul, [in] Float64 Fat, [in]Float64 Pedes);
 		[helpstring("method GetG"),helpcontext(IDH_DistributionFactor_GetG)] 
-		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, 
-                   [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, 
-                   [out] Float64* FatM, [out] Float64* FatV, [out]Float64* Pedes);
+		HRESULT GetG([out] Float64* PMSgl, [out] Float64* PMMul, [out] Float64* NMSgl, [out] Float64* NMMul, [out] Float64* VSgl, [out] Float64* VMul, [out] Float64* DSgl, [out] Float64* DMul, [out] Float64* RSgl, [out] Float64* RMul, [out]Float64* TSgl, [out]Float64* TMul, [out] Float64* Fat, [out]Float64* Pedes);
 		[helpstring("method Clone"),helpcontext(IDH_DistributionFactor_Clone)] 
 		HRESULT Clone([out, retval]IDistributionFactor**);
 		[propget, helpstring("property GTMul"),helpcontext(IDH_DistributionFactor_GTMul)] 
@@ -2475,6 +2475,14 @@ library WBFLLBAM
 		HRESULT CurvatureStrain([out, retval] Float64 *pVal);
 		[propput, helpstring("property CurvatureStrain"),helpcontext(IDH_StrainLoad_CurvatureStrain)] 
 		HRESULT CurvatureStrain([in] Float64 newVal);
+		[propget, helpstring("property StartLocation"),helpcontext(IDH_StrainLoad_StartLocation)] 
+		HRESULT StartLocation([out, retval] Float64 *pVal);
+		[propput, helpstring("property StartLocation"),helpcontext(IDH_StrainLoad_StartLocation)] 
+		HRESULT StartLocation([in] Float64 newVal);
+		[propget, helpstring("property EndLocation"),helpcontext(IDH_StrainLoad_EndLocation)] 
+		HRESULT EndLocation([out, retval] Float64 *pVal);
+		[propput, helpstring("property EndLocation"),helpcontext(IDH_StrainLoad_EndLocation)] 
+		HRESULT EndLocation([in] Float64 newVal);
 		[helpstring("method Clone"),helpcontext(IDH_StrainLoad_Clone)] 
 		HRESULT Clone([out,retval]IStrainLoad** clone);
 	};
@@ -2877,27 +2885,6 @@ library WBFLLBAM
 	};
 
 	[
-		object,
-		uuid(176038BE-9484-469d-97DD-D2764B0FBAE9),
-		oleautomation,
-		helpstring("ILinearDistributionFactorSegment Interface"), ,helpcontext(IDH_DistributionFactorSegment),
-		pointer_default(unique)
-	]
-	interface ILinearDistributionFactorSegment : IDistributionFactorSegment
-	{
-      // distribution factor at the end of the segment...
-      // the inherited method provides the distribution factor at the start of the segment
-		[propget, helpstring("property EndDistributionFactor"),helpcontext(IDH_DistributionFactorSegment_DistributionFactor)] 
-		HRESULT EndDistributionFactor([out, retval] IDistributionFactor* *pVal);
-		[propputref, helpstring("property EndDistributionFactor"),helpcontext(IDH_DistributionFactorSegment_DistributionFactor)] 
-		HRESULT EndDistributionFactor([in] IDistributionFactor* newVal);
-
-      // creates a new distibution factor object at dist from the start of this segment.
-      // if dist < 0 it is considered a fraction of the segment length
-      HRESULT CreateDistributionFactor([in] Float64 dist,[out,retval]IDistributionFactor** pFactor);
-	};
-
-	[
 	   object,
 	   uuid(CA93AE99-EA30-4d83-97B1-16C93210F4AD),
 	   helpstring("IEnumDistributionFactorSegment Interface"),
@@ -2977,8 +2964,6 @@ library WBFLLBAM
 		HRESULT Reverse();
 		[helpstring("method GetSegmentForLocation"),helpcontext(IDH_DistributionFactors_GetSegmentForLocation)] 
 		HRESULT GetSegmentForLocation([in]Float64 location, [in]Float64 superstructureLength, [out]IDistributionFactorSegment** leftSegment, [out]IDistributionFactorSegment** rightSegment);
-		[helpstring("method GetFactorForLocation"),helpcontext(IDH_DistributionFactors_GetSegmentForLocation)] 
-		HRESULT GetFactorForLocation([in]Float64 location, [in]Float64 superstructureLength, [out]IDistributionFactor** leftLLDF, [out]IDistributionFactor** rightLLDF);
 		[helpstring("method GetMemberSegments"),helpcontext(IDH_DistributionFactors_GetMemberSegments)] 
 		HRESULT GetMemberSegments([in]Float64 superstructureLength, [out,retval]IFilteredDfSegmentCollection** segments);
 		[helpstring("method Clone"),helpcontext(IDH_DistributionFactors_Clone)] 
@@ -2999,6 +2984,9 @@ library WBFLLBAM
 	]
 	interface ILBAMModel : IUnknown
 	{
+      [propget] HRESULT Name([out,retval]BSTR* name);
+      [propput] HRESULT Name([in]BSTR name);
+
 		[propget, helpstring("property SuperstructureMembers"),helpcontext(IDH_Model_SuperstructureMembers)] 
 		HRESULT SuperstructureMembers([out, retval] ISuperstructureMembers* *pVal);
 
@@ -4108,18 +4096,7 @@ library WBFLLBAM
 		[default] interface IDistributionFactorSegment;
 		[default, source] interface IDistributionFactorSegmentEvents;
 	};
-
-   [
-      uuid(18CF521C-48EF-473d-856B-A7A83135D073),
-		helpstring("LinearDistributionFactorSegment Class")
-	]
-	coclass LinearDistributionFactorSegment
-	{
-		[default] interface ILinearDistributionFactorSegment;
-		[default, source] interface IDistributionFactorSegmentEvents;
-	};
-
-   [
+	[
 		uuid(6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4),
 		helpstring("FilteredDfSegmentCollection Class")
 	]

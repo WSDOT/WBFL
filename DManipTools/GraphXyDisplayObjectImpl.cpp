@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManipTools - Direct Manipulation Tools
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,7 +52,7 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
    // this is a butt-ugly routine that was converted from fortran - excuse
    // the mess, but it works
    Float64 exponent, factor, scale_fac, test_scale, adjusted_min, adjusted_max; 
-   IndexType  nmin, nmax, need;
+   Int32  nmin, nmax, need;
    bool  is_defseg;
 
    const Float64  tol = 1.0e-09;
@@ -68,14 +68,16 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
    if (niceMin == niceMax)
    {
        if (niceMin == 0.0)
+       {
            niceMax = 1.0;
+       }
        else
        {
            niceMin = niceMin/prturb;
            niceMax = niceMax*prturb;
        }
    }
-   else if (niceMin > niceMax)
+   else if (niceMax < niceMin)
    {
        Float64 temp = niceMin;
        niceMin = niceMax;
@@ -105,11 +107,11 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
 
 //     test each scale and keep the largest one that works
 
-   for (CollectionIndexType i=0; i<nscale; i++)
+   for (Int32 i=0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
-       nmin = (CollectionIndexType)floor(niceMin/test_scale);
-       nmax = (CollectionIndexType)ceil(niceMax/test_scale);
+       nmin = (Int32)floor(niceMin/test_scale);
+       nmax = (Int32)ceil(niceMax/test_scale);
        need = nmax - nmin;
 
        if (need <= numberOfSegments)

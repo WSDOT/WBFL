@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -191,9 +191,9 @@ bmfMeasuredFrom bmfPrecastGirderTemplate::HarpPointLocationMeasuredFrom() const
    return m_HpLocMeasuredFrom;
 }
 
-Uint32 bmfPrecastGirderTemplate::GetHarpingPointCount() const
+IndexType bmfPrecastGirderTemplate::GetHarpingPointCount() const
 {
-   Uint32 cHP = ( m_HpLoc < 0.5 ? 2 : 1 );
+   IndexType cHP = ( m_HpLoc < 0.5 ? 2 : 1 );
    return cHP;
 }
 

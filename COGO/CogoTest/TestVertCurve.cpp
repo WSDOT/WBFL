@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -74,11 +74,11 @@ void CTestVertCurve::Test()
    TRY_TEST( vc->putref_PFG(pfg), S_OK );
 
    TRY_TEST( vc->put_L1(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L1(0),S_OK);
+   TRY_TEST( vc->put_L1(0),E_INVALIDARG);
    TRY_TEST( vc->put_L1(100),S_OK);
 
    TRY_TEST( vc->put_L2(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L2(0),S_OK);
+   TRY_TEST( vc->put_L2(0),E_INVALIDARG);
    TRY_TEST( vc->put_L2(200),S_OK);
 
    Float64 g1, g2;

@@ -733,41 +733,51 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       ssm_rep->SetID(10000+curr_id++);
 
 
-      CComPtr<iRectangleDrawLineStrategy> draw_ssm;
-      ::CoCreateInstance(CLSID_RectangleDrawLineStrategy,NULL,CLSCTX_ALL,IID_iRectangleDrawLineStrategy,(void**)&draw_ssm);
-      draw_ssm->SetLineWidth(3);
-      draw_ssm->SetWidth(5);
       m_RoadwayElevation = 3; // same as rectangle width
-      draw_ssm->SetColor( colors.Item((int)nssm) );
+
+      //CComPtr<iRectangleDrawLineStrategy> draw_ssm;
+      //::CoCreateInstance(CLSID_RectangleDrawLineStrategy,NULL,CLSCTX_ALL,IID_iRectangleDrawLineStrategy,(void**)&draw_ssm);
+      //draw_ssm->SetLineWidth(3);
+      //draw_ssm->SetWidth(5);
+      //draw_ssm->SetColor( colors.Item((int)nssm) );
+      //ssm_rep->SetDrawLineStrategy(draw_ssm);
+
+      CComPtr<iSimpleDrawLineStrategy> draw_ssm;
+      ::CoCreateInstance(CLSID_SimpleDrawLineStrategy,NULL,CLSCTX_ALL,IID_iSimpleDrawLineStrategy,(void**)&draw_ssm);
+      draw_ssm->SetWidth(3);
+      draw_ssm->SetColor(colors.Item((int)nssm));
       ssm_rep->SetDrawLineStrategy(draw_ssm);
-/*
+
       // see if ends are released
       BSTR start_rel_stage=NULL;
-      WBFLLBAM::MemberReleaseType rel_type;
-      ssm->raw_GetEndRelease(WBFLLBAM::ssLeft, &start_rel_stage, &rel_type);
-      // rel_type = ssm->GetEndRelease(WBFLLBAM::ssLeft, &start_rel_stage); //  can't get to work under import directive
-      if (rel_type== WBFLLBAM::mrtPinned)
+      MemberReleaseType rel_type;
+      ssm->GetEndRelease(ssLeft, &start_rel_stage, &rel_type);
+      if (rel_type== mrtPinned)
       {
-         long rel_index = stages->FindIndex(start_rel_stage);
-         if ( rel_index==-1 || rel_index>m_CurrentStageIndex )
+         StageIndexType rel_index;
+         stages->FindIndex(start_rel_stage,&rel_index);
+         if ( rel_index == INVALID_INDEX || rel_index>m_CurrentStageIndex )
          {
-            sds->SetBeginType(leCircle);
+            draw_ssm->SetBeginType(leCircle);
+            draw_ssm->SetBeginSize(10);
          }
       }
       ::SysFreeString(start_rel_stage);
 
       BSTR end_rel_stage=NULL;
-      ssm->raw_GetEndRelease(WBFLLBAM::ssRight, &end_rel_stage, &rel_type);
-      if (rel_type== WBFLLBAM::mrtPinned)
+      ssm->GetEndRelease(ssRight, &end_rel_stage, &rel_type);
+      if (rel_type== mrtPinned)
       {
-         long rel_index = stages->FindIndex(end_rel_stage);
-         if ( rel_index==-1 || rel_index>m_CurrentStageIndex )
+         StageIndexType rel_index;
+         stages->FindIndex(end_rel_stage,&rel_index);
+         if ( rel_index == INVALID_INDEX || rel_index>m_CurrentStageIndex )
          {
-            sds->SetEndType(leCircle);
+            draw_ssm->SetEndType(leCircle);
+            draw_ssm->SetEndSize(10);
          }
       }
       ::SysFreeString(end_rel_stage);
-*/
+
       // plug in
       CComQIPtr<iConnector,&IID_iConnector> connector(ssm_rep);
 

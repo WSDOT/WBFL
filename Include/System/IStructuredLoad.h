@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -134,6 +134,14 @@ public:
    //------------------------------------------------------------------------
    // Read an unsigned integral property
    virtual bool Property(LPCTSTR name, Uint64* pvalue)=0;
+
+   //------------------------------------------------------------------------
+   // Read an integral property
+   virtual bool Property(LPCTSTR name, LONG* pvalue)=0;
+
+   //------------------------------------------------------------------------
+   // Read an unsigned integral property
+   virtual bool Property(LPCTSTR name, ULONG* pvalue)=0;
 
    //------------------------------------------------------------------------
    // Read a bool property

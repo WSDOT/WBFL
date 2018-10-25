@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -414,7 +414,7 @@ STDMETHODIMP CSuperstructureMember::OnSegmentItemChanged(/*[in]*/ISegmentItem* S
 }
 
 // IStructuredStorage2
-static const Float64 MY_VER=1.0;
+static const Float64 MY_VER=2.0;
 STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
 {
    CHECK_IN(pload);
@@ -425,13 +425,10 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   Float64 ver;
-   hr = pload->get_Version(&ver);
+   Float64 version;
+   hr = pload->get_Version(&version);
    if (FAILED(hr))
       return hr;
-
-   if (ver!=MY_VER)
-      return STRLOAD_E_BADVERSION;
 
    {        
       _variant_t var;
@@ -506,6 +503,16 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
       name = var;
       m_RightReleaseRemovalStage = (LPCTSTR)name;
 
+      if ( 1.0 < version )
+      {
+         var.Clear();
+         hr = pload->get_Property(CComBSTR("IsLinkMember"),&var);
+         if (FAILED(hr))
+            return hr;
+
+         m_bIsLinkMember = var.boolVal;
+      }
+
       m_pSegments->Load(pload);
    }
 
@@ -540,6 +547,8 @@ STDMETHODIMP CSuperstructureMember::Save(IStructuredSave2 * psave)
       hr = psave->put_Property(CComBSTR("RightRelease"),var);
 
       hr = psave->put_Property(CComBSTR("RightReleaseRemovalStage"),_variant_t(m_RightReleaseRemovalStage));
+
+      hr = psave->put_Property(CComBSTR("IsLinkMember"),_variant_t(m_bIsLinkMember));
 
       m_pSegments->Save(psave);
 
@@ -617,8 +626,22 @@ STDMETHODIMP CSuperstructureMember::RemoveStage(BSTR stage)
    }
 }
 
+STDMETHODIMP CSuperstructureMember::get_LinkMember(VARIANT_BOOL* pbIsLinkMember)
+{
+   CHECK_RETVAL(pbIsLinkMember);
+   *pbIsLinkMember = m_bIsLinkMember;
+   return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMember::put_LinkMember(VARIANT_BOOL bIsLinkMember)
+{
+   m_bIsLinkMember = bIsLinkMember;
+   return S_OK;
+}
+
 void CSuperstructureMember::Init()
 {
+   m_bIsLinkMember = VARIANT_FALSE;
    m_Length = 0.0;
    m_IsSymmetrical = VARIANT_FALSE;
    m_LeftRelease = mrtNone;

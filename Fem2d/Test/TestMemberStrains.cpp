@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,9 +98,9 @@ void CTestMemberStrains::TestGeneral()
    TRY_TEST_HR(pLoading0->get_MemberStrains(&pMemberStrains));
 
    CComPtr<IFem2dMemberStrain> pMemberStrain0,pMemberStrain3,pPl;
-   TRY_TEST_HR(pMemberStrains->Create(0, 0, 42.3, 52.3, &pMemberStrain0));
-   TRY_TEST(pMemberStrains->Create(0, 0, 0, 0, &pPl),FEM2D_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS);
-   TRY_TEST_HR(pMemberStrains->Create(3, 5, 33.0, 44.0, &pMemberStrain3));
+   TRY_TEST_HR(pMemberStrains->Create(0, 0, 0.0, -1.0, 42.3, 52.3, &pMemberStrain0));
+   TRY_TEST(pMemberStrains->Create(0, 0, 0, 0.0, -1.0, 0, &pPl),FEM2D_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS);
+   TRY_TEST_HR(pMemberStrains->Create(3, 5, 0.0, -1.0, 33.0, 44.0, &pMemberStrain3));
 
    CollectionIndexType num;
    TRY_TEST_HR(pMemberStrains->get_Count(&num));
@@ -204,7 +204,7 @@ void CTestMemberStrains::Test1Bar()
 
    CComPtr<IFem2dMemberStrain> pMemberStrain;
    Float64 strain = 0.002;
-   TRY_TEST_HR(pMemberStrains->Create(0, 1, strain, 0.0, &pMemberStrain));
+   TRY_TEST_HR(pMemberStrains->Create(0, 1, 0.0, -1.0, strain, 0.0, &pMemberStrain));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -352,7 +352,7 @@ void CTestMemberStrains::TestBar()
    TRY_TEST_HR(pLoading->get_MemberStrains(&pMemberStrains));
 
    CComPtr<IFem2dMemberStrain> pMemberStrain;
-   TRY_TEST_HR(pMemberStrains->Create(0, 2, strain, 0.0, &pMemberStrain));
+   TRY_TEST_HR(pMemberStrains->Create(0, 2, 0.0, -1.0, strain, 0.0, &pMemberStrain));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -500,7 +500,7 @@ void CTestMemberStrains::TestBeam()
    CComPtr<IFem2dPOI> pPOI1;
    TRY_TEST_HR(pPOIs->Create(1,  1,  -.5, &pPOI1));
 
-   // create load case and member rotational strain of 0.002
+   // create load case and member curvature of 0.002 length/radian
    CComPtr<IFem2dLoadingCollection> pLoadings;
    TRY_TEST_HR(pmodel->get_Loadings(&pLoadings));
    CComPtr<IFem2dLoading> pLoading;
@@ -508,7 +508,7 @@ void CTestMemberStrains::TestBeam()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain;
-   TRY_TEST_HR(pMemberStrains->Create(0, 1, 0.0, 0.002, &pMemberStrain));
+   TRY_TEST_HR(pMemberStrains->Create(0, 1, 0.0, -1.0, 0.0, 0.002, &pMemberStrain));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -593,7 +593,7 @@ void CTestMemberStrains::TestBeam()
    // poi results
    TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
-   TRY_TEST_B( IsEqual(dy,-0.025) );
+   TRY_TEST_B( IsEqual(dy, -0.025) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
 
    TRY_TEST_HR(presults->ComputePOIForces(0, 1, mftLeft, lotGlobal, &fx, &fy, &mz));
@@ -703,8 +703,8 @@ void CTestMemberStrains::TestBeam2()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain1, pMemberStrain2;
-   TRY_TEST_HR(pMemberStrains->Create(1, 1, 0.0, 0.002, &pMemberStrain1));
-   TRY_TEST_HR(pMemberStrains->Create(2, 2, 0.0, 0.002, &pMemberStrain2));
+   TRY_TEST_HR(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.002, &pMemberStrain1));
+   TRY_TEST_HR(pMemberStrains->Create(2, 2, 0.0, -1.0, 0.0, 0.002, &pMemberStrain2));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -83,7 +83,7 @@ static void NegateMpf(lrfdILiveLoadDistributionFactor::DFResult& g)
 
    if (g.LanesBeamsData.bWasUsed)
    {
-      Float64 mpf =  g.LanesBeamsData.m;
+      Float64 mpf =  g.RigidData.m;
       g.LanesBeamsData.mg /= mpf;
       g.LanesBeamsData.m = 1.0;
 
@@ -496,17 +496,14 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
 //======================== LIFECYCLE  =======================================
 lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane,
-                                      bool bSkewMoment,bool bSkewShear):
+                                      CollectionIndexType Nl, Float64 wLane):
  m_GdrNum(gdr),
  m_Spacings(gdrSpacings),
  m_Savg(Savg),  
  m_LeftCurbOverhang(leftOverhang),
  m_RightCurbOverhang(rightOverhang),
  m_Nl(Nl),
- m_wLane(wLane),
- m_bSkewMoment(bSkewMoment),
- m_bSkewShear(bSkewShear)
+ m_wLane(wLane)
 {
     // Cache nb
     m_Nb = gdrSpacings.size()+1;
@@ -954,9 +951,6 @@ void lrfdLiveLoadDistributionFactorBase::MakeCopy(const lrfdLiveLoadDistribution
    m_wLane         = rOther.m_wLane;
    m_Side          = rOther.m_Side;
 
-   m_bSkewMoment = rOther.m_bSkewMoment;
-   m_bSkewShear  = rOther.m_bSkewShear;
-
    m_Nb            = rOther.m_Nb;
 }
 
@@ -1086,10 +1080,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
@@ -1105,10 +1095,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;

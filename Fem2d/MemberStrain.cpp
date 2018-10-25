@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,7 +44,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CMemberStrain
-void CMemberStrain::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID, Float64 axial, Float64 curvature)
+void CMemberStrain::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID,Float64 xStart,Float64 xEnd, Float64 axial, Float64 curvature)
 {
    ATLASSERT(pLoading!=0);
 
@@ -56,6 +56,8 @@ void CMemberStrain::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoadi
    m_MemberID = memberID;
    m_AxialStrain = axial;
    m_CurvatureStrain = curvature;
+   m_StartLocation = xStart;
+   m_EndLocation = xEnd;
 }
 
 STDMETHODIMP CMemberStrain::InterfaceSupportsErrorInfo(REFIID riid)
@@ -118,6 +120,18 @@ STDMETHODIMP CMemberStrain::Load(/*[in]*/ IStructuredLoad2 *pload)
          return hr;
 
       m_CurvatureStrain = vardbl.dblVal;
+
+      hr = pload->get_Property(CComBSTR("StartLocation"),&vardbl);
+      if (FAILED(hr))
+         return hr;
+
+      m_StartLocation = vardbl.dblVal;
+
+      hr = pload->get_Property(CComBSTR("EndLocation"),&vardbl);
+      if (FAILED(hr))
+         return hr;
+
+      m_EndLocation = vardbl.dblVal;
    }
 
    VARIANT_BOOL eb;
@@ -155,6 +169,13 @@ STDMETHODIMP CMemberStrain::Save(/*[in]*/ IStructuredSave2 *psave)
       if (FAILED(hr))
          return hr;
 
+      hr = psave->put_Property(CComBSTR("StartLocation"),CComVariant(m_StartLocation));
+      if (FAILED(hr))
+         return hr;
+
+      hr = psave->put_Property(CComBSTR("EndLocation"),CComVariant(m_EndLocation));
+      if (FAILED(hr))
+         return hr;
    }
 
    hr = psave->EndUnit();
@@ -227,6 +248,39 @@ STDMETHODIMP CMemberStrain::put_CurvatureStrain(Float64 newVal)
 	return S_OK;
 }
 
+STDMETHODIMP CMemberStrain::get_StartLocation(Float64  *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_StartLocation;
+   return S_OK;
+}
+
+STDMETHODIMP CMemberStrain::put_StartLocation(Float64  newVal)
+{
+   if ( m_StartLocation != newVal )
+   {
+      m_StartLocation = newVal;
+      ON_LOAD_CHANGED()
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CMemberStrain::get_EndLocation(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = m_EndLocation;
+   return S_OK;
+}
+
+STDMETHODIMP CMemberStrain::put_EndLocation(Float64 newVal)
+{
+   if ( m_EndLocation != newVal )
+   {
+      m_EndLocation = newVal;
+      ON_LOAD_CHANGED()
+   }
+   return S_OK;
+}
 
 STDMETHODIMP CMemberStrain::get_Loading(LoadCaseIDType *pVal)
 {
@@ -243,6 +297,9 @@ STDMETHODIMP CMemberStrain::get_Loading(LoadCaseIDType *pVal)
 
 void CMemberStrain::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector)
 {
+   Float64 La, Lb;
+   GetLocalData(Angle, Length, &La, &Lb);
+
    // get stiffness coeff's from the member
    // must first get a CModel - This cast is ugly, but is done to reduce physical coupling
    CModel* pModel;
@@ -254,7 +311,7 @@ void CMemberStrain::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Flo
    pmbr->get_EA(&ea);
    pmbr->get_EI(&ei);
 
-   MemberStrainBeam Beam(m_AxialStrain, m_CurvatureStrain, Length, ea, ei, type);
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, ea, ei, type);
    Float64 fxl,fyl,mzl,fxr,fyr,mzr;
    Beam.GetReactions( fxl, fyl, mzl, fxr, fyr, mzr);
 
@@ -270,7 +327,10 @@ void CMemberStrain::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
                                      Float64 EA,Float64 EI,
                                      Float64 *vector)
 {
-   MemberStrainBeam Beam(m_AxialStrain, m_CurvatureStrain, Length, EA, EI, type);
+   Float64 La, Lb;
+   GetLocalData(Angle, Length, &La, &Lb);
+
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, type);
    Float64 dxl,dyl,rzl,dxr,dyr,rzr;
    Beam.GetDisplacements( dxl, dyl, rzl, dxr, dyr, rzr);
 
@@ -293,9 +353,11 @@ void CMemberStrain::GetDisplacement(Float64 x,MbrType type,Float64 Length,Float6
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 {
-   MemberStrainBeam Beam(m_AxialStrain, m_CurvatureStrain, Length, EA, EI, type);
-   Beam.GetDeflection( x, *pdx, *pdy, *prz);
+   Float64 La, Lb;
+   GetLocalData(Angle, Length, &La, &Lb);
 
+   UniformMemberDistortionBeam Beam(m_AxialStrain, m_CurvatureStrain, La, Lb, Length, EA, EI, type);
+   Beam.GetDeflection( x, *pdx, *pdy, *prz);
 }
 
 void CMemberStrain::GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx,Float64* pFy,Float64* pMz)
@@ -303,4 +365,67 @@ void CMemberStrain::GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx,Fl
    *pFx = 0;
    *pFy = 0;
    *pMz = 0;
+}
+
+void CMemberStrain::GetLocalData(Float64 Angle, Float64 length, Float64* pStartLoc, Float64* pEndLoc)
+{
+   ATLASSERT(length>=-1.0);
+
+   // first get locations
+   // start location
+   Float64 startloc = CMember::GetRealLocation(length, m_StartLocation);
+
+   if (startloc==-1.0)
+   {
+      // we're in errorland
+      if (m_StartLocation<0.0)
+      {
+         // fractional error
+         ATLASSERT(m_StartLocation>=-1.0); // interface should be blocking this
+         THROW_IDS(IDS_E_FRACTIONAL_VALUE_OUT_OF_RANGE, FEM2D_E_FRACTIONAL_VALUE_OUT_OF_RANGE, IDH_E_FRACTIONAL_VALUE_OUT_OF_RANGE);
+      }
+      else
+      {
+         // explicit location error
+         LoadCaseIDType lid;
+         m_pLoading->get_ID(&lid);
+         CComBSTR msg(CreateErrorMsg2(IDS_E_STRAIN_LOAD_OFF_GIRDER_END, m_ID,lid));
+         THROW_MSG(msg, FEM2D_E_STRAIN_LOAD_OFF_GIRDER_END, IDH_E_STRAIN_LOAD_OFF_GIRDER_END);
+      }
+   }
+
+
+   // end location
+   Float64 endloc = CMember::GetRealLocation(length, m_EndLocation);
+
+   if (endloc==-1.0)
+   {
+      // we're in errorland
+      if (m_EndLocation<0.0)
+      {
+         // fractional error
+         ATLASSERT(m_EndLocation>=-1.0); // interface should be blocking this
+         THROW_IDS(IDS_E_FRACTIONAL_VALUE_OUT_OF_RANGE, FEM2D_E_FRACTIONAL_VALUE_OUT_OF_RANGE, IDH_E_FRACTIONAL_VALUE_OUT_OF_RANGE);
+      }
+      else
+      {
+         // explicit location error
+         LoadCaseIDType lid;
+         m_pLoading->get_ID(&lid);
+         CComBSTR msg(CreateErrorMsg2(IDS_E_STRAIN_LOAD_OFF_GIRDER_END, m_ID,lid));
+         THROW_MSG(msg, FEM2D_E_STRAIN_LOAD_OFF_GIRDER_END, IDH_E_STRAIN_LOAD_OFF_GIRDER_END);
+      }
+   }
+   
+  // flip values if user entered start>end
+  if (endloc < startloc)
+  {
+     *pStartLoc= endloc;
+     *pEndLoc  = startloc;
+  }
+  else
+  {
+     *pStartLoc= startloc;
+     *pEndLoc  = endloc;
+  }
 }

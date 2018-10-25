@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,10 +39,8 @@ static char THIS_FILE[] = __FILE__;
 // CTendon
 HRESULT CTendon::FinalConstruct()
 {
-   m_TendonSize     = 0.0;
-   m_StrandSize     = 0.0;
+   m_DuctDiameter     = 0.0;
    m_StrandCount    = 0;
-   m_MaxStrandCount = 0;
 
    return S_OK;
 }
@@ -93,35 +91,19 @@ STDMETHODIMP CTendon::ClearSegments()
    return PersistentTendonSegmentCollection::Clear();
 }
 
-STDMETHODIMP CTendon::get_TendonSize(Float64* size)
+STDMETHODIMP CTendon::get_DuctDiameter(Float64* size)
 {
    CHECK_RETVAL(size);
-   *size = m_TendonSize;
+   *size = m_DuctDiameter;
    return S_OK;
 }
 
-STDMETHODIMP CTendon::put_TendonSize(Float64 size)
+STDMETHODIMP CTendon::put_DuctDiameter(Float64 size)
 {
    if ( size < 0 )
       return E_INVALIDARG;
 
-   m_TendonSize = size;
-   return S_OK;
-}
-
-STDMETHODIMP CTendon::get_StrandSize(Float64* size)
-{
-   CHECK_RETVAL(size);
-   *size = m_StrandSize;
-   return S_OK;
-}
-
-STDMETHODIMP CTendon::put_StrandSize(Float64 size)
-{
-   if ( size < 0 )
-      return E_INVALIDARG;
-
-   m_StrandSize = size;
+   m_DuctDiameter = size;
    return S_OK;
 }
 
@@ -137,9 +119,6 @@ STDMETHODIMP CTendon::put_StrandCount(StrandIndexType count)
    if ( count < 0 )
       return E_INVALIDARG;
 
-   if ( m_MaxStrandCount < count )
-      return E_FAIL;
-
    m_StrandCount = count;
    return S_OK;
 }
@@ -154,58 +133,63 @@ STDMETHODIMP CTendon::get_Material(IPrestressingStrand** material)
    return S_OK;
 }
 
-STDMETHODIMP CTendon::putref_Material(IPrestressingStrand* material)
+STDMETHODIMP CTendon::putref_Material(IPrestressingStrand* psMaterial)
 {
-   CHECK_IN(material);
-   m_Material = material;
-   return S_OK;
-}
-
-STDMETHODIMP CTendon::get_MaxStrandCount(StrandIndexType* count)
-{
-   CHECK_RETVAL(count);
-   *count = m_MaxStrandCount;
-   return S_OK;
-}
-
-STDMETHODIMP CTendon::put_MaxStrandCount(StrandIndexType count)
-{
-   if ( count < 0 )
+   CHECK_IN(psMaterial);
+   CComQIPtr<IMaterial> material(psMaterial);
+   if ( material == NULL )
+   {
+      ATLASSERT(false); // psMaterial must implement IMaterial
       return E_INVALIDARG;
+   }
 
-   m_MaxStrandCount = count;
+   m_Material = psMaterial;
    return S_OK;
 }
 
-STDMETHODIMP CTendon::get_CG(Float64 x,TendonMeasure measure,IPoint3d** cg)
+STDMETHODIMP CTendon::get_TendonArea(Float64* Apt)
+{
+   CHECK_RETVAL(Apt);
+
+   // area of one strand
+   Float64 apt;
+   m_Material->get_NominalArea(&apt);
+
+   *Apt = m_StrandCount*apt;
+
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_CG(Float64 z,TendonMeasure measure,IPoint3d** cg)
 {
    CHECK_RETOBJ(cg);
 
    CComPtr<ITendonSegment> segment;
-   bool bSuccess = GetTendonSegment(x,&segment);
+   bool bSuccess = GetTendonSegment(z,&segment);
    if ( !bSuccess )
       return E_FAIL;
 
-   segment->get_Position(x,cg);
+   segment->get_Position(z,cg);
 
    if ( measure == tmTendon )
    {
-#pragma Reminder("Need to account for strand being off center from the cg")
+#pragma Reminder("UPDATE: Need to account for strand being off center from the cg")
+      //ATLASSERT(false); /// need to implement this
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CTendon::get_Slope(Float64 x,TendonMeasure measure,IVector3d** slope)
+STDMETHODIMP CTendon::get_Slope(Float64 z,TendonMeasure measure,IVector3d** slope)
 {
    CHECK_RETOBJ(slope);
 
    CComPtr<ITendonSegment> segment;
-   bool bSuccess = GetTendonSegment(x,&segment);
+   bool bSuccess = GetTendonSegment(z,&segment);
    if ( !bSuccess )
       return E_FAIL;
 
-   segment->get_Slope(x,slope);
+   segment->get_Slope(z,slope);
 
    if ( measure == tmTendon )
    {
@@ -233,6 +217,19 @@ STDMETHODIMP CTendon::get_Length(Float64* length)
    return S_OK;
 }
 
+STDMETHODIMP CTendon::get_Start(IPoint3d** start)
+{
+   ATLASSERT(m_coll.size() != 0);
+   CComPtr<ITendonSegment> segment = m_coll.front().second.m_T;
+   return segment->get_Start(start);
+}
+
+STDMETHODIMP CTendon::get_End(IPoint3d** end)
+{
+   ATLASSERT(m_coll.size() != 0);
+   CComPtr<ITendonSegment> segment = m_coll.back().second.m_T;
+   return segment->get_End(end);
+}
 
 /////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
@@ -271,7 +268,7 @@ STDMETHODIMP CTendon::Save(IStructuredSave2* save)
 }
 
 
-bool CTendon::GetTendonSegment(Float64 x,ITendonSegment** segment)
+bool CTendon::GetTendonSegment(Float64 z,ITendonSegment** segment)
 {
    iterator iter;
    Float64 start = 0;
@@ -281,7 +278,7 @@ bool CTendon::GetTendonSegment(Float64 x,ITendonSegment** segment)
       Float64 dx,dy,dz;
       seg->ProjectedLength(&dx,&dy,&dz);
 
-      if ( InRange(start,x,start+dx) )
+      if ( InRange(start,z,start+dz) )
       {
          // found
          (*segment) = seg;
@@ -289,8 +286,28 @@ bool CTendon::GetTendonSegment(Float64 x,ITendonSegment** segment)
          return true;
       }
 
-      start += dx;
+      start += dz;
    }
 
    return false;
 }
+
+#if defined _DEBUG
+// verify that the next segment starts where the previous segment ends
+HRESULT CTendon::OnBeforeAdd( StoredType* pVal)
+{
+   if ( m_coll.size() == 0 )
+      return S_OK;
+
+   CComPtr<ITendonSegment> newSegment = pVal->second.m_T;
+   CComPtr<ITendonSegment> lastSegment = m_coll.back().second.m_T;
+
+   CComPtr<IPoint3d> pntStart,pntEnd;
+   lastSegment->get_End(&pntEnd);
+   newSegment->get_Start(&pntStart);
+
+   ATLASSERT( pntStart->SameLocation(pntEnd) == S_OK );
+
+   return S_OK;
+}
+#endif

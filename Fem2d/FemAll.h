@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,7 +36,7 @@
 #define MAX_ELEMENT_DOF 6 // used to avoid dynamic memory allocation
 
 #undef  EPS
-#define EPS  0.010
+#define EPS  0.10
 #undef   zero_val
 #define  zero_val( x )     (((-EPS)<=(x)) && ((x)<=(EPS)))
 

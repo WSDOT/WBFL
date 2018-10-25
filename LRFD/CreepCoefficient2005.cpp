@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -150,17 +150,8 @@ Float64 lrfdCreepCoefficient2005::GetInitialAge() const
 Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
-   if ( m_CuringMethod == Normal )
-   {
-      // NCHRP 496...
-      // ti = age of concrete, in days, when load is initially applied
-      // for accelerated curing, or the age minus 6 days for moist (normal) curing
-      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
-      if ( tiAdjusted < 0 )
-      {
-         tiAdjusted = 1;
-      }
-   }
+   if ( m_CuringMethod == Accelerated )
+      tiAdjusted *= m_CuringMethodTimeAdjustmentFactor;
 
    return tiAdjusted;
 }
@@ -298,31 +289,23 @@ void lrfdCreepCoefficient2005::Update() const
    ti = ::ConvertFromSysUnits(GetAdjustedInitialAge(),unitMeasure::Day);
    t  = ::ConvertFromSysUnits(m_t,unitMeasure::Day);
 
+#if defined IGNORE_2007_CHANGES
+   Float64 kvs_limit = (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::ThirdEditionWith2005Interims ? 1.0 : 0.0);
+#else
    // kvs_limit is 1.0 in 2005, changed to 0.0 in 2006, changed back to 1.0 in 2007
    Float64 kvs_limit = (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::ThirdEditionWith2006Interims ? 0.0 : 1.0);
-
+#endif // IGNORE_2007_CHANGES
    if ( bSI )
    {
       m_kvs = _cpp_max(kvs_limit, 1.45-0.0051*::ConvertFromSysUnits(VS,unitMeasure::Millimeter));
       m_kf = 35.0 / ( 7.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) );
       m_ktd = t / ( 61. - 0.58*::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) + t);
-      ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
       m_kvs = _cpp_max(kvs_limit, 1.45-0.13*::ConvertFromSysUnits(VS,unitMeasure::Inch));
       m_kf =  5.0 / ( 1.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) );
-
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-      {
-         m_ktd = t / ( 61. - 4.*::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) + t);
-      }
-      else
-      {
-         // ktd equation changed in LRFD 2015
-         Float64 fc = ::ConvertFromSysUnits(m_Fc,unitMeasure::KSI);
-         m_ktd = t / (12*(100. - 4.*fc)/(fc + 20.) + t);
-      }
+      m_ktd = t / ( 61. - 4.*::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) + t);
    }
 
    m_Ct = 1.9*m_K1*m_K2*m_kvs*m_khc*m_kf*m_ktd*pow(ti,-0.118); // see NCHRP Report 496, Eqn 62

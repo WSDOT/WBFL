@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,73 +70,13 @@ STDMETHODIMP CCrossBeam::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CCrossBeam::Clone(ICrossBeam* *clone)
-{
-   CComObject<CCrossBeam>* pClone;
-   HRESULT hr = CComObject<CCrossBeam>::CreateInstance(&pClone);
-   if (FAILED(hr))
-      return hr;
-
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   pClone->put_Symmetrical(m_bSymmetrical);
-   pClone->put_Fractional(m_bFractional);
-   
-   hr = m_pSegments->Copy( pClone->GetSegments() );
-   if (FAILED(hr))
-      return hr;
-
-	return S_OK;
-}
-
 ////////////////////////////////////////////////////////////////////////
 // CSegmentsOwner implementation
-HRESULT CCrossBeam::SetUpConnection(ISegmentItem* pCp, unsigned long* pcookie)
-{
-   HRESULT hr = AdviseSegmentItem(pCp,pcookie);
-   return S_OK;
-}
-
-void CCrossBeam::BreakConnection(ISegmentItem* pCp, unsigned long cookie)
-{
-   UnadviseSegmentItem(pCp,cookie);
-}
-
-void CCrossBeam::OnSegmentsChanged(CSegments* psegments)
-{
-   Fire_OnCrossBeamChanged(this);
-}
-
 Float64 CCrossBeam::Length()
 {
    Float64 length;
    get_Length(&length);
    return length;
-}
-
-HRESULT CCrossBeam::AdviseSegmentItem(ISegmentItem* segItem,DWORD* pdwCookie)
-{
-   CComPtr<ISegmentItem> item(segItem);
-   HRESULT hr = item.Advise(GetUnknown(),IID_ISegmentItemEvents,pdwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-   InternalRelease(); // Break circular reference
-
-   return hr;
-}
-
-HRESULT CCrossBeam::UnadviseSegmentItem(ISegmentItem* segItem,DWORD dwCookie)
-{
-   InternalAddRef(); // conteract InternalRelease() in advise
-   CComQIPtr<IConnectionPointContainer> pCPC(segItem);
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint(IID_ISegmentItemEvents,&pCP);
-
-   HRESULT hr = pCP->Unadvise(dwCookie);
-   ATLASSERT( SUCCEEDED(hr) );
-
-   return hr;
 }
 
 //////////////////////////////////////////////////////
@@ -161,7 +101,6 @@ STDMETHODIMP CCrossBeam::AddSegment(ISegment* segment)
 {
    try
    {
-      segment->putref_SegmentMeasure(this);
       HRESULT hr = m_pSegments->Add(segment);
       if ( FAILED(hr) )
          return hr;
@@ -184,7 +123,6 @@ STDMETHODIMP CCrossBeam::InsertSegment(CollectionIndexType idx,ISegment* segment
 {
    try
    {
-      segment->putref_SegmentMeasure(this);
       HRESULT hr = m_pSegments->Insert(idx,segment);
       if ( FAILED(hr) )
          return hr;
@@ -305,16 +243,11 @@ STDMETHODIMP CCrossBeam::put_Fractional(VARIANT_BOOL bFractional)
 
    m_bFractional = bFractional;
 
-   m_bIgnoreSegmentEvents = true;
-
    if ( m_bFractional == VARIANT_TRUE )
       m_pSegments->MakeFractional();
    else
       m_pSegments->MakeAbsolute();
 
-   m_bIgnoreSegmentEvents = false;
-
-   Fire_OnCrossBeamChanged(this);
    return S_OK;
 }
 
@@ -331,7 +264,6 @@ STDMETHODIMP CCrossBeam::put_Symmetrical(VARIANT_BOOL bSymmetrical)
       return S_OK;
 
    m_bSymmetrical = bSymmetrical;
-   Fire_OnCrossBeamChanged(this);
    return S_OK;
 }
 
@@ -347,11 +279,11 @@ STDMETHODIMP CCrossBeam::GetMemberSegments(IFilteredSegmentCollection **ppSeg)
    }
 }
 
-STDMETHODIMP CCrossBeam::GetSegmentForMemberLocation(Float64 location, Float64* dist,ISegmentItem **ppSeg)
+STDMETHODIMP CCrossBeam::GetDistanceFromStartOfSegment(Float64 location, Float64* dist,ISegmentItem **ppSeg)
 {
    try
    {
-   	return m_pSegments->GetSegmentForMemberLocation(Length(), m_bSymmetrical, location, dist, ppSeg);
+   	return m_pSegments->GetDistanceFromStartOfSegment(Length(), m_bSymmetrical, location, dist, ppSeg);
    }
    catch(...)
    {

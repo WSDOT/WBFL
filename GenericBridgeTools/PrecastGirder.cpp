@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLGenericBridgeTools.h"
 #include "PrecastGirder.h"
-#include "RebarLayout.h"
 #include <limits>
 
 #ifdef _DEBUG
@@ -77,9 +76,9 @@ HRESULT CPrecastGirder::FinalConstruct()
 
    m_UpdateHarpedMaxFill = true;
 
-   CComObject<CRebarLayout>* pRebarLayout;
-   CComObject<CRebarLayout>::CreateInstance(&pRebarLayout);
-   m_RebarLayout = pRebarLayout;
+   hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
+   if ( FAILED(hr) )
+      return hr;
 
    CComPtr<IGeomUtil> geom_util;
    hr = geom_util.CoCreateInstance(CLSID_GeomUtil);
@@ -97,23 +96,6 @@ HRESULT CPrecastGirder::FinalConstruct()
 
 void CPrecastGirder::FinalRelease()
 {
-   // ATL HAS BEEN CHANGED - The ref count is scrambled at this point
-   // Not sure what will happen when we call AtlUnadvise
-
-   //// we're dieing here so we can't kill ourself in the unadvise
-   //ULONG cnt = this->AddRef();
-   //ATLASSERT(cnt==2);
-
-   DWORD dwRef = m_dwRef;
-   m_dwRef = 10;
-
-   if ( m_dwCookie != 0 )
-   {
-      HRESULT hr = AtlUnadvise(m_pBridge,IID_IGenericBridgeEvents,m_dwCookie);
-      ATLASSERT( SUCCEEDED(hr) );
-   }
-
-   m_dwRef = dwRef;
 }
 
 STDMETHODIMP CPrecastGirder::InterfaceSupportsErrorInfo(REFIID riid)
@@ -130,27 +112,14 @@ STDMETHODIMP CPrecastGirder::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CPrecastGirder::Initialize(IGenericBridge* bridge,IStrandMover* strandMover,SpanIndexType spanIdx,GirderIndexType gdrIdx)
+STDMETHODIMP CPrecastGirder::Initialize(ISegment* segment,IStrandMover* strandMover)
 {
-   CHECK_IN(bridge);
-   CHECK_IN(strandMover);
+   CHECK_IN(segment);
+   //CHECK_IN(strandMover);
 
-   if ( spanIdx == INVALID_INDEX || gdrIdx == INVALID_INDEX )
-      return E_INVALIDARG;
-
-   m_pBridge = bridge;
+   m_pSegment = segment;
    m_pStrandMover = strandMover;
-   m_SpanIdx = spanIdx;
-   m_GirderIdx = gdrIdx;
 
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   // sink event
-   HRESULT hr;
-   hr = AtlAdvise(bridge,punk,IID_IGenericBridgeEvents,&m_dwCookie);
-   if ( FAILED(hr) )
-      return hr; 
 
    m_HarpGridEnd[etStart]->put_StrandMover(strandMover);
    m_HarpGridEnd[etEnd]->put_StrandMover(strandMover);
@@ -161,25 +130,43 @@ STDMETHODIMP CPrecastGirder::Initialize(IGenericBridge* bridge,IStrandMover* str
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::put_StrandMover(/*[in]*/IStrandMover* strandMover)
+STDMETHODIMP CPrecastGirder::putref_StraightStrandMaterial(IPrestressingStrand* pMaterial)
 {
-   CHECK_IN(strandMover);
-
-   m_pStrandMover = strandMover;
-
-   m_HarpGridEnd[etStart]->put_StrandMover(strandMover);
-   m_HarpGridEnd[etEnd]->put_StrandMover(strandMover);
-
-   m_HarpGridHp[etStart]->put_StrandMover(strandMover);
-   m_HarpGridHp[etEnd]->put_StrandMover(strandMover);
-
+   CHECK_IN(pMaterial);
+   m_StraightStrandMaterial = pMaterial;
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::get_StrandMover(/*[out,retval]*/IStrandMover** ppStrandMover)
+STDMETHODIMP CPrecastGirder::get_StraightStrandMaterial(IPrestressingStrand** ppMaterial)
 {
-   CHECK_RETOBJ(ppStrandMover);
-   return m_pStrandMover.CopyTo(ppStrandMover);
+   CHECK_RETOBJ(ppMaterial);
+   return m_StraightStrandMaterial.CopyTo(ppMaterial);
+}
+
+STDMETHODIMP CPrecastGirder::putref_HarpedStrandMaterial(IPrestressingStrand* pMaterial)
+{
+   CHECK_IN(pMaterial);
+   m_HarpedStrandMaterial = pMaterial;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_HarpedStrandMaterial(IPrestressingStrand** ppMaterial)
+{
+   CHECK_RETOBJ(ppMaterial);
+   return m_HarpedStrandMaterial.CopyTo(ppMaterial);
+}
+
+STDMETHODIMP CPrecastGirder::putref_TemporaryStrandMaterial(IPrestressingStrand* pMaterial)
+{
+   CHECK_IN(pMaterial);
+   m_TemporaryStrandMaterial = pMaterial;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_TemporaryStrandMaterial(IPrestressingStrand** ppMaterial)
+{
+   CHECK_RETOBJ(ppMaterial);
+   return m_TemporaryStrandMaterial.CopyTo(ppMaterial);
 }
 
 STDMETHODIMP CPrecastGirder::get_StraightStrandGrid(EndType endType,IStrandGrid** grid)
@@ -232,17 +219,6 @@ STDMETHODIMP CPrecastGirder::get_AllowOddNumberOfHarpedStrands(VARIANT_BOOL* bUs
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::put_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL bUseDifferent)
-{
-   m_UseDifferentHarpedGirdAtEnds = bUseDifferent;
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastGirder::get_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL* bUseDifferent)
-{
-   *bUseDifferent = m_UseDifferentHarpedGirdAtEnds;
-   return S_OK;
-}
 
 STDMETHODIMP CPrecastGirder::get_HarpedStrandAdjustmentEnd(Float64* offset)
 {
@@ -404,24 +380,24 @@ STDMETHODIMP CPrecastGirder::get_GirderLength(Float64* length)
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::get_LeftEndSize(Float64* size)
+STDMETHODIMP CPrecastGirder::get_LeftEndDistance(Float64* size)
 {
    CHECK_RETVAL(size);
 
    DoUpdateLengths();
 
-   *size = m_Lengths.dbLeftEndSize;
+   *size = m_Lengths.dbLeftEndDistance;
 
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::get_RightEndSize(Float64* size)
+STDMETHODIMP CPrecastGirder::get_RightEndDistance(Float64* size)
 {
    CHECK_RETVAL(size);
 
    DoUpdateLengths();
 
-   *size = m_Lengths.dbRightEndSize;
+   *size = m_Lengths.dbRightEndDistance;
 
    return S_OK;
 }
@@ -450,54 +426,10 @@ STDMETHODIMP CPrecastGirder::get_RightBearingOffset(Float64* offset)
 
 STDMETHODIMP CPrecastGirder::GetEndPoints(IPoint2d** pntPier1,IPoint2d** pntEnd1,IPoint2d** pntBrg1,IPoint2d** pntBrg2,IPoint2d** pntEnd2,IPoint2d** pntPier2)
 {
-   CHECK_RETOBJ(pntPier1);
-   CHECK_RETOBJ(pntEnd1);
-   CHECK_RETOBJ(pntBrg1);
-   CHECK_RETOBJ(pntBrg2);
-   CHECK_RETOBJ(pntEnd2);
-   CHECK_RETOBJ(pntPier2);
+   CComPtr<IGirderLine> girderLine;
+   m_pSegment->get_GirderLine(&girderLine);
 
-   CComPtr<ICogoInfo> cogoInfo;
-   m_pBridge->get_CogoInfo(&cogoInfo);
-   CogoElementKey id1,id2;
-
-   cogoInfo->get_PierGirderIntersectionPointID(m_SpanIdx,  m_GirderIdx,qcbAfter,&id1);
-   cogoInfo->get_PierGirderIntersectionPointID(m_SpanIdx+1,m_GirderIdx,qcbBefore,&id2);
-
-   CComPtr<ICogoModel> cogoModel;
-   m_pBridge->get_CogoModel(&cogoModel);
-   
-   CComPtr<IPointCollection> points;
-   cogoModel->get_Points(&points);
-
-   // Get the points where the girder line intersect the CL pier
-   points->get_Item(id1,pntPier1);
-   points->get_Item(id2,pntPier2);
-
-   // get the connection data
-   CComPtr<IConnection> c1,c2;
-   GetLeftConnection(&c1);
-   GetRightConnection(&c2);
-
-   Float64 endDist1, endDist2;
-   get_LeftEndSize(&endDist1);
-   get_RightEndSize(&endDist2);
-
-   // Get the points where the girder line intersect the CL pier
-   cogoInfo->get_BearingGirderIntersectionPointID(m_SpanIdx,  m_GirderIdx,qcbAfter,&id1);
-   cogoInfo->get_BearingGirderIntersectionPointID(m_SpanIdx+1,m_GirderIdx,qcbBefore,&id2);
-   points->get_Item(id1,pntBrg1);
-   points->get_Item(id2,pntBrg2);
-
-   // Compute end of girder points
-   CComPtr<ICogoEngine> cogoEngine;
-   cogoEngine.CoCreateInstance(CLSID_CogoEngine);
-
-   CComQIPtr<ILocate2> locate(cogoEngine);
-   locate->PointOnLine(*pntBrg1,*pntPier2,-endDist1,0.00,pntEnd1);
-   locate->PointOnLine(*pntBrg2,*pntPier1,-endDist2,0.00,pntEnd2);
-
-   return S_OK;
+   return girderLine->GetEndPoints(pntPier1,pntEnd1,pntBrg1,pntBrg2,pntEnd2,pntPier2);
 }
 
 
@@ -520,37 +452,6 @@ HRESULT CPrecastGirder::UpdateMaxStrandFill()
       HRESULT hr = m_StrandFillTool->ComputeHarpedStrandMaxFill(pEndGridFiller,pHPGridFiller,&m_MaxHarpedStrands,&m_HarpedMaxStrandFill);
       if ( FAILED(hr) )
          return hr;
-
-   //   m_HarpedMaxStrandFill.CoCreateInstance(CLSID_LongArray);
-
-   //   CComPtr<ILongArray> hp_fill, end_fill;
-   //   m_HarpGridEnd[etStart]->GetMaxStrandFill(&end_fill);
-   //   m_HarpGridHp[etStart]->GetMaxStrandFill(&hp_fill);
-
-   //   CollectionIndexType num_hp, num_end;
-   //   end_fill->get_Count(&num_end);
-   //   hp_fill->get_Count(&num_hp);
-
-   //   if (num_hp != num_end)
-   //   {
-   //      // this should never happen - strand arrays must be the same length;
-   //      ATLASSERT(0);
-   //      return E_FAIL;
-   //   }
-
-   //   m_MaxHarpedStrands=0;
-   //   m_HarpedMaxStrandFill->Reserve(num_hp);
-   //   for (CollectionIndexType i=0; i<num_hp; i++)
-   //{
-   //      IDType hp, end; // should be index type, but must be ID type because of LongArray
-   //      hp_fill->get_Item(i, &hp);
-   //      end_fill->get_Item(i, &end);
-
-   //      // use the max fill value from both grids
-   //      hp = max(end, hp);
-   //      m_HarpedMaxStrandFill->Add(hp);
-   //      m_MaxHarpedStrands += StrandIndexType(hp);
-   //   }
 
       m_UpdateHarpedMaxFill = false;
    }
@@ -739,14 +640,14 @@ STDMETHODIMP CPrecastGirder::get_HarpedStrandPositionsEx(Float64 distFromStart, 
    }
 }
 
-STDMETHODIMP CPrecastGirder::get_TempStrandPositions(Float64 distFromStart, IPoint2dCollection** points)
+STDMETHODIMP CPrecastGirder::get_TemporaryStrandPositions(Float64 distFromStart, IPoint2dCollection** points)
 {
    CComPtr<IIndexArray> fill;
    m_TempGrid[etStart]->get_StrandFill(&fill);
-   return get_TempStrandPositionsEx(distFromStart,fill,points);
+   return get_TemporaryStrandPositionsEx(distFromStart,fill,points);
 }
 
-STDMETHODIMP CPrecastGirder::get_TempStrandPositionsEx(Float64 distFromStart, IIndexArray* fill, IPoint2dCollection** points)
+STDMETHODIMP CPrecastGirder::get_TemporaryStrandPositionsEx(Float64 distFromStart, IIndexArray* fill, IPoint2dCollection** points)
 {
    Float64 gdrLength;
    get_GirderLength(&gdrLength);
@@ -1652,27 +1553,21 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByGridIndex(/*[in]*/Gr
    return m_StraightGrid[etStart]->GetBondedLengthByGridIndex(grdIndex, distFromStart, gdr_length, YCoord, leftBond, rightBond);
 }
 
-
-STDMETHODIMP CPrecastGirder::get_HarpedStrandRowsWithStrand(Float64 distFromStart,RowIndexType* nRows)
+STDMETHODIMP CPrecastGirder::get_HarpedStrandRowsWithStrand(RowIndexType* nRows)
 {
-   CComPtr<IStrandGridFiller> grid;
-   GetHarpedStrandGrid(distFromStart,&grid);
-   return grid->get_RowsWithStrand(nRows);
+   return m_HarpGridHp[etStart]->get_RowsWithStrand(nRows);
 }
 
-STDMETHODIMP CPrecastGirder::get_HarpedStrandsInRow(Float64 distFromStart,RowIndexType rowIdx,IIndexArray** gridIndexes)
+STDMETHODIMP CPrecastGirder::get_HarpedStrandsInRow(RowIndexType rowIdx,IIndexArray** gridIndexes)
 {
-   CComPtr<IStrandGridFiller> grid;
-   GetHarpedStrandGrid(distFromStart,&grid);
-   return grid->get_StrandsInRow(rowIdx, gridIndexes);
+   return m_HarpGridHp[etStart]->get_StrandsInRow(rowIdx, gridIndexes);
 }
 
-STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(Float64 distFromStart,RowIndexType rowIdx,StrandIndexType* nStrands)
+STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(RowIndexType rowIdx,StrandIndexType* nStrands)
 {
-   CComPtr<IStrandGridFiller> grid;
-   GetHarpedStrandGrid(distFromStart,&grid);
-   return grid->get_NumStrandsInRow(rowIdx, nStrands);
+   return m_HarpGridHp[etStart]->get_NumStrandsInRow(rowIdx, nStrands);
 }
+
 
 STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
@@ -1684,161 +1579,6 @@ STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 
 
 ///// PRIVATE /////
-void CPrecastGirder::GetLeftConnection(IConnection** connection)
-{
-   CComPtr<ISpanCollection> spans;
-   m_pBridge->get_Spans(&spans);
-
-   CComPtr<ISpan> span;
-   spans->get_Item(m_SpanIdx,&span);
-
-   CComPtr<ISuperstructureMember> ssmbr;
-   span->get_SuperstructureMember(m_GirderIdx,&ssmbr); 
-
-   CComQIPtr<IItemData> item_data(ssmbr);
-   CComPtr<IUnknown> punk;
-   item_data->GetItemData(CComBSTR("Left Connection"),&punk);
-
-   punk.QueryInterface(connection);
-}
-
-void CPrecastGirder::GetRightConnection(IConnection** connection)
-{
-   CComPtr<ISpanCollection> spans;
-   m_pBridge->get_Spans(&spans);
-
-   CComPtr<ISpan> span;
-   spans->get_Item(m_SpanIdx,&span);
-
-   CComPtr<ISuperstructureMember> ssmbr;
-   span->get_SuperstructureMember(m_GirderIdx,&ssmbr); 
-
-   CComQIPtr<IItemData> item_data(ssmbr);
-   CComPtr<IUnknown> punk;
-   item_data->GetItemData(CComBSTR("Right Connection"),&punk);
-
-   punk.QueryInterface(connection);
-}
-
-void CPrecastGirder::GetEndDistance(EndType end,CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist)
-{
-   Float64 end_dist;
-   connection->get_EndDistance(&end_dist);
-
-   MeasurementType measure_type;
-   connection->get_EndDistanceMeasurementType(&measure_type);
-
-   MeasurementLocation measure_loc;
-   connection->get_EndDistanceMeasurementLocation(&measure_loc);
-
-   if ( measure_type == mtAlongItem )
-   {
-      // Measured along girder
-      if ( measure_loc == mlCenterlineBearing )
-      {
-         ;// do nothing - input is same as internal
-      }
-      else if ( measure_loc == mlPierLine )
-      {
-         // subtract end dist from bearing offset
-         Float64 bearing_offset;
-         CComQIPtr<IMeasure> measure(cogoModel);
-         measure->Distance(brgPntID,pierPntID,&bearing_offset); // want offset measured along girder
-         end_dist = bearing_offset - end_dist;
-      }
-      else
-         ATLASSERT(0);
-   }
-   else if ( measure_type == mtNormal )
-   {
-      // Measured normal to pier
-      // First create a line along the pier centerline
-      CComPtr<IPointCollection> points;
-      cogoModel->get_Points(&points);
-      CComPtr<IPoint2d> pier_pnt;
-      points->get_Item(pierPntID, &pier_pnt);
-
-      CComPtr<IDirection> pier_dir;
-      pier->get_Direction(&pier_dir);
-
-      CComPtr<ICogoEngine> cogoEngine;
-      cogoEngine.CoCreateInstance(CLSID_CogoEngine);
-      CComQIPtr<ILocate2> locate(cogoEngine);
-
-      Float64 dist = end==etEnd ? 10.0 : -10.0; // distance is abitrary, we just want a line that's left side faces inward to span
-      CComPtr<IPoint2d> pier_pnt2;
-      locate->ByDistDir(pier_pnt, dist, CComVariant(pier_dir), 0.0, &pier_pnt2);
-
-      CComPtr<ILine2d> pier_line;
-      pier_line.CoCreateInstance(CLSID_Line2d);
-      pier_line->ThroughPoints(pier_pnt, pier_pnt2);
-
-      // compute distance from bearing point to CL pier along CL pier
-      CComPtr<IPoint2d> brg_pnt;
-      points->get_Item(brgPntID, &brg_pnt);
-
-      CComPtr<IGeomUtil2d> geom_util;
-      geom_util.CoCreateInstance(CLSID_GeomUtil);
-
-      Float64 bearing_to_pier_dist;
-      geom_util->ShortestDistanceToPoint(pier_line, brg_pnt, &bearing_to_pier_dist);
-      bearing_to_pier_dist *= -1.0; // left side is negative 
-
-      // get girder line to intersect with
-      CComPtr<ILineSegmentCollection> lineSegments;
-      cogoModel->get_LineSegments(&lineSegments);
-      CComPtr<ILineSegment2d> gdr_lineseg;
-      lineSegments->get_Item(girderLineID,&gdr_lineseg);
-      // make segment into a line so we know we'll intersect
-      CComPtr<IPoint2d> gdr_pnt1, gdr_pnt2;
-      gdr_lineseg->get_StartPoint(&gdr_pnt1);
-      gdr_lineseg->get_EndPoint(&gdr_pnt2);
-
-      CComPtr<ILine2d> gdr_line;
-      gdr_line.CoCreateInstance(CLSID_Line2d);
-      gdr_line->ThroughPoints(gdr_pnt1, gdr_pnt2);
-
-      // Now we have our construction lines. Basic idea is to offset the pier line and find
-      // its intersection with the girder line. That will give us the end of the girder
-      Float64 offset_dist=0.0;
-      Float64 sign = 1;
-      if ( measure_loc == mlCenterlineBearing )
-      {
-         // measured from centerline bearing
-         offset_dist = bearing_to_pier_dist - end_dist;
-      }
-      else if ( measure_loc == mlPierLine )
-      {
-         offset_dist = end_dist;
-
-         if (end_dist > bearing_to_pier_dist)
-         {
-            // end of girder is before bearing, negative end dist
-            sign = -1;
-         }
-      }
-      else
-      {
-         ATLASSERT(0);
-      }
-
-      pier_line->Offset(offset_dist);
-
-      CComPtr<IPoint2d> end_of_girder;
-      geom_util->LineLineIntersect(pier_line,gdr_line,&end_of_girder);
-
-      // finally, our end distance
-      geom_util->Distance(brg_pnt, end_of_girder, &end_dist);
-      end_dist *= sign;
-   }
-   else
-   {
-      ATLASSERT(0);
-   }
-
-   *endDist   = end_dist;
-}
-
 void CPrecastGirder::GetHarpPointLocations(Float64& hp1,Float64& hp2)
 {
    hp1 = GetHarpPointLocation(m_HP1,false);
@@ -1849,8 +1589,8 @@ void CPrecastGirder::GetHarpPointLocations(Float64& hp1,Float64& hp2)
 
 Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
 {
-   Float64 left_end_size;
-   Float64 right_end_size;
+   Float64 left_end_distance;
+   Float64 right_end_distance;
 
    Float64 span_length;
    get_SpanLength(&span_length);
@@ -1887,9 +1627,9 @@ Float64 CPrecastGirder::GetHarpPointLocation(Float64 hp,bool bRight)
       break;
 
    case hprBearing:
-      get_LeftEndSize(&left_end_size);
-      get_RightEndSize(&right_end_size);
-      result = (bRight ? gdr_length - right_end_size - hp : left_end_size + hp);
+      get_LeftEndDistance(&left_end_distance);
+      get_RightEndDistance(&right_end_distance);
+      result = (bRight ? gdr_length - right_end_distance - hp : left_end_distance + hp);
       if ( (bRight && result < gdr_length/2) || (!bRight && gdr_length/2 < result) )
          result = gdr_length/2;
       break;
@@ -1973,13 +1713,13 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
 
          // put two strands in the first hp location
 #if defined _DEBUG
-         IndexType first_row;
+         CollectionIndexType first_row;
          endFill->get_Item(0,&first_row);
          ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
 #endif
 
-         StrandIndexType running_cnt = (m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE ? 2 : 1);
-         m_OddHpFill->Add(running_cnt); 
+         StrandIndexType running_cnt = 2;
+         m_OddHpFill->Add(running_cnt); // start with 2 strands
 
          for (CollectionIndexType is = 1; is < fill_size; is++)
          {
@@ -2000,11 +1740,7 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
                else
                {
                   // we are at the end... add the odd strand
-                  if ( m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE )
-                     m_OddHpFill->Add(fill_val-1);
-                  else
-                     m_OddHpFill->Add(fill_val);
-
+                  m_OddHpFill->Add(fill_val-1);
                   running_cnt--;
                }
             }
@@ -2027,96 +1763,22 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
    return S_OK;
 }
 
-STDMETHODIMP CPrecastGirder::OnBridgeChanged(/*[in]*/ IGenericBridge* bridge)
-{
-   m_UpdateLengths=true;
-   return S_OK;
-}
-
 void CPrecastGirder::DoUpdateLengths()
 {
    if (m_UpdateLengths)
    {
-      CComPtr<ICogoInfo> cogoInfo;
-      m_pBridge->get_CogoInfo(&cogoInfo);
+      CComPtr<IPoint2d> pntPier1, pntEnd1, pntBrg1;
+      CComPtr<IPoint2d> pntPier2, pntEnd2, pntBrg2;
+      GetEndPoints(&pntPier1,&pntEnd1,&pntBrg1,&pntBrg2,&pntEnd2,&pntPier2);
 
-      PierIndexType startPierIdx = PierIndexType(m_SpanIdx);
-      PierIndexType endPierIdx = PierIndexType(startPierIdx+1);
+      pntEnd1->DistanceEx(pntEnd2,&m_Lengths.dbGirderLength);
+      pntBrg1->DistanceEx(pntBrg2,&m_Lengths.dbSpanLength);
+      pntPier1->DistanceEx(pntBrg1,&m_Lengths.dbLeftBearingOffset);
+      pntPier2->DistanceEx(pntBrg2,&m_Lengths.dbRightBearingOffset);
+      pntEnd1->DistanceEx(pntBrg1,&m_Lengths.dbLeftEndDistance);
+      pntEnd2->DistanceEx(pntBrg2,&m_Lengths.dbRightEndDistance);
 
-      // get ID of intersection CL Pier and CL Girder
-      CogoElementKey startPierPntID, endPierPntID;
-      cogoInfo->get_PierGirderIntersectionPointID(startPierIdx, m_GirderIdx, qcbAfter,  &startPierPntID);
-      cogoInfo->get_PierGirderIntersectionPointID(endPierIdx,   m_GirderIdx, qcbBefore, &endPierPntID);
-
-      // get ID of intersection CL bearing and CL girder
-      CogoElementKey startBrgPntID, endBrgPntID;
-      cogoInfo->get_BearingGirderIntersectionPointID(startPierIdx, m_GirderIdx, qcbAfter,  &startBrgPntID);
-      cogoInfo->get_BearingGirderIntersectionPointID(endPierIdx,   m_GirderIdx, qcbBefore, &endBrgPntID);
-
-      // get girder line ID
-      CogoElementKey girderLineID;
-      cogoInfo->get_GirderLineID(startPierIdx, m_GirderIdx, &girderLineID);
-
-      // compute bearing offsets
-      CComPtr<ICogoModel> cogoModel;
-      m_pBridge->get_CogoModel(&cogoModel);
-
-      CComQIPtr<IMeasure> measure(cogoModel);
-      measure->Distance(startPierPntID,startBrgPntID,&m_Lengths.dbLeftBearingOffset);
-      measure->Distance(endPierPntID,  endBrgPntID,  &m_Lengths.dbRightBearingOffset);
-      m_Lengths.dbLeftBearingOffset  = IsZero(m_Lengths.dbLeftBearingOffset)  ? 0 : m_Lengths.dbLeftBearingOffset;
-      m_Lengths.dbRightBearingOffset = IsZero(m_Lengths.dbRightBearingOffset) ? 0 : m_Lengths.dbRightBearingOffset;
-
-      // compute span length
-      measure->Distance(startBrgPntID,endBrgPntID,&m_Lengths.dbSpanLength);
-
-      // left and right end size
-      CComPtr<IConnection> connectionl;
-      GetLeftConnection(&connectionl);
-
-      CComPtr<IPierCollection> piers;
-      m_pBridge->get_Piers(&piers);
-
-      CComPtr<IPier> pierl;
-      piers->get_Item(startPierIdx,&pierl);
-
-      Float64 end_dist;
-      GetEndDistance(etStart,startBrgPntID,startPierPntID,girderLineID,connectionl,pierl,cogoModel,&end_dist);
-      end_dist = IsZero(end_dist) ? 0 : end_dist;
-      m_Lengths.dbLeftEndSize       = end_dist;
-
-      CComPtr<IConnection> connectionr;
-      GetRightConnection(&connectionr);
-
-      CComPtr<IPier> pierr;
-      piers->get_Item(endPierIdx,&pierr);
-
-      GetEndDistance(etEnd,endBrgPntID,endPierPntID,girderLineID,connectionr,pierr,cogoModel,&end_dist);
-      end_dist = IsZero(end_dist) ? 0 : end_dist;
-      m_Lengths.dbRightEndSize        = end_dist;
-
-      m_Lengths.dbGirderLength = m_Lengths.dbSpanLength + m_Lengths.dbLeftEndSize + m_Lengths.dbRightEndSize;
-
-      m_UpdateLengths=false;
+      m_UpdateLengths = false;
    }
 }
 
-
-void CPrecastGirder::GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid)
-{
-   Float64 hp1, hp2;
-   GetHarpPointLocations(hp1,hp2);
-
-   if ( distFromStart < hp1 )
-   {
-      m_HarpGridEnd[etStart].CopyTo(ppGrid);
-   }
-   else if ( hp2 < distFromStart )
-   {
-      m_HarpGridEnd[etEnd].CopyTo(ppGrid);
-   }
-   else 
-   {
-      m_HarpGridHp[etStart].CopyTo(ppGrid);
-   }
-}

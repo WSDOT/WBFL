@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,18 +34,12 @@
 #include <vector>
 #include <afxcmn.h>
 
-#if defined _EAF_USING_MFC_FEATURE_PACK
-#include <EAF\EAFPaneDialog.h>
-#else
-#define CEAFPaneDialog CDialogBar
-#endif
-
 struct iTool;
 
 /////////////////////////////////////////////////////////////////////////////
 // CToolPalette dialog
 
-class DMANIPCLASS CToolPalette : public CEAFPaneDialog
+class DMANIPCLASS CToolPalette : public CDialogBar
 {
 // Construction
 public:
@@ -75,10 +69,6 @@ public:
    void FindTool(IDType id,iTool** pTool);
    void RemoveTool(IndexType idx);
    void RemoveTool(IDType id);
-
-#if defined _DEBUG
-   virtual void AssertValid() const;
-#endif
 
 // Implementation
 protected:

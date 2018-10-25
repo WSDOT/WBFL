@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -196,13 +196,11 @@ public:
 
    virtual void UnloadPlugins()
    {
-      Plugins::iterator iter(m_Plugins.begin());
-      Plugins::iterator end(m_Plugins.end());
-      for ( ; iter != end; iter++ )
+      Plugins::iterator iter;
+      for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
       {
          CComPtr<T> plugin = iter->second;
          plugin->Terminate();
-         plugin.Release();
       }
       m_Plugins.clear();
    }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -130,7 +130,7 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
    // first check the most frequently used list
    InterfaceItem key;
    key.iid = riid;
-   boost::circular_buffer<InterfaceItem>::iterator found = std::find(m_MostFrequentlyUsed.begin(),m_MostFrequentlyUsed.end(),key);
+   boost::circular_buffer<InterfaceItem>::iterator found( std::find(m_MostFrequentlyUsed.begin(),m_MostFrequentlyUsed.end(),key) );
    if ( found != m_MostFrequentlyUsed.end() )
    {
       InterfaceItem& item = *found;
@@ -153,8 +153,7 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, void** ppv)
 
    // IID is not in the most frequently used list... search for it in the regular list of interfaces
    HRESULT hr = E_NOINTERFACE;
-   Interfaces::iterator interface_found;
-   interface_found = m_Interfaces.find( key );
+   Interfaces::iterator interface_found( m_Interfaces.find( key ) );
    if ( interface_found == m_Interfaces.end() )
       return E_NOINTERFACE;
 
@@ -202,16 +201,19 @@ STDMETHODIMP CBrokerImp2::Reset()
    if ( !m_bAgentsInitialized )
       return S_OK; // do nothing if the agents weren't initialized
 
-   Agents::iterator i;
-   for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
+   Agents::iterator extensionAgentIter(m_ExtensionAgents.begin());
+   Agents::iterator extensionAgentIterEnd(m_ExtensionAgents.end());
+   for ( ; extensionAgentIter != extensionAgentIterEnd; extensionAgentIter++ )
    {
-      IAgentEx* pAgent = (*i).second;
+      IAgentEx* pAgent = (*extensionAgentIter).second;
       pAgent->Reset();
    }
 
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   Agents::iterator agentIter(m_Agents.begin());
+   Agents::iterator agentIterEnd(m_Agents.end());
+   for ( ; agentIter != agentIterEnd; agentIter++ )
    {
-      IAgentEx* pAgent = (*i).second;
+      IAgentEx* pAgent = (*agentIter).second;
       pAgent->Reset();
    }
 
@@ -239,16 +241,19 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
    m_bAgentsInitialized = true;
 
-   Agents::iterator i;
-   for ( i = m_ExtensionAgents.begin(); i != m_ExtensionAgents.end(); i++ )
+   Agents::iterator extensionAgentIter(m_ExtensionAgents.begin());
+   Agents::iterator extensionAgentIterEnd(m_ExtensionAgents.end());
+   for ( ; extensionAgentIter != extensionAgentIterEnd; extensionAgentIter++ )
    {
-      IAgent* pAgent = (*i).second;
+      IAgentEx* pAgent = (*extensionAgentIter).second;
       pAgent->ShutDown();
    }
 
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   Agents::iterator agentIter(m_Agents.begin());
+   Agents::iterator agentIterEnd(m_Agents.end());
+   for ( ; agentIter != agentIterEnd; agentIter++ )
    {
-      IAgent* pAgent = (*i).second;
+      IAgentEx* pAgent = (*agentIter).second;
       pAgent->ShutDown();
    }
 
@@ -280,7 +285,7 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
    std::sort(interfaces.begin(),interfaces.end(),CompareCLSID);
 
-   Uint64 count = 0;
+   IndexType count = 0;
    std::vector<InterfaceItem>::iterator k;
    for ( k = interfaces.begin(); k != interfaces.end(); k++ )
    {
@@ -316,17 +321,17 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
 //////////////////////////////////////////////////////
 // IBrokerInitEx2/3
-STDMETHODIMP CBrokerImp2::LoadExtensionAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex )
+STDMETHODIMP CBrokerImp2::LoadExtensionAgents( CLSID * clsid, IndexType nClsid,IIndexArray** plErrIndex )
 {
    return LoadAgents(clsid,nClsid,plErrIndex,m_ExtensionAgents);
 }
 
-STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex )
+STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** plErrIndex )
 {
    return LoadAgents(clsid,nClsid,plErrIndex,m_Agents);
 }
 
-HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex, Agents& agents )
+HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** plErrIndex, Agents& agents )
 {
    CHECK_RETOBJ(plErrIndex);
 
@@ -339,7 +344,7 @@ HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrI
 
    // Load all the agents, wire them up with the broker, and tell them
    // to register their interfaces
-   for ( long i = 0; i < nClsid; i++ )
+   for ( IndexType i = 0; i < nClsid; i++ )
    {
       CComPtr<IAgentEx> pAgent;
       hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
@@ -364,9 +369,10 @@ HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrI
    // (Hence the need to wait until all agents are available).
    if ( !m_DelayInit )
    {
-      long count = 0;
-      Agents::iterator iter;
-      for ( iter = agents.begin(); iter != agents.end(); iter++ )
+      IndexType count = 0;
+      Agents::iterator iter(agents.begin());
+      Agents::iterator iterEnd(agents.end());
+      for ( ; iter != iterEnd; iter++ )
       {
          CComPtr<IAgentEx> pAgent = (*iter).second;
          if ( FAILED(pAgent->Init()) )
@@ -471,7 +477,7 @@ STDMETHODIMP CBrokerImp2::RegInterface( REFIID riid, IAgentEx* pAgent)
    item.iid = riid;
    item.pAgent = pAgent;
    (*item.pUsageCount) = 0;
-   std::pair<std::set<InterfaceItem>::iterator,bool> result = m_Interfaces.insert( item );
+   std::pair<std::set<InterfaceItem>::iterator,bool> result( m_Interfaces.insert( item ) );
    ASSERT(result.second); // if this fires, the interface was already registered by a different agent
    if ( result.second == false )
       return E_FAIL;
@@ -524,8 +530,9 @@ HRESULT CBrokerImp2::InitAgents(Agents::iterator begin,Agents::iterator end)
       begin++;
    }
 
-   std::vector<IAgentEx*>::iterator j;
-   for ( j = secondPassAgents.begin(); j != secondPassAgents.end(); j++ )
+   std::vector<IAgentEx*>::iterator j(secondPassAgents.begin());
+   std::vector<IAgentEx*>::iterator j_end(secondPassAgents.end());
+   for ( ; j != j_end; j++ )
    {
       IAgentEx* pAgent = *j;
       HRESULT hr = pAgent->Init2();
@@ -655,8 +662,9 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
 
    if ( m_bSaveMissingAgentData == VARIANT_TRUE )
    {
-      std::vector<std::_tstring>::iterator iter2;
-      for ( iter2 = m_MissingAgentData.begin(); iter2 != m_MissingAgentData.end(); iter2++ )
+      std::vector<std::_tstring>::iterator iter2(m_MissingAgentData.begin());
+      std::vector<std::_tstring>::iterator iter2End(m_MissingAgentData.end());
+      for ( ; iter2 != iter2End; iter2++ )
       {
          pStrSave->SaveRawUnit(iter2->c_str());
       }
@@ -726,9 +734,10 @@ STDMETHODIMP CBrokerImp2::get_Agent(CollectionIndexType idx,IAgent** ppAgent)
 {
    CHECK_RETOBJ(ppAgent);
 
-   Agents::iterator iter;
    CollectionIndexType i = 0;
-   for ( iter = m_Agents.begin(); iter != m_Agents.end() && i != idx; iter++, i++ )
+   Agents::iterator iter(m_Agents.begin());
+   Agents::iterator iterEnd(m_Agents.end());
+   for ( ; iter != iterEnd && i != idx; iter++, i++ )
    {   }
 
    (*ppAgent) = iter->second;
@@ -748,9 +757,10 @@ STDMETHODIMP CBrokerImp2::get_ExtensionAgent(CollectionIndexType idx,IAgent** pp
 {
    CHECK_RETOBJ(ppAgent);
 
-   Agents::iterator iter;
    CollectionIndexType i = 0;
-   for ( iter = m_ExtensionAgents.begin(); iter != m_ExtensionAgents.end() && i != idx; iter++, i++ )
+   Agents::iterator iter(m_ExtensionAgents.begin());
+   Agents::iterator iterEnd(m_ExtensionAgents.end());
+   for ( ; iter != iterEnd && i != idx; iter++, i++ )
    {   }
 
    (*ppAgent) = iter->second;
@@ -761,8 +771,9 @@ STDMETHODIMP CBrokerImp2::get_ExtensionAgent(CollectionIndexType idx,IAgent** pp
 
 HRESULT CBrokerImp2::LoadOldFormat(IStructuredLoad* pStrLoad)
 {
-   Agents::iterator i;
-   for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
+   Agents::iterator i(m_Agents.begin());
+   Agents::iterator i_end(m_Agents.end());
+   for ( ; i != i_end; i++ )
    {
       HRESULT hr = S_OK;
       CComPtr<IAgentEx> pAgent = (*i).second;
@@ -790,7 +801,7 @@ HRESULT CBrokerImp2::LoadOldFormat(IStructuredLoad* pStrLoad)
 
 HRESULT CBrokerImp2::FindAgent(const CLSID& clsid,IAgentEx** ppAgent)
 {
-   Agents::iterator found = m_Agents.find(clsid);
+   Agents::iterator found( m_Agents.find(clsid) );
    if ( found != m_Agents.end() )
    {
       (*ppAgent) = (*found).second;

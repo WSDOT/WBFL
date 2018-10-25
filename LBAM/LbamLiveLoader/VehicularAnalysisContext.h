@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -93,6 +93,8 @@ public:
 	STDMETHOD(Initialize)(/*[in]*/ILBAMModel* model, /*[in]*/IInfluenceLineResponse* influence, 
                          /*[in]*/ILiveLoadNegativeMomentRegion* llnmr, /*[in]*/IAnalysisPOIs* pois,
                          /*[in]*/IGetDistributionFactors* dfs, /*[in]*/IGetStressPoints* gcs);
+
+   STDMETHOD(get_Model)(/*[out,retval]*/ILBAMModel** ppModel);
 
 // ISupportLocations
 public:

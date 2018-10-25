@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -47,6 +47,8 @@
 #define bold(a)      new rptRcFontModifier(rptRiStyle::BOLD, rptRcFontModifier::a)
 #define italic(a)    new rptRcFontModifier(rptRiStyle::ITALIC, rptRcFontModifier::a)
 #define underline(a) new rptRcFontModifier(rptRiStyle::UNDERLINE, rptRcFontModifier::a)
+#define overline(a)  new rptRcFontModifier(rptRiStyle::OVERLINE, rptRcFontModifier::a)
+#define linethrough(a)  new rptRcFontModifier(rptRiStyle::LINETHROUGH, rptRcFontModifier::a)
 #define subscript(a) new rptRcFontModifier(rptRiStyle::SUBSCRIPT, rptRcFontModifier::a)
 #define superscript(a) new rptRcFontModifier(rptRiStyle::SUPERSCRIPT, rptRcFontModifier::a)
 
@@ -61,7 +63,7 @@ CLASS
 DESCRIPTION
    This class is to be used as a stream manipulator to change the state of
    the current font in the report content stream. Properties that may be
-   modified are Bold, Underline, and Italics.
+   modified are Bold, Underline, Overline, Line-through, and Italics.
 
 
    EXAMPLE
@@ -149,7 +151,7 @@ protected:
 
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   void MakeAssignment(const rptRcFontModifier& rOther);
+   virtual void MakeAssignment(const rptRcFontModifier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

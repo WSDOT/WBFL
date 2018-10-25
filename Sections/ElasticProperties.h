@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections - Model bridge member cross sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@ class ATL_NO_VTABLE CElasticProperties :
 	public CComCoClass<CElasticProperties, &CLSID_ElasticProperties>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CElasticProperties,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IElasticPropertiesEx,
+   public IElasticProperties,
    public IStructuredStorage2,
    public IPersistImpl<CElasticProperties>
 {
@@ -51,7 +51,6 @@ DECLARE_REGISTRY_RESOURCEID(IDR_ELASTICPROPERTIES)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CElasticProperties)
-	COM_INTERFACE_ENTRY(IElasticPropertiesEx)
 	COM_INTERFACE_ENTRY(IElasticProperties)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)

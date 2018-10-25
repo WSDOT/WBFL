@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,29 +30,12 @@
 #ifndef INCLUDED_TESTCROSSBEAM_H_
 #define INCLUDED_TESTCROSSBEAM_H_
 
-class ATL_NO_VTABLE CTestCrossBeam :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ICrossBeamEvents
+class CTestCrossBeam
 {
 public:
 	static void Test();
 	CTestCrossBeam();
 	virtual ~CTestCrossBeam();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestCrossBeam)
-   COM_INTERFACE_ENTRY(ICrossBeamEvents)
-END_COM_MAP()
-
-// ICrossBeamEvents
-public:
-   STDMETHOD(OnCrossBeamChanged)(ICrossBeam* col);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTCROSSBEAM_H_

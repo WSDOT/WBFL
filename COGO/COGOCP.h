@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,7 +57,7 @@ class CProxyDPathCollectionEvents : public IConnectionPointImpl<T, &IID_IPathCol
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPathChanged(IPathCollection* coll,CogoElementKey key, IPath * Path)
+	VOID Fire_OnPathChanged(IPathCollection* coll,CogoObjectID key, IPath * Path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -89,7 +89,7 @@ public:
             events->OnProfileChanged(coll,Profile);
 		}
 	}
-	VOID Fire_OnPathAdded(IPathCollection* coll,CogoElementKey key, IPath * Path)
+	VOID Fire_OnPathAdded(IPathCollection* coll,CogoObjectID key, IPath * Path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -105,7 +105,7 @@ public:
             events->OnPathAdded(coll,key,Path);
 		}
 	}
-	VOID Fire_OnPathRemoved(IPathCollection* coll,CogoElementKey key)
+	VOID Fire_OnPathRemoved(IPathCollection* coll,CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -206,7 +206,7 @@ class CProxyDCogoModelEvents : public IConnectionPointImpl<T, &IID_ICogoModelEve
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPointChanged(ICogoModel * cm, CogoElementKey key, IPoint2d * point)
+	VOID Fire_OnPointChanged(ICogoModel * cm, CogoObjectID key, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -222,7 +222,7 @@ public:
             events->OnPointChanged(cm,key,point);
 		}
 	}
-	VOID Fire_OnPointAdded(ICogoModel * cm, CogoElementKey key, IPoint2d * point)
+	VOID Fire_OnPointAdded(ICogoModel * cm, CogoObjectID key, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -238,7 +238,7 @@ public:
             events->OnPointAdded(cm,key,point);
 		}
 	}
-	VOID Fire_OnPointRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnPointRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -270,7 +270,7 @@ public:
             events->OnPointsCleared(cm);
 		}
 	}
-	VOID Fire_OnLineSegmentChanged(ICogoModel * cm, CogoElementKey key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentChanged(ICogoModel * cm, CogoObjectID key, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -286,7 +286,7 @@ public:
             events->OnLineSegmentChanged(cm,key,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentAdded(ICogoModel * cm, CogoElementKey key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentAdded(ICogoModel * cm, CogoObjectID key, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -302,7 +302,7 @@ public:
             events->OnLineSegmentAdded(cm,key,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnLineSegmentRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -334,7 +334,7 @@ public:
             events->OnLineSegmentsCleared(cm);
 		}
 	}
-	VOID Fire_OnProfilePointChanged(ICogoModel * cm, CogoElementKey key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointChanged(ICogoModel * cm, CogoObjectID key, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -350,7 +350,7 @@ public:
             events->OnProfilePointChanged(cm,key,pp);
 		}
 	}
-	VOID Fire_OnProfilePointAdded(ICogoModel * cm, CogoElementKey key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointAdded(ICogoModel * cm, CogoObjectID key, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -366,7 +366,7 @@ public:
             events->OnProfilePointAdded(cm,key,pp);
 		}
 	}
-	VOID Fire_OnProfilePointRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnProfilePointRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -398,7 +398,7 @@ public:
             events->OnProfilePointsCleared(cm);
 		}
 	}
-	VOID Fire_OnVertCurveChanged(ICogoModel * cm, CogoElementKey key, IVertCurve * vc)
+	VOID Fire_OnVertCurveChanged(ICogoModel * cm, CogoObjectID key, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -414,7 +414,7 @@ public:
             events->OnVertCurveChanged(cm,key,vc);
 		}
 	}
-	VOID Fire_OnVertCurveAdded(ICogoModel * cm, CogoElementKey key, IVertCurve * vc)
+	VOID Fire_OnVertCurveAdded(ICogoModel * cm, CogoObjectID key, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -430,7 +430,7 @@ public:
             events->OnVertCurveAdded(cm,key,vc);
 		}
 	}
-	VOID Fire_OnVertCurveRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnVertCurveRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -462,7 +462,7 @@ public:
             events->OnVertCurvesCleared(cm);
 		}
 	}
-	VOID Fire_OnHorzCurveChanged(ICogoModel * cm, CogoElementKey key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveChanged(ICogoModel * cm, CogoObjectID key, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -478,7 +478,7 @@ public:
             events->OnHorzCurveChanged(cm,key,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(ICogoModel * cm, CogoElementKey key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveAdded(ICogoModel * cm, CogoObjectID key, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -494,7 +494,7 @@ public:
             events->OnHorzCurveAdded(cm,key,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnHorzCurveRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -542,7 +542,7 @@ public:
             events->OnProfileChanged(cm,Profile);
 		}
 	}
-	VOID Fire_OnAlignmentChanged(ICogoModel * cm, CogoElementKey key, IAlignment * alignment)
+	VOID Fire_OnAlignmentChanged(ICogoModel * cm, CogoObjectID key, IAlignment * alignment)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -558,7 +558,7 @@ public:
             events->OnAlignmentChanged(cm,key,alignment);
 		}
 	}
-	VOID Fire_OnAlignmentAdded(ICogoModel * cm, CogoElementKey key, IAlignment * alignment)
+	VOID Fire_OnAlignmentAdded(ICogoModel * cm, CogoObjectID key, IAlignment * alignment)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -574,7 +574,7 @@ public:
             events->OnAlignmentAdded(cm,key,alignment);
 		}
 	}
-	VOID Fire_OnAlignmentRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnAlignmentRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -607,7 +607,7 @@ public:
 		}
 	}
 
-	VOID Fire_OnPathChanged(ICogoModel * cm, CogoElementKey key, IPath * path)
+	VOID Fire_OnPathChanged(ICogoModel * cm, CogoObjectID key, IPath * path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -623,7 +623,7 @@ public:
             events->OnPathChanged(cm,key,path);
 		}
 	}
-	VOID Fire_OnPathAdded(ICogoModel * cm, CogoElementKey key, IPath * path)
+	VOID Fire_OnPathAdded(ICogoModel * cm, CogoObjectID key, IPath * path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -639,7 +639,7 @@ public:
             events->OnPathAdded(cm,key,path);
 		}
 	}
-	VOID Fire_OnPathRemoved(ICogoModel * cm, CogoElementKey key)
+	VOID Fire_OnPathRemoved(ICogoModel * cm, CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -788,7 +788,7 @@ class CProxyDHorzCurveCollectionEvents : public IConnectionPointImpl<T, &IID_IHo
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnHorzCurveChanged(CogoElementKey key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveChanged(CogoObjectID key, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -804,7 +804,7 @@ public:
             events->OnHorzCurveChanged(key,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(CogoElementKey key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveAdded(CogoObjectID key, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -820,7 +820,7 @@ public:
             events->OnHorzCurveAdded(key,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(CogoElementKey key)
+	VOID Fire_OnHorzCurveRemoved(CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -906,7 +906,7 @@ class CProxyDLineSegmentCollectionEvents : public IConnectionPointImpl<T, &IID_I
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnLineSegmentChanged(CogoElementKey key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentChanged(CogoObjectID key, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -922,7 +922,7 @@ public:
             events->OnLineSegmentChanged(key,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentAdded(CogoElementKey key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentAdded(CogoObjectID key, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -938,7 +938,7 @@ public:
             events->OnLineSegmentAdded(key,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentRemoved(CogoElementKey key)
+	VOID Fire_OnLineSegmentRemoved(CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1023,7 +1023,7 @@ class CProxyDProfilePointCollectionEvents : public IConnectionPointImpl<T, &IID_
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnProfilePointChanged(CogoElementKey key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointChanged(CogoObjectID key, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1039,7 +1039,7 @@ public:
             events->OnProfilePointChanged(key,pp);
 		}
 	}
-	VOID Fire_OnProfilePointAdded(CogoElementKey key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointAdded(CogoObjectID key, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1055,7 +1055,7 @@ public:
             events->OnProfilePointAdded(key,pp);
 		}
 	}
-	VOID Fire_OnProfilePointRemoved(CogoElementKey key)
+	VOID Fire_OnProfilePointRemoved(CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1117,7 +1117,7 @@ class CProxyDVertCurveCollectionEvents : public IConnectionPointImpl<T, &IID_IVe
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnVertCurveChanged(CogoElementKey key, IVertCurve * vc)
+	VOID Fire_OnVertCurveChanged(CogoObjectID key, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1133,7 +1133,7 @@ public:
             events->OnVertCurveChanged(key,vc);
 		}
 	}
-	VOID Fire_OnVertCurveAdded(CogoElementKey key, IVertCurve * vc)
+	VOID Fire_OnVertCurveAdded(CogoObjectID key, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1149,7 +1149,7 @@ public:
             events->OnVertCurveAdded(key,vc);
 		}
 	}
-	VOID Fire_OnVertCurveRemoved(CogoElementKey key)
+	VOID Fire_OnVertCurveRemoved(CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1235,7 +1235,7 @@ class CProxyDPointCollectionEvents : public IConnectionPointImpl<T, &IID_IPointC
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPointChanged(CogoElementKey key, IPoint2d * point)
+	VOID Fire_OnPointChanged(CogoObjectID key, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1251,7 +1251,7 @@ public:
             events->OnPointChanged(key,point);
 		}
 	}
-	VOID Fire_OnPointAdded(CogoElementKey key, IPoint2d * point)
+	VOID Fire_OnPointAdded(CogoObjectID key, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1267,7 +1267,7 @@ public:
             events->OnPointAdded(key,point);
 		}
 	}
-	VOID Fire_OnPointRemoved(CogoElementKey key)
+	VOID Fire_OnPointRemoved(CogoObjectID key)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;

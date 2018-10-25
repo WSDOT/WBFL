@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,30 +31,12 @@
 #define INCLUDED_TESTCOLUMNSPACING_H_
 
 
-class ATL_NO_VTABLE CTestColumnSpacing :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IColumnSpacingEvents
+class CTestColumnSpacing
 {
 public:
 	static void Test();
 	CTestColumnSpacing();
 	virtual ~CTestColumnSpacing();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestColumnSpacing)
-   COM_INTERFACE_ENTRY(IColumnSpacingEvents)
-END_COM_MAP()
-
-// IStressPointEvents
-public:
-   STDMETHOD(OnColumnCountChanged)(/*[in]*/ColumnIndexType newVal);
-   STDMETHOD(OnColumnSpacingChanged)();
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTCOLUMNSPACING_H_

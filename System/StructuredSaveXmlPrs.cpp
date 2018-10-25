@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -397,7 +397,7 @@ void sysStructuredSaveXmlPrs_Impl::BeginSave(IStream* pis)
       m_pOStream->AddRef();
 
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
       if (!(bool)pDoc)
       {
          THROW(sysXStructuredSave,CantInitializeTheParser);
@@ -761,7 +761,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, bool value)
 
 void sysStructuredSaveXmlPrs_Impl::PutUnit(LPCTSTR xml)
 {
-   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
+   MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
    pDoc->loadXML(_bstr_t(xml));
 
    MSXML::IXMLDOMNodePtr pNewNode = pDoc->firstChild;

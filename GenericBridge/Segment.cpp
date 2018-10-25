@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,22 +39,19 @@ static char THIS_FILE[] = __FILE__;
 // CSegment
 HRESULT CSegment::FinalConstruct()
 {
-   m_Length = 1.0;
-
+   m_pGirderLine = NULL;
+   m_Orientation = 0;
+   m_HaunchDepth[etStart] = 0;
+   m_HaunchDepth[etEnd] = 0;
+   m_pPrevSegment = NULL;
+   m_pNextSegment = NULL;
    return S_OK;
 }
 
 void CSegment::FinalRelease()
 {
-   m_Shape.Release();
-
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-   }
-   m_Material.Release();
+   m_pGirderLine = NULL;
+   m_Shapes.clear();
 }
 
 STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
@@ -74,173 +71,225 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 
 ////////////////////////////////////////////////////////////////////////
 // ISegment implementation
-STDMETHODIMP CSegment::putref_SegmentMeasure(ISegmentMeasure* sm)
-{
-   m_pSegmentMeasure = sm;
-
-#if defined _DEBUG
-   // m_pSegmentMeasure is a weak references. This is so because
-   // I expect the object implementing sm to also be a superstructure member
-   // Assert this is true.
-   if ( sm != NULL )
-   {
-      CComQIPtr<ISuperstructureMember> ssmbr(sm);
-      CComQIPtr<ILongitudinalPierDescription> lpd(sm);
-      CComQIPtr<ICrossBeam> cb(sm);
-      CComQIPtr<IColumn> col(sm);
-      ATLASSERT(ssmbr != NULL || lpd != NULL || cb != NULL || col != NULL);
-   }
-#endif // _DEBUG
-
-   return S_OK;
-}
 
 STDMETHODIMP CSegment::get_Length(Float64 *pVal)
 {
-   CHECK_RETVAL(pVal);
-   (*pVal) = m_Length;
-	return S_OK;
+   return m_pGirderLine->get_LayoutLength(pVal);
 }
 
-STDMETHODIMP CSegment::put_Length(Float64 length)
+STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
-   if ( IsEqual(m_Length,length) )
+   CHECK_RETOBJ(ppSection);
+
+   if ( m_Shapes.size() == 0 )
+   {
+      *ppSection = NULL;
       return S_OK;
-
-   // Validate length
-   if ( m_pSegmentMeasure )
-   {
-      bool bFractional = m_pSegmentMeasure->IsFractional() == S_OK ? true : false;
-      if ( bFractional )
-      {
-         if ( length > 0 )
-            return Error(IDS_E_FRACTIONAL_EXPECTED,IID_ISegment,GB_E_FRACTIONAL_EXPECTED);
-      }
-      else
-      {
-         if ( length < 0 )
-            return Error(IDS_E_ABSOLUTE_EXPECTED,IID_ISegment,GB_E_ABSOLUTE_EXPECTED);
-      }
    }
-
-   m_Length = length;
-   Fire_OnSegmentChanged(this);
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_SegmentLength(/*[out, retval]*/ Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-   Float64 segLength;
-   if ( m_Length < 0 )
-   {
-      // segment length is a fraction of the superstructure member length
-      Float64 ssmbrLength = GetSuperstructureMemberLength();
-      segLength = -1*m_Length*ssmbrLength;
-   }
-   else
-   {
-      // segment lenght is an absolute value
-      *pVal = m_Length;
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CSegment::get_Shape(Float64 distAlongSegment,IShape** ppShape)
-{
-   CHECK_RETOBJ(ppShape);
 
    // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-   if ( m_Shape )
+   CComPtr<ICompositeSectionEx> section;
+   section.CoCreateInstance(CLSID_CompositeSectionEx);
+
+   std::vector<ShapeData>::iterator iter(m_Shapes.begin());
+   std::vector<ShapeData>::iterator end(m_Shapes.end());
+   for ( ; iter != end; iter++ )
    {
-      hr = m_Shape->Clone(ppShape);
+      ShapeData& shapeData = *iter;
+
+      Float64 Efg = 0;
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_E(stageIdx,&Efg);
+
+      Float64 Ebg = 0;
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+
+      Float64 Dfg = 0;
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+
+      Float64 Dbg = 0;
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+
+      CComPtr<IShape> shape;
+      shapeData.Shape->Clone(&shape);
+
+      // position the shape
+      CComPtr<IPoint2d> pntTopCenter;
+      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+
+      CComQIPtr<IXYPosition> position(shape);
+      position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+
+      section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+   }
+
+   section->QueryInterface(IID_ISection,(void**)ppSection);
+   ATLASSERT(*ppSection);
+
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   if ( m_Shapes.size() == 0 )
+   {
+      *ppShape = 0;
+      return S_OK;
+   }
+
+   // this is a prismatic shape, so distAlongSegment doesn't matter
+   m_Shapes.front().Shape->Clone(ppShape);
+
+   // position the shape
+   CComPtr<IPoint2d> pntTopCenter;
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+
+   CComQIPtr<IXYPosition> position(*ppShape);
+   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
+
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   CComPtr<IRect2d> rect;
+
+   // it is assumed that the first shape is the main shape in the section and all
+   // other shapes are inside of it
+   m_Shapes[0].Shape->get_BoundingBox(&rect);
+
+   Float64 h;
+   rect->get_Height(&h);
+
+   Float64 l;
+   Float64 brgOffset,endDist;
+   if ( bIncludeClosure == VARIANT_TRUE )
+   {
+      m_pGirderLine->get_LayoutLength(&l);
+      brgOffset = 0;
+      endDist = 0;
    }
    else
    {
-      (*ppShape) = 0;
+      m_pGirderLine->get_GirderLength(&l);
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
    }
 
-   return hr;
-}
+   CComPtr<IRectangle> shape;
+   shape.CoCreateInstance(CLSID_Rect);
+   shape->put_Height(h);
+   shape->put_Width(l);
 
-STDMETHODIMP CSegment::putref_Shape(IShape* pShape)
-{
-   CHECK_IN(pShape);
+   // CL Pier/Top Shape is at (0,0)
+   //
+   // CL Pier   End of segment
+   // |         |       CL Bearing
+   // | (0,0)   |       |
+   // *         +-------+---------------\  
+   // |         |       .               /
+   // |         +-------+---------------\  
 
-#if defined _DEBUG
-   CComQIPtr<IGirderSection> gdrSection(pShape);
-   ATLASSERT(gdrSection != NULL); // shape must be a girder section
-#endif
+   CComQIPtr<IXYPosition> position(shape);
+   CComPtr<IPoint2d> topLeft;
+   position->get_LocatorPoint(lpTopLeft,&topLeft);
+   topLeft->Move(brgOffset-endDist,0);
+   position->put_LocatorPoint(lpTopLeft,topLeft);
 
-   if ( m_Shape.IsEqualObject(pShape) )
-      return S_OK;
+   shape->QueryInterface(ppShape);
 
-   m_Shape = pShape;
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
-STDMETHODIMP CSegment::putref_Material(IMaterial* material)
+STDMETHODIMP CSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
 {
-   CHECK_IN(material);
-
-   if ( m_Material.IsEqualObject(material) )
-      return S_OK;
-
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   HRESULT hr;
-   DWORD dwCookie;
-   if ( material )
-   {
-      hr = AtlAdvise(material,punk,IID_IMaterialEvents,&dwCookie);
-      if ( FAILED(hr) )
-         return hr; // can't sink on material... get outta here before anything gets changed
-
-      InternalRelease(); // break circular reference
-   }
-
-   // unsink on the older material (if there was one)
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      hr = AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-      ATLASSERT(SUCCEEDED(hr));
-   }
-
-   m_Material = material;
-
-   if ( m_Material )
-   {
-      m_dwMaterialCookie = dwCookie;
-   }
-
-   Fire_OnSegmentChanged(this);
+   CHECK_IN(ssMbr);
+   m_pSSMbr = ssMbr;
    return S_OK;
 }
 
-STDMETHODIMP CSegment::get_Material(IMaterial* *material)
+STDMETHODIMP CSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
 {
-   CHECK_RETVAL(material);
+   CHECK_RETOBJ(ssMbr);
+   if ( m_pSSMbr )
+   {
+      (*ssMbr) = m_pSSMbr;
+      (*ssMbr)->AddRef();
+   }
+   else
+   {
+      (*ssMbr) = NULL;
+   }
 
-   (*material) = m_Material;
+   return S_OK;
+}
 
-   if ( *material )
-      (*material)->AddRef();
+STDMETHODIMP CSegment::putref_GirderLine(IGirderLine* girderLine)
+{
+   CHECK_IN(girderLine);
+   m_pGirderLine = girderLine;
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_GirderLine(IGirderLine** girderLine)
+{
+   CHECK_RETOBJ(girderLine);
+   if ( m_pGirderLine )
+   {
+      (*girderLine) = m_pGirderLine;
+      (*girderLine)->AddRef();
+   }
+   else
+   {
+      (*girderLine) = NULL;
+   }
+
+   return S_OK;
+
+}
+
+STDMETHODIMP CSegment::putref_PrevSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pPrevSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_PrevSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pPrevSegment;
+   if ( *segment )
+      (*segment)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::putref_NextSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pNextSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_NextSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pNextSegment;
+   if ( *segment )
+      (*segment)->AddRef();
 
    return S_OK;
 }
 
 STDMETHODIMP CSegment::put_Orientation(Float64 orientation)
 {
-   if ( IsEqual(m_Orientation,orientation) )
-      return S_OK;
-
    m_Orientation = orientation;
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
@@ -251,29 +300,98 @@ STDMETHODIMP CSegment::get_Orientation(Float64* orientation)
    return S_OK;
 }
 
-STDMETHODIMP CSegment::Clone(ISegment* *clone)
+STDMETHODIMP CSegment::get_HaunchDepth(EndType endType,Float64* pVal)
 {
-   CHECK_RETOBJ(clone);
+   CHECK_RETVAL(pVal);
+   *pVal = m_HaunchDepth[endType];
+   return S_OK;
+}
 
-   CComObject<CSegment>* pClone;
-   CComObject<CSegment>::CreateInstance(&pClone);
-   (*clone) = pClone;
-   (*clone)->AddRef();
+STDMETHODIMP CSegment::put_HaunchDepth(EndType endType,Float64 val)
+{
+   m_HaunchDepth[endType] = val;
+   return S_OK;
+}
 
-   pClone->m_Length = m_Length;
-   pClone->m_pSegmentMeasure = m_pSegmentMeasure;
-   pClone->m_Orientation = m_Orientation;
+STDMETHODIMP CSegment::GetHaunchDepth(Float64 distAlongSegment,Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = GB_GetHaunchDepth(this,distAlongSegment);
+   return S_OK;
+}
 
-   if ( m_Shape )
-      m_Shape->Clone(&pClone->m_Shape);
+////////////////////////////////////////////////////////////////////
+// IPrismaticSection implementation
 
-   CComPtr<IMaterial> material;
-   if ( m_Material )
-      m_Material->Clone(&material);
+STDMETHODIMP CSegment::AddShape(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
+{
+   CHECK_IN(pShape);
 
-   pClone->putref_Material(material);
+   ShapeData shapeData;
+   shapeData.Shape = pShape;
+   shapeData.FGMaterial = pFGMaterial;
+   shapeData.BGMaterial = pBGMaterial;
+
+   m_Shapes.push_back(shapeData);
 
    return S_OK;
+}
+
+STDMETHODIMP CSegment::get_ShapeCount(IndexType* nShapes)
+{
+   CHECK_RETVAL(nShapes);
+   *nShapes = m_Shapes.size();
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_ForegroundMaterial(IndexType index,IMaterial* *material)
+{
+   if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[index].FGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CSegment::get_BackgroundMaterial(IndexType index,IMaterial* *material)
+{
+   if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[index].BGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+////////////////////////////////////////////////////////////////////
+// IItemData implementation
+STDMETHODIMP CSegment::AddItemData(BSTR name,IUnknown* data)
+{
+   return m_ItemDataMgr.AddItemData(name,data);
+}
+
+STDMETHODIMP CSegment::GetItemData(BSTR name,IUnknown** data)
+{
+   return m_ItemDataMgr.GetItemData(name,data);
+}
+
+STDMETHODIMP CSegment::RemoveItemData(BSTR name)
+{
+   return m_ItemDataMgr.RemoveItemData(name);
+}
+
+STDMETHODIMP CSegment::GetItemDataCount(CollectionIndexType* count)
+{
+   return m_ItemDataMgr.GetItemDataCount(count);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -283,13 +401,13 @@ STDMETHODIMP CSegment::Load(IStructuredLoad2* load)
    CComVariant var;
    load->BeginUnit(CComBSTR("Segment"));
 
-   load->get_Property(CComBSTR("Length"),&var);
-   m_Length = var.dblVal;
+   ATLASSERT(false); // not implemented
 
-   m_Shape.Release();
-   load->get_Property(CComBSTR("Shape"),&var);
-   if ( var.vt == VT_UNKNOWN )
-      var.punkVal->QueryInterface(&m_Shape);
+   m_Shapes.clear();
+
+   //load->get_Property(CComBSTR("Shape"),&var);
+   //if ( var.vt == VT_UNKNOWN )
+   //   var.punkVal->QueryInterface(&m_Shape);
 
    VARIANT_BOOL bEnd;
    load->EndUnit(&bEnd);
@@ -300,23 +418,13 @@ STDMETHODIMP CSegment::Save(IStructuredSave2* save)
 {
    save->BeginUnit(CComBSTR("Segment"),1.0);
 
-   save->put_Property(CComBSTR("Length"),CComVariant(m_Length));
-   if ( m_Shape )
-      save->put_Property(CComBSTR("Shape"),CComVariant(m_Shape));
-   else
-      save->put_Property(CComBSTR("Shape"),CComVariant(0));
+   ATLASSERT(false); // not implemented
+
+   //if ( m_Shape )
+   //   save->put_Property(CComBSTR("Shape"),CComVariant(m_Shape));
+   //else
+   //   save->put_Property(CComBSTR("Shape"),CComVariant(0));
 
    save->EndUnit();
    return S_OK;
-}
-
-Float64 CSegment::GetSuperstructureMemberLength()
-{
-   Float64 length;
-   CComQIPtr<ISuperstructureMember> ssmbr(m_pSegmentMeasure);
-   ATLASSERT(ssmbr);
-
-   ssmbr->get_Length(&length);
-   ATLASSERT( 0 <= length );
-   return length;
 }

@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.DeckBoundary.1 = s 'DeckBoundary Class'
+	{
+		CLSID = s '{E66BB224-9C23-47FE-836A-A59945BB46DE}'
+	}
+	WBFLBridgeGeometry.DeckBoundary = s 'DeckBoundary Class'
+	{
+		CLSID = s '{E66BB224-9C23-47FE-836A-A59945BB46DE}'
+		CurVer = s 'WBFLBridgeGeometry.DeckBoundary.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {E66BB224-9C23-47FE-836A-A59945BB46DE} = s 'DeckBoundary Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.DeckBoundary.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.DeckBoundary'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

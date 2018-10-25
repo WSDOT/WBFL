@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -315,6 +315,34 @@ STDMETHODIMP CVoidedSlabSection2::get_MinWebThickness(Float64* tWeb)
 STDMETHODIMP CVoidedSlabSection2::get_EffectiveWebThickness(Float64* tWeb)
 {
    return get_MinWebThickness(tWeb);
+}
+
+STDMETHODIMP CVoidedSlabSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+{
+   CHECK_RETOBJ(ppPlane);
+
+   Float64 x;
+   HRESULT hr = get_WebLocation(idx,&x);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<IPoint3d> p1;
+   p1.CoCreateInstance(CLSID_Point3d);
+   p1->Move(x,0,0);
+
+   CComPtr<IPoint3d> p2;
+   p2.CoCreateInstance(CLSID_Point3d);
+   p2->Move(x,100,0);
+
+   CComPtr<IPoint3d> p3;
+   p3.CoCreateInstance(CLSID_Point3d);
+   p3->Move(x,0,100);
+
+   CComPtr<IPlane3d> plane;
+   plane.CoCreateInstance(CLSID_Plane3d);
+   plane->ThroughPoints(p1,p2,p3);
+
+   return plane.CopyTo(ppPlane);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceCount(MatingSurfaceIndexType* nMatingSurfaces)
@@ -652,6 +680,18 @@ STDMETHODIMP CVoidedSlabSection2::Clear()
 {
    CComQIPtr<ICompositeShape> compshape(m_Shape);
    return compshape->Clear();
+}
+
+STDMETHODIMP CVoidedSlabSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   CComQIPtr<ICompositeShape> compshape(m_Shape);
+   return compshape->ReplaceEx(idx,pShapeItem);
+}
+
+STDMETHODIMP CVoidedSlabSection2::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   CComQIPtr<ICompositeShape> compshape(m_Shape);
+   return compshape->Replace(idx,pShape);
 }
 
 STDMETHODIMP CVoidedSlabSection2::AddShapeEx(ICompositeShapeItem* ShapeItem)

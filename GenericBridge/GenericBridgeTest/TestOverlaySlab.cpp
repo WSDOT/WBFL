@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -67,31 +67,9 @@ void CTestOverlaySlab::Test()
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   ///////////////////////////////////////
-   // Test Set with event sink
-   CComObject<CTestOverlaySlab>* pTestOverlaySlab;
-   CComObject<CTestOverlaySlab>::CreateInstance(&pTestOverlaySlab);
-   pTestOverlaySlab->AddRef();
-   
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestOverlaySlab);
-   TRY_TEST(AtlAdvise(slab,punk,IID_IBridgeDeckEvents,&dwCookie),S_OK);
-
-   pTestOverlaySlab->InitEventTest();
-   TRY_TEST(slab->put_GrossDepth(-10),E_INVALIDARG);
-   TRY_TEST(slab->put_GrossDepth(0),S_OK);
-   TRY_TEST(pTestOverlaySlab->PassedEventTest(), false );
-
-   pTestOverlaySlab->InitEventTest();
-   TRY_TEST(slab->put_GrossDepth(10),S_OK);
-   TRY_TEST(pTestOverlaySlab->PassedEventTest(), true );
-
-   slab->get_GrossDepth(&value);
-   TRY_TEST(IsEqual(value,10.0),true);
-
-   // Done with events
-   TRY_TEST(AtlUnadvise(slab,IID_IBridgeDeckEvents,dwCookie),S_OK);
-   pTestOverlaySlab->Release();
+   TRY_TEST(slab->get_SacrificialDepth(NULL),E_POINTER);
+   TRY_TEST(slab->get_SacrificialDepth(&value),S_OK);
+   TRY_TEST(IsZero(value),true);
 
    ///////////////////////////////////////
    // Test Error Info
@@ -108,11 +86,4 @@ void CTestOverlaySlab::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(slab,IID_IOverlaySlab,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(slab,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-
-STDMETHODIMP CTestOverlaySlab::OnBridgeDeckChanged(IBridgeDeck* pDeck)
-{
-   Pass();
-   return S_OK;
 }

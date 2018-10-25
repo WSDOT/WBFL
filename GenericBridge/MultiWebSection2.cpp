@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,9 +40,16 @@ static char THIS_FILE[] = __FILE__;
 // CMultiWebSection2
 HRESULT CMultiWebSection2::FinalConstruct()
 {
+   m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
    m_Beam.CoCreateInstance(CLSID_MultiWeb2);
-   m_Beam.QueryInterface(&m_Shape);
-   m_Beam.QueryInterface(&m_Position);
+
+   CComQIPtr<IShape> beamShape(m_Beam);
+   ATLASSERT(beamShape != NULL); // must implement IShape interface
+
+   m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
+
+   m_CompositeShape.QueryInterface(&m_Shape);
+   m_CompositeShape.QueryInterface(&m_Position);
 
    return S_OK;
 }
@@ -58,6 +65,7 @@ STDMETHODIMP CMultiWebSection2::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IMultiWebSection2,
       &IID_IGirderSection,
       &IID_IShape,
+      &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -190,6 +198,34 @@ STDMETHODIMP CMultiWebSection2::get_MinWebThickness(Float64* tWeb)
    *tWeb = _cpp_min(w1,w2);
 
    return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+{
+   CHECK_RETOBJ(ppPlane);
+
+   Float64 x;
+   HRESULT hr = get_WebLocation(idx,&x);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<IPoint3d> p1;
+   p1.CoCreateInstance(CLSID_Point3d);
+   p1->Move(x,0,0);
+
+   CComPtr<IPoint3d> p2;
+   p2.CoCreateInstance(CLSID_Point3d);
+   p2->Move(x,100,0);
+
+   CComPtr<IPoint3d> p3;
+   p3.CoCreateInstance(CLSID_Point3d);
+   p3->Move(x,0,100);
+
+   CComPtr<IPlane3d> plane;
+   plane.CoCreateInstance(CLSID_Plane3d);
+   plane->ThroughPoints(p1,p2,p3);
+
+   return plane.CopyTo(ppPlane);
 }
 
 STDMETHODIMP CMultiWebSection2::get_EffectiveWebThickness(Float64* tWeb)
@@ -445,13 +481,27 @@ STDMETHODIMP CMultiWebSection2::Clone(IShape** pClone)
 
    CComObject<CMultiWebSection2>* clone;
    CComObject<CMultiWebSection2>::CreateInstance(&clone);
+   clone->m_CompositeShape.Release();
+   clone->m_Shape.Release();
+   clone->m_Position.Release();
+   clone->m_Beam.Release();
 
-   CComPtr<IMultiWebSection2> flanged_beam = clone;
+   m_Shape->Clone(&clone->m_Shape);
+   clone->m_Shape->QueryInterface(&clone->m_CompositeShape);
+   clone->m_Shape->QueryInterface(&clone->m_Position);
 
-   flanged_beam->put_Beam(m_Beam);
+   // first item is the beam
+   CComPtr<ICompositeShapeItem> item;
+   clone->m_CompositeShape->get_Item(0,&item);
 
-   CComQIPtr<IShape> shape(flanged_beam);
-   (*pClone) = shape;
+   CComPtr<IShape> s;
+   item->get_Shape(&s);
+
+   CComQIPtr<IMultiWeb2> beam(s);
+   clone->m_Beam = beam;
+
+
+   (*pClone) = clone;
    (*pClone)->AddRef();
 
    return S_OK;
@@ -500,4 +550,61 @@ STDMETHODIMP CMultiWebSection2::RotateEx(IPoint2d* pPoint,Float64 angle)
 STDMETHODIMP CMultiWebSection2::Rotate(Float64 cx,Float64 cy,Float64 angle)
 {
    return m_Position->Rotate(cx,cy,angle);
+}
+
+////////////////////////////////////////////////////////////////////////
+// ICompositeShape implementation
+STDMETHODIMP CMultiWebSection2::get__NewEnum(IUnknown* *pVal)
+{
+   return m_CompositeShape->get__NewEnum(pVal);
+}
+
+STDMETHODIMP CMultiWebSection2::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+{
+   return m_CompositeShape->get_Item(idx,pVal);
+}
+
+STDMETHODIMP CMultiWebSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   return m_CompositeShape->ReplaceEx(idx,pShapeItem);
+}
+
+STDMETHODIMP CMultiWebSection2::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   return m_CompositeShape->Replace(idx,pShape);
+}
+
+STDMETHODIMP CMultiWebSection2::AddShape(IShape* shape,VARIANT_BOOL bVoid)
+{
+   return m_CompositeShape->AddShape(shape,bVoid);
+}
+
+STDMETHODIMP CMultiWebSection2::AddShapeEx(ICompositeShapeItem* shapeItem)
+{
+   return m_CompositeShape->AddShapeEx(shapeItem);
+}
+
+STDMETHODIMP CMultiWebSection2::Remove(CollectionIndexType idx)
+{
+   return m_CompositeShape->Remove(idx);
+}
+
+STDMETHODIMP CMultiWebSection2::Clear()
+{
+   return m_CompositeShape->Clear();
+}
+
+STDMETHODIMP CMultiWebSection2::get_Count(CollectionIndexType *pVal)
+{
+   return m_CompositeShape->get_Count(pVal);
+}
+
+STDMETHODIMP CMultiWebSection2::get_Shape(IShape* *pVal)
+{
+   return m_CompositeShape->get_Shape(pVal);
+}
+
+STDMETHODIMP CMultiWebSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)
+{
+   return m_CompositeShape->get_StructuredStorage(pStrStg);
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -883,7 +883,7 @@ STDMETHODIMP CCogoEngine::PointOnCurve(/*[in]*/ IPoint2d* pnt, /*[in]*/ IHorzCur
    return curve->ProjectPoint(pnt,point);
 }
 
-STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(from);
    CHECK_IN(vertex);
@@ -913,7 +913,7 @@ STDMETHODIMP CCogoEngine::Arc(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(from);
    CHECK_IN(to);
@@ -939,7 +939,7 @@ STDMETHODIMP CCogoEngine::BetweenPoints(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(seg);
    CHECK_RETOBJ(points);
@@ -959,7 +959,7 @@ STDMETHODIMP CCogoEngine::LineSegment(/*[in]*/ ILineSegment2d* seg,/*[in]*/ long
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nParts, /*[out,retval]*/ IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points)
 {
    CHECK_IN(curve);
    CHECK_RETOBJ(points);
@@ -978,7 +978,7 @@ STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nP
 
    Float64 stepSize = Lt/nParts;
    Float64 currDist = stepSize;
-   for ( int i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
       CComPtr<IPoint2d> point;
       curve->PointOnCurve(currDist,&point);
@@ -991,7 +991,7 @@ STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nP
    return S_OK;
 }
 
-STDMETHODIMP CCogoEngine::Path(IPath* pPath,long nParts,Float64 start,Float64 end,IPoint2dCollection** points)
+STDMETHODIMP CCogoEngine::Path(IPath* pPath,CollectionIndexType nParts,Float64 start,Float64 end,IPoint2dCollection** points)
 {
    CHECK_IN(pPath);
    CHECK_RETOBJ(points);
@@ -1006,7 +1006,7 @@ STDMETHODIMP CCogoEngine::Path(IPath* pPath,long nParts,Float64 start,Float64 en
    Float64 distance = end - start;
    Float64 stepSize = distance/nParts;
    Float64 location = stepSize + start;
-   for ( long i = 0; i < nParts-1; i++ )
+   for ( CollectionIndexType i = 0; i < nParts-1; i++ )
    {
       CComPtr<IPoint2d> point;
       pPath->LocatePoint(location,omtNormal,0.0,CComVariant(0.00),&point);

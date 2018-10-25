@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,8 +34,6 @@
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 #include <System\SectionValue.h>
-
-#include <Material\Concrete.h>
 
 // LOCAL INCLUDES
 //
@@ -166,8 +164,8 @@ public:
    static HsAvfOverSMinType AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
 
    //------------------------------------------------------------------------
-   // Max bar spacing 5.8.4.1/2
-   static Float64 MaxStirrupSpacingForHoriz(Float64 Hg);
+   // Max bar spacing 5.8.4.1
+   static Float64 MaxStirrupSpacingForHoriz();
 
    //------------------------------------------------------------------------
    // Calculate required Avf for horizontal shear
@@ -175,14 +173,6 @@ public:
                                       Float64 c, Float64 u, Float64 K1, Float64 K2,
                                       Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
                                       Float64 fc, Float64 fy);
-
-   //------------------------------------------------------------------------
-   // Calculates the concrete density modification factor (lambda)
-   // per LRFD 5.4.2.8 (added to LRFD in 2016)
-   static Float64 ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
-
-   static std::_tstring GetTypeName(matConcrete::Type type,bool bFull);
-   static matConcrete::Type GetTypeFromName(LPCTSTR strName);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

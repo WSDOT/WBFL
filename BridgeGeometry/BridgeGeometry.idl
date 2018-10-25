@@ -1,0 +1,18 @@
+// BridgeGeometry.idl : IDL source for BridgeGeometry
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (BridgeGeometry.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(3887C38E-D11E-4740-896B-D1DBA8F74BD7),
+	version(1.0),
+	helpstring("WBFLBridgeGeometry")
+]
+library WBFLBridgeGeometry
+{
+	importlib("stdole2.tlb");
+};

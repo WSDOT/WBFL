@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -383,6 +383,7 @@ STDMETHODIMP CLoadGroupResponse::OnPOIsAdded(/*[in]*/IPOI* poi)
    m_ChangeManager.OnPOIAdded(id);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnPOIsBeforeRemove(/*[in]*/IPOI* poi)
 {
    PoiIDType id;
@@ -399,26 +400,31 @@ STDMETHODIMP CLoadGroupResponse::OnStagesChanged(IStage* item, ChangeType change
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStagesAdded(IStage* item, StageIndexType index)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStagesBeforeRemove(IStage* item, StageIndexType index)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStagesMoveTo(StageIndexType from, StageIndexType to)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStagesCopyTo(StageIndexType from, StageIndexType to)
 {
    m_ChangeManager.OnModelHosed();
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStagesReverse()
 {
    m_ChangeManager.OnModelHosed();
@@ -434,6 +440,7 @@ STDMETHODIMP CLoadGroupResponse::OnLoadGroupsChanged(ILoadGroup* item, ChangeTyp
 
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnLoadGroupsRenamed(BSTR oldName, BSTR newName)
 {
    m_ChangeManager.OnLoadGroupRenamed(oldName, newName);
@@ -450,6 +457,7 @@ STDMETHODIMP CLoadGroupResponse::OnLoadGroupsAdded(ILoadGroup* item)
    m_ChangeManager.OnLoadGroupAdded(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnLoadGroupsBeforeRemove(ILoadGroup* item)
 {
    CComBSTR name;
@@ -473,6 +481,7 @@ STDMETHODIMP CLoadGroupResponse::OnPointLoadsChanged(/*[in]*/IPointLoadItem* ite
 
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnPointLoadsAdded(/*[in]*/IPointLoadItem* item)
 {
    CComBSTR name;
@@ -484,6 +493,7 @@ STDMETHODIMP CLoadGroupResponse::OnPointLoadsAdded(/*[in]*/IPointLoadItem* item)
 
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnPointLoadsBeforeRemove(/*[in]*/IPointLoadItem* item)
 {
    CComBSTR name;
@@ -505,6 +515,7 @@ STDMETHODIMP CLoadGroupResponse::OnDistributedLoadsChanged(/*[in]*/IDistributedL
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnDistributedLoadsAdded(/*[in]*/IDistributedLoadItem* item)
 {
    CComBSTR name;
@@ -515,6 +526,7 @@ STDMETHODIMP CLoadGroupResponse::OnDistributedLoadsAdded(/*[in]*/IDistributedLoa
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnDistributedLoadsBeforeRemove(/*[in]*/IDistributedLoadItem* item)
 {
    CComBSTR name;
@@ -536,6 +548,7 @@ STDMETHODIMP CLoadGroupResponse::OnTemperatureLoadsChanged(/*[in]*/ITemperatureL
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnTemperatureLoadsAdded(/*[in]*/ITemperatureLoadItem* item)
 {
    CComBSTR name;
@@ -546,6 +559,7 @@ STDMETHODIMP CLoadGroupResponse::OnTemperatureLoadsAdded(/*[in]*/ITemperatureLoa
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnTemperatureLoadsBeforeRemove(/*[in]*/ITemperatureLoadItem* item)
 {
    CComBSTR name;
@@ -567,6 +581,7 @@ STDMETHODIMP CLoadGroupResponse::OnStrainLoadsChanged(/*[in]*/IStrainLoadItem* i
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStrainLoadsAdded(/*[in]*/IStrainLoadItem* item)
 {
    CComBSTR name;
@@ -577,6 +592,7 @@ STDMETHODIMP CLoadGroupResponse::OnStrainLoadsAdded(/*[in]*/IStrainLoadItem* ite
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnStrainLoadsBeforeRemove(/*[in]*/IStrainLoadItem* item)
 {
    CComBSTR name;
@@ -598,6 +614,7 @@ STDMETHODIMP CLoadGroupResponse::OnSettlementLoadsChanged(/*[in]*/ISettlementLoa
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnSettlementLoadsAdded(/*[in]*/ISettlementLoadItem* item)
 {
    CComBSTR name;
@@ -608,6 +625,7 @@ STDMETHODIMP CLoadGroupResponse::OnSettlementLoadsAdded(/*[in]*/ISettlementLoadI
    m_ChangeManager.OnLoadGroupChanged(name);
    return S_OK;
 }
+
 STDMETHODIMP CLoadGroupResponse::OnSettlementLoadsBeforeRemove(/*[in]*/ISettlementLoadItem* item)
 {
    CComBSTR name;
@@ -967,13 +985,18 @@ void CLoadGroupResponse::CAnalysisController::UpdateTemporarySupportLoadings(ILB
          hr = temporarySupport->get_StageRemoved(&bstrRemovalStage);
 
          StageIndexType removalStageIdx;
-         if ( !GetStageIndex(bstrRemovalStage,&removalStageIdx) )
+         if ( GetStageIndex(bstrRemovalStage,&removalStageIdx) )
          {
-            CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrRemovalStage));
-            THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS,msg);
+            m_TemporarySupportInfo.push_back(TemporarySupportInfo(tempSupportID, removalStageIdx));
          }
 
-         m_TemporarySupportInfo.push_back(TemporarySupportInfo(tempSupportID, removalStageIdx));
+         //if ( !GetStageIndex(bstrRemovalStage,&removalStageIdx) )
+         //{
+         //   CComBSTR msg(::CreateErrorMsg1S(IDS_E_NO_REM_STAGE_FOR_TS, bstrRemovalStage));
+         //   THROW_LBAMA_MSG(NO_REM_STAGE_FOR_TS,msg);
+         //}
+
+         //m_TemporarySupportInfo.push_back(TemporarySupportInfo(tempSupportID, removalStageIdx));
       }
    }
 }
@@ -1195,15 +1218,15 @@ void CLoadGroupResponse::ValidateModels()
             StageIndexType nStages = m_AnalysisController.StageCount();
             for (StageIndexType stageIdx = 0; stageIdx < nStages; stageIdx++)
             {
-               CComBSTR stage = m_AnalysisController.Stage(stageIdx);
+               CComBSTR bstrStage = m_AnalysisController.Stage(stageIdx);
                boost::shared_ptr<CAnalysisModel> pAnalysisModel(
-                        new CAnalysisModel(m_pLBAM, stage, &m_AnalysisController, &m_AnalysisController, 
+                        new CAnalysisModel(m_pLBAM, bstrStage, &m_AnalysisController, &m_AnalysisController, 
                                            m_MinSpanPoiIncrement, m_MinCantileverPoiIncrement,
                                            m_ForForces) );
                
                m_Models.push_back( pAnalysisModel );
 
-               pAnalysisModel->BuildModel();
+               pAnalysisModel->BuildModel(bstrStage);
             }
 
             // Next need to apply reaction forces for temporary supports in
@@ -2039,8 +2062,6 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflectionInfluenceLine(SupportID
 
    return S_OK;
 }
-
-
 
 STDMETHODIMP CLoadGroupResponse::ComputeContraflexureLocations(BSTR stage, IDblArray* *locations)
 {

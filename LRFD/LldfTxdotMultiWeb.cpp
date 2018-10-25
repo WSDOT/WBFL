@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,7 +49,7 @@ lrfdTxdotLldfMultiWeb::lrfdTxdotLldfMultiWeb(GirderIndexType gdr,Float64 Savg,co
                                              Uint32 Nl, Float64 wLane,
                                              Float64 W, Float64 L, Float64 Kfactor,
                                              Float64 skewAngle1, Float64 skewAngle2) :
-lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,false,false)
+lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane)
 {
    m_W           = W;
    m_L           = L;
@@ -168,7 +168,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
    {
       g.ControllingMethod = SPEC_EQN | S_OVER_D_METHOD;
       g.EqnData.bWasUsed = true;
-      g.EqnData.D = ::ConvertToSysUnits(D,bSI? unitMeasure::Millimeter : unitMeasure::Feet);
+      g.EqnData.D = ::ConvertToSysUnits(D,bSI? unitMeasure::Millimeter : unitMeasure::Feet);;
       g.EqnData.C = C;
       g.EqnData.K = m_Kfactor;
       g.EqnData.mg = mg;
@@ -176,10 +176,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
 
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.EqnData.mg;

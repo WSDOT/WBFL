@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -127,11 +127,4 @@ void CTestAlignmentOffsetStrategy::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(strategy,IID_IAlignmentOffsetStrategy,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(strategy,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-
-STDMETHODIMP CTestAlignmentOffsetStrategy::OnStrategyChanged()
-{
-   Pass();
-   return S_OK;
 }

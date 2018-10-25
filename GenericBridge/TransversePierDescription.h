@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __TRANSVERSEPIERDESCRIPTION_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 #include <vector>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,13 +37,8 @@ class ATL_NO_VTABLE CTransversePierDescription :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CTransversePierDescription, &CLSID_TransversePierDescription>,
 	public ISupportErrorInfo,
-	public IConnectionPointContainerImpl<CTransversePierDescription>,
-	public CProxyDTransversePierDescriptionEvents< CTransversePierDescription >,
 	public ITransversePierDescription,
    public IStructuredStorage2,
-   public IColumnSpacingEvents,
-	public ICrossBeamEvents,
-   public IColumnEvents,
    public IObjectSafetyImpl<CTransversePierDescription,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
@@ -64,8 +58,6 @@ public:
 
    void SetItems(IColumnSpacing* pSpacing,ICrossBeam* pCrossBeam);
 
-   STDMETHOD(Clone)(ITransversePierDescription* *clone);
-
 DECLARE_REGISTRY_RESOURCEID(IDR_TRANSVERSEPIERDESCRIPTION)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -74,34 +66,17 @@ BEGIN_COM_MAP(CTransversePierDescription)
 	COM_INTERFACE_ENTRY(ITransversePierDescription)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IColumnSpacingEvents)
-   COM_INTERFACE_ENTRY(ICrossBeamEvents)
-   COM_INTERFACE_ENTRY(IColumnEvents)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CTransversePierDescription)
-   CONNECTION_POINT_ENTRY(IID_ITransversePierDescriptionEvents)
-END_CONNECTION_POINT_MAP()
 
 private:
    CComPtr<ICrossBeam> m_CrossBeam;
-   DWORD m_dwCrossBeamCookie;
-
    CComPtr<IColumnSpacing> m_ColumnSpacing;
-   DWORD m_dwColumnSpacingCookie;
 
    IGenericBridge* m_pBridge; // weak reference
    IPier* m_pPier; // weak reference
 
-   HRESULT AdviseChild(IUnknown* punk,REFIID riid,DWORD* pdwCookie);
-   HRESULT UnadviseChild(IUnknown* punk,REFIID riid,DWORD dwCookie);
-
-   std::vector< std::pair<DWORD,CComPtr<IColumn> > > m_ColumnCookies;
-   void AdviseColumns();
-   void UnadviseColumns();
+   std::vector<CComPtr<IColumn>> m_Columns;
 
 // ISupportsErrorInfo
 public:
@@ -118,35 +93,6 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-// IColumnSpacingEvents
-public:
-	STDMETHOD(OnColumnCountChanged)(ColumnIndexType newVal)
-	{
-      UnadviseColumns();
-      AdviseColumns();
-      Fire_OnChanged();
-      return S_OK;
-	}
-	STDMETHOD(OnColumnSpacingChanged)()
-	{
-      Fire_OnChanged();
-      return S_OK;
-	}
-
-// ICrossBeamEvents
-public:
-	STDMETHOD(OnCrossBeamChanged)(ICrossBeam * CrossBeam)
-	{
-      Fire_OnChanged();
-      return S_OK;
-	}
-// IColumnEvents
-	STDMETHOD(OnColumnChanged)(IColumn * Column)
-	{
-      Fire_OnChanged();
-      return S_OK;
-	}
 };
 
 #endif //__TRANSVERSEPIERDESCRIPTION_H_

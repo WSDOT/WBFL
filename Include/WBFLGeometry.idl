@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1313,30 +1313,6 @@ library WBFLGeometry
 
 		[propputref, helpstring("property Centroid"),helpcontext(IDH_IGenericShape_Centroid)]
 		HRESULT Centroid([in] IPoint2d* newVal);
-
-		[propget, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
-		HRESULT Xleft([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Xleft"),helpcontext(IDH_IShapeProperties_Xleft)]
-		HRESULT Xleft([in] Float64 newVal);
-
-		[propget, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
-		HRESULT Xright([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Xright"),helpcontext(IDH_IShapeProperties_Xright)]
-		HRESULT Xright([in] Float64 newVal);
-
-		[propget, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
-		HRESULT Ytop([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ytop"),helpcontext(IDH_IShapeProperties_Ytop)]
-		HRESULT Ytop([in] Float64 newVal);
-
-		[propget, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
-		HRESULT Ybottom([out, retval] Float64 *pVal);
-
-		[propput, helpstring("property Ybottom"),helpcontext(IDH_IShapeProperties_Ybottom)]
-		HRESULT Ybottom([in] Float64 newVal);
 
 		[propget, helpstring("property Ixx"),helpcontext(IDH_IGenericShape_Ixx)]
 		HRESULT Ixx([out, retval] Float64 *pVal);
@@ -2840,473 +2816,479 @@ library WBFLGeometry
       HRESULT UseOutlineOnly([out,retval]VARIANT_BOOL* bUseOutlineOnly);
    };
 
-
-[
-object,
-uuid(A76E22D6-6C41-49d8-94C2-10D10CF0DB04),
-oleautomation,
-helpstring("ICompositeShapeItem Interface"),
-//helpcontext(IDH_ICompositeShapeItem),
-pointer_default(unique)
-]
-interface ICompositeShapeItem : IUnknown
-{
-   [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
-   HRESULT Shape([out, retval] IShape* *pVal);
-
-   [propputref, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
-   HRESULT Shape([in] IShape* newVal);
-
-   [propget, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
-   HRESULT Void([out, retval] VARIANT_BOOL *pVal);
-
-   [propput, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
-   HRESULT Void([in] VARIANT_BOOL newVal);
-
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-};
-
-[
-object,
-uuid(0BAF0D09-6A8D-4818-AAA6-C5B72C3641FE),
-oleautomation,
-helpstring("ICompositeShape Interface"),
-//helpcontext(IDH_ICompositeShape),
-pointer_default(unique)
-]
-interface ICompositeShape : IUnknown
-{
-		[propget, helpstring("property _NewEnum")]
-      HRESULT _NewEnum([out, retval] IUnknown* *pVal);
-
-		[propget, helpstring("property Item")/*,helpcontext(IDH_ICompositeShape_Item)*/]
-      HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeShapeItem* *pVal);
-
-		[helpstring("method AddShape")/*,helpcontext(IDH_ICompositeShape_AddShape)*/]
-      HRESULT AddShape([in] IShape* shape,[in] VARIANT_BOOL bVoid);
-
-		[helpstring("method AddSectionEx")/*,helpcontext(IDH_ICompositeSection_AddShapeEx)*/]
-      HRESULT AddShapeEx([in] ICompositeShapeItem* shapeItem);
-
-		[helpstring("method Remove")/*,helpcontext(IDH_ICompositeShape_Remove)*/]
-      HRESULT Remove([in] CollectionIndexType idx);
-
-		[helpstring("method Clear")/*,helpcontext(IDH_ICompositeShape_Clear)*/]
-      HRESULT Clear();
-
-		[propget, helpstring("property Count")/*,helpcontext(IDH_ICompositeShape_Count)*/]
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
-
-		[propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
+   [
+   object,
+   uuid(A76E22D6-6C41-49d8-94C2-10D10CF0DB04),
+   oleautomation,
+   helpstring("ICompositeShapeItem Interface"),
+   //helpcontext(IDH_ICompositeShapeItem),
+   pointer_default(unique)
+   ]
+   interface ICompositeShapeItem : IUnknown
+   {
+      [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
       HRESULT Shape([out, retval] IShape* *pVal);
 
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-};
+      [propputref, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShapeItem_Shape)*/]
+      HRESULT Shape([in] IShape* newVal);
 
-[
-object,
-uuid(82ABF099-2BCB-4119-AAFC-C3E6B04624C7),
-oleautomation,
-helpstring("IVoidedSlab Interface"),
-//helpcontext(IDH_IVoidedSlab),
-pointer_default(unique)
-]
-interface IVoidedSlab : IUnknown
-{
-   [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
-   HRESULT Height([in]Float64 h);
+      [propget, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
+      HRESULT Void([out, retval] VARIANT_BOOL *pVal);
 
-   [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
-   HRESULT Height([out,retval]Float64* h);
+      [propput, helpstring("property Void")/*,helpcontext(IDH_ICompositeShapeItem_Void)*/]
+      HRESULT Void([in] VARIANT_BOOL newVal);
 
-   [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
-   HRESULT Width([in]Float64 w);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
-   [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
-   HRESULT Width([out,retval]Float64* w);
+   [
+   object,
+   uuid(0BAF0D09-6A8D-4818-AAA6-C5B72C3641FE),
+   oleautomation,
+   helpstring("ICompositeShape Interface"),
+   //helpcontext(IDH_ICompositeShape),
+   pointer_default(unique)
+   ]
+   interface ICompositeShape : IUnknown
+   {
+		   [propget, helpstring("property _NewEnum")]
+         HRESULT _NewEnum([out, retval] IUnknown* *pVal);
 
-   [propput,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
-   HRESULT VoidDiameter([in]Float64 d);
+		   [propget, helpstring("property Item")/*,helpcontext(IDH_ICompositeShape_Item)*/]
+         HRESULT Item([in] CollectionIndexType idx, [out, retval] ICompositeShapeItem* *pVal);
 
-   [propget,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
-   HRESULT VoidDiameter([out,retval]Float64* d);
+		   [helpstring("method AddShape")/*,helpcontext(IDH_ICompositeShape_AddShape)*/]
+         HRESULT AddShape([in] IShape* shape,[in] VARIANT_BOOL bVoid);
 
-   [propput,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
-   HRESULT VoidSpacing([in]Float64 s);
+		   [helpstring("method AddSectionEx")/*,helpcontext(IDH_ICompositeSection_AddShapeEx)*/]
+         HRESULT AddShapeEx([in] ICompositeShapeItem* shapeItem);
 
-   [propget,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
-   HRESULT VoidSpacing([out,retval]Float64* s);
 
-   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-   HRESULT VoidCount([in]CollectionIndexType nv);
+         [helpstring("method Replace")/*,helpcontext(IDH_ICompsiteShape_Replace)*/]
+         HRESULT Replace([in]CollectionIndexType idx,[in]IShape* pShape);
 
-   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+         [helpstring("method ReplaceEx")/*,helpcontext(IDH_ICompsiteShape_ReplaceEx)*/]
+         HRESULT ReplaceEx([in]CollectionIndexType idx,[in]ICompositeShapeItem* pShapeItem);
 
-   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
-   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+		   [helpstring("method Remove")/*,helpcontext(IDH_ICompositeShape_Remove)*/]
+         HRESULT Remove([in] CollectionIndexType idx);
 
-   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
-   HRESULT HookPoint([in] IPoint2d* hookPnt);
+		   [helpstring("method Clear")/*,helpcontext(IDH_ICompositeShape_Clear)*/]
+         HRESULT Clear();
 
-   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
-   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+		   [propget, helpstring("property Count")/*,helpcontext(IDH_ICompositeShape_Count)*/]
+         HRESULT Count([out, retval] CollectionIndexType *pVal);
 
-   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
-   HRESULT Shape([out, retval] IShape* *pVal);
+		   [propget, helpstring("property Shape")/*,helpcontext(IDH_ICompositeShape_Shape)*/]
+         HRESULT Shape([out, retval] IShape* *pVal);
 
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-};
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
+   [
+   object,
+   uuid(82ABF099-2BCB-4119-AAFC-C3E6B04624C7),
+   oleautomation,
+   helpstring("IVoidedSlab Interface"),
+   //helpcontext(IDH_IVoidedSlab),
+   pointer_default(unique)
+   ]
+   interface IVoidedSlab : IUnknown
+   {
+      [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+      HRESULT Height([in]Float64 h);
 
-[
-object,
-uuid(F8EC30FA-8C49-4b8d-AA93-B0D83A785142),
-oleautomation,
-helpstring("IVoidedSlab2 Interface"),
-//helpcontext(IDH_IVoidedSlab2),
-pointer_default(unique)
-]
-interface IVoidedSlab2 : IUnknown
-{
-   [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
-   HRESULT Height([in]Float64 h);
+      [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+      HRESULT Height([out,retval]Float64* h);
 
-   [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
-   HRESULT Height([out,retval]Float64* h);
+      [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+      HRESULT Width([in]Float64 w);
 
-   [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
-   HRESULT Width([in]Float64 w);
+      [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+      HRESULT Width([out,retval]Float64* w);
 
-   [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
-   HRESULT Width([out,retval]Float64* w);
+      [propput,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
+      HRESULT VoidDiameter([in]Float64 d);
 
-   [propput,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
-   HRESULT C1([in]Float64 c1);
+      [propget,helpstring("property VoidDiameter")/*,helpcontext(IDH_IVoidedSlab_VoidDiameter)*/]
+      HRESULT VoidDiameter([out,retval]Float64* d);
 
-   [propget,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
-   HRESULT C1([out,retval]Float64* c1);
+      [propput,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
+      HRESULT VoidSpacing([in]Float64 s);
 
-   [propput,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
-   HRESULT C2([in]Float64 c2);
+      [propget,helpstring("property VoidSpacing")/*,helpcontext(IDH_IVoidedSlab_VoidSpacing)*/]
+      HRESULT VoidSpacing([out,retval]Float64* s);
 
-   [propget,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
-   HRESULT C2([out,retval]Float64* c2);
+      [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+      HRESULT VoidCount([in]CollectionIndexType nv);
 
-   [propput,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
-   HRESULT C3([in]Float64 c3);
+      [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
 
-   [propget,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
-   HRESULT C3([out,retval]Float64* c3);
+      [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+      HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
 
-   [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
+      [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
 
-   [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+      [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-   [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
-   HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+      [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
 
-   [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
-   HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
-   [propput,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
-   HRESULT ExteriorVoidDiameter([in]Float64 d);
 
-   [propget,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
-   HRESULT ExteriorVoidDiameter([out,retval]Float64* d);
+   [
+   object,
+   uuid(F8EC30FA-8C49-4b8d-AA93-B0D83A785142),
+   oleautomation,
+   helpstring("IVoidedSlab2 Interface"),
+   //helpcontext(IDH_IVoidedSlab2),
+   pointer_default(unique)
+   ]
+   interface IVoidedSlab2 : IUnknown
+   {
+      [propput,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+      HRESULT Height([in]Float64 h);
 
-   [propput,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
-   HRESULT InteriorVoidDiameter([in]Float64 d);
+      [propget,helpstring("property Height")/*,helpcontext(IDH_IVoidedSlab_Height)*/]
+      HRESULT Height([out,retval]Float64* h);
 
-   [propget,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
-   HRESULT InteriorVoidDiameter([out,retval]Float64* d);
+      [propput,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+      HRESULT Width([in]Float64 w);
 
-   [propput,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
-   HRESULT ExteriorVoidSpacing([in]Float64 s);
+      [propget,helpstring("property Width")/*,helpcontext(IDH_IVoidedSlab_Width)*/]
+      HRESULT Width([out,retval]Float64* w);
 
-   [propget,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
-   HRESULT ExteriorVoidSpacing([out,retval]Float64* s);
+      [propput,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
+      HRESULT C1([in]Float64 c1);
 
-   [propput,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
-   HRESULT InteriorVoidSpacing([in]Float64 s);
+      [propget,helpstring("property C1")/*,helpcontext(IDH_IVoidedSlab_C1)*/]
+      HRESULT C1([out,retval]Float64* c1);
 
-   [propget,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
-   HRESULT InteriorVoidSpacing([out,retval]Float64* s);
+      [propput,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
+      HRESULT C2([in]Float64 c2);
 
-   [propput,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
-   HRESULT ExteriorVoidElevation([in]Float64 h1);
+      [propget,helpstring("property C2")/*,helpcontext(IDH_IVoidedSlab_C2)*/]
+      HRESULT C2([out,retval]Float64* c2);
 
-   [propget,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
-   HRESULT ExteriorVoidElevation([out,retval]Float64* h1);
+      [propput,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
+      HRESULT C3([in]Float64 c3);
 
-   [propput,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
-   HRESULT InteriorVoidElevation([in]Float64 h2);
+      [propget,helpstring("property C3")/*,helpcontext(IDH_IVoidedSlab_C3)*/]
+      HRESULT C3([out,retval]Float64* c3);
 
-   [propget,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
-   HRESULT InteriorVoidElevation([out,retval]Float64* h2);
+      [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
 
-   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-   HRESULT VoidCount([in]CollectionIndexType nv);
+      [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IVoidedSlab_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
 
-   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
-   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
+      HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
 
-   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
-   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+      [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IVoidedSlab_RightBlockOut)*/]
+      HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
 
-   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
-   HRESULT HookPoint([in] IPoint2d* hookPnt);
+      [propput,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
+      HRESULT ExteriorVoidDiameter([in]Float64 d);
 
-   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
-   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+      [propget,helpstring("property ExteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidDiameter)*/]
+      HRESULT ExteriorVoidDiameter([out,retval]Float64* d);
 
-   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
-   HRESULT Shape([out, retval] IShape* *pVal);
+      [propput,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
+      HRESULT InteriorVoidDiameter([in]Float64 d);
 
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-};
+      [propget,helpstring("property InteriorVoidDiameter")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidDiameter)*/]
+      HRESULT InteriorVoidDiameter([out,retval]Float64* d);
 
-[
-object,
-uuid(DD2E8D6C-2EC0-4370-AC01-11EA0C01294C),
-oleautomation,
-helpstring("IBoxBeam Interface"),
-//helpcontext(IDH_IBoxBeam),
-pointer_default(unique)
-]
-interface IBoxBeam : IUnknown
-{
-	[propget,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
-	HRESULT W1([out, retval] Float64 *pVal);
+      [propput,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
+      HRESULT ExteriorVoidSpacing([in]Float64 s);
 
-	[propput,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
-	HRESULT W1([in] Float64 newVal);
+      [propget,helpstring("property ExteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidSpacing)*/]
+      HRESULT ExteriorVoidSpacing([out,retval]Float64* s);
 
-	[propget,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
-	HRESULT W2([out, retval] Float64 *pVal);
+      [propput,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
+      HRESULT InteriorVoidSpacing([in]Float64 s);
 
-	[propput,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
-	HRESULT W2([in] Float64 newVal);
+      [propget,helpstring("property InteriorVoidSpacing")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidSpacing)*/]
+      HRESULT InteriorVoidSpacing([out,retval]Float64* s);
 
-	[propget,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
-	HRESULT W3([out, retval] Float64 *pVal);
+      [propput,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
+      HRESULT ExteriorVoidElevation([in]Float64 h1);
 
-	[propput,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
-	HRESULT W3([in] Float64 newVal);
+      [propget,helpstring("property ExteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_ExteriorVoidElevation)*/]
+      HRESULT ExteriorVoidElevation([out,retval]Float64* h1);
 
-	[propget,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
-	HRESULT W4([out, retval] Float64 *pVal);
+      [propput,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
+      HRESULT InteriorVoidElevation([in]Float64 h2);
 
-	[propput,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
-	HRESULT W4([in] Float64 newVal);
+      [propget,helpstring("property InteriorVoidElevation")/*,helpcontext(IDH_IVoidedSlab_InteriorVoidElevation)*/]
+      HRESULT InteriorVoidElevation([out,retval]Float64* h2);
 
-	[propget,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
-	HRESULT H1([out, retval] Float64 *pVal);
+      [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+      HRESULT VoidCount([in]CollectionIndexType nv);
 
-	[propput,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
-	HRESULT H1([in] Float64 newVal);
+      [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IVoidedSlab_VoidCount)*/]
+      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
 
-	[propget,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
-	HRESULT H2([out, retval] Float64 *pVal);
+      [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+      HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
 
-	[propput,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
-	HRESULT H2([in] Float64 newVal);
+      [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IVoidedSlab_HookPoint)*/]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
 
-	[propget,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
-	HRESULT H3([out, retval] Float64 *pVal);
+      [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IVoidedSlab_XYPosition)*/]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-	[propput,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
-	HRESULT H3([in] Float64 newVal);
+      [propget,  helpstring("property Shape")/*,helpcontext(IDH_IVoidedSlab_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
 
-	[propget,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
-	HRESULT H4([out, retval] Float64 *pVal);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
 
-	[propput,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
-	HRESULT H4([in] Float64 newVal);
+   [
+   object,
+   uuid(DD2E8D6C-2EC0-4370-AC01-11EA0C01294C),
+   oleautomation,
+   helpstring("IBoxBeam Interface"),
+   //helpcontext(IDH_IBoxBeam),
+   pointer_default(unique)
+   ]
+   interface IBoxBeam : IUnknown
+   {
+	   [propget,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
+	   HRESULT W1([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
-	HRESULT H5([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property W1")/*,helpcontext(IDH_IBoxBeam_W1)*/]
+	   HRESULT W1([in] Float64 newVal);
 
-	[propput,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
-	HRESULT H5([in] Float64 newVal);
+	   [propget,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
+	   HRESULT W2([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
-	HRESULT H6([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property W2")/*,helpcontext(IDH_IBoxBeam_W2)*/]
+	   HRESULT W2([in] Float64 newVal);
 
-	[propput,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
-	HRESULT H6([in] Float64 newVal);
+	   [propget,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
+	   HRESULT W3([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
-	HRESULT H7([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property W3")/*,helpcontext(IDH_IBoxBeam_W3)*/]
+	   HRESULT W3([in] Float64 newVal);
 
-	[propput,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
-	HRESULT H7([in] Float64 newVal);
+	   [propget,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
+	   HRESULT W4([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
-	HRESULT F1([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property W4")/*,helpcontext(IDH_IBoxBeam_W4)*/]
+	   HRESULT W4([in] Float64 newVal);
 
-	[propput,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
-	HRESULT F1([in] Float64 newVal);
+	   [propget,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
+	   HRESULT H1([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
-	HRESULT F2([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property H1")/*,helpcontext(IDH_IBoxBeam_H1)*/]
+	   HRESULT H1([in] Float64 newVal);
 
-	[propput,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
-	HRESULT F2([in] Float64 newVal);
+	   [propget,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
+	   HRESULT H2([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
-	HRESULT C1([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property H2")/*,helpcontext(IDH_IBoxBeam_H2)*/]
+	   HRESULT H2([in] Float64 newVal);
 
-	[propput,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
-	HRESULT C1([in] Float64 newVal);
+	   [propget,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
+	   HRESULT H3([out, retval] Float64 *pVal);
 
-   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
-   HRESULT VoidCount([in]CollectionIndexType nv);
+	   [propput,  helpstring("property H3")/*,helpcontext(IDH_IBoxBeam_H3)*/]
+	   HRESULT H3([in] Float64 newVal);
 
-   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
-   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+	   [propget,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
+	   HRESULT H4([out, retval] Float64 *pVal);
 
-   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
-	HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+	   [propput,  helpstring("property H4")/*,helpcontext(IDH_IBoxBeam_H4)*/]
+	   HRESULT H4([in] Float64 newVal);
 
-   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
-	HRESULT HookPoint([in] IPoint2d* hookPnt);
+	   [propget,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
+	   HRESULT H5([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property WebWidth")/*,helpcontext(IDH_IBoxBeam_WebWidth)*/]
-	HRESULT WebWidth([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property H5")/*,helpcontext(IDH_IBoxBeam_H5)*/]
+	   HRESULT H5([in] Float64 newVal);
 
-	[propget,  helpstring("property BottomFlangeWidth")/*,helpcontext(IDH_IBoxBeam_BottomFlangeWidth)*/]
-	HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+	   [propget,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
+	   HRESULT H6([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property TopFlangeWidth")/*,helpcontext(IDH_IBoxBeam_TopFlangeWidth)*/]
-	HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+	   [propput,  helpstring("property H6")/*,helpcontext(IDH_IBoxBeam_H6)*/]
+	   HRESULT H6([in] Float64 newVal);
 
-	[propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
-	HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+	   [propget,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
+	   HRESULT H7([out, retval] Float64 *pVal);
 
-	[propget,  helpstring("property Shape")/*,helpcontext(IDH_IBoxBeam_Shape)*/]
-	HRESULT Shape([out, retval] IShape* *pVal);
+	   [propput,  helpstring("property H7")/*,helpcontext(IDH_IBoxBeam_H7)*/]
+	   HRESULT H7([in] Float64 newVal);
 
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+	   [propget,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
+	   HRESULT F1([out, retval] Float64 *pVal);
 
-   [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
+	   [propput,  helpstring("property F1")/*,helpcontext(IDH_IBoxBeam_F1)*/]
+	   HRESULT F1([in] Float64 newVal);
 
-   [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+	   [propget,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
+	   HRESULT F2([out, retval] Float64 *pVal);
 
-   [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
-   HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+	   [propput,  helpstring("property F2")/*,helpcontext(IDH_IBoxBeam_F2)*/]
+	   HRESULT F2([in] Float64 newVal);
 
-   [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
-   HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+	   [propget,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
+	   HRESULT C1([out, retval] Float64 *pVal);
 
-   [propget,helpstring("property Width")]
-   HRESULT Width([out,retval]Float64* pVal);
+	   [propput,  helpstring("property C1"),/*helpcontext(IDH_IBoxBeam_C1)*/]
+	   HRESULT C1([in] Float64 newVal);
 
-   [propput,helpstring("property UseOverallWidth")]
-   HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
+      [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
+      HRESULT VoidCount([in]CollectionIndexType nv);
 
-   [propget,helpstring("property UseOverallWidth")]
-   HRESULT UseOverallWidth([out,retval]VARIANT_BOOL* pbUseOverallWidth);
-};
+      [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IBoxBeam_VoidCount)*/]
+      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
 
+      [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
+	   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
 
-[
-object,
-uuid(ED1C099C-E020-408c-B9B5-952E0DAAB8D6),
-oleautomation,
-helpstring("IDeckedSlabBeam Interface"),
-//helpcontext(IDH_IDeckedSlabBeam),
-pointer_default(unique)
-]
-interface IDeckedSlabBeam : IUnknown
-{
-   [propput,helpstring("property A")/*,helpcontext(IDH_IDeckedSlabBeam_A)*/]
-   HRESULT A([in]Float64 a);
+      [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IBoxBeam_HookPoint)*/]
+	   HRESULT HookPoint([in] IPoint2d* hookPnt);
 
-   [propget,helpstring("property A")/*,helpcontext(IDH_IDeckedSlabBeam_A)*/]
-   HRESULT A([out,retval]Float64* a);
+	   [propget,  helpstring("property WebWidth")/*,helpcontext(IDH_IBoxBeam_WebWidth)*/]
+	   HRESULT WebWidth([out, retval] Float64 *pVal);
 
-   [propput,helpstring("property B")/*,helpcontext(IDH_IDeckedSlabBeam_B)*/]
-   HRESULT B([in]Float64 b);
+	   [propget,  helpstring("property BottomFlangeWidth")/*,helpcontext(IDH_IBoxBeam_BottomFlangeWidth)*/]
+	   HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
 
-   [propget,helpstring("property B")/*,helpcontext(IDH_IDeckedSlabBeam_B)*/]
-   HRESULT B([out,retval]Float64* b);
+	   [propget,  helpstring("property TopFlangeWidth")/*,helpcontext(IDH_IBoxBeam_TopFlangeWidth)*/]
+	   HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
 
-   [propput,helpstring("property C")/*,helpcontext(IDH_IDeckedSlabBeam_C)*/]
-   HRESULT C([in]Float64 c);
+	   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IBoxBeam_XYPosition)*/]
+	   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
 
-   [propget,helpstring("property C")/*,helpcontext(IDH_IDeckedSlabBeam_C)*/]
-   HRESULT C([out,retval]Float64* c);
+	   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IBoxBeam_Shape)*/]
+	   HRESULT Shape([out, retval] IShape* *pVal);
 
-   [propput,helpstring("property W")/*,helpcontext(IDH_IDeckedSlabBeam_W)*/]
-   HRESULT W([in]Float64 W);
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
 
-   [propget,helpstring("property W")/*,helpcontext(IDH_IDeckedSlabBeam_W)*/]
-   HRESULT W([out,retval]Float64* W);
+      [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
 
-   [propput,helpstring("property Tt")/*,helpcontext(IDH_IDeckedSlabBeam_Tt)*/]
-   HRESULT Tt([in]Float64 Tt);
+      [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
 
-   [propget,helpstring("property Tt")/*,helpcontext(IDH_IDeckedSlabBeam_Tt)*/]
-   HRESULT Tt([out,retval]Float64* Tt);
+      [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+      HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
 
-   [propput,helpstring("property Tb")/*,helpcontext(IDH_IDeckedSlabBeam_Tb)*/]
-   HRESULT Tb([in]Float64 Tb);
+      [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+      HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
 
-   [propget,helpstring("property Tb")/*,helpcontext(IDH_IDeckedSlabBeam_Tb)*/]
-   HRESULT Tb([out,retval]Float64* Tb);
+      [propget,helpstring("property Width")]
+      HRESULT Width([out,retval]Float64* pVal);
 
-   [propput,helpstring("property F")/*,helpcontext(IDH_IDeckedSlabBeam_F)*/]
-   HRESULT F([in]Float64 F);
+      [propput,helpstring("property UseOverallWidth")]
+      HRESULT UseOverallWidth([in]VARIANT_BOOL bUseOverallWidth);
 
-   [propget,helpstring("property F")/*,helpcontext(IDH_IDeckedSlabBeam_F)*/]
-   HRESULT F([out,retval]Float64* F);
+      [propget,helpstring("property UseOverallWidth")]
+      HRESULT UseOverallWidth([out,retval]VARIANT_BOOL* pbUseOverallWidth);
+   };
 
-   [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
 
-   [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
-   HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+   [
+   object,
+   uuid(ED1C099C-E020-408c-B9B5-952E0DAAB8D6),
+   oleautomation,
+   helpstring("IDeckedSlabBeam Interface"),
+   //helpcontext(IDH_IDeckedSlabBeam),
+   pointer_default(unique)
+   ]
+   interface IDeckedSlabBeam : IUnknown
+   {
+      [propput,helpstring("property A")/*,helpcontext(IDH_IDeckedSlabBeam_A)*/]
+      HRESULT A([in]Float64 a);
 
-   [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
-   HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+      [propget,helpstring("property A")/*,helpcontext(IDH_IDeckedSlabBeam_A)*/]
+      HRESULT A([out,retval]Float64* a);
 
-   [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
-   HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+      [propput,helpstring("property B")/*,helpcontext(IDH_IDeckedSlabBeam_B)*/]
+      HRESULT B([in]Float64 b);
 
-   [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
-   HRESULT VoidCount([in]CollectionIndexType nv);
+      [propget,helpstring("property B")/*,helpcontext(IDH_IDeckedSlabBeam_B)*/]
+      HRESULT B([out,retval]Float64* b);
 
-   [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
-   HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+      [propput,helpstring("property C")/*,helpcontext(IDH_IDeckedSlabBeam_C)*/]
+      HRESULT C([in]Float64 c);
 
-   [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
-   HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+      [propget,helpstring("property C")/*,helpcontext(IDH_IDeckedSlabBeam_C)*/]
+      HRESULT C([out,retval]Float64* c);
 
-   [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
-   HRESULT HookPoint([in] IPoint2d* hookPnt);
+      [propput,helpstring("property W")/*,helpcontext(IDH_IDeckedSlabBeam_W)*/]
+      HRESULT W([in]Float64 W);
 
-   [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IDeckedSlabBeam_XYPosition)*/]
-   HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+      [propget,helpstring("property W")/*,helpcontext(IDH_IDeckedSlabBeam_W)*/]
+      HRESULT W([out,retval]Float64* W);
 
-   [propget,  helpstring("property Shape")/*,helpcontext(IDH_IDeckedSlabBeam_Shape)*/]
-   HRESULT Shape([out, retval] IShape* *pVal);
+      [propput,helpstring("property Tt")/*,helpcontext(IDH_IDeckedSlabBeam_Tt)*/]
+      HRESULT Tt([in]Float64 Tt);
 
-   [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
-   HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
-};
+      [propget,helpstring("property Tt")/*,helpcontext(IDH_IDeckedSlabBeam_Tt)*/]
+      HRESULT Tt([out,retval]Float64* Tt);
 
-// A faster alternative for the poly shape. The original version depended on IPoint2dCollection,
-// which is very COM resource intensive
+      [propput,helpstring("property Tb")/*,helpcontext(IDH_IDeckedSlabBeam_Tb)*/]
+      HRESULT Tb([in]Float64 Tb);
+
+      [propget,helpstring("property Tb")/*,helpcontext(IDH_IDeckedSlabBeam_Tb)*/]
+      HRESULT Tb([out,retval]Float64* Tb);
+
+      [propput,helpstring("property F")/*,helpcontext(IDH_IDeckedSlabBeam_F)*/]
+      HRESULT F([in]Float64 F);
+
+      [propget,helpstring("property F")/*,helpcontext(IDH_IDeckedSlabBeam_F)*/]
+      HRESULT F([out,retval]Float64* F);
+
+      [propput,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([in]VARIANT_BOOL bLeftBlockOut);
+
+      [propget,helpstring("property LeftBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_LeftBlockOut)*/]
+      HRESULT LeftBlockOut([out,retval]VARIANT_BOOL* pbLeftBlockOut);
+
+      [propput,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+      HRESULT RightBlockOut([in]VARIANT_BOOL bRightBlockOut);
+
+      [propget,helpstring("property RightBlockOut")/*,helpcontext(IDH_IDeckedSlabBeam_RightBlockOut)*/]
+      HRESULT RightBlockOut([out,retval]VARIANT_BOOL* pbRightBlockOut);
+
+      [propput,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
+      HRESULT VoidCount([in]CollectionIndexType nv);
+
+      [propget,helpstring("property VoidCount")/*,helpcontext(IDH_IDeckedSlabBeam_VoidCount)*/]
+      HRESULT VoidCount([out,retval]CollectionIndexType* nv);
+
+      [propget,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
+      HRESULT HookPoint([out,retval] IPoint2d** hookPnt);
+
+      [propputref,  helpstring("property HookPoint")/*,helpcontext(IDH_IDeckedSlabBeam_HookPoint)*/]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      [propget,  helpstring("property XYPosition")/*,helpcontext(IDH_IDeckedSlabBeam_XYPosition)*/]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget,  helpstring("property Shape")/*,helpcontext(IDH_IDeckedSlabBeam_Shape)*/]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+
+   // A faster alternative for the poly shape. The original version depended on IPoint2dCollection,
+   // which is very COM resource intensive
    [
 		object,
 		uuid(8F4AC52C-4C4E-4015-934E-58E1C35DC39E),

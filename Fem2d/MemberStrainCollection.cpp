@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -57,7 +57,7 @@ void CMemberStrainCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, I
    InitCollection(pParent,pEvents,pLoading);  // for C++ event handlers
 }
 
-STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/MemberIDType memberID, /*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain, /*[out, retval]*/ IFem2dMemberStrain** ppMemberStrain)
+STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/MemberIDType memberID, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain, /*[out, retval]*/ IFem2dMemberStrain** ppMemberStrain)
 {
    CHECK_RETOBJ(ppMemberStrain);
    HRESULT hr = E_FAIL;
@@ -80,10 +80,10 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
       *ppMemberStrain = pstrn;
       (*ppMemberStrain)->AddRef(); // for client
 
-      pstrn->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, axialStrain, curvatureStrain);
+      pstrn->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, start, end, axialStrain, curvatureStrain);
 
       // insert new load
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppMemberStrain )) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMemberStrain) )) );
       if (!st.second)
       {
          ATLASSERT(0); // insert failed - better check why

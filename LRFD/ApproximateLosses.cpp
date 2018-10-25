@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -55,6 +55,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 ppr,
                          Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
+                         lrfdLosses::SectionPropertiesType sectionProperties,
                          matPsStrand::Grade gr,
                          matPsStrand::Type type,
                          Float64 fpjPerm, // fpj permanent strands
@@ -62,7 +63,8 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermFinal,
                          Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
@@ -90,12 +92,19 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 Ic,    // Moment of inertia of composite
                          Float64 Ybc,   // Centroid of composite measured from bottom
 
+                         Float64 An,    // Area of girder
+                         Float64 In,    // Moment of inertia of girder
+                         Float64 Ybn,   // Centroid of girder measured from bottom
+                         Float64 Acn,    // Area of the composite girder and deck
+                         Float64 Icn,    // Moment of inertia of composite
+                         Float64 Ybcn,   // Centroid of composite measured from bottom
+
                          Float64 rh,      // relative humidity
                          Float64 ti,   // Time until prestress transfer
                          bool bIgnoreInitialRelaxation,
                          bool bValidateLosses
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
+lrfdLosses(x,Lg,sectionProperties,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
 
 {
    m_ConcreteType = concreteType;
@@ -312,7 +321,7 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
       m_dfpLT = ::ConvertToSysUnits( losses, *p_unit );
    }
 
-   m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+   m_DeltaFcd1 = -1*(m_Madlg*m_epermFinal/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic);
 }
 
 void lrfdApproximateLosses::UpdateHaulingLosses() const

@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by FEA2D.rc
 //
 #define IDD_ABOUTBOX                    100
@@ -10,6 +10,13 @@
 #define IDD_ADDPOINTLOAD                132
 #define IDD_EDITJOINT                   133
 #define IDD_EDITMEMBER                  134
+#define IDD_JOINT_LIST                  135
+#define IDD_MEMBER_LIST                 136
+#define IDD_JOINT_LOAD_LIST             137
+#define IDD_POINT_LOAD_LIST             138
+#define IDD_DISTRIBUTED_LOAD_LIST       139
+#define IDD_JOINT_LIST1                 140
+#define IDD_POI_LIST                    140
 #define IDS_INDICATOR_WORLDPOINT        199
 #define IDS_INDICATOR_LOGICALPOINT      200
 #define IDS_INDICATOR_DEVICEPOINT       201
@@ -34,6 +41,7 @@
 #define IDC_ENDJNT                      1020
 #define IDC_RELEASE_MZ_START            1021
 #define IDC_RELEASE_MZ_END              1022
+#define IDC_LIST                        1023
 #define ID_VIEW_SCALETOFIT              32771
 #define ID_VIEW_CENTERONPOINT           32772
 #define ID_VIEW_ZOOM                    32773
@@ -43,15 +51,17 @@
 #define ID_VIEW_JOINTS                  32777
 #define ID_VIEW_MEMBERS                 32778
 #define ID_VIEW_LOADS                   32779
+#define ID_VIEW_MODEL                   32780
+#define ID_GTSTRUDL                     32781
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_3D_CONTROLS                     1
-#define _APS_NEXT_RESOURCE_VALUE        135
-#define _APS_NEXT_COMMAND_VALUE         32780
-#define _APS_NEXT_CONTROL_VALUE         1023
+#define _APS_NEXT_RESOURCE_VALUE        140
+#define _APS_NEXT_COMMAND_VALUE         32782
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

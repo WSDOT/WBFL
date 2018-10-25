@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,8 +36,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-static const Float64 ZERO_TOLER=1.0e-06;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -338,7 +336,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
       const InflPoint& first_gs = container[ m_LastFound[side] ];
 
       // Use of tolerance allows points very near dual-value points to nail the location
-      if (location+ZERO_TOLER < first_gs.m_Location)
+      if (location+m_ZeroTolerance < first_gs.m_Location)
       {
          // look backward
          for(CollectionIndexType i = m_LastFound[side]-1; i >= 0; i--)
@@ -380,7 +378,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
             }
          }
       }
-      else if (location > first_gs.m_Location+ZERO_TOLER)
+      else if (location > first_gs.m_Location+m_ZeroTolerance)
       {
          // look forward
          CollectionIndexType num_pts = container.size();
@@ -430,7 +428,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
             // go to next value
             const InflPoint& rgt = container[m_LastFound[side]+1];
             ATLASSERT(rgt.m_LocationType==iflDualRight);
-            ATLASSERT(IsEqual(rgt.m_Location,location,ZERO_TOLER));
+            ATLASSERT(IsEqual(rgt.m_Location,location,m_ZeroTolerance));
             *isDualValue = VARIANT_TRUE;
             *leftValue = first_gs.m_Value;
             *rightValue= rgt.m_Value;
@@ -439,7 +437,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
          {
             const InflPoint& lft = container[m_LastFound[side]-1];
             ATLASSERT(lft.m_LocationType==iflDualLeft);
-            ATLASSERT(IsEqual(lft.m_Location,location,ZERO_TOLER));
+            ATLASSERT(IsEqual(lft.m_Location,location,m_ZeroTolerance));
             *isDualValue = VARIANT_TRUE;
             *leftValue = lft.m_Value;
             *rightValue= first_gs.m_Value;
@@ -772,6 +770,7 @@ void CInfluenceLine::ComputeMainValues()
 void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, InfluencePointContainer& target)
 {
    // this function removes excessive locations (misfits) in the "flat spots" in an influence line
+
    CollectionIndexType source_size = source.size();
    if (source_size==0)
    {
@@ -881,7 +880,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
       InfluencePointIterator itend( target.end() );
       while( it2!=itend )
       {
-         if (it1->m_Location == it2->m_Location)
+         if ( IsEqual(it1->m_Location,it2->m_Location,m_ZeroTolerance) )
          {
             it1->m_LocationType = iflDualLeft;
             it2->m_LocationType = iflDualRight;
@@ -889,7 +888,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
 
          // some debug code here to check that we don't have three or more of the same location
 #if defined (_DEBUG)
-         if (it1->m_Location == it2->m_Location)
+         if ( IsEqual(it1->m_Location,it2->m_Location,m_ZeroTolerance) )
          {
             if (last_matched)
             {
@@ -974,7 +973,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
             else if (p1.m_Value>0.0 && p2.m_Value<0.0)
             {
                // downward intersection
-               if ( IsEqual(p1.m_Location, p2.m_Location, ZERO_TOLER) )
+               if ( IsEqual(p1.m_Location, p2.m_Location, m_ZeroTolerance) )
                {
                   // vertical drop
                   // if assert below fires, then influence line was not properly laid out
@@ -992,7 +991,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
             else
             {
                // upward intersection
-               if (IsEqual(p1.m_Location, p2.m_Location, ZERO_TOLER))
+               if (IsEqual(p1.m_Location, p2.m_Location, m_ZeroTolerance))
                {
                   // vertical climb
                   // if assert below fires, then influence line was not properly laid out
@@ -1071,7 +1070,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
             else if (p1.m_Value>0.0 && p2.m_Value<0.0)
             {
                // downward intersection
-               if ( IsEqual(p1.m_Location, p2.m_Location, ZERO_TOLER) )
+               if ( IsEqual(p1.m_Location, p2.m_Location, m_ZeroTolerance) )
                {
                   // vertical drop
                   // if assert below fires, then influence line was not properly laid out
@@ -1089,7 +1088,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
             else
             {
                // upward intersection
-               if (IsEqual(p1.m_Location, p2.m_Location,ZERO_TOLER))
+               if (IsEqual(p1.m_Location, p2.m_Location,m_ZeroTolerance))
                {
                   // vertical climb
                   // if assert below fires, then influence line was not properly laid out
@@ -1152,11 +1151,11 @@ void CInfluenceLine::TraceInfluenceLine(InfluenceSideType side)
 }
 #endif
 
-inline Float64 ComputePntArea(const CInfluenceLine::InflPoint& pnt1, const CInfluenceLine::InflPoint& pnt2, InfluenceSideType side)
+inline Float64 ComputePntArea(const CInfluenceLine::InflPoint& pnt1, const CInfluenceLine::InflPoint& pnt2, InfluenceSideType side, Float64 tolerance)
 {
    ATLASSERT( IsLE(pnt1.m_Location, pnt2.m_Location) );
 
-   if (IsEqual(pnt1.m_Location, pnt2.m_Location, ZERO_TOLER) )
+   if (IsEqual(pnt1.m_Location, pnt2.m_Location, tolerance) )
       return 0.0;
 
    if (side == ilsPositive)
@@ -1250,8 +1249,8 @@ void CInfluenceLine::DoComputeArea()
          const InflPoint& pnt1 = *it1;
          const InflPoint& pnt2 = *it2;
 
-         pos_area += ComputePntArea(pnt1, pnt2, ilsPositive);
-         neg_area += ComputePntArea(pnt1, pnt2, ilsNegative);
+         pos_area += ComputePntArea(pnt1, pnt2, ilsPositive, m_ZeroTolerance);
+         neg_area += ComputePntArea(pnt1, pnt2, ilsNegative, m_ZeroTolerance);
 
          it1 = it2++;
       }
@@ -1291,11 +1290,11 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                InflPoint& pnt2 = *it2;
 
                Float64 x_intersect;
-               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,ZERO_TOLER);
+               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,m_ZeroTolerance);
 
                if (!in_zone)
                {
-                  if (lat==trpCrossingUpward&& !::IsZero(pnt2.m_Value,ZERO_TOLER))
+                  if (lat==trpCrossingUpward&& !::IsZero(pnt2.m_Value,m_ZeroTolerance))
                   {
                      // Just crossed over to positive zone 
                      in_zone = true;
@@ -1310,7 +1309,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                         in_zone = true;
                         zone_locations.AddLocation(pnt1.m_Location);
                      }
-                     else if (lat == trpCrossingDownward && pnt1.m_Value>0.0+ZERO_TOLER)
+                     else if (lat == trpCrossingDownward && pnt1.m_Value>0.0+m_ZeroTolerance)
                      {
                         // very first segment crosses from positive to negative
                         zone_locations.push_back(pnt1.m_Location);  // push_back allows for duplicate location 
@@ -1355,11 +1354,11 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                InflPoint& pnt2 = *it2;
 
                Float64 x_intersect;
-               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,ZERO_TOLER);
+               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,m_ZeroTolerance);
 
                if (!in_zone)
                {
-                  if (lat==trpCrossingDownward && !::IsZero(pnt2.m_Value,ZERO_TOLER))
+                  if (lat==trpCrossingDownward && !::IsZero(pnt2.m_Value,m_ZeroTolerance))
                   {
                      // Just crossed over to negative zone 
                      in_zone = true;
@@ -1374,7 +1373,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                         in_zone = true;
                         zone_locations.AddLocation(pnt1.m_Location);
                      }
-                     else if (lat == trpCrossingUpward  && pnt1.m_Value<0.0-ZERO_TOLER)
+                     else if (lat == trpCrossingUpward  && pnt1.m_Value<0.0-m_ZeroTolerance)
                      {
                         // very first segment crosses from negative to positive
                         zone_locations.push_back(pnt1.m_Location);
@@ -1420,7 +1419,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                InflPoint& pnt2 = *it2;
 
                Float64 x_intersect;
-               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,ZERO_TOLER);
+               LineAttitude lat = GetLineSegmentAttitude(pnt1.m_Location, pnt1.m_Value, pnt2.m_Location, pnt2.m_Value, &x_intersect,m_ZeroTolerance);
 
                if (!in_zone)
                {
@@ -1430,7 +1429,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
                      zone_locations.AddLocation(pnt1.m_Location);
                      in_zone = true;
 
-                     if (iseg==0 && ::IsZero(pnt2.m_Value, ZERO_TOLER))
+                     if (iseg==0 && ::IsZero(pnt2.m_Value, m_ZeroTolerance))
                      {
                         // starting value goes from non-zero to zero
                         zone_locations.push_back(pnt2.m_Location);

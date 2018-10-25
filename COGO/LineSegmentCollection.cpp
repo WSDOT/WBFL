@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,27 +70,27 @@ void CLineSegmentCollection::FinalRelease()
 //   return S_OK;
 //}
 
-STDMETHODIMP CLineSegmentCollection::get_Item(CogoElementKey key, ILineSegment2d* *pVal)
+STDMETHODIMP CLineSegmentCollection::get_Item(CogoObjectID key, ILineSegment2d* *pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return LineSegNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::putref_Item(CogoElementKey key, ILineSegment2d* newVal)
+STDMETHODIMP CLineSegmentCollection::putref_Item(CogoObjectID key, ILineSegment2d* newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -117,7 +117,7 @@ STDMETHODIMP CLineSegmentCollection::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Add(CogoElementKey key, IPoint2d* start, IPoint2d* end,ILineSegment2d* *ls)
+STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID key, IPoint2d* start, IPoint2d* end,ILineSegment2d* *ls)
 {
    CHECK_IN(start);
    CHECK_IN(end);
@@ -142,11 +142,11 @@ STDMETHODIMP CLineSegmentCollection::Add(CogoElementKey key, IPoint2d* start, IP
    return AddEx(key,newLS);
 }
 
-STDMETHODIMP CLineSegmentCollection::AddEx(CogoElementKey key, ILineSegment2d* newVal)
+STDMETHODIMP CLineSegmentCollection::AddEx(CogoObjectID key, ILineSegment2d* newVal)
 {
    CHECK_IN(newVal);
    
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -165,9 +165,9 @@ STDMETHODIMP CLineSegmentCollection::AddEx(CogoElementKey key, ILineSegment2d* n
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Remove(CogoElementKey key)
+STDMETHODIMP CLineSegmentCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -193,15 +193,15 @@ STDMETHODIMP CLineSegmentCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::FindKey(ILineSegment2d* ls, CogoElementKey* key)
+STDMETHODIMP CLineSegmentCollection::FindKey(ILineSegment2d* ls, CogoObjectID* key)
 {
    CHECK_IN(ls);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<ILineSegment2d> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(ls) )
@@ -218,7 +218,7 @@ STDMETHODIMP CLineSegmentCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -237,7 +237,7 @@ STDMETHODIMP CLineSegmentCollection::get__EnumLineSegments(IEnumLineSegments** p
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumLineSegments,&IID_IEnumLineSegments, ILineSegment2d*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,ILineSegment2d*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumLineSegments,&IID_IEnumLineSegments, ILineSegment2d*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,ILineSegment2d*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -267,18 +267,18 @@ STDMETHODIMP CLineSegmentCollection::putref_Factory(ILineSegment2dFactory* facto
    return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CLineSegmentCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -318,7 +318,7 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
       cloneStart->MoveEx(start);
       cloneEnd->MoveEx(end);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,cloneLS);
@@ -334,7 +334,7 @@ STDMETHODIMP CLineSegmentCollection::OnLineSegmentChanged(ILineSegment2d* lineSe
    CComQIPtr<ILineSegment2d> lineSegEx(lineSeg);
    ATLASSERT( lineSegEx != NULL ); // better be listening only to LineSegment2dEx objects
 
-   CogoElementKey key;
+   CogoObjectID key;
    HRESULT hr = FindKey(lineSegEx,&key);
 
    // This container only listens to events from linesegment objects in this 
@@ -348,7 +348,7 @@ STDMETHODIMP CLineSegmentCollection::OnLineSegmentChanged(ILineSegment2d* lineSe
 }
 
 
-void CLineSegmentCollection::Advise(CogoElementKey key,ILineSegment2d* lineSeg)
+void CLineSegmentCollection::Advise(CogoObjectID key,ILineSegment2d* lineSeg)
 {
    DWORD dwCookie;
    CComPtr<ILineSegment2d> pCP(lineSeg);
@@ -364,7 +364,7 @@ void CLineSegmentCollection::Advise(CogoElementKey key,ILineSegment2d* lineSeg)
    InternalRelease(); // Break circular reference
 }
 
-void CLineSegmentCollection::Unadvise(CogoElementKey key,ILineSegment2d* lineSeg)
+void CLineSegmentCollection::Unadvise(CogoObjectID key,ILineSegment2d* lineSeg)
 {
    ATLASSERT(lineSeg != 0);
 
@@ -373,7 +373,7 @@ void CLineSegmentCollection::Unadvise(CogoElementKey key,ILineSegment2d* lineSeg
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -397,26 +397,26 @@ void CLineSegmentCollection::Unadvise(CogoElementKey key,ILineSegment2d* lineSeg
 
 void CLineSegmentCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<ILineSegment2d> lineSeg( (*iter).second.pdispVal );
       Unadvise(key,lineSeg);
    }
 }
 
-HRESULT CLineSegmentCollection::LineSegNotFound(CogoElementKey key)
+HRESULT CLineSegmentCollection::LineSegNotFound(CogoObjectID key)
 {
    return LineSegKeyError(key,IDS_E_LINESEGMENTNOTFOUND,COGO_E_LINESEGMENTNOTFOUND);
 }
 
-HRESULT CLineSegmentCollection::LineSegAlreadyDefined(CogoElementKey key)
+HRESULT CLineSegmentCollection::LineSegAlreadyDefined(CogoObjectID key)
 {
    return LineSegKeyError(key,IDS_E_LINESEGMENTALREADYDEFINED,COGO_E_LINESEGMENTALREADYDEFINED);
 }
 
-HRESULT CLineSegmentCollection::LineSegKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CLineSegmentCollection::LineSegKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -270,7 +270,7 @@ library WBFLCore
 	]
 	interface IBrokerInit : IUnknown
 	{
-		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] long* lErrIndex);
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] IndexType nClsid,[out] IndexType* lErrIndex);
 		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgent* pAgent);
 		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);
 		[helpstring("method RegInterface")] HRESULT RegInterface([in] REFIID riid,[in] IAgent* pAgent);
@@ -283,8 +283,8 @@ library WBFLCore
 	]
 	interface IBrokerInitEx : IUnknown
 	{
-		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] IIndexArray** lErrIndex);
-		[helpstring("method LoadExtensionAgents")] HRESULT LoadExtensionAgents([in] CLSID* pClsid, [in] long nClsid,[out] IIndexArray** lErrIndex);
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] IndexType nClsid,[out] IIndexArray** lErrIndex);
+		[helpstring("method LoadExtensionAgents")] HRESULT LoadExtensionAgents([in] CLSID* pClsid, [in] IndexType nClsid,[out] IIndexArray** lErrIndex);
 		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgentEx* pAgent);
 		[helpstring("method AddExtensionAgent")] HRESULT AddExtensionAgent([in] IAgentEx* pAgent);
 		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);

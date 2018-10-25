@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,10 +46,12 @@ matConcrete()
    m_WeightDensity = 0;
 }
 
-matConcreteEx::matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE) :
+matConcreteEx::matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE,Float64 frShear,Float64 frFlexure) :
 matConcrete( name, fc, density, modE )
 {
    m_WeightDensity = wDensity;
+   m_FrShear = frShear;
+   m_FrFlexure = frFlexure;
 }
 
 matConcreteEx::matConcreteEx(const matConcreteEx& rOther) :
@@ -98,6 +100,26 @@ Float64 matConcreteEx::GetDensityForWeight() const
    return m_WeightDensity;
 }
 
+void matConcreteEx::SetShearFr(Float64 fr)
+{
+   m_FrShear = fr;
+}
+
+Float64 matConcreteEx::GetShearFr() const
+{
+   return m_FrShear;
+}
+
+void matConcreteEx::SetFlexureFr(Float64 fr)
+{
+   m_FrFlexure = fr;
+}
+
+Float64 matConcreteEx::GetFlexureFr() const
+{
+   return m_FrFlexure;
+}
+
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
 #if defined _DEBUG
@@ -129,6 +151,8 @@ bool matConcreteEx::TestMe(dbgLog& rlog)
 void matConcreteEx::MakeCopy(const matConcreteEx& rOther)
 {
    m_WeightDensity = rOther.m_WeightDensity;
+   m_FrShear = rOther.m_FrShear;
+   m_FrFlexure = rOther.m_FrFlexure;
 }
 
 void matConcreteEx::MakeAssignment(const matConcreteEx& rOther)

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,16 +40,12 @@ class ATL_NO_VTABLE CPrecastGirder :
 	public CComCoClass<CPrecastGirder, &CLSID_PrecastGirder>,
 	public ISupportErrorInfo,
 	public IPrecastGirder,
-   public IObjectSafetyImpl<CPrecastGirder,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IGenericBridgeEvents
+   public IObjectSafetyImpl<CPrecastGirder,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
 	CPrecastGirder()
 	{
-      m_pBridge = 0;
-
-      m_SpanIdx = 0;
-      m_GirderIdx = 0;
+      m_pSegment = 0;
 
       // default harping point... fraction of girder length, measured from left end
       m_HPMeasure = hpmFractionOfGirderLength;
@@ -57,14 +53,11 @@ public:
       m_HP1 = 0.4;
       m_HP2 = 0.6;
       m_AllowOddNumberOfHarpedStrands=VARIANT_FALSE;
-      m_UseDifferentHarpedGirdAtEnds=VARIANT_TRUE;
 
       m_bUseMinHpDistance = VARIANT_FALSE;
       m_MinHpDist = 0;
 
       m_UpdateLengths = true;
-
-      m_dwCookie = 0;
 	}
 
    HRESULT FinalConstruct();
@@ -78,15 +71,16 @@ BEGIN_COM_MAP(CPrecastGirder)
 	COM_INTERFACE_ENTRY(IPrecastGirder)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IGenericBridgeEvents)
 END_COM_MAP()
 
 private:
-   IGenericBridge* m_pBridge; // weak reference because this object is intended to
-                              // be used as item data for a SuperstructureMember.
-                              // A strong reference will cause a circular reference
+   ISegment* m_pSegment; // weak reference to the superstructure member segment for this girder
    CComPtr<IStrandMover> m_pStrandMover;
    CComPtr<IStrandFillTool> m_StrandFillTool;
+
+   CComPtr<IPrestressingStrand> m_StraightStrandMaterial;
+   CComPtr<IPrestressingStrand> m_HarpedStrandMaterial;
+   CComPtr<IPrestressingStrand> m_TemporaryStrandMaterial;
 
    SpanIndexType m_SpanIdx;
    GirderIndexType m_GirderIdx;
@@ -97,8 +91,6 @@ private:
    CComPtr<IStrandGridFiller> m_HarpGridHp[2];
    CComPtr<IStrandGridFiller> m_TempGrid[2];
    
-   void GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid);
-
    // this is a special fill array that represents the max between harped strands at the HP and at the Ends
    CComPtr<IIndexArray> m_HarpedMaxStrandFill;
    StrandIndexType m_MaxHarpedStrands;
@@ -109,10 +101,6 @@ private:
    // If this is true, it is possible that the one-to-one relationship between strand grid fill locations
    // at the girder ends and harping points is broken. i.e., different fills are are needed for each.
    VARIANT_BOOL m_AllowOddNumberOfHarpedStrands;
-
-   // If this is true, different harped grids are used at the ends of the girder than at the
-   // harping point.
-   VARIANT_BOOL m_UseDifferentHarpedGirdAtEnds;
 
    // data and functions required to compute harped grid if odd strands are allowed
    CComPtr<IIndexArray> m_OddHpFill;
@@ -128,29 +116,20 @@ private:
    // geometry factory for performance
    CComPtr<IPoint2dFactory> m_Point2dFactory;
 
-   // cookie for IGenericBridgeEvents 
-   DWORD m_dwCookie;
-
    // caching of span and girder lengths
    bool m_UpdateLengths;
    void DoUpdateLengths();
 
    struct Lengths
    {
-      Float64 dbSpanLength;
-      Float64 dbGirderLength;
-      Float64 dbLeftEndSize;
-      Float64 dbRightEndSize;
-      Float64 dbLeftBearingOffset;
-      Float64 dbRightBearingOffset;
+      Float64 dbSpanLength;           // cl-brg to cl-brg
+      Float64 dbGirderLength;         // end to end
+      Float64 dbLeftEndDistance;      // cl-brg to end (left end of girder)
+      Float64 dbRightEndDistance;     // cl-brg to end (right end of girder)
+      Float64 dbLeftBearingOffset;    // cl-pier to cl-brg (left end of girder)
+      Float64 dbRightBearingOffset;   // cl-pier to cl-brg (right end of girder)
    } m_Lengths;
   
-
-
-
-   void GetLeftConnection(IConnection** connnection);
-   void GetRightConnection(IConnection** connnection);
-   void GetEndDistance(EndType end, CogoElementKey brgPntID,CogoElementKey pierPntID,CogoElementKey girderLineID,IConnection* connection,IPier* pier,ICogoModel* cogoModel,Float64* endDist);
    void GetHarpPointLocations(Float64& hp1,Float64& hp2);
    Float64 GetHarpPointLocation(Float64 hp,bool bRight);
    Float64 GetHarpPatternFillAdjustment();
@@ -164,21 +143,24 @@ public:
 
 // IPrecastGirder
 public:
-	STDMETHOD(Initialize)(/*[in]*/IGenericBridge* bridge,/*[in]*/IStrandMover* strandMover,/*[in]*/SpanIndexType spanIdx,/*[in]*/GirderIndexType gdrIdx);
+	STDMETHOD(Initialize)(ISegment* segment,IStrandMover* strandMover);
 
-	STDMETHOD(put_StrandMover)(/*[in]*/IStrandMover* pStrandMover);
-	STDMETHOD(get_StrandMover)(/*[out,retval]*/IStrandMover** ppStrandMover);
+   STDMETHOD(putref_StraightStrandMaterial)(IPrestressingStrand* pMaterial);
+   STDMETHOD(get_StraightStrandMaterial)(IPrestressingStrand** ppMaterial);
 
-	STDMETHOD(get_StraightStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
+   STDMETHOD(putref_HarpedStrandMaterial)(IPrestressingStrand* pMaterial);
+   STDMETHOD(get_HarpedStrandMaterial)(IPrestressingStrand** ppMaterial);
+
+   STDMETHOD(putref_TemporaryStrandMaterial)(IPrestressingStrand* pMaterial);
+   STDMETHOD(get_TemporaryStrandMaterial)(IPrestressingStrand** ppMaterial);
+
+   STDMETHOD(get_StraightStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 	STDMETHOD(get_TemporaryStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 	STDMETHOD(get_HarpedStrandGridEnd)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 	STDMETHOD(get_HarpedStrandGridHP)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 
 	STDMETHOD(put_AllowOddNumberOfHarpedStrands)(/*[in]*/VARIANT_BOOL bUseMin);
 	STDMETHOD(get_AllowOddNumberOfHarpedStrands)(/*[out,retval]*/VARIANT_BOOL* bUseMin);
-
-	STDMETHOD(put_UseDifferentHarpedGridsAtEnds)(/*[in]*/VARIANT_BOOL bUseDifferent);
-	STDMETHOD(get_UseDifferentHarpedGridsAtEnds)(/*[out,retval]*/VARIANT_BOOL* bUseDifferent);
 
 	STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* top);
 
@@ -201,8 +183,8 @@ public:
 
    STDMETHOD(get_SpanLength)(/*[out,retval]*/ Float64* length);
    STDMETHOD(get_GirderLength)(/*[out,retval]*/ Float64* length);
-   STDMETHOD(get_LeftEndSize)(/*[out,retval]*/ Float64* size);
-   STDMETHOD(get_RightEndSize)(/*[out,retval]*/ Float64* size);
+   STDMETHOD(get_LeftEndDistance)(/*[out,retval]*/ Float64* size);
+   STDMETHOD(get_RightEndDistance)(/*[out,retval]*/ Float64* size);
    STDMETHOD(get_LeftBearingOffset)(/*[out,retval]*/ Float64* offset);
    STDMETHOD(get_RightBearingOffset)(/*[out,retval]*/ Float64* offset);
    STDMETHOD(GetEndPoints)(/*[out]*/IPoint2d** pntPier1,/*[out]*/IPoint2d** pntEnd1,/*[out]*/IPoint2d** pntBrg1,/*[out]*/IPoint2d** pntBrg2,/*[out]*/IPoint2d** pntEnd2,/*[out]*/IPoint2d** pntPier2);
@@ -222,8 +204,8 @@ public:
    STDMETHOD(get_StraightStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
    STDMETHOD(get_HarpedStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points);
    STDMETHOD(get_HarpedStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
-   STDMETHOD(get_TempStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points);
-   STDMETHOD(get_TempStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
+   STDMETHOD(get_TemporaryStrandPositions)(/*[in]*/Float64 distFromStart, /*[out,retval]*/IPoint2dCollection** points);
+   STDMETHOD(get_TemporaryStrandPositionsEx)(/*[in]*/Float64 distFromStart, /*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
 
    STDMETHOD(StraightStrandIndexToGridIndex)(/*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex);
    STDMETHOD(StraightStrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/StrandIndexType strandIndex, /*[out,retval]*/GridIndexType* gridIndex);
@@ -292,9 +274,9 @@ public:
    STDMETHOD(get_StraightStrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
    STDMETHOD(IsExteriorStraightStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult);
 
-   STDMETHOD(get_HarpedStrandRowsWithStrand)(/*[in]*/Float64 distFromStart,/*[out,retval]*/RowIndexType* nRows);
-   STDMETHOD(get_HarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
-   STDMETHOD(get_NumHarpedStrandsInRow)(/*[in]*/Float64 distFromStart,/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
+   STDMETHOD(get_HarpedStrandRowsWithStrand)(/*[out,retval]*/RowIndexType* nRows);
+   STDMETHOD(get_HarpedStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
+   STDMETHOD(get_NumHarpedStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
 
 	STDMETHOD(GetStraightStrandDebondAtSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight);
 	STDMETHOD(GetStraightStrandDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** pstnIndexes);
@@ -306,8 +288,6 @@ public:
                                                /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
-
-   STDMETHOD(OnBridgeChanged)(/*[in]*/ IGenericBridge* bridge);
 };
 
 #endif //__PRECASTGIRDER_H_

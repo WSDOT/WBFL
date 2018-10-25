@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridgeTools.BridgeDeckRebarLayout.1 = s 'BridgeDeckRebarLayout Class'
+	{
+		CLSID = s '{2C4F5781-2FD5-4fcc-AC8F-E8CD9C324066}'
+	}
+	WBFLGenericBridgeTools.BridgeDeckRebarLayout = s 'BridgeDeckRebarLayout Class'
+	{
+		CLSID = s '{2C4F5781-2FD5-4fcc-AC8F-E8CD9C324066}'
+		CurVer = s 'WBFLGenericBridgeTools.BridgeDeckRebarLayout.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {2C4F5781-2FD5-4fcc-AC8F-E8CD9C324066} = s 'BridgeDeckRebarLayout Class'
+		{
+			ProgID = s 'WBFLGenericBridgeTools.BridgeDeckRebarLayout.1'
+			VersionIndependentProgID = s 'WBFLGenericBridgeTools.BridgeDeckRebarLayout'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}'
+		}
+	}
+}

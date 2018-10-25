@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -118,7 +118,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
    try
    {
       // create our document
-      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
+      MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
       if (!(bool)pDoc)
       {
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, OLESTR("XML Parser"));

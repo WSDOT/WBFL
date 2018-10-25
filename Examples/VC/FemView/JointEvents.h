@@ -52,8 +52,8 @@ public:
    CFEA2DDoc* m_pDoc;
 
 private:
-   void EditJoint(long jntID);
-   void DeleteJoint(long jntID);
+   void EditJoint(IDType jntID);
+   void DeleteJoint(IDType jntID);
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -258,6 +258,7 @@ Objects\CapacityReductionFactor\Compute_Method_(CapacityReductionFactor_Object).
 eHelp.xml
 RoboHHRE.lng
 
+RC Capacity.glo
 RC Capacity.brs
 [ALIAS]
 #include RC Capacity.ali

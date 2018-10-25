@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Sections Test - Test driver for Sections library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,6 +38,7 @@
 #include "TestCompositeSectionItem.h"
 #include "TestCompositeSection.h"
 #include "TestCompositeBeam.h"
+#include "TestCompositeSectionEx.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,7 +46,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-int main(int argc, LPTSTR  argv[])
+int main(int argc, TCHAR* argv[])
 {
    ::CoInitialize(NULL);
    {
@@ -54,6 +55,7 @@ int main(int argc, LPTSTR  argv[])
       CTestCompositeSectionItem::Test();
       CTestCompositeSection::Test();
       CTestCompositeBeam::Test();
+      CTestCompositeSectionEx::Test();
    }
    ::CoUninitialize();
 	return 0;

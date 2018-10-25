@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,9 +60,18 @@ HRESULT CStrandGrid::FinalConstruct()
 
    geom_util->get_Point2dFactory(&m_Point2dFactory);
 
-   m_GridBoundingBox.CoCreateInstance(CLSID_Rect2d);
-   m_CurrentFill.CoCreateInstance(CLSID_IndexArray);
-   m_MaxFill.CoCreateInstance(CLSID_IndexArray);
+   hr = m_GridBoundingBox.CoCreateInstance(CLSID_Rect2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_CurrentFill.CoCreateInstance(CLSID_IndexArray);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_MaxFill.CoCreateInstance(CLSID_IndexArray);
+   if ( FAILED(hr) )
+      return hr;
+
 
    m_VerticalAdjustment = 0.0;
 
@@ -256,7 +265,7 @@ STDMETHODIMP CStrandGrid::put_StrandFill(/*[in]*/IIndexArray* fill)
 
          if ( 0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2 )
          {
-            it->nStrandsAtGridPoint = nStrandsAtGridPoint;
+            it->nStrandsAtGridPoint = StrandIndexType(nStrandsAtGridPoint);
          }
          else
          {
@@ -397,7 +406,7 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndex(/*[in]*/ StrandIndexType strand
 
    HRESULT hr = S_OK;
 
-   if ( strandIndex == INVALID_INDEX || m_StrandToGridMap.size() <= strandIndex)
+   if ( strandIndex < 0 || (StrandIndexType)m_StrandToGridMap.size() <= strandIndex)
    {
       hr = E_INVALIDARG;
    }
@@ -1033,7 +1042,7 @@ STDMETHODIMP CStrandGrid::DebondStrandByGridIndex(/*[in]*/GridIndexType grdIndex
 {
    ValidateGrid();
 
-   if ( grdIndex < 0 || (GridIndexType)m_GridPoints.size() <= grdIndex )
+   if ( grdIndex == INVALID_INDEX || (GridIndexType)m_GridPoints.size() <= grdIndex )
       return E_INVALIDARG;
 
    GridPoint2d& sp = m_GridPoints[grdIndex];

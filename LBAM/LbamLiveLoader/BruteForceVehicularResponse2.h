@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -449,6 +449,9 @@ private:
    void SaveInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
                          VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                          iLLCompare* pLeftCompare, iLLCompare* pRightCompare);
+
+
+   bool IsPoiAtSupport(BSTR stage,PoiIDType poiID);
 };
 
 #endif //__BruteForceVehicularResponse2_H_

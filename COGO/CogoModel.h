@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -152,50 +152,50 @@ public:
 
 // IMeasure
 public:
-  	STDMETHOD(Angle)(/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey vertexID,/*[in]*/ CogoElementKey toID,/*[out,retval]*/ IAngle** angle);
+  	STDMETHOD(Angle)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID vertexID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IAngle** angle);
 	STDMETHOD(Area)(/*[in]*/ VARIANT keys,/*[out,retval]*/ Float64* area);
-	STDMETHOD(Distance)(/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID,/*[out,retval]*/ Float64* dist);
-	STDMETHOD(Direction)(/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID,/*[out,retval]*/ IDirection** dir);
-   STDMETHOD(Inverse)(/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir);
+	STDMETHOD(Distance)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ Float64* dist);
+	STDMETHOD(Direction)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out,retval]*/ IDirection** dir);
+   STDMETHOD(Inverse)(/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID,/*[out]*/ Float64* dist,/*[out]*/ IDirection** dir);
 
 // ILocate
 public:
-   STDMETHOD(ParallelLineSegment)(/*[in]*/ CogoElementKey newLineID,/*[in]*/ CogoElementKey newFromID,/*[in]*/ CogoElementKey newToID,/*[in]*/ CogoElementKey lineID, /*[in]*/ Float64 offset);
-   STDMETHOD(ParallelLineByPoints)(/*[in]*/ CogoElementKey newFromID,/*[in]*/ CogoElementKey newToID,/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID, /*[in]*/ Float64 offset);
-	STDMETHOD(ByDistAngle)(/*[in]*/ CogoElementKey newID,/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varAngle, /*[in]*/ Float64 offset);
-	STDMETHOD(ByDistDefAngle)(/*[in]*/ CogoElementKey newID,/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDefAngle, /*[in]*/ Float64 offset);
-	STDMETHOD(ByDistDir)(/*[in]*/ CogoElementKey newID,/*[in]*/ CogoElementKey fromID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset);
-	STDMETHOD(PointOnLine)(/*[in]*/ CogoElementKey newID,/*[in]*/ CogoElementKey fromID, /*[in]*/ CogoElementKey toID, /*[in]*/ Float64 dist, /*[in]*/ Float64 offset);
-   STDMETHOD(LinesByPoints)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey id11, /*[in]*/ CogoElementKey id12, /*[in]*/ Float64 offset1,/*[in]*/ CogoElementKey id21, /*[in]*/ CogoElementKey id22, /*[in]*/ Float64 offset2, /*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(ParallelLineSegment)(/*[in]*/ CogoObjectID newLineID,/*[in]*/ CogoObjectID newFromID,/*[in]*/ CogoObjectID newToID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset);
+   STDMETHOD(ParallelLineByPoints)(/*[in]*/ CogoObjectID newFromID,/*[in]*/ CogoObjectID newToID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 offset);
+	STDMETHOD(ByDistAngle)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varAngle, /*[in]*/ Float64 offset);
+	STDMETHOD(ByDistDefAngle)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDefAngle, /*[in]*/ Float64 offset);
+	STDMETHOD(ByDistDir)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ Float64 dist, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset);
+	STDMETHOD(PointOnLine)(/*[in]*/ CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID toID, /*[in]*/ Float64 dist, /*[in]*/ Float64 offset);
+   STDMETHOD(LinesByPoints)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id11, /*[in]*/ CogoObjectID id12, /*[in]*/ Float64 offset1,/*[in]*/ CogoObjectID id21, /*[in]*/ CogoObjectID id22, /*[in]*/ Float64 offset2, /*[out,retval]*/ VARIANT_BOOL* bFound);
 
 // IIntersect
 public:
-   STDMETHOD(Bearings)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey id1, /*[in]*/ VARIANT varDir1, /*[in]*/ Float64 offset1,/*[in]*/ CogoElementKey id2, /*[in]*/ VARIANT varDir2, /*[in]*/ Float64 offset2,/*[out,retval]*/ VARIANT_BOOL* bFound);
-   STDMETHOD(BearingCircle)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey id1, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[in]*/ CogoElementKey idc, /*[in]*/ Float64 radius, /*[in]*/ CogoElementKey idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
-   STDMETHOD(Circles)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey id1, /*[in]*/ Float64 r1, /*[in]*/ CogoElementKey id2, /*[in]*/ Float64 r2, /*[in]*/ CogoElementKey idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
-   STDMETHOD(LineByPointsCircle)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey id1, /*[in]*/ CogoElementKey id2, /*[in]*/ Float64 offset,/*[in]*/ CogoElementKey idc, /*[in]*/ Float64 radius, /*[in]*/ CogoElementKey idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
-   STDMETHOD(Lines)(/*[in]*/CogoElementKey newID,/*[in]*/CogoElementKey id1,/*[in]*/Float64 offset1,/*[in]*/CogoElementKey id2,/*[in]*/Float64 offset2,/*[out,retval]*/VARIANT_BOOL* bFound);
-   STDMETHOD(LineSegmentCircle)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey lineID, /*[in]*/ Float64 offset,/*[in]*/ CogoElementKey idc, /*[in]*/ Float64 radius, /*[in]*/ CogoElementKey idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(Bearings)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ VARIANT varDir1, /*[in]*/ Float64 offset1,/*[in]*/ CogoObjectID id2, /*[in]*/ VARIANT varDir2, /*[in]*/ Float64 offset2,/*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(BearingCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ VARIANT varDir, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(Circles)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ Float64 r1, /*[in]*/ CogoObjectID id2, /*[in]*/ Float64 r2, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(LineByPointsCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID id1, /*[in]*/ CogoObjectID id2, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
+   STDMETHOD(Lines)(/*[in]*/CogoObjectID newID,/*[in]*/CogoObjectID id1,/*[in]*/Float64 offset1,/*[in]*/CogoObjectID id2,/*[in]*/Float64 offset2,/*[out,retval]*/VARIANT_BOOL* bFound);
+   STDMETHOD(LineSegmentCircle)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset,/*[in]*/ CogoObjectID idc, /*[in]*/ Float64 radius, /*[in]*/ CogoObjectID idNearest, /*[out,retval]*/ VARIANT_BOOL* bFound);
 
 // IProject
 public:
-   STDMETHOD(PointOnCurve)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey fromID, /*[in]*/CogoElementKey curveID);
-   STDMETHOD(PointOnLineByPoints)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey fromID, /*[in]*/ CogoElementKey startID, /*[in]*/ CogoElementKey endID, /*[in]*/ Float64 offset);
-   STDMETHOD(PointOnLineSegment)(/*[in]*/CogoElementKey newID,/*[in]*/ CogoElementKey fromID,/*[in]*/ CogoElementKey lineID, /*[in]*/ Float64 offset);
+   STDMETHOD(PointOnCurve)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/CogoObjectID curveID);
+   STDMETHOD(PointOnLineByPoints)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID startID, /*[in]*/ CogoObjectID endID, /*[in]*/ Float64 offset);
+   STDMETHOD(PointOnLineSegment)(/*[in]*/CogoObjectID newID,/*[in]*/ CogoObjectID fromID,/*[in]*/ CogoObjectID lineID, /*[in]*/ Float64 offset);
 
 // IDivide
 public:
-   STDMETHOD(Arc)(/*[in]*/CogoElementKey firstID,/*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey fromID, /*[in]*/ CogoElementKey HorzexID, /*[in]*/ CogoElementKey toID,/*[in]*/ long nParts);
-   STDMETHOD(BetweenPoints)(/*[in]*/CogoElementKey firstID,/*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey fromID, /*[in]*/ CogoElementKey toID,/*[in]*/ long nParts);
-   STDMETHOD(LineSegment)(/*[in]*/CogoElementKey firstID,/*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey lineID,/*[in]*/ long nParts);
-	STDMETHOD(HorzCurve)(/*[in]*/ CogoElementKey firstID, /*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey curveID, /*[in]*/ long nParts);
-   STDMETHOD(Path)(/*[in]*/CogoElementKey firstID,/*[in]*/CogoElementKey idInc,/*[in]*/CogoElementKey pathID,/*[in]*/ long nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end);
+   STDMETHOD(Arc)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID HorzexID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts);
+   STDMETHOD(BetweenPoints)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID fromID, /*[in]*/ CogoObjectID toID,/*[in]*/ CollectionIndexType nParts);
+   STDMETHOD(LineSegment)(/*[in]*/CogoObjectID firstID,/*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID lineID,/*[in]*/ CollectionIndexType nParts);
+	STDMETHOD(HorzCurve)(/*[in]*/ CogoObjectID firstID, /*[in]*/ CogoObjectID idInc, /*[in]*/ CogoObjectID curveID, /*[in]*/ CollectionIndexType nParts);
+   STDMETHOD(Path)(/*[in]*/CogoObjectID firstID,/*[in]*/CogoObjectID idInc,/*[in]*/CogoObjectID pathID,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end);
 
 // ITangent
 public:
-   STDMETHOD(External)(/*[in]*/ CogoElementKey newID1, /*[in]*/ CogoElementKey idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoElementKey newID2,/*[in]*/ CogoElementKey idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign);
-   STDMETHOD(Cross)(/*[in]*/ CogoElementKey newID1, /*[in]*/ CogoElementKey idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoElementKey newID2,/*[in]*/ CogoElementKey idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign);
-   STDMETHOD(Point)(/*[in]*/ CogoElementKey newID, /*[in]*/ CogoElementKey idCenter, /*[in]*/ Float64 radius,/*[in]*/ CogoElementKey pointID,/*[in]*/ TangentSignType sign);
+   STDMETHOD(External)(/*[in]*/ CogoObjectID newID1, /*[in]*/ CogoObjectID idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoObjectID newID2,/*[in]*/ CogoObjectID idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign);
+   STDMETHOD(Cross)(/*[in]*/ CogoObjectID newID1, /*[in]*/ CogoObjectID idCenter1, /*[in]*/ Float64 radius1,/*[in]*/ CogoObjectID newID2,/*[in]*/ CogoObjectID idCenter2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign);
+   STDMETHOD(Point)(/*[in]*/ CogoObjectID newID, /*[in]*/ CogoObjectID idCenter, /*[in]*/ Float64 radius,/*[in]*/ CogoObjectID pointID,/*[in]*/ TangentSignType sign);
 
 // IStructuredStorage2
 public:
@@ -204,45 +204,45 @@ public:
 
 // IPointCollectionEvents
 public:
-   STDMETHOD(OnPointChanged)(/*[in]*/ CogoElementKey key,/*[in]*/ IPoint2d* point);
-   STDMETHOD(OnPointAdded)(/*[in]*/ CogoElementKey key,/*[in]*/ IPoint2d* point);
-   STDMETHOD(OnPointRemoved)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnPointChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* point);
+   STDMETHOD(OnPointAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* point);
+   STDMETHOD(OnPointRemoved)(/*[in]*/ CogoObjectID key);
    STDMETHOD(OnPointsCleared)();
 
 // ILineSegmentCollectionEvents
 public:
-   STDMETHOD(OnLineSegmentChanged)(/*[in]*/ CogoElementKey key,/*[in]*/ ILineSegment2d* lineSeg);
-   STDMETHOD(OnLineSegmentAdded)(/*[in]*/ CogoElementKey key,/*[in]*/ ILineSegment2d* lineSeg);
-   STDMETHOD(OnLineSegmentRemoved)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnLineSegmentChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* lineSeg);
+   STDMETHOD(OnLineSegmentAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* lineSeg);
+   STDMETHOD(OnLineSegmentRemoved)(/*[in]*/ CogoObjectID key);
    STDMETHOD(OnLineSegmentsCleared)();
 
 // IProfilePointCollectionEvents
 public:
-   STDMETHOD(OnProfilePointChanged)(/*[in]*/ CogoElementKey key,/*[in]*/ IProfilePoint* pp);
-   STDMETHOD(OnProfilePointAdded)(/*[in]*/ CogoElementKey key,/*[in]*/ IProfilePoint* pp);
-   STDMETHOD(OnProfilePointRemoved)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnProfilePointChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pp);
+   STDMETHOD(OnProfilePointAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IProfilePoint* pp);
+   STDMETHOD(OnProfilePointRemoved)(/*[in]*/ CogoObjectID key);
    STDMETHOD(OnProfilePointsCleared)();
 
 // IVertCurveCollectionEvents
 public:
-   STDMETHOD(OnVertCurveChanged)(/*[in]*/ CogoElementKey key,/*[in]*/ IVertCurve* vc);
-   STDMETHOD(OnVertCurveAdded)(/*[in]*/ CogoElementKey key,/*[in]*/ IVertCurve* vc);
-   STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnVertCurveChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* vc);
+   STDMETHOD(OnVertCurveAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IVertCurve* vc);
+   STDMETHOD(OnVertCurveRemoved)(/*[in]*/ CogoObjectID key);
    STDMETHOD(OnVertCurvesCleared)();
 
 // IHorzCurveCollectionEvents
 public:
-   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ CogoElementKey key,/*[in]*/ IHorzCurve* hc);
-   STDMETHOD(OnHorzCurveAdded)(/*[in]*/ CogoElementKey key,/*[in]*/ IHorzCurve* hc);
-   STDMETHOD(OnHorzCurveRemoved)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* hc);
+   STDMETHOD(OnHorzCurveAdded)(/*[in]*/ CogoObjectID key,/*[in]*/ IHorzCurve* hc);
+   STDMETHOD(OnHorzCurveRemoved)(/*[in]*/ CogoObjectID key);
    STDMETHOD(OnHorzCurvesCleared)();
 
 // IPathCollectionEvents
 public:
-   STDMETHOD(OnPathChanged)(/*[in]*/IPathCollection* coll,/*[in]*/CogoElementKey key, /*[in]*/IPath* path);
+   STDMETHOD(OnPathChanged)(/*[in]*/IPathCollection* coll,/*[in]*/CogoObjectID key, /*[in]*/IPath* path);
    STDMETHOD(OnProfileChanged)(/*[in]*/IPathCollection* coll,/*[in]*/ IProfile* profile);
-   STDMETHOD(OnPathAdded)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoElementKey key,/*[in]*/ IPath* path);
-   STDMETHOD(OnPathRemoved)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoElementKey key);
+   STDMETHOD(OnPathAdded)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID key,/*[in]*/ IPath* path);
+   STDMETHOD(OnPathRemoved)(/*[in]*/IPathCollection* coll,/*[in]*/ CogoObjectID key);
    STDMETHOD(OnPathsCleared)(/*[in]*/IPathCollection* coll);
 
 private:

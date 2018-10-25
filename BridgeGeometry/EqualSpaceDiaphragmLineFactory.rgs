@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.EqualSpaceDiaphragmLineFactory.1 = s 'EqualSpaceDiaphragmLineFactory Class'
+	{
+		CLSID = s '{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}'
+	}
+	WBFLBridgeGeometry.EqualSpaceDiaphragmLineFactory = s 'EqualSpaceDiaphragmLineFactory Class'
+	{
+		CLSID = s '{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}'
+		CurVer = s 'WBFLBridgeGeometry.EqualSpaceDiaphragmLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {FF0B7F56-329E-4DB3-BF9C-E076555C1EEE} = s 'EqualSpaceDiaphragmLineFactory Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.EqualSpaceDiaphragmLineFactory.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.EqualSpaceDiaphragmLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

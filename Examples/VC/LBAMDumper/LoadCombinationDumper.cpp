@@ -14,7 +14,7 @@ static char THIS_FILE[] = __FILE__;
 // utility class to allow stacking up of optimization parameters for the load combination
 struct LcParams
 {
-   LcParams(BSTR lcName, StageIndexType iStg, ForceEffectType fet, OptimizationType Opt, 
+   LcParams(BSTR lcName, long iStg, ForceEffectType fet, OptimizationType Opt, 
             ResultsSummationType summ, VARIANT_BOOL includeLL):
    LcName(lcName),
    Stage(iStg),
@@ -24,10 +24,10 @@ struct LcParams
    DoIncludeLiveLoad(includeLL)
    {;}
 
-   std::_tstring AsString(bool isForce, CDumperUtil* util) const;
+   std::string AsString(bool isForce, CDumperUtil* util) const;
   
    CComBSTR             LcName;
-   StageIndexType       Stage;
+   long                 Stage;
    ForceEffectType      ForceEffect;
    OptimizationType     Optimization;
    VARIANT_BOOL         DoIncludeLiveLoad;
@@ -122,7 +122,7 @@ void CLcParameterStack::Init(ILBAMAnalysisEngine* Engine)
          else
             do_apply_liveload = VARIANT_TRUE;
 
-         for (StageIndexType is=0; is<2; is++)
+         for (long is=0; is<2; is++)
          {
             ResultsSummationType rs_type = (is==0 ? rsIncremental : rsCumulative);
 
@@ -137,11 +137,11 @@ void CLcParameterStack::Init(ILBAMAnalysisEngine* Engine)
    }
 }
 
-std::_tstring LcParams::AsString(bool isForce, CDumperUtil* util) const
+std::string LcParams::AsString(bool isForce, CDumperUtil* util) const
 {
    USES_CONVERSION;
 
-   std::_tostringstream msg;
+   std::stringstream msg;
 
    CComBSTR stgnm;
    util->StageName(Stage, &stgnm);
@@ -211,7 +211,7 @@ CLoadCombinationDumper::~CLoadCombinationDumper()
 }
 
 
-void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
+void CLoadCombinationDumper::DumpLoadCaseResponse(std::ostream& os)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -251,7 +251,7 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
       hr = loadcase->get_Name(&lc_name);
 
       CollectionIndexType idx;
-      active_lcs->Find(lc_name, &idx);
+      hr = active_lcs->Find(lc_name, &idx);
       if (idx == -1)
       {
          // not found in active list
@@ -275,7 +275,7 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
    }
 
    // loop over all of our active loadcases and stages and report responses
-   StageIndexType stg_cnt = m_Util->StageCount();
+   long stg_cnt = m_Util->StageCount();
 
    CollectionIndexType alc_cnt;
    hr = active_lcs->get_Count(&alc_cnt);
@@ -285,21 +285,21 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
       hr = active_lcs->get_Item(ilc, &lc_name);
 
       // forces
-      for (StageIndexType ist=0; ist<stg_cnt; ist++)
+      for (long ist=0; ist<stg_cnt; ist++)
       {
          DumpLoadCaseForces(os, lc_name, ist, rsIncremental);
          DumpLoadCaseForces(os, lc_name, ist, rsCumulative);
       }
 
       // deflections
-      for (StageIndexType ist=0; ist<stg_cnt; ist++)
+      for (long ist=0; ist<stg_cnt; ist++)
       {
          DumpLoadCaseDeflections(os, lc_name, ist, rsIncremental);
          DumpLoadCaseDeflections(os, lc_name, ist, rsCumulative);
       }
 
       // stresses
-      for (StageIndexType ist=0; ist<stg_cnt; ist++)
+      for (long ist=0; ist<stg_cnt; ist++)
       {
          DumpLoadCaseStresses(os, lc_name, ist, rsIncremental);
          DumpLoadCaseStresses(os, lc_name, ist, rsCumulative);
@@ -309,7 +309,7 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
 }
 
 
-void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ)
+void CLoadCombinationDumper::DumpLoadCaseForces(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -327,7 +327,7 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    os<<" ------ ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    CComPtr<IDblArray> poi_locs;
    m_Util->GetSuperstructurePOIs(ist, summ, &poi_ids, &poi_locs);
 
@@ -372,7 +372,7 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    os<<" ------ ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> spt_poi_ids;
+   CComPtr<ILongArray> spt_poi_ids;
    m_Util->GetSupportPOIs(ist, &spt_poi_ids);
 
    CComPtr<ISectionResult3Ds> spt_force_results;
@@ -404,7 +404,7 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    os<<endl;
    os<<"   Reactions (global coordinates)"<<endl
      <<"   ------------------------------"<<endl;
-   CComPtr<IIDArray> supp_ids;
+   CComPtr<ILongArray> supp_ids;
    m_Util->GetSupportIDs(ist, &supp_ids);
 
    CComPtr<IResult3Ds> react_results;
@@ -433,7 +433,7 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    os<<endl;
 }
 
-void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ)
+void CLoadCombinationDumper::DumpLoadCaseDeflections(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -451,7 +451,7 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    os<<" ------ ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    CComPtr<IDblArray> poi_locs;
    m_Util->GetSuperstructurePOIs(ist, summ, &poi_ids, &poi_locs);
 
@@ -496,7 +496,7 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    os<<" ------ ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> spt_poi_ids;
+   CComPtr<ILongArray> spt_poi_ids;
    m_Util->GetSupportPOIs(ist, &spt_poi_ids);
 
    CComPtr<ISectionResult3Ds> spt_defl_results;
@@ -528,7 +528,7 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    os<<endl;
    os<<"   Support Deflections (global coordinates)"<<endl
      <<"   ----------------------------------------"<<endl;
-   CComPtr<IIDArray> supp_ids;
+   CComPtr<ILongArray> supp_ids;
    m_Util->GetSupportIDs(ist, &supp_ids);
 
    CComPtr<IResult3Ds> react_results;
@@ -557,7 +557,7 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    os<<endl;
 }
 
-void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcName, StageIndexType ist, ResultsSummationType summ)
+void CLoadCombinationDumper::DumpLoadCaseStresses(std::ostream& os, BSTR lcName, long ist, ResultsSummationType summ)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -575,7 +575,7 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
    os<<" ------ ----------- ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    CComPtr<IDblArray> poi_locs;
    m_Util->GetSuperstructurePOIs(ist, summ, &poi_ids, &poi_locs);
 
@@ -595,8 +595,8 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
       CComPtr<ISectionStressResult> stress_result;
       hr = stress_results->get_Item(ip, &stress_result);
 
-      std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
-      std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
+      std::string rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
+      std::string lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
       CollectionIndexType cnt;
       double val;
@@ -667,7 +667,7 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
    os<<" ------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
 
    // compute member responses
-   CComPtr<IIDArray> spt_poi_ids;
+   CComPtr<ILongArray> spt_poi_ids;
    m_Util->GetSupportPOIs(ist, &spt_poi_ids);
 
    CComPtr<ISectionStressResults> spt_stress_results;
@@ -683,8 +683,8 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
       CComPtr<ISectionStressResult> stress_result;
       hr = stress_results->get_Item(ip, &stress_result);
 
-      std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
-      std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
+      std::string rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
+      std::string lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
       CollectionIndexType cnt;
       double val;
@@ -746,7 +746,7 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
 }
 
 
-void CLoadCombinationDumper::DumpLoadCombinationResponse(std::_tostream& os, std::_tostream& cos)
+void CLoadCombinationDumper::DumpLoadCombinationResponse(std::ostream& os, std::ostream& cos)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -796,14 +796,14 @@ void CLoadCombinationDumper::DumpLoadCombinationResponse(std::_tostream& os, std
 
 }
 
-void CLoadCombinationDumper::DumpLoadCombinationForces(std::_tostream& os, std::_tostream& cos, 
+void CLoadCombinationDumper::DumpLoadCombinationForces(std::ostream& os, std::ostream& cos, 
                                                        const LcParams& params)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    m_Util->GetAllPOIs(params.Stage , rsCumulative, &poi_ids);
 
    CComBSTR stgn;
@@ -849,7 +849,7 @@ void CLoadCombinationDumper::DumpLoadCombinationForces(std::_tostream& os, std::
 
       long curr_key = start_key;
 
-      CComPtr<IIDArray> one_poi;
+      CComPtr<ILongArray> one_poi;
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
@@ -911,14 +911,14 @@ void CLoadCombinationDumper::DumpLoadCombinationForces(std::_tostream& os, std::
    }
 }
 
-void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::_tostream& os, std::_tostream& cos, 
+void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::ostream& os, std::ostream& cos, 
                                                        const LcParams& params)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    m_Util->GetAllPOIs(params.Stage , rsCumulative, &poi_ids);
 
    CComBSTR stgn;
@@ -964,7 +964,7 @@ void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::_tostream& os, 
 
       long curr_key = start_key;
 
-      CComPtr<IIDArray> one_poi;
+      CComPtr<ILongArray> one_poi;
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
@@ -1027,14 +1027,14 @@ void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::_tostream& os, 
 }
 
 
-void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std::_tostream& cos, 
+void CLoadCombinationDumper::DumpLoadCombinationStresses(std::ostream& os, std::ostream& cos, 
                                                        const LcParams& params)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<IIDArray> poi_ids;
+   CComPtr<ILongArray> poi_ids;
    m_Util->GetAllPOIs(params.Stage , rsCumulative, &poi_ids);
 
    CComBSTR stgn;
@@ -1067,8 +1067,8 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
       CComPtr<ILoadCombinationResultConfiguration> left_config, right_config;
       hr = lcresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
-      std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
-      std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
+      std::string rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
+      std::string lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
       CollectionIndexType cnt;
       double val;
@@ -1138,7 +1138,7 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
 
       long curr_key = start_key;
 
-      CComPtr<IIDArray> one_poi;
+      CComPtr<ILongArray> one_poi;
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
@@ -1177,14 +1177,14 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
 
 
 
-void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, std::_tostream& cos, 
+void CLoadCombinationDumper::DumpLoadCombinationReactions(std::ostream& os, std::ostream& cos, 
                                                        const LcParams& params)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<IIDArray> spt_ids;
+   CComPtr<ILongArray> spt_ids;
    m_Util->GetSupportIDs(params.Stage, &spt_ids);
 
    CComBSTR stgn;
@@ -1209,7 +1209,7 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, st
    hr = lcresults->get_Count(&res_cnt);
    for (CollectionIndexType ires=0; ires<res_cnt; ires++)
    {
-      IDType spt_id;
+      long spt_id;
       hr = spt_ids->get_Item(ires, &spt_id);
 
       double res;
@@ -1228,13 +1228,13 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, st
 
       long curr_key = start_key;
 
-      CComPtr<IIDArray> one_poi;
+      CComPtr<ILongArray> one_poi;
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
       for (CollectionIndexType ires=0; ires<res_cnt; ires++)
       {
-         IDType spt_id;
+         long spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
 
          hr = one_poi->put_Item(0, spt_id);
@@ -1271,14 +1271,14 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, st
 
 
 
-void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostream& os, std::_tostream& cos, 
+void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::ostream& os, std::ostream& cos, 
                                                        const LcParams& params)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<IIDArray> spt_ids;
+   CComPtr<ILongArray> spt_ids;
    m_Util->GetSupportIDs(params.Stage, &spt_ids);
 
    CComBSTR stgn;
@@ -1303,7 +1303,7 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostrea
    hr = lcresults->get_Count(&res_cnt);
    for (CollectionIndexType ires=0; ires<res_cnt; ires++)
    {
-      IDType spt_id;
+      long spt_id;
       hr = spt_ids->get_Item(ires, &spt_id);
 
       double res;
@@ -1322,13 +1322,13 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostrea
 
       long curr_key = start_key;
 
-      CComPtr<IIDArray> one_poi;
+      CComPtr<ILongArray> one_poi;
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
       for (CollectionIndexType ires=0; ires<res_cnt; ires++)
       {
-         IDType spt_id;
+         long spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
 
          hr = one_poi->put_Item(0, spt_id);
@@ -1363,16 +1363,16 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostrea
 }
 
 
-void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os, ILoadCombinationResultConfiguration* config)
+void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::ostream& os, ILoadCombinationResultConfiguration* config)
 {
    CHRException hr;
    USES_CONVERSION;
 
-   os<<_T(" Dump of Load Combination Configuration")<<endl;
+   os<<" Dump of Load Combination Configuration"<<endl;
 
    ResultsSummationType rs;
    hr = config->get_SummationType(&rs);
-   std::_tstring str_rs((rs==rsIncremental ? _T("Incremental"):_T("Cumulative")));
+   std::string str_rs((rs==rsIncremental ? "Incremental":"Cumulative"));
 
    double llf;
    hr = config->get_LiveLoadFactor(&llf);
@@ -1380,9 +1380,9 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
    CollectionIndexType lcf_cnt;
    hr = config->get_LoadCaseFactorCount(&lcf_cnt);
 
-   os<<_T("                  Live Load  <-----------Load Case Factors ------------>")<<endl;
-   os<<_T("  Summation Type   Factor          Load Case                   Factor")<<endl;
-   os<<_T("  --------------- ---------- ------------------------------- ----------")<<endl;
+   os<<"                  Live Load  <-----------Load Case Factors ------------>"<<endl;
+   os<<"  Summation Type   Factor          Load Case                   Factor"<<endl;
+   os<<"  --------------- ---------- ------------------------------- ----------"<<endl;
    if (lcf_cnt==0)
    {
       os<<left<<setw(15)<<str_rs<<Ff(llf)<<endl;
@@ -1397,11 +1397,11 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
 
          if (icf==0)
          {
-            os<<_T("  ")<<left<<setw(15)<<str_rs<<right<<Ff(llf)<<_T(" ")<<setw(31)<<left<<W2A(lcn)<<right<<Ff(fac)<<endl;
+            os<<"  "<<left<<setw(15)<<str_rs<<right<<Ff(llf)<<" "<<setw(31)<<left<<W2A(lcn)<<right<<Ff(fac)<<endl;
          }
          else
          {
-            os<<_T("  ")<<left<<setw(27)<<_T(" ")<<setw(31)<<W2A(lcn)<<right<<Ff(fac)<<endl;
+            os<<"  "<<left<<setw(27)<<" "<<setw(31)<<W2A(lcn)<<right<<Ff(fac)<<endl;
          }
       }
    }
@@ -1420,7 +1420,7 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
 
       if (lvlc==NULL)
       {
-         os<<endl<<_T("  No Live Load Was Applied for this Combination")<<endl;
+         os<<endl<<"  No Live Load Was Applied for this Combination"<<endl;
       }
       else
       {
@@ -1429,7 +1429,7 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
 
          if (type==lltNone)
          {
-            os<<endl<<_T("  No Live Load Was Applied for this Combination")<<endl;
+            os<<endl<<"  No Live Load Was Applied for this Combination"<<endl;
          }
          else
          {
@@ -1445,7 +1445,7 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
             CComPtr<IVehicularLoads> vhls;
             hr = llm->get_VehicularLoads(&vhls);
 
-            AxleIndexType axle_cnt = GetAxleCnt(vhls, lvlc);
+            long axle_cnt = GetAxleCnt(vhls, lvlc);
 
             DumpLiveLoadConfiguration(os, lvlc, axle_cnt, m_Util);
          }

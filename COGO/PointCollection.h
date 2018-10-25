@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 #include "Collections.h"
 
 class CPointCollection;
-typedef PersistentKeyedCollection<CPointCollection,IPointCollection,&IID_IPointCollection,CogoElementKey,IPoint2d> PointCollectionImpl;
+typedef PersistentKeyedCollection<CPointCollection,IPointCollection,&IID_IPointCollection,CogoObjectID,IPoint2d> PointCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointCollection
@@ -83,18 +83,18 @@ public:
 //   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/IPointCollection* *clone);
 	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point);
-	STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point);
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* newVal);
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ IPoint2d* newVal);
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IPoint2d* *pVal);
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IPoint2d* newVal);
 // STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(get__EnumKeys)(IEnumKeys** ppenum);
-	STDMETHOD(FindKey)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoElementKey* key);
+	STDMETHOD(FindKey)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* key);
 	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
    STDMETHOD(get__EnumPoints)(/*[out,retval]*/ IEnumPoint2d** ppenum);
 
 // IPointEvents
@@ -107,14 +107,14 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT PointNotFound(CogoElementKey key);
-   HRESULT PointAlreadyDefined(CogoElementKey key);
-   HRESULT PointKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT PointNotFound(CogoObjectID key);
+   HRESULT PointAlreadyDefined(CogoObjectID key);
+   HRESULT PointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,IPoint2d* point);
-   void Unadvise(CogoElementKey key,IPoint2d* point);
+   void Advise(CogoObjectID key,IPoint2d* point);
+   void Unadvise(CogoObjectID key,IPoint2d* point);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 };
 
 #endif //__PointCollection_H_

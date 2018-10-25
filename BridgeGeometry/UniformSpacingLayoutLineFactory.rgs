@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.UniformSpacingGirderLineFactory.1 = s 'UniformSpacingGirderLineFactory Class'
+	{
+		CLSID = s '{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}'
+	}
+	WBFLBridgeGeometry.UniformSpacingGirderLineFactory = s 'UniformSpacingGirderLineFactory Class'
+	{
+		CLSID = s '{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}'
+		CurVer = s 'WBFLBridgeGeometry.UniformSpacingGirderLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4FA7EC00-ADFB-4F50-A9E6-0A3142090639} = s 'UniformSpacingGirderLineFactory Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.UniformSpacingGirderLineFactory.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.UniformSpacingGirderLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

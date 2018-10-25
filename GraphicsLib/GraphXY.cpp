@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -71,7 +71,6 @@ m_LegendBoarderType(lbCheckerBoarder),
 m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
-m_bIsotropicAxes(false),
 m_MinZoomHeight(DEFAULT_ZOOM),
 m_MinZoomWidth(DEFAULT_ZOOM)
 {
@@ -405,6 +404,26 @@ const sysINumericFormatToolBase* grGraphXY::GetXAxisValueFormat() const
    return  m_XAxis.GetValueFormat();
 }
 
+void grGraphXY::SetXAxisScale(grAxisXY::AxisScale scale)
+{
+   m_XAxis.SetScale(scale);
+}
+
+grAxisXY::AxisScale grGraphXY::GetXAxisScale() const
+{
+   return m_XAxis.GetScale();
+}
+
+void grGraphXY::SetYAxisScale(grAxisXY::AxisScale scale)
+{
+   m_YAxis.SetScale(scale);
+}
+
+grAxisXY::AxisScale grGraphXY::GetYAxisScale() const
+{
+   return m_YAxis.GetScale();
+}
+
 void grGraphXY::SetYAxisValueFormat(const sysINumericFormatToolBase& format)
 {
    m_YAxis.SetValueFormat(format);
@@ -552,14 +571,14 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    // if there is not any data points, then make the world 1x1
    if ( nDataPoints == 0 )
    {
-      m_WorldRect.Left()   = 0.0;
+      m_WorldRect.Left()   = m_XAxis.GetScale() == grAxisXY::LINEAR ? 0.0 : 0.1;
       m_WorldRect.Right()  = 1.0;
-      m_WorldRect.Top()    = 0.0;
+      m_WorldRect.Top()    = m_YAxis.GetScale() == grAxisXY::LINEAR ? 0.0 : 0.1;
       m_WorldRect.Bottom() = 1.0;
    }
 
    // make sure zero is in Y range if requested
-   if (m_PinYAxisAtZero)
+   if (m_PinYAxisAtZero && m_YAxis.GetScale() == grAxisXY::LINEAR)
    {
       gpPoint2d pnt((m_WorldRect.Left()+m_WorldRect.Right())/2., 0.0);
       m_WorldRect.BoundPoint(pnt);
@@ -580,29 +599,12 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       m_WorldRect.Left()  = cen - m_MinZoomWidth/2.0;
    }
 
-   if ( m_bIsotropicAxes )
-   {
-      Float64 width = m_WorldRect.Width();
-      Float64 height = m_WorldRect.Height();
-      gpPoint2d center = m_WorldRect.Center();
-      if ( width < height )
-      {
-         m_WorldRect.Left()  = center.X() - height/2;
-         m_WorldRect.Right() = center.X() + height/2;
-      }
-      else
-      {
-         m_WorldRect.Top()    = center.Y() + width/2;
-         m_WorldRect.Bottom() = center.Y() - width/2;
-      }
-   }
-
    // set ranges on axis to create graph world client rect area size
    Float64 client_left, client_right, client_bottom, client_top;
    Float64 inc;
    if (GetXAxisNiceRange())
    {
-      m_XAxis.SetNiceAxisRange(m_WorldRect.Left(), m_WorldRect.Right());
+      m_XAxis.SetNiceAxisRange(m_WorldRect.Left(), m_WorldRect.Right(),false);
       m_XAxis.GetAxisRange(client_left, client_right, inc);
    }
    else
@@ -626,7 +628,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
 
    if (GetYAxisNiceRange())
    {
-      m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top());
+      m_YAxis.SetNiceAxisRange(m_WorldRect.Bottom(), m_WorldRect.Top(),true);
       m_YAxis.GetAxisRange(client_bottom, client_top, inc);
    }
    else
@@ -646,6 +648,18 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
          inc = wid;
       }
       m_YAxis.SetForcedAxisRange(client_top, client_bottom, inc);
+   }
+
+   if ( m_XAxis.GetScale() == grAxisXY::LOGARITHMIC )
+   {
+      client_left  = log10(client_left);
+      client_right = log10(client_right);
+   }
+
+   if ( m_YAxis.GetScale() == grAxisXY::LOGARITHMIC )
+   {
+      client_top    = log10(client_top);
+      client_bottom = log10(client_bottom);
    }
 
    gpRect2d world_client_rect(client_left, client_bottom, client_right, client_top);
@@ -758,6 +772,9 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
 
 void grGraphXY::DrawCurve(HDC hDC)
 {
+   grAxisXY::AxisScale scaleX = m_XAxis.GetScale();
+   grAxisXY::AxisScale scaleY = m_YAxis.GetScale();
+
    // draw curve in color
    GraphDataMap::iterator map_iter;
    for ( map_iter = m_GraphDataMap.begin(); map_iter != m_GraphDataMap.end(); map_iter++ )
@@ -776,7 +793,9 @@ void grGraphXY::DrawCurve(HDC hDC)
       {
          const gpPoint2d& p = *ds_iter;
          POINT dp;
-         m_PointMapper.WPtoDP( p, &dp.x, &dp.y );
+         m_PointMapper.WPtoDP( scaleX == grAxisXY::LINEAR ? p.X() : log10(p.X()),
+                               scaleY == grAxisXY::LINEAR ? p.Y() : log10(p.Y()),
+                               &dp.x, &dp.y );
          p_points[count++] = dp;
       }
 
@@ -800,35 +819,67 @@ void grGraphXY::DrawAxes(HDC hDC)
    Float64 bot_val, top_val, y_increment;
    m_YAxis.GetAxisRange(bot_val, top_val, y_increment);
 
+   grAxisXY::AxisScale scaleX = m_XAxis.GetScale();
+   grAxisXY::AxisScale scaleY = m_YAxis.GetScale();
+
+   if ( scaleX == grAxisXY::LOGARITHMIC )
+      x_increment = floor(pow(10.0,left_val))/10.0;
+
+   if ( scaleY == grAxisXY::LOGARITHMIC )
+      y_increment = floor(pow(10.0,bot_val))/10.0;
+
    if (m_DoDrawGrid)
    {
       // draw a grid along major x and y tic lines
 
       // x axis grid
       LONG   ldx, ldy, rdx, rdy;
-      Float64 curr_val = left_val + x_increment;
+      Float64 curr_val;
+      if ( scaleX == grAxisXY::LINEAR )
+         curr_val = left_val + x_increment;
+      else
+         curr_val = x_increment;
+
       while (curr_val <= right_val)
       {
-         m_PointMapper.WPtoDP(curr_val, bot_val, &ldx, &ldy);
-         m_PointMapper.WPtoDP(curr_val, top_val, &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR ? bot_val : log10(bot_val), &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? curr_val : log10(curr_val), scaleY == grAxisXY::LINEAR ? top_val : log10(top_val), &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
-         curr_val += x_increment;
+
+         if ( scaleX == grAxisXY::LINEAR )
+            curr_val += x_increment;
+         else
+         {
+            curr_val = pow(10,x_increment);
+            x_increment += 1.0;
+         }
       }
 
       // y axis grid
-      curr_val = bot_val + y_increment;
+      if ( scaleY == grAxisXY::LINEAR )
+         curr_val = bot_val + y_increment;
+      else
+         curr_val = y_increment;
+
       while (curr_val <= top_val)
       {
-         m_PointMapper.WPtoDP(left_val,  curr_val, &ldx, &ldy);
-         m_PointMapper.WPtoDP(right_val, curr_val, &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? left_val  : log10(left_val),  scaleY == grAxisXY::LINEAR ? curr_val : log10(curr_val), &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? right_val : log10(right_val), scaleY == grAxisXY::LINEAR ? curr_val : log10(curr_val), &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC, ldx,ldy,&pnt);
          ::LineTo(hDC,rdx,rdy);
-         curr_val += y_increment;
+
+         if ( scaleY == grAxisXY::LINEAR )
+            curr_val += y_increment;
+         else
+         {
+            curr_val = pow(10,y_increment);
+            y_increment += 1.0;
+         }
       }
    }
    else
@@ -838,8 +889,8 @@ void grGraphXY::DrawAxes(HDC hDC)
       {
          LONG   ldx, ldy, rdx, rdy;
 
-         m_PointMapper.WPtoDP(left_val,  0., &ldx, &ldy);
-         m_PointMapper.WPtoDP(right_val, 0., &rdx, &rdy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? left_val  : log10(left_val),  0., &ldx, &ldy);
+         m_PointMapper.WPtoDP(scaleX == grAxisXY::LINEAR ? right_val : log10(right_val), 0., &rdx, &rdy);
 
          POINT pnt;
          ::MoveToEx(hDC,ldx,ldy,&pnt);
@@ -851,7 +902,6 @@ void grGraphXY::DrawAxes(HDC hDC)
 
    m_YAxis.Draw(hDC);
    m_XAxis.Draw(hDC);
-
 }
 
 void grGraphXY::DrawLegend(HDC hDC)
@@ -979,15 +1029,6 @@ void grGraphXY::SetPinYAxisAtZero(bool pin)
    m_PinYAxisAtZero = pin;
 }
 
-void grGraphXY::SetIsotropicAxes(bool bIsotropic)
-{
-   m_bIsotropicAxes = bIsotropic;
-}
-
-bool grGraphXY::GetIsotropicAxes() const
-{
-   return m_bIsotropicAxes;
-}
 
 int grGraphXY::UpdateLegendMetrics(HDC hDC)
 {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -99,8 +99,8 @@ public:
    IDType LoadingId() const;
    void StressPointIdx(IndexType idx);
    IndexType StressPointIdx() const;
-   void PointOfInterest(IDType poi);
-   IDType PointOfInterest() const;
+   void PointOfInterest(PoiIDType poi);
+   PoiIDType PointOfInterest() const;
 
    // GROUP: INQUIRY
 
@@ -110,7 +110,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const bamSectionStressKey& rOther);
-   void MakeAssignment(const bamSectionStressKey& rOther);
+   virtual void MakeAssignment(const bamSectionStressKey& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -197,7 +197,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const bamSectionStress& rOther);
-   void MakeAssignment(const bamSectionStress& rOther);
+   virtual void MakeAssignment(const bamSectionStress& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

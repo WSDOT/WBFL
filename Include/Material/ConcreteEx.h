@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -75,7 +75,7 @@ public:
    matConcreteEx();
 
    //------------------------------------------------------------------------
-   matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE);
+   matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE,Float64 frShear,Float64 frFlexure);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -102,6 +102,11 @@ public:
 
    //------------------------------------------------------------------------
    Float64 GetDensityForWeight() const;
+
+   void SetShearFr(Float64 fr);
+   Float64 GetShearFr() const;
+   void SetFlexureFr(Float64 fr);
+   Float64 GetFlexureFr() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -131,7 +136,7 @@ protected:
    void MakeCopy(const matConcreteEx& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const matConcreteEx& rOther);
+   virtual void MakeAssignment(const matConcreteEx& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -139,6 +144,8 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Float64 m_WeightDensity;
+   Float64 m_FrShear;
+   Float64 m_FrFlexure;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

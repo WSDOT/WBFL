@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,9 +49,8 @@ lrfdLldfTypeHIJ::lrfdLldfTypeHIJ(GirderIndexType gdr,Float64 Savg,const std::vec
                                  Uint32 Nl, Float64 wLane,
                                  Float64 L,Float64 W,Float64 I,Float64 J,Float64 PoissonRatio,
                                  Float64 leftDe,Float64 rightDe,
-                                 Float64 skewAngle1, Float64 skewAngle2,
-                                 bool bMomentSkew, bool bShearSkew) :
-lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,bMomentSkew,bShearSkew)
+                                 Float64 skewAngle1, Float64 skewAngle2) :
+lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane)
 {
    m_L           = L;
    m_W           = W;
@@ -212,10 +211,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_1_Str
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
 
@@ -240,13 +235,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Ext_1_Str
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
+   Float64 skew = MomentSkewCorrectionFactor();
    g.ControllingMethod = LEVER_RULE;
    g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
-   Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
 
@@ -261,10 +252,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Ext_2_Str
    g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
    return g;
@@ -274,15 +261,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Int_1_Stre
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
+   Float64 skew = ShearSkewCorrectionFactor();
 
    g.ControllingMethod = LEVER_RULE;
    g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
-
-   Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
 
@@ -297,10 +279,6 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeHIJ::GetShearDF_Int_2_Str
    g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, TwoOrMoreLoadedLanes);
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
    return g;
@@ -314,10 +292,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Ext_1_Stre
    g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
 
@@ -332,10 +306,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Ext_2_Stre
    g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
    g.SkewCorrectionFactor = skew;
    g.mg = skew*g.LeverRuleData.mg;
    return g;
@@ -345,40 +315,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetShearDF_Ext_2_Stre
 
 Float64 lrfdLldfTypeHIJ::MomentSkewCorrectionFactor() const
 {
-   if ( !m_bSkewMoment )
-   {
-      return 1.0;
-   }
-
-   Float64 skew = 1.0;  // no skew correction given in AASHTO, before 7th edition
-
-   if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
-   {
-      // LRFD 7th Edition 2014 added skew correction for moment for type h,i,j sections
-      
-      // 4.6.2.2.2e - don't reduce moment if difference in skew is > 10 degree
-      Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
-      if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-      {
-         return 1.0;
-      }
-
-      Float64 avg_skew_angle = fabs(m_SkewAngle1 + m_SkewAngle2)/2.;
-
-      Float64 deg60 = ::ConvertToSysUnits(60.,unitMeasure::Degree);
-      if ( deg60 < avg_skew_angle )
-      {
-         avg_skew_angle = deg60;
-      }
-
-      skew = 1.05 - 0.25*tan(avg_skew_angle);
-      if ( 1.0 < skew )
-      {
-         skew = 1.0;
-      }
-   }
-
-   return skew;
+   return 1.0; // no skew correction given in AASHTO
 }
 
 Float64 lrfdLldfTypeHIJ::ShearSkewCorrectionFactor() const
@@ -431,7 +368,7 @@ bool lrfdLldfTypeHIJ::TestMe(dbgLog& rlog)
 
    lrfdLldfTypeHIJ df(1,S,spacings,de,de,Nl,wLane,
                       L,W,I,J,0.2,de,de,
-                      0.0,0.0,true,true);
+                      0.0,0.0);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.55226, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.55226, 0.001) );

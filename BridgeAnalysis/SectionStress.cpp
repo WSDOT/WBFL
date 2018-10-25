@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -116,12 +116,12 @@ IndexType bamSectionStressKey::StressPointIdx() const
    return m_StressPointIdx;
 }
 
-void bamSectionStressKey::PointOfInterest(IDType poi)
+void bamSectionStressKey::PointOfInterest(PoiIDType poi)
 {
    m_Poi = poi;
 }
 
-IDType bamSectionStressKey::PointOfInterest() const
+PoiIDType bamSectionStressKey::PointOfInterest() const
 {
    return m_Poi;
 }

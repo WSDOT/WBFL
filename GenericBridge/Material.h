@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,7 @@
 #define __MATERIAL_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
+#include <map>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,15 +41,11 @@ class ATL_NO_VTABLE CMaterial :
 	public ISupportErrorInfo,
 	public IMaterial,
    public IStructuredStorage2,
-   public CProxyDMaterialEvents< CMaterial >,
-   public IConnectionPointContainerImpl<CMaterial>,
    public IObjectSafetyImpl<CMaterial,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
    CMaterial()
 	{
-      m_E = 4000;
-      m_Density = 0;
 	}
 
    HRESULT FinalConstruct();
@@ -61,23 +57,14 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CMaterial)
 	COM_INTERFACE_ENTRY(IMaterial)
-
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CMaterial)
-	CONNECTION_POINT_ENTRY(IID_IMaterialEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
-   Float64 m_E;
-   Float64 m_Density;
+   std::map<StageIndexType,Float64> m_E;
+   std::map<StageIndexType,Float64> m_Density;
 
    // ISupportsErrorInfo
 public:
@@ -85,11 +72,10 @@ public:
 
 // IConcrete
 public:
-   STDMETHOD(get_E)(/*[out,retval]*/Float64* E);
-	STDMETHOD(put_E)(/*[in]*/Float64 E);
-	STDMETHOD(get_Density)(/*[out,retval]*/Float64* w);
-	STDMETHOD(put_Density)(/*[in]*/Float64 w);
-	STDMETHOD(Clone)(/*[out,retval]*/IMaterial** clone);
+   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E);
+	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E);
+	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w);
+	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w);
 
 // IStructuredStorage2
 public:

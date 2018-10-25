@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,7 +49,8 @@ public:
 
 //IEAFDisplayUnitsEventSink : IUnknown
 public:
-	HRESULT Fire_UnitsChanged(eafTypes::UnitMode newUnitsMode)
+	HRESULT Fire_UnitsChanged(
+      eafTypes::UnitMode newUnitsMode)
 	{
 		T* pT = (T*)this;
 
@@ -60,7 +61,7 @@ public:
       //}
 
       pT->Lock();
-		HRESULT ret = S_OK;
+		HRESULT ret;
 		IUnknown** pp = m_vec.begin();
 		while (pp < m_vec.end())
 		{

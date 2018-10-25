@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -53,27 +53,27 @@ void CHorzCurveCollection::FinalRelease()
    m_coll.clear();
 }
 
-STDMETHODIMP CHorzCurveCollection::get_Item(CogoElementKey key, IHorzCurve **pVal)
+STDMETHODIMP CHorzCurveCollection::get_Item(CogoObjectID key, IHorzCurve **pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return HorzCurveNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::putref_Item(CogoElementKey key, IHorzCurve *newVal)
+STDMETHODIMP CHorzCurveCollection::putref_Item(CogoObjectID key, IHorzCurve *newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -100,9 +100,9 @@ STDMETHODIMP CHorzCurveCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Remove(CogoElementKey key)
+STDMETHODIMP CHorzCurveCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -120,7 +120,7 @@ STDMETHODIMP CHorzCurveCollection::Remove(CogoElementKey key)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Add(CogoElementKey key, IPoint2d* pbt, IPoint2d* pi, IPoint2d* pft, Float64 radius, Float64 Ls1, Float64 Ls2,IHorzCurve** hc)
+STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID key, IPoint2d* pbt, IPoint2d* pi, IPoint2d* pft, Float64 radius, Float64 Ls1, Float64 Ls2,IHorzCurve** hc)
 {
    CHECK_IN(pbt);
    CHECK_IN(pi);
@@ -159,11 +159,11 @@ STDMETHODIMP CHorzCurveCollection::Add(CogoElementKey key, IPoint2d* pbt, IPoint
 }
 
    
-STDMETHODIMP CHorzCurveCollection::AddEx(CogoElementKey key, IHorzCurve* newVal)
+STDMETHODIMP CHorzCurveCollection::AddEx(CogoObjectID key, IHorzCurve* newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -172,7 +172,7 @@ STDMETHODIMP CHorzCurveCollection::AddEx(CogoElementKey key, IHorzCurve* newVal)
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   std::pair<std::map<CogoElementKey,CComVariant>::iterator,bool> result;
+   std::pair<std::map<CogoObjectID,CComVariant>::iterator,bool> result;
    result = m_coll.insert(std::make_pair(key,var));
    if ( result.second == false )
    {
@@ -195,15 +195,15 @@ STDMETHODIMP CHorzCurveCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::FindKey(IHorzCurve* hc,CogoElementKey* key)
+STDMETHODIMP CHorzCurveCollection::FindKey(IHorzCurve* hc,CogoObjectID* key)
 {
    CHECK_IN(hc);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IHorzCurve> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(hc) )
@@ -220,7 +220,7 @@ STDMETHODIMP CHorzCurveCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -239,7 +239,7 @@ STDMETHODIMP CHorzCurveCollection::get__EnumHorzCurves(IEnumHorzCurves** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumHorzCurves,&IID_IEnumHorzCurves, IHorzCurve*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,IHorzCurve*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumHorzCurves,&IID_IEnumHorzCurves, IHorzCurve*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,IHorzCurve*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -274,7 +274,7 @@ STDMETHODIMP CHorzCurveCollection::Clone(IHorzCurveCollection* *clone)
       CComPtr<IHorzCurve> cloneHC;
       hc->Clone(&cloneHC);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,cloneHC);
@@ -300,18 +300,18 @@ STDMETHODIMP CHorzCurveCollection::putref_Factory(IHorzCurveFactory* factory)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -321,7 +321,7 @@ STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoElementKey*
 
 STDMETHODIMP CHorzCurveCollection::OnHorzCurveChanged(IHorzCurve* hc)
 {
-   CogoElementKey key;
+   CogoObjectID key;
    HRESULT hr = FindKey(hc,&key);
 
    // This container only listens to events from point objects in this 
@@ -333,7 +333,7 @@ STDMETHODIMP CHorzCurveCollection::OnHorzCurveChanged(IHorzCurve* hc)
    return S_OK;
 }
 
-void CHorzCurveCollection::Advise(CogoElementKey key,IHorzCurve* hc)
+void CHorzCurveCollection::Advise(CogoObjectID key,IHorzCurve* hc)
 {
    DWORD dwCookie;
    CComPtr<IHorzCurve> pCP(hc);
@@ -349,7 +349,7 @@ void CHorzCurveCollection::Advise(CogoElementKey key,IHorzCurve* hc)
    InternalRelease(); // Break circular reference
 }
 
-void CHorzCurveCollection::Unadvise(CogoElementKey key,IHorzCurve* hc)
+void CHorzCurveCollection::Unadvise(CogoObjectID key,IHorzCurve* hc)
 {
    ATLASSERT(hc != 0);
 
@@ -358,7 +358,7 @@ void CHorzCurveCollection::Unadvise(CogoElementKey key,IHorzCurve* hc)
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -382,26 +382,26 @@ void CHorzCurveCollection::Unadvise(CogoElementKey key,IHorzCurve* hc)
 
 void CHorzCurveCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<IHorzCurve> hc( (*iter).second.pdispVal );
       Unadvise(key,hc);
    }
 }
 
-HRESULT CHorzCurveCollection::HorzCurveNotFound(CogoElementKey key)
+HRESULT CHorzCurveCollection::HorzCurveNotFound(CogoObjectID key)
 {
    return HorzCurveKeyError(key,IDS_E_HORZCURVENOTFOUND,COGO_E_HORZCURVENOTFOUND);
 }
 
-HRESULT CHorzCurveCollection::HorzCurveAlreadyDefined(CogoElementKey key)
+HRESULT CHorzCurveCollection::HorzCurveAlreadyDefined(CogoObjectID key)
 {
    return HorzCurveKeyError(key,IDS_E_HORZCURVEALREADYDEFINED,COGO_E_HORZCURVEALREADYDEFINED);
 }
 
-HRESULT CHorzCurveCollection::HorzCurveKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CHorzCurveCollection::HorzCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

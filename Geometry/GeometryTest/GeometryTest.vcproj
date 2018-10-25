@@ -1938,6 +1938,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\TestGenericShape.cpp"
+				>
+			</File>
+			<File
 				RelativePath="TestGeomUtil.cpp"
 				>
 				<FileConfiguration
@@ -4816,6 +4820,10 @@
 			</File>
 			<File
 				RelativePath=".\TestFasterPolyShape.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TestGenericShape.h"
 				>
 			</File>
 			<File

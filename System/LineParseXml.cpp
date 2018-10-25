@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -267,6 +267,42 @@ bool sysLineParseXml::GetValue(Uint64* value)
       return false;
 
    Uint64 l;
+   std::_tistringstream is(m_Value);
+
+   is >> l;
+   if (is)
+   {
+      *value = l;
+      return true;
+   }
+   return false;
+}
+
+bool sysLineParseXml::GetValue(LONG* value)
+{
+   CHECK(m_Type!=sysLineParseXml::Unknown);
+   if (m_Value.empty())
+      return false;
+
+   LONG l;
+   std::_tistringstream is(m_Value);
+
+   is >> l;
+   if (is)
+   {
+      *value = l;
+      return true;
+   }
+   return false;
+}
+
+bool sysLineParseXml::GetValue(ULONG* value)
+{
+   CHECK(m_Type!=sysLineParseXml::Unknown);
+   if (m_Value.empty())
+      return false;
+
+   ULONG l;
    std::_tistringstream is(m_Value);
 
    is >> l;

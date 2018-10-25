@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,7 +54,6 @@ void CTestSuperstructureMemberCollection::Test()
 {
    TestDefaults();
    TestMethods();
-   TestEvents();
 }
 
 void CTestSuperstructureMemberCollection::TestDefaults()
@@ -240,139 +239,4 @@ void CTestSuperstructureMemberCollection::TestMethods()
 //   TRY_TEST(members->Clear(),S_OK);
 //   members->get_Count(&nMembers);
 //   TRY_TEST(nMembers,0);
-}
-
-void CTestSuperstructureMemberCollection::TestEvents()
-{
-//   // Create a default bridge
-//   CComPtr<IGenericBridge> bridge;
-//   bridge.CoCreateInstance(CLSID_GenericBridge);
-//
-//   // Drill down and get a superstructure members collection
-//   CComPtr<ISuperstructureMemberCollection> members;
-//   bridge->get_SuperstructureMembers(0,&members);
-//
-//   ///////////////////////////////////////
-//   // Test Set with event sink
-//   CComObject<CTestSuperstructureMemberCollection>* pTest;
-//   CComObject<CTestSuperstructureMemberCollection>::CreateInstance(&pTest);
-//   pTest->AddRef();
-//   
-//   DWORD dwCookie;
-//   CComPtr<IUnknown> punk(pTest);
-//   TRY_TEST(AtlAdvise(members,punk,IID_ISuperstructureMemberCollectionEvents,&dwCookie),S_OK);
-//
-//   pTest->InitEventTest();
-//   members->Add();
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->Clear();
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->Clear();
-//   TRY_TEST(pTest->PassedEventTest(), false ); // second Clear should not fire because nothing changed
-//
-//   members->Add();
-//   members->Add();
-//   pTest->InitEventTest();
-//   members->CopyTo(0,1);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->Insert(0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->MoveTo(0,1);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->Reverse();
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   members->put_Symmetrical(VARIANT_FALSE);
-//   TRY_TEST(pTest->PassedEventTest(), false ); // no change, no event
-//
-//   pTest->InitEventTest();
-//   members->put_Symmetrical(VARIANT_TRUE);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   // Bubbled events
-//   CComPtr<ISuperstructureMember> mbr;
-//   members->get_Item(0,&mbr);
-//
-//   pTest->InitEventTest();
-//   CComPtr<IPrismaticSegment> newSegment;
-//   newSegment.CoCreateInstance(CLSID_PrismaticSegment);
-//   mbr->AddSegment(newSegment);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   CComPtr<ISegment> segment;
-//   mbr->get_Segment(0,&segment);
-//
-////   CComPtr<ISegmentCrossSection> crossSection;
-////   segment->get_CrossSection(&crossSection);
-////
-////   CComPtr<IStressPointCollection> stressPoints;
-////   crossSection->get_StressPoints(&stressPoints);
-////
-////   pTest->InitEventTest();
-////   stressPoints->Add();
-////   TRY_TEST(pTest->PassedEventTest(), true );
-////
-////   CComPtr<IStressPoint> stressPoint;
-////   stressPoints->get_Item(0,&stressPoint);
-////
-////   pTest->InitEventTest();
-////   stressPoint->put_Sa(10.0);
-////   TRY_TEST(pTest->PassedEventTest(), true );
-////
-////   pTest->InitEventTest();
-////   crossSection->put_Area(10.0);
-////   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   segment->put_Length(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   pTest->InitEventTest();
-//   mbr->put_Length(10.0);
-//   TRY_TEST(pTest->PassedEventTest(), true );
-//
-//   // Done with events
-//   TRY_TEST(AtlUnadvise(members,IID_ISuperstructureMemberCollectionEvents,dwCookie),S_OK);
-//   pTest->Release();
-}
-
-STDMETHODIMP CTestSuperstructureMemberCollection::OnSuperstructureMemberChanged(ISuperstructureMember* mbr)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestSuperstructureMemberCollection::OnSuperstructureMemberAdded(long idx)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestSuperstructureMemberCollection::OnSuperstructureMemberRemoved(long idx)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestSuperstructureMemberCollection::OnSuperstructureMemberMoved(long from,long to)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestSuperstructureMemberCollection::OnSuperstructureMemberCollectionChanged(ISuperstructureMemberCollection* members)
-{
-   Pass();
-   return S_OK;
 }

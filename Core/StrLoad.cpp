@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -233,8 +233,9 @@ STDMETHODIMP CStrLoad::Close()
 STDMETHODIMP CStrLoad::LoadRawUnit(BSTR* pbstrUnit)
 {
    CHECK_RETSTRING(pbstrUnit);
-   USES_CONVERSION;
-   *pbstrUnit = T2BSTR(m_StrLoad.GetUnit().c_str());
+
+   std::_tstring strXML = m_StrLoad.GetUnit();
+   *pbstrUnit = CComBSTR(strXML.c_str());
    return S_OK;
 }
 

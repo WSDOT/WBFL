@@ -50,8 +50,8 @@ private:
    // weak reference
    iDisplayObject* m_DispObj;
 
-   void DeleteMember(long mbrID);
-   void EditMember(long mbrID);
+   void DeleteMember(IDType mbrID);
+   void EditMember(IDType mbrID);
 };
 
 #endif // !defined(AFX_MEMBERDROPSITE_H__1F8A97C9_F789_11D4_8B9B_006097C68A9C__INCLUDED_)

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -74,78 +74,14 @@ STDMETHODIMP CColumn::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CColumn::Clone(IColumn* *clone)
-{
-   CComObject<CColumn>* pClone;
-   HRESULT hr = CComObject<CColumn>::CreateInstance(&pClone);
-   if (FAILED(hr))
-      return hr;
-
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   pClone->SetBridge(m_pBridge);
-
-   pClone->put_Symmetrical(m_bSymmetrical);
-   pClone->put_Fractional(m_bFractional);
-   pClone->put_Height(m_Height);
-   pClone->put_BaseOffset(m_BaseOffset);
-   
-   hr = m_pSegments->Copy( pClone->GetSegments() );
-   if (FAILED(hr))
-      return hr;
-
-	return S_OK;
-}
-
-
 ////////////////////////////////////////////////////////////////////////
 // CSegmentsOwner implementation
-HRESULT CColumn::SetUpConnection(ISegmentItem* pCp, unsigned long* pcookie)
-{
-   HRESULT hr = AdviseSegmentItem(pCp,pcookie);
-   return S_OK;
-}
-
-void CColumn::BreakConnection(ISegmentItem* pCp, unsigned long cookie)
-{
-   UnadviseSegmentItem(pCp,cookie);
-}
-
-void CColumn::OnSegmentsChanged(CSegments* psegments)
-{
-   Fire_OnColumnChanged(this);
-}
 
 Float64 CColumn::Length()
 {
    Float64 length;
    get_Length(&length);
    return length;
-}
-
-HRESULT CColumn::AdviseSegmentItem(ISegmentItem* segItem,DWORD* pdwCookie)
-{
-   CComPtr<ISegmentItem> item(segItem);
-   HRESULT hr = item.Advise(GetUnknown(),IID_ISegmentItemEvents,pdwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-
-   InternalRelease(); // Break circular reference
-
-   return hr;
-}
-
-HRESULT CColumn::UnadviseSegmentItem(ISegmentItem* segItem,DWORD dwCookie)
-{
-   InternalAddRef(); // conteract InternalRelease() in advise
-   CComQIPtr<IConnectionPointContainer> pCPC(segItem);
-   CComPtr<IConnectionPoint> pCP;
-   pCPC->FindConnectionPoint(IID_ISegmentItemEvents,&pCP);
-
-   HRESULT hr = pCP->Unadvise(dwCookie);
-   ATLASSERT( SUCCEEDED(hr) );
-
-   return hr;
 }
 
 //////////////////////////////////////////////////////
@@ -175,7 +111,7 @@ STDMETHODIMP CColumn::put_Height(Float64 height)
       return S_OK;
 
    m_Height = height;
-   Fire_OnColumnChanged(this);
+   //Fire_OnColumnChanged(this);
    return S_OK;
 }
 
@@ -192,7 +128,7 @@ STDMETHODIMP CColumn::put_BaseOffset(Float64 offset)
       return S_OK;
 
    m_BaseOffset = offset;
-   Fire_OnColumnChanged(this);
+   //Fire_OnColumnChanged(this);
    return S_OK;
 }
 
@@ -207,7 +143,6 @@ STDMETHODIMP CColumn::AddSegment(ISegment* segment)
 {
    try
    {
-      segment->putref_SegmentMeasure(this);
       HRESULT hr = m_pSegments->Add(segment);
       if ( FAILED(hr) )
          return hr;
@@ -230,7 +165,6 @@ STDMETHODIMP CColumn::InsertSegment(CollectionIndexType idx,ISegment* segment)
 {
    try
    {
-      segment->putref_SegmentMeasure(this);
       HRESULT hr = m_pSegments->Insert(idx,segment);
       if ( FAILED(hr) )
          return hr;
@@ -351,16 +285,11 @@ STDMETHODIMP CColumn::put_Fractional(VARIANT_BOOL bFractional)
 
    m_bFractional = bFractional;
 
-   m_bIgnoreSegmentEvents = true;
-
    if ( m_bFractional == VARIANT_TRUE )
       m_pSegments->MakeFractional();
    else
       m_pSegments->MakeAbsolute();
 
-   m_bIgnoreSegmentEvents = false;
-
-   Fire_OnColumnChanged(this);
    return S_OK;
 }
 
@@ -377,7 +306,7 @@ STDMETHODIMP CColumn::put_Symmetrical(VARIANT_BOOL bSymmetrical)
       return S_OK;
 
    m_bSymmetrical = bSymmetrical;
-   Fire_OnColumnChanged(this);
+   //Fire_OnColumnChanged(this);
    return S_OK;
 }
 
@@ -393,11 +322,11 @@ STDMETHODIMP CColumn::GetMemberSegments(IFilteredSegmentCollection **ppSeg)
    }
 }
 
-STDMETHODIMP CColumn::GetSegmentForMemberLocation(Float64 location, Float64* dist,ISegmentItem **ppSeg)
+STDMETHODIMP CColumn::GetDistanceFromStartOfSegment(Float64 location, Float64* dist,ISegmentItem **ppSeg)
 {
    try
    {
-   	return m_pSegments->GetSegmentForMemberLocation(Length(), m_bSymmetrical, location, dist, ppSeg);
+   	return m_pSegments->GetDistanceFromStartOfSegment(Length(), m_bSymmetrical, location, dist, ppSeg);
    }
    catch(...)
    {

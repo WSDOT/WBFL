@@ -3559,10 +3559,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\RefinedLossesTxDOT2013.cpp"
-				>
-			</File>
-			<File
 				RelativePath="Shear.cpp"
 				>
 				<FileConfiguration
@@ -4727,10 +4723,6 @@
 			</File>
 			<File
 				RelativePath="..\Include\LRFD\RefinedLosses2005.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\LRFD\RefinedLossesTxDOT2013.h"
 				>
 			</File>
 			<File

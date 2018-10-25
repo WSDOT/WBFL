@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitMgt - Service for managing display units indirectly
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -256,7 +256,7 @@ protected:
    }
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const unitmgtLibraryT& rOther)
+   virtual void MakeAssignment(const unitmgtLibraryT& rOther)
    {
       MakeCopy( rOther );
    }
@@ -420,7 +420,7 @@ protected:
    }
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const unitmgtLibraryIterT& rOther)
+   virtual void MakeAssignment(const unitmgtLibraryIterT& rOther)
    {
       MakeCopy( rOther );
    }
@@ -585,7 +585,7 @@ protected:
    }
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const unitmgtConstLibraryIterT& rOther)
+   virtual void MakeAssignment(const unitmgtConstLibraryIterT& rOther)
    {
       MakeCopy( rOther );
    }

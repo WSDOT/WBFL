@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -42,15 +42,19 @@
 #define ID_EDIT_UNITS                   EAF_RESERVED_COMMAND_BASE+6
 #define ID_TIPOFTHEDAY                  EAF_RESERVED_COMMAND_BASE+7
 #define ID_MANAGE_APP_PLUGINS           EAF_RESERVED_COMMAND_BASE+8
-#define ID_REPORT_MENU_DISPLAY_MODE     EAF_RESERVED_COMMAND_BASE+9
-#define ID_OPTIONS_REPORTING            EAF_RESERVED_COMMAND_BASE+10
 
 // reserve commands IDs for the report popup menus
-#define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE+11
+#define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE+9 
 #define EAF_REPORT_MENU_COUNT 50 // maximum 50 reports
+#define EAF_REPORT_MENU_LAST EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT
+
+// reserve command IDs for the graph popup menus
+#define EAF_GRAPH_MENU_BASE EAF_REPORT_MENU_LAST + 1
+#define EAF_GRAPH_MENU_COUNT 50 // maximum 50 graphs
+#define EAF_GRAPH_MENU_LAST EAF_GRAPH_MENU_BASE + EAF_GRAPH_MENU_COUNT
 
 // reserve command IDs for toolbar menu
-#define EAF_TOOLBAR_MENU_BASE EAF_REPORT_MENU_BASE + 2*EAF_REPORT_MENU_COUNT + 1 
+#define EAF_TOOLBAR_MENU_BASE EAF_GRAPH_MENU_LAST + 1
 #define EAF_TOOLBAR_MENU_COUNT 40 // maximum of 40 toolbars
 
 

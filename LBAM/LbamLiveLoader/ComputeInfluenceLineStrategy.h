@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,8 @@
 class iComputeInfluenceLineStrategy
 {
 public:
+   virtual void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse) = 0;
+
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)=0;
 
@@ -60,6 +62,12 @@ public:
       return -1.0;
    }
 
+   void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse)
+   {
+      *ppResponse = m_Response;
+      (*ppResponse)->AddRef();
+   }
+
 private:
    IInfluenceLineResponse* m_Response;
    ResultsOrientation      m_Orientation;
@@ -85,6 +93,12 @@ public:
    virtual Float64 SignFlip()
    {
       return 1.0;
+   }
+
+   void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse)
+   {
+      *ppResponse = m_Response;
+      (*ppResponse)->AddRef();
    }
 
 private:
@@ -114,6 +128,12 @@ public:
       return 1.0;
    }
 
+   void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse)
+   {
+      *ppResponse = m_Response;
+      (*ppResponse)->AddRef();
+   }
+
 private:
    IInfluenceLineResponse* m_Response;
 };
@@ -139,6 +159,12 @@ public:
    virtual Float64 SignFlip()
    {
       return 1.0;
+   }
+
+   void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse)
+   {
+      *ppResponse = m_Response;
+      (*ppResponse)->AddRef();
    }
 
 private:

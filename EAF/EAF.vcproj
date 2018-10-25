@@ -1116,14 +1116,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ConfigureReportsDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\CustomReportsPage.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\custsite.cpp"
 				>
 			</File>
@@ -1444,6 +1436,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFAutoCalcGraphBuilder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFAutoCalcGraphView.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFAutoCalcReportView.cpp"
 				>
 			</File>
@@ -1645,14 +1645,6 @@
 			</File>
 			<File
 				RelativePath=".\EAFCommandLineInfo.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EAFCustomReport.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EAFCustomReportConflictDlg.cpp"
 				>
 			</File>
 			<File
@@ -1950,7 +1942,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EAFExportCustomReports.cpp"
+				RelativePath=".\EAFGraphBuilderBase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFGraphChildFrame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFGraphControlWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFGraphView.cpp"
 				>
 			</File>
 			<File
@@ -2159,10 +2163,6 @@
 			</File>
 			<File
 				RelativePath=".\EAFPluginState.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\EAFRenameReportDlg.cpp"
 				>
 			</File>
 			<File
@@ -2378,14 +2378,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EditCustomReportDlg.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FavoriteReportsPage.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\ManagePluginsDlg.cpp"
 				>
 			</File>
@@ -2547,14 +2539,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\ConfigureReportsDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\CustomReportsPage.h"
-				>
-			</File>
-			<File
 				RelativePath=".\custsite.h"
 				>
 			</File>
@@ -2583,6 +2567,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcGraphBuilder.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFAutoCalcGraphView.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFAutoCalcReportView.h"
 				>
 			</File>
@@ -2604,14 +2596,6 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFCommandLineInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Include\EAF\EAFCustomReport.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EAFCustomReportConflictDlg.h"
 				>
 			</File>
 			<File
@@ -2647,7 +2631,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EAFExportCustomReports.h"
+				RelativePath="..\Include\EAF\EAFGraphBuilderBase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFGraphChildFrame.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFGraphControlWindow.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFGraphView.h"
 				>
 			</File>
 			<File
@@ -2691,10 +2687,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EAFRenameReportDlg.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Include\EAF\EAFReportView.h"
 				>
 			</File>
@@ -2732,14 +2724,6 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFUtilities.h"
-				>
-			</File>
-			<File
-				RelativePath=".\EditCustomReportDlg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\FavoriteReportsPage.h"
 				>
 			</File>
 			<File
@@ -2791,10 +2775,6 @@
 			Name="Resource Files"
 			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
-			<File
-				RelativePath=".\res\bitmap1.bmp"
-				>
-			</File>
 			<File
 				RelativePath="res\EAF.rc2"
 				>

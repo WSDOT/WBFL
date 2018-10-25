@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -102,6 +102,11 @@ Float64 interpolate(const gpPoint2d& p1, const gpPoint2d& p2, Float64 x)
    return LinInterp( a, l, h, delta);
 }
 
+bool point_sort(const gpPoint2d& p1,const gpPoint2d& p2)
+{
+   return p1.X() < p2.X();
+}
+
 //======================== LIFECYCLE  =======================================
 mathPwLinearFunction2dUsingPoints::mathPwLinearFunction2dUsingPoints() :
 mathPwLinearFunction2d(),
@@ -201,6 +206,7 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& 
 {
    ASSERTVALID;
    m_Points = points;
+   std::sort(m_Points.begin(),m_Points.end(),point_sort);
 
    CollectionIndexType siz = GetNumPoints();
    if (m_LastSegment>siz)
@@ -211,8 +217,8 @@ void mathPwLinearFunction2dUsingPoints::SetPoints(const std::vector<gpPoint2d>& 
 CollectionIndexType mathPwLinearFunction2dUsingPoints::AddPoint(const gpPoint2d& point)
 {
    ASSERTVALID;
-   PRECONDITION( m_Points.size()>0 ? point.X()>m_Points.back().X() : true);
    m_Points.push_back(point);
+   std::sort(m_Points.begin(),m_Points.end(),point_sort);
    ASSERTVALID;
    return GetNumPoints();
 }
@@ -314,8 +320,8 @@ void mathPwLinearFunction2dUsingPoints::GetMaximumsInRange(const math1dRange& ra
    // Loop over remaining values to find max's
    Float64 last_x(left_bnd);
    Float64 last_y(left_y);
-   Uint32 idx(m_LastSegment); // m_LastSegment set by Evaluate
-   Uint32 size(m_Points.size());
+   CollectionIndexType idx(m_LastSegment); // m_LastSegment set by Evaluate
+   CollectionIndexType size(m_Points.size());
 
    while(true)
    {

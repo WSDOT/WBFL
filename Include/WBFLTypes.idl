@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -124,6 +124,11 @@ typedef IDType  PoiIDType;
 typedef IDType  LoadCaseIDType;
 typedef IDType  LoadGroupIDType;
 typedef IDType  LoadCombinationIDType;
+typedef IDType  GirderIDType;
+typedef IDType  GroupIDType;
+typedef IDType  SegmentIDType;
+typedef IDType  StageIDType;
+typedef IDType  EventIDType;
 
 typedef Int32 BarSizeType;
 
@@ -157,11 +162,14 @@ cpp_quote("#define ALL_SPANS        INVALID_INDEX")
 cpp_quote("#define ALL_PIERS        INVALID_INDEX")
 cpp_quote("#define ALL_GIRDERS      INVALID_INDEX")
 cpp_quote("#define ALL_GROUPS       INVALID_INDEX")
+cpp_quote("#define ALL_SEGMENTS     INVALID_INDEX")
 cpp_quote("#define ALL_STAGES       INVALID_INDEX")
+cpp_quote("#define ALL_DUCTS        INVALID_INDEX")
 cpp_quote("#define INVALID_BAR_SIZE INVALID_INDEX")
 
 typedef IndexType CollectionIndexType;
 typedef IndexType StageIndexType;
+typedef IndexType EventIndexType;
 typedef IndexType SupportIndexType;
 typedef IndexType StrandIndexType;
 typedef IndexType SpanIndexType;
@@ -182,6 +190,7 @@ typedef IndexType FlangeIndexType;
 typedef IndexType SplittingPlaneIndexType;
 typedef IndexType ZoneIndexType;
 typedef IndexType DuctIndexType;
+typedef IndexType IntervalIndexType;
 
 cpp_quote("typedef Int64 SpanGirderHashType;")
 cpp_quote("typedef Int64 PierGirderHashType;")

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -49,9 +49,8 @@ lrfdLldfTypeBC::lrfdLldfTypeBC(GirderIndexType gdr,Float64 Savg,const std::vecto
                   Uint32 Nl, Float64 wLane,
                   Float64 d,Float64 L,
                   Float64 leftDe,Float64 rightDe,
-                  Float64 skewAngle1, Float64 skewAngle2,
-                  bool bMomentSkew, bool bShearSkew) :
-lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane,bMomentSkew,bShearSkew)
+                  Float64 skewAngle1, Float64 skewAngle2) :
+lrfdLiveLoadDistributionFactorBase(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,Nl,wLane)
 {
    m_d           = d;
    m_L           = L;
@@ -130,7 +129,7 @@ bool lrfdLldfTypeBC::TestRangeOfApplicability(Location loc) const
       }
    }
 
-   if ( (m_bSkewMoment || m_bSkewShear) && DoApplySkew() )
+   if ( DoApplySkew() )
    {
       // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
       //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
@@ -282,10 +281,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_1_Stre
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
@@ -338,10 +333,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_2_Stre
    }
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
@@ -358,10 +349,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Ext_1_Stre
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = MomentSkewCorrectionFactor();
-   if ( m_bSkewMoment )
-   {
-      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-   }
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -409,10 +396,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Ext_2_Stre
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
-      {
-         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-      }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
    }
@@ -462,10 +445,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Int_1_Stren
    }
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( !m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
+
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -515,10 +495,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeBC::GetShearDF_Int_2_Stre
    }
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
+
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -534,10 +511,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Ext_1_Stren
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = ShearSkewCorrectionFactor();
-   if ( m_bSkewShear )
-   {
-      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-   }
+
    g.mg *= skew;
    g.SkewCorrectionFactor = skew;
 
@@ -586,10 +560,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Ext_2_Stren
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
-      if ( m_bSkewShear )
-      {
-         g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-      }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
    }
@@ -605,11 +575,6 @@ bool lrfdLldfTypeBC::DoApplySkew() const
 
 Float64 lrfdLldfTypeBC::MomentSkewCorrectionFactor() const
 {
-   if ( !m_bSkewMoment )
-   {
-      return 1.0;
-   }
-
    Float64 skew;
 
    if (!DoApplySkew())
@@ -636,11 +601,6 @@ Float64 lrfdLldfTypeBC::MomentSkewCorrectionFactor() const
 
 Float64 lrfdLldfTypeBC::ShearSkewCorrectionFactor() const
 {
-   if ( !m_bSkewShear )
-   {
-      return 1.0;
-   }
-
    Float64 skew;
 
    if (!DoApplySkew())
@@ -719,7 +679,7 @@ bool lrfdLldfTypeBC::TestMe(dbgLog& rlog)
    lrfdLldfTypeBC df(1,S,spacings,oh,oh,
                      Nl,wLane,d,L,
                      de,de,
-                     skew,skew,true,true);
+                     skew,skew);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.31382, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.54911, 0.001) );
@@ -763,11 +723,10 @@ lrfdWsdotLldfTypeBC::lrfdWsdotLldfTypeBC(GirderIndexType gdr,Float64 Savg,const 
                                          Float64 d,Float64 L,
                                          Float64 leftDe,Float64 rightDe,
                                          Float64 leftSlabOverhang,Float64 rightSlabOverhang,
-                                         Float64 skewAngle1, Float64 skewAngle2,
-                                         bool bMomentSkew, bool bShearSkew):
+                                         Float64 skewAngle1, Float64 skewAngle2):
 lrfdLldfTypeBC(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
                Nl, wLane, d, L, leftDe, rightDe,
-               skewAngle1, skewAngle2, bMomentSkew, bShearSkew),
+               skewAngle1, skewAngle2),
 m_LeftSlabOverhang(leftSlabOverhang),
 m_RightSlabOverhang(rightSlabOverhang)
 {
@@ -815,7 +774,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_1
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -824,10 +783,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_1
       gext.mg = gext.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
-      {
-         gext.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-      }
       gext.mg *= skew;
       gext.SkewCorrectionFactor = skew;
 
@@ -854,7 +809,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetMomentDF_Ext_2
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext;
       gext = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
@@ -881,7 +836,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_1_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       // apply lever rule with mpf=1
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -890,10 +845,6 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_1_
       gext.mg = gext.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
-      if ( m_bSkewShear )
-      {
-         gext.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-      }
       gext.mg *= skew;
       gext.SkewCorrectionFactor = skew;
 
@@ -918,7 +869,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeBC::GetShearDF_Ext_2_
 
    Float64 soh_raw = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
 
-   if ( IsGT(m_Savg/2,soh_raw) )
+   if ( IsGT(soh_raw, m_Savg/2) )
    {
       lrfdILiveLoadDistributionFactor::DFResult gext =  lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
 
@@ -996,7 +947,7 @@ bool lrfdWsdotLldfTypeBC::TestMe(dbgLog& rlog)
                           Nl,wLane,d,L,
                           de,de,
                           ohs,ohs,
-                          skew,skew,true,true);
+                          skew,skew);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.31382, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.54911, 0.001) );
@@ -1040,11 +991,10 @@ lrfdTxDotLldfTypeBC::lrfdTxDotLldfTypeBC(GirderIndexType gdr,Float64 Savg,const 
                                          Float64 d,Float64 L,
                                          Float64 leftDe,Float64 rightDe,
                                          Float64 roadwayWidth,
-                                         Float64 skewAngle1, Float64 skewAngle2,
-                                         bool bMomentSkew, bool bShearSkew):
+                                         Float64 skewAngle1, Float64 skewAngle2):
 lrfdLldfTypeBC(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
                Nl, wLane, d, L, leftDe, rightDe,
-               skewAngle1, skewAngle2, bMomentSkew, bShearSkew),
+               skewAngle1, skewAngle2),
 m_RoadwayWidth(roadwayWidth)
 {
    // For U Beams, TxDOT applies a MPF of 1.0 for exterior girders using the lever rule where one lane controls
@@ -1099,7 +1049,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_1
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetMomentDF_Int_1_Strength();
+   GirderIndexType nb = GetNb();
+   if (nb >= 3)
+   {
+      g = lrfdLldfTypeBC::GetMomentDF_Int_1_Strength();
+   }
+   else
+   {
+      g = GetLanesBeamsMethod(1,nb);
+   }
 
    return g;
 }
@@ -1108,7 +1066,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Int_2
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetMomentDF_Int_2_Strength();
+   GirderIndexType nb = GetNb();
+   if (nb>=3)
+   {
+      g = lrfdLldfTypeBC::GetMomentDF_Int_2_Strength();
+   }
+   else
+   {
+      g = GetLanesBeamsMethod(m_Nl,nb);
+   }
 
    return g;
 }
@@ -1118,7 +1084,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
    lrfdILiveLoadDistributionFactor::DFResult g;
    Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet); // txdot doesn't care about metric
 
-   if (m_RoadwayWidth >= w20)
+   GirderIndexType nb = GetNb();
+   if ( nb<3 )
+   {
+      g = GetLanesBeamsMethod(1,nb);
+   }
+   else if (m_RoadwayWidth >= w20)
    {
       g = GetMomentDF_Ext_2_Strength();
    }
@@ -1130,20 +1101,19 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_1
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
-      {
-         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
-      }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
    }
 
    // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
-   if (g.mg < gint.mg)
+   if (nb>2) // no use computing twice for nb<3 case
    {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_1_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
    }
 
    return g;
@@ -1153,38 +1123,45 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetMomentDF_Ext_2
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
-   // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
-   // lever rule for any case of spacing over limit
-   bool do_lever = SpacingTriggersLeverRule(bSISpec);
-
-   if(!do_lever && ExteriorMomentEquationRule(bSISpec, false)) 
+   GirderIndexType nb = GetNb();
+   if ( nb < 3 )
    {
-      g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
-
-      assert(g.ControllingMethod & SPEC_EQN); // always should use equation
+      g = GetLanesBeamsMethod(m_Nl,nb);
    }
-   else
+   else 
    {
-      g.ControllingMethod = LEVER_RULE;
-      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
-      g.mg = g.LeverRuleData.mg;
+      bool bSISpec = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+      // ROA for TxDOT moment is more like shear: all outside of equation goes to lever rule
+      // lever rule for any case of spacing over limit
+      bool do_lever = SpacingTriggersLeverRule(bSISpec);
 
-      Float64 skew = MomentSkewCorrectionFactor();
-      if ( m_bSkewMoment )
+      if(!do_lever && ExteriorMomentEquationRule(bSISpec, false)) 
       {
-         g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+         g = lrfdLldfTypeBC::GetMomentDF_Ext_2_Strength();
+
+         assert(g.ControllingMethod & SPEC_EQN); // always should use equation
       }
-      g.mg *= skew;
-      g.SkewCorrectionFactor = skew;
+      else
+      {
+         g.ControllingMethod = LEVER_RULE;
+         g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+         g.mg = g.LeverRuleData.mg;
+
+         Float64 skew = MomentSkewCorrectionFactor();
+         g.mg *= skew;
+         g.SkewCorrectionFactor = skew;
+      }
    }
 
    // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
-   if (g.mg < gint.mg)
+   if (nb>2)
    {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetMomentDF_Int_2_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
    }
 
    return g;
@@ -1194,7 +1171,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_1_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetShearDF_Int_1_Strength();
+   GirderIndexType nb = GetNb();
+   if (nb>=3)
+   {
+      g = lrfdLldfTypeBC::GetShearDF_Int_1_Strength();
+   }
+   else
+   {
+      g = GetLanesBeamsMethod(1,nb);
+   }
 
    return g;
 }
@@ -1203,7 +1188,15 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Int_2_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetShearDF_Int_2_Strength();
+   GirderIndexType nb = GetNb();
+   if (nb>=3)
+   {
+      g = lrfdLldfTypeBC::GetShearDF_Int_2_Strength();
+   }
+   else
+   {
+      g = GetLanesBeamsMethod(m_Nl,nb);
+   }
 
    return g;
 }
@@ -1213,7 +1206,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
    lrfdILiveLoadDistributionFactor::DFResult g;
    Float64 w20 = ::ConvertToSysUnits(20.0, unitMeasure::Feet);
 
-   if (m_RoadwayWidth >= w20)
+   GirderIndexType nb = GetNb();
+   if ( nb<3 )
+   {
+      g = GetLanesBeamsMethod(1,nb);
+   }
+   else if (m_RoadwayWidth >= w20)
    {
       g = GetShearDF_Ext_2_Strength();
    }
@@ -1225,20 +1223,19 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_1_
       g.mg = g.LeverRuleData.mg;
 
       Float64 skew = ShearSkewCorrectionFactor();
-      if ( m_bSkewShear )
-      {
-         g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-      }
       g.mg *= skew;
       g.SkewCorrectionFactor = skew;
    }
 
    // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
-   if (g.mg < gint.mg)
+   if (nb>2)
    {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_1_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
    }
 
    return g;
@@ -1248,14 +1245,25 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxDotLldfTypeBC::GetShearDF_Ext_2_
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 
-   g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
+   GirderIndexType nb = GetNb();
+   if ( nb<3 )
+   {
+      g = GetLanesBeamsMethod(m_Nl,nb);
+   }
+   else 
+   {
+      g = lrfdLldfTypeBC::GetShearDF_Ext_2_Strength();
+   }
 
    // exterior cannot be less than interior
-   lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
-   if (g.mg < gint.mg)
+   if (nb>2)
    {
-      g = gint;
-      g.ControllingMethod |= INTERIOR_OVERRIDE;
+      lrfdILiveLoadDistributionFactor::DFResult gint = GetShearDF_Int_2_Strength();
+      if (g.mg < gint.mg)
+      {
+         g = gint;
+         g.ControllingMethod |= INTERIOR_OVERRIDE;
+      }
    }
 
    return g;
@@ -1272,12 +1280,23 @@ void lrfdTxDotLldfTypeBC::MakeAssignment(const lrfdTxDotLldfTypeBC& rOther)
    MakeCopy( rOther );
 }
 
+// only difference between txdot and aashto is txdot allows Nb<3
 bool lrfdTxDotLldfTypeBC::TestRangeOfApplicability(Location loc) const
 {
    if (!DoCheckApplicablity())
       return true;
 
-   return lrfdLldfTypeBC::TestRangeOfApplicability(loc);
+   GirderIndexType nb = GetNb();
+   if ( nb<3)
+   {
+      return true;
+   }
+   else
+   {
+      return lrfdLldfTypeBC::TestRangeOfApplicability(loc);
+   }
+
+   return true;
 }
 
 //======================== ACCESS     =======================================
@@ -1292,7 +1311,15 @@ bool lrfdTxDotLldfTypeBC::TestRangeOfApplicability(Location loc) const
 //======================== INQUERY    =======================================
 bool lrfdTxDotLldfTypeBC::DoApplySkew() const
 {
-   return lrfdLldfTypeBC::DoApplySkew();
+   GirderIndexType nb = GetNb();
+   if (nb>=3)
+   {
+      return lrfdLldfTypeBC::DoApplySkew();
+   }
+   else
+   {
+      return false;
+   }
 }
 
 //======================== DEBUG      =======================================
@@ -1330,7 +1357,7 @@ bool lrfdTxDotLldfTypeBC::TestMe(dbgLog& rlog)
    lrfdLldfTypeBC df(1,S,spacings,oh,oh,
                      Nl,wLane,d,L,
                      de,de,
-                     skew,skew,true,true);
+                     skew,skew);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.31382, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.54911, 0.001) );

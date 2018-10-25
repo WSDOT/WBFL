@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,8 +76,7 @@ public:
                    Uint32 Nl, Float64 wLane,
                    Float64 L,Float64 W,Float64 I,Float64 J,Float64 PossionRatio,
                    Float64 leftDe,Float64 rightDe,
-                   Float64 skewAngle1, Float64 skewAngle2,
-                   bool bMomentSkew, bool bShearSkew);
+                   Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -123,7 +122,7 @@ protected:
    void MakeCopy(const lrfdLldfTypeHIJ& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeHIJ& rOther);
+   virtual void MakeAssignment(const lrfdLldfTypeHIJ& rOther);
 
    //------------------------------------------------------------------------
    virtual bool TestRangeOfApplicability(Location loc) const;

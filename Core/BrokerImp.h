@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -71,7 +71,7 @@ public:
 
 // IBrokerInit2
 public:
-   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ long nClsid,/*[out]*/ long* lErrIndex);
+   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IndexType* lErrIndex);
    STDMETHOD(AddAgent)(/*[in]*/ IAgent* pAgent);
 	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
 	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgent* pAgent);

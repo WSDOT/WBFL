@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -281,16 +281,8 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
          {  
             // dual valued - if one is, the entire response is
             *isDualValued = VARIANT_TRUE;
-            if ( side == ilsPositive )
-            {
-               left_response  += left_inf_resp * axle_wgt;
-               right_response += right_inf_resp  * axle_wgt;
-            }
-            else
-            {
-               left_response  += right_inf_resp * axle_wgt;
-               right_response += left_inf_resp  * axle_wgt;
-            }
+            left_response  += left_inf_resp * axle_wgt;
+            right_response += right_inf_resp * axle_wgt;
 
             if (appliedAxles != NULL)
                appliedAxles->push_back(AxleOn);

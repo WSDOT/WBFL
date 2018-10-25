@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EngTools - Library of miscellaneous engineering tools
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -191,7 +191,7 @@ protected:
                const gpPoint2d& p3, Float64 s3);
    // GROUP: OPERATIONS
    void MakeCopy(const etBiaxialBeamStrain& rOther);
-   void MakeAssignment(const etBiaxialBeamStrain& rOther);
+   virtual void MakeAssignment(const etBiaxialBeamStrain& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

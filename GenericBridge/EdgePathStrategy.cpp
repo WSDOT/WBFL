@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -44,7 +44,7 @@ HRESULT CEdgePathStrategy::FinalConstruct()
 
 void CEdgePathStrategy::FinalRelease()
 {
-   Unadvise(m_Path,m_dwPathCookie);
+   //Unadvise(m_Path,m_dwPathCookie);
 }
 
 STDMETHODIMP CEdgePathStrategy::InterfaceSupportsErrorInfo(REFIID riid)
@@ -82,10 +82,7 @@ STDMETHODIMP CEdgePathStrategy::get_Path(IPath** path)
 STDMETHODIMP CEdgePathStrategy::putref_Path(IPath* path)
 {
    CHECK_IN(path);
-   Unadvise(m_Path,m_dwPathCookie);
    m_Path = path;
-   Advise(m_Path,&m_dwPathCookie);
-   Fire_OnStrategyChanged();
    return S_OK;
 }
 
@@ -115,24 +112,4 @@ STDMETHODIMP CEdgePathStrategy::Save(IStructuredSave2* save)
    save->put_Property(CComBSTR("Path"),CComVariant(m_Path));
    save->EndUnit();
    return S_OK;
-}
-
-void CEdgePathStrategy::Advise(IPath* path,DWORD* pdwCookie)
-{
-   if ( path == NULL )
-      return;
-
-   HRESULT hr = AtlAdvise(path,GetUnknown(),IID_IPathEvents,pdwCookie);
-   ATLASSERT(SUCCEEDED(hr));
-   InternalRelease();
-}
-
-void CEdgePathStrategy::Unadvise(IPath* path,DWORD dwCookie)
-{
-   if ( path == NULL )
-      return;
-
-   InternalAddRef();
-   HRESULT hr = AtlUnadvise(path,IID_IPathEvents,dwCookie);
-   ATLASSERT( SUCCEEDED(hr) );
 }

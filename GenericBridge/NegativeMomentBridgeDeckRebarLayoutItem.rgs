@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.NegativeMomentBridgeDeckRebarLayoutItem.1 = s 'NegativeMomentBridgeDeckRebarLayoutItem Class'
+	{
+		CLSID = s '{BBCE715B-3F02-4859-AA8B-81B9ED11826D}'
+	}
+	WBFLGenericBridge.NegativeMomentBridgeDeckRebarLayoutItem = s 'NegativeMomentBridgeDeckRebarLayoutItem Class'
+	{
+		CLSID = s '{BBCE715B-3F02-4859-AA8B-81B9ED11826D}'
+		CurVer = s 'GenericBridge.NegativeMomentBridgeDeckRebarLayoutItem.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BBCE715B-3F02-4859-AA8B-81B9ED11826D} = s 'NegativeMomentBridgeDeckRebarLayoutItem Class'
+		{
+			ProgID = s 'WBFLGenericBridge.NegativeMomentBridgeDeckRebarLayoutItem.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.NegativeMomentBridgeDeckRebarLayoutItem'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

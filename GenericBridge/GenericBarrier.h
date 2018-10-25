@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __GENERICBARRIER_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -41,8 +40,6 @@ class ATL_NO_VTABLE CGenericBarrier :
 	public ISupportErrorInfo,
 	public IGenericBarrier,
    public IStructuredStorage2,
-//   public CProxyDGenericBarrierEvents< CGenericBarrier >,
-//   public IConnectionPointContainerImpl<CGenericBarrier>,
    public IObjectSafetyImpl<CGenericBarrier,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
@@ -63,14 +60,8 @@ BEGIN_COM_MAP(CGenericBarrier)
 
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 
-//   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CGenericBarrier)
-//	CONNECTION_POINT_ENTRY(IID_IGenericBarrierEvents)
-END_CONNECTION_POINT_MAP()
 
 private:
    CComPtr<IShape> m_BarrierShape;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -130,9 +130,6 @@ END_COM_MAP()
 
 
 protected:
-   void MakeCopy(const CDisplayListImpl& other);
-   void MakeAssignment(const CDisplayListImpl& other);
-
    void CreateStrongRef()
    {
       if ( m_pDispMgr )

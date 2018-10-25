@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -590,6 +590,11 @@ STDMETHODIMP CPath::Offset(IPoint2d* point,Float64* distance,Float64* offset)
 
 STDMETHODIMP CPath::Intersect(ILine2d* line,IPoint2d* pNearest,IPoint2d** point)
 {
+   return IntersectEx(line,pNearest,VARIANT_TRUE,VARIANT_TRUE,point);
+}
+
+STDMETHODIMP CPath::IntersectEx(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point)
+{
    CHECK_IN(line);
    CHECK_IN(pNearest);
    CHECK_RETOBJ(point);
@@ -600,14 +605,15 @@ STDMETHODIMP CPath::Intersect(ILine2d* line,IPoint2d* pNearest,IPoint2d** point)
    CComPtr<IPoint2dCollection> points;
    points.CoCreateInstance(CLSID_Point2dCollection);
 
-   ElementContainer::iterator iter;
-   for ( iter = elements.begin(); iter < elements.end(); iter++ )
+   ElementContainer::iterator iter(elements.begin());
+   ElementContainer::iterator end(elements.end());
+   for ( ; iter != end; iter++ )
    {
       ElementContainer::value_type& item = *iter;
       CComPtr<IPathElement> element(item.second.m_T);
 
-      bool bProjectBack = (iter == elements.begin() ? true : false);
-      bool bProjectAhead = (iter == elements.end() - 1 ? true : false);
+      bool bProjectBack  = (vbProjectBack  == VARIANT_FALSE ? false : (iter == elements.begin() ? true : false));
+      bool bProjectAhead = (vbProjectAhead == VARIANT_FALSE ? false : (iter == elements.end() - 1 ? true : false));
       IntersectElement(line,element,bProjectBack,bProjectAhead,points);
    }
 
@@ -631,14 +637,14 @@ STDMETHODIMP CPath::Intersect(ILine2d* line,IPoint2d* pNearest,IPoint2d** point)
       p.Release();
    }
 
-   ATLASSERT(nearestPoint != NULL);
    if ( nearestPoint )
    {
       (*point) = nearestPoint;
       (*point)->AddRef();
+      return S_OK;
    }
 
-   return S_OK;
+   return Error(IDS_E_NOINTERSECTION,IID_IPath,COGO_E_NOINTERSECTION);
 }
 
 STDMETHODIMP CPath::get_Length(Float64* pLength)
@@ -708,9 +714,9 @@ STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
    typedef CComEnumOnSTL<IEnumPathElements,
                          &IID_IEnumPathElements, 
                          IPathElement*,
-                         CopyFromPair2Interface<std::pair<CogoElementKey,CComVariant>,
+                         CopyFromPair2Interface<PathType,
                                                 IPathElement*>, 
-                         std::vector<std::pair<CogoElementKey,CComVariant> > > Enum;
+                                                std::vector<PathType>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -760,7 +766,7 @@ void CPath::UnadviseElement(CollectionIndexType idx)
    //
    // Disconnection from connection CrossSection
    //
-   std::pair<IDType,CComVariant>& p = m_coll[idx];
+   PathType& p = m_coll[idx];
    if ( p.first == 0 )
       return;
 
@@ -1537,17 +1543,7 @@ CPath::ElementContainer CPath::GetAllElements()
 
             CComPtr<IPathElement> element;
             CreateDummyPathElement(prevPoint,lastPoint,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            Float64 length;
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
-            {
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
+            elements.push_back( std::make_pair(currDist,AdaptElement(element)));
          }
       }
       else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
@@ -1725,7 +1721,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back(std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -1767,7 +1763,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -1809,7 +1805,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -2256,15 +2252,9 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
    point1->get_X(&x1);
    point2->get_X(&x2);
 
-   // NOTE: this code is commented out because it causes problems.
-   // There is a case (seem mantis issue 404) where x1 is a very small
-   // positive value. When it gets forced to zero the line below
-   // if ( 0 < x1 && 0 <= x2 ) evaluates to false, because x1 is zero,
-   // and the point ends up not being projected onto anything. This is
-   // a bug. Just leave x1 and x2 alone.
-   //// Supress round off error
-   //x1 = IsZero(x1) ? 0.00 : x1;
-   //x2 = IsZero(x2) ? 0.00 : x2;
+   // Supress round off error
+   x1 = IsZero(x1) ? 0.00 : x1;
+   x2 = IsZero(x2) ? 0.00 : x2;
 
    // Adjust mapping if the element is to be extended
    if ( bExtendBack )
@@ -2740,9 +2730,9 @@ STDMETHODIMP CPath::Load(IStructuredLoad2* pLoad)
 
    pLoad->BeginUnit(CComBSTR("PathElements"));
    pLoad->get_Property(CComBSTR("Count"),&var);
-   long count = var.lVal;
+   CollectionIndexType count = var.iVal;
 
-   for ( long i = 0; i < count; i++ )
+   for ( CollectionIndexType i = 0; i < count; i++ )
    {
       pLoad->get_Property(CComBSTR("PathElement"),&var);
       CComPtr<IPathElement> element;
@@ -2894,7 +2884,7 @@ void CPath::CreateParallelCubicSpline(Float64 offset,ICubicSpline* spline,IUnkno
    (*result)->AddRef();
 }
 
-void CPath::CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint)
+void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint)
 {
    CComPtr<IPoint2d> prevPoint, nextPoint;
 
@@ -3072,7 +3062,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
    (*ppResult2) = NULL;
    (*ppResult3) = NULL;
 
-   long nSplinePoints = 7;
+   CollectionIndexType nSplinePoints = 7;
 
    // get distance from the start of the path to the start and end of the horz curve
    CComPtr<IPoint2d> hcStartPoint, hcEndPoint;
@@ -3450,7 +3440,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
 }
 
  
-HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,long nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline)
+HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline)
 {
    // create a cubic spline to represent the sub-portion of the entry spiral
    CComObject<CCubicSpline>* pSpline;
@@ -3467,8 +3457,8 @@ HRESULT CPath::CreateSubCurveSpline(Float64 start,Float64 end,long nPoints,IHorz
 
    // lay out some points between the start point and the end point
    // so the cubic spline gives a good approximation of the spiral
-   long nIntermediatePoints = nPoints-2;
-   for ( int i = 0; i < nIntermediatePoints; i++ )
+   CollectionIndexType nIntermediatePoints = nPoints-2;
+   for ( CollectionIndexType i = 0; i < nIntermediatePoints; i++ )
    {
       Float64 d = start + (i+1)*(end - start)/(nIntermediatePoints+1);
 

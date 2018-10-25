@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,7 +43,7 @@ public:
 	static void Test();
 	CTestPointCollection();
 
-   void InitEventTest(CogoElementKey expectedKey) { m_expectedKey = expectedKey; m_bTestState = false; }
+   void InitEventTest(CogoObjectID expectedKey) { m_expectedKey = expectedKey; m_bTestState = false; }
    bool PassedEventTest() { return m_bTestState; }
 
 BEGIN_COM_MAP(CTestPointCollection)
@@ -52,14 +52,14 @@ END_COM_MAP()
 
 // IPointCollectionEvents
 public:
-	STDMETHOD(OnPointChanged)(CogoElementKey key,IPoint2d* point);
-	STDMETHOD(OnPointAdded)(CogoElementKey key,IPoint2d* point);
-	STDMETHOD(OnPointRemoved)(CogoElementKey key);
+	STDMETHOD(OnPointChanged)(CogoObjectID key,IPoint2d* point);
+	STDMETHOD(OnPointAdded)(CogoObjectID key,IPoint2d* point);
+	STDMETHOD(OnPointRemoved)(CogoObjectID key);
 	STDMETHOD(OnPointsCleared)();
 
 private:
    bool m_bTestState;
-   CogoElementKey m_expectedKey;
+   CogoObjectID m_expectedKey;
    void Pass() { m_bTestState = true; }
 };
 

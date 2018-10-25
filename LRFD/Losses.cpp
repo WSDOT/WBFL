@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,6 +43,7 @@ CLASS
 
 lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 Lg,
+                         lrfdLosses::SectionPropertiesType sectionProperties,
                          matPsStrand::Grade gr,
                          matPsStrand::Type type,
                          Float64 fpjPerm, // fpj permanent strands
@@ -50,7 +51,8 @@ lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,   // area of TTS 
                          Float64 aps,      // area of one temp strand
-                         Float64 eperm, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
+                         Float64 epermFinal,
                          Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
                          lrfdLosses::TempStrandUsage usage,
                          Float64 anchorSet,
@@ -77,6 +79,13 @@ lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 Ic,    // Moment of inertia of composite
                          Float64 Ybc,   // Centroid of composite measured from bottom
 
+                         Float64 An,   // area of girder
+                         Float64 In,   // moment of inertia of girder
+                         Float64 Ybn,   // Centroid of girder measured from bottom
+                         Float64 Acn,    // Area of the composite girder and deck
+                         Float64 Icn,    // Moment of inertia of composite
+                         Float64 Ybcn,   // Centroid of composite measured from bottom
+
                          Float64 rh, // relative humidity
                          Float64 ti,   // Time until prestress transfer
 
@@ -94,7 +103,8 @@ lrfdLosses::lrfdLosses(  Float64 x,
    m_ApsPerm               = ApsPerm;
    m_ApsTemp               = ApsTemp;
    m_aps                   = aps;
-   m_eperm                 = eperm;
+   m_epermRelease          = epermRelease;
+   m_epermFinal            = epermFinal;
    m_etemp                 = etemp;
    m_Fc                    = Fc;
    m_Fci                   = Fci;
@@ -123,12 +133,21 @@ lrfdLosses::lrfdLosses(  Float64 x,
    
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
+   m_SectionProperties = sectionProperties;
+
    m_Ag                    = Ag;
    m_Ig                    = Ig;
    m_Ybg                   = Ybg;
    m_Ac                    = Ac;
    m_Ic                    = Ic;
    m_Ybc                   = Ybc;
+
+   m_An                    = An;
+   m_In                    = In;
+   m_Ybn                   = Ybn;
+   m_Acn                   = Acn;
+   m_Icn                   = Icn;
+   m_Ybcn                  = Ybcn;
 
    m_H = rh;
 
@@ -150,7 +169,8 @@ lrfdLosses::lrfdLosses()
    m_ApsPerm               = 0;
    m_ApsTemp               = 0;
    m_aps                   = 0;
-   m_eperm                 = 0;
+   m_epermRelease          = 0;
+   m_epermFinal            = 0;
    m_etemp                 = 0;
    m_Fc                    = 0;
    m_Fci                   = 0;
@@ -178,12 +198,21 @@ lrfdLosses::lrfdLosses()
    
    m_bIgnoreInitialRelaxation = true;
 
+   m_SectionProperties = sptGross;
+
    m_Ag                    = 0;
    m_Ig                    = 0;
    m_Ybg                   = 0;
    m_Ac                    = 0;
    m_Ic                    = 0;
    m_Ybc                   = 0;
+
+   m_An                    = 0;
+   m_In                    = 0;
+   m_Ybn                   = 0;
+   m_Acn                   = 0;
+   m_Icn                   = 0;
+   m_Ybcn                  = 0;
 
    m_H = 0;
 
@@ -201,10 +230,10 @@ lrfdLosses::lrfdLosses(const lrfdLosses& rOther)
 void lrfdLosses::Init()
 {
    m_bValidateParameters = true;
-   m_dfpR0[0] = 0;
-   m_dfpR0[1] = 0;
-   m_dfpES[0] = 0;
-   m_dfpES[1] = 0;
+   m_dfpR0[TEMPORARY_STRAND] = 0;
+   m_dfpR0[PERMANENT_STRAND] = 0;
+   m_dfpES[TEMPORARY_STRAND] = 0;
+   m_dfpES[PERMANENT_STRAND] = 0;
    m_dfpED = 0;
    m_dfpSIDL = 0;
    m_dfpSS = 0;
@@ -309,18 +338,32 @@ Float64 lrfdLosses::GetStrandArea() const
    return m_aps;
 }
 
-void lrfdLosses::SetEccPermanent(Float64 e)
+void lrfdLosses::SetEccPermanentRelease(Float64 e)
 {
-   if ( !IsEqual(m_eperm,e) )
+   if ( !IsEqual(m_epermRelease,e) )
    {
-      m_eperm = e;
+      m_epermRelease = e;
       m_IsDirty = true;
    }
 }
 
-Float64 lrfdLosses::GetEccPermanent() const
+Float64 lrfdLosses::GetEccPermanentRelease() const
 {
-   return m_eperm;
+   return m_epermRelease;
+}
+
+void lrfdLosses::SetEccPermanentFinal(Float64 e)
+{
+   if ( !IsEqual(m_epermFinal,e) )
+   {
+      m_epermFinal = e;
+      m_IsDirty = true;
+   }
+}
+
+Float64 lrfdLosses::GetEccPermanentFinal() const
+{
+   return m_epermFinal;
 }
 
 void lrfdLosses::SetEccTemporary(Float64 e)
@@ -340,14 +383,22 @@ Float64 lrfdLosses::GetEccTemporary() const
 Float64 lrfdLosses::GetEccpc() const
 {
    // eccentricty of permanent strand on composite girder
-   return m_eperm + (m_Ybc - m_Ybg);
+   return m_epermFinal + (m_Ybc - m_Ybg);
 }
 
-Float64 lrfdLosses::GetEccpg() const
+Float64 lrfdLosses::GetEccpgRelease() const
 {
    // eccentricty of all strand on non-composite girder
-   Float64 aps = m_ApsPerm + m_ApsTemp;
-   Float64 ecc = IsZero(aps) ? 0 : (m_ApsPerm*m_eperm + m_ApsTemp*m_etemp)/aps;
+   Float64 Aps = m_ApsPerm + m_ApsTemp;
+   Float64 ecc = IsZero(Aps) ? 0 : (m_ApsPerm*m_epermRelease + m_ApsTemp*m_etemp)/Aps;
+   return ecc;
+}
+
+Float64 lrfdLosses::GetEccpgFinal() const
+{
+   // eccentricty of all strand on non-composite girder
+   Float64 Aps = m_ApsPerm + m_ApsTemp;
+   Float64 ecc = IsZero(Aps) ? 0 : (m_ApsPerm*m_epermFinal + m_ApsTemp*m_etemp)/Aps;
    return ecc;
 }
 
@@ -373,7 +424,11 @@ Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return PermanentStrand_RelaxationLossesBeforeTransfer() + PermanentStrand_ElasticShorteningLosses();
+   Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer();
+   if ( m_SectionProperties == sptGross )
+      loss += PermanentStrand_ElasticShorteningLosses();
+
+   return loss;
 }
 
 Float64 lrfdLosses::PermanentStrand_AtLifting() const
@@ -441,7 +496,10 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() - ElasticGainDueToDeckPlacement() + GetDeltaFptr();
+   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() + GetDeltaFptr();
+      
+   if ( m_SectionProperties == sptGross )
+      loss -= ElasticGainDueToDeckPlacement();
 
    if ( m_TempStrandUsage != tsPretensioned )
       loss += GetDeltaFpp();//m_dfpp;
@@ -454,7 +512,9 @@ Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_AfterDeckPlacement() - ElasticGainDueToSIDL();
+   Float64 loss = PermanentStrand_AfterDeckPlacement();
+   if ( m_SectionProperties == sptGross )
+      loss -= ElasticGainDueToSIDL();
 
    return loss;
 }
@@ -473,8 +533,7 @@ Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_Final() - gLL*ElasticGainDueToLiveLoad();
-   return loss;
+   return PermanentStrand_Final() - gLL*ElasticGainDueToLiveLoad();
 }
 
 Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const
@@ -545,7 +604,27 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = TemporaryStrand_AtShipping();
+   Float64 loss = 0;
+   switch ( m_TempStrandUsage )
+   {
+   case lrfdLosses::tsPretensioned:
+      loss = TemporaryStrand_AtShipping();
+      break;
+
+   case lrfdLosses::tsPTBeforeLifting:
+   case lrfdLosses::tsPTAfterLifting:
+      loss = TemporaryStrand_AtLifting() + TimeDependentLossesBeforeDeck();
+      break;
+
+   case lrfdLosses::tsPTBeforeShipping:
+      loss = TemporaryStrand_AtShipping();
+      break;
+
+   default:
+      CHECK(false);
+      break;
+   }
+
    return loss;
 }
 
@@ -586,7 +665,7 @@ Float64 lrfdLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpR0[1];
+   return m_dfpR0[PERMANENT_STRAND];
 }
 
 Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
@@ -594,7 +673,7 @@ Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpES[1];
+   return m_dfpES[PERMANENT_STRAND];
 }
 
 Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
@@ -602,7 +681,7 @@ Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpR0[0];
+   return m_dfpR0[TEMPORARY_STRAND];
 }
 
 Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
@@ -610,7 +689,7 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   return m_dfpES[0];
+   return m_dfpES[TEMPORARY_STRAND];
 }
 
 Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
@@ -884,26 +963,26 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       if ( m_TempStrandUsage == tsPretensioned )
       {
          if ( t_days*24. < 1 )
-            m_dfpR0[0] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+            m_dfpR0[TEMPORARY_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
          else
-            m_dfpR0[0] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
+            m_dfpR0[TEMPORARY_STRAND] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
       }
       else
       {
-         m_dfpR0[0] = 0; // no initial relaxation if not pre-tensioned
+         m_dfpR0[TEMPORARY_STRAND] = 0; // no initial relaxation if not pre-tensioned
       }
 
 
       if ( t_days*24. < 1 )
-         m_dfpR0[1] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+         m_dfpR0[PERMANENT_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
       else
-         m_dfpR0[1] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
+         m_dfpR0[PERMANENT_STRAND] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
    }
    else
    {
       // AASHTO
-      m_dfpR0[0] = 0;
-      m_dfpR0[1] = 0;
+      m_dfpR0[TEMPORARY_STRAND] = 0;
+      m_dfpR0[PERMANENT_STRAND] = 0;
    }
 }
 
@@ -912,24 +991,24 @@ void lrfdLosses::UpdateElasticShortening() const
    // Elastic shortening
    lrfdElasticShortening es(m_FpjPerm,
                             (m_TempStrandUsage == tsPretensioned ? m_FpjTemp : 0),
-                            m_dfpR0[1], // perm
-                            m_dfpR0[0], // temp
+                            m_dfpR0[PERMANENT_STRAND], // perm
+                            m_dfpR0[TEMPORARY_STRAND], // temp
                             m_ApsPerm,
                             (m_TempStrandUsage == tsPretensioned ? m_ApsTemp : 0),
+                            m_SectionProperties == sptGross ? true : false,
                             m_Ag,
                             m_Ig,
-                            m_eperm,
+                            m_epermRelease,
                             m_etemp,
                             m_Mdlg,
                             1.0,
                             m_Eci,
-                            m_Ep,
-                            lrfdElasticShortening::fcgpIterative);
+                            m_Ep);
 
    m_ElasticShortening = es;
 
-   m_dfpES[0] = m_ElasticShortening.TemporaryStrand_ElasticShorteningLosses();
-   m_dfpES[1] = m_ElasticShortening.PermanentStrand_ElasticShorteningLosses();
+   m_dfpES[TEMPORARY_STRAND] = m_ElasticShortening.TemporaryStrand_ElasticShorteningLosses();
+   m_dfpES[PERMANENT_STRAND] = m_ElasticShortening.PermanentStrand_ElasticShorteningLosses();
 }
 
 void lrfdLosses::UpdatePostTensionLosses() const
@@ -977,7 +1056,7 @@ void lrfdLosses::UpdatePostTensionLosses() const
          lg = ::ConvertFromSysUnits(m_Lg,unitMeasure::Feet);
       }
 
-      m_dfpF  = m_FpjTemp*(1 - exp(-K*x + m_AngleChange*m_FrictionCoefficient));
+      m_dfpF  = m_FpjTemp*(1 - exp(-K*x  + m_AngleChange*m_FrictionCoefficient));
       m_dfpFT = m_FpjTemp*(1 - exp(-K*lg + m_AngleChange*m_FrictionCoefficient));
 
       // anchor set loss
@@ -1064,7 +1143,7 @@ void lrfdLosses::UpdatePostTensionLosses() const
       m_PptAvg = m_ApsTemp*m_fptAvg;
 
       // compute effect of pt on the perminate strands
-      m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp*m_eperm/m_Ig; 
+      m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp*m_epermFinal/m_Ig; 
 
       if ( m_TempStrandUsage == tsPTBeforeShipping )
          m_dfpp  = m_Fcgpp*(m_Ep/m_Ec);
@@ -1085,10 +1164,12 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    }
    else if ( m_TempStrandUsage == tsPretensioned )
    {
-      f = fpj - m_dfpR0[0]
-              - m_dfpES[0]
+      f = fpj - m_dfpR0[TEMPORARY_STRAND]
               - TemporaryStrand_TimeDependentLossesAtShipping()
               - m_dfpp;
+
+      if ( m_SectionProperties == sptGross )
+         f -= m_dfpES[TEMPORARY_STRAND];
    }
    else if ( m_TempStrandUsage == tsPTBeforeShipping )
    {
@@ -1107,12 +1188,8 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    //_ASSERTE( f <= fpj );
 
    m_Ptr   = m_ApsTemp*f; // force in temporary strands immediately before removal
-   m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_eperm*m_etemp/m_Ig; // concrete stress change due to removal
-
-   if (m_ApsPerm>0.0)
-      m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
-   else
-      m_dfptr = 0.0; // no permanent strands, so the effect is zero
+   m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_epermFinal*m_etemp/m_Ig; // concrete stress change due to removal
+   m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
 }
 
 void lrfdLosses::MakeAssignment( const lrfdLosses& rOther )
@@ -1126,7 +1203,8 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 
    m_Type                  = rOther.m_Type;
    m_Grade                 = rOther.m_Grade;
-   m_eperm                 = rOther.m_eperm;
+   m_epermRelease          = rOther.m_epermRelease;
+   m_epermFinal            = rOther.m_epermFinal;
    m_etemp                 = rOther.m_etemp;
    m_ApsPerm               = rOther.m_ApsPerm;
    m_ApsTemp               = rOther.m_ApsTemp;
@@ -1152,6 +1230,8 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 
    m_ti                    = rOther.m_ti;
    
+   m_SectionProperties     = rOther.m_SectionProperties;
+
    m_Ag                    = rOther.m_Ag;
    m_Ig                    = rOther.m_Ig;
    m_Ybg                   = rOther.m_Ybg;
@@ -1159,15 +1239,22 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Ic                    = rOther.m_Ic;
    m_Ybc                   = rOther.m_Ybc;
 
+   m_An                    = rOther.m_An;
+   m_In                    = rOther.m_In;
+   m_Ybn                   = rOther.m_Ybn;
+   m_Acn                   = rOther.m_Acn;
+   m_Icn                   = rOther.m_Icn;
+   m_Ybcn                  = rOther.m_Ybcn;
+
    m_H                     = rOther.m_H;
 
    m_bIgnoreInitialRelaxation = rOther.m_bIgnoreInitialRelaxation;
 
-   m_dfpR0[0]              = rOther.m_dfpR0[0];
-   m_dfpES[0]              = rOther.m_dfpES[0];
+   m_dfpR0[TEMPORARY_STRAND]  = rOther.m_dfpR0[TEMPORARY_STRAND];
+   m_dfpES[TEMPORARY_STRAND]  = rOther.m_dfpES[TEMPORARY_STRAND];
 
-   m_dfpR0[1]              = rOther.m_dfpR0[1];
-   m_dfpES[1]              = rOther.m_dfpES[1];
+   m_dfpR0[PERMANENT_STRAND]  = rOther.m_dfpR0[PERMANENT_STRAND];
+   m_dfpES[PERMANENT_STRAND]  = rOther.m_dfpES[PERMANENT_STRAND];
 
    m_dfpED                 = rOther.m_dfpED;
    m_dfpSIDL               = rOther.m_dfpSIDL;

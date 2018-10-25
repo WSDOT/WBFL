@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -176,13 +176,14 @@ private:
    void ComputeFFDeflectionMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 };
 
-
+// Beam modeling uniform member distortions starting at point a, measured from the left
+// end of the beam, and ending at the right end of the beam
 class MemberStrainBeam : public Beam
 {
 // Public Implementation
 public:
-	MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 l,Float64 ea,Float64 ei,MbrType type = mtFixFix);
-   void GetLoad(Float64& qAxial, Float64& qCurvature);
+	MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,MbrType type);
+   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a);
 	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
 	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                          Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
@@ -191,6 +192,7 @@ public:
 // Private Implementation
 private:
    MemberStrainBeam();
+   Float64 m_A; 
    Float64 m_Qx;
    Float64 m_Qz;
    Float64 m_Fxl, m_Fxr;
@@ -212,18 +214,41 @@ private:
    void ComputePFDisplacements();
    void ComputeFPDisplacements();
    void ComputeFFDisplacements();
-
-   void ComputePPForces(Float64 x,Float64 &fy,Float64 &mz);
-   void ComputePFForces(Float64 x,Float64 &fy,Float64 &mz);
-   void ComputeFPForces(Float64 x,Float64 &fy,Float64 &mz);
-   void ComputeFFForces(Float64 x,Float64 &fy,Float64 &mz);
-
-	void ComputePPDeflection(Float64 x,Float64 &dy,Float64 &rz);
-	void ComputePFDeflection(Float64 x,Float64 &dy,Float64 &rz);
-	void ComputeFPDeflection(Float64 x,Float64 &dy,Float64 &rz);
-	void ComputeFFDeflection(Float64 x,Float64 &dy,Float64 &rz);
 };
 
+// Beam modeling uniform member distortions starting at point a and ending at point b, measured from the left
+// end of the beam
+class UniformMemberDistortionBeam : public Beam
+{
+// Public Implementation
+public:
+	UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,MbrType type);
+   void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b);
+	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
+	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+                         Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
+	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
+
+// Private Implementation
+private:
+   UniformMemberDistortionBeam();
+   MemberStrainBeam m_Case1Beam; // distortion from point a to the end of beam
+   MemberStrainBeam m_Case2Beam; // distortion from point b to end of beam
+   // what we want is case 1 - case 2, distortion from point a to b.
+   //
+   // (==== is the portion of the beam with the applied distortion)
+   //
+   //           |<---- a ------>|
+   // Case 1    ----------------===============
+   //
+   //           |<---- b -------------->|
+   // Case 2    ------------------------=======
+   //
+   // Case 1 - Case 2
+   //           |<---- a ------>|
+   //           |<---- b -------------->|
+   //           ----------------=========------
+};
 
 class  TrapezoidalLdBeam : public Beam
 {
@@ -258,9 +283,10 @@ private:
 
    // need to keep separate results for reactions at left end due to uniform and triangular
    // portions of load
-   Float64 m_Fyl_u, m_Fyl_t, m_Fyr_t;
+   Float64 m_Fyl_u, m_Fyl_t;
+   Float64 m_Fyr_u, m_Fyr_t;
    Float64 m_Mzl_u, m_Mzl_t;
-   Float64 m_Fyr_u, m_Mzr_u;
+   Float64 m_Mzr_u, m_Mzr_t;
 
    void ComputeReactions();
    void ComputeDisplacements();

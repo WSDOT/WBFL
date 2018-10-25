@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLBridgeGeometry.PierLineCollection.1 = s 'PierLineCollection Class'
+	{
+		CLSID = s '{66394ACF-2A3E-43EB-94EE-0E7CE50A8904}'
+	}
+	WBFLBridgeGeometry.PierLineCollection = s 'PierLineCollection Class'
+	{
+		CLSID = s '{66394ACF-2A3E-43EB-94EE-0E7CE50A8904}'
+		CurVer = s 'WBFLBridgeGeometry.PierLineCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {66394ACF-2A3E-43EB-94EE-0E7CE50A8904} = s 'PierLineCollection Class'
+		{
+			ProgID = s 'WBFLBridgeGeometry.PierLineCollection.1'
+			VersionIndependentProgID = s 'WBFLBridgeGeometry.PierLineCollection'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

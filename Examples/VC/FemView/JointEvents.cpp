@@ -96,7 +96,7 @@ STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnLButtonDblClk(iDisplay
    METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
 
    // Joint got double clicked on... Display its editing dialog
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pThis->EditJoint(id);
 
    return true;
@@ -173,7 +173,7 @@ STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnMouseWheel(iDisplayObj
 STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
 
    switch(nChar)
    {
@@ -212,14 +212,14 @@ STDMETHODIMP_(BOOL) CJointEvents::XDragData::PrepareForDrag(iDisplayObject* pDO,
 {
    pSink->CreateFormat(ms_Format);
 
-   long id = pDO->GetID();
+   IDType id = pDO->GetID();
    pSink->Write(ms_Format,&id,sizeof(id));
    return TRUE;
 }
 
 STDMETHODIMP_(void) CJointEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
 {
-   long id;
+   IDType id;
    pSource->PrepareFormat(ms_Format);
    pSource->Read(ms_Format,&id,sizeof(id));
    pDO->SetID(id);
@@ -227,7 +227,7 @@ STDMETHODIMP_(void) CJointEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDat
 
 
 
-void CJointEvents::EditJoint(long jntID)
+void CJointEvents::EditJoint(IDType jntID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dJointCollection> joints;
@@ -274,7 +274,7 @@ void CJointEvents::EditJoint(long jntID)
    }
 }
 
-void CJointEvents::DeleteJoint(long jntID)
+void CJointEvents::DeleteJoint(IDType jntID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dJointCollection> joints;

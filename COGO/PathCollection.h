@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@
 #include "COGOCP.h"
 
 class CPathCollection;
-typedef PersistentKeyedCollection<CPathCollection,IPathCollection,&IID_IPathCollection,CogoElementKey,IPath> PathCollectionImpl;
+typedef PersistentKeyedCollection<CPathCollection,IPathCollection,&IID_IPathCollection,CogoObjectID,IPath> PathCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPathCollection
@@ -87,23 +87,23 @@ public:
 	STDMETHOD(get_Factory)(/*[out,retval]*/IPathFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/IPathFactory* factory);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoElementKey key, /*[out, retval]*/ IPath* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoElementKey key, /*[in]*/ IPath* pVal);
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ IPath* *pVal);
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ IPath* pVal);
    STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(AddEx)(/*[in]*/ CogoElementKey key,/*[in]*/ IPath* newVal);
-   STDMETHOD(Add)(/*[in]*/ CogoElementKey key,/*[out,retval]*/ IPath* *Path);
-   STDMETHOD(Remove)(/*[in]*/ CogoElementKey key);
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ IPath* newVal);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[out,retval]*/ IPath* *Path);
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
    STDMETHOD(Clear)();
-   STDMETHOD(FindKey)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoElementKey* key);
+   STDMETHOD(FindKey)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* key);
    STDMETHOD(get__EnumKeys)(/*[out,retval]*/ IEnumKeys** ppenum);
 //	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
 //	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-   STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoElementKey* key);
+   STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
 
 // IPathEvents
 	STDMETHOD(OnPathChanged)(IPath * Path)
 	{
-      CogoElementKey key;
+      CogoObjectID key;
       FindKey(Path,&key);
       Fire_OnPathChanged(this,key,Path);
 		return S_OK;
@@ -117,14 +117,14 @@ public:
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
-   HRESULT PathNotFound(CogoElementKey key);
-   HRESULT PathAlreadyDefined(CogoElementKey key);
-   HRESULT PathKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes);
+   HRESULT PathNotFound(CogoObjectID key);
+   HRESULT PathAlreadyDefined(CogoObjectID key);
+   HRESULT PathKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoElementKey key,IPath* Path);
-   void Unadvise(CogoElementKey key,IPath* Path);
+   void Advise(CogoObjectID key,IPath* Path);
+   void Unadvise(CogoObjectID key,IPath* Path);
    void UnadviseAll();
-   std::map<CogoElementKey,DWORD> m_Cookies;
+   std::map<CogoObjectID,DWORD> m_Cookies;
 
    CComPtr<IPathFactory> m_Factory;
 

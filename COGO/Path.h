@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@
 #include <vector>
 #include "COGOCP.h"
 
-typedef std::pair<CogoElementKey,CComVariant> PathType;
+typedef std::pair<DWORD,CComVariant> PathType; // cookie,varient(IUnknown for PathElement)
 typedef std::vector<PathType> Paths;
 typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<PathType,VARIANT>, Paths > PathEnum;
 typedef ICollectionOnSTLImpl<IPath, Paths, VARIANT, CopyFromPair2<PathType,VARIANT>, PathEnum> IPathElementCollection;
@@ -94,6 +94,7 @@ public:
    STDMETHOD(Clone)(/*[out,retval]*/ IPath* *clone);
    STDMETHOD(get__EnumPathElements)(/*[out, retval]*/ IEnumPathElements** pVal);  
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength);
+   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point);
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point);
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset); 
 	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint);
@@ -192,13 +193,13 @@ private:
 
    void CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** result);
    void CreateParallelCubicSpline(Float64 offset,ICubicSpline* spline,IUnknown** result);
-   void CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint);
+   void CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint);
 
 
    HRESULT CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment);
    HRESULT CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3);
    HRESULT CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpine,IUnknown** ppResult);
-   HRESULT CreateSubCurveSpline(Float64 start,Float64 end,long nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline);
+   HRESULT CreateSubCurveSpline(Float64 start,Float64 end,CollectionIndexType nPoints,IHorzCurve* pHC,ICubicSpline** ppSpline);
    HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
 
    HRESULT DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOffset);

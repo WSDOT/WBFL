@@ -132,32 +132,12 @@ STDMETHODIMP CRoundColumn::get_Es(Float64* es)
 
 STDMETHODIMP CRoundColumn::ComputeInteraction(long nSteps,IPoint2dCollection* *points)
 {
-   return ComputeInteractionCurve(nSteps,false,0,0,points,NULL);
-}
-
-STDMETHODIMP CRoundColumn::ComputeInteractionEx(long nSteps,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored)
-{
-   return ComputeInteractionCurve(nSteps,true,ecl,etl,ppUnfactored,ppFactored);
-}
-
-HRESULT CRoundColumn::ComputeInteractionCurve(long nSteps,bool bFactor,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored)
-{
-   CHECK_RETOBJ(ppUnfactored);
-   if ( bFactor )
-   {
-      CHECK_RETOBJ(ppFactored);
-   }
+   CHECK_RETOBJ(points);
 
    // This is a C translation from an old FORTRAN routine
    // The numbers refer to the line numbers in the original FORTRAN source
-   CComPtr<IPoint2dCollection> unfactoredPoints;
-   unfactoredPoints.CoCreateInstance(CLSID_Point2dCollection);
-
-   CComPtr<IPoint2dCollection> factoredPoints;
-   if ( bFactor )
-   {
-      factoredPoints.CoCreateInstance(CLSID_Point2dCollection);
-   }
+   CComPtr<IPoint2dCollection> ip;
+   ip.CoCreateInstance(CLSID_Point2dCollection);
 
    Float64 p1, xm;
    Uint32 nb;
@@ -253,37 +233,15 @@ HRESULT CRoundColumn::ComputeInteractionCurve(long nSteps,bool bFactor,Float64 e
       CComPtr<IPoint2d> point;
       point.CoCreateInstance(CLSID_Point2d);
       point->Move(xm,-p1); // make tesion + and compression -
-      unfactoredPoints->Add(point);
-
-      if ( bFactor )
-      {
-         Float64 et = 0.003*( (m_Diameter-m_Cover)/w - 1);
-         Float64 phi = 0.75 + 0.15*(et-ecl)/(etl-ecl);
-         phi = ::ForceIntoRange(0.75,phi,0.9);
-
-         xm *= phi;
-         p1 *= phi;
-
-         CComPtr<IPoint2d> point;
-         point.CoCreateInstance(CLSID_Point2d);
-         point->Move(xm,-p1);
-         factoredPoints->Add(point);
-      }
-
+      ip->Add(point);
       count++;
 
       p1 = 0;
       xm = 0;
       } // 235 CONTINUE
 
-   (*ppUnfactored) = unfactoredPoints;
-   (*ppUnfactored)->AddRef();
-
-   if ( bFactor )
-   {
-      (*ppFactored) = factoredPoints;
-      (*ppFactored)->AddRef();
-   }
+   (*points) = ip;
+   (*points)->AddRef();
 
    return S_OK;
 }

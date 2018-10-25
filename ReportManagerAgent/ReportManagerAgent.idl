@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManagerAgent - Provides report manager as an Agent
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,13 +40,12 @@ library WBFLReportManagerAgent
 {
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
-   importlib("WBFLCore.tlb");
 
 	[
 		uuid(809889B1-69F0-49FC-B8F5-50B0BC169EB0),
-		helpstring("ReportManager Class")
+		helpstring("ReportManagerAgent Class")
 	]
-	coclass ReportManager
+	coclass ReportManagerAgent
 	{
 		[default] interface IAgentEx;
 	};

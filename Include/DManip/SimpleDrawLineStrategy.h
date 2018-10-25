@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,8 +43,12 @@ interface iSimpleDrawLineStrategy : public iDrawLineStrategy
    STDMETHOD_(COLORREF,GetColor)() PURE;
    STDMETHOD_(void,SetBeginType)(LineEndType type) PURE;
    STDMETHOD_(LineEndType,GetBeginType)() PURE;
+   STDMETHOD_(int,GetBeginSize)() PURE;
+   STDMETHOD_(void,SetBeginSize)(int size) PURE;
    STDMETHOD_(void,SetEndType)(LineEndType type) PURE;
    STDMETHOD_(LineEndType,GetEndType)() PURE;
+   STDMETHOD_(int,GetEndSize)() PURE;
+   STDMETHOD_(void,SetEndSize)(int size) PURE;
    STDMETHOD_(void,SetLineStyle)(LineStyleType style) PURE;
    STDMETHOD_(LineStyleType,GetLineStyle)() PURE;
 };

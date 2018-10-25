@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -141,7 +141,7 @@ void CTestISupportErrorInfo::Test()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading1->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain;
-   TRY_TEST_LC(pMemberStrains->Create(1, 7, 0.05, 0.0, &pMemberStrain));
+   TRY_TEST_LC(pMemberStrains->Create(1, 7, 0.0, -1.0, 0.05, 0.0, &pMemberStrain));
 
    TEST_EI(pSEIFem2dMemberStrain, pMemberStrain, IID_IFem2dMemberStrain);
    TEST_EI(pSEIFem2dMemberStrains, pMemberStrains, IID_IFem2dMemberStrainCollection);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -104,6 +104,35 @@ public:
    //------------------------------------------------------------------------
    Float64 GetKg() const;
 
+   // GROUP: ACCESS
+   // GROUP: INQUIRY
+
+protected:
+   // GROUP: DATA MEMBERS
+   Float64 m_LeftDe;
+   Float64 m_RightDe;
+   Float64 m_L;
+   Float64 m_ts;
+   Float64 m_n;
+   Float64 m_A;
+   Float64 m_I;
+   Float64 m_eg;
+   Float64 m_SkewAngle1;
+   Float64 m_SkewAngle2;
+   bool m_bSkewMoment;
+   bool m_bSkewShear;
+   bool m_bIgnoreDe; // not the best OO design, but some of our children would like to ignore the check for this
+
+   Float64 m_Kg;
+
+   // GROUP: LIFECYCLE
+   // GROUP: OPERATORS
+   // GROUP: OPERATIONS
+   //------------------------------------------------------------------------
+   void MakeCopy(const lrfdLldfTypeAEKIJ& rOther);
+
+   //------------------------------------------------------------------------
+   virtual void MakeAssignment(const lrfdLldfTypeAEKIJ& rOther);
 
    //------------------------------------------------------------------------
    virtual bool TestRangeOfApplicability(Location loc) const;
@@ -123,34 +152,6 @@ public:
    virtual DFResult GetShearDF_Ext_1_Strength() const;
    //------------------------------------------------------------------------
    virtual DFResult GetShearDF_Ext_2_Strength() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Float64 m_LeftDe;
-   Float64 m_RightDe;
-   Float64 m_L;
-   Float64 m_ts;
-   Float64 m_n;
-   Float64 m_A;
-   Float64 m_I;
-   Float64 m_eg;
-   Float64 m_SkewAngle1;
-   Float64 m_SkewAngle2;
-   bool m_bIgnoreDe; // not the best OO design, but some of our children would like to ignore the check for this
-
-   Float64 m_Kg;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLldfTypeAEKIJ& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeAEKIJ& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

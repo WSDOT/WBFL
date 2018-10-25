@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -52,27 +52,27 @@ void CPathCollection::FinalRelease()
    m_coll.clear();
 }
 
-STDMETHODIMP CPathCollection::get_Item(CogoElementKey key, IPath **pVal)
+STDMETHODIMP CPathCollection::get_Item(CogoObjectID key, IPath **pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return PathNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::putref_Item(CogoElementKey key, IPath *newVal)
+STDMETHODIMP CPathCollection::putref_Item(CogoObjectID key, IPath *newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -99,9 +99,9 @@ STDMETHODIMP CPathCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Remove(CogoElementKey key)
+STDMETHODIMP CPathCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -119,7 +119,7 @@ STDMETHODIMP CPathCollection::Remove(CogoElementKey key)
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Add(CogoElementKey key, IPath* *path)
+STDMETHODIMP CPathCollection::Add(CogoObjectID key, IPath* *path)
 {
    if ( path != NULL )
    {
@@ -138,7 +138,7 @@ STDMETHODIMP CPathCollection::Add(CogoElementKey key, IPath* *path)
    return AddEx(key,newPath);
 }
 
-STDMETHODIMP CPathCollection::AddEx(CogoElementKey key, IPath* newVal)
+STDMETHODIMP CPathCollection::AddEx(CogoObjectID key, IPath* newVal)
 {
    CHECK_IN(newVal);
 
@@ -147,7 +147,7 @@ STDMETHODIMP CPathCollection::AddEx(CogoElementKey key, IPath* newVal)
    if ( bIsValid != VARIANT_TRUE )
       return E_INVALIDARG;
    
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -174,15 +174,15 @@ STDMETHODIMP CPathCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CPathCollection::FindKey(IPath* pp,CogoElementKey* key)
+STDMETHODIMP CPathCollection::FindKey(IPath* pp,CogoObjectID* key)
 {
    CHECK_IN(pp);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IPath> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(pp) )
@@ -199,7 +199,7 @@ STDMETHODIMP CPathCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -214,18 +214,18 @@ STDMETHODIMP CPathCollection::get__EnumKeys(IEnumKeys** ppenum)
    return S_OK;
 }
 
-STDMETHODIMP CPathCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CPathCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -252,7 +252,7 @@ STDMETHODIMP CPathCollection::get__EnumPaths(IEnumPaths** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumPaths,&IID_IEnumPaths, IPath*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,IPath*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumPaths,&IID_IEnumPaths, IPath*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,IPath*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -286,7 +286,7 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
       CComPtr<IPath> clonePath;
       Path->Clone(&clonePath);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,clonePath);
@@ -299,7 +299,7 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
    return S_OK;
 }
 
-void CPathCollection::Advise(CogoElementKey key,IPath* Path)
+void CPathCollection::Advise(CogoObjectID key,IPath* Path)
 {
    DWORD dwCookie;
    HRESULT hr = AtlAdvise(Path,GetUnknown(),IID_IPathEvents,&dwCookie);
@@ -314,7 +314,7 @@ void CPathCollection::Advise(CogoElementKey key,IPath* Path)
    InternalRelease(); // Break circular reference
 }
 
-void CPathCollection::Unadvise(CogoElementKey key,IPath* Path)
+void CPathCollection::Unadvise(CogoObjectID key,IPath* Path)
 {
    ATLASSERT(Path != 0);
 
@@ -323,7 +323,7 @@ void CPathCollection::Unadvise(CogoElementKey key,IPath* Path)
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -344,26 +344,26 @@ void CPathCollection::Unadvise(CogoElementKey key,IPath* Path)
 
 void CPathCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<IPath> Path( (*iter).second.pdispVal );
       Unadvise(key,Path);
    }
 }
 
-HRESULT CPathCollection::PathNotFound(CogoElementKey key)
+HRESULT CPathCollection::PathNotFound(CogoObjectID key)
 {
    return PathKeyError(key,IDS_E_PATHNOTFOUND,COGO_E_PATHNOTFOUND);
 }
 
-HRESULT CPathCollection::PathAlreadyDefined(CogoElementKey key)
+HRESULT CPathCollection::PathAlreadyDefined(CogoObjectID key)
 {
    return PathKeyError(key,IDS_E_PATHALREADYDEFINED,COGO_E_PATHALREADYDEFINED);
 }
 
-HRESULT CPathCollection::PathKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CPathCollection::PathKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

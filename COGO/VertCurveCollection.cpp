@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -51,27 +51,27 @@ void CVertCurveCollection::FinalRelease()
    UnadviseAll();
 }
 
-STDMETHODIMP CVertCurveCollection::get_Item(CogoElementKey key, IVertCurve **pVal)
+STDMETHODIMP CVertCurveCollection::get_Item(CogoObjectID key, IVertCurve **pVal)
 {
    CHECK_RETVAL(pVal);
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
       return VertCurveNotFound(key);
    }
 
-   std::pair<CogoElementKey,CComVariant> p = *found;
+   std::pair<CogoObjectID,CComVariant> p = *found;
    p.second.pdispVal->QueryInterface(pVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::putref_Item(CogoElementKey key, IVertCurve *newVal)
+STDMETHODIMP CVertCurveCollection::putref_Item(CogoObjectID key, IVertCurve *newVal)
 {
    CHECK_IN(newVal);
 
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -98,9 +98,9 @@ STDMETHODIMP CVertCurveCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::Remove(CogoElementKey key)
+STDMETHODIMP CVertCurveCollection::Remove(CogoObjectID key)
 {
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found == m_coll.end() )
    {
@@ -118,7 +118,7 @@ STDMETHODIMP CVertCurveCollection::Remove(CogoElementKey key)
 	return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::Add(CogoElementKey key, IProfilePoint* pbg, IProfilePoint* pvi, IProfilePoint* pfg,Float64 l1,Float64 l2,IVertCurve* *vc)
+STDMETHODIMP CVertCurveCollection::Add(CogoObjectID key, IProfilePoint* pbg, IProfilePoint* pvi, IProfilePoint* pfg,Float64 l1,Float64 l2,IVertCurve* *vc)
 {
    CHECK_IN(pbg);
    CHECK_IN(pvi);
@@ -148,11 +148,11 @@ STDMETHODIMP CVertCurveCollection::Add(CogoElementKey key, IProfilePoint* pbg, I
    return AddEx(key,newVC);
 }
 
-STDMETHODIMP CVertCurveCollection::AddEx(CogoElementKey key, IVertCurve* newVal)
+STDMETHODIMP CVertCurveCollection::AddEx(CogoObjectID key, IVertCurve* newVal)
 {
    CHECK_IN(newVal);
    
-   std::map<CogoElementKey,CComVariant>::iterator found;
+   std::map<CogoObjectID,CComVariant>::iterator found;
    found = m_coll.find(key);
    if ( found != m_coll.end() )
    {
@@ -161,7 +161,7 @@ STDMETHODIMP CVertCurveCollection::AddEx(CogoElementKey key, IVertCurve* newVal)
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   std::pair<std::map<CogoElementKey,CComVariant>::iterator,bool> result;
+   std::pair<std::map<CogoObjectID,CComVariant>::iterator,bool> result;
    result = m_coll.insert(std::make_pair(key,var));
    if ( result.second == false )
    {
@@ -184,15 +184,15 @@ STDMETHODIMP CVertCurveCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::FindKey(IVertCurve* vc,CogoElementKey* key)
+STDMETHODIMP CVertCurveCollection::FindKey(IVertCurve* vc,CogoObjectID* key)
 {
    CHECK_IN(vc);
    CHECK_RETVAL(key);
 
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      std::pair<CogoElementKey,CComVariant> item = *iter;
+      std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IVertCurve> value( item.second.pdispVal );
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(vc) )
@@ -209,7 +209,7 @@ STDMETHODIMP CVertCurveCollection::get__EnumKeys(IEnumKeys** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoElementKey, MapCopyKey<std::map<CogoElementKey,CComVariant>>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -228,7 +228,7 @@ STDMETHODIMP CVertCurveCollection::get__EnumVertCurves(IEnumVertCurves** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumVertCurves,&IID_IEnumVertCurves, IVertCurve*, MapCopyValueToInterface<std::map<CogoElementKey,CComVariant>,IVertCurve*>, std::map<CogoElementKey,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumVertCurves,&IID_IEnumVertCurves, IVertCurve*, MapCopyValueToInterface<std::map<CogoObjectID,CComVariant>,IVertCurve*>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -243,18 +243,18 @@ STDMETHODIMP CVertCurveCollection::get__EnumVertCurves(IEnumVertCurves** ppenum)
    return S_OK;
 }
 
-STDMETHODIMP CVertCurveCollection::Key(CollectionIndexType index,CogoElementKey* key)
+STDMETHODIMP CVertCurveCollection::Key(CollectionIndexType index,CogoObjectID* key)
 {
    CHECK_RETVAL(key);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
 
-   std::map<CogoElementKey,CComVariant>::iterator iter = m_coll.begin();
+   std::map<CogoObjectID,CComVariant>::iterator iter = m_coll.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
       iter++;
 
-   std::pair<CogoElementKey,CComVariant> p = *iter;
+   std::pair<CogoObjectID,CComVariant> p = *iter;
    *key = p.first;
 
    return S_OK;
@@ -277,7 +277,7 @@ STDMETHODIMP CVertCurveCollection::get_Factory(IVertCurveFactory* *factory)
 
 STDMETHODIMP CVertCurveCollection::OnVertCurveChanged(IVertCurve* vc)
 {
-   CogoElementKey key;
+   CogoObjectID key;
    HRESULT hr = FindKey(vc,&key);
 
    // This container only listens to events from VertCurve objects in this 
@@ -309,7 +309,7 @@ STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
       CComPtr<IVertCurve> cloneVC;
       vc->Clone(&cloneVC);
 
-      CogoElementKey key;
+      CogoObjectID key;
       Key(count++,&key);
 
       (*clone)->AddEx(key,cloneVC);
@@ -320,7 +320,7 @@ STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
    return S_OK;
 }
 
-void CVertCurveCollection::Advise(CogoElementKey key,IVertCurve* vc)
+void CVertCurveCollection::Advise(CogoObjectID key,IVertCurve* vc)
 {
    DWORD dwCookie;
    CComPtr<IVertCurve> pCP(vc);
@@ -336,7 +336,7 @@ void CVertCurveCollection::Advise(CogoElementKey key,IVertCurve* vc)
    InternalRelease(); // Break circular reference
 }
 
-void CVertCurveCollection::Unadvise(CogoElementKey key,IVertCurve* vc)
+void CVertCurveCollection::Unadvise(CogoObjectID key,IVertCurve* vc)
 {
    ATLASSERT(vc != 0);
 
@@ -345,7 +345,7 @@ void CVertCurveCollection::Unadvise(CogoElementKey key,IVertCurve* vc)
    //
 
    // Lookup the cookie
-   std::map<CogoElementKey,DWORD>::iterator found;
+   std::map<CogoObjectID,DWORD>::iterator found;
    found = m_Cookies.find( key );
    if ( found == m_Cookies.end() )
    {
@@ -369,26 +369,26 @@ void CVertCurveCollection::Unadvise(CogoElementKey key,IVertCurve* vc)
 
 void CVertCurveCollection::UnadviseAll()
 {
-   std::map<CogoElementKey,CComVariant>::iterator iter;
+   std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoElementKey key = (*iter).first;
+      CogoObjectID key = (*iter).first;
       CComQIPtr<IVertCurve> vc( (*iter).second.pdispVal );
       Unadvise(key,vc);
    }
 }
 
-HRESULT CVertCurveCollection::VertCurveNotFound(CogoElementKey key)
+HRESULT CVertCurveCollection::VertCurveNotFound(CogoObjectID key)
 {
    return VertCurveKeyError(key,IDS_E_VERTCURVENOTFOUND,COGO_E_VERTCURVENOTFOUND);
 }
 
-HRESULT CVertCurveCollection::VertCurveAlreadyDefined(CogoElementKey key)
+HRESULT CVertCurveCollection::VertCurveAlreadyDefined(CogoObjectID key)
 {
    return VertCurveKeyError(key,IDS_E_VERTCURVEALREADYDEFINED,COGO_E_VERTCURVEALREADYDEFINED);
 }
 
-HRESULT CVertCurveCollection::VertCurveKeyError(CogoElementKey key,UINT nHelpString,HRESULT hRes)
+HRESULT CVertCurveCollection::VertCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 

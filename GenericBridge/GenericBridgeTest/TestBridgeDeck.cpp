@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,81 +61,19 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    TRY_TEST(deck->get_Composite(&bComposite),S_OK);
    TRY_TEST(bComposite,VARIANT_TRUE);
 
-   CComBSTR bstrStage;
-   TRY_TEST(deck->get_CompositeStage(NULL),E_POINTER);
-   TRY_TEST(deck->get_CompositeStage(&bstrStage),S_OK);
-   TRY_TEST(bstrStage.Length(),0);
-
-   bstrStage.Empty();
-   TRY_TEST(deck->get_ConstructionStage(NULL),E_POINTER);
-   TRY_TEST(deck->get_ConstructionStage(&bstrStage),S_OK);
-   TRY_TEST(bstrStage.Length(),0);
-
    CComPtr<IMaterial> material;
    TRY_TEST(deck->get_Material(NULL),E_POINTER);
    TRY_TEST(deck->get_Material(&material),S_OK);
    TRY_TEST(material != NULL,true);
 
-   // Manipulate values while testing for event handling
-   CComObject<CTestBridgeDeck>* pTestBridgeDeck;
-   CComObject<CTestBridgeDeck>::CreateInstance(&pTestBridgeDeck);
-   pTestBridgeDeck->AddRef();
-   
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestBridgeDeck);
-   TRY_TEST(AtlAdvise(deck,punk,IID_IBridgeDeckEvents,&dwCookie),S_OK);
+   Float64 value;
+   TRY_TEST(deck->get_WearingSurfaceDensity(NULL),E_POINTER);
+   TRY_TEST(deck->get_WearingSurfaceDensity(&value),S_OK);
+   TRY_TEST(value,0.0);
 
-   pTestBridgeDeck->InitEventTest();
-   deck->put_Composite(VARIANT_TRUE);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), false );
-
-   pTestBridgeDeck->InitEventTest();
-   deck->put_Composite(VARIANT_FALSE);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   deck->get_Composite(&bComposite);
-   TRY_TEST(bComposite,VARIANT_FALSE);
-   
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_CompositeStage(NULL),E_INVALIDARG);
-   TRY_TEST(deck->put_CompositeStage(CComBSTR()),E_INVALIDARG);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), false );
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_CompositeStage(CComBSTR("Stage 2")),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   bstrStage.Empty();
-   deck->get_CompositeStage(&bstrStage);
-   TRY_TEST(bstrStage,CComBSTR("Stage 2"));
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_ConstructionStage(CComBSTR("Stage 2")),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   bstrStage.Empty();
-   deck->get_ConstructionStage(&bstrStage);
-   TRY_TEST(bstrStage,CComBSTR("Stage 2"));
-
-   CComPtr<IMaterial> material2;
-   material2.CoCreateInstance(CLSID_Material);
-
-   pTestBridgeDeck->InitEventTest();
-   TRY_TEST(deck->put_Material(NULL),E_INVALIDARG);
-   TRY_TEST(deck->put_Material(material2),S_OK);
-   TRY_TEST(pTestBridgeDeck->PassedEventTest(), true );
-
-   CComPtr<IMaterial> testmat;
-   deck->get_Material(&testmat);
-   TRY_TEST(testmat.IsEqualObject(material2),false);
-
-   testmat.Release();
-   deck->get_Material(&testmat);
-   TRY_TEST(testmat.IsEqualObject(material),false);
-
-   // Done with events
-   TRY_TEST(AtlUnadvise(deck,IID_IBridgeDeckEvents,dwCookie),S_OK);
-   pTestBridgeDeck->Release();
+   TRY_TEST(deck->get_WearingSurfaceDepth(NULL),E_POINTER);
+   TRY_TEST(deck->get_WearingSurfaceDepth(&value),S_OK);
+   TRY_TEST(value,0.0);
 
    ///////////////////////////////////////
    // Test Error Info
@@ -152,11 +90,4 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(deck,IID_IBridgeDeck,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(deck,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-
-STDMETHODIMP CTestBridgeDeck::OnBridgeDeckChanged(IBridgeDeck* pDeck)
-{
-   Pass();
-   return S_OK;
 }

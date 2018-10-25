@@ -39,11 +39,11 @@ void CEditMemberDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CEditMemberDlg)
 	DDX_Text(pDX, IDC_EA, m_EA);
 	DDX_Text(pDX, IDC_EI, m_EI);
-	DDX_CBIndex(pDX, IDC_ENDJNT, m_EndJoint);
+	DDX_CBIndex(pDX, IDC_ENDJNT,(int&)m_EndJoint);
 	DDX_Text(pDX, IDC_MBRID, m_MbrID);
 	DDX_Check(pDX, IDC_RELEASE_MZ_END, m_bReleaseMzAtEnd);
 	DDX_Check(pDX, IDC_RELEASE_MZ_START, m_bReleaseMzAtStart);
-	DDX_CBIndex(pDX, IDC_STARTJNT, m_StartJoint);
+	DDX_CBIndex(pDX, IDC_STARTJNT, (int&)m_StartJoint);
 	//}}AFX_DATA_MAP
 }
 
@@ -82,10 +82,10 @@ BOOL CEditMemberDlg::OnInitDialog()
       pEnd->AddString(strJntID);
    }
 
-   if ( pStart->SetCurSel(m_StartJoint) == CB_ERR )
+   if ( pStart->SetCurSel((int)m_StartJoint) == CB_ERR )
       pStart->SetCurSel(0);
 
-   if ( pEnd->SetCurSel(m_EndJoint) == CB_ERR )
+   if ( pEnd->SetCurSel((int)m_EndJoint) == CB_ERR )
       pEnd->SetCurSel(0);
 
    // Make the member id edit control read only

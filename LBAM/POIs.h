@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -80,7 +80,6 @@ END_CONNECTION_POINT_MAP()
 // IPOIs
 public:
 	STDMETHOD(Clone)(/*[out, retval]*/ IPOIs** clone);
-   //STDMETHOD(get_Item)(CollectionIndexType idx,IPOI** ppPOI);
 
 protected:
    // implementations of virtual functions for collection

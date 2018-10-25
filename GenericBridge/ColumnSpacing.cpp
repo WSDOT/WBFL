@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -69,39 +69,6 @@ STDMETHODIMP CColumnSpacing::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CColumnSpacing::Clone(IColumnSpacing* *clone)
-{
-   CHECK_RETOBJ(clone);
-
-   CComObject<CColumnSpacing> *pClone;
-   CComObject<CColumnSpacing>::CreateInstance(&pClone);
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   CColumnSpacing* pSpacingClone = dynamic_cast<CColumnSpacing*>(pClone);
-
-   pSpacingClone->m_bUniform = m_bUniform;
-   pSpacingClone->m_UniformSpacing = m_UniformSpacing;
-
-   pSpacingClone->m_SpacingData = m_SpacingData;
-
-   // Clone all of the columns
-   pClone->ClearColumns();
-   std::vector<CComPtr<IColumn> >::iterator iter;
-   for ( iter = m_Columns.begin(); iter != m_Columns.end(); iter++ )
-   {
-      CComPtr<IColumn> column = *iter;
-      CColumn* pColumn = dynamic_cast<CColumn*>(column.p);
-
-      CComPtr<IColumn> columnClone;
-      pColumn->Clone(&columnClone);
-
-      pClone->AddColumn(columnClone);
-   }
-
-   return S_OK;
-}
-
 void CColumnSpacing::ClearColumns()
 {
    m_Columns.clear();
@@ -162,7 +129,7 @@ STDMETHODIMP CColumnSpacing::put_Uniform(VARIANT_BOOL bUniform)
 
    m_bUniform = bUniform;
 
-   Fire_OnColumnSpacingChanged();
+   //Fire_OnColumnSpacingChanged();
    return S_OK;
 }
 
@@ -213,7 +180,7 @@ STDMETHODIMP CColumnSpacing::put_Spacing(SpacingIndexType spaceIdx,Float64 space
       m_SpacingData.m_Spacing[spaceIdx] = space;
    }
 
-   Fire_OnColumnSpacingChanged();
+   //Fire_OnColumnSpacingChanged();
    return S_OK;
 }
 
@@ -236,7 +203,7 @@ STDMETHODIMP CColumnSpacing::put_Overhang(DirectionType side, Float64 overhang)
 
    m_SpacingData.m_Overhang[side == qcbLeft ? 0 : 1] = overhang;
 
-   Fire_OnColumnSpacingChanged();
+   //Fire_OnColumnSpacingChanged();
    return S_OK;
 }
 
@@ -254,113 +221,117 @@ STDMETHODIMP CColumnSpacing::get_ColumnCount(ColumnIndexType* nColumns)
 
 STDMETHODIMP CColumnSpacing::Add(ColumnIndexType nColumns)
 {
-   if ( nColumns < 0 )
-      return E_INVALIDARG;
+   ATLASSERT(false); // implement
+   return E_FAIL;
+   //if ( nColumns < 0 )
+   //   return E_INVALIDARG;
 
-   // Get the current number of columns
-   ColumnIndexType currNumColumns;
-   get_ColumnCount(&currNumColumns);
+   //// Get the current number of columns
+   //ColumnIndexType currNumColumns;
+   //get_ColumnCount(&currNumColumns);
 
-   nColumns += currNumColumns;
+   //nColumns += currNumColumns;
 
-   SpacingIndexType nSpaces = SpacingIndexType(nColumns - 1);
+   //SpacingIndexType nSpaces = SpacingIndexType(nColumns - 1);
 
-   if ( nColumns < currNumColumns )
-   {
-      if ( currNumColumns - nColumns <= 0 )
-         return E_INVALIDARG;
+   //if ( nColumns < currNumColumns )
+   //{
+   //   if ( currNumColumns - nColumns <= 0 )
+   //      return E_INVALIDARG;
 
-      // Reducing number of columns
-      m_SpacingData.m_Spacing.resize(nSpaces);
-      m_Columns.resize(nColumns);
-   }
-   else if ( currNumColumns < nColumns )
-   {
-      // Increasing number of columns
-      Float64 lastSpace;
-      if ( currNumColumns == 1 )
-         lastSpace = 1; // There isn't a spacing defined, use a reasonable default
-      else
-         lastSpace = m_SpacingData.m_Spacing[m_SpacingData.m_Spacing.size()-1];
+   //   // Reducing number of columns
+   //   m_SpacingData.m_Spacing.resize(nSpaces);
+   //   m_Columns.resize(nColumns);
+   //}
+   //else if ( currNumColumns < nColumns )
+   //{
+   //   // Increasing number of columns
+   //   Float64 lastSpace;
+   //   if ( currNumColumns == 1 )
+   //      lastSpace = 1; // There isn't a spacing defined, use a reasonable default
+   //   else
+   //      lastSpace = m_SpacingData.m_Spacing[m_SpacingData.m_Spacing.size()-1];
 
-      m_SpacingData.m_Spacing.resize(nSpaces,lastSpace); // fills new values with lastSpace
+   //   m_SpacingData.m_Spacing.resize(nSpaces,lastSpace); // fills new values with lastSpace
 
-      CComPtr<IColumn> lastColumn = m_Columns.back();
-      CColumn* pLastColumn = dynamic_cast<CColumn*>(lastColumn.p);
+   //   CComPtr<IColumn> lastColumn = m_Columns.back();
+   //   CColumn* pLastColumn = dynamic_cast<CColumn*>(lastColumn.p);
 
-      for ( ColumnIndexType i = 0; i < nColumns - currNumColumns; i++ )
-      {
-         CComPtr<IColumn> clone;
-         pLastColumn->Clone(&clone);
-         PutColumn(m_Columns.size(),clone);
-      }
-   }
+   //   for ( ColumnIndexType i = 0; i < nColumns - currNumColumns; i++ )
+   //   {
+   //      CComPtr<IColumn> clone;
+   //      pLastColumn->Clone(&clone);
+   //      PutColumn(m_Columns.size(),clone);
+   //   }
+   //}
 
-   Fire_OnColumnCountChanged(nColumns);
-   return S_OK;
+   ////Fire_OnColumnCountChanged(nColumns);
+   //return S_OK;
 }
 
 STDMETHODIMP CColumnSpacing::Insert(SpacingIndexType spaceIdx,SpacingIndexType nInsert)
 {
-   if ( nInsert < 0 )
-      return E_INVALIDARG;
+   ATLASSERT(false); // implement
+   return E_FAIL;
+   //if ( nInsert < 0 )
+   //   return E_INVALIDARG;
 
-   ColumnIndexType nColumns;
-   get_ColumnCount(&nColumns);
+   //ColumnIndexType nColumns;
+   //get_ColumnCount(&nColumns);
 
-   if ( nColumns <= spaceIdx )
-      return Error(IDS_E_SPACEINDEX,IID_IColumnSpacing,GB_E_SPACEINDEX);
+   //if ( nColumns <= spaceIdx )
+   //   return Error(IDS_E_SPACEINDEX,IID_IColumnSpacing,GB_E_SPACEINDEX);
 
-   if ( nInsert <= 0 ) // Must be adding at least 1 girder line
-      return E_INVALIDARG;
+   //if ( nInsert <= 0 ) // Must be adding at least 1 girder line
+   //   return E_INVALIDARG;
 
-   // interate over all the piers and insert girder lines
-   // Get the spacing at the specified index. This is the spacing that will be used. 
-   // If there is only one girder line, use a default spacing of 1
-   Float64 spacing;
-   if ( m_SpacingData.m_Spacing.size() == 0 )
-   {
-      spacing = 1.0;
-   }
-   else
-   {
-      if (spaceIdx == INVALID_INDEX) // inserting before first
-         spacing = m_SpacingData.m_Spacing[0];
-      else if ( (SpacingIndexType)m_SpacingData.m_Spacing.size() <= spaceIdx ) // inserting after last
-         spacing = m_SpacingData.m_Spacing[m_SpacingData.m_Spacing.size()-1];
-      else
-         spacing = m_SpacingData.m_Spacing[spaceIdx];
-   }
+   //// interate over all the piers and insert girder lines
+   //// Get the spacing at the specified index. This is the spacing that will be used. 
+   //// If there is only one girder line, use a default spacing of 1
+   //Float64 spacing;
+   //if ( m_SpacingData.m_Spacing.size() == 0 )
+   //{
+   //   spacing = 1.0;
+   //}
+   //else
+   //{
+   //   if (spaceIdx == INVALID_INDEX) // inserting before first
+   //      spacing = m_SpacingData.m_Spacing[0];
+   //   else if ( (SpacingIndexType)m_SpacingData.m_Spacing.size() <= spaceIdx ) // inserting after last
+   //      spacing = m_SpacingData.m_Spacing[m_SpacingData.m_Spacing.size()-1];
+   //   else
+   //      spacing = m_SpacingData.m_Spacing[spaceIdx];
+   //}
 
-   SpacingIndexType offset = spaceIdx;
-   if ( spaceIdx == INVALID_INDEX )
-      offset = 0;
-   else if ( (SpacingIndexType)m_SpacingData.m_Spacing.size() <= spaceIdx )
-      offset = m_SpacingData.m_Spacing.size() - 1;
+   //SpacingIndexType offset = spaceIdx;
+   //if ( spaceIdx == INVALID_INDEX )
+   //   offset = 0;
+   //else if ( (SpacingIndexType)m_SpacingData.m_Spacing.size() <= spaceIdx )
+   //   offset = m_SpacingData.m_Spacing.size() - 1;
 
-   m_SpacingData.m_Spacing.insert(m_SpacingData.m_Spacing.begin()+offset,nInsert,spacing);
+   //m_SpacingData.m_Spacing.insert(m_SpacingData.m_Spacing.begin()+offset,nInsert,spacing);
 
-   CComPtr<IColumn> lastColumn;
-   if ( spaceIdx == INVALID_INDEX )
-      lastColumn = m_Columns[0];
-   else if ( nColumns-1 <= spaceIdx )
-      lastColumn = m_Columns[nColumns-1];
-   else
-      lastColumn = m_Columns[spaceIdx+1];
+   //CComPtr<IColumn> lastColumn;
+   //if ( spaceIdx == INVALID_INDEX )
+   //   lastColumn = m_Columns[0];
+   //else if ( nColumns-1 <= spaceIdx )
+   //   lastColumn = m_Columns[nColumns-1];
+   //else
+   //   lastColumn = m_Columns[spaceIdx+1];
 
-   CColumn* pLastColumn = dynamic_cast<CColumn*>(lastColumn.p);
+   //CColumn* pLastColumn = dynamic_cast<CColumn*>(lastColumn.p);
 
-   for ( SpacingIndexType i = 0; i < nInsert; i++ )
-   {
-      CComPtr<IColumn> clone;
-      pLastColumn->Clone(&clone);
-      PutColumn(spaceIdx+1,clone);
-   }
+   //for ( SpacingIndexType i = 0; i < nInsert; i++ )
+   //{
+   //   CComPtr<IColumn> clone;
+   //   pLastColumn->Clone(&clone);
+   //   PutColumn(spaceIdx+1,clone);
+   //}
 
-   get_ColumnCount(&nColumns);
-   Fire_OnColumnCountChanged(nColumns);
+   //get_ColumnCount(&nColumns);
+   ////Fire_OnColumnCountChanged(nColumns);
 
-   return S_OK;
+   //return S_OK;
 }
 
 STDMETHODIMP CColumnSpacing::Remove(ColumnIndexType columnIdx,ColumnIndexType nRemove)
@@ -393,7 +364,7 @@ STDMETHODIMP CColumnSpacing::Remove(ColumnIndexType columnIdx,ColumnIndexType nR
 
    ATLASSERT(GetNumColumns() == nRemainingColumns);
 
-   Fire_OnColumnCountChanged(nRemainingColumns);
+   //Fire_OnColumnCountChanged(nRemainingColumns);
    return S_OK;
 }
 
@@ -467,10 +438,10 @@ STDMETHODIMP CColumnSpacing::Load(IStructuredLoad2* pLoad)
    m_UniformSpacing = var.dblVal;
 
    pLoad->BeginUnit(CComBSTR("Columns"));
-   ColumnIndexType nColumns;
+   CollectionIndexType nColumns;
    pLoad->get_Property(CComBSTR("NumColumns"),&var);
-   nColumns = var.lVal;
-   for ( ColumnIndexType i = 0; i < nColumns; i++ )
+   nColumns = var.iVal;
+   for ( CollectionIndexType i = 0; i < nColumns; i++ )
    {
       CComObject<CColumn>* pColumn;
       CComObject<CColumn>::CreateInstance(&pColumn);
@@ -492,10 +463,10 @@ STDMETHODIMP CColumnSpacing::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("RightOverhang"),&var);
    m_SpacingData.m_Overhang[1] = var.dblVal;
 
-   SpacingIndexType nSpaces;
+   CollectionIndexType nSpaces;
    pLoad->get_Property(CComBSTR("NumSpaces"),&var);
-   nSpaces = var.lVal;
-   for ( SpacingIndexType j = 0; j < nSpaces; j++ )
+   nSpaces = var.iVal;
+   for ( CollectionIndexType j = 0; j < nSpaces; j++ )
    {
       pLoad->get_Property(CComBSTR("Space"),&var);
       Float64 space = var.dblVal;

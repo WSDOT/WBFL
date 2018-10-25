@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -123,7 +123,7 @@ HFONT grGraphTool::CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LP
 }
 
 
-void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 originalMax,
+void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 originalMax, bool bOffsetZero,
                         CollectionIndexType& numberOfSegments,
                         Float64& niceMin, Float64& niceMax,
                         Float64& niceIncrement)
@@ -172,7 +172,7 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 
 //  set nseg to default if .lt. 1
 
-   if (numberOfSegments < 1)
+   if (numberOfSegments == INVALID_INDEX)
    {
       numberOfSegments = 7;
       is_defseg = true;
@@ -231,6 +231,16 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 
    niceMin = adjusted_min;
    niceMax = adjusted_max;
+
+   // if we don't want the range to start/end at zero, offset the value by one increment
+   if ( bOffsetZero )
+   {
+      if ( IsZero(niceMin) && !IsZero(niceMax) )
+         niceMin -= niceIncrement;
+
+      if ( IsZero(niceMax) && !IsZero(niceMin) )
+         niceMax += niceIncrement;
+   }
 }
 
 

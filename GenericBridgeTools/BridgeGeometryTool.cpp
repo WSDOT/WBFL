@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,12 +35,57 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+template <class T>
+class CSafeObjectUsage
+{
+public:
+   CSafeObjectUsage(T* pObject)
+   {
+      // if this exception fires, the internal object you are trying to use
+      // is being used for another purpose
+      m_pObject = pObject;
+      ATLASSERT(m_pObject->AddRef() == 2);
+   }
+   ~CSafeObjectUsage()
+   {
+      // if this exception fires, the internal object you are using is messed up
+      ATLASSERT(m_pObject->Release() == 1);
+      m_pObject = 0;
+   }
+
+private:
+   T* m_pObject;
+};
+
+#define USE_LINE(_line_) CSafeObjectUsage<ILine2d> _safety_##_line_ (_line_)
+#define USE_LINESEGMENT(_line_) CSafeObjectUsage<ILineSegment2d> _safety_##_line_ (_line_)
+
 /////////////////////////////////////////////////////////////////////////////
 // CBridgeGeometryTool
 HRESULT CBridgeGeometryTool::FinalConstruct()
 {
    HRESULT hr = m_CogoEngine.CoCreateInstance(CLSID_CogoEngine);
    if ( FAILED(hr) ) 
+      return hr;
+
+   hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_Line1.CoCreateInstance(CLSID_Line2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_Line2.CoCreateInstance(CLSID_Line2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_LineSegment1.CoCreateInstance(CLSID_LineSegment2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   hr = m_LineSegment2.CoCreateInstance(CLSID_LineSegment2d);
+   if ( FAILED(hr) )
       return hr;
 
    return S_OK;
@@ -64,42 +109,61 @@ STDMETHODIMP CBridgeGeometryTool::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CBridgeGeometryTool::Point(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx, Float64 distFromStartOfGirder, IPoint2d** point)
+STDMETHODIMP CBridgeGeometryTool::PointBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IPoint2d** point)
 {
-   // distFromStartOfSpan is measured along the girder line, from the intersection of the CL Pier and the CL girder
-#pragma Reminder("UPDATE: Should be using actual path for the girderline")
-   // Assuming a straight path for now (girder line paths have not been implemented yet)
-   CComPtr<ICogoInfo> cogoinfo;
-   bridge->get_CogoInfo(&cogoinfo);
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CogoElementKey startID, endID;
-   cogoinfo->get_GirderEndPointID(spanIdx,gdrIdx,etStart,&startID);
-   cogoinfo->get_GirderEndPointID(spanIdx,gdrIdx,etEnd,  &endID);
+   CComPtr<ISegment> segment;
+   Float64 distFromStartOfSegment;
+   SegmentIndexType segIdx;
+   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ATLASSERT(segment);
 
-   CComPtr<ICogoModel> cogomodel;
-   bridge->get_CogoModel(&cogomodel);
+   return PointBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,point);
+}
 
-   CComPtr<IPointCollection> points;
-   cogomodel->get_Points(&points);
+STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment, IPoint2d** point)
+{
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
+
+   CComPtr<IGirderLine> girderLine;
+   segment->get_GirderLine(&girderLine);
 
    CComPtr<IPoint2d> p1, p2;
-   points->get_Item(startID,&p1);
-   points->get_Item(endID,  &p2);
+   girderLine->get_EndPoint(etStart,&p1);
+   girderLine->get_EndPoint(etEnd,  &p2);
 
    CComPtr<ILocate2> locate;
    m_CogoEngine->get_Locate(&locate);
 
-   locate->PointOnLine(p1,p2,distFromStartOfGirder,0.00,point);
+   locate->PointOnLine(p1,p2,distFromStartOfSegment,0.00,point);
 
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::StationAndOffset(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfGirder,IStation** station,Float64* offset)
+STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IStation** station, Float64* offset)
 {
-   // distFromStartOfSpan is measured along the girder line, from the intersection of the CL pier and the CL girder
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
+   CComPtr<ISegment> segment;
+   Float64 distFromStartOfSegment;
+   SegmentIndexType segIdx;
+   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ATLASSERT(segment);
+
+   return StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,station,offset);
+}
+
+STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment, IStation** station, Float64* offset)
+{
    CComPtr<IPoint2d> point;
-   Point(bridge,spanIdx,gdrIdx,distFromStartOfGirder,&point);
+   PointBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,&point);
 
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
@@ -109,32 +173,31 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffset(IGenericBridge* bridge,SpanIn
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,VARIANT varStation,Float64* offset)
+STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,Float64* offset)
 {
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);
 
    // get point on alignment at station
-   CComPtr<IPoint2d> a_point;
-   alignment->LocatePoint(varStation,omtAlongDirection, 0.00,CComVariant(0.00),&a_point);
+   CComPtr<IPoint2d> point_on_alignment;
+   alignment->LocatePoint(varStation,omtAlongDirection, 0.00,CComVariant(0.00),&point_on_alignment);
+
+   // get the superstructure member
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+
+   // get the segment
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
+
+   // the the girder line
+   CComPtr<IGirderLine> girderLine;
+   segment->get_GirderLine(&girderLine);
 
    // Create a line that represents the girder path
-   CComPtr<ICogoInfo> cogoinfo;
-   bridge->get_CogoInfo(&cogoinfo);
-
-   CogoElementKey startID, endID;
-   cogoinfo->get_PierGirderIntersectionPointID(spanIdx,   gdrIdx, qcbAfter,  &startID);
-   cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1, gdrIdx, qcbBefore, &endID);
-
-   CComPtr<ICogoModel> cogomodel;
-   bridge->get_CogoModel(&cogomodel);
-
-   CComPtr<IPointCollection> points;
-   cogomodel->get_Points(&points);
-
    CComPtr<IPoint2d> p1, p2;
-   points->get_Item(startID,&p1);
-   points->get_Item(endID,  &p2);
+   girderLine->get_PierPoint(etStart,&p1);
+   girderLine->get_PierPoint(etEnd,  &p2);
 
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
@@ -150,246 +213,252 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,SpanIn
    // of the girder path, offset will be > 0. This means the girder path is
    // offset to the left of the alignment so the offset that we want has the opposite
    // sign.
-   geom_util->ShortestDistanceToPoint(line,a_point,offset);
+   geom_util->ShortestDistanceToPoint(line,point_on_alignment,offset);
    (*offset) *= -1;
 
    return S_OK;
 }
-
-STDMETHODIMP CBridgeGeometryTool::GirderLineBearing(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,IDirection** direction)
-{
-   CComPtr<ICogoInfo> cogoinfo;
-   bridge->get_CogoInfo(&cogoinfo);
-
-   CogoElementKey startID, endID;
-   cogoinfo->get_PierGirderIntersectionPointID(spanIdx,   gdrIdx, qcbAfter,  &startID);
-   cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1, gdrIdx, qcbBefore, &endID);
-
-   CComPtr<ICogoModel> cogomodel;
-   bridge->get_CogoModel(&cogomodel);
-
-   CComPtr<IPointCollection> points;
-   cogomodel->get_Points(&points);
-
-   CComPtr<IPoint2d> p1, p2;
-   points->get_Item(startID,&p1);
-   points->get_Item(endID,  &p2);
-
-   CComPtr<IMeasure2> measure;
-   m_CogoEngine->get_Measure(&measure);
-
-   return measure->Direction(p1,p2,direction);
-}
-
-STDMETHODIMP CBridgeGeometryTool::GirderLinePoint(IGenericBridge* bridge,Float64 distFromStartOfBridge,GirderIndexType gdrIdx,SpanIndexType* spanIdx,Float64* distFromStartOfSpan)
-{
-   // Determine the span and the distance along that span which correspond to a 
-   // distance from the start of the bridge and a girder line
-   CComPtr<IPierCollection> piers;
-   bridge->get_Piers(&piers);
-
-   CComPtr<IEnumPiers> enum_piers;
-   piers->get__EnumPiers(&enum_piers);
-
-   CComPtr<IPier> pier;
-   enum_piers->Next(1,&pier,NULL);
-
-   CComPtr<IStation> objStartStation;
-   pier->get_Station(&objStartStation);
-   Float64 start_station;
-   objStartStation->get_Value(&start_station);
-
-   Float64 cut_station = start_station + distFromStartOfBridge;
-
-   PierIndexType nPiers;
-   piers->get_Count(&nPiers);
-   SpanIndexType nSpans = SpanIndexType(nPiers - 1);
-
-   // Find the span that contains this station
-   SpanIndexType spanIndex = 0;
-   if ( cut_station < start_station )
-   {
-      // before start of bridge
-      spanIndex = 0;
-   }
-   else
-   {
-      Float64 end_station;
-      pier.Release();
-      while ( enum_piers->Next(1,&pier,NULL) != S_FALSE )
-      {
-         CComPtr<IStation> station;
-         pier->get_Station(&station);
-         station->get_Value(&end_station);
-
-         if ( InRange(start_station,cut_station,end_station) )
-         {
-            // we found the span
-            break;
-         }
-
-         // next pier... try again
-         spanIndex++;
-         start_station = end_station;
-         pier.Release();
-      }
-
-      // don't go beyond the end of the bridge
-      if ( nSpans <= spanIndex )
-      {
-         spanIndex = nSpans-1;
-      }
-   }
-
-   // Get the start and end points of the girder line in this span
-
-   CComPtr<ISpanCollection> spans;
-   bridge->get_Spans(&spans);
-   CComPtr<ISpan> objSpan;
-   spans->get_Item(spanIndex,&objSpan);
-   GirderIndexType nGirders;
-   objSpan->get_GirderCount(&nGirders);
-   if ( gdrIdx == INVALID_INDEX )
-   {
-      // this means use the right-most girder
-      gdrIdx = nGirders - 1;
-   }
-
-   if ( nGirders <= gdrIdx )
-   {
-      *spanIdx = INVALID_INDEX;
-      *distFromStartOfSpan = 0;
-      return S_FALSE;
-   }
-
-   CComPtr<ICogoInfo> cogoinfo;
-   bridge->get_CogoInfo(&cogoinfo);
-   CogoElementKey startPointID, endPointID;
-   PierIndexType prevPierIdx = spanIndex;
-   PierIndexType nextPierIdx = prevPierIdx+1;
-   cogoinfo->get_PierGirderIntersectionPointID(prevPierIdx, gdrIdx, qcbAfter,  &startPointID);
-   cogoinfo->get_PierGirderIntersectionPointID(nextPierIdx, gdrIdx, qcbBefore, &endPointID);
-
-   CComPtr<ICogoModel> cogomodel;
-   bridge->get_CogoModel(&cogomodel);
-
-   CComPtr<IPointCollection> points;
-   cogomodel->get_Points(&points);
-
-   CComPtr<IPoint2d> startPoint,endPoint;
-   points->get_Item(startPointID, &startPoint);
-   points->get_Item(endPointID,   &endPoint  );
-
-   // Create a point on the alignment at the cut station
-   CComPtr<IAlignment> alignment;
-   GetAlignment(bridge,&alignment);
-
-   CComPtr<IPoint2d> cut_point;
-   alignment->LocatePoint(CComVariant(cut_station),omtAlongDirection, 0.00,CComVariant(0.00),&cut_point);
-
-   // Intersect the normal at the cut point with the girder line
-   CComPtr<IDirection> normal;
-   alignment->Normal(CComVariant(cut_station),&normal);
-
-   CComPtr<IDirection> gdrBearing;
-   GirderLineBearing(bridge,spanIndex,gdrIdx,&gdrBearing);
-
-   CComQIPtr<IIntersect2> intersect(m_CogoEngine);
-
-   CComPtr<IPoint2d> intersect_point;
-   intersect->Bearings(cut_point,CComVariant(normal),0.00,startPoint,CComVariant(gdrBearing),0.00,&intersect_point);
-
-   // Determine if the intersect_point actually falls in this span
-   CComQIPtr<IMeasure2> measure(m_CogoEngine);
-
-   Float64 girder_distance, cut_distance;
-   measure->Distance(startPoint,endPoint,&girder_distance);
-   measure->Distance(startPoint,intersect_point,&cut_distance);
-
-   // if the cut is right at the end of the girder, this cleans up the "noise"
-   if ( IsEqual(girder_distance,cut_distance) )
-      cut_distance = girder_distance;
-
-   Float64 angle = 0;
-   // if cut_distance is zero, intersect_point is at the same
-   // location as startPoint...
-
-   // determine if the cut location is before, in, or after this span
-   // (if the span is skewed cut locations can be off this span)
-   //
-   // cut_distance is always positive so compute the angle from
-   // end to start to intersection... if the angle is not zero, then
-   // the intersection is not on the same line as start-end and is not after start
-   if ( !IsZero(cut_distance) )
-   {
-      CComPtr<IAngle> objAngle;
-      measure->Angle(endPoint,startPoint,intersect_point,&objAngle);
-      objAngle->get_Value(&angle);
-   }
-
-   if ( !IsEqual(angle,0.00) )
-   {
-      // Intersect point occurs in the previous span
-      if ( spanIndex == 0 )
-      {
-         // before start of bridge
-         *spanIdx = INVALID_INDEX;
-         *distFromStartOfSpan = cut_distance - girder_distance;
-         return S_FALSE;
-      }
-
-      spanIndex--;
-
-      cogoinfo->get_PierGirderIntersectionPointID(spanIndex,gdrIdx,qcbAfter,&startPointID);
-
-      startPoint.Release();
-      points->get_Item(startPointID, &startPoint);
-
-      measure->Distance(startPoint,intersect_point,&cut_distance);
-
-      *distFromStartOfSpan = cut_distance;
-      *spanIdx = spanIndex;
-   }
-   else if ( girder_distance < cut_distance )
-   {
-      // Intersect point occurs in next span
-      spanIndex++;
-
-      if ( nSpans <= spanIndex  )
-      {
-         // after end of bridge
-         *spanIdx = INVALID_INDEX;
-         *distFromStartOfSpan = girder_distance - cut_distance;
-         return S_FALSE;
-      }
-
-      cogoinfo->get_PierGirderIntersectionPointID(spanIndex,gdrIdx,qcbAfter,&startPointID);
-
-      startPoint.Release();
-      points->get_Item(startPointID, &startPoint);
-
-      measure->Distance(startPoint,intersect_point,&cut_distance);
-
-      *distFromStartOfSpan = cut_distance;
-      *spanIdx = spanIndex;
-   }
-   else
-   {
-      // Intersect point occurs in this span
-      *spanIdx = spanIndex;
-      *distFromStartOfSpan = cut_distance;
-   }
-
-   return S_OK;
-}
+//
+//STDMETHODIMP CBridgeGeometryTool::GirderLineBearing(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,IDirection** direction)
+//{
+//   ATLASSERT(false); // re-implement
+//   return S_OK;
+//   //CComPtr<ICogoInfo> cogoinfo;
+//   //bridge->get_CogoInfo(&cogoinfo);
+//
+//   //CogoObjectID startID, endID;
+//   //cogoinfo->get_PierGirderIntersectionPointID(spanIdx,   gdrIdx, qcbAfter,  &startID);
+//   //cogoinfo->get_PierGirderIntersectionPointID(spanIdx+1, gdrIdx, qcbBefore, &endID);
+//
+//   //CComPtr<ICogoModel> cogomodel;
+//   //bridge->get_CogoModel(&cogomodel);
+//
+//   //CComPtr<IPointCollection> points;
+//   //cogomodel->get_Points(&points);
+//
+//   //CComPtr<IPoint2d> p1, p2;
+//   //points->get_Item(startID,&p1);
+//   //points->get_Item(endID,  &p2);
+//
+//   //CComPtr<IMeasure2> measure;
+//   //m_CogoEngine->get_Measure(&measure);
+//
+//   //return measure->Direction(p1,p2,direction);
+//}
+//
+//STDMETHODIMP CBridgeGeometryTool::GirderLinePoint(IGenericBridge* bridge,Float64 distFromStartOfBridge,GirderIndexType gdrIdx,SpanIndexType* spanIdx,Float64* distFromStartOfSpan)
+//{
+//   //// Determine the span and the distance along that span which correspond to a 
+//   //// distance from the start of the bridge and a girder line
+//   //CComPtr<IPierCollection> piers;
+//   //bridge->get_Piers(&piers);
+//
+//   //CComPtr<IEnumPiers> enum_piers;
+//   //piers->get__EnumPiers(&enum_piers);
+//
+//   //CComPtr<IPier> pier;
+//   //enum_piers->Next(1,&pier,NULL);
+//
+//   //CComPtr<IStation> objStartStation;
+//   //pier->get_Station(&objStartStation);
+//   //Float64 start_station;
+//   //objStartStation->get_Value(&start_station);
+//
+//   //Float64 cut_station = start_station + distFromStartOfBridge;
+//
+//   //PierIndexType nPiers;
+//   //piers->get_Count(&nPiers);
+//   //SpanIndexType nSpans = SpanIndexType(nPiers - 1);
+//
+//   //// Find the span that contains this station
+//   //SpanIndexType spanIndex = 0;
+//   //if ( cut_station < start_station )
+//   //{
+//   //   // before start of bridge
+//   //   spanIndex = 0;
+//   //}
+//   //else
+//   //{
+//   //   Float64 end_station;
+//   //   pier.Release();
+//   //   while ( enum_piers->Next(1,&pier,NULL) != S_FALSE )
+//   //   {
+//   //      CComPtr<IStation> station;
+//   //      pier->get_Station(&station);
+//   //      station->get_Value(&end_station);
+//
+//   //      if ( InRange(start_station,cut_station,end_station) )
+//   //      {
+//   //         // we found the span
+//   //         break;
+//   //      }
+//
+//   //      // next pier... try again
+//   //      spanIndex++;
+//   //      start_station = end_station;
+//   //      pier.Release();
+//   //   }
+//
+//   //   // don't go beyond the end of the bridge
+//   //   if ( nSpans <= spanIndex )
+//   //   {
+//   //      spanIndex = nSpans-1;
+//   //   }
+//   //}
+//
+//   //// Get the start and end points of the girder line in this span
+////   CComPtr<ISpanCollection> spans;
+////   bridge->get_Spans(&spans);
+////   CComPtr<ISpan> objSpan;
+////   spans->get_Item(spanIndex,&objSpan);
+////   GirderIndexType nGirders;
+////   objSpan->get_GirderCount(&nGirders);
+////   if ( gdrIdx == INVALID_INDEX )
+////   {
+////      // this means use the right-most girder
+////      gdrIdx = nGirders - 1;
+////   }
+////
+////   if ( nGirders <= gdrIdx )
+////   {
+////      *spanIdx = INVALID_INDEX;
+////      *distFromStartOfSpan = 0;
+////      return S_FALSE;
+////   }
+//
+//   //CComPtr<ICogoInfo> cogoinfo;
+//   //bridge->get_CogoInfo(&cogoinfo);
+//   //CogoObjectID startPointID, endPointID;
+//   //PierIndexType prevPierIdx = spanIndex;
+//   //PierIndexType nextPierIdx = prevPierIdx+1;
+//   //cogoinfo->get_PierGirderIntersectionPointID(prevPierIdx, gdrIdx, qcbAfter,  &startPointID);
+//   //cogoinfo->get_PierGirderIntersectionPointID(nextPierIdx, gdrIdx, qcbBefore, &endPointID);
+//
+//   //CComPtr<ICogoModel> cogomodel;
+//   //bridge->get_CogoModel(&cogomodel);
+//
+//   //CComPtr<IPointCollection> points;
+//   //cogomodel->get_Points(&points);
+//
+//   //CComPtr<IPoint2d> startPoint,endPoint;
+//   //points->get_Item(startPointID, &startPoint);
+//   //points->get_Item(endPointID,   &endPoint  );
+//
+//   //// Create a point on the alignment at the cut station
+//   //CComPtr<IAlignment> alignment;
+//   //GetAlignment(bridge,&alignment);
+//
+//   //CComPtr<IPoint2d> cut_point;
+//   //alignment->LocatePoint(CComVariant(cut_station),omtAlongDirection, 0.00,CComVariant(0.00),&cut_point);
+//
+//   //// Intersect the normal at the cut point with the girder line
+//   //CComPtr<IDirection> normal;
+//   //alignment->Normal(CComVariant(cut_station),&normal);
+//
+//   //CComPtr<IDirection> gdrBearing;
+//   //GirderLineBearing(bridge,spanIndex,gdrIdx,&gdrBearing);
+//
+//   //CComQIPtr<IIntersect2> intersect(m_CogoEngine);
+//
+//   //CComPtr<IPoint2d> intersect_point;
+//   //intersect->Bearings(cut_point,CComVariant(normal),0.00,startPoint,CComVariant(gdrBearing),0.00,&intersect_point);
+//
+//   //// Determine if the intersect_point actually falls in this span
+//   //CComQIPtr<IMeasure2> measure(m_CogoEngine);
+//
+//   //Float64 girder_distance, cut_distance;
+//   //measure->Distance(startPoint,endPoint,&girder_distance);
+//   //measure->Distance(startPoint,intersect_point,&cut_distance);
+//
+//   //// if the cut is right at the end of the girder, this cleans up the "noise"
+//   //if ( IsEqual(girder_distance,cut_distance) )
+//   //   cut_distance = girder_distance;
+//
+//   //Float64 angle = 0;
+//   //// if cut_distance is zero, intersect_point is at the same
+//   //// location as startPoint...
+//
+//   //// determine if the cut location is before, in, or after this span
+//   //// (if the span is skewed cut locations can be off this span)
+//   ////
+//   //// cut_distance is always positive so compute the angle from
+//   //// end to start to intersection... if the angle is not zero, then
+//   //// the intersection is not on the same line as start-end and is not after start
+//   //if ( !IsZero(cut_distance) )
+//   //{
+//   //   CComPtr<IAngle> objAngle;
+//   //   measure->Angle(endPoint,startPoint,intersect_point,&objAngle);
+//   //   objAngle->get_Value(&angle);
+//   //}
+//
+//   //if ( !IsEqual(angle,0.00) )
+//   //{
+//   //   // Intersect point occurs in the previous span
+//   //   if ( spanIndex == 0 )
+//   //   {
+//   //      // before start of bridge
+//   //      *spanIdx = INVALID_INDEX;
+//   //      *distFromStartOfSpan = cut_distance - girder_distance;
+//   //      return S_FALSE;
+//   //   }
+//
+//   //   spanIndex--;
+//
+//   //   cogoinfo->get_PierGirderIntersectionPointID(spanIndex,gdrIdx,qcbAfter,&startPointID);
+//
+//   //   startPoint.Release();
+//   //   points->get_Item(startPointID, &startPoint);
+//
+//   //   measure->Distance(startPoint,intersect_point,&cut_distance);
+//
+//   //   *distFromStartOfSpan = cut_distance;
+//   //   *spanIdx = spanIndex;
+//   //}
+//   //else if ( girder_distance < cut_distance )
+//   //{
+//   //   // Intersect point occurs in next span
+//   //   spanIndex++;
+//
+//   //   if ( nSpans <= spanIndex  )
+//   //   {
+//   //      // after end of bridge
+//   //      *spanIdx = INVALID_INDEX;
+//   //      *distFromStartOfSpan = girder_distance - cut_distance;
+//   //      return S_FALSE;
+//   //   }
+//
+//   //   cogoinfo->get_PierGirderIntersectionPointID(spanIndex,gdrIdx,qcbAfter,&startPointID);
+//
+//   //   startPoint.Release();
+//   //   points->get_Item(startPointID, &startPoint);
+//
+//   //   measure->Distance(startPoint,intersect_point,&cut_distance);
+//
+//   //   *distFromStartOfSpan = cut_distance;
+//   //   *spanIdx = spanIndex;
+//   //}
+//   //else
+//   //{
+//   //   // Intersect point occurs in this span
+//   //   *spanIdx = spanIndex;
+//   //   *distFromStartOfSpan = cut_distance;
+//   //}
+//
+//   //return S_OK;
+//}
 
 STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 station, IDirection* direction,DirectionType side, IPoint2d** point)
 {
    // determine slab type and overhang
-   CComPtr<IPath> path;
-   HRESULT hr = GetDeckEdgePath(bridge,side,&path);
-   if ( FAILED(hr) )
-      return hr;
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+
+   CComQIPtr<ICastSlab> cip(deck);
+   CComQIPtr<IPrecastSlab> sip(deck);
+   CComQIPtr<IOverlaySlab> overlay(deck);
+
+   if ( cip == NULL && sip == NULL && overlay == NULL )
+      return Error(IDS_E_UNKNOWNDECKTYPE,IID_IBridgeGeometryTool,GBMT_E_UNKNOWNDECKTYPE);
 
    // get the alignment
    CComPtr<IAlignment> alignment;
@@ -399,20 +468,32 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 
    CComPtr<IPoint2d> point_on_alignment;
    alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&point_on_alignment);
 
-   // Create a line to intersection with the path
+   // Create a line to intersection with the edge of deck
    Float64 angle;
-  direction->get_Value(&angle);
+   direction->get_Value(&angle);
 
+   CComPtr<IPoint2d> p;
    CComPtr<IVector2d> vector;
-   vector.CoCreateInstance(CLSID_Vector2d);
+
+   USE_LINE(m_Line1);
+   m_Line1->GetExplicit(&p,&vector);
    vector->put_Direction(angle);
 
-   CComPtr<ILine2d> line;
-   line.CoCreateInstance(CLSID_Line2d);
-   line->SetExplicit(point_on_alignment,vector);
+   m_Line1->SetExplicit(point_on_alignment,vector);
 
    // Intersection line with path... we want the point to be the one nearest the point on the alignment
-   path->Intersect(line,point_on_alignment,point);
+   CComPtr<IDeckBoundary> deckBoundary;
+   deck->get_DeckBoundary(&deckBoundary);
+
+   // VARIANT_TRUE to get the layout line and not the actual edge path. The actual deck edge path
+   // teminates at the ends of the deck.
+   CComPtr<IPath> path;
+   if ( side == qcbLeft )
+      deckBoundary->get_LeftEdgePath(VARIANT_TRUE,&path); 
+   else
+      deckBoundary->get_RightEdgePath(VARIANT_TRUE,&path);
+
+   path->Intersect(m_Line1,point_on_alignment,point);
 
    return S_OK;
 }
@@ -576,10 +657,181 @@ STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Floa
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 station,IDirection* dir,DirectionType side,Float64* pOverhang)
+STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 station,GirderIDType ssMbrID,IDirection* direction,DirectionType side,Float64* pOverhang)
 {
-   Float64 distFromStartOfBridge = StationToDistance(bridge,station);
+   // Computes the offset from the superstructure member identified by "ssMbrID" to the edge of deck
+   // on the side of the bridge specified by "side". The offset is measured along a line in
+   // the direction specified by "direction" passing throught "station". If "direction" is NULL, the line 
+   // is taken to be normal to the alignment at "station"
 
+   //
+   // Create a line passing through station in the specified direction
+   //
+
+   // Get the alignment
+   CComPtr<IAlignment> alignment;
+   bridge->get_Alignment(&alignment);
+
+   // use a local object so that direction is reference counted
+   // if dir is NULL, the alignment normal is not ref counted and it leaks
+   CComPtr<IDirection> dir(direction);
+
+   // if dir is NULL, use the normal to the alignment
+   if ( dir == NULL )
+      alignment->Normal(CComVariant(station),&dir);
+
+   // Get point on alignment at station
+   CComPtr<IPoint2d> alignment_point;
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
+
+   // Create a line through the alignment point in the direction of "direction"
+   // Use the m_Line2 object (it is faster if we don't have to create it every time it is needed)
+   USE_LINE(m_Line2);
+   Float64 angle;
+   dir->get_Value(&angle);
+   
+   CComPtr<IPoint2d> p;
+   CComPtr<IVector2d> v;
+   m_Line2->GetExplicit(&p,&v);
+   v->put_X(cos(angle));
+   v->put_Y(sin(angle));
+   m_Line2->SetExplicit(alignment_point,v);
+
+   //
+   // Get the intersection point of the line passing through the alignment and the superstructure member
+   //
+
+   // get the superstructure member
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+
+   // using a line semgnet
+   USE_LINESEGMENT(m_LineSegment1);
+
+   // loop over all the segments until the line defined above intersects with one of the segments
+   SegmentIndexType nSegments;
+   ssmbr->get_SegmentCount(&nSegments);
+   CComPtr<IPoint2d> pntSegment;
+   for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
+   {
+      CComPtr<ISegment> segment;
+      ssmbr->get_Segment(segIdx,&segment);
+
+      CComPtr<IGirderLine> girderLine;
+      segment->get_GirderLine(&girderLine);
+
+      CComPtr<IPoint2d> pnt1,pnt2;
+      girderLine->get_PierPoint(etStart,&pnt1);
+      girderLine->get_PierPoint(etEnd,  &pnt2);
+
+      m_LineSegment1->ThroughPoints(pnt1,pnt2);
+
+      CComPtr<IPoint2d> pntIntersect;
+      m_GeomUtil->IntersectLineWithLineSegment(m_Line2,m_LineSegment1,&pntIntersect);
+      if ( pntIntersect != NULL )
+      {
+         // an intersection was found
+         pntSegment = pntIntersect;
+         break; // get the heck outta of the loop
+      }
+   }
+
+   if ( pntSegment == NULL )
+   {
+      // extend the last segment until there is an intersection
+      CComPtr<ISegment> segment;
+      ssmbr->get_Segment(nSegments-1,&segment);
+
+      CComPtr<IGirderLine> girderLine;
+      segment->get_GirderLine(&girderLine);
+
+      CComPtr<IPoint2d> pnt1,pnt2;
+      girderLine->get_PierPoint(etStart,&pnt1);
+      girderLine->get_PierPoint(etEnd,  &pnt2);
+
+      USE_LINE(m_Line1);
+      m_Line1->ThroughPoints(pnt1,pnt2);
+
+      CComPtr<IPoint2d> pntIntersect;
+      m_GeomUtil->LineLineIntersect(m_Line2,m_Line1,&pntSegment);
+   }
+
+   ATLASSERT(pntSegment != NULL);
+
+   //
+   // Get the deck edge point
+   //
+   CComPtr<IPoint2d> pntEdge;
+   HRESULT hr = DeckEdgePoint(bridge,station,dir,side,&pntEdge);
+   if ( FAILED(hr) )
+      return hr;
+
+
+   // offset is distance between girder line point and deck point
+   Float64 dist;
+   m_GeomUtil->Distance(pntSegment,pntEdge,&dist);
+
+   // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
+   // create a vector from pntSegment to pntDeck
+   Float64 x1,y1;
+   Float64 x2,y2;
+   pntSegment->Location(&x1,&y1);
+   pntEdge->Location(&x2,&y2);
+
+   v->put_X(x2-x1); 
+   v->put_Y(y2-y1);
+
+   // get the normal to the girder line (normal goes to the left of the line in this case)
+   CComPtr<IPoint2d> pnt1,pnt2;
+   m_LineSegment1->get_StartPoint(&pnt1);
+   m_LineSegment1->get_EndPoint(&pnt2);
+
+   // changing line 2... line 2 is now the girder line
+   m_Line2->ThroughPoints(pnt1,pnt2);
+   Float64 c;
+   CComPtr<IVector2d> n;
+   m_Line2->GetImplicit(&c,&n);
+
+   // compute the dot product of the normal vector and the vector from the girder to the deck point
+   Float64 dot;
+   n->Dot(v,&dot);
+
+   if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
+      dist *= -1;
+
+   *pOverhang = dist;
+   return S_OK;
+}
+
+STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,IDirection* dir,DirectionType side,Float64* pOverhang)
+{
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+
+   CComPtr<ISegment> segment;
+   Float64 distFromStartOfSegment;
+   SegmentIndexType segIdx;
+   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ATLASSERT(segment);
+
+   return DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,dir,side,pOverhang);
+}
+
+STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IDirection* dir,DirectionType side,Float64* pOverhang)
+{
+   // Computes the distance from the centerline of the superstructure member to the edge of deck along a given direction
+
+   // Get station and offset of point on segment where deck overhang is to be computed
+   CComPtr<IStation> objStation;
+   Float64 offset;
+   HRESULT hr = StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,&objStation,&offset);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 station;
+   objStation->get_Value(&station);
+
+   // Get the alignment
    CComPtr<IAlignment> alignment;
    bridge->get_Alignment(&alignment);
 
@@ -589,530 +841,176 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
    // if direction is NULL, use the normal to the alignment
    if ( direction == NULL )
-      alignment->Normal(CComVariant(station),&direction);
+      alignment->Normal(CComVariant(objStation),&direction);
 
    // Get point on edge of deck
    CComPtr<IPoint2d> pntDeck;
-   HRESULT hr = DeckEdgePoint(bridge,station,direction,side,&pntDeck);
+   hr = DeckEdgePoint(bridge,station,direction,side,&pntDeck);
    if ( FAILED(hr) )
       return hr;
 
    // Get point on alignment at station
    CComPtr<IPoint2d> alignment_point;
-   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
+   alignment->LocatePoint(CComVariant(objStation),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
 
-   // Create a construction line through the alignment point in the direction of "direction"
+   // Create a line through the alignment point in the direction of "direction"
+   // Use the m_Line1 object (it is faster if we don't have to create it every time it is needed)
+   USE_LINE(m_Line1);
    Float64 angle;
    direction->get_Value(&angle);
-
+   
+   CComPtr<IPoint2d> p;
    CComPtr<IVector2d> v;
-   v.CoCreateInstance(CLSID_Vector2d);
+   m_Line1->GetExplicit(&p,&v);
    v->put_X(cos(angle));
    v->put_Y(sin(angle));
+   m_Line1->SetExplicit(alignment_point,v);
 
-   CComPtr<ILine2d> line;
-   line.CoCreateInstance(CLSID_Line2d);
-   line->SetExplicit(alignment_point,v);
 
-   // Utils needed
-   CComPtr<ICogoInfo> cogoInfo;
-   bridge->get_CogoInfo(&cogoInfo);
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
-   CComPtr<ICogoModel> cogoModel;
-   bridge->get_CogoModel(&cogoModel);
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
 
-   CComPtr<IPointCollection> points;
-   cogoModel->get_Points(&points);
+   CComPtr<IGirderLine> girderLine;
+   segment->get_GirderLine(&girderLine);
 
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
+   // get end points of the girder l ine
+   CComPtr<IPoint2d> p1, p2;
+   girderLine->get_PierPoint(etStart,&p1);
+   girderLine->get_PierPoint(etEnd,  &p2);
 
-   /////////////////////////
-   CComPtr<IPoint2d> pntGirder; // intersection of normal line and girder line
-   CComPtr<ILine2d> girderLine;
-   CComPtr<ISpanCollection> spans;
-   bridge->get_Spans(&spans);
-   SpanIndexType nSpans;
-   spans->get_Count(&nSpans);
+   // line 2 is a cogo line object that represents the girder line
+   USE_LINE(m_Line2);
+   m_Line2->ThroughPoints(p1,p2);
 
-   CComPtr<IPierCollection> piers;
-   bridge->get_Piers(&piers);
-   CComPtr<IPier> pier;
-   piers->get_Item(1,&pier);
-   CComPtr<IStation> pierStation;
-   pier->get_Station(&pierStation);
-   Float64 first_interior_pier_station;
-   pierStation->get_Value(&first_interior_pier_station);
+   // intersect line from alignment with girder line
+   CComPtr<IPoint2d> pntGirder;
+   m_GeomUtil->LineLineIntersect(m_Line1,m_Line2,&pntGirder);
 
-   pier.Release();
-   pierStation.Release();
-   piers->get_Item(nSpans-1,&pier);
-   pier->get_Station(&pierStation);
-   Float64 last_interior_pier_station;
-   pierStation->get_Value(&last_interior_pier_station);
-   
-   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
+   // offset is distance between girder line point and deck point
+   Float64 dist;
+   m_GeomUtil->Distance(pntGirder,pntDeck,&dist);
+
+   // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
+   // create a vector from pntGirder to pntDeck
+   Float64 x1,y1;
+   Float64 x2,y2;
+   pntGirder->Location(&x1,&y1);
+   pntDeck->Location(&x2,&y2);
+
+   v->put_X(x2-x1); 
+   v->put_Y(y2-y1);
+
+   // get the normal to the girder line (normal goes to the left of the line in this case)
+   Float64 c;
+   CComPtr<IVector2d> n;
+   m_Line2->GetImplicit(&c,&n);
+
+   // compute the dot product of the normal vector and the vector from the girder to the deck point
+   Float64 dot;
+   n->Dot(v,&dot);
+
+   if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
+      dist *= -1;
+
+   *pOverhang = dist;
+   return S_OK;
+}
+
+STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType otherSSMbrID,Float64* pSpacing)
+{
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+
+   CComPtr<ISegment> segment;
+   Float64 distFromStartOfSegment;
+   SegmentIndexType segIdx;
+   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ATLASSERT(segment);
+
+   return GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,otherSSMbrID,pSpacing);
+}
+
+STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType otherSSMbrID,Float64* pSpacing)
+{
+   // Computes the perpendicular distance between the superstructure member (ssMbrID) at the a distance along this 
+   // superstructure member (distFromStartOfSSMbr) and another superstructure member (otherSSMbrID)
+
+   if ( otherSSMbrID == INVALID_ID )
    {
-      CComPtr<ISpan> span;
-      spans->get_Item(spanIdx,&span);
+      *pSpacing = 0;
+      return E_FAIL;
+   }
 
-      GirderIndexType nGirders = 0;
-      span->get_GirderCount(&nGirders);
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
+   ATLASSERT(ssmbr); // why? bad ssMbrID?
 
-      // create a line for the outside girder
-      ATLASSERT(0 < nGirders);
-      GirderIndexType girderIdx = (side == qcbLeft ? 0 : nGirders-1);
+   CComPtr<ISegment> segment;
+   ssmbr->get_Segment(segIdx,&segment);
+   ATLASSERT(segment);
 
-      // Piers bounding span
-      PierIndexType prev_pier = spanIdx;
-      PierIndexType next_pier = spanIdx+1;
+   CComPtr<IGirderLine> girderLine; // girderLine for this girder
+   segment->get_GirderLine(&girderLine);
 
-      CogoElementKey id;
-      cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
-      CComPtr<IPoint2d> p1;
-      points->get_Item(id,&p1);
+   // Get point object for point under consideration
+   CComQIPtr<ILocate2> locate(m_CogoEngine);
 
-      cogoInfo->get_PierGirderIntersectionPointID(next_pier,girderIdx,qcbBefore,&id);
-      CComPtr<IPoint2d> p2;
-      points->get_Item(id,&p2);
+   // get end points of girder line
+   CComPtr<IPoint2d> p1, p2;
+   girderLine->get_EndPoint(etStart,&p1);
+   girderLine->get_EndPoint(etEnd,  &p2);
 
-      if ( (spanIdx == 0 && station < first_interior_pier_station) || (spanIdx == nSpans-1 && last_interior_pier_station < station) )
+   // locate point on girder line where spacing is measured
+   CComPtr<IPoint2d> pntOnGirder;
+   locate->PointOnLine(p1,p2,distFromStartOfSegment,0.00,&pntOnGirder);
+
+   // Use m_Line1 for a line that is perpendicular to the girder line, throught pntOnGirder
+   USE_LINE(m_Line1);
+   m_Line1->ThroughPoints(p1,p2); // line runs along girderline
+   m_Line1->RotateEx(pntOnGirder,PI_OVER_2); // rotate 90 degrees, centered on pntOnGirder
+
+   // Get the girder line for the adjacent girder
+   // We don't know which segment the normal line will intersect, so start with the
+   // first one and work down the superstructure member
+   CComPtr<IGirderLine> otherGirderLine; // girderLine for the girder spacing is measured to
+   CComPtr<ISuperstructureMember> otherSSMbr;
+   bridge->get_SuperstructureMember(otherSSMbrID,&otherSSMbr);
+
+   SegmentIndexType nSegments;
+   otherSSMbr->get_SegmentCount(&nSegments);
+   CComPtr<IPoint2d> pntOnOtherGirder;
+   for ( SegmentIndexType segIdx = 0; segIdx < nSegments; segIdx++ )
+   {
+      CComPtr<ISegment> otherSegment;
+      otherSSMbr->get_Segment(segIdx,&otherSegment);
+      otherSegment->get_GirderLine(&otherGirderLine);
+
+      // Use m_Line2 for second girder line (doesn't really matter which end points we use)
+      USE_LINE(m_Line2);
+      CComPtr<IPoint2d> p3, p4;
+      otherGirderLine->get_PierPoint(etStart,&p3);
+      otherGirderLine->get_PierPoint(etEnd,  &p4);
+      m_Line2->ThroughPoints(p3,p4);
+
+      // Intersect normal line and other girder line
+      if ( m_GeomUtil->LineLineIntersect(m_Line1,m_Line2,&pntOnOtherGirder) == S_OK )
       {
-         // extend girders if in first or last span
-         CComPtr<ILine2d> gdrLine;
-         gdrLine.CoCreateInstance(CLSID_Line2d);
-         gdrLine->ThroughPoints(p1,p2);
-
-         // intersect line from alignment with girder line
-         pntGirder.Release();
-         geomUtil->LineLineIntersect(line,gdrLine,&pntGirder);
-      }
-      else
-      {
-         CComPtr<ILineSegment2d> gdrLine;
-         gdrLine.CoCreateInstance(CLSID_LineSegment2d);
-         gdrLine->ThroughPoints(p1,p2);
-
-         // intersect line from alignment with girder line
-         pntGirder.Release();
-         geomUtil->IntersectLineWithLineSegment(line,gdrLine,&pntGirder);
-      }
-
-      if ( pntGirder != NULL ) // an intersection was found
-      {
-         // an intersection was found
-         girderLine.CoCreateInstance(CLSID_Line2d);
-         girderLine->ThroughPoints(p1,p2);
+         // point found
          break;
       }
    }
 
-   if ( pntGirder == NULL )
+   if ( pntOnOtherGirder == NULL )
    {
-      // girder point is usually found by now, but there is a case where at an intermediate pier, the "line" can pass
-      // between girder ends and not actually intersect
-
-      //        .  | <- Cut Line passes between girders, no intersection found
-      //         . |
-      // ---------.|
-      //           . 
-      //           |.
-      //           | .------------  <- CL Girder
-      //           |  .
-      //           |   .<- CL Pier
-      // 
-      
-
-      // This is a last ditch effort... simply intersect "line" with the exterior girder line
-      for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
-      {
-         CComPtr<ISpan> span;
-         spans->get_Item(spanIdx,&span);
-
-         GirderIndexType nGirders = 0;
-         span->get_GirderCount(&nGirders);
-
-         // create a line for the outside girder
-         ATLASSERT(0 < nGirders);
-         GirderIndexType girderIdx = (side == qcbLeft ? 0 : nGirders-1);
-
-         // Piers bounding span
-         PierIndexType prev_pier = spanIdx;
-         PierIndexType next_pier = spanIdx+1;
-
-         CComPtr<IPier> prevPier, nextPier;
-         piers->get_Item(prev_pier,&prevPier);
-         piers->get_Item(next_pier,&nextPier);
-
-         CComPtr<IStation> objPrevPierStation, objNextPierStation;
-         prevPier->get_Station(&objPrevPierStation);
-         nextPier->get_Station(&objNextPierStation);
-
-         Float64 prev_pier_station, next_pier_station;
-         objPrevPierStation->get_Value(&prev_pier_station);
-         objNextPierStation->get_Value(&next_pier_station);
-
-         if ( ::InRange(prev_pier_station,station,next_pier_station) )
-         {
-            CogoElementKey id;
-            cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
-            CComPtr<IPoint2d> p1;
-            points->get_Item(id,&p1);
-
-            cogoInfo->get_PierGirderIntersectionPointID(next_pier,girderIdx,qcbBefore,&id);
-            CComPtr<IPoint2d> p2;
-            points->get_Item(id,&p2);
-
-            // extend girders if in first or last span
-            girderLine.CoCreateInstance(CLSID_Line2d);
-            girderLine->ThroughPoints(p1,p2);
-
-            // intersect line from alignment with girder line
-            pntGirder.Release();
-            geomUtil->LineLineIntersect(line,girderLine,&pntGirder);
-
-            break;
-         }
-      }
-   }
-   ATLASSERT(pntGirder != NULL);
-
-   //// Determine which span the deck edge point lies in by creating creating a local coordinate system
-   //// with the origin at the intersection of the centerline pier and alignment. The Y direction
-   //// is along the CL Pier. If X of the deck point is >= 0 in this coordinate system and X
-   //// is less than zero in a coordinate system at the next pier, the point is in the span
-
-   //bool bFound = false;
-   //SpanIndexType spanIdx = 0; // this is what we are trying to find
-   //CComPtr<IPierCollection> piers;
-   //bridge->get_Piers(&piers);
-   //PierIndexType nPiers;
-   //piers->get_Count(&nPiers);
-
-   //if ( nPiers <= 2 )
-   //{
-   //   // single span bridge.
-   //   spanIdx = 0;
-   //}
-   //else
-   //{
-   //   CComPtr<ICoordinateXform2d> xform;
-   //   xform.CoCreateInstance(CLSID_CoordinateXform2d);
-
-   //   CComPtr<IPier> pier;
-   //   piers->get_Item(0,&pier);
-   //   CComPtr<IDirection> dirPier;
-   //   pier->get_Direction(&dirPier); // direction of Y-axis in local coordinate system
-   //   dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // direction of X-axis in local coordinate system
-
-   //   Float64 dirStartPier;
-   //   dirPier->get_Value(&dirStartPier);
-
-
-   //   long ID;
-   //   cogoInfo->get_PierPointID(0,pptAlignment,&ID);
-
-   //   CComPtr<IPoint2d> pntStartPier;
-   //   points->get_Item(ID,&pntStartPier);
-
-   //   for ( PierIndexType pierIdx = 1; pierIdx < nPiers; pierIdx++ )
-   //   {
-   //      pier.Release();
-   //      dirPier.Release();
-
-   //      piers->get_Item(pierIdx,&pier);
-   //      pier->get_Direction(&dirPier); // direction of Y-axis in local coordinate system
-   //      dirPier->IncrementBy(CComVariant(-PI_OVER_2)); // direction of X-axis in local coordinate system
-
-   //      Float64 dirEndPier;
-   //      dirPier->get_Value(&dirEndPier);
-
-   //      cogoInfo->get_PierPointID(pierIdx,pptAlignment,&ID);
-   //      CComPtr<IPoint2d> pntEndPier;
-   //      points->get_Item(ID,&pntEndPier);
-
-   //      xform->putref_NewOrigin(pntStartPier);
-   //      xform->put_RotationAngle(dirStartPier);
-
-   //      CComPtr<IPoint2d> pnt1;
-   //      xform->XformEx(pntDeck,xfrmOldToNew,&pnt1);
-
-   //      xform->putref_NewOrigin(pntEndPier);
-   //      xform->put_RotationAngle(dirEndPier);
-
-   //      CComPtr<IPoint2d> pnt2;
-   //      xform->XformEx(pntDeck,xfrmOldToNew,&pnt2);
-
-   //      Float64 x1;
-   //      pnt1->get_X(&x1);
-
-   //      Float64 x2;
-   //      pnt2->get_X(&x2);
-
-   //      if ( pierIdx == 1 && x1 < 0 )
-   //      {
-   //         // deck edge point is before the first pier
-   //         ATLASSERT(x2 < 0);
-   //         spanIdx = 0;
-   //         bFound = true;
-   //         break;
-   //      }
-   //      else if ( 0 <= x1 && x2 <= 0 )
-   //      {
-   //         spanIdx = pierIdx-1;
-   //         bFound = true;
-   //         break;
-   //      }
-   //      else if ( pierIdx == nPiers-1 && 0 < x2 )
-   //      {
-   //         // deck edge point is after last pier
-   //         ATLASSERT(0 < x1);
-   //         spanIdx = nPiers-2;
-   //         bFound = true;
-   //         break;
-   //      }
-
-   //      pntStartPier.Release();
-   //      pntStartPier = pntEndPier;
-   //      dirStartPier = dirEndPier;
-   //   }
-   //}
-
-   //if ( !bFound )
-   //{
-   //   // deck point projects beyond last pier... just use the last span
-   //   spanIdx = nPiers-2;
-   //}
-
-   //CComPtr<ISpanCollection> spans;
-   //bridge->get_Spans(&spans);
-
-   //CComPtr<ISpan> span;
-   //spans->get_Item(spanIdx,&span);
-
-   //GirderIndexType nGirders = 0;
-   //span->get_GirderCount(&nGirders);
-
-   //// create a line for the outside girder
-   //ATLASSERT(0 < nGirders);
-   //GirderIndexType girderIdx = (side == qcbLeft ? 0 : nGirders-1);
-
-   //// Piers bounding span
-   //PierIndexType prev_pier = spanIdx;
-   //PierIndexType next_pier = spanIdx+1;
-
-   //long id;
-   //cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
-   //CComPtr<IPoint2d> p1;
-   //points->get_Item(id,&p1);
-
-   //cogoInfo->get_PierGirderIntersectionPointID(next_pier,girderIdx,qcbBefore,&id);
-   //CComPtr<IPoint2d> p2;
-   //points->get_Item(id,&p2);
-
-   //CComPtr<ILine2d> gdrLine;
-   //gdrLine.CoCreateInstance(CLSID_Line2d);
-   //gdrLine->ThroughPoints(p1,p2);
-
-   //// intersect line from alignment with girder line
-   //CComPtr<IPoint2d> pntGirder;
-   //geomUtil->LineLineIntersect(line,gdrLine,&pntGirder);
-
-   // offset is distance between girder line point and deck point
-   Float64 dist;
-   geomUtil->Distance(pntGirder,pntDeck,&dist);
-
-   // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
-   // create a vector from pntGirder to pntDeck
-   Float64 x1,y1;
-   Float64 x2,y2;
-   pntGirder->get_X(&x1); pntGirder->get_Y(&y1);
-   pntDeck->get_X(&x2);   pntDeck->get_Y(&y2);
-
-   v->put_X(x2-x1); 
-   v->put_Y(y2-y1);
-
-   // get the normal to the girder line (normal goes to the left of the line in this case)
-   Float64 c;
-   CComPtr<IVector2d> n;
-   girderLine->GetImplicit(&c,&n);
-
-   // compute the dot product of the normal vector and the vector from the girder to the deck point
-   Float64 dot;
-   n->Dot(v,&dot);
-
-   if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
-      dist *= -1;
-
-   *pOverhang = dist;
-   return S_OK;
-}
-
-STDMETHODIMP CBridgeGeometryTool::DeckOverhangFromGirder(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,Float64 distFromStartOfGirder,DirectionType side,Float64* pOverhang)
-{
-   // Computes the distance from the girder to the edge of the deck along a line passing through the point on the
-   // girder that is normal to the alignment. The overhang distance is < 0 if the edge of the deck is inboard
-   // of the girder
-
-   // convert location along girder to a point
-   CComPtr<IPoint2d> pntGirder;
-   Point(bridge,spanIdx,gdrIdx,distFromStartOfGirder,&pntGirder);
-
-
-   // get deck edge point
-   // need station and offset of girder point
-   CComPtr<IStation> objStation;
-   Float64 offset;
-   StationAndOffset(bridge,spanIdx,gdrIdx,distFromStartOfGirder,&objStation,&offset);
-
-   Float64 station;
-   objStation->get_Value(&station);
-
-
-   CComPtr<IAlignment> alignment;
-   bridge->get_Alignment(&alignment);
-
-   // measure normal to girder
-   CComPtr<IDirection> direction;
-   alignment->Normal(CComVariant(objStation),&direction);
-
-   // Get point on edge of deck
-   CComPtr<IPoint2d> pntDeck;
-   HRESULT hr = DeckEdgePoint(bridge,station,direction,side,&pntDeck);
-   if ( FAILED(hr) )
-      return hr;
-
-   // Utils needed
-   CComPtr<ICogoInfo> cogoInfo;
-   bridge->get_CogoInfo(&cogoInfo);
-
-   CComPtr<ICogoModel> cogoModel;
-   bridge->get_CogoModel(&cogoModel);
-
-   CComPtr<IPointCollection> points;
-   cogoModel->get_Points(&points);
-
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
-
-   // offset is distance between girder line point and deck point
-   Float64 dist;
-   geomUtil->Distance(pntGirder,pntDeck,&dist);
-
-   // Distance is always a positive quantity... distance needs to be < 0 if inboard of the girder line
-   // create a vector from pntGirder to pntDeck
-   Float64 x1,y1;
-   Float64 x2,y2;
-   pntGirder->get_X(&x1); pntGirder->get_Y(&y1);
-   pntDeck->get_X(&x2);   pntDeck->get_Y(&y2);
-
-   CComPtr<IVector2d> v;
-   v.CoCreateInstance(CLSID_Vector2d);
-   v->put_X(x2-x1); 
-   v->put_Y(y2-y1);
-
-   // get the normal to the girder line (normal goes to the left of the line in this case)
-   // Piers bounding span
-   PierIndexType prev_pier = spanIdx;
-   PierIndexType next_pier = prev_pier+1;
-
-   CogoElementKey id;
-   cogoInfo->get_PierGirderIntersectionPointID(prev_pier,gdrIdx,qcbAfter,&id);
-   CComPtr<IPoint2d> p1;
-   points->get_Item(id,&p1);
-
-   cogoInfo->get_PierGirderIntersectionPointID(next_pier,gdrIdx,qcbBefore,&id);
-   CComPtr<IPoint2d> p2;
-   points->get_Item(id,&p2);
-
-   CComPtr<ILine2d> gdrLine;
-   gdrLine.CoCreateInstance(CLSID_Line2d);
-   gdrLine->ThroughPoints(p1,p2);
-
-   Float64 c;
-   CComPtr<IVector2d> n;
-   gdrLine->GetImplicit(&c,&n);
-
-   // compute the dot product of the normal vector and the vector from the girder to the deck point
-   Float64 dot;
-   n->Dot(v,&dot);
-
-   if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
-      dist *= -1;
-
-   *pOverhang = dist;
-   return S_OK;
-}
-
-HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath)
-{
-   CComPtr<IBridgeDeck> deck;
-   bridge->get_Deck(&deck);
-
-   if ( deck == NULL )
-   {
-      // no deck...use the traffic barrier path
-      CComPtr<ISidewalkBarrier> barrier;
-      if ( side == qcbLeft )
-         bridge->get_LeftBarrier(&barrier);
-      else
-         bridge->get_RightBarrier(&barrier);
-
-      return barrier->get_Path(ppPath);
+      ATLASSERT(false); // point not found, and it should have been???
+      return E_FAIL;
    }
 
-   CComQIPtr<ICastSlab> cip(deck);
-   CComQIPtr<IPrecastSlab> sip(deck);
-   CComQIPtr<IOverlaySlab> overlay(deck);
-
-   if ( cip == NULL && sip == NULL && overlay == NULL )
-      return Error(IDS_E_UNKNOWNDECKTYPE,IID_IBridgeGeometryTool,GBMT_E_UNKNOWNDECKTYPE);
-
-   CComPtr<IPath> path;
-   if ( cip )
-      (side == qcbLeft) ? cip->get_LeftOverhangPath(&path)     : cip->get_RightOverhangPath(&path);
-   else if ( sip )
-      (side == qcbLeft) ? sip->get_LeftOverhangPath(&path)     : sip->get_RightOverhangPath(&path);
-   else if ( overlay )
-      (side == qcbLeft) ? overlay->get_LeftOverhangPath(&path) : overlay->get_RightOverhangPath(&path);
-
-   *ppPath = path;
-   (*ppPath)->AddRef();
-   return S_OK;
-}
-
-HRESULT CBridgeGeometryTool::GetPierLine(IGenericBridge* bridge,PierIndexType pierIdx,ILine2d** ppLine)
-{
-   CComPtr<IPierCollection> piers;
-   bridge->get_Piers(&piers);
-
-   CComPtr<IPier> pier;
-   piers->get_Item(pierIdx,&pier);
-
-   CComPtr<ICogoInfo> cogoInfo;
-   bridge->get_CogoInfo(&cogoInfo);
-
-   CComPtr<ICogoModel> cogoModel;
-   bridge->get_CogoModel(&cogoModel);
-
-   CComPtr<IPointCollection> points;
-   cogoModel->get_Points(&points);
-
-   CogoElementKey leftPntID, rightPntID;
-   cogoInfo->get_PierPointID(pierIdx,pptLeft, &leftPntID);
-   cogoInfo->get_PierPointID(pierIdx,pptRight,&rightPntID);
-
-   CComPtr<IPoint2d> pntLeft, pntRight;
-   points->get_Item(leftPntID, &pntLeft);
-   points->get_Item(rightPntID,&pntRight);
-
-   CComPtr<ILine2d> line;
-   line.CoCreateInstance(CLSID_Line2d);
-
-   line->ThroughPoints(pntRight,pntLeft);
-
-   *ppLine = line;
-   (*ppLine)->AddRef();
+   // compute distance to get spacing
+   pntOnGirder->DistanceEx(pntOnOtherGirder,pSpacing);
 
    return S_OK;
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphicsLib - Utility library graphics
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -117,8 +117,8 @@ void grAxisXY::Draw(HDC hDC)
    // will be the A axis.
    mathCoordMapper1d axis_mapper;
 
-   axis_mapper.SetCoordinateMap(m_LeftAxisValue,  m_MinLocation, 
-                                m_RightAxisValue, m_MaxLocation);
+   axis_mapper.SetCoordinateMap(m_Scale == LINEAR ? m_LeftAxisValue  : log10(m_LeftAxisValue),  m_MinLocation, 
+                                m_Scale == LINEAR ? m_RightAxisValue : log10(m_RightAxisValue), m_MaxLocation);
 
    // Draw the main axis line
    POINT p1, p2;
@@ -141,92 +141,175 @@ void grAxisXY::Draw(HDC hDC)
    if (m_DoShowTics)
    {
       // draw tics and values
-      Float64 tic_value = m_LeftAxisValue;
-      Float64 tic_prev;
-      Int32 num_incrs = (Int32)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement );
-      for (Int32 i=0; i<=num_incrs; i++)
+      if ( m_Scale == LINEAR )
       {
-         Int32 tic_l = (Int32)Round( axis_mapper.GetB(tic_value));
-
-         // draw major tic
-         if (m_Orientation == X_AXIS)
+         Float64 tic_value = m_LeftAxisValue;
+         Float64 tic_prev;
+         Int32 num_incrs = (Int32)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement );
+         for (Int32 i=0; i<=num_incrs; i++)
          {
-            POINT pt1={tic_l,m_AxisMetrics.MajorTicTop}, pt2={tic_l,m_AxisMetrics.MajorTicBottom};
-            ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
-            ::LineTo(hDC, pt2.x, pt2.y);
-         }
-         else
-         {
-            POINT pt1={m_AxisMetrics.MajorTicTop, tic_l}, pt2={m_AxisMetrics.MajorTicBottom, tic_l};
-            ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
-            ::LineTo(hDC, pt2.x, pt2.y);
-         }
+            Int32 tic_l = (Int32)Round( axis_mapper.GetB(tic_value) );
 
-         // draw value text
-         if (m_DoShowText)
-         {
-            std::_tstring value_text = m_pValueFormat->AsString(tic_value);
-
+            // draw major tic
             if (m_Orientation == X_AXIS)
             {
-               LONG old_a;
-               if ( m_ValueAngle == 0 )
-                  old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
-               else
-                  old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
-
-               grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
-                                  value_text.c_str(), (LONG)value_text.size(),
-                                  m_AxisValueSize);
-               ::SetTextAlign(hDC, old_a);            
+               POINT pt1={tic_l,m_AxisMetrics.MajorTicTop}, pt2={tic_l,m_AxisMetrics.MajorTicBottom};
+               ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
+               ::LineTo(hDC, pt2.x, pt2.y);
             }
             else
             {
-               UINT old_a = SetTextAlign(hDC, TA_RIGHT | TA_BASELINE);
-               grGraphTool::TextOutRotated(hDC, m_AxisMetrics.ValueTextLoc, tic_l,  m_ValueAngle,
-                                  value_text.c_str(), (LONG)value_text.size(),
-                                  m_AxisValueSize);
-               ::SetTextAlign(hDC, old_a);            
+               POINT pt1={m_AxisMetrics.MajorTicTop, tic_l}, pt2={m_AxisMetrics.MajorTicBottom, tic_l};
+               ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
+               ::LineTo(hDC, pt2.x, pt2.y);
             }
-         }
 
-         // minor tics
-         if (i>0 && m_NumberOfMinorTics>1)
-         {
-            Float64 minor_tic_inc = (tic_value-tic_prev)/m_NumberOfMinorTics;
-            Float64 minor_tic_l = tic_prev;
-            for (Int32 j=1; j<m_NumberOfMinorTics; j++)
+            // draw value text
+            if (m_DoShowText)
             {
-               minor_tic_l += minor_tic_inc;
-               tic_l = (Int32)Round( axis_mapper.GetB(minor_tic_l));
+               std::_tstring value_text = m_pValueFormat->AsString(tic_value);
 
                if (m_Orientation == X_AXIS)
                {
-                  POINT pm1={tic_l,m_AxisMetrics.MinorTicTop}, 
-                        pm2={tic_l,m_AxisMetrics.MinorTicBottom};
-                  ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
-                  ::LineTo(hDC, pm2.x, pm2.y);
+                  LONG old_a;
+                  if ( m_ValueAngle == 0 )
+                     old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
+                  else
+                     old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
+
+                  grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
+                                     value_text.c_str(), (LONG)value_text.size(),
+                                     m_AxisValueSize);
+                  ::SetTextAlign(hDC, old_a);            
                }
                else
                {
-                  POINT pm1={m_AxisMetrics.MinorTicTop, tic_l},
-                        pm2={m_AxisMetrics.MinorTicBottom, tic_l};
-                  ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
-                  ::LineTo(hDC, pm2.x, pm2.y);
+                  UINT old_a = SetTextAlign(hDC, TA_RIGHT | TA_BASELINE);
+                  grGraphTool::TextOutRotated(hDC, m_AxisMetrics.ValueTextLoc, tic_l,  m_ValueAngle,
+                                     value_text.c_str(), (LONG)value_text.size(),
+                                     m_AxisValueSize);
+                  ::SetTextAlign(hDC, old_a);            
+               }
+            }
+
+            // minor tics
+            if (i>0 && m_NumberOfMinorTics>1)
+            {
+               Float64 minor_tic_inc = (tic_value-tic_prev)/m_NumberOfMinorTics;
+               Float64 minor_tic_l = tic_prev;
+               for (Int32 j=1; j<m_NumberOfMinorTics; j++)
+               {
+                  minor_tic_l += minor_tic_inc;
+                  tic_l = (Int32)Round( axis_mapper.GetB(minor_tic_l) );
+
+                  if (m_Orientation == X_AXIS)
+                  {
+                     POINT pm1={tic_l,m_AxisMetrics.MinorTicTop}, 
+                           pm2={tic_l,m_AxisMetrics.MinorTicBottom};
+                     ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
+                     ::LineTo(hDC, pm2.x, pm2.y);
+                  }
+                  else
+                  {
+                     POINT pm1={m_AxisMetrics.MinorTicTop, tic_l},
+                           pm2={m_AxisMetrics.MinorTicBottom, tic_l};
+                     ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
+                     ::LineTo(hDC, pm2.x, pm2.y);
+                  }
+               }
+            }
+            tic_prev = tic_value;
+            tic_value += m_AxisIncrement;
+         }
+      }
+      else
+      {
+         // LOG scale
+         int exp1 = (m_LeftAxisValue == 0 ? 0 : (int)floor(log10(m_LeftAxisValue)));
+         int exp2 = (int)floor(log10(m_RightAxisValue));
+         for ( int i = exp1; i <= exp2; i++ )
+         {
+            Float64 tic_value = pow(10,(Float64)i);
+            Int32 tic_l = (Int32)Round(axis_mapper.GetB(log10(tic_value)));
+
+            // draw major tic
+            if (m_Orientation == X_AXIS)
+            {
+               POINT pt1={tic_l,m_AxisMetrics.MajorTicTop}, pt2={tic_l,m_AxisMetrics.MajorTicBottom};
+               ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
+               ::LineTo(hDC, pt2.x, pt2.y);
+            }
+            else
+            {
+               POINT pt1={m_AxisMetrics.MajorTicTop, tic_l}, pt2={m_AxisMetrics.MajorTicBottom, tic_l};
+               ::MoveToEx(hDC, pt1.x, pt1.y, &pnt);
+               ::LineTo(hDC, pt2.x, pt2.y);
+            }
+
+            // draw value text
+            if (m_DoShowText)
+            {
+               std::_tstring value_text = m_pValueFormat->AsString(tic_value);
+
+               if (m_Orientation == X_AXIS)
+               {
+                  LONG old_a;
+                  if ( m_ValueAngle == 0 )
+                     old_a = ::SetTextAlign(hDC, TA_CENTER | TA_TOP);
+                  else
+                     old_a = ::SetTextAlign(hDC, TA_RIGHT  | TA_TOP);
+
+                  grGraphTool::TextOutRotated(hDC, tic_l, m_AxisMetrics.ValueTextLoc, m_ValueAngle,
+                                     value_text.c_str(), (LONG)value_text.size(),
+                                     m_AxisValueSize);
+                  ::SetTextAlign(hDC, old_a);            
+               }
+               else
+               {
+                  UINT old_a = SetTextAlign(hDC, TA_RIGHT | TA_BASELINE);
+                  grGraphTool::TextOutRotated(hDC, m_AxisMetrics.ValueTextLoc, tic_l,  m_ValueAngle,
+                                     value_text.c_str(), (LONG)value_text.size(),
+                                     m_AxisValueSize);
+                  ::SetTextAlign(hDC, old_a);            
+               }
+            }
+
+            // minor tics
+            if (i < exp2 && 1 < m_NumberOfMinorTics)
+            {
+               for ( int j = 1; j < 10; j++ )
+               {
+                  Float64 minor_tic = j*pow(10,(Float64)i);
+                  tic_l = (Int32)Round( axis_mapper.GetB(log10(minor_tic)) );
+
+                  if (m_Orientation == X_AXIS)
+                  {
+                     POINT pm1={tic_l,m_AxisMetrics.MinorTicTop}, 
+                           pm2={tic_l,m_AxisMetrics.MinorTicBottom};
+                     ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
+                     ::LineTo(hDC, pm2.x, pm2.y);
+                  }
+                  else
+                  {
+                     POINT pm1={m_AxisMetrics.MinorTicTop, tic_l},
+                           pm2={m_AxisMetrics.MinorTicBottom, tic_l};
+                     ::MoveToEx(hDC, pm1.x, pm1.y, &pnt);
+                     ::LineTo(hDC, pm2.x, pm2.y);
+                  }
                }
             }
          }
-         tic_prev = tic_value;
-         tic_value += m_AxisIncrement;
       }
    }
-      // draw text title and subtitle
+
+   // draw text title and subtitle
 
    if (m_DoShowText)
    {
       // set text alignment for axis titles
 
-      Int32 tit_hl = (Int32)Round( axis_mapper.GetB( (m_LeftAxisValue+m_RightAxisValue)/2 ));
+      //Int32 tit_hl = (Int32)Round( m_Scale == LINEAR ? axis_mapper.GetB( (m_LeftAxisValue+m_RightAxisValue)/2 ) : axis_mapper.GetB( log10( (m_LeftAxisValue+m_RightAxisValue)/2 ) ));
+      Int32 tit_hl = (m_MinLocation + m_MaxLocation)/2;
 
       if (m_Orientation == X_AXIS)
       {
@@ -260,14 +343,28 @@ void grAxisXY::Draw(HDC hDC)
    ::SetBkMode(hDC,old_bk);
 }
 
-void grAxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal)
+void grAxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZero)
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
 
-   CollectionIndexType num_tic = m_NumberOfMajorTics;
-   grGraphTool::CalculateNiceRange(leftVal, rightVal, num_tic, m_LeftAxisValue, 
-                                   m_RightAxisValue, m_AxisIncrement);
+   if ( m_Scale == LINEAR )
+   {
+      CollectionIndexType num_tic = m_NumberOfMajorTics;
+      grGraphTool::CalculateNiceRange(leftVal, rightVal, bOffsetZero, num_tic, m_LeftAxisValue, 
+                                      m_RightAxisValue, m_AxisIncrement);
+   }
+   else //( m_Scale == LOGARITHMIC )
+   {
+      // Compute nice log value
+      Float64 exp1 = floor(log10(leftVal));
+      m_LeftAxisValue = pow(10,exp1);
+
+      Float64 exp2 = ceil(log10(rightVal));
+      m_RightAxisValue = pow(10,exp2);
+
+      m_AxisIncrement = (m_RightAxisValue - m_LeftAxisValue)/(exp2-exp1);
+   }
 }
 
 void grAxisXY::SetForcedAxisRange(Float64 leftVal, Float64 rightVal, Float64 increment)
@@ -480,6 +577,16 @@ bool grAxisXY::GetShowText()
    return m_DoShowText;
 }
 
+void grAxisXY::SetScale(grAxisXY::AxisScale scale)
+{
+   m_Scale = scale;
+}
+
+grAxisXY::AxisScale grAxisXY::GetScale() const
+{
+   return m_Scale;
+}
+
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
@@ -512,6 +619,8 @@ void grAxisXY::MakeCopy(const grAxisXY& rOther)
    m_pValueFormat      = rOther.m_pValueFormat;
 
    m_ValueAngle        = rOther.m_ValueAngle;
+
+   m_Scale             = rOther.m_Scale;
 
    // force recalculation of metrics rather than copy them.
    m_MetricsDirtyFlag = true;
@@ -715,6 +824,8 @@ void grAxisXY::Init()
    m_AxisSubtitleSize = 10;
    m_AxisValueSize    = 10;
    m_MetricsDirtyFlag = true;
+
+   m_Scale = LINEAR;
 }
 
 

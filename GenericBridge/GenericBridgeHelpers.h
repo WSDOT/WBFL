@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,27 +38,31 @@
 //          -> CL Girder - CL Brg,  1
 // Side     -> Back/Behind,         0
 //          -> Ahead                1
-#define BRIDGE_ID_OFFSET 10000000  // cl-pier, cl-bridge point
-#define PIER_ID_OFFSET     100000  // cl-pier, alignment point
-#define GIRDER_ID_OFFSET      100
-#define LOCATION_OFFSET        10
-#define SIDE_OFFSET             1
+#define BRIDGE_ID_OFFSET  1000000000  // cl-pier, cl-bridge point
+#define TS_ID_OFFSET       100000000  // cl-temp support, alignment point
+#define PIER_ID_OFFSET        100000  // cl-pier, alignment point
+#define GIRDER_ID_OFFSET         100
+#define LOCATION_OFFSET           10
+#define SIDE_OFFSET                1
 
-extern const CogoElementKey g_AlignmentKey;
-extern const CogoElementKey g_CLBridgeKey;
+extern const CogoObjectID g_CLBridgeKey;
 
-HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,CogoElementKey* pVal);
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal);
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal);
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoElementKey* pVal);
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoElementKey* pVal);
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoElementKey* pVal);
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoObjectID* pVal);
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoObjectID* pVal);
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoObjectID* pVal);
 HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2d* *left,IPoint2d* *right);
-
+HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,CogoObjectID* pVal);
+HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
 //long GB_GetGirderLineIndex(IGenericBridge* pBridge,ISuperstructureMemberCollection* members);
 
 // function to deal with fractional and absolute values
 enum FracRes {frTooSmall, frTooBig};
 Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig=false); // throw FracRes
+
+Float64 GB_GetHaunchDepth(ISegment* pSegment,Float64 distAlongSegment);
+
+HRESULT GB_GetSectionLocation(ISegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter);
 
 #endif // INCLUDED_GENERICBRIDGEHELPERS_H_

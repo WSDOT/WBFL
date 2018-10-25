@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -256,7 +256,7 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
 
    BOOL bIsSelected = pDO->IsSelected();
 
-   if ( bIsSelected )
+   if ( bIsSelected || bHighlite )
    {
       line_color = pDispMgr->GetSelectionLineColor();
       fill_color = pDispMgr->GetSelectionFillColor();
@@ -267,23 +267,31 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
       fill_color = m_SolidFillColor;
    }
 
-   CPen solid_pen(PS_SOLID,bHighlite ? 2 : 1,line_color);
+   CPen solid_pen(PS_SOLID,1,line_color);
    CBrush solid_brush;
    if ( bIsSelected )
       solid_brush.CreateHatchBrush(HS_DIAGCROSS,fill_color);
    else
       solid_brush.CreateSolidBrush(fill_color);
 
-   CPen void_pen(PS_SOLID,bHighlite ? 2 : 1,m_VoidLineColor);
+   CPen void_pen(PS_SOLID,1,m_VoidLineColor);
    CBrush void_brush(m_VoidFillColor);
 
    CPen* pOldPen = pDC->SelectObject(&solid_pen);
    CBrush* pOldBrush;
    
-   if ( m_bFill )
-      pOldBrush = pDC->SelectObject(&solid_brush);
-   else
+   if ( bHighlite )
+   {
+      // highlited always uses NULL brush (not filled)
       pOldBrush = (CBrush*)pDC->SelectStockObject(NULL_BRUSH);
+   }
+   else
+   {
+      if ( m_bFill )
+         pOldBrush = pDC->SelectObject(&solid_brush);
+      else
+         pOldBrush = (CBrush*)pDC->SelectStockObject(NULL_BRUSH);
+   }
 
 
    if ( m_CompositeShape )

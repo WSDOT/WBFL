@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@
 #include <vector>
 #include "COGOCP.h"
 
-typedef std::pair<CogoElementKey,CComVariant> ProfileType;
+typedef std::pair<DWORD,CComVariant> ProfileType;
 typedef std::vector<ProfileType> Profiles;
 typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<ProfileType,VARIANT>, Profiles > ProfileEnum;
 typedef ICollectionOnSTLImpl<IProfile, Profiles, VARIANT, CopyFromPair2<ProfileType,VARIANT>, ProfileEnum> IProfileCollection;

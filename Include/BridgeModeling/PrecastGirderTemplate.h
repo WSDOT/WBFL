@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -172,7 +172,7 @@ public:
    bmfMeasuredFrom HarpPointLocationMeasuredFrom() const;
 
    //------------------------------------------------------------------------
-   Uint32 GetHarpingPointCount() const;
+   IndexType GetHarpingPointCount() const;
 
    //------------------------------------------------------------------------
    gmIPrecastBeam* CreateShape(Float64 distFromStart,Float64 length) const;
@@ -202,7 +202,7 @@ protected:
    void MakeCopy(const bmfPrecastGirderTemplate& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const bmfPrecastGirderTemplate& rOther);
+   virtual void MakeAssignment(const bmfPrecastGirderTemplate& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

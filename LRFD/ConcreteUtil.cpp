@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,14 +50,13 @@ static const Float64 g_p075_KSI  = ::ConvertToSysUnits(0.075,unitMeasure::KSI);
 static const Float64 g_p8_KSI    = ::ConvertToSysUnits(0.8,unitMeasure::KSI);
 static const Float64 g_1p3_KSI   = ::ConvertToSysUnits(1.3,unitMeasure::KSI);
 static const Float64 g_1p8_KSI   = ::ConvertToSysUnits(1.8,unitMeasure::KSI);
-static const Float64 g_60_KSI    = ::ConvertToSysUnits(60.0,unitMeasure::KSI);
 
 static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
 static const Float64 g_0p9_M = ::ConvertToSysUnits(0.9, unitMeasure::Meter);
 
-static const Float64 g_48_IN = ::ConvertToSysUnits(48.0, unitMeasure::Inch);
 static const Float64 g_36_IN = ::ConvertToSysUnits(36.0, unitMeasure::Inch);
-static const Float64 g_24_IN = ::ConvertToSysUnits(24.0, unitMeasure::Inch);
+
+static const Float64 g_2_FT = ::ConvertToSysUnits(2.0, unitMeasure::Feet);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -70,9 +69,6 @@ lrfdConcreteUtil::~lrfdConcreteUtil()
 //======================== OPERATIONS =======================================
 Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
 {
-   PRECONDITION( fc > 0 );
-   PRECONDITION( density > 0 );
-
    Float64 Fc;          // fc in spec units
    Float64 Density;     // density in spec units
    Float64 E;           // Modulus of elasticity in spec units
@@ -100,21 +96,14 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
    else
    {
       // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::KSI;
-      p_density_unit = &unitMeasure::KipPerFeet3;
-      p_E_unit       = &unitMeasure::KSI;
+      p_fc_unit      = &unitMeasure::PSI;
+      p_density_unit = &unitMeasure::LbmPerFeet3;
+      p_E_unit       = &unitMeasure::PSI;
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-      {
-         k = 33000.;
-      }
-      else
-      {
-         k = 120000.;
-      }
+      k = 33.;
 
-      min_density = 0.090; // kcf
-      max_density = 0.155; // kcf
+      min_density =  90.; // pcf
+      max_density = 155.; // pcf
    }
 
    // Convert input to required units
@@ -128,15 +117,7 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
    if ( bCheckRange && !InRange( min_density, density, max_density ) )
       THROW(sysXProgrammingError,ValueOutOfRange);
 
-
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-   {
-      E = k * pow( Density, 1.5 ) * sqrt( Fc );
-   }
-   else
-   {
-      E = k*pow(Density,2.0)*pow(Fc,0.33);
-   }
+   E = k * pow( Density, 1.5 ) * sqrt( Fc );
 
    // Convert output to system units.
    e = ::ConvertToSysUnits( E, *p_E_unit );
@@ -146,9 +127,6 @@ Float64 lrfdConcreteUtil::ModE(Float64 fc,Float64 density,bool bCheckRange)
 
 Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
 {
-   PRECONDITION( ec > 0 );
-   PRECONDITION( density > 0 );
-
    Float64 Fc;          // fc in spec units
    Float64 fc;          // fc in system units
    Float64 Density;     // density in spec units
@@ -171,32 +149,18 @@ Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
    else
    {
       // :NOTE: 1 lbm = 1 lbf
-      p_fc_unit      = &unitMeasure::KSI;
-      p_density_unit = &unitMeasure::KipPerFeet3;
-      p_E_unit       = &unitMeasure::KSI;
+      p_fc_unit      = &unitMeasure::PSI;
+      p_density_unit = &unitMeasure::LbmPerFeet3;
+      p_E_unit       = &unitMeasure::PSI;
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-      {
-         k = 33000.;
-      }
-      else
-      {
-         k = 120000.;
-      }
+      k = 33.;
    }
 
    // Convert input to required units
    Ec      = ::ConvertFromSysUnits( ec,      *p_E_unit      );
    Density = ::ConvertFromSysUnits( density, *p_density_unit );
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
-   {
-      Fc = pow(Ec/(k*pow(Density,1.5)),2);
-   }
-   else
-   {
-      Fc = pow(Ec/(k*pow(Density,2)),1/0.33);
-   }
+   Fc = pow(Ec/(k*pow(Density,1.5)),2);
 
    // Convert output to system units.
    fc = ::ConvertToSysUnits( Fc, *p_fc_unit );
@@ -206,8 +170,6 @@ Float64 lrfdConcreteUtil::FcFromEc(Float64 ec,Float64 density)
 
 Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64 k)
 {
-   PRECONDITION( fc > 0 );
-
    const unitStress* p_fc_unit;
    const unitStress* p_fr_unit;
    const unitSqrtPressure* p_coefficient_unit;
@@ -270,8 +232,6 @@ Float64 lrfdConcreteUtil::ModRupture(Float64 fc, DensityType densityType,Float64
 
 Float64 lrfdConcreteUtil::Beta1(Float64 fc)
 {
-   PRECONDITION( fc > 0 );
-
    const unitStress* p_fc_unit;
    Float64 fc_limit;
    Float64 fc_step;
@@ -435,9 +395,6 @@ void lrfdConcreteUtil::HorizontalShearResistances(Float64 c, Float64 u, Float64 
                                                   Float64* penqn1, Float64* penqn2, Float64* penqn3)
 {
    // nominal shear capacity 5.8.4.1-1,2
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SixthEditionWith2013Interims )
-      fy = min(fy,g_60_KSI);
-
    Float64 Vn1 = c*Acv + u*(Avf * fy + Pc);
    Float64 Vn2 = K1 * fc * Acv;
 
@@ -581,24 +538,12 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
    return hsAvfOverSMin;
 }
 
-Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
+Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()
 {
-   if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
-   {
-      ATLASSERT(lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US);
-      return min(Hg,g_48_IN);
-   }
+   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      return g_0p6_M;
    else
-   {
-      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      {
-         return g_0p6_M;
-      }
-      else
-      {
-         return g_24_IN;
-      }
-   }
+      return g_2_FT;
 }
 
 Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
@@ -628,108 +573,7 @@ Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float6
    }
 }
 
-Float64 lrfdConcreteUtil::ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc)
-{
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims || type == matConcrete::Normal )
-   {
-      return 1.0;
-   }
 
-   Float64 lambda;
-   if ( bHasFct )
-   {
-      fct = ::ConvertFromSysUnits(fct,unitMeasure::KSI);
-      fc  = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
-      lambda = 4.7*fct/sqrt(fc);
-      lambda = ::ForceIntoRange(0.0,lambda,1.0);
-   }
-   else
-   {
-      density = ::ConvertFromSysUnits(density,unitMeasure::KipPerFeet3);
-      lambda = 7.5*density;
-      lambda = ::ForceIntoRange(0.75,lambda,1.0);
-   }
-   return lambda;
-}
-
-
-std::_tstring lrfdConcreteUtil::GetTypeName(matConcrete::Type type,bool bFull)
-{
-   switch(type)
-   {
-   case matConcrete::Normal:
-      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
-
-   case matConcrete::AllLightweight:
-      if ( bFull )
-      {
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
-         {
-            return _T("All Lightweight Concrete");
-         }
-         else
-         {
-            return _T("Lightweight Concrete");
-         }
-      }
-      else
-      {
-         return _T("AllLightweight");
-      }
-
-   case matConcrete::SandLightweight:
-      if ( bFull )
-      {
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2016Interims )
-         {
-            return _T("Sand Lightweight Concrete");
-         }
-         else
-         {
-            return _T("Lightweight Concrete");
-         }
-      }
-      else
-      {
-         return _T("SandLightweight");
-      }
-
-   default:
-      ATLASSERT(false); // is there a new type?
-      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
-   }
-}
-
-matConcrete::Type lrfdConcreteUtil::GetTypeFromName(LPCTSTR strName)
-{
-   matConcrete::Type type;
-   if ( std::_tstring(strName) == _T("Normal") )
-   {
-      type = matConcrete::Normal;
-   }
-   else if ( std::_tstring(strName) == _T("AllLightweight") )
-   {
-      type = matConcrete::AllLightweight;
-   }
-   else if ( std::_tstring(strName) == _T("SandLightweight") )
-   {
-      type = matConcrete::SandLightweight;
-   }
-   else
-   {
-      ATLASSERT(false); // invalid name
-      type = matConcrete::Normal;
-   }
-
-   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() && type == matConcrete::AllLightweight )
-   {
-      // LRFD 2016 removed the distinction between Sand and All lightweight concrete. For a consistent application of the
-      // concrete type, we will use SandLightweight to mean "Lightweight" for all lightweight cases
-      type = matConcrete::SandLightweight;
-   }
-
-   return type;
-}
 
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================

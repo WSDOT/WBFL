@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -292,22 +292,6 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
       if ( m_pReportBrowser )
       {
          boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
-
-         // It is possible for the report builder to be deleted dynamically (e.g., if it is a custom report)
-         if (!pBuilder)
-         {
-            m_ErrorMsg = _T("The report specified when creating this window no longer exists. Please close this window.");
-            m_bUpdateError = true;
-
-            if ( m_pBtnEdit->GetSafeHwnd() )
-               m_pBtnEdit->ShowWindow(SW_HIDE);
-
-            // delete the report browser because what ever it is displaying is totally invalid
-            // also need to elimintate it so that we can draw the error message on the view window itself
-            m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
-            return E_FAIL;
-         }
-
          if ( pBuilder->NeedsUpdate(pHint,m_pReportSpec) )
          {
             boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
@@ -323,7 +307,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          // create the report and browser
          m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(),m_pReportSpec,m_pRptSpecBuilder);
 
-         CreateEditButton();
+        CreateEditButton();
       }
    }
    catch(...)
@@ -498,7 +482,7 @@ void CEAFReportView::UpdateNow(CReportHint* pHint)
             m_bInvalidReport = false;
          }
 
-         UpdateViewTitle();
+
       }
       catch(...)
       {
@@ -702,9 +686,4 @@ boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndP
 void CEAFReportView::NotifyReportButtonWasClicked()
 {
    EditReport();
-}
-
-boost::shared_ptr<CReportSpecification> CEAFReportView::GetReportSpecification()
-{
-   return m_pReportSpec;
 }

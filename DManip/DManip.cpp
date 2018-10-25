@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -70,6 +70,7 @@
 
 #include "SimpleDrawPointStrategyImpl.h"
 #include "SimpleDrawLineStrategyImpl.h"
+#include "SimpleDrawDashedLineStrategyImpl.h"
 #include "RectangleDrawLineStrategyImpl.h"
 #include "ExtRectangleDrawLineStrategyImpl.h"
 #include "ShapeDrawStrategyImpl.h"
@@ -123,6 +124,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
 
    OBJECT_ENTRY(CLSID_SimpleDrawPointStrategy,CSimpleDrawPointStrategyImpl)
    OBJECT_ENTRY(CLSID_SimpleDrawLineStrategy,CSimpleDrawLineStrategyImpl)
+   OBJECT_ENTRY(CLSID_SimpleDrawDashedLineStrategy,CSimpleDrawDashedLineStrategyImpl)
    OBJECT_ENTRY(CLSID_RectangleDrawLineStrategy,CRectangleDrawLineStrategyImpl)
    OBJECT_ENTRY(CLSID_ExtRectangleDrawLineStrategy,CExtRectangleDrawLineStrategyImpl)
    OBJECT_ENTRY(CLSID_ShapeDrawStrategy, CShapeDrawStrategyImpl)

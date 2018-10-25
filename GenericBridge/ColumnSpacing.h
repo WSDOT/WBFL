@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __COLUMNSPACING_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 #include <MathEx.h>
 #include <vector>
 
@@ -52,11 +51,9 @@ class ATL_NO_VTABLE CColumnSpacing :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CColumnSpacing, &CLSID_ColumnSpacing>,
 	public ISupportErrorInfo,
-	public IConnectionPointContainerImpl<CColumnSpacing>,
 	public IColumnSpacing,
    public IStructuredStorage2,
-   public IObjectSafetyImpl<CColumnSpacing,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public CProxyDColumnSpacingEvents< CColumnSpacing >
+   public IObjectSafetyImpl<CColumnSpacing,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
 	CColumnSpacing()
@@ -69,7 +66,6 @@ public:
    void SetBridge(IGenericBridge* pBridge);
    Float64 GetCrossBeamWidth();
 
-   STDMETHOD(Clone)(IColumnSpacing* *clone);
    void ClearColumns();
    void AddColumn(IColumn* column);
 
@@ -82,13 +78,7 @@ BEGIN_COM_MAP(CColumnSpacing)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IObjectSafety)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CColumnSpacing)
-CONNECTION_POINT_ENTRY(IID_IColumnSpacingEvents)
-END_CONNECTION_POINT_MAP()
 
 private:
    IGenericBridge* m_pBridge; // weak reference to parent

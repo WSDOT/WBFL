@@ -1097,6 +1097,10 @@
 			Filter="cpp"
 			>
 			<File
+				RelativePath=".\ACI209Concrete.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Concrete.cpp"
 				>
 				<FileConfiguration
@@ -1189,6 +1193,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\ConcreteBase.cpp"
+				>
 			</File>
 			<File
 				RelativePath="ConcreteEx.cpp"
@@ -1471,6 +1479,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\LRFDConcrete.cpp"
+				>
 			</File>
 			<File
 				RelativePath="main.cpp"
@@ -2334,11 +2346,19 @@
 			Filter="h"
 			>
 			<File
+				RelativePath="..\Include\Material\ACI209Concrete.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\Material\AutoLib.h"
 				>
 			</File>
 			<File
 				RelativePath="..\Include\Material\Concrete.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Material\ConcreteBase.h"
 				>
 			</File>
 			<File
@@ -2351,6 +2371,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Material\LinearStressStrainCurve.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Material\LRFDConcrete.h"
 				>
 			</File>
 			<File

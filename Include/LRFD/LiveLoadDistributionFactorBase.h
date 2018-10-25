@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -74,7 +74,7 @@ public:
    void MakeCopy(const lrfdLiveLoadDistributionFactorMixin& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther);
+   virtual void MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther);
 
 
 private:
@@ -116,8 +116,7 @@ public:
    // GROUP: LIFECYCLE
    lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane,
-                                      bool bSkewMoment, bool bSkewShear);
+                                      CollectionIndexType Nl, Float64 wLane);
 private:
    //------------------------------------------------------------------------
    // no default
@@ -150,10 +149,6 @@ public:
    virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
 
    //------------------------------------------------------------------------
-   virtual Float64 MomentSkewCorrectionFactor() const = 0;
-   virtual Float64 ShearSkewCorrectionFactor() const = 0;
-
-   //------------------------------------------------------------------------
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const;
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const;
    virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const;
@@ -181,9 +176,6 @@ protected:
    CollectionIndexType m_Nl;
    Float64 m_wLane;
 
-   bool m_bSkewMoment;
-   bool m_bSkewShear;
-
    DfSide  m_Side; // beam is nearest to this side
 
    GirderIndexType   m_Nb; // cached number of beams
@@ -203,7 +195,7 @@ protected:
    void MakeCopy(const lrfdLiveLoadDistributionFactorBase& rOther);
 
    //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther);
+   virtual void MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -255,6 +247,10 @@ protected:
    virtual DFResult GetReactionDF_Ext_Fatigue() const;
    //------------------------------------------------------------------------
    virtual DFResult GetReactionDF_Int_Fatigue() const;
+
+   //------------------------------------------------------------------------
+   virtual Float64 MomentSkewCorrectionFactor() const = 0;
+   virtual Float64 ShearSkewCorrectionFactor() const = 0;
 
 private:
    // GROUP: DATA MEMBERS

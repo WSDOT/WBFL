@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Math - Utility library of mathematical services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -101,7 +101,7 @@ mathPolynomial2d mathPolynomial2d::GetDerivative() const
    for ( ; iter != m_Coefficients.rend(); iter++, C++ )
    {
       Float64 K = *iter;
-      coefficients.push_back( C*K );
+      coefficients.insert( coefficients.begin(), C*K );
    }
 
    ASSERT(coefficients.size() == m_Coefficients.size()-1);

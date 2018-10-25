@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -85,10 +85,6 @@ private:
    Float64 m_Ixy;
    Float64 m_Perimeter;
    Float64 m_Rotation;
-   Float64   m_Xleft;   // Distance from centroid to left edge
-   Float64   m_Xright;  // Distance from centroid to right edge
-   Float64   m_Ytop;    // Distance from centroid to top edge
-   Float64   m_Ybottom; // Distance from centroid to bottom edge
 
 // ISupportErrorInfo
 public:
@@ -101,14 +97,6 @@ public:
    STDMETHOD(put_Perimeter)(Float64 newVal);
    STDMETHOD(get_Centroid)(IPoint2d* *pVal);
    STDMETHOD(putref_Centroid)(IPoint2d* newVal);
-	STDMETHOD(get_Ybottom)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Ybottom)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Ytop)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Ytop)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Xright)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Xright)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Xleft)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Xleft)(/*[in]*/ Float64 newVal);
    STDMETHOD(get_Ixx)(Float64 *pVal);
    STDMETHOD(put_Ixx)(Float64 newVal);
    STDMETHOD(get_Iyy)(Float64 *pVal);

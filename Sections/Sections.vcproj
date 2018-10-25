@@ -1369,6 +1369,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\CompositeSectionEx.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CompositeSectionItem.cpp"
 				>
 				<FileConfiguration
@@ -1461,6 +1465,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CompositeSectionItemEx.cpp"
+				>
 			</File>
 			<File
 				RelativePath="ElasticProperties.cpp"
@@ -1964,7 +1972,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CompositeSectionEx.h"
+				>
+			</File>
+			<File
 				RelativePath="CompositeSectionItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CompositeSectionItemEx.h"
 				>
 			</File>
 			<File
@@ -1997,7 +2013,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CompositeSectionEx.rgs"
+				>
+			</File>
+			<File
 				RelativePath="CompositeSectionItem.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\CompositeSectionItemEx.rgs"
 				>
 			</File>
 			<File

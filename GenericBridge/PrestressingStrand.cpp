@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,6 +27,9 @@
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
 #include "PrestressingStrand.h"
+
+#include <Units\Units.h>
+
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -34,15 +37,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-Float64 gs_Grade[2] = { 250.0, 270.0 };  // KSI
-Float64 gs_Size[6][2] = { {0.25,   0.036} ,   // Inch, Inch^2
-                         {0.3125, 0.058},
-                         {0.375,  0.080},
-                         {0.4375, 0.108},
-                         {0.50,   0.1440},
-                         {0.60,   0.2160} 
-                       };
 
 ////////////////////////////////////////////////////////////////////////////
 // CPrestressingStrand
@@ -68,6 +62,16 @@ STDMETHODIMP CPrestressingStrand::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
+}
+
+const matPsStrand* CPrestressingStrand::GetStrand()
+{
+   lrfdStrandPool* pStrandPool = lrfdStrandPool::GetInstance();
+   const matPsStrand* pStrand = pStrandPool->GetStrand((matPsStrand::Grade)m_Grade,
+                                                       (matPsStrand::Type)m_Type,
+                                                       (matPsStrand::Size)m_Size);
+
+   return pStrand;
 }
 
 /////////////////////////////////////////////////////
@@ -125,44 +129,103 @@ STDMETHODIMP CPrestressingStrand::put_Size(StrandSize size)
    return S_OK;
 }
 
+STDMETHODIMP CPrestressingStrand::put_InstallationStage(StageIndexType stageIdx)
+{
+   m_InstallationStageIdx = stageIdx;
+   return S_OK;
+}
+
+STDMETHODIMP CPrestressingStrand::get_InstallationStage(StageIndexType* pStageIdx)
+{
+   CHECK_RETVAL(pStageIdx);
+   *pStageIdx = m_InstallationStageIdx;
+   return S_OK;
+}
+
 STDMETHODIMP CPrestressingStrand::get_NominalDiameter(Float64* dps)
 {
    CHECK_RETVAL(dps);
-   *dps = gs_Size[m_Size][0];
+
+   const matPsStrand* pStrand = GetStrand();
+   *dps = pStrand->GetNominalDiameter();
    return S_OK;
 }
 
 STDMETHODIMP CPrestressingStrand::get_NominalArea(Float64* aps)
 {
    CHECK_RETVAL(aps);
-   *aps = gs_Size[m_Size][1];
+
+   const matPsStrand* pStrand = GetStrand();
+   *aps = pStrand->GetNominalArea();
+
    return S_OK;
 }
 
 STDMETHODIMP CPrestressingStrand::get_UltimateStrength(Float64* fpu)
 {
    CHECK_RETVAL(fpu);
-   *fpu = gs_Grade[m_Grade];
+
+    const matPsStrand* pStrand = GetStrand();
+   *fpu = pStrand->GetUltimateStrength();
+
    return S_OK;
 }
 
 STDMETHODIMP CPrestressingStrand::get_YieldStrength(Float64* fpy)
 {
-   HRESULT hr = get_UltimateStrength(fpy);
-   if ( FAILED(hr) )
-      return hr;
+   CHECK_RETVAL(fpy);
 
-   (*fpy) *= (m_Type == LowRelaxation ? 0.85 : 0.90);
+   const matPsStrand* pStrand = GetStrand();
+   *fpy = pStrand->GetYieldStrength();
+
    return S_OK;
 }
 
 STDMETHODIMP CPrestressingStrand::get_ModulusE(Float64* e)
 {
    CHECK_RETVAL(e);
-   (*e) = 28500.0;
+
+   const matPsStrand* pStrand = GetStrand();
+   *e = pStrand->GetE();
+
    return S_OK;
 }
 
+/////////////////////////////////////////////////////
+// IMaterial
+STDMETHODIMP CPrestressingStrand::get_E(StageIndexType stageIdx,Float64* E)
+{
+   CHECK_RETVAL(E);
+   if ( stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX )
+      *E = 0;
+   else
+      get_ModulusE(E);
+
+   return S_OK;
+}
+
+STDMETHODIMP CPrestressingStrand::put_E(StageIndexType stageIdx,Float64 E)
+{
+   ATLASSERT(false); // this method shouldn't be called
+   return E_NOTIMPL;
+}
+
+STDMETHODIMP CPrestressingStrand::get_Density(StageIndexType stageIdx,Float64* w)
+{
+   CHECK_RETVAL(w);
+   if ( stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX )
+      *w = 0;
+   else
+      *w = ::ConvertToSysUnits(490.0,unitMeasure::LbfPerFeet3);
+
+   return S_OK;
+}
+
+STDMETHODIMP CPrestressingStrand::put_Density(StageIndexType stageIdx,Float64 w)
+{
+   ATLASSERT(false); // this method shouldn't be called
+   return E_NOTIMPL;
+}
 
 /////////////////////////////////////////////////////
 // IStructuredStorage2 implementation

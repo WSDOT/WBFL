@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #include "ReportManager.h"
 #include <ReportManager\ReportBuilder.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
-#include <ReportManager\TimeChapterBuilder.h>
 #include <Reporter\Reporter.h>
 
 #ifdef _DEBUG
@@ -42,10 +41,9 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :
+CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden) :
 m_Name(strName),
 m_bHidden(bHidden),
-m_bIncludeTimingChapter(bIncludeTimingChapter),
 m_pRptSpecBuilder( new CReportSpecificationBuilder )
 {
    m_pBitmap = NULL;
@@ -71,24 +69,9 @@ bool CReportBuilder::Hidden() const
    return m_bHidden;
 }
 
-void CReportBuilder::IncludeTimingChapter(bool bInclude)
-{
-   m_bIncludeTimingChapter = bInclude;
-}
-
-bool CReportBuilder::IncludeTimingChapter() const
-{
-   return m_bIncludeTimingChapter;
-}
-
 void CReportBuilder::AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder)
 {
    m_pTitlePageBuilder = pTitlePageBuilder;
-}
-
-boost::shared_ptr<CTitlePageBuilder> CReportBuilder::GetTitlePageBuilder()
-{
-   return m_pTitlePageBuilder;
 }
 
 void CReportBuilder::AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder)
@@ -164,8 +147,6 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpe
 
 boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec)
 {
-   sysTime start;
-
    boost::shared_ptr<rptReport> pReport( new rptReport(pRptSpec->GetReportName()) );
    std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
@@ -175,7 +156,10 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
       CChapterInfo chInfo = *iter;
       boost::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
-      (*pReport) << pChapter;
+      if ( pChapter )
+      {
+         (*pReport) << pChapter;
+      }
    }
 
    // Build title page after all others to assure that all status items have been created
@@ -183,14 +167,6 @@ boost::shared_ptr<rptReport> CReportBuilder::CreateReport(boost::shared_ptr<CRep
    {
       rptChapter* pTitlePage = m_pTitlePageBuilder->Build( pRptSpec );
       pReport->InsertChapterAt(0, pTitlePage);
-   }
-
-   sysTime end;
-   if ( m_bIncludeTimingChapter )
-   {
-      CTimeChapterBuilder timeChapterBuilder;
-      rptChapter* pChapter = timeChapterBuilder.Build(start,end);
-      (*pReport) << pChapter;
    }
 
    return pReport;

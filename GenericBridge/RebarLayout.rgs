@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.RebarLayout.1 = s 'RebarLayout Class'
+	{
+		CLSID = s '{33813283-3F28-4291-AE33-AAD126881A38}'
+	}
+	WBFLGenericBridge.RebarLayout = s 'RebarLayout Class'
+	{
+		CLSID = s '{33813283-3F28-4291-AE33-AAD126881A38}'
+		CurVer = s 'GenericBridge.RebarLayout.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {33813283-3F28-4291-AE33-AAD126881A38} = s 'RebarLayout Class'
+		{
+			ProgID = s 'WBFLGenericBridge.RebarLayout.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.RebarLayout'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

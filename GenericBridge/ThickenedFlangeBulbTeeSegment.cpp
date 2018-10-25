@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,22 +39,18 @@ static char THIS_FILE[] = __FILE__;
 // CThickenedFlangeBulbTeeSegment
 HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
 {
-   m_Length = 1.0;
+   m_pGirderLine = NULL;
+   m_Orientation = 0;
+   m_HaunchDepth[etStart] = 0;
+   m_HaunchDepth[etEnd]   = 0;
 
    return S_OK;
 }
 
 void CThickenedFlangeBulbTeeSegment::FinalRelease()
 {
-   m_Beam.Release();
-
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-   }
-   m_Material.Release();
+   m_pGirderLine = NULL;
+   m_Shapes.clear();
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::InterfaceSupportsErrorInfo(REFIID riid)
@@ -74,91 +70,183 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::InterfaceSupportsErrorInfo(REFIID r
 
 ////////////////////////////////////////////////////////////////////////
 // ISegment implementation
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_SegmentMeasure(ISegmentMeasure* sm)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
 {
-   m_pSegmentMeasure = sm;
+   CHECK_IN(ssMbr);
+   m_pSSMbr = ssMbr;
+   return S_OK;
+}
 
-#if defined _DEBUG
-   // m_pSegmentMeasure is a weak references. This is so because
-   // I expect the object implementing sm to also be a superstructure member
-   // Assert this is true.
-   if ( sm != NULL )
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
+{
+   CHECK_RETOBJ(ssMbr);
+   if ( m_pSSMbr )
    {
-      CComQIPtr<ISuperstructureMember> ssmbr(sm);
-      CComQIPtr<ILongitudinalPierDescription> lpd(sm);
-      CComQIPtr<ICrossBeam> cb(sm);
-      CComQIPtr<IColumn> col(sm);
-      ATLASSERT(ssmbr != NULL || lpd != NULL || cb != NULL || col != NULL);
+      (*ssMbr) = m_pSSMbr;
+      (*ssMbr)->AddRef();
    }
-#endif // _DEBUG
+   else
+   {
+      (*ssMbr) = NULL;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_GirderLine(IGirderLine* girderLine)
+{
+   m_pGirderLine = girderLine;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderLine(IGirderLine** girderLine)
+{
+   CHECK_RETOBJ(girderLine);
+   if ( m_pGirderLine )
+   {
+      (*girderLine) = m_pGirderLine;
+      (*girderLine)->AddRef();
+   }
+   else
+   {
+      (*girderLine) = NULL;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_PrevSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pPrevSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrevSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pPrevSegment;
+   if ( *segment )
+      (*segment)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_NextSegment(ISegment* segment)
+{
+   CHECK_IN(segment);
+   m_pNextSegment = segment;
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_NextSegment(ISegment** segment)
+{
+   CHECK_RETVAL(segment);
+   *segment = m_pNextSegment;
+   if ( *segment )
+      (*segment)->AddRef();
 
    return S_OK;
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Length(Float64 *pVal)
 {
-   CHECK_RETVAL(pVal);
-   (*pVal) = m_Length;
-	return S_OK;
+   return m_pGirderLine->get_GirderLength(pVal);
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_Length(Float64 length)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
-   if ( IsEqual(m_Length,length) )
+   CHECK_RETOBJ(ppSection);
+
+   if (m_Shapes.size() == 0 )
+   {
+      *ppSection = 0;
       return S_OK;
-
-   // Validate length
-   if ( m_pSegmentMeasure )
-   {
-      bool bFractional = m_pSegmentMeasure->IsFractional() == S_OK ? true : false;
-      if ( bFractional )
-      {
-         if ( length > 0 )
-            return Error(IDS_E_FRACTIONAL_EXPECTED,IID_ISegment,GB_E_FRACTIONAL_EXPECTED);
-      }
-      else
-      {
-         if ( length < 0 )
-            return Error(IDS_E_ABSOLUTE_EXPECTED,IID_ISegment,GB_E_ABSOLUTE_EXPECTED);
-      }
    }
 
-   m_Length = length;
-   Fire_OnSegmentChanged(this);
+   HRESULT hr;
+   CComPtr<IShape> primaryShape;
+   hr = get_PrimaryShape(distAlongSegment,&primaryShape);
+   ATLASSERT(SUCCEEDED(hr));
+   if ( FAILED(hr) )
+      return hr;
+
+   // create our section object
+   CComPtr<ICompositeSectionEx> section;
+   section.CoCreateInstance(CLSID_CompositeSectionEx);
+
+   section->QueryInterface(IID_ISection,(void**)ppSection);
+   ATLASSERT(*ppSection != NULL);
+
+   // add the primary shape
+   Float64 Efg = 0;
+   m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
+   
+   Float64 Ebg = 0;
+   if ( m_Shapes.front().BGMaterial )
+      m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
+
+   Float64 Dfg = 0;
+   m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
+   
+   Float64 Dbg = 0;
+   if ( m_Shapes.front().BGMaterial )
+      m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
+
+   section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+
+   // add all the secondary shapes
+   std::vector<ShapeData>::iterator iter(m_Shapes.begin());
+   std::vector<ShapeData>::iterator end(m_Shapes.end());
+   iter++; // skip the first shape, we already processed it
+
+   for ( ; iter != end; iter++ )
+   {
+      ShapeData& shapeData = *iter;
+
+      Float64 Efg = 0;
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_E(stageIdx,&Efg);
+
+      Float64 Ebg;
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
+
+      Float64 Dfg = 0;
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
+
+      Float64 Dbg = 0;
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
+
+      CComPtr<IShape> shape;
+      shapeData.Shape->Clone(&shape);
+
+      section->AddSection(shape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
+   }
+
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_SegmentLength(/*[out, retval]*/ Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-   if ( m_Length < 0 )
-   {
-      // segment length is a fraction of the superstructure member length
-      Float64 ssmbrLength = GetSuperstructureMemberLength();
-      *pVal = -1*m_Length*ssmbrLength;
-   }
-   else
-   {
-      // segment lenght is an absolute value
-      *pVal = m_Length;
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Shape(Float64 distAlongSegment,IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
-   // This object reprsents a prismatic shape... all sections are the same
-   HRESULT hr = S_OK;
-   if ( m_Beam == 0 )
+   if (m_Shapes.size() == 0 )
    {
-      (*ppShape) = 0;
-      return hr;
+      *ppShape = 0;
+      return S_OK;
    }
 
+   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
+   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+
+   // This object reprsents a prismatic shape... all sections are the same
+   HRESULT hr = S_OK;
+
    Float64 segLength;
-   get_SegmentLength(&segLength);
+   get_Length(&segLength);
 
    // get dimensions of beam shape at start and end of segment
    CComPtr<IBulbTee> pcBeam;
@@ -167,7 +255,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Shape(Float64 distAlongSegment,
    Float64 D1, D2, D3, D4, D5, D6, D7;
    Float64 T1, T2;
 
-   m_Beam->get_Beam(&pcBeam);
+   beam->get_Beam(&pcBeam);
 
    pcBeam->get_W1(&W1);
    pcBeam->get_W2(&W2);
@@ -186,10 +274,11 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Shape(Float64 distAlongSegment,
    pcBeam->get_T2(&T2);
 
    // parabolic interpolation of the depth of the top flange thickening
-   Float64 D8 = 4*m_FlangeThickening*distAlongSegment*distAlongSegment/(segLength*segLength) - 4*m_FlangeThickening*distAlongSegment/segLength + m_FlangeThickening;
+
+   Float64 D8 = GetFlangeThickening(distAlongSegment);
 
    // create a new shape that is a clone of the original
-   CComQIPtr<IShape> shape(m_Beam);
+   CComQIPtr<IShape> shape(beam);
    CComPtr<IShape> newShape;
    hr = shape->Clone(&newShape);
 
@@ -211,71 +300,73 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Shape(Float64 distAlongSegment,
    newBeam->put_T1(T1);
    newBeam->put_T2(T2);
 
-   newFlangedBeam.QueryInterface(ppShape);
+   // position the shape
+   CComPtr<IPoint2d> pntTopCenter;
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
-   return hr;
-}
+   CComQIPtr<IXYPosition> position(newFlangedBeam);
+   position->put_LocatorPoint(lpTopCenter,pntTopCenter);
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_Material(IMaterial* material)
-{
-   CHECK_IN(material);
+   *ppShape = newShape;
+   (*ppShape)->AddRef();
 
-   if ( m_Material.IsEqualObject(material) )
-      return S_OK;
-
-   CComPtr<IUnknown> punk;
-   QueryInterface(IID_IUnknown,(void**)&punk);
-
-   HRESULT hr;
-   DWORD dwCookie;
-   if ( material )
-   {
-      hr = AtlAdvise(material,punk,IID_IMaterialEvents,&dwCookie);
-      if ( FAILED(hr) )
-         return hr; // can't sink on material... get outta here before anything gets changed
-
-      InternalRelease(); // break circular reference
-   }
-
-   // unsink on the older material (if there was one)
-   if ( m_Material )
-   {
-      InternalAddRef();
-
-      hr = AtlUnadvise(m_Material,IID_IMaterialEvents,m_dwMaterialCookie);
-      ATLASSERT(SUCCEEDED(hr));
-   }
-
-   m_Material = material;
-
-   if ( m_Material )
-   {
-      m_dwMaterialCookie = dwCookie;
-   }
-
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Material(IMaterial* *material)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
 {
-   CHECK_RETVAL(material);
+   CHECK_RETOBJ(ppShape);
 
-   (*material) = m_Material;
+   Float64 segLength;
+   get_Length(&segLength);
 
-   if ( *material )
-      (*material)->AddRef();
+   CComPtr<IPolyShape> shape;
+   shape.CoCreateInstance(CLSID_PolyShape);
+
+   shape->AddPoint(segLength,0.0);
+   shape->AddPoint(0.0,0.0);
+
+   CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
+   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+
+   // get dimensions of beam shape at start and end of segment
+   CComPtr<IBulbTee> pcBeam;
+   Float64 D1, D2, D3, D4, D5, D6, D7;
+   beam->get_Beam(&pcBeam);
+   pcBeam->get_D1(&D1);
+   pcBeam->get_D2(&D2);
+   pcBeam->get_D3(&D3);
+   pcBeam->get_D4(&D4);
+   pcBeam->get_D5(&D5);
+   pcBeam->get_D6(&D6);
+   pcBeam->get_D7(&D7);
+
+   Float64 H = D1 + D2 + D3 + D4 + D5 + D6 + D7;
+
+   int nPoints = 21;
+   for ( int i = 0; i < nPoints; i++ )
+   {
+      Float64 distAlongSegment = i*segLength/(nPoints-1);
+      Float64 D8 = GetFlangeThickening(distAlongSegment);
+
+      shape->AddPoint(distAlongSegment,H + D8);
+   }
+
+   // Put (0,0) at the top left of the rectangle
+   CComQIPtr<IXYPosition> position(shape);
+   CComPtr<IPoint2d> topLeft;
+   position->get_LocatorPoint(lpTopLeft,&topLeft);
+   topLeft->Move(0,0);
+   position->put_LocatorPoint(lpTopLeft,topLeft);
+
+   shape->QueryInterface(ppShape);
 
    return S_OK;
 }
 
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_Orientation(Float64 orientation)
 {
-   if ( IsEqual(m_Orientation,orientation) )
-      return S_OK;
-
    m_Orientation = orientation;
-   Fire_OnSegmentChanged(this);
    return S_OK;
 }
 
@@ -286,56 +377,113 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Orientation(Float64* orientatio
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::Clone(ISegment* *clone)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_HaunchDepth(EndType endType,Float64* pVal)
 {
-   CHECK_RETOBJ(clone);
+   CHECK_RETVAL(pVal);
+   *pVal = m_HaunchDepth[endType];
+   return S_OK;
+}
 
-   CComObject<CThickenedFlangeBulbTeeSegment>* pClone;
-   CComObject<CThickenedFlangeBulbTeeSegment>::CreateInstance(&pClone);
-   (*clone) = pClone;
-   (*clone)->AddRef();
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_HaunchDepth(EndType endType,Float64 val)
+{
+   m_HaunchDepth[endType] = val;
+   return S_OK;
+}
 
-   pClone->m_Length = m_Length;
-   pClone->m_pSegmentMeasure = m_pSegmentMeasure;
-   pClone->m_Orientation = m_Orientation;
-
-   pClone->m_FlangeThickening = m_FlangeThickening;
-
-   if ( m_Beam )
-   {
-      CComQIPtr<IShape> shape(m_Beam);
-      pClone->m_Beam.Release();
-
-      CComPtr<IShape> cloneShape;
-      shape->Clone(&cloneShape);
-
-      cloneShape.QueryInterface(&pClone->m_Beam);
-   }
-
-   CComPtr<IMaterial> material;
-   if ( m_Material )
-      m_Material->Clone(&material);
-
-   pClone->putref_Material(material);
-
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetHaunchDepth(Float64 distAlongSegment,Float64* pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
    return S_OK;
 }
 
 ////////////////////////////////////////////////////////////////////
 // IThickenedFlangeBulbTeeSegment implementation
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_BulbTeeSection(IBulbTeeSection* pPrecastBeam,Float64 flangeThickening)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::put_FlangeThickening(Float64 flangeThickening)
 {
-   CHECK_IN(pPrecastBeam);
-
-   if ( m_Beam.IsEqualObject(pPrecastBeam) )
-      return S_OK;
-
-   m_Beam = pPrecastBeam;
-
    m_FlangeThickening = flangeThickening;
-
-   Fire_OnSegmentChanged(this);
    return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddShape(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
+{
+   CHECK_IN(pShape);
+
+   if ( m_Shapes.size() == 0 )
+   {
+      CComQIPtr<IBulbTeeSection> beam(pShape);
+      if ( beam == NULL )
+      {
+         ATLASSERT(false); // first shape must be a flanged girder section
+         return E_INVALIDARG;
+      }
+   }
+
+   ShapeData shapeData;
+   shapeData.Shape = pShape;
+   shapeData.FGMaterial = pFGMaterial;
+   shapeData.BGMaterial = pBGMaterial;
+
+   m_Shapes.push_back(shapeData);
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_ShapeCount(IndexType* nShapes)
+{
+   CHECK_RETVAL(nShapes);
+   *nShapes = m_Shapes.size();
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_ForegroundMaterial(IndexType index,IMaterial* *material)
+{
+   if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[index].FGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BackgroundMaterial(IndexType index,IMaterial* *material)
+{
+   if ( m_Shapes.size() <= index || index == INVALID_INDEX )
+      return E_INVALIDARG;
+
+   CHECK_RETVAL(material);
+   (*material) = m_Shapes[index].BGMaterial;
+
+   if ( *material )
+      (*material)->AddRef();
+
+   return S_OK;
+}
+
+////////////////////////////////////////////////////////////////////
+// IItemData implementation
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddItemData(BSTR name,IUnknown* data)
+{
+   return m_ItemDataMgr.AddItemData(name,data);
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemData(BSTR name,IUnknown** data)
+{
+   return m_ItemDataMgr.GetItemData(name,data);
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::RemoveItemData(BSTR name)
+{
+   return m_ItemDataMgr.RemoveItemData(name);
+}
+
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemDataCount(CollectionIndexType* count)
+{
+   return m_ItemDataMgr.GetItemDataCount(count);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -374,13 +522,13 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::Save(IStructuredSave2* save)
    //return S_OK;
 }
 
-Float64 CThickenedFlangeBulbTeeSegment::GetSuperstructureMemberLength()
-{
-   Float64 length;
-   CComQIPtr<ISuperstructureMember> ssmbr(m_pSegmentMeasure);
-   ATLASSERT(ssmbr);
 
-   ssmbr->get_Length(&length);
-   ATLASSERT( 0 <= length );
-   return length;
+Float64 CThickenedFlangeBulbTeeSegment::GetFlangeThickening(Float64 distAlongSegment)
+{
+   // parabolic interpolation of the depth of the top flange thickening
+   Float64 segLength;
+   get_Length(&segLength);
+
+   Float64 thickening = 4*m_FlangeThickening*distAlongSegment*distAlongSegment/(segLength*segLength) - 4*m_FlangeThickening*distAlongSegment/segLength + m_FlangeThickening;
+   return thickening;
 }

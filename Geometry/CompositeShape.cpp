@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -91,46 +91,27 @@ STDMETHODIMP CCompositeShape::AddShape(IShape* shape, VARIANT_BOOL bVoid)
 
    return AddShapeEx(item);
 }
-//
-//STDMETHODIMP CCompositeShape::Remove(long idx)
-//{
-//   if ( idx < 0 || m_coll.size() <= idx )
-//      return E_INVALIDARG;
-//
-//   m_coll.erase( m_coll.begin() + idx );
-//
-//	return S_OK;
-//}
-//
-//STDMETHODIMP CCompositeShape::get_Count(long *pVal)
-//{
-//   CHECK_RETVAL(pVal);
-//   *pVal = m_coll.size();
-//	return S_OK;
-//}
-//
-////STDMETHODIMP CCompositeShape::get__NewEnum(IUnknown **pVal)
-////{
-////}
-//
-//STDMETHODIMP CCompositeShape::get_Item(long idx, ICompositeShapeItem **pVal)
-//{
-//   CHECK_RETOBJ(pVal);
-//
-//   if ( idx < 0 || m_coll.size() <= idx )
-//      return E_INVALIDARG;
-//
-//   // In order to support Visual Basic's For Each construct, we have a
-//   // collection of variants. Get the variant for this Index by using
-//   // ICollectionOnSTLImpl implementation. Then, get the real interface.
-//   CComVariant var;
-//   HRESULT hr = ICompositeShapeCollection::get_Item(idx+1,&var); //+1 because ATL uses 1-based index
-//   if (FAILED(hr) )
-//      return hr;
-//
-//   var.pdispVal->QueryInterface( pVal );
-//   return S_OK;
-//}
+
+STDMETHODIMP CCompositeShape::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+{
+   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+      return E_INVALIDARG;
+
+   m_coll[idx].second.m_T = pShapeItem;
+   return S_OK;
+}
+
+STDMETHODIMP CCompositeShape::Replace(CollectionIndexType idx,IShape* pShape)
+{
+   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+      return E_INVALIDARG;
+
+   CComPtr<ICompositeShapeItem> shapeItem = m_coll[idx].second.m_T;
+   shapeItem->putref_Shape(pShape);
+
+   return S_OK;
+}
+
 
 ///////////////////////////////////////////////
 // IShape

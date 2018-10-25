@@ -1764,7 +1764,7 @@ protected:
 
 public:
    // count
-	STDMETHOD(get_Count)(CollectionIndexType* pcount)
+	STDMETHOD(get_Count)(IndexType* pcount)
 	{
       CHECK_RETVAL(pcount);
 

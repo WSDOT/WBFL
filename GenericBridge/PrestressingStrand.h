@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,7 @@
 #include "resource.h"       // main symbols
 //#include "GenericBridgeCP.h"
 
+#include <LRFD\StrandPool.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPrestressingStrand
@@ -40,6 +41,7 @@ class ATL_NO_VTABLE CPrestressingStrand :
 	public CComCoClass<CPrestressingStrand, &CLSID_PrestressingStrand>,
 	public ISupportErrorInfo,
 	public IPrestressingStrand,
+   public IMaterial,
    public IStructuredStorage2,
 //   public CProxyDPrestressingStrandEvents< CPrestressingStrand >,
 //   public IPrestressingStrandPointContainerImpl<CPrestressingStrand>,
@@ -51,11 +53,15 @@ public:
 	{
       m_Grade = Grade270;
       m_Type = LowRelaxation;
-      m_Size = D0500;
-	}
+      m_Size = D5000;
+	
+      m_InstallationStageIdx = 0;
+   }
 
    HRESULT FinalConstruct();
    void FinalRelease();
+   
+   const matPsStrand* GetStrand();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PRESTRESSINGSTRAND)
 
@@ -63,6 +69,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPrestressingStrand)
 	COM_INTERFACE_ENTRY(IPrestressingStrand)
+	COM_INTERFACE_ENTRY(IMaterial)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 //   COM_INTERFACE_ENTRY_IMPL(IPrestressingStrandPointContainer)
@@ -78,6 +85,7 @@ private:
    StrandGrade m_Grade;
    StrandType m_Type;
    StrandSize m_Size;
+   StageIndexType m_InstallationStageIdx;
 
    // ISupportsErrorInfo
 public:
@@ -93,11 +101,20 @@ public:
 	STDMETHOD(put_Type)(/*[in]*/ StrandType type);
 	STDMETHOD(get_Size)(/*[out,retval]*/ StrandSize* size);
 	STDMETHOD(put_Size)(/*[in]*/ StrandSize size);
+   STDMETHOD(put_InstallationStage)(StageIndexType stageIdx);
+   STDMETHOD(get_InstallationStage)(StageIndexType* pStageIdx);
 	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/Float64* dps);
 	STDMETHOD(get_NominalArea)(/*[out,retval]*/Float64* aps);
 	STDMETHOD(get_UltimateStrength)(/*[out,retval]*/Float64* fpu);
 	STDMETHOD(get_YieldStrength)(/*[out,retval]*/Float64* fpy);
 	STDMETHOD(get_ModulusE)(/*[out,retval]*/Float64* e);
+
+// IMaterial
+public:
+   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E);
+	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E);
+	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w);
+	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w);
 
 // IStructuredStorage2
 public:

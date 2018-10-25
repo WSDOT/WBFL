@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,7 @@
 #include "Model.h"
 
 #include <cmath>
+#include <MathEx.h>
 
 
 #ifdef _DEBUG
@@ -55,14 +56,11 @@ CMember::CMember():
    m_TransMatrix(TotalDOF,TotalDOF),
    m_Kglobal(TotalDOF,TotalDOF),
    m_Klocal(TotalDOF,TotalDOF),
-   m_Fglobal(),
-   m_Dlocal(),
-   m_Rlocal(),
+   m_Fglobal(TotalDOF),
+   m_Dlocal(TotalDOF),
+   m_Rlocal(TotalDOF),
    m_JointKeeper(this)
 {
-#if defined DUMP_KMATRIX
-   m_logfile.open("memberMatrix.log");
-#endif
 }
 
 CMember::~CMember()
@@ -456,14 +454,16 @@ void CMember::InitModel()
    BuildKglobal();
 
 #if defined DUMP_KMATRIX
-   m_logfile << "Member " << m_ID << std::endl;
-   m_logfile << "Transformation Matrix" << std::endl;
-   m_logfile << (m_TransMatrix) << std::endl;
-   m_logfile << "Local K Matrix" << std::endl;
-   m_logfile << m_Klocal << std::endl;
-   m_logfile << "Global K Matrix" << std::endl;
-   m_logfile << m_Kglobal << std::endl;
-   m_logfile << std::endl;
+   std::_tofstream logfile;
+   logfile.open("memberMatrix.log");
+   logfile << "Member " << m_ID << std::endl;
+   logfile << "Transformation Matrix" << std::endl;
+   logfile << (m_TransMatrix) << std::endl;
+   logfile << "Local K Matrix" << std::endl;
+   logfile << m_Klocal << std::endl;
+   logfile << "Global K Matrix" << std::endl;
+   logfile << m_Kglobal << std::endl;
+   logfile << std::endl;
 #endif
 }
 
@@ -746,7 +746,7 @@ MbrType CMember::GetMemberType()
 void CMember::ComputeDisplacements()
 {
    Float64 Dglobal[6];
-   Vector6 Disp;
+   Vector Disp(TotalDOF);
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
@@ -796,8 +796,8 @@ void CMember::ComputeDisplacements()
 void CMember::ComputeForces()
 {
    Float64 Dglobal[6];
-   Vector6 Disp;
-   Vector6 Rglobal;
+   Vector Disp(6);
+   Vector Rglobal(6);
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
 
@@ -815,10 +815,10 @@ void CMember::ComputeForces()
    m_TransMatrix.Multiply(&Rglobal,&m_Rlocal);
 }
 
-void CMember::ComputeJointDisplacementForce(iActLikeMatrix* pdf)
+void CMember::ComputeJointDisplacementForce(Vector* pdf)
 {
-   // compute element forces due to a joint Deflection
-   Vector6 Disp;
+   // compute element forces due to a joint displacement
+   Vector Disp(6);
    Disp.Zero();
    CJoint *StartJnt, *EndJnt;
    m_JointKeeper.GetJoints(&StartJnt, &EndJnt);
@@ -844,7 +844,7 @@ void CMember::ComputeJointDisplacementForce(iActLikeMatrix* pdf)
 void CMember::GetGlobalJntForces(JointIDType jntId,Float64 *force)
 {
    LONG i,count,start,end;
-   Vector6 Rglobal;
+   Vector Rglobal(6);
 
    m_TransMatrix.Multiply(&m_Rlocal,&Rglobal,ATB);
 
@@ -960,9 +960,6 @@ void CMember::GetInternalForces(Float64 loc,Fem2dMbrFaceType face,Float64 *force
 //
 // Gets the deflection normal to the member at the specified location,
 // in local coordinates.
-//
-// For now, this function only gets the dy deflection. It must be
-// updated to compute the dx and rz deflections as well.
 void CMember::GetDeflection(Float64 loc,Float64 *disp)
 {
    Float64 dx, dy, rz;
@@ -1128,7 +1125,7 @@ void CMember::AssembleF()
 {
    // Assembles the local and global force vectors for the applied loads.
    // Loads should have been applied from TFemModel for the active load case.
-   Vector6 Flocal;
+   Vector Flocal(TotalDOF);
 
    // Initialize the local force vector
    Flocal(0) = 0;
@@ -1214,7 +1211,7 @@ void CMember::GetFglobal(Float64 *f)
 {
    // first compute member forces due to joint displacements
    // forces are transient since they are not needed later
-   Vector6 dforce;
+   Vector dforce(6);
    ComputeJointDisplacementForce(&dforce);
 
    for (long i = 0; i < TotalDOF; i++)
@@ -1264,12 +1261,23 @@ bool CMember::IsEquilibriumSatisfied(Float64 tolerance)
    Mz = mz + mz1 + mz2 + length*fy2;
 
 
-   if (!((-tolerance <= Fx) && (Fx <= tolerance)))
+   if (!IsZero(Fx,tolerance))
+   {
+      ATLASSERT(false);
       return false;
-   if (!((-tolerance <= Fy) && (Fy <= tolerance)))
+   }
+
+   if (!IsZero(Fy,tolerance))
+   {
+      ATLASSERT(false);
       return false;
-   if (!((-tolerance <= Mz) && (Mz <= tolerance)))
+   }
+
+   if (!IsZero(Mz,tolerance))
+   {
+      ATLASSERT(false);
       return false;
+   }
 
    return true;
 }

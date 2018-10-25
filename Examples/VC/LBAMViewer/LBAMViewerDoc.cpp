@@ -134,6 +134,13 @@ void CLBAMViewerDoc::CreateDocument()
    CComQIPtr<ISupportProgressMonitorForEngine> ispme(m_pLBAMAnalysisEngine);
    hr = ispme->InitializeProgressMonitor4E(ipm, m_LoadGroupCookie, m_LiveLoadCookie, m_LoadCombinationCookie);
    ATLASSERT(SUCCEEDED(hr));
+
+
+   //CComPtr<IContraflexureResponse> pContraflexureResponse;
+   //m_pLBAMAnalysisEngine->get_ContraflexureResponse(&pContraflexureResponse);
+   //pContraflexureResponse->put_IgnoreOverhangs(ssLeft,VARIANT_TRUE);
+   //pContraflexureResponse->put_IgnoreOverhangs(ssRight,VARIANT_TRUE);
+
 }
 
 void CLBAMViewerDoc::BlastDocument()

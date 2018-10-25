@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -371,6 +371,50 @@ bool sysStructuredLoadXml::Property(LPCTSTR name, Uint64* value)
       if (prop_name==inputname)
       {
          Uint64 val;
+         if (m_LineParser.GetValue(&val))
+         {
+            *value = val;
+            ReadNext();
+            return true;
+         }
+      }
+   }
+   return false;
+}
+
+bool sysStructuredLoadXml::Property(LPCTSTR name, LONG* value)
+{
+   ASSERTVALID;
+   // ask parser if a Property was last parsed item
+   if (m_LineParser.GetType()==sysLineParseXml::Property)
+   {
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
+      if (prop_name==inputname)
+      {
+         LONG val;
+         if (m_LineParser.GetValue(&val))
+         {
+            *value = val;
+            ReadNext();
+            return true;
+         }
+      }
+   }
+   return false;
+}
+
+bool sysStructuredLoadXml::Property(LPCTSTR name, ULONG* value)
+{
+   ASSERTVALID;
+   // ask parser if a Property was last parsed item
+   if (m_LineParser.GetType()==sysLineParseXml::Property)
+   {
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
+      if (prop_name==inputname)
+      {
+         ULONG val;
          if (m_LineParser.GetValue(&val))
          {
             *value = val;

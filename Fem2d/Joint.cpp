@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,6 +29,8 @@
 #include "Member.h"
 #include "JointLoad.h"
 #include "JointDisplacement.h"
+
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -619,12 +621,23 @@ bool CJoint::IsEquilibriumSatisfied(Float64 tolerance)
    Mz -= mz;
 
    // Check equilibrium
-   if (!((-tolerance <= Fx) && (Fx <= tolerance)))
+   if (!IsZero(Fx,tolerance))
+   {
+      ATLASSERT(false);
       return false;
-   if (!((-tolerance <= Fy) && (Fy <= tolerance)))
+   }
+
+   if (!IsZero(Fy,tolerance))
+   {
+      ATLASSERT(false);
       return false;
-   if (!((-tolerance <= Mz) && (Mz <= tolerance)))
+   }
+
+   if (!IsZero(Mz,tolerance))
+   {
+      ATLASSERT(false);
       return false;
+   }
 
    return true;
 }

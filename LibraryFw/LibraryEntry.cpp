@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -131,16 +131,6 @@ void libLibraryEntry::EnableEditing(bool enable)
    m_IsEditingEnabled = enable;
 }
 
-void libLibraryEntry::EnableCopying(bool bEnable)
-{
-   m_bCanCopy = bEnable;
-}
-
-bool libLibraryEntry::IsCopyingEnabled() const
-{
-   return m_bCanCopy;
-}
-
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 
@@ -157,7 +147,6 @@ void libLibraryEntry::MakeCopy(const libLibraryEntry& rOther)
    m_pLibrary         = rOther.m_pLibrary;
    m_Name             = rOther.m_Name;
    m_IsEditingEnabled = rOther.m_IsEditingEnabled;
-   m_bCanCopy         = rOther.m_bCanCopy;
 }
 
 void libLibraryEntry::MakeAssignment(const libLibraryEntry& rOther)
@@ -189,7 +178,6 @@ void libLibraryEntry::Init()
    m_pLibrary = 0;
    m_RefCnt = 0;
    m_IsEditingEnabled = true;
-   m_bCanCopy = true;
 }
 
 void libLibraryEntry::Clean()

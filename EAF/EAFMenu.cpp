@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -150,66 +150,14 @@ CEAFMenu* CEAFMenu::CreatePopupMenu(INT pos,LPCTSTR lpszName)
    }
    else
    {
-      //m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
+      m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
       pMenu->InsertMenu(pos+offset,MF_BYPOSITION | MF_POPUP, (UINT)pNewMenu->m_Menu.m_hMenu, lpszName );
-      if ( 0 < pos )
-      {
-         CString strMenu;
-         pMenu->GetMenuString(pos+offset-1,strMenu,MF_BYPOSITION);
-
-         std::vector<CEAFMenu*>::iterator iter(m_Popups.begin());
-         std::vector<CEAFMenu*>::iterator end(m_Popups.end());
-         for ( ; iter != end; iter++ )
-         {
-            CEAFMenu* pPopupMenu = *iter;
-            if ( pPopupMenu->m_strMenu.Compare(strMenu) == 0 )
-            {
-               m_Popups.insert(iter+1,pNewMenu);
-               break;
-            }
-         }
-      }
-      else
-      {
-         m_Popups.insert( m_Popups.begin() + pos, pNewMenu );
-      }
    }
 
    if ( m_pWnd )
       m_pWnd->DrawMenuBar();
 
    return pNewMenu;
-}
-
-void CEAFMenu::LoadSubMenu(CEAFMenu* pEAFMenu,CMenu* pMenu,IEAFCommandCallback* pCallback)
-{
-   UINT nMenuItems = pMenu->GetMenuItemCount();
-   for (UINT i = 0; i < nMenuItems; i++ )
-   {
-      INT nID = pMenu->GetMenuItemID(i);
-      if ( nID < 0 )
-      {
-         CMenu* pSubMenu = pMenu->GetSubMenu(i);
-         ASSERT( pSubMenu->GetSafeHmenu() != NULL );
-
-         CString strName;
-         pMenu->GetMenuString(i,strName,MF_BYPOSITION);
-
-         CEAFMenu* pEAFSubMenu = CreatePopupMenu(-1,strName);
-         LoadSubMenu(pEAFSubMenu,pSubMenu,pCallback); // sub-menu
-         m_Popups.push_back(pEAFSubMenu);
-      }
-      else if ( nID == 0 )
-      {
-         pEAFMenu->AppendSeparator(); // separator
-      }
-      else
-      {
-         CString strMenuItem;
-         pMenu->GetMenuString( nID, strMenuItem, MF_BYCOMMAND );
-         pEAFMenu->AppendMenu(nID,strMenuItem,pCallback);
-      }
-   }
 }
 
 void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
@@ -220,21 +168,7 @@ void CEAFMenu::LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback)
       INT nID = pMenu->GetMenuItemID(i);
       if ( nID < 0 )
       {
-         CMenu* pSubMenu = pMenu->GetSubMenu(i);
-         ASSERT( pSubMenu->GetSafeHmenu() != NULL );
-
-         CString strName;
-         pMenu->GetMenuString(i,strName,MF_BYPOSITION);
-         if ( strName.GetLength() == 0 )
-         {
-            LoadMenu(pSubMenu,pCallback);
-         }
-         else
-         {
-            CEAFMenu* pEAFSubMenu = CreatePopupMenu(-1,strName);
-            m_Popups.push_back(pEAFSubMenu);
-            LoadSubMenu(pEAFSubMenu,pSubMenu,pCallback); // sub-menu
-         }
+         LoadMenu(pMenu->GetSubMenu(i),pCallback); // sub-menu
       }
       else if ( nID == 0 )
       {
@@ -308,7 +242,7 @@ BOOL CEAFMenu::InsertMenu(UINT nPosition, UINT nID, LPCTSTR lpszNewItem, IEAFCom
       return FALSE;
    }
    
-   ASSERT(nPosition <= m_Popups.size());
+   ASSERT(nPosition < m_Popups.size());
    m_Popups.insert(m_Popups.begin()+nPosition,NULL);
 
    return TRUE;
@@ -516,6 +450,7 @@ void CEAFMenu::CreateSubMenus()
       CMenu* pSubMenu = pMenu->GetSubMenu(menuIdx);
       if ( pSubMenu )
       {
+
          if ( pSubMenu->GetSafeHmenu() != NULL )
          {
             CEAFMenu* pEAFSubMenu = new CEAFMenu();
@@ -546,8 +481,7 @@ INT CEAFMenu::GetMenuItemOffset()
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
    INT offset = 0;
-   DWORD dwStyle = pActiveFrame->GetStyle();
-   if ( pActiveFrame && m_pWnd && (pActiveFrame->IsZoomed() || sysFlags<DWORD>::IsSet(dwStyle,WS_MAXIMIZE)) )
+   if ( pActiveFrame && m_pWnd && pActiveFrame->IsZoomed() )
    {
       offset = 1;
    }

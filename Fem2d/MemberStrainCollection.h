@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -74,7 +74,7 @@ END_COM_MAP()
 
 // IFem2dMemberStrainCollection
 public:
-	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/MemberIDType member, /*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain,  /*[out, retval]*/ IFem2dMemberStrain** pVal);
+	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/MemberIDType member, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain,  /*[out, retval]*/ IFem2dMemberStrain** pVal);
 	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid);
 	STDMETHOD(Clear)();
 };

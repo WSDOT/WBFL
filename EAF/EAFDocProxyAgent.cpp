@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -639,11 +639,8 @@ void CEAFDocProxyAgent::LogMessage( LPCTSTR lpszMsg )
    if ( !IsLogFileOpen() )
       OpenLogFile();
 
-   if ( IsLogFileOpen() )
-   {
-      GET_IFACE(ILogFile,pLogFile);
-      pLogFile->LogMessage( m_dwLogFileCookie, lpszMsg );
-   }
+   GET_IFACE(ILogFile,pLogFile);
+   pLogFile->LogMessage( m_dwLogFileCookie, lpszMsg );
 }
 
 void CEAFDocProxyAgent::Destroy()
@@ -667,10 +664,7 @@ void CEAFDocProxyAgent::OpenLogFile()
    m_LogFileName = m_pDoc->GetLogFileName();
 
    GET_IFACE(ILogFile,pLogFile);
-   HRESULT hr = pLogFile->Open( m_LogFileName, &m_dwLogFileCookie );
-   if ( SUCCEEDED(hr) )
-   {
-      m_pDoc->OnLogFileOpened();
-   }
+   pLogFile->Open( m_LogFileName, &m_dwLogFileCookie );
+   m_pDoc->OnLogFileOpened();
 }
 

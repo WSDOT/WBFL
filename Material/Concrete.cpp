@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -78,8 +78,7 @@ m_ModE( 0 ),
 m_MaxAggregateSize(0),
 m_Type(matConcrete::Normal),
 m_Fct(0),
-m_bHasFct(false),
-m_Lambda(1.0)
+m_bHasFct(false)
 {
    m_bIsDamaged = false;
    // Don't call assert value because this material model is not valid.
@@ -93,8 +92,7 @@ m_ModE( modE ),
 m_MaxAggregateSize(0.0),
 m_Type(matConcrete::Normal),
 m_Fct(0),
-m_bHasFct(false),
-m_Lambda(1.0)
+m_bHasFct(false)
 {
    m_bIsDamaged = false;
    ASSERTVALID;
@@ -244,7 +242,6 @@ std::_tstring matConcrete::GetName() const
 
 void matConcrete::SetFc(Float64 fc)
 {
-   PRECONDITION( fc > 0 );
    if ( !IsEqual( m_Fc, fc ) )
    {
       m_Fc = fc;
@@ -260,7 +257,6 @@ Float64 matConcrete::GetFc() const
 
 void matConcrete::SetDensity(Float64 density)
 {
-   PRECONDITION( density > 0 );
    if ( !IsEqual( m_Density, density ) )
    {
       m_Density = density;
@@ -276,7 +272,6 @@ Float64 matConcrete::GetDensity() const
 
 void matConcrete::SetE(Float64 modE)
 {
-   PRECONDITION( modE > 0 );
    if ( !IsEqual( m_ModE, modE ) )
    {
       m_ModE = modE;
@@ -304,20 +299,6 @@ Float64 matConcrete::GetMaxAggregateSize() const
    return m_MaxAggregateSize;
 }
 
-void matConcrete::SetLambda(Float64 lambda)
-{
-   if ( !IsEqual(m_Lambda,lambda) )
-   {
-      m_Lambda = lambda;
-      NotifyAllListeners();
-   }
-}
-
-Float64 matConcrete::GetLambda() const
-{
-   return m_Lambda;
-}
-
 //======================== INQUIRY    =======================================
 CollectionIndexType matConcrete::ListenerCount() const
 {
@@ -333,14 +314,14 @@ bool matConcrete::IsDamaged() const
 #if defined _DEBUG
 bool matConcrete::AssertValid() const
 {
-   if ( !(m_Fc > 0) )
-      return false;
+   //if ( !(m_Fc > 0) )
+   //   return false;
 
-   if ( !(m_Density > 0) )
-      return false;
+   //if ( !(m_Density > 0) )
+   //   return false;
 
-   if ( !(m_ModE > 0) )
-      return false;
+   //if ( !(m_ModE > 0) )
+   //   return false;
 
    return true;
 }
@@ -399,7 +380,6 @@ void matConcrete::MakeCopy(const matConcrete& rOther)
    m_Type      = rOther.m_Type;
    m_Fct        = rOther.m_Fct;
    m_bHasFct    = rOther.m_bHasFct;
-   m_Lambda     = rOther.m_Lambda;
 
    ASSERTVALID;
 }

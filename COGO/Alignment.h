@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -113,6 +113,8 @@ public:
    { return m_Path->ProjectPoint(point,newPoint); }
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point)
    { return m_Path->Intersect(line,pNearest,point); }
+   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point)
+   { return m_Path->IntersectEx(line,pNearest,vbProjectBack,vbProjectAhead,point); }
 	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset)
    { return m_Path->Offset(point,distance,offset); }
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength)

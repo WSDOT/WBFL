@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,23 +33,10 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const CogoElementKey g_AlignmentKey = 0;
-const CogoElementKey g_CLBridgeKey  = 1;
+const CogoObjectID g_AlignmentKey = 0;
+const CogoObjectID g_CLBridgeKey  = 1;
 
-HRESULT GB_GetGirderEndPointId(SpanIndexType spanIdx,GirderIndexType gdrIdx,EndType endType,CogoElementKey* pVal)
-{
-   CHECK_RETVAL(pVal);
-
-   *pVal = -1*( (spanIdx+1)*PIER_ID_OFFSET 
-               +(gdrIdx+1)*GIRDER_ID_OFFSET
-               +(2)*LOCATION_OFFSET
-               +(endType)*SIDE_OFFSET
-               );
-
-   return S_OK;
-}
-
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal)
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -62,7 +49,7 @@ HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,Pos
    return S_OK;
 }
 
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoElementKey* pVal)
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -75,7 +62,7 @@ HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,
    return S_OK;
 }
 
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoElementKey* pVal)
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoObjectID* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -84,7 +71,26 @@ HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoElementKey* pVal)
    return S_OK;
 }
 
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoElementKey* pVal)
+HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,CogoObjectID* pVal)
+{
+   CHECK_RETVAL(pVal);
+   (*pVal) = -1*( (spanIdx+1)*TS_ID_OFFSET + (tsIdx+1)*TS_ID_OFFSET/100 );
+   return S_OK;
+}
+
+HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal)
+{
+   CHECK_RETVAL(pVal);
+   (*pVal) = -1*( (spanIdx+1)*TS_ID_OFFSET 
+                   + (tsIdx+1)*TS_ID_OFFSET/100 
+                   + (gdrIdx+1)*GIRDER_ID_OFFSET
+                   + (0)*LOCATION_OFFSET
+                   + (posType)*SIDE_OFFSET
+      );
+   return S_OK;
+}
+
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoObjectID* pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -93,28 +99,7 @@ HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoElementKey* pVal)
    return S_OK;
 }
 
-HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2d* *left,IPoint2d* *right)
-{
-   CComPtr<ICogoInfo> cogoInfo;
-   bridge->get_CogoInfo(&cogoInfo);
-
-   CComPtr<ICogoModel> cogoModel;
-   bridge->get_CogoModel(&cogoModel);
-
-   CComPtr<IPointCollection> points;
-   cogoModel->get_Points(&points);
-
-   CogoElementKey id;
-   cogoInfo->get_PierPointID(pierIdx,pptLeft,&id);
-   points->get_Item(id,left);
-
-   cogoInfo->get_PierPointID(pierIdx,pptRight,&id);
-   points->get_Item(id,right);
-
-   return S_OK;
-}
-
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoElementKey* pVal)
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoObjectID* pVal)
 {
    *pVal = -1*( (spanIdx+1)*PIER_ID_OFFSET 
                +(gdrIdx+1)*GIRDER_ID_OFFSET
@@ -151,4 +136,72 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig)
 
    ATLASSERT(0); //can't get here
    return 0.0;
+}
+
+Float64 GB_GetHaunchDepth(ISegment* pSegment,Float64 distAlongSegment)
+{
+   Float64 startHaunch,endHaunch;
+   pSegment->get_HaunchDepth(etStart,&startHaunch);
+   pSegment->get_HaunchDepth(etEnd,&endHaunch);
+
+   Float64 segment_length;
+   pSegment->get_Length(&segment_length);
+   Float64 haunch = ::LinInterp(distAlongSegment,startHaunch,endHaunch,segment_length);
+
+   return haunch;
+}
+
+HRESULT GB_GetSectionLocation(ISegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter)
+{
+   CComPtr<IGirderLine> gdrLine;
+   pSegment->get_GirderLine(&gdrLine);
+
+   CComPtr<IPath> gdrPath;
+   gdrLine->get_Path(&gdrPath);
+
+   CComPtr<IPoint2d> pnt;
+   gdrPath->LocatePoint(distAlongSegment,omtNormal,0.00,CComVariant(NULL),&pnt);
+   Float64 x,y;
+   pnt->Location(&x,&y);
+
+   CComPtr<ISuperstructureMember> ssmbr;
+   pSegment->get_SuperstructureMember(&ssmbr);
+
+   CComPtr<IGenericBridge> bridge;
+   ssmbr->get_Bridge(&bridge);
+
+   CComPtr<IAlignment> alignment;
+   bridge->get_Alignment(&alignment);
+
+   CComPtr<IStation> station;
+   Float64 offset;
+   alignment->Offset(pnt,&station,&offset);
+
+   CComPtr<IProfile> profile;
+   alignment->get_Profile(&profile);
+
+   Float64 elevation;
+   profile->Elevation(CComVariant(station),offset,&elevation);
+
+   Float64 elevation_offset = 0;
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+   if ( deck )
+   {
+      Float64 gross_depth;
+      deck->get_GrossDepth(&gross_depth);
+
+      Float64 haunch;
+      pSegment->GetHaunchDepth(distAlongSegment,&haunch);
+
+      elevation_offset = gross_depth + haunch;
+   }
+
+   elevation -= elevation_offset;
+
+   CComPtr<IPoint2d> pntTopCenter;
+   pntTopCenter.CoCreateInstance(CLSID_Point2d);
+   pntTopCenter->Move(offset,elevation);
+
+   return pntTopCenter.CopyTo(ppTopCenter);
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,7 +29,6 @@
 #define __ALIGNMENTOFFSETSTRATEGY_H_
 
 #include "resource.h"       // main symbols
-#include "GenericBridgeCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAlignmentOffsetStrategy
@@ -41,10 +40,7 @@ class ATL_NO_VTABLE CAlignmentOffsetStrategy :
    public IAlignmentOffsetStrategy,
    public IStructuredStorage2,
    public IOverhangPathStrategy,
-   public CProxyDOverhangPathStrategyEvents<CAlignmentOffsetStrategy>,
-   public IObjectSafetyImpl<CAlignmentOffsetStrategy,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IConnectionPointContainerImpl<CAlignmentOffsetStrategy>,
-   public IPathEvents
+   public IObjectSafetyImpl<CAlignmentOffsetStrategy,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
    CAlignmentOffsetStrategy()
@@ -59,11 +55,6 @@ private:
    Float64 m_Offset;
    CComPtr<IAlignment> m_Alignment;
    CComPtr<IPath> m_Path;
-   DWORD m_dwAlignmentCookie;
-   DWORD m_dwPathCookie;
-
-   void Advise(IPath* path,DWORD* pdwCookie);
-   void Unadvise(IPath* path,DWORD dwCookie);
 
 public:
 DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENTOFFSETSTRATEGY)
@@ -76,13 +67,7 @@ BEGIN_COM_MAP(CAlignmentOffsetStrategy)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPathEvents)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CAlignmentOffsetStrategy)
-	CONNECTION_POINT_ENTRY(IID_IOverhangPathStrategyEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
@@ -101,25 +86,6 @@ public:
 public:
 	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-// IPathEvents
-public:
-   STDMETHOD(OnPathChanged)(/*[in]*/ IPath* path)
-   {
-      // the alignment or the cached path changed so the cached path is invalid... release it
-      Unadvise(m_Path,m_dwPathCookie);
-      m_Path.Release();
-
-      Fire_OnStrategyChanged();
-
-      return S_OK;
-   }
-
-	STDMETHOD(OnProfileChanged)(/*[in]*/ IProfile* profile)
-   {
-      // do nothing... it doesn't matter if the profile changes
-      return S_OK;
-   }
 };
 
 #endif //__ALIGNMENTOFFSETSTRATEGY_H_

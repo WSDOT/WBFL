@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,16 +34,10 @@
 #define IDR_STRANDPATTERN               104
 #define IDR_PRECASTGIRDER               105
 #define IDR_BRIDGEGEOMETRYTOOL          106
-#define IDR_REBAR                       107
-#define IDR_REBARSECTIONITEM            108
-#define IDR_REBARSECTION                109
-#define IDR_REBARROWPATTERN             110
 #define IDR_FLEXREBARLAYOUTITEM         111
-#define IDR_REBARLAYOUT                 112
-#define IDR_REBARFACTORY                113
 #define IDR_STRANDGRID                  114
+#define IDR_BRIDGEDECKREBARLAYOUT       115
 #define IDR_STRANDFILLTOOL              115
-#define IDR_FIXEDLENGTHREBARLAYOUTITEM  116
 
 #define IDS_E_UNKNOWNDECKTYPE           512
 #define IDS_E_GIRDERSECTION             513
@@ -59,6 +53,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        202
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         201
-#define _APS_NEXT_SYMED_VALUE           117
+#define _APS_NEXT_SYMED_VALUE           115
 #endif
 #endif

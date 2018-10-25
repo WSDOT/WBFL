@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GeomModel - Geometric Modeling of shapes and sections
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -329,7 +329,7 @@ Float64 gmUBeam::GetTopWidth() const
    return m_W2;
 }
 
-Int32 gmUBeam::GetNumberOfMatingSurfaces() const
+MatingSurfaceIndexType gmUBeam::GetNumberOfMatingSurfaces() const
 {
    return 2;
 }

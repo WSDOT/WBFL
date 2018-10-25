@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,9 +63,6 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
    m_EditableTextBlock = pTextBlock;
    m_EditableTextBlock->RegisterEventSink(this);
-
-   InternalRelease(); // break circular reference with m_EditableTextBlock
-
    m_EditableTextBlock->SetFormat(etbfNumeric);
    CString str;
    str.Format(_T("%f"),m_Value);
@@ -78,9 +75,6 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
 
 void CEditableUnitValueTextBlockImpl::FinalRelease()
 {
-   InternalAddRef(); // counter-act InternalRelease() above
-   m_EditableTextBlock->UnregisterEventSink();
-
    delete m_pctlUnitTag;
    m_pctlUnitTag = NULL;
 

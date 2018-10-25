@@ -4868,6 +4868,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SimpleDrawDashedLineStrategyImpl.cpp"
+				>
+			</File>
+			<File
 				RelativePath="SimpleDrawLineStrategyImpl.cpp"
 				>
 				<FileConfiguration
@@ -6509,6 +6513,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SimpleDrawDashedLineStrategyImpl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\DManip\SimpleDrawLineStrategy.h"
 				>
 			</File>
@@ -6707,6 +6715,10 @@
 			</File>
 			<File
 				RelativePath=".\ShapeGravityWellStrategy.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SimpleDrawDashedLineStrategy.rgs"
 				>
 			</File>
 			<File

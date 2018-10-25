@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // COGOTest - Test Driver for Coordinate Geometry Library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -166,9 +166,9 @@ void CTestMeasure::Test()
    SAFEARRAY* keys;
    SAFEARRAYBOUND bounds = { 4, 10 };
    keys = SafeArrayCreate(VT_I4,1,&bounds);
-   for ( long i = bounds.lLbound; i < long(bounds.lLbound+bounds.cElements); i++ )
+   for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoElementKey key = i - bounds.lLbound + 1;
+      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
 
@@ -183,9 +183,9 @@ void CTestMeasure::Test()
 
    // Try an array with undefined points
    keys = SafeArrayCreate(VT_I4,1,&bounds);
-   for ( long i = bounds.lLbound; i < long(bounds.lLbound+bounds.cElements); i++ )
+   for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoElementKey key = i - bounds.lLbound + 1;
+      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
       if ( (i-bounds.lLbound) == 2 )
          key = 400;
 
@@ -199,9 +199,9 @@ void CTestMeasure::Test()
    // Try an array with less than 3 elements
    bounds.cElements = 2;
    keys = SafeArrayCreate(VT_I4,1,&bounds);
-   for ( long i = bounds.lLbound; i < long(bounds.lLbound+bounds.cElements); i++ )
+   for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoElementKey key = i - bounds.lLbound + 1;
+      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
    varKeys.vt = VT_ARRAY | VT_I4;

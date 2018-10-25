@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -98,7 +98,6 @@ private:
    const CMenu* GetMenu() const;
 
    void LoadMenu(CMenu* pMenu,IEAFCommandCallback* pCallback);
-   void LoadSubMenu(CEAFMenu* pEAFMenu,CMenu* pMenu,IEAFCommandCallback* pCallback);
    void CreateSubMenus(); // called by SetWindow to fill up m_Popups with the pop up menus for the main menu
 
    BOOL AppendSeparator(CMenu* pMenu);

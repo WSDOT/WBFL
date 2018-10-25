@@ -9,13 +9,12 @@
 #include <WBFLLBAMLiveLoader.h>
 #include <WBFLLBAMLoadCombiner.h>
 
-#include "..\LBAMDumper.h"
-#include "..\LBAMDumper_i.c"
+#include "LBAMDumper.h"
+#include "LBAMDumper_i.c"
 
 #include "WBFLLBAMAnalysisUtility_i.c"
 #include "WBFLLBAM_i.c"
 #include "WBFLTools_i.c"
-#include <WBFLLBAMLiveLoader_i.c>
 
 
 #ifdef _DEBUG
@@ -42,62 +41,61 @@ int main(int argc, char* argv[])
          throw st = -1;
       }
 
-      CComPtr<ILBAMModel> model;
-
-      // create an empty model
-      model.CoCreateInstance(CLSID_LBAMModel);
-
-      // set up analysis engines
-      CComPtr<ILBAMAnalysisEngine> engine;
-      hr = engine.CoCreateInstance(CLSID_LBAMAnalysisEngine);
-      ATLASSERT(SUCCEEDED(hr));
-
-   //   hr = m_pLBAMAnalysisEngine->Initialize(m_pModel, atForce);
-   //   ATLASSERT(SUCCEEDED(hr));
-      CComPtr<IEnvelopedVehicularResponse> envelopedVehicularResponse;
-   #if defined _USE_ORIGINAL_LIVELOADER
-      envelopedVehicularResponse.CoCreateInstance(CLSID_BruteForceVehicularResponse);
-   #else
-      envelopedVehicularResponse.CoCreateInstance(CLSID_BruteForceVehicularResponse2);
-   #endif
-
-      // initialize the engine with default values (NULL), except for the vehicular response enveloper
-      engine->InitializeEx(model,atForce,
-                           NULL, // load group response
-                           NULL, // influence line response
-                           NULL, // analysis pois
-                           NULL, // basic vehicular response
-                           NULL, // live load model response
-                           envelopedVehicularResponse,
-                           NULL, // load case response
-                           NULL, // load combination response
-                           NULL, // concurrent load combination response
-                           NULL, // live load negative moment response
-                           NULL); // contraflexure response
-
-      CComPtr<IStructuredLoad2> pLoad;
-      pLoad.CoCreateInstance(CLSID_StructuredLoad2);
-
-      CComPtr<IStructuredStorage2> pSS;
-      model->QueryInterface(&pSS);
-
-      hr = pLoad->Open(CComBSTR(argv[1]));
+      // create our file loader
+      CComPtr<IStructuredLoad2> sload;
+      hr = sload.CoCreateInstance(CLSID_StructuredLoad2);
       if (FAILED(hr))
       {
-         std::cout<<"Error Opening File - Probably doesn't exist";
-         return FALSE;
+         std::cout<<"An Error occurred in CoCreateInstance(CLSID_StructuredLoad2). WBFLTools is probably not registered on this system"<<std::endl;
+         throw st = -2;
       }
 
-      hr = pSS->Load(pLoad);
+      hr = sload->Open(CComBSTR(argv[1]));
+      if (FAILED(hr))
+      {
+         std::cout<<"An Error occurred while opening the XML file containing the LBAM model - perhaps it is not a valid XML/LBAM file?"<<std::endl;
+         throw st = -3;
+      }
+
+      // open and create lbam model file and initialize our engine
+      CComPtr<ILBAMModel> model;
+      hr = model.CoCreateInstance(CLSID_LBAMModel);
+      if (FAILED(hr))
+      {
+         std::cout<<"An Error occurred in CoCreateInstance(CLSID_LBAMModel). The LBAM is probably not registered on this system"<<std::endl;
+         throw st = -4;
+      }
+
+      CComQIPtr<IStructuredStorage2> piss(model);
+      if (piss==NULL)
+      {
+         std::cout<<"An Error during QueryInterface of the LBAM model to IStructuredStorage2 - this should not happen"<<std::endl;
+         throw st = -5;
+      }
+
+      // finally load up our model
+      hr = piss->Load(sload);
       if (FAILED(hr))
       {
          std::cout<<"An Error occurred while reading the XML file containing the LBAM model - perhaps it is not a valid LBAM file?"<<std::endl;
          throw st = -6;
       }
 
-      pLoad->Close();
+      // create and init the engine needed for analysis
+      CComPtr<ILBAMAnalysisEngine> engine;
+      hr = engine.CoCreateInstance(CLSID_LBAMAnalysisEngine);
+      if (FAILED(hr))
+      {
+         std::cout<<"An Error occurred in CoCreateInstance(CLSID_LBAMAnalysisEngine). The LBAMAnalysisUtility is probably not registered on this system"<<std::endl;
+         throw st = -7;
+      }
 
-
+      hr = engine->Initialize(model, atForce);
+      if (FAILED(hr))
+      {
+         std::cout<<"An Error occurred while initializing the analysis engine"<<std::endl;
+         throw st = -8;
+      }
 
       // finally create our model dumper and procede to dump out results
       CComPtr<ILBAMResponseDumper> dumper;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -137,7 +137,7 @@ void CTestMemberStrains2::TestTruss()
 
    Float64 strain = -40.0 * 6.5e-6;
    CComPtr<IFem2dMemberStrain> pMemberStrain;
-   TRY_TEST_LC(pMemberStrains->Create(0, 2, strain, 0.0, &pMemberStrain));
+   TRY_TEST_LC(pMemberStrains->Create(0, 2, 0.0, -1.0, strain, 0.0, &pMemberStrain));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -268,40 +268,40 @@ void CTestMemberStrains2::TestStrudlBeam()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading1->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain1, pMemberStrain2, pMemberStrain3, pMemberStrain4;
-   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, strain, &pMemberStrain1));
-   TRY_TEST_LC(pMemberStrains->Create(2, 2, 0.0, strain, &pMemberStrain2));
-   TRY_TEST_LC(pMemberStrains->Create(3, 3, 0.0, strain, &pMemberStrain3));
-   TRY_TEST_LC(pMemberStrains->Create(4, 4, 0.0, strain, &pMemberStrain4));
+   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, strain, &pMemberStrain1));
+   TRY_TEST_LC(pMemberStrains->Create(2, 2, 0.0, -1.0, 0.0, strain, &pMemberStrain2));
+   TRY_TEST_LC(pMemberStrains->Create(3, 3, 0.0, -1.0, 0.0, strain, &pMemberStrain3));
+   TRY_TEST_LC(pMemberStrains->Create(4, 4, 0.0, -1.0, 0.0, strain, &pMemberStrain4));
 
    // loading 2 - all members 1 and 3 loaded
    TRY_TEST_HR(pLoadings->Create(2, &pLoading2));
    pMemberStrains = 0;
    TRY_TEST_HR(pLoading2->get_MemberStrains(&pMemberStrains));
    pMemberStrain1 = pMemberStrain2 = pMemberStrain3 = pMemberStrain4 = 0;
-   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, strain, &pMemberStrain1));
-   TRY_TEST_LC(pMemberStrains->Create(3, 3, 0.0, strain, &pMemberStrain3));
+   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, strain, &pMemberStrain1));
+   TRY_TEST_LC(pMemberStrains->Create(3, 3, 0.0, -1.0, 0.0, strain, &pMemberStrain3));
 
    // loading 3 - all members 2 and 4 loaded
    TRY_TEST_HR(pLoadings->Create(3, &pLoading3));
    pMemberStrains = 0;
    TRY_TEST_HR(pLoading3->get_MemberStrains(&pMemberStrains));
    pMemberStrain1 = pMemberStrain2 = pMemberStrain3 = pMemberStrain4 = 0;
-   TRY_TEST_LC(pMemberStrains->Create(2, 2, 0.0, strain, &pMemberStrain2));
-   TRY_TEST_LC(pMemberStrains->Create(4, 4, 0.0, strain, &pMemberStrain4));
+   TRY_TEST_LC(pMemberStrains->Create(2, 2, 0.0, -1.0, 0.0, strain, &pMemberStrain2));
+   TRY_TEST_LC(pMemberStrains->Create(4, 4, 0.0, -1.0, 0.0, strain, &pMemberStrain4));
 
    // loading 4 - members 1 loaded only
    TRY_TEST_HR(pLoadings->Create(4, &pLoading4));
    pMemberStrains = 0;
    TRY_TEST_HR(pLoading4->get_MemberStrains(&pMemberStrains));
    pMemberStrain1 = pMemberStrain2 = pMemberStrain3 = pMemberStrain4 = 0;
-   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, strain, &pMemberStrain1));
+   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, strain, &pMemberStrain1));
 
    // loading 5 - members 4 loaded only
    TRY_TEST_LC(pLoadings->Create(5, &pLoading5));
    pMemberStrains = 0;
    TRY_TEST_HR(pLoading5->get_MemberStrains(&pMemberStrains));
    pMemberStrain1 = pMemberStrain2 = pMemberStrain3 = pMemberStrain4 = 0;
-   TRY_TEST_LC(pMemberStrains->Create(1, 4, 0.0, strain, &pMemberStrain4));
+   TRY_TEST_LC(pMemberStrains->Create(1, 4, 0.0, -1.0, 0.0, strain, &pMemberStrain4));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -709,7 +709,7 @@ void CTestMemberStrains2::TestStrudlBeam2()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading1->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain1, pMemberStrain2, pMemberStrain3, pMemberStrain4;
-   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, strain, &pMemberStrain1));
+   TRY_TEST_LC(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, strain, &pMemberStrain1));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
@@ -940,7 +940,7 @@ void CTestMemberStrains2::TestFrame()
    CComPtr<IFem2dMemberStrainCollection> pMemberStrains;
    TRY_TEST_HR(pLoading->get_MemberStrains(&pMemberStrains));
    CComPtr<IFem2dMemberStrain> pMemberStrain2;
-   TRY_TEST_LC(pMemberStrains->Create(1, 2, saxial, scurv, &pMemberStrain2));
+   TRY_TEST_LC(pMemberStrains->Create(1, 2, 0.0, -1.0, saxial, scurv, &pMemberStrain2));
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);

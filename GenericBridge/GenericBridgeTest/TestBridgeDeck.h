@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,29 +30,12 @@
 #ifndef INCLUDED_TESTBRIDGEDECK_H_
 #define INCLUDED_TESTBRIDGEDECK_H_
 
-class ATL_NO_VTABLE CTestBridgeDeck :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IBridgeDeckEvents
+class CTestBridgeDeck
 {
 public:
 	static void Test(IUnknown* pDeck);
 	CTestBridgeDeck();
 	virtual ~CTestBridgeDeck();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestBridgeDeck)
-   COM_INTERFACE_ENTRY(IBridgeDeckEvents)
-END_COM_MAP()
-
-// IBridgeDeckEvents
-public:
-   STDMETHOD(OnBridgeDeckChanged)(IBridgeDeck* material);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // INCLUDED_TESTBRIDGEDECK_H_

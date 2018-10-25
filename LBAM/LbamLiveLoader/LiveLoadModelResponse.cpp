@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Live Loader - Longitindal Bridge Analysis Model
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -65,12 +65,12 @@ STDMETHODIMP CLiveLoadModelResponse::InterfaceSupportsErrorInfo(REFIID riid)
 
 bool CompareMax(Float64 newv, Float64 oldv)
 {
-   return ::IsGT(oldv,newv); //newv>oldv;
+   return newv>oldv;
 }
 
 bool CompareMin(Float64 newv, Float64 oldv)
 {
-   return ::IsLT(newv,oldv); //newv<oldv;
+   return newv<oldv;
 }
 
 
@@ -141,84 +141,6 @@ static void ComputeMax(LiveLoadModelType type, VehicleIndexType vehIdx, Collecti
          if (new_max_occurred)
          {
             hr = results->SetResult(poiIdx,left_result, left_config, right_result, right_config);
-         }
-      }
-   }
-}
-
-static void ComputeOptimumShear(LiveLoadModelType type, VehicleIndexType vehIdx, CollectionIndexType numPois, 
-                bool (*leftCompare)(Float64, Float64), bool (*rightCompare)(Float64, Float64), 
-                VARIANT_BOOL doComputePlacement, 
-                ILiveLoadModelSectionResults* envResults, ILiveLoadModelSectionResults* results)
-{
-   CHRException hr;
-   if (vehIdx==0)
-   {
-      // first vehicle. no comparison needed. first is optimal, by definition
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
-      {
-         Float64 left_result, right_result;
-         CComPtr<ILiveLoadConfiguration> left_config, right_config;
-         hr = envResults->GetResult(poiIdx, &left_result, &left_config, &right_result, &right_config);
-
-         if ( leftCompare(left_result,-right_result) )
-            hr = results->Add(left_result, left_config, -left_result, left_config);
-         else
-            hr = results->Add(-right_result, right_config, right_result, right_config);
-      }
-   }
-   else
-   {
-      // need to perform comparison with previously computed results
-      for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
-      {
-         // pull out new result to compare with
-         Float64 new_left_result, new_right_result;
-         CComPtr<ILiveLoadConfiguration> new_left_config, new_right_config;
-         hr = envResults->GetResult(poiIdx, &new_left_result, &new_left_config, &new_right_result, &new_right_config);
-
-         // old result 
-         Float64 old_left_result, old_right_result;
-         CComPtr<ILiveLoadConfiguration> old_left_config, old_right_config;
-         hr = results->GetResult(poiIdx, &old_left_result, &old_left_config, &old_right_result, &old_right_config);
-
-         bool new_max_occurred=false;
-         Float64 left_result, right_result;
-         CComPtr<ILiveLoadConfiguration> left_config, right_config;
-
-         // left side
-         if (leftCompare(new_left_result, old_left_result))
-         {
-            new_max_occurred = true;
-            left_result = new_left_result;
-            left_config = new_left_config;
-         }
-         else
-         {
-            left_result = old_left_result;
-            left_config = old_left_config;
-         }
-
-         // right side
-         if (rightCompare(new_right_result, old_right_result))
-         {
-            new_max_occurred = true;
-            right_result = new_right_result;
-            right_config = new_right_config;
-         }
-         else
-         {
-            right_result = old_right_result;
-            right_config = old_right_config;
-         }
-
-         // only need to update if a new maximum occured
-         if (new_max_occurred)
-         {
-            if ( leftCompare(left_result,-right_result) )
-               hr = results->SetResult(poiIdx,left_result, left_config, -left_result, left_config);
-            else
-               hr = results->SetResult(poiIdx,-right_result, right_config, right_result, right_config);
          }
       }
    }
@@ -358,10 +280,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeForces(IIDArray* poiIDs, BSTR stage,
                                                     effect, optimization, vehConfiguration, applyImpact, df_type,
                                                     computePlacement, &env_results);
 
-            if ( effect == fetFy )
-               ComputeOptimumShear(type, vehicleIdx, nPOI, fleft_compare, fright_compare, computePlacement, env_results, results);
-            else
-               ComputeMax(type, vehicleIdx, nPOI, fleft_compare, fright_compare, computePlacement, env_results, results);
+            ComputeMax(type, vehicleIdx, nPOI, fleft_compare, fright_compare, computePlacement, env_results, results);
          }
       }
 

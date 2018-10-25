@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTest - Test driver for generic bridge library
-// Copyright © 1999-2016  Washington State Department of Transportation
+// Copyright © 1999-2013  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -227,13 +227,13 @@ bool CTestPersistance::TestBridge(IGenericBridge* bridge)
 
 void CTestPersistance::BuildSegment(IPrismaticSegment* segment)
 {
-   segment->put_Length(2.0);
+   //segment->put_Length(2.0);
 
-   CComPtr<ICircle> circle;
-   circle.CoCreateInstance(CLSID_Circle);
-   circle->put_Radius(3);
+   //CComPtr<ICircle> circle;
+   //circle.CoCreateInstance(CLSID_Circle);
+   //circle->put_Radius(3);
 
-   CComQIPtr<IShape> shape(circle);
+   //CComQIPtr<IShape> shape(circle);
 
-   segment->putref_Shape(shape);
+   //segment->putref_Shape(shape);
 }
