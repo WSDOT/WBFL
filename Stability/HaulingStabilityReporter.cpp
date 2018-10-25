@@ -234,7 +234,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
       else
       {
-         (*pStressTable)(0,col1++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"), rptLengthUnitTag, pDisplayUnits->SpanLength );
+         (*pStressTable)(0,col1++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength );
       }
 
       pStressTable->SetColumnSpan(0,col1,nColSpan);
@@ -535,8 +535,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    LPCTSTR strImpact[3];
    stbTypes::ImpactDirection impactDir[3];
-   Float64 impactFactor[3];
-   IndexType impactIndex[3];
+   Float64 impactFactor[3] = { -1,-1,-1 };
+   IndexType impactIndex[3] = { INVALID_INDEX,INVALID_INDEX,INVALID_INDEX };
 
    Float64 ImpactUp, ImpactDown;
    pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
@@ -576,10 +576,26 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    bool bLabelWind   = (0 < nWindCases   ? true : false);
    bool bIsCF        = (0 < nCFCases     ? true : false);
 
-   rptParagraph* pPara;
 
-   pPara = new rptParagraph;
-   (*pChapter) << pPara;
+   // If epxs = 0, lateral camber = 0, Ixy = 0, and Xleft = Max(Wtf,Wbf)/2, then use a simple formatting
+   // otherwise do the full formatting
+   bool bSimpleFormat = false;
+
+   // this is the first check to see if epxs and lateral camber meet the criteria for simple formatting
+   // we have to deal with the section propertes later
+   bool bSimpleFormatTest1 = IsZero(pStabilityProblem->GetFpeLateralEccentricity()) && (!pStabilityProblem->IncludeLateralRollAxisOffset() || (pStabilityProblem->IncludeLateralRollAxisOffset() && IsZero(pStabilityProblem->GetLateralCamber())));
+
+   Float64 Ag, Ixx, Iyy, Ixy, Xcg, Ycg, Hg, Wtop, Wbot;
+   pGirder->GetSectionProperties(0, stbTypes::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xcg, &Ycg, &Hg, &Wtop, &Wbot);
+   if (bSimpleFormatTest1)
+   {
+      // we might be able to use simple formatting... check the section properties
+      if (IsZero(Ixy) && IsEqual(Xcg, Max(Wtop, Wbot) / 2))
+      {
+         // we can use simple formatting
+         bSimpleFormat = true;
+      }
+   }
 
    INIT_SCALAR_PROTOTYPE(rptRcScalar, scalar, pDisplayUnits->Scalar);
    INIT_UV_PROTOTYPE( rptForceUnitValue,   force,       pDisplayUnits->GeneralForce, true);
@@ -597,7 +613,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    INIT_UV_PROTOTYPE( rptMomentPerAngleUnitValue,   rotational_stiffness, pDisplayUnits->MomentPerAngle, true);
    INIT_UV_PROTOTYPE( rptVelocityUnitValue, velocity, pDisplayUnits->Velocity, true);
 
-   pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
+   rptParagraph* pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
    *pChapter << pPara;
    *pPara << _T("Hauling Analysis Details") << rptNewLine;
    *pPara << _T("Hauling to Bridge Site [5.5.4.3][5.9.4.1]") << rptNewLine;
@@ -621,8 +637,11 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Location of Roll Axis below top of girder, ") << Sub2(_T("y"),_T("rc")) << _T(" = ") << shortLength.SetValue(-pStabilityProblem->GetYRollAxis()) << rptNewLine;
    *pPara << _T("Truck Rotational Stiffness, ") << Sub2(_T("K"),symbol(theta)) << _T(" = ") << rotational_stiffness.SetValue(pStabilityProblem->GetTruckRotationalStiffness()) << rptNewLine;
    *pPara << _T("Wheel line spacing (C-C distance between tires), ") << Sub2(_T("W"),_T("cc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetWheelLineSpacing()) << rptNewLine;
-   *pPara << _T("At Normal Crown Slope ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << rptNewLine;
-   *pPara << _T("At Maximum Superelevation ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << rptNewLine;
+
+   CString slope_unit(pApp->GetUnitsMode() == eafTypes::umSI ? _T("m/m") : _T("ft/ft"));
+
+   *pPara << _T("Normal Crown Slope ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetCrownSlope() << _T(" ") << slope_unit << rptNewLine;
+   *pPara << _T("Maximum Superelevation ") << symbol(alpha) << _T(" = ") << pStabilityProblem->GetSuperelevation() << _T(" ") << slope_unit << rptNewLine;
 
    Float64 impactUp, impactDown;
    pStabilityProblem->GetImpact(&impactUp,&impactDown);
@@ -666,11 +685,11 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    bool bPrismaticBeam = false;
    if ( nSections == 1 )
    {
-      Float64 Ag1,Ix1,Iy1,Yt1,Hg1,Wtop1,Wbot1;
-      pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ix1,&Iy1,&Yt1,&Hg1,&Wtop1,&Wbot1);
-      Float64 Ag2,Ix2,Iy2,Yt2,Hg2,Wtop2,Wbot2;
-      pGirder->GetSectionProperties(0,stbTypes::End,&Ag2,&Ix2,&Iy2,&Yt2,&Hg2,&Wtop2,&Wbot2);
-      if ( IsEqual(Ag1,Ag2) && IsEqual(Ix1,Ix2) && IsEqual(Iy1,Iy2) && IsEqual(Yt1,Yt2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) )
+      Float64 Ag1,Ixx1,Iyy1,Ixy1,Xcg1,Ycg1,Hg1,Wtop1,Wbot1;
+      pGirder->GetSectionProperties(0,stbTypes::Start,&Ag1,&Ixx1,&Iyy1,&Ixy1,&Xcg1,&Ycg1,&Hg1,&Wtop1,&Wbot1);
+      Float64 Ag2,Ixx2,Iyy2,Ixy2,Xcg2,Ycg2,Hg2,Wtop2,Wbot2;
+      pGirder->GetSectionProperties(0,stbTypes::End,&Ag2,&Ixx2,&Iyy2,&Ixy2,&Xcg2,&Ycg2,&Hg2,&Wtop2,&Wbot2);
+      if ( IsEqual(Ag1,Ag2) && IsEqual(Ixx1,Ixx2) && IsEqual(Iyy1,Iyy2) && IsEqual(Ixy1,Ixy2) && IsEqual(Xcg1,Xcg2) && IsEqual(Ycg1,Ycg2) && IsEqual(Hg1,Hg2) && IsEqual(Wtop1,Wtop2) && IsEqual(Wbot1,Wbot2) )
       {
          bPrismaticBeam = true;
 
@@ -685,85 +704,253 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
          shortLength.ShowUnitTag(true);
 
          *pPara << Sub2(_T("A"),_T("g")) << _T(" = ") << area.SetValue(Ag1) << rptNewLine;
-         *pPara << Sub2(_T("I"),_T("x")) << _T(" = ") << inertia.SetValue(Ix1) << rptNewLine;
-         *pPara << Sub2(_T("I"),_T("y")) << _T(" = ") << inertia.SetValue(Iy1) << rptNewLine;
-         *pPara << Sub2(_T("Y"),_T("t")) << _T(" = ") << shortLength.SetValue(-Yt1) << rptNewLine;
+         *pPara << Sub2(_T("I"),_T("x")) << _T(" = ") << inertia.SetValue(Ixx1) << rptNewLine;
+         *pPara << Sub2(_T("I"), _T("y")) << _T(" = ") << inertia.SetValue(Iyy1) << rptNewLine;
+         *pPara << Sub2(_T("I"), _T("xy")) << _T(" = ") << inertia.SetValue(Ixy1) << rptNewLine;
+         if (pStabilityProblem->IncludeLateralRollAxisOffset())
+         {
+            *pPara << Sub2(_T("X"), _T("left")) << _T(" = ") << shortLength.SetValue(Xcg1) << rptNewLine;
+         }
+         *pPara << Sub2(_T("Y"), _T("top")) << _T(" = ") << shortLength.SetValue(-Ycg1) << rptNewLine;
          *pPara << Sub2(_T("H"),_T("g")) << _T(" = ") << shortLength.SetValue(Hg1) << rptNewLine;
          *pPara << Sub2(_T("W"),_T("top")) << _T(" = ") << shortLength.SetValue(Wtop1) << rptNewLine;
          *pPara << Sub2(_T("W"),_T("bot")) << _T(" = ") << shortLength.SetValue(Wbot1) << rptNewLine;
+
+         if (!bSimpleFormat)
+         {
+            pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
+            *pChapter << pPara;
+            *pPara << _T("Stress Points") << rptNewLine;
+            pPara = new rptParagraph;
+            *pChapter << pPara;
+
+            gpPoint2d pntTL, pntTR, pntBL, pntBR;
+            pGirder->GetStressPoints(0, stbTypes::Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            *pPara << _T("Top Left") << rptNewLine;
+            *pPara << _T("X = ") << shortLength.SetValue(pntTL.X()) << rptNewLine;
+            *pPara << _T("Y = ") << shortLength.SetValue(pntTL.Y()) << rptNewLine << rptNewLine;
+
+            *pPara << _T("Top Right") << rptNewLine;
+            *pPara << _T("X = ") << shortLength.SetValue(pntTR.X()) << rptNewLine;
+            *pPara << _T("Y = ") << shortLength.SetValue(pntTR.Y()) << rptNewLine << rptNewLine;
+
+            *pPara << _T("Bottom Left") << rptNewLine;
+            *pPara << _T("X = ") << shortLength.SetValue(pntBL.X()) << rptNewLine;
+            *pPara << _T("Y = ") << shortLength.SetValue(pntBL.Y()) << rptNewLine << rptNewLine;
+
+            *pPara << _T("Bottom Right") << rptNewLine;
+            *pPara << _T("X = ") << shortLength.SetValue(pntBR.X()) << rptNewLine;
+            *pPara << _T("Y = ") << shortLength.SetValue(pntBR.Y()) << rptNewLine << rptNewLine;
+         }
       }
    }
 
    if ( !bPrismaticBeam )
    {
-      rptRcTable* pSectPropTable = rptStyleManager::CreateDefaultTable(15,_T("Section Properties"));
+      ColumnIndexType nCol = 17;
+      if (pStabilityProblem->IncludeLateralRollAxisOffset())
+      {
+         nCol += 2;
+      }
+      rptRcTable* pSectPropTable = rptStyleManager::CreateDefaultTable(nCol, _T("Section Properties"));
       *pPara << pSectPropTable << rptNewLine;
       ColumnIndexType col = 0;
       pSectPropTable->SetNumberOfHeaderRows(2);
-      
-      pSectPropTable->SetRowSpan(0,0,2);
-      pSectPropTable->SetRowSpan(1,0,SKIP_CELL);
-      (*pSectPropTable)(0,col++) << COLHDR(_T("Section") << rptNewLine << _T("Length"),rptLengthUnitTag,pDisplayUnits->SpanLength);
 
-      pSectPropTable->SetColumnSpan(0,col,7);
-      (*pSectPropTable)(0,col)   << _T("Start of Section");
-      pSectPropTable->SetColumnSpan(0,col+1,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+2,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+3,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+4,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+5,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+6,SKIP_CELL);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("A"),_T("g")), rptAreaUnitTag, pDisplayUnits->Area);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("I"),_T("x")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("I"),_T("y")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("Y"),_T("t")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("H"),_T("g")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("W"),_T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("W"),_T("bot")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      pSectPropTable->SetRowSpan(0, 0, 2);
+      pSectPropTable->SetRowSpan(1, 0, SKIP_CELL);
+      (*pSectPropTable)(0, col++) << COLHDR(_T("Section") << rptNewLine << _T("Length"), rptLengthUnitTag, pDisplayUnits->SpanLength);
 
-      pSectPropTable->SetColumnSpan(0,col,7);
-      (*pSectPropTable)(0,col)   << _T("End of Section");
-      pSectPropTable->SetColumnSpan(0,col+1,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+2,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+3,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+4,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+5,SKIP_CELL);
-      pSectPropTable->SetColumnSpan(0,col+6,SKIP_CELL);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("A"),_T("g")), rptAreaUnitTag, pDisplayUnits->Area);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("I"),_T("x")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("I"),_T("y")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("Y"),_T("t")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("H"),_T("g")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("W"),_T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-      (*pSectPropTable)(1,col++) << COLHDR(Sub2(_T("W"),_T("bot")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      ColumnIndexType nColSpan = 8;
+      if (pStabilityProblem->IncludeLateralRollAxisOffset())
+      {
+         nColSpan++;
+      }
+      pSectPropTable->SetColumnSpan(0, col, nColSpan);
+      (*pSectPropTable)(0, col) << _T("Start of Section");
+      for (ColumnIndexType i = 1; i < nColSpan; i++)
+      {
+         pSectPropTable->SetColumnSpan(0, col + i, SKIP_CELL);
+      }
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("A"), _T("g")), rptAreaUnitTag, pDisplayUnits->Area);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("x")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("y")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("xy")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      if (pStabilityProblem->IncludeLateralRollAxisOffset())
+      {
+         (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("X"), _T("left")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      }
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("Y"), _T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("H"), _T("g")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("W"), _T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("W"), _T("bot")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+      pSectPropTable->SetColumnSpan(0, col, nColSpan);
+      (*pSectPropTable)(0, col) << _T("End of Section");
+      for (ColumnIndexType i = 1; i < nColSpan; i++)
+      {
+         pSectPropTable->SetColumnSpan(0, col + i, SKIP_CELL);
+      }
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("A"), _T("g")), rptAreaUnitTag, pDisplayUnits->Area);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("x")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("y")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("I"), _T("xy")), rptLength4UnitTag, pDisplayUnits->MomentOfInertia);
+      if (pStabilityProblem->IncludeLateralRollAxisOffset())
+      {
+         (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("X"), _T("left")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      }
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("Y"), _T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("H"), _T("g")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("W"), _T("top")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pSectPropTable)(1, col++) << COLHDR(Sub2(_T("W"), _T("bot")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+      rptRcTable* pStressPointTable = nullptr;
+      if (!bSimpleFormat)
+      {
+         pStressPointTable = rptStyleManager::CreateDefaultTable(17, _T("Stress Points"));
+         *pPara << pStressPointTable << rptNewLine;
+
+         pStressPointTable->SetNumberOfHeaderRows(3);
+         col = 0;
+         pStressPointTable->SetRowSpan(0, col, 3);
+         pStressPointTable->SetRowSpan(1, col, SKIP_CELL);
+         pStressPointTable->SetRowSpan(2, col, SKIP_CELL);
+         (*pStressPointTable)(0, col++) << COLHDR(_T("Section") << rptNewLine << _T("Length"), rptLengthUnitTag, pDisplayUnits->SpanLength);
+
+         pStressPointTable->SetColumnSpan(0, col, 8);
+         pStressPointTable->SetColumnSpan(0, col + 1, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 2, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 3, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 4, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 5, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 6, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 7, SKIP_CELL);
+         (*pStressPointTable)(0, col) << _T("Start of Section");
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Top Left");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Top Right");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Bottom Left");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Bottom Right");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(0, col, 8);
+         pStressPointTable->SetColumnSpan(0, col + 1, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 2, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 3, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 4, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 5, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 6, SKIP_CELL);
+         pStressPointTable->SetColumnSpan(0, col + 7, SKIP_CELL);
+         (*pStressPointTable)(0, col) << _T("End of Section");
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Top Left");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Top Right");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Bottom Left");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+
+         pStressPointTable->SetColumnSpan(1, col, 2);
+         pStressPointTable->SetColumnSpan(1, col + 1, SKIP_CELL);
+         (*pStressPointTable)(1, col) << _T("Bottom Right");
+         (*pStressPointTable)(2, col++) << COLHDR(_T("X"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+         (*pStressPointTable)(2, col++) << COLHDR(_T("Y"), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      }
 
       RowIndexType row = pSectPropTable->GetNumberOfHeaderRows();
       longLength.ShowUnitTag(false);
       shortLength.ShowUnitTag(false);
-      for ( IndexType sectIdx = 0; sectIdx < nSections; sectIdx++, row++ )
+      for (IndexType sectIdx = 0; sectIdx < nSections; sectIdx++, row++)
       {
          col = 0;
          Float64 L = pGirder->GetSectionLength(sectIdx);
-         (*pSectPropTable)(row,col++) << longLength.SetValue(L);
+         (*pSectPropTable)(row, col++) << longLength.SetValue(L);
 
-         Float64 Ag,Ix,Iy,Yt,Hg,Wtop,Wbot;
-         pGirder->GetSectionProperties(sectIdx,stbTypes::Start,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtop,&Wbot);
-         (*pSectPropTable)(row,col++) << area.SetValue(Ag);
-         (*pSectPropTable)(row,col++) << inertia.SetValue(Ix);
-         (*pSectPropTable)(row,col++) << inertia.SetValue(Iy);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(-Yt);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Hg);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Wtop);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Wbot);
+         Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
+         pGirder->GetSectionProperties(sectIdx, stbTypes::Start, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         (*pSectPropTable)(row, col++) << area.SetValue(Ag);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Ixy);
+         if (pStabilityProblem->IncludeLateralRollAxisOffset())
+         {
+            (*pSectPropTable)(row, col++) << shortLength.SetValue(Xleft);
+         }
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(-Ytop);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Hg);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Wtop);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Wbot);
 
-         pGirder->GetSectionProperties(sectIdx,stbTypes::End,&Ag,&Ix,&Iy,&Yt,&Hg,&Wtop,&Wbot);
-         (*pSectPropTable)(row,col++) << area.SetValue(Ag);
-         (*pSectPropTable)(row,col++) << inertia.SetValue(Ix);
-         (*pSectPropTable)(row,col++) << inertia.SetValue(Iy);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(-Yt);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Hg);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Wtop);
-         (*pSectPropTable)(row,col++) << shortLength.SetValue(Wbot);
+         pGirder->GetSectionProperties(sectIdx, stbTypes::End, &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+         (*pSectPropTable)(row, col++) << area.SetValue(Ag);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Ixx);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Iyy);
+         (*pSectPropTable)(row, col++) << inertia.SetValue(Ixy);
+         if (pStabilityProblem->IncludeLateralRollAxisOffset())
+         {
+            (*pSectPropTable)(row, col++) << shortLength.SetValue(Xleft);
+         }
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(-Ytop);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Hg);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Wtop);
+         (*pSectPropTable)(row, col++) << shortLength.SetValue(Wbot);
+
+         if (!bSimpleFormat)
+         {
+            col = 0;
+            row++;
+            (*pStressPointTable)(row, col++) << longLength.SetValue(L);
+
+            gpPoint2d pntTL, pntTR, pntBL, pntBR;
+            pGirder->GetStressPoints(sectIdx, stbTypes::Start, &pntTL, &pntTR, &pntBL, &pntBR);
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBL.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBL.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.Y());
+
+            pGirder->GetStressPoints(sectIdx, stbTypes::End, &pntTL, &pntTR, &pntBL, &pntBR);
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTL.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntTR.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBL.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBL.Y());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.X());
+            (*pStressPointTable)(row, col++) << shortLength.SetValue(pntBR.Y());
+         }
       }
 
       *pPara << rptNewLine;
@@ -788,16 +975,20 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    bool bDirectCamber;
    Float64 camber;
    pStabilityProblem->GetCamber(&bDirectCamber,&camber);
+   Float64 precamber = pGirder->GetPrecamber();
    if ( bDirectCamber )
    {
-      *pPara << _T("Camber, ") << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
       *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
-      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(" + ") << Sub2(_T("F"),_T("o")) << _T("(m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Camber, ") << Sub2(symbol(DELTA), _T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
+      *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
+      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(" + ") << Sub2(_T("F"),_T("o")) << _T("((m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(symbol(DELTA), _T("precamber")) << _T(") = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
+
       *pPara << _T("Camber offset factor, ") << Sub2(_T("F"),_T("co")) << _T(" = ") << scalar.SetValue(pResults->CamberOffsetFactor) << rptNewLine;
-      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(") = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Precamber, ") << Sub2(symbol(DELTA), _T("precamber")) << _T(" = ") << shortLength.SetValue(precamber) << rptNewLine;
+      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("top")) << _T(") + ") << Sub2(_T("F"),_T("o")) << Sub2(symbol(DELTA),_T("precamber")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    }
 
    *pPara << rptNewLine;
@@ -808,29 +999,68 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Lateral Deflection Parameters") << rptNewLine;
    pPara = new rptParagraph;
    *pChapter << pPara;
+   if (pStabilityProblem->IncludeLateralRollAxisOffset())
+   {
+      *pPara << _T("Lateral camber, ") << Sub2(symbol(DELTA), _T("lc")) << _T(" = ") << shortLength.SetValue(pStabilityProblem->GetLateralCamber()) << rptNewLine;
+      if (pResults->XcgMethod == stbTypes::Exact)
+      {
+         Float64 Ag1, Ixx1, Iyy1, Ixy1, Xcg1, Ycg1, Hg1, Wtop1, Wbot1;
+         pGirder->GetSectionProperties(0, stbTypes::Start, &Ag1, &Ixx1, &Iyy1, &Ixy1, &Xcg1, &Ycg1, &Hg1, &Wtop1, &Wbot1);
+         if (Wbot1 < Wtop1)
+         {
+            *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << _T("|") << Sub2(_T("X"), _T("left")) << _T(" - ") << Sub2(_T("W"), _T("top")) << _T("/2| = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
+         }
+         else
+         {
+            *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << _T("|") << Sub2(_T("X"), _T("left")) << _T(" - ") << Sub2(_T("W"), _T("bot")) << _T("/2| = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
+         }
+      }
+      else
+      {
+         *pPara << _T("Eccentricity of CG from roll axis, ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << symbol(SUM) << _T("(0.5(") << Super2(Sub2(_T("X"), _T("left")),_T("i")) << _T(" + ") << Super2(Sub2(_T("X"), _T("left")), _T("i+1")) << _T(")") << _T("(Section Length)") << _T(")/") << Sub2(_T("L"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->Xleft) << rptNewLine;
+      }
+   }
    *pPara << _T("Lateral Sweep, ") << Sub2(_T("e"),_T("sweep")) << _T(" = ") << Sub2(_T("L"),_T("g")) << Sub2(_T("t"),_T("sweep")) << _T(" = ") << shortLength.SetValue(pResults->LateralSweep) << rptNewLine;
 
    *pPara << _T("Initial lateral eccentricity of center of gravity of girder due to lateral sweep and eccentricity of bunking devices from centerline of girder, ") << rptNewLine;
-   *pPara << Sub2(_T("e"),_T("i")) << _T(" = ") << Sub2(_T("F"),_T("o")) << Sub2(_T("e"),_T("sweep")) << _T(" + " ) << Sub2(_T("e"),_T("bunk")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+   if (pStabilityProblem->IncludeLateralRollAxisOffset())
+   {
+      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("F"), _T("o")) << _T("(") << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(symbol(DELTA),_T("lc")) << _T(")") << _T(" + ") << Sub2(_T("e"), _T("bunk")) << _T(" + ") << Sub2(_T("e"), _T("cg")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+   }
+   else
+   {
+      *pPara << Sub2(_T("e"), _T("i")) << _T(" = ") << Sub2(_T("F"), _T("o")) << Sub2(_T("e"), _T("sweep")) << _T(" + ") << Sub2(_T("e"), _T("bunk")) << _T(" = ") << shortLength.SetValue(pResults->EccLateralSweep[stbTypes::NoImpact]) << rptNewLine;
+   }
    *pPara << rptNewLine;
- 
-   *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << Sub2(_T("z"),_T("o"));
+
+   *pPara << _T("Lateral Deflection of center of gravity due to total girder weight applied to weak axis, ") << Sub2(_T("z"),_T("o")) << rptNewLine;
    if ( pResults->ZoMethod == stbTypes::Exact )
    {
-      *pPara << _T(" = (") << Sub2(_T("W"),_T("g")) << _T("/12E") << Sub2(_T("I"),_T("y")) << Sub2(_T("L"),_T("g")) << Super(_T("2")) << _T(")(") 
-         << Sub2(_T("L"),_T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
-         << Super2(_T("a"),_T("2")) << Sub2(_T("L"),_T("s")) << Super(_T("3")) << _T(" + ")
-         << _T("3") << Super2(_T("a"),_T("4")) << Sub2(_T("L"),_T("s")) << _T(" + ")
-         << _T("6") << Super2(_T("a"),_T("5")) << _T("/5") << _T(")");
+      if (bSimpleFormat)
+      {
+         *pPara << Sub2(_T("z"),_T("o")) << _T(" = (") << Sub2(_T("W"), _T("g")) << _T("/12E") << Sub2(_T("I"), _T("yy")) << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+      }
+      else
+      {
+         *pPara << Sub2(_T("z"), _T("o")) << _T(" = (") << Sub2(_T("W"), _T("g")) << Sub2(_T("I"), _T("xx")) << _T("/(12E(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T("-") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << Sub2(_T("L"), _T("g")) << Super(_T("2")) << _T(")(")
+            << Sub2(_T("L"), _T("s")) << Super(_T("5")) << _T("/10") << _T(" - ")
+            << Super2(_T("a"), _T("2")) << Sub2(_T("L"), _T("s")) << Super(_T("3")) << _T(" + ")
+            << _T("3") << Super2(_T("a"), _T("4")) << Sub2(_T("L"), _T("s")) << _T(" + ")
+            << _T("6") << Super2(_T("a"), _T("5")) << _T("/5") << _T(")") << rptNewLine;
+      }
    }
 
    for ( IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++ )
    {
-      *pPara << _T(" = ") << shortLength.SetValue(pResults->Zo[impactDir[impactCase]]);
-      if ( 0 < nImpactCases )
+      if (0 < nImpactCases)
       {
-         *pPara << _T(" (") << strImpact[impactCase] << _T(")");
+         *pPara << strImpact[impactCase] << _T(" ");
       }
+      *pPara << Sub2(_T("z"),_T("o")) << _T(" = ") << shortLength.SetValue(pResults->Zo[impactDir[impactCase]]) << rptNewLine;
    }
    *pPara << rptNewLine;
 
@@ -853,27 +1083,30 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       *pPara << _T("Lateral wind pressure, ") << Sub2(_T("w"),_T("wind")) << _T(" = ") << pressure.SetValue(pResults->WindPressure) << rptNewLine;
    }
    *pPara << _T("Total Wind Load, ") << Sub2(_T("W"),_T("wind")) << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
+   *pPara << _T("Location of resultant wind force above roll axis, ") << Sub2(_T("y"), _T("wind")) << rptNewLine;
    if ( bDirectCamber )
    {
-      *pPara << _T("Location of resultant wind force above roll axis, ") << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("F"),_T("o")) << _T("(m)") << _T("(") << Sub2(symbol(DELTA),_T("camber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("F"),_T("o")) << _T("(m)") << _T("(") << Sub2(symbol(DELTA),_T("camber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
-      *pPara << _T("Location of resultant wind force above roll axis, ") << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
    }
    *pPara << rptNewLine;
 
-   *pPara << _T("Lateral Deflection due to wind applied toward the left, ") << Sub2(_T("z"),_T("wind")) << _T(" = ") << Sub2(_T("W"),_T("wind")) << Sub2(_T("z"),_T("o")) << _T("/") << Sub2(_T("W"),_T("g")) << _T(" = ") << shortLength.SetValue(pResults->ZoWind[stbTypes::NoImpact]) << rptNewLine;
+   *pPara << _T("Lateral Deflection due to wind applied toward the left, ") << Sub2(_T("z"), _T("wind")) << rptNewLine;
+   *pPara << Sub2(_T("z"), _T("wind")) << _T(" = ") << Sub2(_T("W"), _T("wind")) << Sub2(_T("z"), _T("o")) << _T("/") << Sub2(_T("W"), _T("g")) << _T(" = ") << shortLength.SetValue(pResults->ZoWind[stbTypes::NoImpact]) << rptNewLine;
    *pPara << rptNewLine;
 
-   *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << Sub2(_T("e"),_T("wind")) << _T(" = ") << Sub2(_T("W"),_T("wind")) << Sub2(_T("y"),_T("wind")) << _T("/") << Sub2(_T("W"),_T("g"));
+   *pPara << _T("Lateral eccentricity of Girder Self Weight due to Wind Load towards the left, ") << Sub2(_T("e"), _T("wind")) << rptNewLine;
+   *pPara << Sub2(_T("e"), _T("wind")) << _T(" = ") << Sub2(_T("W"), _T("wind")) << Sub2(_T("y"), _T("wind")) << _T("/") << Sub2(_T("W"), _T("g")) << rptNewLine;
    for (IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++ )
    {
-      *pPara << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]);
-      if ( 0 < nImpactCases )
+      if (0 < nImpactCases)
       {
-         *pPara << _T(" (") << strImpact[impactCase] << _T(")");
+         *pPara << strImpact[impactCase] << _T(" ");
       }
+      *pPara << Sub2(_T("e"),_T("wind")) << _T(" = ") << shortLength.SetValue(pResults->EccWind[impactDir[impactCase]]);
    }
    *pPara << rptNewLine;
    *pPara << _T("Overturning moment due to wind applied toward the left, ") << Sub2(_T("M"),_T("otwind")) << _T(" = ") << moment.SetValue(pResults->MotWind) << rptNewLine;
@@ -895,128 +1128,247 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Roll over moment due to centrigural force, ") << Sub2(_T("M"),_T("rocf")) << _T(" = ") << Sub2(_T("W"),_T("cf")) << _T("(") << Sub2(_T("y"),_T("cf")) << _T(" + ") << Sub2(_T("H"),_T("cr")) << _T(") = ") << moment.SetValue(pResults->MroCF) << rptNewLine;
    *pPara << rptNewLine;
 
-   pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
-   *pChapter << pPara;
-   *pPara << _T("Moments and Stresses") << rptNewLine;
-
-   pPara = new rptParagraph;
-   *pChapter << pPara;
-   rptRcTable* pLayoutTable = rptStyleManager::CreateLayoutTable(2);
-   (*pPara) << pLayoutTable << rptNewLine;
-
-   rptRcTable* pMomentTable = rptStyleManager::CreateDefaultTable(4,_T("Moments"));
-   (*pLayoutTable)(0,0) << pMomentTable;
+   rptRcTable* pPrestressTable = rptStyleManager::CreateDefaultTable(bSimpleFormat ? 9 : 14, _T("Stress due to Effective Prestress"));
+   *pPara << pPrestressTable << rptNewLine;
 
    ColumnIndexType col = 0;
-   if ( lpszLocColumnLabel )
+   pPrestressTable->SetNumberOfHeaderRows(2);
+   pPrestressTable->SetRowSpan(0, col, 2);
+   pPrestressTable->SetRowSpan(1, col, SKIP_CELL);
+   if (lpszLocColumnLabel)
    {
-      (*pMomentTable)(0,col++) << COLHDR(rptRcStringLiteral(lpszLocColumnLabel),rptLengthUnitTag,pDisplayUnits->SpanLength);
+      (*pPrestressTable)(0, col++) << COLHDR(rptRcStringLiteral(lpszLocColumnLabel), rptLengthUnitTag, pDisplayUnits->SpanLength);
    }
    else
    {
-      (*pMomentTable)(0,col++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"),rptLengthUnitTag,pDisplayUnits->SpanLength);
+      (*pPrestressTable)(0, col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength);
    }
-   (*pMomentTable)(0,col++) << COLHDR(Sub2(_T("M"),_T("girder")), rptMomentUnitTag, pDisplayUnits->Moment);
-   (*pMomentTable)(0,col++) << COLHDR(Sub2(_T("M"),_T("wind")), rptMomentUnitTag, pDisplayUnits->Moment);
-   (*pMomentTable)(0,col++) << COLHDR(Sub2(_T("M"),_T("cf")), rptMomentUnitTag, pDisplayUnits->Moment);
 
-   rptRcTable* pStressTable = rptStyleManager::CreateDefaultTable(19,_T("Stress"));
-   rptParagraph* p = &(*pLayoutTable)(0,1);
-   *p << pStressTable << rptNewLine;
-   *p << Sub2(_T("F"),_T("pe")) << _T(" = effective prestress force") << rptNewLine;
-   *p << Sub2(_T("e"),_T("ps")) << _T(" = eccentricity of the prestress force. Positive values are below the neutral axis") << rptNewLine;
-   *p << RPT_STRESS(_T("ps")) << _T(" = ") << _T("stress due to prestressing, ");
-   *p << RPT_STRESS(_T("ps")) << _T(" Top = -") << Sub2(_T("F"),_T("pe")) << _T("(1/") << Sub2(_T("A"),_T("g")) << _T(" - ") << Sub2(_T("e"),_T("ps")) << Sub2(_T("Y"),_T("t")) << _T("/") << Sub2(_T("I"),_T("x")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("ps")) << _T(" Bottom = -") << Sub2(_T("F"),_T("pe")) << _T("(1/") << Sub2(_T("A"),_T("g")) << _T(" + ") << Sub2(_T("e"),_T("ps")) << _T("(") << Sub2(_T("H"),_T("g")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(")/") << Sub2(_T("I"),_T("x")) << _T(")") << rptNewLine;
-   
-   *p << RPT_STRESS(_T("g")) << _T(" = ") << _T("stress due to girder self weight without impact, ");
-   *p << RPT_STRESS(_T("g")) << _T(" Top = -") << Sub2(_T("M"),_T("girder")) << Sub2(_T("Y"),_T("t")) << _T("/") << Sub2(_T("I"),_T("x"));
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("g")) << _T(" Bottom = ") << Sub2(_T("M"),_T("girder")) << _T("(") << Sub2(_T("H"),_T("g")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(")/") << Sub2(_T("I"),_T("x")) << rptNewLine;
-   
-   *p << RPT_STRESS(_T("w")) << _T(" = ") << _T("stress due to wind toward the left, ");
-   *p << RPT_STRESS(_T("w")) << _T(" Top Left = ") << Sub2(_T("M"),_T("wind")) << Sub2(_T("W"),_T("top")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("w")) << _T(" Top Right = -") << Sub2(_T("M"),_T("wind")) << Sub2(_T("W"),_T("top")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("w")) << _T(" Bottom Left = ") << Sub2(_T("M"),_T("wind")) << Sub2(_T("W"),_T("bot")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("w")) << _T(" Bottom Right = -") << Sub2(_T("M"),_T("wind")) << Sub2(_T("W"),_T("bot")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")") << rptNewLine;
-   
-   *p << RPT_STRESS(_T("cf")) << _T(" = ") << _T("stress due to centrifugal force, ");
-   *p << RPT_STRESS(_T("cf")) << _T(" Top Left = ") << Sub2(_T("M"),_T("cf")) << Sub2(_T("W"),_T("top")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("cf")) << _T(" Top Right = -") << Sub2(_T("M"),_T("cf")) << Sub2(_T("W"),_T("top")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("cf")) << _T(" Bottom Left = ") << Sub2(_T("M"),_T("cf")) << Sub2(_T("W"),_T("bot")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")");
-   *p << _T(", ");
-   *p << RPT_STRESS(_T("cf")) << _T(" Bottom Right = -") << Sub2(_T("M"),_T("cf")) << Sub2(_T("W"),_T("bot")) << _T("/(2") << Sub2(_T("I"),_T("y")) << _T(")") << rptNewLine;
+   ColumnIndexType nColSpan = (bSimpleFormat ? 2 : 3);
+   pPrestressTable->SetColumnSpan(0, col, nColSpan);
+   (*pPrestressTable)(0, col) << _T("Straight");
+   for (ColumnIndexType i = 1; i < nColSpan; i++)
+   {
+      pPrestressTable->SetColumnSpan(0, col + i, SKIP_CELL);
+   }
+   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
+   if (bSimpleFormat)
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
+   else
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
 
+   pPrestressTable->SetColumnSpan(0, col, nColSpan);
+   (*pPrestressTable)(0, col) << _T("Harped");
+   for (ColumnIndexType i = 1; i < nColSpan; i++)
+   {
+      pPrestressTable->SetColumnSpan(0, col + i, SKIP_CELL);
+   }
+   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
+   if (bSimpleFormat)
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
+   else
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
+
+   pPrestressTable->SetColumnSpan(0, col, nColSpan);
+   (*pPrestressTable)(0, col) << _T("Temporary");
+   for (ColumnIndexType i = 1; i < nColSpan; i++)
+   {
+      pPrestressTable->SetColumnSpan(0, col + i, SKIP_CELL);
+   }
+   (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("F"), _T("pe")), rptForceUnitTag, pDisplayUnits->GeneralForce);
+   if (bSimpleFormat)
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("ps")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
+   else
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psx")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+      (*pPrestressTable)(1, col++) << COLHDR(Sub2(_T("e"), _T("psy")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
+   }
+
+   nColSpan = (bSimpleFormat ? 2 : 4);
+   pPrestressTable->SetColumnSpan(0, col, nColSpan);
+   (*pPrestressTable)(0, col) << RPT_STRESS(_T("ps"));
+   for (ColumnIndexType i = 1; i < nColSpan; i++)
+   {
+      pPrestressTable->SetColumnSpan(0, col + i, SKIP_CELL);
+   }
+
+   if (bSimpleFormat)
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Top"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Bottom"), rptStressUnitTag, pDisplayUnits->Stress);
+   }
+   else
+   {
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pPrestressTable)(1, col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
+   }
+
+   longLength.ShowUnitTag(false);
+   shortLength.ShowUnitTag(false);
+   force.ShowUnitTag(false);
+   stress.ShowUnitTag(false);
+   area.ShowUnitTag(false);
+
+   Float64 epsx = pStabilityProblem->GetFpeLateralEccentricity();
+
+   RowIndexType row = pPrestressTable->GetNumberOfHeaderRows();
+   for (const auto& sectionResult : pResults->vSectionResults)
+   {
+      col = 0;
+
+      const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
+
+      (*pPrestressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
+
+      Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
+      pGirder->GetSectionProperties(pAnalysisPoint->GetLocation(), &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+
+      Float64 Fpe, Yps;
+      pStabilityProblem->GetFpe(stbTypes::Straight, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
+      if (!bSimpleFormat)
+      {
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+      }
+      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
+
+      pStabilityProblem->GetFpe(stbTypes::Harped, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
+      if (!bSimpleFormat)
+      {
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+      }
+      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
+
+      pStabilityProblem->GetFpe(stbTypes::Temporary, pAnalysisPoint->GetLocation(), &Fpe, &Yps);
+      (*pPrestressTable)(row, col++) << force.SetValue(Fpe);
+      if (!bSimpleFormat)
+      {
+         (*pPrestressTable)(row, col++) << shortLength.SetValue(epsx);
+      }
+      (*pPrestressTable)(row, col++) << shortLength.SetValue(Ytop - Yps);
+
+      if (bSimpleFormat)
+      {
+         ATLASSERT(IsEqual(sectionResult.fps[stbTypes::TopLeft], sectionResult.fps[stbTypes::TopRight],0.001));
+         ATLASSERT(IsEqual(sectionResult.fps[stbTypes::BottomLeft], sectionResult.fps[stbTypes::BottomRight], 0.001));
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomLeft]);
+      }
+      else
+      {
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::TopRight]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomLeft]);
+         (*pPrestressTable)(row, col++) << stress.SetValue(sectionResult.fps[stbTypes::BottomRight]);
+      }
+
+      row++;
+   }
+
+   *pPara << Sub2(_T("F"), _T("pe")) << _T(" = effective prestress force") << rptNewLine;
+   if (bSimpleFormat)
+   {
+      *pPara << Sub2(_T("e"), _T("ps")) << _T(" = eccentricity of the prestress force. Positive values are for ") << Sub2(_T("F"), _T("pe")) << _T(" below the centroidal axis") << rptNewLine;
+      *pPara << RPT_STRESS(_T("ps")) << _T(" = ") << _T("stress due to prestressing") << rptNewLine;
+      *pPara << _T("Top ") << RPT_STRESS(_T("ps")) << _T(" = -") << Sub2(_T("F"), _T("pe")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" - ") << Sub2(_T("e"), _T("ps")) << Sub2(_T("Y"), _T("top")) << _T("/") << Sub2(_T("I"), _T("x")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom ") << RPT_STRESS(_T("ps")) << _T(" = -") << Sub2(_T("F"), _T("pe")) << _T("(1/") << Sub2(_T("A"), _T("g")) << _T(" + ") << Sub2(_T("e"), _T("ps")) << _T("(") << Sub2(_T("H"), _T("g")) << _T(" - ") << Sub2(_T("Y"), _T("top")) << _T(")/") << Sub2(_T("I"), _T("x")) << _T(")") << rptNewLine;
+   }
+   else
+   {
+      *pPara << Sub2(_T("e"), _T("psx")) << _T(" = eccentricity of the prestress force. Positive values are for ") << Sub2(_T("F"), _T("pe")) << _T(" to the left of the centroidal axis") << rptNewLine;
+      *pPara << Sub2(_T("e"), _T("psy")) << _T(" = eccentricity of the prestress force. Positive values are for ") << Sub2(_T("F"), _T("pe")) << _T(" below the centroidal axis") << rptNewLine;
+      *pPara << Sub2(_T("M"), _T("psx")) << _T(" = ") << Sub2(_T("F"), _T("pe")) << Sub2(_T("e"), _T("psy")) << rptNewLine;
+      *pPara << Sub2(_T("M"), _T("psy")) << _T(" = ") << Sub2(_T("F"), _T("pe")) << Sub2(_T("e"), _T("psx")) << rptNewLine;
+      *pPara << RPT_STRESS(_T("ps")) << _T("(x,y) = ")
+         << _T("(") << Sub2(_T("M"), _T("psy")) << Sub2(_T("I"), _T("xx")) << _T("+") << Sub2(_T("M"), _T("psx")) << Sub2(_T("I"), _T("xy")) << _T(")(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+         << _T(" - ")
+         << _T("(") << Sub2(_T("M"), _T("psx")) << Sub2(_T("I"), _T("yy")) << _T("+") << Sub2(_T("M"), _T("psy")) << Sub2(_T("I"), _T("xy")) << _T(")(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+         << _T(" - ")
+         << Sub2(_T("F"), _T("pe")) << _T("/") << Sub2(_T("A"), _T("g")) << rptNewLine;
+   }
+
+   rptRcTable* pStressTable = rptStyleManager::CreateDefaultTable(bSimpleFormat ? 14 : 16, _T("Stress due to External Loads"));
+   *pPara << pStressTable << rptNewLine;
 
    col = 0;
    pStressTable->SetNumberOfHeaderRows(2);
-   pStressTable->SetRowSpan(0,col,2);
-   pStressTable->SetRowSpan(1,col,SKIP_CELL);
-   if ( lpszLocColumnLabel )
+   pStressTable->SetRowSpan(0, col, 2);
+   pStressTable->SetRowSpan(1, col, SKIP_CELL);
+   if (lpszLocColumnLabel)
    {
-      (*pStressTable)(0,col++) << COLHDR(rptRcStringLiteral(lpszLocColumnLabel),rptLengthUnitTag,pDisplayUnits->SpanLength);
+      (*pStressTable)(0, col++) << COLHDR(rptRcStringLiteral(lpszLocColumnLabel), rptLengthUnitTag, pDisplayUnits->SpanLength);
    }
    else
    {
-      (*pStressTable)(0,col++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"),rptLengthUnitTag,pDisplayUnits->SpanLength);
+      (*pStressTable)(0, col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength);
    }
 
-   pStressTable->SetColumnSpan(0,col,2);
-   (*pStressTable)(0,col) << _T("Straight");
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("F"),_T("pe")), rptForceUnitTag,pDisplayUnits->GeneralForce);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("e"),_T("ps")), rptLengthUnitTag,pDisplayUnits->ComponentDim);
+   pStressTable->SetRowSpan(0, col, 2);
+   pStressTable->SetRowSpan(1, col, SKIP_CELL);
+   (*pStressTable)(0, col++) << COLHDR(Sub2(_T("M"), _T("girder")), rptMomentUnitTag, pDisplayUnits->Moment);
 
-   pStressTable->SetColumnSpan(0,col,2);
-   (*pStressTable)(0,col) << _T("Harped");
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("F"),_T("pe")), rptForceUnitTag,pDisplayUnits->GeneralForce);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("e"),_T("ps")), rptLengthUnitTag,pDisplayUnits->ComponentDim);
+   nColSpan = (bSimpleFormat ? 2 : 4);
+   pStressTable->SetColumnSpan(0, col, nColSpan);
+   for (ColumnIndexType i = 1; i < nColSpan; i++)
+   {
+      pStressTable->SetColumnSpan(0, col + i, SKIP_CELL);
+   }
+   (*pStressTable)(0, col) << RPT_STRESS(_T("g"));
+   if (bSimpleFormat)
+   {
+      (*pStressTable)(1, col++) << COLHDR(_T("Top"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pStressTable)(1, col++) << COLHDR(_T("Bottom"), rptStressUnitTag, pDisplayUnits->Stress);
+   }
+   else
+   {
+      (*pStressTable)(1, col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pStressTable)(1, col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pStressTable)(1, col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
+      (*pStressTable)(1, col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
+   }
 
-   pStressTable->SetColumnSpan(0,col,2);
-   (*pStressTable)(0,col) << _T("Temporary");
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("F"),_T("pe")), rptForceUnitTag,pDisplayUnits->GeneralForce);
-   (*pStressTable)(1,col++) << COLHDR(Sub2(_T("e"),_T("ps")), rptLengthUnitTag,pDisplayUnits->ComponentDim);
+   pStressTable->SetRowSpan(0, col, 2);
+   pStressTable->SetRowSpan(1, col, SKIP_CELL);
+   (*pStressTable)(0, col++) << COLHDR(Sub2(_T("M"), _T("wind")), rptMomentUnitTag, pDisplayUnits->Moment);
 
-   pStressTable->SetColumnSpan(0,col,2);
-   (*pStressTable)(0,col) << RPT_STRESS(_T("ps"));
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom"), rptStressUnitTag, pDisplayUnits->Stress);
+   pStressTable->SetColumnSpan(0, col, 4);
+   (*pStressTable)(0, col) << RPT_STRESS(_T("w"));
+   pStressTable->SetColumnSpan(0, col + 1, SKIP_CELL);
+   pStressTable->SetColumnSpan(0, col + 2, SKIP_CELL);
+   pStressTable->SetColumnSpan(0, col + 3, SKIP_CELL);
+   (*pStressTable)(1, col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
 
-   pStressTable->SetColumnSpan(0,col,2);
-   (*pStressTable)(0,col) << RPT_STRESS(_T("g"));
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom"), rptStressUnitTag, pDisplayUnits->Stress);
+   pStressTable->SetRowSpan(0, col, 2);
+   pStressTable->SetRowSpan(1, col, SKIP_CELL);
+   (*pStressTable)(0, col++) << COLHDR(Sub2(_T("M"), _T("cf")), rptMomentUnitTag, pDisplayUnits->Moment);
 
-   pStressTable->SetColumnSpan(0,col,4);
-   (*pStressTable)(0,col) << RPT_STRESS(_T("w"));
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   pStressTable->SetColumnSpan(0,col+2,SKIP_CELL);
-   pStressTable->SetColumnSpan(0,col+3,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
-
-   pStressTable->SetColumnSpan(0,col,4);
-   (*pStressTable)(0,col) << RPT_STRESS(_T("cf"));
-   pStressTable->SetColumnSpan(0,col+1,SKIP_CELL);
-   pStressTable->SetColumnSpan(0,col+2,SKIP_CELL);
-   pStressTable->SetColumnSpan(0,col+3,SKIP_CELL);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
-   (*pStressTable)(1,col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
-
+   pStressTable->SetColumnSpan(0, col, 4);
+   (*pStressTable)(0, col) << RPT_STRESS(_T("cf"));
+   pStressTable->SetColumnSpan(0, col + 1, SKIP_CELL);
+   pStressTable->SetColumnSpan(0, col + 2, SKIP_CELL);
+   pStressTable->SetColumnSpan(0, col + 3, SKIP_CELL);
+   (*pStressTable)(1, col++) << COLHDR(_T("Top Left"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Top Right"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Bottom Left"), rptStressUnitTag, pDisplayUnits->Stress);
+   (*pStressTable)(1, col++) << COLHDR(_T("Bottom Right"), rptStressUnitTag, pDisplayUnits->Stress);
 
    longLength.ShowUnitTag(false);
    shortLength.ShowUnitTag(false);
@@ -1025,56 +1377,93 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    area.ShowUnitTag(false);
    moment.ShowUnitTag(false);
 
-   RowIndexType mrow = pMomentTable->GetNumberOfHeaderRows();
-   RowIndexType srow = pStressTable->GetNumberOfHeaderRows();
-   for( const auto& sectionResult : pResults->vSectionResults)
+   row = pStressTable->GetNumberOfHeaderRows();
+   for (const auto& sectionResult : pResults->vSectionResults)
    {
       col = 0;
 
       const stbIAnalysisPoint* pAnalysisPoint = pStabilityProblem->GetAnalysisPoint(sectionResult.AnalysisPointIndex);
-      (*pMomentTable)(mrow,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
 
-      (*pMomentTable)(mrow,col++) << moment.SetValue(sectionResult.Mg);
-      (*pMomentTable)(mrow,col++) << moment.SetValue(sectionResult.Mw);
-      (*pMomentTable)(mrow,col++) << moment.SetValue(sectionResult.Mcf);
-      mrow++;
+      (*pStressTable)(row, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
-      col = 0;
-      (*pStressTable)(srow,col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength,offset,false));
+      (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mg);
 
-      Float64 Ag,Ix,Iy,Yt,Hg,Wtop,Wbot;
-      pGirder->GetSectionProperties(pAnalysisPoint->GetLocation(),&Ag,&Ix,&Iy,&Yt,&Hg,&Wtop,&Wbot);
-      
-      Float64 Fpe,Yps;
-      pStabilityProblem->GetFpe(stbTypes::Straight,pAnalysisPoint->GetLocation(),&Fpe,&Yps);
-      (*pStressTable)(srow,col++) << force.SetValue(Fpe);
-      (*pStressTable)(srow,col++) << shortLength.SetValue(Yt - Yps);
-      
-      pStabilityProblem->GetFpe(stbTypes::Harped,pAnalysisPoint->GetLocation(),&Fpe,&Yps);
-      (*pStressTable)(srow,col++) << force.SetValue(Fpe);
-      (*pStressTable)(srow,col++) << shortLength.SetValue(Yt - Yps);
-      
-      pStabilityProblem->GetFpe(stbTypes::Temporary,pAnalysisPoint->GetLocation(),&Fpe,&Yps);
-      (*pStressTable)(srow,col++) << force.SetValue(Fpe);
-      (*pStressTable)(srow,col++) << shortLength.SetValue(Yt - Yps);
+      if (bSimpleFormat)
+      {
+         ATLASSERT(IsEqual(sectionResult.fg[stbTypes::TopLeft], sectionResult.fg[stbTypes::TopRight]));
+         ATLASSERT(IsEqual(sectionResult.fg[stbTypes::BottomLeft], sectionResult.fg[stbTypes::BottomRight]));
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomLeft]);
+      }
+      else
+      {
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::TopRight]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomLeft]);
+         (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fg[stbTypes::BottomRight]);
+      }
 
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fps[stbTypes::Top]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fps[stbTypes::Bottom]);
+      (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mw);
 
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fg[stbTypes::Top]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fg[stbTypes::Bottom]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::TopLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::TopRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomRight]);
 
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fw[stbTypes::TopLeft]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fw[stbTypes::TopRight]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomLeft]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fw[stbTypes::BottomRight]);
+      (*pStressTable)(row, col++) << moment.SetValue(sectionResult.Mcf);
 
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopLeft]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopRight]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomLeft]);
-      (*pStressTable)(srow,col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::TopRight]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomLeft]);
+      (*pStressTable)(row, col++) << stress.SetValue(sectionResult.fcf[stbTypes::BottomRight]);
 
-      srow++;
+      row++;
+   }
+
+   *pPara << RPT_STRESS(_T("g")) << _T(" = ") << _T("stress due to girder self weight applied without tilt or impact") << rptNewLine;
+   if (bSimpleFormat)
+   {
+      *pPara << _T("Top ") << RPT_STRESS(_T("g")) << _T(" = -") << Sub2(_T("M"), _T("girder")) << Sub2(_T("Y"), _T("top")) << _T("/") << Sub2(_T("I"), _T("xx")) << rptNewLine;
+      *pPara << _T("Bottom ") << RPT_STRESS(_T("g")) << _T(" = ") << Sub2(_T("M"), _T("girder")) << _T("(") << Sub2(_T("H"), _T("g")) << _T(" - ") << Sub2(_T("Y"), _T("top")) << _T(")/") << Sub2(_T("I"), _T("xx")) << rptNewLine;
+   }
+   else
+   {
+      *pPara << RPT_STRESS(_T("g")) << _T("(x,y)") << _T(" = ")
+         << Sub2(_T("M"), _T("girder")) << Sub2(_T("I"), _T("xy")) << _T("(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+         << _T(" - ")
+         << Sub2(_T("M"), _T("girder")) << Sub2(_T("I"), _T("yy")) << _T("(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
+   }
+
+   *pPara << RPT_STRESS(_T("w")) << _T(" = ") << _T("stress due to wind toward the left") << rptNewLine;
+   if (bSimpleFormat)
+   {
+      *pPara << _T("Top Left ") << RPT_STRESS(_T("w")) << _T(" = ") << Sub2(_T("M"), _T("wind")) << Sub2(_T("W"), _T("top")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Top Right ") << RPT_STRESS(_T("w")) << _T(" = -") << Sub2(_T("M"), _T("wind")) << Sub2(_T("W"), _T("top")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom Left ") << RPT_STRESS(_T("w")) << _T(" = ") << Sub2(_T("M"), _T("wind")) << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom Right ") << RPT_STRESS(_T("w")) << _T(" = -") << Sub2(_T("M"), _T("wind")) << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+   }
+   else
+   {
+      *pPara << RPT_STRESS(_T("w")) << _T("(x,y)") << _T(" = ")
+         << Sub2(_T("M"), _T("wind")) << Sub2(_T("I"), _T("xy")) << _T("(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+         << _T(" - ")
+         << Sub2(_T("M"), _T("wind")) << Sub2(_T("I"), _T("yy")) << _T("(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
+   }
+
+   *pPara << RPT_STRESS(_T("cf")) << _T(" = ") << _T("stress due to centrifugal force") << rptNewLine;
+   if (bSimpleFormat)
+   {
+      *pPara << _T("Top Left ") << RPT_STRESS(_T("cf")) << _T(" = ") << Sub2(_T("M"), _T("cf")) << Sub2(_T("W"), _T("top")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Top Right ") << RPT_STRESS(_T("cf")) << _T(" = -") << Sub2(_T("M"), _T("cf")) << Sub2(_T("W"), _T("top")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom Left ") << RPT_STRESS(_T("cf")) << _T(" = ") << Sub2(_T("M"), _T("cf")) << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+      *pPara << _T("Bottom Right ") << RPT_STRESS(_T("cf")) << _T(" = -") << Sub2(_T("M"), _T("cf")) << Sub2(_T("W"), _T("bot")) << _T("/(2") << Sub2(_T("I"), _T("yy")) << _T(")") << rptNewLine;
+   }
+   else
+   {
+      *pPara << RPT_STRESS(_T("cf")) << _T("(x,y)") << _T(" = ")
+         << Sub2(_T("M"), _T("cf")) << Sub2(_T("I"), _T("xy")) << _T("(x)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+         << _T(" - ")
+         << Sub2(_T("M"), _T("cf")) << Sub2(_T("I"), _T("yy")) << _T("(y)/(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")") << rptNewLine;
    }
 
    LPCTSTR strSlope[2] = { _T("Normal Crown Slope"),_T("Maximum Superelevation") };
@@ -1198,15 +1587,12 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             rptRcTable* pTotalStressTable = rptStyleManager::CreateDefaultTable(13,_T("Stresses"));
             (*pPara) << pTotalStressTable << rptNewLine;
-            (*pPara) << RPT_STRESS(_T("direct")) << _T(" = ") << RPT_STRESS(_T("ps")) << _T(" + (IM)(") << RPT_STRESS(_T("g")) << _T(" + ") << RPT_STRESS(_T("h")) << _T(") ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << rptNewLine;
-            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" = stress induced by girder rotation, ");
-            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" Top Left = (IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("top")) << _T("/2") << Sub2(_T("I"),_T("y"));
-            (*pPara) << _T(", ");
-            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" Top Right = -(IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("top")) << _T("/2") << Sub2(_T("I"),_T("y"));
-            (*pPara) << _T(", ");
-            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" Bottom Left = (IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("bot")) << _T("/2") << Sub2(_T("I"),_T("y"));
-            (*pPara) << _T(", ");
-            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" Bottom Right = -(IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("bot")) << _T("/2") << Sub2(_T("I"),_T("y")) << rptNewLine;
+            (*pPara) << RPT_STRESS(_T("direct")) << _T(" = ") << RPT_STRESS(_T("ps")) << _T(" + (IM)") << RPT_STRESS(_T("g")) << _T(" ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(" + ") << strCFSign.c_str() << _T(" ") << Sub2(_T("M"), _T("cf")) << rptNewLine;
+            (*pPara) << RPT_STRESS(_T("tilt")) << _T(" = stress induced by girder rotation") << rptNewLine;
+            (*pPara) << _T("Top Left ") << RPT_STRESS(_T("tilt")) << _T(" = (IM)") << Sub2(_T("M"), _T("girder")) << Sub2(symbol(theta), _T("eq")) << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << rptNewLine;
+            (*pPara) << _T("Top Right ") << RPT_STRESS(_T("tilt")) << _T(" = -(IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("top")) << _T("/2") << Sub2(_T("I"),_T("yy")) << rptNewLine;
+            (*pPara) << _T("Bottom Left ") << RPT_STRESS(_T("tilt")) << _T(" = (IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("bot")) << _T("/2") << Sub2(_T("I"),_T("yy")) << rptNewLine;
+            (*pPara) << _T("Bottom Right ") << RPT_STRESS(_T("tilt")) << _T(" = -(IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("bot")) << _T("/2") << Sub2(_T("I"),_T("yy")) << rptNewLine;
             (*pPara) << RPT_STRESS(_T("total")) << _T(" = ") << RPT_STRESS(_T("direct")) << _T(" + ") << RPT_STRESS(_T("tilt")) << rptNewLine;
 
             col = 0;
@@ -1219,7 +1605,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               (*pTotalStressTable)(0,col++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"),rptLengthUnitTag,pDisplayUnits->SpanLength);
+               (*pTotalStressTable)(0,col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"),rptLengthUnitTag,pDisplayUnits->SpanLength);
             }
 
             pTotalStressTable->SetColumnSpan(0,col,4);
@@ -1254,13 +1640,23 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             rptRcTable* pCrackingTable = rptStyleManager::CreateDefaultTable(5,_T("Factor of Safety Against Cracking"));
             (*pPara) << pCrackingTable << rptNewLine;
-            (*pPara) << Sub2(_T("M"),_T("cr")) << _T(" = Cracking Moment = ");
-            (*pPara) << Sub2(_T("M"),_T("cr")) << _T(" Top Flange = (") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"),_T("y")) << _T("/") << Sub2(_T("W"),_T("top"));
-            (*pPara) << _T(", ");
-            (*pPara) << Sub2(_T("M"),_T("cr")) << _T(" Bottom Flange = (") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"),_T("y")) << _T("/") << Sub2(_T("W"),_T("bot")) << rptNewLine;
+            (*pPara) << Sub2(_T("M"),_T("cr")) << _T(" = Cracking Moment") << rptNewLine;
+            if (bSimpleFormat)
+            {
+               (*pPara) << _T("Top Flange ") << Sub2(_T("M"), _T("cr")) << _T(" = (") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("y")) << _T("/") << Sub2(_T("W"), _T("top")) << rptNewLine;
+               (*pPara) << _T("Bottom Flange ") << Sub2(_T("M"), _T("cr")) << _T(" = (") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")2") << Sub2(_T("I"), _T("y")) << _T("/") << Sub2(_T("W"), _T("bot")) << rptNewLine;
+            }
+            else
+            {
+               (*pPara) << Sub2(_T("M"), _T("cr")) << _T(" = ") << _T("(") << RPT_STRESS(_T("r")) << _T(" - ") << RPT_STRESS(_T("direct")) << _T(")")
+                  << _T("(") << Sub2(_T("I"), _T("xx")) << Sub2(_T("I"), _T("yy")) << _T(" - ") << Super2(Sub2(_T("I"), _T("xy")), _T("2")) << _T(")")
+                  << _T("(") << Sub2(_T("I"), _T("xx")) << _T("(x)") << _T(" - ") << Sub2(_T("I"), _T("xy")) << _T("(y)") << _T(")") << rptNewLine;
+            }
             (*pPara) << _T("Cracked Flange, indicates the flange that is first to crack") << rptNewLine;
-            (*pPara) << Sub2(symbol(theta),_T("cr")) << _T(" = tilt angle at cracking = ") << Sub2(_T("M"),_T("cr")) << _T("/") << Sub2(_T("M"),_T("girder")) << _T(" ") << symbol(LTE) << _T(" 0.4 radians") << rptNewLine;
-            (*pPara) << Sub2(_T("FS"),_T("cr")) << _T(" = Factor of Safety Against Cracking = [") << Sub2(_T("K"),symbol(theta)) << _T("(") << Sub2(symbol(theta),_T("cr")) << _T(" - ") << symbol(alpha) << _T(")]");
+            (*pPara) << Sub2(symbol(theta), _T("cr")) << _T(" = tilt angle at cracking") << rptNewLine;
+            (*pPara) << Sub2(symbol(theta), _T("cr")) << _T(" = ") << Sub2(_T("M"), _T("cr")) << _T("/") << Sub2(_T("M"), _T("girder")) << _T(" ") << symbol(LTE) << _T(" 0.4 radians") << rptNewLine;
+            (*pPara) << Sub2(_T("FS"), _T("cr")) << _T(" = Factor of Safety Against Cracking") << rptNewLine;
+            (*pPara) << Sub2(_T("FS"), _T("cr")) << _T(" = [") << Sub2(_T("K"), symbol(theta)) << _T("(") << Sub2(symbol(theta), _T("cr")) << _T(" - ") << symbol(alpha) << _T(")]");
             (*pPara) << _T("/{");
             if ( 0 < nImpactCases )
             {
@@ -1285,7 +1681,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             }
             else
             {
-               (*pCrackingTable)(0,col++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"),rptLengthUnitTag,pDisplayUnits->SpanLength);
+               (*pCrackingTable)(0,col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"),rptLengthUnitTag,pDisplayUnits->SpanLength);
             }
             (*pCrackingTable)(0,col++) << COLHDR(Sub2(_T("M"),_T("cr")),rptMomentUnitTag,pDisplayUnits->Moment);
             (*pCrackingTable)(0,col++) << _T("Cracked Flange");
@@ -1305,7 +1701,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
                }
                else
                {
-                  (*pRebarTable)(0,col++) << COLHDR(_T("Dist from left") << rptNewLine << _T("end of girder"),rptLengthUnitTag,pDisplayUnits->SpanLength);
+                  (*pRebarTable)(0,col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"),rptLengthUnitTag,pDisplayUnits->SpanLength);
                }
                (*pRebarTable)(0,col++) << COLHDR(Sub2(_T("Y"),_T("na")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
                (*pRebarTable)(0,col++) << _T("Slope NA");
@@ -1384,7 +1780,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("Factor of Safety Against Failure") << rptNewLine;
             pPara = new rptParagraph;
             *pChapter << pPara;
-            *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << symbol(alpha) << _T(" + ") << symbol(ROOT) << _T("{") << Super2(symbol(alpha),_T("2")) << _T(" + [") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("M"),_T("ot")) << _T("/") << Sub2(_T("W"),_T("g")) << _T(" + (") << Sub2(_T("z"),_T("o")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind"));
+            *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << symbol(alpha) << _T(" + ") << symbol(ROOT) << _T("{") << Super2(symbol(alpha),_T("2")) << _T("[") << Sub2(_T("e"),_T("i")) << _T(" + ") << Sub2(_T("M"),_T("ot")) << _T("/") << Sub2(_T("W"),_T("g")) << _T(" + (") << Sub2(_T("z"),_T("o")) << _T(" ") << strWindSign.c_str() << _T(" ") << Sub2(_T("z"),_T("wind"));
             if ( slope == stbTypes::MaxSuper )
             {
                *pPara << _T(" ") << strOppCFSign.c_str() << _T(" ") << Sub2(_T("z"),_T("cf"));
@@ -1397,7 +1793,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T(")]} ") << symbol(LTE) << _T(" 0.4 radians") << rptNewLine;
 
             *pPara << Sub2(symbol(theta),_T("max")) << _T(" = ") << tiltAngle.SetValue(pResults->ThetaMax[slope][impactDir[impactCase]][wind]) << rptNewLine;
-            *pPara << Sub2(_T("FS"),_T("f")) << _T(" = Factor of Safety Against Failure = [") << Sub2(_T("K"),symbol(theta)) << _T("(") << Sub2(symbol(theta),_T("max")) << _T(" - ") << symbol(alpha) << _T(")]");
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = Factor of Safety Against Failure") << rptNewLine;
+            *pPara << Sub2(_T("FS"), _T("f")) << _T(" = [") << Sub2(_T("K"), symbol(theta)) << _T("(") << Sub2(symbol(theta), _T("max")) << _T(" - ") << symbol(alpha) << _T(")]");
             *pPara << _T("/{");
             if ( 0 < nImpactCases )
             {
@@ -1431,7 +1828,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             {
                *pPara << _T("(IM)");
             }
-            *pPara << Sub2(_T("W"),_T("g")) << _T("(") << Sub2(_T("W"),_T("cc")) << _T("/2") << _T(" - ") << Sub2(_T("H"),_T("rc")) << symbol(alpha) << _T(" - ") << Sub2(_T("e"),_T("bunk")) << _T(") ") << strWindSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rowind"));
+            *pPara << Sub2(_T("W"),_T("g")) << _T("(") << Sub2(_T("W"),_T("cc")) << _T("/2") << _T(" - ") << Sub2(_T("H"),_T("rs")) << symbol(alpha) << _T(" - ") << Sub2(_T("e"),_T("bunk")) << _T(") ") << strWindSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rowind"));
             if ( slope == stbTypes::MaxSuper )
             {
                *pPara << _T(" ") << strCFSign.c_str() << _T(" ") << Sub2(_T("M"),_T("rocf"));
@@ -1439,7 +1836,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             *pPara << _T("]");
             *pPara << _T("/") << Sub2(_T("K"),symbol(theta)) << _T(" + ") << symbol(alpha) << rptNewLine;
             *pPara << Sub2(symbol(theta),_T("ro")) << _T(" = ") << tiltAngle.SetValue(pResults->ThetaRollover[slope][impactDir[impactCase]][wind]) << rptNewLine;
-            *pPara << Sub2(_T("FS"),_T("r")) << _T(" = Factor of Safety Against Rollover = [") << Sub2(_T("K"),symbol(theta)) << _T("(") << Sub2(symbol(theta),_T("ro")) << _T(" - ") << symbol(alpha) << _T(")]");
+            *pPara << Sub2(_T("FS"), _T("r")) << _T(" = Factor of Safety Against Rollover") << rptNewLine;
+            *pPara << Sub2(_T("FS"), _T("r")) << _T(" = [") << Sub2(_T("K"), symbol(theta)) << _T("(") << Sub2(symbol(theta), _T("ro")) << _T(" - ") << symbol(alpha) << _T(")]");
             *pPara << _T("/{");
             if ( 0 < nImpactCases )
             {

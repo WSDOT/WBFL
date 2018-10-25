@@ -73,7 +73,7 @@ STDMETHODIMP CTransactionMgr::Execute(IWBFLTransaction *pTxn)
    if ( FAILED(hr) )
       return hr;
 
-   m_TxnHistory.push_back( TxnType(txn) );
+   m_TxnHistory.emplace_back(txn);
    m_Mode = txnRepeat;
 
 	return S_OK;
@@ -92,7 +92,7 @@ STDMETHODIMP CTransactionMgr::Undo()
    if ( FAILED(hr) )
       return hr;
 
-   m_UndoHistory.push_back( TxnType(txn) );
+   m_UndoHistory.emplace_back(txn);
    m_Mode = txnRedo;
 
 	return S_OK;
@@ -325,7 +325,7 @@ STDMETHODIMP CTransactionMgr::BeginMacro(VARIANT nameOrMacro)
       if ( macro == nullptr )
          return E_INVALIDARG;
 
-      m_Macros.push_back(CComPtr<IWBFLMacroTransaction>(macro));
+      m_Macros.emplace_back(macro);
    }
    else
    {

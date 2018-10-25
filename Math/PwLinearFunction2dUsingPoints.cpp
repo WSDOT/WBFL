@@ -554,12 +554,12 @@ bool mathPwLinearFunction2dUsingPoints::TestMe(dbgLog& rlog)
 
    // create another function
    std::vector<gpPoint2d> pvec;
-   pvec.push_back(gpPoint2d(-5,1));
-   pvec.push_back(gpPoint2d(-4.1,1));
-   pvec.push_back(gpPoint2d(-3.4,1));
-   pvec.push_back(gpPoint2d( 0.0,1));
-   pvec.push_back(gpPoint2d( 2.2,1));
-   pvec.push_back(gpPoint2d( 5,1));
+   pvec.emplace_back(-5,1);
+   pvec.emplace_back(-4.1,1);
+   pvec.emplace_back(-3.4,1);
+   pvec.emplace_back( 0.0,1);
+   pvec.emplace_back( 2.2,1);
+   pvec.emplace_back( 5,1);
    mathPwLinearFunction2dUsingPoints fun2(pvec);
    TRY_TESTME(fun2.GetPoints()==pvec);
    TRY_TESTME(fun2.Evaluate(0.0)==1);

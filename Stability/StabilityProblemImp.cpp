@@ -38,6 +38,8 @@ stbGirder::stbGirder()
 {
    m_pSegment = nullptr;
 
+   m_Precamber = 0.0;
+
    m_DragCoefficient = 2.2; // default for I-Beams
 
    m_bLengthNeedsUpdate = true;
@@ -59,6 +61,9 @@ bool stbGirder::operator==(const stbGirder& other) const
       return false;
 
    if ( !IsEqual(m_DragCoefficient,other.m_DragCoefficient) )
+      return false;
+
+   if (!IsEqual(m_Precamber, other.m_Precamber))
       return false;
 
    return true;
@@ -88,27 +93,76 @@ void stbGirder::ClearSections()
    m_vSectionProperties.clear();
 }
 
-void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf)
+IndexType stbGirder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf)
 {
-   SetSectionProperties(sectIdx,Length,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf);
+   return AddSection(Length, Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf, Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtf, Wbf);
 }
 
-void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ix2,Float64 Iy2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2)
+IndexType stbGirder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2)
+{
+   stbSectionProperties props;
+   props.Ag[stbTypes::Start] = Ag;
+   props.Ag[stbTypes::End] = Ag2;
+
+   props.Ixx[stbTypes::Start] = Ixx;
+   props.Ixx[stbTypes::End] = Ixx2;
+
+   props.Iyy[stbTypes::Start] = Iyy;
+   props.Iyy[stbTypes::End] = Iyy2;
+
+   props.Ixy[stbTypes::Start] = Ixy;
+   props.Ixy[stbTypes::End] = Ixy2;
+
+   props.Xleft[stbTypes::Start] = Xleft;
+   props.Xleft[stbTypes::End] = Xcg2;
+
+   props.Ytop[stbTypes::Start] = Ytop;
+   props.Ytop[stbTypes::End] = Ycg2;
+
+   props.Hg[stbTypes::Start] = Hg;
+   props.Hg[stbTypes::End] = Hg2;
+
+   props.Wtf[stbTypes::Start] = Wtf;
+   props.Wtf[stbTypes::End] = Wtf2;
+
+   props.Wbf[stbTypes::Start] = Wbf;
+   props.Wbf[stbTypes::End] = Wbf2;
+
+   props.L = Length;
+
+   IndexType index = m_vSectionProperties.size();
+   m_vSectionProperties.push_back(props);
+
+   m_bLengthNeedsUpdate = true;
+
+   return index;
+}
+
+void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf)
+{
+   SetSectionProperties(sectIdx,Length,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf,Ag,Ixx,Iyy,Ixy,Xleft,Ytop,Hg,Wtf,Wbf);
+}
+
+void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Float64 Ixx,Float64 Iyy,Float64 Ixy,Float64 Xleft,Float64 Ytop,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ixx2,Float64 Iyy2,Float64 Ixy2,Float64 Xcg2,Float64 Ycg2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2)
 {
    stbSectionProperties& props = m_vSectionProperties[sectIdx];
    props.L = Length;
    props.Ag[stbTypes::Start] = Ag;
-   props.Ix[stbTypes::Start] = Ix;
-   props.Iy[stbTypes::Start] = Iy;
-   props.Yt[stbTypes::Start] = Yt;
+   props.Ixx[stbTypes::Start] = Ixx;
+   props.Iyy[stbTypes::Start] = Iyy;
+   props.Ixy[stbTypes::Start] = Ixy;
+   props.Xleft[stbTypes::Start] = Xleft;
+   props.Ytop[stbTypes::Start] = Ytop;
    props.Hg[stbTypes::Start] = Hg;
    props.Wtf[stbTypes::Start] = Wtf;
    props.Wbf[stbTypes::Start] = Wbf;
 
    props.Ag[stbTypes::End] = Ag2;
-   props.Ix[stbTypes::End] = Ix2;
-   props.Iy[stbTypes::End] = Iy2;
-   props.Yt[stbTypes::End] = Yt2;
+   props.Ixx[stbTypes::End] = Ixx2;
+   props.Iyy[stbTypes::End] = Iyy2;
+   props.Ixy[stbTypes::End] = Ixy2;
+   props.Xleft[stbTypes::End] = Xcg2;
+   props.Ytop[stbTypes::End] = Ycg2;
    props.Hg[stbTypes::End] = Hg2;
    props.Wtf[stbTypes::End] = Wtf2;
    props.Wbf[stbTypes::End] = Wbf2;
@@ -116,40 +170,29 @@ void stbGirder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag
    m_bLengthNeedsUpdate = true;
 }
 
-void stbGirder::AddSection(Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf)
+// Assigns stress point values to a section. 
+void stbGirder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR)
 {
-   AddSection(Length,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf,Ag,Ix,Iy,Yt,Hg,Wtf,Wbf);
+   SetStressPoints(sectIdx, pntTL, pntTR, pntBL, pntBR, pntTL, pntTR, pntBL, pntBR);
 }
 
-void stbGirder::AddSection(Float64 Length,Float64 Ag,Float64 Ix,Float64 Iy,Float64 Yt,Float64 Hg,Float64 Wtf,Float64 Wbf,Float64 Ag2,Float64 Ix2,Float64 Iy2,Float64 Yt2,Float64 Hg2,Float64 Wtf2,Float64 Wbf2)
+void stbGirder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2)
 {
-   stbSectionProperties props;
-   props.Ag[stbTypes::Start] = Ag;
-   props.Ag[stbTypes::End]   = Ag2;
+   stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   if (props.m_pStressPoints == nullptr)
+   {
+      // stress points have not yet been assigned
+      props.m_pStressPoints = std::make_shared<stbStressPoints>();
+   }
+   props.m_pStressPoints->pntTL[stbTypes::Start] = pntTL;
+   props.m_pStressPoints->pntTR[stbTypes::Start] = pntTR;
+   props.m_pStressPoints->pntBL[stbTypes::Start] = pntBL;
+   props.m_pStressPoints->pntBR[stbTypes::Start] = pntBR;
 
-   props.Ix[stbTypes::Start] = Ix;
-   props.Ix[stbTypes::End]   = Ix2;
-
-   props.Iy[stbTypes::Start] = Iy;
-   props.Iy[stbTypes::End]   = Iy2;
-
-   props.Yt[stbTypes::Start] = Yt;
-   props.Yt[stbTypes::End]   = Yt2;
-
-   props.Hg[stbTypes::Start] = Hg;
-   props.Hg[stbTypes::End]   = Hg2;
-
-   props.Wtf[stbTypes::Start] = Wtf;
-   props.Wtf[stbTypes::End]   = Wtf2;
-
-   props.Wbf[stbTypes::Start] = Wbf;
-   props.Wbf[stbTypes::End]   = Wbf2;
-
-   props.L = Length;
-
-   m_vSectionProperties.push_back(props);
-
-   m_bLengthNeedsUpdate = true;
+   props.m_pStressPoints->pntTL[stbTypes::End] = pntTL2;
+   props.m_pStressPoints->pntTR[stbTypes::End] = pntTR2;
+   props.m_pStressPoints->pntBL[stbTypes::End] = pntBL2;
+   props.m_pStressPoints->pntBR[stbTypes::End] = pntBR2;
 }
 
 void stbGirder::ClearPointLoads()
@@ -159,7 +202,7 @@ void stbGirder::ClearPointLoads()
 
 void stbGirder::AddPointLoad(Float64 X,Float64 P)
 {
-   m_vPointLoads.push_back(std::make_pair(X,P));
+   m_vPointLoads.emplace_back(X,P);
 }
 
 Float64 stbGirder::GetGirderLength() const
@@ -173,24 +216,26 @@ IndexType stbGirder::GetSectionCount() const
    return m_vSectionProperties.size();
 }
 
-void stbGirder::GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const
-{
-   const stbSectionProperties& props = m_vSectionProperties[sectIdx];
-   *pAg = props.Ag[section];
-   *pIx = props.Ix[section];
-   *pIy = props.Iy[section];
-   *pYt = props.Yt[section];
-   *pHg = props.Hg[section];
-   *pWtop = props.Wtf[section];
-   *pWbot = props.Wbf[section];
-}
-
 Float64 stbGirder::GetSectionLength(IndexType sectIdx) const
 {
    return m_vSectionProperties[sectIdx].L;
 }
 
-void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64* pIy,Float64* pYt,Float64* pHg,Float64* pWtop,Float64* pWbot) const
+void stbGirder::GetSectionProperties(IndexType sectIdx,stbTypes::Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
+{
+   const stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   *pAg = props.Ag[section];
+   *pIxx = props.Ixx[section];
+   *pIyy = props.Iyy[section];
+   *pIxy = props.Ixy[section];
+   *pXleft = props.Xleft[section];
+   *pYtop = props.Ytop[section];
+   *pHg = props.Hg[section];
+   *pWtop = props.Wtf[section];
+   *pWbot = props.Wbf[section];
+}
+
+void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
    ATLASSERT(m_vSectionProperties.size() != 0);
 
@@ -198,9 +243,11 @@ void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64
    {
       const stbSectionProperties& props = m_vSectionProperties.front();
       *pAg = ::LinInterp(X,props.Ag[stbTypes::Start],props.Ag[stbTypes::End],props.L);
-      *pIx = ::LinInterp(X,props.Ix[stbTypes::Start],props.Ix[stbTypes::End],props.L);
-      *pIy = ::LinInterp(X,props.Iy[stbTypes::Start],props.Iy[stbTypes::End],props.L);
-      *pYt = ::LinInterp(X,props.Yt[stbTypes::Start],props.Yt[stbTypes::End],props.L);
+      *pIxx = ::LinInterp(X,props.Ixx[stbTypes::Start],props.Ixx[stbTypes::End],props.L);
+      *pIyy = ::LinInterp(X,props.Iyy[stbTypes::Start],props.Iyy[stbTypes::End],props.L);
+      *pIxy = ::LinInterp(X, props.Ixy[stbTypes::Start], props.Ixy[stbTypes::End], props.L);
+      *pXleft = ::LinInterp(X, props.Xleft[stbTypes::Start], props.Xleft[stbTypes::End], props.L);
+      *pYtop = ::LinInterp(X, props.Ytop[stbTypes::Start], props.Ytop[stbTypes::End], props.L);
       *pHg = ::LinInterp(X,props.Hg[stbTypes::Start],props.Hg[stbTypes::End],props.L);
       *pWtop = ::LinInterp(X,props.Wtf[stbTypes::Start],props.Wtf[stbTypes::End],props.L);
       *pWbot = ::LinInterp(X,props.Wbf[stbTypes::Start],props.Wbf[stbTypes::End],props.L);
@@ -215,19 +262,60 @@ void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIx,Float64
       Float64 Xend = Xstart + iter->L;
       if ( ::InRange(Xstart,X,Xend) )
       {
-         *pAg = ::LinInterp(X-Xstart,iter->Ag[stbTypes::Start],iter->Ag[stbTypes::End],Xend-Xstart);
-         *pIx = ::LinInterp(X-Xstart,iter->Ix[stbTypes::Start],iter->Ix[stbTypes::End],Xend-Xstart);
-         *pIy = ::LinInterp(X-Xstart,iter->Iy[stbTypes::Start],iter->Iy[stbTypes::End],Xend-Xstart);
-         *pYt = ::LinInterp(X-Xstart,iter->Yt[stbTypes::Start],iter->Yt[stbTypes::End],Xend-Xstart);
-         *pHg = ::LinInterp(X-Xstart,iter->Hg[stbTypes::Start],iter->Hg[stbTypes::End],Xend-Xstart);
-         *pWtop = ::LinInterp(X-Xstart,iter->Wtf[stbTypes::Start],iter->Wtf[stbTypes::End],Xend-Xstart);
-         *pWbot = ::LinInterp(X-Xstart,iter->Wbf[stbTypes::Start],iter->Wbf[stbTypes::End],Xend-Xstart);
+         *pAg = ::LinInterp(X-Xstart,iter->Ag[stbTypes::Start],iter->Ag[stbTypes::End],iter->L);
+         *pIxx = ::LinInterp(X-Xstart,iter->Ixx[stbTypes::Start],iter->Ixx[stbTypes::End],iter->L);
+         *pIyy = ::LinInterp(X - Xstart, iter->Iyy[stbTypes::Start], iter->Iyy[stbTypes::End], iter->L);
+         *pIxy = ::LinInterp(X - Xstart, iter->Ixy[stbTypes::Start], iter->Ixy[stbTypes::End], iter->L);
+         *pXleft = ::LinInterp(X - Xstart, iter->Xleft[stbTypes::Start], iter->Xleft[stbTypes::End], iter->L);
+         *pYtop = ::LinInterp(X - Xstart, iter->Ytop[stbTypes::Start], iter->Ytop[stbTypes::End], iter->L);
+         *pHg = ::LinInterp(X-Xstart,iter->Hg[stbTypes::Start],iter->Hg[stbTypes::End],iter->L);
+         *pWtop = ::LinInterp(X-Xstart,iter->Wtf[stbTypes::Start],iter->Wtf[stbTypes::End],iter->L);
+         *pWbot = ::LinInterp(X-Xstart,iter->Wbf[stbTypes::Start],iter->Wbf[stbTypes::End],iter->L);
          return;
       }
       Xstart = Xend;
    }
 
    ATLASSERT(false); // should never get here.... is X out of range?
+}
+
+void stbGirder::GetStressPoints(IndexType sectIdx, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+{
+   const stbSectionProperties& props = m_vSectionProperties[sectIdx];
+   GetStressPoints(props, section, pTL, pTR, pBL, pBR);
+}
+
+void stbGirder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+{
+   Float64 Xstart = 0;
+   for (const auto& props : m_vSectionProperties)
+   {
+      Float64 Xend = Xstart + props.L;
+      if (::InRange(Xstart, X, Xend))
+      {
+         gpPoint2d tl1, tr1, bl1, br1;
+         GetStressPoints(props, stbTypes::Start, &tl1, &tr1, &bl1, &br1);
+
+         gpPoint2d tl2, tr2, bl2, br2;
+         GetStressPoints(props, stbTypes::End, &tl2, &tr2, &bl2, &br2);
+
+         pTL->X() = ::LinInterp(X - Xstart, tl1.X(), tl2.X(), props.L);
+         pTL->Y() = ::LinInterp(X - Xstart, tl1.Y(), tl2.Y(), props.L);
+
+         pTR->X() = ::LinInterp(X - Xstart, tr1.X(), tr2.X(), props.L);
+         pTR->Y() = ::LinInterp(X - Xstart, tr1.Y(), tr2.Y(), props.L);
+
+         pBL->X() = ::LinInterp(X - Xstart, bl1.X(), bl2.X(), props.L);
+         pBL->Y() = ::LinInterp(X - Xstart, bl1.Y(), bl2.Y(), props.L);
+
+         pBR->X() = ::LinInterp(X - Xstart, br1.X(), br2.X(), props.L);
+         pBR->Y() = ::LinInterp(X - Xstart, br1.Y(), br2.Y(), props.L);
+
+         return;
+      }
+      Xstart = Xend;
+   }
+   ATLASSERT(false); // should never get here... is X out of range?
 }
 
 void stbGirder::SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads)
@@ -248,6 +336,16 @@ Float64 stbGirder::GetDragCoefficient() const
 void stbGirder::SetDragCoefficient(Float64 Cd)
 {
    m_DragCoefficient = Cd;
+}
+
+Float64 stbGirder::GetPrecamber() const
+{
+   return m_Precamber;
+}
+
+void stbGirder::SetPrecamber(Float64 precamber)
+{
+   m_Precamber = precamber;
 }
 
 void stbGirder::UpdateLength() const
@@ -272,12 +370,17 @@ stbStabilityProblemImp::stbStabilityProblemImp()
 {
    m_fy = 0;
 
+   m_ex = 0;
+
    m_bAdjustForXferLength = false;
    m_XferLength = 0;
 
    m_bDirectCamber = true;
    m_Camber = 0;
    m_CamberMultiplier = 1.0;
+
+   m_bIncludeRollAxisLateralOffset = false;
+   m_LateralCamber = 0.0;
 
    m_Ll = 0;
    m_Lr = 0;
@@ -316,6 +419,9 @@ stbStabilityProblemImp& stbStabilityProblemImp::operator=(const stbStabilityProb
 
 bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) const
 {
+   if (!IsEqual(m_ex, other.m_ex))
+      return false;
+
    if ( m_Concrete != other.m_Concrete )
       return false;
 
@@ -341,6 +447,12 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
       return false;
 
    if (m_bDirectCamber && !IsEqual(m_CamberMultiplier, other.m_CamberMultiplier))
+      return false;
+
+   if (m_bIncludeRollAxisLateralOffset != other.m_bIncludeRollAxisLateralOffset)
+      return false;
+
+   if (!IsEqual(m_LateralCamber, other.m_LateralCamber))
       return false;
 
    if ( !IsEqual(m_Ll,other.m_Ll) )
@@ -490,9 +602,29 @@ void stbStabilityProblemImp::SetCamberMultiplier(Float64 m)
    m_CamberMultiplier = m;
 }
 
+void stbStabilityProblemImp::SetLateralCamber(Float64 camber)
+{
+   m_LateralCamber = camber;
+}
+
+void stbStabilityProblemImp::IncludeLateralRollAxisOffset(bool bInclude)
+{
+   m_bIncludeRollAxisLateralOffset = bInclude;
+}
+
 Float64 stbStabilityProblemImp::GetCamberMultiplier() const
 {
    return m_CamberMultiplier;
+}
+
+Float64 stbStabilityProblemImp::GetLateralCamber() const
+{
+   return m_LateralCamber;
+}
+
+bool stbStabilityProblemImp::IncludeLateralRollAxisOffset() const
+{
+   return m_bIncludeRollAxisLateralOffset;
 }
 
 const matConcreteEx& stbStabilityProblemImp::GetConcrete() const
@@ -668,6 +800,16 @@ void stbStabilityProblemImp::GetFpe(stbTypes::StrandType strandType,Float64 X,Fl
    ATLASSERT(false); // should never get here
 }
 
+void stbStabilityProblemImp::SetFpeLateralEccentricity(Float64 ex)
+{
+   m_ex = ex;
+}
+
+Float64 stbStabilityProblemImp::GetFpeLateralEccentricity() const
+{
+   return m_ex;
+}
+
 void stbStabilityProblemImp::GetCamber(bool* pbDirectCamber,Float64* pCamber) const
 {
    *pbDirectCamber = m_bDirectCamber;
@@ -779,9 +921,14 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 
    m_vFpe = other.m_vFpe;
    
+   m_ex = other.m_ex;
+
    m_bDirectCamber = other.m_bDirectCamber;
    m_Camber = other.m_Camber;
    m_CamberMultiplier = other.m_CamberMultiplier;
+
+   m_bIncludeRollAxisLateralOffset = other.m_bIncludeRollAxisLateralOffset;
+   m_LateralCamber = other.m_LateralCamber;
 
    m_Concrete = other.m_Concrete;
 
@@ -805,6 +952,31 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 void stbStabilityProblemImp::MakeAssignment(const stbStabilityProblemImp& other)
 {
    MakeCopy(other);
+}
+
+void stbGirder::GetStressPoints(const stbSectionProperties& props, stbTypes::Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+{
+   if (props.m_pStressPoints)
+   {
+      *pTL = props.m_pStressPoints->pntTL[section];
+      *pTR = props.m_pStressPoints->pntTR[section];
+      *pBL = props.m_pStressPoints->pntBL[section];
+      *pBR = props.m_pStressPoints->pntBR[section];
+   }
+   else
+   {
+      pTL->X() = -props.Wtf[section] / 2;
+      pTL->Y() = -props.Ytop[section];
+
+      pTR->X() = props.Wtf[section] / 2;
+      pTR->Y() = -props.Ytop[section];
+
+      pBL->X() = -props.Wbf[section] / 2;
+      pBL->Y() = -(props.Ytop[section] + props.Hg[section]);
+
+      pBR->X() = props.Wbf[section] / 2;
+      pBR->Y() = -(props.Ytop[section] + props.Hg[section]);
+   }
 }
 
 ////////////////////////////////
@@ -1075,3 +1247,4 @@ void stbHaulingStabilityProblem::MakeAssignment(const stbHaulingStabilityProblem
 {
    MakeCopy(other);
 }
+

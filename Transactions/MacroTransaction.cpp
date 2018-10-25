@@ -93,7 +93,7 @@ STDMETHODIMP CMacroTransaction::put_Name(BSTR newVal)
 
 STDMETHODIMP CMacroTransaction::AddTransaction(IWBFLTransaction *txn)
 {
-   m_Transactions.push_back(TxnType(txn));
+   m_Transactions.emplace_back(txn);
 
    VARIANT_BOOL bIsUndoable;
    txn->get_IsUndoable(&bIsUndoable);
