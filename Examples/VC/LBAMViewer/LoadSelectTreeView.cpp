@@ -161,6 +161,8 @@ void CLoadSelectTreeView::OnInitialUpdate()
    // load two icons for each library. a normal and a selected
    BuildImageList();
 	CTreeCtrl& tree = GetTreeCtrl();
+   tree.DeleteAllItems();
+
    tree.SetImageList(&m_TreeImages,LVSIL_NORMAL);
 
    // Add top-level folders

@@ -1,60 +1,57 @@
-// PointLoadListPage.cpp : implementation file
+// MemberStrainListPage.cpp : implementation file
 //
 
 #include "stdafx.h"
 #include "FEA2D.h"
-#include "PointLoadListPage.h"
+#include "MemberStrainLoadListPage.h"
 #include "ModelPropertiesDlg.h"
 
 
-// CPointLoadListPage dialog
+// CMemberStrainLoadListPage dialog
 
-IMPLEMENT_DYNAMIC(CPointLoadListPage, CPropertyPage)
+IMPLEMENT_DYNAMIC(CMemberStrainLoadListPage, CPropertyPage)
 
-CPointLoadListPage::CPointLoadListPage()
-	: CPropertyPage(CPointLoadListPage::IDD)
+CMemberStrainLoadListPage::CMemberStrainLoadListPage()
+	: CPropertyPage(CMemberStrainLoadListPage::IDD)
 {
 
 }
 
-CPointLoadListPage::~CPointLoadListPage()
+CMemberStrainLoadListPage::~CMemberStrainLoadListPage()
 {
 }
 
-void CPointLoadListPage::DoDataExchange(CDataExchange* pDX)
+void CMemberStrainLoadListPage::DoDataExchange(CDataExchange* pDX)
 {
    CPropertyPage::DoDataExchange(pDX);
    DDX_Control(pDX, IDC_LIST, m_ctrlList);
 }
 
 
-BEGIN_MESSAGE_MAP(CPointLoadListPage, CPropertyPage)
+BEGIN_MESSAGE_MAP(CMemberStrainLoadListPage, CPropertyPage)
 END_MESSAGE_MAP()
 
 
-// CPointLoadListPage message handlers
+// CMemberStrainLoadListPage message handlers
 
-BOOL CPointLoadListPage::OnInitDialog()
+BOOL CMemberStrainLoadListPage::OnInitDialog()
 {
    CPropertyPage::OnInitDialog();
 
+
    m_ctrlList.InsertColumn(0,_T("ID"));
    m_ctrlList.InsertColumn(1,_T("Member"));
-   m_ctrlList.InsertColumn(2,_T("Location"));
-   m_ctrlList.InsertColumn(3,_T("Orientation"));
-   m_ctrlList.InsertColumn(4,_T("Loading"));
-   m_ctrlList.InsertColumn(5,_T("Fx"));
-   m_ctrlList.InsertColumn(6,_T("Fy"));
-   m_ctrlList.InsertColumn(7,_T("Mz"));
+   m_ctrlList.InsertColumn(2,_T("Loading"));
+   m_ctrlList.InsertColumn(3,_T("Start"));
+   m_ctrlList.InsertColumn(4,_T("End"));
+   m_ctrlList.InsertColumn(5,_T("e*10^6"));
+   m_ctrlList.InsertColumn(6,_T("r*10^6"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
    CComPtr<IFem2dLoadingCollection> loadings;
    pParent->m_pFem2d->get_Loadings(&loadings);
 
-   CString strOrientation[] = {_T("Global"),_T("Member"),_T("GlobalProjected")};
-
    int listIdx = 0;
-
    CollectionIndexType nLoadings;
    loadings->get_Count(&nLoadings);
    for ( CollectionIndexType idx = 0; idx < nLoadings; idx++ )
@@ -62,13 +59,13 @@ BOOL CPointLoadListPage::OnInitDialog()
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(idx,&loading);
 
-      CComPtr<IFem2dPointLoadCollection> loads;
-      loading->get_PointLoads(&loads);
+      CComPtr<IFem2dMemberStrainCollection> loads;
+      loading->get_MemberStrains(&loads);
       CollectionIndexType nLoads;
       loads->get_Count(&nLoads);
       for ( CollectionIndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
-         CComPtr<IFem2dPointLoad> load;
+         CComPtr<IFem2dMemberStrain> load;
          loads->get_Item(ldIdx,&load);
 
          IDType ID;
@@ -77,17 +74,16 @@ BOOL CPointLoadListPage::OnInitDialog()
          MemberIDType mbrID;
          load->get_MemberID(&mbrID);
 
-         Float64 location;
-         load->get_Location(&location);
-
-         Fem2dLoadOrientation orientation;
-         load->get_Orientation(&orientation);
-
          LoadCaseIDType loadID;
          load->get_Loading(&loadID);
 
-         Float64 fx,fy,mz;
-         load->GetForce(&fx,&fy,&mz);
+         Float64 Start,End;
+         load->get_StartLocation(&Start);
+         load->get_EndLocation(&End);
+
+         Float64 axial,curvature;
+         load->get_AxialStrain(&axial);
+         load->get_CurvatureStrain(&curvature);
 
          m_ctrlList.InsertItem(listIdx,_T("Load"));
 
@@ -98,23 +94,20 @@ BOOL CPointLoadListPage::OnInitDialog()
          str.Format(_T("%d"),mbrID);
          m_ctrlList.SetItemText(listIdx,1,str);
 
-         str.Format(_T("%f"),location);
+         str.Format(_T("%d"),loadID);
          m_ctrlList.SetItemText(listIdx,2,str);
 
-         str.Format(_T("%s"),strOrientation[orientation]);
+         str.Format(_T("%f"),Start);
          m_ctrlList.SetItemText(listIdx,3,str);
 
-         str.Format(_T("%d"),loadID);
+         str.Format(_T("%f"),End);
          m_ctrlList.SetItemText(listIdx,4,str);
 
-         str.Format(_T("%f"),fx);
+         str.Format(_T("%f"),1e6*axial);
          m_ctrlList.SetItemText(listIdx,5,str);
 
-         str.Format(_T("%f"),fy);
+         str.Format(_T("%f"),1e6*curvature);
          m_ctrlList.SetItemText(listIdx,6,str);
-
-         str.Format(_T("%f"),mz);
-         m_ctrlList.SetItemText(listIdx,7,str);
 
          listIdx++;
       }
@@ -127,7 +120,6 @@ BOOL CPointLoadListPage::OnInitDialog()
    m_ctrlList.SetColumnWidth(4,LVSCW_AUTOSIZE);
    m_ctrlList.SetColumnWidth(5,LVSCW_AUTOSIZE);
    m_ctrlList.SetColumnWidth(6,LVSCW_AUTOSIZE);
-   m_ctrlList.SetColumnWidth(7,LVSCW_AUTOSIZE);
 
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE

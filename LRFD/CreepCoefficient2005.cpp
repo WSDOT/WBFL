@@ -150,8 +150,17 @@ Float64 lrfdCreepCoefficient2005::GetInitialAge() const
 Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
-   if ( m_CuringMethod == Accelerated )
-      tiAdjusted *= m_CuringMethodTimeAdjustmentFactor;
+   if ( m_CuringMethod == Normal )
+   {
+      // NCHRP 496...
+      // ti = age of concrete, in days, when load is initially applied
+      // for accelerated curing, or the age minus 6 days for moist (normal) curing
+      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
+      if ( tiAdjusted < 0 )
+      {
+         tiAdjusted = 1;
+      }
+   }
 
    return tiAdjusted;
 }

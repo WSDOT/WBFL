@@ -5,6 +5,7 @@
 #include "JointLoadListPage.h"
 #include "PointLoadListPage.h"
 #include "DistributedLoadListPage.h"
+#include "MemberStrainLoadListPage.h"
 #include "PoiListPage.h"
 
 // CModelPropertiesDlg
@@ -29,6 +30,7 @@ protected:
    CJointLoadListPage m_JointLoadPage;
    CPointLoadListPage m_PointLoadPage;
    CDistributedLoadListPage m_DistributedLoadPage;
+   CMemberStrainLoadListPage m_StrainLoadPage;
    CPoiListPage m_PoiPage;
 };
 

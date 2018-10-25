@@ -33,5 +33,6 @@ void CModelPropertiesDlg::Init()
    AddPage(&m_JointLoadPage);
    AddPage(&m_PointLoadPage);
    AddPage(&m_DistributedLoadPage);
+   AddPage(&m_StrainLoadPage);
    AddPage(&m_PoiPage);
 }

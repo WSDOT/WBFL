@@ -17,6 +17,7 @@
 #define IDD_DISTRIBUTED_LOAD_LIST       139
 #define IDD_JOINT_LIST1                 140
 #define IDD_POI_LIST                    140
+#define IDD_STRAIN_LOAD_LIST            141
 #define IDS_INDICATOR_WORLDPOINT        199
 #define IDS_INDICATOR_LOGICALPOINT      200
 #define IDS_INDICATOR_DEVICEPOINT       201

@@ -1023,6 +1023,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MemberStrainLoadListPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="mfcdual.cpp"
 				>
 				<FileConfiguration
@@ -1281,6 +1285,10 @@
 			</File>
 			<File
 				RelativePath=".\MemberListPage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MemberStrainLoadListPage.h"
 				>
 			</File>
 			<File
