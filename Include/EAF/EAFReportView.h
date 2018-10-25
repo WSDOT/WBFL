@@ -113,6 +113,8 @@ public:
    // listen if our button was clicked
    void NotifyReportButtonWasClicked();
 
+   boost::shared_ptr<CReportSpecification> GetReportSpecification();
+
    // Generated message map functions
 protected:
 	//{{AFX_MSG(CEAFReportView)

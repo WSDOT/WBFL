@@ -289,12 +289,9 @@ void lrfdCreepCoefficient2005::Update() const
    ti = ::ConvertFromSysUnits(GetAdjustedInitialAge(),unitMeasure::Day);
    t  = ::ConvertFromSysUnits(m_t,unitMeasure::Day);
 
-#if defined IGNORE_2007_CHANGES
-   Float64 kvs_limit = (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::ThirdEditionWith2005Interims ? 1.0 : 0.0);
-#else
    // kvs_limit is 1.0 in 2005, changed to 0.0 in 2006, changed back to 1.0 in 2007
    Float64 kvs_limit = (lrfdVersionMgr::GetVersion() == lrfdVersionMgr::ThirdEditionWith2006Interims ? 0.0 : 1.0);
-#endif // IGNORE_2007_CHANGES
+
    if ( bSI )
    {
       m_kvs = _cpp_max(kvs_limit, 1.45-0.0051*::ConvertFromSysUnits(VS,unitMeasure::Millimeter));

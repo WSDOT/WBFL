@@ -41,12 +41,12 @@ static char THIS_FILE[] = __FILE__;
 // comparision functions
 static bool MaxCmp(Float64 val1, Float64 val2)
 {
-   return val2>val1;
+   return ::IsGT(val1,val2);//val1<val2;
 }
 
 static bool MinCmp(Float64 val1, Float64 val2)
 {
-   return val2<val1;
+   return ::IsLT(val2,val1);//val2<val1;
 }
 
 

@@ -260,8 +260,8 @@ public:
 
    //------------------------------------------------------------------------
    // border styles
-   enum BorderStyle   { NOBORDER, HAIR_THICK, SINGLE_THICK, Float64_THICK,
-   Float64_LINE, DASHED, DOTTED, BRDRSIZE}; // BRDSIZE to be used as sizing info only.
+   enum BorderStyle   { NOBORDER, HAIR_THICK, SINGLE_THICK, DOUBLE_THICK,
+   DOUBLE_LINE, DASHED, DOTTED, BRDRSIZE}; // BRDSIZE to be used as sizing info only.
 
    //------------------------------------------------------------------------
    // media type

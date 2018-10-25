@@ -170,7 +170,12 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
 void CEAFDocument::OnUpdateError(const CString& errorMsg)
 {
    CString my_string = errorMsg;
-   UpdateAllViews(0,EAF_HINT_UPDATEERROR,(CObject*)&my_string);
+   OnUpdateAllViews(0,EAF_HINT_UPDATEERROR,(CObject*)&my_string);
+}
+
+void CEAFDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* pHint)
+{
+   UpdateAllViews(pSender,lHint,pHint);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -243,15 +248,14 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
    }
 
    // save toolbar state before they are removed
-   CEAFMainFrame* pFrame = EAFGetMainFrame();
    if ( !bIntegrate )
-      pFrame->SaveBarState(CString("Toolbars\\") + GetToolbarSectionName());
+      SaveToolbarState();
 
    DoIntegrateWithUI(bIntegrate);
 
    // load toolbar state after toolbars are created
    if ( bIntegrate )
-      pFrame->LoadBarState(CString("Toolbars\\") + GetToolbarSectionName());
+      LoadToolbarState();
 
    m_bUIIntegrated = bIntegrate;
 }
@@ -312,6 +316,18 @@ void CEAFDocument::DestroyToolBar(UINT toolbarID)
    pMainFrame->DestroyToolBar(toolbarID);
 }
 
+void CEAFDocument::LoadToolbarState()
+{
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->LoadBarState(CString("Toolbars\\")+GetToolbarSectionName());
+}
+
+void CEAFDocument::SaveToolbarState()
+{
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+   pMainFrame->SaveBarState(CString("Toolbars\\")+GetToolbarSectionName());
+}
+
 long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
    if ( hSharedMenu == NULL )
@@ -369,15 +385,19 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
 
 void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
 {
-   CString strLogFile = EAFGetApp()->m_pszExeName;
-   strLogFile += _T(".log");
+   CEAFApp* pApp = EAFGetApp();
+   CString strLogFile;
+   strLogFile.Format(_T("%s\\%s.log"),pApp->GetAppLocation(),pApp->m_pszExeName);
 
-   std::_tofstream ofile(strLogFile);
+   std::vector<CString> strings;
    sysTime now;
    now.PrintDate(true);
-   ofile << _T("Log opened ") << now << std::endl;
+   CString strTime;
+   strTime.Format(_T("Log Opened %s"),now.AsString().c_str());
+   strings.push_back(strTime);
 
-   CString strExe = EAFGetApp()->m_pszAppName;
+
+   CString strExe = pApp->m_pszAppName;
    strExe += _T(".exe");
    
    CVersionInfo verInfo;
@@ -386,17 +406,43 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
       CString strProduct = verInfo.GetProductName();
       CString strVersion = verInfo.GetProductVersionAsString();
 
-      ofile << strProduct.LockBuffer() << _T(" Version ") << strVersion.LockBuffer() << std::endl;
+      CString str;
+      str.Format(_T("%s Version %s"),strProduct,strVersion);
+      strings.push_back(str);
    }
    else
    {
-      ofile << _T("Product Version Information not available") << std::endl;
+      strings.push_back(CString(_T("Product Version Information not available")));
    }
 
-   ofile << msg << std::endl;
+   strings.push_back(CString(msg));
 
-   ofile << _T("Log closed") << now << std::endl;
-   ofile.close();
+   now.PrintDate(true);
+   CString strTime2;
+   strTime2.Format(_T("Log Closed %s"),now.AsString().c_str());
+   strings.push_back(strTime2);
+
+   std::_tofstream ofile(strLogFile);
+   if ( ofile.is_open() )
+   {
+      std::vector<CString>::iterator iter(strings.begin());
+      std::vector<CString>::iterator end(strings.end());
+      for ( ; iter != end; iter++ )
+      {
+         ofile << (*iter).LockBuffer() << std::endl;
+      }
+   }
+   else
+   {
+      CString strMsg(_T("An error occured and the log file could not be created.\n\n"));
+      std::vector<CString>::iterator iter(strings.begin());
+      std::vector<CString>::iterator end(strings.end());
+      for ( ; iter != end; iter++ )
+      {
+         strMsg += (*iter) + CString(_T("\n"));
+      }
+      AfxMessageBox(strMsg,MB_ICONEXCLAMATION | MB_OK);
+   }
 }
 
 void CEAFDocument::SetModifiedFlag(BOOL bModified)
@@ -420,6 +466,7 @@ BOOL CEAFDocument::GetSaveMissingPluginDataFlag()
 
 void CEAFDocument::InitFailMessage()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CString msg, msg1, msg2;
 
    CString strLogFile = EAFGetApp()->m_pszExeName;
@@ -972,7 +1019,7 @@ CEAFStatusCenter& CEAFDocument::GetStatusCenter()
 
 void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 {
-   UpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
+   OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
 }
 
 void CEAFDocument::Execute(txnTransaction& rTxn)

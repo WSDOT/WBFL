@@ -119,12 +119,10 @@ void CEAFDocManager::OnFileNew()
 		return;
 	}
 
-	CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_templateList.GetHead();
-	if ( 1 < m_templateList.GetCount() || 0 < pTemplate->GetTemplateGroup()->GetGroupCount() )
-	{
-		// more than one document template to choose from
-		// bring up dialog prompting user
-		CNewProjectDlg dlg(&m_templateList);
+   CEAFDocTemplate* pTemplate = NULL;
+   if ( 1 < m_TemplateGroups.GetGroupCount() || 0 < m_TemplateGroups.GetGroup(0)->GetGroupCount() )
+   {
+      CNewProjectDlg dlg(&m_TemplateGroups);
 		if ( dlg.DoModal() != IDOK )
          return;
       
@@ -138,9 +136,10 @@ void CEAFDocManager::OnFileNew()
    }
    else
    {
-      CEAFDocTemplate* pEAFTemplate = (CEAFDocTemplate*)pTemplate;
-      pEAFTemplate->SetTemplateItem(pEAFTemplate->GetTemplateGroup()->GetItem(0));
+      pTemplate = m_TemplateGroups.GetGroup(0)->GetItem(0)->GetDocTemplate();
+      pTemplate->SetTemplateItem(pTemplate->GetTemplateGroup()->GetItem(0));
    }
+
 
    pTemplate->OpenDocumentFile(NULL);
 }
@@ -236,17 +235,76 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 
 void CEAFDocManager::AddDocTemplate(CDocTemplate* pTemplate)
 {
+   ATLASSERT(pTemplate->IsKindOf(RUNTIME_CLASS(CEAFDocTemplate)));
+   CEAFDocTemplate* pEAFDocTemplate = (CEAFDocTemplate*)pTemplate;
+
+   // Store the doc template in the MFC template list.
    CDocManager::AddDocTemplate(pTemplate);
-   SortDocTemplates();
+
+   // Organize the document templates in a way that works with the new project dialog
+   CComPtr<IEAFAppPlugin> plugin;
+   pEAFDocTemplate->GetPlugin(&plugin);
+   ATLASSERT(plugin!=NULL);
+
+   // This is the root group (corrosponds to the root level nodes on the project type tree
+   // in the new project dialog)
+   const CEAFTemplateGroup* pTemplateGroup = pEAFDocTemplate->GetTemplateGroup();
+
+   // Search to see if there is already a group for the same plugin
+   CEAFTemplateGroup* pExistingGroup = m_TemplateGroups.FindGroup(pTemplateGroup->GetGroupName());
+
+   if ( pExistingGroup == NULL )
+   {
+      // this is a new group
+      m_TemplateGroups.AddGroup(pTemplateGroup->Clone());
+   }
+   else
+   {
+      // a group already exists... merge the sub-groups and template items so they
+      // display as sub-items on a single node in the project type tree
+      IndexType nItems = pTemplateGroup->GetItemCount();
+      for ( IndexType itemIdx = 0; itemIdx < nItems; itemIdx++ )
+      {
+         pExistingGroup->AddItem( pTemplateGroup->GetItem(itemIdx)->Clone() );
+      }
+
+      IndexType nGroups = pTemplateGroup->GetGroupCount();
+      for ( IndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
+      {
+         pExistingGroup->AddGroup( pTemplateGroup->GetGroup(grpIdx)->Clone() );
+      }
+   }
 }
 
 void CEAFDocManager::RemoveDocTemplate(POSITION pos)
 {
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_templateList.GetAt(pos);
+
+   RemoveDocTemplate(pTemplate,&m_TemplateGroups);
+
    m_templateList.RemoveAt(pos);
 }
 
-void CEAFDocManager::SortDocTemplates()
+void CEAFDocManager::RemoveDocTemplate(CEAFDocTemplate* pTemplate,CEAFTemplateGroup* pGroup)
 {
-   // need to sort the document templates by pTemplate->GetDocString(strTypeName, CDocTemplate::fileNewName)
-   // so that the always display in a consistent order in the New Project dialog
+   IndexType nItems = pGroup->GetItemCount();
+   for ( IndexType itemIdx = nItems; 0 < itemIdx; itemIdx-- )
+   {
+      CEAFTemplateItem* pItem = pGroup->GetItem(itemIdx-1);
+      if ( pItem->GetDocTemplate() == pTemplate )
+      {
+         pGroup->RemoveItem(itemIdx-1);
+      }
+   }
+
+   GroupIndexType nGroups = pGroup->GetGroupCount();
+   for ( GroupIndexType grpIdx = nGroups; 0 < grpIdx; grpIdx-- )
+   {
+      CEAFTemplateGroup* pSubGroup = pGroup->GetGroup(grpIdx-1);
+      RemoveDocTemplate(pTemplate,pSubGroup);
+      if ( pSubGroup->GetItemCount() == 0 && pSubGroup->GetGroupCount() == 0 )
+      {
+         pGroup->RemoveGroup(grpIdx-1);
+      }
+   }
 }

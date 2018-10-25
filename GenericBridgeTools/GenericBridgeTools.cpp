@@ -58,6 +58,7 @@
 #include "RebarSection.h"
 #include "RebarRowPattern.h"
 #include "FlexRebarLayoutItem.h"
+#include "FixedLengthRebarLayoutItem.h"
 #include "StrandGrid.h"
 #include "StrandFillTool.h"
 
@@ -80,6 +81,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_RebarFactory,CRebarFactory)
    OBJECT_ENTRY(CLSID_RebarRowPattern,CRebarRowPattern)
    OBJECT_ENTRY(CLSID_FlexRebarLayoutItem,CFlexRebarLayoutItem)
+   OBJECT_ENTRY(CLSID_FixedLengthRebarLayoutItem,CFixedLengthRebarLayoutItem)
    OBJECT_ENTRY_NON_CREATEABLE(CRebarSectionItem)
    OBJECT_ENTRY_NON_CREATEABLE(CRebarSection)
    OBJECT_ENTRY(CLSID_StrandGrid, CStrandGrid)

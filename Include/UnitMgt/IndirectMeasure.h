@@ -181,6 +181,7 @@ public:
    unitmgtTimeData           Time;
    unitmgtTimeData           Time2;
    unitmgtPerLengthData      PerLength;
+   unitmgtPerLengthData      Curvature;
    unitmgtForceLength2Data   ForceLength2;
    unitmgtSqrtPressureData   SqrtPressure;
 

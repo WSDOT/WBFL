@@ -72,6 +72,7 @@ interface IEAFDisplayUnits : IUnknown
    virtual const unitmgtForceLength2Data&   GetStiffnessUnit()=0;
    virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit() = 0;
    virtual const unitmgtPerLengthData&      GetPerLengthUnit() = 0;
+   virtual const unitmgtPerLengthData&      GetCurvatureUnit() = 0;
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit() = 0;
    virtual const unitmgtPressureData&       GetOverlayWeightUnit() = 0;
 };

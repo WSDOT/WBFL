@@ -79,6 +79,7 @@
 #include "BoxBeam.h"
 #include "DeckedSlabBeam.h"
 #include "FasterPolyShape.h"
+#include "GenericShape.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -129,6 +130,7 @@ OBJECT_ENTRY(CLSID_VoidedSlab2,CVoidedSlab2)
 OBJECT_ENTRY(CLSID_DeckedSlabBeam,CDeckedSlabBeam)
 OBJECT_ENTRY(CLSID_BoxBeam,CBoxBeam)
 OBJECT_ENTRY(CLSID_FasterPolyShape, CFasterPolyShape)
+OBJECT_ENTRY(CLSID_GenericShape, CGenericShape)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

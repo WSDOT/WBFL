@@ -101,6 +101,22 @@ CEAFDocument* EAFGetDocument()
    return pFrame->GetDocument();
 }
 
+CView* EAFGetActiveView()
+{
+   CEAFMainFrame* pFrame = EAFGetMainFrame();
+   CView* pView = pFrame->GetActiveView();
+   if ( pView )
+      return pView;
+
+   if ( pFrame->IsKindOf(RUNTIME_CLASS(CFrameWnd)) )
+   {
+      CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
+      pView = pChild->GetActiveView();
+      return pView;
+   }
+
+   return NULL;
+}
 
 bool operator<(REFIID a,REFIID b)
 {

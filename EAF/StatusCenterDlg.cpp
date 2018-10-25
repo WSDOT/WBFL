@@ -104,7 +104,7 @@ void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
    CString strSeverityType[] = { _T("Info"), _T("Warn"), _T("Error") };
    CString strSeverity;
    strSeverity.Format(_T("%s"),strSeverityType[severity]);
-   int idx = pListCtrl->InsertItem((int)pNewItem->GetID(),strSeverity);
+   int idx = pListCtrl->InsertItem(pNewItem->GetID(),strSeverity);
    VERIFY( pListCtrl->SetItemText(idx,1,pNewItem->GetDescription().c_str()) );
    VERIFY( pListCtrl->SetItemData(idx,pNewItem->GetID()) );
 }

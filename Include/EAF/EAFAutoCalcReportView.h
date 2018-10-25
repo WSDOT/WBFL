@@ -45,7 +45,7 @@ public:
    
 // Operations
 public:
-   virtual bool DoResultsExist() const;
+   virtual bool DoResultsExist();
 
 // Overrides
 	// ClassWizard generated virtual function overrides

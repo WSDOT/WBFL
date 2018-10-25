@@ -189,6 +189,20 @@ void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool b
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    std::vector<std::_tstring> rptNames = GetReportNames();
+   if ( rptNames.size() == 0 )
+   {
+      // can't create reports if there aren't any defined.
+
+      // The view creation must fail and this is intentional
+      // Turn off the error message so the user doesn't see it
+      CEAFMainFrame* pFrame = EAFGetMainFrame();
+      pFrame->DisableFailCreateMessage();
+      pFrame->CreateCanceled();
+
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
+      AfxMessageBox(_T("There must be at least one report defined to create the report view."),MB_OK | MB_ICONEXCLAMATION);
+   }
+
    std::_tstring rptName;
    if ( rptIdx == INVALID_INDEX )
    {
@@ -468,7 +482,7 @@ void CEAFReportView::UpdateNow(CReportHint* pHint)
             m_bInvalidReport = false;
          }
 
-
+         UpdateViewTitle();
       }
       catch(...)
       {
@@ -672,4 +686,9 @@ boost::shared_ptr<CReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndP
 void CEAFReportView::NotifyReportButtonWasClicked()
 {
    EditReport();
+}
+
+boost::shared_ptr<CReportSpecification> CEAFReportView::GetReportSpecification()
+{
+   return m_pReportSpec;
 }

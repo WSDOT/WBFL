@@ -34,7 +34,7 @@ class CNewProjectDlg : public CDialog
 {
 	DECLARE_DYNAMIC(CNewProjectDlg)
 protected:
-	CPtrList*   m_pList;        // actually a list of doc templates
+   CEAFTemplateGroup* m_pRootTemplateGroup; // root template group
 
 public:
 	CEAFDocTemplate*  m_pSelectedTemplate;
@@ -43,7 +43,7 @@ public:
    int m_ViewMode;
 
 public:
-	CNewProjectDlg(CPtrList* pList,CWnd* pParent = NULL);   // standard constructor
+   CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent = NULL);
 	virtual ~CNewProjectDlg();
 
 // Dialog Data
@@ -58,17 +58,23 @@ protected:
    int m_cxMin;
    int m_cyMin;
 
-   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup);
+   HICON m_hDefaultIcon;
+   HICON m_hDefaultSelectedIcon;
+   int m_DefaultIconIdx;
+   int m_DefaultSelectedIconIdx;
+
+   void AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CEAFTemplateGroup* pGroup,const CString& strLastSelection,HTREEITEM* pDefaultItem);
    
    void ExpandProjectTypes();
 
 	DECLARE_MESSAGE_MAP()
 public:
    virtual BOOL OnInitDialog();
-   CTreeCtrl m_ProjectTypes;
-   CListCtrl m_Templates;
+   CTreeCtrl m_ctrlProjectTypes;
+   CListCtrl m_ctrlTemplates;
    CImageList m_TemplateLargeImageList;
    CImageList m_TemplateSmallImageList;
+   CImageList m_ProjectTypeImageList;
 
    afx_msg void OnProjectTypeSelectionChanged(NMHDR *pNMHDR, LRESULT *pResult);
    afx_msg void OnTemplatesItemChanged(NMHDR *pNMHDR, LRESULT *pResult);

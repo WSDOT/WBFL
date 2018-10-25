@@ -43,6 +43,8 @@
 #define IDR_REBARFACTORY                113
 #define IDR_STRANDGRID                  114
 #define IDR_STRANDFILLTOOL              115
+#define IDR_FIXEDLENGTHREBARLAYOUTITEM  116
+
 #define IDS_E_UNKNOWNDECKTYPE           512
 #define IDS_E_GIRDERSECTION             513
 #define IDS_E_NODECK                    514
@@ -57,6 +59,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        202
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         201
-#define _APS_NEXT_SYMED_VALUE           115
+#define _APS_NEXT_SYMED_VALUE           117
 #endif
 #endif

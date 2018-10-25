@@ -146,7 +146,7 @@ std::_tstring lrfdRebarPool::GetMaterialName(matRebar::Type type,matRebar::Grade
          break;
       }
    }
-   else
+   else if ( type == matRebar::A706 )
    {
       switch(grade)
       {
@@ -158,6 +158,22 @@ std::_tstring lrfdRebarPool::GetMaterialName(matRebar::Type type,matRebar::Grade
          break;
       case matRebar::Grade40:
       case matRebar::Grade75:
+      default:
+         ATLASSERT(false); // not value
+         str = _T("Unknown");
+         break;
+      }
+   }
+   else if ( type == matRebar::A1035 )
+   {
+      switch(grade)
+      {
+      case matRebar::Grade100:
+         str = _T("ASTM A1035 - Grade 100");
+         break;
+      case matRebar::Grade40:
+      case matRebar::Grade75:
+      case matRebar::Grade80:
       default:
          ATLASSERT(false); // not value
          str = _T("Unknown");
@@ -330,6 +346,18 @@ lrfdRebarPool::lrfdRebarPool()
    NEW_BAR( "#11 (36M)", bs11, A706, Grade80 ); 
    NEW_BAR( "#14 (43M)", bs14, A706, Grade80 ); 
    NEW_BAR( "#18 (57M)", bs18, A706, Grade80 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A1035, Grade100 );
+   NEW_BAR(  "#4 (13M)", bs4,  A1035, Grade100 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A1035, Grade100 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A1035, Grade100 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A1035, Grade100 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A1035, Grade100 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A1035, Grade100 ); 
+   NEW_BAR( "#10 (32M)", bs10, A1035, Grade100 ); 
+   NEW_BAR( "#11 (36M)", bs11, A1035, Grade100 ); 
+   NEW_BAR( "#14 (43M)", bs14, A1035, Grade100 ); 
+   NEW_BAR( "#18 (57M)", bs18, A1035, Grade100 ); 
 }
 
 //======================== OPERATORS  =======================================

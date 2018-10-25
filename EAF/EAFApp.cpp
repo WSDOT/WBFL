@@ -240,7 +240,7 @@ int CEAFApp::ExitInstance()
 
 void CEAFApp::RegistryInit()
 {
-	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(10);  // Load standard INI file options (including MRU) ... make the MRU list be 10 items long
    CString strDefaultLegalNotice = GetLocalMachineString(_T("Settings"),_T("LegalNotice"), _T("On"));
 
    CString strLegalNotice = GetProfileString(_T("Settings"),_T("LegalNotice"),strDefaultLegalNotice);
@@ -1176,11 +1176,17 @@ void CEAFPluginApp::OnManageApplicationPlugins()
                pPluginMgr->AddPlugin( state.GetCLSID(), plugin );
                plugin->IntegrateWithUI(TRUE); // must come after AddPlugin
 
-               CEAFDocTemplate* pDocTemplate = plugin->CreateDocTemplate();
-               if ( pDocTemplate )
+               std::vector<CEAFDocTemplate*> vDocTemplates = plugin->CreateDocTemplates();
+               std::vector<CEAFDocTemplate*>::iterator iter(vDocTemplates.begin());
+               std::vector<CEAFDocTemplate*>::iterator end(vDocTemplates.end());
+               for ( ; iter != end; iter++ )
                {
-                  pDocTemplate->SetPlugin(plugin);
-                  m_pDocManager->AddDocTemplate( pDocTemplate );
+                  CEAFDocTemplate* pDocTemplate = *iter;
+                  if ( pDocTemplate )
+                  {
+                     pDocTemplate->SetPlugin(plugin);
+                     m_pDocManager->AddDocTemplate( pDocTemplate );
+                  }
                }
 
                WriteProfileString(_T("Plugins"),state.GetCLSIDString(),_T("Enabled"));
@@ -1278,10 +1284,11 @@ unitmgtIndirectMeasure init_si_units()
    im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
    im.MomentPerAngle.Update(  unitMeasure::KiloNewtonMeterPerRadian,  0.001, 8, 2, sysNumericFormatTool::Fixed );
    im.Time.Update(            unitMeasure::Hour,                      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,                       0.001, 7, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,                       0.001, 7, 2, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Scientific);
+   im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 9, 9, sysNumericFormatTool::Scientific);
    im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
 
    return im;
@@ -1302,7 +1309,7 @@ unitmgtIndirectMeasure init_english_units()
    im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 4, sysNumericFormatTool::Fixed );
+   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 3, sysNumericFormatTool::Fixed );
    im.Displacement.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
    im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
    im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
@@ -1322,10 +1329,11 @@ unitmgtIndirectMeasure init_english_units()
    im.ForcePerLength.Update(  unitMeasure::KipPerFoot,     1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
    im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
    im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,             0.001, 7, 0, sysNumericFormatTool::Fixed );
+   im.Time2.Update(           unitMeasure::Day,             0.001, 7, 2, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
+   im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 10, 8, sysNumericFormatTool::Automatic);
    im.SmallStress.Update(          unitMeasure::PSF,             0.001, 8, 3, sysNumericFormatTool::Fixed );
 
    return im;

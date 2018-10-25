@@ -71,6 +71,7 @@ m_LegendBoarderType(lbCheckerBoarder),
 m_XAxisNiceRange(true),
 m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
+m_bIsotropicAxes(false),
 m_MinZoomHeight(DEFAULT_ZOOM),
 m_MinZoomWidth(DEFAULT_ZOOM)
 {
@@ -530,6 +531,7 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
 {
    m_WorldRect.Set(DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX);
 
+   IndexType nDataPoints = 0;
    GraphDataMap::iterator map_iter;
    for ( map_iter = m_GraphDataMap.begin(); map_iter != m_GraphDataMap.end(); map_iter++ )
    {
@@ -543,11 +545,12 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
          m_WorldRect.Right()  = max( p.X(), m_WorldRect.Right() );
          m_WorldRect.Top()    = max( p.Y(), m_WorldRect.Top() );
          m_WorldRect.Bottom() = min( p.Y(), m_WorldRect.Bottom() );
+         nDataPoints++;
       }
    }
 
    // if there is not any data points, then make the world 1x1
-   if ( m_GraphDataMap.size() == 0 )
+   if ( nDataPoints == 0 )
    {
       m_WorldRect.Left()   = 0.0;
       m_WorldRect.Right()  = 1.0;
@@ -575,6 +578,23 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       Float64 cen = (m_WorldRect.Right() + m_WorldRect.Left())/2.0;
       m_WorldRect.Right() = cen + m_MinZoomWidth/2.0;
       m_WorldRect.Left()  = cen - m_MinZoomWidth/2.0;
+   }
+
+   if ( m_bIsotropicAxes )
+   {
+      Float64 width = m_WorldRect.Width();
+      Float64 height = m_WorldRect.Height();
+      gpPoint2d center = m_WorldRect.Center();
+      if ( width < height )
+      {
+         m_WorldRect.Left()  = center.X() - height/2;
+         m_WorldRect.Right() = center.X() + height/2;
+      }
+      else
+      {
+         m_WorldRect.Top()    = center.Y() + width/2;
+         m_WorldRect.Bottom() = center.Y() - width/2;
+      }
    }
 
    // set ranges on axis to create graph world client rect area size
@@ -959,6 +979,15 @@ void grGraphXY::SetPinYAxisAtZero(bool pin)
    m_PinYAxisAtZero = pin;
 }
 
+void grGraphXY::SetIsotropicAxes(bool bIsotropic)
+{
+   m_bIsotropicAxes = bIsotropic;
+}
+
+bool grGraphXY::GetIsotropicAxes() const
+{
+   return m_bIsotropicAxes;
+}
 
 int grGraphXY::UpdateLegendMetrics(HDC hDC)
 {

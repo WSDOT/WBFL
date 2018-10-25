@@ -40,8 +40,8 @@ static char THIS_FILE[] = __FILE__;
 void CRebarSectionItem::Init(IPoint2d* pLocation,Float64 start,Float64 end,IRebar* pRebar)
 {
    m_Location = pLocation;
-   m_DistFromStart = start;
-   m_DistFromEnd = end;
+   m_LeftExtension = start;
+   m_RightExtension = end;
    m_Rebar = pRebar;
 }
 
@@ -70,17 +70,17 @@ STDMETHODIMP CRebarSectionItem::get_Location(IPoint2d** location)
    return S_OK;
 }
 
-STDMETHODIMP CRebarSectionItem::get_DistFromStart(Float64* dist)
+STDMETHODIMP CRebarSectionItem::get_LeftExtension(Float64* dist)
 {
    CHECK_RETVAL(dist);
-   *dist = m_DistFromStart;
+   *dist = m_LeftExtension;
    return S_OK;
 }
 
-STDMETHODIMP CRebarSectionItem::get_DistFromEnd(Float64* dist)
+STDMETHODIMP CRebarSectionItem::get_RightExtension(Float64* dist)
 {
    CHECK_RETVAL(dist);
-   *dist = m_DistFromEnd;
+   *dist = m_RightExtension;
    return S_OK;
 }
 
@@ -104,11 +104,11 @@ STDMETHODIMP CRebarSectionItem::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("Location"),&var);
     _CopyVariantToInterface<IPoint2d>::copy(&m_Location,&var);
 
-    load->get_Property(CComBSTR("DistFromStart"),&var);
-    m_DistFromStart = var.dblVal;
+    load->get_Property(CComBSTR("LeftExtension"),&var);
+    m_LeftExtension = var.dblVal;
 
-    load->get_Property(CComBSTR("DistFromEnd"),&var);
-    m_DistFromEnd = var.dblVal;
+    load->get_Property(CComBSTR("RightExtension"),&var);
+    m_RightExtension = var.dblVal;
 
    load->get_Property(CComBSTR("Rebar"),&var);
     _CopyVariantToInterface<IRebar>::copy(&m_Rebar,&var);
@@ -125,8 +125,8 @@ STDMETHODIMP CRebarSectionItem::Save(IStructuredSave2* save)
 
    save->BeginUnit(CComBSTR("RebarSectionItem"),1.0);
    save->put_Property(CComBSTR("Location"),CComVariant(m_Location));
-   save->put_Property(CComBSTR("DistFromStart"),CComVariant(m_DistFromStart));
-   save->put_Property(CComBSTR("DistFromEnd"),CComVariant(m_DistFromEnd));
+   save->put_Property(CComBSTR("LeftExtension"),CComVariant(m_LeftExtension));
+   save->put_Property(CComBSTR("RightExtension"),CComVariant(m_RightExtension));
    save->put_Property(CComBSTR("Rebar"),CComVariant(m_Rebar));
    save->EndUnit();
 

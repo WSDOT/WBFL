@@ -43,5 +43,6 @@ EAFFUNC std::vector<CEAFPluginState> EAFManagePlugins(LPCTSTR lpszTitle,const CA
 
 EAFFUNC CEAFMainFrame* EAFGetMainFrame();
 EAFFUNC CEAFDocument* EAFGetDocument();
+EAFFUNC CView* EAFGetActiveView();
 
 EAFFUNC bool operator<(REFIID a,REFIID b);

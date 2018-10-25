@@ -311,6 +311,11 @@ public:
    void SetPinYAxisAtZero(bool pin=true);
 
    //------------------------------------------------------------------------
+   // If set to true, the X and Y axis will have the same scale
+   void SetIsotropicAxes(bool bIsotropic=true);
+   bool GetIsotropicAxes() const;
+
+   //------------------------------------------------------------------------
    // Set whether to show the grid or not
    void SetDoDrawGrid(bool doDraw=true) {m_DoDrawGrid=doDraw;}
 
@@ -413,6 +418,7 @@ private:
    bool m_XAxisNiceRange;
    bool m_YAxisNiceRange;
    bool m_PinYAxisAtZero;
+   bool m_bIsotropicAxes;
 
    grlibPointMapper m_PointMapper;
    bool m_IsBroken;

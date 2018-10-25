@@ -588,4 +588,15 @@
 #define IDH_IMultiWeb2_C1						3721
 #define IDH_IMultiWeb2_C2						3722
 
+
+#define IDH_IGenericShape                 3800
+#define IDH_IGenericShape_Area            3801
+#define IDH_IGenericShape_Perimeter       3802
+#define IDH_IGenericShape_Centroid        3803
+#define IDH_IGenericShape_Ixx             3804
+#define IDH_IGenericShape_Iyy             3805
+#define IDH_IGenericShape_Ixy             3806
+#define IDH_IGenericShape_Shape           3807
+#define IDH_IGenericShape_XYPosition      3808
+
 #endif // INCLUDED_PRIMITIVES_HH_

@@ -105,7 +105,8 @@ library WBFLGenericBridgeTools
    enum 
    {
       msA615,
-      msA706
+      msA706,
+      msA1035
    } MaterialSpec;
 
    typedef [public,helpstring("enum RebarGrade"),uuid(3DB21D7F-CA67-453a-9E62-FE9989BBBEA7)]
@@ -114,7 +115,8 @@ library WBFLGenericBridgeTools
 		Grade40,
 		Grade60,
 		Grade75,
-      Grade80
+      Grade80,
+      Grade100
    } RebarGrade;
 
    typedef [public,helpstring("enum BarSize"),uuid(FCC0993E-988B-4bf2-A708-094AC20B51BA)]
@@ -603,8 +605,8 @@ library WBFLGenericBridgeTools
 	interface IRebarSectionItem : IUnknown
 	{
 		[propget,helpstring("property Location")] HRESULT Location([out,retval]IPoint2d** location);
-		[propget,helpstring("property DistFromStart")] HRESULT DistFromStart([out,retval] Float64* dist);
-		[propget,helpstring("property DistFromEnd")] HRESULT DistFromEnd([out,retval] Float64* dist);
+		[propget,helpstring("property LeftExtension - Distance from cut to left end of bar")] HRESULT LeftExtension([out,retval] Float64* dist);
+		[propget,helpstring("property RightExtension - Distance from cut to right end of bar")] HRESULT RightExtension([out,retval] Float64* dist);
 		[propget,helpstring("property Rebar")] HRESULT Rebar([out,retval] IRebar** rebar);
 	};
 
@@ -725,6 +727,7 @@ library WBFLGenericBridgeTools
 	   [helpstring("Skip")]  HRESULT Skip([in] ULONG celt);
 	};
 
+   // Interface for rebar layouts that grow/shrink with girder length
 	[
 		object,
 		uuid(B887911C-EC53-4f32-B5E2-9D43C1F8D977),
@@ -740,6 +743,23 @@ library WBFLGenericBridgeTools
 	   [propput,helpstring("property LengthFactor")] HRESULT LengthFactor([in] Float64 lf);
 	   [propputref,helpstring("property Girder")] HRESULT Girder([in]IPrecastGirder* girder);
 	};
+
+   // Interface for rebar layouts that have a fixed length
+   [
+	   object,
+	   uuid(5471ADD4-FB20-4694-A4F2-0267447AAE3E),
+	   dual,
+	   nonextensible,
+	   helpstring("IFixedLengthRebarLayoutItem Interface"),
+	   pointer_default(unique)
+   ]
+   interface IFixedLengthRebarLayoutItem : IRebarLayoutItem
+   {
+	   [propput,helpstring("property Start")] HRESULT Start([in]Float64 start);
+	   [propput,helpstring("property End")] HRESULT End([in]Float64 end);
+	   [propget,helpstring("property End")] HRESULT End([out,retval] Float64* end);
+	   [propputref,helpstring("property Girder")] HRESULT Girder([in]IPrecastGirder* girder);
+   };
 
 	[
 		object,
@@ -883,4 +903,12 @@ library WBFLGenericBridgeTools
    {
       [default] interface IStrandFillTool;
    };
+	[
+		uuid(BBAE8AB6-5822-47CA-8ECD-0C2AFF18FC0B),
+		helpstring("FixedLengthRebarLayoutItem Class")
+	]
+	coclass FixedLengthRebarLayoutItem
+	{
+		[default] interface IFixedLengthRebarLayoutItem;
+	};
 };

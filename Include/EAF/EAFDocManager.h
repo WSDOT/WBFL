@@ -21,10 +21,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <EAF\EAFExp.h>
-
 #pragma once
 
+
+#include <EAF\EAFExp.h>
+
+#include <EAF\EAFTemplateGroup.h>
 
 // CEAFDocManager provides a better new file dialog than MFC
 
@@ -48,7 +50,8 @@ public:
 private:
    CString m_strCurrentFilter; // filter for open/close of the current document
 
-   void SortDocTemplates();
+   CEAFTemplateGroup m_TemplateGroups;
+   void RemoveDocTemplate(CEAFDocTemplate* pTemplate,CEAFTemplateGroup* pGroups);
 };
 
 

@@ -70,6 +70,7 @@
 #define IDR_DECKEDSLABBEAM              141
 #define IDR_LINESEGMENT3D               142
 #define IDR_FASTERPOLYSHAPE             143
+#define IDR_GENERICSHAPE                144
 
 #define IDS_E_NOTNORMALIZED             512
 #define IDS_E_ZEROMAGNITUDE             513
@@ -93,6 +94,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         201
-#define _APS_NEXT_SYMED_VALUE           143
+#define _APS_NEXT_SYMED_VALUE           145
 #endif
 #endif
