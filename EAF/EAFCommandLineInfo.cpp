@@ -60,8 +60,14 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
 
    m_nParams++;
 
-   if ( bLast && 1 < m_nParams )
+   // if this is the last parameter and there is only one parameter and it isn't a filename, then go into command line mode.
+   // if this is the last parameter and there more than one paramenter and one of the parameters is a filename, go into command line mode
+   if ( bLast && (1 == m_nParams && m_nShellCommand != CCommandLineInfo::FileOpen) 
+              || (1 <  m_nParams && m_nShellCommand == CCommandLineInfo::FileOpen) 
+      )
+   {
       m_bCommandLineMode = TRUE;
+   }
 }
 
 CEAFCommandLineInfo& CEAFCommandLineInfo::operator=(const CEAFCommandLineInfo& other)

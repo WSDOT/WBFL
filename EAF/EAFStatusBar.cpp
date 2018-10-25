@@ -278,3 +278,11 @@ void CEAFStatusBar::Reset()
 {
    OnStatusChanged();
 }
+
+#ifdef _DEBUG
+void CEAFStatusBar::AssertValid() const
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+	CStatusBar::AssertValid();
+}
+#endif

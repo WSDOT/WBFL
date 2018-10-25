@@ -88,6 +88,14 @@ rptRcImage& rptRcImage::operator= (const rptRcImage& rOther)
 //======================== OPERATIONS =======================================
 void rptRcImage::Accept( rptRcVisitor& rVisitor )
 {
+#if defined _DEBUG
+   // test to make sure the file exists
+   WIN32_FIND_DATA findData;
+   HANDLE handle = ::FindFirstFile(m_FileName.c_str(),&findData);
+   ASSERT(handle != INVALID_HANDLE_VALUE);
+   if ( handle != INVALID_HANDLE_VALUE )
+      ::FindClose(handle);
+#endif
    rVisitor.VisitRcImage( this );
 }
 

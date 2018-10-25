@@ -48,6 +48,10 @@ public:
 
    virtual void Reset();
 
+#ifdef _DEBUG
+   virtual void AssertValid() const;
+#endif
+
 protected:
    //{{AFX_MSG(CEAFStatusBar)
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
