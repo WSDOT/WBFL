@@ -495,7 +495,7 @@ void grlibPointMapper::UpdateDeviceExtents()
    }
    else
    {
-      CHECKX( false, "The mapping mode is invalid" );
+      CHECKX( false, _T("The mapping mode is invalid") );
    }
 
 

@@ -140,10 +140,10 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
 
    CHECK_IN(bstrAngle);
 
-   std::string str( OLE2A(bstrAngle) );
+   std::_tstring str( OLE2T(bstrAngle) );
 
    // parse into space-delimited tokens
-   const char *delims[] = {" ","\t", 0};
+   LPCTSTR delims[] = {_T(" "),_T("\t"), 0};
    sysTokenizer tokizer(delims);
    tokizer.push_back(str);
 
@@ -155,17 +155,17 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    {
       // String is of the format [+|-]ddd.ddd[R|L]
       // check for R or L
-      std::string stmp = tokizer[0];
+      std::_tstring stmp = tokizer[0];
       int endloc = stmp.length()-1;
-      char end = stmp[endloc];
+      TCHAR end = stmp[endloc];
       Float64 rlfactor=1.;
-      if (end=='R' || end=='r' || end=='L' || end=='l')
+      if (end == _T('R') || end == _T('r') || end == _T('L') || end == _T('l') )
       {
          // can't begin with a - or + sign and have L/R
-         if ( stmp[0] == '+' || stmp[0] == '-' )
+         if ( stmp[0] == _T('+') || stmp[0] == _T('-') )
             return BadAngleString();
 
-         if (end=='R' || end=='r')
+         if (end == _T('R') || end == _T('r') )
             rlfactor = -1;
 
          stmp.erase(endloc,endloc);
@@ -183,20 +183,20 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    {
       // String is of the format ddd.ddd [L|R]
 
-      std::string stmp = tokizer[0];
+      std::_tstring stmp = tokizer[0];
 
       Float64 angle;
       if (!sysTokenizer::ParseDouble(stmp.c_str(),&angle))
          return BadAngleString();
 
-      std::string rl = tokizer[1];
-      if (rl=="L" || rl=="l" || rl=="R" || rl=="r")
+      std::_tstring rl = tokizer[1];
+      if (rl == _T("L") || rl == _T("l") || rl == _T("R") || rl == _T("r") )
       {
          // can't begin with a - or + sign
-         if ( stmp[0] == '+' || stmp[0] == '-' )
+         if ( stmp[0] == _T('+') || stmp[0] == _T('-') )
             return BadAngleString();
 
-         if (rl=="R" || rl=="r")
+         if (rl == _T("R") || rl == _T("r") )
             angle *= -1;
       }
       else 
@@ -207,19 +207,19 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    else if ( nParts == 3 || nParts == 4)
    {
       // String is of the format [+|-]ddd mm ss.s or ddd mm ss.s [L|R]
-      std::string stmp = tokizer[0];
+      std::_tstring stmp = tokizer[0];
 
       // deal with [L|R]
-      std::string rl = tokizer[nParts-1];
+      std::_tstring rl = tokizer[nParts-1];
 
       long rlfactor = 0;
-      if (rl=="L" || rl=="l" || rl=="R" || rl=="r")
+      if (rl == _T("L") || rl == _T("l") || rl == _T("R") || rl == _T("r") )
       {
          // can't begin with a - or + sign
-         if ( stmp[0] == '+' || stmp[0] == '-' )
+         if ( stmp[0] == _T('+') || stmp[0] == _T('-') )
             return BadAngleString();
 
-         rlfactor = (rl=="R" || rl=="r") ? -1 : 1;
+         rlfactor = (rl == _T("R") || rl == _T("r") ) ? -1 : 1;
       }
       else if (nParts==4)
       {
@@ -260,6 +260,17 @@ STDMETHODIMP CAngle::FromString(BSTR bstrAngle)
    }
 
 	return S_OK;
+}
+
+STDMETHODIMP CAngle::FromVariant(VARIANT varAngle)
+{
+   CComPtr<IAngle> angle;
+   HRESULT hr = cogoUtil::AngleFromVariant(varAngle,&angle);
+   if ( FAILED(hr) )
+      return hr;
+
+   angle->get_Value(&m_Angle);
+   return S_OK;
 }
 
 STDMETHODIMP CAngle::Increment( VARIANT varAngle, IAngle* *pVal)

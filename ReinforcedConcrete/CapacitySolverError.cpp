@@ -40,15 +40,15 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rcaXCapacitySolverError::rcaXCapacitySolverError(Reason reason, const char* file, Int16 line) :
+rcaXCapacitySolverError::rcaXCapacitySolverError(Reason reason, LPCTSTR file, Int16 line) :
 sysXBase(file, line),
 m_Reason(reason),
-m_ReinterpertMsg( "None given" )
+m_ReinterpertMsg( _T("None given") )
 {
    Init();
 }
 
-rcaXCapacitySolverError::rcaXCapacitySolverError(const std::string &reinterpMsg,Reason reason, const char* file, Int16 line) :
+rcaXCapacitySolverError::rcaXCapacitySolverError(const std::_tstring &reinterpMsg,Reason reason, LPCTSTR file, Int16 line) :
 sysXBase(file,line),
 m_Reason(reason),
 m_ReinterpertMsg( reinterpMsg )
@@ -97,43 +97,43 @@ rcaXCapacitySolverError::Reason rcaXCapacitySolverError::GetReasonCode() const
    return m_Reason;
 }
 
-void rcaXCapacitySolverError::GetErrorMessage(std::string* pMsg,Int32 reserved) const
+void rcaXCapacitySolverError::GetErrorMessage(std::_tstring* pMsg,Int32 reserved) const
 {
    if ( reserved == 0 )
    {
       switch (m_Reason)
       {
       case ProblemRepError:
-         *pMsg = "There is an error with the analysis model";
+         *pMsg = _T("There is an error with the analysis model");
          break;
 
       case NoTensileCapacity:
-         *pMsg = "Analysis model has no tensile capacity";
+         *pMsg = _T("Analysis model has no tensile capacity");
          break;
 
       case NoCompressiveCapacity:
-         *pMsg = "Analysis model has no compressive capacity";
+         *pMsg = _T("Analysis model has no compressive capacity");
          break;
 
       case TensileCapacityExceeded:
-         *pMsg = "The applied axial load exceeds the tensile capacity of the model.";
+         *pMsg = _T("The applied axial load exceeds the tensile capacity of the model.");
          break;
 
       case CompressiveCapacityExceeded:
-         *pMsg = "The applied axial load exceeds the compressive capacity of the model.";
+         *pMsg = _T("The applied axial load exceeds the compressive capacity of the model.");
          break;
 
       case MaxIterExceeded:
-         *pMsg = "The maximum number of iterations have been exceeded.";
+         *pMsg = _T("The maximum number of iterations have been exceeded.");
          break;
 
       case Unknown:
-         *pMsg = "An unknown error has occured";
+         *pMsg = _T("An unknown error has occured");
          break;
 
       default:
          CHECK(0);
-         *pMsg = "Unknown Error Message - Bad Reason Type";
+         *pMsg = _T("Unknown Error Message - Bad Reason Type");
       }
    }
    else
@@ -154,7 +154,7 @@ bool rcaXCapacitySolverError::AssertValid() const
 
 void rcaXCapacitySolverError::Dump(dbgDumpContext& os) const
 {
-   os<<"Dump for rcaXCapacitySolverError"<<endl;
+   os<<_T("Dump for rcaXCapacitySolverError")<<endl;
 }
 #endif // _DEBUG
 

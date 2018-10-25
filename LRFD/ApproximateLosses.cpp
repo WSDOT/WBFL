@@ -91,9 +91,10 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
 
                          Float64 rh,      // relative humidity
                          Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateLosses
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateLosses)
 
 {
    m_ConcreteType = concreteType;

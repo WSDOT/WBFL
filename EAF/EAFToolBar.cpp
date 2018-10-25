@@ -104,7 +104,7 @@ BOOL CEAFToolBar::LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback)
    return TRUE;
 }
 
-BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,IEAFCommandCallback* pCallback)
+BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCTSTR lpszStrings,IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
@@ -142,7 +142,7 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszS
    return TRUE;
 }
 
-BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCSTR lpszString,IEAFCommandCallback* pCallback)
+BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCTSTR lpszString,IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 

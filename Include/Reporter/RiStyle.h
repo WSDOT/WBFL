@@ -238,7 +238,7 @@ public:
       DarkSlateGray,
       Black
    };
-   static std::string GetColorCode(FontColor color);
+   static std::_tstring GetColorCode(FontColor color);
 
 
    //------------------------------------------------------------------------

@@ -33,18 +33,20 @@
 #endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
+#include <string>
+#include <vector>
 
 class CChapterBuilder;
 
 class REPORTMANAGERCLASS CChapterInfo
 {
 public:
-   std::string Name;
-   std::string Key;
+   std::_tstring Name;
+   std::_tstring Key;
    Uint16 MaxLevel;
    bool Select;
 
-   CChapterInfo() { Name = "Bad Chapter Name"; Key = "Bad Chapter Key"; MaxLevel = 0; Select = true;}
+   CChapterInfo() { Name = _T("Bad Chapter Name"); Key = _T("Bad Chapter Key"); MaxLevel = 0; Select = true;}
    CChapterInfo(const CChapterInfo& other): Name(other.Name), Key(other.Key), MaxLevel(other.MaxLevel), Select(other.Select) {}
 
    bool operator==(const CChapterInfo& other) const
@@ -56,15 +58,15 @@ public:
 class REPORTMANAGERCLASS CReportDescription  
 {
 public:
-	CReportDescription(const char* strRptName);
+	CReportDescription(LPCTSTR strRptName);
 	virtual ~CReportDescription();
 
-   const char* GetReportName() const;
+   LPCTSTR GetReportName() const;
    void AddChapter(const CChapterBuilder* pChapterBuilder);
    std::vector<CChapterInfo> GetChapterInfo() const;
 
 private:
-   std::string m_ReportName;
+   std::_tstring m_ReportName;
    std::vector<const CChapterBuilder*> m_ChapterBuilders; // do not delete these pointers
 };
 

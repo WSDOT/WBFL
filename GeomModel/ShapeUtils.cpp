@@ -68,7 +68,7 @@ gmCompositeShape* gmShapeUtils::GetRootNode(gmIShape& rShape)
          if(ps==0)
             loop=false;
       }
-      CHECKX(pold->GetComposite(),"Root not not a composite");
+      CHECKX(pold->GetComposite(),_T("Root not not a composite"));
       return pold;
    }
    else
@@ -90,7 +90,7 @@ const gmCompositeShape* gmShapeUtils::GetRootNode(const gmIShape& rShape)
          if(ps==0)
             loop=false;
       }
-      CHECKX(pold->GetComposite(),"Root not not a composite");
+      CHECKX(pold->GetComposite(),_T("Root not not a composite"));
       return pold;
    }
    else

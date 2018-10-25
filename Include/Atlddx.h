@@ -50,7 +50,7 @@ inline void DDX_PutDouble(HWND hwndDlg,int nIDC,double value)
    ATLASSERT( hWndCtrl != NULL);
 
    TCHAR szBuffer[32];
-   sprintf_s(szBuffer,sizeof(szBuffer),"%.*g",DBL_DIG,value);
+   _stprintf_s(szBuffer,sizeof(szBuffer),_T("%.*g"),DBL_DIG,value);
    ::SetWindowText(hWndCtrl,szBuffer);
 }
 
@@ -76,12 +76,12 @@ inline void DDX_PutUnitValue(HWND hwndDlg,int nIDC,int nIDCTag,CComBSTR bstrGrou
    // Get the unit tag and put it in the text control
    CComBSTR bstrTag;
    unitSystem->get_Tag(bstrGroup,&bstrTag);
-   ::SetWindowText(hWndTagCtrl,OLE2A(bstrTag));
+   ::SetWindowText(hWndTagCtrl,OLE2T(bstrTag));
 
    // Convert the value to display units and put it in the edit control
    CComBSTR bstrValue;
    unitSystem->Format(value,bstrGroup,VARIANT_FALSE,&bstrValue);
-   ::SetWindowText(hWndEditCtrl,OLE2A(bstrValue));
+   ::SetWindowText(hWndEditCtrl,OLE2T(bstrValue));
 }
 
 #endif // INCLUDED_ATLDDX_H_

@@ -200,7 +200,7 @@ public:
                                   IInfluenceLine** pLeftDxInfl,     IInfluenceLine** pRightDxInfl,
                                   IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
                                   IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
-   virtual std::string GetDescription() const;
+   virtual std::_tstring GetDescription() const;
    PoiIDType GetLBAMPoiID() const;
    void SetIsInternallyGenerated(bool is);
    bool GetIsInternallyGenerated() const;
@@ -261,7 +261,7 @@ public:
                                   IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
                                   IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
 
-   virtual std::string GetDescription() const;
+   virtual std::_tstring GetDescription() const;
 
 private:
    PoiIDType  m_FemPoiID;
@@ -289,7 +289,7 @@ public:
                                   IInfluenceLine** pLeftDxInfl,     IInfluenceLine** pRightDxInfl,
                                   IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
                                   IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
-   virtual std::string GetDescription() const;
+   virtual std::_tstring GetDescription() const;
 
 
 private:

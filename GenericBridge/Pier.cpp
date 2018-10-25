@@ -115,19 +115,19 @@ HRESULT CPier::ValidateOrientation(BSTR bstrOrientation)
    USES_CONVERSION;
 
    // convert and make uppercase
-   std::string strOrientation = OLE2A(bstrOrientation);
+   std::_tstring strOrientation = OLE2T(bstrOrientation);
    std::transform(strOrientation.begin(),strOrientation.end(),strOrientation.begin(),(int(*)(int))std::toupper);
 
    // Trim off the leading and trailing whitespace
-   std::string::size_type last_leading_space   = strOrientation.find_first_not_of(" ");
-   if ( last_leading_space == std::string::npos )
+   std::_tstring::size_type last_leading_space   = strOrientation.find_first_not_of(_T(" "));
+   if ( last_leading_space == std::_tstring::npos )
       return E_INVALIDARG;
 
-   std::string::size_type cChar;
+   std::_tstring::size_type cChar;
    cChar = last_leading_space;  // number of characters to remove
    strOrientation.erase( 0, cChar );
 
-   std::string::size_type first_trailing_space = strOrientation.find_last_not_of(" ");
+   std::_tstring::size_type first_trailing_space = strOrientation.find_last_not_of(_T(" "));
    cChar = strOrientation.length() - first_trailing_space - 1;
    strOrientation.erase( first_trailing_space+1, cChar );
 
@@ -136,12 +136,12 @@ HRESULT CPier::ValidateOrientation(BSTR bstrOrientation)
    //helper.toupper(strOrientation.begin(),strOrientation.end());
 
    // Validate
-   if ( (strOrientation.length() == 1 && strOrientation[0] == 'N') || 
-         strOrientation.compare("NORMAL") == 0 )
+   if ( (strOrientation.length() == 1 && strOrientation[0] == _T('N')) || 
+         strOrientation.compare(_T("NORMAL")) == 0 )
    {
       return S_OK;
    }
-   else if ( strOrientation[0] == 'N' || strOrientation[0] == 'S' )
+   else if ( strOrientation[0] == _T('N') || strOrientation[0] == _T('S') )
    {
       // It is a bearing
       CComPtr<IDirection> bearing;
@@ -366,7 +366,7 @@ STDMETHODIMP CPier::get_Direction(IDirection* *direction)
 
    // Convert the orientation string to something we can work with
    // Make it upper case for easy conparison
-   std::string strOrientation(OLE2A(m_bstrOrientation));
+   std::_tstring strOrientation(OLE2T(m_bstrOrientation));
    std::transform(strOrientation.begin(),strOrientation.end(),strOrientation.begin(),(int(*)(int))std::toupper);
 
    // Get the alignment object
@@ -375,7 +375,7 @@ STDMETHODIMP CPier::get_Direction(IDirection* *direction)
    m_pBridge->get_Alignment(&alignment);
 
    // process the orientation string
-   if ( strOrientation.compare("N") == 0 || strOrientation.compare("NORMAL") == 0 )
+   if ( strOrientation.compare(_T("N")) == 0 || strOrientation.compare(_T("NORMAL")) == 0 )
    {
       // Pier is normal to the alignment
       CComPtr<IDirection> normal;
@@ -388,7 +388,7 @@ STDMETHODIMP CPier::get_Direction(IDirection* *direction)
       (*direction)->AddRef();
       return S_OK;
    }
-   else if (strOrientation[0] == 'N' || strOrientation[0] == 'S')
+   else if (strOrientation[0] == _T('N') || strOrientation[0] == _T('S'))
    {
       // Pier is defined by an explicit bearing
       CComPtr<IDirection> brg;

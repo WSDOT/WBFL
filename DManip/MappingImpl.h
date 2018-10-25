@@ -107,7 +107,7 @@ END_COM_MAP()
 
    STDMETHOD_(CSize,GetTextWindowExtent)();
 
-   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCSTR lpszText);
+   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCTSTR lpszText);
 
 protected:
    void MakeAssignment(const CMappingImpl& other);

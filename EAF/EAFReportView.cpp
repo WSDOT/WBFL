@@ -111,7 +111,7 @@ void CEAFReportView::OnDraw(CDC* pDC)
 
   CFont font;
   CFont* pOldFont = NULL;
-  if ( font.CreatePointFont(100,"Arial",pDC) )
+  if ( font.CreatePointFont(100,_T("Arial"),pDC) )
      pOldFont = pDC->SelectObject(&font);
 
   COLORREF oldColor = pDC->SetBkColor( GetSysColor(COLOR_BTNFACE) );
@@ -167,8 +167,8 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec
 void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool bPromptForSpec)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   std::vector<std::string> rptNames = GetReportNames();
-   std::string rptName;
+   std::vector<std::_tstring> rptNames = GetReportNames();
+   std::_tstring rptName;
    if ( rptIdx == INVALID_INDEX )
    {
       // creating report with invalid index, this means we have to prompt for the
@@ -398,7 +398,7 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    if ( statusCenter.GetSeverity() == eafTypes::statusError )
    {
       m_bUpdateError = true;
-      m_ErrorMsg = "Errors exist that prevent analysis. Review the errors posted in the status center for more information";
+      m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
 
       if ( m_btnEdit.GetSafeHwnd() )
          m_btnEdit.ShowWindow(SW_HIDE);
@@ -498,7 +498,7 @@ void CEAFReportView::UpdateViewTitle()
 {
    if ( m_pReportSpec == NULL )
    {
-      SetWindowText("Report View");
+      SetWindowText(_T("Report View"));
       return;
    }
 
@@ -602,12 +602,12 @@ BOOL CEAFReportView::PreCreateWindow(CREATESTRUCT& cs)
 void CEAFReportView::CreateEditButton()
 {
    CRect rect(0,0,50,21);
-   m_btnEdit.Create("Edit",WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
+   m_btnEdit.Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
    m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
    m_btnEdit.SetFont(&m_btnFont);
 }
 
-std::vector<std::string> CEAFReportView::GetReportNames()
+std::vector<std::_tstring> CEAFReportView::GetReportNames()
 {
    if ( m_pReportBuilderMgr )
       return m_pReportBuilderMgr->GetReportNames();
@@ -615,7 +615,7 @@ std::vector<std::string> CEAFReportView::GetReportNames()
       return m_pRptMgr->GetReportNames();
 }
 
-boost::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::string& strRptName)
+boost::shared_ptr<CReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName)
 {
    if ( m_pReportBuilderMgr )
       return m_pReportBuilderMgr->GetReportBuilder(strRptName);

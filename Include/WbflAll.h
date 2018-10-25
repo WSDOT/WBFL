@@ -25,11 +25,6 @@
 #define INCLUDED_WBFLALL_H_
 #pragma once
 
-#ifndef _WBFL_VERSION
-#define _WBFL_VERSION 330 // version 3.3.0
-#endif 
-
-#include <System\AutoLib.h>
 
 // Make sure compiler settings are correct.
 #if !defined(_DLL)
@@ -44,7 +39,9 @@
    #error Please use the /GX switch to enable Exception Handling
 #endif
 
+
+#define RPC_NO_WINDOWS_H // causes WbflTypes.h to not include Windows.h via rpc.h
+                         // mfc must include Windows.h directly
 #include <WbflTypes.h>
-#include <System\Log.h>
 
 #endif // INCLUDED_WBFLALL_H_

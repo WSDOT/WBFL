@@ -46,9 +46,9 @@ public:
 	CZoomRectFSMState();
 	virtual ~CZoomRectFSMState();
 
-	virtual const char* StateName() const = 0;
+	virtual LPCTSTR StateName() const = 0;
 	virtual void Do(CZoomRectFSM& fsm);
-	virtual void Float64Click(CZoomRectFSM& fsm);
+	virtual void DoubleClick(CZoomRectFSM& fsm);
 	virtual void MouseDown(CZoomRectFSM& fsm);
 	virtual void MouseUp(CZoomRectFSM& fsm);
 	virtual void MouseMove(CZoomRectFSM& fsm);
@@ -61,7 +61,7 @@ public:
 class CZoomRectFSMDoneState : public CZoomRectFSMState
 {
 public:
-   virtual const char* StateName() const { return "Done"; }
+   virtual LPCTSTR StateName() const { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -70,10 +70,10 @@ public:
 class CZoomRectFSMWaitingForFirstPointState : public CZoomRectFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForFirstPoint"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForFirstPoint"); }
    virtual void MouseMove(CZoomRectFSM& fsm);
    virtual void MouseDown(CZoomRectFSM& fsm);
-   virtual void Float64Click(CZoomRectFSM& fsm);
+   virtual void DoubleClick(CZoomRectFSM& fsm);
    virtual void EscKey(CZoomRectFSM& fsm);
 };
 
@@ -83,10 +83,10 @@ public:
 class CZoomRectFSMWaitingForSecondPointState : public CZoomRectFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForSecondPoint"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForSecondPoint"); }
    virtual void MouseMove(CZoomRectFSM& fsm);
    virtual void MouseUp(CZoomRectFSM& fsm);
-   virtual void Float64Click(CZoomRectFSM& fsm);
+   virtual void DoubleClick(CZoomRectFSM& fsm);
    virtual void EscKey(CZoomRectFSM& fsm);
 };
 
@@ -96,7 +96,7 @@ public:
 class CZoomRectFSMStartState : public CZoomRectFSMState
 {
 public:
-   virtual const char* StateName() const { return "Start"; }
+   virtual LPCTSTR StateName() const { return _T("Start"); }
    virtual void Do(CZoomRectFSM& fsm);
 };
 
@@ -112,7 +112,7 @@ public:
 
    // Event Functions
    void Do() {m_pState->Do(*this);}
-   void Float64Click() {m_pState->Float64Click(*this);}
+   void DoubleClick() {m_pState->DoubleClick(*this);}
    void MouseDown()   {m_pState->MouseDown(*this); }
    void MouseUp()     {m_pState->MouseUp(*this); }
    void MouseMove()   {m_pState->MouseMove(*this); }

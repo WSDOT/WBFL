@@ -8,7 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #ifndef APSTUDIO_INVOKED
-#include "targetver.h"
+#include <WBFLVersion.h>
 #endif
 #include "afxres.h"
 
@@ -38,7 +38,7 @@ END
 2 TEXTINCLUDE 
 BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
+    "#include "<WBFLVersion.h>"\r\n"
     "#endif\r\n"
     "#include ""afxres.h""\r\n"
     "\0"
@@ -59,8 +59,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,3,0,4
- PRODUCTVERSION 3,3,0,4
+ FILEVERSION 3,3,1,0
+ PRODUCTVERSION 3,3,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -78,12 +78,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Core Services"
-            VALUE "FileVersion", "3.3.0.4"
+            VALUE "FileVersion", "3.3.1.0"
             VALUE "InternalName", "Core"
             VALUE "LegalCopyright", "Copyright © 1999-2010"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.3.0.4"
+            VALUE "ProductVersion", "3.3.1.0"
         END
     END
     BLOCK "VarFileInfo"

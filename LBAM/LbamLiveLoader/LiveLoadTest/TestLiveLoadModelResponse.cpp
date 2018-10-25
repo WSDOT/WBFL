@@ -69,7 +69,7 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
                              VehicularLoadConfigurationType vlcType, VARIANT_BOOL doApplyImpact,
                              VARIANT_BOOL doApplyDistribution,
                              ILiveLoadModelResponse* llmResponse, IBasicVehicularResponse* basicResponse,
-                             std::ofstream& os)
+                             std::_tofstream& os)
 {
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
    // the optimal configuration into the basic engine. The result should be the same if both engines are
@@ -203,7 +203,7 @@ void TestLiveLoadModelResponse::Test()
    TRY_TEST(pengine->get_BasicVehicularResponse(&basic_response), S_OK);
 
    // dump results to a file
-   std::ofstream os("LiveLoadModelResponse.txt");
+   std::_tofstream os("LiveLoadModelResponse.txt");
 
    // ready to compute something
    // Mz

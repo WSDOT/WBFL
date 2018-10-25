@@ -363,17 +363,17 @@ bool gmShapeImp::AssertValid() const
 void gmShapeImp::Dump(dbgDumpContext& os) const
 {
    ASSERTVALID;
-   os << "Dump for gmShapeImp" << endl;
-   os << "  m_IsSolid           = "<<m_IsSolid <<endl;
-   os << "  m_pParent           = "<<m_pParent <<endl;           
-   os << "  m_BorderMode        = "<<m_BorderMode  <<endl;       
-   os << "  m_FillMode          = "<<m_FillMode  <<endl;         
-   os << "  m_BorderColor       = "<<m_BorderColor <<endl;      
-   os << "  m_FillColor         = "<<m_FillColor  <<endl;        
+   os << _T("Dump for gmShapeImp") << endl;
+   os << _T("  m_IsSolid           = ")<<m_IsSolid <<endl;
+   os << _T("  m_pParent           = ")<<m_pParent <<endl;           
+   os << _T("  m_BorderMode        = ")<<m_BorderMode  <<endl;       
+   os << _T("  m_FillMode          = ")<<m_FillMode  <<endl;         
+   os << _T("  m_BorderColor       = ")<<m_BorderColor <<endl;      
+   os << _T("  m_FillColor         = ")<<m_FillColor  <<endl;        
 
-   os << "  m_ListenerList size = "<<m_ListenerList.size()<<endl;
-   os << "  m_DamageCount       = "<<m_DamageCount <<endl;       
-   os << "  m_DamageTypeTally   = "<<m_DamageTypeTally <<endl;   
+   os << _T("  m_ListenerList size = ")<<m_ListenerList.size()<<endl;
+   os << _T("  m_DamageCount       = ")<<m_DamageCount <<endl;       
+   os << _T("  m_DamageTypeTally   = ")<<m_DamageTypeTally <<endl;   
 }
 #endif // _DEBUG
 
@@ -488,7 +488,7 @@ void gmShapeImp::Clean()
    // Clean up as best we can in release.
    if (m_ListenerList.size() > 0)
    {
-      CHECKX(0,"Tried to delete shape that still has listeners");
+      CHECKX(0,_T("Tried to delete shape that still has listeners"));
       ListenerListIterator it;
       for (it=m_ListenerList.begin(); it!=m_ListenerList.end(); it++)
       {
@@ -504,7 +504,7 @@ void gmShapeImp::DoRegisterListener(gmShapeListener* pListener)
    PRECONDITION(pListener);
    // add listener to list
    if (!m_ListenerList.insert(pListener).second)
-      WARN(0,"Listener insertion failed - probably duplicate");
+      WARN(0,_T("Listener insertion failed - probably duplicate"));
 
    pListener->OnRegistered(this);
 }

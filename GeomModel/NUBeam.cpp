@@ -456,7 +456,7 @@ bool gmNUBeam::AssertValid() const
 
 void gmNUBeam::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmNUBeam ***"<<endl;
+   os << _T("*** Dump for gmNUBeam ***") <<endl;
 //   gmShapeImp::Dump( os );
 //   os << "  Hook Point      = ("<<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
 //   os << "  Rotation        =  "<<m_Rotation<<endl;

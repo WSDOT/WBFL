@@ -1574,6 +1574,10 @@ Float64 CSplineSegmentLengthFunction::Evaluate(Float64 x) const
    return sqrt(1 + dy*dy);
 }
 
+mathFunction2d* CSplineSegmentLengthFunction::Clone() const
+{
+   return new CSplineSegmentLengthFunction(m_SplineSegment);
+}
 
 ///////////////////////////////////////////////////////
 CSplineSegmentPointFunction::CSplineSegmentPointFunction(Float64 distance,Float64 x0,const CSplineSegment& splineSegment) :
@@ -1595,6 +1599,11 @@ Float64 CSplineSegmentPointFunction::Evaluate(Float64 x) const
    Float64 dist = x - m_X0;
    Float64 result = m_Distance - m_SplineSegment.Length(dist);
    return result;
+}
+
+mathFunction2d* CSplineSegmentPointFunction::Clone() const
+{
+   return new CSplineSegmentPointFunction(m_Distance,m_X0,m_SplineSegment);
 }
 
 /////////////////////////////////////////////////////////////
@@ -1623,4 +1632,9 @@ Float64 CSplineSegmentProjectPointFunction::Evaluate(Float64 s) const
    // > 0 if target point is on the right hand side of the normal line
    m_GeomUtil->ShortestDistanceToPoint(m_Line,m_TargetPoint,&dist);
    return dist;
+}
+
+mathFunction2d* CSplineSegmentProjectPointFunction::Clone() const
+{
+   return new CSplineSegmentProjectPointFunction(m_SplineSegment, m_TargetPoint, m_GeomUtil);
 }

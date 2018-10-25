@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bmfSplicedGirderTemplate::bmfSplicedGirderTemplate(const std::string& name,
+bmfSplicedGirderTemplate::bmfSplicedGirderTemplate(const std::_tstring& name,
                                                    const bmfGirderProfile* pProfile,
                                                    Uint16 nSplices,
                                                    Float64* segmentLength,

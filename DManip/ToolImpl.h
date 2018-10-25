@@ -51,7 +51,7 @@ END_COM_MAP()
 // iTool Implementation
    STDMETHOD_(void,SetID)(UINT id);
    STDMETHOD_(UINT,GetID)();
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszText);
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszText);
    STDMETHOD_(CString,GetToolTipText)();
 
    // iToolIcon interace

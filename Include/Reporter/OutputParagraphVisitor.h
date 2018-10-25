@@ -74,7 +74,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor
-   rptOutputParagraphVisitor(std::ostream* pMyOstream/*, 
+   rptOutputParagraphVisitor(std::_tostream* pMyOstream/*, 
                            const rptUnitSnapShot* MypUnitSnapShot*/)
    {
       m_pOstream = pMyOstream;
@@ -93,7 +93,7 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   std::ostream* m_pOstream;
+   std::_tostream* m_pOstream;
    //const rptUnitSnapShot* m_pUnitSnapShot;
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

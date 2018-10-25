@@ -175,7 +175,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    }
 
    m_ProgressMsgMarker.push_back(0);
-   UpdateMessage("Working...");
+   UpdateMessage(_T("Working..."));
 
    // disable the main window
    pMainWnd->EnableWindow(FALSE);
@@ -267,10 +267,10 @@ STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
 
    // Try to create a stream... Could fail in one of two ways.  Failed allocation could throw
    // and bad_alloc exception or return NULL.
-   boost::shared_ptr<std::ofstream> pofile;
+   boost::shared_ptr<std::_tofstream> pofile;
    try
    {
-      pofile = boost::shared_ptr<std::ofstream>( new std::ofstream(name) );
+      pofile = boost::shared_ptr<std::_tofstream>( new std::_tofstream(name) );
    }
    catch ( ... )
    {
@@ -303,7 +303,7 @@ STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
    now.PrintDate( true );
    try
    {
-      *pofile << "Log opened " << now << std::endl;
+      *pofile << _T("Log opened ") << now << std::endl;
       *pofile << std::endl;
    }
    catch (...)
@@ -342,7 +342,7 @@ STDMETHODIMP CSysAgent::LogMessage(DWORD dwCookie,LPCTSTR msg)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::ofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    try
    {
@@ -364,7 +364,7 @@ STDMETHODIMP CSysAgent::Close(DWORD dwCookie)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::ofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    // Write a little postscript
    sysTime now;
@@ -372,7 +372,7 @@ STDMETHODIMP CSysAgent::Close(DWORD dwCookie)
    try
    {
       *pofile << std::endl;
-      *pofile << "Log closed " << now << std::endl;
+      *pofile << _T("Log closed ") << now << std::endl;
    }
    catch(...)
    {

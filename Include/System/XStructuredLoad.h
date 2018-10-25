@@ -44,7 +44,7 @@
 //
 
 #undef THROW_LOAD
-#define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, __FILE__, __LINE__ ); \
+#define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, _T(__FILE__), __LINE__ ); \
                                 alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); \
                                 _ASSERT(false); \
                                 alzxb_.Throw();}
@@ -80,7 +80,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   sysXStructuredLoad( Reason reason, const char* file, Int16 line);
+   sysXStructuredLoad( Reason reason, LPCTSTR file, Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -116,7 +116,7 @@ public:
    // Set an extended message containing state data of the loader that crashed
    // this message will be appended to the message from the base class in 
    // GetErrorMessage
-   void SetExtendedMessage(const char* msg);
+   void SetExtendedMessage(LPCTSTR msg);
 
    //------------------------------------------------------------------------
    // Assigns an error message to pMsg.  The default implementation is to 
@@ -129,7 +129,7 @@ public:
    // reason is the reason code returned by GetReason(),
    // filename is the filename returned by GetFile(),  and
    // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::string* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const;
 
 
    // GROUP: ACCESS
@@ -152,7 +152,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Reason m_Reason;
-   std::string m_ExtendedMessage;
+   std::_tstring m_ExtendedMessage;
 
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------

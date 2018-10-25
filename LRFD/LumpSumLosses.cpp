@@ -54,6 +54,7 @@ lrfdLumpSumLosses::lrfdLumpSumLosses(Float64 ApsPerm,
                                      Float64 beforeTempStrandRemoval,
                                      Float64 afterTempStrandRemoval,
                                      Float64 afterDeckPlacement,
+                                     Float64 afterSIDL,
                                      Float64 final) :
 lrfdLosses()
 {
@@ -70,6 +71,7 @@ lrfdLosses()
    m_BeforeTempStrandRemoval = beforeTempStrandRemoval;
    m_AfterTempStrandRemoval  = afterTempStrandRemoval;
    m_AfterDeckPlacement      = afterDeckPlacement;
+   m_AfterSIDL               = afterSIDL;
    m_Final                   = final;
 }
 
@@ -132,6 +134,11 @@ Float64 lrfdLumpSumLosses::PermanentStrand_AfterDeckPlacement() const
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterDeckPlacement : 0;
 }
 
+Float64 lrfdLumpSumLosses::PermanentStrand_AfterSIDL() const
+{
+   return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterSIDL : 0;
+}
+
 Float64 lrfdLumpSumLosses::PermanentStrand_Final() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_Final : 0;
@@ -192,6 +199,11 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AfterDeckPlacement() const
+{
+   return 0;
+}
+
+Float64 lrfdLumpSumLosses::TemporaryStrand_AfterSIDL() const
 {
    return 0;
 }
@@ -360,14 +372,16 @@ void lrfdLumpSumLosses::MakeAssignment( const lrfdLumpSumLosses& rOther )
 void lrfdLumpSumLosses::MakeCopy( const lrfdLumpSumLosses& rOther )
 {
    lrfdLosses::MakeCopy(rOther);
-   m_BeforeXfer = rOther.m_BeforeXfer;
-   m_AfterXfer = rOther.m_AfterXfer;
-   m_AtLifting = rOther.m_AtLifting;
-   m_AtShipping = rOther.m_AtShipping;
+
+   m_BeforeXfer              = rOther.m_BeforeXfer;
+   m_AfterXfer               = rOther.m_AfterXfer;
+   m_AtLifting               = rOther.m_AtLifting;
+   m_AtShipping              = rOther.m_AtShipping;
    m_BeforeTempStrandRemoval = rOther.m_BeforeTempStrandRemoval;
-   m_AfterTempStrandRemoval = rOther.m_AfterTempStrandRemoval;
-   m_AfterDeckPlacement = rOther.m_AfterDeckPlacement;
-   m_Final = rOther.m_Final;
+   m_AfterTempStrandRemoval  = rOther.m_AfterTempStrandRemoval;
+   m_AfterDeckPlacement      = rOther.m_AfterDeckPlacement;
+   m_AfterSIDL               = rOther.m_AfterSIDL;
+   m_Final                   = rOther.m_Final;
 }
 
 void lrfdLumpSumLosses::ValidateParameters() const

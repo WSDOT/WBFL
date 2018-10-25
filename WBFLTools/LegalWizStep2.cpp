@@ -94,6 +94,8 @@ BOOL CLegalWizStep2::OnWizardFinish()
 
 BOOL CLegalWizStep2::OnInitDialog() 
 {
+   USES_CONVERSION;
+
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
    HMODULE hMod = AfxGetResourceHandle();
    HRSRC hResInfo = FindResource( hMod, MAKEINTRESOURCE(IDR_DISCLAIMER), _T("TEXT") );
@@ -103,11 +105,11 @@ BOOL CLegalWizStep2::OnInitDialog()
    HGLOBAL hResData = LoadResource( hMod, hResInfo );
    LPVOID pVoid = LockResource( hResData );
 
-   char* pText = new char[dwSize];
+   LPSTR pText = new char[dwSize];
    memcpy((void*)pText,pVoid,dwSize);
    pText[dwSize-1] = 0;
 
-   m_Text = pText;
+   m_Text = A2T(pText);
 
    delete[] pText;
 	

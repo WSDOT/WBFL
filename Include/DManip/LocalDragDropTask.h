@@ -33,7 +33,7 @@ interface iLocalDragDropTask
    STDMETHOD_(DROPEFFECT,DetermineDropEffect)() PURE;
    STDMETHOD_(void,TrackDragObjects)() PURE;
    STDMETHOD_(void,NotifyDropTarget)() PURE;
-   STDMETHOD_(void,FSMError)(const char* t,const char* s) PURE;
+   STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
 };
 
 #endif // INCLUDED_LOCALDRAGDROPTASK_H_

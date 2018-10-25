@@ -44,7 +44,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 libLibraryManager::libLibraryManager() :
-m_Name("")
+m_Name(_T(""))
 {
 }
 
@@ -55,12 +55,12 @@ libLibraryManager::~libLibraryManager()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-void libLibraryManager::SetName(const char* name) 
+void libLibraryManager::SetName(LPCTSTR name) 
 {
    m_Name =name;
 }
 
-std::string libLibraryManager::GetName() const
+std::_tstring libLibraryManager::GetName() const
 {
    return m_Name;
 }
@@ -69,7 +69,7 @@ Uint32 libLibraryManager::AddLibrary(libILibrary* pLibrary)
 {
    PRECONDITION(pLibrary);
    libILibrary* plib = GetLibrary(pLibrary->GetIdName().c_str());
-   PRECONDITIONX(!plib,"Libraries must have unique id names");
+   PRECONDITIONX(!plib,_T("Libraries must have unique id names"));
    pLibrary->SetLibraryManager(this);
 
    m_Libraries.push_back(LibraryEntryType(pLibrary));
@@ -92,7 +92,7 @@ sysTime libLibraryManager::GetTimeStamp() const
    return m_LastSavedTime;
 }
 
-std::string libLibraryManager::GetLibraryIdName(Uint32 index) const
+std::_tstring libLibraryManager::GetLibraryIdName(Uint32 index) const
 {
    const libILibrary* plib;
    if (index>=0 && index<m_Libraries.size())
@@ -103,7 +103,7 @@ std::string libLibraryManager::GetLibraryIdName(Uint32 index) const
    return plib->GetIdName();
 }
 
-std::string libLibraryManager::GetLibraryDisplayName(Uint32 index) const
+std::_tstring libLibraryManager::GetLibraryDisplayName(Uint32 index) const
 {
    const libILibrary* plib;
    if (index>=0 && index<m_Libraries.size())
@@ -130,9 +130,9 @@ const libILibrary* libLibraryManager::GetLibrary(Uint32 index) const
       return 0;
 }
 
-libILibrary* libLibraryManager::GetLibrary(const char* displayName)
+libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName)
 {
-   std::string name(displayName);
+   std::_tstring name(displayName);
    for(LibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
@@ -142,9 +142,9 @@ libILibrary* libLibraryManager::GetLibrary(const char* displayName)
 }
 
 
-const libILibrary* libLibraryManager::GetLibrary(const char* displayName) const
+const libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName) const
 {
-   std::string name(displayName);
+   std::_tstring name(displayName);
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
@@ -153,10 +153,10 @@ const libILibrary* libLibraryManager::GetLibrary(const char* displayName) const
    return 0;
 }
 
-Uint32 libLibraryManager::GetIndex(const char* displayName) const
+Uint32 libLibraryManager::GetIndex(LPCTSTR displayName) const
 {
    Uint32 idx=0;
-   std::string name(displayName);
+   std::_tstring name(displayName);
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       if ((*it)->GetDisplayName()==name)
@@ -197,14 +197,14 @@ std::vector<libEntryUsageRecord> libLibraryManager::GetInUseLibraryEntries() con
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       const libILibrary* pLibrary = (*it).get();
-      std::string strLibName = pLibrary->GetDisplayName();
+      std::_tstring strLibName = pLibrary->GetDisplayName();
 
       libKeyListType key_list;
       pLibrary->KeyList(key_list);
       libKeyListIterator key_iter;
       for (key_iter = key_list.begin(); key_iter != key_list.end(); key_iter++ )
       {
-         std::string key = (*key_iter);
+         std::_tstring key = (*key_iter);
          const libLibraryEntry* pEntry = pLibrary->GetEntry(key.c_str());
          if ( 0 < pEntry->GetRefCount() )
          {
@@ -224,10 +224,10 @@ std::vector<libEntryUsageRecord> libLibraryManager::GetInUseLibraryEntries() con
 bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
 {
    // not much data for a library manager 
-   pSave->BeginUnit("LIBRARY_MANAGER", 2.0);
+   pSave->BeginUnit(_T("LIBRARY_MANAGER"), 2.0);
 
    sysTime time; // now
-   pSave->Property("TimeStamp",time.Seconds());
+   pSave->Property(_T("TimeStamp"),time.Seconds());
    for (LibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       libILibrary* pLibrary = (*it).get();
@@ -235,8 +235,8 @@ bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
       if ( !pLibrary->IsDepreciated() )
       {
          // only save the library if it is not depreciated
-         pSave->BeginUnit("LIBRARY_MANAGER_ENTRY",1.0);
-         pSave->Property("LIBRARY_NAME", (*it)->GetIdName().c_str());
+         pSave->BeginUnit(_T("LIBRARY_MANAGER_ENTRY"),1.0);
+         pSave->Property(_T("LIBRARY_NAME"), (*it)->GetIdName().c_str());
 
          (*it)->SaveMe(pSave);
 
@@ -250,7 +250,7 @@ bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
 bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
 {
    // load library and its entries
-   if (pLoad->BeginUnit("LIBRARY_MANAGER"))
+   if (pLoad->BeginUnit(_T("LIBRARY_MANAGER")))
    {
       Float64 version = pLoad->GetVersion();
 
@@ -260,7 +260,7 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
          {
             // beginning with version 2, a time stamp was added
             ClockTy time;
-            pLoad->Property("TimeStamp",&time);
+            pLoad->Property(_T("TimeStamp"),&time);
             m_LastSavedTime = sysTime((ClockTy)time);
          }
          else
@@ -273,10 +273,10 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
             libILibrary* pLib = (*it).get();
 
 
-            std::string key;
-            if ( pLoad->BeginUnit("LIBRARY_MANAGER_ENTRY") )
+            std::_tstring key;
+            if ( pLoad->BeginUnit(_T("LIBRARY_MANAGER_ENTRY")) )
             {
-               if (pLoad->Property("LIBRARY_NAME", &key) )
+               if (pLoad->Property(_T("LIBRARY_NAME"), &key) )
                {
                   while ( key != pLib->GetIdName() )
                   {
@@ -363,7 +363,7 @@ bool libLibraryManager::AssertValid() const
       std::string lib_type( "class libILibrary *" );
       if ( name != lib_type )
       {
-         WATCH("######## Bad library type");
+         WATCH(_T("######## Bad library type"));
          return false; // bad name
       }
    }
@@ -372,9 +372,9 @@ bool libLibraryManager::AssertValid() const
 
 void libLibraryManager::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for libLibraryManager" << endl;
-   os << "  Name = "<< m_Name << endl;
-   os << "  Dumping "<<m_Libraries.size()<<" libraries:"<<endl;
+   os << _T("Dump for libLibraryManager") << endl;
+   os << _T("  Name = ") << m_Name << endl;
+   os << _T("  Dumping ") <<m_Libraries.size()<<_T(" libraries:")<<endl;
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
       (*it)->Dump(os);

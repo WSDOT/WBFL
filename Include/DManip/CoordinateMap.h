@@ -62,7 +62,7 @@ interface iCoordinateMap : public IUnknown
 
    // get text extent in logical coord's. Font dimensions are expected in
    // 1/10 points (i.e., in form needed by CreatePointFontIndirect).
-   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCSTR lpszText) PURE;
+   STDMETHOD_(CSize,GetTextExtent)(const LOGFONT& font, LPCTSTR lpszText) PURE;
 };
 
 #endif // INCLUDED_COORDINATEMAP_H_

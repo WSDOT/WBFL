@@ -25,7 +25,6 @@
 #define INCLUDED_SYSTEM_DATE_H_
 #pragma once
 
-
 #include <istream>
 #include <ostream>
 #include <string>
@@ -99,7 +98,7 @@ public:
    //------------------------------------------------------------------------
    //  Construct a sysDate for the given day, month, and year.
    // If year is between 00 and 99, 1900 will be added to year.
-   sysDate( DayTy, const char* month, YearTy );
+   sysDate( DayTy, LPCTSTR month, YearTy );
 
    //------------------------------------------------------------------------
    //  Construct a sysDate for the given day, month, and year.
@@ -108,7 +107,7 @@ public:
 
    //------------------------------------------------------------------------
    // Read date from stream.
-   sysDate( std::istream& s );   
+   sysDate( std::_tistream& s );   
 
    //------------------------------------------------------------------------
    // Construct a sysDate from a sysTime
@@ -139,14 +138,14 @@ public:
 
    //------------------------------------------------------------------------
    // Read or write dates:
-   SYSCLASS friend std::ostream&  operator << ( std::ostream& s, const sysDate& d );
-   SYSCLASS friend std::istream&  operator >> ( std::istream& s, sysDate& d );
+   SYSCLASS friend std::_tostream&  operator << ( std::_tostream& s, const sysDate& d );
+   SYSCLASS friend std::_tistream&  operator >> ( std::_tistream& s, sysDate& d );
 
 
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
-   // return date in current format as defined by SetPrInt16Option
-   std::string AsString() const;
+   // return date in current format as defined by SetPrintOption
+   std::_tstring AsString() const;
 
    //------------------------------------------------------------------------
    // is date between two other dates
@@ -202,15 +201,15 @@ public:
 
    //------------------------------------------------------------------------
    // return the days' name
-   const char* NameOfDay() const;
+   LPCTSTR NameOfDay() const;
 
    //------------------------------------------------------------------------
    // return the months' name
-   const char* NameOfMonth() const;
+   LPCTSTR NameOfMonth() const;
 
    //------------------------------------------------------------------------
    // Return date of previous dayName
-   sysDate Previous( const char* dayName ) const;
+   sysDate Previous( LPCTSTR dayName ) const;
 
    //------------------------------------------------------------------------
    // Same as above, but use day of week
@@ -228,11 +227,11 @@ public:
    // Static member functions:
    //------------------------------------------------------------------------
    // get name of day for a given day number
-   static const char* DayName( DayTy weekDayNumber );
+   static LPCTSTR DayName( DayTy weekDayNumber );
 
    //------------------------------------------------------------------------
    // return day number 1-7 for a given day name
-   static DayTy DayOfWeek( const char* dayName );
+   static DayTy DayOfWeek( LPCTSTR dayName );
 
    //------------------------------------------------------------------------
    // Is a day (1-31) within a given month?
@@ -244,7 +243,7 @@ public:
 
    //------------------------------------------------------------------------
    // return the index 1-12 of this month
-   static MonthTy IndexOfMonth( const char*  monthName );
+   static MonthTy IndexOfMonth( LPCTSTR  monthName );
 
    //------------------------------------------------------------------------
    // return the julian date number
@@ -252,7 +251,7 @@ public:
 
    //------------------------------------------------------------------------
    // return the name of the given month
-   static const char* MonthName( MonthTy monthNumber );
+   static LPCTSTR MonthName( MonthTy monthNumber );
 
    //------------------------------------------------------------------------
    // set prInt16 format for date
@@ -272,7 +271,7 @@ private:
     JulTy Julnum;                   // Julian Day Number (Not same as Julian date.)
     static HowToPrint PrintOption;  // Printing with different formats
 
-    void ParseFrom( std::istream  & );     // Reading dates
+    void ParseFrom( std::_tistream  & );     // Reading dates
     void  Mdy( MonthTy  &, DayTy  &, YearTy  & ) const;
 
 };
@@ -280,7 +279,7 @@ private:
 // INLINE METHODS
 //
 
-inline sysDate::sysDate( std::istream& s )
+inline sysDate::sysDate( std::_tistream& s )
 {
     ParseFrom(s);
 }
@@ -305,12 +304,12 @@ inline bool sysDate::IsLeapYear() const
     return IsLeapYear(Year());
 }
 
-inline const char *sysDate::NameOfDay() const
+inline LPCTSTR sysDate::NameOfDay() const
 {
     return DayName(WeekDay());
 }
 
-inline const char *sysDate::NameOfMonth() const
+inline LPCTSTR sysDate::NameOfMonth() const
 {
     return MonthName(Month());
 }
@@ -385,7 +384,7 @@ inline void sysDate::operator -= ( Int16 dd )
     Julnum -= dd;
 }
 
-SYSCLASS inline std::istream&  operator >> ( std::istream& s, sysDate& d )
+SYSCLASS inline std::_tistream&  operator >> ( std::_tistream& s, sysDate& d )
 {
     d.ParseFrom(s);
     return s;

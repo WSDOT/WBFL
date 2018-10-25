@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 
 //======================== LIFECYCLE  =======================================
 sysXStructuredSave::sysXStructuredSave(sysXStructuredSave::Reason reason,
-                                       const char* file, Int16 line) :
+                                       LPCTSTR file, Int16 line) :
 sysXBase(file,line),
 m_Reason(reason)
 {
@@ -83,23 +83,23 @@ sysXStructuredSave::Reason sysXStructuredSave::GetExplicitReason() const
    return m_Reason;
 }
 
-void sysXStructuredSave::GetErrorMessage(std::string* pMsg) const
+void sysXStructuredSave::GetErrorMessage(std::_tstring* pMsg) const
 {
    sysXBase::GetErrorMessage(pMsg);
 
    switch (m_Reason)
    {
    case (BadWrite):
-      *pMsg += "A unknown error occured writing to the file\n";
+      *pMsg += _T("A unknown error occured writing to the file\n");
       break;
    case (sysXStructuredSave::CantInitializeTheParser):
-      *pMsg += "Could not initialize the parser. Perhaps the parser component is not installed\n";
+      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n");
       break;
    default:
-      *pMsg += "Unknown error saving structured data\n";
+      *pMsg += _T("Unknown error saving structured data\n");
       break;
    }
-   *pMsg += "\n";
+   *pMsg += _T("\n");
    *pMsg +=m_ExtendedMessage;
 }
 

@@ -71,7 +71,7 @@ rptFontStyleLibrary::~rptFontStyleLibrary()
 
 bool rptFontStyleLibrary::AddNamedStyle(const rptStyleName& styleName, const rptRiStyle& rmyStyle)
 {
-   CHECKX(styleName!="Default","Default is always in library");
+   CHECKX(styleName != _T("Default"),_T("Default is always in library"));
 
    StylePair my_pair;
    my_pair = m_StyleMap.insert( std::make_pair(styleName, rmyStyle) );
@@ -84,7 +84,7 @@ void rptFontStyleLibrary::GetStyleNames(std::vector<rptStyleName, std::allocator
    myNames.clear();
 
    // add "Default" to top of list
-   myNames.push_back("Default");
+   myNames.push_back(_T("Default"));
 
    // get all names in map
    for (StyleMap::const_iterator i=m_StyleMap.begin(); i!=m_StyleMap.end(); i++)
@@ -97,7 +97,7 @@ void rptFontStyleLibrary::GetStyleNames(std::vector<rptStyleName, std::allocator
 const rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyleName) const
 {
    // check for default style first
-   if (rmyStyleName=="Default")
+   if (rmyStyleName == _T("Default") )
       return m_DefaultStyle;
 
    // search through custom style list
@@ -107,7 +107,7 @@ const rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyl
    else
    {
       // should not have a case where looking for a named style that doesn't exist
-      CHECKX(0,"Could not find named style in library");
+      CHECKX(0,_T("Could not find named style in library"));
       return m_DefaultStyle;
    }
 }
@@ -115,7 +115,7 @@ const rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyl
 rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyleName)
 {
    // check for default style first
-   if (rmyStyleName=="Default")
+   if (rmyStyleName == _T("Default") )
       return m_DefaultStyle;
 
    // search through custom style list
@@ -125,7 +125,7 @@ rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyleName)
    else
    {
       // should not have a case where looking for a named style that doesn't exist
-      CHECKX(0,"Could not find named style in library");
+      CHECKX(0,_T("Could not find named style in library"));
       return m_DefaultStyle;
    }
 

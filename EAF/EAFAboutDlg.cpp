@@ -91,11 +91,11 @@ BOOL CEAFAboutDlg::OnInitDialog()
 
    // Get the version information and update the version # and copyright
    CString strTitle;
-   strTitle.Format("About %s",AfxGetAppName());
+   strTitle.Format(_T("About %s"),AfxGetAppName());
    SetWindowText( strTitle );
 
    CString strExe = EAFGetApp()->m_pszAppName;
-   strExe += ".exe";
+   strExe += _T(".exe");
 
    CVersionInfo verInfo;
    verInfo.Load(strExe);
@@ -103,7 +103,7 @@ BOOL CEAFAboutDlg::OnInitDialog()
    CString strCopyright = verInfo.GetLegalCopyright();
 
    CString str;
-   str.Format("Version %s",strVersion);
+   str.Format(_T("Version %s"),strVersion);
    GetDlgItem(IDC_VERSION)->SetWindowText(str);
    GetDlgItem(IDC_COPYRIGHT)->SetWindowText(strCopyright);
 

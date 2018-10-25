@@ -52,7 +52,7 @@ public:
    bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<rptReport>& pReport);
    boost::shared_ptr<CReportSpecification> GetReportSpecification();
    boost::shared_ptr<rptReport> GetReport();
-   std::string GetReportTitle();
+   std::_tstring GetReportTitle();
    void Move(POINT topLeft);
    void Size(SIZE size);
    void Print(bool bPrompt);
@@ -68,7 +68,7 @@ public:
 private:
    CWebBrowser* m_pWebBrowser;
    TweakIESettings* m_pTweakIESettings;
-   std::string m_Filename;
+   std::_tstring m_Filename;
    boost::shared_ptr<CReportSpecification> m_pRptSpec;
    boost::shared_ptr<rptReport> m_pReport;
    CReportBuilderManager* m_pRptMgr;

@@ -45,24 +45,24 @@ public:
    void AddReportBuilder(CReportBuilder* pRptBuilder);
    void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pRptBuilder);
    Uint32 GetReportBuilderCount(bool bIncludeHidden = false) const;
-   boost::shared_ptr<CReportBuilder> GetReportBuilder(const char* strReportName);
-   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::string& strReportName);
-   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const char* strReportName);
-   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::string& strReportName);
-   std::vector<std::string> GetReportNames(bool bIncludeHidden = false) const;
-   CReportDescription GetReportDescription(const char* strReportName);
-   CReportDescription GetReportDescription(const std::string& strReportName);
-   const CBitmap* GetMenuBitmap(const char* strReportName);
-   const CBitmap* GetMenuBitmap(const std::string& strReportName);
-   boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const char* strReportName);
-   boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::string& strReportName);
+   boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName);
+   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
+   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
+   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName);
+   std::vector<std::_tstring> GetReportNames(bool bIncludeHidden = false) const;
+   CReportDescription GetReportDescription(LPCTSTR strReportName);
+   CReportDescription GetReportDescription(const std::_tstring& strReportName);
+   const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
+   const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
+   boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName);
+   boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
    boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec);
    Int16 DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec);
 
 private:
-   typedef std::map<std::string, boost::shared_ptr<CReportBuilder> > RptBuilderContainer;
-   typedef std::pair<std::string, boost::shared_ptr<CReportBuilder> > RptBuilderEntry;
+   typedef std::map<std::_tstring, boost::shared_ptr<CReportBuilder> > RptBuilderContainer;
+   typedef std::pair<std::_tstring, boost::shared_ptr<CReportBuilder> > RptBuilderEntry;
    RptBuilderContainer m_RptBuilders;
 
    boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);

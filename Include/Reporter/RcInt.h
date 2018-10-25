@@ -70,7 +70,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor with HyperLink
-   rptRcInt(Int32 MyVal, const std::string& HyperTarget);
+   rptRcInt(Int32 MyVal, const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Copy constructor

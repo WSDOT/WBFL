@@ -77,7 +77,7 @@ public:
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   mathXRootFinder2dFailed(Reason reason,const char* file,Int16 line);
+   mathXRootFinder2dFailed(Reason reason,LPCTSTR file,Int16 line);
 
    //------------------------------------------------------------------------
    // Default constructor

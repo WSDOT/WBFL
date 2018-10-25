@@ -47,7 +47,7 @@ public:
    STDMETHOD_(void,DoInplaceEdit)();
 //   virtual void CreateEditControl() = 0;
 //   virtual void DestroyEditControl() = 0;
-//   virtual void OnTextChanged(LPCSTR lpszText) = 0;
+//   virtual void OnTextChanged(LPCTSTR lpszText) = 0;
 
 protected:
    // Abstract methods that must be implemented by subclasses

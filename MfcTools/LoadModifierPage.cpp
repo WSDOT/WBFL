@@ -42,13 +42,13 @@ static DWORD CALLBACK StreamInCtrl(DWORD dwCookie, LPBYTE pbBuff, LONG cb, LONG*
    if ( pstr->GetLength() < cb )
    {
       *pcb = pstr->GetLength();
-      memcpy( pbBuff, (LPCSTR)*pstr, *pcb );
+      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
       pstr->Empty();
    }
    else
    {
       *pcb = cb;
-      memcpy( pbBuff, (LPCSTR)*pstr, *pcb );
+      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
       *pstr = pstr->Right( pstr->GetLength() - cb );
    }
 
@@ -116,7 +116,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    CRichEditCtrl* pLabel = (CRichEditCtrl*)GetDlgItem(IDC_N_LABEL);
    ASSERT( pLabel );
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
-   label1.Format("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub\\par }",m_Subscript);
+   label1.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub\\par }"),m_Subscript);
    EDITSTREAM es;
    es.dwCookie = (DWORD)(&label1);
    es.dwError = 0;
@@ -126,7 +126,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    pLabel = (CRichEditCtrl*)GetDlgItem(IDC_N_SERVICE);
    ASSERT( pLabel );
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
-   label2.Format("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub = 1.0 for all other limit states.\\par }",m_Subscript);
+   label2.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub = 1.0 for all other limit states.\\par }"),m_Subscript);
    es.dwCookie = (DWORD)(&label2);
    pLabel->StreamIn( SF_RTF, es );
 
@@ -163,5 +163,5 @@ void CLoadModifierPage::OnRadioButtonChanged()
    pEdit->EnableWindow( bEnable ? TRUE : FALSE );
 
    if ( !bEnable )
-      pEdit->SetWindowText("1.0");
+      pEdit->SetWindowText(_T("1.0"));
 }

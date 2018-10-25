@@ -55,8 +55,8 @@ rptPageLayout::rptPageLayout()
     m_PageOrientation = poDefault;
 
     // Set the styles of the header and footer paragraphs to default
-    m_FooterParagraph.SetStyleName("Default");
-    m_HeaderParagraph.SetStyleName("Default");
+    m_FooterParagraph.SetStyleName(_T("Default"));
+    m_HeaderParagraph.SetStyleName(_T("Default"));
 }
 
 

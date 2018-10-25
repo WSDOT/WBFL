@@ -355,7 +355,7 @@ void gmProperties::SetCoordinateSystem(gmProperties::CoordSystemType sys)
          break;
       }
       default:
-         CHECKX(0,"Bad coordinate type");
+         CHECKX(0,_T("Bad coordinate type"));
    }
 }
 
@@ -402,23 +402,23 @@ bool gmProperties::AssertValid() const
 
 void gmProperties::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmProperties" << endl;
-   os << "   m_Area         = "<< m_Area <<endl;
-   os << "   m_Centroid     = ("<< m_Centroid.X()<<", "<<m_Centroid.Y()<<")"<<endl;
-   os << "   m_Ixx          = "<< m_Ixx <<endl;         
-   os << "   m_Iyy          = "<< m_Iyy <<endl;          
-   os << "   m_Ixy          = "<< m_Ixy <<endl;         
-   os << "   m_Box.Top      = "<< m_Box.Top() <<endl;        
-   os << "   m_Box.Bottom   = "<< m_Box.Bottom() <<endl;     
-   os << "   m_Box.Left     = "<< m_Box.Left() <<endl;       
-   os << "   m_Box.Right    = "<< m_Box.Right() <<endl;      
-   os << "   m_CoordType    = "<< (int)m_CoordType <<endl;   
-   os << "   m_Origin       = ("<<m_Origin.X()<<", "<<m_Origin.Y()<<")" <<endl;
-   os << "   m_Orientation  = "<< m_Orientation <<endl;
-   os << "   m_CurrCentroid = ("<< m_CurrCentroid.X()<<", "<<m_CurrCentroid.Y()<<")"<<endl;
-   os << "   m_CurrIxx      = "<< m_CurrIxx <<endl;
-   os << "   m_CurrIyy      = "<< m_CurrIyy <<endl;
-   os << "   m_CurrIxy      = "<< m_CurrIxy <<endl;
+   os << _T("Dump for gmProperties") << endl;
+   os << _T("   m_Area         = ")<< m_Area <<endl;
+   os << _T("   m_Centroid     = (")<< m_Centroid.X()<<_T(", ")<<m_Centroid.Y()<<_T(")")<<endl;
+   os << _T("   m_Ixx          = ")<< m_Ixx <<endl;         
+   os << _T("   m_Iyy          = ")<< m_Iyy <<endl;          
+   os << _T("   m_Ixy          = ")<< m_Ixy <<endl;         
+   os << _T("   m_Box.Top      = ")<< m_Box.Top() <<endl;        
+   os << _T("   m_Box.Bottom   = ")<< m_Box.Bottom() <<endl;     
+   os << _T("   m_Box.Left     = ")<< m_Box.Left() <<endl;       
+   os << _T("   m_Box.Right    = ")<< m_Box.Right() <<endl;      
+   os << _T("   m_CoordType    = ")<< (int)m_CoordType <<endl;   
+   os << _T("   m_Origin       = (")<<m_Origin.X()<<_T(", ")<<m_Origin.Y()<<_T(")") <<endl;
+   os << _T("   m_Orientation  = ")<< m_Orientation <<endl;
+   os << _T("   m_CurrCentroid = (")<< m_CurrCentroid.X()<<_T(", ")<<m_CurrCentroid.Y()<<_T(")")<<endl;
+   os << _T("   m_CurrIxx      = ")<< m_CurrIxx <<endl;
+   os << _T("   m_CurrIyy      = ")<< m_CurrIyy <<endl;
+   os << _T("   m_CurrIxy      = ")<< m_CurrIxy <<endl;
 }
 
 #endif // _DEBUG

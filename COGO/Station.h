@@ -80,6 +80,8 @@ public:
 	STDMETHOD(FromString)(/*[in]*/ BSTR station,/*[in]*/ UnitModeType unitMode);
 	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal);
+   STDMETHOD(Increment)(/*[in]*/ Float64 value);
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varStation);
 
 // IStructuredStorage2
 public:

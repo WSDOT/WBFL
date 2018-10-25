@@ -39,7 +39,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CReportSpecification::CReportSpecification(const char* strReportName) :
+CReportSpecification::CReportSpecification(LPCTSTR strReportName) :
 m_ReportName(strReportName)
 {
 
@@ -50,17 +50,17 @@ CReportSpecification::~CReportSpecification()
 
 }
 
-std::string CReportSpecification::GetReportName() const
+std::_tstring CReportSpecification::GetReportName() const
 {
    return m_ReportName.c_str();
 }
 
-std::string CReportSpecification::GetReportTitle() const
+std::_tstring CReportSpecification::GetReportTitle() const
 {
    return GetReportName();
 }
 
-void CReportSpecification::AddChapter(const char* strName,const char* strKey,Uint16 level)
+void CReportSpecification::AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level)
 {
    CChapterInfo chInfo;
    chInfo.Name = strName;

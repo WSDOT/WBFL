@@ -41,7 +41,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 
-rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::ostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
+rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
                      const rptHtmlHelper& rmyHelper,
                      Uint32 logPixelsX,Uint32 logPixelsY):
    rptOutputChapterVisitor(pMyOstream/*, MypUnitSnapShot*/),
@@ -80,12 +80,12 @@ void rptHtmlChapterVisitor::VisitChapter(rptChapter* pChapter)
 */
 
    // create a hypertext anchor for this chapter - to be placed in toc
-   const char* name = pChapter->GetName();
+   LPCTSTR name = pChapter->GetName();
    if (name!=0)
    {
       Uint32 anchor = GetNextAnchor();
-      std::string sname(name);
-      *m_pOstream<<"<A ID=\"_"<<anchor<<"\" TITLE=\""<<sname<<"\" NAME=\"_"<<anchor<<"\">";
+      std::_tstring sname(name);
+      *m_pOstream<<_T("<A ID=\"_")<<anchor<<_T("\" TITLE=\"")<<sname<<_T("\" NAME=\"_")<<anchor<<_T("\">");
    }
    // create a paragraph visitor
    rptHtmlParagraphVisitor my_visitor(m_pOstream, /*m_pUnitSnapShot,*/ pr_layout, m_Helper, m_LogPixelsX, m_LogPixelsY);

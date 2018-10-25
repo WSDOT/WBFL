@@ -478,7 +478,7 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t name(var);
-      m_LeftReleaseRemovalStage = (const char*)name;
+      m_LeftReleaseRemovalStage = (LPCTSTR)name;
 
       var.Clear();
       hr = pload->get_Property(CComBSTR("RightRelease"),&var);
@@ -504,7 +504,7 @@ STDMETHODIMP CSuperstructureMember::Load(IStructuredLoad2 * pload)
          return hr;
 
       name = var;
-      m_RightReleaseRemovalStage = (const char*)name;
+      m_RightReleaseRemovalStage = (LPCTSTR)name;
 
       m_pSegments->Load(pload);
    }

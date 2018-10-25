@@ -276,7 +276,7 @@ HRESULT CCrackedSectionSolver::AnalyzeSection(Float64 Yguess,IUnkArray* slices,I
    Float64 EAy = 0;
 
 #if defined _DEBUG_LOGGING
-   std::ostringstream os;
+   std::_tostringstream os;
    os << "Yguess: " << LENGTH(Yguess) << std::endl;
    os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "FG, " << std::setw(20) << "BG" << std::endl;
 #endif // _DEBUG_LOGGING

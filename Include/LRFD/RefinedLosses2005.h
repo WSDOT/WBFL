@@ -152,7 +152,8 @@ public:
                          Float64 tf,   // Final time
                          lrfdCreepCoefficient2005::CuringMethod curingMethod,
                          Float64 tCuringAdjustment, // time scale factor for curing method
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateParameters
                          );
 
    //------------------------------------------------------------------------
@@ -339,7 +340,7 @@ private:
    Float64 m_ed;    // Eccentricity of deck with respect to the transformed net composite section (neg if deck is above girder)
 
 
-   mutable Float64 m_DeltaFcd2;
+   mutable Float64 m_DeltaFcd3;
    mutable Float64 m_DeltaFcd;
    mutable Float64 m_DeltaFcdf;
 

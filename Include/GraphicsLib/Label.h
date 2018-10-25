@@ -81,7 +81,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor - sets hook point and label
    // Center-Middle by default.
-   grLabel(const gpPoint2d& point, const std::string& label);
+   grLabel(const gpPoint2d& point, const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -139,11 +139,11 @@ public:
    //------------------------------------------------------------------------
    //  Set the label to be placed on the dimension. std::endl's (\n's) in the string
    //  will start a new line and create a multiline label.
-   void SetLabel(const std::string& label);
+   void SetLabel(const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Get the label
-   std::string GetLabel() const;
+   std::_tstring GetLabel() const;
 
    //------------------------------------------------------------------------
    // Set point size for label
@@ -192,7 +192,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    gpPoint2d                m_HookPoint;
-   std::vector<std::string> m_Labels;
+   std::vector<std::_tstring> m_Labels;
    HorizPosition            m_HorizPos;
    VertPosition             m_VertPos;
    Int32                    m_PointSize;

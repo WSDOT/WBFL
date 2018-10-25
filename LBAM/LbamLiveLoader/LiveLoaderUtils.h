@@ -33,8 +33,8 @@
 // macros to help error processing
 // short-hand version if consistent naming conventions are used
 #define THROW_LBAMLL(errNam) { ATLASSERT(0); THROW_LBAMLL_NOA(errNam);}
-#define THROW_LBAMLL_NOA(errNam) { throw CComException(__FILE__,__LINE__, IDS_E_##errNam, LBAMLL_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMLL_MSG(errNam, msg) { ATLASSERT(0); throw CComException(__FILE__,__LINE__, msg, LBAMLL_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMLL_NOA(errNam) { throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMLL_E_##errNam, IDH_E_##errNam);}
+#define THROW_LBAMLL_MSG(errNam, msg) { ATLASSERT(0); throw CComException(_T(__FILE__),__LINE__, msg, LBAMLL_E_##errNam, IDH_E_##errNam);}
 
 #define THROW_HR(hr) { ATLASSERT(0); throw hr;}
 #define PROCESS_HR(hr) if (FAILED(hr)){ THROW_HR(hr) }

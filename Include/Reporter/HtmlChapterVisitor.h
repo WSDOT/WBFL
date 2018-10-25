@@ -72,7 +72,7 @@ public:
    // construct with an ostream and a pointer to a unitsnapshot. this class does
    // not own, and will not delete, the unitsnapshot pointer
    //
-   rptHtmlChapterVisitor(std::ostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
+   rptHtmlChapterVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
                         const rptHtmlHelper& rmyHelper,
                         Uint32 logPixelsX, Uint32 logPixelsY);
 

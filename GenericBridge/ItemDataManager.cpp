@@ -37,7 +37,7 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CItemDataManager::AddItemData(BSTR name,IUnknown* data)
 {
    USES_CONVERSION;
-   m_Items.insert( std::make_pair(OLE2A(name),data) );
+   m_Items.insert( std::make_pair(OLE2T(name),data) );
    return S_OK;
 }
 
@@ -48,7 +48,7 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
 
    USES_CONVERSION;
 
-   std::string strName(OLE2A(name));
+   std::_tstring strName(OLE2T(name));
    ItemDataCollection::iterator found = m_Items.find(strName);
 
    if ( found != m_Items.end() )
@@ -68,7 +68,7 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
 HRESULT CItemDataManager::RemoveItemData(BSTR name)
 {
    USES_CONVERSION;
-   m_Items.erase(OLE2A(name));
+   m_Items.erase(OLE2T(name));
    return S_OK;
 }
 

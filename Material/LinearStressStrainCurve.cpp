@@ -46,7 +46,7 @@ matYieldStressStrainCurve()
 {
 }
 
-matLinearStressStrainCurve::matLinearStressStrainCurve(const std::string& name,
+matLinearStressStrainCurve::matLinearStressStrainCurve(const std::_tstring& name,
                                                        Float64 E,
                                                        Float64 tensYieldStress,
                                                        Float64 compYieldStress,
@@ -74,7 +74,7 @@ matYieldStressStrainCurve(name,
 }
 
 
-matLinearStressStrainCurve::matLinearStressStrainCurve(const std::string& name,
+matLinearStressStrainCurve::matLinearStressStrainCurve(const std::_tstring& name,
                                                        Float64 E,
                                                        Float64 tensYieldStress,
                                                        Float64 tensUltStrain,
@@ -263,7 +263,7 @@ bool matLinearStressStrainCurve::TestMe(dbgLog& rlog)
    unitSysUnitsMgr::SetTemperatureUnit( unitMeasure::Celcius );
    unitSysUnitsMgr::SetAngleUnit( unitMeasure::Radian );
 
-   matLinearStressStrainCurve curve("",50000000.,60000.,0.003,65000.,0.006,62000.);
+   matLinearStressStrainCurve curve(_T(""),50000000.,60000.,0.003,65000.,0.006,62000.);
    Float64 s1 = -0.006;
    Float64 s2 =  0.006;
    Float64 s3 = -0.003;

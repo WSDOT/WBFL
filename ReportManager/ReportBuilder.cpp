@@ -41,7 +41,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CReportBuilder::CReportBuilder(const char* strName,bool bHidden) :
+CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden) :
 m_Name(strName),
 m_bHidden(bHidden),
 m_pRptSpecBuilder( new CReportSpecificationBuilder )
@@ -54,7 +54,7 @@ CReportBuilder::~CReportBuilder()
 
 }
 
-const char* CReportBuilder::GetName() const
+LPCTSTR CReportBuilder::GetName() const
 {
    return m_Name.c_str();
 }
@@ -89,13 +89,13 @@ boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(Uint16 idx)
    return m_ChapterBuilders[idx];
 }
 
-boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(const char* strKey)
+boost::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(LPCTSTR strKey)
 {
    ChapterBuilderContainer::iterator iter;
    for ( iter = m_ChapterBuilders.begin(); iter != m_ChapterBuilders.end(); iter++ )
    {
       boost::shared_ptr<CChapterBuilder> pChBuilder = (*iter);
-      if ( std::string(pChBuilder->GetKey()) == std::string(strKey) )
+      if ( std::_tstring(pChBuilder->GetKey()) == std::_tstring(strKey) )
          return pChBuilder;
    }
 

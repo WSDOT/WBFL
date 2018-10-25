@@ -173,7 +173,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
    catch(_com_error& e) 
    {
       // parser errors
-      CComBSTR msg((char*)e.Description());
+      CComBSTR msg((LPTSTR)e.Description());
       THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
    }
 }
@@ -340,12 +340,12 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
          if (_bstr_t("VT_BSTR") == bsvt )
          {
             // must reconstitute string first
-            std::string tmp((char*)(_bstr_t)vval);
-            find_replace_all(&tmp, "&amp;","&");
-            find_replace_all(&tmp, "&lt;","<");
-            find_replace_all(&tmp, "&gt;",">");
-            find_replace_all(&tmp, "&sq;","'");
-            find_replace_all(&tmp, "&dq;","\"");
+            std::_tstring tmp((LPTSTR)(_bstr_t)vval);
+            find_replace_all(&tmp, _T("&amp;"),_T("&"));
+            find_replace_all(&tmp, _T("&lt;"),_T("<"));
+            find_replace_all(&tmp, _T("&gt;"),_T(">"));
+            find_replace_all(&tmp, _T("&sq;"),_T("'"));
+            find_replace_all(&tmp, _T("&dq;"),_T("\""));
 
             pVal->bstrVal = CString( tmp.c_str() ).AllocSysString();
             pVal->vt = VT_BSTR;
@@ -369,6 +369,11 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
          {
             pVal->lVal = (long)vval;
             pVal->vt = VT_I4;
+         }
+         else if (_bstr_t("VT_I8") == bsvt)
+         {
+            pVal->llVal = (LONGLONG)vval;
+            pVal->vt = VT_I8;
          }
          else if (_bstr_t("VT_INT") == bsvt)
          {
@@ -401,10 +406,10 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             {
                // variant couldn't parse, so try brute force
                _bstr_t bval(vval);
-               char* sv = (char*)bval; 
-               //char** ev = &sv + bval.length();
-               unsigned long uval = strtoul(sv,NULL,10);
-               if (uval==0 && *sv != '0')
+               LPTSTR sv = (LPTSTR)bval; 
+               //LPTSTR* ev = &sv + bval.length();
+               unsigned long uval = _tcstoul(sv,NULL,10);
+               if (uval==0 && *sv != _T('0') )
                   THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
 
                ul = uval;
@@ -842,7 +847,7 @@ _bstr_t GetParseError(MSXML::IXMLDOMParseErrorPtr pXMLError)
    long line, linePos;
    LONG errorCode;
    _bstr_t pBURL, pBReason;
-   std::ostringstream os;
+   std::_tostringstream os;
 
    try
    {
@@ -853,7 +858,7 @@ _bstr_t GetParseError(MSXML::IXMLDOMParseErrorPtr pXMLError)
       pBReason = pXMLError->reason;
 
       if (line > 0)
-        os<< "Error in xml file on line "<< line<<", position "<<linePos<<" in \""<<(char*)pBURL<<"\" Reason was "<<(char*)pBReason; 
+        os<< "Error in xml file on line "<< line<<", position "<<linePos<<" in \""<<(LPTSTR)pBURL<<"\" Reason was "<<(LPTSTR)pBReason; 
       else
          os<<"Error in xml file - location unknown";
    }

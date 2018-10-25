@@ -47,7 +47,7 @@ m_GirderHow(NormalToLine)
 {
 } // bmfConnection
 
-bmfConnection::bmfConnection(const std::string& name,
+bmfConnection::bmfConnection(const std::_tstring& name,
                              Float64 brgOffset,
                              bmfMeasuredHow how_brg,
                              Float64 gdrEndSize,
@@ -102,7 +102,7 @@ bmfMeasuredHow bmfConnection::GetHowGirderEndSizeIsMeasured() const
    return m_GirderHow;
 }
 
-std::string bmfConnection::GetName() const
+std::_tstring bmfConnection::GetName() const
 {
    return m_Name;
 }

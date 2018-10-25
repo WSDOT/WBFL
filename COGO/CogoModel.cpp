@@ -374,6 +374,12 @@ STDMETHODIMP CCogoModel::get_PathFactory(IPathFactory** factory)
    return m_Paths->get_Factory(factory);
 }
 
+STDMETHODIMP CCogoModel::get_Engine(ICogoEngine** engine)
+{
+   CHECK_RETOBJ(engine);
+   return m_Engine.CopyTo(engine);
+}
+
 STDMETHODIMP CCogoModel::Clone(ICogoModel* *clone)
 {
    CHECK_RETOBJ(clone);
@@ -510,7 +516,7 @@ STDMETHODIMP CCogoModel::Area(VARIANT keys,Float64* area)
 
    for ( long i = lb; i <= ub; i++ )
    {
-      CogoElementKey key;
+      long key;
       VARIANT varKey;
       if ( pKeys->fFeatures & FADF_VARIANT )
       {
@@ -1437,6 +1443,65 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoElementKey firstID, CogoElementKey idInc,
    CComPtr<IPoint2dCollection> points;
    CComQIPtr<IDivide2> divide(m_Engine);
    hr = divide->HorzCurve(hc,nParts,&points);
+   if ( FAILED(hr) )
+      return hr;
+
+   // Store the points in the points collection
+   CComPtr<IEnumPoint2d> enum_points;
+   points->get__Enum(&enum_points);
+   CComPtr<IPoint2d> p;
+   long i = 0;
+   while ( enum_points->Next(1,&p,NULL) != S_FALSE )
+   {
+      CogoElementKey key = firstID + i*idInc;
+
+      CComQIPtr<IPoint2d> pEx(p);
+
+      // m_GeomUtil's factory must create a IPoint2d object.
+      // If not, a factory got let in that shouldn't have
+      ATLASSERT(pEx != NULL);
+
+      hr = m_Points->AddEx(key,pEx); // add it to the cogo model
+      if ( FAILED(hr) )
+         return hr;
+
+      p.Release();
+      i++;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CCogoModel::Path(CogoElementKey firstID,CogoElementKey idInc,CogoElementKey pathID,long nParts,Float64 start,Float64 end)
+{
+   if ( nParts <= 1 )
+      return E_INVALIDARG;
+
+   if ( idInc == 0 )
+      return E_INVALIDARG;
+
+   // Check to see if the ID's of the new points are already in use
+   HRESULT hr;
+   CComPtr<IPoint2d> pnt;
+   for ( long i = 0; i < nParts-1; i++ )
+   {
+      CogoElementKey key = firstID + i*idInc;
+      pnt.Release();
+      hr = m_Points->get_Item(key,&pnt);
+      if ( SUCCEEDED(hr) )
+         return Error(IDS_E_POINTALREADYDEFINED,IID_IDivide,COGO_E_POINTALREADYDEFINED);
+   }
+
+   // Get the curve
+   CComPtr<IPath> path;
+   hr = m_Paths->get_Item(pathID,&path);
+   if ( FAILED(hr) )
+      return hr;
+
+   // Divide the path
+   CComPtr<IPoint2dCollection> points;
+   CComQIPtr<IDivide2> divide(m_Engine);
+   hr = divide->Path(path,nParts,start,end,&points);
    if ( FAILED(hr) )
       return hr;
 

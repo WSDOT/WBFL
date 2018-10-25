@@ -70,7 +70,7 @@ public:
    //------------------------------------------------------------------------
    // constructor
    //
-   rptHtmlRcVisitor(std::ostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
+   rptHtmlRcVisitor(std::_tostream* pMyOstream, /*const rptUnitSnapShot* MypUnitSnapShot,*/
                   const rptPageLayout* MypPageLayout, const rptHtmlHelper&   rmyHelper,
                   Uint32 logPixelsX, Uint32 logPixelsY);
 

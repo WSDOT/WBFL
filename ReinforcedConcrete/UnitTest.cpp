@@ -153,7 +153,7 @@ bool Example::Run(dbgDumpContext& os,int solverType)
 
    rcaCapacitySolution sol = my_solver.Solve(*m_pProblem);
    WriteSolution(os, pc, sol);
-   os << "Total Iterations = "<< my_solver.m_TotalIter << endl;
+   os << _T("Total Iterations = ")<< my_solver.m_TotalIter << endl;
    os << endl;
 
 #if defined _DEBUG
@@ -185,44 +185,44 @@ public:
 
 bool Example1::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a simple rectangular section - From Wang & Salmon, 3rd Edition, Page 50  " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                        < ---- .3556 m --->                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "                         -----------------   -                                       " << endl;
-   os << "                        |                 |  ^                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |        Y        |  |                                       " << endl;
-   os << "                        |        ^        |  |                                       " << endl;
-   os << "                  ^     |        |        |  |                                       " << endl;
-   os << "                  |     |        |        | .5461m                                   " << endl;
-   os << "               .6096m   |        |        |  |                                       " << endl;
-   os << "                depth   |        -----> X |  |                                       " << endl;
-   os << "                  |     |                 |  |                                       " << endl;
-   os << "                  v     |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |      As=.004658 |  |                                       " << endl;
-   os << "                        |  [[[[[[]]]]]]]  |  v                                       " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                         -----------------                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are N's & m's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is 444 ft-kips ~ 602550 N-m's              " << endl;
-   os << "                          neutral axis location is ~ 0.123m                          " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a simple rectangular section - From Wang & Salmon, 3rd Edition, Page 50  ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                        < ---- .3556 m --->                                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                         -----------------   -                                       ") << endl;
+   os << _T("                        |                 |  ^                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |        Y        |  |                                       ") << endl;
+   os << _T("                        |        ^        |  |                                       ") << endl;
+   os << _T("                  ^     |        |        |  |                                       ") << endl;
+   os << _T("                  |     |        |        | .5461m                                   ") << endl;
+   os << _T("               .6096m   |        |        |  |                                       ") << endl;
+   os << _T("                depth   |        -----> X |  |                                       ") << endl;
+   os << _T("                  |     |                 |  |                                       ") << endl;
+   os << _T("                  v     |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |      As=.004658 |  |                                       ") << endl;
+   os << _T("                        |  [[[[[[]]]]]]]  |  v                                       ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                         -----------------                                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are N's & m's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is 444 ft-kips ~ 602550 N-m's              ") << endl;
+   os << _T("                          neutral axis location is ~ 0.123m                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 
@@ -256,44 +256,44 @@ public:
 
 bool Example2::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a doubly reinforced rect. section - Wang & Salmon, 3rd Edition, Page 63  " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                        < ----0.3556 m -->                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "                    ^    -----------------   -                                       " << endl;
-   os << "                .0762m  |                 |  ^                                       " << endl;
-   os << "                    v   |  o  2-#8's   o  |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |        Y        |  |                                       " << endl;
-   os << "                        |        ^        |  |                                       " << endl;
-   os << "                  ^     |        |        |  |                                       " << endl;
-   os << "                  |     |        |        | .6604m                                  " << endl;
-   os << "               0.7112m  |        |        |  |                                       " << endl;
-   os << "                depth   |        -----> X |  |                                       " << endl;
-   os << "                  |     |                 |  |                                       " << endl;
-   os << "                  v     |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        | As=5.8903e-2m^2 |                                          " << endl;
-   os << "                        |  [[[[[[]]]]]]]  |  v                                       " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                         -----------------                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are lb - in's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is 988e5 N-m                               " << endl;
-   os << "                          neutral axis location is 0.192 m                           " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a doubly reinforced rect. section - Wang & Salmon, 3rd Edition, Page 63  ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                        < ----0.3556 m -->                                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                    ^    -----------------   -                                       ") << endl;
+   os << _T("                .0762m  |                 |  ^                                       ") << endl;
+   os << _T("                    v   |  o  2-#8's   o  |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |        Y        |  |                                       ") << endl;
+   os << _T("                        |        ^        |  |                                       ") << endl;
+   os << _T("                  ^     |        |        |  |                                       ") << endl;
+   os << _T("                  |     |        |        | .6604m                                   ") << endl;
+   os << _T("               0.7112m  |        |        |  |                                       ") << endl;
+   os << _T("                depth   |        -----> X |  |                                       ") << endl;
+   os << _T("                  |     |                 |  |                                       ") << endl;
+   os << _T("                  v     |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        | As=5.8903e-2m^2 |                                          ") << endl;
+   os << _T("                        |  [[[[[[]]]]]]]  |  v                                       ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                         -----------------                                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are lb - in's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is 988e5 N-m                               ") << endl;
+   os << _T("                          neutral axis location is 0.192 m                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -332,47 +332,47 @@ public:
 
 bool Example3::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a singly reinforced Tee section with compresssion in slab only           " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "         |<------------------  1.9812m      ----------------------->|                " << endl;
-   os << "    v                                                                                " << endl;
-   os << "    -     ----------------------------------------------------------                 " << endl;
-   os << "         |                                                          |                " << endl;
-   os << "    -     ----------------------------------------------------------                 " << endl;
-   os << "    ^                              |         |                                       " << endl;
-   os << " .1143m                            |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "        d=0.635m                   |         |                                       " << endl;
-   os << "        Depth= 0.7112m             |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |  As=    |                                       " << endl;
-   os << "                                   | .0041m^2|                                       " << endl;
-   os << "                                   | ooooooo |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                    ---------                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                   |<------->|                                       " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                     .3302m                                          " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are lb - in's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is 858927 N-m                              " << endl;
-   os << "                          neutral axis location is -0.04717 m                        " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a singly reinforced Tee section with compresssion in slab only           ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         |<------------------  1.9812m      ----------------------->|                ") << endl;
+   os << _T("    v                                                                                ") << endl;
+   os << _T("    -     ----------------------------------------------------------                 ") << endl;
+   os << _T("         |                                                          |                ") << endl;
+   os << _T("    -     ----------------------------------------------------------                 ") << endl;
+   os << _T("    ^                              |         |                                       ") << endl;
+   os << _T(" .1143m                            |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("        d=0.635m                   |         |                                       ") << endl;
+   os << _T("        Depth= 0.7112m             |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |  As=    |                                       ") << endl;
+   os << _T("                                   | .0041m^2|                                       ") << endl;
+   os << _T("                                   | ooooooo |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                    ---------                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                   |<------->|                                       ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                     .3302m                                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are lb - in's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is 858927 N-m                              ") << endl;
+   os << _T("                          neutral axis location is -0.04717 m                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -410,50 +410,50 @@ public:
 
 bool Example4::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a singly reinforced Tee. section with compression in the web            " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                           |<---  0.762m    ------>|                                 " << endl;
-   os << "    v                                                                                " << endl;
-   os << "    -                       -----------------------                                  " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "    -                       -----------------------                                  " << endl;
-   os << "    ^                              |         |                                       " << endl;
-   os << " .1778m                            |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "        d=0.9144m                  |         |                                       " << endl;
-   os << "        Depth= 0.9652m             |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |  As=    |                                       " << endl;
-   os << "                                   | .0081m^2|                                       " << endl;
-   os << "                                   | ooooooo |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                    ---------                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                   |<------->|                                       " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                     .3556m                                          " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are lb - in's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is 2.24e6 N-m                              " << endl;
-   os << "                          neutral axis location is -0.2833 m                         " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a singly reinforced Tee. section with compression in the web             ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                           |<---  0.762m    ------>|                                 ") << endl;
+   os << _T("    v                                                                                ") << endl;
+   os << _T("    -                       -----------------------                                  ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("    -                       -----------------------                                  ") << endl;
+   os << _T("    ^                              |         |                                       ") << endl;
+   os << _T(" .1778m                            |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("        d=0.9144m                  |         |                                       ") << endl;
+   os << _T("        Depth= 0.9652m             |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |  As=    |                                       ") << endl;
+   os << _T("                                   | .0081m^2|                                       ") << endl;
+   os << _T("                                   | ooooooo |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                    ---------                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                   |<------->|                                       ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                     .3556m                                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are lb - in's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is 2.24e6 N-m                              ") << endl;
+   os << _T("                          neutral axis location is -0.2833 m                         ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -490,45 +490,45 @@ public:
 
 bool Example5::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a simple prestressed rectangular section - J.R. Libby -                  " << endl;
-   os << "  Modern Prestressed Concrete, 4th Ed. Page 192                                      " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                  ^ Y                                                " << endl;
-   os << "                                  |                                                  " << endl;
-   os << "                        < ---- .6096 m --->                                           " << endl;
-   os << "                                  |                                                  " << endl;
-   os << "                         -------- --->X --   -                                       " << endl;
-   os << "                        |                 |  ^                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |     Effective prestressing stress     " << endl;
-   os << "                        |                 |  |     = 1.103161e9 Pa                   " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                  ^     |                 |  |                                       " << endl;
-   os << "                  |     |                 | .62992m                                  " << endl;
-   os << "               .7620m   |                 |  |                                       " << endl;
-   os << "                depth   |                 |  |                                       " << endl;
-   os << "                  |     |                 |  |                                       " << endl;
-   os << "                  v     |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |    As=.0.00177  |  |                                       " << endl;
-   os << "                        |         @       |  v                                       " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                         -----------------                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are N's & m's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is 1321 ft-kips ~ 1.8e6 N-m's              " << endl;
-   os << "                          neutral axis location is ~ -0.173 m                        " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a simple prestressed rectangular section - J.R. Libby -                  ") << endl;
+   os << _T("  Modern Prestressed Concrete, 4th Ed. Page 192                                      ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                  ^ Y                                                ") << endl;
+   os << _T("                                  |                                                  ") << endl;
+   os << _T("                        < ---- .6096 m --->                                          ") << endl;
+   os << _T("                                  |                                                  ") << endl;
+   os << _T("                         -------- --->X --   -                                       ") << endl;
+   os << _T("                        |                 |  ^                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |     Effective prestressing stress     ") << endl;
+   os << _T("                        |                 |  |     = 1.103161e9 Pa                   ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                  ^     |                 |  |                                       ") << endl;
+   os << _T("                  |     |                 | .62992m                                  ") << endl;
+   os << _T("               .7620m   |                 |  |                                       ") << endl;
+   os << _T("                depth   |                 |  |                                       ") << endl;
+   os << _T("                  |     |                 |  |                                       ") << endl;
+   os << _T("                  v     |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |    As=.0.00177  |  |                                       ") << endl;
+   os << _T("                        |         @       |  v                                       ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                         -----------------                                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are N's & m's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is 1321 ft-kips ~ 1.8e6 N-m's              ") << endl;
+   os << _T("                          neutral axis location is ~ -0.173 m                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -563,45 +563,45 @@ public:
 
 bool Example6::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a prestressed rectangular section with compression rebar                 " << endl;
-   os << "  - J.R. Libby -  Modern Prestressed Concrete, 4th Ed. Page 195                      " << endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                        < ---- .6096 m --->                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "                         -----------------   -                                       " << endl;
-   os << "                  ^     |                 |  ^                                       " << endl;
-   os << "      dc=0.1143m  |     |  Asc=.001935    |  |                                       " << endl;
-   os << "                  v     |  [[[[[[[]]]]]]  |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |     Effective prestressing stress     " << endl;
-   os << "                        |        Y        |  |     = 1.103161e9 Pa                   " << endl;
-   os << "                        |        ^        |  |                                       " << endl;
-   os << "                  ^     |        |        |  |                                       " << endl;
-   os << "                  |     |        |        | .62992m                                  " << endl;
-   os << "               .7620m   |        |        |  |                                       " << endl;
-   os << "                depth   |        -----> X |  |                                       " << endl;
-   os << "                  |     |                 |  |                                       " << endl;
-   os << "                  v     |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |                 |  |                                       " << endl;
-   os << "                        |    As=.0.00129  |  |                                       " << endl;
-   os << "                        |         @       |  v                                       " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                        |                 |                                          " << endl;
-   os << "                         -----------------                                           " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are N's & m's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Book answer is wrong, debug hand check gives 1.36e6 N-m's                   " << endl;
-   os << "                          neutral axis location is ~ -0.123 m                        " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a prestressed rectangular section with compression rebar                 ") << endl;
+   os << _T("  - J.R. Libby -  Modern Prestressed Concrete, 4th Ed. Page 195                      ") << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                        < ---- .6096 m --->                                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                         -----------------   -                                       ") << endl;
+   os << _T("                  ^     |                 |  ^                                       ") << endl;
+   os << _T("      dc=0.1143m  |     |  Asc=.001935    |  |                                       ") << endl;
+   os << _T("                  v     |  [[[[[[[]]]]]]  |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |     Effective prestressing stress     ") << endl;
+   os << _T("                        |        Y        |  |     = 1.103161e9 Pa                   ") << endl;
+   os << _T("                        |        ^        |  |                                       ") << endl;
+   os << _T("                  ^     |        |        |  |                                       ") << endl;
+   os << _T("                  |     |        |        | .62992m                                  ") << endl;
+   os << _T("               .7620m   |        |        |  |                                       ") << endl;
+   os << _T("                depth   |        -----> X |  |                                       ") << endl;
+   os << _T("                  |     |                 |  |                                       ") << endl;
+   os << _T("                  v     |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |                 |  |                                       ") << endl;
+   os << _T("                        |    As=.0.00129  |  |                                       ") << endl;
+   os << _T("                        |         @       |  v                                       ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                        |                 |                                          ") << endl;
+   os << _T("                         -----------------                                           ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are N's & m's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Book answer is wrong, debug hand check gives 1.36e6 N-m's                   ") << endl;
+   os << _T("                          neutral axis location is ~ -0.123 m                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -644,9 +644,9 @@ public:
 
 bool Example7::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "Zero capacity problem - no reinforcement" << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("Zero capacity problem - no reinforcement") << endl;
+   os << _T(" ====================================================================================") << endl;
    return Example::Run(os,solverType);
 }
 
@@ -676,9 +676,9 @@ public:
 
 bool Example8::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "Zero capacity problem - No concrete elements" << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("Zero capacity problem - No concrete elements") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -715,10 +715,10 @@ public:
 
 bool Example9::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "Zero capacity problem - f'c = 0" << endl;
-   os << "Only run this in Release builds" << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("Zero capacity problem - f'c = 0") << endl;
+   os << _T("Only run this in Release builds") << endl;
+   os << _T(" ====================================================================================") << endl;
    return Example::Run(os,solverType);
 }
 
@@ -760,9 +760,9 @@ public:
 
 bool Example10::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "Highly prestressed WSDOT W74G girder" << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("Highly prestressed WSDOT W74G girder") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -877,51 +877,51 @@ public:
 
 bool Example11::Run(dbgDumpContext& os,int solverType)
 {
-   os << " ====================================================================================" << endl;
-   os << "  let's try a singly reinforced Tee. section with compression in the web             " << endl;
-   os << "  also f'c is different for girder and slab                                          " <<endl;
-   os << " ====================================================================================" << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                           |<---  0.762m    ------>|                                 " << endl;
-   os << "    v                                                                                " << endl;
-   os << "    -                       -----------------------                                  " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "                           |      f'c=4ksi         |                                 " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "                           |                       |                                 " << endl;
-   os << "    -                       -----------------------                                  " << endl;
-   os << "    ^                              |         |                                       " << endl;
-   os << " .1778m                            |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |f'c=7.5ksi                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "        d=0.9144m                  |         |                                       " << endl;
-   os << "        Depth= 0.9652m             |         |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                   |  As=    |                                       " << endl;
-   os << "                                   | .0081m^2|                                       " << endl;
-   os << "                                   | ooooooo |                                       " << endl;
-   os << "                                   |         |                                       " << endl;
-   os << "                                    ---------                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                   |<------->|                                       " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                     .3556m                                          " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "                                                                                     " << endl;
-   os << "      All units are lb - in's                                                        " << endl;
-   os << "                                                                                     " << endl;
-   os << "         Right answer for moment capacity is "<<m_RightMoment<<" N-m                              " << endl;
-   os << "                          neutral axis location is "<<m_RightNaLocation<<" m                         " << endl;
-   os << "                                                                                     " << endl;
-   os << " ====================================================================================" << endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("  let's try a singly reinforced Tee. section with compression in the web             ") << endl;
+   os << _T("  also f'c is different for girder and slab                                          ") <<endl;
+   os << _T(" ====================================================================================") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                           |<---  0.762m    ------>|                                 ") << endl;
+   os << _T("    v                                                                                ") << endl;
+   os << _T("    -                       -----------------------                                  ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("                           |      f'c=4ksi         |                                 ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("                           |                       |                                 ") << endl;
+   os << _T("    -                       -----------------------                                  ") << endl;
+   os << _T("    ^                              |         |                                       ") << endl;
+   os << _T(" .1778m                            |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |f'c=7.5ksi                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("        d=0.9144m                  |         |                                       ") << endl;
+   os << _T("        Depth= 0.9652m             |         |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                   |  As=    |                                       ") << endl;
+   os << _T("                                   | .0081m^2|                                       ") << endl;
+   os << _T("                                   | ooooooo |                                       ") << endl;
+   os << _T("                                   |         |                                       ") << endl;
+   os << _T("                                    ---------                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                   |<------->|                                       ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                     .3556m                                          ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("      All units are lb - in's                                                        ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T("         Right answer for moment capacity is ")<<m_RightMoment<<_T(" N-m                 ") << endl;
+   os << _T("                          neutral axis location is ")<<m_RightNaLocation<<_T(" m         ") << endl;
+   os << _T("                                                                                     ") << endl;
+   os << _T(" ====================================================================================") << endl;
 
    return Example::Run(os,solverType);
 }
@@ -954,23 +954,23 @@ void Example11::Build(matConcrete* pgird_mat, matConcrete* pslab_mat, matMetal* 
 void WriteSolution(dbgDumpContext& os, const gpPoint2d& pc, const rcaCapacitySolution& sol)
 {
 
-   os<<"Plastic Centroid X = "<< pc.X() << endl;
-   os<<"Plastic Centroid Y = "<< pc.Y() << endl;
-   os<<"Mx Capacity        = "<< sol.GetMx()<<endl;
-   os<<"My Capacity        = "<< sol.GetMy()<<endl;
-   os<<"Axial Residual     = "<< sol.GetAxialForce() << endl;
+   os<<_T("Plastic Centroid X = ")<< pc.X() << endl;
+   os<<_T("Plastic Centroid Y = ")<< pc.Y() << endl;
+   os<<_T("Mx Capacity        = ")<< sol.GetMx()<<endl;
+   os<<_T("My Capacity        = ")<< sol.GetMy()<<endl;
+   os<<_T("Axial Residual     = ")<< sol.GetAxialForce() << endl;
    gpLine2d naline;
    sol.GetNeutralAxis(&naline);
    gpPoint2d pnt = naline.PointOnLineNearest(gpPoint2d(0,0));
-   os<<"Y of n.a.          = "<< pnt.Y() << endl;
+   os<<_T("Y of n.a.          = ")<< pnt.Y() << endl;
    Float64 compRes, tensRes;
    gpPoint2d compResLoc, tensResLoc;
    sol.GetForceRes(&compRes, &compResLoc, &tensRes, &tensResLoc);
-   os<<"Compression Resultant = "<<compRes<<" at ("<<compResLoc.X()<<","<<compResLoc.Y()<<")" << endl;
-   os<<"Tension     Resultant = "<<tensRes<<" at ("<<tensResLoc.X()<<","<<tensResLoc.Y()<<")" << endl;
-   os<<"Beta1                 = "<<sol.GetBeta1()<<endl;
-   os<<"Total Compr. Area     = "<< sol.GetAreaAboveNeutralAxis()<<endl;
-   os<<"Compression Block Area= "<<sol.GetCompressionBlockArea()<<endl;
+   os<<_T("Compression Resultant = ")<<compRes<<_T(" at (")<<compResLoc.X()<<_T(",")<<compResLoc.Y()<<_T(")") << endl;
+   os<<_T("Tension     Resultant = ")<<tensRes<<_T(" at (")<<tensResLoc.X()<<_T(",")<<tensResLoc.Y()<<_T(")") << endl;
+   os<<_T("Beta1                 = ")<<sol.GetBeta1()<<endl;
+   os<<_T("Total Compr. Area     = ")<< sol.GetAreaAboveNeutralAxis()<<endl;
+   os<<_T("Compression Block Area= ")<<sol.GetCompressionBlockArea()<<endl;
 }
 
 
@@ -981,47 +981,47 @@ bool run_integration_tests(dbgLog& rlog)
    dbgDumpContext& os = rlog.GetDumpCtx();
 
    // create some materials
-   matConcrete conc_3000("3ksi Concrete",
+   matConcrete conc_3000(_T("3ksi Concrete"),
                           ::ConvertToSysUnits(3.,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matConcrete conc_4000("4ksi Concrete",
+   matConcrete conc_4000(_T("4ksi Concrete"),
                           ::ConvertToSysUnits(4.,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matConcrete conc_5000("5ksi Concrete",
+   matConcrete conc_5000(_T("5ksi Concrete"),
                           ::ConvertToSysUnits(5.,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matConcrete conc_6000("6ksi Concrete",
+   matConcrete conc_6000(_T("6ksi Concrete"),
                           ::ConvertToSysUnits(6.,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matConcrete conc_7500("7.5ksi Concrete",
+   matConcrete conc_7500(_T("7.5ksi Concrete"),
                           ::ConvertToSysUnits(7.5,unitMeasure::KSI),
                           ::ConvertToSysUnits(150.,unitMeasure::PCF),
                           ::ConvertToSysUnits(3.7e6,unitMeasure::KSI));
 
-   matMetal  rebar_40("40ksi Rebar", 
+   matMetal  rebar_40(_T("40ksi Rebar"), 
                       ::ConvertToSysUnits(490.,unitMeasure::PCF),
                       ::ConvertToSysUnits(29000.,unitMeasure::KSI),
                       ::ConvertToSysUnits(40.,unitMeasure::KSI));
 
-   matMetal  rebar_50("50ksi Rebar", 
+   matMetal  rebar_50(_T("50ksi Rebar"), 
                       ::ConvertToSysUnits(490.,unitMeasure::PCF),
                       ::ConvertToSysUnits(29000.,unitMeasure::KSI),
                       ::ConvertToSysUnits(50.,unitMeasure::KSI));
 
-   matMetal  rebar_60("60ksi Rebar", 
+   matMetal  rebar_60(_T("60ksi Rebar"), 
                       ::ConvertToSysUnits(490.,unitMeasure::PCF),
                       ::ConvertToSysUnits(29000.,unitMeasure::KSI),
                       ::ConvertToSysUnits(60.,unitMeasure::KSI));
 
-   matPsStrand ps_270("Grade 270",matPsStrand::Gr1860,matPsStrand::LowRelaxation,matPsStrand::D1270,
+   matPsStrand ps_270(_T("Grade 270"),matPsStrand::Gr1860,matPsStrand::LowRelaxation,matPsStrand::D1270,
                       ::ConvertToSysUnits(270.,unitMeasure::KSI),
                       ::ConvertToSysUnits(243.,unitMeasure::KSI),
                       ::ConvertToSysUnits(28000.,unitMeasure::KSI),
@@ -1031,7 +1031,7 @@ bool run_integration_tests(dbgLog& rlog)
    // run in whitney mode.
    Example::m_Mode=Example::WhitneyMode;
 
-   os << "************* Examples in Whitney Mode ****************" << endl;
+   os << _T("************* Examples in Whitney Mode ****************") << endl;
    os << endl<<endl;
 
    Example1 example1(-602550, .1234);
@@ -1091,7 +1091,7 @@ bool run_integration_tests(dbgLog& rlog)
 
    // run in naaman mode.
    os << endl<<endl;
-   os << "************* Examples in Naaman Mode ****************" << endl;
+   os << _T("************* Examples in Naaman Mode ****************") << endl;
    os << endl<<endl;
    Example::m_Mode=Example::NaamanMode;
 

@@ -117,7 +117,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor - sets hook points and label
    // Horizontal dimension Above,Center by default.
-   grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::string& label);
+   grDimension(const gpPoint2d& pointA, const gpPoint2d& pointB, const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -188,11 +188,11 @@ public:
    //------------------------------------------------------------------------
    //  Set the label to be placed on the dimension. std::endl's in the string
    //  will start a new line and create a multiline label.
-   void SetLabel(const std::string& label);
+   void SetLabel(const std::_tstring& label);
 
    //------------------------------------------------------------------------
    // Get the label
-   std::string GetLabel() const;
+   std::_tstring GetLabel() const;
 
    //------------------------------------------------------------------------
    // Sets the point size of the font

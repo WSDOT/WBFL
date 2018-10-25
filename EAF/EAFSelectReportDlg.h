@@ -37,13 +37,13 @@ class CEAFSelectReportDlg : public CDialog
 {
 // Construction
 public:
-   CEAFSelectReportDlg(std::vector<std::string>& rptNames,CWnd* pParent = NULL);   // standard constructor
+   CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CEAFSelectReportDlg)
 	enum { IDD = IDD_SELECTREPORT };
 	//}}AFX_DATA
-	std::string	m_ReportName;
+	std::_tstring	m_ReportName;
 
 
 // Overrides
@@ -55,7 +55,7 @@ public:
 
 // Implementation
 protected:
-   std::vector<std::string> m_RptNames;
+   std::vector<std::_tstring> m_RptNames;
 
 	// Generated message map functions
 	//{{AFX_MSG(CEAFSelectReportDlg)

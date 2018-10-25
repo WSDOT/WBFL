@@ -62,7 +62,7 @@ void txnTransaction::Undo()
    // Does nothing by default
 } // Undo
 
-void txnTransaction::Log(std::ostream& os) const
+void txnTransaction::Log(std::_tostream& os) const
 {
    os << Name();
 }

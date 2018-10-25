@@ -57,7 +57,7 @@ HRESULT sysComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
    CATEGORYINFO CatInfo;
    CatInfo.catid = catid;
    CatInfo.lcid = LOCALE_SYSTEM_DEFAULT;
-   wcscpy_s(CatInfo.szDescription,lpszDesc);
+   _tcscpy_s(CatInfo.szDescription,lpszDesc);
 
    // Array of categories
    const int nID = 1;

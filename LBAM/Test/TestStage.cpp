@@ -181,13 +181,13 @@ void CTestStage::Test()
    // might have to resort to less memory intensive methods.
    try
    {
-      std::string x1;
-      std::ifstream if1("Test.xml");
+      std::_tstring x1;
+      std::_tifstream if1("Test.xml");
       std::getline(if1, x1);
       std::getline(if1, x1); // second line is the data
 
-      std::string x2;
-      std::ifstream if2("Test2.xml");
+      std::_tstring x2;
+      std::_tifstream if2("Test2.xml");
       std::getline(if2, x2);
       std::getline(if2, x2);
 
@@ -406,7 +406,7 @@ HRESULT CTestStage::OnCreateSegment(IStage* pstage)
 {
    // give stage a unique name
    TCHAR str[45];
-   int cOut = sprintf_s( str, 45, "Stage %d", m_LastID++);
+   int cOut = _stprintf_s( str, 45, _T("Stage %d"), m_LastID++);
    ATLASSERT( cOut < 45 );
 
    CComBSTR name(str);

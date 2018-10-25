@@ -63,7 +63,7 @@ CTestSpliced::~CTestSpliced()
 HRESULT CTestSpliced::Test()
 {
    // dump results to a file
-   std::ofstream os("Spliced.txt");
+   std::_tofstream os("Spliced.txt");
 
    // build a model and attach it to our load group response object
    CComPtr<ILoadGroupResponse> plgr;
@@ -544,7 +544,7 @@ ILBAMModel* CTestSpliced::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   char* lgns[]={"Self Weight"};
+   LPTSTR lgns[]={_T("Self Weight")};
    for (int i=0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

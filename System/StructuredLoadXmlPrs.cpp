@@ -43,21 +43,22 @@ public:
 
    void BeginLoad(IStream* pis);
    void EndLoad();
-   virtual bool BeginUnit(const char* name);
+   virtual bool BeginUnit(LPCTSTR name);
    virtual bool EndUnit();
    virtual Float64 GetVersion();
    virtual Float64 GetParentVersion();
+   virtual std::_tstring GetParentUnit();
    virtual Float64 GetTopVersion();
-   virtual bool Property(const char* name, std::string* pvalue);
-   virtual bool Property(const char* name, Float64* pvalue);
-   virtual bool Property(const char* name, Int16* pvalue);
-   virtual bool Property(const char* name, Uint16* pvalue);
-   virtual bool Property(const char* name, Int32* pvalue);
-   virtual bool Property(const char* name, Uint32* pvalue);
-   virtual bool Property(const char* name, bool* pvalue);
+   virtual bool Property(LPCTSTR name, std::_tstring* pvalue);
+   virtual bool Property(LPCTSTR name, Float64* pvalue);
+   virtual bool Property(LPCTSTR name, Int16* pvalue);
+   virtual bool Property(LPCTSTR name, Uint16* pvalue);
+   virtual bool Property(LPCTSTR name, Int32* pvalue);
+   virtual bool Property(LPCTSTR name, Uint32* pvalue);
+   virtual bool Property(LPCTSTR name, bool* pvalue);
    virtual bool Eof() const;
-   virtual std::string GetStateDump() const;
-   virtual std::string GetUnit() const;
+   virtual std::_tstring GetStateDump() const;
+   virtual std::_tstring GetUnit() const;
 
 private:
    IStream*                        m_pIStream;
@@ -67,7 +68,7 @@ private:
    // have to keep track of recursive data structure
    struct ListItem
    {
-      std::string           Name;
+      std::_tstring           Name;
       Float64                Version;
       MSXML::IXMLDOMNodePtr spCurrentUnit;
       MSXML::IXMLDOMNodePtr spCurrentChild;
@@ -80,8 +81,8 @@ private:
    sysStructuredLoadXmlPrs_Impl(const sysStructuredLoadXmlPrs_Impl&);
    sysStructuredLoadXmlPrs_Impl& operator=(const sysStructuredLoadXmlPrs_Impl&);
 
-   MSXML::IXMLDOMNodePtr GetCurrentNode(const char* name);
-   bool GetProperty(const char* name, _variant_t* pval);
+   MSXML::IXMLDOMNodePtr GetCurrentNode(LPCTSTR name);
+   bool GetProperty(LPCTSTR name, _variant_t* pval);
    void ReadNext();
 
 public:
@@ -130,7 +131,7 @@ void sysStructuredLoadXmlPrs::EndLoad()
    m_pImp->EndLoad();
 }
 
-bool sysStructuredLoadXmlPrs::BeginUnit(const char* name)
+bool sysStructuredLoadXmlPrs::BeginUnit(LPCTSTR name)
 {
    return m_pImp->BeginUnit(name);
 }
@@ -150,42 +151,47 @@ Float64 sysStructuredLoadXmlPrs::GetParentVersion()
    return m_pImp->GetParentVersion();
 }
 
+std::_tstring sysStructuredLoadXmlPrs::GetParentUnit()
+{
+   return m_pImp->GetParentUnit();
+}
+
 Float64 sysStructuredLoadXmlPrs::GetTopVersion()
 {
    return m_pImp->GetTopVersion();
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, std::string* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, std::_tstring* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, Float64* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Float64* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, Int16* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Int16* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, Uint16* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Uint16* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, Int32* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Int32* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, Uint32* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, Uint32* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
 
-bool sysStructuredLoadXmlPrs::Property(const char* name, bool* pvalue)
+bool sysStructuredLoadXmlPrs::Property(LPCTSTR name, bool* pvalue)
 {
    return m_pImp->Property(name, pvalue);
 }
@@ -196,12 +202,12 @@ bool sysStructuredLoadXmlPrs::Eof() const
    return m_pImp->Eof();
 }
 
-std::string sysStructuredLoadXmlPrs::GetStateDump() const
+std::_tstring sysStructuredLoadXmlPrs::GetStateDump() const
 {
    return m_pImp->GetStateDump();
 }
 
-std::string sysStructuredLoadXmlPrs::GetUnit() const
+std::_tstring sysStructuredLoadXmlPrs::GetUnit() const
 {
    return m_pImp->GetUnit();
 }
@@ -261,7 +267,7 @@ CLASS
 
 /////// FREE FUNCTIONS
 HRESULT CheckLoad(MSXML::IXMLDOMDocument* pDoc);
-void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, const char* file, int line);
+void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, LPCTSTR file, int line);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -339,7 +345,7 @@ void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
 
          // push our top-level collection onto the stack
          ListItem tmp;
-         tmp.Name = "Document";
+         tmp.Name = _T("Document");
          tmp.Version = 0.0;
          tmp.spCurrentChild = pDoc->GetdocumentElement();
          tmp.spCurrentUnit =  pDoc;
@@ -361,7 +367,7 @@ void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW_LOAD(InvalidFileFormat,this);
    }
    catch(...)
@@ -389,7 +395,7 @@ void sysStructuredLoadXmlPrs_Impl::EndLoad()
 
 }
 
-bool sysStructuredLoadXmlPrs_Impl::BeginUnit(const char* name)
+bool sysStructuredLoadXmlPrs_Impl::BeginUnit(LPCTSTR name)
 {
    ASSERTVALID;
    bool retval = false;
@@ -424,7 +430,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(const char* name)
          // push new unit onto the stack
          m_Level++;
          ListItem tmp;
-         tmp.Name = std::string(name);
+         tmp.Name = std::_tstring(name);
          tmp.Version = vers;
          if (ptest->hasChildNodes())
             tmp.spCurrentChild = ptest->firstChild;
@@ -443,7 +449,7 @@ bool sysStructuredLoadXmlPrs_Impl::BeginUnit(const char* name)
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW_LOAD(InvalidFileFormat,this);
    }
    catch(...)
@@ -481,7 +487,7 @@ bool sysStructuredLoadXmlPrs_Impl::EndUnit()
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW_LOAD(InvalidFileFormat,this);
    }
    catch(...)
@@ -503,9 +509,20 @@ Float64 sysStructuredLoadXmlPrs_Impl::GetParentVersion()
 {
    ASSERTVALID;
    CHECK(!m_UnitList.empty());
-   UnitListConstIterator it = m_UnitList.end();
-   it--;
+   UnitListConstIterator it = m_UnitList.end(); // one past end
+   it--; // last item in the list (this is the current unit)
+   it--; // back up one, this is the parent
    return (*it).Version;
+}
+
+std::_tstring sysStructuredLoadXmlPrs_Impl::GetParentUnit()
+{
+   ASSERTVALID;
+   CHECK(!m_UnitList.empty());
+   UnitListConstIterator it = m_UnitList.end(); // one past end
+   it--; // last item in the list (this is the current unit)
+   it--; // back up one, this is the parent
+   return (*it).Name;
 }
 
 Float64 sysStructuredLoadXmlPrs_Impl::GetTopVersion()
@@ -518,19 +535,19 @@ Float64 sysStructuredLoadXmlPrs_Impl::GetTopVersion()
    return it->Version;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, std::string* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, std::_tstring* pvalue)
 {
    bool retval = false;
    _variant_t val;
    if (GetProperty(name, &val))
    {
       // need to take out special characters &,',",<,>
-      std::string tmp((char*)(_bstr_t)val);
-      find_replace_all(&tmp, "&amp;","&");
-      find_replace_all(&tmp, "&lt;","<");
-      find_replace_all(&tmp, "&gt;",">");
-      find_replace_all(&tmp, "&sq;","'");
-      find_replace_all(&tmp, "&dq;","\"");
+      std::_tstring tmp((LPTSTR)(_bstr_t)val);
+      find_replace_all(&tmp, _T("&amp;"),_T("&"));
+      find_replace_all(&tmp, _T("&lt;"),_T("<"));
+      find_replace_all(&tmp, _T("&gt;"),_T(">"));
+      find_replace_all(&tmp, _T("&sq;"),_T("'"));
+      find_replace_all(&tmp, _T("&dq;"),_T("\""));
       *pvalue = tmp;
       retval = true;
    }
@@ -538,7 +555,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, std::string* pvalu
    return retval;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Float64* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Float64* pvalue)
 {
    bool retval = false;
    _variant_t val;
@@ -551,7 +568,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Float64* pvalue)
    return retval;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Int16* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Int16* pvalue)
 {
    Int32 val;
    if (Property(name, &val))
@@ -564,7 +581,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Int16* pvalue)
       return false;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Uint16* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint16* pvalue)
 {
    Uint32 val;
    if (Property(name, &val))
@@ -577,7 +594,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Uint16* pvalue)
       return false;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Int32* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Int32* pvalue)
 {
    bool retval = false;
    _variant_t val;
@@ -590,7 +607,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Int32* pvalue)
    return retval;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Uint32* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint32* pvalue)
 {
    bool retval = false;
    _variant_t val;
@@ -605,9 +622,9 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Uint32* pvalue)
       {
          // variant couldn't parse, so try brute force
          _bstr_t bval(val);
-         char* sv = (char*)bval;
-         char** ev = &sv + bval.length();
-         Uint32 uval = strtoul(sv,ev,10);
+         LPTSTR sv = (LPTSTR)bval;
+         LPTSTR* ev = &sv + bval.length();
+         Uint32 uval = _tcstoul(sv,ev,10);
          if (uval==0 && *sv != '0')
             THROW_LOAD(InvalidFileFormat,this);
 
@@ -618,7 +635,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, Uint32* pvalue)
    return retval;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::Property(const char* name, bool* pvalue)
+bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, bool* pvalue)
 {
    bool retval = false;
    _variant_t val;
@@ -637,26 +654,26 @@ bool sysStructuredLoadXmlPrs_Impl::Eof() const
    return false;
 }
 
-std::string sysStructuredLoadXmlPrs_Impl::GetStateDump() const
+std::_tstring sysStructuredLoadXmlPrs_Impl::GetStateDump() const
 {
    // use Dump
-   std::ostringstream os;
-   os << "Dump for sysStructuredLoadXmlPrs_Impl" << std::endl;
-   os << "  Level       = " << m_Level << std::endl;
-   os << "  Units: <name, version> " << std::endl;
+   std::_tostringstream os;
+   os << _T("Dump for sysStructuredLoadXmlPrs_Impl") << std::endl;
+   os << _T("  Level       = ") << m_Level << std::endl;
+   os << _T("  Units: <name, version> ") << std::endl;
    for (UnitListConstIterator it=m_UnitList.begin(); it!=m_UnitList.end(); it++)
-      os <<"    <"<<(*it).Name<<", "<<(*it).Version<<">"<<std::endl;
+      os <<_T("    <")<<(*it).Name<<_T(", ")<<(*it).Version<<_T(">")<<std::endl;
    return os.str(); 
 }
 
-std::string sysStructuredLoadXmlPrs_Impl::GetUnit() const
+std::_tstring sysStructuredLoadXmlPrs_Impl::GetUnit() const
 {
    PRECONDITION(!m_UnitList.empty());
    const MSXML::IXMLDOMNodePtr& rUnit = m_UnitList.back().spCurrentUnit;
 
    _bstr_t bstrXML = rUnit->xml;
 
-   return std::string((char*)bstrXML);
+   return std::_tstring((LPTSTR)bstrXML);
 }
 
 //======================== ACCESS     =======================================
@@ -700,7 +717,7 @@ bool sysStructuredLoadXmlPrs_Impl::AssertValid() const
 
 void sysStructuredLoadXmlPrs_Impl::Dump(dbgDumpContext& os) const
 {
-   std::string tmp;
+   std::_tstring tmp;
    tmp = GetStateDump();
    os << tmp << endl;
 }
@@ -735,7 +752,7 @@ HRESULT CheckLoad(MSXML::IXMLDOMDocument* pDoc)
        long code = pXMLError->errorCode;
        if (code != 0)
        {
-           ThrowParseError(pXMLError,__FILE__,__LINE__);
+           ThrowParseError(pXMLError,_T(__FILE__),__LINE__);
        }
        else
        {
@@ -756,12 +773,12 @@ HRESULT CheckLoad(MSXML::IXMLDOMDocument* pDoc)
 ////////////////////////////////////////////////////////////////////////////
 // Helper function: Report parsing error information
 ////////////////////////////////////////////////////////////////////////////
-void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, const char* file, int lineno)
+void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, LPCTSTR file, int lineno)
 {
    long line, linePos;
    LONG errorCode;
    _bstr_t pBURL, pBReason;
-   std::ostringstream os;
+   std::_tostringstream os;
 
    // create and throw and exception
    sysXStructuredLoad except(sysXStructuredLoad::InvalidFileFormat, file, lineno );
@@ -775,9 +792,9 @@ void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, const char* file, in
       pBReason = pXMLError->reason;
 
       if (line > 0)
-        os<< "Error in xml file on line "<< line<<", position "<<linePos<<" in \""<<(char*)pBURL<<"\" Reason was "<<(char*)pBReason; 
+        os<< _T("Error in xml file on line ")<< line<<_T(", position ")<<linePos<<_T(" in \"")<<(LPTSTR)pBURL<<_T("\" Reason was ")<<(LPTSTR)pBReason; 
       else
-         os<<"Error in xml file - location unknown";
+         os<<_T("Error in xml file - location unknown");
    }
    catch(...)
    {
@@ -789,7 +806,7 @@ void ThrowParseError(MSXML::IXMLDOMParseErrorPtr pXMLError, const char* file, in
   except.Throw();
 }
 
-MSXML::IXMLDOMNodePtr sysStructuredLoadXmlPrs_Impl::GetCurrentNode(const char* name)
+MSXML::IXMLDOMNodePtr sysStructuredLoadXmlPrs_Impl::GetCurrentNode(LPCTSTR name)
 {
    PRECONDITION(!m_UnitList.empty());
    _bstr_t bname(name);
@@ -806,7 +823,7 @@ MSXML::IXMLDOMNodePtr sysStructuredLoadXmlPrs_Impl::GetCurrentNode(const char* n
       return 0;
 }
 
-bool sysStructuredLoadXmlPrs_Impl::GetProperty(const char* name, _variant_t* pval)
+bool sysStructuredLoadXmlPrs_Impl::GetProperty(LPCTSTR name, _variant_t* pval)
 {
    ASSERTVALID;
    bool retval = false;
@@ -832,7 +849,7 @@ bool sysStructuredLoadXmlPrs_Impl::GetProperty(const char* name, _variant_t* pva
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW_LOAD(InvalidFileFormat,this);
    }
    catch(...)

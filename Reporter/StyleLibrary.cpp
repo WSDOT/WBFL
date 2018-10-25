@@ -16,18 +16,18 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-std::string rptStyleLibrary::ms_ReportTitleStyle           = "ReportTitleStyle";
-std::string rptStyleLibrary::ms_ReportSubtitleStyle        = "ReportSubtitleStyle";
-std::string rptStyleLibrary::ms_ChapterTitleStyle          = "ChapterTitleStyle";
-std::string rptStyleLibrary::ms_HeadingStyle               = "HeadingStyle";
-std::string rptStyleLibrary::ms_SubheadingStyle            = "SubheadingStyle";
-std::string rptStyleLibrary::ms_TableColumnHeadingStyle    = "TableColumnHeadingStyle";
-std::string rptStyleLibrary::ms_TableDataStyleLeftJustify  = "TableDataStyle-LJ";
-std::string rptStyleLibrary::ms_TableDataStyleRightJustify = "TableDataStyle-RJ";
-std::string rptStyleLibrary::ms_FootnoteStyle              = "Footnote";
-std::string rptStyleLibrary::ms_TableCellStyle[4]          = {"NB-LJ","TB-LJ","NB-RJ","TB-RJ"};
+std::_tstring rptStyleLibrary::ms_ReportTitleStyle           = _T("ReportTitleStyle");
+std::_tstring rptStyleLibrary::ms_ReportSubtitleStyle        = _T("ReportSubtitleStyle");
+std::_tstring rptStyleLibrary::ms_ChapterTitleStyle          = _T("ChapterTitleStyle");
+std::_tstring rptStyleLibrary::ms_HeadingStyle               = _T("HeadingStyle");
+std::_tstring rptStyleLibrary::ms_SubheadingStyle            = _T("SubheadingStyle");
+std::_tstring rptStyleLibrary::ms_TableColumnHeadingStyle    = _T("TableColumnHeadingStyle");
+std::_tstring rptStyleLibrary::ms_TableDataStyleLeftJustify  = _T("TableDataStyle-LJ");
+std::_tstring rptStyleLibrary::ms_TableDataStyleRightJustify = _T("TableDataStyle-RJ");
+std::_tstring rptStyleLibrary::ms_FootnoteStyle              = _T("Footnote");
+std::_tstring rptStyleLibrary::ms_TableCellStyle[4]          = {_T("NB-LJ"),_T("TB-LJ"),_T("NB-RJ"),_T("TB-RJ")};
 
-std::string rptStyleLibrary::ms_ImagePath= "";
+std::_tstring rptStyleLibrary::ms_ImagePath= _T("");
 
 Float64 rptStyleLibrary::ms_MaxTableWidth = 7.5; // 7.5" wide tables
 
@@ -40,7 +40,7 @@ Float64 rptStyleLibrary::ms_MaxTableWidth = 7.5; // 7.5" wide tables
 //======================== OPERATIONS =======================================
 
 
-void rptStyleLibrary::InitStyles(const std::string& imagePath)
+void rptStyleLibrary::InitStyles(const std::_tstring& imagePath)
 {
    // path name
    CHECK(imagePath.size()!=0);
@@ -167,42 +167,42 @@ void rptStyleLibrary::InitStyles(const std::string& imagePath)
 }
 
 
-const std::string& rptStyleLibrary::GetReportTitleStyle()
+const std::_tstring& rptStyleLibrary::GetReportTitleStyle()
 {
 return ms_ReportTitleStyle;
 }
 
-const std::string& rptStyleLibrary::GetReportSubtitleStyle()
+const std::_tstring& rptStyleLibrary::GetReportSubtitleStyle()
 {
 return ms_ReportSubtitleStyle;
 }
 
-const std::string& rptStyleLibrary::GetChapterTitleStyle()
+const std::_tstring& rptStyleLibrary::GetChapterTitleStyle()
 {
 return ms_ChapterTitleStyle;
 }
 
-const std::string& rptStyleLibrary::GetHeadingStyle()
+const std::_tstring& rptStyleLibrary::GetHeadingStyle()
 {
 return ms_HeadingStyle;
 }
 
-const std::string& rptStyleLibrary::GetSubheadingStyle()
+const std::_tstring& rptStyleLibrary::GetSubheadingStyle()
 {
 return ms_SubheadingStyle;
 }
 
-const std::string& rptStyleLibrary::GetTableColumnHeadingStyle()
+const std::_tstring& rptStyleLibrary::GetTableColumnHeadingStyle()
 {
 return ms_TableColumnHeadingStyle;
 }
 
-const std::string& rptStyleLibrary::GetTableDataStyle(Justification justify)
+const std::_tstring& rptStyleLibrary::GetTableDataStyle(Justification justify)
 {
    return (justify == Left) ? ms_TableDataStyleLeftJustify : ms_TableDataStyleRightJustify;
 }
 
-const std::string& rptStyleLibrary::GetTableCellStyle(Uint32 style)
+const std::_tstring& rptStyleLibrary::GetTableCellStyle(Uint32 style)
 {
    // Bit 1 = Border Style
    // Bit 2 = Justification
@@ -229,7 +229,7 @@ const std::string& rptStyleLibrary::GetTableCellStyle(Uint32 style)
    return ms_TableCellStyle[index];
 }
 
-const std::string& rptStyleLibrary::GetFootnoteStyle()
+const std::_tstring& rptStyleLibrary::GetFootnoteStyle()
 {
    return ms_FootnoteStyle;
 }
@@ -239,7 +239,7 @@ Float64 rptStyleLibrary::GetMaxTableWidth()
    return ms_MaxTableWidth;
 }
 
-rptRcTable* rptStyleLibrary::CreateDefaultTable(unsigned numColumns, std::string label,bool bLoadingColumn)
+rptRcTable* rptStyleLibrary::CreateDefaultTable(unsigned numColumns, std::_tstring label,bool bLoadingColumn)
 {
    rptRcTable* ptable = new rptRcTable( numColumns, rptStyleLibrary::GetMaxTableWidth() );
    if (!label.empty())
@@ -266,7 +266,7 @@ rptRcTable* rptStyleLibrary::CreateDefaultTable(unsigned numColumns, std::string
    return ptable;
 }
 
-rptRcTable* rptStyleLibrary::CreateTableNoHeading(unsigned numColumns, std::string label)
+rptRcTable* rptStyleLibrary::CreateTableNoHeading(unsigned numColumns, std::_tstring label)
 {
    rptRcTable* pTable = CreateDefaultTable(numColumns,label,false);
 
@@ -284,7 +284,7 @@ rptRcTable* rptStyleLibrary::CreateTableNoHeading(unsigned numColumns, std::stri
    return pTable;
 }
 
-void make_upper( std::string::iterator begin,std::string::iterator end)
+void make_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
 {
    while ( begin != end )
    {
@@ -293,7 +293,7 @@ void make_upper( std::string::iterator begin,std::string::iterator end)
    }
 }
 
-const std::string& rptStyleLibrary::GetImagePath()
+const std::_tstring& rptStyleLibrary::GetImagePath()
 {
    return ms_ImagePath;
 }

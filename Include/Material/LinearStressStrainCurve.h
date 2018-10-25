@@ -77,7 +77,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor. Initializes the stress strain curve with the supplied parameters.
-   matLinearStressStrainCurve(const std::string& name,
+   matLinearStressStrainCurve(const std::_tstring& name,
                               Float64 E,
                               Float64 tensYieldStress,
                               Float64 compYieldStress,
@@ -91,7 +91,7 @@ public:
                               Float64 crushingStress);
 
    //------------------------------------------------------------------------
-   matLinearStressStrainCurve(const std::string& name,
+   matLinearStressStrainCurve(const std::_tstring& name,
                               Float64 E,
                               Float64 tensYieldStress,
                               Float64 tensUltStrain,

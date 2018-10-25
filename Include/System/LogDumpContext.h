@@ -77,9 +77,9 @@ public:
    //------------------------------------------------------------------------
    // Inserters for various built-ins
 #if defined UNICODE
-   virtual dbgDumpContext& operator<<(const std::wstring& s);
+   virtual dbgDumpContext& operator<<(const std::_tstring& s);
 #else
-   virtual dbgDumpContext& operator<<(const std::string& s);
+   virtual dbgDumpContext& operator<<(const std::_tstring& s);
 #endif
    virtual dbgDumpContext& operator<<(LPCTSTR s);
    dbgDumpContext& operator<<(TCHAR c);    

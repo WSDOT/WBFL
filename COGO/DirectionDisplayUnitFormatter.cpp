@@ -134,15 +134,15 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    val = cogoUtil::NormalizeAngle(val);
 
    bool bShowTag = (tag == NULL ? false : true);
-   std::string strDegTag, strMinTag, strSecTag;
+   std::_tstring strDegTag, strMinTag, strSecTag;
    if ( bShowTag )
    {
-      std::string strTag = OLE2A(tag);
+      std::_tstring strTag = OLE2T(tag);
       if ( FAILED(cogoUtil::ParseAngleTags(strTag,&strDegTag,&strMinTag,&strSecTag)) )
          return Error(IDS_E_BADFORMATTAG,IID_IDirectionDisplayUnitFormatter,COGO_E_BADFORMATTAG);
    }
 
-   std::stringstream s;
+   std::_tostringstream s;
 
    if ( m_bBearingFormat )
    {
@@ -154,7 +154,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
 
       cogoUtil::GetBrgParts( val, &n, &deg, &min, &sec, &e );
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
-      s << std::setw(1) << (n == nsNorth ? 'N' : 'S') << " " 
+      s << std::setw(1) << (n == nsNorth ? _T('N') : _T('S') ) << _T(" ") 
         << deg;
 
       if ( bShowTag )
@@ -162,17 +162,17 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
 
       if ( m_bCondensedFormat == VARIANT_FALSE || ( min != 0 || sec != 0 ) )
       {
-         s << " " << std::setw(2) << std::setfill('0') << min;
+         s << _T(" ") << std::setw(2) << std::setfill( _T('0') ) << min;
          if ( bShowTag )
             s << strMinTag;
 
-         s << " " << std::setw(m_Width) << std::setfill('0') << std::showpoint << std::fixed << std::setprecision(m_Precision) << sec;
+         s << _T(" ") << std::setw(m_Width) << std::setfill( _T('0') ) << std::showpoint << std::fixed << std::setprecision(m_Precision) << sec;
 
          if ( bShowTag )
             s << strSecTag;
       }
 
-      s << " " << std::setw(1) << (e == ewEast ? 'E' : 'W') << std::ends;
+      s << _T(" ") << std::setw(1) << (e == ewEast ? _T('E') : _T('W') ) << std::ends;
    }
    else
    {
@@ -191,11 +191,11 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
 
       if ( m_bCondensedFormat == VARIANT_FALSE || ( min != 0 || sec != 0 ) )
       {
-         s << " " << std::setw(2) << std::setfill('0') << min;
+         s << _T(" ") << std::setw(2) << std::setfill( _T('0') ) << min;
          if ( bShowTag )
             s << strMinTag;
 
-         s << " " << std::setw(m_Width) << std::setfill('0') << std::showpoint << std::fixed << std::setprecision(m_Precision) << sec;
+         s << _T(" ") << std::setw(m_Width) << std::setfill( _T('0') ) << std::showpoint << std::fixed << std::setprecision(m_Precision) << sec;
 
          if ( bShowTag )
             s << strSecTag;

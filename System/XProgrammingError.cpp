@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-sysXProgrammingError::sysXProgrammingError(Reason reason, const char* file, Int32 line) :
+sysXProgrammingError::sysXProgrammingError(Reason reason, LPCTSTR file, Int32 line) :
 sysXBase(file,line),
 m_Reason( reason )
 {

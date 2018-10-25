@@ -238,7 +238,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 
                _bstr_t bstr;
                bstr = pSel->Gettype();
-               CString strTag((char*)bstr);
+               CString strTag((LPTSTR)bstr);
                if (strTag=="None") // nothing selected, show our context menu
                {
                   CMenu menu;
@@ -246,13 +246,13 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 	               {
                      ::AfxMessageBox(_T("Could not create CMenu"));
 	               }
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, "&Edit" );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_FIND, "&Find" );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_PRINT, "&Print" );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_SELECT_ALL, "&Select All" );
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_REFRESH, "&Refresh" );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_EDIT, _T("&Edit") );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_FIND, _T("&Find") );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_PRINT, _T("&Print") );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_SELECT_ALL, _T("&Select All") );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_REFRESH, _T("&Refresh") );
 #ifdef DEBUG
-                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_SOURCE, "&View Source" );
+                  menu.AppendMenu( MF_STRING | MF_ENABLED, CCS_CMENU_BASE+CCS_RB_VIEW_SOURCE, _T("&View Source") );
 #endif
 
                   // create pop up
@@ -322,7 +322,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
                      if ( 0 < popup.GetMenuItemCount() )
                      {
                         menu.AppendMenu( MF_SEPARATOR, 0);
-                        menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT)popup.Detach(), "&Table of Contents" );
+                        menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT)popup.Detach(), _T("&Table of Contents") );
                      }
                   }
 
@@ -426,11 +426,11 @@ anchorType GetAnchorInfo(long i, MSHTML::IHTMLElementCollectionPtr& pcoll, long*
    pel = pcoll->item(iv,iv);
 
    _bstr_t btitle = pel->Gettitle ( );
-   CString title((char*)btitle);
+   CString title((LPTSTR)btitle);
    *ptitle = title;
 
    _bstr_t bid = pel->Getid( );
-   CString cid((char*)bid);
+   CString cid((LPTSTR)bid);
 
    // parse id
    CString nid = cid.Right(cid.GetLength()-1);

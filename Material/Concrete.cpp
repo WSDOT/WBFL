@@ -71,7 +71,7 @@ void notify_listeners(const ConcListener& listeners, matConcrete* pConcrete)
 
 //======================== LIFECYCLE  =======================================
 matConcrete::matConcrete() :
-m_Name("Unknown"),
+m_Name( _T("Unknown") ),
 m_Fc( 0 ),
 m_Density( 0 ),
 m_ModE( 0 ),
@@ -84,7 +84,7 @@ m_bHasFct(false)
    // Don't call assert value because this material model is not valid.
 }
 
-matConcrete::matConcrete(const std::string& name,Float64 fc,Float64 density,Float64 modE) :
+matConcrete::matConcrete(const std::_tstring& name,Float64 fc,Float64 density,Float64 modE) :
 m_Name(name),
 m_Fc(fc),
 m_Density(density),
@@ -142,34 +142,34 @@ bool matConcrete::HasAggSplittingStrength() const
    return m_bHasFct;
 }
 
-std::string matConcrete::GetTypeName(matConcrete::Type type,bool bFull)
+std::_tstring matConcrete::GetTypeName(matConcrete::Type type,bool bFull)
 {
    switch(type)
    {
    case matConcrete::Normal:
-      return bFull ? "Normal Weight Concrete" : "Normal";
+      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
 
    case matConcrete::AllLightweight:
-      return bFull ? "All Lightweight Concrete" : "AllLightweight";
+      return bFull ? _T("All Lightweight Concrete") : _T("AllLightweight");
 
    case matConcrete::SandLightweight:
-      return bFull ? "Sand Lightweight Concrete" : "SandLightweight";
+      return bFull ? _T("Sand Lightweight Concrete") : _T("SandLightweight");
 
    default:
       ATLASSERT(false); // is there a new type?
-      return bFull ? "Normal Weight Concrete" : "Normal";
+      return bFull ? _T("Normal Weight Concrete") : _T("Normal");
    }
 }
 
-matConcrete::Type matConcrete::GetTypeFromName(const char* strName)
+matConcrete::Type matConcrete::GetTypeFromName(LPCTSTR strName)
 {
-   if ( std::string(strName) == "Normal" )
+   if ( std::_tstring(strName) == _T("Normal") )
       return matConcrete::Normal;
 
-   if ( std::string(strName) == "AllLightweight" )
+   if ( std::_tstring(strName) == _T("AllLightweight") )
       return matConcrete::AllLightweight;
 
-   if ( std::string(strName) == "SandLightweight" )
+   if ( std::_tstring(strName) == _T("SandLightweight") )
       return matConcrete::SandLightweight;
 
    ATLASSERT(false); // invalid name
@@ -179,7 +179,7 @@ matConcrete::Type matConcrete::GetTypeFromName(const char* strName)
 //======================== OPERATIONS =======================================
 void matConcrete::RegisterListener(matConcreteListener* pListener)
 {
-   WARN( pListener == 0, "pListener is zero" );
+   WARN( pListener == 0, _T("pListener is zero") );
 
    if ( pListener )
    {
@@ -198,7 +198,7 @@ void matConcrete::UnregisterListener(matConcreteListener* pListener)
    {
       ConcListener::iterator found;
       found = m_Listeners.find( pListener );
-      WARN( found == m_Listeners.end(), "pListener was not previously registered" );
+      WARN( found == m_Listeners.end(), _T("pListener was not previously registered") );
       if ( found != m_Listeners.end() )
       {
          (*found)->OnUnregistered( this );
@@ -229,13 +229,13 @@ void matConcrete::EndDamage()
 }
 
 //======================== ACCESS     =======================================
-void matConcrete::SetName(const std::string& name)
+void matConcrete::SetName(const std::_tstring& name)
 {
    m_Name = name;
    NotifyAllListeners();
 }
 
-std::string matConcrete::GetName() const
+std::_tstring matConcrete::GetName() const
 {
    return m_Name;
 }
@@ -331,13 +331,13 @@ bool matConcrete::AssertValid() const
 
 void matConcrete::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for matConcrete"         << endl;
-   os << "===================="         << endl;
-   os << "Name    : " << m_Name.c_str() << endl;
-   os << "Fc      : " << m_Fc           << endl;
-   os << "Density : " << m_Density      << endl;
-   os << "Mod E   : " << m_ModE         << endl;
-   os << "Max Aggr: " << m_MaxAggregateSize<<endl;
+   os << _T("Dump for matConcrete")         << endl;
+   os << _T("====================")         << endl;
+   os << _T("Name    : ") << m_Name.c_str() << endl;
+   os << _T("Fc      : ") << m_Fc           << endl;
+   os << _T("Density : ") << m_Density      << endl;
+   os << _T("Mod E   : ") << m_ModE         << endl;
+   os << _T("Max Aggr: ") << m_MaxAggregateSize<<endl;
 }
 #endif // _DEBUG
 

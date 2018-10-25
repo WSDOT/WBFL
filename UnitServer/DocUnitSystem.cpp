@@ -21,7 +21,7 @@ HRESULT CDocUnitSystem::BadDisplayUnitGroupError(BSTR name)
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), IDS_E_BADDISPLAYUNITGROUP, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, str, W2T(name) );
+   int cOut = _stprintf_s( msg, str, W2T(name) );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CDocUnitSystem>::Error(oleMsg,IDH_E_BADDISPLAYUNITGROUP, GetHelpFile(), IID_IDocUnitSystem, UNITS_E_BADDISPLAYUNITGROUP);

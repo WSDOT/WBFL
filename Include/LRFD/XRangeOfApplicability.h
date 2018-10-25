@@ -91,7 +91,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdXRangeOfApplicability(Reason reason,const char* msg,const char* file, long line);
+   lrfdXRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, long line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -112,7 +112,7 @@ public:
    void Throw() const { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
    Int32 GetReason() const { return (Int32)m_Reason; }
    lrfdXRangeOfApplicability::Reason GetReasonCode() const { return m_Reason; }
-   virtual void GetErrorMessage(std::string* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -131,7 +131,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    Reason m_Reason;
-   std::string m_Message;
+   std::_tstring m_Message;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

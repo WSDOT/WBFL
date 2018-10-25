@@ -179,7 +179,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag for the output unit of measure.
-   virtual std::string GetUnitTag() const
+   virtual std::_tstring GetUnitTag() const
    {
       return m_pUnitOfMeasure->UnitTag();
    }

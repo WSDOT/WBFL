@@ -63,7 +63,7 @@ CTestOverhang::~CTestOverhang()
 HRESULT CTestOverhang::Test()
 {
    // dump results to a file
-   std::ofstream os("Overhang.txt");
+   std::_tofstream os("Overhang.txt");
 
    // build a model and attach it to our load group response object
    CComPtr<ILoadGroupResponse> plgr;
@@ -692,7 +692,7 @@ ILBAMModel* CTestOverhang::CreateModel(bool doPois)
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   char* lgns[]={"Point Loads","Distributed Loads"};
+   LPTSTR lgns[]={_T("Point Loads"),_T("Distributed Loads")};
    for (long i=0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

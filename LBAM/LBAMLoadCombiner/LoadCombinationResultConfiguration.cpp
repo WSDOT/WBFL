@@ -255,7 +255,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::Load(IStructuredLoad2 * pload)
          if (FAILED(hr))
             return hr;
 
-         lcf.m_LoadCaseName = (char*)_bstr_t(var);
+         lcf.m_LoadCaseName = (LPTSTR)_bstr_t(var);
 
          var.Clear();
          hr = pload->get_Property(_bstr_t("LoadCaseFactor"),&var);

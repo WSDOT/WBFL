@@ -55,7 +55,7 @@ m_CompYieldStrain( 0 )
    ASSERTVALID;
 }
 
-matYieldStressStrainCurve::matYieldStressStrainCurve(const std::string& name,
+matYieldStressStrainCurve::matYieldStressStrainCurve(const std::_tstring& name,
                                                      Float64 E,
                                                      Float64 tensYieldStress,
                                                      Float64 compYieldStress,

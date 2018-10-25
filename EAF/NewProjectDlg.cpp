@@ -82,7 +82,7 @@ void CNewProjectDlg::SetOKButtonState()
    GetDlgItem(IDOK)->EnableWindow( (0 == m_Templates.GetSelectedCount() ? FALSE : TRUE) );
    if ( !GetDlgItem(IDOK)->IsWindowEnabled() )
    {
-      GetDlgItem(IDC_DESCRIPTION)->SetWindowText("Select a project template");
+      GetDlgItem(IDC_DESCRIPTION)->SetWindowText(_T("Select a project template"));
       GetDlgItem(IDC_DESCRIPTION)->Invalidate();
    }
 }
@@ -115,7 +115,7 @@ BOOL CNewProjectDlg::OnInitDialog()
    CDialog::OnInitDialog();
    EnableToolTips(TRUE);
 
-   GetDlgItem(IDC_DESCRIPTION)->SetWindowText("");
+   GetDlgItem(IDC_DESCRIPTION)->SetWindowText(_T(""));
 
    CEAFApp* pApp = EAFGetApp();
    m_ViewMode = pApp->GetProfileInt(strNewDialogSection,_T("ViewMode"),IDC_LARGE);

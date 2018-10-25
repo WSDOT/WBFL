@@ -327,6 +327,6 @@ void CEAFStatusCenter::EditItem(StatusItemIDType id)
    }
    else
    {
-      AfxMessageBox("An error occured while attempting to display status item details",MB_OK | MB_ICONEXCLAMATION);
+      AfxMessageBox(_T("An error occured while attempting to display status item details"),MB_OK | MB_ICONEXCLAMATION);
    }
 }

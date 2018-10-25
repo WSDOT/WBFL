@@ -68,14 +68,14 @@ inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR lo
 inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, OptimizationType optmization, 
                              ForceEffectType forceType, ResultsSummationType summ, VARIANT_BOOL includeLiveLoad,
                              ILoadCombinationResponse* lcResponse, IConcurrentLoadCombinationResponse* concResponse,
-                             std::ofstream& os)
+                             std::_tofstream& os)
 {
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
    // the optimal configuration into the basic engine. The result should be the same if both engines are
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Results for "<<(char*)_bstr_t(loadCombination)<< " for stage "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Results for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Moment " : "Shear ")<<std::endl;
 
@@ -151,14 +151,14 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
 inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, OptimizationType optmization, 
                              ForceEffectType forceType, ResultsSummationType summ, VARIANT_BOOL includeLiveLoad,
                              ILoadCombinationResponse* lcResponse, IConcurrentLoadCombinationResponse* concResponse,
-                             std::ofstream& os)
+                             std::_tofstream& os)
 {
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
    // the optimal configuration into the basic engine. The result should be the same if both engines are
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Deflection Results for "<<(char*)_bstr_t(loadCombination)<< " for stage "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Deflection Results for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"Horizontal Displacement"<<std::endl;
@@ -241,7 +241,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
                                    OptimizationType optmization, ForceEffectType forceType, 
                                    ResultsSummationType summ, VARIANT_BOOL includeLiveLoad,
                                    ILoadCombinationResponse* lcResponse, IConcurrentLoadCombinationResponse* concResponse,
-                                   std::ofstream& os)
+                                   std::_tofstream& os)
 {
    HRESULT hr;
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
@@ -249,7 +249,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Reactions for "<<(char*)_bstr_t(loadCombination)<< " for stage "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Reactions for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
 
    if (forceType==fetFx)
@@ -314,7 +314,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
                                    OptimizationType optmization, ForceEffectType forceType, 
                                    ResultsSummationType summ, VARIANT_BOOL includeLiveLoad,
                                    ILoadCombinationResponse* lcResponse, IConcurrentLoadCombinationResponse* concResponse,
-                                   std::ofstream& os)
+                                   std::_tofstream& os)
 {
    HRESULT hr;
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
@@ -322,7 +322,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Support Deflections for "<<(char*)_bstr_t(loadCombination)<< " for stage "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Support Deflections for "<<(LPTSTR)_bstr_t(loadCombination)<< " for stage "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
 
    if (forceType==fetFx)
@@ -410,7 +410,7 @@ void Solleks::Test()
    TRY_TEST(pengine->get_ConcurrentLoadCombinationResponse(&clc_response), S_OK);
 
    // dump results to a file
-   std::ofstream os("Solleks.txt");
+   std::_tofstream os("Solleks.txt");
 
    for (long is=0; is<1; is++)
    {

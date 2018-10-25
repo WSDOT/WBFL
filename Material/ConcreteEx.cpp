@@ -46,7 +46,7 @@ matConcrete()
    m_WeightDensity = 0;
 }
 
-matConcreteEx::matConcreteEx(const std::string& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE) :
+matConcreteEx::matConcreteEx(const std::_tstring& name,Float64 fc,Float64 density,Float64 wDensity,Float64 modE) :
 matConcrete( name, fc, density, modE )
 {
    m_WeightDensity = wDensity;

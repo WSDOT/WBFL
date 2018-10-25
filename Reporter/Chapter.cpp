@@ -43,15 +43,15 @@ CLASS
 
 
 rptChapter::rptChapter() :
-m_Name( "" )
+m_Name( _T("") )
 {}
 
-rptChapter::rptChapter(const std::string& name) :
+rptChapter::rptChapter(const std::_tstring& name) :
 m_Name( name )
 {}
 
 
-rptChapter::rptChapter(const std::string& name,const rptStyleName& rStyleName, 
+rptChapter::rptChapter(const std::_tstring& name,const rptStyleName& rStyleName, 
                        const rptPageLayout& rLayout):
 rptReportLayoutItem(rStyleName, rLayout),
 m_Name( name )
@@ -121,7 +121,7 @@ rptChapter::ChapterParagraphIterator rptChapter::End()
    return m_ParagraphVec.end();
 }
 
-const char* rptChapter::GetName() const
+LPCTSTR rptChapter::GetName() const
 {
    if (!m_Name.empty())
       return m_Name.c_str();
@@ -129,9 +129,9 @@ const char* rptChapter::GetName() const
       return 0;
 }
 
-void rptChapter::SetName(const char* name)
+void rptChapter::SetName(LPCTSTR name)
 {
-   m_Name.assign( name ? name : "" );
+   m_Name.assign( name ? name : _T("") );
 }
 
 //======================== INQUIRY    =======================================

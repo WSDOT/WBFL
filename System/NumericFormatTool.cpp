@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 
 // Helper function prototypes
 Uint16 get_width_demand(Float64 value,Uint16 precision);
-void apply_stream_manipulators( std::ostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision);
+void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -66,18 +66,18 @@ sysNumericFormatTool::~sysNumericFormatTool()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-std::string sysNumericFormatTool::AsString(Float64 value) const
+std::_tstring sysNumericFormatTool::AsString(Float64 value) const
 {
-   std::ostringstream os;
+   std::_tostringstream os;
 
    if ( !IsZero(value) )
    {
       if ( IsEqual(fabs(value)/Float64_Max,1.0) )
       {
          if ( value > 0 )
-            return "INF";
+            return _T("INF");
          else 
-            return "-INF";
+            return _T("-INF");
       }
    }
 
@@ -113,9 +113,9 @@ std::string sysNumericFormatTool::AsString(Float64 value) const
    return os.str();
 }
 
-std::string sysNumericFormatTool::AsString(const sysSectionValue& value) const
+std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
 {
-   std::ostringstream os;
+   std::_tostringstream os;
    
    Float64 left_value  = value.Left();
    Float64 right_value = value.Right();
@@ -212,7 +212,7 @@ Uint16 get_width_demand(Float64 value,Uint16 precision)
    return demand;
 }
 
-void apply_stream_manipulators( std::ostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision)
+void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision)
 {
    switch ( format )
    {

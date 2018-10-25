@@ -50,7 +50,7 @@ public:
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   mathXFixedPointIterationFailed(Reason reason,Float64 last,const char* file,Int16 line);
+   mathXFixedPointIterationFailed(Reason reason,Float64 last,LPCTSTR file,Int16 line);
 
    //------------------------------------------------------------------------
    // Default constructor

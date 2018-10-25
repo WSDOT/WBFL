@@ -218,7 +218,7 @@ void CEAFStatusBar::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
          pDC->Rectangle( &(lpDrawItemStruct->rcItem) );
 
          CString strStatus;
-         strStatus.Format("%d",status_count);
+         strStatus.Format(_T("%d"),status_count);
          int bkMode = pDC->SetBkMode(TRANSPARENT);
          pDC->DrawText(strStatus,&(lpDrawItemStruct->rcItem),DT_CENTER | DT_VCENTER);
          pDC->SetBkMode(bkMode);

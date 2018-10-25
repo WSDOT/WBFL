@@ -89,7 +89,7 @@ int CEAFApp::Run()
    }
    catch(sysXBase& e)
    {
-      std::string msg;
+      std::_tstring msg;
       e.GetErrorMessage(&msg);
       AfxMessageBox(msg.c_str(),MB_OK);
       ExitInstance();
@@ -103,7 +103,7 @@ BOOL CEAFApp::InitInstance()
    // Initialize OLE libraries
 	if (!SUCCEEDED(OleInitialize(NULL)))
 	{
-		AfxMessageBox("OLE initialization failed. Make sure that the OLE libraries are the correct version.");
+		AfxMessageBox(_T("OLE initialization failed. Make sure that the OLE libraries are the correct version."));
 		return FALSE;
 	}
 
@@ -279,7 +279,7 @@ void CEAFApp::ShowUsageMessage()
    ASSERT( cmdInfo.m_bUsageMessage );
 
    CString strUsage;
-   strUsage.Format("%s",cmdInfo.GetUsageMessage());
+   strUsage.Format(_T("%s"),cmdInfo.GetUsageMessage());
    
    UINT nPlugins = GetAppPluginManager()->GetPluginCount();
    for ( UINT idx = 0; idx < nPlugins; idx++ )
@@ -292,7 +292,7 @@ void CEAFApp::ShowUsageMessage()
       {
          CString str = appCmdLine->GetUsageMessage();
 
-         strUsage += "\n";
+         strUsage += _T("\n");
          strUsage += str;
       }
    }
@@ -340,7 +340,7 @@ CString CEAFApp::GetAppLocation()
    finder.FindNextFile();
 
    CString filePath = finder.GetFilePath();
-   filePath.Replace( finder.GetFileName(), "" );
+   filePath.Replace( finder.GetFileName(), _T("") );
 
    return filePath;
 }
@@ -427,7 +427,7 @@ BOOL CEAFApp::RegisterDocTemplates()
 BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
 {
    if ( bIntegrate )
-      CEAFSplashScreen::SetText("Integrating components into the user interface");
+      CEAFSplashScreen::SetText(_T("Integrating components into the user interface"));
 
    GetAppPluginManager()->IntegrateWithUI(bIntegrate);
    return TRUE;
@@ -543,7 +543,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    else
    {
       CString strMsg;
-      strMsg.Format("%s is not a valid file for this application. Please select a different file",lpszFileName);
+      strMsg.Format(_T("%s is not a valid file for this application. Please select a different file"),lpszFileName);
       ::AfxMessageBox(strMsg,MB_ICONEXCLAMATION|MB_OK);
    }
 
@@ -555,12 +555,12 @@ void CEAFApp::SetHelpFileName(LPCTSTR lpszHelpFile)
    if ( lpszHelpFile == NULL )
    {
       free((void*)m_pszHelpFilePath);
-      m_pszHelpFilePath = _tcsdup(_T(m_strHelpFile));
+      m_pszHelpFilePath = _tcsdup(m_strHelpFile);
    }
    else
    {
       free((void*)m_pszHelpFilePath);
-      m_pszHelpFilePath = _tcsdup(_T(lpszHelpFile));
+      m_pszHelpFilePath = _tcsdup(lpszHelpFile);
    }
 }
 
@@ -571,11 +571,11 @@ LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg)
 	if ( e->IsKindOf(RUNTIME_CLASS(CXShutDown) ) )
    {
       CXShutDown* pXShutDown = (CXShutDown*)e;
-      std::string error_msg;
+      std::_tstring error_msg;
       pXShutDown->GetErrorMessage( &error_msg );
 
       CString msg1;
-      AfxFormatString1( msg1, IDS_E_PROBPERSISTS, "log" ); 
+      AfxFormatString1( msg1, IDS_E_PROBPERSISTS, _T("log") ); 
       CString msg2;
       AfxFormatString2( msg2, pXShutDown->AttemptSave() ? IDS_FATAL_MSG_SAVE : IDS_FATAL_MSG_NOSAVE, error_msg.c_str(), msg1 );
       int retval = AfxMessageBox( msg2, (pXShutDown->AttemptSave() ? MB_YESNO : MB_OK) | MB_ICONEXCLAMATION );
@@ -591,7 +591,7 @@ LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg)
    else if ( e->IsKindOf(RUNTIME_CLASS(CXUnwind) ) )
    {
       CXUnwind* pXUnwind = (CXUnwind*)e;
-      std::string error_msg;
+      std::_tstring error_msg;
       pXUnwind->GetErrorMessage( &error_msg );
       m_LastError = error_msg.c_str();
       AfxMessageBox( error_msg.c_str(),  MB_OK | MB_ICONWARNING );
@@ -673,14 +673,14 @@ void CEAFApp::InitDisplayUnits()
    unitSysUnitsMgr::SetTemperatureUnit( unitMeasure::Celcius );
    unitSysUnitsMgr::SetAngleUnit( unitMeasure::Radian );
 
-   m_UnitLibrary.AddEntry("SI",      init_si_units());
-   m_UnitLibrary.AddEntry("English", init_english_units() );
+   m_UnitLibrary.AddEntry(_T("SI"),      init_si_units());
+   m_UnitLibrary.AddEntry(_T("English"), init_english_units() );
    SetUnitsMode(eafTypes::umUS);
 }
 
 void CEAFApp::UpdateDisplayUnits()
 {
-   std::string units = (m_Units == eafTypes::umUS ? "English" : "SI");
+   std::_tstring units = (m_Units == eafTypes::umUS ? _T("English") : _T("SI"));
    m_pDisplayUnits = &m_UnitLibrary.GetEntry(units);
 }
 
@@ -723,9 +723,9 @@ sysDate CEAFApp::GetInstallDate()
    // The GUID used here is the Product Code from InstallShield
    // This code uniquely identifies PGSuper so don't change it
    CString strDate = GetLocalMachineString(hKey,strProductCode,_T("InstallDate"),_T("191001015"));
-   int year  = atoi(strDate.Left(4));
-   int month = atoi(strDate.Mid(4,2));
-   int day   = atoi(strDate.Right(2));
+   int year  = _ttoi(strDate.Left(4));
+   int month = _ttoi(strDate.Mid(4,2));
+   int day   = _ttoi(strDate.Right(2));
 
    sysDate date(day,month,year);
    return date;
@@ -870,7 +870,7 @@ BOOL CEAFApp::ReadWindowPlacement(const CString& strSection,const CString& strKe
       return FALSE;
 
    WINDOWPLACEMENT wp;
-   int nRead = sscanf_s(strBuffer, m_strWindowPlacementFormat,
+   int nRead = _stscanf_s(strBuffer, m_strWindowPlacementFormat,
       &wp.flags, &wp.showCmd,
       &wp.ptMinPosition.x, &wp.ptMinPosition.y,
       &wp.ptMaxPosition.x, &wp.ptMaxPosition.y,
@@ -1128,12 +1128,12 @@ END_MESSAGE_MAP()
 
 void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 {
-   pCmdUI->SetText("Project Types");
+   pCmdUI->SetText(_T("Project Types"));
 }
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins("Project Types",GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins(_T("Project Types"),GetAppPluginCategoryID(),EAFGetMainFrame());
    std::vector<CEAFPluginState>::iterator iter;
    for ( iter = pluginStates.begin(); iter != pluginStates.end(); iter++ )
    {
@@ -1187,7 +1187,7 @@ void CEAFPluginApp::OnManageApplicationPlugins()
             }
             else
             {
-               AfxMessageBox("Error creating plugin");
+               AfxMessageBox(_T("Error creating plugin"));
             }
          }
       }
@@ -1232,11 +1232,11 @@ void log_error(CDocument* pDoc,void* pStuff)
 
       GET_IFACE2(pBroker,IEAFProjectLog,pLog);
 
-      std::string error_message;
+      std::_tstring error_message;
       pXShutDown->GetErrorMessage( &error_message );
 
       CString msg;
-      msg.Format("%s\nFile : %s\nLine : %d\n", error_message.c_str(), pXShutDown->GetFile().c_str(), pXShutDown->GetLine() );
+      msg.Format(_T("%s\nFile : %s\nLine : %d\n"), error_message.c_str(), pXShutDown->GetFile().c_str(), pXShutDown->GetLine() );
 
       pLog->LogMessage( msg );
    }
@@ -1247,7 +1247,7 @@ void log_error(CDocument* pDoc,void* pStuff)
 unitmgtIndirectMeasure init_si_units()
 {
    unitmgtIndirectMeasure im;
-   im.Name = "SI";
+   im.Name = _T("SI");
    
    im.StationFormat = unitStationFormats::SI;
 
@@ -1291,7 +1291,7 @@ unitmgtIndirectMeasure init_english_units()
 {
    unitmgtIndirectMeasure im;
 
-   im.Name = "English";
+   im.Name = _T("English");
 
    im.StationFormat = unitStationFormats::US;
 

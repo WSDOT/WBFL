@@ -99,57 +99,57 @@ Uint32 CReportManager::GetReportBuilderCount(bool bIncludeHidden) const
    return m_RptMgr.GetReportBuilderCount(bIncludeHidden);
 }
 
-boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(const char* strReportName)
+boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(LPCTSTR strReportName)
 {
    return m_RptMgr.GetReportBuilder(strReportName);
 }
 
-boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(const std::string& strReportName)
+boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(const std::_tstring& strReportName)
 {
    return m_RptMgr.GetReportBuilder(strReportName);
 }
 
-boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(const char* strReportName)
+boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(LPCTSTR strReportName)
 {
    return m_RptMgr.RemoveReportBuilder(strReportName);
 }
 
-boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(const std::string& strReportName)
+boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(const std::_tstring& strReportName)
 {
    return m_RptMgr.RemoveReportBuilder(strReportName);
 }
 
-std::vector<std::string> CReportManager::GetReportNames(bool bIncludeHidden) const
+std::vector<std::_tstring> CReportManager::GetReportNames(bool bIncludeHidden) const
 {
    return m_RptMgr.GetReportNames(bIncludeHidden);
 }
 
-CReportDescription CReportManager::GetReportDescription(const char* strReportName)
+CReportDescription CReportManager::GetReportDescription(LPCTSTR strReportName)
 {
    return m_RptMgr.GetReportDescription(strReportName);
 }
 
-CReportDescription CReportManager::GetReportDescription(const std::string& strReportName)
+CReportDescription CReportManager::GetReportDescription(const std::_tstring& strReportName)
 {
    return m_RptMgr.GetReportDescription(strReportName);
 }
 
-const CBitmap* CReportManager::GetMenuBitmap(const char* strReportName)
+const CBitmap* CReportManager::GetMenuBitmap(LPCTSTR strReportName)
 {
    return m_RptMgr.GetMenuBitmap(strReportName);
 }
 
-const CBitmap* CReportManager::GetMenuBitmap(const std::string& strReportName)
+const CBitmap* CReportManager::GetMenuBitmap(const std::_tstring& strReportName)
 {
    return m_RptMgr.GetMenuBitmap(strReportName);
 }
 
-boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecificationBuilder(const char* strReportName)
+boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecificationBuilder(LPCTSTR strReportName)
 {
    return m_RptMgr.GetReportSpecificationBuilder(strReportName);
 }
 
-boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecificationBuilder(const std::string& strReportName)
+boost::shared_ptr<CReportSpecificationBuilder> CReportManager::GetReportSpecificationBuilder(const std::_tstring& strReportName)
 {
    return m_RptMgr.GetReportSpecificationBuilder(strReportName);
 }

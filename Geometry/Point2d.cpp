@@ -164,6 +164,21 @@ STDMETHODIMP CPoint2d::get_StructuredStorage(IStructuredStorage2* *pStg)
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
 }
 
+STDMETHODIMP CPoint2d::Distance(Float64 x,Float64 y,Float64* pDistance)
+{
+   CHECK_RETVAL(pDistance);
+   *pDistance = sqrt( (m_X-x)*(m_X-x) + (m_Y-y)*(m_Y-y) );
+   return S_OK;
+}
+
+STDMETHODIMP CPoint2d::DistanceEx(IPoint2d* pOther,Float64* pDistance)
+{
+   CHECK_IN(pOther);
+   Float64 x,y;
+   pOther->Location(&x,&y);
+   return Distance(x,y,pDistance);
+}
+
 STDMETHODIMP CPoint2d::SameLocation(IPoint2d* pOther)
 {
    CHECK_IN(pOther);

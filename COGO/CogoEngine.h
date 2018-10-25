@@ -122,6 +122,7 @@ public:
    STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points);
    STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ long nParts,/*[out,retval]*/ IPoint2dCollection** points);
 	STDMETHOD(HorzCurve)(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nParts, /*[out,retval]*/ IPoint2dCollection** points);
+   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ long nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points);
 
 // ITangent2
 public:

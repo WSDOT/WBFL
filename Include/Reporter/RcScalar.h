@@ -134,7 +134,7 @@ public:
    virtual rptReportContent&  SetValue(Float64 v);
 
    //------------------------------------------------------------------------
-   std::string AsString() const;
+   std::_tstring AsString() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

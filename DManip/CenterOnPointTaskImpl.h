@@ -57,7 +57,7 @@ BEGIN_COM_MAP(CCenterOnPointTaskImpl)
 END_COM_MAP()
 
    // CCenterOnPointTask methods (from CCenterOnPointFSM)
-	STDMETHOD_(void,FSMError)(const char* t,const char* s);
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
 	STDMETHOD_(void,CenterOnPoint)();
    STDMETHOD_(void,Cancel)();
 	STDMETHOD_(void,InitTask)();

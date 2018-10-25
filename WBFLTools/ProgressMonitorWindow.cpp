@@ -109,7 +109,7 @@ STDMETHODIMP CProgressMonitorWindow::put_Message(/*[in]*/long cookie, /*[in]*/BS
    if (m_IsFileOpen)
    {
       CString msg(newVal);
-      m_FileStream << "("<<cookie<<")>>Msg: "<<(const char*)msg<<std::endl;
+      m_FileStream << "("<<cookie<<")>>Msg: "<<(LPCTSTR)msg<<std::endl;
    }
 
    m_pDlg->PumpMessage();
@@ -248,7 +248,7 @@ STDMETHODIMP CProgressMonitorWindow::OpenLogFile(BSTR fileName)
          return E_INVALIDARG;
       }
 
-      m_FileStream.open((const char*)file_name);
+      m_FileStream.open((LPCTSTR)file_name);
       if (m_FileStream.is_open())
       {
          m_IsFileOpen = true;

@@ -77,7 +77,7 @@ public:
    //------------------------------------------------------------------------
    // Default constructor
    lrfdXCreepCoefficient(Reason reason,
-                    const char* file,
+                    LPCTSTR file,
                     Int16 line);
 
    //------------------------------------------------------------------------

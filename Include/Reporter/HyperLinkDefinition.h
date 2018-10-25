@@ -73,7 +73,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor - Must define hyper target.
-   rptHyperLinkDefinition(const std::string& HyperTarget);
+   rptHyperLinkDefinition(const std::_tstring& HyperTarget);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -94,7 +94,7 @@ public:
    //------------------------------------------------------------------------
    //
    // Return the target location
-   std::string GetTargetName() const;
+   std::_tstring GetTargetName() const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -113,7 +113,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    // the target that we are linking to
-   std::string m_TargetName;
+   std::_tstring m_TargetName;
 
    // GROUP: LIFECYCLE
    // Default constructor - hidden

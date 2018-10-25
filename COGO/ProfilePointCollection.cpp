@@ -279,7 +279,7 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
    CComPtr<IEnumProfilePoints> enumPP;
    get__EnumProfilePoints(&enumPP);
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IProfilePoint> pp;
    while ( enumPP->Next(1,&pp,NULL) != S_FALSE )
    {
@@ -388,7 +388,7 @@ HRESULT CProfilePointCollection::ProfilePointKeyError(CogoElementKey key,UINT nH
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CProfilePointCollection,&CLSID_ProfilePointCollection>::Error(oleMsg, IID_IProfilePointCollection, hRes);

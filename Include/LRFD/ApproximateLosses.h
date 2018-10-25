@@ -133,7 +133,8 @@ public:
 
                          Float64 rh,      // relative humidity
                          Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateParameters
                          );
 
    //------------------------------------------------------------------------

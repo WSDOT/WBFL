@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 
 //======================== LIFECYCLE  =======================================
 sysXStructuredLoad::sysXStructuredLoad(sysXStructuredLoad::Reason reason,
-                                       const char* file, Int16 line) :
+                                       LPCTSTR file, Int16 line) :
 sysXBase(file,line),
 m_Reason(reason)
 {
@@ -86,41 +86,41 @@ sysXStructuredLoad::Reason sysXStructuredLoad::GetExplicitReason() const
    return m_Reason;
 }
 
-void sysXStructuredLoad::GetErrorMessage(std::string* pMsg) const
+void sysXStructuredLoad::GetErrorMessage(std::_tstring* pMsg) const
 {
    sysXBase::GetErrorMessage(pMsg);
 
    switch (m_Reason)
    {
    case (sysXStructuredLoad::InvalidFileFormat):
-      *pMsg += "File format was invalid\n";
+      *pMsg += _T("File format was invalid\n");
       break;
    case (sysXStructuredLoad::EndOfFile):
-      *pMsg += "Unexpected end of file\n";
+      *pMsg += _T("Unexpected end of file\n");
       break;
    case (sysXStructuredLoad::BadRead):
-      *pMsg += "Unexpected error trying to read file\n";
+      *pMsg += _T("Unexpected error trying to read file\n");
       break;
    case (sysXStructuredLoad::BadVersion):
-      *pMsg += "Unexpected version number reading structured data\n";
+      *pMsg += _T("Unexpected version number reading structured data\n");
       break;
    case (sysXStructuredLoad::MemoryError):
-      *pMsg += "Memory allocation error during structured read\n";
+      *pMsg += _T("Memory allocation error during structured read\n");
       break;
    case (sysXStructuredLoad::CantInitializeTheParser):
-      *pMsg += "Could not initialize the parser. Perhaps the parser component is not installed\n";
+      *pMsg += _T("Could not initialize the parser. Perhaps the parser component is not installed\n");
       break;
    default:
-      *pMsg += "Unknown error reading structured data\n";
+      *pMsg += _T("Unknown error reading structured data\n");
       break;
    }
-   *pMsg += "\n";
+   *pMsg += _T("\n");
    *pMsg +=m_ExtendedMessage;
 }
 
-void sysXStructuredLoad::SetExtendedMessage(const char* msg)
+void sysXStructuredLoad::SetExtendedMessage(LPCTSTR msg)
 {
-   m_ExtendedMessage = std::string(msg);
+   m_ExtendedMessage = std::_tstring(msg);
 }
 
 //======================== ACCESS     =======================================

@@ -46,17 +46,19 @@ CString AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszDefault)
    return dlg.m_Answer;
 }
 
-int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice)
+int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,BOOL bCancelButton,int defChoice)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CChoiceDlg dlg;
+   dlg.m_bCancel = bCancelButton;
    dlg.m_Title = lpszTitle;
    dlg.m_Question = lpszQuestion;
    dlg.m_Responses = lpszResponses;
    dlg.m_Choice = defChoice;
 
-   dlg.DoModal();
-
-   return dlg.m_Choice;
+   if ( dlg.DoModal() == IDOK )
+      return dlg.m_Choice;
+   else
+      return -1;
 }

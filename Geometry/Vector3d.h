@@ -72,6 +72,7 @@ private:
 // IVector3d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Clone)(/*[out,retval]*/ IVector3d** ppClone);
 	STDMETHOD(IncrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val);
 	STDMETHOD(Increment)(/*[in]*/ IVector3d* v);
 	STDMETHOD(DecrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val);

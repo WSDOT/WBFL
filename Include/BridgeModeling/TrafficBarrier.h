@@ -98,7 +98,7 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    const gmTrafficBarrier* GetTrafficBarrierShape() const;

@@ -248,7 +248,7 @@ ILBAMModel* TestStressPoints::CreateModel(bool doPois)
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   char* lgns[]={"Point Loads","Distributed Loads"};
+   LPTSTR lgns[]={_T("Point Loads"),_T("Distributed Loads")};
    for (int i=0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

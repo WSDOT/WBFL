@@ -25,6 +25,7 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -130,6 +131,8 @@
 			UseOfMFC="2"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -155,6 +158,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_AFXEXT;BUILDMFCTOOLSLIB"
 				RuntimeLibrary="2"
@@ -191,6 +199,9 @@
 				EnableUAC="true"
 				ModuleDefinitionFile=".\MfcTools.def"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -231,6 +242,14 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
+			<File
+				RelativePath=".\CacheComboBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CacheEdit.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\ChoiceDlg.cpp"
 				>
@@ -833,6 +852,14 @@
 			>
 			<File
 				RelativePath="..\Include\MfcTools\AutoLib.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\MfcTools\CacheComboBox.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\MfcTools\CacheEdit.h"
 				>
 			</File>
 			<File

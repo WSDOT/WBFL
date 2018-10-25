@@ -58,7 +58,7 @@ BEGIN_COM_MAP(CZoomRectTaskImpl)
 END_COM_MAP()
 
    // CZoomRectTask methods (from CZoomRectFSM)
-	STDMETHOD_(void,FSMError)(const char* t,const char* s);
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
 	STDMETHOD_(void,ZoomRect)();
 	STDMETHOD_(void,RecordFirstPoint)();
    STDMETHOD_(void,ClearRect)();

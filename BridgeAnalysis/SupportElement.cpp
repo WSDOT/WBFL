@@ -135,7 +135,7 @@ void bamSupportElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
         break;
 
    default:
-        CHECKX( false, "Unknown support type encountered");
+        CHECKX( false, _T("Unknown support type encountered"));
         break;
    }
 

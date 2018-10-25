@@ -43,27 +43,27 @@ CLASS
 
 // constructors
 // non-hyperlink versions
-rptRcString::rptRcString(const char * YourStr,bool bNoWrap) :
+rptRcString::rptRcString(LPCTSTR  YourStr,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
 {
 }
 
-rptRcString::rptRcString(const std::string& YourString,bool bNoWrap) :
+rptRcString::rptRcString(const std::_tstring& YourString,bool bNoWrap) :
 m_TheString( YourString ),
 m_bNoWrap(bNoWrap)
 {
 }
 
 // hyperlink versions
-rptRcString::rptRcString(const char * YourStr, const std::string& HyperTarget,bool bNoWrap) :
+rptRcString::rptRcString(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap) :
 m_TheString( YourStr ),
 m_bNoWrap(bNoWrap)
 {
    SetHyperLink(HyperTarget);
 }
 
-rptRcString::rptRcString(const std::string& YourString, const std::string& HyperTarget,bool bNoWrap) :
+rptRcString::rptRcString(const std::_tstring& YourString, const std::_tstring& HyperTarget,bool bNoWrap) :
 m_TheString( YourString ),
 m_bNoWrap(bNoWrap)
 {
@@ -116,7 +116,7 @@ bool rptRcString::NoWrap() const
    return m_bNoWrap;
 }
 
-rptReportContent&  rptRcString::SetValue(const char* str)
+rptReportContent&  rptRcString::SetValue(LPCTSTR str)
 {
    m_TheString = str;
    return *this;

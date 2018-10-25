@@ -74,11 +74,11 @@ public:
 
    //------------------------------------------------------------------------
    // Report with default style and page layout
-   rptReport(const std::string& rReportName = "");
+   rptReport(const std::_tstring& rReportName = _T(""));
 
    //------------------------------------------------------------------------
    // Report with fully defined style and page layout.
-   rptReport(const std::string& rReportName,
+   rptReport(const std::_tstring& rReportName,
              const rptStyleName& rStyleName,
              const rptPageLayout& rLayout);
    
@@ -101,7 +101,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the name of the report
-   virtual std::string GetName() const {return m_ReportName;}
+   virtual std::_tstring GetName() const {return m_ReportName;}
 
    //------------------------------------------------------------------------
    // Override the rptReportItem version because having a report with no style
@@ -143,7 +143,7 @@ private:
 
    //------------------------------------------------------------------------
    // Title of the report
-   std::string m_ReportName;
+   std::_tstring m_ReportName;
 
    //------------------------------------------------------------------------
    // A vector of chapters that make up the report.

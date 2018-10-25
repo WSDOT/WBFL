@@ -34,7 +34,7 @@
 
 interface iZoomRectTask : public IUnknown
 {
-	STDMETHOD_(void,FSMError)(const char* t,const char* s) PURE;
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
 	STDMETHOD_(void,ZoomRect)() PURE;
    STDMETHOD_(void,RecordFirstPoint)() PURE;
    STDMETHOD_(void,ClearRect)() PURE;

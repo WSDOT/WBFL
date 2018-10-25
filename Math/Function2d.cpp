@@ -39,7 +39,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-mathXEvalError::mathXEvalError(Reason reason,const char* file, Int16 line) :
+mathXEvalError::mathXEvalError(Reason reason,LPCTSTR file, Int16 line) :
 sysXBase(file,line)
 {
    m_Reason = reason;
@@ -142,7 +142,7 @@ bool mathFunction2d::AssertValid() const
 
 void mathFunction2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for mathFunction2d" << endl;
+   os << _T("Dump for mathFunction2d") << endl;
 }
 #endif // _DEBUG
 

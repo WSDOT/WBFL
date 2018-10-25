@@ -399,7 +399,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t name(var);
-      m_Name = (const char*)name;
+      m_Name = (LPCTSTR)name;
 
       var.Clear();
       hr = pload->get_Property(_bstr_t("Description"),&var);
@@ -407,7 +407,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t desc(var);
-      m_Description = (const char*)desc;
+      m_Description = (LPCTSTR)desc;
 
       hr = pload->get_Property(_bstr_t("ItemData"),&m_ItemData);
       if (FAILED(hr))
@@ -525,7 +525,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
             return hr;
 
          _bstr_t lcname(var);
-         lcf.m_LoadCase = (const char*)lcname;
+         lcf.m_LoadCase = (LPCTSTR)lcname;
 
          var.Clear();
          hr = pload->get_Property(_bstr_t("MinFactor"),&var);

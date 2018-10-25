@@ -192,6 +192,24 @@ STDMETHODIMP CLineSegment3d::ThroughPoints(IPoint3d* p1, IPoint3d* p2)
    return S_OK;
 }
 
+STDMETHODIMP CLineSegment3d::Clone(ILineSegment3d** ppClone)
+{
+   CHECK_RETOBJ(ppClone);
+   CComObject<CLineSegment3d>* pClone;
+   CComObject<CLineSegment3d>::CreateInstance(&pClone);
+
+   CComPtr<IPoint3d> start,end;
+   m_pStart->Clone(&start);
+   m_pEnd->Clone(&end);
+
+   pClone->ThroughPoints(start,end);
+
+   (*ppClone) = pClone;
+   (*ppClone)->AddRef();
+
+   return S_OK;
+}
+
 STDMETHODIMP CLineSegment3d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

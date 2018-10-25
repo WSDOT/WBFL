@@ -55,8 +55,8 @@
 
 struct LIBRARYFWCLASS libEntryUsageRecord
 {
-   std::string LibName;   // name of the library the contains the entry
-   std::string EntryName; // name of the library entry
+   std::_tstring LibName;   // name of the library the contains the entry
+   std::_tstring EntryName; // name of the library entry
    bool bEditable;        // true if the entry can be editied
 
    bool operator<(const libEntryUsageRecord& other) const
@@ -116,19 +116,19 @@ public:
    // GROUP: ACCESS
    //------------------------------------------------------------------------
    // Get manager's name
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    // Set manager's name
-   void SetName(const char* name);
+   void SetName(LPCTSTR name);
 
    //------------------------------------------------------------------------
    // Get the identifier name of a library based on its index
-   std::string GetLibraryIdName(Uint32 index) const;
+   std::_tstring GetLibraryIdName(Uint32 index) const;
 
    //------------------------------------------------------------------------
    // Get the display name of a library based on its index
-   std::string GetLibraryDisplayName(Uint32 index) const;
+   std::_tstring GetLibraryDisplayName(Uint32 index) const;
 
    //------------------------------------------------------------------------
    // Get a pointer to a library based on its index
@@ -137,13 +137,13 @@ public:
 
    //------------------------------------------------------------------------
    // Get a pointer to a library based on its display name
-   libILibrary* GetLibrary(const char* displayName);
-   const libILibrary* GetLibrary(const char* displayName) const;
+   libILibrary* GetLibrary(LPCTSTR displayName);
+   const libILibrary* GetLibrary(LPCTSTR displayName) const;
 
    //------------------------------------------------------------------------
    // Get the index of a library based on its display name
    // Returns -1 if no library exists.
-   Uint32 GetIndex(const char* displayName) const;
+   Uint32 GetIndex(LPCTSTR displayName) const;
 
    //------------------------------------------------------------------------
    // Clears all entries from all contained libraries. This function can
@@ -201,7 +201,7 @@ private:
 
    //------------------------------------------------------------------------
    // Name of the manager
-   std::string m_Name;
+   std::_tstring m_Name;
 
 
    // GROUP: LIFECYCLE

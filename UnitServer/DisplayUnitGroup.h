@@ -92,7 +92,7 @@ private:
    CComPtr<IUnitType> m_pUnitType;
 
    DWORD m_Cookie;
-   std::map<std::string,DWORD> m_DisplayUnitCookies;
+   std::map<std::_tstring,DWORD> m_DisplayUnitCookies;
 
    HRESULT BadUnitTagError(BSTR bstrTag);
    void UnadviseDisplayUnit(IDisplayUnit* pDisplayUnit);

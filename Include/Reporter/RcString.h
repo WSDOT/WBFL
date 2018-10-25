@@ -66,12 +66,12 @@ public:
    //------------------------------------------------------------------------
    // constructors
    // non-hyperlink versions
-   rptRcString(const char * YourStr,bool bNoWrap = false);
-   rptRcString(const std::string& YourString,bool bNoWrap = false);
+   rptRcString(LPCTSTR  YourStr,bool bNoWrap = false);
+   rptRcString(const std::_tstring& YourString,bool bNoWrap = false);
    //------------------------------------------------------------------------
    // hyperlink versions - link to HyperTarget somewhere on page
-   rptRcString(const char * YourStr, const std::string& HyperTarget,bool bNoWrap = false);
-   rptRcString(const std::string& YourString, const std::string& HyperTarget,bool bNoWrap = false);
+   rptRcString(LPCTSTR  YourStr, const std::_tstring& HyperTarget,bool bNoWrap = false);
+   rptRcString(const std::_tstring& YourString, const std::_tstring& HyperTarget,bool bNoWrap = false);
 
    void NoWrap(bool bNoWrap);
    bool NoWrap() const;
@@ -90,13 +90,13 @@ public:
    void Accept( rptRcVisitor& MyVisitor );
 
    //------------------------------------------------------------------------
-   virtual rptReportContent&  SetValue(const char* str);
+   virtual rptReportContent&  SetValue(LPCTSTR str);
 
    // GROUP: ACCESS
    //
    // get the string
    //
-   std::string GetString() const {return m_TheString; }
+   std::_tstring GetString() const {return m_TheString; }
    // GROUP: INQUIRY
 
 protected:
@@ -112,7 +112,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_TheString;
+   std::_tstring m_TheString;
    bool m_bNoWrap;
 
    // GROUP: LIFECYCLE

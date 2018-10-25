@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 class SortCrossSections
 {
 public:
-   bool operator()(std::pair<CogoElementKey,CComVariant>& pX,std::pair<CogoElementKey,CComVariant>& pY)
+   bool operator()(CSType& pX,CSType& pY)
    {
       CComVariant& varX = pX.second;
       CComVariant& varY = pY.second;
@@ -101,7 +101,7 @@ STDMETHODIMP CCrossSectionCollection::get_Item(CollectionIndexType idx, ICrossSe
    if ( !IsValidIndex(idx,m_coll) )
       return E_INVALIDARG;
 
-   std::pair<CogoElementKey,CComVariant>& p = m_coll[idx];
+   CSType& p = m_coll[idx];
    CComVariant& varItem = p.second;
    varItem.pdispVal->QueryInterface(pVal);
    return S_OK;
@@ -336,9 +336,8 @@ STDMETHODIMP CCrossSectionCollection::get__EnumCrossSections(IEnumCrossSections*
    typedef CComEnumOnSTL<IEnumCrossSections,
                          &IID_IEnumCrossSections, 
                          ICrossSection*,
-                         CopyFromPair2Interface<std::pair<CogoElementKey,CComVariant>,
-                                                ICrossSection*>, 
-                         std::vector<std::pair<CogoElementKey,CComVariant> > > Enum;
+                         CopyFromPair2Interface<CSType,ICrossSection*>, 
+                         std::vector<CSType>> Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -532,7 +531,7 @@ void CCrossSectionCollection::Unadvise(long idx)
    //
    // Disconnection from connection CrossSection
    //
-   std::pair<CogoElementKey,CComVariant>& p = m_coll[idx];
+   CSType& p = m_coll[idx];
    if ( p.first == 0 )
       return;
 

@@ -90,7 +90,7 @@ public:
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------
    // Constructor
-   mfcTemplateTabHelper(const std::string& name, const std::string& suffix);
+   mfcTemplateTabHelper(const std::_tstring& name, const std::_tstring& suffix);
 
    //------------------------------------------------------------------------
    // copy
@@ -106,7 +106,7 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // add another sudirectory for this tab
-   void AddSubDirectory(const std::string& dirName);
+   void AddSubDirectory(const std::_tstring& dirName);
 
    //------------------------------------------------------------------------
    // Get the file list for the current subdirectories. Returns an empty list
@@ -116,12 +116,12 @@ public:
    //------------------------------------------------------------------------
    // get the corresponding path for the given file. Returns an empty
    // string if the file could not be found.
-   std::string GetFilePath(const std::string& fileName);
+   std::_tstring GetFilePath(const std::_tstring& fileName);
 
    // GROUP: ACCESS
    //------------------------------------------------------------------------
    // get name
-   std::string GetName() const {return m_Name;}
+   std::_tstring GetName() const {return m_Name;}
    // GROUP: INQUIRY
 
 protected:
@@ -138,8 +138,8 @@ private:
    class TabFile
    {
    public:
-      std::string  m_FileName;
-      const std::string* m_pDirectory;  // each file indexes to its directory
+      std::_tstring  m_FileName;
+      const std::_tstring* m_pDirectory;  // each file indexes to its directory
       bool operator==(const TabFile& rOther) const {return m_FileName==rOther.m_FileName;}
       bool operator<(const TabFile& rOther)  const {return m_FileName<rOther.m_FileName;}
    };
@@ -147,11 +147,11 @@ private:
    //------------------------------------------------------------------------
    // hold a reference here. kind of dangerous, but saves on memory and speed,
    // and this guy is only used by doctemplatefinder-related classes
-   const std::string&    m_Suffix;
-   std::string           m_Name;
+   const std::_tstring&    m_Suffix;
+   std::_tstring           m_Name;
 
    //------------------------------------------------------------------------
-   std::set<std::string> m_DirectoryList;
+   std::set<std::_tstring> m_DirectoryList;
 
    typedef std::set<TabFile> FileListType;
    typedef FileListType::iterator FileListTypeIterator;
@@ -192,7 +192,7 @@ public:
 //
    //------------------------------------------------------------------------
    // useful typedefs for tab and file lists
-   typedef std::map<std::string, mfcTemplateTabHelper> TabList;
+   typedef std::map<std::_tstring, mfcTemplateTabHelper> TabList;
    typedef TabList::value_type TabListEntry;
    typedef TabList::iterator TabListIterator;
 

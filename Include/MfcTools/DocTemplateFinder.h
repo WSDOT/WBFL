@@ -81,8 +81,8 @@ public:
    //------------------------------------------------------------------------
    // uicGetNewFile
    // Construct with a directory list, suffix and display mode.
-   mfcDocTemplateFinder(const std::vector<std::string>& directoryList, 
-                     const std::string& suffix,
+   mfcDocTemplateFinder(const std::vector<std::_tstring>& directoryList, 
+                     const std::_tstring& suffix,
                      ListMode mode=SmallIconMode);
 
    //------------------------------------------------------------------------
@@ -97,27 +97,27 @@ public:
    // Set up the list of directories that will be searched for template 
    // files. Each directory and all of its first-level subdirectories 
    // will be searched.
-   void SetDirectoryList(const std::vector<std::string>& directoryList);
+   void SetDirectoryList(const std::vector<std::_tstring>& directoryList);
 
    //------------------------------------------------------------------------
    // GetDirectoryList
    // Get the list of directories that will be searched for template files. 
    // Each directory and all of its first-level subdirectories will be searched.
-   void GetDirectoryList(std::vector<std::string>* directoryList) const;
+   void GetDirectoryList(std::vector<std::_tstring>* directoryList) const;
 
    //------------------------------------------------------------------------
    // SetFileSuffix
    // Set the suffix for the template files. Although any suffix will do, it 
    // is standard to use a three letter suffix for files on Windows platforms.
    // A blank suffix string will cause an assert.
-   void SetFileSuffix(const std::string& suffix);
+   void SetFileSuffix(const std::_tstring& suffix);
 
    //------------------------------------------------------------------------
    // GetFileSuffix
    // Get the suffix for the template files. Although any suffix will do, 
    // it is standard to use a three letter suffix for files on Windows 
    // platforms. A blank suffix string will cause an assert.
-   std::string GetFileSuffix();
+   std::_tstring GetFileSuffix();
 
    //------------------------------------------------------------------------
    // SetDefaultFileName
@@ -128,7 +128,7 @@ public:
    // the default file is "Normal.*" were * is the suffix associated with this
    // object.
    // NOTE: defaultName may not have a '.' in it. A '.' will cause an ASSERT
-   void SetDefaultFileName(const std::string& defaultName, const std::string& defaltFile);
+   void SetDefaultFileName(const std::_tstring& defaultName, const std::_tstring& defaltFile);
 
    //------------------------------------------------------------------------
    // GetDefaultFileName
@@ -138,7 +138,7 @@ public:
    // In fact, the defaults for this implementation are "Blank Document" and
    // the default file is "Normal.*" were * is the suffix associated with this
    // object.
-   void GetDefaultFileName(std::string* pdefaultName, std::string* pdefaltFile)const;
+   void GetDefaultFileName(std::_tstring* pdefaultName, std::_tstring* pdefaltFile)const;
 
 
    bool OmitDefaultFile() const;
@@ -180,7 +180,7 @@ public:
    // file. Returns false if the action was canceled by the user, or if 
    // directory list is empty, or suffix string is null. If true is 
    // returned, the string will contain the entire path to the template file.
-   GetTemplateFileResult GetTemplateFile(std::string& fileName);
+   GetTemplateFileResult GetTemplateFile(std::_tstring& fileName);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -195,10 +195,10 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::vector<std::string> m_DirectoryList;
-   std::string              m_Suffix;
-   std::string              m_DefaultName;
-   std::string              m_DefaultFile;
+   std::vector<std::_tstring> m_DirectoryList;
+   std::_tstring              m_Suffix;
+   std::_tstring              m_DefaultName;
+   std::_tstring              m_DefaultFile;
    ListMode                 m_Mode;
    HICON                    m_HIcon;
 

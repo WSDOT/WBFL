@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bmfPrecastGirderTemplate(const std::string& name, // girder name
+   bmfPrecastGirderTemplate(const std::_tstring& name, // girder name
                             const bmfGirderProfile* pProfile, // girder shape is expected to be gmIPrecastBeam
                             const matConcreteEx* pConc,
                             const matPsStrand* pStrand,

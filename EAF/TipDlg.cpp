@@ -48,7 +48,7 @@ static const TCHAR szIntFilePos[] = _T("FilePos");
 static const TCHAR szTimeStamp[] = _T("TimeStamp");
 static const TCHAR szIntStartup[] = _T("StartUp");
 
-CTipDlg::CTipDlg(LPCSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
+CTipDlg::CTipDlg(LPCTSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
 	: CDialog(IDD_TIP, pParent)
 {
 	//{{AFX_DATA_INIT(CTipDlg)
@@ -62,7 +62,7 @@ CTipDlg::CTipDlg(LPCSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
 	UINT iFilePos = pApp->GetProfileInt(szSection, szIntFilePos, 0);
 
 	// Now try to open the tips file
-	if (fopen_s(&m_pStream,lpszTipeFile, "r") != 0 || m_pStream == NULL) 
+	if (_tfopen_s(&m_pStream,lpszTipeFile, _T("r")) != 0 || m_pStream == NULL) 
 	{
 		m_strTip.LoadString(CG_IDS_FILE_ABSENT);
 		return;

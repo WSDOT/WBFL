@@ -112,6 +112,13 @@ STDMETHODIMP CStrLoad::get_ParentVersion(Float64 *pVal)
 	return S_OK;
 }
 
+STDMETHODIMP CStrLoad::get_ParentUnit(BSTR* pParentUnit)
+{
+   USES_CONVERSION;
+   *pParentUnit = T2BSTR(m_StrLoad.GetParentUnit().c_str());
+   return S_OK;
+}
+
 STDMETHODIMP CStrLoad::get_TopVersion(Float64 *pVal)
 {
    *pVal = m_StrLoad.GetTopVersion();
@@ -124,7 +131,7 @@ STDMETHODIMP CStrLoad::get_Property(LPCTSTR name, VARIANT *pVal)
    bool bRetVal;
    try
    {
-      std::string str;
+      std::_tstring str;
       Float64 d;
       long l;
       unsigned long ul;
@@ -206,7 +213,7 @@ STDMETHODIMP CStrLoad::LoadRawUnit(BSTR* pbstrUnit)
 {
    CHECK_RETSTRING(pbstrUnit);
 
-   std::string strXML = m_StrLoad.GetUnit();
+   std::_tstring strXML = m_StrLoad.GetUnit();
    *pbstrUnit = CComBSTR(strXML.c_str());
    return S_OK;
 }
@@ -285,7 +292,7 @@ HRESULT CStrLoad::HandleException2( sysXStructuredLoad& e )
 
 ////////////////////////////////////////////////////////
 //
-//HRESULT CStrLoad::Open(/*[in]*/ LPCSTR strFile)
+//HRESULT CStrLoad::Open(/*[in]*/ LPCTSTR strFile)
 //{
 //   // Check if the file exists.  If we can't get its attributes, then
 //   // it probably isn't there.
@@ -318,7 +325,7 @@ HRESULT CStrLoad::HandleException2( sysXStructuredLoad& e )
 //	return S_OK;
 //}
 //
-//HRESULT CStrLoad::BeginUnit(/*[in]*/ LPCSTR strUnit)
+//HRESULT CStrLoad::BeginUnit(/*[in]*/ LPCTSTR strUnit)
 //{
 //   try
 //   {
@@ -369,12 +376,12 @@ HRESULT CStrLoad::HandleException2( sysXStructuredLoad& e )
 //	return S_OK;
 //}
 //
-//HRESULT CStrLoad::get_Property(/*[in]*/ LPCSTR strPropName, /*[out, retval]*/ VARIANT *pVal)
+//HRESULT CStrLoad::get_Property(/*[in]*/ LPCTSTR strPropName, /*[out, retval]*/ VARIANT *pVal)
 //{
 //   bool bRetVal;
 //   try
 //   {
-//      std::string str;
+//      std::_tstring str;
 //      Float64 d;
 //      long l;
 //      unsigned long ul;

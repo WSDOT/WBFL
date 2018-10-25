@@ -94,8 +94,8 @@ void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
    GetDocString(strFileName,CDocTemplate::fileNewName);
 
    CString strItemName;
-   if ( strExtName != "" )
-      strItemName.Format("%s (%s)",strFileName,strExtName);
+   if ( strExtName != _T("") )
+      strItemName.Format(_T("%s (%s)"),strFileName,strExtName);
    else
       strItemName = strFileName;
  
@@ -110,7 +110,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 	CDocument* pDocument = CreateNewDocument();
 	if (pDocument == NULL)
 	{
-		TRACE(traceAppMsg, 0, "CEAFDocTemplate::CreateNewDocument returned NULL.\n");
+		TRACE(traceAppMsg, 0, _T("CEAFDocTemplate::CreateNewDocument returned NULL.\n"));
 		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
 		return NULL;
 	}
@@ -165,7 +165,7 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 		   if (!pDocument->OnNewDocument())
 		   {
 			   // user has be alerted to what failed in OnNewDocument
-			   TRACE(traceAppMsg, 0, "CEAFDocument::OnNewDocument returned FALSE.\n");
+			   TRACE(traceAppMsg, 0, _T("CEAFDocument::OnNewDocument returned FALSE.\n"));
 			   pFrame->DestroyWindow();
 			   return FALSE;
 		   }
@@ -175,7 +175,7 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 		   if (!pDocument->OnNewDocumentFromTemplate(strTemplateFile))
 		   {
 			   // user has be alerted to what failed in OnNewDocumentFromTemplate
-			   TRACE(traceAppMsg, 0, "CEAFDocument::OnNewDocumentFromTemplate returned FALSE.\n");
+			   TRACE(traceAppMsg, 0, _T("CEAFDocument::OnNewDocumentFromTemplate returned FALSE.\n"));
 			   pFrame->DestroyWindow();
 			   return FALSE;
 		   }
@@ -191,7 +191,7 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 		if (!pDocument->OnOpenDocument(lpszPathName))
 		{
 			// user has be alerted to what failed in OnOpenDocument
-			TRACE(traceAppMsg, 0, "CEAFDocument::OnOpenDocument returned FALSE.\n");
+			TRACE(traceAppMsg, 0, _T("CEAFDocument::OnOpenDocument returned FALSE.\n"));
 			pFrame->DestroyWindow();
 			return FALSE;
 		}
@@ -203,7 +203,7 @@ BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,
 CString CEAFDocTemplate::GetTemplateGroupItemDescription(const CEAFTemplateItem* pItem) const
 {
    CString strDesc;
-   strDesc.Format("Create a new %s",pItem->GetName());
+   strDesc.Format(_T("Create a new %s"),pItem->GetName());
    return strDesc;
 }
 

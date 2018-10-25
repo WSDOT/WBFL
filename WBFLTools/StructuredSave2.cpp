@@ -325,12 +325,12 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
          {
             // first need to take out special characters &,',",<,>
             _bstr_t value(newVal);
-            std::string tmp(value);
-            find_replace_all(&tmp, "&" , "&amp;");
-            find_replace_all(&tmp, "<" , "&lt;" );
-            find_replace_all(&tmp, ">" , "&gt;" );
-            find_replace_all(&tmp, "'" , "&sq;" );
-            find_replace_all(&tmp, "\"", "&dq;" );
+            std::_tstring tmp(value);
+            find_replace_all(&tmp, _T("&") , _T("&amp;"));
+            find_replace_all(&tmp, _T("<") , _T("&lt;" ));
+            find_replace_all(&tmp, _T(">") , _T("&gt;" ));
+            find_replace_all(&tmp, _T("'") , _T("&sq;" ));
+            find_replace_all(&tmp, _T("\""), _T("&dq;" ));
 
             _bstr_t val(tmp.c_str());
             pchild->text = (_bstr_t)val;
@@ -342,6 +342,7 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
       case VT_R8:
       case VT_I2:
       case VT_I4:
+      case VT_I8:
       case VT_INT:
       case VT_BOOL:
          {
@@ -355,9 +356,9 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
       case VT_UINT:
          {
             unsigned int ul = newVal.uiVal;
-            std::stringstream os;
+            std::_tostringstream os;
             os<<ul;
-            std::string msg(os.str());
+            std::_tstring msg(os.str());
             _bstr_t bval(msg.c_str());
             pchild->text = bval;
          }
@@ -366,7 +367,7 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
       case VT_UI4:
          {
             unsigned long ul = newVal.ulVal;
-            std::stringstream os;
+            std::_tostringstream os;
             os<<ul;
             _bstr_t bval(os.str().c_str());
             pchild->text = bval;
@@ -459,7 +460,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       m_NodeStack.push_back(tmp);
 
       // create the unique name for our object
-      std::stringstream os;
+      std::_tostringstream os;
       os<<"Object_"<<m_NextName++;
       object_name = _bstr_t(os.str().c_str());
 

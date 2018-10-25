@@ -320,40 +320,36 @@ SecondTy sysTime::Second() const
 //
 bool sysTime::PrintDateFlag = true;
 
-std::string sysTime::AsString() const
+std::_tstring sysTime::AsString() const
 {
-    std::ostringstream strtemp;
-    strtemp << (*this) << std::ends;
-
-    std::string stemp;
-    stemp = strtemp.str();
-
-    return stemp;
+    std::_tostringstream strtemp;
+    strtemp << (*this);
+    return strtemp.str();
 }
 
-SYSCLASS std::ostream  &  operator << ( std::ostream  & s, const sysTime  & t )
+SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysTime  & t )
 {
 
     // We use an ostrstream to format into buf so that
     // we don't affect the std::ostream's width setting.
     //
-    std::ostrstream out; //( buf, sizeof(buf) );
+    std::_tostringstream out;
   
     // First print the date if requested:
     //
     if(sysTime::PrintDateFlag) 
-        out << sysDate(t) << " ";
+        out << sysDate(t) << _T(" ");
 
     Uint16 hh = t.Hour();
-    out << (hh <= 12 ? hh : hh-12) << ':' 
-        << std::setfill('0') << std::setw(2) << t.Minute() << ':'
-        << std::setw(2) << t.Second() << ' ' << std::setfill(' ');
-    out << ( hh<12 ? "am" : "pm") ;//<< std::ends;
+    out << (hh <= 12 ? hh : hh-12) << _T(':') 
+        << std::setfill(_T('0')) << std::setw(2) << t.Minute() << _T(':')
+        << std::setw(2) << t.Second() << _T(' ') << std::setfill(_T(' '));
+    out << ( hh<12 ? _T("am") : _T("pm")) ;//<< std::ends;
 
     // now we write out the formatted buffer, and the std::ostream's
     // width setting will control the actual width of the field.
     //
-    s << out.rdbuf();
+    s << out.str();
     return s;
 }
 
@@ -371,7 +367,7 @@ bool sysTime::TestMe(dbgLog& rlog)
    TESTME_PROLOGUE("sysTime");
 
    sysTime now;
-   rlog <<"The current time is "<< now.AsString() << endl;
+   rlog << _T("The current time is ")<< now.AsString() << endl;
 
    TESTME_EPILOG("sysTime");
 }

@@ -131,78 +131,78 @@ lrfdVersionMgr::Units lrfdVersionMgr::GetUnits()
    return ms_Units;
 }
 
-std::string lrfdVersionMgr::GetCodeString()
+std::_tstring lrfdVersionMgr::GetCodeString()
 {
-   return "AASHTO LRFD Bridge Design Specification";
+   return _T("AASHTO LRFD Bridge Design Specification");
 }
 
-std::string lrfdVersionMgr::GetVersionString()
+std::_tstring lrfdVersionMgr::GetVersionString()
 {
-   std::string version;
+   std::_tstring version;
    switch( ms_Version )
    {
    case FirstEdition1994:
-      version = "First Edition 1994";
+      version = _T("First Edition 1994");
       break;
 
    case FirstEditionWith1996Interims:
-      version = "First Edition with 1996 interim provisions";
+      version = _T("First Edition with 1996 interim provisions");
       break;
 
    case FirstEditionWith1997Interims:
-      version = "First Edition with 1996 - 1997 interim provisions";
+      version = _T("First Edition with 1996 - 1997 interim provisions");
       break;
 
    case SecondEdition1998:
-      version = "Second Edition 1998";
+      version = _T("Second Edition 1998");
       break;
 
    case SecondEditionWith1999Interims:
-      version = "Second Edition with 1999 interim provisions";
+      version = _T("Second Edition with 1999 interim provisions");
       break;
 
    case SecondEditionWith2000Interims:
-      version = "Second Edition with 1999 - 2000 interim provisions";
+      version = _T("Second Edition with 1999 - 2000 interim provisions");
       break;
 
    case SecondEditionWith2001Interims:
-      version = "Second Edition with 1999 - 2001 interim provisions";
+      version = _T("Second Edition with 1999 - 2001 interim provisions");
       break;
 
    case SecondEditionWith2002Interims:
-      version = "Second Edition with 1999 - 2002 interim provisions";
+      version = _T("Second Edition with 1999 - 2002 interim provisions");
       break;
 
    case SecondEditionWith2003Interims:
-      version = "2nd Edition, 1998 with 1999 - 2003 interim provisions";
+      version = _T("2nd Edition, 1998 with 1999 - 2003 interim provisions");
       break;
 
    case ThirdEdition2004:
-      version = "3rd Edition, 2004";
+      version = _T("3rd Edition, 2004");
       break;
 
    case ThirdEditionWith2005Interims:
-      version = "3rd Edition, 2004 with 2005 interim provisions";
+      version = _T("3rd Edition, 2004 with 2005 interim provisions");
       break;
 
    case ThirdEditionWith2006Interims:
-      version = "3rd Edition, 2004 with 2005 - 2006 interim provisions";
+      version = _T("3rd Edition, 2004 with 2005 - 2006 interim provisions");
       break;
 
    case FourthEdition2007:
-      version = "4th Edition, 2007";
+      version = _T("4th Edition, 2007");
       break;
 
    case FourthEditionWith2008Interims:
-      version = "4th Edition, 2007 with 2008 interim provisions";
+      version = _T("4th Edition, 2007 with 2008 interim provisions");
       break;
 
    case FourthEditionWith2009Interims:
-      version = "4th Edition, 2007 with 2008 - 2009 interim provisions";
+      version = _T("4th Edition, 2007 with 2008 - 2009 interim provisions");
       break;
 
    case FifthEdition2010:
-      version = "5th Edition, 2010";
+      version = _T("5th Edition, 2010");
       break;
 
    default:
@@ -212,9 +212,9 @@ std::string lrfdVersionMgr::GetVersionString()
    return version;
 }
 
-std::string lrfdVersionMgr::GetUnitString()
+std::_tstring lrfdVersionMgr::GetUnitString()
 {
-   return ( ms_Units == SI ? "SI Units" : "Customary U.S. Units");
+   return ( ms_Units == SI ? _T("SI Units") : _T("Customary U.S. Units")) ;
 }
 
 void lrfdVersionMgr::RegisterListener(lrfdVersionMgrListener* pListener)

@@ -82,6 +82,9 @@ private:
 // IPoint2dEx
 public:
    STDMETHOD(Clone)(/*[out,retval]*/IPoint2d** ppPoint);
+
+   STDMETHOD(Distance)(Float64 x,Float64 y,Float64* pDistance);
+   STDMETHOD(DistanceEx)(IPoint2d* pOther,Float64* pDistance);
    STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY);
    STDMETHOD(SameLocation)(/*[in]*/IPoint2d* pOther);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);

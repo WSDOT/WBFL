@@ -460,7 +460,7 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
    log.CoCreateInstance(CLSID_WBFLErrorLog);
    DWORD cookie;
    log->Open(CComBSTR("NLSolver.log"),&cookie);
-   std::ostringstream os;
+   std::_tostringstream os;
 #endif
 
    Float64 Cflange = 0;

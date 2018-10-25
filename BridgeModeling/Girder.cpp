@@ -131,7 +131,7 @@ void bmfGirder::MakeAssignment(const bmfGirder& rOther)
 
 Float64 bmfGirder::GetLeftEndSize() const
 {
-   CHECKX( m_pSpan != 0, "This call only valid after the girder has been inserted into a span" );
+   CHECKX( m_pSpan != 0, _T("This call only valid after the girder has been inserted into a span") );
 
    const bmfConnection* pConnection = m_pSpan->GetStartPier()->GetConnection();
    Float64 end_size = pConnection->GetGirderEndSize();
@@ -152,7 +152,7 @@ Float64 bmfGirder::GetLeftEndSize() const
 
 Float64 bmfGirder::GetRightEndSize() const
 {
-   CHECKX( m_pSpan != 0, "This call only valid after the girder has been inserted into a span" );
+   CHECKX( m_pSpan != 0, _T("This call only valid after the girder has been inserted into a span") );
 
    const bmfConnection* pConnection = m_pSpan->GetEndPier()->GetConnection();
    Float64 end_size = pConnection->GetGirderEndSize();
@@ -172,7 +172,7 @@ Float64 bmfGirder::GetRightEndSize() const
 
 Float64 bmfGirder::GetLeftBearingOffset() const
 {
-   CHECKX( m_pSpan != 0, "This call only valid after the girder has been inserted into a span" );
+   CHECKX( m_pSpan != 0, _T("This call only valid after the girder has been inserted into a span") );
 
    const bmfConnection* pConnection = m_pSpan->GetStartPier()->GetConnection();
    Float64 offset = pConnection->GetBearingOffset();
@@ -193,7 +193,7 @@ Float64 bmfGirder::GetLeftBearingOffset() const
 
 Float64 bmfGirder::GetRightBearingOffset() const
 {
-   CHECKX( m_pSpan != 0, "This call only valid after the girder has been inserted into a span" );
+   CHECKX( m_pSpan != 0, _T("This call only valid after the girder has been inserted into a span") );
 
    const bmfConnection* pConnection = m_pSpan->GetEndPier()->GetConnection();
    Float64 offset = pConnection->GetBearingOffset();
@@ -212,8 +212,8 @@ Float64 bmfGirder::GetRightBearingOffset() const
 }
 
 #if defined _DEBUG
-void bmfGirder::Dump(std::ostream& os)
+void bmfGirder::Dump(std::_tostream& os)
 {
-   os << "Girder " << m_pTemplate->GetName() << std::endl;
+   os << _T("Girder ") << m_pTemplate->GetName() << std::endl;
 }
 #endif // _DEBUG

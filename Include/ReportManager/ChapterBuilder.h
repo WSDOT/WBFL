@@ -44,8 +44,8 @@ public:
 	CChapterBuilder();
 	virtual ~CChapterBuilder();
 
-   virtual const char* GetKey() const;
-   virtual const char* GetName() const = 0;
+   virtual LPCTSTR GetKey() const;
+   virtual LPCTSTR GetName() const = 0;
    virtual Uint16 GetMaxLevel() const = 0;
    virtual bool Select() const = 0; // return true if this chapter is to be selected by default
    virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const = 0;

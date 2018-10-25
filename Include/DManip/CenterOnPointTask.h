@@ -34,7 +34,7 @@
 
 interface iCenterOnPointTask : public IUnknown
 {
-	STDMETHOD_(void,FSMError)(const char* t,const char* s) PURE;
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
    STDMETHOD_(void,CenterOnPoint)() PURE;
 	STDMETHOD_(void,InitTask)() PURE;
    STDMETHOD_(void,Cancel)() PURE;

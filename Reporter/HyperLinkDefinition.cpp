@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptHyperLinkDefinition::rptHyperLinkDefinition(const std::string& HyperTarget)
+rptHyperLinkDefinition::rptHyperLinkDefinition(const std::_tstring& HyperTarget)
 {
    m_TargetName = HyperTarget;
 }
@@ -67,7 +67,7 @@ rptHyperLinkDefinition& rptHyperLinkDefinition::operator= (const rptHyperLinkDef
 
 //======================== OPERATIONS =======================================
 // Return the target location
-std::string rptHyperLinkDefinition::GetTargetName() const
+std::_tstring rptHyperLinkDefinition::GetTargetName() const
 {
    return m_TargetName;
 }

@@ -64,12 +64,12 @@ bool test_iter(dbgLog& rlog)
 
    unitmgtLibrary my_lib;
 
-   my_lib.AddEntry("SI",unitmgtIndirectMeasure() );
-   my_lib.AddEntry("English",unitmgtIndirectMeasure() );
-   my_lib.AddEntry("Bob's Favorite",unitmgtIndirectMeasure() );
+   my_lib.AddEntry(_T("SI"),unitmgtIndirectMeasure() );
+   my_lib.AddEntry(_T("English"),unitmgtIndirectMeasure() );
+   my_lib.AddEntry(_T("Bob's Favorite"),unitmgtIndirectMeasure() );
 
 
-   rlog << "Iterator test" << endl;
+   rlog << _T("Iterator test") << endl;
    unitmgtLibraryIter iter(my_lib);
    for ( iter.First(); !iter.IsDone(); iter.Next() )
    {
@@ -82,7 +82,7 @@ bool test_iter(dbgLog& rlog)
 
    rlog << endl;
 
-   rlog << "Const Iterator test" << endl;
+   rlog << _T("Const Iterator test") << endl;
    unitmgtConstLibraryIter const_iter(my_lib);
    for ( const_iter.First(); !const_iter.IsDone(); const_iter.Next() )
    {

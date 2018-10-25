@@ -568,7 +568,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
             if (grx >= gr_left && grx<=gr_right)
             {
                Float64 wx = mapper.GetWorldX(grx);
-               std::string val = formatter.AsString(grx);
+               std::_tstring val = formatter.AsString(grx);
 
                DrawString(val, wx, tl_y, locator);
             }
@@ -583,7 +583,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
             if (gry >=gr_bottom && gry<=gr_top)
             {
                Float64 wy = mapper.GetWorldY(gry);
-               std::string val = formatter.AsString(gry);
+               std::_tstring val = formatter.AsString(gry);
 
                DrawString(val, tl_x , wy, locator);
             }
@@ -599,7 +599,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
    return S_OK;
 }
 
-HRESULT CGraphXyDisplayObject::DrawString(std::string& string, Float64 wx, Float64 wy, UINT textAlign)
+HRESULT CGraphXyDisplayObject::DrawString(std::_tstring& string, Float64 wx, Float64 wy, UINT textAlign)
 {
    HRESULT hr;
 

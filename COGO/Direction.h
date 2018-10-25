@@ -68,6 +68,7 @@ public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ IDirection* *clone);
 	STDMETHOD(AngleBetween)(/*[in]*/ IDirection* dir,/*[out,retval]*/IAngle** pVal);
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varDirection);
 	STDMETHOD(FromAzimuth)(/*[in]*/ long Degree, /*[in]*/ long Minute, /*[in]*/ Float64 Second);
 	STDMETHOD(FromDMS)(/*[in]*/ NSDirectionType ns,/*[in]*/ long Degree,/*[in]*/ long Minute, /*[in]*/ Float64 Second, /*[in]*/ EWDirectionType ew);
 	STDMETHOD(FromString)(/*[in]*/ BSTR bstrDir);

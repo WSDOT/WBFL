@@ -62,6 +62,7 @@ public:
 	STDMETHOD(put_Property)(/*[in]*/ LPCTSTR name, /*[in]*/ VARIANT newVal);
    STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(get_ParentVersion)(/*[out, retval]*/ Float64 *pVal);
+   STDMETHOD(get_ParentUnit)(BSTR* pParentUnit);
    STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(EndUnit)();
    STDMETHOD(Close)();
@@ -74,13 +75,13 @@ private:
    HRESULT HandleException( sysXStructuredSave& e );
    HRESULT HandleException2(sysXStructuredSave& e);
 
- //  HRESULT Open(/*[in]*/ LPCSTR bstrFileName);
-	//HRESULT BeginUnit(/*[in]*/ LPCSTR bstrUnit,/*[in]*/ Float64 ver);
+ //  HRESULT Open(/*[in]*/ LPCTSTR bstrFileName);
+	//HRESULT BeginUnit(/*[in]*/ LPCTSTR bstrUnit,/*[in]*/ Float64 ver);
 	//HRESULT EndUnit();
 	//HRESULT get_Version(/*[out, retval]*/ Float64 *pVal);
 	//HRESULT get_ParentVersion(/*[out, retval]*/ Float64 *pVal);
 	//HRESULT get_TopVersion(/*[out, retval]*/ Float64 *pVal);
-	//HRESULT put_Property(/*[in]*/ LPCSTR bstrPropName, /*[in]*/ VARIANT newVal);
+	//HRESULT put_Property(/*[in]*/ LPCTSTR bstrPropName, /*[in]*/ VARIANT newVal);
 	//HRESULT Close();
 };
 

@@ -37,8 +37,8 @@
 //
 #define THROW_HR(hr) { ATLASSERT(0); throw hr;}
 // short-hand version if consistent naming conventions are used
-#define THROW_EXCEPTION(errNam) { /*ATLASSERT(0);*/ throw CComException(__FILE__,__LINE__, IDS_E_##errNam, LOADING_E_##errNam, IDH_E_##errNam);}
-//#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(0);*/ throw CComException(__FILE__,__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
+#define THROW_EXCEPTION(errNam) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LOADING_E_##errNam, IDH_E_##errNam);}
+//#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
 //
 /*
 #define CHECK_MEMBERTYPE(mbrType) if (mbrType<mtUndefined || mbrType>mtSuperstructureMember) return E_INVALIDARG;

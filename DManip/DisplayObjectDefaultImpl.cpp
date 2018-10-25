@@ -496,7 +496,7 @@ bool CDisplayObjectDefaultImpl::Do_OnContextMenu(CWnd* pWnd,CPoint point)
    return Fire_OnContextMenu(pWnd,point);
 }
 
-void CDisplayObjectDefaultImpl::Do_SetToolTipText(LPCSTR lpszToolTipText)
+void CDisplayObjectDefaultImpl::Do_SetToolTipText(LPCTSTR lpszToolTipText)
 {
    m_strToolTipText = lpszToolTipText;
 }

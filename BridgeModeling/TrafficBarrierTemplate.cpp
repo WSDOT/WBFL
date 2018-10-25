@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bmfTrafficBarrierTemplate::bmfTrafficBarrierTemplate(const std::string& name,
+bmfTrafficBarrierTemplate::bmfTrafficBarrierTemplate(const std::_tstring& name,
                                                      const gmTrafficBarrier* pTB,
                                                      const matConcreteEx* pConc) :
 m_Name( name ),
@@ -79,13 +79,13 @@ bmfTrafficBarrier* bmfTrafficBarrierTemplate::CreateTrafficBarrier() const
 }
 
 //======================== ACCESS     =======================================
-void bmfTrafficBarrierTemplate::SetName(const std::string& name)
+void bmfTrafficBarrierTemplate::SetName(const std::_tstring& name)
 {
    PRECONDITION( name.length() > 0 );
    m_Name = name;
 }
 
-std::string bmfTrafficBarrierTemplate::GetName() const
+std::_tstring bmfTrafficBarrierTemplate::GetName() const
 {
    return m_Name;
 }

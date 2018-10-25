@@ -84,7 +84,7 @@ private:
    CComPtr<IUnitServer> m_pUnitServer;
    CComPtr<IUnitModeController> m_pUMC;
 
-   std::map<std::string,DWORD> m_GroupCookies;
+   std::map<std::_tstring,DWORD> m_GroupCookies;
 
    void UnadviseDisplayUnitGroup(IDisplayUnitGroup* pGroup);
    void UnadviseAll();

@@ -31,6 +31,7 @@
 #include <vector>
 #include <System\DbgBuild.h>
 #include <System\DumpContext.h>
+#include <tchar.h>
 
 // FORWARD DECLARATIONS
 //
@@ -40,32 +41,32 @@
 // Test macros
 
 #define TESTME_PROLOGUE(className) bool bpf=true; \
-                                   std::ostringstream erro; \
-                                   rlog <<endl<< "Begin Testing class "<<className<<" at "<<__LINE__<<" in "<<__FILE__<<endl;
+                                   std::_tostringstream erro; \
+                                   rlog <<endl<< _T("Begin Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<endl;
 
-#define TESTME_EPILOG(className)   rlog<<"End Testing class "<<className<<" at "<<__LINE__<<" in "<<__FILE__<<endl; \
+#define TESTME_EPILOG(className)   rlog<<_T("End Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<endl; \
                                    return bpf;
 
 #define TEST_FAIL       {bpf = false; \
                          erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
                          erro.clear(); \
-                         erro <<"*** Failed at "<<__FILE__<<" Line "<<__LINE__; \
+                         erro <<_T("*** Failed at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__; \
                          rlog.AddEntryToLog(erro.str(), dbgLog::Failed); \
                          rlog << erro.str();} 
 
 #define TEST_PASS       {erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
                          erro.clear(); \
-                         erro <<"    Passed at "<<__FILE__<<" Line "<<__LINE__; \
+                         erro <<_T("    Passed at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__; \
                          rlog.AddEntryToLog(erro.str(), dbgLog::Passed); \
                          rlog << erro.str();}
 
 #define TEST_NOT_IMPLEMENTED(msg) {erro.flush(); \
                                    erro.seekp(std::ios_base::beg); \
                                    erro.clear(); \
-                                   erro <<"         Missing test at "<<__FILE__<<" Line "<<__LINE__<<std::endl; \
-                                   erro <<"... " << msg << std::endl; \
+                                   erro <<_T("         Missing test at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__<<std::endl; \
+                                   erro <<_T("... ") << msg << std::endl; \
                                    rlog.AddEntryToLog(erro.str(), dbgLog::NotImplemented); \
                                    rlog << erro.str();}
 
@@ -81,10 +82,10 @@
                         }}
 
 #define TEST_FAIL_EX(msg) TEST_FAIL \
-                          rlog <<" "<< msg <<endl;
+                          rlog <<_T(" ")<< msg <<endl;
                             
 #define TEST_PASS_EX(msg) TEST_PASS \
-                          rlog<< " "<< msg <<endl;
+                          rlog<<_T(" ")<< msg <<endl;
 
 #define TRY_TESTME_EX(pf,msg) if ((pf)) \
                             { \
@@ -136,7 +137,7 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // Add an entry to the error log.
-   void AddEntryToLog(std::string& msg, EntryType type);
+   void AddEntryToLog(std::_tstring& msg, EntryType type);
 
    //------------------------------------------------------------------------
    // Get total number of entries in log
@@ -164,9 +165,9 @@ public:
    //------------------------------------------------------------------------
    // 
    // Inserters for various built-ins
-   dbgLog& operator<<(const std::string& s);
-   dbgLog& operator<<(const char *s);
-   dbgLog& operator<<(char c);    
+   dbgLog& operator<<(const std::_tstring& s);
+   dbgLog& operator<<(LPCTSTR s);
+   dbgLog& operator<<(TCHAR c);    
    dbgLog& operator<<(bool n);
    dbgLog& operator<<(Int16 n);
    dbgLog& operator<<(Uint16 n);
@@ -202,7 +203,7 @@ private:
    struct LogEntry
    {
       EntryType   Type;
-      std::string Msg;
+      std::_tstring Msg;
    };
    typedef std::vector<LogEntry> EntryVec;
    typedef EntryVec::iterator    EntryVecIterator;
@@ -241,7 +242,7 @@ inline dbgDumpContext& dbgLog::GetDumpCtx() {return *m_pDumpCtx;}
 
 //------------------------------------------------------------------------
 // define our own endl function
-inline dbgLog& endl(dbgLog& rl) {rl<<"\n"; return rl;}
+inline dbgLog& endl(dbgLog& rl) {rl<<_T("\n"); return rl;}
 
 
 

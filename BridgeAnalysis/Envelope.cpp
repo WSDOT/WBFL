@@ -115,8 +115,8 @@ void bamEnvelope::DoEnvelopeSectionStress(Int32 poi,Int32 srid) const
    bamSectionResultsKey max_key( poi, m_MaxId );
    bamSectionResults sr_max = m_pBridgeModel->ReadSectionResults( max_key );
 
-   WATCHX( bamEnvelope, ENV_TRACE, "Max Moment = " << sr_max.Mz() );
-   WATCHX( bamEnvelope, ENV_TRACE, "Min Moment = " << sr_min.Mz() );
+   WATCHX( bamEnvelope, ENV_TRACE, _T("Max Moment = ") << sr_max.Mz() );
+   WATCHX( bamEnvelope, ENV_TRACE, _T("Min Moment = ") << sr_min.Mz() );
 
    const bamPointOfInterest* pPoi = m_pBridgeModel->GetPointOfInterest( poi );
    CHECK( pPoi != 0 );

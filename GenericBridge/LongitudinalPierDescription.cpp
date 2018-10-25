@@ -515,7 +515,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_Fractional(VARIANT_BOOL bFraction
       typedef CEditValueTransaction<CLongitudinalPierDescription,VARIANT_BOOL,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditFractionalTxn;
       CComObject<CEditFractionalTxn>* pTxn;
       CComObject<CEditFractionalTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Fractional Measure",&PutFractional,m_bFractional,bFractional);
+      pTxn->Init(this,_T("Fractional Measure"),&PutFractional,m_bFractional,bFractional);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -543,7 +543,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_Symmetrical(VARIANT_BOOL bSymmetr
       typedef CEditValueTransaction<CLongitudinalPierDescription,VARIANT_BOOL,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditSymmetricalTxn;
       CComObject<CEditSymmetricalTxn>* pTxn;
       CComObject<CEditSymmetricalTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Symmetrical Segments",&PutSymmetrical,m_bSymmetrical,bSymmetrical);
+      pTxn->Init(this,_T("Symmetrical Segments"),&PutSymmetrical,m_bSymmetrical,bSymmetrical);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -572,7 +572,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_Connectivity(ConnectivityType new
       typedef CEditValueTransaction<CLongitudinalPierDescription,ConnectivityType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditConnectivityTxn;
       CComObject<CEditConnectivityTxn>* pTxn;
       CComObject<CEditConnectivityTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Change connectivity",&PutConnectivity,m_Connectivity,newVal);
+      pTxn->Init(this,_T("Change connectivity"),&PutConnectivity,m_Connectivity,newVal);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -601,7 +601,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_Height(Float64 newVal)
       typedef CEditValueTransaction<CLongitudinalPierDescription,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditHeightTxn;
       CComObject<CEditHeightTxn>* pTxn;
       CComObject<CEditHeightTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Change Height",&PutHeight,m_Height,newVal);
+      pTxn->Init(this,_T("Change Height"),&PutHeight,m_Height,newVal);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -630,7 +630,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_BaseOffset(Float64 newVal)
       typedef CEditValueTransaction<CLongitudinalPierDescription,Float64,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditBaseOffsetTxn;
       CComObject<CEditBaseOffsetTxn>* pTxn;
       CComObject<CEditBaseOffsetTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Change BaseOffset",&PutBaseOffset,m_BaseOffset,newVal);
+      pTxn->Init(this,_T("Change BaseOffset"),&PutBaseOffset,m_BaseOffset,newVal);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -671,7 +671,7 @@ STDMETHODIMP CLongitudinalPierDescription::put_ContinuityStage(BSTR stage)
       typedef CEditValueTransaction<CLongitudinalPierDescription,CComBSTR,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CEditContinuityStageTxn;
       CComObject<CEditContinuityStageTxn>* pTxn;
       CComObject<CEditContinuityStageTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Change Continuity Stage",&PutContinuityStage,m_bstrStage,stage);
+      pTxn->Init(this,_T("Change Continuity Stage"),&PutContinuityStage,m_bstrStage,stage);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -691,7 +691,7 @@ STDMETHODIMP CLongitudinalPierDescription::AddSegment(ISegment* segment)
       typedef CActionTransaction1<CLongitudinalPierDescription,CComPtr<ISegment>,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CAddSegmentTxn;
       CComObject<CAddSegmentTxn>* pTxn;
       CComObject<CAddSegmentTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Add Segment",&DoAddSegment,&UndoAddSegment,CComPtr<ISegment>(segment));
+      pTxn->Init(this,_T("Add Segment"),&DoAddSegment,&UndoAddSegment,CComPtr<ISegment>(segment));
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -711,7 +711,7 @@ STDMETHODIMP CLongitudinalPierDescription::InsertSegment(CollectionIndexType idx
       typedef CActionTransaction2<CLongitudinalPierDescription,CollectionIndexType,CComPtr<ISegment>,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CInsertSegmentTxn;
       CComObject<CInsertSegmentTxn>* pTxn;
       CComObject<CInsertSegmentTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Insert Segment",&DoInsertSegment,&UndoInsertSegment,idx,CComPtr<ISegment>(segment));
+      pTxn->Init(this,_T("Insert Segment"),&DoInsertSegment,&UndoInsertSegment,idx,CComPtr<ISegment>(segment));
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -730,7 +730,7 @@ STDMETHODIMP CLongitudinalPierDescription::MoveSegmentTo(CollectionIndexType fro
       typedef CActionTransaction2<CLongitudinalPierDescription,CollectionIndexType,CollectionIndexType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CMoveSegmentTxn;
       CComObject<CMoveSegmentTxn>* pTxn;
       CComObject<CMoveSegmentTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Move Segment",&DoMoveSegment,&UndoMoveSegment,fromIdx,toIdx);
+      pTxn->Init(this,_T("Move Segment"),&DoMoveSegment,&UndoMoveSegment,fromIdx,toIdx);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -749,7 +749,7 @@ STDMETHODIMP CLongitudinalPierDescription::CopySegmentTo(CollectionIndexType fro
       typedef CActionTransaction2<CLongitudinalPierDescription,CollectionIndexType,CollectionIndexType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CCopySegmentTxn;
       CComObject<CCopySegmentTxn>* pTxn;
       CComObject<CCopySegmentTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Copy Segment",&DoCopySegment,&UndoCopySegment,fromIdx,toIdx);
+      pTxn->Init(this,_T("Copy Segment"),&DoCopySegment,&UndoCopySegment,fromIdx,toIdx);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -771,7 +771,7 @@ STDMETHODIMP CLongitudinalPierDescription::RemoveSegment(CollectionIndexType idx
       typedef CActionTransaction1<CLongitudinalPierDescription,REMOVESEGMENT,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CRemoveSegmentTxn;
       CComObject<CRemoveSegmentTxn>* pTxn;
       CComObject<CRemoveSegmentTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Remove Segment",&DoRemoveSegment,&UndoRemoveSegment,data);
+      pTxn->Init(this,_T("Remove Segment"),&DoRemoveSegment,&UndoRemoveSegment,data);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -792,7 +792,7 @@ STDMETHODIMP CLongitudinalPierDescription::RemoveSegments()
       typedef CActionTransaction1<CLongitudinalPierDescription,REMOVESEGMENTS,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CRemoveSegmentsTxn;
       CComObject<CRemoveSegmentsTxn>* pTxn;
       CComObject<CRemoveSegmentsTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Remove Segments",&DoRemoveSegments,&UndoRemoveSegments,data);
+      pTxn->Init(this,_T("Remove Segments"),&DoRemoveSegments,&UndoRemoveSegments,data);
 
       return m_TxnMgr->Execute(pTxn);
    }
@@ -835,7 +835,7 @@ STDMETHODIMP CLongitudinalPierDescription::ReverseSegments()
       typedef CActionTransaction<CLongitudinalPierDescription,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLGenericBridge> CReverseSegmentsTxn;
       CComObject<CReverseSegmentsTxn>* pTxn;
       CComObject<CReverseSegmentsTxn>::CreateInstance(&pTxn);
-      pTxn->Init(this,"Reverse Segment",&DoReverseSegments,&DoReverseSegments);
+      pTxn->Init(this,_T("Reverse Segment"),&DoReverseSegments,&DoReverseSegments);
 
       return m_TxnMgr->Execute(pTxn);
    }

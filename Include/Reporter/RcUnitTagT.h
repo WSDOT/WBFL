@@ -123,7 +123,7 @@ public:
    }
 
    //------------------------------------------------------------------------
-   virtual std::string AsString() const
+   virtual std::_tstring AsString() const
    {
       return m_pUnitOfMeasure->UnitTag();
    }

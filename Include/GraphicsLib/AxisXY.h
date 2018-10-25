@@ -251,19 +251,19 @@ public:
 
    //------------------------------------------------------------------------
    // Set the title text
-   void SetTitleText(const std::string& text);
+   void SetTitleText(const std::_tstring& text);
 
    //------------------------------------------------------------------------
    // Get the title text
-   std::string GetTitleText();
+   std::_tstring GetTitleText();
 
    //------------------------------------------------------------------------
    // Set the subtitle text
-   void SetSubtitleText(const std::string& text);
+   void SetSubtitleText(const std::_tstring& text);
 
    //------------------------------------------------------------------------
    // Get the subtitle text
-   std::string GetSubtitleText();
+   std::_tstring GetSubtitleText();
 
    //------------------------------------------------------------------------
    // Set whether to show text or not
@@ -311,8 +311,8 @@ private:
    bool   m_DoShowText;
    grAxisXY::TextLocation m_TextLocation;
 
-   std::string m_AxisTitle;
-   std::string m_AxisSubtitle;
+   std::_tstring m_AxisTitle;
+   std::_tstring m_AxisSubtitle;
 
    Int32   m_AxisTitleSize;
    Int32   m_AxisSubtitleSize;

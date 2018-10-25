@@ -356,7 +356,7 @@ public:
 #ifdef DUMP_LOG
    mutable long m_AxialIter;
    mutable long m_AngleIter;
-   mutable std::ofstream m_Log;
+   mutable std::_tofstream m_Log;
 #endif
 
    // GROUP: LIFECYCLE
@@ -366,6 +366,8 @@ private:
    //------------------------------------------------------------------------
    // Private version of mathFunction2d interface to be used by math solvers.
    virtual Float64 Evaluate(Float64 x) const;
+
+   virtual mathFunction2d* Clone() const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

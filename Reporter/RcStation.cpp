@@ -103,7 +103,7 @@ Float64 rptRcStation::GetStation(bool bConvert) const
    return value;
 }
 
-std::string rptRcStation::AsString() const
+std::_tstring rptRcStation::AsString() const
 {
    return m_pFormat->AsString( m_Station ); 
 }

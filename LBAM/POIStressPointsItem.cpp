@@ -97,7 +97,7 @@ STDMETHODIMP CPOIStressPointsItem::Load(IStructuredLoad2 * pload)
          return hr;
 
       _bstr_t stage(var);
-      m_Stage = (const char*)stage;
+      m_Stage = (LPCTSTR)stage;
       var.Clear();
 
       CComPtr<IStressPoints> leftsps, rightsps;

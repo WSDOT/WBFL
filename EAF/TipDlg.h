@@ -30,7 +30,7 @@ class CTipDlg : public CDialog
 {
 // Construction
 public:
-	CTipDlg(LPCSTR lpszTipFile,CWnd* pParent = NULL);	 // standard constructor
+	CTipDlg(LPCTSTR lpszTipFile,CWnd* pParent = NULL);	 // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CTipDlg)

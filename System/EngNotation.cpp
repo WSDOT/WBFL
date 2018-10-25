@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
 {
    char buf[51];
-   char *buffer;
+   char* buffer;
    int decPos;
    int negative;
    int nDigits;
@@ -48,9 +48,9 @@ void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
    buffer = buf;
 
    if (negative)
-      {
+   {
       *buffer++ = '-';
-      }
+   }
 
    strcpy_s(buffer,51,tempBuffer);
 
@@ -90,7 +90,8 @@ void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
    if (negative)
       buffer--;
 
-   dynamic_cast<std::ostream&>(os) << buffer;
+   USES_CONVERSION;
+   dynamic_cast<std::_tostream&>(os) << A2T(buffer);
 }
 
 eng_notation_manip eng_notation(Float64 value,Int16 nDigits,Int16 sigDigits)

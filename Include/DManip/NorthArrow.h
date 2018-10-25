@@ -29,7 +29,7 @@
 
 interface iNorthArrow : public iDisplayObject
 {
-   STDMETHOD_(void,SetText)(LPCSTR lpszText) PURE;
+   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetText)() PURE;
 
    // set font. Note that font height is in 10th of points.

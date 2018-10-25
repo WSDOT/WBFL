@@ -55,17 +55,17 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 
    sysTime my_time;
    // dump control information out to the report
-   *m_pOstream << "<!DOCTYPE HTML PUBLIC \"-//Spyglass//DTD HTML 2.0 Extended//EN\">" << std::endl
-               << "<html>" << std::endl
-               << "<head>" << std::endl
-               << "<meta title=\"WSDOT Engineering Reporter on "
-               <<  my_time <<"\">" << std::endl;
+   *m_pOstream << _T("<!DOCTYPE HTML PUBLIC \"-//Spyglass//DTD HTML 2.0 Extended//EN\">") << std::endl
+               << _T("<html>") << std::endl
+               << _T("<head>") << std::endl
+               << _T("<meta title=\"WSDOT Engineering Reporter on ")
+               <<  my_time << _T("\">") << std::endl;
 
    if (pReport->GetName().empty())
-      *m_pOstream << "<title>\"WSDOT Engineering Reporter on "
-                  <<  my_time <<"\"</title>" << std::endl;
+      *m_pOstream << _T("<title>\"WSDOT Engineering Reporter on ")
+                  <<  my_time << _T("\"</title>") << std::endl;
    else
-      *m_pOstream << "<title>"<<pReport->GetName()<<"</title>" << std::endl<<std::endl;
+      *m_pOstream << _T("<title>") << pReport->GetName() << _T("</title>") << std::endl<<std::endl;
 
    // Use html helper to Write out style block
    m_Helper.VisitFontLibrary(*m_pOstream);
@@ -78,14 +78,14 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 //   *m_pOstream << "   BODY {margin:0,0,0,0}" << std::endl;
 //   *m_pOstream << "</STYLE>" << std::endl;
 
-   *m_pOstream << "<STYLE MEDIA=\"SCREEN\">" << std::endl;
-   *m_pOstream << "   BODY {";
-   *m_pOstream           << "margin-top:"    << (pl->GetTopMargin()*m_LogPixelsY) << " ";
-   *m_pOstream           << "margin-bottom:" << (pl->GetBottomMargin()*m_LogPixelsY) << " ";
-   *m_pOstream           << "margin-left:"   << (pl->GetLeftMargin()*m_LogPixelsX) << " ";
-   *m_pOstream           << "margin-right:"  << (pl->GetRightMargin()*m_LogPixelsX) << " ";
-   *m_pOstream           << "}" << std::endl;
-   *m_pOstream << "</STYLE>" << std::endl;
+   *m_pOstream << _T("<STYLE MEDIA=\"SCREEN\">") << std::endl;
+   *m_pOstream << _T("   BODY {");
+   *m_pOstream           << _T("margin-top:")    << (pl->GetTopMargin()*m_LogPixelsY) << _T(" ");
+   *m_pOstream           << _T("margin-bottom:") << (pl->GetBottomMargin()*m_LogPixelsY) << _T(" ");
+   *m_pOstream           << _T("margin-left:")   << (pl->GetLeftMargin()*m_LogPixelsX) << _T(" ");
+   *m_pOstream           << _T("margin-right:")  << (pl->GetRightMargin()*m_LogPixelsX) << _T(" ");
+   *m_pOstream           << _T("}") << std::endl;
+   *m_pOstream << _T("</STYLE>") << std::endl;
 
 //   // force landscape page layout during printing
 // // browsers don't support this very will... skip it for now!
@@ -97,9 +97,9 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 //   }
 
 
-   *m_pOstream << "</head>" << std::endl<<std::endl;
+   *m_pOstream << _T("</head>") << std::endl<<std::endl;
 
-   *m_pOstream << "<BODY onDragStart=\"onde()\" >" << std::endl;
+   *m_pOstream << _T("<BODY onDragStart=\"onde()\" >") << std::endl;
 
    // now we're ready to start iterating over chapters.    
    // create a chapter visitor
@@ -114,18 +114,18 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
    // end of report - should only have to write out the final closing brace
    // and we're done!
    //
-   *m_pOstream << "</body>"<<std::endl;
+   *m_pOstream << _T("</body>") << std::endl;
 
    // javascript to disable drag & drop
-   *m_pOstream << "<SCRIPT LANGUAGE=\"JavaScript\">"<<std::endl;
-   *m_pOstream << "function onde(){"<<std::endl;
-   *m_pOstream << "    var oEvent = window.event;"<<std::endl;
-   *m_pOstream << "    oEvent.returnValue = false;"<<std::endl;
-   *m_pOstream << "    oEvent.cancelBubble = true;"<<std::endl;
-   *m_pOstream << "}"<<std::endl;
-   *m_pOstream << "</SCRIPT>"<<std::endl<<std::endl;
+   *m_pOstream << _T("<SCRIPT LANGUAGE=\"JavaScript\">") <<std::endl;
+   *m_pOstream << _T("function onde(){") <<std::endl;
+   *m_pOstream << _T("    var oEvent = window.event;")<<std::endl;
+   *m_pOstream << _T("    oEvent.returnValue = false;")<<std::endl;
+   *m_pOstream << _T("    oEvent.cancelBubble = true;")<<std::endl;
+   *m_pOstream << _T("}")<<std::endl;
+   *m_pOstream << _T("</SCRIPT>")<<std::endl<<std::endl;
 
-   *m_pOstream << "</html>"<<std::endl;
+   *m_pOstream << _T("</html>") <<std::endl;
 
 }
 

@@ -495,6 +495,20 @@ STDMETHODIMP CRect2d::IsNull(VARIANT_BOOL *pbResult)
 	return S_OK;
 }
 
+STDMETHODIMP CRect2d::Clone(IRect2d** clone)
+{
+   CHECK_RETOBJ(clone);
+   CComObject<CRect2d>* pClone;
+   CComObject<CRect2d>::CreateInstance(&pClone);
+   pClone->m_Left   = m_Left;
+   pClone->m_Right  = m_Right;
+   pClone->m_Top    = m_Top;
+   pClone->m_Bottom = m_Bottom;
+   (*clone) = pClone;
+   (*clone)->AddRef();
+   return S_OK;
+}
+
 STDMETHODIMP CRect2d::IsNormalized(VARIANT_BOOL *pbResult)
 {
    CHECK_RETVAL(pbResult);

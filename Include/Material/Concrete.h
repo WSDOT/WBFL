@@ -74,7 +74,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor.
-   matConcrete(const std::string& name,Float64 fc,Float64 density,Float64 modE);
+   matConcrete(const std::_tstring& name,Float64 fc,Float64 density,Float64 modE);
 
    //------------------------------------------------------------------------
    // Destructor
@@ -89,8 +89,8 @@ public:
    bool HasAggSplittingStrength() const;
    void HasAggSplittingStrength(bool bHasFct);
 
-   static std::string GetTypeName(Type type,bool bFull);
-   static Type GetTypeFromName(const char* strName);
+   static std::_tstring GetTypeName(Type type,bool bFull);
+   static Type GetTypeFromName(LPCTSTR strName);
 
    // GROUP: OPERATIONS
 
@@ -126,10 +126,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    void SetFc(Float64 fc);
@@ -220,7 +220,7 @@ private:
    Type        m_Type;
    Float64     m_Fct;
    bool        m_bHasFct;
-   std::string m_Name;
+   std::_tstring m_Name;
    Float64     m_Fc;
    Float64     m_Density;
    Float64     m_ModE;

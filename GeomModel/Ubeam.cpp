@@ -502,24 +502,24 @@ bool gmUBeam::AssertValid() const
 
 void gmUBeam::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmUBeam ***"<<endl;
+   os << _T("*** Dump for gmUBeam ***") <<endl;
    gmShapeImp::Dump( os );
-   os << "  Hook Point      = ("<<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
-   os << "  Rotation        =  "<<m_Rotation<<endl;
-   os << "  D1              =  "<<m_D1 <<endl;
-   os << "  D2              =  "<<m_D2 <<endl;
-   os << "  D3              =  "<<m_D3 <<endl;
-   os << "  D4              =  "<<m_D4 <<endl;
-   os << "  D5              =  "<<m_D5 <<endl;
-   os << "  D6              =  "<<m_D6 <<endl;
-   os << "  D7              =  "<<m_D7 <<endl;
-   os << "  W1              =  "<<m_W1 <<endl;
-   os << "  W2              =  "<<m_W2 <<endl;
-   os << "  W3              =  "<<m_W3 <<endl;
-   os << "  W4              =  "<<m_W4 <<endl;
-   os << "  W5              =  "<<m_W5 <<endl;
-   os << "  T               =  "<<m_T  <<endl;
-   os << "Polygon rep of beam" << endl;
+   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
+   os << _T("  D1              =  ")<<m_D1 <<endl;
+   os << _T("  D2              =  ")<<m_D2 <<endl;
+   os << _T("  D3              =  ")<<m_D3 <<endl;
+   os << _T("  D4              =  ")<<m_D4 <<endl;
+   os << _T("  D5              =  ")<<m_D5 <<endl;
+   os << _T("  D6              =  ")<<m_D6 <<endl;
+   os << _T("  D7              =  ")<<m_D7 <<endl;
+   os << _T("  W1              =  ")<<m_W1 <<endl;
+   os << _T("  W2              =  ")<<m_W2 <<endl;
+   os << _T("  W3              =  ")<<m_W3 <<endl;
+   os << _T("  W4              =  ")<<m_W4 <<endl;
+   os << _T("  W5              =  ")<<m_W5 <<endl;
+   os << _T("  T               =  ")<<m_T  <<endl;
+   os << _T("Polygon rep of beam") << endl;
    m_PolyImp.Dump( os );
 }
 #endif // _DEBUG

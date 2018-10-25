@@ -67,7 +67,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   unitXUnit(Reason reason,const char* file,Int16 line);
+   unitXUnit(Reason reason,LPCTSTR file,Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor

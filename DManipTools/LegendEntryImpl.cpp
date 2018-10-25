@@ -78,14 +78,14 @@ STDMETHODIMP_(void) CLegendEntryImpl::put_Name(BSTR newVal)
 
 }
 
-STDMETHODIMP_(void) CLegendEntryImpl::get_SymbolFontFace(char* *pVal)
+STDMETHODIMP_(void) CLegendEntryImpl::get_SymbolFontFace(LPTSTR *pVal)
 {
    int nChar = m_FontFace.GetLength()+1;
-   *pVal = new char[nChar];
-   strcpy_s(*pVal,nChar,m_FontFace);
+   *pVal = new TCHAR[nChar];
+   _tcscpy_s(*pVal,nChar,m_FontFace);
 }
 
-STDMETHODIMP_(void) CLegendEntryImpl::put_SymbolFontFace(const char* newVal)
+STDMETHODIMP_(void) CLegendEntryImpl::put_SymbolFontFace(LPCTSTR newVal)
 {
    m_FontFace = CString(newVal);
 }
@@ -234,7 +234,7 @@ STDMETHODIMP_(HRESULT) CLegendEntryImpl::CreateDataPoint(Float64 dataX, Float64 
 
    // tool tips
    CString strToolTipText;
-   strToolTipText.Format("(%f, %f)", dataX, dataY);
+   strToolTipText.Format(_T("(%f, %f)"), dataX, dataY);
    dp_rep->SetToolTipText(strToolTipText);
 
    return dp_rep.QueryInterface(dataPoint);
@@ -285,7 +285,7 @@ STDMETHODIMP_(void) CLegendEntryImpl::ReadDragData(iDragDataSource* pSource, UIN
 
    // font face
    pSource->Read(cfFormat,&len,sizeof(long));
-   TCHAR* tstr = new TCHAR[len+1];
+   LPTSTR tstr = new TCHAR[len+1];
 
    if (len>0)
       pSource->Read(cfFormat,tstr,len*sizeof(TCHAR)); 

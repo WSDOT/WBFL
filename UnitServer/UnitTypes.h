@@ -150,7 +150,7 @@ public:
 private:
    IUnitServer* m_pUnitServer; // Weak reference
    CComPtr<IUnitServer> m_pUnitServerStrong; // Strong reference
-   std::map<std::string,DWORD> m_Cookies; // Map of unit type name to connection cookie
+   std::map<std::_tstring,DWORD> m_Cookies; // Map of unit type name to connection cookie
 
    void UnadviseUnitType(IUnitType* pUnitType);
    void UnadviseAll();

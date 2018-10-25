@@ -57,7 +57,6 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005()
    m_Ad                    = ::ConvertToSysUnits(600.,unitMeasure::Inch2);
    m_ed                    = ::ConvertToSysUnits(-25.865,unitMeasure::Inch);
    m_CuringMethodTimeAdjustmentFactor = 7;
-
 }
 
 lrfdRefinedLosses2005::lrfdRefinedLosses2005(
@@ -119,9 +118,10 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 tf,   // Final time
                          lrfdCreepCoefficient2005::CuringMethod curingMethod,
                          Float64 curingMethodTimeFactor,
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation)
+lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -683,7 +683,7 @@ void lrfdRefinedLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
-      throw lrfdXPsLosses(lrfdXPsLosses::Specification,__FILE__,__LINE__);
+      throw lrfdXPsLosses(lrfdXPsLosses::Specification,_T(__FILE__),__LINE__);
 
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
@@ -798,12 +798,13 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetK2(m_CreepK2);
 
    // 3. Compute Delta Fcd
-   m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
-   m_DeltaFcd2 = -1*((m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm/m_Ag + (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm*m_eperm*m_eperm/m_Ig);
+   m_DeltaFcd1 = IsZero(m_ApsPerm) ? 0 : -1*(m_Madlg*m_eperm/m_Ig);
+   m_DeltaFcd2 = IsZero(m_ApsPerm) ? 0 : -1*(m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
+   m_DeltaFcd3 = -1*((m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm/m_Ag + (m_dfpCR + m_dfpSR + m_dfpR1)*m_ApsPerm*m_eperm*m_eperm/m_Ig);
    // change sign because these moments cause tension at the level of
    // the strands which reduces creep
 
-   m_DeltaFcd = m_DeltaFcd1 + m_DeltaFcd2;
+   m_DeltaFcd = m_DeltaFcd1 + m_DeltaFcd2 + m_DeltaFcd3;
 
    if ( IsZero(m_ApsPerm) )
    {
@@ -822,8 +823,11 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
       m_dfpCD = 0;
    }
 
-   // Elastic gain due to deck and superimposed dead loads
+   // Elastic gain due to deck placement
    m_dfpED = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd1;
+
+   // Elastic gain due to superimposed dead loads
+   m_dfpSIDL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd2;
 
    // Relaxation of Prestressing Strands [5.9.5.4.3c]
    m_dfpR2 = m_dfpR1;
@@ -1004,7 +1008,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          172800000.00000000,   // Final time
                          lrfdCreepCoefficient2005::Accelerated,
                          7, // time scale factor for curing method
-                         false
+                         false,true
                          );
 
    lrfdVersionMgr::RegisterListener( &loss );
@@ -1036,6 +1040,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value,164929970.05799773) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
+   TRY_TESTME( IsEqual(value,220117979.23064584) );
+
+   value = loss.PermanentStrand_AfterSIDL();
    TRY_TESTME( IsEqual(value,212991990.04773825) );
 
    value = loss.PermanentStrand_Final();
@@ -1064,6 +1071,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value,0.) );
 
    value = loss.TemporaryStrand_AfterDeckPlacement();
+   TRY_TESTME( IsEqual(value,0.) );
+
+   value = loss.TemporaryStrand_AfterSIDL();
    TRY_TESTME( IsEqual(value,0.) );
 
    value = loss.TemporaryStrand_Final();

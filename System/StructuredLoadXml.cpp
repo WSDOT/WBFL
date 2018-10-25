@@ -39,9 +39,9 @@ static char THIS_FILE[] = __FILE__;
 
 /////// FREE FUNCTIONS
 // free function to eat white space
-std::istream& eatwhite(std::istream& is);
+std::_tistream& eatwhite(std::_tistream& is);
 // a free function to read a line trimmed of whitespace
-void get_clean_line(std::istream& is, std::string& str);
+void get_clean_line(std::_tistream& is, std::_tstring& str);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -55,12 +55,12 @@ m_LineNumber(0)
 
 sysStructuredLoadXml::~sysStructuredLoadXml()
 {
-   WARN( m_pIStream != 0, "Did you forget to call FinishLoad()?" );
+   WARN( m_pIStream != 0, _T("Did you forget to call FinishLoad()?") );
 }
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void sysStructuredLoadXml::BeginLoad(std::istream* pis)
+void sysStructuredLoadXml::BeginLoad(std::_tistream* pis)
 {
    PRECONDITION( pis != 0 );
 
@@ -72,7 +72,7 @@ void sysStructuredLoadXml::BeginLoad(std::istream* pis)
    m_pIStream->exceptions(std::ios_base::badbit|std::ios_base::failbit|std::ios_base::eofbit);
 
    // read header information and compare to what we expect
-   std::string lin;
+   std::_tstring lin;
    try
    {
       eatwhite(*m_pIStream);          // eat leading white space
@@ -87,15 +87,15 @@ void sysStructuredLoadXml::BeginLoad(std::istream* pis)
    // tokenize line to make sure xml is of right format
    // should look something like: <?xml version="1.0" ?>
    // not a perfect parse, but...
-   const char* Dels[] = {"?"," ","=","<",">",0};
+   LPCTSTR Dels[] = {_T("?"),_T(" "),_T("="),_T("<"),_T(">"),0};
    sysTokenizer tokize(Dels);
    tokize.push_back(lin);
    bool failed = false;
    if (tokize.size()==3)
    {
-      failed |= tokize[0] != std::string("xml");
-      failed |= tokize[1] != std::string("version");
-      failed |= tokize[2] != std::string("\"1.0\"");
+      failed |= tokize[0] != std::_tstring(_T("xml"));
+      failed |= tokize[1] != std::_tstring(_T("version"));
+      failed |= tokize[2] != std::_tstring(_T("\"1.0\""));
    }
    else
    {
@@ -116,24 +116,24 @@ void sysStructuredLoadXml::EndLoad()
 {
    PRECONDITION( m_pIStream != 0 );
    dbgDiagBase::EnableWarnPopup(false);
-   WARN(m_Level==0,"Error: BeginUnit-EndUnit mismatch in structured load");
+   WARN(m_Level==0,_T("Error: BeginUnit-EndUnit mismatch in structured load"));
    dbgDiagBase::EnableWarnPopup(true);
    // restore original state
    m_pIStream->exceptions(m_IoState);
    m_pIStream = 0;
 }
 
-bool sysStructuredLoadXml::BeginUnit(const char* name)
+bool sysStructuredLoadXml::BeginUnit(LPCTSTR name)
 {
    ASSERTVALID;
 
-   std::string unit_name;
+   std::_tstring unit_name;
    Float64 unit_version;
    // ask parser if a BeginUnit was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::BeginUnit)
    {
       unit_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring inputname(name);
       if (unit_name==inputname)
       {
          // was a BeginUnit and the name matches
@@ -185,7 +185,18 @@ Float64 sysStructuredLoadXml::GetParentVersion()
    CHECK(m_UnitList.size()>0);
    UnitListConstIterator iter = m_UnitList.end();
    iter--;
+   iter--;
    return (*iter).second;
+}
+
+std::_tstring sysStructuredLoadXml::GetParentUnit()
+{
+   ASSERTVALID;
+   CHECK(m_UnitList.size()>0);
+   UnitListConstIterator iter = m_UnitList.end();
+   iter--;
+   iter--;
+   return (*iter).first;
 }
 
 Float64 sysStructuredLoadXml::GetTopVersion()
@@ -195,17 +206,17 @@ Float64 sysStructuredLoadXml::GetTopVersion()
    return m_UnitList.front().second;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, std::string* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, std::_tstring* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
-         std::string val;
+         std::_tstring val;
          if (m_LineParser.GetValue(&val))
          {
             *value = val;
@@ -217,14 +228,14 @@ bool sysStructuredLoadXml::Property(const char* name, std::string* value)
    return false;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, Float64* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, Float64* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          Float64 val;
@@ -239,14 +250,14 @@ bool sysStructuredLoadXml::Property(const char* name, Float64* value)
    return false;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, Int16* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, Int16* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          Int16 val;
@@ -261,14 +272,14 @@ bool sysStructuredLoadXml::Property(const char* name, Int16* value)
    return false;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, Uint16* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, Uint16* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          Uint16 val;
@@ -284,14 +295,14 @@ bool sysStructuredLoadXml::Property(const char* name, Uint16* value)
 }
 
 
-bool sysStructuredLoadXml::Property(const char* name, Int32* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, Int32* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          Int32 val;
@@ -306,14 +317,14 @@ bool sysStructuredLoadXml::Property(const char* name, Int32* value)
    return false;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, Uint32* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, Uint32* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          Uint32 val;
@@ -328,14 +339,14 @@ bool sysStructuredLoadXml::Property(const char* name, Uint32* value)
    return false;
 }
 
-bool sysStructuredLoadXml::Property(const char* name, bool* value)
+bool sysStructuredLoadXml::Property(LPCTSTR name, bool* value)
 {
    ASSERTVALID;
    // ask parser if a Property was last parsed item
    if (m_LineParser.GetType()==sysLineParseXml::Property)
    {
-      std::string prop_name = m_LineParser.GetName();
-      std::string inputname(name);
+      std::_tstring prop_name = m_LineParser.GetName();
+      std::_tstring inputname(name);
       if (prop_name==inputname)
       {
          bool val;
@@ -359,22 +370,22 @@ bool sysStructuredLoadXml::Eof() const
       return false;
 }
 
-std::string sysStructuredLoadXml::GetStateDump() const
+std::_tstring sysStructuredLoadXml::GetStateDump() const
 {
    // use Dump
-   std::ostringstream os;
-   os << "Dump for sysStructuredLoadXml" << std::endl;
-   os << "  Level       = " << m_Level << std::endl;
-   os << "  Line Number = " << m_LineNumber << std::endl;
-   os << "  Units: <name, version> " << std::endl;
+   std::_tostringstream os;
+   os << _T("Dump for sysStructuredLoadXml") << std::endl;
+   os << _T("  Level       = ") << m_Level << std::endl;
+   os << _T("  Line Number = ") << m_LineNumber << std::endl;
+   os << _T("  Units: <name, version> ") << std::endl;
    for (UnitListConstIterator it=m_UnitList.begin(); it!=m_UnitList.end(); it++)
-      os <<"    <"<<(*it).first<<", "<<(*it).second<<">"<<std::endl;
-   os << "  LineParser" << std::endl;
+      os <<_T("    <")<<(*it).first<<_T(", ")<<(*it).second<<_T(">")<<std::endl;
+   os << _T("  LineParser") << std::endl;
    os << m_LineParser.GetStateDump();
    return os.str(); 
 }
 
-std::string sysStructuredLoadXml::GetUnit() const
+std::_tstring sysStructuredLoadXml::GetUnit() const
 {
    const ListItem& listItem = m_UnitList.back();
    return listItem.first;
@@ -400,7 +411,7 @@ void sysStructuredLoadXml::ReadNext()
 {
    
    PRECONDITION( m_pIStream );
-   std::string block;
+   std::_tstring block;
    bool ateof=false; 
    sysLineParseXml::LineType lt;
 
@@ -409,28 +420,29 @@ void sysStructuredLoadXml::ReadNext()
       // Read next xml block and store in buffer
       eatwhite(*m_pIStream);
       // blocks must start with a '<'
-      char br = m_pIStream->get();
-      if (br!='<')
+      TCHAR br = m_pIStream->get();
+      if (br != _T('<') )
          THROW_LOAD(InvalidFileFormat,this);
+
       m_pIStream->putback(br);
 
       bool loop=true;
       bool first=true;
-      while(loop&&m_pIStream)
+      while(loop && m_pIStream)
       {
-         std::string lin;
+         std::_tstring lin;
          std::getline(*m_pIStream, lin);
          if (m_pIStream)
          {
             m_LineNumber++;
-            std::string::size_type dpos = lin.find("</");
-            std::string::size_type apos = lin.find(">");
-            std::string::size_type bpos = lin.find_last_of(">",lin.size());
-            if (std::string::npos != dpos)
+            std::_tstring::size_type dpos = lin.find(_T("</"));
+            std::_tstring::size_type apos = lin.find(_T(">"));
+            std::_tstring::size_type bpos = lin.find_last_of(_T(">"),lin.size());
+            if (std::_tstring::npos != dpos)
             {
                // found end of block - either a property or and endunit
-               std::string::size_type epos = lin.find(">",dpos);
-               if (std::string::npos != epos)
+               std::_tstring::size_type epos = lin.find(_T(">"),dpos);
+               if (std::_tstring::npos != epos)
                {
                   block+=lin.substr(0,epos+1);
                   loop=false;
@@ -450,7 +462,7 @@ void sysStructuredLoadXml::ReadNext()
             {
                // a multi line block - re-add eol
                block+=lin;
-               block+="\n";
+               block+=_T("\n");
             }
          }
          first=false;
@@ -498,7 +510,7 @@ bool sysStructuredLoadXml::AssertValid() const
 
 void sysStructuredLoadXml::Dump(dbgDumpContext& os) const
 {
-   std::string tmp;
+   std::_tstring tmp;
    tmp = GetStateDump();
    os << tmp << endl;
 }
@@ -518,9 +530,9 @@ bool sysStructuredLoadXml::TestMe(dbgLog& rlog)
 
 
 // free function to eat white space
-std::istream& eatwhite(std::istream& is)
+std::_tistream& eatwhite(std::_tistream& is)
 {
-   char c;
+   TCHAR c;
    while(is.get(c))
    {
       if (!isspace(c))
@@ -533,7 +545,7 @@ std::istream& eatwhite(std::istream& is)
 }
 
 // a free function to read a line trimmed of whitespace
-void get_clean_line(std::istream& is, std::string& str)
+void get_clean_line(std::_tistream& is, std::_tstring& str)
 {
    CHECK(is);
    eatwhite(is);          // eat leading white space

@@ -75,7 +75,7 @@ public:
    //------------------------------------------------------------------------
    // Initializes the structured save object before writing a stream.
    // Call this method before calling any other method of this class.
-   void BeginSave(std::ostream* pos);
+   void BeginSave(std::_tostream* pos);
 
    //------------------------------------------------------------------------
    // Call this method after you are done with your structured load
@@ -86,7 +86,7 @@ public:
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
    // Version 0.0 means no version was attached.
-   virtual void BeginUnit(const char* name, Float64 version=0.0);
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0);
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
@@ -107,31 +107,31 @@ public:
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(const char* name, const char* value);
+   virtual void Property(LPCTSTR name, LPCTSTR value);
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(const char* name, Float64 value);
+   virtual void Property(LPCTSTR name, Float64 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int16 value);
+   virtual void Property(LPCTSTR name, Int16 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint16 value);
+   virtual void Property(LPCTSTR name, Uint16 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int32 value);
+   virtual void Property(LPCTSTR name, Int32 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint32 value);
+   virtual void Property(LPCTSTR name, Uint32 value);
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(const char* name, bool value);
+   virtual void Property(LPCTSTR name, bool value);
 
 
    // GROUP: ACCESS
@@ -147,10 +147,10 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::ostream* m_pOStream;
+   std::_tostream* m_pOStream;
    std::ios_base::iostate m_IoState;
    long          m_Level; // unit nesting level
-   typedef std::pair<std::string, Float64> ListItem;
+   typedef std::pair<std::_tstring, Float64> ListItem;
    typedef std::list<ListItem> UnitList;
    typedef UnitList::const_iterator UnitListConstIterator;
    UnitList   m_UnitList; // stack of information about current units.

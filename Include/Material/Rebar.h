@@ -80,7 +80,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructs a new rebar object using the supplied parameters.
-   matRebar(const std::string& name,
+   matRebar(const std::_tstring& name,
             Float64 fpu,
             Float64 fpy,
             Float64 modE,
@@ -106,10 +106,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    void SetShape(ShapeType st);
@@ -165,7 +165,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    ShapeType   m_Shape;
    Float64     m_Dimension;
    Float64     m_Area;
@@ -183,12 +183,12 @@ private:
 // INLINE METHODS
 //
 
-inline void matRebar::SetName(const std::string& name)
+inline void matRebar::SetName(const std::_tstring& name)
 {
    m_Name = name;
 }
 
-inline std::string matRebar::GetName() const
+inline std::_tstring matRebar::GetName() const
 {
    return m_Name;
 }

@@ -86,7 +86,7 @@ BOOL CManagePluginsDlg::InitList()
    HRESULT hr = pICatReg.CoCreateInstance(CLSID_StdComponentCategoriesMgr);
    if ( FAILED(hr) )
    {
-      AfxMessageBox("Failed to create the component category manager");
+      AfxMessageBox(_T("Failed to create the component category manager"));
       return FALSE;
    }
 
@@ -111,7 +111,7 @@ BOOL CManagePluginsDlg::InitList()
       {
          LPOLESTR pszUserType;
          OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
-         int idx = m_PluginList.AddString(OLE2A(pszUserType));
+         int idx = m_PluginList.AddString(OLE2T(pszUserType));
 
          LPOLESTR pszCLSID;
          ::StringFromCLSID(clsid[i],&pszCLSID);
@@ -120,7 +120,7 @@ BOOL CManagePluginsDlg::InitList()
 
          CString strState = pApp->GetProfileString(m_strSection,strCLSID,_T("Enabled"));
          
-         bool bInitiallyEnabled = (strState.CompareNoCase("Enabled") == 0 ? true : false);
+         bool bInitiallyEnabled = (strState.CompareNoCase(_T("Enabled")) == 0 ? true : false);
          m_PluginList.SetCheck(idx,bInitiallyEnabled);
 
          CEAFPluginState state(clsid[i],strCLSID,bInitiallyEnabled);

@@ -85,6 +85,8 @@ public:
    // Evaluates the function at x.
    Float64 Evaluate(Float64 x) const;
 
+   virtual mathFunction2d* Clone() const;
+
    //------------------------------------------------------------------------
    // GetRange
    // Returns the range over which the function is valid.

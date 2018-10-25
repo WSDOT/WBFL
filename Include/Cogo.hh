@@ -172,6 +172,7 @@
 #define IDH_IDivide_BetweenPoints                             1102
 #define IDH_IDivide_LineSegment                               1103
 #define IDH_IDivide_HorzCurve                                 1104
+#define IDH_IDivide_Path                                      1105
 
 #define IDH_ITangent                                          1150
 #define IDH_ITangent_External                                 1151

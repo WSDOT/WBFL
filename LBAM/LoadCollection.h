@@ -156,7 +156,7 @@ public:
             return hr;
 
          _bstr_t stage(var);
-         m_Stage = (const char*)stage;
+         m_Stage = (LPCTSTR)stage;
          var.Clear();
 
          var.Clear();
@@ -165,7 +165,7 @@ public:
             return hr;
 
          _bstr_t lg(var);
-         m_LoadGroup = (const char*)lg;
+         m_LoadGroup = (LPCTSTR)lg;
 
          var.Clear();
          hr = pload->get_Property(_bstr_t("ID"),&var);

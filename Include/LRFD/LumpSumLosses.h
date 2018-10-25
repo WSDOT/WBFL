@@ -85,6 +85,7 @@ public:
                      Float64 beforeTempStrandRemoval,
                      Float64 afterTempStrandRemoval,
                      Float64 afterDeckPlacement,
+                     Float64 afterSIDL,
                      Float64 final);
 
    //------------------------------------------------------------------------
@@ -112,6 +113,7 @@ public:
    virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const;
    virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const;
    virtual Float64 PermanentStrand_AfterDeckPlacement() const;
+   virtual Float64 PermanentStrand_AfterSIDL() const;
    virtual Float64 PermanentStrand_Final() const;
 
    virtual Float64 TemporaryStrand_BeforeTransfer() const;
@@ -122,6 +124,7 @@ public:
    virtual Float64 TemporaryStrand_BeforeTemporaryStrandRemoval() const;
    virtual Float64 TemporaryStrand_AfterTemporaryStrandRemoval() const;
    virtual Float64 TemporaryStrand_AfterDeckPlacement() const;
+   virtual Float64 TemporaryStrand_AfterSIDL() const;
    virtual Float64 TemporaryStrand_Final() const;
 
    virtual Float64 PermanentStrand_RelaxationLossesBeforeTransfer() const;
@@ -171,6 +174,7 @@ protected:
    Float64 m_BeforeTempStrandRemoval;
    Float64 m_AfterTempStrandRemoval;
    Float64 m_AfterDeckPlacement;
+   Float64 m_AfterSIDL;
    Float64 m_Final;
 
    // GROUP: LIFECYCLE

@@ -22,6 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\System.h>
+#include <tchar.h>
 #include <iostream>
 #include <ostream>
 #include <fstream>
@@ -34,23 +35,23 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-bool TestDll(const char* plibname, dbgLog& rlog);
+bool TestDll(LPCTSTR plibname, dbgLog& rlog);
 
 // put names of all dll's to be tested here:
-static const char* lib_list[] = {"WBFLSystem.dll",
-                                 "WBFLRoark.dll",
-                                 "WBFLGeometricPrimitives.dll",
-                                 "WBFLGraphicsLib.dll",
-                                 "WBFLGeomModel.dll",
-                                 "WBFLLibraryFw.dll",
-                                 "WBFLLrfd.dll",
-                                 "WBFLMaterial.dll",
-                                 "WBFLMath.dll",
-                                 "WBFLReinforcedConcrete.dll",
-                                 "WBFLUnitMgt.dll",
-                                 "WBFLUnits.dll",
-                                 "WBFLBridgeAnalysis.dll",
-                                 "WBFLBridgeModeling.dll"};
+static LPCTSTR lib_list[] = {_T("WBFLSystem.dll"),
+                                 _T("WBFLRoark.dll"),
+                                 _T("WBFLGeometricPrimitives.dll"),
+                                 _T("WBFLGraphicsLib.dll"),
+                                 _T("WBFLGeomModel.dll"),
+                                 _T("WBFLLibraryFw.dll"),
+                                 _T("WBFLLrfd.dll"),
+                                 _T("WBFLMaterial.dll"),
+                                 _T("WBFLMath.dll"),
+                                 _T("WBFLReinforcedConcrete.dll"),
+                                 _T("WBFLUnitMgt.dll"),
+                                 _T("WBFLUnits.dll"),
+                                 _T("WBFLBridgeAnalysis.dll"),
+                                 _T("WBFLBridgeModeling.dll")};
 
 int main()
 {
@@ -60,52 +61,52 @@ int main()
 
    // create a test logger
 #if defined _DEBUG
-   dbgFileDumpContext dc("UnitTest_Debug.Log");
+   dbgFileDumpContext dc(_T("UnitTest_Debug.Log"));
 #else
-   dbgFileDumpContext dc("UnitTest_Release.Log");
+   dbgFileDumpContext dc(_T("UnitTest_Release.Log"));
 #endif
    dbgLog tl(&dc);
 
 
    // send intro messages to screen and file
    sysDate now_start;
-   tl << "*** Start WBFL Unit Testing at " << now_start.AsString() << " ***" << endl;
-   std::cout << "*** Start WBFL Unit Testing at "<< now_start <<"  ***" << std::endl;
+   tl << _T("*** Start WBFL Unit Testing at ") << now_start.AsString() << _T(" ***") << endl;
+   std::_tcout << _T("*** Start WBFL Unit Testing at ")<< now_start <<_T("  ***") << std::endl;
 
 
    // run testme's for all libraries
-   int n = sizeof(lib_list)/sizeof(char*);
+   int n = sizeof(lib_list)/sizeof(LPTSTR);
    for (int i=0; i<n; i++)
       st |= TestDll(lib_list[i], tl);
 
    // Test reporting
    tl << endl;
-   tl << "Total number of tests           : " << tl.GetNumEntries() << endl;
-   tl << "Number of Passing tests         : " << tl.GetTestCount( dbgLog::Passed ) << endl;
-   tl << "Number of Failing tests         : " << tl.GetTestCount( dbgLog::Failed ) << endl;
-   tl << "Number of tests not implemented : " << tl.GetTestCount( dbgLog::NotImplemented ) << endl;
+   tl << _T("Total number of tests           : ") << tl.GetNumEntries() << endl;
+   tl << _T("Number of Passing tests         : ") << tl.GetTestCount( dbgLog::Passed ) << endl;
+   tl << _T("Number of Failing tests         : ") << tl.GetTestCount( dbgLog::Failed ) << endl;
+   tl << _T("Number of tests not implemented : ") << tl.GetTestCount( dbgLog::NotImplemented ) << endl;
 
    dc << endl;
    tl.DumpFilteredLog( dbgLog::Failed );
 
    sysDate now_end;
-   tl << "*** Finished WBFL Unit Testing at " << now_end.AsString() << " ***" << endl;
-   std::cout << "*** Finished WBFL Unit Testing at "<< now_end <<"  ***" << std::endl;
+   tl << _T("*** Finished WBFL Unit Testing at ") << now_end.AsString() << _T(" ***") << endl;
+   std::_tcout << _T("*** Finished WBFL Unit Testing at ")<< now_end <<_T("  ***") << std::endl;
 
    return st ? 1 : 0;
 }
 
 
-bool TestDll(const char* plibname, dbgLog& rlog)
+bool TestDll(LPCTSTR plibname, dbgLog& rlog)
 {
    HINSTANCE hLibrary;
    pUnitTest ptst;
    bool      bt;
-   std::ostringstream ost;
+   std::_tostringstream ost;
 
-   std::string dllname(plibname);
+   std::_tstring dllname(plibname);
 
-   rlog << endl<<"**** Begin Testing DLL: "<< dllname <<" ****"<<endl;
+   rlog << endl<<_T("**** Begin Testing DLL: ")<< dllname <<_T(" ****")<<endl;
 
    hLibrary = LoadLibrary(dllname.c_str());
    if (hLibrary!=NULL)
@@ -120,14 +121,14 @@ bool TestDll(const char* plibname, dbgLog& rlog)
          }
          catch(sysXBase* xb)
          {
-            ost<<"Handled uncaught sysXBase exception from :"<< dllname<<std::endl
-               <<"Reason was "<<xb->GetReason()<<std::endl;
+            ost<<_T("Handled uncaught sysXBase exception from :")<< dllname<<std::endl
+               <<_T("Reason was ")<<xb->GetReason()<<std::endl;
             rlog << ost;
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
          catch(...)
          {
-            ost<<"Handled uncaught exception from :"<< dllname<<std::endl;
+            ost<<_T("Handled uncaught exception from :")<< dllname<<std::endl;
             rlog << ost;
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
@@ -138,7 +139,7 @@ bool TestDll(const char* plibname, dbgLog& rlog)
       else
       {
          //failed to get UnitTest from dll
-         ost<<"Failed to load UnitTest function from: "<< dllname<<std::endl;
+         ost<<_T("Failed to load UnitTest function from: ")<< dllname<<std::endl;
          rlog << ost;
          rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
       }
@@ -146,12 +147,12 @@ bool TestDll(const char* plibname, dbgLog& rlog)
    else
    {
       // dll failed to load
-      ost<<"Error Loading DLL: "<< dllname<<std::endl;
+      ost<<_T("Error Loading DLL: ")<< dllname<<std::endl;
       rlog << ost;
       rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
    }
 
-   rlog << "**** End Testing DLL: "<< dllname <<" ****"<<endl;
+   rlog << _T("**** End Testing DLL: ")<< dllname <<_T(" ****")<<endl;
 
    return bt;
 }

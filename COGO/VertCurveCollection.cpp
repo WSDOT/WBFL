@@ -302,7 +302,7 @@ STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
    CComPtr<IEnumVertCurves> enumVC;
    get__EnumVertCurves(&enumVC);
 
-   CogoElementKey count = 0;
+   CollectionIndexType count = 0;
    CComPtr<IVertCurve> vc;
    while ( enumVC->Next(1,&vc,NULL) != S_FALSE )
    {
@@ -395,7 +395,7 @@ HRESULT CVertCurveCollection::VertCurveKeyError(CogoElementKey key,UINT nHelpStr
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = sprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, key );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CVertCurveCollection,&CLSID_VertCurveCollection>::Error(oleMsg, IID_IVertCurveCollection, hRes);

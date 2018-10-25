@@ -130,10 +130,10 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
       val = 0.0;
 
    bool bShowTag = (tag == NULL ? false : true);
-   std::string strDegTag, strMinTag, strSecTag;
+   std::_tstring strDegTag, strMinTag, strSecTag;
    if ( bShowTag )
    {
-      std::string strTag = OLE2A(tag);
+      std::_tstring strTag = OLE2T(tag);
       if ( FAILED(cogoUtil::ParseAngleTags(strTag,&strDegTag,&strMinTag,&strSecTag)) )
          return Error(IDS_E_BADFORMATTAG,IID_IAngleDisplayUnitFormatter,COGO_E_BADFORMATTAG);
    }
@@ -141,12 +141,12 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
    long deg;
    long min;
    Float64 sec;
-   char dir;
+   TCHAR dir;
 
    dir = (val < 0) ? 'R' : 'L';
    cogoUtil::ToDMS( val, &deg, &min, &sec );
 
-   std::stringstream s;
+   std::_tostringstream s;
    s << (m_bSigned == VARIANT_TRUE ? deg : abs(deg));
 
    if ( bShowTag )
@@ -154,16 +154,16 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
 
    if ( m_bCondensedFormat == VARIANT_FALSE || (min != 0 || sec != 0 ) )
    {
-      s << " " << std::setw(2) << std::setfill('0') << min;
+      s << _T(" ") << std::setw(2) << std::setfill( _T('0') ) << min;
       if ( bShowTag )
          s << strMinTag;
-      s << " " << std::setw(m_Width) << std::setfill('0') << std::showpoint << std::fixed << std::setprecision(m_Precision) << (IsZero(sec) ? 0. : sec );
+      s << _T(" ") << std::setw(m_Width) << std::setfill( _T('0') ) << std::showpoint << std::fixed << std::setprecision(m_Precision) << (IsZero(sec) ? 0. : sec );
       if ( bShowTag ) 
          s << strSecTag;
    }
 
    if ( m_bSigned == VARIANT_FALSE )
-     s << " " << dir;
+     s << _T(" ") << dir;
 
    CComBSTR bstrFormattedValue(s.str().c_str());
    *fmtString = bstrFormattedValue.Copy();

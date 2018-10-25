@@ -75,7 +75,7 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 				{
 					// set the default extension
 					*pstrDefaultExt = strExtension.Mid( 1 );  // skip the '.'
-					ofn.lpstrDefExt = const_cast< LPTSTR >((LPCTSTR)(*pstrDefaultExt));
+					ofn.lpstrDefExt = *pstrDefaultExt;
 					ofn.nFilterIndex = ofn.nMaxCustFilter + 1;  // 1 based number
 				}
 
@@ -187,7 +187,7 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 	dlgFile.m_ofn.lpstrTitle = title;
 	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);
 
-   TCHAR strCustomFilter[40] = { "\0\0" };
+   TCHAR strCustomFilter[40] = { _T("\0\0") };
    dlgFile.m_ofn.lpstrCustomFilter = strCustomFilter;
    dlgFile.m_ofn.nMaxCustFilter = 40;
 
@@ -211,9 +211,9 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 
 	INT_PTR nResult = dlgFile.DoModal();
 
-   TCHAR* pstrCustomFilter = strCustomFilter;
+   LPTSTR pstrCustomFilter = strCustomFilter;
    pstrCustomFilter++;
-   m_strCurrentFilter.Format("%s",pstrCustomFilter);
+   m_strCurrentFilter.Format(_T("%s"),pstrCustomFilter);
 
 	fileName.ReleaseBuffer();
 

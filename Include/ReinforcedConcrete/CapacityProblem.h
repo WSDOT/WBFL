@@ -132,7 +132,7 @@ public:
    //------------------------------------------------------------------------
    // Default constructor.  Supply the file and line number where the 
    // exception occured.
-   rcaXRcCapProbError(Reason reason, const char* file, Int16 line);
+   rcaXRcCapProbError(Reason reason, LPCTSTR file, Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -173,7 +173,7 @@ public:
    // MaterialNotFound	    "Material not found"
    // ElementNotFound	    "Element not found"
    // InvalidProblemRep	    "The problem representation is invalid"
-   void GetErrorMessage(std::string* pMsg,Int32 reserved) const;
+   void GetErrorMessage(std::_tstring* pMsg,Int32 reserved) const;
 
 
    // GROUP: ACCESS

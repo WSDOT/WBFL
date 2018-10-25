@@ -57,7 +57,7 @@ BEGIN_COM_MAP(CForeignDragDropTaskImpl)
 END_COM_MAP()
 
    // CForeignDragDropTask methods (from CForeignDragDropFSM)
-	STDMETHOD_(void,FSMError)(const char* t,const char* s);
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
 	STDMETHOD_(void,InitTask)();
    STDMETHOD_(void,CreateDragObjects)();
    STDMETHOD_(void,DestroyDragObjects)();

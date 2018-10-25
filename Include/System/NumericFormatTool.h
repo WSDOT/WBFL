@@ -96,8 +96,8 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   std::string AsString(Float64 value) const;
-   std::string AsString(const sysSectionValue& value) const;
+   std::_tstring AsString(Float64 value) const;
+   std::_tstring AsString(const sysSectionValue& value) const;
 
    // GROUP: ACCESS
 

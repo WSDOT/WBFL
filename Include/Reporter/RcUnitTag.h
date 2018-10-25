@@ -90,7 +90,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag as a string.
-   virtual std::string AsString() const = 0;
+   virtual std::_tstring AsString() const = 0;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG

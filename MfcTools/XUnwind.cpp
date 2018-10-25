@@ -41,7 +41,7 @@ IMPLEMENT_DYNAMIC(CXUnwind,CException)
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-CXUnwind::CXUnwind(const char* msg,Int32 reason,const char* file, Int16 line) :
+CXUnwind::CXUnwind(LPCTSTR msg,Int32 reason,LPCTSTR file, Int16 line) :
 CException(TRUE),
 m_Message(msg),
 m_Reason(reason),
@@ -62,7 +62,7 @@ Int32 CXUnwind::GetReason() const
    return m_Reason;
 }
 
-void CXUnwind::GetErrorMessage(std::string* pMsg) const
+void CXUnwind::GetErrorMessage(std::_tstring* pMsg) const
 {
    *pMsg = m_Message;
 }
@@ -70,11 +70,11 @@ void CXUnwind::GetErrorMessage(std::string* pMsg) const
 BOOL CXUnwind::GetErrorMessage( LPTSTR lpszError, INT nChar, UINT nMaxError, PUINT pnHelpContext)
 {
    UINT max = min(nMaxError, m_Message.size());
-   strncpy_s(lpszError,nChar,m_Message.c_str(),max);
+   _tcsncpy_s(lpszError,nChar,m_Message.c_str(),max);
    return TRUE;
 }
 
-std::string CXUnwind::GetFile() const
+std::_tstring CXUnwind::GetFile() const
 {
    return m_File;
 }

@@ -61,19 +61,19 @@ CInplaceEditFSMState::~CInplaceEditFSMState()
 void CInplaceEditFSMState::Do(CInplaceEditFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Do",fsm.GetState().StateName());
+   fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
 void CInplaceEditFSMState::LButtonDown(CInplaceEditFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("LButtonDown",fsm.GetState().StateName());
+   fsm.FSMError(_T("LButtonDown"),fsm.GetState().StateName());
 }
 
 void CInplaceEditFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("KeyPress",fsm.GetState().StateName());
+   fsm.FSMError(_T("KeyPress"),fsm.GetState().StateName());
 }
 
 //////////////////////////////////////////////////////////

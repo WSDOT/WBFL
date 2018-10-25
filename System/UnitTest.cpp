@@ -114,30 +114,30 @@ bool TestStructuredStorage(dbgLog& rlog)
    // create a test logger
    TESTME_PROLOGUE("Structured Storage Classes");
 
-   std::ostringstream ostr;
-   ostr << "This is "<<std::endl<<"a multi-line description"<<std::endl;
-   ostr << "With a twist >";
-   std::string twist(ostr.str());
+   std::_tostringstream ostr;
+   ostr << _T("This is ") << std::endl << _T("a multi-line description") << std::endl;
+   ostr << _T("With a twist >");
+   std::_tstring twist(ostr.str());
    // test saving
    {
-   std::ofstream os("Test.xml");
+   std::_tofstream os(_T("Test.xml"));
    PRECONDITION(os);
    sysStructuredSaveXml save;
    save.BeginSave( &os );
 
-   save.BeginUnit("LIBRARY_MANAGER", 1.0);
-      save.BeginUnit("LIBRARY",2.1);
-      save.Property("NAME", "ConcreteLibrary");
-      save.Property("DESCRIPTION", twist.c_str());
-         save.BeginUnit("CONCRETE_ENTRY");
-            save.Property("Density", 150.20);
-            save.Property("IsLightWeight", true);
-            save.Property("Int32_Max", (Int32)Int32_Max);
-            save.Property("Int32_Min", (Int32)Int32_Min);
-            save.Property("Uint32_Max",(Uint32)Uint32_Max);
-            save.Property("Int16_Max", (Int16)Int16_Max);
-            save.Property("Int16_Min", (Int16)Int16_Min);
-            save.Property("Uint16_Max",(Uint16)Uint16_Max);
+   save.BeginUnit(_T("LIBRARY_MANAGER"), 1.0);
+      save.BeginUnit(_T("LIBRARY"),2.1);
+      save.Property(_T("NAME"), _T("ConcreteLibrary"));
+      save.Property(_T("DESCRIPTION"), twist.c_str());
+         save.BeginUnit(_T("CONCRETE_ENTRY"));
+            save.Property(_T("Density"), 150.20);
+            save.Property(_T("IsLightWeight"), true);
+            save.Property(_T("Int32_Max"), (Int32)Int32_Max);
+            save.Property(_T("Int32_Min"), (Int32)Int32_Min);
+            save.Property(_T("Uint32_Max"),(Uint32)Uint32_Max);
+            save.Property(_T("Int16_Max"), (Int16)Int16_Max);
+            save.Property(_T("Int16_Min"), (Int16)Int16_Min);
+            save.Property(_T("Uint16_Max"),(Uint16)Uint16_Max);
          save.EndUnit();
       save.EndUnit();
    save.EndUnit();
@@ -146,7 +146,7 @@ bool TestStructuredStorage(dbgLog& rlog)
    }
 
    // test loading
-   std::ifstream is("Test.xml");
+   std::_tifstream is(_T("Test.xml"));
    if (!is) exit(1);
    sysStructuredLoadXml load;
 
@@ -160,38 +160,38 @@ bool TestStructuredStorage(dbgLog& rlog)
       Uint32 ulmax;
       Int16 smax, smin;
       Uint16 usmax;
-      std::string str;
+      std::_tstring str;
 
-      TRY_TESTME(load.BeginUnit("LIBRARY_MANAGER"));
+      TRY_TESTME(load.BeginUnit(_T("LIBRARY_MANAGER")));
 
-         TRY_TESTME(load.BeginUnit("LIBRARY"));
+         TRY_TESTME(load.BeginUnit(_T("LIBRARY")));
          TRY_TESTME(load.GetVersion()==2.1);
-           TRY_TESTME(load.Property("NAME", &str));
-           TRY_TESTME((str=="ConcreteLibrary"));
-           TRY_TESTME(load.Property("DESCRIPTION", &str));
+           TRY_TESTME(load.Property(_T("NAME"), &str));
+           TRY_TESTME((str==_T("ConcreteLibrary")));
+           TRY_TESTME(load.Property(_T("DESCRIPTION"), &str));
            TRY_TESTME((str==twist));
-           TRY_TESTME(load.BeginUnit("CONCRETE_ENTRY"));
-              TRY_TESTME(load.Property("Density", &d));
+           TRY_TESTME(load.BeginUnit(_T("CONCRETE_ENTRY")));
+              TRY_TESTME(load.Property(_T("Density"), &d));
               TRY_TESTME(d==150.20);
-              TRY_TESTME(load.Property("IsLightWeight", &b));
+              TRY_TESTME(load.Property(_T("IsLightWeight"), &b));
               TRY_TESTME(b==true);
 
-              TRY_TESTME(load.Property("Int32_Max", &lmax ));
+              TRY_TESTME(load.Property(_T("Int32_Max"), &lmax ));
               TRY_TESTME(lmax == Int32_Max);
 
-              TRY_TESTME(load.Property("Int32_Min", &lmin));
+              TRY_TESTME(load.Property(_T("Int32_Min"), &lmin));
               TRY_TESTME( lmin == Int32_Min );
 
-              TRY_TESTME(load.Property("Uint32_Max",&ulmax));
+              TRY_TESTME(load.Property(_T("Uint32_Max"),&ulmax));
               TRY_TESTME( ulmax == Uint32_Max );
 
-              TRY_TESTME(load.Property("Int16_Max", &smax ));
+              TRY_TESTME(load.Property(_T("Int16_Max"), &smax ));
               TRY_TESTME(smax == Int16_Max);
 
-              TRY_TESTME(load.Property("Int16_Min", &smin));
+              TRY_TESTME(load.Property(_T("Int16_Min"), &smin));
               TRY_TESTME( smin == Int16_Min );
 
-              TRY_TESTME(load.Property("Uint16_Max",&usmax));
+              TRY_TESTME(load.Property(_T("Uint16_Max"),&usmax));
               TRY_TESTME( usmax == Uint16_Max );
 
               TRY_TESTME(load.GetTopVersion()==1.0);
@@ -205,13 +205,13 @@ bool TestStructuredStorage(dbgLog& rlog)
    }
    catch (sysXStructuredLoad& ex)
    {
-      std::string msg;
+      std::_tstring msg;
       ex.GetErrorMessage(&msg);
-      std::cout << msg;
+      std::_tcout << msg;
    }
 
    // test some exceptions
-   rlog << "Test Structured Save & Load Exceptions"<<endl;
+   rlog << _T("Test Structured Save & Load Exceptions")<<endl;
 
    try
    {
@@ -219,7 +219,7 @@ bool TestStructuredStorage(dbgLog& rlog)
    }
    catch (sysXStructuredLoad& ex)
    {
-      std::string msg;
+      std::_tstring msg;
       ex.GetErrorMessage(&msg);
       rlog << msg << endl;
    }
@@ -230,7 +230,7 @@ bool TestStructuredStorage(dbgLog& rlog)
    }
    catch (sysXStructuredSave& ex)
    {
-      std::string msg;
+      std::_tstring msg;
       ex.GetErrorMessage(&msg);
       rlog << msg << endl;
    }
@@ -243,34 +243,34 @@ bool TestStructuredStoragePrs(dbgLog& rlog)
 {
    // create a test logger
    TESTME_PROLOGUE("Structured Storage Classes - XML Parser");
-   std::ostringstream ostr;
-   ostr << "This is "<<std::endl<<"a multi-line description"<<std::endl;
-   ostr << "With a twist >";
-   std::string twist(ostr.str());
+   std::_tostringstream ostr;
+   ostr << _T("This is ")<<std::endl<<_T("a multi-line description")<<std::endl;
+   ostr << _T("With a twist >");
+   std::_tstring twist(ostr.str());
 
-   std::string special("A string with \"special char's < > && & things><");
+   std::_tstring special(_T("A string with \"special char's < > && & things><"));
    // test saving
    {
    FileStream os;
-   if (!os.open(CComBSTR("Test.xml"),false)) exit(1);
+   if (!os.open(_T("Test.xml"),false)) exit(1);
 
    sysStructuredSaveXmlPrs save;
    save.BeginSave( &os );
 
-   save.BeginUnit("LIBRARY_MANAGER", 1.0);
-      save.BeginUnit("LIBRARY",2.1);
-      save.Property("NAME", "ConcreteLibrary");
-      save.Property("DESCRIPTION", twist.c_str());
-         save.BeginUnit("CONCRETE_ENTRY");
-            save.Property("Special", special.c_str());
-            save.Property("Density", 150.20);
-            save.Property("IsLightWeight", true);
-            save.Property("Int32_Max", (Int32)Int32_Max);
-            save.Property("Int32_Min", (Int32)Int32_Min);
-            save.Property("Uint32_Max",(Uint32)Uint32_Max);
-            save.Property("Int16_Max", (Int16)Int16_Max);
-            save.Property("Int16_Min", (Int16)Int16_Min);
-            save.Property("Uint16_Max",(Uint16)Uint16_Max);
+   save.BeginUnit(_T("LIBRARY_MANAGER"), 1.0);
+      save.BeginUnit(_T("LIBRARY"),2.1);
+      save.Property(_T("NAME"), _T("ConcreteLibrary"));
+      save.Property(_T("DESCRIPTION"), twist.c_str());
+         save.BeginUnit(_T("CONCRETE_ENTRY"));
+            save.Property(_T("Special"), special.c_str());
+            save.Property(_T("Density"), 150.20);
+            save.Property(_T("IsLightWeight"), true);
+            save.Property(_T("Int32_Max"), (Int32)Int32_Max);
+            save.Property(_T("Int32_Min"), (Int32)Int32_Min);
+            save.Property(_T("Uint32_Max"),(Uint32)Uint32_Max);
+            save.Property(_T("Int16_Max"), (Int16)Int16_Max);
+            save.Property(_T("Int16_Min"), (Int16)Int16_Min);
+            save.Property(_T("Uint16_Max"),(Uint16)Uint16_Max);
          save.EndUnit();
       save.EndUnit();
    save.EndUnit();
@@ -278,10 +278,11 @@ bool TestStructuredStoragePrs(dbgLog& rlog)
    save.EndSave();
    }
 
+
    // test loading
    FileStream is;
 
-   if (!is.open(CComBSTR("Test.xml"),true)) exit(1);
+   if (!is.open(_T("Test.xml"),true)) exit(1);
    sysStructuredLoadXmlPrs load;
 
    try
@@ -294,40 +295,40 @@ bool TestStructuredStoragePrs(dbgLog& rlog)
       Uint32 ulmax;
       Int16 smax, smin;
       Uint16 usmax;
-      std::string str;
+      std::_tstring str;
 
-      TRY_TESTME(load.BeginUnit("LIBRARY_MANAGER"));
+      TRY_TESTME(load.BeginUnit(_T("LIBRARY_MANAGER")));
 
-         TRY_TESTME(load.BeginUnit("LIBRARY"));
+         TRY_TESTME(load.BeginUnit(_T("LIBRARY")));
          TRY_TESTME(load.GetVersion()==2.1);
-           TRY_TESTME(load.Property("NAME", &str));
-           TRY_TESTME((str=="ConcreteLibrary"));
-           TRY_TESTME(load.Property("DESCRIPTION", &str));
+           TRY_TESTME(load.Property(_T("NAME"), &str));
+           TRY_TESTME((str==_T("ConcreteLibrary")));
+           TRY_TESTME(load.Property(_T("DESCRIPTION"), &str));
            //TRY_TESTME((str==twist)); // this test doesn't pass, but seems to have no consequence either.
-           TRY_TESTME(load.BeginUnit("CONCRETE_ENTRY"));
-              TRY_TESTME(load.Property("Special", &str));
+           TRY_TESTME(load.BeginUnit(_T("CONCRETE_ENTRY")));
+              TRY_TESTME(load.Property(_T("Special"), &str));
               TRY_TESTME(str==special);
-              TRY_TESTME(load.Property("Density", &d));
+              TRY_TESTME(load.Property(_T("Density"), &d));
               TRY_TESTME(d==150.20);
-              TRY_TESTME(load.Property("IsLightWeight", &b));
+              TRY_TESTME(load.Property(_T("IsLightWeight"), &b));
               TRY_TESTME(b==true);
 
-              TRY_TESTME(load.Property("Int32_Max", &lmax ));
+              TRY_TESTME(load.Property(_T("Int32_Max"), &lmax ));
               TRY_TESTME(lmax == Int32_Max);
 
-              TRY_TESTME(load.Property("Int32_Min", &lmin));
+              TRY_TESTME(load.Property(_T("Int32_Min"), &lmin));
               TRY_TESTME( lmin == Int32_Min );
 
-              TRY_TESTME(load.Property("Uint32_Max",&ulmax));
+              TRY_TESTME(load.Property(_T("Uint32_Max"),&ulmax));
               TRY_TESTME( ulmax == Uint32_Max );
 
-              TRY_TESTME(load.Property("Int16_Max", &smax ));
+              TRY_TESTME(load.Property(_T("Int16_Max"), &smax ));
               TRY_TESTME(smax == Int16_Max);
 
-              TRY_TESTME(load.Property("Int16_Min", &smin));
+              TRY_TESTME(load.Property(_T("Int16_Min"), &smin));
               TRY_TESTME( smin == Int16_Min );
 
-              TRY_TESTME(load.Property("Uint16_Max",&usmax));
+              TRY_TESTME(load.Property(_T("Uint16_Max"),&usmax));
               TRY_TESTME( usmax == Uint16_Max );
 
               TRY_TESTME(load.GetTopVersion()==1.0);
@@ -341,9 +342,9 @@ bool TestStructuredStoragePrs(dbgLog& rlog)
    }
    catch (sysXStructuredLoad& ex)
    {
-      std::string msg;
+      std::_tstring msg;
       ex.GetErrorMessage(&msg);
-      std::cout << msg;
+      std::_tcout << msg;
    }
 
    TESTME_EPILOG("Structured Storage XMLPRS Library");

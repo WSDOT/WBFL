@@ -80,7 +80,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
    m_RegFont.GetLogFont(&lf);
    lf.lfWeight = FW_BOLD;
    m_BoldFont.CreateFontIndirect(&lf);
-   m_TitleFont.CreatePointFont(m_PointSize,"Arial Black",pDC);
+   m_TitleFont.CreatePointFont(m_PointSize,_T("Arial Black"),pDC);
    // file name font is 2 points smaller
    m_FileNameFont.CreatePointFont(m_PointSize-20,m_FontFace,pDC);
 
@@ -125,7 +125,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // job #
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_JobNumberLoc);
-      pDC->TextOut(0,0,"Job Number: ");
+      pDC->TextOut(0,0,_T("Job Number: "));
       if(!m_JobNumber.IsEmpty())
       {
          pDC->SelectObject(m_RegFont);
@@ -135,21 +135,21 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // sheet
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_SheetLoc);
-      pDC->TextOut(0,0,"Sheet ");
+      pDC->TextOut(0,0,_T("Sheet "));
       CString tmp;
-      tmp.Format("%d",sheetNumber);
+      tmp.Format(_T("%d"),sheetNumber);
       pDC->SelectObject(m_RegFont);
       pDC->TextOut(0,0,tmp);
       pDC->SelectObject(&m_BoldFont);
-      pDC->TextOut(0,0," of ");
-      tmp.Format("%d",m_MaxSheetNo);
+      pDC->TextOut(0,0,_T(" of "));
+      tmp.Format(_T("%d"),m_MaxSheetNo);
       pDC->SelectObject(m_RegFont);
       pDC->TextOut(0,0,tmp);
 
       // bridge
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_BridgeLoc);
-      pDC->TextOut(0,0,"Bridge: ");
+      pDC->TextOut(0,0,_T("Bridge: "));
       if(!m_Bridge.IsEmpty())
       {
          pDC->SelectObject(m_RegFont);
@@ -159,7 +159,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // bridge id
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_BridgeIdLoc);
-      pDC->TextOut(0,0,"BridgeId: ");
+      pDC->TextOut(0,0,_T("BridgeId: "));
       if(!m_BridgeId.IsEmpty())
       {
          pDC->SelectObject(m_RegFont);
@@ -169,7 +169,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // Engineer
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_EngineerLoc);
-      pDC->TextOut(0,0,"Engineer: ");
+      pDC->TextOut(0,0,_T("Engineer: "));
       if(!m_Engineer.IsEmpty())
       {
          pDC->SelectObject(m_RegFont);
@@ -187,7 +187,7 @@ CRect WsdotCalculationSheet::Print(CDC* pDC, Uint32 sheetNumber, bool doPrint)
       // date
       pDC->SelectObject(&m_BoldFont);
       pDC->MoveTo(m_DateLoc);
-      pDC->TextOut(0,0,"Date: ");
+      pDC->TextOut(0,0,_T("Date: "));
 
       sysTime now;
       now.PrintDate( true );

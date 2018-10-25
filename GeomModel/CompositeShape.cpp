@@ -338,15 +338,15 @@ bool gmCompositeShape::AssertValid() const
 
 void gmCompositeShape::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gmCompositeShape" << endl;
+   os << _T("Dump for gmCompositeShape") << endl;
    gmShapeImp::Dump( os );
-   os << "Contained shapes in gmCompositeShape" << endl;
-   os << "   m_LastKey   = "<<m_LastKey<<endl;
-   os << "   # of Shapes = "<<m_ShapeContainer.size()<<endl;
+   os << _T("Contained shapes in gmCompositeShape") << endl;
+   os << _T("   m_LastKey   = ")<<m_LastKey<<endl;
+   os << _T("   # of Shapes = ")<<m_ShapeContainer.size()<<endl;
    Uint32 i=0;
    for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
    {
-      os<<" Shape Number: "<<++i<<" Key = "<<(*it).first<<endl;
+      os<<_T(" Shape Number: ")<<++i<<_T(" Key = ")<<(*it).first<<endl;
       (*it).second->Dump(os);
    }
 }
@@ -552,8 +552,8 @@ bool gmShapeIter::AssertValid() const
 
 void gmShapeIter::Dump(dbgDumpContext& os) const
 {
-   os<< "Dump for gmShapeIter"<<endl;
-   os<< "   m_pComposite = "<<m_pComposite<<endl;
+   os<< _T("Dump for gmShapeIter")<<endl;
+   os<< _T("   m_pComposite = ")<<m_pComposite<<endl;
 }
 
 #endif // _DEBUG
@@ -712,7 +712,7 @@ bool gmConstShapeIter::AssertValid() const
 
 void gmConstShapeIter::Dump(dbgDumpContext& os) const
 {
-   os<< "Dump for gmConstShapeIter"<<endl;
+   os<< _T("Dump for gmConstShapeIter")<<endl;
 }
 
 #endif // _DEBUG

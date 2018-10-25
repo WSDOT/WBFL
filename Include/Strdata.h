@@ -76,8 +76,8 @@ template <class T>
          return *this;
       }
 
-      std::string m_Name;
-      std::string m_Description;
+      std::_tstring m_Name;
+      std::_tstring m_Description;
       double m_Version;
       enum DataType { Unit, Prop, Callback } m_DataType;
       StrDataType m_SDT;
@@ -94,7 +94,7 @@ public:
    StrStorageDataMap(const StrStorageDataMap* pOther);
    StrStorageDataMap(LPCTSTR desc,LPCTSTR root,double version);
    void BeginUnit(LPCTSTR desc,LPCTSTR unit,double version);
-   void Property(LPCSTR prop,StrDataType vt,void* ptr);
+   void Property(LPCTSTR prop,StrDataType vt,void* ptr);
    void Callback(typename StrStorageData<T>::CallbackProc pfn,T* obj);
    void EndUnit();
    double GetVersion();

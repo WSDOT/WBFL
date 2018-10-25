@@ -30,7 +30,6 @@ CLASS
 
 #include <System\DumpContext.h>
 #include <System\SectionValue.h>
-#include <TCHAR.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -62,22 +61,22 @@ dbgDumpContext::~dbgDumpContext()
 }
 
 //======================== OPERATORS  =======================================
-dbgDumpContext& dbgDumpContext::operator<<(const std::string& s)
+dbgDumpContext& dbgDumpContext::operator<<(const std::_tstring& s)
 {
    OutputDebugString( s.c_str() );
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(const char* s)
+dbgDumpContext& dbgDumpContext::operator<<(LPCTSTR s)
 {
    OutputDebugString( s );
    return *this;
 }
 
-dbgDumpContext& dbgDumpContext::operator<<(char ch)
+dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, TEXT("%c"), ch );
+   _stprintf_s( buffer, TEXT("%c"), ch );
    OutputDebugString( buffer );
    return *this;
 }
@@ -91,7 +90,7 @@ dbgDumpContext& dbgDumpContext::operator<<(bool n)
 dbgDumpContext& dbgDumpContext::operator<<(int n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, TEXT("%d"), n );
+   _stprintf_s( buffer, TEXT("%d"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -99,7 +98,7 @@ dbgDumpContext& dbgDumpContext::operator<<(int n)
 dbgDumpContext& dbgDumpContext::operator<<(unsigned int n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -107,7 +106,7 @@ dbgDumpContext& dbgDumpContext::operator<<(unsigned int n)
 dbgDumpContext& dbgDumpContext::operator<<(Int16 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%d"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%d"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -115,7 +114,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Int16 n)
 dbgDumpContext& dbgDumpContext::operator<<(Uint16 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%u"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -123,7 +122,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint16 n)
 dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%ld"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%ld"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -131,7 +130,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Int32 n)
 dbgDumpContext& dbgDumpContext::operator<<(Uint32 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%lu"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%lu"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -139,7 +138,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Uint32 n)
 dbgDumpContext& dbgDumpContext::operator<<(Float32 n)    
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -147,7 +146,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float32 n)
 dbgDumpContext& dbgDumpContext::operator<<(Float64 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%f"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -155,7 +154,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float64 n)
 dbgDumpContext& dbgDumpContext::operator<<(Float80 n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%lf"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%lf"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -163,7 +162,7 @@ dbgDumpContext& dbgDumpContext::operator<<(Float80 n)
 dbgDumpContext& dbgDumpContext::operator<<(void * n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%p"), n );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%p"), n );
    OutputDebugString( buffer );
    return *this;
 }
@@ -171,7 +170,7 @@ dbgDumpContext& dbgDumpContext::operator<<(void * n)
 dbgDumpContext& dbgDumpContext::operator<<(const sysSectionValue& n)
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%s"), n.AsString() );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%s"), n.AsString() );
    OutputDebugString( buffer );
    return *this;
 }
@@ -180,7 +179,7 @@ dbgDumpContext& dbgDumpContext::operator<<(const sysSectionValue& n)
 dbgDumpContext& dbgDumpContext::EndLine()
 {
    TCHAR buffer[BUFSIZE];
-   sprintf_s( buffer, BUFSIZE, TEXT("%s"), TEXT("\n") );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%s"), TEXT("\n") );
    OutputDebugString( buffer );
    return *this;
 }

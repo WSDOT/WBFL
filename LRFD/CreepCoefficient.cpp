@@ -220,7 +220,7 @@ void lrfdCreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
-      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,__FILE__,__LINE__);
+      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
 
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
    
@@ -239,7 +239,7 @@ void lrfdCreepCoefficient::Update() const
    }
 
 //   if ( VS > VSMax )
-//      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::VSRatio,__FILE__,__LINE__);
+//      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::VSRatio,_T(__FILE__),__LINE__);
 
    // Compute Kf
    if ( bSI )

@@ -143,19 +143,19 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
       Float64 Lmax = bSISpec ? 37000 : 120;
       Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
       if ( L < Lmin || Lmax < L )
-         THROW_DF(lrfdXRangeOfApplicability, SpanLength, "Span Length (L) is out of range. See Table 4.6.2.2.3c-1");
+         THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
       Float64 d = ::ConvertFromSysUnits(m_d,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
       if ( d < dMin || dMax < d )
-         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, "Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1");
+         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
 
       Float64 bMin = bSISpec ?  900 : 35;
       Float64 bMax = bSISpec ? 1500 : 60;
       Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
       if ( b < bMin || bMax < b )
-         THROW_DF(lrfdXRangeOfApplicability, BeamWidth, "Width (b), of beam is out of range. See Table 4.6.2.2.3c-1");
+         THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
 
    return true;
@@ -164,14 +164,14 @@ bool lrfdLldfTypeG::TestRangeOfApplicability(Location loc) const
 bool lrfdLldfTypeG::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    if ( 6 < m_Nl )
-      THROW_DF( lrfdXRangeOfApplicability, NumLanes, "Excessive number of lanes. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
 
    if ( GetNb() < 4 )
-      THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. Must be >=4, see 4.6.2.2.1");
+      THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
 
    Float64 skew_max = ::ConvertToSysUnits( 45.0, unitMeasure::Degree );
    if ( !m_IgnoreSkew && (!IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max)) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Excessive skew angle. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
 
    return true;
 }
@@ -185,7 +185,7 @@ bool lrfdLldfTypeG::ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const
    Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
 
    if ( de_max+1.0e-06 < de_raw )
-         THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, "Curb offset (de) is out of range. See Table 4.6.2.2.2d-1");
+         THROW_DF( lrfdXRangeOfApplicability, CurbLineOffset, _T("Curb offset (de) is out of range. See Table 4.6.2.2.2d-1"));
 
    return true;
 }
@@ -945,18 +945,18 @@ bool lrfdLldfTypeF::TestRangeOfApplicability(Location loc) const
    {
       Float64 skew_max = ::ConvertToSysUnits( 60.0, unitMeasure::Degree );
       if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
-         THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Excessive skew angle. See Table 4.6.2.2.3c-1");
+         THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.3c-1"));
 
       Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
       if ( skew_delta_max <= fabs(m_SkewAngle1 - m_SkewAngle2) )
-         THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, "Excessive difference in skew angles. See Article 4.6.2.2.2e");
+         THROW_DF( lrfdXRangeOfApplicability, SkewAngleDiff, _T("Excessive difference in skew angles. See Article 4.6.2.2.2e"));
 
       // the depth range is only appicable if Table 4.6.2.2.3c-1 is used
       Float64 dMin = bSISpec ?  430 : 17;
       Float64 dMax = bSISpec ? 1500 : 60;
       Float64 d = ::ConvertFromSysUnits(m_d,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
       if ( d < dMin || dMax < d )
-         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, "Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1");
+         THROW_DF(lrfdXRangeOfApplicability, GirderDepth, _T("Depth (d) of beam is out of range. See Table 4.6.2.2.3c-1"));
    }
    
    return true;
@@ -968,17 +968,17 @@ bool lrfdLldfTypeF::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
    Float64 bMax = bSISpec ? 1500 : 60;
    Float64 b = ::ConvertFromSysUnits(m_b,bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
    if ( b < bMin || bMax < b )
-      THROW_DF(lrfdXRangeOfApplicability, BeamWidth, "Width (b), of beam is out of range. See Table 4.6.2.2.3a-1");
+      THROW_DF(lrfdXRangeOfApplicability, BeamWidth, _T("Width (b), of beam is out of range. See Table 4.6.2.2.3a-1"));
 
    Float64 Lmin = bSISpec ?  6000 :  20;
    Float64 Lmax = bSISpec ? 37000 : 120;
    Float64 L = ::ConvertFromSysUnits(m_L,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
    if ( L < Lmin || Lmax < L )
-      THROW_DF(lrfdXRangeOfApplicability, SpanLength, "Span Length (L) is out of range. See Table 4.6.2.2.3a-1");
+      THROW_DF(lrfdXRangeOfApplicability, SpanLength, _T("Span Length (L) is out of range. See Table 4.6.2.2.3a-1"));
 
    GirderIndexType nb = GetNb();
    if ( nb < 5 || nb > 20 )
-      THROW_DF(lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range (5<=Ng<=20). See Table 4.6.2.2.3a-1");
+      THROW_DF(lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range (5<=Ng<=20). See Table 4.6.2.2.3a-1"));
 
    return true;
 }

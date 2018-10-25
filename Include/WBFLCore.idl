@@ -147,6 +147,7 @@ library WBFLCore
 		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
 		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
 		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out,retval]BSTR* pParentUnit);
 		[propget, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [out, retval] VARIANT *pVal);
 		[helpstring("method EndOfStorage")] HRESULT EndOfStorage();
 		[helpstring("method Close")] HRESULT Close();
@@ -166,6 +167,7 @@ library WBFLCore
 		[helpstring("method EndUnit")] HRESULT EndUnit();
 		[propget, helpstring("property Version")] HRESULT Version([out, retval] Float64 *pVal);
 		[propget, helpstring("property ParentVersion")] HRESULT ParentVersion([out, retval] Float64 *pVal);
+      [propget, helpstring("property ParentUnit")] HRESULT ParentUnit([out,retval]BSTR* pParentUnit);
 		[propget, helpstring("property TopVersion")] HRESULT TopVersion([out, retval] Float64 *pVal);
 		[propput, helpstring("property Property")] HRESULT Property([in] LPCTSTR name, [in] VARIANT newVal);
 		[helpstring("method Close")] HRESULT Close();

@@ -95,7 +95,7 @@ CTestTwoSpan::~CTestTwoSpan()
 HRESULT CTestTwoSpan::Test()
 {
    // dump results to a file
-   std::ofstream os("TwoSpan.txt");
+   std::_tofstream os("TwoSpan.txt");
 
    // build a model and attach it to our load group response object
    CComPtr<ILoadGroupResponse> loadGroupResponse;
@@ -729,7 +729,15 @@ ILBAMModel* CTestTwoSpan::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(lbamModel->get_LoadGroups(&pLoadGroups), S_OK);
 
-   char* lgns[]={"Point Loads","Distributed Loads","Temperature Loads","Strain Loads","Settlement Loads","Span Point Load At Temp Support","Point Loads At Supports"};
+   LPTSTR lgns[]={_T("Point Loads"),
+                  _T("Distributed Loads"),
+                  _T("Temperature Loads"),
+                  _T("Strain Loads"),
+                  _T("Settlement Loads"),
+                  _T("Span Point Load At Temp Support"),
+                  _T("Point Loads At Supports")
+   };
+
    for (int i=0; i<7; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

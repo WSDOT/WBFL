@@ -262,7 +262,7 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
       OLECHAR szGUID[39];
       ::StringFromGUID2(item.iid,szGUID,39);
-      WATCHX(IFC,0,"IID = " << OLE2A(szGUID) << " Usage Count = " << (*item.pUsageCount));
+      WATCHX(IFC,0,"IID = " << OLE2T(szGUID) << " Usage Count = " << (*item.pUsageCount));
 
    }
 
@@ -300,7 +300,7 @@ STDMETHODIMP CBrokerImp2::ShutDown()
       item.pAgent->GetClassID(&clsid);
       OLECHAR szCLSID[39];
       ::StringFromGUID2(clsid,szCLSID,39);
-      WATCHX(IFC,0,"CLSID = " << OLE2A(szCLSID) << " IID = " << OLE2A(szGUID) << " Usage Count = " << (*item.pUsageCount) << " Agent Ref Count = " << cRef);
+      WATCHX(IFC,0,"CLSID = " << OLE2T(szCLSID) << " IID = " << OLE2T(szGUID) << " Usage Count = " << (*item.pUsageCount) << " Agent Ref Count = " << cRef);
 
       count += (*item.pUsageCount);
    }
@@ -579,7 +579,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
 {
    USES_CONVERSION;
 
-   HRESULT hr = pStrLoad->BeginUnit("Broker");
+   HRESULT hr = pStrLoad->BeginUnit(_T("Broker"));
    if ( FAILED(hr) )
    {
       // the data isn't saved in the current format
@@ -588,12 +588,12 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
    }
 
    // until we run out of "Agent"units
-   while ( SUCCEEDED(pStrLoad->BeginUnit("Agent")) )
+   while ( SUCCEEDED(pStrLoad->BeginUnit(_T("Agent"))) )
    {
       // get CLSID of the agent
       CComVariant varCLSID;
       varCLSID.vt = VT_BSTR;
-      HRESULT hr = pStrLoad->get_Property("CLSID", &varCLSID);
+      HRESULT hr = pStrLoad->get_Property(_T("CLSID"), &varCLSID);
       if ( FAILED(hr) )
          return hr;
 
@@ -630,7 +630,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
          if ( FAILED(hr) )
             return hr;
 
-         m_MissingAgentData.push_back(OLE2A(bstrRawUnit));
+         m_MissingAgentData.push_back(OLE2T(bstrRawUnit));
       }
 
       pStrLoad->EndUnit(); // end of "Agent" unit
@@ -643,7 +643,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
 
 STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
 {
-   pStrSave->BeginUnit("Broker",1.0);
+   pStrSave->BeginUnit(_T("Broker"),1.0);
 
    HRESULT hr = SaveAgentData(pStrSave,m_Agents.begin(),m_Agents.end());
    if ( FAILED(hr) )
@@ -655,7 +655,7 @@ STDMETHODIMP CBrokerImp2::Save(IStructuredSave* pStrSave)
 
    if ( m_bSaveMissingAgentData == VARIANT_TRUE )
    {
-      std::vector<std::string>::iterator iter2;
+      std::vector<std::_tstring>::iterator iter2;
       for ( iter2 = m_MissingAgentData.begin(); iter2 != m_MissingAgentData.end(); iter2++ )
       {
          pStrSave->SaveRawUnit(iter2->c_str());
@@ -678,13 +678,13 @@ HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator be
       if ( SUCCEEDED(hr) )
       {
          // create a unit around each agent's data
-         pStrSave->BeginUnit("Agent",1.0);
+         pStrSave->BeginUnit(_T("Agent"),1.0);
 
          LPOLESTR postr = 0;
          hr = StringFromCLSID((*begin).first, &postr);
 
          // capture the class id of the agent
-         pStrSave->put_Property("CLSID",CComVariant(postr));
+         pStrSave->put_Property(_T("CLSID"),CComVariant(postr));
 
          CoTaskMemFree(postr);
 

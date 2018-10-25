@@ -110,9 +110,9 @@ public:
    virtual rptParagraph& operator << (rptReportContent* pContent );
    
    //------------------------------------------------------------------------
-   rptParagraph& operator << (const std::string& str);
+   rptParagraph& operator << (const std::_tstring& str);
    //------------------------------------------------------------------------
-   rptParagraph& operator << (const char* str);
+   rptParagraph& operator << (LPCTSTR str);
    //------------------------------------------------------------------------
    rptParagraph& operator << (Int8 value);
    //------------------------------------------------------------------------
@@ -148,10 +148,10 @@ public:
 
    // Name will be used for table of contents generation
    //------------------------------------------------------------------------
-   const char* GetName() const;
+   LPCTSTR GetName() const;
 
    //------------------------------------------------------------------------
-   void SetName(const char* name);
+   void SetName(LPCTSTR name);
 
 
    //------------------------------------------------------------------------
@@ -192,7 +192,7 @@ private:
    // rptReportContent pointers point to. 
    ContentVec     m_ContentVec;
 
-   std::string m_Name;
+   std::_tstring m_Name;
 
    // GROUP: LIFECYCLE
 

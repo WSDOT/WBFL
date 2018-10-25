@@ -726,7 +726,7 @@ bool gpPolygon2d::Contains(const gpPoint2d& pnt) const
       contained = false;
    else
    {
-      CHECKX( false, "This should never happen" );
+      CHECKX( false, _T("This should never happen") );
    }
 
    return contained;
@@ -796,14 +796,14 @@ bool gpPolygon2d::AssertValid() const
 
 void gpPolygon2d::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for gpPolygon2d" << endl;
-   os << "   m_LastKey   = "<<m_LastKey<<endl;
-   os << "   # of Points = "<< (Uint32)m_PointContainer.size()<<endl;
+   os << _T("Dump for gpPolygon2d") << endl;
+   os << _T("   m_LastKey   = ")<<m_LastKey<<endl;
+   os << _T("   # of Points = ")<< (Uint32)m_PointContainer.size()<<endl;
    for (ConstPointIterator iter = m_PointContainer.begin(); iter != m_PointContainer.end(); iter++)
    {
       const gpPoint2d& p = (*iter).second;
       Uint32     key = (*iter).first;
-      os << "     (Key,X,Y)   = (" << key << ", " << p.X() << ", " << p.Y() << ")" << endl;
+      os << _T("     (Key,X,Y)   = (") << key << _T(", ") << p.X() << _T(", ") << p.Y() << _T(")") << endl;
    }
 }
 #endif // _DEBUG
@@ -962,7 +962,7 @@ bool gpPolyPointIter2d::AssertValid() const
 
 void gpPolyPointIter2d::Dump(dbgDumpContext& os) const
 {
-   os<< "Dump for gpPolyPointIter2d"<<endl;
+   os<< _T("Dump for gpPolyPointIter2d")<<endl;
 }
 
 #endif // _DEBUG

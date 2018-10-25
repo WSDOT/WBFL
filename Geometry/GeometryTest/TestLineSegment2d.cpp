@@ -187,7 +187,162 @@ void CTestLineSegment2d::Test()
    pEnd->get_Y(&y);
    TRY_TEST( IsEqual(x,-10.0), true );
    TRY_TEST( IsEqual(y,-10.0), true );
+
+   //
+   // Test Offset2 method
+   //
+   p1->put_X(-10);
+   p1->put_Y(-10);
+   p2->put_X(-20);
+   p2->put_Y(-20);
+   pSeg->putref_StartPoint(p1);
+   pSeg->putref_EndPoint(p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,  0.0), true );
+   TRY_TEST( IsEqual(y,-20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-10.0), true );
+   TRY_TEST( IsEqual(y,-30.0), true );
    
+   p1->put_X(-10);
+   p1->put_Y(-10);
+   p2->put_X(-20);
+   p2->put_Y(-20);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,-20.0), true );
+   TRY_TEST( IsEqual(y,  0.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-30.0), true );
+   TRY_TEST( IsEqual(y,-10.0), true );
+
+   p1->put_X(10);
+   p1->put_Y(10);
+   p2->put_X(20);
+   p2->put_Y(20);
+   pSeg->putref_StartPoint(p1);
+   pSeg->putref_EndPoint(p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,  0.0), true );
+   TRY_TEST( IsEqual(y, 20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 10.0), true );
+   TRY_TEST( IsEqual(y, 30.0), true );
+   
+   p1->put_X(10);
+   p1->put_Y(10);
+   p2->put_X(20);
+   p2->put_Y(20);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 20.0), true );
+   TRY_TEST( IsEqual(y,  0.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 30.0), true );
+   TRY_TEST( IsEqual(y, 10.0), true );
+
+   p1->put_X(-10);
+   p1->put_Y(10);
+   p2->put_X(-20);
+   p2->put_Y(20);
+   pSeg->putref_StartPoint(p1);
+   pSeg->putref_EndPoint(p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,-20.0), true );
+   TRY_TEST( IsEqual(y,  0.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-30.0), true );
+   TRY_TEST( IsEqual(y, 10.0), true );
+   
+   p1->put_X(-10);
+   p1->put_Y(10);
+   p2->put_X(-20);
+   p2->put_Y(20);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,  0.0), true );
+   TRY_TEST( IsEqual(y, 20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x,-10.0), true );
+   TRY_TEST( IsEqual(y, 30.0), true );
+
+   p1->put_X(10);
+   p1->put_Y(-10);
+   p2->put_X(20);
+   p2->put_Y(-20);
+   pSeg->putref_StartPoint(p1);
+   pSeg->putref_EndPoint(p2);
+   TRY_TEST(pSeg->Offset2(14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x, 20.0), true );
+   TRY_TEST( IsEqual(y,  0.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 30.0), true );
+   TRY_TEST( IsEqual(y,-10.0), true );
+   
+   p1->put_X(10);
+   p1->put_Y(-10);
+   p2->put_X(20);
+   p2->put_Y(-20);
+   TRY_TEST(pSeg->Offset2(-14.1421356),S_OK);
+   pStart.Release();
+   pSeg->get_StartPoint(&pStart);
+   pEnd.Release();
+   pSeg->get_EndPoint(&pEnd);
+   pStart->get_X(&x);
+   pStart->get_Y(&y);
+   TRY_TEST( IsEqual(x,  0.0), true );
+   TRY_TEST( IsEqual(y,-20.0), true );
+   pEnd->get_X(&x);
+   pEnd->get_Y(&y);
+   TRY_TEST( IsEqual(x, 10.0), true );
+   TRY_TEST( IsEqual(y,-30.0), true );
+
    //
    // Test Rotate method
    //

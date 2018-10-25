@@ -111,6 +111,8 @@ public:
 	STDMETHOD(get_TopFlangeWidth)(/*[out,retval]*/Float64* width);
 	STDMETHOD(get_WebLocation)(/*[in]*/long webIdx,/*[out,retval]*/Float64* location);
 	STDMETHOD(get_WebSpacing)(/*[out,retval]*/Float64* spacing);
+   STDMETHOD(put_UseOutlineOnly)(/*[in]*/VARIANT_BOOL bUseOutlineOnly);
+   STDMETHOD(get_UseOutlineOnly)(/*[out,retval]*/VARIANT_BOOL* pUseOutlineOnly);
 
 // IShape
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal);
@@ -170,6 +172,10 @@ private:
    Float64   m_W6;
    Float64   m_W7;
    Float64   m_C1;
+   VARIANT_BOOL m_bUseOutlineOnly; // when true, the shape is taken to be just the overall outline
+                                   // the "U" is omitted and the resulting shape is basically a trapazoid
+                                   // This is typically set to VARIANT_TRUE to model U-beams in a section
+                                   // with an end block
 
    // Objects needed to compute web thichkess
    CComPtr<IPoint2d> m_P2;  // lower left corner

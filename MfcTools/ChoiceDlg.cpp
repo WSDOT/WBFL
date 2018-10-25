@@ -66,17 +66,31 @@ BOOL CChoiceDlg::OnInitDialog()
 
    CString resToken;
    int curPos = 0;
-   resToken = m_Responses.Tokenize("\n",curPos);
+   resToken = m_Responses.Tokenize( _T("\n") ,curPos);
    while ( resToken != "" )
    {
       pcbResponses->AddString(resToken);
-      resToken = m_Responses.Tokenize("\n",curPos);
+      resToken = m_Responses.Tokenize(_T("\n"),curPos);
    }
 
 
    CDialog::OnInitDialog();
 
    m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
+
+   if ( !m_bCancel )
+   {
+      CWnd* pCancel = GetDlgItem(IDCANCEL);
+      CWnd* pOK     = GetDlgItem(IDOK);
+
+      CRect rCancel;
+      pCancel->GetWindowRect(&rCancel);
+
+      ScreenToClient(&rCancel);
+
+      pOK->MoveWindow(rCancel);
+      pCancel->ShowWindow(SW_HIDE);
+   }
 
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE

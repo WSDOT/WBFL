@@ -222,11 +222,11 @@ bool gmRectangle::AssertValid() const
 
 void gmRectangle::Dump(dbgDumpContext& os) const
 {
-   os << "*** Dump for gmRectangle ***"<<endl;
+   os << _T("*** Dump for gmRectangle ***")<<endl;
    gmShapeImp::Dump( os );
-   os << "  (Height, Width) = ("<<m_Height<<", "<<m_Width<<")"<<endl;
-   os << "  Hook Point      = ("<<m_HookPoint.X()<<", "<<m_HookPoint.Y()<<")"<<endl;
-   os << "  Rotation        =  "<<m_Rotation<<endl;
+   os << _T("  (Height, Width) = (")<<m_Height<<_T(", ")<<m_Width<<_T(")")<<endl;
+   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
+   os << _T("  Rotation        =  ")<<m_Rotation<<endl;
 }
 #endif // _DEBUG
 

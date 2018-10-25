@@ -127,7 +127,7 @@ BarSizeType lrfdRebarPool::GetRebarKey(const matRebar* pRebar)
          return key;
    }
 
-   CHECKX( false, "Code should never get here!!!" );
+   CHECKX( false, _T("Code should never get here!!!" ));
    return INVALID_BAR_SIZE;
 }
 
@@ -141,7 +141,7 @@ bool lrfdRebarPool::AssertValid() const
 
 void lrfdRebarPool::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for lrfdRebarPool" << endl;
+   os << _T("Dump for lrfdRebarPool") << endl;
 }
 #endif // _DEBUG
 
@@ -156,7 +156,7 @@ void lrfdRebarPool::Dump(dbgDumpContext& os) const
 ////////////////////////// PRIVATE    ///////////////////////////////////////
 
 #define NEW_BAR(name,nd,na,fu,fy,e) \
-   ms_Rebar.push_back( boost::shared_ptr<matRebar>(new matRebar(name,::ConvertToSysUnits(fu, unitMeasure::KSI),::ConvertToSysUnits(fy, unitMeasure::KSI),::ConvertToSysUnits(e, unitMeasure::KSI),matRebar::Circle,::ConvertToSysUnits(nd,unitMeasure::Inch),::ConvertToSysUnits(na,unitMeasure::Inch2) ) ) );
+   ms_Rebar.push_back( boost::shared_ptr<matRebar>(new matRebar(_T(name),::ConvertToSysUnits(fu, unitMeasure::KSI),::ConvertToSysUnits(fy, unitMeasure::KSI),::ConvertToSysUnits(e, unitMeasure::KSI),matRebar::Circle,::ConvertToSysUnits(nd,unitMeasure::Inch),::ConvertToSysUnits(na,unitMeasure::Inch2) ) ) );
 
 //======================== LIFECYCLE  =======================================
 lrfdRebarPool::lrfdRebarPool()

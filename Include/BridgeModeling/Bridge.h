@@ -379,7 +379,7 @@ public:
    // GROUP: INQUIRY
 
 #if defined _DEBUG
-   void DumpGirder(Int32 spanId,Int32 gdrPathIdx,const char* fname);
+   void DumpGirder(Int32 spanId,Int32 gdrPathIdx,LPCTSTR fname);
 #endif // _DEBUG
 
 protected:

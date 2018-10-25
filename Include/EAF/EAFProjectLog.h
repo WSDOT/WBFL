@@ -43,7 +43,7 @@ interface IEAFProjectLog : IUnknown
 
    //------------------------------------------------------------------------
    // Writes a message to the log file
-   virtual void LogMessage( const char* lpszMsg ) = 0;
+   virtual void LogMessage( LPCTSTR lpszMsg ) = 0;
 
    //------------------------------------------------------------------------
    // Destroys the log file.

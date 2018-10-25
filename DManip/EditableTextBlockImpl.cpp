@@ -342,7 +342,7 @@ STDMETHODIMP_(SelectionType) CEditableTextBlockImpl::GetSelectionType()
    return dispObj->GetSelectionType();
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetToolTipText(LPCSTR lpszToolTipText)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_TextBlock);
    dispObj->SetToolTipText(lpszToolTipText);
@@ -548,7 +548,7 @@ STDMETHODIMP_(long) CEditableTextBlockImpl::GetAngle()
    return m_TextBlock->GetAngle();
 }
 
-STDMETHODIMP_(void) CEditableTextBlockImpl::SetText(LPCSTR lpszText)
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetText(LPCTSTR lpszText)
 {
    CInplaceEdit* pEdit = GetEditObject();
 

@@ -30,7 +30,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void MultiLineTextOut(CDC* pDC,int x,int y,const char* lpszText)
+void MultiLineTextOut(CDC* pDC,int x,int y,LPCTSTR lpszText)
 {
    CString strText(lpszText);
 

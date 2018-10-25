@@ -87,7 +87,7 @@ public:
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
    // Version 0.0 means no version was attached.
-   virtual void BeginUnit(const char* name, Float64 version=0.0);
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0);
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
@@ -102,39 +102,41 @@ public:
    // Get the version number of the unit that is the parent to this unit
    virtual Float64 GetParentVersion();
 
+   virtual std::_tstring GetParentUnit();
+
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
    virtual Float64 GetTopVersion();
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(const char* name, const char* value);
+   virtual void Property(LPCTSTR name, LPCTSTR value);
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(const char* name, Float64 value);
+   virtual void Property(LPCTSTR name, Float64 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int16 value);
+   virtual void Property(LPCTSTR name, Int16 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint16 value);
+   virtual void Property(LPCTSTR name, Uint16 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int32 value);
+   virtual void Property(LPCTSTR name, Int32 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint32 value);
+   virtual void Property(LPCTSTR name, Uint32 value);
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(const char* name, bool value);
+   virtual void Property(LPCTSTR name, bool value);
 
-   virtual void PutUnit(const char* xml);
+   virtual void PutUnit(LPCTSTR xml);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

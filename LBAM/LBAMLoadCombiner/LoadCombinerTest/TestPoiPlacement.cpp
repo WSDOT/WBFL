@@ -60,7 +60,7 @@ CTestPoiPlacement::~CTestPoiPlacement()
 HRESULT CTestPoiPlacement::Test()
 {
    // dump results to a file
-   std::ofstream os("Spliced.txt");
+   std::_tofstream os("Spliced.txt");
 
    // build a model and attach it to our load group response object
    CComPtr<ILoadGroupResponse> plgr;
@@ -447,7 +447,7 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   char* lgns[]={"Self Weight"};
+   LPTSTR lgns[]={_T("Self Weight")};
    for (long i=0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;

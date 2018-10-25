@@ -38,7 +38,7 @@ public:
       CComQIPtr<IUnitType,&IID_IUnitType> pUnitType( var.punkVal );
       CComBSTR bstrLabel;
       pUnitType->get_Label( &bstrLabel );
-      return (wcscmp( m_bstrTarget, bstrLabel ) == 0);
+      return (_tcscmp( m_bstrTarget, bstrLabel ) == 0);
    }
 
 private:

@@ -154,7 +154,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
 
    // Check if the annotation string is really going to change. If not,
    // just get the heck outta here.
-   if ( wcscmp(m_bstrAnnotation,bstrAnnotation) == 0 )
+   if ( _tcscmp(m_bstrAnnotation,bstrAnnotation) == 0 )
       return S_OK;
 
    m_bstrAnnotation = bstrAnnotation;
@@ -165,7 +165,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
    // Parse the annotation string into the seperator and suffix tokens
 
    OLECHAR* next_token;
-   OLECHAR* token = wcstok_s(CComBSTR(bstrAnnotation),CComBSTR(","),&next_token);
+   OLECHAR* token = _tcstok_s(CComBSTR(bstrAnnotation),CComBSTR(","),&next_token);
    if ( token )
    {
       // Check if the string leads with a delimeter
@@ -181,7 +181,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
          m_bstrSeperator = token;
       }
 
-      token = wcstok_s(NULL,L",",&next_token);
+      token = _tcstok_s(NULL,L",",&next_token);
 
       if ( token )
          m_bstrSuffix = token;
@@ -245,25 +245,25 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
    int nChar;
    nChar = (v1 == 0) ? 1 : (int)log10((Float64)v1) + 1;
    nChar += width;
-   nChar += wcslen(m_bstrSeperator);
-   nChar += wcslen(m_bstrSuffix);
+   nChar += _tcslen(m_bstrSeperator);
+   nChar += _tcslen(m_bstrSuffix);
    nChar += 1; // add one for the '\n'
    nChar += (sign < 0) ? 1 : 0; // for the "-" if the value is negative
 
    // Build the string
-   char* pBuffer = new char[nChar];
+   LPTSTR pBuffer = new TCHAR[nChar];
    if ( tag == NULL )
-      sprintf_s(pBuffer,nChar,"%s%d %0*.*f",sign < 0 ? "-" : "",v1,width,m_Precision,v2);
+      _stprintf_s(pBuffer,nChar,_T("%s%d %0*.*f"),sign < 0 ? _T("-") : _T(""),v1,width,m_Precision,v2);
    else
-      sprintf_s(pBuffer,nChar,"%s%d%s%0*.*f%s",sign < 0 ? "-" : "",v1,OLE2A(m_bstrSeperator),width,m_Precision,v2,OLE2A(m_bstrSuffix));
+      _stprintf_s(pBuffer,nChar,_T("%s%d%s%0*.*f%s"),sign < 0 ? _T("-") : _T(""),v1,OLE2T(m_bstrSeperator),width,m_Precision,v2,OLE2T(m_bstrSuffix));
 
    // Write the string into a different buffer so it is the right width and justification
-   size_t sizeBuffer2 = _cpp_max((Uint32)strlen(pBuffer),m_Width)+1;
-   char* pBuffer2 = new char[sizeBuffer2];
+   size_t sizeBuffer2 = _cpp_max((Uint32)_tcslen(pBuffer),m_Width)+1;
+   LPTSTR pBuffer2 = new TCHAR[sizeBuffer2];
    if ( m_Justify == tjLeft )
-      sprintf_s(pBuffer2,sizeBuffer2,"%-*s",m_Width,pBuffer);
+      _stprintf_s(pBuffer2,sizeBuffer2,_T("%-*s"),m_Width,pBuffer);
    else
-      sprintf_s(pBuffer2,sizeBuffer2,"%*s",m_Width,pBuffer);
+      _stprintf_s(pBuffer2,sizeBuffer2,_T("%*s"),m_Width,pBuffer);
 
 
    CComBSTR bstrBuffer(pBuffer2);

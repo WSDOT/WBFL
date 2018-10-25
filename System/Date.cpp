@@ -49,21 +49,21 @@ static const Uint8 DaysInMonth[12] =
     { 31,28,31,30,31,30,31,31,30,31,30,31 };
 static const DayTy FirstDayOfEachMonth[12] =
     { 1,32,60,91,121,152,182,213,244,274,305,335 };
-static const char *MonthNames[12] = 
-    { "January","February","March","April","May","June",
-      "July","August","September","October","November","December" };
-static const char *UCMonthNames[12] =
-    { "JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE",
-      "JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER" };
-static const char *WeekDayNames[7] =
-    { "Monday","Tuesday","Wednesday",
-      "Thursday","Friday","Saturday","Sunday" };
-static const char *UCWeekDayNames[7] =
-    { "MONDAY","TUESDAY","WEDNESDAY",
-      "THURSDAY","FRIDAY","SATURDAY","SUNDAY" };
+static LPCTSTR MonthNames[12] = 
+    { _T("January"),_T("February"),_T("March"),_T("April"),_T("May"),_T("June"),
+      _T("July"),_T("August"),_T("September"),_T("October"),_T("November"),_T("December") };
+static LPCTSTR UCMonthNames[12] =
+    { _T("JANUARY"),_T("FEBRUARY"),_T("MARCH"),_T("APRIL"),_T("MAY"),_T("JUNE"),
+      _T("JULY"),_T("AUGUST"),_T("SEPTEMBER"),_T("OCTOBER"),_T("NOVEMBER"),_T("DECEMBER") };
+static LPCTSTR WeekDayNames[7] =
+    { _T("Monday"),_T("Tuesday"),_T("Wednesday"),
+      _T("Thursday"),_T("Friday"),_T("Saturday"),_T("Sunday") };
+static LPCTSTR UCWeekDayNames[7] =
+    { _T("MONDAY"),_T("TUESDAY"),_T("WEDNESDAY"),
+      _T("THURSDAY"),_T("FRIDAY"),_T("SATURDAY"),_T("SUNDAY") };
 
 static Int16 
-FindMatch( const char *str, const char**candidates, Int16 icand );
+FindMatch( LPCTSTR str, LPCTSTR* candidates, Int16 icand );
 
 /***************************************************************************/
 
@@ -99,7 +99,7 @@ sysDate::sysDate(DayTy day, YearTy year)
 //
 //   Construct a sysDate for the given day, monthName, and year.
 //
-sysDate::sysDate( DayTy day, const char  *monthName, YearTy year )
+sysDate::sysDate( DayTy day, LPCTSTR monthName, YearTy year )
 {
    Julnum = Jday( IndexOfMonth(monthName), day, year );
 }
@@ -123,7 +123,7 @@ sysDate::sysDate( DayTy day, MonthTy month, YearTy year )
 // Monday == 1, ... , Sunday == 7
 // Return 0 for weekday number out of range
 //
-const char  *sysDate::DayName( DayTy weekDayNumber )
+LPCTSTR sysDate::DayName( DayTy weekDayNumber )
 {
     return AssertWeekDayNumber(weekDayNumber) ? WeekDayNames[weekDayNumber-1] : 0;
 }
@@ -132,7 +132,7 @@ const char  *sysDate::DayName( DayTy weekDayNumber )
 // Return the number, 1-7, of the day of the week named nameOfDay.
 // Return 0 if name doesn't match.
 //
-DayTy sysDate::DayOfWeek( const char  *nameOfDay )
+DayTy sysDate::DayOfWeek( LPCTSTR nameOfDay )
 {
     return (DayTy)(FindMatch( nameOfDay, UCWeekDayNames, 7 )+1);
 }
@@ -162,7 +162,7 @@ DayTy sysDate::DaysInYear( YearTy year )
 // Returns the number, 1-12, of the month named nameOfMonth.
 // Return 0 for no match.
 //
-MonthTy sysDate::IndexOfMonth( const char  *nameOfMonth )
+MonthTy sysDate::IndexOfMonth( LPCTSTR nameOfMonth )
 {
     return (MonthTy)(FindMatch( nameOfMonth, UCMonthNames, 12 )+1);
 }
@@ -215,7 +215,7 @@ bool sysDate::IsLeapYear( YearTy year )
 // Returns a string name for the month number.
 // Return 0 if invalid month number.
 //
-const char  *sysDate::MonthName( MonthTy monthNumber )
+LPCTSTR sysDate::MonthName( MonthTy monthNumber )
 {
     return AssertIndexOfMonth(monthNumber) ? MonthNames[monthNumber-1] : 0;
 }
@@ -223,13 +223,13 @@ const char  *sysDate::MonthName( MonthTy monthNumber )
 //
 // Return index of case-insensitive match; -1 if no match.
 //
-static Int16  FindMatch( const char *str, const char**candidates, Int16 icand )
+static Int16  FindMatch( LPCTSTR str, LPCTSTR* candidates, Int16 icand )
 {
-    Uint16 len = strlen(str);
+    Uint16 len = _tcslen(str);
 
     while(icand--)
         {
-        if( _strnicmp(str, candidates[icand], len) == 0)
+        if( _tcsnicmp(str, candidates[icand], len) == 0)
             break;
         }
     return icand;
@@ -351,7 +351,7 @@ MonthTy sysDate::Month() const
 //
 //
 //
-sysDate sysDate::Previous( const char  *dayName) const
+sysDate sysDate::Previous( LPCTSTR dayName) const
 {
     return Previous( DayOfWeek(dayName) );
 }
@@ -403,9 +403,9 @@ sysDate::HowToPrint sysDate::PrintOption = sysDate::Normal;
 //
 //
 //
-std::string sysDate::AsString() const
+std::_tstring sysDate::AsString() const
 {
-   std::ostrstream os;
+   std::_tostringstream os;
    os << (*this) << std::ends;
    return os.str();
 }
@@ -423,9 +423,9 @@ sysDate::HowToPrint sysDate::SetPrintOption( HowToPrint h )
 //
 // Skip any characters except alphanumeric characters
 //
-static void  SkipDelim( std::istream  & strm )
+static void  SkipDelim( std::_tistream  & strm )
 {
-    char c;
+    TCHAR c;
     if( !strm.good() )
         return;
 
@@ -440,11 +440,11 @@ static void  SkipDelim( std::istream  & strm )
 //
 // Parse the name of a month from input stream.
 //
-static const char*  ParseMonth( std::istream  & s )
+static LPCTSTR  ParseMonth( std::_tistream  & s )
 {
-    static char month[12];
-    register char* p = month;
-    char c;
+    static TCHAR month[12];
+    register LPTSTR p = month;
+    TCHAR c;
     SkipDelim(s);
     s.get(c);
     while (s.good() && isalpha(c) && (p != &month[10]))
@@ -465,7 +465,7 @@ static const char*  ParseMonth( std::istream  & s )
 //        e.g.: 10-MAR-86,  3/10/86, or March 10, 1986.  
 //  Any non-alphanumeric character may be used as a delimiter.
 //
-void sysDate::ParseFrom( std::istream  & s )
+void sysDate::ParseFrom( std::_tistream  & s )
 {
     Uint16 d,m,y;
     Julnum = 0;                 // Assume failure
@@ -506,41 +506,41 @@ void sysDate::ParseFrom( std::istream  & s )
 //
 //
 //
-SYSCLASS std::ostream  &  operator << ( std::ostream  & s, const sysDate  & d )
+SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysDate  & d )
 {
-    char buf[80];
-
-    // we use an ostrstream to format into buf so that
-    // we don't affect the ostream's width setting.
-    //
-    std::ostrstream out( buf, sizeof(buf) );
+    std::_tostringstream out;
   
     switch ( sysDate::PrintOption )
         {
         case sysDate::Normal:
-            out << d.NameOfMonth() << " " 
-                << d.DayOfMonth()  << ", "
+            out << d.NameOfMonth() << _T(" ") 
+                << d.DayOfMonth()  << _T(", ")
                 << d.Year() << std::ends;
             break;
         case sysDate::Terse:
-            sprintf_s(buf,"%2u-%.3s-%.2u",
+           {
+              TCHAR buf[50];
+            _stprintf_s(buf,_T("%2u-%.3s-%.2u"),
                     d.DayOfMonth(),
                     d.NameOfMonth(),
                     d.Year() % 100);
+
+            out << buf;
+           }
             break;
         case sysDate::Numbers:
-            out << d.Month() << "/"
-                << d.DayOfMonth() << "/"
+            out << d.Month() << _T("/")
+                << d.DayOfMonth() << _T("/")
                 << (d.Year() % 100) << std::ends;
             break;
         case sysDate::EuropeanNumbers:
-            out << d.DayOfMonth()   << "/"
-                << d.Month() <<"/"
+            out << d.DayOfMonth()   << _T("/")
+                << d.Month() << _T("/")
                 << (d.Year() % 100) << std::ends;
             break;
         case sysDate::European:
-            out << d.DayOfMonth() << " "
-                << d.NameOfMonth() << " " 
+            out << d.DayOfMonth() << _T(" ")
+                << d.NameOfMonth() << _T(" ")
                 << d.Year() << std::ends;
             break;
         };
@@ -548,7 +548,8 @@ SYSCLASS std::ostream  &  operator << ( std::ostream  & s, const sysDate  & d )
     // now we write out the formatted buffer, and the ostream's
     // width setting will control the actual width of the field.
     //
-    s << buf;
+
+    s << out.str();
     return s;
 }
 
@@ -560,16 +561,16 @@ bool sysDate::TestMe(dbgLog& rlog)
 
    // Check date integrity
    sysDate d1(01,01,2000);
-   TRY_TESTME_EX ( std::string( d1.NameOfDay() ) == "Saturday","Test day name" );
+   TRY_TESTME_EX ( std::_tstring( d1.NameOfDay() ) == _T("Saturday"),_T("Test day name") );
 
    sysDate d2(02,01,2000);
-   TRY_TESTME ( std::string( d2.NameOfDay() ) == "Sunday" );
+   TRY_TESTME ( std::_tstring( d2.NameOfDay() ) == _T("Sunday") );
 
    sysDate d3(29,02,2000);
-   TRY_TESTME ( std::string( d3.NameOfDay() ) == "Tuesday" );
+   TRY_TESTME ( std::_tstring( d3.NameOfDay() ) == _T("Tuesday") );
 
    sysDate d4(01,03,2000);
-   TRY_TESTME ( std::string( d4.NameOfDay() ) == "Wednesday" );
+   TRY_TESTME ( std::_tstring( d4.NameOfDay() ) == _T("Wednesday") );
 
    // Check date roll over
    sysDate d5(31,12,1998);

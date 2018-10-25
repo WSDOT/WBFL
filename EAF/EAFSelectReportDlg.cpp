@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 // CEAFSelectReportDlg dialog
 
 
-CEAFSelectReportDlg::CEAFSelectReportDlg(std::vector<std::string>& rptNames,CWnd* pParent /*=NULL*/)
+CEAFSelectReportDlg::CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent /*=NULL*/)
 	: CDialog(CEAFSelectReportDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CEAFSelectReportDlg)
@@ -72,7 +72,7 @@ END_MESSAGE_MAP()
 BOOL CEAFSelectReportDlg::OnInitDialog() 
 {
    CListBox* pList = (CListBox*)GetDlgItem(IDC_LIST);
-   std::vector<std::string>::iterator iter;
+   std::vector<std::_tstring>::iterator iter;
    for ( iter = m_RptNames.begin(); iter != m_RptNames.end(); iter++ )
    {
       pList->AddString( (*iter).c_str() );

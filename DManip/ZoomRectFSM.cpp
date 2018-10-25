@@ -57,37 +57,37 @@ CZoomRectFSMState::~CZoomRectFSMState()
 void CZoomRectFSMState::Do(CZoomRectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Do",fsm.GetState().StateName());
+   fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::Float64Click(CZoomRectFSM &fsm)
+void CZoomRectFSMState::DoubleClick(CZoomRectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Float64Click",fsm.GetState().StateName());
+   fsm.FSMError(_T("DoubleClick"),fsm.GetState().StateName());
 }
 
 void CZoomRectFSMState::MouseDown(CZoomRectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseDown",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
 void CZoomRectFSMState::MouseUp(CZoomRectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseUp",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
 void CZoomRectFSMState::MouseMove(CZoomRectFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseMove",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
 void CZoomRectFSMState::EscKey(CZoomRectFSM& fsm)
 {
    // Default implementation
-   fsm.FSMError("EscKey",fsm.GetState().StateName());
+   fsm.FSMError(_T("EscKey"),fsm.GetState().StateName());
 }
 
 // States and State Transitions
@@ -104,7 +104,7 @@ void CZoomRectFSMWaitingForFirstPointState::MouseDown(CZoomRectFSM& fsm)
    fsm.SetState(CZoomRectFSM::WaitingForSecondPoint);
 }
 
-void CZoomRectFSMWaitingForFirstPointState::Float64Click(CZoomRectFSM& fsm)
+void CZoomRectFSMWaitingForFirstPointState::DoubleClick(CZoomRectFSM& fsm)
 {
 }
 
@@ -135,7 +135,7 @@ void CZoomRectFSMWaitingForSecondPointState::MouseMove(CZoomRectFSM& fsm)
    fsm.SetState(CZoomRectFSM::WaitingForSecondPoint);
 }
 
-void CZoomRectFSMWaitingForSecondPointState::Float64Click(CZoomRectFSM& fsm)
+void CZoomRectFSMWaitingForSecondPointState::DoubleClick(CZoomRectFSM& fsm)
 {
    // No action or state change. Just a stub so the default error doesn't occur
 }

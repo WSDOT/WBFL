@@ -154,7 +154,7 @@ rptReportContent& rptRcScalar::SetValue(Float64 value)
    return *this;
 }
 
-std::string rptRcScalar::AsString() const
+std::_tstring rptRcScalar::AsString() const
 {
    sysNumericFormatTool fmt(m_Format,m_Width,m_Precision);
    return fmt.AsString( GetValue() );

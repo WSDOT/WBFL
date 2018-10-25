@@ -84,11 +84,11 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the name of the macro
-   std::string Name() const;
+   std::_tstring Name() const;
    
    //------------------------------------------------------------------------
    // Assigns a name to the macro
-   void Name(const std::string& name);
+   void Name(const std::_tstring& name);
 
    //------------------------------------------------------------------------
    // Returns a pointer to a copy of the transaction
@@ -96,7 +96,7 @@ public:
 
    //------------------------------------------------------------------------
    // Writes all transactions in this macro to the log.
-   void Log(std::ostream& os) const;
+   void Log(std::_tostream& os) const;
 
    //------------------------------------------------------------------------
    // Adds a transaction to the macro.  The transaction is cloned.
@@ -134,7 +134,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    #pragma warning(disable:4251)
-   std::string m_Name;
+   std::_tstring m_Name;
    typedef boost::shared_ptr<txnTransaction> TransactionPtr;
    typedef std::vector<TransactionPtr> TxnContainer;
    typedef TxnContainer::iterator TxnIterator;

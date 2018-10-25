@@ -44,7 +44,7 @@ class rptReport;
 class REPORTMANAGERCLASS CReportBuilder  
 {
 public:
-	CReportBuilder(const char* strName,bool bHidden = false);
+	CReportBuilder(LPCTSTR strName,bool bHidden = false);
 	virtual ~CReportBuilder();
 
    // report builders may be hidden so that they don't show up in
@@ -52,12 +52,12 @@ public:
    void Hidden(bool bHide);
    bool Hidden() const;
 
-   const char* GetName() const;
+   LPCTSTR GetName() const;
    void AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
    void AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder);
    Uint16 GetChapterBuilderCount() const;
    boost::shared_ptr<CChapterBuilder> GetChapterBuilder(Uint16 idx);
-   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(const char* strKey);
+   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(LPCTSTR strKey);
    CReportDescription GetReportDescription();
    void SetReportSpecificationBuilder(boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder();
@@ -69,7 +69,7 @@ public:
    virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
 
 private:
-   std::string m_Name;
+   std::_tstring m_Name;
    bool m_bHidden;
    const CBitmap* m_pBitmap;
 

@@ -51,10 +51,10 @@ void CUnitTypes::UnadviseUnitType(IUnitType* pUnitType)
    // Get the lookup key
    CComBSTR bstrLabel;
    pUnitType->get_Label(&bstrLabel);
-   std::string strLabel( OLE2A(bstrLabel) );
+   std::_tstring strLabel( OLE2T(bstrLabel) );
 
    // Lookup the cookie
-   std::map<std::string,DWORD>::iterator found;
+   std::map<std::_tstring,DWORD>::iterator found;
    found = m_Cookies.find( strLabel );
    ATLASSERT( found != m_Cookies.end() );
 
@@ -114,7 +114,7 @@ void CUnitTypes::SaveUnitType(IUnitType* pUnitType)
    DWORD dwCookie;
    CComBSTR bstrLabel;
    pUnitType->get_Label(&bstrLabel);
-   std::string strLabel( OLE2A(bstrLabel) );
+   std::_tstring strLabel( OLE2T(bstrLabel) );
    CComPtr<IUnitType> pCPUnitType(pUnitType);
    pCPUnitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &dwCookie );
    m_Cookies.insert( std::make_pair(strLabel,dwCookie) );
@@ -412,7 +412,7 @@ STDMETHODIMP CUnitTypes::Add(BSTR label,Float64 m,Float64 l,Float64 t,Float64 k,
 
    // Hookup to the connection point
    DWORD dwCookie;
-   std::string strLabel( OLE2A(label) );
+   std::_tstring strLabel( OLE2T(label) );
    hr = unitType.Advise( GetUnknown(), IID_IUnitTypeEventSink, &dwCookie );
    ATLASSERT(SUCCEEDED(hr));
    m_Cookies.insert( std::make_pair(strLabel,dwCookie) );

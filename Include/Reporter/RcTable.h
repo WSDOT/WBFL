@@ -193,7 +193,7 @@ public:
    // This function will append the data to any other data that exists in 
    // the column.
    void PutStringColumn(ColumnIndexType ColNo,
-      const std::vector<std::string>&);
+      const std::vector<std::_tstring>&);
 
    //------------------------------------------------------------------------
    // Set the border style of all inside borders in the table

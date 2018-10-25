@@ -148,8 +148,8 @@ BOOL CEAFBrokerDocument::CreateBroker()
    hr = ::CoCreateInstance( CLSID_Broker2, NULL, CLSCTX_INPROC_SERVER, IID_IBroker, (void**)&m_pBroker );
    if ( FAILED(hr) )
    {
-      std::ostringstream msg;
-      msg << "Failed to create broker. hr = " << hr << std::endl << std::ends;
+      std::_tostringstream msg;
+      msg << _T("Failed to create broker. hr = ") << hr << std::endl << std::ends;
       FailSafeLogMessage( msg.str().c_str() );
       return FALSE;
    }
@@ -160,7 +160,7 @@ BOOL CEAFBrokerDocument::CreateBroker()
    CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
    if ( pBrokerInit == NULL )
    {
-      FailSafeLogMessage("Wrong version of Broker installed\nRe-install");
+      FailSafeLogMessage(_T("Wrong version of Broker installed\nRe-install"));
       return FALSE;
    }
 
@@ -202,7 +202,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
    // deal with failure
    if ( FAILED(hr) )
    {
-      std::ostringstream msg;
+      std::_tostringstream msg;
       msg << "Failed to create Component Category Manager. hr = " << hr << std::endl;
       msg << "Is the correct version of Internet Explorer installed?" << std::endl << std::ends;
       FailSafeLogMessage( msg.str().c_str() );
@@ -263,7 +263,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
             LPOLESTR pszCLSID;
             ::StringFromCLSID(clsid[i],&pszCLSID);
 
-            CString strState = pApp->GetProfileString(_T("Extensions"),OLE2A(pszCLSID),_T("Enabled"));
+            CString strState = pApp->GetProfileString(_T("Extensions"),OLE2T(pszCLSID),_T("Enabled"));
             if ( strState.CompareNoCase(_T("Enabled")) == 0 )
             {
                CLSID* pCLSID = &clsid[i];
@@ -306,7 +306,7 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
          CString strProgID(pszProgID);
          ::CoTaskMemFree( (LPVOID)pszProgID );
 
-         std::ostringstream msg;
+         std::_tostringstream msg;
          msg << "Failed to load agent. hr = " << hr << std::endl;
          msg << "CLSID = " << strCLSID.LockBuffer() << std::endl;
          msg << "ProgID = " << strProgID.LockBuffer() << std::endl << std::ends;
@@ -322,7 +322,7 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
             OleRegGetUserType(pClsid[agentIdx],USERCLASSTYPE_SHORT,&pszUserType);
 
             CString strMsg;
-            strMsg.Format("Failed to load %s.\n\nWould you like to disable this component?",OLE2A(pszUserType));
+            strMsg.Format(_T("Failed to load %s.\n\nWould you like to disable this component?"),OLE2T(pszUserType));
             if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
             {
                CEAFApp* pApp = EAFGetApp();
@@ -437,7 +437,7 @@ HRESULT CEAFBrokerDocument::WriteTheDocument(IStructuredSave* pStrSave)
 CString CEAFBrokerDocument::GetLogFileName()
 {
    CString strFileName;
-   strFileName.Format("%s.log",EAFGetApp()->m_pszExeName);
+   strFileName.Format(_T("%s.log"),EAFGetApp()->m_pszExeName);
    return strFileName;
 }
 
@@ -508,13 +508,13 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
 void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
 {
    GET_IFACE(IReportManager,pReportMgr);
-   std::vector<std::string> rptNames = pReportMgr->GetReportNames();
+   std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
 
    UINT i = 0;
-   std::vector<std::string>::iterator iter;
+   std::vector<std::_tstring>::iterator iter;
    for ( iter = rptNames.begin(); iter != rptNames.end(); iter++ )
    {
-      std::string rptName = *iter;
+      std::_tstring rptName = *iter;
       UINT_PTR nCmd = GetReportCommand(i,bQuickReport);
       pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
 

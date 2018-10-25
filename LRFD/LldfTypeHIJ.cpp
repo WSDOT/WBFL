@@ -124,7 +124,7 @@ bool lrfdLldfTypeHIJ::TestRangeOfApplicability(Location loc) const
       return false;
 
    if ( !IsZero(m_SkewAngle1) || !IsZero(m_SkewAngle2) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Skew corrections are not defined for this girder type. See 4.6.2.2.2e");
+      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Skew corrections are not defined for this girder type. See 4.6.2.2.2e"));
 
    // This is not an out of range of applicability case... skew adjustment simply isn't applied in this case
    //Float64 skew_delta_max = ::ConvertToSysUnits( 10.0, unitMeasure::Degree );
@@ -137,14 +137,14 @@ bool lrfdLldfTypeHIJ::TestRangeOfApplicability(Location loc) const
 bool lrfdLldfTypeHIJ::InteriorMomentEquationRule(bool bSISpec, bool doThrow) const
 {
    if ( 6 < m_Nl )
-      THROW_DF( lrfdXRangeOfApplicability, NumLanes, "Excessive number of lanes. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability, NumLanes, _T("Excessive number of lanes. See Table 4.6.2.2.2b-1"));
 
    Float64 skew_max = ::ConvertToSysUnits( 45.0, unitMeasure::Degree );
    if ( !IsLE(m_SkewAngle1,skew_max) || !IsLE(m_SkewAngle2,skew_max) )
-      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, "Excessive skew angle. See Table 4.6.2.2.2b-1");
+      THROW_DF( lrfdXRangeOfApplicability, SkewAngle, _T("Excessive skew angle. See Table 4.6.2.2.2b-1"));
 
    if ( GetNb() < 4 )
-      THROW_DF( lrfdXRangeOfApplicability, NumGirders, "Number of girders is out of range. Must be >=4, see 4.6.2.2.1");
+      THROW_DF( lrfdXRangeOfApplicability, NumGirders, _T("Number of girders is out of range. Must be >=4, see 4.6.2.2.1"));
 
    return true;
 }

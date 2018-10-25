@@ -78,7 +78,7 @@ public:
    //------------------------------------------------------------------------
    // Constructor. Initializes the stress strain curve with the supplied parameters.
    matXStressStrainEvalError(Reason reason,
-                             const char* file,
+                             LPCTSTR file,
                              Int16 line);
 
    //------------------------------------------------------------------------
@@ -177,7 +177,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor. Initializes the stress strain curve with the supplied parameters.
-   matStressStrainCurve(const std::string& name,
+   matStressStrainCurve(const std::_tstring& name,
                         Float64 fractureStrain,
                         Float64 fractureStress,
                         Float64 crushingStrain,
@@ -214,10 +214,10 @@ public:
    // GROUP: ACCESS
 
    //------------------------------------------------------------------------
-   void SetName(const std::string& name);
+   void SetName(const std::_tstring& name);
 
    //------------------------------------------------------------------------
-   std::string GetName() const;
+   std::_tstring GetName() const;
 
    //------------------------------------------------------------------------
    Float64 GetFractureStrain() const;
@@ -281,7 +281,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::string m_Name;
+   std::_tstring m_Name;
    Float64 m_FractureStrain;
    Float64 m_FractureStress;
    Float64 m_CrushingStrain;

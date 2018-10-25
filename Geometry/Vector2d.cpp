@@ -338,6 +338,21 @@ STDMETHODIMP CVector2d::Decrement(IVector2d* v)
    return S_OK;
 }
 
+STDMETHODIMP CVector2d::Clone(IVector2d** ppClone)
+{
+   CHECK_RETVAL(ppClone);
+   CComObject<CVector2d>* pClone;
+   CComObject<CVector2d>::CreateInstance(&pClone);
+
+   pClone->m_X = m_X;
+   pClone->m_Y = m_Y;
+
+   (*ppClone) = pClone;
+   (*ppClone)->AddRef();
+
+   return S_OK;
+}
+
 STDMETHODIMP CVector2d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

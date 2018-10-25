@@ -71,7 +71,7 @@ void notify_listeners(const MatListeners& listeners, matMetal* pMetal)
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-matMetal::matMetal(const std::string& name,
+matMetal::matMetal(const std::_tstring& name,
                    Float64 density,
                    Float64 modE,
                    Float64 yieldStress,
@@ -94,7 +94,7 @@ m_Name( name )
    ASSERTVALID;
 }
 
-matMetal::matMetal(const std::string& name,
+matMetal::matMetal(const std::_tstring& name,
                    Float64 density,
                    Float64 modE,
                    Float64 yieldStress) :
@@ -173,13 +173,13 @@ void matMetal::EndDamage()
 }
 
 //======================== ACCESS     =======================================
-void matMetal::SetName(const std::string& name)
+void matMetal::SetName(const std::_tstring& name)
 {
    m_Name = name;
    NotifyAllListeners();
 }
 
-std::string matMetal::GetName() const
+std::_tstring matMetal::GetName() const
 {
    return m_Name;
 }

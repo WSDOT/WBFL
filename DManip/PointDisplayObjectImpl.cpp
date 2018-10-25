@@ -42,7 +42,7 @@ static char THIS_FILE[]=__FILE__;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-UINT CPointDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat("WBFLDManip.PointDisplayObject");
+UINT CPointDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.PointDisplayObject"));
 
 CPointDisplayObjectImpl::CPointDisplayObjectImpl()
 {

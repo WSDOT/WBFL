@@ -93,7 +93,7 @@ bool rptRcSectionScalar::IsDualValued() const
    return !IsEqual(GetLeftValue(),GetRightValue());
 }
 
-std::string rptRcSectionScalar::AsString(int idx) const
+std::_tstring rptRcSectionScalar::AsString(int idx) const
 {
    sysNumericFormatTool fmt( m_Format, m_Width, m_Precision );
    return fmt.AsString( idx == 0 ? GetLeftValue() : GetRightValue() );

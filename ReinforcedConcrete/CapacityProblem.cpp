@@ -53,7 +53,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rcaXRcCapProbError::rcaXRcCapProbError(Reason reason, const char* file, Int16 line) :
+rcaXRcCapProbError::rcaXRcCapProbError(Reason reason, LPCTSTR file, Int16 line) :
 sysXBase(file, line),
 m_Reason(reason)
 {
@@ -101,22 +101,22 @@ rcaXRcCapProbError::Reason rcaXRcCapProbError::GetReasonCode() const
    return m_Reason;
 }
 
-void rcaXRcCapProbError::GetErrorMessage(std::string* pMsg,Int32 reserved) const
+void rcaXRcCapProbError::GetErrorMessage(std::_tstring* pMsg,Int32 reserved) const
 {
    switch (m_Reason)
    {
    case MaterialNotFound:
-      *pMsg = "Material not found";
+      *pMsg = _T("Material not found");
       break;
    case ElementNotFound:
-      *pMsg = "Element not found";
+      *pMsg = _T("Element not found");
       break;
    case InvalidProblemRep:
-      *pMsg = "The problem representation is invalid";
+      *pMsg = _T("The problem representation is invalid");
       break;
    default:
       CHECK(0);
-      *pMsg = "Unknown Error Message - Bad Reason Type";
+      *pMsg = _T("Unknown Error Message - Bad Reason Type");
    }
 }
 
@@ -362,7 +362,7 @@ Int32 rcaCapacityProblem::AddReinforcementElement(const gmIShape& shape, Int32 m
    }
 
    // could not find material
-   rcaXRcCapProbError ex(rcaXRcCapProbError::MaterialNotFound,__FILE__,__LINE__);
+   rcaXRcCapProbError ex(rcaXRcCapProbError::MaterialNotFound,_T(__FILE__),__LINE__);
    ex.Throw();
    return 0;  // should never get here, but compiler needs it
 }
@@ -477,7 +477,7 @@ Float64 rcaCapacityProblem::GetStrain( Int32 id ) const
 
 
    // could not find material
-   rcaXRcCapProbError ex(rcaXRcCapProbError::ElementNotFound,__FILE__,__LINE__);
+   rcaXRcCapProbError ex(rcaXRcCapProbError::ElementNotFound,_T(__FILE__),__LINE__);
    ex.Throw();
    return 0;  // should never get here, but compiler needs it
 }
@@ -1226,56 +1226,56 @@ void rcaCapacityProblem::Clean()
 #if defined _DEBUG
 dbgDumpContext& operator<<(dbgDumpContext& os,const gpPoint2d& p)
 {
-   os << "(" << p.X() << "," << p.Y() << ")";
+   os << _T("(") << p.X() << _T(",") << p.Y() << _T(")");
    return os;
 }
 
 void rcaSectionForceDetails::Dump(dbgDumpContext& os) const
 {
-   os << "Section Force Details" << endl;
-   os << "=====================" << endl;
+   os << _T("Section Force Details") << endl;
+   os << _T("=====================") << endl;
    os << endl;
 
-   os << "Section force relative to plastic centroid" << endl;
-   os << "------------------------------------------" << endl;
-   os << "Fz = " << Fz << endl;
-   os << "Mx = " << Mx << endl;
-   os << "My = " << My << endl;
+   os << _T("Section force relative to plastic centroid") << endl;
+   os << _T("------------------------------------------") << endl;
+   os << _T("Fz = ") << Fz << endl;
+   os << _T("Mx = ") << Mx << endl;
+   os << _T("My = ") << My << endl;
    os << endl;
    
-   os << "PlasticCentroid  = " << PlasticCentroid << endl;
-   os << "NeutralAxis (PC) = " << (NeutralAxis.PointOnLineNearest(PlasticCentroid).Y()) << endl;
-   os << "NeutralAxis (O)  = " << (NeutralAxis.PointOnLineNearest(gpPoint2d(0,0)).Y()) << endl;
-   os << "NeutralAxis Slope= " << NeutralAxis.GetSlope() << endl;
-   os << "Beta1            = " << Beta1 << endl;
-   os << "CompForce        = " << CompForce << endl;
-   os << "LocCompForce     = " << LocCompForce << endl;
-   os << "TensForce        = " << TensForce << endl;
-   os << "LocTensForce     = " << LocTensForce << endl;
+   os << _T("PlasticCentroid  = ") << PlasticCentroid << endl;
+   os << _T("NeutralAxis (PC) = ") << (NeutralAxis.PointOnLineNearest(PlasticCentroid).Y()) << endl;
+   os << _T("NeutralAxis (O)  = ") << (NeutralAxis.PointOnLineNearest(gpPoint2d(0,0)).Y()) << endl;
+   os << _T("NeutralAxis Slope= ") << NeutralAxis.GetSlope() << endl;
+   os << _T("Beta1            = ") << Beta1 << endl;
+   os << _T("CompForce        = ") << CompForce << endl;
+   os << _T("LocCompForce     = ") << LocCompForce << endl;
+   os << _T("TensForce        = ") << TensForce << endl;
+   os << _T("LocTensForce     = ") << LocTensForce << endl;
    os << endl;
 
-   os << "Pure Compression details" << endl;
-   os << "------------------------" << endl;
-   os << "Pc  = " << Pc  << endl;
-   os << "Mxc = " << Mxc << endl;
-   os << "Myc = " << Myc << endl;
+   os << _T("Pure Compression details") << endl;
+   os << _T("------------------------") << endl;
+   os << _T("Pc  = ") << Pc  << endl;
+   os << _T("Mxc = ") << Mxc << endl;
+   os << _T("Myc = ") << Myc << endl;
    os << endl;
 
-   os << "Pure Tension details" << endl;
-   os << "--------------------" << endl;
-   os << "Pt  = " << Pt  << endl;
-   os << "Mxt = " << Mxt << endl;
-   os << "Myt = " << Myt << endl;
+   os << _T("Pure Tension details") << endl;
+   os << _T("--------------------") << endl;
+   os << _T("Pt  = ") << Pt  << endl;
+   os << _T("Mxt = ") << Mxt << endl;
+   os << _T("Myt = ") << Myt << endl;
    os << endl;
 
-   os << "Concrete force details" << endl;
-   os << "----------------------" << endl;
-   os << "CompArea    = " <<    CompArea << endl;
-   os << "EffCompArea = " << EffCompArea << endl;
+   os << _T("Concrete force details") << endl;
+   os << _T("----------------------") << endl;
+   os << _T("CompArea    = ") <<    CompArea << endl;
+   os << _T("EffCompArea = ") << EffCompArea << endl;
    os << endl;
 
-   os << "Reinforcment force details" << endl;
-   os << "--------------------------" << endl;
+   os << _T("Reinforcment force details") << endl;
+   os << _T("--------------------------") << endl;
    std::vector<rcaReinforcementForceDetails>::const_iterator iter;
    for ( iter = ReinforcementForceDetails.begin(); iter != ReinforcementForceDetails.end(); iter++ )
    {
@@ -1287,12 +1287,12 @@ void rcaSectionForceDetails::Dump(dbgDumpContext& os) const
 
 void rcaReinforcementForceDetails::Dump(dbgDumpContext& os) const
 {
-   os << "Ab             = " << Ab << endl;
-   os << "LocBar         = " << LocBar << endl;
-   os << "ConcreteStrain = " << ConcreteStrain << endl;
-   os << "InitialStrain  = " << InitialStrain << endl;
-   os << "BarStrain      = " << BarStrain << endl;
-   os << "BarStress      = " << BarStress << endl;
-   os << "BarForce       = " << BarForce << endl;
+   os << _T("Ab             = ") << Ab << endl;
+   os << _T("LocBar         = ") << LocBar << endl;
+   os << _T("ConcreteStrain = ") << ConcreteStrain << endl;
+   os << _T("InitialStrain  = ") << InitialStrain << endl;
+   os << _T("BarStrain      = ") << BarStrain << endl;
+   os << _T("BarStress      = ") << BarStress << endl;
+   os << _T("BarForce       = ") << BarForce << endl;
 }
 #endif // _DEBUG

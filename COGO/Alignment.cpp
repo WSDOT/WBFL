@@ -33,6 +33,7 @@
 #include "Station.h"
 #include <MathEx.h>
 #include <Float.h>
+#include <cctype>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -244,6 +245,84 @@ STDMETHODIMP CAlignment::Offset(IPoint2d* point,IStation* *station,Float64* offs
    return S_OK;
 }
 
+STDMETHODIMP CAlignment::GetDirection(VARIANT varStation, BSTR bstrOrientation,IDirection** direction)
+{
+   USES_CONVERSION;
+
+   CHECK_RETOBJ(direction);
+
+   CComPtr<IStation> objStation;
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 station;
+   objStation->get_Value(&station);
+
+
+   // Convert the orientation string to something we can work with
+   // Make it upper case for easy conparison
+   std::_tstring strOrientation(OLE2T(bstrOrientation));
+   std::transform(strOrientation.begin(),strOrientation.end(),strOrientation.begin(),(int(*)(int))std::toupper);
+
+
+   // Get the alignment normal
+   CComPtr<IDirection> normal;
+   Normal(varStation,&normal); // This is the normal to the right
+
+   // We want the normal to the left... Increment by 180 degrees
+   normal->IncrementBy(CComVariant(M_PI));
+
+   // process the orientation string
+   if ( strOrientation.compare(_T("N")) == 0 || strOrientation.compare(_T("NORMAL")) == 0 )
+   {
+      // Normal to the alignment
+      normal.CopyTo(direction);
+   }
+   else if (strOrientation[0] == _T('N') || strOrientation[0] == _T('S') )
+   {
+      // Defined by an explicit bearing
+      CComPtr<IDirection> brg;
+      brg.CoCreateInstance(CLSID_Direction);
+      hr = brg->FromString(bstrOrientation);
+      if ( FAILED(hr) )
+         return hr;
+
+      // if the bearing is to the right of the alignment, reverse it
+      CComPtr<IDirection> align_dir;
+      Bearing(varStation,&align_dir);
+
+      CComPtr<IAngle> angle;
+      brg->AngleBetween(align_dir,&angle);
+
+      Float64 value;
+      angle->get_Value(&value);
+
+      // if the angle between is between 0 and 180, bearing is to the left
+      if ( M_PI < value )
+      {
+         // bearing is to the right of the alignment.... increment by 180 degrees
+         brg->IncrementBy(CComVariant(M_PI));
+      }
+
+      brg.CopyTo(direction);
+   }
+   else
+   {
+      CComPtr<IAngle> angle;
+      angle.CoCreateInstance(CLSID_Angle);
+      hr = angle->FromString(bstrOrientation);
+      if ( FAILED(hr) )
+         return hr;
+
+      CComPtr<IDirection> brg;
+      normal->Increment(CComVariant(angle),&brg);
+
+      brg.CopyTo(direction);
+   }
+
+   return S_OK;
+}
 
 STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndStation,IPath** path)
 {

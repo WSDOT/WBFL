@@ -123,7 +123,7 @@ void CLibraryViewer::PopulateTreeControl()
       insert.item.lParam = -1;
       insert.item.iImage = 0;
       insert.item.iSelectedImage = 1;
-      insert.item.pszText = "I need a library manager";
+      insert.item.pszText = _T("I need a library manager");
       insert.item.cchTextMax = 24;
 
       TreeView_InsertItem(hWndTree,&insert);
@@ -144,7 +144,7 @@ void CLibraryViewer::PopulateTreeControl()
    insert.item.lParam = -1;
    insert.item.iImage = 0;
    insert.item.iSelectedImage = 1;
-   insert.item.pszText = OLE2A(bstrName);
+   insert.item.pszText = OLE2T(bstrName);
 
    HTREEITEM htiRoot = TreeView_InsertItem(hWndTree,&insert);
 
@@ -166,7 +166,7 @@ void CLibraryViewer::PopulateTreeControl()
       //insert.item.lParam = i;
       insert.item.iImage = 0;
       insert.item.iSelectedImage = 1;
-      insert.item.pszText = OLE2A(bstrName);
+      insert.item.pszText = OLE2T(bstrName);
 
       HTREEITEM item = TreeView_InsertItem(hWndTree,&insert);
    }
@@ -206,7 +206,7 @@ void CLibraryViewer::PopulateListControl(BSTR bstrLibName)
       item.mask = LVIF_IMAGE | LVIF_TEXT;
       item.iItem = i;
       item.iSubItem = 0;
-      item.pszText = OLE2A(bstrName);
+      item.pszText = OLE2T(bstrName);
       item.iImage = 1;
 //      item.iImage = index;
       int iResult = ListView_InsertItem(hWndList,&item);
@@ -331,7 +331,7 @@ BSTR CLibraryViewer::CurLibName()
       return 0; // Nothing selected
 
    // Get the item so that we can grab the library name
-   char libName[20];
+   TCHAR libName[20];
    TVITEM tvItem;
    tvItem.hItem = htiLib;
    tvItem.mask = TVIF_TEXT;
@@ -349,7 +349,7 @@ BSTR CLibraryViewer::CurEntryName()
    if ( idx == -1 )
       return 0;
 
-   char entryName[20];
+   TCHAR entryName[20];
    LVITEM lvItem;
    lvItem.iItem = idx;
    lvItem.iSubItem = 0;

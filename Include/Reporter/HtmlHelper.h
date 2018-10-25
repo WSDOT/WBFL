@@ -42,7 +42,7 @@ class rptPageLayout;
 //
 
 // typedefs for private stl stuff - should go in class, but templates won't allow it
-//typedef std::map<rptStyleName, std::string, std::less<rptStyleName>, std::allocator<std::string> > StyleElementMap;
+//typedef std::map<rptStyleName, std::_tstring, std::less<rptStyleName>, std::allocator<std::_tstring> > StyleElementMap;
 //typedef StyleElementMap::iterator StyleElementMapIterator;
 //typedef StyleElementMap::const_iterator ConstStyleElementMapIterator;
 
@@ -90,21 +90,21 @@ public:
 
    //------------------------------------------------------------------------
    // Get stylistic information to put into HTML style block.
-   static std::string GetStyleString(const rptRiStyle& MyStyle);
+   static std::_tstring GetStyleString(const rptRiStyle& MyStyle);
 
    //------------------------------------------------------------------------
    // Get page layout information to put into HTML style block.
-   static std::string GetPageLayoutString(const rptPageLayout& MyLayout);
+   static std::_tstring GetPageLayoutString(const rptPageLayout& MyLayout);
 
    //------------------------------------------------------------------------
    // Visit font library. Write library style information to the ostream, and set
    // up style name - htlm element name mapping.
-   void VisitFontLibrary(std::ostream& os);
+   void VisitFontLibrary(std::_tostream& os);
 
    //------------------------------------------------------------------------
    // Get html element name for a given style name (e.g., H1,H2...)
    // string is returned empty if no name exists
-   std::string GetElementName(const rptStyleName& rstyleName) const;
+   std::_tstring GetElementName(const rptStyleName& rstyleName) const;
    
 
    // GROUP: ACCESS
@@ -125,7 +125,7 @@ private:
 
    bool m_DidVisit;
 
-   typedef std::map<rptStyleName, std::string, std::less<rptStyleName>, std::allocator<std::string> > StyleElementMap;
+   typedef std::map<rptStyleName, std::_tstring, std::less<rptStyleName>, std::allocator<std::_tstring> > StyleElementMap;
    StyleElementMap m_StyleElementMap;
 
    // GROUP: LIFECYCLE

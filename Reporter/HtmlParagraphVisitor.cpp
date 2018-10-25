@@ -44,7 +44,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::ostream* pMyOstream, 
+rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                                                  const rptPageLayout*   MypPageLayout,
                                                  const rptHtmlHelper&   rmyHelper,
                                                  Uint32 logPixelsX,
@@ -73,23 +73,23 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
    // get the paragraph's style name
    rptStyleName style = pPara->GetStyleName();
    // get corresponding element name for style name
-   std::string el_name = m_Helper.GetElementName(style);
+   std::_tstring el_name = m_Helper.GetElementName(style);
 
    // create a hypertext anchor for this chapter - to be placed in toc
-   const char* name = pPara->GetName();
+   LPCTSTR name = pPara->GetName();
    if (name!=0)
    {
       Uint32 anchor = GetNextAnchor();
-      std::string sname(name);
-      *m_pOstream<<"<A ID=\"_"<<anchor<<"\" TITLE=\""<<sname<<"\" NAME=\"_"<<anchor<<"\">";
+      std::_tstring sname(name);
+      *m_pOstream<< _T("<A ID=\"_") << anchor << _T("\" TITLE=\"") << sname << _T("\" NAME=\"_") << anchor << _T("\">");
    }
 
    // Default styles use the <P> style
-   if (style=="Default")
-      *m_pOstream << "<P>";
+   if (style == _T("Default"))
+      *m_pOstream << _T("<P>");
    else
    {
-      *m_pOstream << "<P CLASS=" << el_name << ">";
+      *m_pOstream << _T("<P CLASS=") << el_name << _T(">");
       lib_style=true;
    }
 
@@ -103,10 +103,10 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
    switch (my_btype)
    {
    case rptRiStyle::DASH:
-      *m_pOstream << "<UL><LI>"<<std::endl; // dash doesn't work in html
+      *m_pOstream << _T("<UL><LI>")<<std::endl; // dash doesn't work in html
       break;
    case rptRiStyle::ROUND:
-      *m_pOstream << "<UL><LI>"<<std::endl;
+      *m_pOstream << _T("<UL><LI>")<<std::endl;
       break;
    }
 
@@ -125,15 +125,15 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
 
    // close out bullet if needed
    if (my_btype != rptRiStyle::NOBULLET)
-      *m_pOstream << "</LI></UL>"<<std::endl;
+      *m_pOstream << _T("</LI></UL>")<<std::endl;
    else
 
    // send paragraph end
    if (!lib_style)
-      *m_pOstream << "</P>"<<std::endl;
+      *m_pOstream << _T("</P>")<<std::endl;
    else
       // only "Hn" elements include a line break
-      *m_pOstream << "</P>"<< std::endl;
+      *m_pOstream << _T("</P>")<< std::endl;
 
 
 

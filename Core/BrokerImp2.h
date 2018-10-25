@@ -131,7 +131,7 @@ private:
    bool m_bAgentsInitialized; // true if the agents where initialized
 
    VARIANT_BOOL m_bSaveMissingAgentData;
-   std::vector<std::string> m_MissingAgentData; // holds the entire unit data block
+   std::vector<std::_tstring> m_MissingAgentData; // holds the entire unit data block
                                                 // for agent data that is in the file, but
                                                 // the agent can't be created
 

@@ -32,8 +32,6 @@
 
 #include <Private\WbflPackage.h>
 
-#include "targetver.h"
-
 #include <stdio.h>
 #include <tchar.h>
 

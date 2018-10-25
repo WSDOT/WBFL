@@ -220,7 +220,7 @@ public CTransactionImpl<T,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading>
 public:
    typedef HRESULT (*PutPropFunc)(T* pThis,ItemType* item,LoadType* newLoad);
 
-void Init(T* pTarget,const char* strName,PutPropFunc putFunc,ItemType* item,LoadType* newLoad)
+void Init(T* pTarget,LPCTSTR strName,PutPropFunc putFunc,ItemType* item,LoadType* newLoad)
    {
       CTransactionImpl<T,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading>::Init(pTarget,strName);
       m_PutFunc = putFunc;
@@ -368,7 +368,7 @@ public:
          typedef CSwapLoadTxn<_ThisClass,IItemType,LoadType> CPutLoadTxn;
          CComObject<CPutLoadTxn>* pTxn;
          CComObject<CPutLoadTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,"Put Load",&DoPutLoad,pItem,newLoad);
+         pTxn->Init(this,_T("Put Load"),&DoPutLoad,pItem,newLoad);
 
          return m_TxnMgr->Execute(pTxn);
       }
@@ -444,7 +444,7 @@ public:
          typedef CActionTransaction1<_ThisClass,Parameters,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CAddLoadTxn;
          CComObject<CAddLoadTxn>* pTxn;
          CComObject<CAddLoadTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,"Add Load",DoAddLoad,UndoAddLoad,parameters);
+         pTxn->Init(this,_T("Add Load"),DoAddLoad,UndoAddLoad,parameters);
          hr = m_TxnMgr->Execute(pTxn);
       }
       else
@@ -488,7 +488,7 @@ public:
          typedef CActionTransaction1<_ThisClass,StoredType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CRemoveByIDTxn;
          CComObject<CRemoveByIDTxn>* pTxn;
          CComObject<CRemoveByIDTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,"Remove Load",DoRemoveByID,UndoRemoveLoad,item);
+         pTxn->Init(this,_T("Remove Load"),DoRemoveByID,UndoRemoveLoad,item);
          hr = m_TxnMgr->Execute(pTxn);
       }
       else
@@ -637,7 +637,7 @@ public:
          typedef CActionTransaction1<_ThisClass,ContainerType,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CClearTxn;
          CComObject<CClearTxn>* pTxn;
          CComObject<CClearTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,"Clear Loads",DoClear,UndoClear,m_Container);
+         pTxn->Init(this,_T("Clear Loads"),DoClear,UndoClear,m_Container);
          hr = m_TxnMgr->Execute(pTxn);
       }
       else
@@ -690,7 +690,7 @@ public:
          typedef CActionTransaction1<_ThisClass,RemoveStageParams,VARIANT_TRUE,VARIANT_FALSE,&LIBID_WBFLLoading> CRemoveStageTxn;
          CComObject<CRemoveStageTxn>* pTxn;
          CComObject<CRemoveStageTxn>::CreateInstance(&pTxn);
-         pTxn->Init(this,"Remove Stage",DoRemoveStage,UndoRemoveStage,parameters);
+         pTxn->Init(this,_T("Remove Stage"),DoRemoveStage,UndoRemoveStage,parameters);
          hr = m_TxnMgr->Execute(pTxn);
       }
       else

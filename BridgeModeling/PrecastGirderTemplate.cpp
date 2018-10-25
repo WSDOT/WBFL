@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-bmfPrecastGirderTemplate::bmfPrecastGirderTemplate(const std::string& name,
+bmfPrecastGirderTemplate::bmfPrecastGirderTemplate(const std::_tstring& name,
                                                    const bmfGirderProfile* pProfile,
                                                    const matConcreteEx* pConc,
                                                    const matPsStrand* pStrand,

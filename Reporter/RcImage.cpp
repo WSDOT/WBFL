@@ -44,13 +44,13 @@ CLASS
 //======================== LIFECYCLE  =======================================
 rptRcImage::rptRcImage() :
 rptReportContent(),
-m_FileName("Unspecified"),
+m_FileName( _T("Unspecified") ),
 m_Align(Bottom),
 m_Float(None)
 {
 }
 
-rptRcImage::rptRcImage(const std::string& fileName,rptRcImage::Align align,rptRcImage::Float flt):
+rptRcImage::rptRcImage(const std::_tstring& fileName,rptRcImage::Align align,rptRcImage::Float flt):
 rptReportContent(),
 m_FileName( fileName ),
 m_Align(align),
@@ -106,22 +106,22 @@ rptReportContent* rptRcImage::CreateClone() const
 
 //======================== ACCESS     =======================================
 
-std::string rptRcImage::GetFileName() const
+std::_tstring rptRcImage::GetFileName() const
 {
    return m_FileName;
 }
 
-void rptRcImage::SetFileName(const std::string& fileName)
+void rptRcImage::SetFileName(const std::_tstring& fileName)
 {
    m_FileName = fileName;
 }
 
-std::string rptRcImage::GetPictureDescription() const
+std::_tstring rptRcImage::GetPictureDescription() const
 {
    return m_PictureDescription;
 }
 
-void rptRcImage::SetPictureDescription(const std::string& rPictureDescription)
+void rptRcImage::SetPictureDescription(const std::_tstring& rPictureDescription)
 {
    m_PictureDescription = rPictureDescription;
 }

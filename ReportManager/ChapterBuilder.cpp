@@ -48,7 +48,7 @@ CChapterBuilder::~CChapterBuilder()
 
 }
 
-const char* CChapterBuilder::GetKey() const
+LPCTSTR CChapterBuilder::GetKey() const
 {
    return GetName();
 }

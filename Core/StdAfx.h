@@ -31,7 +31,7 @@
 #define STRICT
 #endif
 
-#include "targetver.h"
+#include <Private\WBFLPackage.h>
 
 #define _ATL_APARTMENT_THREADED
 #define _ATL_NO_AUTOMATIC_NAMESPACE
@@ -50,7 +50,6 @@
 
 #include <afxcmn.h> // for Animation control
 
-#include <Private\WBFLPackage.h>
 
 bool operator<(REFIID a,REFIID b);
 

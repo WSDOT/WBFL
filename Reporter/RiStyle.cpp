@@ -271,170 +271,170 @@ void rptRiStyle::MakeAssignment(const rptRiStyle& rOther)
 //======================== ACCESS     =======================================
 //======================== INQUERY ==========================================
 
-std::string rptRiStyle::GetColorCode(FontColor color)
+std::_tstring rptRiStyle::GetColorCode(FontColor color)
 {
-   std::string strColor;
+   std::_tstring strColor;
    switch(color)
    {
       // Red colors
-      case rptRiStyle::IndianRed:   strColor = "#cd5c5c"; break;
-      case rptRiStyle::LightCoral:  strColor = "#f08080"; break;
-      case rptRiStyle::Salmon:      strColor = "#fa8072"; break;
-      case rptRiStyle::DarkSalmon:  strColor = "#e9967a"; break;
-      case rptRiStyle::LightSalmon: strColor = "#ffa07a"; break;
-      case rptRiStyle::Crimson:     strColor = "#dc143c"; break;
-      case rptRiStyle::Red:         strColor = "#ff0000"; break;
-      case rptRiStyle::FireBrick:   strColor = "#b22222"; break;
-      case rptRiStyle::DarkRed:     strColor = "#8b0000"; break;
+      case rptRiStyle::IndianRed:   strColor = _T("#cd5c5c"); break;
+      case rptRiStyle::LightCoral:  strColor = _T("#f08080"); break;
+      case rptRiStyle::Salmon:      strColor = _T("#fa8072"); break;
+      case rptRiStyle::DarkSalmon:  strColor = _T("#e9967a"); break;
+      case rptRiStyle::LightSalmon: strColor = _T("#ffa07a"); break;
+      case rptRiStyle::Crimson:     strColor = _T("#dc143c"); break;
+      case rptRiStyle::Red:         strColor = _T("#ff0000"); break;
+      case rptRiStyle::FireBrick:   strColor = _T("#b22222"); break;
+      case rptRiStyle::DarkRed:     strColor = _T("#8b0000"); break;
      
       // Pink colors
-      case rptRiStyle::Pink:            strColor = "#ffc0cb"; break;
-      case rptRiStyle::LightPink:       strColor = "#ffb6c1"; break;
-      case rptRiStyle::HotPink:         strColor = "#ff69b4"; break;
-      case rptRiStyle::DeepPink:        strColor = "#ff1493"; break;
-      case rptRiStyle::MediumVioletRed: strColor = "#c71585"; break;
-      case rptRiStyle::PaleVioletRed:   strColor = "#db7093"; break;
+      case rptRiStyle::Pink:            strColor = _T("#ffc0cb"); break;
+      case rptRiStyle::LightPink:       strColor = _T("#ffb6c1"); break;
+      case rptRiStyle::HotPink:         strColor = _T("#ff69b4"); break;
+      case rptRiStyle::DeepPink:        strColor = _T("#ff1493"); break;
+      case rptRiStyle::MediumVioletRed: strColor = _T("#c71585"); break;
+      case rptRiStyle::PaleVioletRed:   strColor = _T("#db7093"); break;
      
       // Orange colors
-      case rptRiStyle::Coral:      strColor = "#ff7f50"; break;
-      case rptRiStyle::Tomato:     strColor = "#ff6347"; break;
-      case rptRiStyle::OrangeRed:  strColor = "#ff4500"; break;
-      case rptRiStyle::DarkOrange: strColor = "#ff8c00"; break;
-      case rptRiStyle::Orange:     strColor = "#ff1500"; break;
+      case rptRiStyle::Coral:      strColor = _T("#ff7f50"); break;
+      case rptRiStyle::Tomato:     strColor = _T("#ff6347"); break;
+      case rptRiStyle::OrangeRed:  strColor = _T("#ff4500"); break;
+      case rptRiStyle::DarkOrange: strColor = _T("#ff8c00"); break;
+      case rptRiStyle::Orange:     strColor = _T("#ff1500"); break;
      
       // Yellow colors
-      case rptRiStyle::Gold:                 strColor = "#ffd700"; break;
-      case rptRiStyle::Yellow:               strColor = "#ffff00"; break;
-      case rptRiStyle::LightYellow:          strColor = "#ffffe0"; break;
-      case rptRiStyle::LemonChiffon:         strColor = "#fffacd"; break;
-      case rptRiStyle::LightGoldenrodYellow: strColor = "#fafad2"; break;
-      case rptRiStyle::PapayaWhip:           strColor = "#ffefd5"; break;
-      case rptRiStyle::Moccasin:             strColor = "#ffe4b5"; break;
-      case rptRiStyle::PeachPuff:            strColor = "#ffdab9"; break;
-      case rptRiStyle::PaleGoldenrod:        strColor = "#eee8aa"; break;
-      case rptRiStyle::Khaki:                strColor = "#f0e68c"; break;
-      case rptRiStyle::DarkKhaki:            strColor = "#bdb76b"; break;
+      case rptRiStyle::Gold:                 strColor = _T("#ffd700"); break;
+      case rptRiStyle::Yellow:               strColor = _T("#ffff00"); break;
+      case rptRiStyle::LightYellow:          strColor = _T("#ffffe0"); break;
+      case rptRiStyle::LemonChiffon:         strColor = _T("#fffacd"); break;
+      case rptRiStyle::LightGoldenrodYellow: strColor = _T("#fafad2"); break;
+      case rptRiStyle::PapayaWhip:           strColor = _T("#ffefd5"); break;
+      case rptRiStyle::Moccasin:             strColor = _T("#ffe4b5"); break;
+      case rptRiStyle::PeachPuff:            strColor = _T("#ffdab9"); break;
+      case rptRiStyle::PaleGoldenrod:        strColor = _T("#eee8aa"); break;
+      case rptRiStyle::Khaki:                strColor = _T("#f0e68c"); break;
+      case rptRiStyle::DarkKhaki:            strColor = _T("#bdb76b"); break;
 
       // Purple colors
-      case rptRiStyle::Lavender:        strColor = "#e6e6fa"; break;
-      case rptRiStyle::Thistle:         strColor = "#d8bfd8"; break;
-      case rptRiStyle::Plum:            strColor = "#dda0dd"; break;
-      case rptRiStyle::Violet:          strColor = "#ee82ee"; break;
-      case rptRiStyle::Ochrid:          strColor = "#da70d6"; break;
-      case rptRiStyle::Fuchsia:         strColor = "#ff00ff"; break;
-      case rptRiStyle::Magenta:         strColor = "#ff00ff"; break;
-      case rptRiStyle::MediumOrchid:    strColor = "#ba55d3"; break;
-      case rptRiStyle::MediumPurple:    strColor = "#9370d3"; break;
-      case rptRiStyle::BlueViolet:      strColor = "#8a2be2"; break;
-      case rptRiStyle::DarkViolet:      strColor = "#9400d3"; break;
-      case rptRiStyle::DarkOrchid:      strColor = "#9932cc"; break;
-      case rptRiStyle::DarkMagenta:     strColor = "#8b008b"; break;
-      case rptRiStyle::Purple:          strColor = "#800080"; break;
-      case rptRiStyle::Indigo:          strColor = "#4b0082"; break;
-      case rptRiStyle::SlateBlue:       strColor = "#6a5acd"; break;
-      case rptRiStyle::DarkSlateBlue:   strColor = "#483d8b"; break;
-      case rptRiStyle::MediumSlateBlue: strColor = "#b68ee"; break;
+      case rptRiStyle::Lavender:        strColor = _T("#e6e6fa"); break;
+      case rptRiStyle::Thistle:         strColor = _T("#d8bfd8"); break;
+      case rptRiStyle::Plum:            strColor = _T("#dda0dd"); break;
+      case rptRiStyle::Violet:          strColor = _T("#ee82ee"); break;
+      case rptRiStyle::Ochrid:          strColor = _T("#da70d6"); break;
+      case rptRiStyle::Fuchsia:         strColor = _T("#ff00ff"); break;
+      case rptRiStyle::Magenta:         strColor = _T("#ff00ff"); break;
+      case rptRiStyle::MediumOrchid:    strColor = _T("#ba55d3"); break;
+      case rptRiStyle::MediumPurple:    strColor = _T("#9370d3"); break;
+      case rptRiStyle::BlueViolet:      strColor = _T("#8a2be2"); break;
+      case rptRiStyle::DarkViolet:      strColor = _T("#9400d3"); break;
+      case rptRiStyle::DarkOrchid:      strColor = _T("#9932cc"); break;
+      case rptRiStyle::DarkMagenta:     strColor = _T("#8b008b"); break;
+      case rptRiStyle::Purple:          strColor = _T("#800080"); break;
+      case rptRiStyle::Indigo:          strColor = _T("#4b0082"); break;
+      case rptRiStyle::SlateBlue:       strColor = _T("#6a5acd"); break;
+      case rptRiStyle::DarkSlateBlue:   strColor = _T("#483d8b"); break;
+      case rptRiStyle::MediumSlateBlue: strColor = _T("#b68ee"); break;
 
       // Green colors
-      case rptRiStyle::GreenYellow:       strColor = "#adff2f"; break;
-      case rptRiStyle::Chartreuse:        strColor = "#7fff00"; break;
-      case rptRiStyle::LawnGreen:         strColor = "#7cfc00"; break;
-      case rptRiStyle::Lime:              strColor = "#00ff00"; break;
-      case rptRiStyle::LimeGreen:         strColor = "#32cd32"; break;
-      case rptRiStyle::PaleGreen:         strColor = "#98fb98"; break;
-      case rptRiStyle::LightGreen:        strColor = "#90ee90"; break;
-      case rptRiStyle::MediumSpringGreen: strColor = "#00fa9a"; break;
-      case rptRiStyle::SpringGreen:       strColor = "#00ff7f"; break;
-      case rptRiStyle::MediumSeaGreen:    strColor = "#3cb371"; break;
-      case rptRiStyle::SeaGreen:          strColor = "#2e8b57"; break;
-      case rptRiStyle::ForestGreen:       strColor = "#228b22"; break;
-      case rptRiStyle::Green:             strColor = "#008000"; break;
-      case rptRiStyle::DarkGreen:         strColor = "#006400"; break;
-      case rptRiStyle::YellowGreen:       strColor = "#9acd32"; break;
-      case rptRiStyle::OliveDrab:         strColor = "#6b8e23"; break;
-      case rptRiStyle::Olive:             strColor = "#808000"; break;
-      case rptRiStyle::DarkOliveGreen:    strColor = "#556b2f"; break;
-      case rptRiStyle::MediumAquamarine:  strColor = "#66cdaa"; break;
-      case rptRiStyle::DarkSeaGreen:      strColor = "#8fbc8f"; break;
-      case rptRiStyle::LightSeaGreen:     strColor = "#20b2aa"; break;
-      case rptRiStyle::DarkCyan:          strColor = "#008b8b"; break;
-      case rptRiStyle::Teal:              strColor = "#008080"; break;
+      case rptRiStyle::GreenYellow:       strColor = _T("#adff2f"); break;
+      case rptRiStyle::Chartreuse:        strColor = _T("#7fff00"); break;
+      case rptRiStyle::LawnGreen:         strColor = _T("#7cfc00"); break;
+      case rptRiStyle::Lime:              strColor = _T("#00ff00"); break;
+      case rptRiStyle::LimeGreen:         strColor = _T("#32cd32"); break;
+      case rptRiStyle::PaleGreen:         strColor = _T("#98fb98"); break;
+      case rptRiStyle::LightGreen:        strColor = _T("#90ee90"); break;
+      case rptRiStyle::MediumSpringGreen: strColor = _T("#00fa9a"); break;
+      case rptRiStyle::SpringGreen:       strColor = _T("#00ff7f"); break;
+      case rptRiStyle::MediumSeaGreen:    strColor = _T("#3cb371"); break;
+      case rptRiStyle::SeaGreen:          strColor = _T("#2e8b57"); break;
+      case rptRiStyle::ForestGreen:       strColor = _T("#228b22"); break;
+      case rptRiStyle::Green:             strColor = _T("#008000"); break;
+      case rptRiStyle::DarkGreen:         strColor = _T("#006400"); break;
+      case rptRiStyle::YellowGreen:       strColor = _T("#9acd32"); break;
+      case rptRiStyle::OliveDrab:         strColor = _T("#6b8e23"); break;
+      case rptRiStyle::Olive:             strColor = _T("#808000"); break;
+      case rptRiStyle::DarkOliveGreen:    strColor = _T("#556b2f"); break;
+      case rptRiStyle::MediumAquamarine:  strColor = _T("#66cdaa"); break;
+      case rptRiStyle::DarkSeaGreen:      strColor = _T("#8fbc8f"); break;
+      case rptRiStyle::LightSeaGreen:     strColor = _T("#20b2aa"); break;
+      case rptRiStyle::DarkCyan:          strColor = _T("#008b8b"); break;
+      case rptRiStyle::Teal:              strColor = _T("#008080"); break;
 
       // Blue colors
-      case rptRiStyle::Aqua:            strColor = "#00ffff"; break;
-      case rptRiStyle::Cyan:            strColor = "#00ffff"; break;
-      case rptRiStyle::LightCyan:       strColor = "#e0ffff"; break;
-      case rptRiStyle::PaleTurquoise:   strColor = "#afeeee"; break;
-      case rptRiStyle::Aquarmarine:     strColor = "#7fffd4"; break;
-      case rptRiStyle::Turquoise:       strColor = "#40e0d0"; break;
-      case rptRiStyle::MediumTurquoise: strColor = "#48d1cc"; break;
-      case rptRiStyle::DarkTurquoise:   strColor = "#00ced1"; break;
-      case rptRiStyle::CadetBlue:       strColor = "#5f9ea0"; break;
-      case rptRiStyle::SteelBlue:       strColor = "#4682b4"; break;
-      case rptRiStyle::LightSteelBlue:  strColor = "#b0c4de"; break;
-      case rptRiStyle::PowderBlue:      strColor = "#b0e0de"; break;
-      case rptRiStyle::LightBlue:       strColor = "#add8e6"; break;
-      case rptRiStyle::SkyBlue:         strColor = "#87ceeb"; break;
-      case rptRiStyle::LightSkyBlue:    strColor = "#87cefa"; break;
-      case rptRiStyle::DeepSkyBlue:     strColor = "#00bfff"; break;
-      case rptRiStyle::DodgerBlue:      strColor = "#1e90ff"; break;
-      case rptRiStyle::CornflowerBlue:  strColor = "#6495ed"; break;
-      case rptRiStyle::RoyalBlue:       strColor = "#4169ed"; break;
-      case rptRiStyle::Blue:            strColor = "#0000ff"; break;
-      case rptRiStyle::MediumBlue:      strColor = "#0000cd"; break;
-      case rptRiStyle::DarkBlue:        strColor = "#00008b"; break;
-      case rptRiStyle::Navy:            strColor = "#000080"; break;
-      case rptRiStyle::MidnightBlue:    strColor = "#191970"; break;
+      case rptRiStyle::Aqua:            strColor = _T("#00ffff"); break;
+      case rptRiStyle::Cyan:            strColor = _T("#00ffff"); break;
+      case rptRiStyle::LightCyan:       strColor = _T("#e0ffff"); break;
+      case rptRiStyle::PaleTurquoise:   strColor = _T("#afeeee"); break;
+      case rptRiStyle::Aquarmarine:     strColor = _T("#7fffd4"); break;
+      case rptRiStyle::Turquoise:       strColor = _T("#40e0d0"); break;
+      case rptRiStyle::MediumTurquoise: strColor = _T("#48d1cc"); break;
+      case rptRiStyle::DarkTurquoise:   strColor = _T("#00ced1"); break;
+      case rptRiStyle::CadetBlue:       strColor = _T("#5f9ea0"); break;
+      case rptRiStyle::SteelBlue:       strColor = _T("#4682b4"); break;
+      case rptRiStyle::LightSteelBlue:  strColor = _T("#b0c4de"); break;
+      case rptRiStyle::PowderBlue:      strColor = _T("#b0e0de"); break;
+      case rptRiStyle::LightBlue:       strColor = _T("#add8e6"); break;
+      case rptRiStyle::SkyBlue:         strColor = _T("#87ceeb"); break;
+      case rptRiStyle::LightSkyBlue:    strColor = _T("#87cefa"); break;
+      case rptRiStyle::DeepSkyBlue:     strColor = _T("#00bfff"); break;
+      case rptRiStyle::DodgerBlue:      strColor = _T("#1e90ff"); break;
+      case rptRiStyle::CornflowerBlue:  strColor = _T("#6495ed"); break;
+      case rptRiStyle::RoyalBlue:       strColor = _T("#4169ed"); break;
+      case rptRiStyle::Blue:            strColor = _T("#0000ff"); break;
+      case rptRiStyle::MediumBlue:      strColor = _T("#0000cd"); break;
+      case rptRiStyle::DarkBlue:        strColor = _T("#00008b"); break;
+      case rptRiStyle::Navy:            strColor = _T("#000080"); break;
+      case rptRiStyle::MidnightBlue:    strColor = _T("#191970"); break;
 
       // Brown colors
-      case rptRiStyle::CornSilk:       strColor = "#fff8dc"; break;
-      case rptRiStyle::BlanchedAlmond: strColor = "#ffebcd"; break;
-      case rptRiStyle::Bisque:         strColor = "#ffe4c4"; break;
-      case rptRiStyle::NavajoWhite:    strColor = "#ffdead"; break;
-      case rptRiStyle::Wheat:          strColor = "#f5deb3"; break;
-      case rptRiStyle::BurlyWood:      strColor = "#deb887"; break;
-      case rptRiStyle::Tan:            strColor = "#d2b48c"; break;
-      case rptRiStyle::RosyBrown:      strColor = "#bc8f8f"; break;
-      case rptRiStyle::SandyBrown:     strColor = "#f4a460"; break;
-      case rptRiStyle::Goldenrod:      strColor = "#daa520"; break;
-      case rptRiStyle::DarkGoldenrod:  strColor = "#b8860b"; break;
-      case rptRiStyle::Peru:           strColor = "#cd853f"; break;
-      case rptRiStyle::Chocolate:      strColor = "#d2691e"; break;
-      case rptRiStyle::SaddleBrown:    strColor = "#8b4513"; break;
-      case rptRiStyle::Sienna:         strColor = "#a0522d"; break;
-      case rptRiStyle::Brown:          strColor = "#a52a2a"; break;
-      case rptRiStyle::Maroon:         strColor = "#800000"; break;
+      case rptRiStyle::CornSilk:       strColor = _T("#fff8dc"); break;
+      case rptRiStyle::BlanchedAlmond: strColor = _T("#ffebcd"); break;
+      case rptRiStyle::Bisque:         strColor = _T("#ffe4c4"); break;
+      case rptRiStyle::NavajoWhite:    strColor = _T("#ffdead"); break;
+      case rptRiStyle::Wheat:          strColor = _T("#f5deb3"); break;
+      case rptRiStyle::BurlyWood:      strColor = _T("#deb887"); break;
+      case rptRiStyle::Tan:            strColor = _T("#d2b48c"); break;
+      case rptRiStyle::RosyBrown:      strColor = _T("#bc8f8f"); break;
+      case rptRiStyle::SandyBrown:     strColor = _T("#f4a460"); break;
+      case rptRiStyle::Goldenrod:      strColor = _T("#daa520"); break;
+      case rptRiStyle::DarkGoldenrod:  strColor = _T("#b8860b"); break;
+      case rptRiStyle::Peru:           strColor = _T("#cd853f"); break;
+      case rptRiStyle::Chocolate:      strColor = _T("#d2691e"); break;
+      case rptRiStyle::SaddleBrown:    strColor = _T("#8b4513"); break;
+      case rptRiStyle::Sienna:         strColor = _T("#a0522d"); break;
+      case rptRiStyle::Brown:          strColor = _T("#a52a2a"); break;
+      case rptRiStyle::Maroon:         strColor = _T("#800000"); break;
 
       // White colors
-      case rptRiStyle::White:         strColor = "#ffffff"; break;
-      case rptRiStyle::Snow:          strColor = "#fffafa"; break;
-      case rptRiStyle::Honeydew:      strColor = "#f0fff0"; break;
-      case rptRiStyle::MintCream:     strColor = "#f5fffa"; break;
-      case rptRiStyle::Azure:         strColor = "#f0ffff"; break;
-      case rptRiStyle::AliceBlue:     strColor = "#f0f8ff"; break;
-      case rptRiStyle::GhostWhite:    strColor = "#f8f8ff"; break;
-      case rptRiStyle::WhiteSmoke:    strColor = "#f5f5f5"; break;
-      case rptRiStyle::Seashell:      strColor = "#fff5ee"; break;
-      case rptRiStyle::Beige:         strColor = "#f5f5ee"; break;
-      case rptRiStyle::OldLace:       strColor = "#f5f5dc"; break;
-      case rptRiStyle::FloralWhite:   strColor = "#fffaf0"; break;
-      case rptRiStyle::Ivory:         strColor = "#fffff0"; break;
-      case rptRiStyle::AntiqueWhite:  strColor = "#faebd7"; break;
-      case rptRiStyle::Linen:         strColor = "#faf0e6"; break;
-      case rptRiStyle::LavenderBlush: strColor = "#fff0f5"; break;
-      case rptRiStyle::MistyRose:     strColor = "#ffe4e1"; break;
+      case rptRiStyle::White:         strColor = _T("#ffffff"); break;
+      case rptRiStyle::Snow:          strColor = _T("#fffafa"); break;
+      case rptRiStyle::Honeydew:      strColor = _T("#f0fff0"); break;
+      case rptRiStyle::MintCream:     strColor = _T("#f5fffa"); break;
+      case rptRiStyle::Azure:         strColor = _T("#f0ffff"); break;
+      case rptRiStyle::AliceBlue:     strColor = _T("#f0f8ff"); break;
+      case rptRiStyle::GhostWhite:    strColor = _T("#f8f8ff"); break;
+      case rptRiStyle::WhiteSmoke:    strColor = _T("#f5f5f5"); break;
+      case rptRiStyle::Seashell:      strColor = _T("#fff5ee"); break;
+      case rptRiStyle::Beige:         strColor = _T("#f5f5ee"); break;
+      case rptRiStyle::OldLace:       strColor = _T("#f5f5dc"); break;
+      case rptRiStyle::FloralWhite:   strColor = _T("#fffaf0"); break;
+      case rptRiStyle::Ivory:         strColor = _T("#fffff0"); break;
+      case rptRiStyle::AntiqueWhite:  strColor = _T("#faebd7"); break;
+      case rptRiStyle::Linen:         strColor = _T("#faf0e6"); break;
+      case rptRiStyle::LavenderBlush: strColor = _T("#fff0f5"); break;
+      case rptRiStyle::MistyRose:     strColor = _T("#ffe4e1"); break;
 
       // Gray colors
-      case rptRiStyle::Gainsboro:      strColor = "#dcdcdc"; break;
-      case rptRiStyle::LightGray:      strColor = "#d3d3d3"; break;
-      case rptRiStyle::Silver:         strColor = "#c0c0c0"; break;
-      case rptRiStyle::DarkGray:       strColor = "#a9a9a9"; break;
-      case rptRiStyle::Gray:           strColor = "#808080"; break;
-      case rptRiStyle::DimGray:        strColor = "#696969"; break;
-      case rptRiStyle::LightSlateGray: strColor = "#778899"; break;
-      case rptRiStyle::SlateGray:      strColor = "#708090"; break;
-      case rptRiStyle::DarkSlateGray:  strColor = "#2f4f4f"; break;
-      case rptRiStyle::Black:          strColor = "#000000"; break;
+      case rptRiStyle::Gainsboro:      strColor = _T("#dcdcdc"); break;
+      case rptRiStyle::LightGray:      strColor = _T("#d3d3d3"); break;
+      case rptRiStyle::Silver:         strColor = _T("#c0c0c0"); break;
+      case rptRiStyle::DarkGray:       strColor = _T("#a9a9a9"); break;
+      case rptRiStyle::Gray:           strColor = _T("#808080"); break;
+      case rptRiStyle::DimGray:        strColor = _T("#696969"); break;
+      case rptRiStyle::LightSlateGray: strColor = _T("#778899"); break;
+      case rptRiStyle::SlateGray:      strColor = _T("#708090"); break;
+      case rptRiStyle::DarkSlateGray:  strColor = _T("#2f4f4f"); break;
+      case rptRiStyle::Black:          strColor = _T("#000000"); break;
    }
    
 

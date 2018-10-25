@@ -79,11 +79,13 @@ lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 rh, // relative humidity
                          Float64 ti,   // Time until prestress transfer
 
-                         bool bIgnoreInitialRelaxation
+                         bool bIgnoreInitialRelaxation,
+                         bool bValidateParameters
                          )
 {
    Init();
 
+   m_bValidateParameters = bValidateParameters;
    m_Grade                 = gr;
    m_Type                  = type;
    m_FpjPerm               = fpjPerm;
@@ -195,11 +197,13 @@ lrfdLosses::lrfdLosses(const lrfdLosses& rOther)
 
 void lrfdLosses::Init()
 {
+   m_bValidateParameters = true;
    m_dfpR0[0] = 0;
    m_dfpR0[1] = 0;
    m_dfpES[0] = 0;
    m_dfpES[1] = 0;
    m_dfpED = 0;
+   m_dfpSIDL = 0;
    m_dfpp = 0;
    m_fpL = 0;
    m_fpD = 0;
@@ -438,12 +442,22 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
    return loss;
 }
 
+Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
+{
+   if ( m_IsDirty )
+      UpdateLosses();
+
+   Float64 loss = PermanentStrand_AfterDeckPlacement() + ElasticGainDueToSIDL();
+
+   return loss;
+}
+
 Float64 lrfdLosses::PermanentStrand_Final() const
 {
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_AfterDeckPlacement() + TimeDependentLossesAfterDeck();
+   Float64 loss = PermanentStrand_AfterSIDL() + TimeDependentLossesAfterDeck();
    return loss;
 }
 
@@ -555,6 +569,14 @@ Float64 lrfdLosses::TemporaryStrand_AfterDeckPlacement() const
    return 0;
 }
 
+Float64 lrfdLosses::TemporaryStrand_AfterSIDL() const
+{
+   if ( m_IsDirty )
+      UpdateLosses();
+
+   return 0;
+}
+
 Float64 lrfdLosses::TemporaryStrand_Final() const
 {
    if ( m_IsDirty )
@@ -599,6 +621,12 @@ Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
 {
    if ( m_IsDirty ) UpdateLosses();
    return m_dfpED;
+}
+
+Float64 lrfdLosses::ElasticGainDueToSIDL() const
+{
+   if ( m_IsDirty ) UpdateLosses();
+   return m_dfpSIDL;
 }
 
 Float64 lrfdLosses::FrictionLoss() const
@@ -761,6 +789,14 @@ Float64 lrfdLosses::GetDeltaFcd1() const
    return m_DeltaFcd1;
 }
 
+Float64 lrfdLosses::GetDeltaFcd2() const
+{
+   if ( m_IsDirty )
+      UpdateLosses();
+
+   return m_DeltaFcd2;
+}
+
 void lrfdLosses::UpdateLosses() const
 {
    static bool bUpdating = false;
@@ -770,7 +806,9 @@ void lrfdLosses::UpdateLosses() const
       bUpdating = true;
       try
       {
-         ValidateParameters();
+         if ( m_bValidateParameters )
+            ValidateParameters();
+
          UpdateInitialLosses();
          UpdateHaulingLosses();
          UpdateTemporaryStrandRemovalEffect();
@@ -1049,6 +1087,8 @@ void lrfdLosses::MakeAssignment( const lrfdLosses& rOther )
 
 void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 {
+   m_bValidateParameters = rOther.m_bValidateParameters;
+
    m_Type                  = rOther.m_Type;
    m_Grade                 = rOther.m_Grade;
    m_eperm                 = rOther.m_eperm;
@@ -1093,6 +1133,7 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_dfpES[1]              = rOther.m_dfpES[1];
 
    m_dfpED                 = rOther.m_dfpED;
+   m_dfpSIDL               = rOther.m_dfpSIDL;
 
    m_dfpF                  = rOther.m_dfpF;
    m_dfpFT                 = rOther.m_dfpFT;
@@ -1125,6 +1166,8 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Ptr                   = rOther.m_Ptr;
 
    m_DeltaFcd1             = rOther.m_DeltaFcd1;
+   m_DeltaFcd2             = rOther.m_DeltaFcd2;
+
    m_ElasticShortening     = rOther.m_ElasticShortening;
 
    m_IsDirty               = rOther.m_IsDirty;

@@ -144,13 +144,13 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	
    // Restore tool tips mode
-   m_bShowToolTips = (EAFGetApp()->GetProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
-                                                 CString((LPCSTR)IDS_TOOLTIP_STATE),
+   m_bShowToolTips = (EAFGetApp()->GetProfileInt(CString((LPCTSTR)IDS_REG_SETTINGS),
+                                                 CString((LPCTSTR)IDS_TOOLTIP_STATE),
                                                  1) !=0 );
 
    // Restore the layout of the application window
    WINDOWPLACEMENT wp;
-   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCSTR)IDS_REG_SETTINGS),CString((LPCSTR)IDS_REG_WNDPOS),&wp) )
+   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),CString((LPCTSTR)IDS_REG_WNDPOS),&wp) )
    {
       if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
          wp.showCmd = SW_SHOW;
@@ -181,7 +181,7 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    DockControlBar( m_pMainFrameToolBar );
 
    // Load the state of the application toolbar
-   LoadBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
+   LoadBarState( CString((LPCTSTR)IDS_TOOLBAR_STATE) );
 
    m_pMainMenu = CreateMainMenu();
 
@@ -199,12 +199,12 @@ void CEAFMainFrame::OnClose()
    {
       wp.flags = 0;
       wp.showCmd = SW_SHOWNORMAL;
-      pApp->WriteWindowPlacement(CString((LPCSTR)IDS_REG_SETTINGS),CString((LPCSTR)IDS_REG_WNDPOS),&wp);
+      pApp->WriteWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),CString((LPCTSTR)IDS_REG_WNDPOS),&wp);
    }
 
    // Save the ToolTips state
-   pApp->WriteProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
-                         CString((LPCSTR)IDS_TOOLTIP_STATE),
+   pApp->WriteProfileInt(CString((LPCTSTR)IDS_REG_SETTINGS),
+                         CString((LPCTSTR)IDS_TOOLTIP_STATE),
                         (m_bShowToolTips != 0) );
 
    pApp->OnMainFrameClosing();
@@ -215,7 +215,7 @@ void CEAFMainFrame::OnClose()
 void CEAFMainFrame::OnDestroy()
 {
    // Save the state of the application toolbar
-   SaveBarState( CString((LPCSTR)IDS_TOOLBAR_STATE) );
+   SaveBarState( CString((LPCTSTR)IDS_TOOLBAR_STATE) );
 
    CMDIFrameWnd::OnDestroy();
 }
@@ -466,10 +466,12 @@ void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
    if (bAddToTitle && pDoc)
    {
       if (pDoc->GetPathName().GetLength() == 0)
+      {
          UpdateFrameTitleForDocument(pDoc->GetTitle());
+      }
       else
       {
-         char title[_MAX_PATH];
+         TCHAR title[_MAX_PATH];
          WORD cbBuf = _MAX_PATH;
 
          ::GetFileTitle(pDoc->GetPathName(),title,cbBuf);
@@ -478,7 +480,9 @@ void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
       }
    }
    else
+   {
       UpdateFrameTitleForDocument(NULL);
+   }
 }
 
 void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
@@ -879,7 +883,7 @@ void CEAFMainFrame::OnDropFiles(HDROP hDropInfo)
    // Don't allow multiple files to be dropped
 	UINT nFiles = ::DragQueryFile(hDropInfo, (UINT)-1, NULL, 0);
    if (nFiles>1)
-      ::AfxMessageBox("Error - Multiple file drop not allowed. Please drop one file at a time.",MB_ICONEXCLAMATION|MB_OK);
+      ::AfxMessageBox(_T("Error - Multiple file drop not allowed. Please drop one file at a time."),MB_ICONEXCLAMATION|MB_OK);
    else
       CMDIFrameWnd::OnDropFiles(hDropInfo);
 }
@@ -956,7 +960,7 @@ std::vector<CString> CEAFMainFrame::GetToolBarNames()
       if ( GetActiveDocument() == NULL )
       {
          CString strName;
-         m_pMainFrameToolBar->GetWindowTextA(strName);
+         m_pMainFrameToolBar->GetWindowText(strName);
          vNames.push_back(strName);
       }
    }

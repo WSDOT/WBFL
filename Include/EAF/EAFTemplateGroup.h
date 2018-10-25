@@ -78,7 +78,7 @@ public:
    CEAFDocTemplate* GetDocTemplate();
 
    // Get/Get the group name
-   virtual void SetGroupName(LPCSTR name);
+   virtual void SetGroupName(LPCTSTR name);
    virtual CString GetGroupName() const;
 
    // Add a sub-group

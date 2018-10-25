@@ -46,7 +46,7 @@ HRESULT CEAFDocPluginManager::SavePluginData(IStructuredSave* pStrSave)
    if ( m_Plugins.size() == 0 )
       return S_OK;
 
-   pStrSave->BeginUnit("Plugins",1.0);
+   pStrSave->BeginUnit(_T("Plugins"),1.0);
 
    Plugins::iterator iter;
    for ( iter = m_Plugins.begin(); iter != m_Plugins.end(); iter++ )
@@ -55,11 +55,11 @@ HRESULT CEAFDocPluginManager::SavePluginData(IStructuredSave* pStrSave)
       CComQIPtr<IEAFPluginPersist> persist(plugin);
       if ( persist )
       {
-         pStrSave->BeginUnit("Plugin",1.0);
+         pStrSave->BeginUnit(_T("Plugin"),1.0);
 
          LPOLESTR bstrCLSID = 0;
          HRESULT hr = StringFromCLSID((*iter).first, &bstrCLSID);
-         pStrSave->put_Property("CLSID",CComVariant(bstrCLSID));
+         pStrSave->put_Property(_T("CLSID"),CComVariant(bstrCLSID));
          ::CoTaskMemFree(bstrCLSID);
 
          hr = persist->Save(pStrSave);
@@ -72,7 +72,7 @@ HRESULT CEAFDocPluginManager::SavePluginData(IStructuredSave* pStrSave)
 
    if ( m_bSaveMissingPluginData )
    {
-      std::vector<std::string>::iterator iter2;
+      std::vector<std::_tstring>::iterator iter2;
       for ( iter2 = m_MissingPluginData.begin(); iter2 != m_MissingPluginData.end(); iter2++ )
       {
          pStrSave->SaveRawUnit(iter2->c_str());
@@ -88,17 +88,17 @@ HRESULT CEAFDocPluginManager::LoadPluginData(IStructuredLoad* pStrLoad)
 {
    USES_CONVERSION;
 
-   HRESULT hr = pStrLoad->BeginUnit("Plugins");
+   HRESULT hr = pStrLoad->BeginUnit(_T("Plugins"));
    if ( FAILED(hr) )
       return S_OK; // it is ok if there isn't any plugins data
 
    // until we run out of "Plugin" units
-   while ( SUCCEEDED(pStrLoad->BeginUnit("Plugin")) )
+   while ( SUCCEEDED(pStrLoad->BeginUnit(_T("Plugin"))) )
    {
       // get CLSID of the agent
       CComVariant varCLSID;
       varCLSID.vt = VT_BSTR;
-      HRESULT hr = pStrLoad->get_Property("CLSID", &varCLSID);
+      HRESULT hr = pStrLoad->get_Property(_T("CLSID"), &varCLSID);
       if ( FAILED(hr) )
          return hr;
 
@@ -134,7 +134,7 @@ HRESULT CEAFDocPluginManager::LoadPluginData(IStructuredLoad* pStrLoad)
          if ( FAILED(hr) )
             return hr;
 
-         m_MissingPluginData.push_back(OLE2A(bstrRawUnit));
+         m_MissingPluginData.push_back(OLE2T(bstrRawUnit));
       }
 
       pStrLoad->EndUnit(); // end of "Plugin" unit

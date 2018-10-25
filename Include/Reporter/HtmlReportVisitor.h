@@ -65,7 +65,7 @@ public:
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
-   rptHtmlReportVisitor(std::ostream* pMyOstream,Uint32 logPixelsX,Uint32 logPixelsY) :
+   rptHtmlReportVisitor(std::_tostream* pMyOstream,Uint32 logPixelsX,Uint32 logPixelsY) :
    rptOutputReportVisitor(pMyOstream)
    {
       m_LogPixelsX = logPixelsX;

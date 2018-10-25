@@ -120,6 +120,7 @@ END_CONNECTION_POINT_MAP()
 public:
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ ICogoModel* *clone);
+   STDMETHOD(get_Engine)(/*[out,retval]*/ICogoEngine** engine);
 	STDMETHOD(putref_ProfilePointFactory)(/*[in]*/IProfilePointFactory* factory);
 	STDMETHOD(get_ProfilePointFactory)(/*[out,retval]*/IProfilePointFactory** factory);
 	STDMETHOD(putref_VertCurveFactory)(/*[in]*/IVertCurveFactory* factory);
@@ -188,6 +189,7 @@ public:
    STDMETHOD(BetweenPoints)(/*[in]*/CogoElementKey firstID,/*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey fromID, /*[in]*/ CogoElementKey toID,/*[in]*/ long nParts);
    STDMETHOD(LineSegment)(/*[in]*/CogoElementKey firstID,/*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey lineID,/*[in]*/ long nParts);
 	STDMETHOD(HorzCurve)(/*[in]*/ CogoElementKey firstID, /*[in]*/ CogoElementKey idInc, /*[in]*/ CogoElementKey curveID, /*[in]*/ long nParts);
+   STDMETHOD(Path)(/*[in]*/CogoElementKey firstID,/*[in]*/CogoElementKey idInc,/*[in]*/CogoElementKey pathID,/*[in]*/ long nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end);
 
 // ITangent
 public:

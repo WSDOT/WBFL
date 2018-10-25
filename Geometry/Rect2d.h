@@ -76,6 +76,7 @@ private:
 // IRect2d
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(Clone)(/*[out,retval]*/IRect2d** clone);
 	STDMETHOD(IsNormalized)(/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(IsNull)(/*[out,retval]*/ VARIANT_BOOL* pbResult);
 	STDMETHOD(Touches)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ VARIANT_BOOL* pbResult);

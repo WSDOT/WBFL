@@ -46,18 +46,18 @@ sysTokenizer::sysTokenizer():
     Vector_Rep(), Token_Rep(), Delims()
 {}
 
-sysTokenizer::sysTokenizer(const char *OneDel):
+sysTokenizer::sysTokenizer(LPCTSTR OneDel):
     Vector_Rep(), Token_Rep()
 {
     if(OneDel) Delims.push_back(CS_to_TS(OneDel));
 }
 
-sysTokenizer::sysTokenizer(const char **Token_Del):
+sysTokenizer::sysTokenizer(LPCTSTR *Token_Del):
     Vector_Rep(), Token_Rep()
 {
     if(Token_Del && Token_Del[0]){
         // Prepare delimiter vector.
-        for(const char * Di = *Token_Del; Di ; Di = *(Token_Del++))
+        for(LPCTSTR  Di = *Token_Del; Di ; Di = *(Token_Del++))
             Delims.push_back(CS_to_TS(Di));
     }
 }
@@ -160,7 +160,7 @@ bool sysTokenizer::empty() const
     return Token_Rep.empty();
 }
 
-void sysTokenizer::push_back(const char* cstr)
+void sysTokenizer::push_back(LPCTSTR cstr)
 {
     if(cstr){
 
@@ -168,7 +168,7 @@ void sysTokenizer::push_back(const char* cstr)
         Vector_Rep.erase(Vector_Rep.begin(),Vector_Rep.end());
         Token_Rep.erase(Token_Rep.begin(),Token_Rep.end());
 
-        Vector_Rep = std::string(cstr);
+        Vector_Rep = std::_tstring(cstr);
 
         // Tokenize now.
         Token TRes;
@@ -180,7 +180,7 @@ void sysTokenizer::push_back(const char* cstr)
     }
 }
 
-void sysTokenizer::push_back(const std::string& VC)
+void sysTokenizer::push_back(const std::_tstring& VC)
 {
     Token_Rep.erase(Token_Rep.begin(),Token_Rep.end());
     Vector_Rep = VC;
@@ -196,20 +196,20 @@ void sysTokenizer::push_back(const std::string& VC)
     }
 }
 
-TString sysTokenizer::CS_to_TS(const char *CS)
+TString sysTokenizer::CS_to_TS(LPCTSTR CS)
 {
     TString TS(CS);
     
     return TS;
 }
 
-char *sysTokenizer::TS_to_CS(TString &TS)
+LPTSTR sysTokenizer::TS_to_CS(TString &TS)
 {
-    char *CS = 0;
+    LPTSTR CS = 0;
     
     if(TS.size()){
-        CS = new char [TS.size() + 1];
-		for(std::string::size_type i = 0; i < TS.size(); i++) 
+        CS = new TCHAR[TS.size() + 1];
+		for(std::_tstring::size_type i = 0; i < TS.size(); i++) 
 		{
 			CS[i] = TS[i];
 		}
@@ -262,15 +262,15 @@ Token sysTokenizer::find_next_token(TString &TS, TIter &Ti)
 }
 
 
-bool sysTokenizer::ParseDouble(const char* lpszText, Float64* d)
+bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 {
 	CHECK(lpszText != 0);
 	while (*lpszText == ' ' || *lpszText == '\t')
 		lpszText++;
 
-	char chFirst = lpszText[0];
-   char* stopstr;
-	*d = strtod(lpszText, &stopstr);
+	TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+	*d = _tcstod(lpszText, &stopstr);
 	if (*d == 0.0 && chFirst != '0')
 		return false;   // could not convert
 
@@ -289,15 +289,15 @@ bool sysTokenizer::ParseDouble(const char* lpszText, Float64* d)
 	return true;
 }
 
-bool sysTokenizer::ParseLong(const char* lpszText, long* l)
+bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
 {
 	CHECK(lpszText != 0);
 	while (*lpszText == ' ' || *lpszText == '\t')
 		lpszText++;
 
-	char chFirst = lpszText[0];
-   char* stopstr;
-	*l = strtol(lpszText, &stopstr, 10);
+	TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+	*l = _tcstol(lpszText, &stopstr, 10);
 	if (*l == 0 && chFirst != '0')
 		return false;   // could not convert
 

@@ -175,6 +175,12 @@ library WBFLGeometry
       [helpstring("method Location"),helpcontext(IDH_IPoint2d_Location)]
       HRESULT Location([out]Float64* pX,[out]Float64* pY);
 
+      [helpstring("method Distance"),helpcontext(IDH_IPoint2d_Distance)]
+      HRESULT Distance([in]Float64 x,[in]Float64 y,[out,retval]Float64* pDistance);
+
+      [helpstring("method DistanceEx"),helpcontext(IDH_IPoint2d_DistanceEx)]
+      HRESULT DistanceEx([in]IPoint2d* pOther,[out,retval]Float64* pDistance);
+
       [helpstring("method Clone")/*,helpcontext(IDH_IPoint2d_Location)*/]
       HRESULT Clone([out,retval]IPoint2d** ppPoint);
    };
@@ -226,6 +232,9 @@ library WBFLGeometry
 
       [helpstring("method Dimensions"),helpcontext(IDH_ISize2d_Dimensions)]
       HRESULT Dimensions([out]Float64* pDx,[out]Float64* pDy);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_ISize2d_Clone)*/]
+      HRESULT Clone([out,retval]ISize2d** clone);
    };
 
 
@@ -353,7 +362,10 @@ library WBFLGeometry
 		[helpstring("method IsNormalized"), helpcontext(IDH_IRect2d_IsNormalized)]
       HRESULT IsNormalized([out,retval] VARIANT_BOOL* pbResult);
 
-		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      [helpstring("method Clone")/*,helpcontext(IDH_IRect2d_Clone)*/]
+      HRESULT Clone([out,retval]IRect2d** clone);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
@@ -439,6 +451,9 @@ library WBFLGeometry
 		[helpstring("method Decrement"), helpcontext(IDH_IVector2d_Decrement)]
 		HRESULT Decrement([in] IVector2d* v);
 
+		[helpstring("method Clone")/*, helpcontext(IDH_IVector2d_Clone)*/]
+		HRESULT Clone([out,retval] IVector2d** ppClone);
+
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
@@ -506,6 +521,9 @@ library WBFLGeometry
 
       [helpstring("method Insert")]
       HRESULT Insert([in]CollectionIndexType index,[in]IPoint2d* pPoint);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_IPoint2dCollection_Clone)*/]
+      HRESULT Clone([out,retval]IPoint2dCollection** clone);
    };
 
    [
@@ -566,8 +584,14 @@ library WBFLGeometry
 		[helpstring("method OffsetEx"), helpcontext(IDH_ILineSegment2d_OffsetEx)]
       HRESULT OffsetEx([in] ISize2d* pSize);
 
-		[helpstring("method ThroughPoints")/*, helpcontext(IDH_ILine2d_ThroughPoints)*/]
+		[helpstring("method Offset2"), helpcontext(IDH_ILineSegment2d_Offset)]
+      HRESULT Offset2([in] Float64 distance);
+
+		[helpstring("method ThroughPoints")/*, helpcontext(IDH_ILineSegment2d_ThroughPoints)*/]
       HRESULT ThroughPoints([in] IPoint2d* p1, [in] IPoint2d* p2);
+
+		[helpstring("method Clone")/*, helpcontext(IDH_ILineSegment2d_Cone)*/]
+      HRESULT Clone([out,retval]ILineSegment2d** ppClone);
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
@@ -622,6 +646,9 @@ library WBFLGeometry
 
 		[helpstring("method Reverse"), helpcontext(IDH_ILine2d_Reverse)]
 	  HRESULT Reverse();
+
+		[helpstring("method Clone")/*, helpcontext(IDH_ILine2d_Clone)*/]
+	  HRESULT Clone([out,retval]ILine2d** ppLine);
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
@@ -739,6 +766,9 @@ library WBFLGeometry
 		[helpstring("method OffsetEx")/*, helpcontext(IDH_ILineSegment2d_OffsetEx)*/]
       HRESULT OffsetEx([in] ISize3d* pSize);
 
+      [helpstring("method Clone")/*,helpcontext(IDH_ILineSegment2d_Clone)*/]
+      HRESULT Clone([out,retval]ILineSegment3d** clone);
+
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
@@ -795,6 +825,9 @@ library WBFLGeometry
 
       [helpstring("method Dimensions"),helpcontext(IDH_ISize3d_Dimensions)]
       HRESULT Dimensions([out]Float64* pDx,[out]Float64* pDy,[out]Float64* pDz);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_ISize3d_Clone)*/]
+      HRESULT Clone([out,retval]ISize3d** clone);
    };
 	[
 		object,
@@ -874,6 +907,9 @@ library WBFLGeometry
 
 		[helpstring("method Decrement"), helpcontext(IDH_IVector3d_Decrement)]
 		HRESULT Decrement([in] IVector3d* v);
+
+		[helpstring("method Clone")/*, helpcontext(IDH_IVector3d_Clone)*/]
+		HRESULT Clone([out,retval] IVector3d** ppClone);
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
@@ -986,6 +1022,9 @@ library WBFLGeometry
 
       [helpstring("method Insert")]
       HRESULT Insert([in]CollectionIndexType index,[in]IPoint3d* pPoint);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_IPoint3dCollection_Clone)*/]
+      HRESULT Clone([out,retval]IPoint3dCollection** clone);
    };
 
    [
@@ -2709,6 +2748,12 @@ library WBFLGeometry
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+
+      [propput,helpstring("property UseOutlineOnly")/*,helpcontext(IDH_IUBeam2_VoidCount)*/]
+      HRESULT UseOutlineOnly([in]VARIANT_BOOL bUseOutlineOnly);
+
+      [propget,helpstring("property UseOutlineOnly")/*,helpcontext(IDH_IUBeam2_VoidCount)*/]
+      HRESULT UseOutlineOnly([out,retval]VARIANT_BOOL* bUseOutlineOnly);
    };
 
 

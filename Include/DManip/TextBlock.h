@@ -42,7 +42,7 @@ interface iTextBlock : public iDisplayObject
    STDMETHOD_(void,SetAngle)(long angle) PURE;
    STDMETHOD_(long,GetAngle)() PURE;
 
-   STDMETHOD_(void,SetText)(LPCSTR lpszText) PURE;
+   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetText)() PURE;
 
    // set font. Note that font height is in 10th of points.
@@ -63,7 +63,7 @@ interface iTextBlock : public iDisplayObject
 // on the top of the display view
 interface iViewTitle : public iDisplayObject
 {
-   STDMETHOD_(void,SetText)(LPCSTR lpszText) PURE;
+   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
    STDMETHOD_(CString,GetText)() PURE;
 
    // set font. Note that font height is in 10th of points.

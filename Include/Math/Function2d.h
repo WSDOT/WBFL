@@ -81,7 +81,7 @@ public:
 
 
    //------------------------------------------------------------------------
-   mathXEvalError(Reason reason,const char* file, Int16 line);
+   mathXEvalError(Reason reason,LPCTSTR file, Int16 line);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -175,6 +175,8 @@ public:
    // Evaluatest the function at x.  If an error occurs during the evaluation,
    // a mathXEvalError exception will be thrown.
    virtual Float64 Evaluate(Float64 x) const = 0;
+
+   virtual mathFunction2d* Clone() const = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -100,7 +100,7 @@ public:
 //   //
 //   // Returns zero on success, required size of str if it is too small, or -1 on
 //   // an other error.
-//   static short StationToString(Float64 station,short nDigOffset,short nDec,char* str,short cch);
+//   static short StationToString(Float64 station,short nDigOffset,short nDec,LPTSTR str,short cch);
 //
 //   //------------------------------------------------------------------------
 //   // Converts a station string to a floating point number.  nDigOffset is the 
@@ -111,14 +111,14 @@ public:
 //   // Returns false if the station string was not correctly formed.
 //   //
 //   // Unit conversions are not performed on the resulting station.
-//   static bool StringToStation(const char* str,short nDigOffset,short nDec,Float64* pStation);
+//   static bool StringToStation(LPCTSTR str,short nDigOffset,short nDec,Float64* pStation);
 //
    //------------------------------------------------------------------------
    // Solves the inverse problem for points (x1,y1) and (x2,y2);
    static void Inverse(IPoint2d* p1,IPoint2d* p2,Float64* pDist,IDirection** ppDir);
 
 
-   static HRESULT ParseAngleTags(std::string& strTag,std::string* strDegTag,std::string* strMinTag,std::string* strSecTag);
+   static HRESULT ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -40,7 +40,7 @@ public:
 
    virtual void ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast);
 
-   void SetErrorInfo(const char* strError);
+   void SetErrorInfo(LPCTSTR strError);
 
    virtual CString GetUsageMessage();
    virtual CString GetErrorMessage();

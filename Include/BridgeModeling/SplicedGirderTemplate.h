@@ -81,7 +81,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   bmfSplicedGirderTemplate(const std::string& name, // girder name
+   bmfSplicedGirderTemplate(const std::_tstring& name, // girder name
                             const bmfGirderProfile* pProfile, // girder shape is expected to be gmIPrecastBeam
                             Uint16 nSplices, // number of splace joints
                             Float64* segmentLength, // array of segment lengths (left and middle segment only)

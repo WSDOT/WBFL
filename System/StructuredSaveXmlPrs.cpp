@@ -65,7 +65,7 @@ public:
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
    // Version 0.0 means no version was attached.
-   virtual void BeginUnit(const char* name, Float64 version=0.0);
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0);
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
@@ -80,39 +80,41 @@ public:
    // Get the version number of the unit that is the parent to this unit
    virtual Float64 GetParentVersion();
 
+   virtual std::_tstring GetParentUnit();
+
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
    virtual Float64 GetTopVersion();
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(const char* name, const char* value);
+   virtual void Property(LPCTSTR name, LPCTSTR value);
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(const char* name, Float64 value);
+   virtual void Property(LPCTSTR name, Float64 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int16 value);
+   virtual void Property(LPCTSTR name, Int16 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint16 value);
+   virtual void Property(LPCTSTR name, Uint16 value);
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(const char* name, Int32 value);
+   virtual void Property(LPCTSTR name, Int32 value);
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(const char* name, Uint32 value);
+   virtual void Property(LPCTSTR name, Uint32 value);
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(const char* name, bool value);
+   virtual void Property(LPCTSTR name, bool value);
 
-   virtual void PutUnit(const char* xml);
+   virtual void PutUnit(LPCTSTR xml);
 
 
    // GROUP: ACCESS
@@ -132,7 +134,7 @@ private:
    MSXML::IXMLDOMDocumentPtr       m_spDoc;
    MSXML::IXMLDOMNodePtr           m_spCurrentUnit;
    long          m_Level; // unit nesting level
-   typedef std::pair<std::string, Float64> ListItem;
+   typedef std::pair<std::_tstring, Float64> ListItem;
    typedef std::list<ListItem> UnitList;
    typedef UnitList::const_iterator UnitListConstIterator;
    UnitList   m_UnitList; // stack of information about current units.
@@ -145,7 +147,7 @@ private:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   MSXML::IXMLDOMNodePtr MakeChildNode(const char* name, Float64 vers=0.0);
+   MSXML::IXMLDOMNodePtr MakeChildNode(LPCTSTR name, Float64 vers=0.0);
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
@@ -200,7 +202,7 @@ void sysStructuredSaveXmlPrs::EndSave()
    m_pImp->EndSave();
 }
 
-void sysStructuredSaveXmlPrs::BeginUnit(const char* name, Float64 version)
+void sysStructuredSaveXmlPrs::BeginUnit(LPCTSTR name, Float64 version)
 {
    m_pImp->BeginUnit(name,version);
 }
@@ -220,47 +222,52 @@ Float64 sysStructuredSaveXmlPrs::GetParentVersion()
    return m_pImp->GetParentVersion();
 }
 
+std::_tstring sysStructuredSaveXmlPrs::GetParentUnit()
+{
+   return m_pImp->GetParentUnit();
+}
+
 Float64 sysStructuredSaveXmlPrs::GetTopVersion()
 {
    return m_pImp->GetTopVersion();
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, const char* value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, LPCTSTR value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, Float64 value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Float64 value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, Int16 value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Int16 value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, Uint16 value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Uint16 value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, Int32 value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Int32 value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, Uint32 value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, Uint32 value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::Property(const char* name, bool value)
+void sysStructuredSaveXmlPrs::Property(LPCTSTR name, bool value)
 {
    m_pImp->Property(name,value);
 }
 
-void sysStructuredSaveXmlPrs::PutUnit(const char* xml)
+void sysStructuredSaveXmlPrs::PutUnit(LPCTSTR xml)
 {
    m_pImp->PutUnit(xml);
 }
@@ -375,7 +382,7 @@ void sysStructuredSaveXmlPrs_Impl::BeginSave(IStream* pis)
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW(sysXStructuredSave,CantInitializeTheParser);
    }
    catch(...)
@@ -386,7 +393,7 @@ void sysStructuredSaveXmlPrs_Impl::BeginSave(IStream* pis)
 
 void sysStructuredSaveXmlPrs_Impl::EndSave()
 {
-   CHECKX(m_Level==0,"Error: BeginUnit-EndUnit mismatch in structured save");
+   CHECKX(m_Level==0,_T("Error: BeginUnit-EndUnit mismatch in structured save"));
    try
    {
       // Save document and make sure it saves correctly
@@ -412,7 +419,7 @@ void sysStructuredSaveXmlPrs_Impl::EndSave()
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW(sysXStructuredSave,BadWrite);
    }
    catch(...)
@@ -421,7 +428,7 @@ void sysStructuredSaveXmlPrs_Impl::EndSave()
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::BeginUnit(const char* name, Float64 version)
+void sysStructuredSaveXmlPrs_Impl::BeginUnit(LPCTSTR name, Float64 version)
 {
    ASSERTVALID;
    
@@ -452,7 +459,7 @@ void sysStructuredSaveXmlPrs_Impl::EndUnit()
       m_spCurrentUnit = m_spCurrentUnit->parentNode;
       if (!(bool)m_spCurrentUnit)
       {
-         CHECKX(0,"Popped too far - no parent for child node");
+         CHECKX(0,_T("Popped too far - no parent for child node"));
          THROW(sysXStructuredSave,BadWrite);
       }
 
@@ -479,7 +486,17 @@ Float64 sysStructuredSaveXmlPrs_Impl::GetParentVersion()
    ASSERTVALID;
    UnitListConstIterator iter = m_UnitList.end();
    iter--;
+   iter--;
    return (*iter).second;
+}
+
+std::_tstring sysStructuredSaveXmlPrs_Impl::GetParentUnit()
+{
+   ASSERTVALID;
+   UnitListConstIterator iter = m_UnitList.end();
+   iter--;
+   iter--;
+   return (*iter).first;
 }
 
 Float64 sysStructuredSaveXmlPrs_Impl::GetTopVersion()
@@ -488,7 +505,7 @@ Float64 sysStructuredSaveXmlPrs_Impl::GetTopVersion()
    return m_UnitList.front().second;
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, const char* value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, LPCTSTR value)
 {
    ASSERTVALID;
 
@@ -500,12 +517,12 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, const char* value)
 
       // made node, now do data conversion
       // first need to take out special characters &,',",<,>
-      std::string tmp(value);
-      find_replace_all(&tmp, "&" , "&amp;");
-      find_replace_all(&tmp, "<" , "&lt;" );
-      find_replace_all(&tmp, ">" , "&gt;" );
-      find_replace_all(&tmp, "'" , "&sq;" );
-      find_replace_all(&tmp, "\"", "&dq;" );
+      std::_tstring tmp(value);
+      find_replace_all(&tmp, _T("&") , _T("&amp;"));
+      find_replace_all(&tmp, _T("<") , _T("&lt;" ));
+      find_replace_all(&tmp, _T(">") , _T("&gt;" ));
+      find_replace_all(&tmp, _T("'") , _T("&sq;" ));
+      find_replace_all(&tmp, _T("\""), _T("&dq;" ));
 
       _variant_t val(tmp.c_str());
       pchild->text = (_bstr_t)val;
@@ -516,7 +533,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, const char* value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Float64 value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Float64 value)
 {
    ASSERTVALID;
    try
@@ -526,7 +543,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Float64 value)
         THROW(sysXStructuredSave,BadWrite);
 
       // made node, now do data conversion
-      std::ostringstream os;
+      std::_tostringstream os;
       os << std::setprecision(17) << value;
       pchild->text = _bstr_t(os.str().c_str());
       // RAB: 11/29/2007
@@ -543,7 +560,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Float64 value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Int16 value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Int16 value)
 {
    ASSERTVALID;
    try
@@ -562,12 +579,12 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Int16 value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Uint16 value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Uint16 value)
 {
    Property(name, (Uint32)value);
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Int32 value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Int32 value)
 {
    ASSERTVALID;
    try
@@ -586,7 +603,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Int32 value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Uint32 value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, Uint32 value)
 {
    ASSERTVALID;
    try
@@ -596,7 +613,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Uint32 value)
         THROW(sysXStructuredSave,BadWrite);
 
       // made node, now do data conversion
-      std::ostringstream os;
+      std::_tostringstream os;
       os<<value;
       _variant_t val(os.str().c_str());
       pchild->text = (_bstr_t)val;
@@ -607,7 +624,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, Uint32 value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::Property(const char* name, bool value)
+void sysStructuredSaveXmlPrs_Impl::Property(LPCTSTR name, bool value)
 {
    ASSERTVALID;
    try
@@ -626,7 +643,7 @@ void sysStructuredSaveXmlPrs_Impl::Property(const char* name, bool value)
    }
 }
 
-void sysStructuredSaveXmlPrs_Impl::PutUnit(const char* xml)
+void sysStructuredSaveXmlPrs_Impl::PutUnit(LPCTSTR xml)
 {
    MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument));
    pDoc->loadXML(_bstr_t(xml));
@@ -693,7 +710,7 @@ bool sysStructuredSaveXmlPrs_Impl::TestMe(dbgLog& rlog)
 ////////////////////////////////////////////////////////////////////////////
 // Helper function: Make a named child node
 ////////////////////////////////////////////////////////////////////////////
-MSXML::IXMLDOMNodePtr sysStructuredSaveXmlPrs_Impl::MakeChildNode(const char* name, Float64 vers)
+MSXML::IXMLDOMNodePtr sysStructuredSaveXmlPrs_Impl::MakeChildNode(LPCTSTR name, Float64 vers)
 {
    ASSERTVALID;
 
@@ -731,7 +748,7 @@ MSXML::IXMLDOMNodePtr sysStructuredSaveXmlPrs_Impl::MakeChildNode(const char* na
    catch(_com_error& /*e*/) 
 #endif // __WARN
    {
-      WARN(0,(char*)(e.Description()));
+      WARN(0,(LPTSTR)(e.Description()));
       THROW(sysXStructuredSave,BadWrite);
    }
    catch(...)

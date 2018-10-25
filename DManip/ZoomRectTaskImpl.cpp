@@ -205,7 +205,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::TrackRect()
    }
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CZoomRectTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

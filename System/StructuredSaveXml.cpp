@@ -37,7 +37,7 @@ const int INDENT=2;
 
 
 // free function to indent a stream
-void indent_stream(std::ostream& rOs, long spaces)
+void indent_stream(std::_tostream& rOs, long spaces)
 {
    for (long i=0; i<spaces; i++)
       rOs << " ";
@@ -59,7 +59,7 @@ sysStructuredSaveXml::~sysStructuredSaveXml()
 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void sysStructuredSaveXml::BeginSave(std::ostream* pos)
+void sysStructuredSaveXml::BeginSave(std::_tostream* pos)
 {
    m_pOStream = pos;
    // set ostream to throw exceptions for all errors and save state to be restored
@@ -68,19 +68,19 @@ void sysStructuredSaveXml::BeginSave(std::ostream* pos)
    m_pOStream->exceptions(std::ios_base::badbit|std::ios_base::failbit|std::ios_base::eofbit);
 
    // write out header information
-   *m_pOStream << "<?xml version=\"1.0\"?>" << std::endl;
+   *m_pOStream << _T("<?xml version=\"1.0\"?>") << std::endl;
 }
 
 void sysStructuredSaveXml::EndSave()
 {
-   CHECKX(m_Level==0,"Error: BeginUnit-EndUnit mismatch in structured save");
+   CHECKX(m_Level==0,_T("Error: BeginUnit-EndUnit mismatch in structured save"));
    // final xml is not closed
 
    // restore original state
    m_pOStream->exceptions(m_IoState);
 }
 
-void sysStructuredSaveXml::BeginUnit(const char* name, Float64 version)
+void sysStructuredSaveXml::BeginUnit(LPCTSTR name, Float64 version)
 {
    ASSERTVALID;
    m_Level++;
@@ -89,7 +89,7 @@ void sysStructuredSaveXml::BeginUnit(const char* name, Float64 version)
    try
    {
    indent_stream(*m_pOStream, m_Level*INDENT);
-   *m_pOStream << "<"<<name<< " version=\""<<version<<"\">"<<std::endl;
+   *m_pOStream << _T("<")<<name<< _T(" version=\"")<<version<<_T("\">")<<std::endl;
    }
    catch(...)
    {
@@ -104,7 +104,7 @@ void sysStructuredSaveXml::EndUnit()
    try
    {
       indent_stream(*m_pOStream, m_Level*INDENT);
-      *m_pOStream << "</"<<m_UnitList.back().first <<">"<<std::endl;
+      *m_pOStream << _T("</")<<m_UnitList.back().first <<_T(">")<<std::endl;
    }
    catch(...)
    {
@@ -139,7 +139,7 @@ Float64 sysStructuredSaveXml::GetTopVersion()
    return m_UnitList.front().second;
 }
 
-void sysStructuredSaveXml::Property(const char* name, const char* value)
+void sysStructuredSaveXml::Property(LPCTSTR name, LPCTSTR value)
 {
    ASSERTVALID;
 
@@ -154,7 +154,7 @@ void sysStructuredSaveXml::Property(const char* name, const char* value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, Float64 value)
+void sysStructuredSaveXml::Property(LPCTSTR name, Float64 value)
 {
    ASSERTVALID;
 
@@ -173,7 +173,7 @@ void sysStructuredSaveXml::Property(const char* name, Float64 value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, Int16 value)
+void sysStructuredSaveXml::Property(LPCTSTR name, Int16 value)
 {
    ASSERTVALID;
 
@@ -188,7 +188,7 @@ void sysStructuredSaveXml::Property(const char* name, Int16 value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, Uint16 value)
+void sysStructuredSaveXml::Property(LPCTSTR name, Uint16 value)
 {
    ASSERTVALID;
 
@@ -203,7 +203,7 @@ void sysStructuredSaveXml::Property(const char* name, Uint16 value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, Int32 value)
+void sysStructuredSaveXml::Property(LPCTSTR name, Int32 value)
 {
    ASSERTVALID;
 
@@ -218,7 +218,7 @@ void sysStructuredSaveXml::Property(const char* name, Int32 value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, Uint32 value)
+void sysStructuredSaveXml::Property(LPCTSTR name, Uint32 value)
 {
    ASSERTVALID;
 
@@ -233,7 +233,7 @@ void sysStructuredSaveXml::Property(const char* name, Uint32 value)
    }
 }
 
-void sysStructuredSaveXml::Property(const char* name, bool value)
+void sysStructuredSaveXml::Property(LPCTSTR name, bool value)
 {
    ASSERTVALID;
 

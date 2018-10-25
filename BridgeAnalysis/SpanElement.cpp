@@ -35,7 +35,7 @@ static char THIS_FILE[] = __FILE__;
 
 bamSpanElement::bamSpanElement(const bamSpanElementInfo& rSpanElementInfo)
 {
-   CHECKX( false, "Don't use this c'tor yet");
+   CHECKX( false, _T("Don't use this c'tor yet"));
 }
 
 bamSpanElement::bamSpanElement(Int32 id,Float64 ax,Float64 iz,Float64 mode,Float64 density)
@@ -225,9 +225,9 @@ void bamSpanElement::Draw(HDC hDC,const grlibPointMapper& mapper) const
    ::LineTo(hDC,dx,dy);
    x2 = dx;
 
-   char buffer[50];
-   sprintf_s(buffer,50,"%f",Length());
-   ::TextOut(hDC,(x1+x2)/2, dy + 10,buffer,strlen(buffer));
+   TCHAR buffer[50];
+   _stprintf_s(buffer,50,_T("%f"),Length());
+   ::TextOut(hDC,(x1+x2)/2, dy + 10,buffer,_tcslen(buffer));
 
    ::SelectObject(hDC,hOldPen);
    ::DeleteObject(hPen);

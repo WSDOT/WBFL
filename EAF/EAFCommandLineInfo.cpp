@@ -49,7 +49,7 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
    {
       // first param and it is a flag... see if it is /? or /help
       CString strParam(lpszParam);
-      if ( strParam.CompareNoCase("?") == 0 || strParam.CompareNoCase("Help") == 0 )
+      if ( strParam.CompareNoCase(_T("?")) == 0 || strParam.CompareNoCase(_T("Help")) == 0 )
       {
          m_bUsageMessage = TRUE;
          m_bCommandLineMode = TRUE;
@@ -81,7 +81,7 @@ CEAFCommandLineInfo& CEAFCommandLineInfo::operator=(const CEAFCommandLineInfo& o
    return *this;
 }
 
-void CEAFCommandLineInfo::SetErrorInfo(const char* strError)
+void CEAFCommandLineInfo::SetErrorInfo(LPCTSTR strError)
 {
    m_strErrorMsg = strError;
 }
@@ -91,7 +91,7 @@ CString CEAFCommandLineInfo::GetUsageMessage()
    CEAFApp* pApp = EAFGetApp();
 
    CString strMsg;
-   strMsg.Format("Usage:\n%s filename\n%s /?",pApp->m_pszAppName,pApp->m_pszAppName);
+   strMsg.Format(_T("Usage:\n%s filename\n%s /?"),pApp->m_pszAppName,pApp->m_pszAppName);
    return strMsg;
 }
 
@@ -102,11 +102,11 @@ CString CEAFCommandLineInfo::GetErrorMessage()
    CString strMsg;
    if ( m_strErrorMsg.IsEmpty() )
    {
-      strMsg.Format("An error occured while starting %s.\n\n%s\n\nRefer to the application documentation for details",pApp->m_pszAppName,pApp->m_lpCmdLine);
+      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\nRefer to the application documentation for details"),pApp->m_pszAppName,pApp->m_lpCmdLine);
    }
    else
    {
-      strMsg.Format("An error occured while starting %s.\n\n%s\n\n%s\n\nRefer to the application documentation for details",pApp->m_pszAppName,pApp->m_lpCmdLine,m_strErrorMsg);
+      strMsg.Format(_T("An error occured while starting %s.\n\n%s\n\n%s\n\nRefer to the application documentation for details"),pApp->m_pszAppName,pApp->m_lpCmdLine,m_strErrorMsg);
    }
 
    return strMsg;

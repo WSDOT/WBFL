@@ -32,7 +32,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CLIPFORMAT CToolImpl::ms_cfFormat = ::RegisterClipboardFormat("WBFLDManip.Tool");
+CLIPFORMAT CToolImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.Tool"));
 
 CToolImpl::CToolImpl() :
 m_ID(-1), 
@@ -62,7 +62,7 @@ UINT CToolImpl::GetID()
    return m_ID;
 }
 
-STDMETHODIMP_(void) CToolImpl::SetToolTipText(LPCSTR lpszToolTipText)
+STDMETHODIMP_(void) CToolImpl::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    m_strToolTipText = lpszToolTipText;
 }

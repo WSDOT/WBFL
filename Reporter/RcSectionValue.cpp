@@ -84,16 +84,16 @@ bool rptRcSectionValue::IsDualValued() const
    return !IsEqual(GetLeftValue(false),GetRightValue(false));
 }
 
-std::string rptRcSectionValue::AsString(int idx) const
+std::_tstring rptRcSectionValue::AsString(int idx) const
 {
    sysNumericFormatTool fmt;
    fmt.SetFormat( m_Format );
    fmt.SetWidth( m_Width );
    fmt.SetPrecision( m_Precision );
    Float64 value = (idx == 0 ? GetLeftValue(true) : GetRightValue(true));
-   std::string str = fmt.AsString( value );
+   std::_tstring str = fmt.AsString( value );
    if ( m_bShowUnitTag )
-      str += (" " + GetUnitTag() );
+      str += ( _T(" ") + GetUnitTag() );
 
    return str;   
 }

@@ -41,7 +41,7 @@ CLASS
 
 //======================== LIFECYCLE  =======================================
 lrfdXPsLosses::lrfdXPsLosses(Reason reason,
-                             const char* file,
+                             LPCTSTR file,
                              Int16 line) :
 sysXBase(file,line),
 m_Reason( reason )

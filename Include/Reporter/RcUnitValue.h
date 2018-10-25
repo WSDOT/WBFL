@@ -101,13 +101,13 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag for the output unit of measure.
-   virtual std::string GetUnitTag() const = 0;
+   virtual std::_tstring GetUnitTag() const = 0;
 
    //------------------------------------------------------------------------
    // Returns the report content as a string.  The value is converted to the
    // correct unit of measure and the unit tag is appedned to the string if 
    // required.
-   virtual std::string AsString() const;
+   virtual std::_tstring AsString() const;
 
    // GROUP: ACCESS
 

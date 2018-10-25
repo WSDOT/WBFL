@@ -104,12 +104,12 @@ void CTestAlignment3::Test1()
 
    p1->get_X(&x);
    p1->get_Y(&y);
-   TRY_TEST( IsEqual(x,-110.0), true);
-   TRY_TEST( IsEqual(y,   0.0), true);
+   TRY_TEST( IsEqual(x,0.0), true);
+   TRY_TEST( IsEqual(y,0.0), true);
 
    p2->get_X(&x);
    p2->get_Y(&y);
-   TRY_TEST( IsEqual(x,200.0), true);
+   TRY_TEST( IsEqual(x,100.0), true);
    TRY_TEST( IsEqual(y,  0.0), true);
 
    // sub-path that captures start
@@ -118,34 +118,51 @@ void CTestAlignment3::Test1()
 
    subPath->get_Count(&nElements);
 
-   TRY_TEST(nElements,1);
+   TRY_TEST(nElements,3);
 
    element.Release();
    subPath->get_Item(0,&element);
 
    element->get_Type(&type);
-   TRY_TEST(type,petLineSegment);
+   TRY_TEST(type,petPoint);
 
    punk.Release();
    element->get_Value(&punk);
-   ls.Release();
-   punk.QueryInterface(&ls);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
 
-   p1.Release();
-   p2.Release();
+   TRY_TEST(IsEqual(x,-110.0),true);
+   TRY_TEST(IsEqual(y,   0.0),true);
 
-   ls->get_StartPoint(&p1);
-   ls->get_EndPoint(&p2);
+   element.Release();
+   subPath->get_Item(1,&element);
+   punk.Release();
+   element->get_Value(&punk);
+   element->get_Type(&type);
+   TRY_TEST(type,petPoint);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
 
-   p1->get_X(&x);
-   p1->get_Y(&y);
-   TRY_TEST( IsEqual(x,-110.0), true);
-   TRY_TEST( IsEqual(y,   0.0), true);
+   TRY_TEST(IsEqual(x,-110.0),true);
+   TRY_TEST(IsEqual(y,   0.0),true);
 
-   p2->get_X(&x);
-   p2->get_Y(&y);
-   TRY_TEST( IsEqual(x,-105.0), true);
-   TRY_TEST( IsEqual(y,   0.0), true);
+   element.Release();
+   subPath->get_Item(2,&element);
+   punk.Release();
+   element->get_Value(&punk);
+   element->get_Type(&type);
+   TRY_TEST(type,petPoint);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+
+   TRY_TEST(IsEqual(x,-105.0),true);
+   TRY_TEST(IsEqual(y,   0.0),true);
 
    // sub-path that captures "middle"
    subPath.Release();
@@ -241,13 +258,13 @@ void CTestAlignment3::Test2()
 
    p1->get_X(&x);
    p1->get_Y(&y);
-   TRY_TEST( IsEqual(x,-67.781745930520231), true);
-   TRY_TEST( IsEqual(y,-67.781745930520231), true);
+   TRY_TEST( IsEqual(x,10.0), true);
+   TRY_TEST( IsEqual(y,10.0), true);
 
    p2->get_X(&x);
    p2->get_Y(&y);
-   TRY_TEST( IsEqual(x,151.42135623730951), true);
-   TRY_TEST( IsEqual(y,151.42135623730951), true);
+   TRY_TEST( IsEqual(x,110.0), true);
+   TRY_TEST( IsEqual(y,110.0), true);
 
    // sub-path that captures start
    subPath.Release();
@@ -255,34 +272,51 @@ void CTestAlignment3::Test2()
 
    subPath->get_Count(&nElements);
 
-   TRY_TEST(nElements,1);
+   TRY_TEST(nElements,3);
 
    element.Release();
    subPath->get_Item(0,&element);
 
    element->get_Type(&type);
-   TRY_TEST(type,petLineSegment);
+   TRY_TEST(type,petPoint);
 
    punk.Release();
    element->get_Value(&punk);
-   ls.Release();
-   punk.QueryInterface(&ls);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
 
-   p1.Release();
-   p2.Release();
+   TRY_TEST(IsEqual(x,-67.781745930520231),true);
+   TRY_TEST(IsEqual(y,-67.781745930520231),true);
 
-   ls->get_StartPoint(&p1);
-   ls->get_EndPoint(&p2);
+   element.Release();
+   subPath->get_Item(1,&element);
+   punk.Release();
+   element->get_Value(&punk);
+   element->get_Type(&type);
+   TRY_TEST(type,petPoint);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
 
-   p1->get_X(&x);
-   p1->get_Y(&y);
-   TRY_TEST( IsEqual(x,-67.781745930520231), true);
-   TRY_TEST( IsEqual(y,-67.781745930520231), true);
+   TRY_TEST(IsEqual(x,-67.781745930520231),true);
+   TRY_TEST(IsEqual(y,-67.781745930520231),true);
 
-   p2->get_X(&x);
-   p2->get_Y(&y);
-   TRY_TEST( IsEqual(x,-64.246212024587493), true);
-   TRY_TEST( IsEqual(y,-64.246212024587493), true);
+   element.Release();
+   subPath->get_Item(2,&element);
+   punk.Release();
+   element->get_Value(&punk);
+   element->get_Type(&type);
+   TRY_TEST(type,petPoint);
+   pnt.Release();
+   punk.QueryInterface(&pnt);
+   pnt->get_X(&x);
+   pnt->get_Y(&y);
+
+   TRY_TEST(IsEqual(x,-64.246212024587493),true);
+   TRY_TEST(IsEqual(y,-64.246212024587493),true);
 
    // sub-path that captures "middle"
    subPath.Release();

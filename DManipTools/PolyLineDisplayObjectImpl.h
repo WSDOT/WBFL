@@ -109,7 +109,7 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) { return m_pDisplayObject->OnContextMenu(pWnd,point); }
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText) {m_pDisplayObject->SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {m_pDisplayObject->SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)() { return m_pDisplayObject->GetToolTipText(); }
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
    STDMETHOD_(long,GetMaxTipWidth)() { return m_pDisplayObject->GetMaxTipWidth(); }

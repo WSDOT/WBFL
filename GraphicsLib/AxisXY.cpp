@@ -165,7 +165,7 @@ void grAxisXY::Draw(HDC hDC)
          // draw value text
          if (m_DoShowText)
          {
-            std::string value_text = m_pValueFormat->AsString(tic_value);
+            std::_tstring value_text = m_pValueFormat->AsString(tic_value);
 
             if (m_Orientation == X_AXIS)
             {
@@ -438,7 +438,7 @@ bool grAxisXY::GetShowTics()
    return m_DoShowTics;
 }
 
-void grAxisXY::SetTitleText(const std::string& text)
+void grAxisXY::SetTitleText(const std::_tstring& text)
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -446,7 +446,7 @@ void grAxisXY::SetTitleText(const std::string& text)
    m_AxisTitle = text.c_str();
 }
 
-std::string grAxisXY::GetTitleText()
+std::_tstring grAxisXY::GetTitleText()
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -454,7 +454,7 @@ std::string grAxisXY::GetTitleText()
    return m_AxisTitle;
 }
 
-void grAxisXY::SetSubtitleText(const std::string& text)
+void grAxisXY::SetSubtitleText(const std::_tstring& text)
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
@@ -462,7 +462,7 @@ void grAxisXY::SetSubtitleText(const std::string& text)
    m_AxisSubtitle = text.c_str();
 }
 
-std::string grAxisXY::GetSubtitleText()
+std::_tstring grAxisXY::GetSubtitleText()
 {
    return m_AxisSubtitle;
 }
@@ -537,13 +537,13 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    HFONT titfont = grGraphTool::CreateRotatedFont(hDC, 0, m_AxisTitleSize);
    HGDIOBJ old_font = ::SelectObject(hDC, titfont);
    SIZE siz;
-   ::GetTextExtentPoint32(hDC,"AA",2,&siz);
+   ::GetTextExtentPoint32(hDC,_T("AA"),2,&siz);
 
    Int32 title_size = labs(siz.cy);
 
    HFONT subtitfont = grGraphTool::CreateRotatedFont(hDC, 0, m_AxisSubtitleSize);
    ::SelectObject(hDC, subtitfont);
-   ::GetTextExtentPoint32(hDC,"AA",2,&siz);
+   ::GetTextExtentPoint32(hDC,_T("AA"),2,&siz);
 
    Int32 subtitle_size = labs(siz.cy);
 
@@ -561,7 +561,7 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    Int32 num_incrs = (Int32)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement);
    for (Int32 i=0; i<=num_incrs; i++)
    {
-      std::string value_text(m_pValueFormat->AsString(curr_value));
+      std::_tstring value_text(m_pValueFormat->AsString(curr_value));
       ::GetTextExtentPoint32(hDC,value_text.c_str(),value_text.size(),&siz);
       Float64 angle = ::ToRadians(m_ValueAngle/10.);
       Float64 width  = siz.cx*cos(angle) + siz.cy*sin(angle);
@@ -608,7 +608,7 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
          m_AxisMetrics.MinorTicTop    = m_YLocation;
       }
       else
-         CHECKX(0, "Bad tic location");
+         CHECKX(0, _T("Bad tic location") );
    }
    else
    {

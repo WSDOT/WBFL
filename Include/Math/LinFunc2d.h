@@ -93,6 +93,8 @@ public:
    //------------------------------------------------------------------------
    Float64 Evaluate(Float64 x) const;
 
+   virtual mathFunction2d* Clone() const;
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
    // GROUP: DEBUG

@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-sysXBase::sysXBase(const char* file, Int32 line ) :
+sysXBase::sysXBase(LPCTSTR file, Int32 line ) :
 m_File( file ),
 m_Line( line )
 {
@@ -58,16 +58,16 @@ sysXBase::~sysXBase()
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 //======================== ACCESS     =======================================
-void sysXBase::GetErrorMessage(std::string* pMsg) const
+void sysXBase::GetErrorMessage(std::_tstring* pMsg) const
 {
    const type_info& ti = typeid(*this);
-   std::stringstream os;
+   std::_tostringstream os;
    os << "A " << ti.name() << " error, number " << GetReason()
       << ", has occurred in " << GetFile() << " at line " << GetLine() << std::endl;
    *pMsg = os.str();
 }
 
-const char* sysXBase::GetFile() const
+LPCTSTR sysXBase::GetFile() const
 {
    return m_File.c_str();
 }

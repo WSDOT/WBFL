@@ -21,14 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_DUMPCONTEXT_H_
-#define INCLUDED_SYSTEM_DUMPCONTEXT_H_
 #pragma once
 
 // SYSTEM INCLUDES
 //
-#include <WBFLTypes.h>
-#include <string>
+#include <WBFLAll.h>
 #include <System\DbgBuild.h>
 
 // LOCAL INCLUDES
@@ -72,9 +69,9 @@ public:
    //------------------------------------------------------------------------
    // 
    // Inserters for various built-ins
-   virtual dbgDumpContext& operator<<(const std::string& s);
-   virtual dbgDumpContext& operator<<(const char* s);
-   virtual dbgDumpContext& operator<<(char ch);    
+   virtual dbgDumpContext& operator<<(const std::_tstring& s);
+   virtual dbgDumpContext& operator<<(LPCTSTR s);
+   virtual dbgDumpContext& operator<<(TCHAR ch);    
    virtual dbgDumpContext& operator<<(bool n);
    virtual dbgDumpContext& operator<<(int n);
    virtual dbgDumpContext& operator<<(unsigned int n);
@@ -121,5 +118,3 @@ public:
 //
 SYSFUNC dbgDumpContext& operator<<(dbgDumpContext& dc,dbgDumpContext& (*pf)(dbgDumpContext&));
 SYSFUNC dbgDumpContext& endl(dbgDumpContext& dmpCtx);
-
-#endif // INCLUDED_SYSTEM_DUMPCONTEXT_H_

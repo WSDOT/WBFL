@@ -116,7 +116,7 @@ public:
    const Float64& Right() const;
 
    //------------------------------------------------------------------------
-   std::string AsString() const;
+   std::_tstring AsString() const;
    // GROUP: INQUIRY
 
 protected:
@@ -155,6 +155,6 @@ SYSFUNC sysSectionValue operator*(const sysSectionValue& a,const sysSectionValue
 SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue& b);
 
 //------------------------------------------------------------------------
-SYSFUNC std::ostream& operator<<(std::ostream& os,const sysSectionValue& a);
+SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a);
 
 #endif // INCLDUED_SYSTEM_SECTIONVALUE_H_

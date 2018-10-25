@@ -30,7 +30,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CEAFStatusItem::CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,const char* strDescription) :
+CEAFStatusItem::CEAFStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,LPCTSTR strDescription) :
 m_Description(strDescription), m_bRemoveAfterEdit(false)
 {
    m_StatusGroupID = statusGroupID;
@@ -52,7 +52,7 @@ StatusGroupIDType CEAFStatusItem::GetStatusGroupID() const
    return m_StatusGroupID;
 }
 
-const std::string& CEAFStatusItem::GetDescription() const
+const std::_tstring& CEAFStatusItem::GetDescription() const
 {
    return m_Description;
 }

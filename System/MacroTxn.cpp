@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 txnMacroTxn::txnMacroTxn() :
 txnTransaction()
 {
-   m_Name = "Macro";
+   m_Name = _T("Macro");
 } // txnMacroTxn
 
 txnMacroTxn::~txnMacroTxn()
@@ -96,12 +96,12 @@ void txnMacroTxn::Undo()
    }
 } // Undo
 
-std::string txnMacroTxn::Name() const
+std::_tstring txnMacroTxn::Name() const
 {
    return m_Name;
 } // GetName
 
-void txnMacroTxn::Name(const std::string& name)
+void txnMacroTxn::Name(const std::_tstring& name)
 {
    m_Name = name;
 } // Name
@@ -126,7 +126,7 @@ txnTransaction* txnMacroTxn::CreateClone() const
    return pClone;
 } // Clone
 
-void txnMacroTxn::Log(std::ostream& os) const
+void txnMacroTxn::Log(std::_tostream& os) const
 {
    os << Name() << ": ";
    TxnConstIterator begin = m_Transactions.begin();

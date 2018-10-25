@@ -276,9 +276,9 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
       pnt.Release();
       alignment->LocatePoint( CComVariant(GetStation()), omtAlongDirection, 0.00, CComVariant(0.00), &pnt );
       mapper.WPtoDP( pnt, &dx, &dy );
-      char label[10]; // arbitrary label size... I doubt we will ever exceed it
-      _itoa_s( GetID()+1, label, 10, 10 ); // Add one because we have a zero-based index
-      std::string message( "Pier ");
+      TCHAR label[10]; // arbitrary label size... I doubt we will ever exceed it
+      _itot_s( GetID()+1, label, 10, 10 ); // Add one because we have a zero-based index
+      std::_tstring message( _T("Pier ") );
       message += label;
 
       Float64 ccw_angle_from_east;

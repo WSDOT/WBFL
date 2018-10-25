@@ -67,7 +67,7 @@ public:
 
    //------------------------------------------------------------------------
    // Constructor
-   rptHtmlParagraphVisitor(std::ostream* pMyOstream, 
+   rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                            const rptPageLayout*   MypPageLayout,
                            const rptHtmlHelper&   rmyHelper,
                            Uint32 logPixelsX,

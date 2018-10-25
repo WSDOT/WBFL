@@ -88,7 +88,7 @@ private:
    std::auto_ptr<CProgressMonitorDlg> m_pDlg;
    CWnd m_wndParent;
 
-   std::ofstream m_FileStream;
+   std::_tofstream m_FileStream;
    bool m_IsFileOpen;
 
 };

@@ -42,7 +42,7 @@ void DDX_Direction(CDataExchange* pDX,int nIDC,IDirection* pDirection,IDisplayUn
 
    int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
    cLength = (cLength == 1 ? 32 : cLength );
-   char* lpszBuffer = new char[cLength];
+   LPTSTR lpszBuffer = new TCHAR[cLength];
 	if (pDX->m_bSaveAndValidate)
 	{
 	   // Transfer data from the control
@@ -59,7 +59,7 @@ void DDX_Direction(CDataExchange* pDX,int nIDC,IDirection* pDirection,IDisplayUn
 
       if ( FAILED(hr) )
       {
-         AfxMessageBox("Invalid Bearing. Valid bearings are of the form\n[N|S] dd (mm (ss.s)) [E|W]\n\nExample: N 25 14 12.5 E\n\nAlso, the total angle may not exceed 90 degrees\n and negative values are not allowed");
+         AfxMessageBox(_T("Invalid Bearing. Valid bearings are of the form\n[N|S] dd (mm (ss.s)) [E|W]\n\nExample: N 25 14 12.5 E\n\nAlso, the total angle may not exceed 90 degrees\n and negative values are not allowed"));
          pDX->Fail();
       }
     }
@@ -87,7 +87,7 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
 
    int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
    cLength = (cLength == 1 ? 32 : cLength );
-   char* lpszBuffer = new char[cLength];
+   LPTSTR lpszBuffer = new TCHAR[cLength];
 	if (pDX->m_bSaveAndValidate)
 	{
 	   // Transfer data from the control
@@ -105,7 +105,7 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
 
       if ( FAILED(hr) )
       {
-         AfxMessageBox("Invalid format.  Valid angles are of the form\n (+|-)ddd ((mm) (ss.s)) or\n ddd ((mm) (ss.s)) [L|R]\n\nExamples:\n -12 32 45.3\n 14 21 14.3 R");
+         AfxMessageBox(_T("Invalid format.  Valid angles are of the form\n (+|-)ddd ((mm) (ss.s)) or\n ddd ((mm) (ss.s)) [L|R]\n\nExamples:\n -12 32 45.3\n 14 21 14.3 R"));
 
          // Fail throws an exception.  delete the buffer so we don't leak memory
          pDX->Fail();
@@ -138,7 +138,7 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, b
 
    int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
    cLength = (cLength == 1 ? 32 : cLength );
-   char* lpszBuffer = new char[cLength];
+   LPTSTR lpszBuffer = new TCHAR[cLength];
 
    CComPtr<IStation> objStation;
    HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
@@ -194,7 +194,7 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, c
 
    int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
    cLength = (cLength == 1 ? 32 : cLength );
-   char* lpszBuffer = new char[cLength];
+   LPTSTR lpszBuffer = new TCHAR[cLength];
 
    CComPtr<IStation> objStation;
    HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
@@ -263,13 +263,13 @@ void MFCTOOLSFUNC DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, F
       hr = objStation->AsString(bUnitsModeSI ? umSI : umUS,&bstrStationLimit);
       ATLASSERT( SUCCEEDED(hr) );
 
-      msg.Format("Please enter a station that is greater than %s", CString(bstrStationLimit));
+      msg.Format(_T("Please enter a station that is greater than %s"), CString(bstrStationLimit));
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
 }
 
-void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::string& strOrientation)
+void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation)
 {
 	if (!pDX->m_bSaveAndValidate)
 	{
@@ -280,12 +280,12 @@ void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::string& strOrientatio
 
    if ( strOrientation.empty() )
    {
-      AfxMessageBox("Orientation must not be blank",MB_ICONEXCLAMATION);
+      AfxMessageBox(_T("Orientation must not be blank"),MB_ICONEXCLAMATION);
       pDX->Fail();
       return;
    }
 
-   if ( strOrientation == "NORMAL" || (strOrientation.length() == 1 && strOrientation[0] == 'N') )
+   if ( strOrientation == _T("NORMAL") || (strOrientation.length() == 1 && strOrientation[0] == _T('N') ) )
       return; // valid orientation
 
    CComPtr<IAngle> angle;
@@ -299,7 +299,7 @@ void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::string& strOrientatio
       angle->get_Value(&value);
       if ( value < -stMax_Skew || stMax_Skew < value )
       {
-         AfxMessageBox("Skew angle must be less than 88 deg",MB_ICONEXCLAMATION);
+         AfxMessageBox(_T("Skew angle must be less than 88 deg"),MB_ICONEXCLAMATION);
          pDX->Fail();
       }
       return;
@@ -310,7 +310,7 @@ void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::string& strOrientatio
    HRESULT hr_direction = direction->FromString(CComBSTR( strOrientation.c_str() ));
    if ( FAILED(hr_direction) )
    {
-      AfxMessageBox("Orientation is invalid",MB_ICONEXCLAMATION);
+      AfxMessageBox(_T("Orientation is invalid"),MB_ICONEXCLAMATION);
       pDX->Fail();
    }
 }

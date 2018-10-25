@@ -29,6 +29,7 @@
 #include "Station.h"
 #include <stdio.h>
 #include <MathEx.h>
+#include "CogoHelpers.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,6 +75,27 @@ STDMETHODIMP CStation::put_Value(Float64 newVal)
    }
 
 	return S_OK;
+}
+
+STDMETHODIMP CStation::Increment(Float64 value)
+{
+   if ( !IsZero(value) )
+   {
+      m_Value += value;
+      Fire_OnStationChanged(m_Value);
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CStation::FromVariant(VARIANT varStation)
+{
+   CComPtr<IStation> station;
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,&station);
+   if ( FAILED(hr) )
+      return hr;
+
+   station->get_Value(&m_Value);
+   return S_OK;
 }
 
 STDMETHODIMP CStation::FromString(BSTR station,UnitModeType unitMode)
@@ -168,9 +190,9 @@ HRESULT CStation::StationToString(int nDigOffset,int nDec,BSTR* strStation)
    if ( m_Value < 0 )
       nChar++; // for the leading "-" sign
 
-   char* pBuffer = new char[nChar];
-   sprintf_s(pBuffer,nChar,(m_Value < 0 ? "-%d+%0*.*f" : "%d+%0*.*f"),v1,width,nDec,v2);
-   *strStation = A2BSTR(pBuffer);
+   LPTSTR pBuffer = new TCHAR[nChar];
+   _stprintf_s(pBuffer,nChar,(m_Value < 0 ? _T("-%d+%0*.*f") : _T("%d+%0*.*f") ),v1,width,nDec,v2);
+   *strStation = T2BSTR(pBuffer);
 
    delete[] pBuffer;
 
@@ -183,23 +205,23 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
 
    CComBSTR bstrStation(strString);
 
-   char* pBuffer = 0;
+   LPTSTR pBuffer = 0;
    HRESULT hr = S_OK;
 
-   char chFirst;
+   TCHAR chFirst;
    Float64 d;
 
    // Look for the +
    int nChar = bstrStation.Length()+1;
-   pBuffer = new char[nChar];
-   strcpy_s( pBuffer, bstrStation.Length()+1, OLE2A(bstrStation) );
-   char* pChar = pBuffer;
-	while (*pChar != '+' && *pChar != '\0')
+   pBuffer = new TCHAR[nChar];
+   _tcscpy_s( pBuffer, bstrStation.Length()+1, OLE2T(bstrStation) );
+   LPTSTR pChar = pBuffer;
+	while (*pChar != _T('+') && *pChar != _T('\0') )
 	{
 		pChar++;
 	}
 
-	if (*pChar == '+')
+	if (*pChar == _T('+') )
 	{
 		// The + was found
 
@@ -216,8 +238,8 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
          goto CleanUp;
       }
 
-		char cDecimal = *(pChar + nDigOffset + 1);
-		if ( cDecimal != '.' && cDecimal != 0 && cDecimal != '\n' && !isspace(cDecimal) )
+		TCHAR cDecimal = *(pChar + nDigOffset + 1);
+		if ( cDecimal != _T('.') && cDecimal != 0 && cDecimal != _T('\n') && !isspace(cDecimal) )
 		{
          hr = E_BADSTATIONSTRING;
          goto CleanUp;
@@ -225,13 +247,13 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
 
 
 	   // Remove the + by shifting the remaining characters 1 to the left
-	   strcpy_s(pChar,nChar - size_t(pChar-pBuffer),pChar+1);
+	   _tcscpy_s(pChar,nChar - size_t(pChar-pBuffer),pChar+1);
 	}
    else
    {
       // The + wasn't found, this must be a regular number
-      d = atof( pBuffer );
-      if ( IsZero( d ) && pBuffer[0] != '0' )
+      d = _tstof( pBuffer );
+      if ( IsZero( d ) && pBuffer[0] != _T('0') )
       {
          hr = E_BADSTATIONSTRING;
          goto CleanUp;
@@ -244,19 +266,19 @@ HRESULT CStation::StringToStation(BSTR strString,int nDigOffset,int nDec)
 		
 	// Now that the + has been removed, convert the string to a Float64
 	chFirst = pBuffer[0];
-   d = strtod(pBuffer,&pChar);
+   d = _tcstod(pBuffer,&pChar);
 
-   if (d == 0.0 && chFirst != '0')
+   if (d == 0.0 && chFirst != _T('0') )
 	{
 		// Could not convert
       hr = CComCoClass<CStation,&CLSID_Station>::Error(IDS_E_BADSTATIONSTRING,IID_IStation,COGO_E_BADSTATIONSTRING);
       goto CleanUp;
 	}
 
-	while (*pChar == ' ' || *pChar == '\t')
+	while (*pChar == _T(' ') || *pChar == _T('\t') )
 	   pChar++;
 
-   if (*pChar != '\0')
+   if (*pChar != _T('\0') )
 	{
 	   // Not terminated properly
       hr = E_BADSTATIONSTRING;

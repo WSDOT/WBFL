@@ -90,7 +90,7 @@ void CTestStageCollection::Test()
    {
       CComBSTR bstrName;
       stage->get_Name(&bstrName);
-      std::string strName = "Stage ";
+      std::_tstring strName = _T("Stage ");
       strName += '0' + (char)i++;
       TRY_TEST(bstrName == CComBSTR(strName.c_str()),true);
       

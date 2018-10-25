@@ -56,37 +56,37 @@ CCenterOnPointFSMState::~CCenterOnPointFSMState()
 void CCenterOnPointFSMState::Do(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Do",fsm.GetState().StateName());
+   fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::Float64Click(CCenterOnPointFSM &fsm)
+void CCenterOnPointFSMState::DoubleClick(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("Float64Click",fsm.GetState().StateName());
+   fsm.FSMError(_T("DoubleClick"),fsm.GetState().StateName());
 }
 
 void CCenterOnPointFSMState::MouseDown(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseDown",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
 void CCenterOnPointFSMState::MouseUp(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseUp",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
 void CCenterOnPointFSMState::MouseMove(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("MouseMove",fsm.GetState().StateName());
+   fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
 void CCenterOnPointFSMState::EscKey(CCenterOnPointFSM &fsm)
 {
    // Default implementation
-   fsm.FSMError("EscKey",fsm.GetState().StateName());
+   fsm.FSMError(_T("EscKey"),fsm.GetState().StateName());
 }
 
 // States and State Transitions
@@ -103,7 +103,7 @@ void CCenterOnPointFSMWaitingForPointState::MouseDown(CCenterOnPointFSM& fsm)
    fsm.SetState(CCenterOnPointFSM::Done);
 }
 
-void CCenterOnPointFSMWaitingForPointState::Float64Click(CCenterOnPointFSM& fsm)
+void CCenterOnPointFSMWaitingForPointState::DoubleClick(CCenterOnPointFSM& fsm)
 {
 }
 

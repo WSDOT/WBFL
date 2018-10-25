@@ -114,15 +114,15 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be undone
-   std::string UndoName() const;
+   std::_tstring UndoName() const;
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be redone
-   std::string RedoName() const;
+   std::_tstring RedoName() const;
 
    //------------------------------------------------------------------------
    // Returns the name of the transaction to be repeated
-   std::string RepeatName() const;
+   std::_tstring RepeatName() const;
 
    //------------------------------------------------------------------------
    // Returns the number of executed transactions
@@ -135,7 +135,7 @@ public:
    //------------------------------------------------------------------------
    // Writes a log of all the transactions that have been done to a
    // standard ostream.
-   void WriteTransactionLog(std::ostream& os) const;
+   void WriteTransactionLog(std::_tostream& os) const;
 
    //------------------------------------------------------------------------
    // Clears the list of all transactions that have been done
@@ -179,13 +179,13 @@ protected:
    // Called by WriteTransactionLog() just before the log is written. This
    // method does nothing by default.  Derived classes can override this
    // to provide application specific information.
-   virtual void WriteLogIntroduction(std::ostream& os) const;
+   virtual void WriteLogIntroduction(std::_tostream& os) const;
 
    //------------------------------------------------------------------------
    // Called by WriteTransactionLog() immediatly after the log is written.
    // This method does nothing by default.  Derived classes can override this
    // to provide application specific information.
-   virtual void WriteLogConclusion(std::ostream& os) const;
+   virtual void WriteLogConclusion(std::_tostream& os) const;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

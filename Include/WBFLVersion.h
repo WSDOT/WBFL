@@ -1,5 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
-// CORE - Core elements of the Agent-Broker Architecture
+// Washington Bridge Foundation Libraries - The foundation of
+// high quality structural engineering applications
+//
 // Copyright © 1999-2010  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,8 +23,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
 #pragma once
+
+#ifndef _WBFL_VERSION
+#define _WBFL_VERSION 331 // version 3.3.1
+#endif 
+
 
 // The following macros define the minimum required platform.  The minimum required platform
 // is the earliest version of Windows, Internet Explorer etc. that has the necessary features to run 
@@ -31,19 +37,19 @@
 
 // Modify the following defines if you have to target a platform prior to the ones specified below.
 // Refer to MSDN for the latest info on corresponding values for different platforms.
-#ifndef WINVER                          // Specifies that the minimum required platform is Windows Vista.
-#define WINVER 0x0600           // Change this to the appropriate value to target other versions of Windows.
+#ifndef WINVER
+#define WINVER 0x0501 // minimum system requirements Windows XP
 #endif
 
-#ifndef _WIN32_WINNT            // Specifies that the minimum required platform is Windows Vista.
-#define _WIN32_WINNT 0x0600     // Change this to the appropriate value to target other versions of Windows.
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501 // minimum system requirements Windows XP
 #endif
 
-#ifndef _WIN32_WINDOWS          // Specifies that the minimum required platform is Windows 98.
-#define _WIN32_WINDOWS 0x0410 // Change this to the appropriate value to target Windows Me or later.
+#ifndef _WIN32_WINDOWS
+#define _WIN32_WINDOWS 0x0501  // minimum system requirements Windows XP
 #endif
 
-#ifndef _WIN32_IE                       // Specifies that the minimum required platform is Internet Explorer 7.0.
-#define _WIN32_IE 0x0700        // Change this to the appropriate value to target other versions of IE.
+#ifndef _WIN32_IE
+#define _WIN32_IE 0x0550  // min version of IE is 5.5      // Change this to the appropriate value to target other versions of IE.
 #endif
 

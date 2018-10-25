@@ -82,7 +82,7 @@ public:
    //------------------------------------------------------------------------
    // Default constructor
    lrfdXPsLosses(Reason reason,
-                 const char* file,
+                 LPCTSTR file,
                  Int16 line);
 
    //------------------------------------------------------------------------

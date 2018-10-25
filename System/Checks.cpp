@@ -47,34 +47,34 @@ static char THIS_FILE[] = __FILE__;
 
 bool dbgDiagBase::bWarnPopup = true;
 
-void dbgDiagBase::Watch( const char *group, const char *msg,
-                         const char *fname, Uint32 line )
+void dbgDiagBase::Watch( LPCTSTR group, LPCTSTR msg,
+                         LPCTSTR fname, Uint32 line )
 {
-   dbgDiagBase::Message( "Watch", group, msg, fname, line, false );
+   dbgDiagBase::Message( _T("Watch"), group, msg, fname, line, false );
 }
 
-void dbgDiagBase::Warn( const char *group, const char *msg,
-                        const char *fname, Uint32 line )
+void dbgDiagBase::Warn( LPCTSTR group, LPCTSTR msg,
+                        LPCTSTR fname, Uint32 line )
 {
-   dbgDiagBase::Message( "Warn", group, msg, fname, line, bWarnPopup );
+   dbgDiagBase::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
 }
 
-void dbgDiagBase::Message( const char *type,
-                           const char *group, const char *msg,
-                           const char *fname, Uint32 line, bool bPopup)
+void dbgDiagBase::Message( LPCTSTR type,
+                           LPCTSTR group, LPCTSTR msg,
+                           LPCTSTR fname, Uint32 line, bool bPopup)
 {
-    std::ostringstream out;
-    out << type << ' ' << fname << ' ' << line
-        << ": [" << group << "] " << msg
+    std::_tostringstream out;
+    out << type << _T(' ') << fname << _T(' ') << line
+        << _T(": [") << group << _T("] ") << msg
         << std::endl;
-    std::string message = out.str();
+    std::_tstring message = out.str();
     Output( message.c_str() );
 
    if ( bPopup )
-      ::MessageBox(0, message.c_str(), "Warning", MB_OK | MB_ICONWARNING );
+      ::MessageBox(0, message.c_str(), _T("Warning"), MB_OK | MB_ICONWARNING );
 }
 
-void dbgDiagBase::Output( const char *msg )
+void dbgDiagBase::Output( LPCTSTR msg )
 {
     ::OutputDebugString(msg);
 }
@@ -89,30 +89,42 @@ bool dbgDiagBase::IsWarnPopupEnabled()
    return bWarnPopup;
 }
 
-void dbgMessage::Precondition(const char* s,const char* file, Int32 line)
+void dbgMessage::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,"[Precondition] %s\n",s) == 1 )
+#if defined _UNICODE
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Precondition] %s\n"),s) == 1 )
+#else
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Precondition] %s\n"),s) == 1 )
+#endif
        _CrtDbgBreak();
 #else
     throw sysXProgrammingError(sysXProgrammingError::InvalidValue,file,line);
 #endif
 }
 
-void dbgMessage::Check(const char* s,const char* file, Int32 line)
+void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,"[Check] %s\n",s) == 1 )
+#if defined _UNICODE
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Check] %s\n"),s) == 1 )
+#else
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Check] %s\n"),s) == 1 )
+#endif
        _CrtDbgBreak();
 #else
     throw sysXProgrammingError(sysXProgrammingError::CodeFault,file,line);
 #endif
 }
 
-void dbgMessage::AssertValidFailed(const char* s,const char* file, Int32 line)
+void dbgMessage::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,"[Assert Valid Failed] %s\n",s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+#if defined _UNICODE
+#else
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+#endif
        _CrtDbgBreak();
 #else
     throw sysXProgrammingError(sysXProgrammingError::AssertValidFailed,file,line);

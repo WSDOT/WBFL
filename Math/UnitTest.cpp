@@ -28,6 +28,7 @@
 #include <Math\RootFinder2d.h>
 #include <Math\CoordMapper1d.h>
 #include <Math\Function2d.h>
+#include <Math\Polynomial2d.h>
 #include <Math\LinFunc2d.h>
 #include <Math\QuadraticSolver.h>
 #include <Math\CubicSolver.h>
@@ -124,32 +125,6 @@ bool mathUnitTest::TestEx(dbgLog& rlog)
 //======================== INQUERY    =======================================
 
 //======================== DEBUG      =======================================
-
-// local class for testing
-class mathPolynomial2d : public mathFunction2d
-{
-public:
-   mathPolynomial2d(const std::vector<Float64>& coeff) :
-      m_Coeff(coeff)
-      {
-      }
-
-   Float64 Evaluate(Float64 x) const
-   {
-      std::vector<Float64>::const_iterator iter;
-      Int16 i = m_Coeff.size()-1;
-      Float64 y = 0;
-      for ( iter = m_Coeff.begin(); iter != m_Coeff.end(); iter++ )
-      {
-         Float64 c = *iter;
-         y += c*pow(x,i);
-         i--;
-      }
-      return y;
-   }
-private:
-   std::vector<Float64> m_Coeff;
-};
 
 bool test_rootfinders(dbgLog& rlog)
 {

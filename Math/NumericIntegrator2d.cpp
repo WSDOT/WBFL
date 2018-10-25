@@ -38,7 +38,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-mathXNumericIntegrator2dFailed::mathXNumericIntegrator2dFailed(Reason reason,const char* file,Int16 line) :
+mathXNumericIntegrator2dFailed::mathXNumericIntegrator2dFailed(Reason reason,LPCTSTR file,Int16 line) :
 sysXBase(file,line)
 {
    m_Reason = reason;

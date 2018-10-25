@@ -45,7 +45,7 @@ public:
 	CForeignDragDropFSMState();
 	virtual ~CForeignDragDropFSMState();
 
-	virtual const char* StateName() const = 0;
+	virtual LPCTSTR StateName() const = 0;
 	virtual void Do(CForeignDragDropFSM& fsm);
 	virtual DROPEFFECT DragEnter(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
 	virtual void DragLeave(CForeignDragDropFSM& fsm);
@@ -61,7 +61,7 @@ public:
 class CForeignDragDropFSMStartState : public CForeignDragDropFSMState
 {
 public:
-   virtual const char* StateName() const { return "Start"; }
+   virtual LPCTSTR StateName() const { return _T("Start"); }
    virtual void Do(CForeignDragDropFSM& fsm);
 };
 
@@ -71,7 +71,7 @@ public:
 class CForeignDragDropFSMDoneState : public CForeignDragDropFSMState
 {
 public:
-   virtual const char* StateName() const { return "Done"; }
+   virtual LPCTSTR StateName() const { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -80,7 +80,7 @@ public:
 class CForeignDragDropFSMWaitingForDragEnterState : public CForeignDragDropFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForDragEnter"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForDragEnter"); }
    virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point);
 	virtual DROPEFFECT DragEnter(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
 };
@@ -91,7 +91,7 @@ public:
 class CForeignDragDropFSMWaitingForDropState : public CForeignDragDropFSMState
 {
 public:
-   virtual const char* StateName() const { return "WaitingForDrop"; }
+   virtual LPCTSTR StateName() const { return _T("WaitingForDrop"); }
 	virtual void DragLeave(CForeignDragDropFSM& fsm);
 	virtual DROPEFFECT DragOver(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
    virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point);

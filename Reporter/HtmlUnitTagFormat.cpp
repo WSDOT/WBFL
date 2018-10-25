@@ -42,55 +42,55 @@ CLASS
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-std::string rptHtmlUnitTagFormat::Format(const std::string& tag)
+std::_tstring rptHtmlUnitTagFormat::Format(const std::_tstring& tag)
 {
-   std::ostringstream stm;
-   std::string fmt;
+   std::_tostringstream stm;
+   std::_tstring fmt;
    bool bSupOn = false;
    bool bSubOn = false;
    Int16 len = tag.length();
    for ( Int16 i = 0; i < len; i++ )
    {
-      if ( tag[i] == '^' )
+      if ( tag[i] == _T('^') )
       {
          // ^ = start of superscript or end of subscript
          if ( !bSupOn && !bSubOn )
          {
             // neither in a super or subscript block... start a superscript
-            stm << "<SUP>";
+            stm << _T("<SUP>");
             bSupOn = true;
          }
          else if ( bSubOn )
          {
             // currently in a subscript block... end it
-            stm << "</SUB>";
+            stm << _T("</SUB>");
             bSubOn = false;
          }
       }
-      else if ( tag[i] == '_' )
+      else if ( tag[i] == _T('_') )
       {
          // _ = start of subscript or end of superscript
          if ( !bSupOn && !bSubOn )
          {
             // neither in a sub or superscript block... start a subscript
-            stm << "<SUB>";
+            stm << _T("<SUB>");
             bSubOn = true;
          }
          else if ( bSupOn )
          {
             // currently in a superscript block... end it
-            stm << "</SUP>";
+            stm << _T("</SUP>");
             bSupOn = false;
          }
       }
-      else if ( bSupOn && (tag[i] == '/' || tag[i] == ' ') )
+      else if ( bSupOn && (tag[i] == _T('/') || tag[i] == _T(' ') ) )
       {
-         stm << "</SUP>" << tag[i];
+         stm << _T("</SUP>") << tag[i];
          bSupOn = false;
       }
-      else if ( bSubOn && tag[i] == ' ' )
+      else if ( bSubOn && tag[i] == _T(' ') )
       {
-         stm << "</SUB>" << tag[i];
+         stm << _T("</SUB>") << tag[i];
          bSubOn = false;
       }
       else
@@ -102,14 +102,14 @@ std::string rptHtmlUnitTagFormat::Format(const std::string& tag)
    // if super got left on, turn it off now.
    if ( bSupOn )
    {
-      stm << "</SUP>";
+      stm << _T("</SUP>");
       bSupOn = false;
    }
 
    // if subscript got left on, turn it off now.
    if ( bSubOn )
    {
-      stm << "</SUB>";
+      stm << _T("</SUB>");
       bSubOn = false;
    }
 
@@ -144,7 +144,7 @@ bool rptHtmlUnitTagFormat::AssertValid() const
 
 void rptHtmlUnitTagFormat::Dump(dbgDumpContext& os) const
 {
-   os << "Dump for rptHtmlUnitTagFormat" << endl;
+   os << _T("Dump for rptHtmlUnitTagFormat") << endl;
 }
 #endif // _DEBUG
 

@@ -84,7 +84,7 @@ inline bool rptReportContent::IsHyperLink() const
 
 //------------------------------------------------------------------------
 // If content is a hyperlink - return target string
-std::string rptReportContent::GetHyperTarget() const
+std::_tstring rptReportContent::GetHyperTarget() const
 {
    CHECK(m_pHyperLink);
    return m_pHyperLink->GetTargetName();
@@ -92,7 +92,7 @@ std::string rptReportContent::GetHyperTarget() const
 
 //------------------------------------------------------------------------
 // Make report content a hyperlink and point it to HyperTarget
-void rptReportContent::SetHyperLink(const std::string& HyperTarget)
+void rptReportContent::SetHyperLink(const std::_tstring& HyperTarget)
 {
    if (m_pHyperLink)
       delete m_pHyperLink;

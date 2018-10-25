@@ -85,6 +85,7 @@ public:
 
 // IPoint3dCollection
 public:
+   STDMETHOD(Clone)(/*[out,retval]*/IPoint3dCollection** clone);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint3d** ppenum);
    STDMETHOD(Clear)();

@@ -34,7 +34,7 @@
 #include <vector>
 #include "COGOCP.h"
 
-typedef std::pair<CogoElementKey,CComVariant> CSType;
+typedef std::pair<DWORD,CComVariant> CSType;
 typedef std::vector<CSType> CrossSections;
 typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<CSType,VARIANT>, CrossSections > CrossSectionEnum;
 typedef ICollectionOnSTLImpl<ICrossSectionCollection, CrossSections, VARIANT, CopyFromPair2<CSType,VARIANT>,CrossSectionEnum> ICrossSectionColl;

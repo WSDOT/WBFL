@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdXRangeOfApplicability::lrfdXRangeOfApplicability(Reason reason,const char* msg,const char* file, long line) :
+lrfdXRangeOfApplicability::lrfdXRangeOfApplicability(Reason reason,LPCTSTR msg,LPCTSTR file, long line) :
 sysXBase( file, line ),
 m_Reason( reason ),
 m_Message( msg )
@@ -69,7 +69,7 @@ lrfdXRangeOfApplicability& lrfdXRangeOfApplicability::operator= (const lrfdXRang
 }
 
 //======================== OPERATIONS =======================================
-void lrfdXRangeOfApplicability::GetErrorMessage(std::string* pMsg) const
+void lrfdXRangeOfApplicability::GetErrorMessage(std::_tstring* pMsg) const
 {
    *pMsg = m_Message;
 }

@@ -783,10 +783,10 @@ void CTestGenericBridge::DumpBridge(IGenericBridge* bridge)
 {
    USES_CONVERSION;
 
-   std::cout << "Dump Bridge Data\n";
-   std::cout << "================\n";
+   std::_tcout << "Dump Bridge Data\n";
+   std::_tcout << "================\n";
 
-   std::cout << "Dump by span\n";
+   std::_tcout << "Dump by span\n";
    CComPtr<ISpanCollection> spans;
    bridge->get_Spans(&spans);
    SpanIndexType nSpans;
@@ -798,10 +798,10 @@ void CTestGenericBridge::DumpBridge(IGenericBridge* bridge)
 
       Float64 length;
       span->get_Length(&length);
-      std::cout << "Span " << (i+1) << " Length = " << length << "\n";
+      std::_tcout << "Span " << (i+1) << " Length = " << length << "\n";
    }
 //
-//   std::cout << "Dump by pier\n";
+//   std::_tcout << "Dump by pier\n";
 //   long nPiers;
 //   CComPtr<IPierCollection> piers;
 //   bridge->get_Piers(&piers);
@@ -825,7 +825,7 @@ void CTestGenericBridge::DumpBridge(IGenericBridge* bridge)
 //      Float64 space;
 //      spacing->get_Spacing(i,0,&space);
 //
-//      std::cout << "Pier " << (i+1) << " " << OLE2A(bstrOrientation) << " Station = " << OLE2A(bstrStation) << " Spacing = " << space << "\n";
+//      std::_tcout << "Pier " << (i+1) << " " << OLE2T(bstrOrientation) << " Station = " << OLE2T(bstrStation) << " Spacing = " << space << "\n";
 //   }
 }
 

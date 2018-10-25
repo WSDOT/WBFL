@@ -127,7 +127,7 @@ public:
    STDMETHOD_(SelectionType,GetSelectionType)() { return Do_GetSelectionType(); }
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText); }
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText); }
    STDMETHOD_(CString,GetToolTipText)() {return Do_GetToolTipText(); }
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
    STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }

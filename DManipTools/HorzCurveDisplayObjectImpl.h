@@ -134,7 +134,7 @@ public:
    STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) { return Do_OnContextMenu(pWnd,point); }
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
    STDMETHOD_(CString,GetToolTipText)();
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth) { Do_SetMaxTipWidth(maxWidth); }
    STDMETHOD_(long,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }

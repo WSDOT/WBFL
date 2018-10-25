@@ -76,16 +76,16 @@ void rptRcUnitValue::Accept( rptRcVisitor& rVisitor )
    rVisitor.VisitRcUnitValue( this );
 }
 
-std::string rptRcUnitValue::AsString() const
+std::_tstring rptRcUnitValue::AsString() const
 {
    sysNumericFormatTool fmt;
    fmt.SetFormat( m_Format );
    fmt.SetWidth( m_Width );
    fmt.SetPrecision( m_Precision );
    Float64 value = GetValue( true ); // Convert the number
-   std::string str = fmt.AsString( value );
+   std::_tstring str = fmt.AsString( value );
    if ( m_bShowUnitTag )
-      str += (" " + GetUnitTag() );
+      str += ( _T(" ") + GetUnitTag() );
 
    return str;   
 }

@@ -199,7 +199,7 @@ void CEAFSplashScreen::SetTimeout(UINT duration)
    m_Duration = duration;
 }
 
-void CEAFSplashScreen::SetText(const char* strText)
+void CEAFSplashScreen::SetText(LPCTSTR strText)
 {
 	if (c_pSplashWnd == NULL)
 		return;
@@ -222,10 +222,10 @@ void CEAFSplashScreen::SetText(const char* strText)
    dc.SetBkColor(m_Info.m_BgColor);
    dc.SetTextColor(m_Info.m_TextColor);
    size_t extra = 4; // DrawText can add up to 4 more characters
-   size_t size = strlen(strText)+extra;
-   char* pText = new char[size];
+   size_t size = _tcslen(strText)+extra;
+   LPTSTR pText = new TCHAR[size];
    memset((void*)pText,0,size);
-   strcpy_s(pText,size,strText);
+   _tcscpy_s(pText,size,strText);
    dc.DrawText(pText,-1,m_Info.m_Rect,DT_MODIFYSTRING | DT_END_ELLIPSIS);
    delete[] pText;
 

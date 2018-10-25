@@ -991,6 +991,34 @@ STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ long nP
    return S_OK;
 }
 
+STDMETHODIMP CCogoEngine::Path(IPath* pPath,long nParts,Float64 start,Float64 end,IPoint2dCollection** points)
+{
+   CHECK_IN(pPath);
+   CHECK_RETOBJ(points);
+
+   if ( nParts <= 1 )
+      return E_INVALIDARG;
+
+   HRESULT hr = ::CoCreateInstance(CLSID_Point2dCollection,NULL,CLSCTX_ALL,IID_IPoint2dCollection,(void**)points);
+   ATLASSERT(SUCCEEDED(hr));
+
+
+   Float64 distance = end - start;
+   Float64 stepSize = distance/nParts;
+   Float64 location = stepSize + start;
+   for ( long i = 0; i < nParts-1; i++ )
+   {
+      CComPtr<IPoint2d> point;
+      pPath->LocatePoint(location,omtNormal,0.0,CComVariant(0.00),&point);
+
+      (*points)->Add(point);
+
+      location += stepSize;
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CCogoEngine::External(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 radius1,/*[in]*/ IPoint2d* center2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** t1,/*[out]*/ IPoint2d** t2)
 {
    // Check the radii

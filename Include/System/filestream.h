@@ -78,40 +78,18 @@ public:
         return _ulRefs;
     }
 
-    bool open(WCHAR* name, bool read = true)
+    bool open(LPCTSTR name, bool read = true)
     {
-        _fRead = read;
-        char szName[512];
-        ULONG cb;
-
-        cb = ::WideCharToMultiByte(CP_ACP, 0, name, lstrlenW(name), szName, 511, NULL, NULL);
-        if (cb == 0)
-            return false;
-
-        szName[cb] = 0;
-    
-        if (read)
+       _fRead = read;
+        if (_fRead)
         {
-		    _hFile = ::CreateFileA( 
-                szName,
-			    GENERIC_READ,
-			    FILE_SHARE_READ,
-			    NULL,
-			    OPEN_EXISTING,
-			    FILE_ATTRIBUTE_NORMAL,
-			    NULL);
+		    _hFile = ::CreateFile(name,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
         }
         else
         {
-		    _hFile = ::CreateFileA(
-			    szName,
-			    GENERIC_WRITE,
-			    FILE_SHARE_READ,
-			    NULL,
-			    CREATE_ALWAYS,
-			    FILE_ATTRIBUTE_NORMAL,
-			    NULL);
+		    _hFile = ::CreateFile(name,GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
         }
+
         return (_hFile == INVALID_HANDLE_VALUE) ? false : true;
     }
 

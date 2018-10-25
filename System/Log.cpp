@@ -58,19 +58,19 @@ dbgLog::~dbgLog()
 
 //======================== OPERATORS  =======================================
 
-dbgLog& dbgLog::operator<<(const std::string& s)
+dbgLog& dbgLog::operator<<(const std::_tstring& s)
 {
    *m_pDumpCtx << s;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(const char *s)
+dbgLog& dbgLog::operator<<(LPCTSTR s)
 {
    *m_pDumpCtx << s;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(char c)
+dbgLog& dbgLog::operator<<(TCHAR c)
 {
    *m_pDumpCtx << c;
    return *this;
@@ -151,7 +151,7 @@ dbgLog& dbgLog::operator<<(dbgLog& (*pf)(dbgLog&))
 
 
 //======================== OPERATIONS =======================================
-void dbgLog::AddEntryToLog(std::string& msg,  dbgLog::EntryType type)
+void dbgLog::AddEntryToLog(std::_tstring& msg,  dbgLog::EntryType type)
 {
    if (type==dbgLog::Failed) m_NumErrors++;
 
@@ -191,7 +191,7 @@ void dbgLog::DumpFilteredLog(dbgLog::EntryType type)
       if ((*i).Type==type)
       {
         // endl doesn't seem to be working correctly in this special case.
-         *m_pDumpCtx << (*i).Msg;
+         *m_pDumpCtx << (*i).Msg << endl;
       }
    }
 }
@@ -201,7 +201,7 @@ void dbgLog::DumpEntireLog()
    for (EntryVecIterator i=m_ErrorLog.begin(); i!=m_ErrorLog.end(); i++)
    {
       // endl doesn't seem to be working correctly in this special case.
-      *m_pDumpCtx << (*i).Msg;
+      *m_pDumpCtx << (*i).Msg << endl;
    }
 }
 

@@ -85,7 +85,7 @@ Float64 ConvertFromSysUnits( Float64 value, const T& to )
                  ua.GetPostTerm(),
                  T::AngleDim() );
 
-   T from(0,1,0,""); // A dummy conversion factor
+   T from(0,1,0,_T("")); // A dummy conversion factor
 
    return Convert( value, from, to );
 }
@@ -128,7 +128,7 @@ Float64 ConvertToSysUnits(Float64 value,const T& from)
                ua.GetPostTerm(),
                T::AngleDim() );
 
-   T to(0,1,0,"");
+   T to(0,1,0,_T(""));
 
    return Convert( value, from, to );
 }

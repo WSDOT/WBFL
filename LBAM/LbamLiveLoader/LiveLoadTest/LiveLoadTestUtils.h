@@ -34,14 +34,14 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
                              VehicularLoadConfigurationType vlcType, VARIANT_BOOL doApplyImpact,
                              VARIANT_BOOL doApplyDistribution,
                              ILiveLoadModelResponse* llmResponse, IBasicVehicularResponse* basicResponse,
-                             std::ofstream& os)
+                             std::_tofstream& os)
 {
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
    // the optimal configuration into the basic engine. The result should be the same if both engines are
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Force Reponse for "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Force Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Moment " : "Shear ")<<std::endl;
 
@@ -147,14 +147,14 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
                               VehicularLoadConfigurationType vlcType, VARIANT_BOOL doApplyImpact,
                               VARIANT_BOOL doApplyDistribution,
                               ILiveLoadModelResponse* llmResponse, IBasicVehicularResponse* basicResponse,
-                              std::ofstream& os)
+                              std::_tofstream& os)
 {
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
    // the optimal configuration into the basic engine. The result should be the same if both engines are
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Deflection Reponse for "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Deflection Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ")<<
       (forceType==fetMz? "Rotation " : "Vertical Deflection ")<<std::endl;
 
@@ -260,7 +260,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
                                   VehicularLoadConfigurationType vlcType, VARIANT_BOOL doApplyImpact,
                                   VARIANT_BOOL doApplyDistribution,
                                   ILiveLoadModelResponse* llmResponse, IBasicVehicularResponse* basicResponse,
-                                  std::ofstream& os)
+                                  std::_tofstream& os)
 {
    HRESULT hr;
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
@@ -268,7 +268,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"Reaction Reponse for "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"Reaction Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"X Direction"<<std::endl;
@@ -359,7 +359,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
                                   VehicularLoadConfigurationType vlcType, VARIANT_BOOL doApplyImpact,
                                   VARIANT_BOOL doApplyDistribution,
                                   ILiveLoadModelResponse* llmResponse, IBasicVehicularResponse* basicResponse,
-                                  std::ofstream& os)
+                                  std::_tofstream& os)
 {
    HRESULT hr;
    // This function compares the enveloped result computed by the enveloping engine and then stuffs
@@ -367,7 +367,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
    // working correctly. 
    // Of course, both engines could be computing the wrong answer....
    os<<"---------------------------------------------------"<< std::endl;
-   os<<"SupportDeflection Reponse for "<<(char*)_bstr_t(Stage)<<std::endl;
+   os<<"SupportDeflection Reponse for "<<(LPTSTR)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
       os<<"X Direction"<<std::endl;

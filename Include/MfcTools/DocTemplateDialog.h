@@ -72,8 +72,8 @@ public:
    // set our list of tabs and files
    void SetTabList(TabList* ptab_list);
    void SetIcon(HICON hicon);
-   std::string GetSelectedFile() const;
-   void SetDefaultFile(const std::string& filename);
+   std::_tstring GetSelectedFile() const;
+   void SetDefaultFile(const std::_tstring& filename);
 protected:
 
 	// Generated message map functions
@@ -91,15 +91,15 @@ private:
 	CImageList    m_FileImages32; // list box images for files
 	CImageList    m_FileImages16; // list box images for files
 
-   std::string   m_CurrentlySelectedFile;
-   std::string   m_DefaultFile;
+   std::_tstring   m_CurrentlySelectedFile;
+   std::_tstring   m_DefaultFile;
    mfcTemplateTabHelper* m_pSelectedTabHelper;
 
    mfcDocTemplateFinder::ListMode m_ListMode;
 
-   void SelectTab(const std::string& key);
+   void SelectTab(const std::_tstring& key);
    void ClearSelectedFile();
-   void SetSelectedFile(const std::string& filename);
+   void SetSelectedFile(const std::_tstring& filename);
 
    void UpdateListViewMode();
 

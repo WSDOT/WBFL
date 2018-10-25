@@ -45,6 +45,8 @@
 #define IDH_IPoint2d_OnChanged         209
 #define IDH_IPoint2d_SameLocation      210
 #define IDH_IPoint2d_Location          211
+#define IDH_IPoint2d_Distance          212
+#define IDH_IPoint2d_DistanceEx        213
 
 #define IDH_IRect2d                    300
 #define IDH_IRect2d_Area               301

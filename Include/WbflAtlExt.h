@@ -230,7 +230,7 @@ inline HRESULT CrUnadvise( IUnknown* pUnkCP, T* pT, const IID& iid, DWORD dw )
 // Example:
 //    return CrAssignPointer(m_pStart, newVal, this, DIID_DPoint2dEvents, &m_dwStartCookie);
 template <class TC, class TL>
-inline HRESULT CrAssignPointer(CComPtr<TC>& rpTarget, TC* pNewVal, TL* listener, const IID& iidEvents, LPDWORD cookie )
+inline HRESULT CrAssignPointer(ATL::CComPtr<TC>& rpTarget, TC* pNewVal, TL* listener, const IID& iidEvents, LPDWORD cookie )
 {
    CHECK_IN(pNewVal);
 

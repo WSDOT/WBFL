@@ -171,7 +171,7 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::CenterOnPoint()
    m_pView->CenterOnPoint(m_Point);
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::FSMError(const char* t,const char* s)
+STDMETHODIMP_(void) CCenterOnPointTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }

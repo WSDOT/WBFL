@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // Helper function prototypes
-void apply_stream_manipulators( std::ostream* pOS,TextJustificationType justify, NumericFormatType format,Uint32 width,Uint32 precision, Float64 value);
+void apply_stream_manipulators( std::_tostream* pOS,TextJustificationType justify, NumericFormatType format,Uint32 width,Uint32 precision, Float64 value);
 Uint32 get_width_demand(Float64 value, Uint32 precision);
 
 /////////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ STDMETHODIMP CDisplayUnitFormatter::Format(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag
 
 
    // Setup stream for floating point format, width, and precision
-   std::ostringstream os;
+   std::_tostringstream os;
    apply_stream_manipulators(&os,m_Justify,m_Notation,m_Width,m_Precision, cv);
 
    if ( m_Notation == nftEngineering )
@@ -94,7 +94,7 @@ STDMETHODIMP CDisplayUnitFormatter::Format(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag
 
    if ( tag != 0 )
    {
-      os << " " << OLE2A(tag);
+      os << " " << OLE2T(tag);
    }
 
    CComBSTR bstrString( os.str().c_str() );
@@ -164,7 +164,7 @@ STDMETHODIMP CDisplayUnitFormatter::get_UsesTag(VARIANT_BOOL *bUsesTag)
    return S_OK;
 }
 
-void apply_stream_manipulators( std::ostream* pOS, TextJustificationType justify, NumericFormatType format,Uint32 width,Uint32 precision, Float64 value)
+void apply_stream_manipulators( std::_tostream* pOS, TextJustificationType justify, NumericFormatType format,Uint32 width,Uint32 precision, Float64 value)
 {
    // Check if the specified width is adequate
    // Only applies to Automatic and Fixed formatting

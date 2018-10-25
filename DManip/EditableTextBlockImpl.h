@@ -108,7 +108,7 @@ END_COM_MAP()
 
    // Tool Tips
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
-   STDMETHOD_(void,SetToolTipText)(LPCSTR lpszToolTipText);
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText);
    STDMETHOD_(CString,GetToolTipText)();
    STDMETHOD_(void,SetMaxTipWidth)(long maxWidth);
    STDMETHOD_(long,GetMaxTipWidth)();
@@ -147,7 +147,7 @@ END_COM_MAP()
    STDMETHOD_(void,SetAngle)(long angle);
    STDMETHOD_(long,GetAngle)();
 
-   STDMETHOD_(void,SetText)(LPCSTR lpszText);
+   STDMETHOD_(void,SetText)(LPCTSTR lpszText);
    STDMETHOD_(CString,GetText)();
 
    STDMETHOD_(void,SetFont)(const LOGFONT& Font);
