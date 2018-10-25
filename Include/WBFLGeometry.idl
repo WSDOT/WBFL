@@ -1335,8 +1335,8 @@ library WBFLGeometry
 		[propput, helpstring("property Area"),helpcontext(IDH_IGenericShape_Area)]
 		HRESULT Area([in] Float64 newVal);
 
-		[propput, helpstring("property Perimeter"),helpcontext(IDH_IGenericShape_Perimeter)]
-		HRESULT Perimeter([in] Float64 newVal);
+      [propput, helpstring("property Perimeter"), helpcontext(IDH_IGenericShape_Perimeter)]
+      HRESULT Perimeter([in] Float64 newVal);
 
       [propget, helpstring("property Centroid"),helpcontext(IDH_IGenericShape_Centroid)]
 		HRESULT Centroid([out, retval] IPoint2d* *pVal);

@@ -381,7 +381,16 @@ library WBFLGenericBridge
       flsAngled
    } FilletShape;
 
-// Interface definitions
+
+   // Longitudinal joint cross section shape
+   typedef [public, helpstring("enum JointSectionType"), uuid(94994AC7-ACA0-4E0A-B956-30527836DB49)]
+   enum
+   {
+      jstConstantDepth, // the shape is defined by a constant depth
+      jstFromAdjacentBeams // the shape is defined by the connection with adjacent beams
+   } JointSectionType;
+   
+   // Interface definitions
 
    [
       object,
@@ -1063,7 +1072,11 @@ library WBFLGenericBridge
    ]
    interface ILongitudinalJoints : IUnknown
    {
-      [propget,helpstring("property HasJoints")] HRESULT HasJoints([out,retval]VARIANT_BOOL* pbHasJoints) const;
+      [propput, helpstring("property CrossSection")] HRESULT CrossSection([in]JointSectionType type);
+      [propget, helpstring("property CrossSection")] HRESULT CrossSection([out,retval]JointSectionType* pType);
+      [propput, helpstring("property JointThickness")] HRESULT JointThickness([in]Float64 thickness);
+      [propget, helpstring("property JointThickness")] HRESULT JointThickness([out, retval]Float64 * pThickness);
+      [propget,helpstring("property HasJoints")] HRESULT HasJoints([out,retval]VARIANT_BOOL* pbHasJoints);
       [propputref,helpstring("property JointMaterial")] HRESULT JointMaterial([in]IMaterial* material);
       [propget,helpstring("property JointMaterial")] HRESULT JointMaterial([out, retval]IMaterial** material);
       [propget,helpstring("property JointShapes")] HRESULT JointShapes([in]Float64 Xs,[out]IShape** ppLeftJoint,[out]IShape** ppRightJoint);

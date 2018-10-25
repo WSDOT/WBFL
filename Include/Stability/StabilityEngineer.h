@@ -97,4 +97,6 @@ private:
    void GetRebarLayout(const stbIGirder* pGirder,IRebarLayout** ppRebarLayout) const;
 
    Float64 ComputePz(Float64 velocity,Float64 Cd) const;
+
+   void FindMember(IFem2dModel* pModel, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const;
 };

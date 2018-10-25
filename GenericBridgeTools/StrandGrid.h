@@ -173,7 +173,7 @@ public:
 
    STDMETHOD(GetDebondedRows)(/*[out]*/IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
    STDMETHOD(GetDebondedConfigurationCountByRow)(/*[in]*/RowIndexType rowIdx, /*[out]*/IndexType* pConfigCount); // returns number of different debonding configurations in this row
-   STDMETHOD(GetDebondConfigurationByRow)(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/IndexType* pnStrands); // returns a debonding configuration in this row
+   STDMETHOD(GetDebondConfigurationByRow)(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/Float64* pCgX, /*[out]*/Float64* pCgY, /*[out]*/IndexType* pnStrands); // returns a debonding configuration in this row
 
 	STDMETHOD(ClearDebonding)() override;
 
@@ -256,8 +256,8 @@ private:
    std::vector<GridIndexType>  m_StrandToGridMap; // index into array is a strand index, value stored in array is corresponding grid point index
    
    // Strand grid adjustments
-   Float64 m_Xadj;
-   Float64 m_Yadj;
+   Float64 m_Xadj; // offsets entire strand grid horizontally
+   Float64 m_Yadj; // offsets entire strand grid verticaly
 
    StrandIndexType GetStrandCount();
 
@@ -271,6 +271,8 @@ private:
    // geometry factory for performance
    CComPtr<IPoint2dFactory> m_Point2dFactory;
 
+   bool EvenStrandsOnLeft(IndexType gridIdx) const;
+   bool IsLeftStrandPosition(GridPoint2d& gridPoint, IndexType positionIndex, bool bEvenStrandsOnLeft) const;
 };
 
 #endif //__STRANDGRID_H_

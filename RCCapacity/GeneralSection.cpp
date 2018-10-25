@@ -64,18 +64,17 @@ STDMETHODIMP CGeneralSection::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSection
-STDMETHODIMP CGeneralSection::AddShape(IShape* pShape,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial,Float64 ei)
+STDMETHODIMP CGeneralSection::AddShape(IShape* pShape,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial,Float64 ei,Float64 Le)
 {
    if ( pShape == nullptr )
       return E_INVALIDARG;
 
-   SectionItem si;
-   si.shape = pShape;
-   si.fgMaterial = pfgMaterial;
-   si.bgMaterial = pbgMaterial;
-   si.ei = ei;
+   if (IsZero(Le))
+      return E_INVALIDARG;
 
-   m_SectionItems.push_back(si);
+   ATLASSERT(1.0 <= Le); // Le should be 1 for unit or greater...
+
+   m_SectionItems.emplace_back(pShape,pfgMaterial,pbgMaterial,ei,Le);
 
    return S_OK;
 }
@@ -185,24 +184,45 @@ STDMETHODIMP CGeneralSection::put_InitialStrain(CollectionIndexType shapeIdx,Flo
    return S_OK;
 }
 
+STDMETHODIMP CGeneralSection::get_ElongationLength(CollectionIndexType shapeIdx, Float64* Le)
+{
+   CHECK_RETVAL(Le);
+
+   if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
+      return E_INVALIDARG;
+
+   *Le = m_SectionItems[shapeIdx].Le;
+
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSection::put_ElongationLength(CollectionIndexType shapeIdx, Float64 Le)
+{
+   if (m_SectionItems.size() <= shapeIdx || shapeIdx == INVALID_INDEX)
+      return E_INVALIDARG;
+
+   m_SectionItems[shapeIdx].Le = Le;
+
+   return S_OK;
+}
+
 ///////////////////////////////////////////////////////////////////
 // IStructuredStorage2
 STDMETHODIMP CGeneralSection::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("GeneralSection"),1.0);
+   pSave->BeginUnit(CComBSTR("GeneralSection"),2.0);
 
    pSave->put_Property(CComBSTR("SectionItemCount"),CComVariant(m_SectionItems.size()));
 
-   std::vector<SectionItem>::iterator iter;
-   for ( iter = m_SectionItems.begin(); iter != m_SectionItems.end(); iter++ )
+   for ( auto& item : m_SectionItems )
    {
-      SectionItem& item = *iter;
       pSave->put_Property(CComBSTR("Shape"),CComVariant(item.shape));
       pSave->put_Property(CComBSTR("FGMaterial"),item.fgMaterial ? CComVariant(item.fgMaterial) : 0);
       pSave->put_Property(CComBSTR("BGMaterial"),item.bgMaterial ? CComVariant(item.bgMaterial) : 0);
-      pSave->put_Property(CComBSTR("InitialStrain"),CComVariant(item.ei));
+      pSave->put_Property(CComBSTR("InitialStrain"), CComVariant(item.ei));
+      pSave->put_Property(CComBSTR("ElongationLength"), CComVariant(item.Le)); // added in vesion 2
    }
 
    pSave->EndUnit();
@@ -217,6 +237,9 @@ STDMETHODIMP CGeneralSection::Load(IStructuredLoad2* pLoad)
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("GeneralSection"));
 
+   Float64 version;
+   pLoad->get_Version(&version);
+
    m_SectionItems.clear();
 
    CollectionIndexType count;
@@ -228,29 +251,48 @@ STDMETHODIMP CGeneralSection::Load(IStructuredLoad2* pLoad)
    {
       SectionItem item;
 
-      if ( FAILED(pLoad->get_Property(CComBSTR("Shape"),  &var) ) )
+      if (FAILED(pLoad->get_Property(CComBSTR("Shape"), &var)))
+      {
          return STRLOAD_E_INVALIDFORMAT;
+      }
       var.punkVal->QueryInterface(&item.shape);
 
-      if ( FAILED(pLoad->get_Property(CComBSTR("FGMaterial"),  &var) ) )
+      if (FAILED(pLoad->get_Property(CComBSTR("FGMaterial"), &var)))
+      {
          return STRLOAD_E_INVALIDFORMAT;
+      }
 
       if ( var.punkVal )
       {
          var.punkVal->QueryInterface(&item.fgMaterial);
       }
 
-      if ( FAILED(pLoad->get_Property(CComBSTR("BGMaterial"),  &var) ) )
+      if (FAILED(pLoad->get_Property(CComBSTR("BGMaterial"), &var)))
+      {
          return STRLOAD_E_INVALIDFORMAT;
+      }
 
       if ( var.punkVal )
       {
          var.punkVal->QueryInterface(&item.bgMaterial);
       }
 
-      if ( FAILED(pLoad->get_Property(CComBSTR("InitialStrain"),  &var) ) )
+      if (FAILED(pLoad->get_Property(CComBSTR("InitialStrain"), &var)))
+      {
          return STRLOAD_E_INVALIDFORMAT;
+      }
       item.ei = var.dblVal;
+
+      if (1 < version)
+      {
+         // added in version 2
+
+         if (FAILED(pLoad->get_Property(CComBSTR("ElongationLength"), &var)))
+         {
+            return STRLOAD_E_INVALIDFORMAT;
+         }
+         item.Le = var.dblVal;
+      }
 
       m_SectionItems.push_back(item);
    }

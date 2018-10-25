@@ -454,6 +454,25 @@ inline bool IsEven(const T& value) { return value % 2 == 0; }
 template <class T>
 inline bool IsOdd(const T& value) { return !IsEven(value); }
 
+
+// Generates a range of N uniformly spaced values between a and b
+// C++ analogous method for Python.Numpy linspace method
+#include <vector>
+template <typename T>
+std::vector<T> linspace(T a, T b, size_t N)
+{
+   T h = (b - a) / static_cast<T>(N - 1);
+   std::vector<T> xs(N);
+   typename std::vector<T>::iterator x;
+   T val;
+   auto end = std::end(xs);
+   for (x = std::begin(xs), val = a; x != end; ++x, val += h)
+   {
+      *x = val;
+   }
+   return xs;
+}
+
 #undef  M_PI
 #define M_PI        3.1415926535897932384626433832795
 

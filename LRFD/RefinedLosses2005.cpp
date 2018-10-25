@@ -70,7 +70,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005()
    m_Ad                    = g_600_IN2;
    m_ed                    = g_m25p865_IN;
    m_Ksh                   = 1.0;
-   m_CuringMethodTimeAdjustmentFactor = 7;
+   m_CuringMethodTimeAdjustmentFactor = ::ConvertToSysUnits(7,unitMeasure::Day);
    m_RelaxationMethod = Simplified;
 }
 
@@ -681,10 +681,11 @@ Float64 lrfdRefinedLosses2005::GetAdjustedInitialAge() const
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
       // for accelerated curing, or the age minus 6 days for moist (normal) curing
-      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
+      Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-one_day);
       if ( tiAdjusted < 0 )
       {
-         tiAdjusted = 1;
+         tiAdjusted = one_day;
       }
    }
 
@@ -1058,7 +1059,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeck.SetFc(0.8*m_FcSlab); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    m_CreepDeck.SetInitialAge(::ConvertToSysUnits(1.0,unitMeasure::Day));
-   m_CreepDeck.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepDeck.SetMaturity(m_tf-m_td);
    m_CreepDeck.SetRelHumidity(m_H);
    m_CreepDeck.SetSurfaceArea(m_SSlab);
    m_CreepDeck.SetVolume(m_VSlab);
@@ -1398,7 +1399,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual(value, 163455953.25443751) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value, 178346414.38325983) );
+   TRY_TESTME( IsEqual(value, 182922464.46524256) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();

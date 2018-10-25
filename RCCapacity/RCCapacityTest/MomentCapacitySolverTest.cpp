@@ -133,11 +133,11 @@ void CMomentCapacitySolverTest::Test()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,nullptr,0); // beam
-   section->AddShape(shape2,material2,nullptr,0); // bar 1
-   section->AddShape(shape3,material2,nullptr,0); // bar 2
-   section->AddShape(shape4,material2,nullptr,0); // bar 3
-   section->AddShape(shape5,material2,nullptr,0); // bar 4
+   section->AddShape(shape1,material1,nullptr,0, 1.0); // beam
+   section->AddShape(shape2,material2,nullptr,0, 1.0); // bar 1
+   section->AddShape(shape3,material2,nullptr,0, 1.0); // bar 2
+   section->AddShape(shape4,material2,nullptr,0, 1.0); // bar 3
+   section->AddShape(shape5,material2,nullptr,0, 1.0); // bar 4
 
 
    CComPtr<IMomentCapacitySolver> solver;
@@ -183,7 +183,30 @@ void CMomentCapacitySolverTest::Test()
    strainPlane->GetZ(0.00,-H/2,&ec);
    TRY_TEST(IsEqual(ec,-0.003),true);
 
-//   TestISupportUnitServer(concrete);
+   // make bar3 and bar4 be unbonded for 5 ft
+   CComQIPtr<IUnitConvert> convert(unit_server);
+   Float64 Le;
+   convert->ConvertToBaseUnits(5.0, CComBSTR("ft"), &Le);
+   section->put_ElongationLength(3, Le);
+   section->put_ElongationLength(4, Le);
+   solution.Release();
+   TRY_TEST(SUCCEEDED(solver->Solve(0.00, M_PI, -0.003, smFixedCompressiveStrain, &solution)), true);
+
+   solution->get_Fz(&Fz);
+   solution->get_Mx(&Mx);
+   solution->get_My(&My);
+   strainPlane.Release();
+   solution->get_StrainPlane(&strainPlane);
+
+
+   TRY_TEST(IsZero(Fz, 0.001), true);
+   TRY_TEST(IsEqual(Mx, 6884.3201), true);
+   TRY_TEST(IsZero(My), true);
+
+   strainPlane->GetZ(0.00, -H / 2, &ec);
+   TRY_TEST(IsEqual(ec, -0.003), true);
+
+   //   TestISupportUnitServer(concrete);
 //
 //   CComQIPtr<IStressStrain> ss(concrete);
 //   TRY_TEST( ss != nullptr, true );

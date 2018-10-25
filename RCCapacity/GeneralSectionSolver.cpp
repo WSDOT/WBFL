@@ -198,11 +198,8 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "initial strain, " << std::setw(20) << "strain, " << std::setw(20) << "fg material, " << std::setw(10) << "fg stress, "  << std::setw(20) << "bg material, " << std::setw(10) << "bg stress, " << std::setw(10) << "stress, " << std::setw(10) << "force" << std::endl;
 #endif // _DEBUG_LOGGING
 
-   std::vector<SLICEINFO>::iterator iter;
-   for ( iter = m_Slices.begin(); iter != m_Slices.end(); iter++ )
+   for(auto& slice : m_Slices)
    {
-      SLICEINFO& slice = *iter;
-
       Float64 P, Mx, My;
       Float64 fg_stress, bg_stress, stress, strain;
       if ( (slice.Bottom < Yna) && (Yna < slice.Top) )
@@ -211,19 +208,17 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
          // need to clip again 
          Float64 angle = GetNeutralAxisAngle();
 
-         SHAPEINFO shape_info;
-         shape_info.BgMaterial = slice.BgMaterial;
-         shape_info.FgMaterial = slice.FgMaterial;
-         shape_info.Shape      = slice.SliceShape;
-         shape_info.ei         = slice.ei;
+         SHAPEINFO shape_info(slice.SliceShape,slice.FgMaterial,slice.BgMaterial,slice.ei,slice.Le);
 
          SLICEINFO top_slice;
          hr = SliceShape(shape_info,angle,slice.Top,Yna,top_slice);
          if ( SUCCEEDED(hr) && hr != S_FALSE )
          {
             hr = AnalyzeSlice(top_slice,strainPlane,P,Mx,My,fg_stress,bg_stress,stress,strain,bExceededStrainLimits);
-            if ( FAILED(hr) )
+            if (FAILED(hr))
+            {
                return hr;
+            }
 
             C += COMPRESSION(P);
             T += TENSION(P);
@@ -384,8 +379,10 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
 
    // if neutral axis direction, determined from the strain plane, is different from the last time
    // we need to re-slice the section... slices must by parallel to the neutral axis
-   if ( m_bDecomposed && IsNeutralAxisParallel(strainPlane))
+   if (m_bDecomposed && IsNeutralAxisParallel(strainPlane))
+   {
       return; // section is decomposed and NA direction hasn't changed... analysis is good to go
+   }
 
    // Update the neutral axis direction
    UpdateNeutralAxis(strainPlane,m_NeutralAxis);
@@ -415,6 +412,9 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
       Float64 ei;
       m_Section->get_InitialStrain(shapeIdx,&ei);
 
+      Float64 Le;
+      m_Section->get_ElongationLength(shapeIdx, &Le);
+
       CComPtr<IShape> shape;
       hr = original_shape->Clone(&shape);
 
@@ -424,17 +424,16 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
       CComPtr<IRect2d> bndbox;
       shape->get_BoundingBox(&bndbox);
 
-      if ( shapeIdx == 0 )
+      if (shapeIdx == 0)
+      {
          bounding_box = bndbox;
+      }
       else
+      {
          bounding_box->Union(bndbox);
+      }
 
-      SHAPEINFO shapeinfo;
-      shapeinfo.Shape = shape;
-      shapeinfo.FgMaterial = fgMaterial;
-      shapeinfo.BgMaterial = bgMaterial;
-      shapeinfo.ei = ei;
-      shapes.push_back( shapeinfo );
+      shapes.emplace_back( shape, fgMaterial, bgMaterial, ei, Le);
    }
 
    //
@@ -500,25 +499,33 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* strainPlane)
          Float64 slice_bottom = slice_top - slice_height;
 
          // expand the depth of the first and last slice just so nothing is missed
-         if ( sliceIdx == 0 )
-            slice_top += slice_height/2;
+         if (sliceIdx == 0)
+         {
+            slice_top += slice_height / 2;
+         }
 
-         if ( sliceIdx == m_nSlices-1 )
-            slice_bottom -= slice_height/2;
+         if (sliceIdx == m_nSlices - 1)
+         {
+            slice_bottom -= slice_height / 2;
+         }
 
          SLICEINFO slice_info;
          hr = SliceShape(shape_info,angle,slice_top,slice_bottom,slice_info);
 
          slice_top = slice_bottom; // top of next slice
 
-         if ( hr == S_FALSE )
+         if (hr == S_FALSE)
+         {
             continue; // go to next slice 
+         }
 
          m_Slices.push_back(slice_info);
 
          // once the top of the slicer is below the shape... stop slicing
-         if ( shape_bottom > slice_top )
+         if (slice_top < slice_bottom)
+         {
             sliceIdx = m_nSlices;
+         }
       }
    }
 
@@ -582,10 +589,14 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* lin
 
    strainPlane->GetZ(y1,x2,&z);
 
-   if ( z < 0 )
-      hr = line->ThroughPoints(p1,p2);
+   if (z < 0)
+   {
+      hr = line->ThroughPoints(p1, p2);
+   }
    else
-      hr = line->ThroughPoints(p2,p1);
+   {
+      hr = line->ThroughPoints(p2, p1);
+   }
 }
 
 HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& slice,IPlane3d* strainPlane,Float64& P,Float64& Mx,Float64& My,Float64& fg_stress,Float64& bg_stress,Float64& stress,Float64& strain,bool& bExceededStrainLimits)
@@ -593,28 +604,35 @@ HRESULT CGeneralSectionSolver::AnalyzeSlice(CGeneralSectionSolver::SLICEINFO& sl
    HRESULT hr = strainPlane->GetZ(slice.Xcg,slice.Ycg,&strain);
    ATLASSERT(SUCCEEDED(hr));
 
-   strain += slice.ei;
+   strain /= slice.Le;
 
-   Float64 minStrain,maxStrain;
+   strain += slice.ei;
 
    fg_stress = 0;
    if ( slice.FgMaterial )
    {
       hr = slice.FgMaterial->ComputeStress(strain,&fg_stress);
-      if ( FAILED(hr) )
-         return Error(IDS_E_FGMATERIAL,IID_IGeneralSectionSolver,RC_E_FGMATERIAL);
+      if (FAILED(hr))
+      {
+         return Error(IDS_E_FGMATERIAL, IID_IGeneralSectionSolver, RC_E_FGMATERIAL);
+      }
 
+      Float64 minStrain, maxStrain;
       slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
-      if ( !InRange(minStrain,strain,maxStrain) )
+      if (!InRange(minStrain, strain, maxStrain))
+      {
          bExceededStrainLimits = true;
+      }
    }
 
    bg_stress = 0;
    if ( slice.BgMaterial )
    {
       hr = slice.BgMaterial->ComputeStress(strain,&bg_stress);
-      if ( FAILED(hr) )
-         return Error(IDS_E_BGMATERIAL,IID_IGeneralSectionSolver,RC_E_BGMATERIAL);
+      if (FAILED(hr))
+      {
+         return Error(IDS_E_BGMATERIAL, IID_IGeneralSectionSolver, RC_E_BGMATERIAL);
+      }
 
 // it doesn't matter if you exceed the strain limit of the back ground material because it doesn't really exist
 //      slice.BgMaterial->StrainLimits(&minStrain,&maxStrain);
@@ -665,6 +683,7 @@ HRESULT CGeneralSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 ang
    sliceInfo.FgMaterial = shapeInfo.FgMaterial;
    sliceInfo.BgMaterial = shapeInfo.BgMaterial;
    sliceInfo.ei         = shapeInfo.ei;
+   sliceInfo.Le         = shapeInfo.Le;
 
    return S_OK;
 }

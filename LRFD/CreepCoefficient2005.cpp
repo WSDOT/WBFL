@@ -155,10 +155,11 @@ Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge() const
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
       // for accelerated curing, or the age minus 6 days for moist (normal) curing
-      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
+      Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-one_day);
       if ( tiAdjusted < 0 )
       {
-         tiAdjusted = 1;
+         tiAdjusted = one_day;
       }
    }
 

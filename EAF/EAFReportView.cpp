@@ -69,15 +69,14 @@ CEAFReportView::CEAFReportView()
    m_pReportBuilderMgr = nullptr;
    m_pRptMgr = nullptr;
 
-   // Create report edit button and register to listen to messages
-   m_pBtnEdit = new CReportButton();
-   m_pBtnEdit->Register(this);
+   m_pBtnEdit = nullptr;
+   m_pwndEdit = nullptr;
 
 }
 
 CEAFReportView::~CEAFReportView()
 {
-   delete(m_pBtnEdit);
+   delete(m_pwndEdit);
 }
 
 BEGIN_MESSAGE_MAP(CEAFReportView, CEAFView)
@@ -153,6 +152,8 @@ int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	if (CEAFView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 	
+   m_fnEdit.Attach(GetStockObject(DEFAULT_GUI_FONT));
+
    return 0;
 }
 
@@ -299,9 +300,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
             m_ErrorMsg = _T("The report specified when creating this window no longer exists. Please close this window.");
             m_bUpdateError = true;
 
-            if (m_pBtnEdit->GetSafeHwnd())
+            if (m_pwndEdit->GetSafeHwnd())
             {
-               m_pBtnEdit->ShowWindow(SW_HIDE);
+               m_pwndEdit->ShowWindow(SW_HIDE);
             }
 
             // delete the report browser because what ever it is displaying is totally invalid
@@ -314,9 +315,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
          {
             std::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );
 
-            if (m_pBtnEdit->GetSafeHwnd())
+            if (m_pwndEdit->GetSafeHwnd())
             {
-               m_pBtnEdit->ShowWindow(SW_SHOW);
+               m_pwndEdit->ShowWindow(SW_SHOW);
             }
 
             CWaitCursor wait;
@@ -331,9 +332,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
             m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), m_pReportSpec, m_pRptSpecBuilder);
          }
 
-         if ( 0 < m_pReportSpec->GetChapterCount() && CanEditReport() )
+         if (m_pReportBrowser && 0 < m_pReportSpec->GetChapterCount() && CanEditReport() && m_pwndEdit == nullptr )
          {
-            CreateEditButton();
+            m_pwndEdit = CreateEditButton();
          }
       }
    }
@@ -356,9 +357,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
    {
       Invalidate();
 
-      if ( m_pBtnEdit->GetSafeHwnd() )
+      if (m_pwndEdit->GetSafeHwnd() )
       {
-         m_pBtnEdit->ShowWindow(SW_SHOW);
+         m_pwndEdit->ShowWindow(SW_SHOW);
       }
 
       // size the browser window to fill the view
@@ -368,9 +369,9 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
    }
    else
    {
-      if ( m_pBtnEdit->GetSafeHwnd() ) 
+      if (m_pwndEdit->GetSafeHwnd() )
       {
-         m_pBtnEdit->ShowWindow(SW_HIDE);
+         m_pwndEdit->ShowWindow(SW_HIDE);
       }
 
       m_bNoBrowser = true;
@@ -414,9 +415,9 @@ void CEAFReportView::OnSize(UINT nType, int cx, int cy)
       m_pReportBrowser->Size( CSize(cx,cy) );
    }
 
-   if ( m_pBtnEdit->GetSafeHwnd() )
+   if (m_pwndEdit->GetSafeHwnd() )
    {
-      m_pBtnEdit->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+      m_pwndEdit->SetWindowPos(&CWnd::wndTop,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
    }
 }
 
@@ -457,9 +458,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_ErrorMsg = *pmsg;
       m_bUpdateError = true;
 
-      if ( m_pBtnEdit->GetSafeHwnd() )
+      if (m_pwndEdit->GetSafeHwnd() )
       {
-         m_pBtnEdit->ShowWindow(SW_HIDE);
+         m_pwndEdit->ShowWindow(SW_HIDE);
       }
 
       // delete the report browser because what ever it is displaying is totally invalid
@@ -479,9 +480,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
 
-      if ( m_pBtnEdit->GetSafeHwnd() )
+      if (m_pwndEdit->GetSafeHwnd() )
       {
-         m_pBtnEdit->ShowWindow(SW_HIDE);
+         m_pwndEdit->ShowWindow(SW_HIDE);
       }
 
       // delete the report browser because what ever it is displaying is totally invalid
@@ -705,17 +706,21 @@ BOOL CEAFReportView::CanEditReport()
    return TRUE;
 }
 
-void CEAFReportView::CreateEditButton()
+CWnd* CEAFReportView::CreateEditButton()
 {
-   if ( m_pReportBrowser )
-   {
-      CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
+   ATLASSERT(m_pReportBrowser != nullptr);
 
-      CRect rect(0,0,50,21);
-      m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
-      m_btnFont.Attach( GetStockObject(DEFAULT_GUI_FONT) );
-      m_pBtnEdit->SetFont(&m_btnFont);
-   }
+   // Create report edit button and register to listen to messages
+   m_pBtnEdit = new CReportButton();
+   m_pBtnEdit->Register(this);
+
+   CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
+
+   CRect rect(0,0,50,21);
+   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
+   m_pBtnEdit->SetFont(&m_fnEdit);
+
+   return m_pBtnEdit;
 }
 
 std::vector<std::_tstring> CEAFReportView::GetReportNames()

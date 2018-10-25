@@ -1145,7 +1145,7 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* s
    GetHarpingPointLocations(&leftHP, &rightHP);
    GetEndHarpingPointLocations(&leftEndHP, &rightEndHP);
 
-   if (Xs < leftEndHP || (leftHP < Xs && Xs < rightHP) || rightEndHP < Xs)
+   if (::IsLT(Xs,leftEndHP) || (::IsLT(leftHP,Xs) && ::IsLT(Xs,rightHP)) || ::IsLT(rightEndHP,Xs))
    {
       // point under consideration is outside of sloped region or between harp points
       // strands are assumed to be horizonal
@@ -1252,7 +1252,7 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlopeEx(Float64 Xs, IIndexA
    GetHarpingPointLocations(&leftHP, &rightHP);
    GetEndHarpingPointLocations(&leftEndHP, &rightEndHP);
 
-   if (Xs < leftEndHP || (leftHP < Xs && Xs < rightHP) || rightEndHP < Xs)
+   if (::IsLT(Xs, leftEndHP) || (::IsLT(leftHP, Xs) && ::IsLT(Xs, rightHP)) || ::IsLT(rightEndHP, Xs))
    {
       // point under consideration is outside of sloped region or between harp points
       // strands are assumed to be horizonal
@@ -1816,13 +1816,13 @@ STDMETHODIMP CStrandGridModel::GetStraightStrandDebondedConfigurationCountByRow(
    return m_StraightGrid[etStart]->GetDebondedConfigurationCountByRow(rowIdx, pConfigCount);
 }
 
-STDMETHODIMP CStrandGridModel::GetStraightStrandDebondConfigurationByRow(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, IndexType* pnStrands)
+STDMETHODIMP CStrandGridModel::GetStraightStrandDebondConfigurationByRow(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, Float64* pCgX, Float64* pCgY, IndexType* pnStrands)
 {
    Float64 gdr_length;
    m_pGirder->get_GirderLength(&gdr_length);
 
    Float64 LdbStart, LdbEnd;
-   m_StraightGrid[etStart]->GetDebondConfigurationByRow(rowIdx, configIdx, &LdbStart, &LdbEnd, pnStrands);
+   m_StraightGrid[etStart]->GetDebondConfigurationByRow(rowIdx, configIdx, &LdbStart, &LdbEnd, pCgX, pCgY, pnStrands);
    *pXstart = LdbStart;
    *pBondedLength = gdr_length - LdbStart - LdbEnd;
    return S_OK;

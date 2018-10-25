@@ -255,22 +255,20 @@ void stbGirder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float6
    }
 
    Float64 Xstart = 0;
-   std::vector<stbSectionProperties>::const_iterator iter(m_vSectionProperties.begin());
-   std::vector<stbSectionProperties>::const_iterator end(m_vSectionProperties.end());
-   for ( ; iter != end; iter++ )
+   for (const auto& properties : m_vSectionProperties)
    {
-      Float64 Xend = Xstart + iter->L;
+      Float64 Xend = Xstart + properties.L;
       if ( ::InRange(Xstart,X,Xend) )
       {
-         *pAg = ::LinInterp(X-Xstart,iter->Ag[stbTypes::Start],iter->Ag[stbTypes::End],iter->L);
-         *pIxx = ::LinInterp(X-Xstart,iter->Ixx[stbTypes::Start],iter->Ixx[stbTypes::End],iter->L);
-         *pIyy = ::LinInterp(X - Xstart, iter->Iyy[stbTypes::Start], iter->Iyy[stbTypes::End], iter->L);
-         *pIxy = ::LinInterp(X - Xstart, iter->Ixy[stbTypes::Start], iter->Ixy[stbTypes::End], iter->L);
-         *pXleft = ::LinInterp(X - Xstart, iter->Xleft[stbTypes::Start], iter->Xleft[stbTypes::End], iter->L);
-         *pYtop = ::LinInterp(X - Xstart, iter->Ytop[stbTypes::Start], iter->Ytop[stbTypes::End], iter->L);
-         *pHg = ::LinInterp(X-Xstart,iter->Hg[stbTypes::Start],iter->Hg[stbTypes::End],iter->L);
-         *pWtop = ::LinInterp(X-Xstart,iter->Wtf[stbTypes::Start],iter->Wtf[stbTypes::End],iter->L);
-         *pWbot = ::LinInterp(X-Xstart,iter->Wbf[stbTypes::Start],iter->Wbf[stbTypes::End],iter->L);
+         *pAg = ::LinInterp(X-Xstart,properties.Ag[stbTypes::Start],properties.Ag[stbTypes::End],properties.L);
+         *pIxx = ::LinInterp(X-Xstart,properties.Ixx[stbTypes::Start],properties.Ixx[stbTypes::End],properties.L);
+         *pIyy = ::LinInterp(X - Xstart, properties.Iyy[stbTypes::Start], properties.Iyy[stbTypes::End], properties.L);
+         *pIxy = ::LinInterp(X - Xstart, properties.Ixy[stbTypes::Start], properties.Ixy[stbTypes::End], properties.L);
+         *pXleft = ::LinInterp(X - Xstart, properties.Xleft[stbTypes::Start], properties.Xleft[stbTypes::End], properties.L);
+         *pYtop = ::LinInterp(X - Xstart, properties.Ytop[stbTypes::Start], properties.Ytop[stbTypes::End], properties.L);
+         *pHg = ::LinInterp(X-Xstart,properties.Hg[stbTypes::Start],properties.Hg[stbTypes::End],properties.L);
+         *pWtop = ::LinInterp(X-Xstart,properties.Wtf[stbTypes::Start],properties.Wtf[stbTypes::End],properties.L);
+         *pWbot = ::LinInterp(X-Xstart,properties.Wbf[stbTypes::Start],properties.Wbf[stbTypes::End],properties.L);
          return;
       }
       Xstart = Xend;

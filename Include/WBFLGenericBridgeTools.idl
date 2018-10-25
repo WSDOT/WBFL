@@ -372,7 +372,8 @@ library WBFLGenericBridgeTools
 
       [helpstring("method GetDebondedRows")] HRESULT GetDebondedRows([out]IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
       [helpstring("method GetDebondedConfigurationCountByRow")] HRESULT GetDebondedConfigurationCountByRow([in]RowIndexType rowIdx, [out]IndexType* pConfigCount); // returns number of different debonding configurations in this row
-      [helpstring("method GetDebondConfigurationByRow")] HRESULT GetDebondConfigurationByRow([in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pLdbStart, [out]Float64* pLdbEnd,[out]IndexType* pnStrands); // returns a debonding configuration in this row
+      // Returns a debonding configuration in this row. CG's are in strand coordinates
+      [helpstring("method GetDebondConfigurationByRow")] HRESULT GetDebondConfigurationByRow([in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pLdbStart, [out]Float64* pLdbEnd, [out]Float64* pCgX, [out]Float64* pCgY, [out]IndexType* pnStrands); 
 
 	  [helpstring("method ClearDebonding")] HRESULT ClearDebonding();
    };
@@ -461,7 +462,7 @@ library WBFLGenericBridgeTools
       [propget, helpstring("property StraightStrandDebondInRow")] HRESULT StraightStrandDebondInRow([in]Float64 Xs,[in] RowIndexType rowIdx, [out, retval]StrandIndexType* nStrands);
       [helpstring("method IsExteriorStraightStrandDebondedInRow")] HRESULT IsExteriorStraightStrandDebondedInRow([in]Float64 Xs, [in] RowIndexType rowIndex, [out, retval]VARIANT_BOOL* bResult);
       [helpstring("method GetStraightStrandDebondedConfigurationCountByRow")] HRESULT GetStraightStrandDebondedConfigurationCountByRow([in]Float64 Xs, [in]RowIndexType rowIdx, [out]IndexType* pConfigCount); // returns number of different debonding configurations in this row
-      [helpstring("method GetStraightStrandDebondConfigurationByRow")] HRESULT GetStraightStrandDebondConfigurationByRow([in]Float64 Xs, [in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pXstart, [out]Float64* pBondedLength, [out]IndexType* pnStrands); // returns a debonding configuration in this row
+      [helpstring("method GetStraightStrandDebondConfigurationByRow")] HRESULT GetStraightStrandDebondConfigurationByRow([in]Float64 Xs, [in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pXstart, [out]Float64* pBondedLength, [out]Float64* pCgX, [out]Float64* pCgY, [out]IndexType* pnStrands); // returns a debonding configuration in this row
       [helpstring("method GetStraightStrandDebondedRows")] HRESULT GetStraightStrandDebondedRows([in]Float64 Xs,[out]IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
    };
 

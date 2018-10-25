@@ -75,6 +75,9 @@ private:
    ThickeningType m_FlangeThickeningType;
    Float64 m_FlangeThickening;
 
+   JointSectionType m_JointSectionType;
+   Float64 m_LongitudinalJointThickness; // only used if joint section type is jstConstantDepth
+
    struct ShapeData
    {
       CComPtr<IShape> Shape;
@@ -134,10 +137,14 @@ public:
 
 // ILongitudinalJoints
 public:
-   STDMETHOD(get_HasJoints)(/*[out,retval]*/VARIANT_BOOL* pbHasJoints);
-   STDMETHOD(putref_JointMaterial)(/*[in]*/IMaterial* material);
-   STDMETHOD(get_JointMaterial)(/*[out, retval]*/IMaterial** material);
-   STDMETHOD(get_JointShapes)(/*[in]*/Float64 Xs,/*[out]*/IShape** ppLeftJoint,/*[out]*/IShape** ppRightJoint);
+   STDMETHOD(put_CrossSection)(JointSectionType type) override;
+   STDMETHOD(get_CrossSection)(JointSectionType* pType) override;
+   STDMETHOD(put_JointThickness)(Float64 thickness) override;
+   STDMETHOD(get_JointThickness)(Float64 * pThickness) override;
+   STDMETHOD(get_HasJoints)(/*[out,retval]*/VARIANT_BOOL* pbHasJoints) override;
+   STDMETHOD(putref_JointMaterial)(/*[in]*/IMaterial* material) override;
+   STDMETHOD(get_JointMaterial)(/*[out, retval]*/IMaterial** material) override;
+   STDMETHOD(get_JointShapes)(/*[in]*/Float64 Xs,/*[out]*/IShape** ppLeftJoint,/*[out]*/IShape** ppRightJoint) override;
 
 // IItemData
 public:

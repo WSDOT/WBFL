@@ -67,6 +67,11 @@ private:
       CComPtr<IStressStrain> fgMaterial;
       CComPtr<IStressStrain> bgMaterial;
       Float64 ei; // initial strain
+      Float64 Le; // elongation length
+      SectionItem() : ei(0), Le(1.0)
+      {}
+      SectionItem(IShape* pShape,IStressStrain* pFG,IStressStrain* pBG,Float64 ei,Float64 le) : shape(pShape), fgMaterial(pFG), bgMaterial(pBG), ei(ei), Le(le)
+      {}
    };
 
    std::vector<SectionItem> m_SectionItems;
@@ -77,7 +82,7 @@ public:
 
 // IGeneralSection
 public:
-   STDMETHOD(AddShape)(/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/Float64 ei) override;
+   STDMETHOD(AddShape)(/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/Float64 ei,/*[in]*/Float64 Le) override;
    STDMETHOD(get_ShapeCount)(/*[out,retval]*/CollectionIndexType* nShapes) override;
    STDMETHOD(get_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IShape** pShape) override;
    STDMETHOD(putref_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IShape* pShape) override;
@@ -87,6 +92,8 @@ public:
    STDMETHOD(putref_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
    STDMETHOD(get_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/Float64* ei) override;
    STDMETHOD(put_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/Float64 ei) override;
+   STDMETHOD(get_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/Float64* Le);
+   STDMETHOD(put_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/Float64 Le);
 
 // IStructuredStorage2
 public:

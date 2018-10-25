@@ -389,6 +389,22 @@ protected:
    //------------------------------------------------------------------------
    virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
+   //
+   // For fatigue, we need to use single lane behavior only
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Int_Fatigue() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetMomentDF_Ext_Fatigue() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Int_Fatigue() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetShearDF_Ext_Fatigue() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetReactionDF_Ext_Fatigue() const;
+   //------------------------------------------------------------------------
+   virtual DFResult GetReactionDF_Int_Fatigue() const;
+
+
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxDotLldfTypeBC& rOther);
 

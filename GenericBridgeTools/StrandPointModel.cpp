@@ -866,7 +866,7 @@ STDMETHODIMP CStrandPointModel::GetStraightStrandDebondedConfigurationCountByRow
    return S_OK;
 }
 
-STDMETHODIMP CStrandPointModel::GetStraightStrandDebondConfigurationByRow(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, IndexType* pnStrands)
+STDMETHODIMP CStrandPointModel::GetStraightStrandDebondConfigurationByRow(Float64 Xs, RowIndexType rowIdx, IndexType configIdx, Float64* pXstart, Float64* pBondedLength, Float64* pCgX, Float64* pCgY, IndexType* pnStrands)
 {
    std::vector<STRANDDEBONDRECORD> debondConfigs = GetStraightStrandDebondedConfigurations(rowIdx);
 
@@ -878,6 +878,19 @@ STDMETHODIMP CStrandPointModel::GetStraightStrandDebondConfigurationByRow(Float6
    *pXstart = record.LdbStart;
    *pBondedLength = gdr_length - record.LdbStart - record.LdbEnd;
    *pnStrands = record.nStrands;
+
+   // CG's
+   if (record.nStrands > 0)
+   {
+      *pCgX = record.XSum / record.nStrands;
+      *pCgY = record.YSum / record.nStrands;
+   }
+   else
+   {
+      *pCgX = 0.0; // for lack of better value
+      *pCgY = 0.0;
+   }
+
    return S_OK;
 }
 
@@ -1108,6 +1121,8 @@ std::vector<CStrandPointModel::STRANDDEBONDRECORD> CStrandPointModel::GetStraigh
          STRANDDEBONDRECORD record;
          record.LdbStart = LdbStart;
          record.LdbEnd = LdbEnd;
+         record.XSum = Xcoord;
+         record.YSum = Ycoord;
          record.nStrands = 1;
 
          auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
@@ -1118,6 +1133,8 @@ std::vector<CStrandPointModel::STRANDDEBONDRECORD> CStrandPointModel::GetStraigh
          else
          {
             found->nStrands++;
+            found->XSum += Xcoord;
+            found->YSum += Ycoord;
          }
       }
    }

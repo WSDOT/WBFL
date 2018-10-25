@@ -1587,7 +1587,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
             rptRcTable* pTotalStressTable = rptStyleManager::CreateDefaultTable(13,_T("Stresses"));
             (*pPara) << pTotalStressTable << rptNewLine;
-            (*pPara) << RPT_STRESS(_T("direct")) << _T(" = ") << RPT_STRESS(_T("ps")) << _T(" + (IM)") << RPT_STRESS(_T("g")) << _T(" ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(" + ") << strCFSign.c_str() << _T(" ") << Sub2(_T("M"), _T("cf")) << rptNewLine;
+            (*pPara) << RPT_STRESS(_T("direct")) << _T(" = ") << RPT_STRESS(_T("ps")) << _T(" + (IM)") << RPT_STRESS(_T("g")) << _T(" ") << strWindSign.c_str() << _T(" ") << RPT_STRESS(_T("w")) << _T(" + ") << strCFSign.c_str() << _T(" ") << RPT_STRESS(_T("cf")) << rptNewLine;
             (*pPara) << RPT_STRESS(_T("tilt")) << _T(" = stress induced by girder rotation") << rptNewLine;
             (*pPara) << _T("Top Left ") << RPT_STRESS(_T("tilt")) << _T(" = (IM)") << Sub2(_T("M"), _T("girder")) << Sub2(symbol(theta), _T("eq")) << Sub2(_T("W"), _T("top")) << _T("/2") << Sub2(_T("I"), _T("yy")) << rptNewLine;
             (*pPara) << _T("Top Right ") << RPT_STRESS(_T("tilt")) << _T(" = -(IM)") << Sub2(_T("M"),_T("girder")) << Sub2(symbol(theta),_T("eq")) << Sub2(_T("W"),_T("top")) << _T("/2") << Sub2(_T("I"),_T("yy")) << rptNewLine;

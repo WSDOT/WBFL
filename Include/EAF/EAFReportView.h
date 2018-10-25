@@ -157,14 +157,16 @@ protected:
 
    static bool ms_bIsUpdatingReport; // true while the report content is being updated
 
-   CReportButton* m_pBtnEdit;
-   CFont   m_btnFont;
- 
+   CWnd* m_pwndEdit;
+   CFont   m_fnEdit;
+
    void UpdateViewTitle();
    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-   void CreateEditButton();
+   virtual CWnd* CreateEditButton();
 
 private:
+   CReportButton* m_pBtnEdit;
+
    std::vector<std::_tstring> GetReportNames();
    std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
    std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);

@@ -1257,13 +1257,15 @@ eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UI
    if ( GetDocumentationSetName() == strDocSetName )
    {
       // help topic is supposed to be part of this documentation set
+      CString strBaseURL = GetDocumentationURL();
+
       std::map<UINT,CString>::iterator found(m_HelpTopics.find(nHID));
       if ( found == m_HelpTopics.end() )
       {
+         strURL = strBaseURL;
          return eafTypes::hrTopicNotFound;
       }
 
-      CString strBaseURL = GetDocumentationURL();
 
       strURL.Format(_T("%s%s"),strBaseURL,found->second);
       return eafTypes::hrOK;

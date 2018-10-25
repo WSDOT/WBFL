@@ -716,14 +716,17 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    HFONT valuefont = grGraphTool::CreateRotatedFont(hDC, m_ValueAngle, m_AxisValueSize);
    ::SelectObject(hDC, valuefont);
    LONG num_incrs = (LONG)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement);
+
+   Float64 angle = ::ToRadians(m_ValueAngle / 10.);
+   Float64 cos_angle = cos(angle);
+   Float64 sin_angle = sin(angle);
    for (LONG i = 0; i<=num_incrs; i++)
    {
       std::_tstring value_text(m_pValueFormat->AsString(curr_value));
       boost::trim(value_text);
       ::GetTextExtentPoint32(hDC,value_text.c_str(),(int)value_text.size(),&siz);
-      Float64 angle = ::ToRadians(m_ValueAngle/10.);
-      Float64 width  = siz.cx*cos(angle) + siz.cy*sin(angle);
-      Float64 height = siz.cx*sin(angle) + siz.cy*cos(angle);
+      Float64 width  = siz.cx*cos_angle + siz.cy*sin_angle;
+      Float64 height = siz.cx*sin_angle + siz.cy*cos_angle;
 
       max_value_width  = max(max_value_width, Int32(width));
       max_value_height = max(max_value_height,Int32(height));
