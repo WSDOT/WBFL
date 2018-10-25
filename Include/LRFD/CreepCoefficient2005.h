@@ -121,6 +121,11 @@ public:
    void SetCuringMethodTimeAdjustmentFactor(Float64 f);
    Float64 GetCuringMethodTimeAdjustmentFactor() const;
 
+   void SetK1(Float64 k1);
+   Float64 GetK1() const;
+   void SetK2(Float64 k2);
+   Float64 GetK2() const;
+
    Float64 GetKvs() const;
    Float64 GetKhc() const;
    Float64 GetKf() const;
@@ -152,6 +157,8 @@ private:
    Float64 m_ti;
    CuringMethod m_CuringMethod;
    Float64 m_CuringMethodTimeAdjustmentFactor;
+   Float64 m_K1;
+   Float64 m_K2;
 
    mutable Float64 m_tiAdjusted; // adjusted for curing method
    mutable Float64 m_Ct; // Creep factor

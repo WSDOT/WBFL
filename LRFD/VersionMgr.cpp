@@ -89,6 +89,14 @@ lrfdVersionMgr::Version lrfdVersionMgr::SetVersion(Version version)
 
    Version temp = ms_Version;
    ms_Version = version;
+
+   if ( lrfdVersionMgr::FourthEdition2007 <= ms_Version && ms_Units == lrfdVersionMgr::SI )
+   {
+      // SI units were dropped from LRFD starting with 4th Edition 2007
+      ms_Units = lrfdVersionMgr::US;
+   }
+
+
    NotifyAllListeners();
    return temp;
 }
@@ -105,6 +113,15 @@ lrfdVersionMgr::Units lrfdVersionMgr::SetUnits(Units units)
 
    Units temp = ms_Units;
    ms_Units = units;
+
+
+   if ( lrfdVersionMgr::FourthEdition2007 <= ms_Version && ms_Units == lrfdVersionMgr::SI )
+   {
+      // SI units were dropped from LRFD starting with 4th Edition 2007
+      ASSERT( false );
+      ms_Units = lrfdVersionMgr::US;
+   }
+
    NotifyAllListeners();
    return temp;
 }
@@ -182,6 +199,10 @@ std::string lrfdVersionMgr::GetVersionString()
 
    case FourthEditionWith2009Interims:
       version = "4th Edition, 2007 with 2008 - 2009 interim provisions";
+      break;
+
+   case FifthEdition2010:
+      version = "5th Edition, 2010";
       break;
 
    default:

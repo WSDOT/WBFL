@@ -70,6 +70,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
                          Float64 friction,
                          Float64 angleChange,
 
+                         lrfdConcreteUtil::DensityType concreteType,
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -95,6 +96,7 @@ lrfdApproximateLosses::lrfdApproximateLosses(BeamType beamType,
 lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Ag,Ig,Ybg,Ac,Ic,Ybc,rh,ti,bIgnoreInitialRelaxation)
 
 {
+   m_ConcreteType = concreteType;
    m_Shipping = shipping;
    m_PPR = ppr;
    m_BeamType = beamType;
@@ -223,6 +225,7 @@ void lrfdApproximateLosses::MakeCopy( const lrfdApproximateLosses& rOther )
    m_PPR      = rOther.m_PPR;
    m_dfpLT    = rOther.m_dfpLT;
    m_Shipping = rOther.m_Shipping;
+   m_ConcreteType = rOther.m_ConcreteType;
 }
 
 void lrfdApproximateLosses::ValidateParameters() const
@@ -295,6 +298,11 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
 
       if ( m_Type == matPsStrand::LowRelaxation )
          losses -= lowRelaxReduction;
+
+      if ( m_ConcreteType != lrfdConcreteUtil::NormalDensity )
+      {
+         losses += (is_si ? ::ConvertToSysUnits(35.,unitMeasure::MPa) : ::ConvertToSysUnits(5.0,unitMeasure::KSI));
+      }
 
       m_dfpLT = ::ConvertToSysUnits( losses, *p_unit );
    }

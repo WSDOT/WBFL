@@ -35,6 +35,7 @@
 
 // LOCAL INCLUDES
 //
+#include <Material\Concrete.h>
 
 // FORWARD DECLARATIONS
 //
@@ -79,6 +80,9 @@ struct LRFDCLASS lrfdShearData
    Float64 Ac;
    Float64 fpo;
    Float64 fc;
+   matConcrete::Type ConcreteType;
+   bool bHasfct;
+   Float64 fct;
 
    // Vci/Vcw parameters
    Float64 Vd;

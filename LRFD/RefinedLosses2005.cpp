@@ -78,6 +78,16 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 friction,
                          Float64 angleChange,
 
+                         Float64 CreepK1,
+                         Float64 CreepK2,
+                         Float64 ShrinkageK1,
+                         Float64 ShrinkageK2,
+                         
+                         Float64 DeckCreepK1,
+                         Float64 DeckCreepK2,
+                         Float64 DeckShrinkageK1,
+                         Float64 DeckShrinkageK2,
+
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -125,6 +135,18 @@ lrfdLosses(x,Lg,gr,type,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,eperm,etemp,usage,an
    m_tf                    = tf;
    m_CuringMethod          = curingMethod;
    m_CuringMethodTimeAdjustmentFactor = curingMethodTimeFactor;
+
+
+   m_CreepK1 = CreepK1;
+   m_CreepK2 = CreepK2;
+   m_ShrinkageK1 = ShrinkageK1;
+   m_ShrinkageK2 = ShrinkageK2;
+                         
+   m_DeckCreepK1 = DeckCreepK1;
+   m_DeckCreepK2 = DeckCreepK2;
+   m_DeckShrinkageK1 = DeckShrinkageK1;
+   m_DeckShrinkageK2 = DeckShrinkageK2;
+
 }
 
 lrfdRefinedLosses2005::lrfdRefinedLosses2005(const lrfdRefinedLosses2005& rOther)
@@ -644,6 +666,17 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
 
    m_CuringMethodTimeAdjustmentFactor = rOther.m_CuringMethodTimeAdjustmentFactor;
 
+   m_CreepK1 = rOther.m_CreepK1;
+   m_CreepK2 = rOther.m_CreepK2;
+   m_ShrinkageK1 = rOther.m_ShrinkageK1;
+   m_ShrinkageK2 = rOther.m_ShrinkageK2;
+                         
+   m_DeckCreepK1 = rOther.m_DeckCreepK1;
+   m_DeckCreepK2 = rOther.m_DeckCreepK2;
+   m_DeckShrinkageK1 = rOther.m_DeckShrinkageK1;
+   m_DeckShrinkageK2 = rOther.m_DeckShrinkageK2;
+
+
 }
 
 void lrfdRefinedLosses2005::ValidateParameters() const
@@ -695,13 +728,15 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
+   m_CreepInitialToDeck.SetK1(m_CreepK1);
+   m_CreepInitialToDeck.SetK2(m_CreepK2);
 
    // 4. Compute shrinkage strain
    Float64 kvs = m_CreepInitialToFinal.GetKvs();
    Float64 kf  = m_CreepInitialToFinal.GetKf();
    Float64 ktd = m_CreepInitialToDeck.GetKtd();
    Float64 khs = m_khs;
-   m_ebid = kvs*khs*kf*ktd*0.48e-03;
+   m_ebid = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
 
    m_dfpSR = IsZero(m_ApsPerm) ? 0 : m_ebid * m_Ep * m_Kid;
 
@@ -731,7 +766,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 2. Compute shrinkage strain
    ktd = m_CreepInitialToFinal.GetKtd();
-   m_ebdf = kvs*khs*kf*ktd*0.48e-03;
+   m_ebdf = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
 
    // if there aren't any strands then there can't be loss due to shrinkage
    m_dfpSD = IsZero(m_ApsPerm) ? 0.0 : m_ebdf*m_Ep*m_Kdf;
@@ -747,6 +782,8 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
+   m_CreepInitialToDeck.SetK1(m_CreepK1);
+   m_CreepInitialToDeck.SetK2(m_CreepK2);
 
    // 2. Creep coefficient - deck to final
    m_CreepDeckToFinal.SetCuringMethod(lrfdCreepCoefficient2005::Normal);
@@ -757,6 +794,8 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
+   m_CreepDeckToFinal.SetK1(m_CreepK1);
+   m_CreepDeckToFinal.SetK2(m_CreepK2);
 
    // 3. Compute Delta Fcd
    m_DeltaFcd1 = -1*(m_Madlg*m_eperm/m_Ig + m_Msidl*( m_Ybc - m_Ybg + m_eperm )/m_Ic);
@@ -798,10 +837,12 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeck.SetRelHumidity(m_H);
    m_CreepDeck.SetSurfaceArea(m_SSlab);
    m_CreepDeck.SetVolume(m_VSlab);
+   m_CreepDeck.SetK1(m_DeckCreepK1);
+   m_CreepDeck.SetK2(m_DeckCreepK2);
    kvs = m_CreepDeck.GetKvs();
    kf  = m_CreepDeck.GetKf();
    ktd = m_CreepDeck.GetKtd();
-   m_eddf = -kvs*khs*kf*ktd*0.48e-03;
+   m_eddf = -m_DeckShrinkageK1*m_DeckShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
@@ -839,6 +880,8 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToFinal.SetRelHumidity(m_H);
    m_CreepInitialToFinal.SetSurfaceArea(m_S);
    m_CreepInitialToFinal.SetVolume(m_V);
+   m_CreepInitialToFinal.SetK1(m_CreepK1);
+   m_CreepInitialToFinal.SetK2(m_CreepK2);
 
    m_Kih[0] = 1 + (m_Ep/m_Eci)*(Aps/m_Ag)*(1 + m_Ag*e*m_etemp/m_Ig)*(1 + 0.7*m_CreepInitialToFinal.GetCreepCoefficient());
    m_Kih[0] = 1/m_Kih[0];
@@ -855,13 +898,15 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToHauling.SetRelHumidity(m_H);
    m_CreepInitialToHauling.SetSurfaceArea(m_S);
    m_CreepInitialToHauling.SetVolume(m_V);
+   m_CreepInitialToHauling.SetK1(m_CreepK1);
+   m_CreepInitialToHauling.SetK2(m_CreepK2);
 
    // Compute shrinkage strain
    Float64 ktd = m_CreepInitialToHauling.GetKtd();
    Float64 kvs = m_CreepInitialToHauling.GetKvs();
    Float64 kf  = m_CreepInitialToHauling.GetKf();
    Float64 khs = m_khs;
-   m_ebih = kvs*khs*kf*ktd*0.48e-03;
+   m_ebih = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
    m_dfpSRH[0] = IsZero(m_ApsTemp*m_FpjTemp) ? 0 : m_ebih * m_Ep * m_Kih[0];
    m_dfpSRH[1] = IsZero(m_ApsPerm*m_FpjPerm) ? 0 : m_ebih * m_Ep * m_Kih[1];
 
@@ -923,6 +968,9 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          0.00065616797900200005, // wobble
                          0.25000000000000000, // friction
                          0, // angle change
+
+                         1,1,1,1, // K for girder
+                         1,1,1,1, // K fog slab
 
                          41368543.759020001,   // 28 day strength of girder concrete
                          35852736.609413415,  // Release strength

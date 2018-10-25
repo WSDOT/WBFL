@@ -111,6 +111,16 @@ public:
                          Float64 friction,
                          Float64 angleChange,
 
+                         Float64 CreepK1,
+                         Float64 CreepK2,
+                         Float64 ShrinkageK1,
+                         Float64 ShrinkageK2,
+                         
+                         Float64 DeckCreepK1,
+                         Float64 DeckCreepK2,
+                         Float64 DeckShrinkageK1,
+                         Float64 DeckShrinkageK2,
+
                          Float64 Fc,   // 28 day strength of girder concrete
                          Float64 Fci,  // Release strength
                          Float64 FcSlab,   
@@ -269,6 +279,16 @@ public:
    Float64 GetAd() const;
 
 
+   Float64 GetGdrK1Creep() const { return m_CreepK1; }
+   Float64 GetGdrK2Creep() const { return m_CreepK2; }
+   Float64 GetGdrK1Shrinkage() const { return m_ShrinkageK1; }
+   Float64 GetGdrK2Shrinkage() const { return m_ShrinkageK2; }
+
+   Float64 GetDeckK1Creep() const { return m_DeckCreepK1; }
+   Float64 GetDeckK2Creep() const { return m_DeckCreepK2; }
+   Float64 GetDeckK1Shrinkage() const { return m_DeckShrinkageK1; }
+   Float64 GetDeckK2Shrinkage() const { return m_DeckShrinkageK2; }
+
 
    
    // GROUP: INQUIRY
@@ -299,6 +319,14 @@ private:
    Float64 m_td; // age at deck placement
    Float64 m_tf; // final time
    Float64 m_CuringMethodTimeAdjustmentFactor;
+   Float64 m_CreepK1;
+   Float64 m_CreepK2;
+   Float64 m_ShrinkageK1;
+   Float64 m_ShrinkageK2;
+   Float64 m_DeckCreepK1;
+   Float64 m_DeckCreepK2;
+   Float64 m_DeckShrinkageK1;
+   Float64 m_DeckShrinkageK2;
    mutable lrfdCreepCoefficient2005::CuringMethod m_CuringMethod;
    mutable lrfdCreepCoefficient2005 m_CreepInitialToFinal;
    mutable lrfdCreepCoefficient2005 m_CreepInitialToDeck;
