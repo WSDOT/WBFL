@@ -96,6 +96,9 @@ public:
    CEAFCustomReports GetCustomReports() const;
    void SetCustomReports(const CEAFCustomReports& reports);
 
+   // Returns TRUE if the command id (nID) is for a report.
+   BOOL IsReportCommand(UINT nID,BOOL bQuickReport);
+
    // Generated message map functions
 protected:
    IBroker* m_pBroker;
