@@ -174,6 +174,9 @@ library WBFLGeometry
 
       [helpstring("method Location"),helpcontext(IDH_IPoint2d_Location)]
       HRESULT Location([out]Float64* pX,[out]Float64* pY);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_IPoint2d_Location)*/]
+      HRESULT Clone([out,retval]IPoint2d** ppPoint);
    };
 
    [
@@ -497,6 +500,12 @@ library WBFLGeometry
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+
+      [helpstring("method Reverse")]
+      HRESULT Reverse();
+
+      [helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index,[in]IPoint2d* pPoint);
    };
 
    [
@@ -672,6 +681,9 @@ library WBFLGeometry
 
       [helpstring("method Location"),helpcontext(IDH_IPoint3d_Location)]
       HRESULT Location([out]Float64* pX,[out]Float64* pY,[out]Float64* pZ);
+
+      [helpstring("method Clone")/*,helpcontext(IDH_IPoint3d_Location)*/]
+      HRESULT Clone([out,retval]IPoint3d** ppPoint);
    };
 
    [
@@ -968,6 +980,12 @@ library WBFLGeometry
 
 		[propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+
+      [helpstring("method Reverse")]
+      HRESULT Reverse();
+
+      [helpstring("method Insert")]
+      HRESULT Insert([in]CollectionIndexType index,[in]IPoint3d* pPoint);
    };
 
    [

@@ -56,10 +56,13 @@ class ATL_NO_VTABLE CCrossSectionCollection :
 public:
 	CCrossSectionCollection()
 	{
+      m_pProfile = NULL;
 	}
 
    HRESULT FinalConstruct();
    void FinalRelease();
+
+   void PutProfile(IProfile* pProfile) { m_pProfile = pProfile; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_CROSSSECTIONCOLLECTION)
 
@@ -90,6 +93,8 @@ END_CONNECTION_POINT_MAP()
 public:
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ ICrossSectionCollection* *clone);
+   STDMETHOD(get_CrownPointPath)(/*[out,retval]*/IPath** ppPath);
+   STDMETHOD(get_Profile)(/*[out,retval]*/IProfile** ppProfile);
 	STDMETHOD(get_Factory)(/*[out,retval]*/ICrossSectionFactory* *factory);
 	STDMETHOD(putref_Factory)(/*[in]*/ICrossSectionFactory* factory);
    STDMETHOD(get__EnumCrossSections)(/*[out, retval]*/ IEnumCrossSections** retval);  
@@ -126,6 +131,11 @@ private:
    void UnadviseAll();
 
    CComPtr<ICrossSectionFactory> m_Factory;
+
+   IProfile* m_pProfile;
+
+   CComPtr<IPath> m_CrownPointPath;
+   HRESULT UpdateCrownPointPath();
 };
 
 #endif //__CROSSSECTIONCOLLECTION_H_

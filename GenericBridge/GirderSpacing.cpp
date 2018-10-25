@@ -387,7 +387,7 @@ STDMETHODIMP CGirderSpacing::get_Width(Float64 distFromStartOfSpan,MeasurementTy
 
 
    CComPtr<IPoint2d> alignment_point;
-   alignment->LocatePoint(CComVariant(cut_station),0.00,CComVariant(0.00),&alignment_point);
+   alignment->LocatePoint(CComVariant(cut_station),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
 
    // project point onto first and last girder line
    CComPtr<ICogoInfo> cogoinfo;
@@ -654,7 +654,7 @@ STDMETHODIMP CGirderSpacing::get_SpaceWidth(SpacingIndexType spaceIdx,Float64 di
 
    // get a point on the alignment at station
    CComPtr<IPoint2d> pntAlignment;
-   alignment->LocatePoint(CComVariant(station),0.00,CComVariant(normal),&pntAlignment);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(normal),&pntAlignment);
 
 
    // compute the intersection point of the normal with each girder line segment

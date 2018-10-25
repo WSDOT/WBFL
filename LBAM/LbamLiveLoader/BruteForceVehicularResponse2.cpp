@@ -872,10 +872,10 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
          }
 
          // apply distribution factors if desired
+         Float64 left_dfactor  = 1.0;
+         Float64 right_dfactor = 1.0;
          if (distributionType!=dftNone)
          {
-            Float64 left_dfactor  = 1.0;
-            Float64 right_dfactor = 1.0;
             DistributionFactorType left_used_dftype, right_used_dftype;
             m_pDfStrategy->GetOptimalDfs(poi_id, stage, effect, distributionType,
                                                  &left_dfactor, &left_used_dftype, 
@@ -895,16 +895,30 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
          if ( m_RealOptimization == optMaximize )
          {
             if ( left_result > right_result )
-               hr = results->Add(left_result, left_config, flip_factor*left_result, left_config);
+            {
+               // left face results are going on the right face side. The right and left DF
+               // could be different... if they are, scale the result
+               Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
+               hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
+            }
             else
-               hr = results->Add(right_result, right_config, flip_factor*right_result, right_config);
+            {
+               Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
+               hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
+            }
          }
          else
          {
             if ( left_result < right_result )
-               hr = results->Add(left_result, left_config, flip_factor*left_result, left_config);
+            {
+               Float64 df_right = IsZero(left_dfactor) ? 1 : right_dfactor/left_dfactor;
+               hr = results->Add(left_result, left_config, flip_factor*left_result*df_right, left_config);
+            }
             else
-               hr = results->Add(right_result, right_config, flip_factor*right_result, right_config);
+            {
+               Float64 df_left = IsZero(right_dfactor) ? 1 : left_dfactor/right_dfactor;
+               hr = results->Add(right_result*df_left, right_config, flip_factor*right_result, right_config);
+            }
          }
       }
 

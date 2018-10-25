@@ -289,7 +289,7 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
 
    // Draw Centerline of span
    CComPtr<IPoint2d> start_pnt;
-   alignment->LocatePoint(CComVariant(start_station),0.0,CComVariant(0.0),&start_pnt); 
+   alignment->LocatePoint(CComVariant(start_station),omtAlongDirection, 0.0,CComVariant(0.0),&start_pnt); 
    mapper.WPtoDP(start_pnt, &dx, &dy);
    ::MoveToEx(hDC,dx,dy,&p);
 
@@ -300,7 +300,7 @@ void bmfSpan::PlanView(HDC hDC,const grlibPointMapper& mapper,
    {
       Float64 station = start_station + i*station_step;
       CComPtr<IPoint2d> pnt;
-      alignment->LocatePoint(CComVariant(station),0.0,CComVariant(0.0),&pnt);
+      alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.0,CComVariant(0.0),&pnt);
       mapper.WPtoDP(pnt,&dx,&dy);
       ::LineTo(hDC,dx,dy);
    }
@@ -484,8 +484,8 @@ void bmfSpan::GetBearing(IDirection** ppBearing) const
    m_pBridge->GetAlignment(&alignment);
 
    CComPtr<IPoint2d> start_pnt, end_pnt;
-   alignment->LocatePoint( CComVariant(StartBrgStation()), 0.00, CComVariant(0.00), &start_pnt);
-   alignment->LocatePoint( CComVariant(EndBrgStation()),   0.00, CComVariant(0.00), &end_pnt);
+   alignment->LocatePoint( CComVariant(StartBrgStation()), omtAlongDirection, 0.00, CComVariant(0.00), &start_pnt);
+   alignment->LocatePoint( CComVariant(EndBrgStation()),   omtAlongDirection, 0.00, CComVariant(0.00), &end_pnt);
 
    CComPtr<ICogoEngine> engine;
    engine.CoCreateInstance(CLSID_CogoEngine);

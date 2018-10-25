@@ -222,6 +222,14 @@ public:
    virtual void OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBackup);
    virtual void OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBackup);
 
+   // You must override this method and call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before
+   // calling __super::GetStatusBarMessageString(nID,rMessage).
+   virtual BOOL GetStatusBarMessageString(UINT nID,CString& rMessage) const = 0;
+
+   // You must override this method and call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before
+   // calling __super::GetToolTipMessageString(nID,rMessage).
+   virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
+
    // The toolbar state for each document type is stored in the registry.
    // To keep them separate, each document type must supply a name for the toolbar section
    virtual CString GetToolbarSectionName() = 0;

@@ -216,6 +216,22 @@ STDMETHODIMP CPoint3d::Location(Float64* pX,Float64* pY,Float64* pZ)
    return S_OK;
 }
 
+STDMETHODIMP CPoint3d::Clone(IPoint3d** ppPoint)
+{
+   CHECK_RETOBJ(ppPoint);
+   CComObject<CPoint3d>* pPoint;
+   HRESULT hr = CComObject<CPoint3d>::CreateInstance(&pPoint);
+   if ( FAILED(hr) )
+      return hr;
+
+   (*ppPoint) = pPoint;
+   (*ppPoint)->AddRef();
+
+   (*ppPoint)->Move(m_X,m_Y,m_Z);
+
+   return S_OK;
+}
+
 // IPersist
 STDMETHODIMP CPoint3d::GetClassID(CLSID* pClassID)
 {

@@ -71,7 +71,7 @@ public:
 
    BOOL SetMenuItemBitmaps(UINT nPosition,UINT nFlags,const CBitmap* pBmpUnchecked,const CBitmap* pBmpChecked, IEAFCommandCallback* pCallback);
 
-   void RemoveMenu(UINT nPosition,UINT nFlags,IEAFCommandCallback* pCallback);
+   BOOL RemoveMenu(UINT nPosition,UINT nFlags,IEAFCommandCallback* pCallback);
 
    void DestroyMenu(CEAFMenu* pMenu);
 

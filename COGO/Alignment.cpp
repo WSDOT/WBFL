@@ -125,14 +125,85 @@ STDMETHODIMP CAlignment::put_RefStation(VARIANT varStation)
 	return S_OK;
 }
 
-STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, Float64 offset, VARIANT varDir, IPoint2d* *newPoint)
+STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, OffsetMeasureType offsetMeasure, Float64 offset, VARIANT varDir, IPoint2d* *newPoint)
 {
    Float64 distance;
    HRESULT hr = StationToPathDistance(varStation,&distance);
    if ( FAILED(hr) )
       return hr;
 
-   return m_Path->LocatePoint(distance,offset,varDir,newPoint);
+   return m_Path->LocatePoint(distance,offsetMeasure,offset,varDir,newPoint);
+}
+
+STDMETHODIMP CAlignment::LocateCrownPoint2D(VARIANT varStation, VARIANT varDir,IPoint2d* *newPoint)
+{
+   CHECK_RETOBJ(newPoint);
+
+   HRESULT hr = S_OK;
+   CComPtr<IDirection> dir;
+   hr = cogoUtil::DirectionFromVariant(varDir,&dir);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 dirValue;
+   dir->get_Value(&dirValue);
+
+   CComPtr<IPath> crown_point_path;
+   CComPtr<IProfile> profile;
+   m_Path->get_Profile(&profile);
+   if ( profile )
+   {
+      CComPtr<ICrossSectionCollection> cross_sections;
+      profile->get_CrossSections(&cross_sections);
+      cross_sections->get_CrownPointPath(&crown_point_path);
+   }
+
+   CComPtr<IPoint2d> point_on_alignment;
+   LocatePoint(varStation,omtAlongDirection,0.00,varDir,&point_on_alignment);
+   if ( crown_point_path == NULL )
+   {
+      (*newPoint) = point_on_alignment;
+      (*newPoint)->AddRef();
+      return S_OK;
+   }
+
+   CComPtr<IVector2d> v;
+   v.CoCreateInstance(CLSID_Vector2d);
+   v->put_Direction(dirValue);
+   CComPtr<ILine2d> line;
+   line.CoCreateInstance(CLSID_Line2d);
+   line->SetExplicit(point_on_alignment,v);
+   return crown_point_path->Intersect(line,point_on_alignment,newPoint);
+}
+
+STDMETHODIMP CAlignment::LocateCrownPoint3D(VARIANT varStation, VARIANT varDir, IPoint3d* *newPoint)
+{
+   CComPtr<IPoint2d> pnt2d;
+   HRESULT hr = LocateCrownPoint2D(varStation,varDir,&pnt2d);
+   if ( FAILED(hr) )
+      return hr;
+
+   CComPtr<IStation> station;
+   Float64 offset;
+   Offset(pnt2d,&station,&offset);
+
+   Float64 elevation;
+   CComPtr<IProfile> profile;
+   m_Path->get_Profile(&profile);
+   profile->Elevation(CComVariant(station),offset,&elevation);
+
+   CComPtr<IPoint3d> pnt3d;
+   pnt3d.CoCreateInstance(CLSID_Point3d);
+   
+   Float64 x,y;
+   pnt2d->Location(&x,&y);
+
+   pnt3d->Move(x,y,elevation);
+
+   (*newPoint) = pnt3d;
+   (*newPoint)->AddRef();
+
+   return S_OK;
 }
 
 STDMETHODIMP CAlignment::Bearing(VARIANT varStation,IDirection* *dir)
@@ -191,7 +262,7 @@ STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndSta
       return hr;
 
    CComPtr<IPoint2d> pntStart;
-   LocatePoint(varStartStation,0.00,CComVariant(0.00),&pntStart);
+   LocatePoint(varStartStation,omtAlongDirection, 0.00,CComVariant(0.00),&pntStart);
 
    CComQIPtr<IAlignment> alignment(*path);
    alignment->InsertEx(0,pntStart);

@@ -842,9 +842,9 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 
 /////////////////////////////////////////////////////////////////////////////
 // Helpers for saving/restoring window state
-BOOL CEAFApp::ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
+BOOL CEAFApp::ReadWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp)
 {
-   CString strBuffer = GetProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey);
+   CString strBuffer = GetProfileString(strSection, strKey);
 
    if (strBuffer.IsEmpty())
       return FALSE;
@@ -866,7 +866,7 @@ BOOL CEAFApp::ReadWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
    return TRUE;
 }
 
-void CEAFApp::WriteWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
+void CEAFApp::WriteWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp)
 {
    TCHAR szBuffer[sizeof("-32767")*8 + sizeof("65535")*2];
 
@@ -877,7 +877,7 @@ void CEAFApp::WriteWindowPlacement(const CString& strKey,LPWINDOWPLACEMENT pwp)
       pwp->rcNormalPosition.left, pwp->rcNormalPosition.top,
       pwp->rcNormalPosition.right, pwp->rcNormalPosition.bottom);
 
-   WriteProfileString(CString((LPCSTR)IDS_REG_SETTINGS), strKey, szBuffer);
+   WriteProfileString(strSection, strKey, szBuffer);
 }
 
 // returns key for HKEY_LOCAL_MACHINE\Software\Washington State Department of Transportation\PGSuper"

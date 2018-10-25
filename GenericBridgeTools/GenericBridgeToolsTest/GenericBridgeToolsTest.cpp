@@ -226,6 +226,8 @@ void CreateBridge(const std::vector<Float64>& spanLengths,Float64 gdrSpacing,Gir
 
    bridge->putref_Deck(deck);
 
+   bridge->UpdateBridgeModel(); // forces the geometry to be up to date
+
    (*ppBridge) = bridge;
    (*ppBridge)->AddRef();
 }

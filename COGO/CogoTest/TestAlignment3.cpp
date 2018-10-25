@@ -635,7 +635,7 @@ void CTestAlignment3::Test4()
 //   TRY_TEST(IsEqual(dirVal,0.0),true);
 //   pnt.Release();
 //
-//   TRY_TEST(alignment->LocatePoint(CComVariant(115),3,CComVariant(dirVal),&pnt),S_OK);
+//   TRY_TEST(alignment->LocatePoint(CComVariant(115),omtAlongDirection, 3,CComVariant(dirVal),&pnt),S_OK);
 //   pnt->get_X(&x);
 //   pnt->get_Y(&y);
 //   TRY_TEST(IsEqual(x, 13.0),true);
@@ -656,13 +656,13 @@ void CTestAlignment3::CompareAlignments(IAlignment* pAlignment1,IAlignment* pAli
    {
       Float64 station = start + (end-start)*i/(nPoints-1);
       CComPtr<IPoint2d> point;
-      pAlignment1->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&point);
+      pAlignment1->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&point);
 
       point->get_X(&x1);
       point->get_Y(&y1);
 
       point.Release();
-      pAlignment2->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&point);
+      pAlignment2->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&point);
 
       point->get_X(&x2);
       point->get_Y(&y2);

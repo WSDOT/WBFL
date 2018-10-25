@@ -197,12 +197,12 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
    GetBearing(&bearing);
 
    CComPtr<IPoint2d> pnt;
-   alignment->LocatePoint( CComVariant(GetStation()), -pier_width/2, CComVariant(bearing), &pnt );
+   alignment->LocatePoint( CComVariant(GetStation()), omtAlongDirection, -pier_width/2, CComVariant(bearing), &pnt );
    mapper.WPtoDP(pnt, &dx, &dy);
    ::MoveToEx(hDC,dx,dy,&p);
 
    pnt.Release();
-   alignment->LocatePoint( CComVariant(GetStation()),  pier_width/2, CComVariant(bearing), &pnt);
+   alignment->LocatePoint( CComVariant(GetStation()), omtAlongDirection,  pier_width/2, CComVariant(bearing), &pnt);
    mapper.WPtoDP(pnt, &dx, &dy);
    ::LineTo(hDC,dx,dy);
 
@@ -214,12 +214,12 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
    if ( p_span )
    {
       pnt.Release();
-      alignment->LocatePoint( CComVariant(GetBackBearingStation()), -pier_width_left/2, CComVariant(bearing), &pnt );
+      alignment->LocatePoint( CComVariant(GetBackBearingStation()), omtAlongDirection, -pier_width_left/2, CComVariant(bearing), &pnt );
       mapper.WPtoDP(pnt, &dx, &dy);
       ::MoveToEx( hDC, dx, dy, &p );
 
       pnt.Release();
-      alignment->LocatePoint( CComVariant(GetBackBearingStation()),  pier_width_left/2, CComVariant(bearing), &pnt );
+      alignment->LocatePoint( CComVariant(GetBackBearingStation()), omtAlongDirection,  pier_width_left/2, CComVariant(bearing), &pnt );
       mapper.WPtoDP(pnt, &dx, &dy);
       ::LineTo( hDC, dx, dy );
    }
@@ -228,12 +228,12 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
    if ( p_span )
    {
       pnt.Release();
-      alignment->LocatePoint( CComVariant(GetAheadBearingStation()), -pier_width_right/2, CComVariant(bearing), &pnt );
+      alignment->LocatePoint( CComVariant(GetAheadBearingStation()), omtAlongDirection, -pier_width_right/2, CComVariant(bearing), &pnt );
       mapper.WPtoDP(pnt, &dx, &dy);
       ::MoveToEx( hDC, dx, dy, &p );
 
       pnt.Release();
-      alignment->LocatePoint( CComVariant(GetAheadBearingStation()),  pier_width_right/2, CComVariant(bearing), &pnt );
+      alignment->LocatePoint( CComVariant(GetAheadBearingStation()), omtAlongDirection,  pier_width_right/2, CComVariant(bearing), &pnt );
       mapper.WPtoDP(pnt, &dx, &dy);
       ::LineTo( hDC, dx, dy );
    }
@@ -252,10 +252,10 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
       pier_width_right = pier_width_left;
 
    CComPtr<IPoint2d> p1, p2, p3, p4;
-   alignment->LocatePoint( CComVariant(station_left),  -pier_width_left/2,  CComVariant(bearing), &p1 );
-   alignment->LocatePoint( CComVariant(station_right), -pier_width_right/2, CComVariant(bearing), &p2 );
-   alignment->LocatePoint( CComVariant(station_right),  pier_width_right/2, CComVariant(bearing), &p3 );
-   alignment->LocatePoint( CComVariant(station_left),   pier_width_left/2,  CComVariant(bearing), &p4 );
+   alignment->LocatePoint( CComVariant(station_left),  omtAlongDirection, -pier_width_left/2,  CComVariant(bearing), &p1 );
+   alignment->LocatePoint( CComVariant(station_right), omtAlongDirection, -pier_width_right/2, CComVariant(bearing), &p2 );
+   alignment->LocatePoint( CComVariant(station_right), omtAlongDirection,  pier_width_right/2, CComVariant(bearing), &p3 );
+   alignment->LocatePoint( CComVariant(station_left),  omtAlongDirection,  pier_width_left/2,  CComVariant(bearing), &p4 );
 
    POINT point[5];
    mapper.WPtoDP( p1, &point[0].x, &point[0].y );
@@ -274,7 +274,7 @@ void bmfPier::Draw(HDC hDC, const grlibPointMapper& mapper, bool show_label) con
       // Label Pier
       //
       pnt.Release();
-      alignment->LocatePoint( CComVariant(GetStation()), 0.00, CComVariant(0.00), &pnt );
+      alignment->LocatePoint( CComVariant(GetStation()), omtAlongDirection, 0.00, CComVariant(0.00), &pnt );
       mapper.WPtoDP( pnt, &dx, &dy );
       char label[10]; // arbitrary label size... I doubt we will ever exceed it
       _itoa_s( GetID()+1, label, 10, 10 ); // Add one because we have a zero-based index
@@ -580,10 +580,10 @@ gpRect2d bmfPier::GetBoundingBox() const
    CComPtr<IDirection> bearing;
    GetBearing(&bearing);
    CComPtr<IPoint2d> p1, p2, p3, p4;
-   alignment->LocatePoint( CComVariant(station_left),   pier_width_left/2,  CComVariant(bearing), &p1 );
-   alignment->LocatePoint( CComVariant(station_right),  pier_width_right/2, CComVariant(bearing), &p2 );
-   alignment->LocatePoint( CComVariant(station_right), -pier_width_right/2, CComVariant(bearing), &p3 );
-   alignment->LocatePoint( CComVariant(station_left),  -pier_width_left/2,  CComVariant(bearing), &p4 );
+   alignment->LocatePoint( CComVariant(station_left),  omtAlongDirection,  pier_width_left/2,  CComVariant(bearing), &p1 );
+   alignment->LocatePoint( CComVariant(station_right), omtAlongDirection,  pier_width_right/2, CComVariant(bearing), &p2 );
+   alignment->LocatePoint( CComVariant(station_right), omtAlongDirection, -pier_width_right/2, CComVariant(bearing), &p3 );
+   alignment->LocatePoint( CComVariant(station_left),  omtAlongDirection, -pier_width_left/2,  CComVariant(bearing), &p4 );
 
    Float64 x1, y1;
    Float64 x2, y2;

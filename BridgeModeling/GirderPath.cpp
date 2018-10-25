@@ -139,7 +139,7 @@ Float64 bmfGirderPath::NormalOffsetFromAlignment(Float64 station) const
 
    // get point on alignment at station
    CComPtr<IPoint2d> a_point;
-   alignment->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&a_point);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&a_point);
 
    // Create a line that represents the girder path
    CComPtr<ILine2d> line;
@@ -168,7 +168,7 @@ Float64 bmfGirderPath::EndDistanceFromStation(Float64 station) const
 
    // get point on alignment at station
    CComPtr<IPoint2d> a_point;
-   alignment->LocatePoint(CComVariant(station),0.00,CComVariant(0.00),&a_point);
+   alignment->LocatePoint(CComVariant(station),omtAlongDirection,0.00,CComVariant(0.00),&a_point);
 
    // Create a line that represents the girder path
    CComPtr<ILine2d> line;
@@ -466,11 +466,11 @@ void bmfGirderPath::DoLayoutPierPier()
       adj_end_offset = m_OffsetEnd / cos( valEndSkew );
 
    // Find the coordinates of the points at the pier/girder line intersections
-   alignment->LocatePoint( CComVariant(pier_start_station), 0.00, CComVariant(0.00), &temp_pnt );
+   alignment->LocatePoint( CComVariant(pier_start_station), omtAlongDirection, 0.00, CComVariant(0.00), &temp_pnt );
    locate2->ByDistDir(temp_pnt, adj_start_offset, CComVariant(start_brg), 0.00, &start_pnt);
 
    temp_pnt.Release();
-   alignment->LocatePoint( CComVariant(pier_end_station), 0.00, CComVariant(0.00),&temp_pnt );
+   alignment->LocatePoint( CComVariant(pier_end_station), omtAlongDirection, 0.00, CComVariant(0.00),&temp_pnt );
    locate2->ByDistDir(temp_pnt, adj_end_offset,CComVariant(end_brg), 0.00, &end_pnt);
 
    // Locate the bearing/girder line intersection points
@@ -570,11 +570,11 @@ void bmfGirderPath::DoLayoutBearingBearing()
    model->get_Points(&points);
 
    CComPtr<IPoint2d> temp_pnt;
-   alignment->LocatePoint( CComVariant(start_station), adj_start_offset, CComVariant(start_brg), &temp_pnt);
+   alignment->LocatePoint( CComVariant(start_station), omtAlongDirection, adj_start_offset, CComVariant(start_brg), &temp_pnt);
    points->AddEx(m_StartBrgPnt,temp_pnt);
 
    temp_pnt.Release();
-   alignment->LocatePoint( CComVariant(end_station), adj_end_offset, CComVariant(end_brg), &temp_pnt);
+   alignment->LocatePoint( CComVariant(end_station), omtAlongDirection, adj_end_offset, CComVariant(end_brg), &temp_pnt);
    points->AddEx(m_EndBrgPnt, temp_pnt);
                            
    // Locate the ends of the girder

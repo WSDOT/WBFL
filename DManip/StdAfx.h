@@ -68,7 +68,6 @@ extern CComModule _Module;
 #include <WBFLAtlExt.h>
 
 //#pragma warning(disable:4786)
-DIAG_DECLARE_GROUP(DManip);
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

@@ -79,6 +79,7 @@ private:
 
 // IPoint3d
 public:
+   STDMETHOD(Clone)(/*[out,retval]*/IPoint3d** ppPoint);
    STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY,/*[out]*/Float64* pZ);
    STDMETHOD(SameLocation)(/*[in]*/IPoint3d* pOther);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);

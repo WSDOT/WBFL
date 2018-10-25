@@ -92,6 +92,8 @@ END_CONNECTION_POINT_MAP()
 // IProfile
 public:
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
+   STDMETHOD(get_Path)(/*[out,retval]*/IPath** ppPath);
+   STDMETHOD(putref_Path)(/*[in]*/IPath* pPath);
    STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone);
 	STDMETHOD(Clear)();
 	STDMETHOD(CrownPointOffset)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* cpoffset);
@@ -145,6 +147,7 @@ public:
 	}
 
 private:
+   IPath* m_pPath; // weak reference
    CComPtr<ICrossSectionCollection> m_CrossSections;
    DWORD m_dwCookie;
 

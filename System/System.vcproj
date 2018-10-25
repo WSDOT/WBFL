@@ -151,7 +151,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(ConfigurationName)&quot;;..\..\boost_1_37_0"
-				PreprocessorDefinitions="BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;_UNITTEST;_SECURE_SCL=0;_HAS_ITERATOR_DEBUGGING=0"
+				PreprocessorDefinitions="BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;_UNITTEST;WBFL_DEBUG"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"

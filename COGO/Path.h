@@ -98,7 +98,7 @@ public:
 	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint);
 	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
-	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
+	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
 	STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
 	STDMETHOD(putref_Profile)(/*[in]*/ IProfile* pVal);
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
