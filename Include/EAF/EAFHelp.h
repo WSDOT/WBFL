@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -20,4 +20,23 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-#define IDH_MANAGE_PLUGINS    100
+
+#pragma once
+
+#include <EAF\EAFExp.h>
+#include <MFCTools\HelpHandler.h>
+
+EAFFUNC void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID);
+
+class EAFCLASS CEAFHelpHandler : public CHelpHandler
+{
+public:
+   CEAFHelpHandler();
+   CEAFHelpHandler(LPCTSTR lpszDocSetName,UINT nHelpID);
+   void Init(LPCTSTR lpszDocSetName,UINT nHelpID);
+   virtual void OnHelp();
+
+protected:
+   CString m_strDocSetName;
+   UINT m_nHID;
+};

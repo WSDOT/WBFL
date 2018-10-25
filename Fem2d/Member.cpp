@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -917,6 +917,7 @@ void CMember::GetInternalForces(Float64 loc,Fem2dMbrFaceType face,Float64 *force
 
    Float64 angle  = m_JointKeeper.GetAngle();
    Float64 length = m_JointKeeper.GetLength();
+
    // Iterate over all loads on this member, for the active Loading
    MbrLoadPointerIterator ld( m_Loads.begin() );
    MbrLoadPointerIterator ldend( m_Loads.end() );

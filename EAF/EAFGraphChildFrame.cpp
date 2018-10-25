@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 #include "resource.h"
 #include <EAF\EAFGraphChildFrame.h>
 #include <EAF\EAFGraphView.h>
+#include <EAF\EAFHelp.h>
 
 // include files needed to get the RecalcLayout override working
 #include <oleimpl2.h>
@@ -57,8 +58,20 @@ CEAFGraphChildFrame::~CEAFGraphChildFrame()
 
 BEGIN_MESSAGE_MAP(CEAFGraphChildFrame, CEAFOutputChildFrame)
 	//{{AFX_MSG_MAP(CEAFGraphChildFrame)
+	ON_MESSAGE(WM_HELP, OnCommandHelp)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
+
+LRESULT CEAFGraphChildFrame::OnCommandHelp(WPARAM, LPARAM lParam)
+{
+   UINT nHID = m_pMyGraphBuilder->GetHelpID();
+   if ( 0 < nHID )
+   {
+      EAFHelp( m_pMyGraphBuilder->GetDocumentationSetName(), nHID );
+      return TRUE;
+   }
+   return FALSE;
+}
 
 CEAFGraphView* CEAFGraphChildFrame::GetGraphView()
 {

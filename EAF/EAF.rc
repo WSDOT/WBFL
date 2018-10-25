@@ -98,7 +98,7 @@ BEGIN
         MENUITEM "P&rint Setup...",             ID_FILE_PRINT_SETUP
         MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
         MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
+        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_APP_EXIT
     END
@@ -110,6 +110,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
         MENUITEM "&Help Topics",                ID_HELP_FINDER
+        MENUITEM "Help Source",                 EAFID_HELP_SOURCE
         MENUITEM SEPARATOR
         MENUITEM "&About...",                   ID_APP_ABOUT
     END
@@ -156,8 +157,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,41
- PRODUCTVERSION 4,0,0,41
+ FILEVERSION 4,0,0,42
+ PRODUCTVERSION 4,0,0,42
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -175,12 +176,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "4.0.0.41"
+            VALUE "FileVersion", "4.0.0.42"
             VALUE "InternalName", "EAF"
-            VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2016, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.41"
+            VALUE "ProductVersion", "4.0.0.42"
         END
     END
     BLOCK "VarFileInfo"
@@ -213,7 +214,7 @@ CAPTION "About"
 FONT 8, "MS Sans Serif", 400, 0, 0x0
 BEGIN
     LTEXT           "Version #",IDC_VERSION,40,10,277,8,SS_NOPREFIX
-    LTEXT           "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved",IDC_COPYRIGHT,40,22,335,8
+    LTEXT           "Copyright © 1999-2016, Washington State Department of Transportation, All Rights Reserved",IDC_COPYRIGHT,40,22,335,8
     DEFPUSHBUTTON   "OK",IDOK,381,214,50,14,WS_GROUP
     ICON            128,IDC_APPICON,7,7,21,20
     LTEXT           "Installed Components",IDC_STATIC,7,40,68,8
@@ -565,10 +566,18 @@ BEGIN
     EAFID_MANAGE_APP_PLUGINS "Manage Application Plugins\n"
     EAFID_REPORT_MENU_DISPLAY_MODE "Change Report Menu Display Mode\n"
     EAFID_OPTIONS_HINTS     "Change user interface hint options\nHint Options"
+    EAFID_TOGGLE_AUTOCALC   "Toggles AutoCalc mode.\nAutoCalc"
+    EAFID_AUTOCALC_UPDATENOW 
+                            "Update all views, reports, and graphs\nUpdate Now (F5)"
+    EAFID_HELP_SOURCE       "Change help documentation between online and offline sources"
+END
+
+STRINGTABLE 
+BEGIN
+    EAFID_INDICATOR_MODIFIED "Modified"
+    EAFID_INDICATOR_STATUS  "OK"
     EAFID_INDICATOR_AUTOCALC_ON "AutoCalc : On"
     EAFID_INDICATOR_AUTOCALC_OFF "AutoCalc : Off"
-    EAFID_TOGGLE_AUTOCALC     "Toggles AutoCalc mode.\nAutoCalc"
-    EAFID_AUTOCALC_UPDATENOW    "Update all views, reports, and graphs\nUpdate Now (F5)"
 END
 
 STRINGTABLE 
@@ -713,12 +722,6 @@ BEGIN
     IDS_E_BADINSTALL        "There is an error with the %1 installation.  Please re-install the program."
     IDS_E_PROBPERSISTS      "If this problem persists,  contact technical support\n Please include your project file and the %1 file found in the program directory."
     IDS_E_UNSAFESAVE        "A backup copy of your last successful save could not be made. If an error occurs while saving  your data, your file may become corrupt and unrecoverable.\n\n Would  you like to proceed?"
-END
-
-STRINGTABLE 
-BEGIN
-    EAFID_INDICATOR_MODIFIED "Modified"
-    EAFID_INDICATOR_STATUS  "OK"
 END
 
 STRINGTABLE 

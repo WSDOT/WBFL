@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,7 +36,7 @@ class CManagePluginsDlg : public CDialog
 	DECLARE_DYNAMIC(CManagePluginsDlg)
 
 public:
-	CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = NULL);   // standard constructor
+	CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = NULL,LPCTSTR lpszDocSetName=NULL,UINT nHID=0);   // standard constructor
 	virtual ~CManagePluginsDlg();
 
 // Dialog Data
@@ -53,6 +53,8 @@ protected:
    CCheckListBox m_PluginList;
    CString m_strSection;
    CATID m_CATID;
+   CString m_DocSetName;
+   UINT m_nHelpID;
    BOOL InitList();
 
 	DECLARE_MESSAGE_MAP()

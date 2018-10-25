@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -615,6 +615,7 @@ BOOL CEAFDocument::Init()
    }
 
    LoadDocumentSettings();
+   LoadDocumentationMap();
 
    UpdateApplicationIcon();
 
@@ -1214,6 +1215,85 @@ void CEAFDocument::SetUIHintSettings(UINT settings)
 void CEAFDocument::ResetUIHints()
 {
    // Does nothing by default
+}
+
+void CEAFDocument::DocumentationSourceChanged()
+{
+   m_strDocumentationMapFile.Empty();
+}
+
+CString CEAFDocument::GetDocumentationSetName()
+{
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CComPtr<IEAFAppPlugin> pAppPlugin;
+   pTemplate->GetPlugin(&pAppPlugin);
+   return pAppPlugin->GetDocumentationSetName();
+}
+
+CString CEAFDocument::GetDocumentationURL()
+{
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CComPtr<IEAFAppPlugin> pAppPlugin;
+   pTemplate->GetPlugin(&pAppPlugin);
+   return pAppPlugin->GetDocumentationURL();
+}
+
+CString CEAFDocument::GetDocumentationMapFile()
+{
+   if ( m_strDocumentationMapFile.IsEmpty() )
+   {
+      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL(),GetDocumentationRootLocation());
+   }
+   return m_strDocumentationMapFile;
+}
+
+void CEAFDocument::LoadDocumentationMap()
+{
+   EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics);
+}
+
+eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+{
+   CString strDocSetName(lpszDocSetName);
+   if ( GetDocumentationSetName() == strDocSetName )
+   {
+      // help topic is supposed to be part of this documentation set
+      std::map<UINT,CString>::iterator found(m_HelpTopics.find(nHID));
+      if ( found == m_HelpTopics.end() )
+      {
+         return eafTypes::hrTopicNotFound;
+      }
+
+      CString strBaseURL = GetDocumentationURL();
+
+      strURL.Format(_T("%s%s"),strBaseURL,found->second);
+      return eafTypes::hrOK;
+   }
+   else
+   {
+      // check to see of the help topic and documentation set belongs to one of our plug-ins
+      CEAFDocPluginManager* pDocPluginMgr = GetDocPluginManager();
+      CollectionIndexType nPlugins = pDocPluginMgr->GetPluginCount();
+      for ( CollectionIndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+      {
+         CComPtr<IEAFDocumentPlugin> pDocPlugin;
+         HRESULT hr = pDocPluginMgr->GetPlugin(pluginIdx,&pDocPlugin);
+         ATLASSERT(SUCCEEDED(hr));
+
+         if ( pDocPlugin->GetDocumentationSetName() == strDocSetName )
+         {
+            return pDocPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+         }
+      }
+   }
+
+   // if we got this far, the help topic still wasn't found... kick it up to our
+   // parent app plug-in
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CComPtr<IEAFAppPlugin> pAppPlugin;
+   pTemplate->GetPlugin(&pAppPlugin);
+
+   return pAppPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
 }
 
 void CEAFDocument::OnCloseDocument()

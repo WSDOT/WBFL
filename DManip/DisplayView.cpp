@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -154,8 +154,6 @@ END_MESSAGE_MAP()
 
 void CDisplayView::OnInitialUpdate()
 {
-   m_pDispMgr->SetView(this);
-
    CScrollView::OnInitialUpdate();
 
    // set up initial mapping for logical size
@@ -274,6 +272,8 @@ int CDisplayView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
    if (CScrollView::OnCreate(lpCreateStruct) == -1)
 		return -1;
+
+   m_pDispMgr->SetView(this);
 
    return 0;
 }

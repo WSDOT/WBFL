@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -95,11 +95,12 @@ public:
 class EAFCLASS CEAFStatusItemCallback : public iStatusCallback
 {
 public:
-   CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,UINT helpID=0);
+   CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,LPCTSTR lpszDocSetName=NULL,UINT helpID=0);
    virtual eafTypes::StatusSeverityType GetSeverity();
    virtual void Execute(CEAFStatusItem* pItem);
 
 private:
    eafTypes::StatusSeverityType m_Severity;
+   CString m_strDocSetName;
    UINT m_HelpID;
 };

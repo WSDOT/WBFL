@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,7 +26,7 @@
 
 #include "stdafx.h"
 #include <EAF\EAFBrokerDocument.h>
-#include <EAF\EAFUtilities.h>
+#include <EAF\EAFHelp.h>
 #include <EAF\EAFHints.h>
 #include <EAF\EAFAutoProgress.h>
 #include "EAFDocProxyAgent.h"
@@ -189,14 +189,14 @@ CATID CEAFBrokerDocument::GetExtensionAgentCategoryID()
 
 BOOL CEAFBrokerDocument::Init()
 {
-   if ( !CEAFDocument::Init() )
-   {
-      return FALSE;
-   }
-
    if ( !CreateBroker() )
    {
       InitFailMessage();
+      return FALSE;
+   }
+
+   if ( !CEAFDocument::Init() )
+   {
       return FALSE;
    }
 
@@ -477,7 +477,7 @@ void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
       m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&m_pReportManager);
       m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
 
-      pBrokerInit->Integrate(TRUE,m_pReportManager == NULL ? FALSE : TRUE,m_pGraphManager == NULL ? FALSE : TRUE);
+      pBrokerInit->Integrate(TRUE,m_pReportManager == NULL ? FALSE : TRUE,m_pGraphManager == NULL ? FALSE : TRUE,TRUE);
    }
    else
    {
@@ -888,6 +888,128 @@ void CEAFBrokerDocument::SetCustomReports(const CEAFCustomReports& reports)
    m_CustomReports = reports;
 }
 
+void CEAFBrokerDocument::LoadDocumentationMap()
+{
+   CEAFDocument::LoadDocumentationMap();
+
+   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
+
+   CollectionIndexType nAgents;
+   manageAgents->get_AgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_Agent(agentIdx,&agent);
+
+      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      if ( pDocIntegration )
+      {
+         HRESULT hr = pDocIntegration->LoadDocumentationMap();
+         ATLASSERT(SUCCEEDED(hr));
+      }
+   }
+
+   manageAgents->get_ExtensionAgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_ExtensionAgent(agentIdx,&agent);
+
+      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      if ( pDocIntegration )
+      {
+         HRESULT hr = pDocIntegration->LoadDocumentationMap();
+         ATLASSERT(SUCCEEDED(hr));
+      }
+   }
+}
+
+eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+{
+   // let the base class do its thing first
+   eafTypes::HelpResult helpResult = CEAFDocument::GetDocumentLocation(lpszDocSetName,nHID,strURL);
+   if ( helpResult == eafTypes::hrOK || helpResult== eafTypes::hrTopicNotFound )
+   {
+      // if we have a good help document location or if the doc set was found but the HID was bad,
+      // we are done... return the result
+      return helpResult;
+   }
+
+   // Search through the agents and extension agents for anyone implementing the IAgentDocumentationIntegration interface
+
+   USES_CONVERSION;
+   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
+
+   CComBSTR bstrDocSetName(lpszDocSetName);
+
+   CollectionIndexType nAgents;
+   manageAgents->get_AgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_Agent(agentIdx,&agent);
+
+      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      if ( pDocIntegration )
+      {
+         CComBSTR bstrMyDocSetName;
+         pDocIntegration->GetDocumentationSetName(&bstrMyDocSetName);
+         if ( bstrMyDocSetName == bstrDocSetName )
+         {
+            // matched the target document set...
+
+            CComBSTR bstrURL;
+            HRESULT hr = pDocIntegration->GetDocumentLocation(nHID,&bstrURL);
+            if ( SUCCEEDED(hr) )
+            {
+               // found the help topic
+               strURL = OLE2T(bstrURL);
+               return eafTypes::hrOK;
+            }
+            else
+            {
+               // did not find the help topic
+               return eafTypes::hrTopicNotFound;
+            }
+         }
+      }
+   }
+
+   manageAgents->get_ExtensionAgentCount(&nAgents);
+   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   {
+      CComPtr<IAgent> agent;
+      manageAgents->get_ExtensionAgent(agentIdx,&agent);
+
+      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      if ( pDocIntegration )
+      {
+         CComBSTR bstrMyDocSetName;
+         pDocIntegration->GetDocumentationSetName(&bstrMyDocSetName);
+         if ( bstrMyDocSetName == bstrDocSetName )
+         {
+            // matched the target document set...
+
+            CComBSTR bstrURL;
+            HRESULT hr = pDocIntegration->GetDocumentLocation(nHID,&bstrURL);
+            if ( SUCCEEDED(hr) )
+            {
+               // found the help topic
+               strURL = OLE2T(bstrURL);
+               return eafTypes::hrOK;
+            }
+            else
+            {
+               // did not find the help topic
+               return eafTypes::hrTopicNotFound;
+            }
+         }
+      }
+   }
+
+   return eafTypes::hrDocSetNotFound;
+}
+
 BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 {
    BOOL bHandled = FALSE;
@@ -1071,7 +1193,7 @@ void CEAFBrokerDocument::ShowCustomReportHelp(eafTypes::CustomReportHelp helpTyp
    UINT helpID = helpType==eafTypes::crhCustomReport ? m_helpIDCustom : m_helpIDFavorite;
    if ( 0 < helpID )
    {
-      ::HtmlHelp( NULL, AfxGetApp()->m_pszHelpFilePath, HH_HELP_CONTEXT, helpID );
+      EAFHelp(GetDocumentationSetName(),helpID);
    }
 }
 

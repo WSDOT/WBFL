@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,6 +35,7 @@
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFCommandLineInfo.h>
 #include <EAF\EAFPluginCommandManager.h>
+#include <EAF\EAFMDISnapper.h>
 
 #include <comcat.h>
 
@@ -81,8 +82,6 @@ public:
    virtual void ReplaceDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
-   void SetHelpFileName(LPCTSTR lpszHelpFile);
-
    CRecentFileList* GetRecentFileList();
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
    CEAFAppPluginManager* GetAppPluginManager();
@@ -104,6 +103,36 @@ public:
    void ForEachDoc(DocCallback pfn,void* pStuff);
 
    virtual void OnMainFrameClosing(); // called by the framework when the main frame window is about to close
+
+   // Returns the name of the documentation set. This name is appended to
+   // the URL returned by GetDocumentationRootLocation()
+   // The default information returns AfxGetAppName();
+   virtual CString GetDocumentationSetName();
+
+   // Return the root location for application documentation
+   // Can be in the form of a WEB URL (http://www.mysite.com/Documentation/")
+   // or a file system URL (C:/Program Files/MyApp/Documentation/")
+   // Include the last '/'
+   // Documents may use this to build their documentation URLs
+   virtual CString GetDocumentationRootLocation() = 0;
+
+   // Return the URL for documation for the application
+   // Called by GetDocumenentLocation to form the complete
+   // documentation URL. The default documentation URL is:
+   // For an Online source
+   //     GetDocumentationRootLocation() + m_pszExeName + major.minor version number
+   // For a local source
+   //     GetDocumentationRootLocation() + m_pszExename
+   virtual CString GetDocumentationURL();
+
+   // Gets the full URL for the document associated with help id nHID
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+
+   // Toggles between online and local sources for documentation
+   void UseOnlineDocumentation(BOOL bUseOnLine);
+
+   // Returns true if an online source is being used for documentation
+   BOOL UseOnlineDocumentation() const;
 
 // Implementation
 protected:
@@ -143,6 +172,8 @@ protected:
 	//{{AFX_MSG(CEAFApp)
 		// NOTE - the ClassWizard will add and remove member functions here.
 	afx_msg void OnAppLegal();
+   afx_msg void OnHelpSource();
+   afx_msg void OnUpdateHelpSource(CCmdUI* pCmdUI);
 	afx_msg void OnFileNew();
    afx_msg void OnFileOpen();
 	afx_msg void OnEditUnits();
@@ -168,6 +199,8 @@ public:
    sysDate GetLastRunDate();
    BOOL IsFirstRun();
 
+   CEAFMDISnapper& GetMDIWndSnapper();
+
 protected:
    // Called during InitInstance when command line parameters need to be handled
    virtual void ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo);
@@ -188,10 +221,16 @@ protected:
    UINT GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
    CString GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
 
+   virtual CString GetDocumentationMapFile();
+   virtual void LoadDocumentationMap();
+
 private:
    CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
 
-   CString m_strHelpFile;
+   BOOL m_bUseOnlineDocumentation; // set to TRUE if documenation is from an online source
+   CString m_strOnlineDocumentationMapFile;
+   CString m_strDocumentationMapFile; // name of documenation map file
+   std::map<UINT,CString> m_HelpTopics; // maps a help topic ID to the topic file name
 
    CString m_LastError;
 
@@ -220,6 +259,8 @@ private:
    CString m_strWindowPlacementFormat;
 
    CEAFCommandLineInfo* m_pCommandLineInfo;
+
+   CEAFMDISnapper m_MDISnapper;
 
 	DECLARE_MESSAGE_MAP()
 

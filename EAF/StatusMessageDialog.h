@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,7 @@ class CStatusMessageDialog : public CDialog
 {
 // Construction
 public:
-	CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,UINT helpID,CWnd* pParent = NULL);   // standard constructor
+	CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CStatusMessageDialog)
@@ -57,7 +57,9 @@ public:
 
 // Implementation
 protected:
+   CString m_strDocSetName;
    UINT m_HelpID;
+
    eafTypes::StatusSeverityType m_Severity;
    BOOL m_bRemoveableOnError;
 	CString	m_Message;

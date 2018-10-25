@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManager - Manages graph definitions
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,12 +41,15 @@ static char THIS_FILE[]=__FILE__;
 CGraphBuilder::CGraphBuilder()
 {
    m_pBitmap = NULL;
+   m_nHelpID = 0;
 }
 
 CGraphBuilder::CGraphBuilder(const CGraphBuilder& other)
 {
    m_pBitmap = other.m_pBitmap;
    m_strName = other.m_strName;
+   m_nHelpID = other.m_nHelpID;
+   m_strDocSetName = other.m_strDocSetName;
 }
 
 CGraphBuilder::~CGraphBuilder()
@@ -61,6 +64,32 @@ void CGraphBuilder::SetName(LPCTSTR strName)
 LPCTSTR CGraphBuilder::GetName() const
 {
    return m_strName;
+}
+
+void CGraphBuilder::InitDocumentation(LPCTSTR lpszDocSetName,UINT nHID)
+{
+   m_strDocSetName = lpszDocSetName;
+   m_nHelpID = nHID;
+}
+
+void CGraphBuilder::SetDocumentationSetName(LPCTSTR lpszDocSetName)
+{
+   m_strDocSetName = lpszDocSetName;
+}
+
+const CString& CGraphBuilder::GetDocumentationSetName() const
+{
+   return m_strDocSetName;
+}
+
+void CGraphBuilder::SetHelpID(UINT nID)
+{
+   m_nHelpID = nID;
+}
+
+UINT CGraphBuilder::GetHelpID() const
+{
+   return m_nHelpID;
 }
 
 void CGraphBuilder::SetMenuBitmap(const CBitmap* pBmp)

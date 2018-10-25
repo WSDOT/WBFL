@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,7 @@
 
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFCommandLineInfo.h>
+#include <EAF\EAFTypes.h>
 
 class CEAFApp;
 
@@ -68,6 +69,23 @@ interface IEAFAppPlugin : IUnknown
 
    // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;
+
+   // returns the name of the documentation set used by this application plug-in
+   virtual CString GetDocumentationSetName() = 0;
+
+   // returns the URL for the documentation.
+   virtual CString GetDocumentationURL() = 0;
+
+   // Returns the name of the documentation map file
+   // Call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   virtual CString GetDocumentationMapFile() = 0;
+
+   // Called by the framework whenever the documentation map needs to be loaded or re-loaded
+   // Call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   virtual void LoadDocumentationMap() = 0;
+
+   // Returns the full documentation URL for the given URL
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nID,CString& strURL) = 0;
 };
 
 

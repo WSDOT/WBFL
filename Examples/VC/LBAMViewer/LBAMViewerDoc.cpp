@@ -237,6 +237,8 @@ BOOL CLBAMViewerDoc::OnOpenDocument(LPCTSTR lpszPathName)
    m_ResponseType = rtMz;
    m_Cumulative = FALSE;
 
+   pLoad.Detach();
+
 	return TRUE;
 }
 

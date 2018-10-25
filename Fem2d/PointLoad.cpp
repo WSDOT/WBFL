@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -481,6 +481,29 @@ void CPointLoad::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dM
 
    const Float64 L_EPS=1.0e-10; // TRICKY: tolerance is very finicky
                                // found that 1.0e-07 was too loose and 1.0e-15 too tight
+
+   // Load contributes to the internal forces if it occurs before a left cut face or
+   // the load and the left face cut are at the right end of the member
+   //     La
+   // |<------->|
+   // |         |
+   // |         |
+   // |         V
+   // |--------------------///(Left Cut Face)
+   // |          x
+   // |<------------------->|
+
+
+   // Load contributes to the internal forces if it occurs after a right cut face or
+   // the load and the right face cut are at the left end of the member
+   //             La
+   // |<--------------------->|
+   // |                       |
+   // |                       |
+   // |                       V
+   // |(Right Cut Face)///--------------------|
+   // |      x
+   // |<--------------->|
 
    if ( ((face == mftLeft)  && (x <= La+L_EPS)) ||
         ((face == mftRight) && (x >= La-L_EPS)) )

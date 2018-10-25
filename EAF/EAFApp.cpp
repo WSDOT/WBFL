@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,8 +37,8 @@
 #include <AgentTools.h>
 #include <System\ComCatMgr.h>
 
-
 #include <MFCTools\Exceptions.h>
+#include <MFCTools\VersionInfo.h>
 
 #include <EAF\EAFAboutDlg.h>
 #include "UnitsDlg.h"
@@ -63,6 +63,7 @@ unitmgtIndirectMeasure init_english_units();
 
 #define ID_REPLACE_FILE (WM_USER+1)
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp
 
@@ -73,6 +74,7 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
 {
    m_bShowLegalNotice = VARIANT_TRUE;
    m_bTipsEnabled = false;
+   m_bUseOnlineDocumentation = TRUE;
 
    // if this assert fires, we've used more than commands then are
    // reserved for EAF standard processing
@@ -214,7 +216,7 @@ BOOL CEAFApp::InitInstance()
       ProcessCommandLineOptions(cmdInfo);
    }
 
-   m_strHelpFile = m_pszHelpFilePath;
+   LoadDocumentationMap();
 
 	return TRUE;
 }
@@ -280,6 +282,9 @@ void CEAFApp::RegistryInit()
    
    ClockTy last_run = GetProfileInt(_T("Settings"),_T("LastRun"),default_time.Seconds());
    m_LastRunDate = sysTime(last_run);
+
+   CString strDocs = GetProfileString(_T("Settings"),_T("Documentation"),_T("Online"));
+   m_bUseOnlineDocumentation = (strDocs.CompareNoCase(_T("Online")) == 0 ? TRUE : FALSE);
 }
 
 void CEAFApp::RegistryExit()
@@ -288,11 +293,102 @@ void CEAFApp::RegistryExit()
 
    sysTime time;
    WriteProfileInt(_T("Settings"),_T("LastRun"),time.Seconds());
+
+   WriteProfileString(_T("Settings"),_T("Documentation"),m_bUseOnlineDocumentation == TRUE ? _T("Online") : _T("Offline"));
 }
 
 CEAFCommandLineInfo& CEAFApp::GetCommandLineInfo()
 {
    return *m_pCommandLineInfo;
+}
+
+CString CEAFApp::GetDocumentationURL()
+{
+   CString strURL;
+
+   if ( UseOnlineDocumentation() )
+   {
+      CString strExe( m_pszExeName );
+      strExe += _T(".exe");
+
+      CVersionInfo verInfo;
+      verInfo.Load(strExe);
+      
+      CString strVersion = verInfo.GetProductVersionAsString();
+
+      // remove the build and release number
+      int pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+      strVersion = strVersion.Left(pos);
+      pos = strVersion.ReverseFind(_T('.')); // find the last '.'
+      strVersion = strVersion.Left(pos);
+
+      strURL.Format(_T("%s%s/%s/"),GetDocumentationRootLocation(),m_pszExeName,strVersion);
+   }
+   else
+   {
+      strURL.Format(_T("%s%s\\"),GetDocumentationRootLocation(),m_pszExeName);
+   }
+   return strURL;
+}
+
+eafTypes::HelpResult CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+{
+   CString strDocSetName(lpszDocSetName);
+   if ( GetDocumentationSetName() == strDocSetName )
+   {
+      // we are looking in our own documentation set
+      std::map<UINT,CString>::iterator found(m_HelpTopics.find(nHID));
+      if ( found == m_HelpTopics.end() )
+      {
+         return eafTypes::hrTopicNotFound;
+      }
+
+      CString strBaseURL = GetDocumentationURL();
+      strURL.Format(_T("%s%s"),strBaseURL,found->second);
+      return eafTypes::hrOK;
+   }
+   else
+   {
+      // look in the documentation sets of our app plug-ins
+      POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
+      while ( pos != NULL )
+      {
+         CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_pDocManager->GetNextDocTemplate( pos );
+         CComPtr<IEAFAppPlugin> pAppPlugin;
+         pTemplate->GetPlugin(&pAppPlugin);
+         if ( pAppPlugin->GetDocumentationSetName() == strDocSetName )
+         {
+            return pAppPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+         }
+      }
+   }
+
+   return eafTypes::hrDocSetNotFound;
+}
+
+void CEAFApp::UseOnlineDocumentation(BOOL bUseOnLine)
+{
+   if ( m_bUseOnlineDocumentation != bUseOnLine )
+   {
+      m_bUseOnlineDocumentation = bUseOnLine;
+      
+      m_strDocumentationMapFile.Empty();
+
+      // Load the documentation map for the main executable program
+      LoadDocumentationMap();
+
+      CEAFDocument* pDoc = EAFGetDocument();
+      if ( pDoc )
+      {
+         pDoc->DocumentationSourceChanged();
+         pDoc->LoadDocumentationMap();
+      }
+   }
+}
+
+BOOL CEAFApp::UseOnlineDocumentation() const
+{
+   return m_bUseOnlineDocumentation;
 }
 
 void CEAFApp::ShowUsageMessage()
@@ -427,6 +523,8 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	//}}AFX_MSG_MAP
 	ON_COMMAND(EAFID_TIPOFTHEDAY, ShowTipOfTheDay)
 	ON_COMMAND(EAFID_APP_LEGAL, OnAppLegal)
+   ON_COMMAND(EAFID_HELP_SOURCE,OnHelpSource)
+   ON_UPDATE_COMMAND_UI(EAFID_HELP_SOURCE,OnUpdateHelpSource)
 
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, OnFileNew)
@@ -492,6 +590,16 @@ BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
 void CEAFApp::OnAppLegal() 
 {
    ShowLegalNotice();	
+}
+
+void CEAFApp::OnHelpSource()
+{
+   UseOnlineDocumentation(!m_bUseOnlineDocumentation);
+}
+
+void CEAFApp::OnUpdateHelpSource(CCmdUI* pCmdUI)
+{
+   pCmdUI->SetText(m_bUseOnlineDocumentation ? _T("Use local documentaiton") : _T("Use online documentation"));
 }
 
 void CEAFApp::OnFileNew()
@@ -619,20 +727,6 @@ void CEAFApp::ReplaceDocumentFile(LPCTSTR lpszFileName)
 void CEAFApp::OnReplaceFile()
 {
    OpenDocumentFile(m_ReplacementFileName);
-}
-
-void CEAFApp::SetHelpFileName(LPCTSTR lpszHelpFile)
-{
-   if ( lpszHelpFile == NULL )
-   {
-      free((void*)m_pszHelpFilePath);
-      m_pszHelpFilePath = _tcsdup(m_strHelpFile);
-   }
-   else
-   {
-      free((void*)m_pszHelpFilePath);
-      m_pszHelpFilePath = _tcsdup(lpszHelpFile);
-   }
 }
 
 LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg) 
@@ -835,6 +929,11 @@ sysDate CEAFApp::GetLastRunDate()
 BOOL CEAFApp::IsFirstRun()
 {
    return ( GetLastRunDate() < GetInstallDate() ) ? TRUE : FALSE;
+}
+
+CEAFMDISnapper& CEAFApp::GetMDIWndSnapper()
+{
+   return m_MDISnapper;
 }
 
 void CEAFApp::Fire_UnitsChanged()
@@ -1253,6 +1352,39 @@ AcceptanceType CEAFApp::ShowLegalNotice(VARIANT_BOOL bGiveChoice)
 
    return accept;
 }
+
+CString CEAFApp::GetDocumentationSetName()
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   return AfxGetAppName();
+}
+
+CString CEAFApp::GetDocumentationMapFile()
+{
+   if ( UseOnlineDocumentation() && !m_strOnlineDocumentationMapFile.IsEmpty() )
+   {
+      // if we are using online documentation and we have the file name, no need to get it again
+      m_strDocumentationMapFile = m_strOnlineDocumentationMapFile;
+   }
+
+   if ( m_strDocumentationMapFile.IsEmpty() )
+   {
+      m_strDocumentationMapFile = EAFGetDocumentationMapFile(GetDocumentationSetName(),GetDocumentationURL(),GetDocumentationRootLocation());
+
+      if ( UseOnlineDocumentation() )
+      {
+         m_strOnlineDocumentationMapFile = m_strDocumentationMapFile;
+      }
+   }
+
+   return m_strDocumentationMapFile;
+}
+
+void CEAFApp::LoadDocumentationMap()
+{
+   EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics);
+}
+
 
 ////////////////////////////////////////////////////
 IMPLEMENT_DYNAMIC(CEAFPluginApp, CEAFApp)

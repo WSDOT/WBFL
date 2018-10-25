@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -59,6 +59,21 @@ struct eafTypes
       crhCustomReport,
       crhFavoriteReport
    } CustomReportHelp;
+
+   typedef enum HttpGetResult
+   {
+      hgrOk,
+      hgrInvalidUrl,
+      hgrConnectionError,
+      hgrNotFound
+   } HttpGetResult;
+
+   typedef enum HelpResult
+   {
+      hrOK,
+      hrDocSetNotFound,
+      hrTopicNotFound
+   } HelpResult;
 };
 
 typedef IDType StatusGroupIDType;
