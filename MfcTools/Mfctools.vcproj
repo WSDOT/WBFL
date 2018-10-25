@@ -2680,6 +2680,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RBChoiceDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\RebarMaterialComboBox.cpp"
 				>
 			</File>
@@ -3748,6 +3752,10 @@
 			</File>
 			<File
 				RelativePath=".\QuestionDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RBChoiceDlg.h"
 				>
 			</File>
 			<File

@@ -25,6 +25,7 @@
 #include <MfcTools\Prompts.h>
 #include "QuestionDlg.h"
 #include "ChoiceDlg.h"
+#include "RBChoiceDlg.h"
 #include "ChoiceListDlg.h"
 
 #ifdef _DEBUG
@@ -65,9 +66,36 @@ int AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int d
    dlg.m_HelpID = helpID;
 
    if ( dlg.DoModal() == IDOK )
+   {
       return dlg.m_Choice;
+   }
    else
+   {
       return -1;
+   }
+}
+
+int AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice,BOOL bCancelButton,LPCTSTR lpszHelpFile,UINT helpID)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
+   CRBChoiceDlg dlg;
+   dlg.m_bCancel = bCancelButton;
+   dlg.m_Title = lpszTitle;
+   dlg.m_Question = lpszQuestion;
+   dlg.m_Responses = lpszResponses;
+   dlg.m_Choice = defChoice;
+   dlg.m_HelpFile = lpszHelpFile;
+   dlg.m_HelpID = helpID;
+
+   if ( dlg.DoModal() == IDOK )
+   {
+      return dlg.m_Choice;
+   }
+   else
+   {
+      return -1;
+   }
 }
 
 std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszOptions,CMultiChoiceValidator* pValidator,const std::vector<int>& defChoices,BOOL bCancelButton,LPCTSTR lpszHelpFile,UINT helpID)
@@ -85,7 +113,11 @@ std::vector<int> AfxMultiChoice(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR l
    dlg.m_pValidator = pValidator;
 
    if ( dlg.DoModal() == IDOK )
+   {
       return dlg.m_Choices;
+   }
    else
+   {
       return std::vector<int>();
+   }
 }

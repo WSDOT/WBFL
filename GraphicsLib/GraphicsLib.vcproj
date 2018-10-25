@@ -1276,6 +1276,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\GraphColor.cpp"
+				>
+			</File>
+			<File
 				RelativePath="GraphicsLib.def"
 				>
 				<FileConfiguration
@@ -1980,6 +1984,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\GraphicsLib\Dimension.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\GraphicsLib\GraphColor.h"
 				>
 			</File>
 			<File

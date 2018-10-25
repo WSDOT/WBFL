@@ -97,16 +97,18 @@ void CEAFBrokerDocument::OnCloseDocument()
    CComPtr<IEAFAppPlugin> pAppPlugin;
    pTemplate->GetPlugin(&pAppPlugin);
    CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+   if ( pCustomReportMixin )
+   {
+      BOOL bDisplayFavorites = DisplayFavoriteReports();
+      const std::vector<std::_tstring>& vFavorites = GetFavoriteReports();
 
-   BOOL bDisplayFavorites = DisplayFavoriteReports();
-   std::vector<std::_tstring> vFavorites = GetFavoriteReports();
+      pCustomReportMixin->DisplayFavoriteReports(bDisplayFavorites);
+      pCustomReportMixin->SetFavoriteReports(vFavorites);
 
-   pCustomReportMixin->DisplayFavoriteReports(bDisplayFavorites);
-   pCustomReportMixin->SetFavoriteReports(vFavorites);
-
-   // user-defined custom reports
-   CEAFCustomReports reports = GetCustomReports();
-   pCustomReportMixin->SetCustomReports(reports);
+      // user-defined custom reports
+      const CEAFCustomReports& reports = GetCustomReports();
+      pCustomReportMixin->SetCustomReports(reports);
+   }
 
    CEAFDocument::OnCloseDocument();
 }
@@ -131,21 +133,23 @@ void CEAFBrokerDocument::OnCreateFinalize()
    CComPtr<IEAFAppPlugin> pAppPlugin;
    pTemplate->GetPlugin(&pAppPlugin);
    CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+   if ( pCustomReportMixin )
+   {
+      BOOL bDisplayFavorites = pCustomReportMixin->DisplayFavoriteReports();
+      std::vector<std::_tstring> vFavorites = pCustomReportMixin->GetFavoriteReports();
 
-   BOOL bDisplayFavorites = pCustomReportMixin->DisplayFavoriteReports();
-   std::vector<std::_tstring> vFavorites = pCustomReportMixin->GetFavoriteReports();
+      DisplayFavoriteReports(bDisplayFavorites);
+      SetFavoriteReports(vFavorites);
 
-   DisplayFavoriteReports(bDisplayFavorites);
-   SetFavoriteReports(vFavorites);
+      CEAFCustomReports customs = pCustomReportMixin->GetCustomReports();
+      SetCustomReports(customs);
 
-   CEAFCustomReports customs = pCustomReportMixin->GetCustomReports();
-   SetCustomReports(customs);
+      // At this point we have loaded all hard-coded reports and read custom
+      // report data from the registry, and broker is loaded. Create custom reports
+      m_bmpCustomReports.LoadBitmap(IDB_CREPORT_BMP);
 
-   // At this point we have loaded all hard-coded reports and read custom
-   // report data from the registry, and broker is loaded. Create custom reports
-   m_bmpCustomReports.LoadBitmap(IDB_CREPORT_BMP);
-
-   IntegrateCustomReports(true);
+      IntegrateCustomReports(true);
+   }
 }
 
 /////////////////////////////////////////////////////////////////////////////

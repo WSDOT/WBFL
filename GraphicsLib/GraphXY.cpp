@@ -121,7 +121,7 @@ IndexType grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidt
    IndexType cookie = m_GraphDataMap.size();
 
    GraphData gd;
-   gd.Label = lpszLabel;
+   gd.Label = (lpszLabel == NULL ? _T("") : lpszLabel);
    gd.Pen.Color = crColor;
    gd.Pen.Width = nWidth;
    gd.Pen.Style = nPenStyle;
