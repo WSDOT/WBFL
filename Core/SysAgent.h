@@ -96,7 +96,10 @@ public:
 private:
    IBroker* m_pBroker;
    CProgressThread* m_pThread;
-   Int16 m_cProgressRef;
+   Int16 m_cProgressRef; // progress thread ref count
+   std::vector<int> m_ProgressMsgMarker; // index into m_Messages where the first message for
+                                         // a progress window instance begins
+   std::vector<std::string> m_Messages;
 
    BOOL m_bEndLines;
    std::vector<boost::shared_ptr<std::ofstream> > m_LogFiles;

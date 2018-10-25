@@ -784,7 +784,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       cmdInfo.m_bCommandLineMode = TRUE; // will cause an application shutdown
    }
 
-   if ( !cmdInfo.m_bError && 1 < cmdInfo.m_nParams)
+   if ( !cmdInfo.m_bError && 1 <= cmdInfo.m_nParams)
    {
       // If a document was opened when processing the shell command, get the doc template
       // and then the app plugin... let the app plugin deal with command line options

@@ -148,6 +148,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    if ( m_cProgressRef > 1 )
    {
       //m_ProgressDlg.ResetContinueState();
+      m_ProgressMsgMarker.push_back(m_Messages.size());
       return S_OK;
    }
 
@@ -163,6 +164,8 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    }
 
    HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
+   m_ProgressMsgMarker.push_back(0);
+   UpdateMessage("Working...");
    ATLASSERT( SUCCEEDED(hr) );
    if ( FAILED(hr) )
    {
@@ -191,6 +194,8 @@ STDMETHODIMP CSysAgent::Increment()
 
 STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 {
+   m_Messages.push_back(msg);
+
    if ( m_pThread )
       m_pThread->UpdateMessage(msg);
 
@@ -237,6 +242,12 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
          pMainWnd->EnableWindow(TRUE);
          pMainWnd->SetActiveWindow();
       }
+   }
+   else
+   {
+      m_Messages.erase(m_Messages.begin()+m_ProgressMsgMarker.back(),m_Messages.end());
+      m_ProgressMsgMarker.pop_back();
+      m_pThread->UpdateMessage(m_Messages.back().c_str());
    }
 
    return S_OK;
