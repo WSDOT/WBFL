@@ -52,14 +52,14 @@ void CProfilePointCollection::FinalRelease()
    UnadviseAll();
 }
 
-STDMETHODIMP CProfilePointCollection::get_Item(CogoObjectID key, IProfilePoint **pVal)
+STDMETHODIMP CProfilePointCollection::get_Item(CogoObjectID id, IProfilePoint **pVal)
 {
    CHECK_RETVAL(pVal);
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return ProfilePointNotFound(key);
+      return ProfilePointNotFound(id);
    }
 
    std::pair<CogoObjectID,CComVariant> p = *found;
@@ -68,26 +68,26 @@ STDMETHODIMP CProfilePointCollection::get_Item(CogoObjectID key, IProfilePoint *
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::putref_Item(CogoObjectID key, IProfilePoint *newVal)
+STDMETHODIMP CProfilePointCollection::putref_Item(CogoObjectID id, IProfilePoint *newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return ProfilePointNotFound(key);
+      return ProfilePointNotFound(id);
    }
 
    CComVariant& var = (*found).second;
 
    CComQIPtr<IProfilePoint> old_ProfilePoint(var.pdispVal);
-   Unadvise(key,old_ProfilePoint);
+   Unadvise(id,old_ProfilePoint);
 
    var = newVal;
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnProfilePointChanged(key,newVal);
+   Fire_OnProfilePointChanged(id,newVal);
 
 	return S_OK;
 }
@@ -99,27 +99,27 @@ STDMETHODIMP CProfilePointCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Remove(CogoObjectID key)
+STDMETHODIMP CProfilePointCollection::Remove(CogoObjectID id)
 {
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return ProfilePointNotFound(key);
+      return ProfilePointNotFound(id);
    }
 
    CComVariant& var = (*found).second;
    CComQIPtr<IProfilePoint> pp(var.pdispVal);
-   Unadvise(key,pp);
+   Unadvise(id,pp);
 
    m_coll.erase(found);
 
-   Fire_OnProfilePointRemoved(key);
+   Fire_OnProfilePointRemoved(id);
 
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Add(CogoObjectID key, VARIANT varStation, Float64 elevation,IProfilePoint* *pp)
+STDMETHODIMP CProfilePointCollection::Add(CogoObjectID id, VARIANT varStation, Float64 elevation,IProfilePoint* *pp)
 {
    if ( pp != NULL )
    {
@@ -141,28 +141,28 @@ STDMETHODIMP CProfilePointCollection::Add(CogoObjectID key, VARIANT varStation, 
       (*pp)->AddRef();
    }
 
-   return AddEx(key,point);
+   return AddEx(id,point);
 }
 
-STDMETHODIMP CProfilePointCollection::AddEx(CogoObjectID key, IProfilePoint* newVal)
+STDMETHODIMP CProfilePointCollection::AddEx(CogoObjectID id, IProfilePoint* newVal)
 {
    CHECK_IN(newVal);
    
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found != m_coll.end() )
    {
-      return ProfilePointAlreadyDefined(key);
+      return ProfilePointAlreadyDefined(id);
    }
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   m_coll.insert(std::make_pair(key,var));
+   m_coll.insert(std::make_pair(id,var));
 
    // Hookup to the connection ProfilePoint
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnProfilePointAdded(key,newVal);
+   Fire_OnProfilePointAdded(id,newVal);
 
 	return S_OK;
 }
@@ -175,10 +175,10 @@ STDMETHODIMP CProfilePointCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::FindKey(IProfilePoint* pp,CogoObjectID* key)
+STDMETHODIMP CProfilePointCollection::FindID(IProfilePoint* pp,CogoObjectID* id)
 {
    CHECK_IN(pp);
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -188,7 +188,7 @@ STDMETHODIMP CProfilePointCollection::FindKey(IProfilePoint* pp,CogoObjectID* ke
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(pp) )
       {
-         *key = item.first;
+         *id = item.first;
          return S_OK;
       }
    }
@@ -196,11 +196,11 @@ STDMETHODIMP CProfilePointCollection::FindKey(IProfilePoint* pp,CogoObjectID* ke
    return E_FAIL;
 }
 
-STDMETHODIMP CProfilePointCollection::get__EnumKeys(IEnumKeys** ppenum)
+STDMETHODIMP CProfilePointCollection::get__EnumIDs(IEnumIDs** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumIDs,&IID_IEnumIDs, CogoObjectID, MapCopyID<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -215,9 +215,9 @@ STDMETHODIMP CProfilePointCollection::get__EnumKeys(IEnumKeys** ppenum)
    return S_OK;
 }
 
-STDMETHODIMP CProfilePointCollection::Key(CollectionIndexType index,CogoObjectID* key)
+STDMETHODIMP CProfilePointCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
@@ -227,7 +227,7 @@ STDMETHODIMP CProfilePointCollection::Key(CollectionIndexType index,CogoObjectID
       iter++;
 
    std::pair<CogoObjectID,CComVariant> p = *iter;
-   *key = p.first;
+   *id = p.first;
 
    return S_OK;
 }
@@ -286,10 +286,10 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
       CComPtr<IProfilePoint> clonePP;
       pp->Clone(&clonePP);
 
-      CogoObjectID key;
-      Key(count++,&key);
+      CogoObjectID id;
+      ID(count++,&id);
 
-      (*clone)->AddEx(key,clonePP);
+      (*clone)->AddEx(id,clonePP);
 
       pp.Release();
    }
@@ -301,19 +301,19 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
 
 STDMETHODIMP CProfilePointCollection::OnProfilePointChanged(IProfilePoint* pp)
 {
-   CogoObjectID key;
-   HRESULT hr = FindKey(pp,&key);
+   CogoObjectID id;
+   HRESULT hr = FindID(pp,&id);
 
    // This container only listens to events from ProfilePoint objects in this 
-   // container. If the key isn't found an error has been made somewhere
+   // container. If the id isn't found an error has been made somewhere
    ATLASSERT( SUCCEEDED(hr) );
 
-   Fire_OnProfilePointChanged(key,pp);
+   Fire_OnProfilePointChanged(id,pp);
 
    return S_OK;
 }
 
-void CProfilePointCollection::Advise(CogoObjectID key,IProfilePoint* pp)
+void CProfilePointCollection::Advise(CogoObjectID id,IProfilePoint* pp)
 {
    DWORD dwCookie;
    CComPtr<IProfilePoint> pCP(pp);
@@ -324,12 +324,12 @@ void CProfilePointCollection::Advise(CogoObjectID key,IProfilePoint* pp)
       return;
    }
 
-   m_Cookies.insert( std::make_pair(key,dwCookie) );
+   m_Cookies.insert( std::make_pair(id,dwCookie) );
 
    InternalRelease(); // Break circular reference
 }
 
-void CProfilePointCollection::Unadvise(CogoObjectID key,IProfilePoint* pp)
+void CProfilePointCollection::Unadvise(CogoObjectID id,IProfilePoint* pp)
 {
    ATLASSERT(pp != 0);
 
@@ -339,7 +339,7 @@ void CProfilePointCollection::Unadvise(CogoObjectID key,IProfilePoint* pp)
 
    // Lookup the cookie
    std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( key );
+   found = m_Cookies.find( id );
    if ( found == m_Cookies.end() )
    {
       ATLTRACE("Failed to disconnect connection ProfilePoint with ProfilePoint object\n");
@@ -357,7 +357,7 @@ void CProfilePointCollection::Unadvise(CogoObjectID key,IProfilePoint* pp)
    ATLASSERT(SUCCEEDED(hr));
 
    // Remove cookie from map
-   m_Cookies.erase( key );
+   m_Cookies.erase( id );
 }
 
 void CProfilePointCollection::UnadviseAll()
@@ -365,30 +365,30 @@ void CProfilePointCollection::UnadviseAll()
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoObjectID key = (*iter).first;
+      CogoObjectID id = (*iter).first;
       CComQIPtr<IProfilePoint> pp( (*iter).second.pdispVal );
-      Unadvise(key,pp);
+      Unadvise(id,pp);
    }
 }
 
-HRESULT CProfilePointCollection::ProfilePointNotFound(CogoObjectID key)
+HRESULT CProfilePointCollection::ProfilePointNotFound(CogoObjectID id)
 {
-   return ProfilePointKeyError(key,IDS_E_PROFILEPOINTNOTFOUND,COGO_E_PROFILEPOINTNOTFOUND);
+   return ProfilePointIDError(id,IDS_E_PROFILEPOINTNOTFOUND,COGO_E_PROFILEPOINTNOTFOUND);
 }
 
-HRESULT CProfilePointCollection::ProfilePointAlreadyDefined(CogoObjectID key)
+HRESULT CProfilePointCollection::ProfilePointAlreadyDefined(CogoObjectID id)
 {
-   return ProfilePointKeyError(key,IDS_E_PROFILEPOINTALREADYDEFINED,COGO_E_PROFILEPOINTALREADYDEFINED);
+   return ProfilePointIDError(id,IDS_E_PROFILEPOINTALREADYDEFINED,COGO_E_PROFILEPOINTALREADYDEFINED);
 }
 
-HRESULT CProfilePointCollection::ProfilePointKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
+HRESULT CProfilePointCollection::ProfilePointIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = _stprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, id );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CProfilePointCollection,&CLSID_ProfilePointCollection>::Error(oleMsg, IID_IProfilePointCollection, hRes);

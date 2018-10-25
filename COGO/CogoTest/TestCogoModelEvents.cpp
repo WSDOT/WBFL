@@ -188,13 +188,13 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    // Alignment
-   CComPtr<IPathCollection> alignments;
+   CComPtr<IAlignmentCollection> alignments;
    model->get_Alignments(&alignments);
    pTestCogoModel->InitEventTest();
    TRY_TEST(alignments->Add(1,NULL),S_OK);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
-   CComPtr<IPath> alignment;
+   CComPtr<IAlignment> alignment;
    alignments->get_Item(1,&alignment);
    point.Release();
    point.CoCreateInstance(CLSID_Point2d);
@@ -213,6 +213,13 @@ void CTestCogoModelEvents::Test()
    alignment->get_Profile(&profile);
    pTestCogoModel->InitEventTest();
    profile->AddEx(pp);
+   TRY_TEST(pTestCogoModel->PassedEventTest(),true);
+
+   CComPtr<IStationEquationCollection> equations;
+   alignment->get_StationEquations(&equations);
+   pTestCogoModel->InitEventTest();
+   CComPtr<IStationEquation> equation;
+   equations->Add(10,50,&equation);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
 
    alignments->Add(2,NULL);
@@ -242,14 +249,6 @@ void CTestCogoModelEvents::Test()
 
    pTestCogoModel->InitEventTest();
    point->Move(10,10);
-   TRY_TEST(pTestCogoModel->PassedEventTest(),true);
-
-   pp.Release();
-   pp.CoCreateInstance(CLSID_ProfilePoint);
-   profile.Release();
-   path->get_Profile(&profile);
-   pTestCogoModel->InitEventTest();
-   profile->AddEx(pp);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
 
    paths->Add(2,NULL);
@@ -416,6 +415,13 @@ STDMETHODIMP CTestCogoModelEvents::OnAlignmentChanged(ICogoModel* cm,CogoObjectI
 STDMETHODIMP CTestCogoModelEvents::OnProfileChanged(ICogoModel* cm,IProfile* profile)
 {
 //   ::MessageBox(NULL,"OnProfileChanged","Event",MB_OK);
+   Pass();
+   return S_OK;
+}
+
+STDMETHODIMP CTestCogoModelEvents::OnStationEquationsChanged(ICogoModel* cm,IStationEquationCollection* equations)
+{
+//   ::MessageBox(NULL,"OnStationEquationsChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

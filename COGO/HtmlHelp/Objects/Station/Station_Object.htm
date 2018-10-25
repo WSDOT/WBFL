@@ -25,8 +25,8 @@
 <meta name=filetype content=kadov>
 <meta name=filetype-version content=1>
 <meta name=page-count content=1>
-<meta name=layout-height content=583>
-<meta name=layout-width content=963>
+<meta name=layout-height content=703>
+<meta name=layout-width content=1586>
 
 
 <!--(Links)=========================================================-->
@@ -44,7 +44,22 @@
 
 <h1>Station Object</h1>
 
-<p>An object that represents a station.</p>
+<p>An object that represents a station. A Station is defined by its StationZoneIndex 
+ and its Value. The StationZoneIndex describes which in StationEquation 
+ zone the Station is located. The number of StationEquation zones is always 
+ one greater that the number of station equations. The Value of a Station 
+ is its location within the station equation zone.</p>
+
+<p>Consider an alignment that has a station equation of 3+00 Back = 7+00 
+ Ahead and 14+00 Back = 9+00 Ahead. A station at 10+00 is not uniquely 
+ identified because it can occur in two locations. The station is uniquely 
+ identified when its StationZoneIndex is used. Station 10+00 in station 
+ zone 1 is uniquely identified.</p>
+
+<p>A station can also be represented by its normalized value. Its normalized 
+ value is the location of the station without considering station equations. 
+ Station 10+00 in Station Zone 1 is 300 ft past the first station equation 
+ and has a normalized value of 6+00. </p>
 
 <p><span style="font-weight: bold;">Properties</span></p>
 
@@ -100,6 +115,52 @@
  interface</td></tr>
 
 <tr>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 5%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=5%>
+<p style="margin-bottom: 0;"><img src="../../prop_rw.gif"
+									style="width: 20px;
+											height: 18px;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;
+											border-style: none;"
+									width=20
+									height=18
+									border=0></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 26%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=26%>
+<p style="margin-bottom: 0;"><a HREF="StationZoneIndex_Property_(Station_Object).htm">StationZoneIndex</a></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 69%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=69%>
+<p style="margin-bottom: 0;">Gets/Sets the station zone index</td></tr>
+
+<tr>
 <td style="x-cell-content-align: TOP;
 			width: 5%;
 			padding-left: 2px;
@@ -137,8 +198,7 @@
 			padding-bottom: 2px;"
 	valign=top
 	width=69%>
-<p style="margin-bottom: 0;">Gets/Sets the station value as a floating 
- point number</td></tr>
+<p style="margin-bottom: 0;">Gets/Sets the station value</td></tr>
 </table>
 
 <p><span style="font-weight: bold;">Methods</span></p>
@@ -152,6 +212,145 @@
 				border-spacing: 0px;"
 		cellspacing=0
 		width=100%>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 5%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=5%>
+<p style="margin-bottom: 0;"><img src="../../method.gif"
+									style="width: 17px;
+											height: 16px;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;
+											border-style: none;"
+									width=17
+									height=16
+									border=0></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 26%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=26%>
+<p style="margin-bottom: 0;"><a HREF="GetStation_Method_(Station_Object).htm">GetStation</a></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 69%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=69%>
+<p style="margin-bottom: 0;">Get the station zone index and value</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 5%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=5%>
+<p style="margin-bottom: 0;"><img src="../../method.gif"
+									style="width: 17px;
+											height: 16px;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;
+											border-style: none;"
+									width=17
+									height=16
+									border=0></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 26%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=26%>
+<p style="margin-bottom: 0;"><a HREF="SetStation_Method_(Station_Object).htm">SetStation</a></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 69%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=69%>
+<p style="margin-bottom: 0;">Set the station zone index and value</td></tr>
+
+<tr>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 5%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=5%>
+<p style="margin-bottom: 0;"><img src="../../method.gif"
+									style="width: 17px;
+											height: 16px;
+											margin-top: 0px;
+											margin-bottom: 0px;
+											margin-left: 0px;
+											margin-right: 0px;
+											border-style: none;
+											border-style: none;"
+									width=17
+									height=16
+									border=0></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 26%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=26%>
+<p style="margin-bottom: 0;"><a HREF="FromVariant_Method_(Station_Object).htm">FromVariant</a></td>
+<td colspan=1
+	rowspan=1
+	style="x-cell-content-align: TOP;
+			width: 69%;
+			padding-left: 2px;
+			padding-top: 2px;
+			padding-right: 2px;
+			padding-bottom: 2px;"
+	valign=top
+	width=69%>
+<p style="margin-bottom: 0;">Initialized this object using a station stored 
+ in a variant</td></tr>
 
 <tr>
 <td style="x-cell-content-align: TOP;

@@ -70,14 +70,14 @@ void CLineSegmentCollection::FinalRelease()
 //   return S_OK;
 //}
 
-STDMETHODIMP CLineSegmentCollection::get_Item(CogoObjectID key, ILineSegment2d* *pVal)
+STDMETHODIMP CLineSegmentCollection::get_Item(CogoObjectID id, ILineSegment2d* *pVal)
 {
    CHECK_RETVAL(pVal);
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return LineSegNotFound(key);
+      return LineSegNotFound(id);
    }
 
    std::pair<CogoObjectID,CComVariant> p = *found;
@@ -86,26 +86,26 @@ STDMETHODIMP CLineSegmentCollection::get_Item(CogoObjectID key, ILineSegment2d* 
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::putref_Item(CogoObjectID key, ILineSegment2d* newVal)
+STDMETHODIMP CLineSegmentCollection::putref_Item(CogoObjectID id, ILineSegment2d* newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return LineSegNotFound(key);
+      return LineSegNotFound(id);
    }
 
    CComVariant& var = (*found).second;
 
    CComQIPtr<ILineSegment2d> old_ls(var.pdispVal);
-   Unadvise(key,old_ls);
+   Unadvise(id,old_ls);
 
    var = newVal;
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnLineSegmentChanged(key,newVal);
+   Fire_OnLineSegmentChanged(id,newVal);
 
 	return S_OK;
 }
@@ -117,7 +117,7 @@ STDMETHODIMP CLineSegmentCollection::get_Count(CollectionIndexType *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID key, IPoint2d* start, IPoint2d* end,ILineSegment2d* *ls)
+STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID id, IPoint2d* start, IPoint2d* end,ILineSegment2d* *ls)
 {
    CHECK_IN(start);
    CHECK_IN(end);
@@ -139,48 +139,48 @@ STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID key, IPoint2d* start, IPoi
       (*ls)->AddRef();
    }
 
-   return AddEx(key,newLS);
+   return AddEx(id,newLS);
 }
 
-STDMETHODIMP CLineSegmentCollection::AddEx(CogoObjectID key, ILineSegment2d* newVal)
+STDMETHODIMP CLineSegmentCollection::AddEx(CogoObjectID id, ILineSegment2d* newVal)
 {
    CHECK_IN(newVal);
    
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found != m_coll.end() )
    {
-      return LineSegAlreadyDefined(key);
+      return LineSegAlreadyDefined(id);
    }
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
-   m_coll.insert(std::make_pair(key,var));
+   m_coll.insert(std::make_pair(id,var));
 
    // Hookup to the connection point
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnLineSegmentAdded(key,newVal);
+   Fire_OnLineSegmentAdded(id,newVal);
 
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Remove(CogoObjectID key)
+STDMETHODIMP CLineSegmentCollection::Remove(CogoObjectID id)
 {
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return LineSegNotFound(key);
+      return LineSegNotFound(id);
    }
 
    CComVariant& var = (*found).second;
    CComQIPtr<ILineSegment2d> ls(var.pdispVal);
-   Unadvise(key,ls);
+   Unadvise(id,ls);
 
    m_coll.erase(found);
 
-   Fire_OnLineSegmentRemoved(key);
+   Fire_OnLineSegmentRemoved(id);
 
 	return S_OK;
 }
@@ -193,10 +193,10 @@ STDMETHODIMP CLineSegmentCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::FindKey(ILineSegment2d* ls, CogoObjectID* key)
+STDMETHODIMP CLineSegmentCollection::FindID(ILineSegment2d* ls, CogoObjectID* id)
 {
    CHECK_IN(ls);
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -206,7 +206,7 @@ STDMETHODIMP CLineSegmentCollection::FindKey(ILineSegment2d* ls, CogoObjectID* k
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(ls) )
       {
-         *key = item.first;
+         *id = item.first;
          return S_OK;
       }
    }
@@ -214,11 +214,11 @@ STDMETHODIMP CLineSegmentCollection::FindKey(ILineSegment2d* ls, CogoObjectID* k
    return E_FAIL;
 }
 
-STDMETHODIMP CLineSegmentCollection::get__EnumKeys(IEnumKeys** ppenum)
+STDMETHODIMP CLineSegmentCollection::get__EnumIDs(IEnumIDs** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumIDs,&IID_IEnumIDs, CogoObjectID, MapCopyID<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -267,9 +267,9 @@ STDMETHODIMP CLineSegmentCollection::putref_Factory(ILineSegment2dFactory* facto
    return S_OK;
 }
 
-STDMETHODIMP CLineSegmentCollection::Key(CollectionIndexType index,CogoObjectID* key)
+STDMETHODIMP CLineSegmentCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
@@ -279,7 +279,7 @@ STDMETHODIMP CLineSegmentCollection::Key(CollectionIndexType index,CogoObjectID*
       iter++;
 
    std::pair<CogoObjectID,CComVariant> p = *iter;
-   *key = p.first;
+   *id = p.first;
 
    return S_OK;
 }
@@ -318,10 +318,10 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
       cloneStart->MoveEx(start);
       cloneEnd->MoveEx(end);
 
-      CogoObjectID key;
-      Key(count++,&key);
+      CogoObjectID id;
+      ID(count++,&id);
 
-      (*clone)->AddEx(key,cloneLS);
+      (*clone)->AddEx(id,cloneLS);
 
       ls.Release();
    };
@@ -334,21 +334,21 @@ STDMETHODIMP CLineSegmentCollection::OnLineSegmentChanged(ILineSegment2d* lineSe
    CComQIPtr<ILineSegment2d> lineSegEx(lineSeg);
    ATLASSERT( lineSegEx != NULL ); // better be listening only to LineSegment2dEx objects
 
-   CogoObjectID key;
-   HRESULT hr = FindKey(lineSegEx,&key);
+   CogoObjectID id;
+   HRESULT hr = FindID(lineSegEx,&id);
 
    // This container only listens to events from linesegment objects in this 
-   // container. If the key isn't found an error has been made somewhere
+   // container. If the id isn't found an error has been made somewhere
    ATLASSERT( SUCCEEDED(hr) );
 
 
-   Fire_OnLineSegmentChanged(key,lineSegEx);
+   Fire_OnLineSegmentChanged(id,lineSegEx);
 
    return S_OK;
 }
 
 
-void CLineSegmentCollection::Advise(CogoObjectID key,ILineSegment2d* lineSeg)
+void CLineSegmentCollection::Advise(CogoObjectID id,ILineSegment2d* lineSeg)
 {
    DWORD dwCookie;
    CComPtr<ILineSegment2d> pCP(lineSeg);
@@ -359,12 +359,12 @@ void CLineSegmentCollection::Advise(CogoObjectID key,ILineSegment2d* lineSeg)
       return;
    }
 
-   m_Cookies.insert( std::make_pair(key,dwCookie) );
+   m_Cookies.insert( std::make_pair(id,dwCookie) );
 
    InternalRelease(); // Break circular reference
 }
 
-void CLineSegmentCollection::Unadvise(CogoObjectID key,ILineSegment2d* lineSeg)
+void CLineSegmentCollection::Unadvise(CogoObjectID id,ILineSegment2d* lineSeg)
 {
    ATLASSERT(lineSeg != 0);
 
@@ -374,7 +374,7 @@ void CLineSegmentCollection::Unadvise(CogoObjectID key,ILineSegment2d* lineSeg)
 
    // Lookup the cookie
    std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( key );
+   found = m_Cookies.find( id );
    if ( found == m_Cookies.end() )
    {
       ATLTRACE("Failed to disconnect connection point with LineSegment object\n");
@@ -392,7 +392,7 @@ void CLineSegmentCollection::Unadvise(CogoObjectID key,ILineSegment2d* lineSeg)
    ATLASSERT(SUCCEEDED(hr));
 
    // Remove cookie from map
-   m_Cookies.erase( key );
+   m_Cookies.erase( id );
 }
 
 void CLineSegmentCollection::UnadviseAll()
@@ -400,30 +400,30 @@ void CLineSegmentCollection::UnadviseAll()
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoObjectID key = (*iter).first;
+      CogoObjectID id = (*iter).first;
       CComQIPtr<ILineSegment2d> lineSeg( (*iter).second.pdispVal );
-      Unadvise(key,lineSeg);
+      Unadvise(id,lineSeg);
    }
 }
 
-HRESULT CLineSegmentCollection::LineSegNotFound(CogoObjectID key)
+HRESULT CLineSegmentCollection::LineSegNotFound(CogoObjectID id)
 {
-   return LineSegKeyError(key,IDS_E_LINESEGMENTNOTFOUND,COGO_E_LINESEGMENTNOTFOUND);
+   return LineSegIDError(id,IDS_E_LINESEGMENTNOTFOUND,COGO_E_LINESEGMENTNOTFOUND);
 }
 
-HRESULT CLineSegmentCollection::LineSegAlreadyDefined(CogoObjectID key)
+HRESULT CLineSegmentCollection::LineSegAlreadyDefined(CogoObjectID id)
 {
-   return LineSegKeyError(key,IDS_E_LINESEGMENTALREADYDEFINED,COGO_E_LINESEGMENTALREADYDEFINED);
+   return LineSegIDError(id,IDS_E_LINESEGMENTALREADYDEFINED,COGO_E_LINESEGMENTALREADYDEFINED);
 }
 
-HRESULT CLineSegmentCollection::LineSegKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
+HRESULT CLineSegmentCollection::LineSegIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = _stprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, id );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return CComCoClass<CLineSegmentCollection,&CLSID_LineSegmentCollection>::Error(oleMsg, IID_ILineSegmentCollection, hRes);

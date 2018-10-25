@@ -42,6 +42,8 @@ HRESULT CTendon::FinalConstruct()
    m_DuctDiameter     = 0.0;
    m_StrandCount    = 0;
 
+   m_JackingEnd = jeLeft;
+
    return S_OK;
 }
 
@@ -229,6 +231,19 @@ STDMETHODIMP CTendon::get_End(IPoint3d** end)
    ATLASSERT(m_coll.size() != 0);
    CComPtr<ITendonSegment> segment = m_coll.back().second.m_T;
    return segment->get_End(end);
+}
+
+STDMETHODIMP CTendon::get_JackingEnd(JackingEndType* type)
+{
+   CHECK_RETVAL(type);
+   *type = m_JackingEnd;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::put_JackingEnd(JackingEndType type)
+{
+   m_JackingEnd = type;
+   return S_OK;
 }
 
 /////////////////////////////////////////////////////

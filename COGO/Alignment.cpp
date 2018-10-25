@@ -28,10 +28,11 @@
 #include "WBFLCogo.h"
 #include "Alignment.h"
 #include "Path.h"
+#include "Profile.h"
 #include "CogoHelpers.h"
 #include "PointFactory.h"
 #include "Station.h"
-#include <MathEx.h>
+#include "StationEquationCollection.h"
 #include <Float.h>
 #include <cctype>
 
@@ -50,6 +51,26 @@ HRESULT CAlignment::FinalConstruct()
    CComPtr<IPath> path = pPath;
    PutPath(path);
 
+   CComObject<CProfile>* pProfile;
+   CComObject<CProfile>::CreateInstance(&pProfile);
+   m_Profile = pProfile;
+
+   HRESULT hr = m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
+   ATLASSERT(SUCCEEDED(hr));
+   InternalRelease();
+
+   pProfile->putref_Alignment(this);
+
+   CComObject<CStationEquationCollection>* pEquations;
+   CComObject<CStationEquationCollection>::CreateInstance(&pEquations);
+   m_Equations = pEquations;
+
+   hr = m_Equations.Advise(GetUnknown(),IID_IStationEquationCollectionEvents,&m_dwEquationsCookie);
+   ATLASSERT(SUCCEEDED(hr));
+   InternalRelease();
+
+   pEquations->putref_Alignment(this);
+
    m_RefStation = 0.0;
 
    return S_OK;
@@ -57,6 +78,12 @@ HRESULT CAlignment::FinalConstruct()
 
 void CAlignment::FinalRelease()
 {
+   InternalAddRef();
+   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
+
+   InternalAddRef();
+   AtlUnadvise(m_Equations,IID_IStationEquationCollectionEvents,m_dwEquationsCookie);
+
    PutPath(NULL);
 }
 
@@ -110,7 +137,7 @@ STDMETHODIMP CAlignment::get_RefStation(IStation* *station)
 STDMETHODIMP CAlignment::put_RefStation(VARIANT varStation)
 {
    CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,true,&objStation);
    if ( FAILED(hr) )
       return hr;
 
@@ -120,10 +147,58 @@ STDMETHODIMP CAlignment::put_RefStation(VARIANT varStation)
    if ( !IsEqual(m_RefStation,station) )
    {
       m_RefStation = station;
-      Fire_OnPathChanged(this);
+      Fire_OnAlignmentChanged(this);
    }
 
 	return S_OK;
+}
+
+STDMETHODIMP CAlignment::get_Profile(IProfile **pVal)
+{
+   CHECK_RETOBJ(pVal);
+   (*pVal) = m_Profile;
+   (*pVal)->AddRef();
+	return S_OK;
+}
+
+STDMETHODIMP CAlignment::putref_Profile(IProfile* pVal)
+{
+   CHECK_IN(pVal);
+
+   InternalAddRef();
+   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
+
+   m_Profile = pVal;
+
+   m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
+   InternalRelease();
+
+   Fire_OnProfileChanged(m_Profile);
+   return S_OK;
+}
+
+STDMETHODIMP CAlignment::get_StationEquations(IStationEquationCollection* *pVal)
+{
+   CHECK_RETOBJ(pVal);
+   (*pVal) = m_Equations;
+   (*pVal)->AddRef();
+	return S_OK;
+}
+
+STDMETHODIMP CAlignment::putref_StationEquations(IStationEquationCollection* pVal)
+{
+   CHECK_IN(pVal);
+
+   InternalAddRef();
+   AtlUnadvise(m_Equations,IID_IStationEquationCollectionEvents,m_dwProfileCookie);
+
+   m_Equations = pVal;
+
+   m_Equations.Advise(GetUnknown(),IID_IStationEquationCollectionEvents,&m_dwProfileCookie);
+   InternalRelease();
+
+   Fire_OnStationEquationsChanged(m_Equations);
+   return S_OK;
 }
 
 STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, OffsetMeasureType offsetMeasure, Float64 offset, VARIANT varDir, IPoint2d* *newPoint)
@@ -134,77 +209,6 @@ STDMETHODIMP CAlignment::LocatePoint( VARIANT varStation, OffsetMeasureType offs
       return hr;
 
    return m_Path->LocatePoint(distance,offsetMeasure,offset,varDir,newPoint);
-}
-
-STDMETHODIMP CAlignment::LocateCrownPoint2D(VARIANT varStation, VARIANT varDir,IPoint2d* *newPoint)
-{
-   CHECK_RETOBJ(newPoint);
-
-   HRESULT hr = S_OK;
-   CComPtr<IDirection> dir;
-   hr = cogoUtil::DirectionFromVariant(varDir,&dir);
-   if ( FAILED(hr) )
-      return hr;
-
-   Float64 dirValue;
-   dir->get_Value(&dirValue);
-
-   CComPtr<IPath> crown_point_path;
-   CComPtr<IProfile> profile;
-   m_Path->get_Profile(&profile);
-   if ( profile )
-   {
-      CComPtr<ICrossSectionCollection> cross_sections;
-      profile->get_CrossSections(&cross_sections);
-      cross_sections->get_CrownPointPath(&crown_point_path);
-   }
-
-   CComPtr<IPoint2d> point_on_alignment;
-   LocatePoint(varStation,omtAlongDirection,0.00,varDir,&point_on_alignment);
-   if ( crown_point_path == NULL )
-   {
-      (*newPoint) = point_on_alignment;
-      (*newPoint)->AddRef();
-      return S_OK;
-   }
-
-   CComPtr<IVector2d> v;
-   v.CoCreateInstance(CLSID_Vector2d);
-   v->put_Direction(dirValue);
-   CComPtr<ILine2d> line;
-   line.CoCreateInstance(CLSID_Line2d);
-   line->SetExplicit(point_on_alignment,v);
-   return crown_point_path->Intersect(line,point_on_alignment,newPoint);
-}
-
-STDMETHODIMP CAlignment::LocateCrownPoint3D(VARIANT varStation, VARIANT varDir, IPoint3d* *newPoint)
-{
-   CComPtr<IPoint2d> pnt2d;
-   HRESULT hr = LocateCrownPoint2D(varStation,varDir,&pnt2d);
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<IStation> station;
-   Float64 offset;
-   Offset(pnt2d,&station,&offset);
-
-   Float64 elevation;
-   CComPtr<IProfile> profile;
-   m_Path->get_Profile(&profile);
-   profile->Elevation(CComVariant(station),offset,&elevation);
-
-   CComPtr<IPoint3d> pnt3d;
-   pnt3d.CoCreateInstance(CLSID_Point3d);
-   
-   Float64 x,y;
-   pnt2d->Location(&x,&y);
-
-   pnt3d->Move(x,y,elevation);
-
-   (*newPoint) = pnt3d;
-   (*newPoint)->AddRef();
-
-   return S_OK;
 }
 
 STDMETHODIMP CAlignment::Bearing(VARIANT varStation,IDirection* *dir)
@@ -252,7 +256,7 @@ STDMETHODIMP CAlignment::GetDirection(VARIANT varStation, BSTR bstrOrientation,I
    CHECK_RETOBJ(direction);
 
    CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   HRESULT hr = cogoUtil::StationFromVariant(varStation,false,&objStation);
    if ( FAILED(hr) )
       return hr;
 
@@ -324,8 +328,15 @@ STDMETHODIMP CAlignment::GetDirection(VARIANT varStation, BSTR bstrOrientation,I
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndStation,IPath** path)
+STDMETHODIMP CAlignment::DistanceBetweenStations(VARIANT station1,VARIANT station2,Float64* pDist)
 {
+   return m_Equations->Distance(station1,station2,pDist);
+}
+
+STDMETHODIMP CAlignment::CreateSubAlignment(VARIANT varStartStation,VARIANT varEndStation,IAlignment** ppAlignment)
+{
+   CHECK_RETOBJ(ppAlignment);
+
    Float64 start;
    HRESULT hr = StationToPathDistance(varStartStation,&start);
    if ( FAILED(hr) )
@@ -336,17 +347,56 @@ STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndSta
    if ( FAILED(hr) )
       return hr;
 
-   hr = CreateSubPath(start,end,path);
+   CComObject<CAlignment>* pAlignment;
+   CComObject<CAlignment>::CreateInstance(&pAlignment);
+
+   CComPtr<IPath> path;
+   hr = m_Path->CreateSubPath(start,end,&path);
    if ( FAILED(hr) )
       return hr;
 
-   CComQIPtr<IAlignment> alignment(*path);
+   (*ppAlignment) = pAlignment;
+   (*ppAlignment)->AddRef();
+
+   pAlignment->PutPath(path);
+   pAlignment->put_RefStation(varStartStation);
+
+   CComPtr<IProfile> cloneProfile;
+   m_Profile->Clone(&cloneProfile);
+   pAlignment->putref_Profile(cloneProfile);
+
+   // Only copy the station equations that are within the range we are creating
+   CComPtr<IStationEquationCollection> equations;
+   pAlignment->get_StationEquations(&equations);
+   CComPtr<IEnumStationEquations> pEnum;
+   m_Equations->get__EnumStationEquations(&pEnum);
+   CComPtr<IStationEquation> equation;
+   ULONG nFetched;
+   while ( pEnum->Next(1,&equation,&nFetched) != S_FALSE )
+   {
+      Float64 distance;
+      equation->get_NormalizedValue(&distance);
+
+      if ( ::InRange(start,distance,end) )
+      {
+         Float64 back, ahead;
+         equation->GetEquation(&back,&ahead);
+         
+         CComPtr<IStationEquation> newEquation;
+         equations->Add(back,ahead,&newEquation);
+      }
+
+      equation.Release();
+   }
+
+
+   // Need to add only those equations within the specified range
 
    CComPtr<IPoint2d> pntStart;
    LocatePoint(varStartStation,omtAlongDirection, 0.00,CComVariant(0.00),&pntStart);
 
    CollectionIndexType nElements;
-   (*path)->get_Count(&nElements);
+   path->get_Count(&nElements);
    if ( nElements == 0 )
    {
       CComPtr<IPoint2d> pntEnd;
@@ -355,19 +405,17 @@ STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndSta
       CComPtr<ILineSegment2d> lineSegment;
       lineSegment.CoCreateInstance(CLSID_LineSegment2d);
       lineSegment->ThroughPoints(pntStart,pntEnd);
-      alignment->AddEx(lineSegment);
+      (*ppAlignment)->AddEx(lineSegment);
    }
    else
    {
-      alignment->InsertEx(0,pntStart);
+      (*ppAlignment)->InsertEx(0,pntStart);
    }
-
-   alignment->put_RefStation(varStartStation);
 
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::Clone(IPath* *clone)
+STDMETHODIMP CAlignment::Clone(IAlignment* *clone)
 {
    CHECK_RETOBJ(clone);
 
@@ -383,18 +431,41 @@ STDMETHODIMP CAlignment::Clone(IPath* *clone)
    m_Path->Clone(&clone_path);
    pClone->PutPath(clone_path);
 
+   CComPtr<IProfile> cloneProfile;
+   m_Profile->Clone(&cloneProfile);
+   pClone->putref_Profile(cloneProfile);
+
+
+   CComPtr<IStationEquationCollection> equations;
+   pClone->get_StationEquations(&equations);
+
+   CComPtr<IEnumStationEquations> pEnum;
+   m_Equations->get__EnumStationEquations(&pEnum);
+   CComPtr<IStationEquation> equation;
+   ULONG nFetched;
+   while ( pEnum->Next(1,&equation,&nFetched) != S_FALSE )
+   {
+      Float64 back, ahead;
+      equation->GetEquation(&back,&ahead);
+         
+      CComPtr<IStationEquation> newEquation;
+      equations->Add(back,ahead,&newEquation);
+
+      equation.Release();
+   }
+
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::CreateParallelPath(Float64 offset,IPath** path)
+STDMETHODIMP CAlignment::CreateParallelAlignment(Float64 offset,IAlignment** ppAlignment)
 {
-   CHECK_RETOBJ(path);
+   CHECK_RETOBJ(ppAlignment);
 
    CComObject<CAlignment>* pClone;
    CComObject<CAlignment>::CreateInstance(&pClone);
 
-   (*path) = pClone;
-   (*path)->AddRef();
+   (*ppAlignment) = pClone;
+   (*ppAlignment)->AddRef();
 
    pClone->put_RefStation(CComVariant(m_RefStation));
 
@@ -402,38 +473,41 @@ STDMETHODIMP CAlignment::CreateParallelPath(Float64 offset,IPath** path)
    m_Path->CreateParallelPath(offset,&clone_path);
    pClone->PutPath(clone_path);
 
+   CComPtr<IProfile> cloneProfile;
+   m_Profile->Clone(&cloneProfile);
+   pClone->putref_Profile(cloneProfile);
+
+
+   CComPtr<IStationEquationCollection> equations;
+   pClone->get_StationEquations(&equations);
+
+   CComPtr<IEnumStationEquations> pEnum;
+   m_Equations->get__EnumStationEquations(&pEnum);
+   CComPtr<IStationEquation> equation;
+   ULONG nFetched;
+   while ( pEnum->Next(1,&equation,&nFetched) != S_FALSE )
+   {
+      Float64 back, ahead;
+      equation->GetEquation(&back,&ahead);
+         
+      CComPtr<IStationEquation> newEquation;
+      equations->Add(back,ahead,&newEquation);
+
+      equation.Release();
+   }
+
    return S_OK;
 }
 
-STDMETHODIMP CAlignment::CreateSubPath(Float64 start,Float64 end,IPath** path)
+STDMETHODIMP CAlignment::CreateConnectedAlignment(IAlignment** ppAlignment)
 {
-   CHECK_RETOBJ(path);
-
-   CComObject<CAlignment>* pSubAlignment;
-   CComObject<CAlignment>::CreateInstance(&pSubAlignment);
-
-   (*path) = pSubAlignment;
-   (*path)->AddRef();
-
-   CComPtr<IPath> sub_path;
-   HRESULT hr = m_Path->CreateSubPath(start,end,&sub_path);
-   if ( FAILED(hr) )
-      return hr;
-
-   pSubAlignment->PutPath(sub_path);
-
-   return S_OK;
-}
-
-STDMETHODIMP CAlignment::CreateConnectedPath(IPath** path)
-{
-   CHECK_RETOBJ(path);
+   CHECK_RETOBJ(ppAlignment);
 
    CComObject<CAlignment>* pClone;
    CComObject<CAlignment>::CreateInstance(&pClone);
 
-   (*path) = pClone;
-   (*path)->AddRef();
+   (*ppAlignment) = pClone;
+   (*ppAlignment)->AddRef();
 
    pClone->put_RefStation(CComVariant(m_RefStation));
 
@@ -444,7 +518,55 @@ STDMETHODIMP CAlignment::CreateConnectedPath(IPath** path)
 
    pClone->PutPath(clone_path);
 
+   CComPtr<IProfile> cloneProfile;
+   m_Profile->Clone(&cloneProfile);
+   pClone->putref_Profile(cloneProfile);
+
+
+   CComPtr<IStationEquationCollection> equations;
+   pClone->get_StationEquations(&equations);
+
+   CComPtr<IEnumStationEquations> pEnum;
+   m_Equations->get__EnumStationEquations(&pEnum);
+   CComPtr<IStationEquation> equation;
+   ULONG nFetched;
+   while ( pEnum->Next(1,&equation,&nFetched) != S_FALSE )
+   {
+      Float64 back, ahead;
+      equation->GetEquation(&back,&ahead);
+         
+      CComPtr<IStationEquation> newEquation;
+      equations->Add(back,ahead,&newEquation);
+
+      equation.Release();
+   }
+
    return S_OK;
+}
+
+STDMETHODIMP CAlignment::CreateParallelPath(Float64 offset,IPath** path)
+{
+   return m_Path->CreateParallelPath(offset,path);
+}
+
+STDMETHODIMP CAlignment::CreateSubPath(VARIANT varStartStation,VARIANT varEndStation,IPath** path)
+{
+   Float64 start;
+   HRESULT hr = StationToPathDistance(varStartStation,&start);
+   if ( FAILED(hr) )
+      return hr;
+
+   Float64 end;
+   hr = StationToPathDistance(varEndStation,&end);
+   if ( FAILED(hr) )
+      return hr;
+
+   return m_Path->CreateSubPath(start,end,path);
+}
+
+STDMETHODIMP CAlignment::CreateConnectedPath(IPath** path)
+{
+   return m_Path->CreateConnectedPath(path);
 }
 
 STDMETHODIMP CAlignment::get_StructuredStorage(IStructuredStorage2* *pStg)
@@ -458,6 +580,8 @@ STDMETHODIMP CAlignment::Save(IStructuredSave2* pSave)
 {
    pSave->BeginUnit(CComBSTR("Alignment"),1.0);
    pSave->put_Property(CComBSTR("RefStation"),CComVariant(m_RefStation));
+   pSave->put_Property(CComBSTR("Profile"),CComVariant(m_Profile));
+   pSave->put_Property(CComBSTR("StationEquations"),CComVariant(m_Equations));
 
    CComPtr<IStructuredStorage2> ss;
    m_Path->get_StructuredStorage(&ss);
@@ -478,6 +602,16 @@ STDMETHODIMP CAlignment::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("RefStation"),&var);
    m_RefStation = var.dblVal;
 
+   pLoad->get_Property(CComBSTR("Profile"),&var);
+   CComPtr<IProfile> profile;
+   _CopyVariantToInterface<IProfile>::copy(&profile,&var);
+   putref_Profile(profile);
+
+   pLoad->get_Property(CComBSTR("StationEquations"),&var);
+   CComPtr<IStationEquationCollection> equations;
+   _CopyVariantToInterface<IStationEquationCollection>::copy(&equations,&var);
+   putref_StationEquations(equations);
+
    CComPtr<IStructuredStorage2> ss;
    m_Path->get_StructuredStorage(&ss);
    ATLASSERT(ss != NULL);
@@ -494,25 +628,18 @@ STDMETHODIMP CAlignment::Load(IStructuredLoad2* pLoad)
 // Helpers
 HRESULT CAlignment::CreateStation(Float64 location,IStation** pStation)
 {
-   CComObject<CStation>* pObjStation;
-   CComObject<CStation>::CreateInstance(&pObjStation);
-   pObjStation->put_Value(location);
-   (*pStation) = pObjStation;
-   (*pStation)->AddRef();
-
-   return S_OK;
+   return m_Equations->ConvertFromNormalizedStation(location,pStation);
 }
 
 HRESULT CAlignment::StationToPathDistance(VARIANT varStation,Float64* distance)
 {
-   CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,&objStation);
+   Float64 normalizedStation;
+   HRESULT hr = m_Equations->ConvertToNormalizedStation(varStation,&normalizedStation);
+
    if ( FAILED(hr) )
       return hr;
 
-   Float64 station;
-   objStation->get_Value(&station);
+   (*distance) = normalizedStation - m_RefStation;
 
-   (*distance) = station - m_RefStation;
    return S_OK;
 }

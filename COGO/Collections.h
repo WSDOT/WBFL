@@ -124,7 +124,7 @@
 	}; // class MapCopyValueToInterface
 
    template <class MapType>
-	class MapCopyKey
+	class MapCopyID
 	{
 	public :
 		typedef typename MapType::value_type	source_type;
@@ -144,7 +144,7 @@
          return GenericCopy<key_type,key_type>::copy(pTo,&(*pFrom).first);
 		}
 
-	}; // class MapCopyKey
+	}; // class MapCopyID
 
    template <class PairType,class DestinationType=PairType::first_type>
    class CopyFromPair1
@@ -224,20 +224,20 @@
    };
 
 //typedef std::map<CogoObjectID,CComVariant> MyMap;
-//typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<KeyType,Iitem>,VARIANT>, std::map<KeyType,Iitem> > MapEnum;
+//typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<IDType,Iitem>,VARIANT>, std::map<IDType,Iitem> > MapEnum;
 
-template <class T,class Icoll,const IID* piid,typename KeyType,class Iitem>
-class PersistentKeyedCollection :
-   public ICollectionOnSTLImpl<Icoll,std::map<KeyType,CComVariant>,VARIANT,MapCopy<std::map<KeyType,CComVariant>,VARIANT>, CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<KeyType,CComVariant>,VARIANT>, std::map<KeyType,CComVariant> > >,
+template <class T,class Icoll,const IID* piid,typename IDType,class Iitem>
+class PersistentIDCollection :
+   public ICollectionOnSTLImpl<Icoll,std::map<IDType,CComVariant>,VARIANT,MapCopy<std::map<IDType,CComVariant>,VARIANT>, CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, MapCopy<std::map<IDType,CComVariant>,VARIANT>, std::map<IDType,CComVariant> > >,
    public IStructuredStorage2,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<T,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
    public IPersistImpl<T>
 {
 public:
-   typedef PersistentKeyedCollection<T,Icoll,piid,KeyType,Iitem> _ThisClass;
+   typedef PersistentIDCollection<T,Icoll,piid,IDType,Iitem> _ThisClass;
 
-   PersistentKeyedCollection<T,Icoll,piid,KeyType,Iitem>(Float64 colVersion=1.0,Float64 itemVersion=1.0)
+   PersistentIDCollection<T,Icoll,piid,IDType,Iitem>(Float64 colVersion=1.0,Float64 itemVersion=1.0)
    {
       m_CollectionVersion = colVersion;
       m_ItemVersion = itemVersion;
@@ -299,14 +299,14 @@ public:
 
       pSave->put_Property(CComBSTR("Count"),CComVariant(m_coll.size()));
 
-      std::map<KeyType,CComVariant>::const_iterator iter;
+      std::map<IDType,CComVariant>::const_iterator iter;
       CComBSTR bstrItemName(GetItemName());
       for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
       {
          pSave->BeginUnit(bstrItemName,m_ItemVersion);
 
-         const std::pair<KeyType,CComVariant>& pair = *iter;
-         pSave->put_Property(CComBSTR("Key"),CComVariant(pair.first));
+         const std::pair<IDType,CComVariant>& pair = *iter;
+         pSave->put_Property(CComBSTR("ID"),CComVariant(pair.first));
          pSave->put_Property(CComBSTR("Value"),CComVariant(pair.second));
 
          pSave->EndUnit();
@@ -342,17 +342,17 @@ public:
 
       for ( CollectionIndexType i = 0; i < count; i++ )
       {
-         KeyType key;
+         IDType ID;
          pLoad->BeginUnit(GetItemName());
 
-         pLoad->get_Property(CComBSTR("Key"),&var);
-         key = (KeyType)var.lVal;
+         pLoad->get_Property(CComBSTR("ID"),&var);
+         ID = (IDType)var.lVal;
 
          pLoad->get_Property(CComBSTR("Value"),&var);
          CComPtr<Iitem> point;
          _CopyVariantToInterface<Iitem>::copy(&point,&var);
 
-         AddEx(key,point);
+         AddEx(ID,point);
 
          pLoad->EndUnit(&bEnd);
       }

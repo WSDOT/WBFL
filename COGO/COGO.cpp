@@ -56,23 +56,30 @@
 #include "HorzCurveCollection.h"
 #include "ProfileElement.h"
 #include "Profile.h"
-#include "CrossSection.h"
-#include "CrossSectionCollection.h"
 #include "PathElement.h"
 #include "Path.h"
 #include "PathFactory.h"
 #include "PathCollection.h"
 #include "Alignment.h"
+#include "AlignmentCollection.h"
 #include "VertCurveFactory.h"
 #include "ProfilePointFactory.h"
 #include "HorzCurveFactory.h"
-#include "CrossSectionFactory.h"
 #include "AlignmentFactory.h"
 #include "AngleDisplayUnitFormatter.h"
 #include "DirectionDisplayUnitFormatter.h"
 #include "Station.h"
+#include "StationEquationCollection.h"
 #include "CogoEngine.h"
 #include "CubicSpline.h"
+#include "Widening.h"
+#include "WideningCollection.h"
+#include "Superelevation.h"
+#include "SuperelevationCollection.h"
+#include "TemplateSegment.h"
+#include "SurfaceTemplate.h"
+#include "SurfaceTemplateCollection.h"
+#include "Surface.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -98,23 +105,30 @@ OBJECT_ENTRY(CLSID_HorzCurve, CHorzCurve)
 OBJECT_ENTRY(CLSID_HorzCurveCollection, CHorzCurveCollection)
 OBJECT_ENTRY(CLSID_ProfileElement, CProfileElement)
 OBJECT_ENTRY(CLSID_Profile, CProfile)
-OBJECT_ENTRY(CLSID_CrossSection, CCrossSection)
-OBJECT_ENTRY(CLSID_CrossSectionCollection, CCrossSectionCollection)
 OBJECT_ENTRY(CLSID_PathElement, CPathElement)
 OBJECT_ENTRY(CLSID_Path, CPath)
 OBJECT_ENTRY(CLSID_PathFactory, CPathFactory)
 OBJECT_ENTRY(CLSID_PathCollection, CPathCollection)
 OBJECT_ENTRY(CLSID_Alignment, CAlignment)
+OBJECT_ENTRY(CLSID_AlignmentCollection, CAlignmentCollection)
 OBJECT_ENTRY(CLSID_VertCurveFactory, CVertCurveFactory)
 OBJECT_ENTRY(CLSID_ProfilePointFactory, CProfilePointFactory)
 OBJECT_ENTRY(CLSID_HorzCurveFactory, CHorzCurveFactory)
-OBJECT_ENTRY(CLSID_CrossSectionFactory, CCrossSectionFactory)
 OBJECT_ENTRY(CLSID_AlignmentFactory, CAlignmentFactory)
 OBJECT_ENTRY(CLSID_AngleDisplayUnitFormatter, CAngleDisplayUnitFormatter)
 OBJECT_ENTRY(CLSID_DirectionDisplayUnitFormatter, CDirectionDisplayUnitFormatter)
 OBJECT_ENTRY(CLSID_Station, CStation)
+OBJECT_ENTRY(CLSID_StationEquationCollection, CStationEquationCollection)
 OBJECT_ENTRY(CLSID_CogoEngine, CCogoEngine)
 OBJECT_ENTRY(CLSID_CubicSpline, CCubicSpline)
+OBJECT_ENTRY(CLSID_Widening, CWidening)
+OBJECT_ENTRY(CLSID_WideningCollection, CWideningCollection)
+OBJECT_ENTRY(CLSID_Superelevation,CSuperelevation)
+OBJECT_ENTRY(CLSID_SuperelevationCollection,CSuperelevationCollection)
+OBJECT_ENTRY(CLSID_TemplateSegment, CTemplateSegment)
+OBJECT_ENTRY(CLSID_SurfaceTemplate, CSurfaceTemplate)
+OBJECT_ENTRY(CLSID_SurfaceTemplateCollection, CSurfaceTemplateCollection)
+OBJECT_ENTRY(CLSID_Surface, CSurface)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -28,13 +28,11 @@
 #include "WBFLCogo.h"
 #include "Path.h"
 #include "PathElement.h"
-#include "Profile.h"
 #include "CogoHelpers.h"
 #include "PointFactory.h"
 #include "CubicSpline.h"
 #include "HorzCurve.h"
 #include "CogoEngine.h"
-#include <MathEx.h>
 #include <Float.h>
 
 #ifdef _DEBUG
@@ -47,17 +45,7 @@ static char THIS_FILE[] = __FILE__;
 // CPath
 HRESULT CPath::FinalConstruct()
 {
-   CComObject<CProfile>* pProfile;
-   CComObject<CProfile>::CreateInstance(&pProfile);
-   m_Profile = pProfile;
-
-   HRESULT hr = m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
-   ATLASSERT(SUCCEEDED(hr));
-   InternalRelease();
-
-   m_Profile->putref_Path(this);
-
-   hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
+   HRESULT hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
       return hr;
 
@@ -76,8 +64,6 @@ HRESULT CPath::FinalConstruct()
 
 void CPath::FinalRelease()
 {
-   InternalAddRef();
-   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
    UnadviseAll();
 }
 
@@ -94,30 +80,6 @@ STDMETHODIMP CPath::InterfaceSupportsErrorInfo(REFIID riid)
 			return S_OK;
 	}
 	return S_FALSE;
-}
-
-STDMETHODIMP CPath::get_Profile(IProfile **pVal)
-{
-   CHECK_RETOBJ(pVal);
-   (*pVal) = m_Profile;
-   (*pVal)->AddRef();
-	return S_OK;
-}
-
-STDMETHODIMP CPath::putref_Profile(IProfile* pVal)
-{
-   CHECK_IN(pVal);
-
-   InternalAddRef();
-   AtlUnadvise(m_Profile,IID_IProfileEvents,m_dwProfileCookie);
-
-   m_Profile = pVal;
-
-   m_Profile.Advise(GetUnknown(),IID_IProfileEvents,&m_dwProfileCookie);
-   InternalRelease();
-
-   Fire_OnProfileChanged(m_Profile);
-   return S_OK;
 }
 
 //STDMETHODIMP CPath::get__NewEnum(IUnknown** retval)
@@ -246,26 +208,26 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
    return S_OK;
 }
 
-STDMETHODIMP CPath::Remove(VARIANT varKey)
+STDMETHODIMP CPath::Remove(VARIANT varID)
 {
-   if ( varKey.vt == VT_I2 || varKey.vt == VT_I4 )
+   if ( varID.vt == VT_I2 || varID.vt == VT_I4 )
    {
       // Element identified by zero-based index
-      long index = (varKey.vt == VT_I2 ? varKey.iVal : varKey.lVal);
+      long index = (varID.vt == VT_I2 ? varID.iVal : varID.lVal);
       if ( index < 0 || (long)m_coll.size() <= index )
          return E_INVALIDARG;
 
       UnadviseElement(index);
       m_coll.erase(m_coll.begin() + index);
    }
-   else if ( varKey.vt == VT_UNKNOWN || varKey.vt == VT_DISPATCH )
+   else if ( varID.vt == VT_UNKNOWN || varID.vt == VT_DISPATCH )
    {
       // Element identified by an Path element object or by proint, line segment, or horz curve
-      CComQIPtr<IPathElement> element(varKey.punkVal);
-      CComQIPtr<IPoint2d> point(varKey.punkVal);
-      CComQIPtr<IHorzCurve> hc(varKey.punkVal);
-      CComQIPtr<ILineSegment2d> ls(varKey.punkVal);
-      CComQIPtr<ICubicSpline> spline(varKey.punkVal);
+      CComQIPtr<IPathElement> element(varID.punkVal);
+      CComQIPtr<IPoint2d> point(varID.punkVal);
+      CComQIPtr<IHorzCurve> hc(varID.punkVal);
+      CComQIPtr<ILineSegment2d> ls(varID.punkVal);
+      CComQIPtr<ICubicSpline> spline(varID.punkVal);
 
       // The input object is not of the correct type
       if ( element == NULL && 
@@ -2410,10 +2372,6 @@ STDMETHODIMP CPath::Clone(IPath* *clone)
 
    (*clone)->putref_PointFactory(m_PointFactory);
 
-   CComPtr<IProfile> cloneProfile;
-   m_Profile->Clone(&cloneProfile);
-   (*clone)->putref_Profile(cloneProfile);
-
    CComPtr<IEnumPathElements> enumPathElements;
    get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> path_element;
@@ -2444,10 +2402,6 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
    (*path)->AddRef();
 
    (*path)->putref_PointFactory(m_PointFactory);
-
-   CComPtr<IProfile> cloneProfile;
-   m_Profile->Clone(&cloneProfile);
-   (*path)->putref_Profile(cloneProfile);
 
    ElementContainer elements = GetAllElements();
    ElementContainer::iterator iter;
@@ -2542,14 +2496,8 @@ STDMETHODIMP CPath::CreateConnectedPath(IPath** path)
    (*path)->AddRef();
 
    (*path)->putref_PointFactory(m_PointFactory);
-
-   CComPtr<IProfile> cloneProfile;
-   m_Profile->Clone(&cloneProfile);
-   (*path)->putref_Profile(cloneProfile);
-
    
    ElementContainer elements = GetAllElements();
-
 
    typedef CAdapt<CComPtr<IPathElement> > AdaptElement;
    typedef std::vector< std::pair<Float64,AdaptElement> > ElementContainer;
@@ -2581,11 +2529,6 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
    (*path)->AddRef();
 
    (*path)->putref_PointFactory(m_PointFactory);
-
-   CComPtr<IProfile> cloneProfile;
-   m_Profile->Clone(&cloneProfile);
-   (*path)->putref_Profile(cloneProfile);
-
 
    ElementContainer elements = GetAllElements();
    ElementContainer::iterator iter;
@@ -2715,7 +2658,6 @@ STDMETHODIMP CPath::Save(IStructuredSave2* pSave)
    }
    pSave->EndUnit(); // PathElements
 
-   pSave->put_Property(CComBSTR("Profile"),CComVariant(m_Profile));
    pSave->put_Property(CComBSTR("PointFactory"),CComVariant(m_PointFactory));
 
    pSave->EndUnit();
@@ -2741,11 +2683,6 @@ STDMETHODIMP CPath::Load(IStructuredLoad2* pLoad)
    }
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd); // PathElements
-
-   pLoad->get_Property(CComBSTR("Profile"),&var);
-   CComPtr<IProfile> profile;
-   _CopyVariantToInterface<IProfile>::copy(&profile,&var);
-   putref_Profile(profile);
 
    pLoad->get_Property(CComBSTR("PointFactory"),&var);
    CComPtr<IPoint2dFactory> factory;

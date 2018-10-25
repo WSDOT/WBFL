@@ -327,6 +327,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComPtr<IProfile> profile;
    alignment->get_Profile(&profile);
 
+   // Walk down the bridge and find the two piers that bound the
+   // station where the cut is being made.
+#pragma Reminder("INEFFICIENCY") // piers are sorted by station so this could be faster with a binary search
    CComPtr<IPier> prev_pier;
    for ( PierIndexType pierIdx = 0; pierIdx < nPiers-1; pierIdx++ )
    {
@@ -359,50 +362,65 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComQIPtr<IOverlaySlab> overlay(deck);
    ATLASSERT(cip != NULL || sip != NULL || overlay != NULL);
 
-   // The basic slab has 5 points
-   // A = Top of slab at crown point
-   // B = Top of slab at left edge
-   // C = Bottom of slab at left edge
-   // ... haunches along bottom of slab ...
-   // E = Bottom of slab at right edge
-   // F = Top of slab at right edge
+   // create the deck shape object
    CComPtr<IPolyShape> slab_shape;
    slab_shape.CoCreateInstance(CLSID_PolyShape);
 
+   // get left and right boundary of the deck, measured from the alignment
    Float64 left_deck_offset; // distance from alignment to left edge of deck
    m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&left_deck_offset);
 
    Float64 right_deck_offset; // distance from alignment to right edge of deck
    m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&right_deck_offset);
 
-   // Point A - Crown Point
-   CComPtr<IPoint2d> A;
-   A.CoCreateInstance(CLSID_Point2d);
+   // many of the calls below are most efficient with a station object
+   // create one and use it.
+   CComPtr<IStation> objStation;
+   objStation.CoCreateInstance(CLSID_Station);
+   objStation->SetStation(INVALID_INDEX,station); // normalized station
+
+   // Get roadway surface at cut station
+   CComPtr<ISurface> surface;
+   profile->GetSurface(CComVariant(objStation),&surface);
+   ATLASSERT(surface != NULL); // there must be a surface
+
+   // get the alignment point
+   IndexType alignmentPointIdx;
+   surface->get_AlignmentPoint(&alignmentPointIdx);
+
+   // create a surface template at the cut station. this is the top of the slab
+   CComPtr<ISurfaceTemplate> surfaceTemplate;
+   surface->CreateSurfaceTemplate(CComVariant(objStation),VARIANT_TRUE,&surfaceTemplate);
+
+   // Top of Deck
+   // work right to left across the deck and get the elevation and offset of each ridge point
+   // with offset being measured from the alignment point
+   IndexType nRidgePoints;
+   surfaceTemplate->get_Count(&nRidgePoints); // this is number of segments
+   nRidgePoints++; // this is the number of ridge points
+   for ( IndexType ridgePointIdx = nRidgePoints; 0 < ridgePointIdx; ridgePointIdx-- )
+   {
+      // get offset (measured from the alignment) and the elevation of the ridge point
+      Float64 offset, elev;
+      profile->RidgePointElevation(CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
+
+      // if the ridge point is between the edges of the deck, add it to the deck shape
+      if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+      {
+         slab_shape->AddPoint(offset,elev);
+      }
+   }
    
-   Float64 elev;
-   Float64 cpo;
-   profile->CrownPointOffset(CComVariant(station),&cpo);
-
-   // if crown point isn't between left and right edge of deck,
-   // force it onto the deck
-   Float64 crown_point = ForceIntoRange(left_deck_offset,cpo,right_deck_offset);
-
-   profile->Elevation(CComVariant(station),crown_point,&elev);
-
-   A->Move(crown_point,elev);
-   slab_shape->AddPointEx(A);
-
-   // Point B - Left Edge, Top
+   // Left Edge
    Float64 gross_depth;
    deck->get_GrossDepth(&gross_depth);
 
-   profile->Elevation(CComVariant(station),left_deck_offset,&elev);
-   CComPtr<IPoint2d> B;
-   B.CoCreateInstance(CLSID_Point2d);
-   B->Move(left_deck_offset,elev);
-   slab_shape->AddPointEx(B);
+   Float64 elev;
+   profile->Elevation(CComVariant(objStation),left_deck_offset,&elev);
 
-   // Point C - Left Edge, Bottom
+   // Top of deck
+   slab_shape->AddPoint(left_deck_offset,elev);
+
    Float64 fillet;
    Float64 overhang_depth;
    DeckOverhangTaper overhang_taper;
@@ -425,20 +443,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       fillet = 0.0;
    }
 
-   Float64 left_slope;
-   profile->CrownSlope(CComVariant(station),left_deck_offset,&left_slope);
-   left_slope *= ::BinarySign(cpo - left_deck_offset);
-
-   CComPtr<IPoint2d> C;
-   C.CoCreateInstance(CLSID_Point2d);
-   C->Move(left_deck_offset - left_slope*overhang_depth,elev - overhang_depth);
-   slab_shape->AddPointEx(C);
-
-   // get right crown slope now because we are going to need it when creating the
-   // haunches
-   Float64 right_slope;
-   profile->CrownSlope(CComVariant(station),right_deck_offset,&right_slope);
-   right_slope *= ::BinarySign(right_deck_offset - cpo);
+   // Bottom of deck
+   slab_shape->AddPoint(left_deck_offset,elev - overhang_depth);
 
 #pragma Reminder("UPDATE: Need to fix the implementation so the slab haunch is drawn correctly")
    // there is still problems when the bridge is skewed and the cut location has girders in different spans
@@ -540,7 +546,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
       // get offset of CL girder from CL alignment ( < 0 means left of CL alignment )
       Float64 girder_offset;
-      m_BridgeGeometryTool->GirderPathOffset(bridge,ssmbrID,segIdx,CComVariant(station),&girder_offset);
+      m_BridgeGeometryTool->GirderPathOffset(bridge,ssmbrID,segIdx,CComVariant(objStation),&girder_offset);
 
       //Float64 location;
       //SpanIndexType span_index;
@@ -553,7 +559,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       segment->GetHaunchDepth(dist_along_segment,&haunch);
 
       Float64 elclg; // elevation at CL of girder
-      profile->Elevation(CComVariant(station),girder_offset,&elclg);
+      profile->Elevation(CComVariant(objStation),girder_offset,&elclg);
 
       MatingSurfaceIndexType nMatingSurfaces;
       girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
@@ -577,9 +583,9 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             Float64 el23; // deck elevation above points 2 & 3
             Float64 el45; // deck elevation above points 4 & 5
             Float64 elcl; // deck elevation above centerline of flange
-            profile->Elevation(CComVariant(station),x23,&el23);
-            profile->Elevation(CComVariant(station),x45,&el45);
-            profile->Elevation(CComVariant(station),xcl,&elcl);
+            profile->Elevation(CComVariant(objStation),x23,&el23);
+            profile->Elevation(CComVariant(objStation),x45,&el45);
+            profile->Elevation(CComVariant(objStation),xcl,&elcl);
 
             Float64 el3; // top of girder elevation on left side of flange (point 3)
             el3 = elclg - gross_depth - haunch - (ms_location - ms_width/2)*sin(orientation);
@@ -601,6 +607,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                }
                else
                {
+                  // this is the left exterior web on the left exterior girder
                   if ( overhang_taper == dotNone )
                   {
                      dy = overhang_depth;
@@ -608,12 +615,24 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   }
                   else
                   {
-                     dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
-                     dx = left_slope*min_top_flange_thickness;
+                     // slab overhang taper goes to the bottom of the top flange
+                     dy = gross_depth + haunch - (elcl-el23) + min_top_flange_thickness;
+
+                     Float64 slope;
+                     profile->Slope(CComVariant(objStation),x23,&slope);
+                     dx = slope*min_top_flange_thickness;
                   }
                }
-               slab_shape->AddPoint(x23-dx-fillet,el23-dy); // 1
-               slab_shape->AddPoint(x23-dx,el23-dy-fillet); // 2
+
+               if ( overhang_taper == dotBottomTopFlange )
+               {
+                  slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
+               }
+               else
+               {
+                  slab_shape->AddPoint(x23-dx-fillet,el23-dy); // 1
+                  slab_shape->AddPoint(x23-dx,el23-dy-fillet); // 2
+               }
             }
 
             slab_shape->AddPoint(x23,el3); // 3
@@ -641,28 +660,33 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                   else
                   {
                      dy = gross_depth + haunch - (elcl-el45) + min_top_flange_thickness; // slab overhang to bottom of girder top flange
-                     dx = right_slope*min_top_flange_thickness;
+
+                     Float64 slope;
+                     profile->Slope(CComVariant(objStation),x45,&slope);
+                     dx = slope*min_top_flange_thickness;
                   }
                }
-               slab_shape->AddPoint(x45+dx,el45-dy-fillet); // 5
-               slab_shape->AddPoint(x45+dx+fillet,el45-dy); // 6
+
+               if ( overhang_taper == dotBottomTopFlange )
+               {
+                  slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
+               }
+               else
+               {
+                  slab_shape->AddPoint(x45+dx,el45-dy-fillet); // 5
+                  slab_shape->AddPoint(x45+dx+fillet,el45-dy); // 6
+               }
             }
          }
       }
    }
 
-   // Point E - Right Edge, Bottom
-   profile->Elevation(CComVariant(station),right_deck_offset,&elev);
-   CComPtr<IPoint2d> E;
-   E.CoCreateInstance(CLSID_Point2d);
-   E->Move(right_deck_offset + right_slope*overhang_depth,elev-overhang_depth);
-   slab_shape->AddPointEx(E);
+   // Right Edge, Bottom
+   profile->Elevation(CComVariant(objStation),right_deck_offset,&elev);
+   slab_shape->AddPoint(right_deck_offset/* + right_slope*overhang_depth*/,elev-overhang_depth);
 
-   // Point F - Right Edge, Top
-   CComPtr<IPoint2d> F;
-   F.CoCreateInstance(CLSID_Point2d);
-   F->Move(right_deck_offset,elev);
-   slab_shape->AddPointEx(F);
+   // Right Edge, Top
+   slab_shape->AddPoint(right_deck_offset,elev);
 
    slab_shape.QueryInterface(shape);
 
@@ -977,16 +1001,6 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
       return S_FALSE;
    }
 
-
-   CComQIPtr<ICastSlab> cip(deck);
-   CComQIPtr<IPrecastSlab> sip(deck);
-   CComQIPtr<IOverlaySlab> overlay(deck);
-
-   if ( cip == NULL && sip == NULL && overlay == NULL )
-   {
-      return Error(IDS_E_UNKNOWNDECKTYPE,IID_ISectionCutTool,GBMT_E_UNKNOWNDECKTYPE);
-   }
-
    Float64 Econc;
    Float64 Dconc;
    CComPtr<IMaterial> material;
@@ -1008,33 +1022,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
 
    // get structural thickness of deck
    Float64 structural_depth = 0;
-   if ( cip != NULL )
-   {
-      Float64 gross,wearing;
-      cip->get_GrossDepth(&gross);
-      cip->get_SacrificialDepth(&wearing);
-      structural_depth = gross - wearing;
-   }
-   else if ( sip != NULL )
-   {
-      Float64 panel, cast, wearing;
-      sip->get_PanelDepth(&panel);
-      sip->get_CastDepth(&cast);
-      sip->get_SacrificialDepth(&wearing);
-
-      structural_depth = panel + cast - wearing;
-   }
-   else if ( overlay != NULL )
-   {
-      Float64 gross,wearing;
-      overlay->get_GrossDepth(&gross);
-      overlay->get_SacrificialDepth(&wearing);
-      structural_depth = gross - wearing;
-   }
-   else
-   {
-      ATLASSERT(false); // should never get here
-   }
+   deck->get_StructuralDepth(&structural_depth);
 
    // Build a slab shape and add it to the section
    CComPtr<IRectangle> slab;
@@ -1161,12 +1149,59 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComPtr<IShape> primary_shape;
    csi->get_Shape(&primary_shape);
 
-   // Strand, Rebar, and Tendon coordinates are relative to the girder....
-   // need to get the offset distance so the strand, bar, tendon can
-   // be put in the correct location of the cross section
    CComQIPtr<IXYPosition> position(primary_shape);
    CComPtr<IPoint2d> pntTopCenter;
    position->get_LocatorPoint(lpTopCenter,&pntTopCenter);
+
+   // Need to determine if the bridge has a deck.
+   // If it DOES NOT have a deck...
+   // Need to get girder material.
+   // Get the last stage defined in the material and compare it to stageIdx
+   // If this IS THE LAST STAGE, and the sacrificial depth is > 0
+   // then clip the sacrifical depth of the top of the girder without
+   // altering the vertical or horizontal position of the girder.
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+   Float64 sacDepth;
+   bridge->get_SacrificialDepth(&sacDepth);
+   if ( deck == NULL && !IsZero(sacDepth) )
+   {
+      // The bridge does not have a deck and there is a sacrifical depth that
+      // must be deducted from the top of the girder to account for the girder 
+      // being worn down over time.
+      StageIndexType sacStageIdx;
+      bridge->get_SacrificialDepthStage(&sacStageIdx);
+
+      if ( sacStageIdx <= stageIdx && sacStageIdx != INVALID_INDEX )
+      {
+         // need to clip sacrificial depth from top of girder
+         CComPtr<IPoint2d> point;
+         pntTopCenter->Clone(&point);
+         point->Offset(0,-sacDepth);
+
+         CComPtr<IVector2d> v;
+         v.CoCreateInstance(CLSID_Vector2d);
+         v->put_X(1.0);
+         v->put_Y(0.0);
+
+         CComPtr<ILine2d> line;
+         line.CoCreateInstance(CLSID_Line2d);
+         line->SetExplicit(point,v);
+
+         CComPtr<IShape> newShape;
+         primary_shape->ClipWithLine(line,&newShape);
+
+         primary_shape.Release();
+         primary_shape = newShape;
+         csi->putref_Shape(primary_shape);
+      }
+   }
+   
+
+   // The girder is located in Bridge Section Coordinates.
+   // Strand, Rebar, and Tendon coordinates are in Girder Section Coordinates.
+   // Need to get the offset distance so the strand, bar, tendon can
+   // be put in the girder section in Bridge Section Coordinates.
    Float64 xTop,yTop;
    pntTopCenter->Location(&xTop,&yTop);
 
@@ -1293,83 +1328,29 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                point.Release();
             }
          } // End of Strand
+
+         // Layout girder rebar
+         CComPtr<IRebarLayout> rebarLayout;
+         girder->get_RebarLayout(&rebarLayout);
+
+         CComPtr<IRebarSection> rebarSection;
+         rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
+
+         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,yBottom,stageIdx,sectionPropMethod);
+
       } // is point on precast girder
-
-      // Add Longitudinal Reinforcement Bars
-      CComPtr<IRebarLayout> rebarLayout;
-      girder->get_RebarLayout(&rebarLayout);
-
-      CComPtr<IRebarSection> rebarSection;
-      rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
-
-      CComPtr<IEnumRebarSectionItem> enumRebarSectionItem;
-      rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
-
-      CComPtr<IRebarSectionItem> rebarSectionItem;
-      while ( enumRebarSectionItem->Next(1,&rebarSectionItem,NULL) != S_FALSE )
+      else
       {
-         CComPtr<IPoint2d> pntRebar;
-         rebarSectionItem->get_Location(&pntRebar);
+         // beyond the end of this girder so this must be in the closure pour
+         
+         CComPtr<IRebarLayout> rebarLayout;
+         girder->get_RebarLayout(&rebarLayout);
 
-         // x measured from CL girder
-         // y measured from bottom of girder
-         Float64 x,y;
-         pntRebar->Location(&x,&y);
+         CComPtr<IRebarSection> rebarSection;
+         rebarLayout->CreateRebarSection(distFromFaceOfSegment,&rebarSection);
 
-         CComPtr<IRebar> rebar;
-         rebarSectionItem->get_Rebar(&rebar);
-
-         Float64 Abar;
-         rebar->get_NominalArea(&Abar);
-
-         // models bar as an object with area. Moment of inertia is taken to be zero
-         CComPtr<IGenericShape> rebarShape;
-         rebarShape.CoCreateInstance(CLSID_GenericShape);
-         rebarShape->put_Area(Abar);
-         rebarShape->put_Ixx(0);
-         rebarShape->put_Iyy(0);
-         rebarShape->put_Ixy(0);
-         rebarShape->put_Perimeter(0);
-
-         CComPtr<IPoint2d> centroid;
-         rebarShape->get_Centroid(&centroid);
-
-         centroid->Move(x,yBottom + y);
-
-         CComQIPtr<IMaterial> material(rebar);
-         ATLASSERT(material);
-
-         Float64 Ebar, Dbar;
-         material->get_E(stageIdx,&Ebar);
-         material->get_Density(stageIdx,&Dbar);
-
-         // If the bar doesn't have strength or density, then it isn't in the girder yet.
-         // Make the foreground material properties the same as the background
-         // material properties. This will eliminate the bar from the section
-         // (e.g EA = Ab(Ebar - Econc) = Ab(Econc - Econc) = 0)
-         if ( sectionPropMethod == spmTransformed )
-         {
-            if ( IsZero(Ebar) )
-               Ebar = Econc;
-
-            if ( IsZero(Dbar) )
-               Dbar = Dconc;
-         }
-         else if ( sectionPropMethod == spmNet )
-         {
-            // If we are computing net properties, we want to
-            // model the hole and not the bar
-            // (e.g. EA = EconcAg + Abar(0 - Econc) = EconcAg - Abar(Econc) = (Ag-Abar)Econc
-            Ebar = 0;
-            Dbar = 0;
-         }
-
-         // EA = EgAg + Abar(Ebar-Eg) = Eg(Ag-Abar) + EbarAbar
-         // models the bar and makes a hole in the concrete for the bar
-         CComQIPtr<IShape> rebar_shape(rebarShape);
-         compositeSection->AddSection(rebar_shape,Ebar,Econc,Dbar,Dconc,VARIANT_TRUE);
-         rebarSectionItem.Release();
-      }
+         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,yBottom,stageIdx,sectionPropMethod);
+      } // is point on precast girder
    } // if not gross properties
 
 
@@ -1494,6 +1475,80 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    return S_OK;
 }
 
+HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 yBottom,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod)
+{
+   CComPtr<IEnumRebarSectionItem> enumRebarSectionItem;
+   rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
+
+   CComPtr<IRebarSectionItem> rebarSectionItem;
+   while ( enumRebarSectionItem->Next(1,&rebarSectionItem,NULL) != S_FALSE )
+   {
+      CComPtr<IPoint2d> pntRebar;
+      rebarSectionItem->get_Location(&pntRebar);
+
+      // x measured from CL girder
+      // y measured from bottom of girder
+      Float64 x,y;
+      pntRebar->Location(&x,&y);
+
+      CComPtr<IRebar> rebar;
+      rebarSectionItem->get_Rebar(&rebar);
+
+      Float64 Abar;
+      rebar->get_NominalArea(&Abar);
+
+      // models bar as an object with area. Moment of inertia is taken to be zero
+      CComPtr<IGenericShape> rebarShape;
+      rebarShape.CoCreateInstance(CLSID_GenericShape);
+      rebarShape->put_Area(Abar);
+      rebarShape->put_Ixx(0);
+      rebarShape->put_Iyy(0);
+      rebarShape->put_Ixy(0);
+      rebarShape->put_Perimeter(0);
+
+      CComPtr<IPoint2d> centroid;
+      rebarShape->get_Centroid(&centroid);
+
+      centroid->Move(x,yBottom + y);
+
+      CComQIPtr<IMaterial> material(rebar);
+      ATLASSERT(material);
+
+      Float64 Ebar, Dbar;
+      material->get_E(stageIdx,&Ebar);
+      material->get_Density(stageIdx,&Dbar);
+
+      // If the bar doesn't have strength or density, then it isn't in the girder yet.
+      // Make the foreground material properties the same as the background
+      // material properties. This will eliminate the bar from the section
+      // (e.g EA = Ab(Ebar - Econc) = Ab(Econc - Econc) = 0)
+      if ( sectionPropMethod == spmTransformed )
+      {
+         if ( IsZero(Ebar) )
+            Ebar = Econc;
+
+         if ( IsZero(Dbar) )
+            Dbar = Dconc;
+      }
+      else if ( sectionPropMethod == spmNet )
+      {
+         // If we are computing net properties, we want to
+         // model the hole and not the bar
+         // (e.g. EA = EconcAg + Abar(0 - Econc) = EconcAg - Abar(Econc) = (Ag-Abar)Econc
+         Ebar = 0;
+         Dbar = 0;
+      }
+
+      // EA = EgAg + Abar(Ebar-Eg) = Eg(Ag-Abar) + EbarAbar
+      // models the bar and makes a hole in the concrete for the bar
+      CComQIPtr<IShape> rebar_shape(rebarShape);
+      compositeSection->AddSection(rebar_shape,Ebar,Econc,Dbar,Dconc,VARIANT_TRUE);
+      rebarSectionItem.Release();
+   }
+
+   return S_OK;
+}
+
 HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 distFromStartOfBridge,StageIndexType stageIdx,Float64 elevBottomDeck,ICompositeSectionItemEx** deckitem)
 {
    // This method creates a rectangular approximation of the bridge deck cross section.
@@ -1553,44 +1608,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
          pntLeft->DistanceEx(pntRight,&ttl_width);
 
          Float64 depth;
-         CComQIPtr<ICastSlab> cip(deck);
-         CComQIPtr<IPrecastSlab> sip(deck);
-         CComQIPtr<IOverlaySlab> overlay(deck);
-
-         if ( cip == NULL && sip == NULL && overlay == NULL )
-         {
-            return Error(IDS_E_UNKNOWNDECKTYPE,IID_ISectionCutTool,GBMT_E_UNKNOWNDECKTYPE);
-         }
-
-         if ( cip )
-         {
-            Float64 gross_depth, sac_depth;
-            cip->get_GrossDepth(&gross_depth);
-            cip->get_SacrificialDepth(&sac_depth);
-
-            depth = gross_depth - sac_depth;
-         }
-         else if ( sip )
-         {
-            Float64 panel_depth, cast_depth, sac_depth;
-            sip->get_PanelDepth(&panel_depth);
-            sip->get_CastDepth(&cast_depth);
-            sip->get_SacrificialDepth(&sac_depth);
-
-            depth = panel_depth + cast_depth - sac_depth;
-         }
-         else if ( overlay )
-         {
-            Float64 gross_depth, sac_depth;
-            overlay->get_GrossDepth(&gross_depth);
-            overlay->get_SacrificialDepth(&sac_depth);
-
-            depth = gross_depth - sac_depth;
-         }
-         else
-         {
-            ATLASSERT(false); // should never get here
-         }
+         deck->get_StructuralDepth(&depth);
 
          CComPtr<IRectangle> rect;
          rect.CoCreateInstance(CLSID_Rect);
@@ -1640,8 +1658,6 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    CComPtr<IShape> primary_shape;
    segment->get_PrimaryShape(distFromStartOfSegment,&primary_shape);
 
-   primary_shape.CopyTo(ppShape);
-
    CComQIPtr<ICompositeShape> compositeShape(primary_shape);
    ATLASSERT(compositeShape); // primary_shape must be a composite so we can put holes in it
 
@@ -1656,6 +1672,49 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
 
 #pragma Reminder("UPDATE: the code here is very similiar to building the section model")
    // find a way to consolidate it for to make it easier to maintain
+
+   // Need to determine if the bridge has a deck.
+   // If it DOES NOT have a deck...
+   // Need to get girder material.
+   // Get the last stage defined in the material and compare it to stageIdx
+   // If this IS THE LAST STAGE, and the sacrificial depth is > 0
+   // then clip the sacrifical depth of the top of the girder without
+   // altering the vertical or horizontal position of the girder.
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+   Float64 sacDepth;
+   bridge->get_SacrificialDepth(&sacDepth);
+   if ( deck == NULL && !IsZero(sacDepth) )
+   {
+      // The bridge does not have a deck and there is a sacrifical depth that
+      // must be deducted from the top of the girder to account for the girder 
+      // being worn down over time.
+      StageIndexType sacStageIdx;
+      bridge->get_SacrificialDepthStage(&sacStageIdx);
+
+      if ( sacStageIdx <= stageIdx && sacStageIdx != INVALID_INDEX )
+      {
+         // need to clip sacrificial depth from top of girder
+         CComPtr<IPoint2d> point;
+         pntTopCenter->Clone(&point);
+         point->Offset(0,-sacDepth);
+
+         CComPtr<IVector2d> v;
+         v.CoCreateInstance(CLSID_Vector2d);
+         v->put_X(1.0);
+         v->put_Y(0.0);
+
+         CComPtr<ILine2d> line;
+         line.CoCreateInstance(CLSID_Line2d);
+         line->SetExplicit(point,v);
+
+         CComPtr<IShape> newShape;
+         primary_shape->ClipWithLine(line,&newShape);
+
+         primary_shape.Release();
+         primary_shape = newShape;
+      }
+   }
 
    ////////////////////////////////////
    // Tendons/Ducts
@@ -1743,10 +1802,6 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    // Model deck
    ///////////////////
 
-   // Get bridge deck and determine type
-   CComPtr<IBridgeDeck> deck;
-   bridge->get_Deck(&deck);
-
    Float64 Edeck = 0;
    if ( deck )
    {
@@ -1760,14 +1815,6 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       // if there is a deck and its E is > 0, then
       // include it in the model. Edeck will be zero in stages before it
       // is cast
-      CComQIPtr<ICastSlab> cip(deck);
-      CComQIPtr<IPrecastSlab> sip(deck);
-      CComQIPtr<IOverlaySlab> overlay(deck);
-
-      if ( cip == NULL && sip == NULL && overlay == NULL )
-      {
-         return Error(IDS_E_UNKNOWNDECKTYPE,IID_ISectionCutTool,GBMT_E_UNKNOWNDECKTYPE);
-      }
 
       // Need to get effective flange width of the slab
       Float64 eff_flange_width;
@@ -1777,33 +1824,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
 
       // get structural thickness of deck
       Float64 structural_depth = 0;
-      if ( cip != NULL )
-      {
-         Float64 gross,wearing;
-         cip->get_GrossDepth(&gross);
-         cip->get_SacrificialDepth(&wearing);
-         structural_depth = gross - wearing;
-      }
-      else if ( sip != NULL )
-      {
-         Float64 panel, cast, wearing;
-         sip->get_PanelDepth(&panel);
-         sip->get_CastDepth(&cast);
-         sip->get_SacrificialDepth(&wearing);
-
-         structural_depth = panel + cast - wearing;
-      }
-      else if ( overlay != NULL )
-      {
-         Float64 gross,wearing;
-         overlay->get_GrossDepth(&gross);
-         overlay->get_SacrificialDepth(&wearing);
-         structural_depth = gross - wearing;
-      }
-      else
-      {
-         ATLASSERT(false); // should never get here
-      }
+      deck->get_StructuralDepth(&structural_depth);
 
       // Build a slab shape and add it to the section
       CComPtr<IRectangle> slab;
@@ -1818,6 +1839,8 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
       CComQIPtr<IShape> slab_shape(slab);
       compositeShape->AddShape(slab_shape,VARIANT_FALSE);
    }
+
+   primary_shape.CopyTo(ppShape);
 
    return S_OK;
 }

@@ -130,7 +130,7 @@ void CTestPointCollection::Test()
    pColl->get_Count(&count);
    TRY_TEST(count,3);
 
-   // Getting the item with key = 2 should fail
+   // Getting the item with id = 2 should fail
    pnt.Release();
    TRY_TEST( pColl->get_Item(2,&pnt), COGO_E_POINTNOTFOUND);
 
@@ -166,17 +166,17 @@ void CTestPointCollection::Test()
    TRY_TEST(pnt.IsEqualObject(p1),true);
 
    //
-   // Test FindKey
+   // Test FindID
    //
-   CogoObjectID key;
-   TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
-   TRY_TEST(pColl->FindKey(p2,NULL),E_POINTER);
-   TRY_TEST(pColl->FindKey(p2,&key),S_OK);
-   TRY_TEST(key,2);
-   TRY_TEST(pColl->FindKey(p3,&key),E_FAIL); // p3 is not part of collection, see putref_Item above
+   CogoObjectID id;
+   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(p2,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(p2,&id),S_OK);
+   TRY_TEST(id,2);
+   TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see putref_Item above
 
    //
-   // Test Key
+   // Test ID
    //
    pColl->Clear();
    p1->put_X(10);
@@ -188,11 +188,11 @@ void CTestPointCollection::Test()
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
 
-   TRY_TEST(pColl->Key(-1,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(500,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(3,NULL),E_POINTER);
-   TRY_TEST(pColl->Key(3,&key),S_OK);
-   TRY_TEST(key,4);
+   TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,&id),S_OK);
+   TRY_TEST(id,4);
    
    //
    // Test _Enum
@@ -206,15 +206,15 @@ void CTestPointCollection::Test()
    pColl->AddEx(2,p2);
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
-   CComPtr<IEnumKeys> pEnum;
-   TRY_TEST(pColl->get__EnumKeys(NULL), E_POINTER );
-   TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
+   CComPtr<IEnumIDs> pEnum;
+   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoObjectID target_key = 1;
-   while( pEnum->Next(1,&key,&fetched ) == S_OK )
+   CogoObjectID target_id = 1;
+   while( pEnum->Next(1,&id,&fetched ) == S_OK )
    {
-      TRY_TEST(key,target_key++);
+      TRY_TEST(id,target_id++);
    }
    
    //
@@ -326,28 +326,28 @@ void CTestPointCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_PointCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID key,IPoint2d* point)
+STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID id,IPoint2d* point)
 {
 //   MessageBox(NULL,"PointChanged","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID key,IPoint2d* point)
+STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID id,IPoint2d* point)
 {
 //   MessageBox(NULL,"PointAdded","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID key)
+STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID id)
 {
 //   MessageBox(NULL,"PointRemoved","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;

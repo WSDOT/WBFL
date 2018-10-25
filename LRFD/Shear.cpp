@@ -1263,8 +1263,15 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
    if ( ex < 0.0 )
    {
       Float64 Fe;
-      Fe = Es*As + Ep*Aps;
-      Fe /= Ec*Ac + Es*As + Ep*Aps;
+      if ( IsZero(Ec*Ac + Es*As + Ep*Aps) )
+      {
+         Fe = 0;
+      }
+      else
+      {
+         Fe = Es*As + Ep*Aps;
+         Fe /= Ec*Ac + Es*As + Ep*Aps;
+      }
 
       ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
    }

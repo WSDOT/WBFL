@@ -38,7 +38,7 @@ class ATL_NO_VTABLE CAlignmentFactory :
 	public CComCoClass<CAlignmentFactory, &CLSID_AlignmentFactory>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CAlignmentFactory,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IPathFactory,
+	public IAlignmentFactory,
    public IStructuredStorage2,
    public IPersistImpl<CAlignmentFactory>
 {
@@ -52,7 +52,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENTFACTORY)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CAlignmentFactory)
-	COM_INTERFACE_ENTRY(IPathFactory)
+	COM_INTERFACE_ENTRY(IAlignmentFactory)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
@@ -62,10 +62,10 @@ END_COM_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IPathFactory
+// IAlignmentFactory
 public:
-	STDMETHOD(CreatePath)(/*[out,retval]*/IPath* *pVal);
-	STDMETHOD(IsValidType)(/*[in]*/IPath* path,/*[out,retval]*/VARIANT_BOOL* bIsValid);
+	STDMETHOD(CreateAlignment)(/*[out,retval]*/IAlignment* *pVal);
+	STDMETHOD(IsValidType)(/*[in]*/IAlignment* path,/*[out,retval]*/VARIANT_BOOL* bIsValid);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
 
 // IStructuredStorage2

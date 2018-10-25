@@ -41,7 +41,7 @@ STDMETHODIMP CAlignmentFactory::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IPathFactory,
+		&IID_IAlignmentFactory,
 		&IID_IStructuredStorage2,
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -52,25 +52,24 @@ STDMETHODIMP CAlignmentFactory::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CAlignmentFactory::CreatePath(IPath **pVal)
+STDMETHODIMP CAlignmentFactory::CreateAlignment(IAlignment **pVal)
 {
    CHECK_RETOBJ(pVal);
    CComObject<CAlignment>* pAlign;
    CComObject<CAlignment>::CreateInstance(&pAlign);
-   CComQIPtr<IPath> path(pAlign);
-   ATLASSERT(path != NULL);
-   (*pVal) = path;
+   CComQIPtr<IAlignment> alignment(pAlign);
+   ATLASSERT(alignment != NULL);
+   (*pVal) = alignment;
    (*pVal)->AddRef();
 	return S_OK;
 }
 
-STDMETHODIMP CAlignmentFactory::IsValidType(IPath* path,VARIANT_BOOL* bIsValid)
+STDMETHODIMP CAlignmentFactory::IsValidType(IAlignment* alignment,VARIANT_BOOL* bIsValid)
 {
-   CHECK_IN(path);
+   CHECK_IN(alignment);
    CHECK_RETVAL(bIsValid);
 
-   CComQIPtr<IAlignment> alignment(path);
-   *bIsValid = (alignment ==  NULL ? VARIANT_FALSE : VARIANT_TRUE);
+   *bIsValid = VARIANT_TRUE;
    return S_OK;
 }
 

@@ -62,7 +62,6 @@ BEGIN_COM_MAP(CUSplicedGirderSegment)
 END_COM_MAP()
 
 protected:
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection);
    virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape);
    void GetEndBlockWidth(Float64 x,Float64* pWtop,Float64* pWbot);
 };

@@ -60,24 +60,6 @@ HRESULT CFixedLengthRebarLayoutItem::DoSaveItem(IStructuredSave2* save,IRebarPat
 
 HRESULT CFixedLengthRebarLayoutItem::DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem)
 {
-//   // Create a new span object
-//   CComObject<CSpan>* pSpan;
-//   CComObject<CSpan>::CreateInstance(&pSpan);
-//   CComPtr<ISpan> newSpan = pSpan;
-//
-//   ATLASSERT(m_pBridge != NULL);
-//   pSpan->SetBridge(m_pBridge);
-//
-//   CComQIPtr<IStructuredStorage2> ssSpan(newSpan);
-//   HRESULT hr = ssSpan->Load(load);
-//   if ( FAILED(hr) )
-//      return hr;
-//
-//   (*ppItem) = newSpan;
-//   (*ppItem)->AddRef();
-//
-//   return S_OK;
-
    // Need to polymorphically create rebar pattern item
    return E_FAIL;
 }
@@ -86,14 +68,14 @@ STDMETHODIMP CFixedLengthRebarLayoutItem::ContainsLocation(Float64 distFromGdrSt
 {
    CHECK_RETVAL(bResult);
 
-   *bResult = (distFromGdrStart >= m_Start && distFromGdrStart <= m_End ) ? VARIANT_TRUE : VARIANT_FALSE;
+   *bResult = ::InRange(m_Start,distFromGdrStart,m_End) ? VARIANT_TRUE : VARIANT_FALSE;
 
    return S_OK;
 }
 
 STDMETHODIMP CFixedLengthRebarLayoutItem::put_Start(Float64 start)
 {
-   ATLASSERT(start>=0.0);
+   ATLASSERT(0 <= start);
 
    m_Start = start;
 

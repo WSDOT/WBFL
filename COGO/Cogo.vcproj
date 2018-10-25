@@ -1307,6 +1307,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\AlignmentCollection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="AlignmentFactory.cpp"
 				>
 				<FileConfiguration
@@ -1970,288 +1974,6 @@
 			</File>
 			<File
 				RelativePath="CogoModel.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="CrossSection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="CrossSectionCollection.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Profile|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="VBA_Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="CrossSectionFactory.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -4225,6 +3947,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\StationEquation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StationEquationCollection.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -4327,6 +4057,34 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Superelevation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SuperelevationCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Surface.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplate.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplateCollection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TemplateSegment.cpp"
+				>
 			</File>
 			<File
 				RelativePath="VertCurve.cpp"
@@ -4704,6 +4462,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\Widening.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WideningCollection.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -4711,6 +4477,10 @@
 			>
 			<File
 				RelativePath="Alignment.h"
+				>
+			</File>
+			<File
+				RelativePath=".\AlignmentCollection.h"
 				>
 			</File>
 			<File
@@ -4743,18 +4513,6 @@
 			</File>
 			<File
 				RelativePath="Collections.h"
-				>
-			</File>
-			<File
-				RelativePath="CrossSection.h"
-				>
-			</File>
-			<File
-				RelativePath="CrossSectionCollection.h"
-				>
-			</File>
-			<File
-				RelativePath="CrossSectionFactory.h"
 				>
 			</File>
 			<File
@@ -4842,7 +4600,43 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StationEquation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StationEquationCollection.h"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Superelevation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SuperelevationCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Surface.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplate.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplateCollection.h"
+				>
+			</File>
+			<File
+				RelativePath=".\TemplateSegment.h"
 				>
 			</File>
 			<File
@@ -4857,6 +4651,14 @@
 				RelativePath="VertCurveFactory.h"
 				>
 			</File>
+			<File
+				RelativePath=".\Widening.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WideningCollection.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -4864,6 +4666,10 @@
 			>
 			<File
 				RelativePath="Alignment.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\AlignmentCollection.rgs"
 				>
 			</File>
 			<File
@@ -4888,18 +4694,6 @@
 			</File>
 			<File
 				RelativePath="CogoUtil.rgs"
-				>
-			</File>
-			<File
-				RelativePath="CrossSection.rgs"
-				>
-			</File>
-			<File
-				RelativePath="CrossSectionCollection.rgs"
-				>
-			</File>
-			<File
-				RelativePath="CrossSectionFactory.rgs"
 				>
 			</File>
 			<File
@@ -4983,6 +4777,42 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StationEquation.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\StationEquationCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\Superelevation.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SuperelevationCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\Surface.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplate.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\SurfaceTemplateCollection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\TemplateSegment.rgs"
+				>
+			</File>
+			<File
 				RelativePath="VertCurve.rgs"
 				>
 			</File>
@@ -4992,6 +4822,14 @@
 			</File>
 			<File
 				RelativePath="VertCurveFactory.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\Widening.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\WideningCollection.rgs"
 				>
 			</File>
 		</Filter>

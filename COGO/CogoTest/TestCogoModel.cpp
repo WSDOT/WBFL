@@ -75,7 +75,7 @@ void CTestCogoModel::Test()
    TRY_TEST(model->get_HorzCurves(NULL),E_POINTER);
    TRY_TEST(model->get_HorzCurves(&horzCurves),S_OK);
 
-   CComPtr<IPathCollection> alignments;
+   CComPtr<IAlignmentCollection> alignments;
    TRY_TEST(model->get_Alignments(NULL),E_POINTER);
    TRY_TEST(model->get_Alignments(&alignments),S_OK);
 
@@ -151,7 +151,7 @@ void CTestCogoModel::Test()
    TRY_TEST(model->putref_HorzCurveFactory(NULL),E_INVALIDARG);
    TRY_TEST(model->putref_HorzCurveFactory(hcFactory),S_OK);
 
-   CComPtr<IPathFactory> alignmentFactory;
+   CComPtr<IAlignmentFactory> alignmentFactory;
    TRY_TEST(model->get_AlignmentFactory(NULL),E_POINTER);
    TRY_TEST(model->get_AlignmentFactory(&alignmentFactory),S_OK);
    TRY_TEST(alignmentFactory != NULL, true);

@@ -1039,8 +1039,6 @@
     <param name="Name" value="Path Object">
     <param name="Name" value="Insert Method (Path Object)">
     <param name="Local" value="Objects\Path\Insert_Method_(Path_Object).htm">
-    <param name="Name" value="Profile Property (Path Object)">
-    <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
     <param name="Name" value="AddEx Method (Path Object)">
     <param name="Local" value="Objects\Path\AddEx_Method_(Path_Object).htm">
     <param name="Name" value="Item Property (Path Object)">
@@ -1312,8 +1310,6 @@
   </object>
   <li><object type="text/sitemap">
     <param name="Name" value="Profile Property">
-    <param name="Name" value="Profile Property (Path Object)">
-    <param name="Local" value="Objects\Path\Profile_Property_(Path_Object).htm">
   </object>
   <li><object type="text/sitemap">
     <param name="Name" value="CurveFwdTangentBrg Property">

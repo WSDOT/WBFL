@@ -30,7 +30,6 @@
 #include "PointFactory.h"
 
 #include "CogoHelpers.h"
-#include <MathEx.h>
 #include <string>
 #include <algorithm>
 

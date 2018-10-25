@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.SuperelevationCollection.1 = s 'SuperelevationCollection Class'
+	{
+		CLSID = s '{981C286A-8B4B-4be9-BB9D-E927FFFF680C}'
+	}
+	WBFLCogo.SuperelevationCollection = s 'SuperelevationCollection Class'
+	{
+		CLSID = s '{981C286A-8B4B-4be9-BB9D-E927FFFF680C}'
+		CurVer = s 'WBFLCogo.SuperelevationCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {981C286A-8B4B-4be9-BB9D-E927FFFF680C} = s 'SuperelevationCollection Class'
+		{
+			ProgID = s 'WBFLCogo.SuperelevationCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.SuperelevationCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

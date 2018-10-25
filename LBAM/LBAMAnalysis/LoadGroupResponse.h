@@ -269,7 +269,7 @@ public:
 
 private: // helper methods
    
-   void CacheInfluenceLines(PoiIDType poiID, BSTR stage,ResultsOrientation orientation);
+   HRESULT CacheInfluenceLines(PoiIDType poiID, BSTR stage,ResultsOrientation orientation);
 
 public:
    ///////////////////////////////////////////////////////////

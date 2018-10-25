@@ -130,16 +130,16 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(pColl->putref_Item(1,vc),S_OK);
 
    //
-   // Test FindKey
+   // Test FindID
    //
-   CogoObjectID key;
-   TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
-   TRY_TEST(pColl->FindKey(vc,NULL),E_POINTER);
-   TRY_TEST(pColl->FindKey(vc,&key),S_OK);
-   TRY_TEST(key,1);
+   CogoObjectID id;
+   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(vc,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(vc,&id),S_OK);
+   TRY_TEST(id,1);
 
    //
-   // Test Key
+   // Test ID
    //
    // load the collection with the same curve, it doesn't really matter
    pColl->Clear();
@@ -148,29 +148,29 @@ void CTestVertCurveCollection::Test()
    pColl->AddEx(3,vc);
    pColl->AddEx(4,vc);
 
-   TRY_TEST(pColl->Key(-1,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(500,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(3,NULL),E_POINTER);
-   TRY_TEST(pColl->Key(3,&key),S_OK);
-   TRY_TEST(key,4);
+   TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,&id),S_OK);
+   TRY_TEST(id,4);
    
    //
-   // Test _EnumKeys
+   // Test _EnumIDs
    //
    pColl->Clear();
    TRY_TEST(pColl->AddEx(1,vc),S_OK);
    TRY_TEST(pColl->AddEx(2,vc),S_OK);
    TRY_TEST(pColl->AddEx(3,vc),S_OK);
    TRY_TEST(pColl->AddEx(4,vc),S_OK);
-   CComPtr<IEnumKeys> pEnum;
-   TRY_TEST(pColl->get__EnumKeys(NULL), E_POINTER );
-   TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
+   CComPtr<IEnumIDs> pEnum;
+   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoObjectID target_key = 1;
-   while( pEnum->Next(1,&key,&fetched ) == S_OK )
+   CogoObjectID target_id = 1;
+   while( pEnum->Next(1,&id,&fetched ) == S_OK )
    {
-      TRY_TEST(key,target_key++);
+      TRY_TEST(id,target_id++);
    }
 
    // Test __EnumVertCurves
@@ -253,28 +253,28 @@ void CTestVertCurveCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_VertCurveCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID key,IVertCurve* vc)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID id,IVertCurve* vc)
 {
 //   MessageBox(NULL,"VertCurveChanged","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID key,IVertCurve* vc)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID id,IVertCurve* vc)
 {
 //   MessageBox(NULL,"VertCurveAdded","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID key)
+STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID id)
 {
 //   MessageBox(NULL,"VertCurveRemoved","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;

@@ -3,6 +3,26 @@
 	<folders/>
 	<topics>
 		<topic>
+			<name>E_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>ProfilePointFactory_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>L1_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>L2_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>PFG_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
@@ -13,37 +33,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>L2_Property_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>L1_Property_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>Clone_Method_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ProfilePointFactory_Property_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Grade_Method_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>VertCurve_Object.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Length_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -54,6 +44,16 @@
 		</topic>
 		<topic>
 			<name>BVC_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>VertCurve_Object.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Grade_Method_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -73,12 +73,17 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
+			<name>HighPoint_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
 			<name>LowPoint_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>PVI_Property_(VertCurve_Object).htm</name>
+			<name>Length_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -88,7 +93,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>HighPoint_Property_(VertCurve_Object).htm</name>
+			<name>PVI_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -98,17 +103,17 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>K_Property_(VertCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>H_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>E_Property_(VertCurve_Object).htm</name>
+			<name>K_Property_(VertCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Profile_Property_(VertCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

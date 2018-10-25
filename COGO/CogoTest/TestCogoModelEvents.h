@@ -79,10 +79,11 @@ public:
 	STDMETHOD(OnHorzCurvesCleared)(ICogoModel* cm);
 
 	STDMETHOD(OnAlignmentChanged)(ICogoModel* cm,CogoObjectID key, IAlignment* alignment);
-	STDMETHOD(OnProfileChanged)(ICogoModel* cm,IProfile* profile);
    STDMETHOD(OnAlignmentAdded)(ICogoModel* cm,CogoObjectID key,IAlignment* alignment);
    STDMETHOD(OnAlignmentRemoved)(ICogoModel* cm,CogoObjectID key);
    STDMETHOD(OnAlignmentsCleared)(ICogoModel* cm);
+	STDMETHOD(OnProfileChanged)(ICogoModel* cm,IProfile* profile);
+	STDMETHOD(OnStationEquationsChanged)(ICogoModel* cm,IStationEquationCollection* equations);
 
 	STDMETHOD(OnPathChanged)(ICogoModel* cm,CogoObjectID key, IPath* path);
    STDMETHOD(OnPathAdded)(ICogoModel* cm,CogoObjectID key,IPath* path);

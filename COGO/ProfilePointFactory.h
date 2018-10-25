@@ -45,6 +45,7 @@ class ATL_NO_VTABLE CProfilePointFactory :
 public:
 	CProfilePointFactory()
 	{
+      m_pProfile = NULL;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PROFILEPOINTFACTORY)
@@ -60,10 +61,13 @@ BEGIN_COM_MAP(CProfilePointFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // IProfilePointFactory
 public:
+   STDMETHOD(get_Profile)(IProfile* *pVal);
+   STDMETHOD(putref_Profile)(IProfile* newVal);
 	STDMETHOD(CreateProfilePoint)(/*[out,retval]*/IProfilePoint* *pVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
 
@@ -71,6 +75,9 @@ public:
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave);
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
+
+private:
+   IProfile* m_pProfile; // weak reference
 };
 
 #endif //__PROFILEPOINTFACTORY_H_

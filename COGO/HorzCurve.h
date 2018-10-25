@@ -32,7 +32,6 @@
 #include "resource.h"       // main symbols
 #include "COGOCP.h"
 
-#include <MathEx.h>
 #include <Math\Math.h>
 
 class CEntrySpiralFunction;

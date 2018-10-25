@@ -314,8 +314,8 @@ void CTestLocate::Test()
    line->get_EndPoint(&end);
    CComQIPtr<IPoint2d> startEx(start);
    CComQIPtr<IPoint2d> endEx(end);
-   TRY_TEST( points->FindKey(startEx,&startID), S_OK );
-   TRY_TEST( points->FindKey(endEx,&endID), S_OK );
+   TRY_TEST( points->FindID(startEx,&startID), S_OK );
+   TRY_TEST( points->FindID(endEx,&endID), S_OK );
    TRY_TEST(startID,3);
    TRY_TEST(endID,4);
 
@@ -343,8 +343,8 @@ void CTestLocate::Test()
    start.QueryInterface(&startEx);
    endEx.Release();
    end.QueryInterface(&endEx);
-   TRY_TEST( points->FindKey(startEx,&startID), S_OK );
-   TRY_TEST( points->FindKey(endEx,&endID), S_OK );
+   TRY_TEST( points->FindID(startEx,&startID), S_OK );
+   TRY_TEST( points->FindID(endEx,&endID), S_OK );
    TRY_TEST(startID,5);
    TRY_TEST(endID,6);
    pnt.Release();

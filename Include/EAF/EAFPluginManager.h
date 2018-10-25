@@ -68,6 +68,11 @@ public:
       m_PluginAcceleratorTable.Init(m_pParent->GetPluginCommandManager());
    }
 
+   P* GetParent()
+   {
+      return m_pParent;
+   }
+
    virtual CEAFAcceleratorTable* GetAcceleratorTable()
    {
       return &m_PluginAcceleratorTable;

@@ -49,11 +49,10 @@ class ATL_NO_VTABLE CCrossSection :
 public:
 	CCrossSection()
 	{
-      m_Station = 0.0;
-      m_CrownPtOffset = 0.0;
-      m_Left = 0.0;
-      m_Right = 0.0;
+      m_pProfile = NULL;
 	}
+
+   HRESULT FinalConstruct();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_CROSSSECTION)
 
@@ -79,6 +78,8 @@ END_CONNECTION_POINT_MAP()
 
 // ICrossSection
 public:
+   STDMETHOD(get_Profile)(IProfile* *pVal);
+   STDMETHOD(putref_Profile)(IProfile* newVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
    STDMETHOD(Clone)(/*[out,retval]*/ ICrossSection* *clone);
 	STDMETHOD(get_RightCrownSlope)(/*[out, retval]*/ Float64 *pVal);
@@ -96,10 +97,11 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
 private:
+   IProfile* m_pProfile;
 	Float64 m_Right;
 	Float64 m_Left;
 	Float64 m_CrownPtOffset;
-	Float64 m_Station;
+	CComPtr<IStation> m_Station;
 };
 
 #endif //__CROSSSECTION_H_

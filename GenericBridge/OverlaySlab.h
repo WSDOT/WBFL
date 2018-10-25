@@ -47,7 +47,6 @@ public:
    COverlaySlab()
 	{
       m_GrossDepth = 0;
-      m_SacrificialDepth = 0;
       m_pDeckBoundary = NULL;
 	}
 
@@ -56,7 +55,6 @@ public:
 
 private:
    Float64 m_GrossDepth;
-   Float64 m_SacrificialDepth;
 
    IDeckBoundary* m_pDeckBoundary; // weak reference
 
@@ -87,8 +85,7 @@ public:
 // IOverlaySlab
 public:
 	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
+
 
 // IStructuredStorage2
 public:

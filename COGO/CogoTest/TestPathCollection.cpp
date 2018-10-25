@@ -109,16 +109,16 @@ void CTestPathCollection::Test()
    TRY_TEST(pColl->putref_Item(1,a),S_OK);
 
    //
-   // Test FindKey
+   // Test FindID
    //
-   CogoObjectID key;
-   TRY_TEST(pColl->FindKey(NULL,&key),E_INVALIDARG);
-   TRY_TEST(pColl->FindKey(a,NULL),E_POINTER);
-   TRY_TEST(pColl->FindKey(a,&key),S_OK);
-   TRY_TEST(key,1);
+   CogoObjectID id;
+   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(a,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(a,&id),S_OK);
+   TRY_TEST(id,1);
 
    //
-   // Test Key
+   // Test ID
    //
    pColl->Clear();
    pColl->Add(1,NULL);
@@ -126,11 +126,11 @@ void CTestPathCollection::Test()
    pColl->Add(3,NULL);
    pColl->Add(4,NULL);
 
-   TRY_TEST(pColl->Key(-1,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(500,&key),E_INVALIDARG);
-   TRY_TEST(pColl->Key(3,NULL),E_POINTER);
-   TRY_TEST(pColl->Key(3,&key),S_OK);
-   TRY_TEST(key,4);
+   TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
+   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,&id),S_OK);
+   TRY_TEST(id,4);
    
    //
    // Test _Enum
@@ -140,15 +140,15 @@ void CTestPathCollection::Test()
    pColl->Add(2,NULL);
    pColl->Add(3,NULL);
    pColl->Add(4,NULL);
-   CComPtr<IEnumKeys> pEnum;
-   TRY_TEST(pColl->get__EnumKeys(NULL), E_POINTER );
-   TRY_TEST( pColl->get__EnumKeys(&pEnum), S_OK );
+   CComPtr<IEnumIDs> pEnum;
+   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
-   CogoObjectID target_key = 1;
-   while( pEnum->Next(1,&key,&fetched ) == S_OK )
+   CogoObjectID target_id = 1;
+   while( pEnum->Next(1,&id,&fetched ) == S_OK )
    {
-      TRY_TEST(key,target_key++);
+      TRY_TEST(id,target_id++);
    }
 
    // Test __EnumPaths
@@ -197,13 +197,6 @@ void CTestPathCollection::Test()
    Path->AddEx(point);
    TRY_TEST(pTestEvents->PassedEventTest(),true);
 
-   // Change the profile
-   CComPtr<IProfile> profile;
-   Path->get_Profile(&profile);
-   pTestEvents->InitEventTest(-1);
-   profile->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
    // Remove a Path
    pTestEvents->InitEventTest(1);
    pColl->Remove(1);
@@ -235,10 +228,10 @@ void CTestPathCollection::Test()
    TRY_TEST( TestIObjectSafety(CLSID_PathCollection,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 }
 
-STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObjectID key,IPath* vc)
+STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObjectID id,IPath* vc)
 {
 //   MessageBox(NULL,"PathChanged","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
@@ -252,19 +245,19 @@ STDMETHODIMP CTestPathCollection::OnProfileChanged(IPathCollection* coll,IProfil
    return S_OK;
 }
 
-STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID key,IPath* Path)
+STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID id,IPath* Path)
 {
 //   MessageBox(NULL,"PathAdded","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;
 }
 
-STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObjectID key)
+STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObjectID id)
 {
 //   MessageBox(NULL,"PathRemoved","Event",MB_OK);
-   if ( key == m_expectedKey )
+   if ( id == m_expectedID )
       Pass();
 
    return S_OK;

@@ -285,33 +285,12 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
 
    // Get slab parameters
    Float64 tSlab;
+   deck->get_StructuralDepth(&tSlab);
+   pDetails->put_SlabThickness(tSlab);
+   pDetails->put_SlabThickness(tSlab);
+
    Float64 left_overhang;
    Float64 right_overhang;
-   if ( cip )
-   {
-      Float64 gross, sacrificial;
-      cip->get_GrossDepth(&gross);
-      cip->get_SacrificialDepth(&sacrificial);
-      tSlab = gross - sacrificial;
-
-   }
-   else if ( sip )
-   {
-      Float64 panel, cast, sacrificial;
-      sip->get_PanelDepth(&panel);
-      sip->get_CastDepth(&cast);
-      sip->get_SacrificialDepth(&sacrificial);
-      tSlab = panel + cast - sacrificial;
-   }
-   else if (overlay)
-   {
-      Float64 gross, sacrificial;
-      overlay->get_GrossDepth(&gross);
-      overlay->get_SacrificialDepth(&sacrificial);
-      tSlab = gross - sacrificial;
-   }
-
-   pDetails->put_SlabThickness(tSlab);
 
    m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbLeft,&left_overhang);
    m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,NULL,qcbRight,&right_overhang);

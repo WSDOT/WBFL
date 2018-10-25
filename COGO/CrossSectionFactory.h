@@ -45,6 +45,7 @@ class ATL_NO_VTABLE CCrossSectionFactory :
 public:
 	CCrossSectionFactory()
 	{
+      m_pProfile = NULL;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_CROSSSECTIONFACTORY)
@@ -60,10 +61,13 @@ BEGIN_COM_MAP(CCrossSectionFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // ICrossSectionFactory
 public:
+   STDMETHOD(get_Profile)(IProfile* *pVal);
+   STDMETHOD(putref_Profile)(IProfile* newVal);
 	STDMETHOD(CreateCrossSection)(/*[out,retval]*/ ICrossSection* *pVal);
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
 
@@ -71,6 +75,9 @@ public:
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave);
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
+
+private:
+   IProfile* m_pProfile;
 };
 
 #endif //__CROSSSECTIONFACTORY_H_

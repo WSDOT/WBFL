@@ -241,38 +241,72 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
    return S_OK;
 }
 
-HRESULT cogoUtil::StationFromVariant(VARIANT varStation,IStation** station)
+HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** station)
 {
    CComPtr<IStation> objStation;
    switch( varStation.vt )
    {
    case VT_UNKNOWN:
       if ( varStation.punkVal == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       varStation.punkVal->QueryInterface(&objStation);
       if ( objStation.p == NULL )
+      {
          return E_INVALIDARG;
+      }
 
-      objStation->QueryInterface(station);
+      if ( bClone )
+         objStation->Clone(station);
+      else
+         objStation->QueryInterface(station);
       break;
 
    case VT_DISPATCH:
       if ( varStation.pdispVal == NULL )
+      {
          return E_INVALIDARG;
+      }
 
       varStation.pdispVal->QueryInterface(&objStation);
       if ( objStation.p == NULL )
+      {
          return E_INVALIDARG;
+      }
 
-      objStation->QueryInterface(station);
+      if ( bClone )
+         objStation->Clone(station);
+      else
+         objStation->QueryInterface(station);
+      break;
+
+   case VT_BSTR:
+      {
+         CComObject<CStation>* pStation;
+         CComObject<CStation>::CreateInstance(&pStation);
+         CComPtr<IStation> sta(pStation); // need this so we don't leak pStation if this fails
+         if ( FAILED(pStation->FromString(varStation.bstrVal,umUS)) ) // try US mode first
+         {
+            if ( FAILED(pStation->FromString(varStation.bstrVal,umSI)) ) // now try SI mode
+            {
+               // still failed... something is wrong
+               return E_INVALIDARG;
+            }
+         }
+         (*station) = pStation;
+         (*station)->AddRef();
+      }
       break;
 
    default:
       {
          CComVariant var;
          if ( FAILED(::VariantChangeType(&var,&varStation,0,VT_R8)))
+         {
             return E_INVALIDARG;
+         }
 
          CComObject<CStation>* pStation;
          CComObject<CStation>::CreateInstance(&pStation);
@@ -479,4 +513,209 @@ HRESULT cogoUtil::ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,
    strSecTag->assign(strTag,posSecond+1,strTag.size()-posFirst-1);
 
    return S_OK;
+}
+
+bool cogoUtil::IsEqual(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+      pProfile->get_Alignment(&alignment);
+
+   return IsEqual(alignment,pSta1,pSta2);
+}
+
+bool cogoUtil::IsEqual(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+      pAlignment->get_StationEquations(&equations);
+
+   return IsEqual(equations,pSta1,pSta2);
+}
+
+bool cogoUtil::IsEqual(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+{
+   if ( pEquations )
+   {
+      Float64 sta1,sta2;
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
+      return ::IsEqual(sta1,sta2);
+   }
+   else
+   {
+      ZoneIndexType zoneIdx1, zoneIdx2;
+      Float64 sta1, sta2;
+      pSta1->GetStation(&zoneIdx1,&sta1);
+      pSta2->GetStation(&zoneIdx2,&sta2);
+
+      if ( zoneIdx1 != zoneIdx2 )
+         return false;
+
+      return ::IsEqual(sta1,sta2);
+   }
+
+   ATLASSERT(false); // should never get here
+   return false;
+}
+
+Float64 cogoUtil::Distance(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+      pProfile->get_Alignment(&alignment);
+
+   return Distance(alignment,pSta1,pSta2);
+}
+
+Float64 cogoUtil::Distance(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+      pAlignment->get_StationEquations(&equations);
+
+   return Distance(equations,pSta1,pSta2);
+}
+
+Float64 cogoUtil::Distance(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+{
+   if ( pEquations )
+   {
+      Float64 sta1,sta2;
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
+      return sta2-sta1;
+   }
+   else
+   {
+      ZoneIndexType zoneIdx1, zoneIdx2;
+      Float64 sta1, sta2;
+      pSta1->GetStation(&zoneIdx1,&sta1);
+      pSta2->GetStation(&zoneIdx2,&sta2);
+
+      ATLASSERT(zoneIdx1 == zoneIdx2);
+
+      return sta2-sta1;
+   }
+
+   ATLASSERT(false); // should never get here
+   return -99999;
+}
+
+Int8 cogoUtil::Compare(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+      pProfile->get_Alignment(&alignment);
+
+   return Compare(alignment,pSta1,pSta2);
+}
+
+Int8 cogoUtil::Compare(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+      pAlignment->get_StationEquations(&equations);
+
+   return Compare(equations,pSta1,pSta2);
+}
+
+Int8 cogoUtil::Compare(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+{
+   if ( pEquations )
+   {
+      Float64 sta1,sta2;
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
+      return ::Sign(sta2-sta1);
+   }
+   else
+   {
+      ZoneIndexType zoneIdx1, zoneIdx2;
+      Float64 sta1, sta2;
+      pSta1->GetStation(&zoneIdx1,&sta1);
+      pSta2->GetStation(&zoneIdx2,&sta2);
+
+      ATLASSERT(zoneIdx1 == zoneIdx2);
+
+      return ::Sign(sta2-sta1);
+   }
+
+   ATLASSERT(false); // should never get here
+   return -2;
+}
+
+Float64 cogoUtil::GetNormalizedStationValue(IProfile* pProfile,IStation* pSta)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+      pProfile->get_Alignment(&alignment);
+
+   return GetNormalizedStationValue(alignment,pSta);
+}
+
+Float64 cogoUtil::GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSta)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+      pAlignment->get_StationEquations(&equations);
+
+   return GetNormalizedStationValue(equations,pSta);
+}
+
+Float64 cogoUtil::GetNormalizedStationValue(IStationEquationCollection* pEquations,IStation* pSta)
+{
+   if ( pEquations )
+   {
+      Float64 station;
+      pEquations->ConvertToNormalizedStation(CComVariant(pSta),&station);
+      return station;
+   }
+   else
+   {
+      ZoneIndexType zoneIdx;
+      Float64 station;
+      pSta->GetStation(&zoneIdx,&station);
+
+      ATLASSERT(zoneIdx == INVALID_INDEX);
+
+      return station;
+   }
+
+   ATLASSERT(false); // should never get here
+   return -99999;
+}
+
+void cogoUtil::CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta)
+{
+   CComPtr<IAlignment> alignment;
+   if ( pProfile )
+      pProfile->get_Alignment(&alignment);
+
+   return CreateStation(alignment,normalizedStation,pSta);
+}
+
+void cogoUtil::CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta)
+{
+   CComPtr<IStationEquationCollection> equations;
+   if ( pAlignment )
+      pAlignment->get_StationEquations(&equations);
+
+   return CreateStation(equations,normalizedStation,pSta);
+}
+
+void cogoUtil::CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta)
+{
+   if ( pEquations )
+   {
+      pEquations->ConvertFromNormalizedStation(normalizedStation,pSta);
+   }
+   else
+   {
+      CComObject<CStation>* pStation;
+      CComObject<CStation>::CreateInstance(&pStation);
+      (*pSta) = pStation;
+      (*pSta)->AddRef();
+      (*pSta)->SetStation(INVALID_INDEX,normalizedStation);
+   }
 }

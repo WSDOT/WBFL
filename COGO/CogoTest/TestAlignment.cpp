@@ -199,8 +199,13 @@ void CTestAlignment::Test()
    CComPtr<IProfile> profile;
    TRY_TEST(alignment->get_Profile(NULL),E_POINTER);
    TRY_TEST(alignment->get_Profile(&profile),S_OK);
-   TRY_TEST(alignment->putref_Profile(NULL),E_INVALIDARG);
-   TRY_TEST(alignment->putref_Profile(profile),S_OK);
+
+   //
+   // Test Station Equations
+   //
+   CComPtr<IStationEquationCollection> equations;
+   TRY_TEST(alignment->get_StationEquations(NULL),E_POINTER);
+   TRY_TEST(alignment->get_StationEquations(&equations),S_OK);
 
    //
    // Test Clear
@@ -222,7 +227,12 @@ void CTestAlignment::Test()
    TRY_TEST(alignment->get_RefStation(&station),S_OK);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,100.0),true);
-   TRY_TEST(alignment->put_RefStation(CComVariant("12+34.56")),E_INVALIDARG);
+   TRY_TEST(alignment->put_RefStation(CComVariant("12+3499.56")),E_INVALIDARG);
+   TRY_TEST(alignment->put_RefStation(CComVariant("12+34.56")),S_OK);
+   station.Release();
+   TRY_TEST(alignment->get_RefStation(&station),S_OK);
+   station->get_Value(&stationVal);
+   TRY_TEST(IsEqual(stationVal,1234.56),true);
 
    //
    // _EnumAlignmentElements
@@ -230,8 +240,8 @@ void CTestAlignment::Test()
    alignment->AddEx(point);
    alignment->AddEx(hc);
    CComPtr<IEnumPathElements> pEnum;
-   TRY_TEST(alignment->get__EnumPathElements(NULL),E_POINTER);
-   TRY_TEST(alignment->get__EnumPathElements(&pEnum),S_OK);
+   TRY_TEST(alignment->get__EnumAlignmentElements(NULL),E_POINTER);
+   TRY_TEST(alignment->get__EnumAlignmentElements(&pEnum),S_OK);
 
    // Test PointFactory
    CComPtr<IPoint2dFactory> factory;
@@ -247,7 +257,7 @@ void CTestAlignment::Test()
 
    DWORD dwCookie;
    CComPtr<IUnknown> punk(pTestAlignment);
-   TRY_TEST(AtlAdvise(alignment,punk,IID_IPathEvents,&dwCookie),S_OK);
+   TRY_TEST(AtlAdvise(alignment,punk,IID_IAlignmentEvents,&dwCookie),S_OK);
 
    // Create a new "clean" horizontal curve
    hc.Release();
@@ -279,15 +289,13 @@ void CTestAlignment::Test()
    profile->Clear();
    TRY_TEST(pTestAlignment->PassedEventTest(), true);
 
+   equations.Release();
+   alignment->get_StationEquations(&equations);
    pTestAlignment->InitEventTest();
-   alignment->putref_Profile(profile);
+   equations->Clear();
    TRY_TEST(pTestAlignment->PassedEventTest(), true);
 
-   pTestAlignment->InitEventTest();
-   profile->Clear(); // make sure events are still being sinked properly
-   TRY_TEST(pTestAlignment->PassedEventTest(), true);
-
-   TRY_TEST(AtlUnadvise(alignment,IID_IPathEvents,dwCookie),S_OK);
+   TRY_TEST(AtlUnadvise(alignment,IID_IAlignmentEvents,dwCookie),S_OK);
    pTestAlignment->Release();
 
    // Test ISupportErrorInfo
@@ -308,9 +316,8 @@ void CTestAlignment::Test()
    CTestAlignment3::Test();
 }
 
-STDMETHODIMP CTestAlignment::OnPathChanged(IPath* pp)
+STDMETHODIMP CTestAlignment::OnAlignmentChanged(IAlignment* alignment)
 {
-   CComQIPtr<IAlignment> alignment(pp);
    if ( alignment != NULL )
       Pass();
 
@@ -318,6 +325,12 @@ STDMETHODIMP CTestAlignment::OnPathChanged(IPath* pp)
 }
 
 STDMETHODIMP CTestAlignment::OnProfileChanged(IProfile* profile)
+{
+   Pass();
+   return S_OK;
+}
+
+STDMETHODIMP CTestAlignment::OnStationEquationsChanged(IStationEquationCollection* equations)
 {
    Pass();
    return S_OK;

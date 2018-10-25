@@ -451,15 +451,10 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
 STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 station, IDirection* direction,DirectionType side, IPoint2d** point)
 {
    // determine slab type and overhang
-   CComPtr<IBridgeDeck> deck;
-   bridge->get_Deck(&deck);
-
-   CComQIPtr<ICastSlab> cip(deck);
-   CComQIPtr<IPrecastSlab> sip(deck);
-   CComQIPtr<IOverlaySlab> overlay(deck);
-
-   if ( cip == NULL && sip == NULL && overlay == NULL )
-      return Error(IDS_E_UNKNOWNDECKTYPE,IID_IBridgeGeometryTool,GBMT_E_UNKNOWNDECKTYPE);
+   CComPtr<IPath> path;
+   HRESULT hr = GetDeckEdgePath(bridge,side,&path);
+   if ( FAILED(hr) )
+      return hr;
 
    // get the alignment
    CComPtr<IAlignment> alignment;
@@ -481,18 +476,6 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 
    vector->put_Direction(angle);
 
    m_Line1->SetExplicit(point_on_alignment,vector);
-
-   // Intersection line with path... we want the point to be the one nearest the point on the alignment
-   CComPtr<IDeckBoundary> deckBoundary;
-   deck->get_DeckBoundary(&deckBoundary);
-
-   // VARIANT_TRUE to get the layout line and not the actual edge path. The actual deck edge path
-   // teminates at the ends of the deck.
-   CComPtr<IPath> path;
-   if ( side == qcbLeft )
-      deckBoundary->get_LeftEdgePath(VARIANT_TRUE,&path); 
-   else
-      deckBoundary->get_RightEdgePath(VARIANT_TRUE,&path);
 
    path->Intersect(m_Line1,point_on_alignment,point);
 
@@ -585,11 +568,14 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
    CComPtr<IAlignment> alignment;
    bridge->get_Alignment(&alignment);
 
+   CComPtr<IDirection> objDirection;
    if ( direction == NULL )
-      alignment->Normal(CComVariant(station),&direction);
+      alignment->Normal(CComVariant(station),&objDirection);
+   else
+      objDirection = direction;
 
    CComPtr<IPoint2d> pntEdge;
-   HRESULT hr = DeckEdgePoint(bridge,station,direction,side,&pntEdge);
+   HRESULT hr = DeckEdgePoint(bridge,station,objDirection,side,&pntEdge);
    if ( FAILED(hr) )
       return hr;
 
@@ -917,6 +903,38 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
       dist *= -1;
 
    *pOverhang = dist;
+   return S_OK;
+}
+
+HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath)
+{
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+
+   if ( deck == NULL )
+   {
+      // no deck...use the traffic barrier path
+      CComPtr<ISidewalkBarrier> barrier;
+      if ( side == qcbLeft )
+         bridge->get_LeftBarrier(&barrier);
+      else
+         bridge->get_RightBarrier(&barrier);
+
+      return barrier->get_Path(ppPath);
+   }
+
+
+   // Intersection line with path... we want the point to be the one nearest the point on the alignment
+   CComPtr<IDeckBoundary> deckBoundary;
+   deck->get_DeckBoundary(&deckBoundary);
+
+   // VARIANT_TRUE to get the layout line and not the actual edge path. The actual deck edge path
+   // teminates at the ends of the deck.
+   if ( side == qcbLeft )
+      deckBoundary->get_LeftEdgePath(VARIANT_TRUE,ppPath); 
+   else
+      deckBoundary->get_RightEdgePath(VARIANT_TRUE,ppPath);
+
    return S_OK;
 }
 

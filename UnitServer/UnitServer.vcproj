@@ -3291,7 +3291,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Include\WBFLUnitServer.h\UnitServerUtils.h"
+				RelativePath="..\Include\WBFLUnitServer\UnitServerUtils.h"
 				>
 			</File>
 			<File

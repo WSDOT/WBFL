@@ -50,7 +50,7 @@ class ATL_NO_VTABLE CProfile :
    public IObjectSafetyImpl<CProfile,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IConnectionPointContainerImpl<CProfile>,
    public IProfileCollection,
-   public ICrossSectionCollectionEvents,
+   public ISurfaceCollectionEvents,
    public IProfileElementEvents,
    public IStructuredStorage2,
 	public CProxyDProfileEvents< CProfile >,
@@ -71,7 +71,7 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CProfile)
 	COM_INTERFACE_ENTRY(IProfile)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(ICrossSectionCollectionEvents)
+   COM_INTERFACE_ENTRY(ISurfaceCollectionEvents)
 	COM_INTERFACE_ENTRY(IProfileElementEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
@@ -85,59 +85,60 @@ BEGIN_CONNECTION_POINT_MAP(CProfile)
 CONNECTION_POINT_ENTRY(IID_IProfileEvents)
 END_CONNECTION_POINT_MAP()
 
-
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // IProfile
 public:
    STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
-   STDMETHOD(get_Path)(/*[out,retval]*/IPath** ppPath);
-   STDMETHOD(putref_Path)(/*[in]*/IPath* pPath);
+   STDMETHOD(putref_Alignment)(/*[in]*/IAlignment* pAlignment);
+   STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment);
    STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone);
 	STDMETHOD(Clear)();
-	STDMETHOD(CrownPointOffset)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* cpoffset);
-	STDMETHOD(CrownSlope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope);
-	STDMETHOD(LeftCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
-	STDMETHOD(RightCrownSlope)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* slope);
+	STDMETHOD(Slope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope);
+   STDMETHOD(TemplateSegmentSlope)(/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope);
 	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade);
 	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev);
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varKey);
+	STDMETHOD(Remove)(/*[in]*/ VARIANT varID);
 	STDMETHOD(Add)(/*[in]*/ IProfileElement* element);
 	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement);
-   STDMETHOD(get_CrossSections)(/*[out, retval]*/ ICrossSectionCollection* *pVal);
-	STDMETHOD(putref_CrossSections)(/*[in]*/ ICrossSectionCollection* pVal);
 	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
 	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement* *pVal);
    STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IProfileElement* pVal);
    STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval);  
+   STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces);
+   STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces);
+   STDMETHOD(GetSurface)(VARIANT varStation,ISurface** ppSurface);
+   STDMETHOD(RidgePointOffset)(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
+   STDMETHOD(RidgePointElevation)(VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
 
 // IStructuredStorage2
 public:
    STDMETHOD(Save)(IStructuredSave2* pSave);
    STDMETHOD(Load)(IStructuredLoad2* pLoad);
 
-// ICrossSectionCollectionEvents
-	STDMETHOD(OnCrossSectionChanged)(ICrossSection * csect)
-	{
+// ISurfaceCollectionEvents
+   STDMETHOD(OnSurfaceChanged)(ISurface* pSurface)
+   {
       Fire_OnProfileChanged(this);
       return S_OK;
-	}
-	STDMETHOD(OnCrossSectionAdded)(ICrossSection * csect)
-	{
+   }
+   STDMETHOD(OnSurfaceAdded)(ISurface* pSurface)
+   {
       Fire_OnProfileChanged(this);
       return S_OK;
-	}
-	STDMETHOD(OnCrossSectionRemoved)()
-	{
+   }
+   STDMETHOD(OnSurfaceRemoved)()
+   {
       Fire_OnProfileChanged(this);
       return S_OK;
-	}
-	STDMETHOD(OnCrossSectionsCleared)()
-	{
+   }
+   STDMETHOD(OnSurfacesCleared)()
+   {
       Fire_OnProfileChanged(this);
       return S_OK;
-	}
+   }
+
 
 // IProfileElementEvents
 	STDMETHOD(OnProfileElementChanged)(IProfileElement * pe)
@@ -147,22 +148,26 @@ public:
 	}
 
 private:
-   IPath* m_pPath; // weak reference
-   CComPtr<ICrossSectionCollection> m_CrossSections;
-   DWORD m_dwCookie;
+   IAlignment* m_pAlignment; // weak reference
+   CComPtr<ISurfaceCollection> m_Surfaces;
+   DWORD m_dwSurfaceCollectionCookie;
 
-   HRESULT GradeAndElevation(VARIANT varStation,Float64 offset,Float64* grade,Float64* elev);
+   HRESULT GetStation(VARIANT varStation,IStation** station);
+
+   HRESULT GradeAndElevation(CComPtr<IStation>& station,Float64 offset,Float64* grade,Float64* elev,Float64* pSlope);
    void BeforeProfileGradeAndElevation(CComPtr<IStation>& station,Float64* grade,Float64* elev);
    void ProfileGradeAndElevation(CComPtr<IStation>& station,Float64* grade,Float64* elev);
    void AfterProfileGradeAndElevation(CComPtr<IStation>& station,Float64*grade, Float64* elev);
-   Float64 AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Float64 elev);
+   HRESULT AdjustForOffset(CComPtr<IStation>& station,Float64 offset,Float64 elev,Float64* pAdjElev,Float64* pSlope);
 
    void AdviseElement(IProfileElement* element,DWORD* pdwCookie);
    void UnadviseElement(CollectionIndexType idx);
    void UnadviseAll();
 
-   void AdviseCrossSections();
-   void UnadviseCrossSections();
+   void AssociateWithProfile(IProfileElement* element,bool bAssociate=true);
+
+   void AdviseSurfaces();
+   void UnadviseSurfaces();
 };
 
 #endif //__PROFILE_H_

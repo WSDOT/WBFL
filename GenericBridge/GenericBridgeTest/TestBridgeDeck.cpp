@@ -66,15 +66,6 @@ void CTestBridgeDeck::Test(IUnknown* pUnk)
    TRY_TEST(deck->get_Material(&material),S_OK);
    TRY_TEST(material != NULL,true);
 
-   Float64 value;
-   TRY_TEST(deck->get_WearingSurfaceDensity(NULL),E_POINTER);
-   TRY_TEST(deck->get_WearingSurfaceDensity(&value),S_OK);
-   TRY_TEST(value,0.0);
-
-   TRY_TEST(deck->get_WearingSurfaceDepth(NULL),E_POINTER);
-   TRY_TEST(deck->get_WearingSurfaceDepth(&value),S_OK);
-   TRY_TEST(value,0.0);
-
    ///////////////////////////////////////
    // Test Error Info
    CComQIPtr<ISupportErrorInfo> eInfo(deck);

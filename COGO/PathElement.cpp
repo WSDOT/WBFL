@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "PathElement.h"
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

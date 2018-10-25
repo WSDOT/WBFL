@@ -46,8 +46,8 @@ public:
    lrfdLosses(Float64 x, // location along girder where losses are computed
               Float64 Lg,    // girder length
               SectionPropertiesType sectionProperties, // type of section properties used
-              matPsStrand::Grade gr,
-              matPsStrand::Type type,
+              matPsStrand::Grade grade, // strand grade
+              matPsStrand::Type type, // strand type
               Float64 fpjPerm, // fpj permanent strands
               Float64 fpjTemp, // fpj of temporary strands
               Float64 ApsPerm,  // area of permanent strand
@@ -56,15 +56,15 @@ public:
               Float64 epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
               Float64 epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
               Float64 etemp, // eccentricty of temporary strands with respect to CG of girder
-              TempStrandUsage usage,
-              Float64 anchorSet,
-              Float64 wobble,
-              Float64 friction,
-              Float64 angleChange,
+              TempStrandUsage usage, // temporary strand usage type
+              Float64 anchorSet, // anchor set for post-tensioned temporary top strands
+              Float64 wobble,    // wobble coefficient for post-tensioned temporary top strands
+              Float64 friction, // friction coefficient for post-tensioned temporary top strands
+              Float64 angleChange, // angle change for post-tensioned temporary top strands
 
               Float64 Fc,   // 28 day strength of girder concrete
               Float64 Fci,  // Release strength
-              Float64 FcSlab,   
+              Float64 FcSlab,   // 28 day strength for slab
               Float64 Ec,   // Modulus of elasticity of girder
               Float64 Eci,  // Modulus of elasticity of girder at transfer
               Float64 Ecd,  // Modulus of elasticity of deck
@@ -93,8 +93,8 @@ public:
               Float64 rh, // relative humidity
 
               Float64 ti,   // Time until prestress transfer
-              bool bIgnoreInitialRelaxation,
-              bool bValidateLosses
+              bool bIgnoreInitialRelaxation, // if true, initialize relaxation is not computed
+              bool bValidateLosses // if true, ValidateLossParameters() is called and lrfdXPsLosses exceptions will be thrown if the loss parameters are not valid
               );
 
    lrfdLosses(const lrfdLosses& rOther);
@@ -422,7 +422,10 @@ protected:
    void UpdateElasticShortening() const;
    void UpdatePostTensionLosses() const;
 
+   // Called by the framework to validate the parameters in this object
+   // Throw lrfdXPsLosses-based exceptions of there are invalid parameters
    virtual void ValidateParameters() const = 0;
+
    virtual void UpdateLongTermLosses() const = 0;
    virtual void UpdateHaulingLosses() const = 0;
    

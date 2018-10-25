@@ -65,6 +65,7 @@ private:
    Float64 m_DuctDiameter;
    StrandIndexType m_StrandCount;
    CComPtr<IPrestressingStrand> m_Material;
+   JackingEndType m_JackingEnd;
 
    CComPtr<ITendon> m_RefTendon; // reference tendon
 
@@ -115,6 +116,8 @@ public:
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
    STDMETHOD(get_Start)(IPoint3d** start);
 	STDMETHOD(get_End)(IPoint3d** end);
+   STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type);
+   STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type);
 
 // IStructuredStorage2
 public:

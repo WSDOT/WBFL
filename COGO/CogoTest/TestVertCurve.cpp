@@ -47,6 +47,12 @@ CTestVertCurve::CTestVertCurve()
 
 void CTestVertCurve::Test()
 {
+   Test1();
+   Test2();
+}
+
+void CTestVertCurve::Test1()
+{
    CComPtr<IVertCurve> vc;
    TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
 
@@ -74,11 +80,11 @@ void CTestVertCurve::Test()
    TRY_TEST( vc->putref_PFG(pfg), S_OK );
 
    TRY_TEST( vc->put_L1(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L1(0),E_INVALIDARG);
+   TRY_TEST( vc->put_L1(0),S_OK);
    TRY_TEST( vc->put_L1(100),S_OK);
 
    TRY_TEST( vc->put_L2(-1),E_INVALIDARG);
-   TRY_TEST( vc->put_L2(0),E_INVALIDARG);
+   TRY_TEST( vc->put_L2(0),S_OK);
    TRY_TEST( vc->put_L2(200),S_OK);
 
    Float64 g1, g2;
@@ -331,6 +337,138 @@ void CTestVertCurve::Test()
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_VertCurve,IID_IVertCurve,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_VertCurve,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+}
+
+
+void CTestVertCurve::Test2()
+{
+   CComPtr<IAlignment> alignment;
+   TRY_TEST(alignment.CoCreateInstance(CLSID_Alignment),S_OK);
+
+   CComPtr<IProfile> profile;
+   alignment->get_Profile(&profile);
+
+   CComPtr<IVertCurve> vc;
+   TRY_TEST(vc.CoCreateInstance(CLSID_VertCurve),S_OK);
+
+   profile->AddEx(vc);
+
+   profile.Release();
+   TRY_TEST(vc->get_Profile(NULL),E_POINTER);
+   TRY_TEST(vc->get_Profile(&profile),S_OK);
+   TRY_TEST(profile!=NULL,true);
+
+   // create station equation
+   CComPtr<IStationEquationCollection> equations;
+   alignment->get_StationEquations(&equations);
+   CComPtr<IStationEquation> equation;
+   equations->Add(150,250,&equation);
+   equation.Release();
+   equations->Add(400,200,&equation);
+
+   CComPtr<IProfilePoint> pbg, pvi, pfg;
+   vc->get_PBG(&pbg);
+   vc->get_PVI(&pvi);
+   vc->get_PFG(&pfg);
+
+   // Sag curve
+   pbg->put_Station(CComVariant(100)); // normalized station
+   pbg->put_Elevation(100);
+
+   CComPtr<IStation> objPVIStation;
+   objPVIStation.CoCreateInstance(CLSID_Station);
+   objPVIStation->SetStation(1,300); // station in equation zone 1
+   pvi->put_Station(CComVariant(objPVIStation));
+   pvi->put_Elevation(50);
+   
+   pfg->put_Station(CComVariant(400)); // normalized station
+   pfg->put_Elevation(100);
+
+   TRY_TEST( vc->put_L1(100),S_OK);
+   TRY_TEST( vc->put_L2(200),S_OK);
+
+   Float64 g1, g2;
+   TRY_TEST( vc->get_EntryGrade(&g1), S_OK );
+   TRY_TEST( IsEqual(g1,-0.5), true );
+
+   TRY_TEST( vc->get_ExitGrade(&g2), S_OK );
+   TRY_TEST( IsEqual(g2,0.25), true );
+
+   Float64 L;
+   TRY_TEST( vc->get_Length(&L), S_OK );
+   TRY_TEST( IsEqual( L, 300.), true );
+
+   CComPtr<IStation> station;
+   equations->ConvertFromNormalizedStation(150,&station);
+   Float64 elev;
+   TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,81.25), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(200,&station);
+   TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,75.0), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(250,&station);
+   TRY_TEST( vc->Elevation(CComVariant(station),&elev), S_OK );
+   TRY_TEST( IsEqual(elev,76.5625), true );
+
+   Float64 grade;
+   station.Release();
+   equations->ConvertFromNormalizedStation(150,&station);
+   TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,-0.25), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(200,&station);
+   TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,0.0), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(250,&station);
+   TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,0.0625), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(0,&station);
+   TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
+   TRY_TEST( IsEqual(grade,-0.50), true );
+   station.Release();
+   equations->ConvertFromNormalizedStation(600,&station);
+   TRY_TEST( vc->Grade(CComVariant(station),&grade), S_OK );
+   TRY_TEST( IsEqual(grade, 0.25), true );
+
+   // high point at start
+   CComPtr<IProfilePoint> point;
+   ZoneIndexType zoneIdx;
+   Float64 sta;
+   TRY_TEST( vc->get_HighPoint(&point), S_OK );
+   station.Release();
+   point->get_Station(&station);
+   station->GetStation(&zoneIdx,&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST(zoneIdx == 0 || zoneIdx == INVALID_INDEX,true);
+   TRY_TEST( IsEqual(sta,100.0), true );
+   TRY_TEST(IsEqual(elev,100.0),true);
+
+   // low point between ends
+   point.Release();
+   TRY_TEST( vc->get_LowPoint(&point), S_OK );
+   station.Release();
+   point->get_Station(&station);
+   station->GetStation(&zoneIdx,&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST(zoneIdx,1);
+   TRY_TEST( IsEqual(sta,300.0), true );
+   TRY_TEST(IsEqual(elev,75.0),true);
+
+   // high point at end
+   pfg->put_Elevation(200);
+   point.Release();
+   TRY_TEST( vc->get_HighPoint(&point), S_OK );
+   station.Release();
+   point->get_Station(&station);
+   station->GetStation(&zoneIdx,&sta);
+   point->get_Elevation(&elev);
+   TRY_TEST(zoneIdx,2);
+   TRY_TEST( IsEqual(sta,300.0), true );
+   TRY_TEST(IsEqual(elev,200.0),true);
 }
 
 STDMETHODIMP CTestVertCurve::OnVertCurveChanged(IVertCurve* pp)

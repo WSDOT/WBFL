@@ -77,6 +77,7 @@
 #define IDH_CogoModel_OnAlignmentAdded                   10033
 #define IDH_CogoModel_OnAlignmentRemoved                 10034
 #define IDH_CogoModel_OnAlignmentCleared                 10035
+#define IDH_CogoModel_OnStationEquationsChanged          10036
 
 #define IDH_CogoModel_OnPathChanged                      11031
 #define IDH_CogoModel_OnPathAdded                        11033
@@ -100,20 +101,15 @@
 #define IDH_HorzCurveCollection_OnHorzCurvesCleared      10050
 #define IDH_ProfileElement_OnProfileElementChanged       10051
 #define IDH_Profile_OnProifleChanged                     10052
-#define IDH_CrossSection_OnCrossSectionChanged           10053
-#define IDH_CrossSection_OnCrossSectionMoved             10054
-#define IDH_CrossSectionCollection_OnCrossSectionChanged 10055
-#define IDH_CrossSectionCollection_OnPointAdded          10056
-#define IDH_CrossSectionCollection_OnPointRemoved        10057
-#define IDH_CrossSectionCollection_OnPointsCleared       10058
 #define IDH_PathElement_OnPathElementChanged   10059
 #define IDH_Alignment_OnAlignmentChanged                 10060
 #define IDH_Alignment_OnProfileChanged                   10061
-#define IDH_PathCollection_OnAlignmentChanged       10062
-#define IDH_PathCollection_OnProfileChanged         10063
-#define IDH_PathCollection_OnAlignmentAdded         10064
-#define IDH_PathCollection_OnAlignmentRemoved       10065
-#define IDH_PathCollection_OnAlignmentCleared       10066
+#define IDH_Alignment_OnStationEquationsChanged                10062
+#define IDH_PathCollection_OnAlignmentChanged       10063
+#define IDH_PathCollection_OnProfileChanged         10064
+#define IDH_PathCollection_OnAlignmentAdded         10065
+#define IDH_PathCollection_OnAlignmentRemoved       10066
+#define IDH_PathCollection_OnAlignmentCleared       10067
 
 #define IDH_AngleDisplayUnitFormatter                          300
 #define IDH_AngleDisplayUnitFormatter_CondensedFormat          301
@@ -131,10 +127,10 @@
 #define IDH_PointCollection_AddEx                              604
 #define IDH_PointCollection_Remove                             605
 #define IDH_PointCollection_Clear                              606
-#define IDH_PointCollection_FindKey                            607
-#define IDH_PointCollection__EnumKeys                          608
+#define IDH_PointCollection_FindID                            607
+#define IDH_PointCollection__EnumIDs                          608
 #define IDH_PointCollection_Factory                            609
-#define IDH_PointCollection_Key                                610
+#define IDH_PointCollection_ID                                610
 #define IDH_PointCollection__EnumPoints                        611
 #define IDH_PointCollection_Clone                              612
  
@@ -209,10 +205,10 @@
 #define IDH_LineSegmentCollection_AddEx                       1304
 #define IDH_LineSegmentCollection_Remove                      1305
 #define IDH_LineSegmentCollection_Clear                       1306
-#define IDH_LineSegmentCollection_FindKey                     1307
-#define IDH_LineSegmentCollection__EnumKeys                   1308
+#define IDH_LineSegmentCollection_FindID                     1307
+#define IDH_LineSegmentCollection__EnumIDs                   1308
 #define IDH_LineSegmentCollection_Factory                     1309
-#define IDH_LineSegmentCollection_Key                         1310
+#define IDH_LineSegmentCollection_ID                         1310
 #define IDH_LineSegmentCollection__EnumLineSegments           1311
 #define IDH_LineSegmentCollection_Clone                       1312
 
@@ -220,6 +216,7 @@
 #define IDH_ProfilePoint_Station                              1401
 #define IDH_ProfilePoint_Elevation                            1402
 #define IDH_ProfilePoint_Clone                                1403
+#define IDH_ProfilePoint_Profile                               1404
 
 #define IDH_ProfilePointCollection                            1500
 #define IDH_ProfilePointCollection_Item                       1501
@@ -228,9 +225,9 @@
 #define IDH_ProfilePointCollection_AddEx                      1504
 #define IDH_ProfilePointCollection_Remove                     1505
 #define IDH_ProfilePointCollection_Clear                      1506
-#define IDH_ProfilePointCollection_FindKey                    1507
-#define IDH_ProfilePointCollection__EnumKeys                  1508
-#define IDH_ProfilePointCollection_Key                        1509
+#define IDH_ProfilePointCollection_FindID                    1507
+#define IDH_ProfilePointCollection__EnumIDs                  1508
+#define IDH_ProfilePointCollection_ID                        1509
 #define IDH_ProfilePointCollection_Factory                    1510
 #define IDH_ProfilePointCollection__EnumProfilePoints         1511
 #define IDH_ProfilePointCollection_Clone                      1512
@@ -256,6 +253,7 @@
 #define IDH_VertCurve_K									      1618
 #define IDH_VertCurve_H										  1619
 #define IDH_VertCurve_E										  1620
+#define IDH_VertCurve_Profile                                  1621
 
 #define IDH_VertCurveCollection                               1700
 #define IDH_VertCurveCollection_Item                          1701
@@ -264,10 +262,10 @@
 #define IDH_VertCurveCollection_AddEx                         1704
 #define IDH_VertCurveCollection_Remove                        1705
 #define IDH_VertCurveCollection_Clear                         1706
-#define IDH_VertCurveCollection_FindKey                       1707
-#define IDH_VertCurveCollection__EnumKeys                     1708
+#define IDH_VertCurveCollection_FindID                       1707
+#define IDH_VertCurveCollection__EnumIDs                     1708
 #define IDH_VertCurveCollection__EnumVertCurves               1709
-#define IDH_VertCurveCollection_Key                           1710
+#define IDH_VertCurveCollection_ID                           1710
 #define IDH_VertCurveCollection_Factory                       1711
 #define IDH_VertCurveCollection_Clone                         1712
 
@@ -330,10 +328,10 @@
 #define IDH_HorzCurveCollection_AddEx                         1904
 #define IDH_HorzCurveCollection_Remove                        1905
 #define IDH_HorzCurveCollection_Clear                         1906
-#define IDH_HorzCurveCollection_FindKey                       1907
-#define IDH_HorzCurveCollection__EnumKeys                     1908
+#define IDH_HorzCurveCollection_FindID                       1907
+#define IDH_HorzCurveCollection__EnumIDs                     1908
 #define IDH_HorzCurveCollection_Factory                       1909
-#define IDH_HorzCurveCollection_Key                           1910
+#define IDH_HorzCurveCollection_ID                           1910
 #define IDH_HorzCurveCollection__EnumHorzCurves               1911
 #define IDH_HorzCurveCollection_Clone                         1912
 
@@ -356,31 +354,8 @@
 #define IDH_Profile_Clear                                     2111
 #define IDH_Profile__EnumProfileElements                      2112
 #define IDH_Profile_Clone                                     2113
-#define IDH_Profile_CrownSlope                                2114
+#define IDH_Profile_Slope                                2114
 #define IDH_Profile_CrownPointOffset                          2115
-
-#define IDH_CrossSection                                      2200
-#define IDH_CrossSection_Station                              2201
-#define IDH_CrossSection_CrownPointOffset                     2202
-#define IDH_CrossSection_LeftCrownSlope                       2203
-#define IDH_CrossSection_RightCrownSlope                      2204
-#define IDH_CrossSection_Clone                                2205
-
-#define IDH_CrossSectionCollection                            2300
-#define IDH_CrossSectionCollection_Item                       2301
-#define IDH_CrossSectionCollection_Count                      2302
-#define IDH_CrossSectionCollection_Add                        2303
-#define IDH_CrossSectionCollection_AddEx                      2304
-#define IDH_CrossSectionCollection_Remove                     2305
-#define IDH_CrossSectionCollection_CrownSlope                 2306
-#define IDH_CrossSectionCollection_LeftCrownSlope             2307
-#define IDH_CrossSectionCollection_RightCrownSlope            2308
-#define IDH_CrossSectionCollection_CreateCrossSection         2309
-#define IDH_CrossSectionCollection_Clear                      2310
-#define IDH_CrossSectionCollection__EnumCrossSections         2311
-#define IDH_CrossSectionCollection_Factory                    2312
-#define IDH_CrossSectionCollection_Clone                      2313
-#define IDH_CrossSectionCollection_CrownPointOffset           2314
 
 #define IDH_PathElement                                        2400
 #define IDH_PathElement_Type                                   2401
@@ -405,11 +380,16 @@
 #define IDH_Alignment_Station                                  2515
 #define IDH_Alignment_Offset                                   2516
 #define IDH_Alignment_PointFactory                             2517
-#define IDH_Alignment__EnumPathElements                        2518
+#define IDH_Alignment__EnumAlignmentElements                        2518
 #define IDH_Alignment_Clone                                    2519
-#define IDH_Alignment_CreateParallelPath                       2520
-#define IDH_Alignment_CreateConnectedPath					   2521
-#define IDH_Alignment_Move                                     2522
+#define IDH_Alignment_CreateParallelAlignment                       2520
+#define IDH_Alignment_CreateSubAlignment                       2521
+#define IDH_Alignment_CreateConnectedAlignment					   2522
+#define IDH_Alignment_CreateParallelPath                       2523
+#define IDH_Alignment_CreateSubPath                            2524
+#define IDH_Alignment_CreateConnectedPath                      2526
+#define IDH_Alignment_Move                                     2527
+#define IDH_Alignment_StationEquations                         2528
 
 #define IDH_PathCollection                               2600
 #define IDH_PathCollection_Item                          2601
@@ -418,10 +398,10 @@
 #define IDH_PathCollection_AddEx                         2604
 #define IDH_PathCollection_Remove                        2605
 #define IDH_PathCollection_Clear                         2606
-#define IDH_PathCollection_FindKey                       2607
-#define IDH_PathCollection__EnumKeys                     2608
+#define IDH_PathCollection_FindID                       2607
+#define IDH_PathCollection__EnumIDs                     2608
 #define IDH_PathCollection_Factory                       2609
-#define IDH_PathCollection_Key                           2610
+#define IDH_PathCollection_ID                           2610
 #define IDH_PathCollection__EnumPaths                    2611
 #define IDH_PathCollection_Clone                         2612
 
@@ -430,24 +410,92 @@
 
 #define IDH_ProfilePointFactory                               2800
 #define IDH_ProfilePointFactory_CreateProfilePoint            2801
+#define IDH_ProfilePointFactory_Profile                       2802
 
 #define IDH_HorzCurveFactory                                  2900
 #define IDH_HorzCurveFactory_CreateHorzCurve                  2901
 
-#define IDH_CrossSectionFactory                               3000
-#define IDH_CrossSectionFactory_CreateCrossSection            3001
+#define IDH_AlignmentFactory                                  3100
+#define IDH_AlignmentFactory_CreateAlignment                  3101
+#define IDH_AlignmentFactory_IsValidType                      3102
 
-#define IDH_AlignmentFactory                                  3099
-#define IDH_PathFactory                                       3100
-#define IDH_PathFactory_CreatePath                            3101
-#define IDH_PathFactory_IsValidType                           3102
+#define IDH_PathFactory                                       3110
+#define IDH_PathFactory_CreatePath                            3111
+#define IDH_PathFactory_IsValidType                           3112
 
 #define IDH_Station                                           3200
-#define IDH_Station_Value                                     3201
-#define IDH_Station_FromString                                3202
-#define IDH_Station_AsString                                  3203
-#define IDH_Station_OnStationChanged                          3204
-#define IDH_Station_Clone                                     3205
+#define IDH_Station_StationZoneIndex                          3201
+#define IDH_Station_Value                                     3202
+#define IDH_Station_FromString                                3203
+#define IDH_Station_AsString                                  3204
+#define IDH_Station_OnStationChanged                          3205
+#define IDH_Station_Clone                                     3206
 
+#define IDH_AlignmentCollection                                3300
+#define IDH_AlignmentCollection_Item                           3301
+#define IDH_AlignmentCollection_Count                          3302
+#define IDH_AlignmentCollection_Add                            3304
+#define IDH_AlignmentCollection_AddEx                          3305
+#define IDH_AlignmentCollection_Remove                         3306
+#define IDH_AlignmentCollection_Clear                          3307
+#define IDH_AlignmentCollection_FindID                         3308
+#define IDH_AlignmentCollection__EnumIDs                       3309
+#define IDH_AlignmentCollection_Factory                        3310
+#define IDH_AlignmentCollection_ID                             3311
+#define IDH_AlignmentCollection__EnumAlignments                3312
+#define IDH_AlignmentCollection_Clone                          3313
+#define IDH_AlignmentCollection_OnProfileChanged               3314
+#define IDH_AlignmentCollection_OnAlignmentChanged             3315
+#define IDH_AlignmentCollection_OnAlignmentAdded               3316
+#define IDH_AlignmentCollection_OnAlignmentRemoved             3317
+#define IDH_AlignmentCollection_OnAlignmentCleared             3318
+#define IDH_AlignmentCollection_OnStationEquationsChanged      3319
+
+
+#define IDH_Path                                          2600
+#define IDH_Path_RefStation                               2601
+#define IDH_Path_Profile                                  2602
+#define IDH_Path_Item                                     2603
+#define IDH_Path_Count                                    2604
+#define IDH_Path_Add                                      2605
+#define IDH_Path_AddEx                                    2606
+#define IDH_Path_Insert                                   2607
+#define IDH_Path_InsertEx                                 2608
+#define IDH_Path_Remove                                   2609
+#define IDH_Path_Clear                                    2610
+#define IDH_Path_LocatePoint                              2611
+#define IDH_Path_Bearing                                  2612
+#define IDH_Path_Normal                                   2613
+#define IDH_Path_ProjectPoint                             2614
+#define IDH_Path_Station                                  2615
+#define IDH_Path_Offset                                   2616
+#define IDH_Path_PointFactory                             2617
+#define IDH_Path__EnumPathElements                        2618
+#define IDH_Path_Clone                                    2619
+#define IDH_Path_CreateParallelPath                       2620
+#define IDH_Path_CreateSubPath                       2621
+#define IDH_Path_CreateConnectedPath					   2622
+#define IDH_Path_Move                                     2623
+
+#define IDH_IEnumPathElements                            2624
+
+
+#define IDH_StationEquation                              2700
+#define IDH_StationEquation_GetEquation                  2701
+#define IDH_StationEquation_Back                         2702
+#define IDH_StationEquation_Ahead                        2703
+#define IDH_StationEquation_NormalizedValue              2704
+
+#define IDH_StationEquationCollection                    2710
+#define IDH_StationEquationCollection_Item               2711
+#define IDH_StationEquationCollection_Count              2712
+#define IDH_StationEquationCollection_Add                2713
+#define IDH_StationEquationCollection_Insert             2714
+#define IDH_StationEquationCollection_Remove             2715
+#define IDH_StationEquationCollection_Clear              2716
+#define IDH_StationEquationCollection__EnumStationEquations 2718
+#define IDH_StationEquationCollection_OnEquationAdded    2720
+#define IDH_StationEquationCollection_OnEquationRemoved  2721
+#define IDH_StationEquationCollection_OnEquationsCleared 2722
 
 #endif // INCLUDED_COGO_HH_

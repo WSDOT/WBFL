@@ -53,6 +53,7 @@ extern CComModule _Module;
 #include <WBFLGeometry.h>
 #include <WBFLUnitServer.h>
 #include <WBFLCogo.h>
+#include <MathEx.h>
 
 #include "GenericBridgeHelpers.h"
 

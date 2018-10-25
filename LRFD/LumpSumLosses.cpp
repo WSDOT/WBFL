@@ -185,9 +185,25 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AtShipping() const
 Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
-      return m_AtShipping;
-   else
-      return 0;
+   {
+      switch ( m_TempStrandUsage )
+      {
+      case lrfdLosses::tsPretensioned:
+         return m_AfterXfer;
+
+      case lrfdLosses::tsPTAfterLifting:
+         return 0;
+
+      case lrfdLosses::tsPTBeforeShipping:
+         return 0;
+
+      default:
+         ASSERT(false); // is there a new temporary strand usage?
+         return 0;
+      }
+   }
+
+   return 0;
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const

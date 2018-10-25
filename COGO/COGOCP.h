@@ -57,7 +57,7 @@ class CProxyDPathCollectionEvents : public IConnectionPointImpl<T, &IID_IPathCol
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPathChanged(IPathCollection* coll,CogoObjectID key, IPath * Path)
+	VOID Fire_OnPathChanged(IPathCollection* coll,CogoObjectID id, IPath * Path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -70,10 +70,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IPathCollectionEvents> events(sp);
          if ( events )
-            events->OnPathChanged(coll,key,Path);
+            events->OnPathChanged(coll,id,Path);
 		}
 	}
-	VOID Fire_OnProfileChanged(IPathCollection* coll,IProfile * Profile)
+	VOID Fire_OnPathAdded(IPathCollection* coll,CogoObjectID id, IPath * Path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -86,10 +86,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IPathCollectionEvents> events(sp);
          if ( events )
-            events->OnProfileChanged(coll,Profile);
+            events->OnPathAdded(coll,id,Path);
 		}
 	}
-	VOID Fire_OnPathAdded(IPathCollection* coll,CogoObjectID key, IPath * Path)
+	VOID Fire_OnPathRemoved(IPathCollection* coll,CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -102,23 +102,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IPathCollectionEvents> events(sp);
          if ( events )
-            events->OnPathAdded(coll,key,Path);
-		}
-	}
-	VOID Fire_OnPathRemoved(IPathCollection* coll,CogoObjectID key)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<IPathCollectionEvents> events(sp);
-         if ( events )
-            events->OnPathRemoved(coll,key);
+            events->OnPathRemoved(coll,id);
 		}
 	}
 	VOID Fire_OnPathsCleared(IPathCollection* coll)
@@ -183,6 +167,132 @@ public:
             events->OnPathChanged(path);
 		}
 	}
+};
+
+template <class T>
+class CProxyDAlignmentCollectionEvents : public IConnectionPointImpl<T, &IID_IAlignmentCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnAlignmentChanged(IAlignmentCollection* coll,CogoObjectID id, IAlignment* Alignment)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnAlignmentChanged(coll,id,Alignment);
+		}
+	}
+	VOID Fire_OnAlignmentAdded(IAlignmentCollection* coll,CogoObjectID id, IAlignment * Alignment)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnAlignmentAdded(coll,id,Alignment);
+		}
+	}
+	VOID Fire_OnAlignmentRemoved(IAlignmentCollection* coll,CogoObjectID id)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnAlignmentRemoved(coll,id);
+		}
+	}
+	VOID Fire_OnAlignmentsCleared(IAlignmentCollection* coll)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnAlignmentsCleared(coll);
+		}
+	}
+	VOID Fire_OnProfileChanged(IAlignmentCollection* coll,IProfile* Profile)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnProfileChanged(coll,Profile);
+		}
+	}
+	VOID Fire_OnStationEquationsChanged(IAlignmentCollection* coll,IStationEquationCollection* Equations)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentCollectionEvents> events(sp);
+         if ( events )
+            events->OnStationEquationsChanged(coll,Equations);
+		}
+	}
+};
+
+template <class T>
+class CProxyDAlignmentEvents : public IConnectionPointImpl<T, &IID_IAlignmentEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnAlignmentChanged(IAlignment * alignmnet)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentEvents> events(sp);
+         if ( events )
+            events->OnAlignmentChanged(alignmnet);
+		}
+	}
 	VOID Fire_OnProfileChanged(IProfile * Profile)
 	{
 		T* pT = static_cast<T*>(this);
@@ -194,9 +304,25 @@ public:
 			pT->Lock();
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
-         CComQIPtr<IPathEvents> events(sp);
+         CComQIPtr<IAlignmentEvents> events(sp);
          if ( events )
             events->OnProfileChanged(Profile);
+		}
+	}
+	VOID Fire_OnStationEquationsChanged(IStationEquationCollection * Equations)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IAlignmentEvents> events(sp);
+         if ( events )
+            events->OnStationEquationsChanged(Equations);
 		}
 	}
 };
@@ -206,7 +332,7 @@ class CProxyDCogoModelEvents : public IConnectionPointImpl<T, &IID_ICogoModelEve
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPointChanged(ICogoModel * cm, CogoObjectID key, IPoint2d * point)
+	VOID Fire_OnPointChanged(ICogoModel * cm, CogoObjectID id, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -219,10 +345,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPointChanged(cm,key,point);
+            events->OnPointChanged(cm,id,point);
 		}
 	}
-	VOID Fire_OnPointAdded(ICogoModel * cm, CogoObjectID key, IPoint2d * point)
+	VOID Fire_OnPointAdded(ICogoModel * cm, CogoObjectID id, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -235,10 +361,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPointAdded(cm,key,point);
+            events->OnPointAdded(cm,id,point);
 		}
 	}
-	VOID Fire_OnPointRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnPointRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -251,7 +377,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPointRemoved(cm,key);
+            events->OnPointRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnPointsCleared(ICogoModel * cm)
@@ -270,7 +396,7 @@ public:
             events->OnPointsCleared(cm);
 		}
 	}
-	VOID Fire_OnLineSegmentChanged(ICogoModel * cm, CogoObjectID key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentChanged(ICogoModel * cm, CogoObjectID id, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -283,10 +409,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnLineSegmentChanged(cm,key,lineSeg);
+            events->OnLineSegmentChanged(cm,id,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentAdded(ICogoModel * cm, CogoObjectID key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentAdded(ICogoModel * cm, CogoObjectID id, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -299,10 +425,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnLineSegmentAdded(cm,key,lineSeg);
+            events->OnLineSegmentAdded(cm,id,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnLineSegmentRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -315,7 +441,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnLineSegmentRemoved(cm,key);
+            events->OnLineSegmentRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnLineSegmentsCleared(ICogoModel * cm)
@@ -334,7 +460,7 @@ public:
             events->OnLineSegmentsCleared(cm);
 		}
 	}
-	VOID Fire_OnProfilePointChanged(ICogoModel * cm, CogoObjectID key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointChanged(ICogoModel * cm, CogoObjectID id, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -347,10 +473,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnProfilePointChanged(cm,key,pp);
+            events->OnProfilePointChanged(cm,id,pp);
 		}
 	}
-	VOID Fire_OnProfilePointAdded(ICogoModel * cm, CogoObjectID key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointAdded(ICogoModel * cm, CogoObjectID id, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -363,10 +489,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnProfilePointAdded(cm,key,pp);
+            events->OnProfilePointAdded(cm,id,pp);
 		}
 	}
-	VOID Fire_OnProfilePointRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnProfilePointRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -379,7 +505,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnProfilePointRemoved(cm,key);
+            events->OnProfilePointRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnProfilePointsCleared(ICogoModel * cm)
@@ -398,7 +524,7 @@ public:
             events->OnProfilePointsCleared(cm);
 		}
 	}
-	VOID Fire_OnVertCurveChanged(ICogoModel * cm, CogoObjectID key, IVertCurve * vc)
+	VOID Fire_OnVertCurveChanged(ICogoModel * cm, CogoObjectID id, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -411,10 +537,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnVertCurveChanged(cm,key,vc);
+            events->OnVertCurveChanged(cm,id,vc);
 		}
 	}
-	VOID Fire_OnVertCurveAdded(ICogoModel * cm, CogoObjectID key, IVertCurve * vc)
+	VOID Fire_OnVertCurveAdded(ICogoModel * cm, CogoObjectID id, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -427,10 +553,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnVertCurveAdded(cm,key,vc);
+            events->OnVertCurveAdded(cm,id,vc);
 		}
 	}
-	VOID Fire_OnVertCurveRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnVertCurveRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -443,7 +569,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnVertCurveRemoved(cm,key);
+            events->OnVertCurveRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnVertCurvesCleared(ICogoModel * cm)
@@ -462,7 +588,7 @@ public:
             events->OnVertCurvesCleared(cm);
 		}
 	}
-	VOID Fire_OnHorzCurveChanged(ICogoModel * cm, CogoObjectID key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveChanged(ICogoModel * cm, CogoObjectID id, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -475,10 +601,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveChanged(cm,key,vc);
+            events->OnHorzCurveChanged(cm,id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(ICogoModel * cm, CogoObjectID key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveAdded(ICogoModel * cm, CogoObjectID id, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -491,10 +617,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveAdded(cm,key,vc);
+            events->OnHorzCurveAdded(cm,id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnHorzCurveRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -507,7 +633,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnHorzCurveRemoved(cm,key);
+            events->OnHorzCurveRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnHorzCurvesCleared(ICogoModel * cm)
@@ -542,7 +668,7 @@ public:
             events->OnProfileChanged(cm,Profile);
 		}
 	}
-	VOID Fire_OnAlignmentChanged(ICogoModel * cm, CogoObjectID key, IAlignment * alignment)
+	VOID Fire_OnStationEquationsChanged(ICogoModel * cm, IStationEquationCollection * Equations)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -555,10 +681,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnAlignmentChanged(cm,key,alignment);
+            events->OnStationEquationsChanged(cm,Equations);
 		}
 	}
-	VOID Fire_OnAlignmentAdded(ICogoModel * cm, CogoObjectID key, IAlignment * alignment)
+	VOID Fire_OnAlignmentChanged(ICogoModel * cm, CogoObjectID id, IAlignment * alignment)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -571,10 +697,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnAlignmentAdded(cm,key,alignment);
+            events->OnAlignmentChanged(cm,id,alignment);
 		}
 	}
-	VOID Fire_OnAlignmentRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnAlignmentAdded(ICogoModel * cm, CogoObjectID id, IAlignment * alignment)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -587,7 +713,23 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnAlignmentRemoved(cm,key);
+            events->OnAlignmentAdded(cm,id,alignment);
+		}
+	}
+	VOID Fire_OnAlignmentRemoved(ICogoModel * cm, CogoObjectID id)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ICogoModelEvents> events(sp);
+         if ( events )
+            events->OnAlignmentRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnAlignmentsCleared(ICogoModel * cm)
@@ -607,7 +749,7 @@ public:
 		}
 	}
 
-	VOID Fire_OnPathChanged(ICogoModel * cm, CogoObjectID key, IPath * path)
+	VOID Fire_OnPathChanged(ICogoModel * cm, CogoObjectID id, IPath * path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -620,10 +762,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPathChanged(cm,key,path);
+            events->OnPathChanged(cm,id,path);
 		}
 	}
-	VOID Fire_OnPathAdded(ICogoModel * cm, CogoObjectID key, IPath * path)
+	VOID Fire_OnPathAdded(ICogoModel * cm, CogoObjectID id, IPath * path)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -636,10 +778,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPathAdded(cm,key,path);
+            events->OnPathAdded(cm,id,path);
 		}
 	}
-	VOID Fire_OnPathRemoved(ICogoModel * cm, CogoObjectID key)
+	VOID Fire_OnPathRemoved(ICogoModel * cm, CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -652,7 +794,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ICogoModelEvents> events(sp);
          if ( events )
-            events->OnPathRemoved(cm,key);
+            events->OnPathRemoved(cm,id);
 		}
 	}
 	VOID Fire_OnPathsCleared(ICogoModel * cm)
@@ -674,121 +816,11 @@ public:
 };
 
 template <class T>
-class CProxyDCrossSectionCollectionEvents : public IConnectionPointImpl<T, &IID_ICrossSectionCollectionEvents, CComDynamicUnkArray>
-{
-	//Warning this class may be recreated by the wizard.
-public:
-	VOID Fire_OnCrossSectionChanged(ICrossSection * csect)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionCollectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionChanged(csect);
-		}
-	}
-	VOID Fire_OnCrossSectionAdded(ICrossSection * csect)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionCollectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionAdded(csect);
-		}
-	}
-	VOID Fire_OnCrossSectionRemoved()
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionCollectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionRemoved();
-		}
-	}
-	VOID Fire_OnCrossSectionsCleared()
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionCollectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionsCleared();
-		}
-	}
-};
-
-template <class T>
-class CProxyDCrossSectionEvents : public IConnectionPointImpl<T, &IID_ICrossSectionEvents, CComDynamicUnkArray>
-{
-	//Warning this class may be recreated by the wizard.
-public:
-	VOID Fire_OnCrossSectionChanged(ICrossSection * csect)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionChanged(csect);
-		}
-	}
-	VOID Fire_OnCrossSectionMoved(ICrossSection * csect)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<ICrossSectionEvents> events(sp);
-         if ( events )
-            events->OnCrossSectionMoved(csect);
-		}
-	}
-};
-
-template <class T>
 class CProxyDHorzCurveCollectionEvents : public IConnectionPointImpl<T, &IID_IHorzCurveCollectionEvents, CComDynamicUnkArray>
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnHorzCurveChanged(CogoObjectID key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveChanged(CogoObjectID id, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -801,10 +833,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IHorzCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveChanged(key,vc);
+            events->OnHorzCurveChanged(id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveAdded(CogoObjectID key, IHorzCurve * vc)
+	VOID Fire_OnHorzCurveAdded(CogoObjectID id, IHorzCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -817,10 +849,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IHorzCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveAdded(key,vc);
+            events->OnHorzCurveAdded(id,vc);
 		}
 	}
-	VOID Fire_OnHorzCurveRemoved(CogoObjectID key)
+	VOID Fire_OnHorzCurveRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -833,7 +865,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IHorzCurveCollectionEvents> events(sp);
          if ( events ) 
-            events->OnHorzCurveRemoved(key);
+            events->OnHorzCurveRemoved(id);
 		}
 	}
 	VOID Fire_OnHorzCurvesCleared()
@@ -906,7 +938,7 @@ class CProxyDLineSegmentCollectionEvents : public IConnectionPointImpl<T, &IID_I
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnLineSegmentChanged(CogoObjectID key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentChanged(CogoObjectID id, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -919,10 +951,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ILineSegmentCollectionEvents> events(sp);
          if ( events )
-            events->OnLineSegmentChanged(key,lineSeg);
+            events->OnLineSegmentChanged(id,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentAdded(CogoObjectID key, ILineSegment2d * lineSeg)
+	VOID Fire_OnLineSegmentAdded(CogoObjectID id, ILineSegment2d * lineSeg)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -935,10 +967,10 @@ public:
 			pT->Unlock();
          CComQIPtr<ILineSegmentCollectionEvents> events(sp);
          if ( events )
-            events->OnLineSegmentAdded(key,lineSeg);
+            events->OnLineSegmentAdded(id,lineSeg);
 		}
 	}
-	VOID Fire_OnLineSegmentRemoved(CogoObjectID key)
+	VOID Fire_OnLineSegmentRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -951,7 +983,7 @@ public:
 			pT->Unlock();
          CComQIPtr<ILineSegmentCollectionEvents> events(sp);
          if ( events )
-            events->OnLineSegmentRemoved(key);
+            events->OnLineSegmentRemoved(id);
 		}
 	}
 	VOID Fire_OnLineSegmentsCleared()
@@ -1023,7 +1055,7 @@ class CProxyDProfilePointCollectionEvents : public IConnectionPointImpl<T, &IID_
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnProfilePointChanged(CogoObjectID key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointChanged(CogoObjectID id, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1036,10 +1068,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IProfilePointCollectionEvents> events(sp);
          if ( events )
-            events->OnProfilePointChanged(key,pp);
+            events->OnProfilePointChanged(id,pp);
 		}
 	}
-	VOID Fire_OnProfilePointAdded(CogoObjectID key, IProfilePoint * pp)
+	VOID Fire_OnProfilePointAdded(CogoObjectID id, IProfilePoint * pp)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1052,10 +1084,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IProfilePointCollectionEvents> events(sp);
          if ( events )
-            events->OnProfilePointAdded(key,pp);
+            events->OnProfilePointAdded(id,pp);
 		}
 	}
-	VOID Fire_OnProfilePointRemoved(CogoObjectID key)
+	VOID Fire_OnProfilePointRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1068,7 +1100,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IProfilePointCollectionEvents> events(sp);
          if ( events )
-            events->OnProfilePointRemoved(key);
+            events->OnProfilePointRemoved(id);
 		}
 	}
 	VOID Fire_OnProfilePointsCleared()
@@ -1117,7 +1149,7 @@ class CProxyDVertCurveCollectionEvents : public IConnectionPointImpl<T, &IID_IVe
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnVertCurveChanged(CogoObjectID key, IVertCurve * vc)
+	VOID Fire_OnVertCurveChanged(CogoObjectID id, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1130,10 +1162,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IVertCurveCollectionEvents> events(sp);
          if ( events )
-            events->OnVertCurveChanged(key,vc);
+            events->OnVertCurveChanged(id,vc);
 		}
 	}
-	VOID Fire_OnVertCurveAdded(CogoObjectID key, IVertCurve * vc)
+	VOID Fire_OnVertCurveAdded(CogoObjectID id, IVertCurve * vc)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1146,10 +1178,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IVertCurveCollectionEvents> events(sp);
          if ( events )
-            events->OnVertCurveAdded(key,vc);
+            events->OnVertCurveAdded(id,vc);
 		}
 	}
-	VOID Fire_OnVertCurveRemoved(CogoObjectID key)
+	VOID Fire_OnVertCurveRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1162,7 +1194,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IVertCurveCollectionEvents> events(sp);
          if ( events )
-            events->OnVertCurveRemoved(key);
+            events->OnVertCurveRemoved(id);
 		}
 	}
 	VOID Fire_OnVertCurvesCleared()
@@ -1211,7 +1243,7 @@ class CProxyDStationEvents : public IConnectionPointImpl<T, &IID_IStationEvents,
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnStationChanged(Float64 newVal)
+	VOID Fire_OnStationChanged(ZoneIndexType zoneIdx,Float64 station)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1224,7 +1256,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IStationEvents> events(sp);
          if ( events )
-            events->OnStationChanged(newVal);
+            events->OnStationChanged(zoneIdx,station);
 		}
 	}
 };
@@ -1235,7 +1267,7 @@ class CProxyDPointCollectionEvents : public IConnectionPointImpl<T, &IID_IPointC
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnPointChanged(CogoObjectID key, IPoint2d * point)
+	VOID Fire_OnPointChanged(CogoObjectID id, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1248,10 +1280,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IPointCollectionEvents> events(sp);
          if ( events )
-            events->OnPointChanged(key,point);
+            events->OnPointChanged(id,point);
 		}
 	}
-	VOID Fire_OnPointAdded(CogoObjectID key, IPoint2d * point)
+	VOID Fire_OnPointAdded(CogoObjectID id, IPoint2d * point)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1264,10 +1296,10 @@ public:
 			pT->Unlock();
          CComQIPtr<IPointCollectionEvents> events(sp);
          if ( events )
-            events->OnPointAdded(key,point);
+            events->OnPointAdded(id,point);
 		}
 	}
-	VOID Fire_OnPointRemoved(CogoObjectID key)
+	VOID Fire_OnPointRemoved(CogoObjectID id)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
@@ -1280,7 +1312,7 @@ public:
 			pT->Unlock();
          CComQIPtr<IPointCollectionEvents> events(sp);
          if ( events )
-            events->OnPointRemoved(key);
+            events->OnPointRemoved(id);
 		}
 	}
 	VOID Fire_OnPointsCleared()
@@ -1301,4 +1333,518 @@ public:
 	}
 };
 
+
+
+template <class T>
+class CProxyDStationEquationCollectionEvents : public IConnectionPointImpl<T, &IID_IStationEquationCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnEquationAdded(CollectionIndexType idx, IStationEquation* pEquation)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IStationEquationCollectionEvents> events(sp);
+         if ( events )
+            events->OnEquationAdded(idx,pEquation);
+		}
+	}
+	VOID Fire_OnEquationRemoved(CollectionIndexType idx)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IStationEquationCollectionEvents> events(sp);
+         if ( events )
+            events->OnEquationRemoved(idx);
+		}
+	}
+	VOID Fire_OnEquationsCleared()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IStationEquationCollectionEvents> events(sp);
+         if ( events )
+            events->OnEquationsCleared();
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDWideningEvents : public IConnectionPointImpl<T, &IID_IWideningEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnWideningChanged(IWidening* pWidening)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IWideningEvents> events(sp);
+         if ( events )
+            events->OnWideningChanged(pWidening);
+		}
+	}
+};
+
+template <class T>
+class CProxyDWideningCollectionEvents : public IConnectionPointImpl<T, &IID_IWideningCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnWideningChanged(IWidening* pWidening)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IWideningCollectionEvents> events(sp);
+         if ( events )
+            events->OnWideningChanged(pWidening);
+		}
+	}
+	VOID Fire_OnWideningAdded(IWidening* pWidening)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IWideningCollectionEvents> events(sp);
+         if ( events )
+            events->OnWideningAdded(pWidening);
+		}
+	}
+	VOID Fire_OnWideningRemoved()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IWideningCollectionEvents> events(sp);
+         if ( events )
+            events->OnWideningRemoved();
+		}
+	}
+	VOID Fire_OnWideningsCleared()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<IWideningCollectionEvents> events(sp);
+         if ( events )
+            events->OnWideningsCleared();
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDSuperelevationEvents : public IConnectionPointImpl<T, &IID_ISuperelevationEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSuperelevationChanged(ISuperelevation* pSuperelevation)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISuperelevationEvents> events(sp);
+         if ( events )
+            events->OnSuperelevationChanged(pSuperelevation);
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDSuperelevationCollectionEvents : public IConnectionPointImpl<T, &IID_ISuperelevationCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSuperelevationChanged(ISuperelevation* pSuperelevation)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISuperelevationCollectionEvents> events(sp);
+         if ( events )
+            events->OnSuperelevationChanged(pSuperelevation);
+		}
+	}
+	VOID Fire_OnSuperelevationAdded(ISuperelevation* pSuperelevation)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISuperelevationCollectionEvents> events(sp);
+         if ( events )
+            events->OnSuperelevationAdded(pSuperelevation);
+		}
+	}
+	VOID Fire_OnSuperelevationRemoved()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISuperelevationCollectionEvents> events(sp);
+         if ( events )
+            events->OnSuperelevationRemoved();
+		}
+	}
+	VOID Fire_OnSuperelevationsCleared()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISuperelevationCollectionEvents> events(sp);
+         if ( events )
+            events->OnSuperelevationsCleared();
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDTemplateSegmentEvents : public IConnectionPointImpl<T, &IID_ITemplateSegmentEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnTemplateSegmentChanged(ITemplateSegment* pSegment)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ITemplateSegmentEvents> events(sp);
+         if ( events )
+            events->OnTemplateSegmentChanged(pSegment);
+		}
+	}
+};
+
+
+
+template <class T>
+class CProxyDSurfaceTemplateEvents : public IConnectionPointImpl<T, &IID_ISurfaceTemplateEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSurfaceTemplateChanged(ISurfaceTemplate* pTemplate)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateEvents> events(sp);
+         if ( events )
+            events->OnSurfaceTemplateChanged(pTemplate);
+		}
+	}
+
+	VOID Fire_OnTemplateSegmentAdded(ISurfaceTemplate* pTemplate,ITemplateSegment* pSegment)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateEvents> events(sp);
+         if ( events )
+            events->OnTemplateSegmentAdded(pTemplate,pSegment);
+		}
+	}
+	VOID Fire_OnTemplateSegmentRemoved(ISurfaceTemplate* pTemplate)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateEvents> events(sp);
+         if ( events )
+            events->OnTemplateSegmentRemoved(pTemplate);
+		}
+	}
+	VOID Fire_OnTemplateSegmentsCleared(ISurfaceTemplate* pTemplate)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateEvents> events(sp);
+         if ( events )
+            events->OnTemplateSegmentsCleared(pTemplate);
+		}
+	}
+};
+
+
+
+template <class T>
+class CProxyDSurfaceTemplateCollectionEvents : public IConnectionPointImpl<T, &IID_ISurfaceTemplateCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSurfaceTemplateChanged(ISurfaceTemplate* pSurfaceTemplate)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceTemplateChanged(pSurfaceTemplate);
+		}
+	}
+	VOID Fire_OnSurfaceTemplateAdded(ISurfaceTemplate* pSurfaceTemplate)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceTemplateAdded(pSurfaceTemplate);
+		}
+	}
+	VOID Fire_OnSurfaceTemplateRemoved()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceTemplateRemoved();
+		}
+	}
+	VOID Fire_OnSurfaceTemplatesCleared()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceTemplateCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceTemplatesCleared();
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDSurfaceEvents : public IConnectionPointImpl<T, &IID_ISurfaceEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSurfaceChanged(ISurface* pSurface)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceEvents> events(sp);
+         if ( events )
+            events->OnSurfaceChanged(pSurface);
+		}
+	}
+};
+
+
+template <class T>
+class CProxyDSurfaceCollectionEvents : public IConnectionPointImpl<T, &IID_ISurfaceCollectionEvents, CComDynamicUnkArray>
+{
+	//Warning this class may be recreated by the wizard.
+public:
+	VOID Fire_OnSurfaceChanged(ISurface* pSurface)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceChanged(pSurface);
+		}
+	}
+	VOID Fire_OnSurfaceAdded(ISurface* pSurface)
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceAdded(pSurface);
+		}
+	}
+	VOID Fire_OnSurfaceRemoved()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfaceRemoved();
+		}
+	}
+	VOID Fire_OnSurfacesCleared()
+	{
+		T* pT = static_cast<T*>(this);
+		int nConnectionIndex;
+		int nConnections = m_vec.GetSize();
+		
+		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
+		{
+			pT->Lock();
+			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			pT->Unlock();
+         CComQIPtr<ISurfaceCollectionEvents> events(sp);
+         if ( events )
+            events->OnSurfacesCleared();
+		}
+	}
+};
 #endif

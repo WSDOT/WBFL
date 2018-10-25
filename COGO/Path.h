@@ -52,7 +52,6 @@ class ATL_NO_VTABLE CPath :
 	public IPathElementCollection,
    public IStructuredStorage2,
 	public IPathElementEvents,
-	public IProfileEvents,
 	public CProxyDPathEvents< CPath >,
    public IPersistImpl<CPath>
 {
@@ -72,7 +71,6 @@ BEGIN_COM_MAP(CPath)
 	COM_INTERFACE_ENTRY(IPath)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IPathElementEvents)
-	COM_INTERFACE_ENTRY(IProfileEvents)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
@@ -101,8 +99,6 @@ public:
 	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
 	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
-	STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
-	STDMETHOD(putref_Profile)(/*[in]*/ IProfile* pVal);
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
 	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal);
 	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal);
@@ -111,7 +107,7 @@ public:
 	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement);
 	STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element);
 	STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement);
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varKey);
+	STDMETHOD(Remove)(/*[in]*/ VARIANT varID);
 	STDMETHOD(Clear)();
 	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory); 
 	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory); 
@@ -133,18 +129,8 @@ public:
 		return S_OK;
 	}
 
-// IProfileEvents
-public:
-	STDMETHOD(OnProfileChanged)(IProfile * profile)
-	{
-      Fire_OnProfileChanged(profile);
-      return S_OK;
-	}
-
 private:
    CComPtr<IPoint2dFactory> m_PointFactory;
-   CComPtr<IProfile> m_Profile;
-   DWORD m_dwProfileCookie;
 
    CComPtr<IGeomUtil2d> m_GeomUtil;
    CComPtr<ICogoEngine> m_CogoEngine;

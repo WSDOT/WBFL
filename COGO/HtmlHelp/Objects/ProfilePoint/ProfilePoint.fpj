@@ -13,7 +13,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Elevation_Property_(ProfilePoint_Object).htm</name>
+			<name>ProfilePoint_Object.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -23,7 +23,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>ProfilePoint_Object.htm</name>
+			<name>Elevation_Property_(ProfilePoint_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Profile_Property_(ProfilePoint_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

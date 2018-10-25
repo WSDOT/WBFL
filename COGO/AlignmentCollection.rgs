@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.AlignmentCollection.1 = s 'AlignmentCollection Class'
+	{
+		CLSID = s '{9B77429D-4A92-4ddd-BAFA-4330EEAF167C}'
+	}
+	WBFLCogo.AlignmentCollection = s 'AlignmentCollection Class'
+	{
+		CLSID = s '{9B77429D-4A92-4ddd-BAFA-4330EEAF167C}'
+		CurVer = s 'WBFLCogo.AlignmentCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9B77429D-4A92-4ddd-BAFA-4330EEAF167C} = s 'AlignmentCollection Class'
+		{
+			ProgID = s 'WBFLCogo.AlignmentCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.AlignmentCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

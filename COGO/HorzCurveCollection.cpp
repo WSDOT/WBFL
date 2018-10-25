@@ -53,14 +53,14 @@ void CHorzCurveCollection::FinalRelease()
    m_coll.clear();
 }
 
-STDMETHODIMP CHorzCurveCollection::get_Item(CogoObjectID key, IHorzCurve **pVal)
+STDMETHODIMP CHorzCurveCollection::get_Item(CogoObjectID id, IHorzCurve **pVal)
 {
    CHECK_RETVAL(pVal);
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return HorzCurveNotFound(key);
+      return HorzCurveNotFound(id);
    }
 
    std::pair<CogoObjectID,CComVariant> p = *found;
@@ -69,26 +69,26 @@ STDMETHODIMP CHorzCurveCollection::get_Item(CogoObjectID key, IHorzCurve **pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::putref_Item(CogoObjectID key, IHorzCurve *newVal)
+STDMETHODIMP CHorzCurveCollection::putref_Item(CogoObjectID id, IHorzCurve *newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return HorzCurveNotFound(key);
+      return HorzCurveNotFound(id);
    }
 
    CComVariant& var = (*found).second;
 
    CComQIPtr<IHorzCurve> old_curve(var.pdispVal);
-   Unadvise(key,old_curve);
+   Unadvise(id,old_curve);
 
    var = newVal;
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnHorzCurveChanged(key,newVal);
+   Fire_OnHorzCurveChanged(id,newVal);
 
 	return S_OK;
 }
@@ -100,27 +100,27 @@ STDMETHODIMP CHorzCurveCollection::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Remove(CogoObjectID key)
+STDMETHODIMP CHorzCurveCollection::Remove(CogoObjectID id)
 {
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found == m_coll.end() )
    {
-      return HorzCurveNotFound(key);
+      return HorzCurveNotFound(id);
    }
 
    CComVariant& var = (*found).second;
    CComQIPtr<IHorzCurve> hc(var.pdispVal);
-   Unadvise(key,hc);
+   Unadvise(id,hc);
 
    m_coll.erase(found);
 
-   Fire_OnHorzCurveRemoved(key);
+   Fire_OnHorzCurveRemoved(id);
 
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID key, IPoint2d* pbt, IPoint2d* pi, IPoint2d* pft, Float64 radius, Float64 Ls1, Float64 Ls2,IHorzCurve** hc)
+STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID id, IPoint2d* pbt, IPoint2d* pi, IPoint2d* pft, Float64 radius, Float64 Ls1, Float64 Ls2,IHorzCurve** hc)
 {
    CHECK_IN(pbt);
    CHECK_IN(pi);
@@ -155,34 +155,34 @@ STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID key, IPoint2d* pbt, IPoint2d
       (*hc)->AddRef();
    }
 
-   return AddEx(key,newHC);
+   return AddEx(id,newHC);
 }
 
    
-STDMETHODIMP CHorzCurveCollection::AddEx(CogoObjectID key, IHorzCurve* newVal)
+STDMETHODIMP CHorzCurveCollection::AddEx(CogoObjectID id, IHorzCurve* newVal)
 {
    CHECK_IN(newVal);
 
    std::map<CogoObjectID,CComVariant>::iterator found;
-   found = m_coll.find(key);
+   found = m_coll.find(id);
    if ( found != m_coll.end() )
    {
-      return HorzCurveAlreadyDefined(key);
+      return HorzCurveAlreadyDefined(id);
    }
 
    CComQIPtr<IUnknown,&IID_IUnknown> pDisp(newVal);
    CComVariant var(pDisp);
    std::pair<std::map<CogoObjectID,CComVariant>::iterator,bool> result;
-   result = m_coll.insert(std::make_pair(key,var));
+   result = m_coll.insert(std::make_pair(id,var));
    if ( result.second == false )
    {
       return E_FAIL;
    }
 
    // Hookup to the connection point
-   Advise(key,newVal);
+   Advise(id,newVal);
 
-   Fire_OnHorzCurveAdded(key,newVal);
+   Fire_OnHorzCurveAdded(id,newVal);
 
 	return S_OK;
 }
@@ -195,10 +195,10 @@ STDMETHODIMP CHorzCurveCollection::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::FindKey(IHorzCurve* hc,CogoObjectID* key)
+STDMETHODIMP CHorzCurveCollection::FindID(IHorzCurve* hc,CogoObjectID* id)
 {
    CHECK_IN(hc);
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -208,7 +208,7 @@ STDMETHODIMP CHorzCurveCollection::FindKey(IHorzCurve* hc,CogoObjectID* key)
       ATLASSERT( value != NULL );
       if ( value.IsEqualObject(hc) )
       {
-         *key = item.first;
+         *id = item.first;
          return S_OK;
       }
    }
@@ -216,11 +216,11 @@ STDMETHODIMP CHorzCurveCollection::FindKey(IHorzCurve* hc,CogoObjectID* key)
    return E_FAIL;
 }
 
-STDMETHODIMP CHorzCurveCollection::get__EnumKeys(IEnumKeys** ppenum)
+STDMETHODIMP CHorzCurveCollection::get__EnumIDs(IEnumIDs** ppenum)
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumKeys,&IID_IEnumKeys, CogoObjectID, MapCopyKey<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
+   typedef CComEnumOnSTL<IEnumIDs,&IID_IEnumIDs, CogoObjectID, MapCopyID<std::map<CogoObjectID,CComVariant>>, std::map<CogoObjectID,CComVariant> > Enum;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -274,10 +274,10 @@ STDMETHODIMP CHorzCurveCollection::Clone(IHorzCurveCollection* *clone)
       CComPtr<IHorzCurve> cloneHC;
       hc->Clone(&cloneHC);
 
-      CogoObjectID key;
-      Key(count++,&key);
+      CogoObjectID id;
+      ID(count++,&id);
 
-      (*clone)->AddEx(key,cloneHC);
+      (*clone)->AddEx(id,cloneHC);
    }
 
    (*clone)->putref_Factory(m_Factory);
@@ -300,9 +300,9 @@ STDMETHODIMP CHorzCurveCollection::putref_Factory(IHorzCurveFactory* factory)
    return S_OK;
 }
 
-STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoObjectID* key)
+STDMETHODIMP CHorzCurveCollection::ID(CollectionIndexType index,CogoObjectID* id)
 {
-   CHECK_RETVAL(key);
+   CHECK_RETVAL(id);
 
    if ( !IsValidIndex(index,m_coll) )
       return E_INVALIDARG;
@@ -312,7 +312,7 @@ STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoObjectID* k
       iter++;
 
    std::pair<CogoObjectID,CComVariant> p = *iter;
-   *key = p.first;
+   *id = p.first;
 
    return S_OK;
 }
@@ -321,19 +321,19 @@ STDMETHODIMP CHorzCurveCollection::Key(CollectionIndexType index,CogoObjectID* k
 
 STDMETHODIMP CHorzCurveCollection::OnHorzCurveChanged(IHorzCurve* hc)
 {
-   CogoObjectID key;
-   HRESULT hr = FindKey(hc,&key);
+   CogoObjectID id;
+   HRESULT hr = FindID(hc,&id);
 
    // This container only listens to events from point objects in this 
-   // container. If the key isn't found an error has been made somewhere
+   // container. If the id isn't found an error has been made somewhere
    ATLASSERT( SUCCEEDED(hr) );
 
-   Fire_OnHorzCurveChanged(key,hc);
+   Fire_OnHorzCurveChanged(id,hc);
 
    return S_OK;
 }
 
-void CHorzCurveCollection::Advise(CogoObjectID key,IHorzCurve* hc)
+void CHorzCurveCollection::Advise(CogoObjectID id,IHorzCurve* hc)
 {
    DWORD dwCookie;
    CComPtr<IHorzCurve> pCP(hc);
@@ -344,12 +344,12 @@ void CHorzCurveCollection::Advise(CogoObjectID key,IHorzCurve* hc)
       return;
    }
 
-   m_Cookies.insert( std::make_pair(key,dwCookie) );
+   m_Cookies.insert( std::make_pair(id,dwCookie) );
 
    InternalRelease(); // Break circular reference
 }
 
-void CHorzCurveCollection::Unadvise(CogoObjectID key,IHorzCurve* hc)
+void CHorzCurveCollection::Unadvise(CogoObjectID id,IHorzCurve* hc)
 {
    ATLASSERT(hc != 0);
 
@@ -359,7 +359,7 @@ void CHorzCurveCollection::Unadvise(CogoObjectID key,IHorzCurve* hc)
 
    // Lookup the cookie
    std::map<CogoObjectID,DWORD>::iterator found;
-   found = m_Cookies.find( key );
+   found = m_Cookies.find( id );
    if ( found == m_Cookies.end() )
    {
       ATLTRACE("Failed to disconnect connection point with HorzCurve object\n");
@@ -377,7 +377,7 @@ void CHorzCurveCollection::Unadvise(CogoObjectID key,IHorzCurve* hc)
    ATLASSERT(SUCCEEDED(hr));
 
    // Remove cookie from map
-   m_Cookies.erase( key );
+   m_Cookies.erase( id );
 }
 
 void CHorzCurveCollection::UnadviseAll()
@@ -385,30 +385,30 @@ void CHorzCurveCollection::UnadviseAll()
    std::map<CogoObjectID,CComVariant>::iterator iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
    {
-      CogoObjectID key = (*iter).first;
+      CogoObjectID id = (*iter).first;
       CComQIPtr<IHorzCurve> hc( (*iter).second.pdispVal );
-      Unadvise(key,hc);
+      Unadvise(id,hc);
    }
 }
 
-HRESULT CHorzCurveCollection::HorzCurveNotFound(CogoObjectID key)
+HRESULT CHorzCurveCollection::HorzCurveNotFound(CogoObjectID id)
 {
-   return HorzCurveKeyError(key,IDS_E_HORZCURVENOTFOUND,COGO_E_HORZCURVENOTFOUND);
+   return HorzCurveIDError(id,IDS_E_HORZCURVENOTFOUND,COGO_E_HORZCURVENOTFOUND);
 }
 
-HRESULT CHorzCurveCollection::HorzCurveAlreadyDefined(CogoObjectID key)
+HRESULT CHorzCurveCollection::HorzCurveAlreadyDefined(CogoObjectID id)
 {
-   return HorzCurveKeyError(key,IDS_E_HORZCURVEALREADYDEFINED,COGO_E_HORZCURVEALREADYDEFINED);
+   return HorzCurveIDError(id,IDS_E_HORZCURVEALREADYDEFINED,COGO_E_HORZCURVEALREADYDEFINED);
 }
 
-HRESULT CHorzCurveCollection::HorzCurveKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes)
+HRESULT CHorzCurveCollection::HorzCurveIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes)
 {
    USES_CONVERSION;
 
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nHelpString, str, 256);
    TCHAR msg[256];
-   int cOut = _stprintf_s( msg, 256, str, key );
+   int cOut = _stprintf_s( msg, 256, str, id );
    _ASSERTE( cOut < 256 );
    CComBSTR oleMsg(msg);
    return Error(oleMsg, IID_IHorzCurveCollection, hRes);

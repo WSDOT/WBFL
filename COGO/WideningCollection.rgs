@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.WideningCollection.1 = s 'WideningCollection Class'
+	{
+		CLSID = s '{9AD670B4-C5FE-4639-A714-67008906B54D}'
+	}
+	WBFLCogo.WideningCollection = s 'WideningCollection Class'
+	{
+		CLSID = s '{9AD670B4-C5FE-4639-A714-67008906B54D}'
+		CurVer = s 'WBFLCogo.WideningCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {9AD670B4-C5FE-4639-A714-67008906B54D} = s 'WideningCollection Class'
+		{
+			ProgID = s 'WBFLCogo.WideningCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.WideningCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

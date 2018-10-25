@@ -230,6 +230,14 @@ library WBFLGenericBridge
 	   tmPath   = 2  // measurement along the centerline of the duct/path
    } TendonMeasure;
 
+   typedef [public,helpstring("enum JackingEndType"),uuid(7DA23C65-4705-4351-81D9-08AF102984EF)]
+   enum
+   {
+      jeLeft,
+      jeRight,
+      jeBoth
+   } JackingEndType;
+
 
    typedef [public,helpstring("enum StrandGrade"),uuid(703D2C89-8DC1-44c5-A8EE-2797F823232A)]
    enum 
@@ -765,16 +773,14 @@ library WBFLGenericBridge
       [propget,helpstring("property DeckBoundary")] HRESULT DeckBoundary([out,retval]IDeckBoundary** deckBoundary);
 	   [propget,helpstring("property Composite")] HRESULT Composite([out,retval]VARIANT_BOOL* bComposite);
 	   [propput,helpstring("property Composite")] HRESULT Composite([in]VARIANT_BOOL bComposite);
-	   [propget,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([out,retval]Float64* d);
-	   [propput,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([in]Float64 d);
-	   [propget,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([out,retval]Float64* d);
-	   [propput,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([in]Float64 d);
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IMaterial** material);
 	   [propputref,helpstring("property Material")] HRESULT Material([in]IMaterial* material);
 	   [propget,helpstring("property StructuralDepth")] HRESULT StructuralDepth([out,retval]Float64* depth);
 	   [propget,helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
       [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IBridgeDeckRebarLayout** rebarLayout);
       [propputref,helpstring("property RebarLayout")] HRESULT RebarLayout([in]IBridgeDeckRebarLayout* rebarLayout);
+      [propputref,helpstring("property Bridge")] HRESULT Bridge([in]IGenericBridge* pBridge);
+      [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
 	};
 
    [
@@ -790,8 +796,6 @@ library WBFLGenericBridge
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
 	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
@@ -813,8 +817,6 @@ library WBFLGenericBridge
 	   [propput, helpstring("property PanelDepth")] HRESULT PanelDepth([in]Float64 depth);
 	   [propget, helpstring("property OverhangDepth")] HRESULT OverhangDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property OverhangDepth")] HRESULT OverhangDepth([in]Float64 depth);
-	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 	   [propget, helpstring("property Fillet")] HRESULT Fillet([out,retval]Float64* depth);
 	   [propput, helpstring("property Fillet")] HRESULT Fillet([in]Float64 depth);
 	   [propget, helpstring("property OverhangTaper")] HRESULT OverhangTaper([out,retval]DeckOverhangTaper* taper);
@@ -832,8 +834,7 @@ library WBFLGenericBridge
 	{
 	   [propget, helpstring("property GrossDepth")] HRESULT GrossDepth([out,retval]Float64* depth);
 	   [propput, helpstring("property GrossDepth")] HRESULT GrossDepth([in]Float64 depth);
-	   [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
-	   [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
+
 	};
 
 	[
@@ -1216,8 +1217,10 @@ library WBFLGenericBridge
       [propget, helpstring("property BottomFlangeProfile")] HRESULT BottomFlangeProfile([out,retval]IPoint2dCollection** ppPoints);
 
       [propget, helpstring("property ClosurePourLength")] HRESULT ClosurePourLength([in]EndType endType,[out,retval]Float64* pLength);
-      [propput, helpstring("property ClosurePourMaterial")] HRESULT ClosurePourMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
-      [propget, helpstring("property ClosurePourMaterial")] HRESULT ClosurePourMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
+      [propput, helpstring("property ClosurePourFgMaterial")] HRESULT ClosurePourForegroundMaterial([in]EndType endType,[in]IMaterial* pFGMaterial);
+      [propget, helpstring("property ClosurePourFgMaterial")] HRESULT ClosurePourForegroundMaterial([in]EndType endType,[out,retval]IMaterial** ppFGMaterial);
+      [propput, helpstring("property ClosurePourBgMaterial")] HRESULT ClosurePourBackgroundMaterial([in]EndType endType,[in]IMaterial* pBGMaterial);
+      [propget, helpstring("property ClosurePourBgMaterial")] HRESULT ClosurePourBackgroundMaterial([in]EndType endType,[out,retval]IMaterial** ppBGMaterial);
    };
 
    [
@@ -1645,6 +1648,9 @@ library WBFLGenericBridge
 	   [helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType index);
 	   [helpstring("method ClearSegments")] HRESULT ClearSegments();
 
+      [propget,helpstring("property JackingEnd")] HRESULT JackingEnd([out,retval]JackingEndType* type);
+      [propput,helpstring("property JackingEnd")] HRESULT JackingEnd([in]JackingEndType type);
+
 	   [propget,helpstring("property DuctDiameter")] HRESULT DuctDiameter([out,retval]Float64* size);
 	   [propput,helpstring("property DuctDiameter")] HRESULT DuctDiameter([in]Float64 size);
 
@@ -1815,6 +1821,18 @@ library WBFLGenericBridge
 	  [propputref, helpstring("property LeftBarrier")] HRESULT LeftBarrier([in] ISidewalkBarrier* barrier);
 	  [propget, helpstring("property RightBarrier")] HRESULT RightBarrier([out,retval] ISidewalkBarrier** barrier);
 	  [propputref, helpstring("property RightBarrier")] HRESULT RightBarrier([in] ISidewalkBarrier* barrier);
+
+	  [propget,helpstring("property WearingSurfaceStage")] HRESULT WearingSurfaceStage([out,retval]StageIndexType* stage);
+	  [propput,helpstring("property WearingSurfaceStage")] HRESULT WearingSurfaceStage([in]StageIndexType stage);
+	  [propget,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([out,retval]Float64* d);
+	  [propput,helpstring("property WearingSurfaceDepth")] HRESULT WearingSurfaceDepth([in]Float64 d);
+	  [propget,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([out,retval]Float64* d);
+	  [propput,helpstring("property WearingSurfaceDensity")] HRESULT WearingSurfaceDensity([in]Float64 d);
+
+     [propget,helpstring("property SacrificialDepthStage")] HRESULT SacrificialDepthStage([out,retval]StageIndexType* stage);
+	  [propput,helpstring("property SacrificialDepthStage")] HRESULT SacrificialDepthStage([in]StageIndexType stage);
+	  [propget, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([out,retval]Float64* depth);
+	  [propput, helpstring("property SacrificialDepth")] HRESULT SacrificialDepth([in]Float64 depth);
 
      [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] LocationType locationType,[out,retval]ISuperstructureMember** ppMbr);
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);

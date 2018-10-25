@@ -171,13 +171,11 @@ void CTestGenericBridge::CreateAlignment(IGenericBridge* bridge)
    CComPtr<ICogoModel> cogoModel;
    geometry->get_CogoModel(&cogoModel);
 
-   CComPtr<IPathCollection> alignments;
+   CComPtr<IAlignmentCollection> alignments;
    cogoModel->get_Alignments(&alignments);
 
-   CComPtr<IPath> path;
-   alignments->Add(0,&path);
-
-   CComQIPtr<IAlignment> alignment(path);
+   CComPtr<IAlignment> alignment;
+   alignments->Add(0,&alignment);
 
    CComPtr<IPoint2d> p1;
    p1.CoCreateInstance(CLSID_Point2d);

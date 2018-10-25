@@ -35,7 +35,7 @@
 
 
 class CLineSegmentCollection;
-typedef PersistentKeyedCollection<CLineSegmentCollection,ILineSegmentCollection,&IID_ILineSegmentCollection,CogoObjectID,ILineSegment2d> LineSegmentCollectionImpl;
+typedef PersistentIDCollection<CLineSegmentCollection,ILineSegmentCollection,&IID_ILineSegmentCollection,CogoObjectID,ILineSegment2d> LineSegmentCollectionImpl;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLineSegmentCollection
@@ -88,19 +88,19 @@ END_CONNECTION_POINT_MAP()
 
 // ILineSegmentCollection
 public:
-	STDMETHOD(Key)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* key);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
 	STDMETHOD(get_Factory)(/*[out,retval]*/ ILineSegment2dFactory** factory);
 	STDMETHOD(putref_Factory)(/*[in]*/ ILineSegment2dFactory* factory);
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID key, /*[out, retval]*/ ILineSegment2d* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID key, /*[in]*/ ILineSegment2d* newVal);
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ ILineSegment2d* *pVal);
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ ILineSegment2d* newVal);
    STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID key,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls);
-   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID key,/*[in]*/ ILineSegment2d* newVal);
-   STDMETHOD(Remove)(/*[in]*/ CogoObjectID key);
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls);
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* newVal);
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
    STDMETHOD(Clear)();
-   STDMETHOD(FindKey)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoObjectID* key);
-   STDMETHOD(get__EnumKeys)(/*[out,retval]*/ IEnumKeys** ppenum);
+   STDMETHOD(FindID)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoObjectID* ID);
+   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum);
    STDMETHOD(get__EnumLineSegments)(/*[out,retval]*/ IEnumLineSegments** ppenum);
    STDMETHOD(Clone)(/*[out,retval]*/ ILineSegmentCollection* *clone);
 
@@ -114,12 +114,12 @@ private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);
    HRESULT OnBeforeLoad(IStructuredLoad2* pLoad);
 
-   HRESULT LineSegNotFound(CogoObjectID key);
-   HRESULT LineSegAlreadyDefined(CogoObjectID key);
-   HRESULT LineSegKeyError(CogoObjectID key,UINT nHelpString,HRESULT hRes);
+   HRESULT LineSegNotFound(CogoObjectID id);
+   HRESULT LineSegAlreadyDefined(CogoObjectID id);
+   HRESULT LineSegIDError(CogoObjectID id,UINT nHelpString,HRESULT hRes);
 
-   void Advise(CogoObjectID key,ILineSegment2d* lineSeg);
-   void Unadvise(CogoObjectID key,ILineSegment2d* lineSeg);
+   void Advise(CogoObjectID id,ILineSegment2d* lineSeg);
+   void Unadvise(CogoObjectID id,ILineSegment2d* lineSeg);
    void UnadviseAll();
    std::map<CogoObjectID,DWORD> m_Cookies;
 };

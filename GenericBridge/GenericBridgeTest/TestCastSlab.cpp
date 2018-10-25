@@ -75,10 +75,6 @@ void CTestCastSlab::Test()
    TRY_TEST(slab->get_OverhangDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_SacrificialDepth(NULL),E_POINTER);
-   TRY_TEST(slab->get_SacrificialDepth(&value),S_OK);
-   TRY_TEST(IsZero(value),true);
-
    DeckOverhangTaper taper;
    TRY_TEST(slab->get_OverhangTaper(NULL),E_POINTER);
    TRY_TEST(slab->get_OverhangTaper(&taper),S_OK);
