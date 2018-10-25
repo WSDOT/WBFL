@@ -232,19 +232,19 @@ void CTestAlignment1::Test1()
    dir.Release();
    TRY_TEST(alignment->Bearing(CComVariant(200.00),&dir),S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
+   TRY_TEST(IsEqual(dirVal,M_PI/4),true);
 
    dir.Release();
    TRY_TEST(alignment->Normal(CComVariant(200.00),&dir),S_OK);
    dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
+   TRY_TEST(IsEqual(dirVal, M_PI / 4 + 3 * PI_OVER_2),true);
 
    pnt.Release();
    TRY_TEST(alignment->LocatePoint(CComVariant(200.00),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.0),true);
-   TRY_TEST(IsEqual(y,-10.0),true);
+   TRY_TEST(IsEqual(x,107.0710678),true);
+   TRY_TEST(IsEqual(y,-7.0710678),true);
 
    station.Release();
    TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
