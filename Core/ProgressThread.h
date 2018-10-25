@@ -20,7 +20,7 @@ public:
 
    void EndThread();
 
-   HRESULT CreateProgressWindow(DWORD dwMask,UINT nDelay);
+   HRESULT CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT nDelay);
 
    void Init(short begin, short end, short inc);
    void Increment();

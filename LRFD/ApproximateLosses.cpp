@@ -241,6 +241,9 @@ void lrfdApproximateLosses::UpdateLongTermLosses() const
    }
    else
    {
+      // approximate loss method was removed from LRFD 5th Edition, 2010
+      ASSERT( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FifthEdition2010 );
+
       Float64 losses;
       const unitStress* p_unit;
 

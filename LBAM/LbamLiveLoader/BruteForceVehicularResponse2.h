@@ -309,7 +309,7 @@ private:
 
    void ComputeInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
                             VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact, VARIANT_BOOL computePlacements,
-                            IInfluenceLine* inflLine, 
+                            IInfluenceLine* inflLine, Side side,
                             Float64* leftResult, Float64 *rightResult, 
                             ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);
 

@@ -95,7 +95,7 @@ public:
       return FALSE; // plugin not added to container
    }
 
-	virtual BOOL LoadPlugins()
+	virtual BOOL LoadPlugins(BOOL bAlwaysAttemptToLoad = FALSE)
    {
       USES_CONVERSION;
 
@@ -133,20 +133,27 @@ public:
             ::StringFromCLSID(clsid[i],&pszCLSID);
             CString strState = pApp->GetProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Enabled"));
 
-            if ( strState.CompareNoCase("Enabled") == 0 )
+            if ( bAlwaysAttemptToLoad || strState.CompareNoCase("Enabled") == 0 )
             {
                CComPtr<T> plugin;
                plugin.CoCreateInstance(clsid[i]);
 
                if ( plugin == NULL )
                {
-                  LPOLESTR pszUserType;
-                  OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
-                  CString strMsg;
-                  strMsg.Format("Failed to load %s plug in\n\nWould you like to disable this plug in?",OLE2A(pszUserType));
-                  if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
+                  if ( bAlwaysAttemptToLoad )
                   {
-                     pApp->WriteProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Disabled"));
+                     // failing is OK if we always attempt
+                  }
+                  else
+                  {
+                     LPOLESTR pszUserType;
+                     OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
+                     CString strMsg;
+                     strMsg.Format("Failed to load %s plug in\n\nWould you like to disable this plug in?",OLE2A(pszUserType));
+                     if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
+                     {
+                        pApp->WriteProfileString(_T("Plugins"),OLE2A(pszCLSID),_T("Disabled"));
+                     }
                   }
                }
                else
