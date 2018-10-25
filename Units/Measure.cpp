@@ -56,9 +56,11 @@ const unitLength unitMeasure::Millimeter  ( 0.0, 1.0e-03,  0.0, "mm"   );
 const unitLength unitMeasure::Centimeter  ( 0.0, 1.0e-02,  0.0, "cm"   );
 const unitLength unitMeasure::Kilometer   ( 0.0, 1.0e03,   0.0, "km"   );
 const unitLength unitMeasure::Feet        ( 0.0, 0.3048,   0.0, "ft"   );
+const unitLength unitMeasure::USSurveyFoot( 0.0, 1200./3937., 0.0, "ft"   );
 const unitLength unitMeasure::Inch        ( 0.0, 0.0254,   0.0, "in"   );
 const unitLength unitMeasure::Mile        ( 0.0, 1609.344, 0.0, "mile" );
 const unitLength unitMeasure::Yard        ( 0.0, 0.9144,   0.0, "yd"   );
+const unitLength unitMeasure::USSurveyYard( 0.0, 3600./3937., 0.0, "yd"   );
 
 const unitAreaPerLength unitMeasure::Meter2PerMeter           ( 0.0, 1.0,      0.0, "m^2/m"  );
 const unitAreaPerLength unitMeasure::Millimeter2PerMillimeter ( 0.0, 1.0e-03,  0.0, "mm^2/mm");

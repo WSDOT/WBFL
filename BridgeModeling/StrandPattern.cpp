@@ -128,7 +128,7 @@ StrandIndexType bmfStrandPattern::GetPatternPointCount() const
 
 bmfStrandPattern::PatternPoint bmfStrandPattern::GetPatternPoint(StrandIndexType idx) const
 {
-   PRECONDITION( idx < m_PtrnPoints.size() );
+   PRECONDITION( idx < (StrandIndexType)m_PtrnPoints.size() );
    return m_PtrnPoints[idx];
 }
 
@@ -139,7 +139,7 @@ std::vector<bmfStrandPattern::PatternPoint> bmfStrandPattern::GetPatternPoints()
 
 void bmfStrandPattern::RemovePatternPoint(StrandIndexType idx)
 {
-   PRECONDITION( idx < m_PtrnPoints.size() );
+   PRECONDITION( idx < (StrandIndexType)m_PtrnPoints.size() );
    m_PtrnPoints.erase( m_PtrnPoints.begin() + idx );
 
    std::vector<PatternPoint> points = m_PtrnPoints;
@@ -189,7 +189,7 @@ gpPoint2d bmfStrandPattern::GetStrandPatternPoint(StrandIndexType idx) const
 {
    ASSERTVALID;
 
-   PRECONDITION( idx < m_StrandPoints.size() );
+   PRECONDITION( idx < (StrandIndexType)m_PtrnPoints.size() );
    return m_StrandPoints[idx].Point;
 }
 
@@ -664,7 +664,7 @@ bool bmfStrandPattern::IsStrandDebonded(StrandIndexType idx) const
 {
    ASSERTVALID;
 
-   PRECONDITION( idx < m_StrandPoints.size() );
+   PRECONDITION( idx < (StrandIndexType)m_PtrnPoints.size() );
    return m_StrandPoints[idx].bIsDebonded;
 }
 

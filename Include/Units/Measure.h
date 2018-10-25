@@ -81,9 +81,11 @@ public:
    static const unitLength Centimeter;
    static const unitLength Kilometer;
    static const unitLength Feet;
+   static const unitLength USSurveyFoot;
    static const unitLength Inch;
    static const unitLength Mile;
    static const unitLength Yard;
+   static const unitLength USSurveyYard;
 
    static const unitLength2 Meter2;
    static const unitLength2 Millimeter2;

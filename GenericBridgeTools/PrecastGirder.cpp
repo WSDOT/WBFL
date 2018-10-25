@@ -2002,6 +2002,8 @@ void CPrecastGirder::DoUpdateLengths()
       CComQIPtr<IMeasure> measure(cogoModel);
       measure->Distance(startPierPntID,startBrgPntID,&m_Lengths.dbLeftBearingOffset);
       measure->Distance(endPierPntID,  endBrgPntID,  &m_Lengths.dbRightBearingOffset);
+      m_Lengths.dbLeftBearingOffset  = IsZero(m_Lengths.dbLeftBearingOffset)  ? 0 : m_Lengths.dbLeftBearingOffset;
+      m_Lengths.dbRightBearingOffset = IsZero(m_Lengths.dbRightBearingOffset) ? 0 : m_Lengths.dbRightBearingOffset;
 
       // compute span length
       measure->Distance(startBrgPntID,endBrgPntID,&m_Lengths.dbSpanLength);
@@ -2018,6 +2020,7 @@ void CPrecastGirder::DoUpdateLengths()
 
       Float64 end_dist;
       GetEndDistance(etStart,startBrgPntID,startPierPntID,girderLineID,connectionl,pierl,cogoModel,&end_dist);
+      end_dist = IsZero(end_dist) ? 0 : end_dist;
       m_Lengths.dbLeftEndSize       = end_dist;
 
       CComPtr<IConnection> connectionr;
@@ -2027,6 +2030,7 @@ void CPrecastGirder::DoUpdateLengths()
       piers->get_Item(endPierIdx,&pierr);
 
       GetEndDistance(etEnd,endBrgPntID,endPierPntID,girderLineID,connectionr,pierr,cogoModel,&end_dist);
+      end_dist = IsZero(end_dist) ? 0 : end_dist;
       m_Lengths.dbRightEndSize        = end_dist;
 
       m_Lengths.dbGirderLength = m_Lengths.dbSpanLength + m_Lengths.dbLeftEndSize + m_Lengths.dbRightEndSize;
