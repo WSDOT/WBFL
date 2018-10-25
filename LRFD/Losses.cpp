@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -943,7 +943,8 @@ void lrfdLosses::UpdateElasticShortening() const
                             m_Mdlg,
                             1.0,
                             m_Eci,
-                            m_Ep);
+                            m_Ep,
+                            lrfdElasticShortening::fcgpIterative);
 
    m_ElasticShortening = es;
 
@@ -1129,7 +1130,7 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    m_fptr  = -m_Ptr/m_Ag - m_Ptr*m_eperm*m_etemp/m_Ig; // concrete stress change due to removal
 
    if (m_ApsPerm>0.0)
-   m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
+      m_dfptr = m_fptr*m_Ep/m_Ec; // change in prestress due to removal
    else
       m_dfptr = 0.0; // no permanent strands, so the effect is zero
 }

@@ -1537,17 +1537,7 @@ CPath::ElementContainer CPath::GetAllElements()
 
             CComPtr<IPathElement> element;
             CreateDummyPathElement(prevPoint,lastPoint,&element);
-
-            CComPtr<IUnknown> dispDummy;
-            element->get_Value(&dispDummy);
-            CComQIPtr<ILineSegment2d> dummyLS(dispDummy);
-            Float64 length;
-            dummyLS->get_Length(&length);
-
-            if ( !IsZero(length) )
-            {
-               elements.push_back( std::make_pair(currDist,AdaptElement(element)));
-            }
+            elements.push_back( std::make_pair(currDist,AdaptElement(element)));
          }
       }
       else if ( lastType == petLineSegment || lastType == petHorzCurve || lastType == petCubicSpline )
@@ -1725,7 +1715,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back(std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -1767,7 +1757,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -1809,7 +1799,7 @@ CPath::ElementContainer CPath::FindElements(IPoint2d* point)
                dummyLS->get_Length(&length);
                nextDist += length;
 
-               if ( DoesPointProjectOntoElement(point,element,false,bExtendAhead) )
+               if ( DoesPointProjectOntoElement(point,element,bExtendBack,bExtendAhead) )
                   elements.push_back( std::make_pair(currDist,AdaptElement(element)));
             }
          }
@@ -2256,15 +2246,9 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
    point1->get_X(&x1);
    point2->get_X(&x2);
 
-   // NOTE: this code is commented out because it causes problems.
-   // There is a case (seem mantis issue 404) where x1 is a very small
-   // positive value. When it gets forced to zero the line below
-   // if ( 0 < x1 && 0 <= x2 ) evaluates to false, because x1 is zero,
-   // and the point ends up not being projected onto anything. This is
-   // a bug. Just leave x1 and x2 alone.
-   //// Supress round off error
-   //x1 = IsZero(x1) ? 0.00 : x1;
-   //x2 = IsZero(x2) ? 0.00 : x2;
+   // Supress round off error
+   x1 = IsZero(x1) ? 0.00 : x1;
+   x2 = IsZero(x2) ? 0.00 : x2;
 
    // Adjust mapping if the element is to be extended
    if ( bExtendBack )

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved
+// Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,28 +37,23 @@ static char THIS_FILE[] = __FILE__;
 
 static DWORD CALLBACK StreamInCtrl(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb )
 {
-   CString* pstr = (CString*)dwCookie;
+   CString* psBuffer = (CString*)dwCookie;
+   if ( psBuffer->GetLength() < cb )
+      cb = psBuffer->GetLength();
 
-   if ( pstr->GetLength() < cb )
+   for ( int i = 0; i < cb; i++ )
    {
-      *pcb = pstr->GetLength();
-      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
-      pstr->Empty();
+      *(pbBuff+i) = psBuffer->GetAt(i);
    }
-   else
-   {
-      *pcb = cb;
-      memcpy( pbBuff, (LPCTSTR)*pstr, *pcb );
-      *pstr = pstr->Right( pstr->GetLength() - cb );
-   }
-
+   *pcb = cb;
+   *psBuffer = psBuffer->Mid(cb);
    return 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadModifierPage property page
 
-CLoadModifierPage::CLoadModifierPage(const CString& t1,const CString& t2,const CString& t3,char ss) :
+CLoadModifierPage::CLoadModifierPage(const CString& t1,const CString& t2,const CString& t3,TCHAR ss) :
 CPropertyPage(CLoadModifierPage::IDD),
 m_Text1( t1 ),
 m_Text2( t2 ),
@@ -70,7 +65,7 @@ m_Subscript( ss )
 	m_Flag = 1;
 	//}}AFX_DATA_INIT
 
-   AfxInitRichEdit();
+   AfxInitRichEdit2();
 }
 
 CLoadModifierPage::~CLoadModifierPage()
@@ -116,7 +111,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    CRichEditCtrl* pLabel = (CRichEditCtrl*)GetDlgItem(IDC_N_LABEL);
    ASSERT( pLabel );
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
-   label1.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub\\par }"),m_Subscript);
+   label1.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %lc\\nosupersub\\par }"),m_Subscript);
    EDITSTREAM es;
    es.dwCookie = (DWORD)(&label1);
    es.dwError = 0;
@@ -126,7 +121,7 @@ BOOL CLoadModifierPage::OnInitDialog()
    pLabel = (CRichEditCtrl*)GetDlgItem(IDC_N_SERVICE);
    ASSERT( pLabel );
    pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
-   label2.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %c\\nosupersub = 1.0 for all other limit states.\\par }"),m_Subscript);
+   label2.Format(_T("{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fswiss MS Sans Serif;}{\\f1\\froman\\fcharset2 Symbol;}{\\f2\\froman\\fprq2\\fcharset2 Symbol;}{\\f3\\froman Times New Roman;}}{\\colortbl\\red0\\green0\\blue0;}\\deflang1033\\pard\\plain\\f2\\fs20 h\\plain\\f3\\fs20 \\sub %lc\\nosupersub = 1.0 for all other limit states.\\par }"),m_Subscript);
    es.dwCookie = (DWORD)(&label2);
    pLabel->StreamIn( SF_RTF, es );
 
