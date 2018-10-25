@@ -153,3 +153,63 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
 
    return TRUE;
 }
+
+template <class U>
+void ConvertBetweenBaseUnitsT(U& unitValueType,LPCTSTR unitTypeName,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer)
+{
+   USES_CONVERSION;
+   Float64 value = unitValueType;
+
+   if ( unitValueType.unit().present() )
+   {
+      // The unit of measure for ModE was specified in the instance document
+
+      // Convert the value from the specified unit of measure to the
+      // consistent unit of measure defined in <UnitsDeclaration> in the instance document
+      CComQIPtr<IUnitConvert> fromUnitConverter(pFromUnitServer);
+      HRESULT hr = fromUnitConverter->ConvertToBaseUnits(value,T2BSTR(unitValueType.unit().get().c_str()),&value);
+      ATLASSERT(SUCCEEDED(hr)); // if this fires, then the unit of measure was not valid
+
+      unitValueType.unit().reset(); // no longer using the specified unit of measure
+   }
+
+   CComPtr<IUnitTypes> unitTypes;
+   pFromUnitServer->get_UnitTypes(&unitTypes);
+   CComPtr<IUnitType> unitTypePressure;
+   unitTypes->get_Item(CComVariant(CComBSTR(unitTypeName)),&unitTypePressure);
+   CComPtr<IUnits> pressureUnits;
+   unitTypePressure->get_Units(&pressureUnits);
+   CComPtr<IUnit> pressureUnit;
+   pressureUnits->get_Item(CComVariant(0),&pressureUnit);
+
+   CComQIPtr<IUnitConvert2> fromUnitConverter(pFromUnitServer);
+   CComQIPtr<IUnitConvert2> toUnitConverter(pToUnitServer);
+
+   fromUnitConverter->ConvertFromBaseUnits(value,pressureUnit,&value); // convert from base units to a neutral unit
+   toUnitConverter->ConvertToBaseUnits(value,pressureUnit,&value); // convert from the neutral unit to our base units
+
+   unitValueType = value;
+}
+
+#define IMPLEMENT_BASE_UNIT_CONVERTER(V,S) \
+void ConvertBetweenBaseUnits(OpenBridgeML::Units::##V& unitValueType,IUnitServer* pFromUnitServer,IUnitServer* pToUnitServer) \
+{ \
+   ConvertBetweenBaseUnitsT<OpenBridgeML::Units::##V>(unitValueType,_T(S),pFromUnitServer,pToUnitServer);\
+}
+
+IMPLEMENT_BASE_UNIT_CONVERTER(MassValueType, "Mass");
+IMPLEMENT_BASE_UNIT_CONVERTER(LengthValueType, "Length");
+IMPLEMENT_BASE_UNIT_CONVERTER(TimeValueType, "Time");
+IMPLEMENT_BASE_UNIT_CONVERTER(TemperatureValueType, "Temperature");
+IMPLEMENT_BASE_UNIT_CONVERTER(AngleValueType, "Angle");
+IMPLEMENT_BASE_UNIT_CONVERTER(MassPerLengthValueType, "MassPerLength");
+IMPLEMENT_BASE_UNIT_CONVERTER(Length2ValueType, "Length2");
+IMPLEMENT_BASE_UNIT_CONVERTER(Length3ValueType, "Length3");
+IMPLEMENT_BASE_UNIT_CONVERTER(Length4ValueType, "Length4");
+IMPLEMENT_BASE_UNIT_CONVERTER(PressureValueType, "Pressure");
+IMPLEMENT_BASE_UNIT_CONVERTER(UnitWeightValueType, "ValueWeight");
+IMPLEMENT_BASE_UNIT_CONVERTER(DensityValueType, "Density");
+IMPLEMENT_BASE_UNIT_CONVERTER(ForceValueType, "Force");
+IMPLEMENT_BASE_UNIT_CONVERTER(ForcePerLengthValueType, "ForcePerLength");
+IMPLEMENT_BASE_UNIT_CONVERTER(MomentValueType, "Moment");
+IMPLEMENT_BASE_UNIT_CONVERTER(ThermalExpansionValueType, "ThermalExpansion");

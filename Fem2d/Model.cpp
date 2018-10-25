@@ -1498,6 +1498,12 @@ void CModel::ComputeLoadings()
       StoreMbrResults(lid);
       StorePoiResults(lid); // compute results for existing poi's
       }
+#if defined _DEBUG
+      catch(CComException& e)
+      {
+         throw;
+      }
+#endif
       catch(...)
       {
          throw;
