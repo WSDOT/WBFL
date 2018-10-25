@@ -87,6 +87,10 @@ public:
    void SetTimeAtCasting(Float64 time);
    Float64 GetTimeAtCasting() const;
 
+   // Age when the concrete first takes load (for creep)
+   void SetAgeAtInitialLoading(Float64 age);
+   Float64 GetAgeAtInitialLoading() const;
+
    // Set/Get the cure time
    void SetCureTime(Float64 t);
    Float64 GetCureTime() const;
@@ -143,6 +147,7 @@ protected:
    Float64     m_RelativeHumidity;
    Float64     m_VS; // V/S ratio
    Float64     m_TimeAtCasting; // time at casting... days
+   Float64     m_AgeAtInitialLoading; // days
    Float64     m_CureTime; // duration of time that the concrete is cured
    CureMethod  m_CureMethod;
 };

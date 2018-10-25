@@ -868,8 +868,8 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
 
    // get end points of girder line
    CComPtr<IPoint2d> p1, p2;
-   girderLine->get_EndPoint(etStart,&p1);
-   girderLine->get_EndPoint(etEnd,  &p2);
+   girderLine->get_PierPoint(etStart,&p1);
+   girderLine->get_PierPoint(etEnd,  &p2);
 
    // locate point on girder line where spacing is measured
    CComPtr<IPoint2d> pntOnGirder;

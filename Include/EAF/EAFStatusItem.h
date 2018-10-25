@@ -80,3 +80,26 @@ private:
    BOOL m_bRemoveAfterEdit;
    CString m_strDescription;
 };
+
+class EAFCLASS CEAFDefaultStatusItem : public CEAFStatusItem
+{
+public:
+   CEAFDefaultStatusItem(StatusGroupIDType statusGroupID,StatusCallbackIDType callbackID,LPCTSTR strDescription) :
+      CEAFStatusItem(statusGroupID,callbackID,strDescription) {}
+
+   virtual ~CEAFDefaultStatusItem() {}
+
+   virtual bool IsEqual(CEAFStatusItem* pOther) { return false; }
+};
+
+class EAFCLASS CEAFStatusItemCallback : public iStatusCallback
+{
+public:
+   CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,UINT helpID=0);
+   virtual eafTypes::StatusSeverityType GetSeverity();
+   virtual void Execute(CEAFStatusItem* pItem);
+
+private:
+   eafTypes::StatusSeverityType m_Severity;
+   UINT m_HelpID;
+};

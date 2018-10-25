@@ -273,7 +273,7 @@ Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    Float64 age_at_time_under_consideration = GetAge(t);
    Float64 age_at_loading = GetAge(tla);
 
-   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 )
+   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 || age_at_time_under_consideration - age_at_loading < 0 )
    {
       return 0;
    }

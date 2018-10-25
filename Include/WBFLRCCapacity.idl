@@ -35,6 +35,7 @@ import "WBFLTypes.idl";
 import "WBFLTools.idl";
 import "WBFLGeometry.idl";
 import "WBFLUnitServer.idl";
+import "WBFLSections.idl";
 
 #include "RCCapacity.hh"
 
@@ -270,6 +271,19 @@ library WBFLRCCapacity
 		[propget, helpcontext(IDH_IRCSolution_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
 		[propget, helpcontext(IDH_IRCSolution_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
 	};
+   [
+      object,
+      uuid(12CD51C9-087E-4608-9821-AE321C1CFA0C),
+      oleautomation,
+      helpstring("LRFDSolution Interface"),
+      pointer_default(unique)
+   ] 
+   interface ILRFDSolution : IRCSolution
+   {
+      HRESULT InitLRFDSolution([in] Float64 alpha1,[in] Float64 beta1,[in] Float64 Mn,[in] Float64 c,[in] Float64 fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb,[in] VARIANT_BOOL bOverReinforced);
+      [propget] HRESULT Alpha1([out,retval]Float64* pAlpha1);
+      [propget] HRESULT Beta1([out,retval]Float64* pBeta1);
+   };
 	[
 		object,
 		uuid(BDBC6326-24AA-433D-9703-1B6E0EC083EB),
@@ -291,6 +305,19 @@ library WBFLRCCapacity
 		[propget, helpcontext(IDH_IRCSolutionEx_Yflange),helpstring("property Yflange")] HRESULT Yflange([out, retval] Float64 *pVal);
 		[propget, helpcontext(IDH_IRCSolutionEx_Yweb),helpstring("property Yweb")] HRESULT Yweb([out, retval] Float64 *pVal);
 	};
+   [
+      object,
+      uuid(53A8F18F-04C5-499d-8CFA-C73203344388),
+      oleautomation,
+      helpstring("LRFDSolutionEx Interface"),
+      pointer_default(unique)
+   ] 
+   interface ILRFDSolutionEx : IRCSolutionEx
+   {
+		HRESULT InitLRFDSolution([in]Float64 alpha1,[in]Float64 beta1,[in] Float64 Mn,[in] Float64 c,[in] IDblArray* fs,[in] IDblArray* fps,[in] Float64 Cflange,[in] Float64 Cweb,[in] Float64 T,[in] Float64 Yflange,[in] Float64 Yweb);
+      [propget] HRESULT Alpha1([out,retval]Float64* pAlpha1);
+      [propget] HRESULT Beta1([out,retval]Float64* pBeta1);
+   };
 	[
 		object,
 		uuid(10426F94-AA0A-4E23-B61F-02C1F1BD99A1),
@@ -849,7 +876,7 @@ library WBFLRCCapacity
 		uuid(3B5642DB-676F-458d-94F6-33B325081475),
 		oleautomation,
 		helpstring("ICrackedSectionSolution Interface"),
-		helpcontext(IDH_ICrackedSectionSolution),
+      helpcontext(IDH_ICrackedSectionSolution),
 		pointer_default(unique)
 	]
 	interface ICrackedSectionSolution : IUnknown
@@ -858,6 +885,7 @@ library WBFLRCCapacity
 		[propget,helpcontext(IDH_ICrackedSectionSolution_CG),helpstring("property CG")] HRESULT CG([out,retval]IPoint2d** pntCG);
 		[propget,helpcontext(IDH_ICrackedSectionSolution_SliceCount),helpstring("property SliceCount")] HRESULT SliceCount([out,retval]CollectionIndexType* nSlices);
 		[propget,helpcontext(IDH_ICrackedSectionSolution_Slice),helpstring("property Slice")] HRESULT Slice([in] CollectionIndexType sliceIdx,[out,retval]ICrackedSectionSlice** pSlice);
+      [propget,helpcontext(IDH_ICrackedSectionSolution_ElasticProperties),helpstring("property ElasticProperties")] HRESULT ElasticProperties([out,retval]IElasticProperties** ppProps);
 	};
 
 
@@ -1002,6 +1030,43 @@ library WBFLRCCapacity
 		[helpcontext(IDH_ICapacityReductionFactor_ComputeEx),helpstring("method ComputeEx")] HRESULT ComputeEx([in]IUnkArray* pConcShapes,[in]IUnkArray* pReinfShapes,[in]ILine2d* neutralAxis,[in]Float64 ppr,[out]Float64* c,[out]Float64* dt,[out]Float64* phi);
 	};
 
+
+	[
+		object,
+		uuid(F351EDCA-2D3A-499a-B1E2-2A54673F087A),
+		oleautomation,
+		helpstring("IRCCrackedSectionSolverSolver Interface"),
+      helpcontext(IDH_IRCSolver),
+		pointer_default(unique)
+	]
+	interface IRCCrackedSectionSolver : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver_Solve),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam* beam,[out,retval] ICrackedSectionSolution* *solution);
+	};
+	[
+		object,
+		uuid(0D0E0A6B-DB53-443e-BC76-CDED1C7C7528),
+		oleautomation,
+		helpstring("IRCCrackedSectionSolver2 Interface"),
+      helpcontext(IDH_IRCSolver2),
+		pointer_default(unique)
+	]
+	interface IRCCrackedSectionSolver2 : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver2_Solver),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam2* beam,[out,retval] ICrackedSectionSolution* *solution);
+	};
+	[
+		object,
+		uuid(3D186B71-8511-43ef-BBD3-DDBA3808CFB4),
+		oleautomation,
+		helpstring("IRCCrackedSectionSolver2Ex Interface"),
+      helpcontext(IDH_IRCSolver2Ex),
+		pointer_default(unique)
+	]
+	interface IRCCrackedSectionSolver2Ex : IUnknown
+	{
+		[helpcontext(IDH_IRCSolver2Ex_Solver),helpstring("method SolveCrackedSection")] HRESULT Solve([in] IRCBeam2Ex* beam,[out,retval] ICrackedSectionSolution* *solution);
+	};
 
 
 	[
@@ -1153,6 +1218,9 @@ library WBFLRCCapacity
       interface IRCSolver;
       interface IRCSolver2;
       interface IRCSolver2Ex;
+      interface IRCCrackedSectionSolver;
+      interface IRCCrackedSectionSolver2;
+      interface IRCCrackedSectionSolver2Ex;
 	};
 	[
 		uuid(DE9971B2-8ED4-4840-80EF-07B0F295410E),
@@ -1171,7 +1239,28 @@ library WBFLRCCapacity
 	{
 		[default] interface IRCSolutionEx;
 	};
-	[
+
+   [
+		uuid(F3E82C7F-E2E1-4949-B724-B15D0329ECE0),
+      helpcontext(IDH_IRCSolution),
+		helpstring("LRFDSolution Class")
+	]
+	coclass LRFDSolution
+	{
+		[default] interface ILRFDSolution;
+	};
+
+   [
+		uuid(96CB9016-C37A-4c09-A710-850FAB1A27B0),
+      helpcontext(IDH_IRCSolutionEx),
+		helpstring("LRFDSolutionEx Class")
+	]
+	coclass LRFDSolutionEx
+	{
+		[default] interface ILRFDSolutionEx;
+	};
+
+   [
 		uuid(D24CC053-6C5B-4392-B0F8-B34D07D815B3),
       helpcontext(IDH_IPCISolution),
 		helpstring("PCISolution Class")

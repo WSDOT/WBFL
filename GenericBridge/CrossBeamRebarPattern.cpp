@@ -181,17 +181,17 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Profile(/*[in]*/IndexType barIdx,/*[out
    if ( m_Datum == xbTop )
    {
       m_pCrossBeam->get_TopSurface(1,&profile);
-      offset = -(m_Cover + db);
+      offset = -(m_Cover + db/2);
    }
    else if ( m_Datum == xbTopLowerXBeam )
    {
       m_pCrossBeam->get_TopSurface(0,&profile);
-      offset = -(m_Cover + db);
+      offset = -(m_Cover + db/2);
    }
    else
    {
       m_pCrossBeam->get_BottomSurface(0,&profile);
-      offset = m_Cover + db;
+      offset = m_Cover + db/2;
    }
 
    // The surface profile is in Pier coordinates
@@ -268,6 +268,8 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Profile(/*[in]*/IndexType barIdx,/*[out
    // points is in Cross Beam coordinates
    // convert it to rebar layout coordinates
    points->Offset(-XxbStart,0);
+
+   points->RemoveDuplicatePoints();
 
    points.CopyTo(ppProfile);
    return S_OK;

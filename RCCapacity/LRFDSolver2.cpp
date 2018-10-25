@@ -241,10 +241,13 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       Astrand += devFactor*Aps;
    }
 
+   Float64 alpha1 = Alpha1(fc,unitServer,m_UnitMode);
+   Float64 beta1  = Beta1(fc,unitServer,m_UnitMode);
+
    // No reinforcement... no capacity
    if ( IsZero(Abar) && IsZero(Astrand) )
    {
-      CreateSolution(0,0,fs,fps,0,0,0,0,0,solution);
+      CreateSolution(alpha1,beta1,0,0,fs,fps,0,0,0,0,0,solution);
       return S_OK;
    }
 
@@ -291,8 +294,6 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    CComPtr<IShapeProperties> props; // properties of beam/web only
    Float64 clipped_area;
 
-   Float64 alpha1 = Alpha1(fc,unitServer,m_UnitMode);
-   Float64 beta1  = Beta1(fc,unitServer,m_UnitMode);
    Float64 a;
    bool bDone = false;
    do
@@ -318,7 +319,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
          clipped_beam->get_ShapeProperties(&props);
          props->get_Area(&clipped_area);
 
-         Fc = beta1*fc*hf*b + beta1*fc*clipped_area;
+         Fc = alpha1*fc*hf*b + alpha1*fc*clipped_area;
       }
 
       // compute Ft
@@ -332,10 +333,10 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
          rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
 
          Float64 stress;
-         Float64 es  = GetStrain(m_ec,ds,c_guess,0,Eps);
+         Float64 es  = GetStrain(m_ec,ds,c_guess,0,Es);
          m_RebarModel->ComputeStress(es,&stress);
 
-         Float64 maxRebarStress = devFactor * fpy;
+         Float64 maxRebarStress = devFactor * fy;
          if ( maxRebarStress < stress )
          {
             stress = maxRebarStress;
@@ -457,7 +458,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    // Change the sign... this is because moments are take about the top of the section
    Mn *= -1.0;
 
-   CreateSolution(Mn,c,fs,fps,Cflange,Cweb,Ft,Yflange,Yweb,solution);
+   CreateSolution(alpha1,beta1,Mn,c,fs,fps,Cflange,Cweb,Ft,Yflange,Yweb,solution);
 
 	return S_OK;
 }

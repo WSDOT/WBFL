@@ -58,11 +58,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(PlatformName)&quot;;&quot;..\Include\$(ConfigurationName)&quot;;\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;BUILDCOGOLIB"
 				RuntimeLibrary="2"
@@ -177,11 +172,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;&quot;..\Include\$(PlatformName)&quot;;&quot;..\Include\$(ConfigurationName)&quot;;\ARP\OpenBridgeML\Include;\ARP\OpenBridgeML\Schema"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL;BUILDCOGOLIB"
 				RuntimeLibrary="2"

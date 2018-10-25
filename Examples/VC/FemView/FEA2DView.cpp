@@ -702,6 +702,8 @@ void CFEA2DView::OnLoadsAddPointLoad()
 
 void CFEA2DView::OnViewJoints() 
 {
+   CDManipClientDC dc(this);
+
    m_bHideJoints = !m_bHideJoints;
 
    CComPtr<iDisplayMgr> pDM;
@@ -719,6 +721,8 @@ void CFEA2DView::OnUpdateViewJoints(CCmdUI* pCmdUI)
 
 void CFEA2DView::OnViewLoads() 
 {
+   CDManipClientDC dc(this);
+
    m_bHideLoads = !m_bHideLoads;
 
    CComPtr<iDisplayMgr> pDM;
@@ -736,6 +740,8 @@ void CFEA2DView::OnUpdateViewLoads(CCmdUI* pCmdUI)
 
 void CFEA2DView::OnViewMembers() 
 {
+   CDManipClientDC dc(this);
+
    m_bHideMembers = !m_bHideMembers;
 
    CComPtr<iDisplayMgr> pDM;

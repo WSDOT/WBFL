@@ -44,7 +44,8 @@ public:
    //STDMETHOD(get_DeckElevation)(/*[out,retval]*/Float64* pElev);
    //STDMETHOD(get_CrownPointOffset)(/*[out,retval]*/Float64* pCPO);
    //STDMETHOD(get_CrownSlope)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
-   //STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO);
+   //STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
+   STDMETHOD(get_CurbToCurbWidth)(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc);
    STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew);
    STDMETHOD(get_SkewAngle)(/*[out,retval]*/ IAngle* *skewAngle);
    STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pCrossBeam);

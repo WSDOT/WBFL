@@ -791,25 +791,29 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
    LONG right_border  = (LONG)(m_RightBorderFraction * out_width);
 
    // Setup legend area
-   int nLegendItems = UpdateLegendMetrics(hDC);
    m_LegendRect.left = m_OutputRect.left + left_border;
    m_LegendRect.right = m_OutputRect.right - right_border;
    m_LegendRect.top = m_OutputRect.top + top_border;
+   m_LegendRect.bottom = m_LegendRect.top;
 
-   if ( nLegendItems == 0 )
+   if ( m_bDrawLegend )
    {
-      m_nLegendCols = 0;
-      m_nLegendRows = 1;
+      int nLegendItems = UpdateLegendMetrics(hDC);
+      if ( nLegendItems == 0 )
+      {
+         m_nLegendCols = 0;
+         m_nLegendRows = 1;
+      }
+      else
+      {
+         m_nLegendCols = max(1, (m_LegendRect.right - m_LegendRect.left)/m_LegendItemSize.cx);
+         m_nLegendRows = max(1, (int)ceil((float)nLegendItems/(float)m_nLegendCols));
+      } 
+
+   //   assert( nLegendItems <= m_nLegendRows*m_nLegendCols );
+      
+      m_LegendRect.bottom = m_LegendRect.top + m_LegendItemSize.cy*m_nLegendRows;
    }
-   else
-   {
-      m_nLegendCols = max(1, (m_LegendRect.right - m_LegendRect.left)/m_LegendItemSize.cx);
-      m_nLegendRows = max(1, (int)ceil((float)nLegendItems/(float)m_nLegendCols));
-   } 
-
-//   assert( nLegendItems <= m_nLegendRows*m_nLegendCols );
-   
-   m_LegendRect.bottom = m_LegendRect.top + m_LegendItemSize.cy*m_nLegendRows;
 
    // play some games here with case where rect is too small to draw the axis and the 
    // graph. If too small, then only draw curves.

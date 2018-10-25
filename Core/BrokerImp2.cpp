@@ -38,6 +38,47 @@ static char THIS_FILE[] = __FILE__;
 
 DIAG_DEFINE_GROUP(IFC,DIAG_GROUP_ENABLE,0);
 
+
+template <class T>
+HRESULT Integrate(BOOL bIntegrating,BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,
+                  T& begin,T& end)
+{
+   while ( begin != end )
+   {
+      IAgentEx* pAgent = (*begin).second;
+      if ( bIntegrateWithUI )
+      {
+         CComQIPtr<IAgentUIIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithUI(bIntegrating);
+         }
+      }
+
+      if ( bIntegrateWithReporting )
+      {
+         CComQIPtr<IAgentReportingIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithReporting(bIntegrating);
+         }
+      }
+
+      if ( bIntegrateWithGraphing )
+      {
+         CComQIPtr<IAgentGraphingIntegration> pUI(pAgent);
+         if ( pUI )
+         {
+            pUI->IntegrateWithGraphing(bIntegrating);
+         }
+      }
+
+      begin++;
+   }
+
+   return S_OK;
+}
+
 #if defined _DEBUG
 bool CompareCLSID(InterfaceItem& item1,InterfaceItem& item2)
 {
@@ -631,54 +672,16 @@ STDMETHODIMP CBrokerImp2::Integrate(BOOL bIntegrateWithUI,BOOL bIntegrateWithRep
    m_bIntegrateWithReporting = bIntegrateWithReporting;
    m_bIntegrateWithGraphing  = bIntegrateWithGraphing;
 
-   Integrate(TRUE,m_Agents.begin(),m_Agents.end());
-   Integrate(TRUE,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
+   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_Agents.begin(),m_Agents.end());
+   ::Integrate(TRUE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
 
    return S_OK;
 }
 
 STDMETHODIMP CBrokerImp2::RemoveIntegration()
 {
-   Integrate(FALSE,m_ExtensionAgents.begin(),m_ExtensionAgents.end());
-   Integrate(FALSE,m_Agents.begin(),m_Agents.end());
-   return S_OK;
-}
-
-HRESULT CBrokerImp2::Integrate(BOOL bIntegrating,Agents::iterator begin,Agents::iterator end)
-{
-   while ( begin != end )
-   {
-      IAgentEx* pAgent = (*begin).second;
-      if ( m_bIntegrateWithUI )
-      {
-         CComQIPtr<IAgentUIIntegration> pUI(pAgent);
-         if ( pUI )
-         {
-            pUI->IntegrateWithUI(bIntegrating);
-         }
-      }
-
-      if ( m_bIntegrateWithReporting )
-      {
-         CComQIPtr<IAgentReportingIntegration> pUI(pAgent);
-         if ( pUI )
-         {
-            pUI->IntegrateWithReporting(bIntegrating);
-         }
-      }
-
-      if ( m_bIntegrateWithGraphing )
-      {
-         CComQIPtr<IAgentGraphingIntegration> pUI(pAgent);
-         if ( pUI )
-         {
-            pUI->IntegrateWithGraphing(bIntegrating);
-         }
-      }
-
-      begin++;
-   }
-
+   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_ExtensionAgents.rbegin(),m_ExtensionAgents.rend());
+   ::Integrate(FALSE,m_bIntegrateWithUI,m_bIntegrateWithReporting,m_bIntegrateWithGraphing,m_Agents.rbegin(),m_Agents.rend());
    return S_OK;
 }
 

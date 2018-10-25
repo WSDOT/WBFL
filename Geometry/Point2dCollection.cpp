@@ -170,6 +170,32 @@ STDMETHODIMP CPoint2dCollection::Offset(Float64 dx,Float64 dy)
    return S_OK;
 }
 
+STDMETHODIMP CPoint2dCollection::RemoveDuplicatePoints()
+{
+   ContainerIteratorType iter = m_coll.begin();
+   CComPtr<IPoint2d> prevPoint(iter->second);
+   iter++;
+   while ( iter != m_coll.end() )
+   {
+      CComPtr<IPoint2d> currPoint(iter->second);
+      if ( prevPoint->SameLocation(currPoint) == S_OK )
+      {
+         IndexType idx = std::distance(m_coll.begin(),iter);
+         OnBeforeRemove(&(*iter),idx);
+         iter = m_coll.erase(iter);
+         OnAfterRemove(idx);
+      }
+      else
+      {
+         iter++;
+         prevPoint = currPoint;
+      }
+   }
+
+   return S_OK;
+}
+
+
 STDMETHODIMP CPoint2dCollection::OffsetEx(ISize2d* size)
 {
    CHECK_IN(size);

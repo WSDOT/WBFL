@@ -196,8 +196,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="BUILDGRAPHMANAGERLIB;WIN32;NDEBUG;_WINDOWS;_USRDLL;"
 				RuntimeLibrary="2"
@@ -275,8 +273,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="BUILDGRAPHMANAGERLIB;WIN32;NDEBUG;_WINDOWS;_USRDLL;"
 				RuntimeLibrary="2"

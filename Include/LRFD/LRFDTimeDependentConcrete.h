@@ -180,6 +180,8 @@ private:
 
    Float64 GetFreeShrinkageStrainBefore2005(Float64 t) const;
    Float64 GetFreeShrinkageStrain2005(Float64 t) const;
+   Float64 GetFreeShrinkageStrain2015(Float64 t) const;
    Float64 GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
    Float64 GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+   Float64 GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 };

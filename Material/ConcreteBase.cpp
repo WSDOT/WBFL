@@ -39,6 +39,7 @@ CLASS
 matConcreteBase::matConcreteBase(LPCTSTR name) :
 m_Name(name),
 m_TimeAtCasting(0),
+m_AgeAtInitialLoading(1.0), // days
 m_CureTime(1.0), // days
 m_CureMethod(matConcreteBase::Moist),
 m_StrengthDensity( 0 ),
@@ -56,6 +57,7 @@ matConcreteBase::matConcreteBase(const matConcreteBase& rOther) :
 m_Name(rOther.m_Name)
 {
    m_TimeAtCasting    = rOther.m_TimeAtCasting;
+   m_AgeAtInitialLoading = rOther.m_AgeAtInitialLoading;
    m_CureTime         = rOther.m_CureTime;
    m_CureMethod       = rOther.m_CureMethod;
    m_StrengthDensity  = rOther.m_StrengthDensity;
@@ -245,6 +247,20 @@ void matConcreteBase::SetTimeAtCasting(Float64 time)
 Float64 matConcreteBase::GetTimeAtCasting() const
 {
    return m_TimeAtCasting;
+}
+
+void matConcreteBase::SetAgeAtInitialLoading(Float64 age)
+{
+   if ( m_AgeAtInitialLoading != age )
+   {
+      m_AgeAtInitialLoading = age;
+      OnChanged();
+   }
+}
+
+Float64 matConcreteBase::GetAgeAtInitialLoading() const
+{
+   return m_AgeAtInitialLoading;
 }
 
 void matConcreteBase::SetCureTime(Float64 t)

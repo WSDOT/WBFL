@@ -100,6 +100,9 @@ CEAFDocument::CEAFDocument()
 
    m_bUIIntegrated = FALSE;
    m_bEnableSaveBackup = TRUE;
+
+   m_bUIHints = TRUE;
+   m_UIHintSettings = EAF_UIHINT_ENABLE_ALL;
 }
 
 CEAFDocument::~CEAFDocument()
@@ -142,6 +145,7 @@ BEGIN_MESSAGE_MAP(CEAFDocument, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdateUndo)
 	ON_COMMAND(ID_EDIT_REDO, OnRedo)
 	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdateRedo)
+   ON_COMMAND(EAFID_OPTIONS_HINTS, OnOptionsHints)
 END_MESSAGE_MAP()
 
 
@@ -474,6 +478,41 @@ void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,COb
    }
 }
 
+std::vector<CView*> CEAFDocument::GetRegisteredView(long key)
+{
+   CEAFApp* pApp = EAFGetApp();
+   std::vector<CView*> vViews;
+
+   // if this assert fires, you probably added AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   // in the scope of calling this method
+   // Try removing AFX_MANAGE_STATE or re-scoping it
+   ASSERT(pApp->IsKindOf(RUNTIME_CLASS(CEAFApp)));
+
+   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
+   if ( pTemplate == NULL )
+   {
+      // the template was not found.... probably a bad key
+      return vViews;
+   }
+
+   CRuntimeClass* pViewClass = pTemplate->GetViewClass();
+
+   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
+
+   POSITION pos = GetFirstViewPosition();
+   while (pos != NULL)
+   {
+      CView* pView = GetNextView(pos);
+      if (pView->IsKindOf(pViewClass))
+      {
+         vViews.push_back(pView);
+      }
+   }
+
+   return vViews;
+}
+
 void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
 {
    CEAFApp* pApp = EAFGetApp();
@@ -585,12 +624,26 @@ BOOL CEAFDocument::Init()
 
 void CEAFDocument::LoadDocumentSettings()
 {
-   // Does nothing by default
+   if ( m_bUIHints )
+   {
+      // Loads the UI Hints settings
+      // Be sure to call AFX_MANAGE_STATE(AfxGetStaticModuleState())
+      // in your class before calling this method
+      CWinApp* pApp = AfxGetApp();
+      m_UIHintSettings = pApp->GetProfileInt(_T("Settings"),_T("UIHints"),EAF_UIHINT_ENABLE_ALL); // default, all hints enabled
+   }
 }
 
 void CEAFDocument::SaveDocumentSettings()
 {
-   // Does nothing by default
+   if ( m_bUIHints )
+   {
+      // Saves the UI Hints settings
+      // Be sure to call AFX_MANAGE_STATE(AfxGetStaticModuleState())
+      // in your class before calling this method
+      CWinApp* pApp = AfxGetApp();
+      VERIFY(pApp->WriteProfileInt(_T("Settings"),_T("UIHints"),m_UIHintSettings));
+   }
 }
 
 CATID CEAFDocument::GetDocumentPluginCATID()
@@ -1135,6 +1188,35 @@ BOOL CEAFDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
    return bHandled;
 }
 
+void CEAFDocument::UIHints(BOOL bEnable)
+{
+   m_bUIHints = bEnable;
+}
+
+BOOL CEAFDocument::UIHints() const
+{
+   return m_bUIHints;
+}
+
+UINT CEAFDocument::GetUIHintSettings() const
+{
+   return m_UIHintSettings;
+}
+
+void CEAFDocument::SetUIHintSettings(UINT settings)
+{
+   m_UIHintSettings = settings;
+   if ( m_UIHintSettings == EAF_UIHINT_ENABLE_ALL )
+   {
+      ResetUIHints();
+   }
+}
+
+void CEAFDocument::ResetUIHints()
+{
+   // Does nothing by default
+}
+
 void CEAFDocument::OnCloseDocument()
 {
    SetModifiedFlag(FALSE);
@@ -1287,6 +1369,19 @@ void CEAFDocument::OnUpdateRedo(CCmdUI* pCmdUI)
    {
       pCmdUI->SetText(_T("Redo\tCtrl+Y"));
       pCmdUI->Enable(FALSE);
+   }
+}
+
+void CEAFDocument::OnOptionsHints()
+{
+   CString strText;
+   strText = _T("Reset all user interface hints?");
+   int result = AfxMessageBox(strText,MB_YESNO);
+   if ( result == IDYES )
+   {
+      UINT hintSettings = GetUIHintSettings();
+      hintSettings = EAF_UIHINT_ENABLE_ALL;
+      SetUIHintSettings(hintSettings);
    }
 }
 

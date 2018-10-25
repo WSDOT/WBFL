@@ -68,6 +68,7 @@ public:
 	//{{AFX_VIRTUAL(CEAFBrokerDocument)
 	protected:
    virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
+   virtual void OnCloseDocument();
    virtual void DeleteContents();
    virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo);
    // called after the document data is created/loaded
@@ -84,17 +85,17 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-   void BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport);
+   void BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport);
    void BuildGraphMenu(CEAFMenu* pMenu);
 
    // Determine whether to display favorite reports or all reports in menu dropdowns
-   bool GetDoDisplayFavoriteReports() const;
-   void SetDoDisplayFavoriteReports(bool doDisplay);
+   BOOL DisplayFavoriteReports() const;
+   void DisplayFavoriteReports(BOOL doDisplay);
 
    // Current list of favorite reports
    const std::vector<std::_tstring>& GetFavoriteReports() const;
    void SetFavoriteReports(const std::vector<std::_tstring>& reports);
-   bool IsFavoriteReport(const std::_tstring& rptName);
+   BOOL IsFavoriteReport(const std::_tstring& rptName);
 
    // Custom, user-defined reports
    const CEAFCustomReports& GetCustomReports() const;
@@ -104,13 +105,19 @@ public:
    virtual BOOL GetStatusBarMessageString(UINT nID,CString& rMessage) const = 0;
    virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
 
+   // called when help on the custom reporting feature is to be activiated
+   // Help topic IDs are set with SetCustomReportHelpID
+   // Call AFX_MANAGE_STATE(AfxGetStaticModuleState()) in the derived class
+   // before calling this method
+   virtual void ShowCustomReportHelp(eafTypes::CustomReportHelp helpType) = 0;
+
    // Generated message map functions
 protected:
    IBroker* m_pBroker;
 
    bool m_bIsGraphMenuPopulated;
 
-   BOOL m_DisplayFavoriteReports;
+   BOOL m_bDisplayFavoriteReports;
    std::vector<std::_tstring> m_FavoriteReports;
 
    CEAFCustomReports m_CustomReports;
@@ -175,24 +182,21 @@ protected:
 
    /// populates a menu with the names of the reports
    void PopulateReportMenu(CEAFMenu* pReportMenu);
-   UINT GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport) const;
-   CollectionIndexType GetReportIndex(UINT nID,bool bQuickReport) const;
-   virtual void CreateReportView(CollectionIndexType rptIdx,bool bPrompt); // does nothing by default
+   UINT GetReportCommand(CollectionIndexType rptIdx,BOOL bQuickReport) const;
+   CollectionIndexType GetReportIndex(UINT nID,BOOL bQuickReport) const;
+   virtual void CreateReportView(CollectionIndexType rptIdx,BOOL bPrompt); // does nothing by default
    void OnReport(UINT nID);
    void OnQuickReport(UINT nID);
 
-   // Fire when changed from favorite reports to all reports. Let know if from a menu or other source
-   virtual void OnChangedFavoriteReports(bool isFavorites, bool fromMenu);
-
-   // Virtual error handling when custom or favorite report data has gone wrong in some way
-   enum custReportErrorType {
-      creParentMissingAtLoad,   // Parent for custom missing at program load time
-      creParentMissingAtImport, // Parent for custom missing when importing
-      creChapterMissingAtLoad,
-      creChapterMissingAtImport
-   };
-   virtual void OnCustomReportError(custReportErrorType error, const std::_tstring& reportName, const std::_tstring& otherName);
-   void IntegrateCustomReports(bool bFirst);
+   /////////////////////////////////////
+   // Custom Reporting
+   void FavoriteReports(BOOL bEnable); // Enables/Disables the Favorites Report feature
+   BOOL FavoriteReports() const;
+   void SetCustomReportHelpID(eafTypes::CustomReportHelp helpType,UINT nHelpID);
+   UINT GetCustomReportHelpID(eafTypes::CustomReportHelp helpType) const;
+   virtual void OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromMenu);
+   virtual void OnCustomReportError(eafTypes::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName);
+   void IntegrateCustomReports(bool bFirst=false);
 
    void PopulateGraphMenu(CEAFMenu* pGraphMenu);
    UINT GetGraphCommand(CollectionIndexType graphIdx) const;
@@ -201,14 +205,6 @@ protected:
    virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
 
    virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = NULL);
-
-public:
-   // Allow applications to publish help for custom reports and favorites
-   enum custRepportHelpType {
-      crhCustomReport,
-      crhFavoriteReport
-   };
-   virtual void OnCustomReportHelp(custRepportHelpType helpType);
 
 protected:  
 	//{{AFX_MSG(CEAFBrokerDocument)
@@ -229,6 +225,13 @@ private:
    CComPtr<IReportManager> m_pReportManager;
    CComPtr<IGraphManager> m_pGraphManager;
 
+   UINT m_helpIDCustom;
+   UINT m_helpIDFavorite;
+   BOOL m_bFavoriteReports;
+
+   // callback IDs for any status callbacks we register
+   StatusCallbackIDType m_scidCustomReportWarning;
+   StatusGroupIDType m_StatusGroupID;
 
    friend CEAFDocProxyAgent;
    friend CEAFDocTemplate;

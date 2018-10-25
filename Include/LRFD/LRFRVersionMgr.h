@@ -58,6 +58,8 @@ public:
                   SecondEdition2011             = 3, // Is this 2010 or 2011... Original document says 2011, interims say 2010... very confusion
                   SecondEditionWith2011Interims = 4,
                   SecondEditionWith2013Interims = 5,
+                  SecondEditionWith2014Interims = 6,
+                  SecondEditionWith2015Interims = 7,
                   LastVersion
 };
 

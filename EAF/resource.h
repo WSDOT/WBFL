@@ -99,6 +99,9 @@
 #define IDS_E_BADINSTALL                61449
 #define IDS_E_PROBPERSISTS              61450
 #define IDS_E_UNSAFESAVE                61451
+#define IDC_TEXT                        1225
+#define IDC_DONTSHOWAGAIN               1226
+#define IDD_UIHINTS                     1135
 
 // Next default values for new objects
 // 

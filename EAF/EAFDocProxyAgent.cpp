@@ -169,6 +169,11 @@ void CEAFDocProxyAgent::UpdateRegisteredView(long key,CView* pSender,LPARAM lHin
    m_pDoc->UpdateRegisteredView(key,pSender,lHint,pHint);
 }
 
+std::vector<CView*> CEAFDocProxyAgent::GetRegisteredView(long key)
+{
+   return m_pDoc->GetRegisteredView(key);
+}
+
 ///////////////////////////////////////////////////////
 // IEAFMainMenu
 CEAFMenu* CEAFDocProxyAgent::GetMainMenu()
@@ -240,6 +245,11 @@ void CEAFDocProxyAgent::SetModified(BOOL bModified)
 void CEAFDocProxyAgent::Save()
 {
    m_pDoc->SaveModified();
+}
+
+void CEAFDocProxyAgent::SaveAs(LPCTSTR lpszPathname,BOOL bReplace)
+{
+   m_pDoc->DoSave(lpszPathname,bReplace);
 }
 
 CString CEAFDocProxyAgent::GetFileName()

@@ -277,10 +277,10 @@ public:
       return false;
    }
 
-   void ManagePlugins(LPCTSTR lpszTitle)
+   void ManagePlugins(LPCTSTR lpszTitle,LPCTSTR lpszText)
    {
       CWnd* pWnd = EAFGetMainFrame();
-      EAFManageApplicationPlugins(lpszTitle,m_CATID,pWnd);
+      EAFManageApplicationPlugins(lpszTitle,lpszText,m_CATID,pWnd);
    }
 
 protected:

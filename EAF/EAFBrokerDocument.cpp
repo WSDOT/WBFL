@@ -53,7 +53,6 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
-   m_DisplayFavoriteReports = FALSE;
    m_bIsGraphMenuPopulated = false;
 
    // The base class registers as a unit mode listener
@@ -62,6 +61,11 @@ CEAFBrokerDocument::CEAFBrokerDocument()
    // Remove this document from the listener list so that only one event is received
    CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
+
+   m_bFavoriteReports = TRUE; // enable feature by default
+   m_bDisplayFavoriteReports = FALSE;
+   m_helpIDCustom = -1;
+   m_helpIDFavorite = -1;
 }
 
 CEAFBrokerDocument::~CEAFBrokerDocument()
@@ -86,6 +90,27 @@ BOOL CEAFBrokerDocument::OnOpenDocument(LPCTSTR lpszPathName)
    return bResult;
 }
 
+void CEAFBrokerDocument::OnCloseDocument()
+{
+   // Put report favorites options back into CPGSuperBaseAppPlugin
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CComPtr<IEAFAppPlugin> pAppPlugin;
+   pTemplate->GetPlugin(&pAppPlugin);
+   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+
+   BOOL bDisplayFavorites = DisplayFavoriteReports();
+   std::vector<std::_tstring> vFavorites = GetFavoriteReports();
+
+   pCustomReportMixin->DisplayFavoriteReports(bDisplayFavorites);
+   pCustomReportMixin->SetFavoriteReports(vFavorites);
+
+   // user-defined custom reports
+   CEAFCustomReports reports = GetCustomReports();
+   pCustomReportMixin->SetCustomReports(reports);
+
+   CEAFDocument::OnCloseDocument();
+}
+
 void CEAFBrokerDocument::DeleteContents()
 {
    CEAFDocument::DeleteContents();
@@ -95,6 +120,26 @@ void CEAFBrokerDocument::DeleteContents()
 void CEAFBrokerDocument::OnCreateFinalize()
 {
    CEAFDocument::OnCreateFinalize();
+
+   GET_IFACE(IEAFStatusCenter,pStatusCenter);
+   m_scidCustomReportWarning = pStatusCenter->RegisterCallback(new CEAFStatusItemCallback(eafTypes::statusWarning)); 
+   m_StatusGroupID = pStatusCenter->CreateStatusGroupID();
+
+
+   // Transfer report favorites and custom reports data from CXBeamRateAppPlugin to CEAFBrokerDocument (this)
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
+   CComPtr<IEAFAppPlugin> pAppPlugin;
+   pTemplate->GetPlugin(&pAppPlugin);
+   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+
+   BOOL bDisplayFavorites = pCustomReportMixin->DisplayFavoriteReports();
+   std::vector<std::_tstring> vFavorites = pCustomReportMixin->GetFavoriteReports();
+
+   DisplayFavoriteReports(bDisplayFavorites);
+   SetFavoriteReports(vFavorites);
+
+   CEAFCustomReports customs = pCustomReportMixin->GetCustomReports();
+   SetCustomReports(customs);
 
    // At this point we have loaded all hard-coded reports and read custom
    // report data from the registry, and broker is loaded. Create custom reports
@@ -598,15 +643,18 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
       pReportMenu->RemoveMenu(0,MF_BYPOSITION,NULL);
    }
 
-   // Add favorites option at top
-   CString msg = m_DisplayFavoriteReports==FALSE ? _T("Show only favorites") : _T("Show all reports");
-   pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg,NULL);
-   pReportMenu->AppendSeparator();
+   if ( m_bFavoriteReports )
+   {
+      // Add favorites option at top
+      CString msg = m_bDisplayFavoriteReports==FALSE ? _T("Show only favorites") : _T("Show all reports");
+      pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg,NULL);
+      pReportMenu->AppendSeparator();
+   }
 
    BuildReportMenu(pReportMenu,false);
 }
 
-void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
+void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
 {
    GET_IFACE(IReportManager,pReportMgr);
    std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
@@ -625,7 +673,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
 
       // list all or favorites
       bool dolist = false;
-      if ( m_DisplayFavoriteReports == FALSE || IsFavoriteReport(rptName) )
+      if ( m_bDisplayFavoriteReports == FALSE || IsFavoriteReport(rptName) )
       {
          dolist = true;
       }
@@ -646,13 +694,13 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    }
 
    // Deal with case where there are no favorites
-   if (!didlist)
+   if ( m_bFavoriteReports && !didlist )
    {
       pMenu->AppendMenu(EAFID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."),NULL);
    }
 }
 
-UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport) const
+UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,BOOL bQuickReport) const
 {
    CollectionIndexType baseID = EAF_REPORT_MENU_BASE;
 
@@ -668,7 +716,7 @@ UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,bool bQuick
    return (UINT)(rptIdx + baseID);
 }
 
-CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,bool bQuickReport) const
+CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,BOOL bQuickReport) const
 {
    if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+2*EAF_REPORT_MENU_COUNT < nID )
    {
@@ -691,19 +739,19 @@ void CEAFBrokerDocument::OnReport(UINT nID)
 {
    // User picked a report from a menu.
    // get the report index
-   CollectionIndexType rptIdx = GetReportIndex(nID,false);
-   CreateReportView(rptIdx,true);
+   CollectionIndexType rptIdx = GetReportIndex(nID,FALSE);
+   CreateReportView(rptIdx,TRUE);
 }
 
 void CEAFBrokerDocument::OnQuickReport(UINT nID)
 {
    // User picked a report from a menu.
    // This is a "quick report" so don't prompt
-   CollectionIndexType rptIdx = GetReportIndex(nID,true);
-   CreateReportView(rptIdx,false);
+   CollectionIndexType rptIdx = GetReportIndex(nID,TRUE);
+   CreateReportView(rptIdx,FALSE);
 }
 
-void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,bool bPrompt)
+void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,BOOL bPrompt)
 {
    // User must override this method to display the report
    AfxMessageBox(_T("Override CEAFBrokerDocument::CreateReportView to create the specific report view you want"));
@@ -795,17 +843,17 @@ void CEAFBrokerDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* 
    CEAFDocument::OnUpdateAllViews(pSender,lHint,pHint);
 }
 
-bool CEAFBrokerDocument::GetDoDisplayFavoriteReports() const
+BOOL CEAFBrokerDocument::DisplayFavoriteReports() const
 {
-   return m_DisplayFavoriteReports!=FALSE;
+   return m_bDisplayFavoriteReports;
 }
 
-void CEAFBrokerDocument::SetDoDisplayFavoriteReports(bool doDisplay)
+void CEAFBrokerDocument::DisplayFavoriteReports(BOOL doDisplay)
 {
-   BOOL bDoDisplay = doDisplay == true ? TRUE : FALSE;
-   if ( m_DisplayFavoriteReports != bDoDisplay )
+   BOOL bDoDisplay = doDisplay;
+   if ( m_bDisplayFavoriteReports != bDoDisplay )
    {
-      m_DisplayFavoriteReports = bDoDisplay;
+      m_bDisplayFavoriteReports = bDoDisplay;
       UpdateAllViews(NULL,EAF_HINT_FAVORITE_REPORTS_CHANGED,NULL);
    }
 }
@@ -820,7 +868,7 @@ void CEAFBrokerDocument::SetFavoriteReports(const std::vector<std::_tstring>& re
    m_FavoriteReports = reports;
 }
 
-bool CEAFBrokerDocument::IsFavoriteReport(const std::_tstring& rptName)
+BOOL CEAFBrokerDocument::IsFavoriteReport(const std::_tstring& rptName)
 {
    return (m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName));
 }
@@ -841,8 +889,8 @@ BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) c
    if ( m_pReportManager )
    {
       CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
-      if ( (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false)) ||
-           (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true)) )
+      if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
+           (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
          rMessage.Format(_T("Creates a report"));
          bHandled = TRUE;
@@ -873,8 +921,8 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
    if ( m_pReportManager )
    {
       CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
-      if ( (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false)) ||
-           (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true)) )
+      if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
+           (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
          rMessage.Format(_T("Creates a report"));
          bHandled = TRUE;
@@ -902,13 +950,13 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
 void CEAFBrokerDocument::OnReportMenuDisplayMode()
 {
    // flip value
-   SetDoDisplayFavoriteReports(!m_DisplayFavoriteReports);
-   OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE, true);
+   DisplayFavoriteReports(!m_bDisplayFavoriteReports);
+   OnChangedFavoriteReports(m_bDisplayFavoriteReports!=FALSE, TRUE);
 }
 
 void CEAFBrokerDocument::OnUpdateReportMenuDisplayMode(CCmdUI* pCmdUI)
 {
-   pCmdUI->SetText( (m_DisplayFavoriteReports ? _T("Show all reports") : _T("Show only favorites") ) );
+   pCmdUI->SetText( (m_bDisplayFavoriteReports ? _T("Show all reports") : _T("Show only favorites") ) );
 }
 
 void CEAFBrokerDocument::OnConfigureReports()
@@ -916,39 +964,111 @@ void CEAFBrokerDocument::OnConfigureReports()
    GET_IFACE(IReportManager,pReportMgr);
    std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
 
-   CConfigureReportsDlg dlg(_T("Configure Reports"));
+   CConfigureReportsDlg dlg(m_bFavoriteReports);
 
    dlg.m_pBroker = m_pBroker;
    dlg.SetFavorites(m_FavoriteReports);
-   dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus = m_DisplayFavoriteReports;
+   dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus = m_bDisplayFavoriteReports;
    dlg.m_CustomReports = m_CustomReports;
 
    if (dlg.DoModal() == IDOK)
    {
       m_FavoriteReports = dlg.GetFavorites();
-      m_DisplayFavoriteReports = dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus;
+      m_bDisplayFavoriteReports = dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus;
       m_CustomReports = dlg.m_CustomReports;
 
-      IntegrateCustomReports(false);
-      OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE, false);
+      IntegrateCustomReports(FALSE);
+      OnChangedFavoriteReports(m_bDisplayFavoriteReports!=FALSE, FALSE);
    }
 }
 
-void CEAFBrokerDocument::OnChangedFavoriteReports(bool isFavorites, bool fromMenu)
+void CEAFBrokerDocument::FavoriteReports(BOOL bEnable)
 {
-   // Do nothing in base class
+   m_bFavoriteReports = bEnable;
 }
 
-void CEAFBrokerDocument::OnCustomReportError(custReportErrorType error, const std::_tstring& reportName, const std::_tstring& otherName)
+BOOL CEAFBrokerDocument::FavoriteReports() const
 {
-   // Do nothing in base class. Error handling happens in app
+   return m_bFavoriteReports;
 }
 
-void CEAFBrokerDocument::OnCustomReportHelp(custRepportHelpType helpType)
+void CEAFBrokerDocument::SetCustomReportHelpID(eafTypes::CustomReportHelp helpType,UINT nHelpID)
 {
-   // Do nothing in base class. Magic happens in app
+   if ( helpType == eafTypes::crhCustomReport )
+   {
+      m_helpIDCustom = nHelpID;
+   }
+   else
+   {
+      m_helpIDFavorite = nHelpID;
+   }
 }
 
+UINT CEAFBrokerDocument::GetCustomReportHelpID(eafTypes::CustomReportHelp helpType) const
+{
+   if ( helpType == eafTypes::crhCustomReport )
+   {
+      return m_helpIDCustom;
+   }
+   else
+   {
+      return m_helpIDFavorite;
+   }
+}
+
+
+void CEAFBrokerDocument::OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromMenu)
+{
+   if (bFromMenu)
+   {
+      Uint32 mask = EAF_UIHINT_FAVORITES_MENU;
+      Uint32 hintSettings = GetUIHintSettings();
+      if ( sysFlags<Uint32>::IsClear(hintSettings,mask) )
+      {
+         CString strText(_T("This menu item allows you to display only your favorite reports in the Reports menus, or display all available reports. The change will occur the next time you open a Report menu."));
+         if ( EAFShowUIHints(strText) )
+         {
+            sysFlags<Uint32>::Set(&hintSettings,mask);
+            SetUIHintSettings(hintSettings);
+         }
+      }
+   }
+}
+
+void CEAFBrokerDocument::OnCustomReportError(eafTypes::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName)
+{
+   CString strError;
+
+   switch(error)
+   {
+   case eafTypes::creParentMissingAtLoad:
+         strError.Format(_T("For custom report \"%s\": the parent report %s could not be found at program load time. The custom report was deleted."),lpszReportName,lpszOtherName);
+         break;
+      case eafTypes::creParentMissingAtImport:
+         strError.Format(_T("For custom report \"%s\": the parent report %s could not be found. The report may have depended on an application extension. The custom report was deleted."), lpszReportName, lpszOtherName);
+         break;
+      case eafTypes::creChapterMissingAtLoad:
+      case eafTypes::creChapterMissingAtImport:
+         strError.Format(_T("For custom report \"%s\": the following chapter %s does not exist in the parent report. The chapter was removed. Perhaps the chapter name changed? You may want to edit the report."), lpszReportName, lpszOtherName);
+         break;
+      default:
+         ATLASSERT(false);
+   };
+
+   GET_IFACE(IEAFStatusCenter,pStatusCenter);
+   CEAFStatusItem* pStatusItem = new CEAFDefaultStatusItem(m_StatusGroupID,m_scidCustomReportWarning,strError);
+   pStatusCenter->Add(pStatusItem);
+}
+
+void CEAFBrokerDocument::ShowCustomReportHelp(eafTypes::CustomReportHelp helpType)
+{
+   // Base class must call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   UINT helpID = helpType==eafTypes::crhCustomReport ? m_helpIDCustom : m_helpIDFavorite;
+   if ( 0 < helpID )
+   {
+      ::HtmlHelp( NULL, AfxGetApp()->m_pszHelpFilePath, HH_HELP_CONTEXT, helpID );
+   }
+}
 
 void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
 {
@@ -1029,7 +1149,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
                else
                {
                   // Chapter referenced from custom does not exist in parent report. 
-                  OnCustomReportError(bFirst?creChapterMissingAtLoad:creChapterMissingAtImport,rCustom.m_ReportName,*itChapName);
+                  OnCustomReportError(bFirst?eafTypes::creChapterMissingAtLoad:eafTypes::creChapterMissingAtImport,rCustom.m_ReportName.c_str(),(*itChapName).c_str());
                   itChapName = rCustom.m_Chapters.erase(itChapName);
                   ATLASSERT(false);
                }
@@ -1050,7 +1170,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          else
          {
             // parent report does not exist for custom report. remove report and post
-            OnCustomReportError(bFirst?creParentMissingAtLoad:creParentMissingAtImport,rCustom.m_ReportName,rCustom.m_ParentReportName);
+            OnCustomReportError(bFirst?eafTypes::creParentMissingAtLoad:eafTypes::creParentMissingAtImport,rCustom.m_ReportName.c_str(),rCustom.m_ParentReportName.c_str());
             itcr = m_CustomReports.m_Reports.erase(itcr);
             ATLASSERT(false);
          }

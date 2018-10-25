@@ -31,6 +31,7 @@ public:
    void DestroyProgressWindow();
 
 protected:
+   CCriticalSection m_CriticalSection;
    CProgressDlg m_ProgressDlg;
    BOOL m_bCancelEnabled;
    BOOL m_bTerminate;

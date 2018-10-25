@@ -36,7 +36,7 @@ class CManagePluginsDlg : public CDialog
 	DECLARE_DYNAMIC(CManagePluginsDlg)
 
 public:
-	CManagePluginsDlg(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);   // standard constructor
+	CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = NULL);   // standard constructor
 	virtual ~CManagePluginsDlg();
 
 // Dialog Data
@@ -48,6 +48,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
    CString m_Title;
+   CString m_Text;
 
    CCheckListBox m_PluginList;
    CString m_strSection;

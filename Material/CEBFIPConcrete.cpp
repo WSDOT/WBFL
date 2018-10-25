@@ -36,13 +36,21 @@ static char THIS_FILE[] = __FILE__;
 LPCTSTR matCEBFIPConcrete::GetCementType(CementType type)
 {
    if ( type == RS )
+   {
       return _T("RS");
+   }
    else if ( type == N )
+   {
       return _T("N");
+   }
    else if ( type == R )
+   {
       return _T("R");
+   }
    else if ( type == SL )
+   {
       return _T("SL");
+   }
 
    ATLASSERT(false); // is there a new cement type?
    return _T("UNKNOWN");
@@ -307,7 +315,7 @@ Float64 matCEBFIPConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    Float64 age_at_time_under_consideration = GetAge(t);
    Float64 age_at_loading = GetAge(tla);
 
-   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 )
+   if ( age_at_time_under_consideration <= 0 || age_at_loading <= 0 || age_at_time_under_consideration - age_at_loading < 0 )
    {
       return 0;
    }

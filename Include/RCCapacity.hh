@@ -380,6 +380,7 @@
 #define IDH_ICrackedSectionSolution_CG                      2002
 #define IDH_ICrackedSectionSolution_SliceCount              2003
 #define IDH_ICrackedSectionSolution_Slice                   2004
+#define IDH_ICrackedSectionSolution_ElasticProperties       2005
 
 #define IDH_ICrackedSectionSolver                           2010
 #define IDH_ICrackedSectionSolver_Section                   2011

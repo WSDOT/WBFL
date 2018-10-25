@@ -37,11 +37,13 @@
 
 #include <WBFLRCCapacity_i.c>
 #include <WBFLGeometry_i.c>
+#include <WBFLSections_i.c>
 #include <WBFLUnitServer_i.c>
 #include <WBFLTools_i.c>
 
 #include "RCBeam.h"
 #include "RCSolution.h"
+#include "LRFDSolution.h"
 #include "LRFDSolver.h"
 #include "LRFDSolver2.h"
 #include "LFDSolver.h"
@@ -57,6 +59,7 @@
 #include "MixedSolver.h"
 #include "RCBeam2Ex.h"
 #include "RCSolutionEx.h"
+#include "LRFDSolutionEx.h"
 #include "PCISolutionEx.h"
 #include "RoundColumn.h"
 #include "GeneralSection.h"
@@ -89,6 +92,7 @@ CComModule _Module;
 BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_RCBeam, CRCBeam)
    OBJECT_ENTRY(CLSID_RCSolution, CRCSolution)
+   OBJECT_ENTRY(CLSID_LRFDSolution, CLRFDSolution)
    OBJECT_ENTRY(CLSID_LRFDSolver, CLRFDSolver)
    OBJECT_ENTRY(CLSID_LRFDSolver2, CLRFDSolver2)
    OBJECT_ENTRY(CLSID_LFDSolver, CLFDSolver)
@@ -103,6 +107,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_MixedSolver, CMixedSolver)
    OBJECT_ENTRY(CLSID_RCBeam2Ex, CRCBeam2Ex)
    OBJECT_ENTRY(CLSID_RCSolutionEx, CRCSolutionEx)
+   OBJECT_ENTRY(CLSID_LRFDSolutionEx, CLRFDSolutionEx)
    OBJECT_ENTRY(CLSID_PCISolutionEx, CPCISolutionEx)
    OBJECT_ENTRY(CLSID_StrainHardenedRebarModel, CStrainHardenedRebarModel)
    OBJECT_ENTRY(CLSID_RoundColumn,CRoundColumn)

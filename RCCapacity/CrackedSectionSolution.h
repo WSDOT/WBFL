@@ -71,6 +71,7 @@ public:
    STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pntCG);
    STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices);
 	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/ICrackedSectionSlice** pSlice);
+   STDMETHOD(get_ElasticProperties)(/*[out,retval]*/IElasticProperties** ppProps);
 };
 
 #endif //__CrackedSectionSolution_H_

@@ -89,7 +89,7 @@ Float64 CPierImpl::GetDelta()
 
    // Location of the alignment measured from the left curb line
    Float64 CLO;
-   m_pPier->get_CurbLineOffset(qcbLeft,&CLO); // in pier coordinates
+   m_pPier->get_CurbLineOffset(qcbLeft,clmPlaneOfPier,&CLO); // in pier coordinates
    Float64 Xcl = -CLO; // in curb line coordinates
 
    Float64 delta = Xcl - Xxb; // Xxb + delta = Xcl
@@ -108,6 +108,16 @@ STDMETHODIMP CPierImpl::get_Type(PierType* type)
 {
    CHECK_RETVAL(type);
    *type = m_Type;
+   return S_OK;
+}
+
+STDMETHODIMP CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
+{
+   CHECK_RETVAL(pWcc);
+   Float64 LCO, RCO;
+   m_pPier->get_CurbLineOffset(qcbLeft,clMeasure,&LCO);
+   m_pPier->get_CurbLineOffset(qcbRight,clMeasure,&RCO);
+   *pWcc = fabs(LCO) + fabs(RCO); // curb-curb width is unsigned, but offsets are signed... uses absolute value
    return S_OK;
 }
 
@@ -219,7 +229,7 @@ STDMETHODIMP CPierImpl::ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[ou
 {
    CHECK_RETVAL(pXcl);
    Float64 leftCLO;
-   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
+   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,clmPlaneOfPier,&leftCLO);
    if ( FAILED(hr) )
    {
       return hr;
@@ -232,7 +242,7 @@ STDMETHODIMP CPierImpl::ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[o
 {
    CHECK_RETVAL(pXp);
    Float64 leftCLO;
-   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,&leftCLO);
+   HRESULT hr = m_pPier->get_CurbLineOffset(qcbLeft,clmPlaneOfPier,&leftCLO);
    if ( FAILED(hr) )
    {
       return hr;
@@ -249,7 +259,7 @@ STDMETHODIMP CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,
    CreateDeckProfileFunction(&fn);
 
    Float64 clo;
-   HRESULT hr = m_pPier->get_CurbLineOffset(side,&clo); // curb line offsets are in Pier coordinates
+   HRESULT hr = m_pPier->get_CurbLineOffset(side,clmPlaneOfPier,&clo); // curb line offsets are in Pier coordinates
    if ( FAILED(hr) )
    {
       return hr;

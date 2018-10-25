@@ -38,7 +38,10 @@ class ATL_NO_VTABLE CNLSolver :
 	public CComCoClass<CNLSolver, &CLSID_NLSolver>,
 	public INLSolver,
 	public IRCSolver2,
-	public IRCSolver2Ex
+	public IRCSolver2Ex,
+   public IRCCrackedSectionSolver,
+	public IRCCrackedSectionSolver2,
+	public IRCCrackedSectionSolver2Ex
 {
 public:
 	CNLSolver()
@@ -53,6 +56,9 @@ public:
       m_bUserBeamConcrete = false;
       m_bUserStrandModel  = false;
       m_bUserRebarModel   = false;
+
+      m_MaxIter = 50;
+      m_CGTolerance = 0.01;
    }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_NLSOLVER)
@@ -64,17 +70,35 @@ BEGIN_COM_MAP(CNLSolver)
 	COM_INTERFACE_ENTRY(IRCSolver)
 	COM_INTERFACE_ENTRY(IRCSolver2)
 	COM_INTERFACE_ENTRY(IRCSolver2Ex)
+	COM_INTERFACE_ENTRY(IRCCrackedSectionSolver)
+	COM_INTERFACE_ENTRY(IRCCrackedSectionSolver2)
+	COM_INTERFACE_ENTRY(IRCCrackedSectionSolver2Ex)
 END_COM_MAP()
 
+   HRESULT FinalConstruct();
+
 private:
+   typedef struct SHAPEINFO
+   {
+      CComPtr<IShape> Shape;
+      CComPtr<IStressStrain> FgMaterial;
+      CComPtr<IStressStrain> BgMaterial;
+   };
+
    typedef struct SLICEINFO
    {
-      Float64 top;
-      Float64 bot;
-      Float64 area;
-      Float64 y_cg;
+      Float64 Area;
+      Float64 Top;
+      Float64 Bottom;
+      Float64 Xcg;
+      Float64 Ycg;
+      CComPtr<IStressStrain> FgMaterial;
+      CComPtr<IStressStrain> BgMaterial;
+
       bool bSlabSlice;
-      CComPtr<IShape> slice_shape;
+      CComPtr<IShape> SliceShape;
+
+      bool operator<(const SLICEINFO& other) { return other.Ycg < Ycg; }
    } SLICEINFO;
 
    long m_nSlices;
@@ -92,15 +116,32 @@ private:
    CComPtr<IStressStrain> m_StrandModel;
    CComPtr<IStressStrain> m_RebarModel;
    HRESULT InitConcreteModel(IStressStrain** model,IUnitServer* unitServer,Float64 fc);
-   void InitStrandModel(IStressStrain** model,IUnitServer* unitServer);
-   void InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es);
+   HRESULT InitStrandModel(IStressStrain** model,IUnitServer* unitServer);
+   HRESULT InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es);
 
    HRESULT AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pMflange,Float64* pMbeam,Float64* pMt,IDblArray* fs,IDblArray* fps,Float64* pCflange,Float64* pCbeam,Float64* pFt);
    HRESULT SliceSection(IRCBeam2Ex* rcbeam);
    std::vector<SLICEINFO> m_Slices;
+   CComPtr<IRect2d> m_ClippingRect;
 
    HRESULT SolveBisectionMethod(IRCBeam2Ex* beam,IRCSolutionEx* *solution);
    HRESULT SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution);
+
+#if defined _DEBUG_LOGGING
+   CComPtr<IWBFLErrorLog> m_Log;
+   DWORD m_dwCookie;
+#endif // _DEBUG_LOGGING
+   Float64 m_Ytop;
+   Float64 m_Ybottom;
+   long m_MaxIter;
+   Float64 m_CGTolerance;
+   HRESULT AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 Yguess,IUnkArray* slices,IPoint2d* pntCG);
+   HRESULT AnalyzeSlice(Float64 Yguess,SLICEINFO& slice,Float64& EA,Float64& EAx,Float64& EAy,Float64& Efg,Float64& Ebg);
+   HRESULT SliceShape(const SHAPEINFO& shapeInfo,Float64 sliceTop,Float64 sliceBottom,SLICEINFO& sliceInfo);
+   HRESULT SolveBisectionMethod(IRCBeam2Ex* beam,ICrackedSectionSolution* *solution);
+   HRESULT SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,ICrackedSectionSolution* *solution);
+
+   HRESULT InitMaterials(IRCBeam2Ex* rcbeam);
 
 // IRCSolver2Ex
 public:
@@ -113,6 +154,18 @@ public:
 // IRCSolver
 public:
 	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution);
+
+// IRCCrackedSectionSolver2Ex
+public:
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
+
+// IRCCrackedSectionSolver2
+public:
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
+
+// IRCCrackedSectionSolver
+public:
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
 
 // INLSolver
 public:

@@ -536,6 +536,9 @@ library WBFLGeometry
 
 		[helpstring("method OffsetEx"), helpcontext(IDH_IPoint2d_OffsetEx)]
       HRESULT OffsetEx([in] ISize2d* size);
+
+      [helpstring("method RemoveDuplicatePoints")]
+      HRESULT RemoveDuplicatePoints();
    };
 
    [
@@ -1049,6 +1052,9 @@ library WBFLGeometry
 
 		[helpstring("method OffsetEx"), helpcontext(IDH_IPoint2d_OffsetEx)]
       HRESULT OffsetEx([in] ISize3d* size);
+
+      [helpstring("method RemoveDuplicatePoints")]
+      HRESULT RemoveDuplicatePoints();
    };
 
    [

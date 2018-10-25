@@ -34,18 +34,31 @@ struct eafTypes
    } UnitMode;
 
    // Status Item Severity Type
-   enum StatusSeverityType
+   typedef enum StatusSeverityType
    {
       statusOK,
       statusWarning,
       statusError
-   };
+   } StatusSeverityType;
 
-   enum LpFrameMode
+   typedef enum LpFrameMode
    { 
       lpfOn, 
       lpfOff
-   };
+   } LpFrameMode;
+
+   typedef enum CustomReportError {
+      creParentMissingAtLoad,   // Parent for custom missing at program load time
+      creParentMissingAtImport, // Parent for custom missing when importing
+      creChapterMissingAtLoad,
+      creChapterMissingAtImport
+   } CustomReportError;
+
+   typedef enum CustomReportHelp
+   {
+      crhCustomReport,
+      crhFavoriteReport
+   } CustomReportHelp;
 };
 
 typedef IDType StatusGroupIDType;

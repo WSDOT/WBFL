@@ -41,10 +41,10 @@ struct EAFCLASS CEAFReportViewCreationData
    // Option 1 - Provide Report Specification
    boost::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
    boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
-   bool m_bInitializeOnly; // if true, creates the report view, sets the spec and spec builder, but does not generate the report
+   BOOL m_bInitializeOnly; // if true, creates the report view, sets the spec and spec builder, but does not generate the report
 
    // Option 2 - Report view creates specification
-   bool m_bPromptForSpec; // true = prompt user to configure spec through UI, otherwise use default
+   BOOL m_bPromptForSpec; // true = prompt user to configure spec through UI, otherwise use default
    
    // The report manager
    CReportBuilderManager* m_pReportBuilderMgr; // Use this when using regular Doc/View
@@ -53,10 +53,10 @@ struct EAFCLASS CEAFReportViewCreationData
    CEAFReportViewCreationData()
    {
       m_RptIdx = 0;
-      m_bPromptForSpec = true;
+      m_bPromptForSpec = TRUE;
       m_pReportBuilderMgr = NULL;
       m_pRptMgr = NULL;
-      m_bInitializeOnly = false;
+      m_bInitializeOnly = FALSE;
    }
 };
 
@@ -106,7 +106,7 @@ public:
    virtual bool InitReport(boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
 
    // Creates a report. The report specification is created by the user through the UI
-   virtual bool CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec=true);
+   virtual bool CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec=true);
 
    // Creates a report. The report specification was created elsewhere and is supplied here
    virtual bool CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
@@ -132,7 +132,7 @@ protected:
 
    virtual void EditReport();
    virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
-   virtual void CreateReportSpecification(CollectionIndexType rptIdx,bool bCreateDefaultReport);
+   virtual void CreateReportSpecification(CollectionIndexType rptIdx,BOOL bCreateDefaultReport);
    virtual HRESULT UpdateReportBrowser(CReportHint* pHint);
 
    // Translate an MFC OnUpdate hint into a CReportHint object that will be passed into
@@ -145,11 +145,11 @@ protected:
    boost::shared_ptr<CReportSpecification> m_pReportSpec;
    boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
 
-   bool m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
-   bool m_bNoBrowser;     // true if the browser window couldn't be created
-   bool m_bUpdateError;   // true if an error occured while updating the report contents
-   bool m_bIsNewReport;   // true while calls are coming from OnInitialUpdate
-   bool m_bUpdateInProgress; // true if the report is being generated/updated
+   BOOL m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
+   BOOL m_bNoBrowser;     // true if the browser window couldn't be created
+   BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+   BOOL m_bIsNewReport;   // true while calls are coming from OnInitialUpdate
+   BOOL m_bUpdateInProgress; // true if the report is being generated/updated
 
    std::_tstring m_ErrorMsg;
 

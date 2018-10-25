@@ -23,6 +23,13 @@
 
 #pragma once
 
+// User Interface Hints
+// Create any hints you like in the range 0x0002 to 0xFFFE
+#define EAF_UIHINT_ENABLE_ALL                 0x0000  // all hints are enabled
+#define EAF_UIHINT_FAVORITES_MENU             0x0001  // UI Hint for favorite report menu
+#define EAF_UIHINT_DISABLE_ALL                0xFFFF  // disables all hints
+
+
 // Doc/View update hints
 #define EAF_HINT_BASE                     1000        
 #define EAF_HINT_UPDATEERROR              EAF_HINT_BASE + 0

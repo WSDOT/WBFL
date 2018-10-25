@@ -55,11 +55,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;;&quot;$(VCInstallDir)atlmfc\src\mfc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;_ATL_NO_UUIDOF"
 				StringPooling="true"
@@ -165,7 +160,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;;&quot;$(VCInstallDir)atlmfc\src\mfc&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;_ATL_NO_UUIDOF"
 				StringPooling="true"
@@ -2570,6 +2564,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UIHintsDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\UnitsDlg.cpp"
 				>
 			</File>
@@ -2880,6 +2878,10 @@
 			</File>
 			<File
 				RelativePath=".\ToolBarDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIHintsDlg.h"
 				>
 			</File>
 			<File

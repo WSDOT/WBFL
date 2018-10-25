@@ -28,6 +28,7 @@
 
 #include "ManagePluginsDlg.h"
 #include "StatusMessageDialog.h"
+#include "UIHintsDlg.h"
 
 EAFFUNC CEAFApp* EAFGetApp()
 {
@@ -81,10 +82,10 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    return E_FAIL;
 }
 
-std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent)
+std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CManagePluginsDlg dlg(lpszTitle,catid,pParent);
+   CManagePluginsDlg dlg(lpszTitle,lpszText,catid,pParent);
    dlg.DoModal(); // this DoModal is correct... dialog takes care of its own data
    return dlg.m_PluginStates;
 }
@@ -122,6 +123,7 @@ CView* EAFGetActiveView()
 
 void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,UINT helpID)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CStatusMessageDialog dlg(pStatusItem,severity,bRemoveableOnError,helpID);
 
    if (dlg.DoModal() == IDOK)
@@ -135,6 +137,16 @@ void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityTy
          pStatusItem->RemoveAfterEdit(FALSE);
       }
    }
+}
+
+BOOL EAFShowUIHints(LPCTSTR lpszText,LPCTSTR lpszTitle)
+{
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CUIHintsDlg dlg;
+   dlg.m_strTitle = lpszTitle;
+   dlg.m_strText = lpszText;
+   dlg.DoModal();
+   return dlg.m_bDontShowAgain;
 }
 
 bool operator<(REFIID a,REFIID b)

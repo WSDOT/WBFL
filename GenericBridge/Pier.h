@@ -76,7 +76,8 @@ public:
    STDMETHOD(get_Type)(/*[out,retval]*/PierType* type) { return m_PierImpl.get_Type(type); }
    STDMETHOD(get_DeckProfile)(/*[out,retval]*/IPoint2dCollection** ppPoints);
    STDMETHOD(get_DeckThickness)(/*[out,retval]*/Float64* pTDeck);
-   STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO);
+   STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
+   STDMETHOD(get_CurbToCurbWidth)(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc);
    STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew) { return m_PierImpl.putref_SkewAngle(pSkew); }
    STDMETHOD(get_SkewAngle)(/*[out,retval]*/IAngle** ppSkew) { return m_PierImpl.get_SkewAngle(ppSkew); }
    STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pCrossBeam) { return m_PierImpl.putref_CrossBeam(pCrossBeam); }

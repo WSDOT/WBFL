@@ -96,6 +96,7 @@ public:
 //	STDMETHOD(get__NewEnum)(IUnknown** retval);
    STDMETHOD(Offset)(Float64 dx,Float64 dy);
    STDMETHOD(OffsetEx)(ISize2d* size);
+   STDMETHOD(RemoveDuplicatePoints)();
 
 // IPoint2dEvents
 public:
