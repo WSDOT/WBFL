@@ -2377,6 +2377,9 @@ library WBFLGeometry
 
      [helpstring("method CreateParallelLineSegment"),helpcontext(IDH_IGeomUtil2d_CreateParallelLineSegment)]
 		HRESULT CreateParallelLineSegment([in] ILineSegment2d* pSeg,[in] Float64 offset,[out,retval] ILineSegment2d** pNewSeg);
+
+      [helpstring("method PointInTriangle")]
+      HRESULT PointInTriangle([in]IPoint2d* p,[in]IPoint2d* pA,[in]IPoint2d* pB,[in]IPoint2d* pC,[out,retval]VARIANT_BOOL* pbResult);
 	};
 	[
 		object,
@@ -2393,6 +2396,9 @@ library WBFLGeometry
 
 		[helpstring("property Magnitude"),helpcontext(IDH_IGeomUtil3d_Magnitude)]
 		HRESULT Magnitude([in] IPoint3d* p,[out, retval] Float64 *pMag);
+
+      [helpstring("method PointInTriangle")]
+      HRESULT PointInTriangle([in]IPoint3d* p,[in]IPoint3d* pA,[in]IPoint3d* pB,[in]IPoint3d* pC,[out,retval]VARIANT_BOOL* pbResult);
    };
 	[
 	   object,

@@ -297,6 +297,9 @@ public:
    // Set if nice numbers are to be used for X axis
    void SetXAxisNiceRange(bool nice=true);
 
+   void SetXAxisForcedRange(Float64 leftVal, Float64 rightVal, Float64 increment);
+   bool IsXAxisRangeForced() const;
+
    //------------------------------------------------------------------------
    // Get if nice numbers are to be used for Y axis
    bool GetYAxisNiceRange() const;
@@ -425,7 +428,8 @@ private:
 
    grAxisXY m_XAxis;
    grAxisXY m_YAxis;
-   bool m_XAxisNiceRange;
+   bool m_XAxisRangeForced; // if true, the XAxis range is forced by the user
+   bool m_XAxisNiceRange; // if true, the XAxis is set to a nice range
    bool m_YAxisNiceRange;
    bool m_PinYAxisAtZero;
    bool m_bIsotropicAxes;

@@ -423,6 +423,23 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    pData->Vcw     = ::ConvertToSysUnits(Vcw,     *p_force_unit);
 }
 
+Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
+{
+   Float64 vu;
+
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   {
+      vu = (Vu - phi*Vp)/(phi*bv*dv);
+   }
+   else
+   {
+      vu = fabs(Vu - phi*Vp)/(phi*bv*dv);
+   }
+
+   return vu;
+}
+
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================
@@ -541,7 +558,8 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    const Float64 v = (Vu - phi*Vp)/(phi*bv*dv);
    Float64 vfc = v/fc;
 
-   pData->vfc = vfc;
+   pData->vu = v;
+   pData->vufc = vfc;
 
    if ( vfc > get_vfc(get_vfc_count()-1) )
    {
@@ -648,7 +666,8 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    const Float64 v = (Vu - phi*Vp)/(phi*bv*dv);
    Float64 vfc = v/fc;
 
-   pData->vfc = vfc;
+   pData->vu = v;
+   pData->vufc = vfc;
 
    if ( vfc > get_vfc(get_vfc_count()-1) )
    {
@@ -817,7 +836,8 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    const Float64 v = (Vu - phi*Vp)/(phi*bv*dv);
    Float64 vfc = v/fc;
 
-   pData->vfc = vfc;
+   pData->vu = v;
+   pData->vufc = vfc;
 
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
@@ -964,7 +984,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 //      bt.Theta = 25;
 
    pData->BetaTheta_tbl = 1; 
-   pData->vfc_tbl = get_vfc(row);
+   pData->vufc_tbl = get_vfc(row);
    pData->ex_tbl = get_ex(col);
    pData->Beta = bt.Beta;
    pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
@@ -1205,7 +1225,8 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    const Float64 v = (Vu - phi*Vp)/(phi*bv*dv);
    Float64 vfc = v/fc;
 
-   pData->vfc = vfc;
+   pData->vu = v;
+   pData->vufc = vfc;
 
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
@@ -1294,7 +1315,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       // Get Beta/Theta;
       const BT& bt = get_beta_theta(row,col);
       pData->ex = ex_calc;
-      pData->vfc_tbl = get_vfc(row);
+      pData->vufc_tbl = get_vfc(row);
       pData->Beta = bt.Beta;
       pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
       pData->Fe = -1; // Not appicable
@@ -1451,8 +1472,9 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    pData->ex = ex_calc;
    Float64 v = fabs(Vu - phi*Vp)/(phi*bv*dv);
-   pData->vfc = v/fc;
-   pData->vfc_tbl = -1; // Not applicable
+   pData->vu = v;
+   pData->vufc = v/fc;
+   pData->vufc_tbl = -1; // Not applicable
    pData->Theta = ::ConvertToSysUnits(29+3500*ex_calc,unitMeasure::Degree);
    pData->Fe = -1; // Not appicable
 }

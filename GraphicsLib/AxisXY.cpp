@@ -29,6 +29,8 @@
 #include <Math\CoordMapper1d.h>
 #include <GraphicsLib\GraphTool.h>
 
+#include <boost\algorithm\string\trim.hpp>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -177,6 +179,7 @@ void grAxisXY::Draw(HDC hDC)
             if (m_DoShowText)
             {
                std::_tstring value_text = m_pValueFormat->AsString(tic_value);
+               boost::trim(value_text);
 
                if (m_Orientation == X_AXIS)
                {
@@ -281,6 +284,7 @@ void grAxisXY::Draw(HDC hDC)
                }
 
                std::_tstring value_text = m_pValueFormat->AsString(tic_value);
+               boost::trim(value_text);
 
                m_pValueFormat->SetPrecision(p);
                m_pValueFormat->SetFormat(format);
@@ -715,6 +719,7 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    for (LONG i=0; i<=num_incrs; i++)
    {
       std::_tstring value_text(m_pValueFormat->AsString(curr_value));
+      boost::trim(value_text);
       ::GetTextExtentPoint32(hDC,value_text.c_str(),(int)value_text.size(),&siz);
       Float64 angle = ::ToRadians(m_ValueAngle/10.);
       Float64 width  = siz.cx*cos(angle) + siz.cy*sin(angle);

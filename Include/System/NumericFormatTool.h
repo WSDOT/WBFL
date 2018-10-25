@@ -96,8 +96,8 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   std::_tstring AsString(Float64 value) const;
-   std::_tstring AsString(const sysSectionValue& value) const;
+   virtual std::_tstring AsString(Float64 value) const;
+   virtual std::_tstring AsString(const sysSectionValue& value) const;
 
    // GROUP: ACCESS
 
@@ -131,7 +131,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    Format m_Format;
    Uint16 m_Width;

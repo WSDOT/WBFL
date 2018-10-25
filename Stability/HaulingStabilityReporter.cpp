@@ -798,12 +798,12 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    if ( bDirectCamber )
    {
       *pPara << _T("Camber, ") << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
-      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("Y"),_T("t")) << _T(" - ") << Sub2(_T("F"),_T("o")) << Sub2(symbol(DELTA),_T("camber")) << _T(" + ") << Sub2(_T("y"),_T("rc")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(" + ") << Sub2(_T("F"),_T("o")) << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
       *pPara << _T("Camber offset factor, ") << Sub2(_T("F"),_T("co")) << _T(" = ") << scalar.SetValue(pResults->CamberOffsetFactor) << rptNewLine;
-      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("Y"),_T("t")) << _T(" + ") << Sub2(_T("y"),_T("rc")) << _T(") = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("F"),_T("co")) << _T("(") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(") = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    }
 
    *pPara << rptNewLine;

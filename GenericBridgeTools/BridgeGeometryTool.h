@@ -66,6 +66,7 @@ private:
    CComPtr<ILine2d> m_Line2;
    CComPtr<ILineSegment2d> m_LineSegment1;
    CComPtr<ILineSegment2d> m_LineSegment2;
+   CComPtr<IVector2d> m_Vector;
    CComPtr<IGeomUtil2d> m_GeomUtil;
 
    HRESULT GetDeckEdgePath(IGenericBridge* bridge,DirectionType side,IPath** ppPath);

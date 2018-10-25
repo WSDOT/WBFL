@@ -1201,3 +1201,118 @@ STDMETHODIMP CGeomUtil::CircleCircleIntersect(ICircle* circle1,ICircle* circle2,
 
    return S_OK;
 }
+
+STDMETHODIMP CGeomUtil::PointInTriangle(IPoint2d* p,IPoint2d* pA,IPoint2d* pB,IPoint2d* pC,VARIANT_BOOL* pbResult)
+{
+   // Use Barycentric Coordinate system
+   // https://blogs.msdn.microsoft.com/rezanour/2011/08/07/barycentric-coordinates-and-point-in-triangle-tests/
+   // http://blackpawn.com/texts/pointinpoly/default.html
+
+   CHECK_IN(p);
+   CHECK_IN(pA);
+   CHECK_IN(pB);
+   CHECK_IN(pC);
+   CHECK_RETVAL(pbResult);
+
+   Float64 Xa,Ya;
+   pA->Location(&Xa,&Ya);
+
+   Float64 Xb,Yb;
+   pB->Location(&Xb,&Yb);
+
+   Float64 Xc,Yc;
+   pC->Location(&Xc,&Yc);
+
+   Float64 Xp,Yp;
+   p->Location(&Xp,&Yp);
+
+   CComPtr<IVector2d> v0,v1,v2;
+   v0.CoCreateInstance(CLSID_Vector2d);
+   v1.CoCreateInstance(CLSID_Vector2d);
+   v2.CoCreateInstance(CLSID_Vector2d);
+   
+   v0->put_X(Xc-Xa);
+   v0->put_Y(Yc-Ya);
+
+   v1->put_X(Xb-Xa);
+   v1->put_Y(Yb-Ya);
+
+   v2->put_X(Xp-Xa);
+   v2->put_Y(Yp-Ya);
+
+   Float64 dot00, dot01, dot02, dot11, dot12;
+   v0->Dot(v0,&dot00);
+   v0->Dot(v1,&dot01);
+   v0->Dot(v2,&dot02);
+   v1->Dot(v1,&dot11);
+   v1->Dot(v2,&dot12);
+
+   Float64 denom = dot00*dot11 - dot01*dot01;
+   if ( denom == 0.0 )
+   {
+      return E_FAIL;
+   }
+
+   Float64 u = (dot11*dot02 - dot01*dot12)/denom;
+   Float64 v = (dot00*dot12 - dot01*dot02)/denom;
+
+   *pbResult = (0 <= u && 0 <= v && (u + v <= 1)) ? VARIANT_TRUE : VARIANT_FALSE;
+   return S_OK;
+}
+
+STDMETHODIMP CGeomUtil::PointInTriangle(IPoint3d* p,IPoint3d* pA,IPoint3d* pB,IPoint3d* pC,VARIANT_BOOL* pbResult)
+{
+   CHECK_IN(p);
+   CHECK_IN(pA);
+   CHECK_IN(pB);
+   CHECK_IN(pC);
+   CHECK_RETVAL(pbResult);
+
+   Float64 Xa,Ya,Za;
+   pA->Location(&Xa,&Ya,&Za);
+
+   Float64 Xb,Yb,Zb;
+   pB->Location(&Xb,&Yb,&Zb);
+
+   Float64 Xc,Yc,Zc;
+   pC->Location(&Xc,&Yc,&Zc);
+
+   Float64 Xp,Yp,Zp;
+   p->Location(&Xp,&Yp,&Zp);
+
+   CComPtr<IVector3d> v0,v1,v2;
+   v0.CoCreateInstance(CLSID_Vector3d);
+   v1.CoCreateInstance(CLSID_Vector3d);
+   v2.CoCreateInstance(CLSID_Vector3d);
+   
+   v0->put_X(Xc-Xa);
+   v0->put_Y(Yc-Ya);
+   v0->put_Z(Zc-Za);
+
+   v1->put_X(Xb-Xa);
+   v1->put_Y(Yb-Ya);
+   v1->put_Z(Zb-Za);
+
+   v2->put_X(Xp-Xa);
+   v2->put_Y(Yp-Ya);
+   v2->put_Z(Zp-Za);
+
+   Float64 dot00, dot01, dot02, dot11, dot12;
+   v0->Dot(v0,&dot00);
+   v0->Dot(v1,&dot01);
+   v0->Dot(v2,&dot02);
+   v1->Dot(v1,&dot11);
+   v1->Dot(v2,&dot12);
+
+   Float64 denom = dot00*dot11 - dot01*dot01;
+   if ( denom == 0.0 )
+   {
+      return E_FAIL;
+   }
+
+   Float64 u = (dot11*dot02 - dot01*dot12)/denom;
+   Float64 v = (dot00*dot12 - dot01*dot02)/denom;
+
+   *pbResult = (0 <= u && 0 <= v && (u + v <= 1)) ? VARIANT_TRUE : VARIANT_FALSE;
+   return S_OK;
+}

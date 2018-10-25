@@ -879,7 +879,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
             for ( ; poiIter != poiIterEnd; poiIter++ )
             {
                CComPtr<IInfluenceLine> leftIL, rightIL;
-               hr = m_pInflStrategy->ComputeInfluenceLine(*poiIter, stage, effect, &leftIL, &rightIL);
+               m_pInflStrategy->ComputeInfluenceLine(*poiIter, stage, effect, &leftIL, &rightIL);
                if ( leftIL )
                {
                   leftFaceInfluenceLines.push_back(leftIL);

@@ -110,6 +110,8 @@
 #define RPT_FTOP italic(ON) << Sub2(_T("f"),_T("t")) << italic(OFF)
 #define RPT_FBOT italic(ON) << Sub2(_T("f"),_T("b")) << italic(OFF)
 #define RPT_STRESS(_subscript_) italic(ON) << Sub2(_T("f"),_subscript_) << italic(OFF)
+#define RPT_vu italic(ON) << Sub2(_T("v"),_T("u")) << italic(OFF)
+#define RPT_Vu italic(ON) << Sub2(_T("V"),_T("u")) << italic(OFF)
 
 #define RPT_PASS color(Green) << _T("Pass") << color(Black)
 #define RPT_FAIL color(Red) << bold(ON) << _T("Fail") << bold(OFF) << color(Black)

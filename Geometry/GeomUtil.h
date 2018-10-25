@@ -111,11 +111,13 @@ public:
 	STDMETHOD(GenerateCircle)(/*[in]*/ IndexType nPoints,/*[in]*/ IPoint2d* center,/*[in]*/ Float64 radius, /*[in]*/ Float64 initAngle,/*[out,retval]*/ IPoint2dCollection** points);
 	STDMETHOD(LineCircleIntersect)(/*[in]*/ ILine2d *line,/*[in]*/ ICircle* circle,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2,/*[out,retval]*/ short* nIntersect);
 	STDMETHOD(CircleCircleIntersect)(/*[in]*/ ICircle* circle1,/*[in]*/ ICircle* circle2,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2,/*[out,retval]*/ short* nIntersect);
+   STDMETHOD(PointInTriangle)(/*[in]*/IPoint2d* p,/*[in]*/IPoint2d* pA,/*[in]*/IPoint2d* pB,/*[in]*/IPoint2d* pC,/*[out,retval]*/VARIANT_BOOL* pbResult);
 
 // IGeomUtil3d
 public:
 	STDMETHOD(Magnitude)(/*[in]*/ IPoint3d* p,/*[out, retval]*/ Float64 *pMag);
    STDMETHOD(Distance)(/*[in]*/ IPoint3d* p1,/*[in]*/ IPoint3d* p2,/*[out,retval]*/ Float64* pDist);
+   STDMETHOD(PointInTriangle)(/*[in]*/IPoint3d* p,/*[in]*/IPoint3d* pA,/*[in]*/IPoint3d* pB,/*[in]*/IPoint3d* pC,/*[out,retval]*/VARIANT_BOOL* pbResult);
 };
 
 #endif //__GEOMUTIL_H_

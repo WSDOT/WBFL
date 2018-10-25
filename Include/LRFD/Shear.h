@@ -105,8 +105,9 @@ struct LRFDCLASS lrfdShearData
    Float64 Theta;
    Float64 ex;
    Float64 Fe; // = -1 if not applicable
-   Float64 vfc;   // v/fc
-   Float64 vfc_tbl; // vfc from table (2000 and later)
+   Float64 vu; // from 2.8.9.2
+   Float64 vufc;   // v/fc
+   Float64 vufc_tbl; // vfc from table (2000 and later)
 
    Float64 sxe; // crack spacing parameter
    Float64 sxe_tbl; // crack spacing parameter from table
@@ -180,6 +181,11 @@ public:
    //------------------------------------------------------------------------
    // Computes Vci and Vcw per LRFD 4th edition 2007
    static void ComputeVciVcw(lrfdShearData* pData);
+
+   //------------------------------------------------------------------------
+   // Computes shear stress via 5.8.9.2
+   static Float64 ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv);
+
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
