@@ -271,18 +271,28 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
 
          hr = influence->Evaluate(axle_loc, side, &is_dual, &left_inf_resp, &right_inf_resp);
          if (is_dual == VARIANT_TRUE)
-         {  // dual valued - if one is, the entire response is
+         {  
+            // dual valued - if one is, the entire response is
             *isDualValued = VARIANT_TRUE;
-            left_response  += right_inf_resp * axle_wgt;
-            right_response += left_inf_resp  * axle_wgt;
-            if (appliedAxles!=NULL)
+            if ( side == ilsPositive )
+            {
+               left_response  += left_inf_resp * axle_wgt;
+               right_response += right_inf_resp  * axle_wgt;
+            }
+            else
+            {
+               left_response  += right_inf_resp * axle_wgt;
+               right_response += left_inf_resp  * axle_wgt;
+            }
+
+            if (appliedAxles != NULL)
                appliedAxles->push_back(true);
          }
          else
          {
             // not dual valued - check to see if response is non-zero
             Float64 response = left_inf_resp * axle_wgt;
-            if (response!=0.0)
+            if (response != 0.0)
             {
                left_response  += response;
                right_response += response;
@@ -322,43 +332,25 @@ void FixedTruck::EvaluatePrimary(Float64 position, InfluenceSideType side, Float
    Float64 right_response=0.0;
    *isDualValued = VARIANT_FALSE;
 
-   // need to check control information to see what we'll return
-   if (rgtInfluence==NULL)
+   if ( lftInfluence )
    {
-      // left influence line only - run truck on a single influence line
-      this->EvaluatePrimaryInfl(position, side, lftInfluence, lftAppliedAxles, isDualValued, leftValue, rightValue);
-
-      (*rightValue) *= flipFactor;  // put result into correct coordinates
-
-      if (lftAppliedAxles!=NULL)
-      {
-         ATLASSERT(rgtAppliedAxles!=NULL);
-         (*rgtAppliedAxles) = (*lftAppliedAxles);
-      }
+      Float64 dummy;
+      EvaluatePrimaryInfl(position, side, lftInfluence, lftAppliedAxles, isDualValued, leftValue, &dummy);
    }
-   else
+
+   if ( rgtInfluence )
    {
-      // we have influence lines to the right and left of our POI
-      *isDualValued = VARIANT_TRUE;
-
-      // left side is easy
-      VARIANT_BOOL is_dual_valued;
-      Float64 bogusval;
-      this->EvaluatePrimaryInfl(position, side, lftInfluence, lftAppliedAxles, &is_dual_valued, leftValue, &bogusval);
-
-      // have to make sure we get the right sign convention for the influence line for the right side
+      Float64 dummy;
       InfluenceSideType loc_side = side;
-      if (flipFactor==-1.0)
+      if ( side != ilsBoth && flipFactor == -1 )
       {
-         if (side==ilsPositive)
-            loc_side=ilsNegative;
-         else if (side==ilsNegative)
-            loc_side=ilsPositive;
+         loc_side = (side == ilsPositive ? ilsNegative : ilsPositive);
       }
-
-      this->EvaluatePrimaryInfl(position, loc_side, rgtInfluence, rgtAppliedAxles, &is_dual_valued, &bogusval, rightValue);
-
+      EvaluatePrimaryInfl(position, loc_side, rgtInfluence, rgtAppliedAxles, isDualValued, &dummy, rightValue);
    }
+
+   if ( !IsEqual(*leftValue,-(*rightValue)) )
+      *isDualValued = VARIANT_TRUE;
 }
 
 AxleIndexType FixedTruck::HeaviestCentralAxle()

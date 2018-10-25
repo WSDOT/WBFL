@@ -79,11 +79,11 @@ public:
 
    CEAFMenu* GetMainMenu();
    CEAFAcceleratorTable* GetAcceleratorTable();
+   CEAFStatusBar* GetStatusBar();
+   void SetStatusBar(CEAFStatusBar* pStatusBar);
 
    void HideMainFrameToolBar();
    void ShowMainFrameToolBar();
-
-   void ResetStatusBar();
 
    UINT CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr);
    CEAFToolBar* GetToolBar(UINT toolbarID);

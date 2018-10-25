@@ -28,19 +28,19 @@ InfluenceLineDataSetBuilder::~InfluenceLineDataSetBuilder()
 }
 
 void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
-                                           CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
+                                           CLBAMViewerDoc::ResponseType responseType, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {
    HRESULT hr;
 
    ForceEffectType fet;
-   if (currRt==CLBAMViewerDoc::rtFx || currRt==CLBAMViewerDoc::rtDx)
+   if (responseType==CLBAMViewerDoc::rtFx || responseType==CLBAMViewerDoc::rtDx)
       fet = fetFx;
-   else if( currRt==CLBAMViewerDoc::rtFy || currRt==CLBAMViewerDoc::rtDy)
+   else if( responseType==CLBAMViewerDoc::rtFy || responseType==CLBAMViewerDoc::rtDy)
       fet = fetFy;
-   else if ( currRt==CLBAMViewerDoc::rtMz || currRt==CLBAMViewerDoc::rtRz)
+   else if ( responseType==CLBAMViewerDoc::rtMz || responseType==CLBAMViewerDoc::rtRz)
       fet = fetMz;
-   else if ( currRt==CLBAMViewerDoc::rtStress)
+   else if ( responseType==CLBAMViewerDoc::rtStress)
    {
       ::AfxMessageBox("Stress Results Not Available for Influence Lines");
       return;
@@ -51,83 +51,23 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       return;
    }
 
-   CComPtr<IInfluenceLine> lft_infl, rgt_infl;
+   CComPtr<IInfluenceLine> left_face_influence_line, right_face_influence_line;
 
-   if (currRt==CLBAMViewerDoc::rtFx || currRt==CLBAMViewerDoc::rtFy || currRt==CLBAMViewerDoc::rtMz)
+   if (responseType==CLBAMViewerDoc::rtFx || responseType==CLBAMViewerDoc::rtFy || responseType==CLBAMViewerDoc::rtMz)
    {
       // forces
-      hr = m_pInfluenceLineResponse->ComputeForceInfluenceLine(m_PoiId, currStg, fet, roGlobal, &lft_infl, &rgt_infl);
+      hr = m_pInfluenceLineResponse->ComputeForceInfluenceLine(m_PoiId, currStg, fet, roGlobal, &left_face_influence_line, &right_face_influence_line);
    }
-   else  if (currRt==CLBAMViewerDoc::rtDx || currRt==CLBAMViewerDoc::rtDy || currRt==CLBAMViewerDoc::rtRz)
+   else  if (responseType==CLBAMViewerDoc::rtDx || responseType==CLBAMViewerDoc::rtDy || responseType==CLBAMViewerDoc::rtRz)
    {
       // deflections
-      hr = m_pInfluenceLineResponse->ComputeDeflectionInfluenceLine(m_PoiId, currStg, fet, &lft_infl, &rgt_infl);
+      hr = m_pInfluenceLineResponse->ComputeDeflectionInfluenceLine(m_PoiId, currStg, fet, &left_face_influence_line, &right_face_influence_line);
    }
    PROCESS_HR(hr);
 
-   bool do_symbols = rgt_infl!=NULL;
+   bool do_symbols = right_face_influence_line!=NULL;
 
-   if (lft_infl!=NULL)
-   {
-      // create dataset 
-      CComPtr<iGraphXyDataProvider> dataset_p;
-      hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-      ATLASSERT(SUCCEEDED(hr));
-
-      // deal with legend
-      CComPtr<iDataPointFactory> fac;
-      dataset_p->get_DataPointFactory(&fac);
-      CComQIPtr<iSymbolLegendEntry> entry(fac);
-
-      entry->put_Color(color);
-      entry->put_SymbolCharacterCode(233);
-      entry->put_DoDrawLine(TRUE);
-
-      CComBSTR btmp("Influence - Rgt");
-      entry->put_Name(btmp);
-
-      CComPtr<iDataSet2d> dataset;
-      dataset_p->get_DataSet(&dataset);
-
-      // fill up data set
-      CollectionIndexType cnt;
-      InfluenceSideType side = ilsBoth;
-
-      hr = lft_infl->get_Count(side, &cnt);
-      PROCESS_HR(hr);
-      for (CollectionIndexType ii=0; ii<cnt; ii++)
-      {
-         double value, location;
-         InfluenceLocationType itype;
-         hr = lft_infl->Item(ii, side, &value, &itype, &location);
-         PROCESS_HR(hr);
-
-         if (currRt==CLBAMViewerDoc::rtFy)
-         {
-            // Convert shear forces to beam diagram coordinates
-            value *= -1;
-         }
-
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         PROCESS_HR(hr);
-
-         pnt->put_X(location);
-         pnt->put_Y(value);
-
-         dataset->Add(pnt);
-      }
-
-      dataSets->push_back( dataset_p.Detach());
-   }
-   else
-   {
-      ATLASSERT(0);
-      return;
-   }
-
-
-   if (rgt_infl!=NULL)
+   if ( left_face_influence_line )
    {
       // create dataset 
       CComPtr<iGraphXyDataProvider> dataset_p;
@@ -143,7 +83,7 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       entry->put_SymbolCharacterCode(249);
       entry->put_DoDrawLine(TRUE);
 
-      CComBSTR btmp("Influence - Lft");
+      CComBSTR btmp("Influence - Left Face");
       entry->put_Name(btmp);
 
       CComPtr<iDataSet2d> dataset;
@@ -153,20 +93,80 @@ void InfluenceLineDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* 
       CollectionIndexType cnt;
       InfluenceSideType side = ilsBoth;
 
-      hr = rgt_infl->get_Count(side, &cnt);
+      hr = left_face_influence_line->get_Count(side, &cnt);
       PROCESS_HR(hr);
       for (CollectionIndexType ii=0; ii<cnt; ii++)
       {
          double value, location;
          InfluenceLocationType itype;
-         hr = rgt_infl->Item(ii, side, &value, &itype, &location);
+         hr = left_face_influence_line->Item(ii, side, &value, &itype, &location);
          PROCESS_HR(hr);
 
-         if (currRt==CLBAMViewerDoc::rtFx || currRt==CLBAMViewerDoc::rtMz)
-         {
-            // convert to beam coordinates
-            value *= -1;
-         }
+         //if (responseType==CLBAMViewerDoc::rtFy)
+         //{
+         //   // Convert shear forces to beam diagram coordinates
+         //   value *= -1;
+         //}
+
+         CComPtr<IPoint2d> pnt;
+         hr = pnt.CoCreateInstance(CLSID_Point2d);
+         PROCESS_HR(hr);
+
+         pnt->put_X(location);
+         pnt->put_Y(value);
+
+         dataset->Add(pnt);
+      }
+
+      dataSets->push_back( dataset_p.Detach());
+   }
+   //else
+   //{
+   //   ATLASSERT(0);
+   //   return;
+   //}
+
+
+   if ( right_face_influence_line )
+   {
+      // create dataset 
+      CComPtr<iGraphXyDataProvider> dataset_p;
+      hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
+      ATLASSERT(SUCCEEDED(hr));
+
+      // deal with legend
+      CComPtr<iDataPointFactory> fac;
+      dataset_p->get_DataPointFactory(&fac);
+      CComQIPtr<iSymbolLegendEntry> entry(fac);
+
+      entry->put_Color(color);
+      entry->put_SymbolCharacterCode(233);
+      entry->put_DoDrawLine(TRUE);
+
+      CComBSTR btmp("Influence - Right Face");
+      entry->put_Name(btmp);
+
+      CComPtr<iDataSet2d> dataset;
+      dataset_p->get_DataSet(&dataset);
+
+      // fill up data set
+      CollectionIndexType cnt;
+      InfluenceSideType side = ilsBoth;
+
+      hr = right_face_influence_line->get_Count(side, &cnt);
+      PROCESS_HR(hr);
+      for (CollectionIndexType ii=0; ii<cnt; ii++)
+      {
+         double value, location;
+         InfluenceLocationType itype;
+         hr = right_face_influence_line->Item(ii, side, &value, &itype, &location);
+         PROCESS_HR(hr);
+
+         //if (responseType==CLBAMViewerDoc::rtFx || responseType==CLBAMViewerDoc::rtMz)
+         //{
+         //   // convert to beam coordinates
+         //   value *= -1;
+         //}
 
          CComPtr<IPoint2d> pnt;
          hr = pnt.CoCreateInstance(CLSID_Point2d);

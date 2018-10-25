@@ -26,6 +26,7 @@
 
 #include "stdafx.h"
 #include "resource.h"
+#include <EAF\EAFResources.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFBrokerDocument.h>
@@ -113,15 +114,18 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
 {
    CToolBar* pToolBar = new CToolBar();
    
-   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC;
+   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
       dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
 
-   if ( !pToolBar->Create(this,dwToolBarStyle,ID_MAINFRAME_TOOLBAR) || !pToolBar->LoadToolBar(IDR_MAINFRAME) )
+   if ( !pToolBar->CreateEx(this,TBSTYLE_FLAT | TBSTYLE_TRANSPARENT,dwToolBarStyle,CRect(0,0,0,0), ID_MAINFRAME_TOOLBAR) ||
+        !pToolBar->LoadToolBar(IDR_MAINFRAME) )
    {
       delete pToolBar;
       return NULL;
    }
+
+
 
    pToolBar->EnableDocking(CBRS_ALIGN_ANY);
    pToolBar->SetWindowText(AfxGetAppName());
@@ -135,13 +139,13 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 	
    // Restore tool tips mode
-   m_bShowToolTips = (AfxGetApp()->GetProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
+   m_bShowToolTips = (EAFGetApp()->GetProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
                                                  CString((LPCSTR)IDS_TOOLTIP_STATE),
                                                  1) !=0 );
 
    // Restore the layout of the application window
    WINDOWPLACEMENT wp;
-   if ( ((CEAFApp*)AfxGetApp())->ReadWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp))
+   if ( EAFGetApp()->ReadWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp) )
    {
       SetWindowPlacement(&wp);
    }
@@ -176,6 +180,8 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CEAFMainFrame::OnClose()
 {
+   CEAFApp* pApp = EAFGetApp();
+
    // Save the layout of the application window
    WINDOWPLACEMENT wp;
    wp.length = sizeof wp;
@@ -183,11 +189,10 @@ void CEAFMainFrame::OnClose()
    {
       wp.flags = 0;
       wp.showCmd = SW_SHOWNORMAL;
-      ((CEAFApp*)AfxGetApp())->WriteWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp);
+      pApp->WriteWindowPlacement(CString((LPCSTR)IDS_REG_WNDPOS),&wp);
    }
 
    // Save the ToolTips state
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
    pApp->WriteProfileInt(CString((LPCSTR)IDS_REG_SETTINGS),
                          CString((LPCSTR)IDS_TOOLTIP_STATE),
                         (m_bShowToolTips != 0) );
@@ -258,8 +263,14 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
          return TRUE;
 
       CEAFDocument* pDoc = GetDocument();
-      if ( pDoc && pDoc->GetDocPluginManager()->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
-         return TRUE;
+      if ( pDoc )
+      {
+         if ( ((CEAFDocTemplate*)pDoc->GetDocTemplate())->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+            return TRUE;
+
+         if ( pDoc->GetDocPluginManager()->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+            return TRUE;
+      }
    }
 
    return FALSE; // message needs further processing
@@ -289,7 +300,7 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
 
    if ( !bHandledByPlugin )
    {
-      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+      CEAFApp* pApp = EAFGetApp();
       UINT nPluginCmdID;
       IEAFCommandCallback* pCallback;
       if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
@@ -349,7 +360,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       }
    }
 
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    UINT nPluginCmdID;
    IEAFCommandCallback* pCallback;
    if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
@@ -488,6 +499,7 @@ void CEAFMainFrame::CreateCanceled()
 
 CEAFDocument* CEAFMainFrame::GetDocument()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CMDIChildWnd* pActiveChild = MDIGetActive();
    CDocument* pDoc = GetActiveDocument();
    if ( pDoc == NULL && pActiveChild != NULL )
@@ -501,6 +513,7 @@ CEAFDocument* CEAFMainFrame::GetDocument()
 
 CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    // If a view (specified by pTemplate->GetViewClass()) already exists, 
    // then activate the MDI child window containing
    // the view.  Otherwise, create a new view for the document.
@@ -601,8 +614,28 @@ CEAFMenu* CEAFMainFrame::GetMainMenu()
 
 CEAFAcceleratorTable* CEAFMainFrame::GetAcceleratorTable()
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return pApp->GetAppPluginManager()->GetAcceleratorTable();
+}
+
+CEAFStatusBar* CEAFMainFrame::GetStatusBar()
+{
+   return m_pStatusBar;
+}
+
+void CEAFMainFrame::SetStatusBar(CEAFStatusBar* pStatusBar)
+{
+   m_pStatusBar->DestroyWindow();
+   delete m_pStatusBar;
+   if ( pStatusBar )
+   {
+      m_pStatusBar = pStatusBar;
+      m_pStatusBar->Reset();
+   }
+   else
+   {
+      m_pStatusBar = CreateStatusBar();
+   }
 }
 
 void CEAFMainFrame::HideMainFrameToolBar()
@@ -619,12 +652,6 @@ void CEAFMainFrame::ShowMainFrameToolBar()
       return;
 
    ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
-}
-
-void CEAFMainFrame::ResetStatusBar()
-{
-   if ( m_pStatusBar )
-      m_pStatusBar->Reset();
 }
 
 UINT CEAFMainFrame::GetNextToolBarID()
@@ -687,11 +714,11 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
 
    CToolBar* pToolBar = new CToolBar;
 
-   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC;
+   DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
       dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
 
-   pToolBar->Create(this,dwToolBarStyle,tbID);
+   pToolBar->CreateEx(this,TBSTYLE_FLAT | TBSTYLE_TRANSPARENT,dwToolBarStyle,CRect(0,0,0,0),tbID);
    pToolBar->EnableDocking(CBRS_ALIGN_ANY);
    pToolBar->SetWindowText(lpszName);
 
@@ -782,12 +809,12 @@ void CEAFMainFrame::OnStatusChanged()
 
 void CEAFMainFrame::OnHelp()
 {
-   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_DISPLAY_TOPIC, 0 );
+   ::HtmlHelp( *this, EAFGetApp()->m_pszHelpFilePath, HH_DISPLAY_TOPIC, 0 );
 }
 
 void CEAFMainFrame::OnHelpFinder()
 {
-   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath, HH_HELP_FINDER, 0 );
+   ::HtmlHelp( *this, EAFGetApp()->m_pszHelpFilePath, HH_HELP_FINDER, 0 );
 }
 
 void CEAFMainFrame::OnDropFiles(HDROP hDropInfo) 
@@ -968,6 +995,6 @@ void CEAFMainFrame::OnToolBarMenuSelected(UINT id)
 
 CEAFMenu* CEAFMainFrame::CreateMainMenu()
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    return new CEAFMenu(this,pApp->GetPluginCommandManager());
 }

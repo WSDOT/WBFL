@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="$(SolutionDir)RegFreeCom\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="$(OutDir)\WBFL.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -186,7 +186,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="$(SolutionDir)RegFreeCom\$(ConfigurationName)\WBFL.manifest"
+				AdditionalManifestFiles="$(OutDir)\WBFL.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"

@@ -1767,7 +1767,7 @@ void CModel::CheckSolution()
       }
       error -= m_pForig[l];
 
-      if (!IsZero(error,0.001))
+      if (!IsZero(error,0.05))
       {
          // something's not right here
          CComBSTR msg = CreateErrorMsg1(IDS_E_SOLVING_GLOBAL_STIFFNESS, l);

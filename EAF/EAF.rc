@@ -8,6 +8,7 @@
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "afxres.h"
+#include "EAF\EAFResources.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -35,6 +36,7 @@ END
 2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
+    "#include ""EAF\\EAFResources.h""\r\n"
     "\0"
 END
 
@@ -145,8 +147,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,2,0,3
- PRODUCTVERSION 3,2,0,3
+ FILEVERSION 3,2,0,4
+ PRODUCTVERSION 3,2,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -164,12 +166,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "3.2.0.3"
+            VALUE "FileVersion", "3.2.0.4"
             VALUE "InternalName", "EAF"
             VALUE "LegalCopyright", "Copyright © 1999-2010"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "3.2.0.3"
+            VALUE "ProductVersion", "3.2.0.4"
         END
     END
     BLOCK "VarFileInfo"
@@ -213,10 +215,10 @@ BEGIN
     PUSHBUTTON      "More Information",IDC_MOREINFO,372,135,59,14
 END
 
-IDD_STATUSCENTER DIALOG  0, 0, 396, 238
-STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+IDD_STATUSCENTER DIALOGEX 0, 0, 396, 238
+STYLE DS_SETFONT | DS_CENTER | WS_POPUP | WS_CAPTION | WS_THICKFRAME
 CAPTION "Status Center"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "Close",IDCLOSE,339,217,50,14
     CONTROL         "List1",IDC_STATUSLIST,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,382,205
@@ -259,13 +261,11 @@ BEGIN
 END
 
 IDD_NEWPROJECT DIALOGEX 0, 0, 409, 254
-STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_THICKFRAME
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_STATICEDGE
 CAPTION "New Project"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,295,233,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,352,233,50,14
     LTEXT           "Project types:",IDC_STATIC,7,15,46,8
     CONTROL         "",IDC_PROJECTTYPES,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | WS_BORDER | WS_HSCROLL | WS_TABSTOP,7,26,138,185
     LTEXT           "Templates:",IDC_STATIC,145,15,36,8
@@ -273,6 +273,8 @@ BEGIN
     CONTROL         "Large",IDC_LARGE,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE | WS_GROUP | WS_TABSTOP,367,7,16,16
     CONTROL         "Small",IDC_SMALL,"Button",BS_AUTORADIOBUTTON | BS_ICON | BS_PUSHLIKE,386,7,16,16
     LTEXT           "Static",IDC_DESCRIPTION,7,213,395,13,SS_CENTERIMAGE | WS_BORDER
+    DEFPUSHBUTTON   "OK",IDOK,295,233,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,352,233,50,14
 END
 
 IDD_MANAGE_PLUGINS DIALOGEX 0, 0, 316, 180
@@ -283,7 +285,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,205,159,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,259,159,50,14
     LTEXT           "Enable Components",IDC_STATIC,7,7,64,8
-    LISTBOX         IDC_PLUGIN_LIST,7,21,302,134,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         IDC_PLUGIN_LIST,7,21,302,134,LBS_OWNERDRAWFIXED | LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_EXTENDEDSEL | WS_VSCROLL | WS_TABSTOP
 END
 
 
@@ -371,8 +373,18 @@ STRINGTABLE
 BEGIN
     ID_UNITS_SI             "Change units mode to SI\nSI Units"
     ID_UNITS_US             "Change units mode to US\nUS Units"
+END
+
+STRINGTABLE 
+BEGIN
     ID_EDIT_UNITS           "Change the system of units\nUnits."
     ID_TIPOFTHEDAY          "Displays a Tip of the Day."
+    ID_MANAGE_APP_PLUGINS   "Manage Application Plugins"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_UPDATE_IN_PROGRESS  "Working..."
     CG_IDS_TIPOFTHEDAYMENU  "Ti&p of the Day..."
     CG_IDS_DIDYOUKNOW       "Did you know..."
     CG_IDS_FILE_ABSENT      "Tips file does not exist in the prescribed directory"
@@ -518,7 +530,6 @@ STRINGTABLE
 BEGIN
     ID_INDICATOR_MODIFIED   "Modified"
     ID_INDICATOR_STATUS     "OK"
-    IDS_UPDATE_IN_PROGRESS  "Working..."
 END
 
 STRINGTABLE 

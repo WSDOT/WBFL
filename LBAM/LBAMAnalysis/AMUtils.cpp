@@ -506,15 +506,20 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    }
 
    // POI mapped pois always only have a left influence line. let's get to creating it
-   CComObject<CInfluenceLine>* pInflLines[6];
+   CComObject<CInfluenceLine>* pLeftInflLines[6];
+   CComObject<CInfluenceLine>* pRightInflLines[6];
    for ( int i = 0; i < 6; i++ )
    {
-      hr = CComObject<CInfluenceLine>::CreateInstance(&pInflLines[i]);
-      pInflLines[i]->Initialize(m_GlobalX,m_LBAMPoiID);
-      pInflLines[i]->Reserve(num_pts*12/10);
-      pInflLines[i]->SetZeroTolerance(i < 3 ? forceZeroTolerance : deflZeroTolerance);
-   }
+      hr = CComObject<CInfluenceLine>::CreateInstance(&pLeftInflLines[i]);
+      pLeftInflLines[i]->Initialize(m_GlobalX,m_LBAMPoiID);
+      pLeftInflLines[i]->Reserve(num_pts*12/10);
+      pLeftInflLines[i]->SetZeroTolerance(i < 3 ? forceZeroTolerance : deflZeroTolerance);
 
+      hr = CComObject<CInfluenceLine>::CreateInstance(&pRightInflLines[i]);
+      pRightInflLines[i]->Initialize(m_GlobalX,m_LBAMPoiID);
+      pRightInflLines[i]->Reserve(num_pts*12/10);
+      pRightInflLines[i]->SetZeroTolerance(i < 3 ? forceZeroTolerance : deflZeroTolerance);
+   }
 
    for (InfluenceLoadSetIterator iter = influenceLoadSet.begin(); iter != influenceLoadSet.end(); iter++)
    {
@@ -527,52 +532,38 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
      
       for ( int i = 0; i < 6; i++ )
       {
-         ////////////////
-         // Tricky (in fact, downright nasty):
-         // Shear influence lines will have a jump at the location of the POI where the influence is being computed.
-         // This jump only needs to be captured here if only a single influence load is at this location
-         // And, it need only be captured if values are different.
          const Float64 tol = 1.0e-09;
-         if ( i == FY && IsEqual(influenceLoadLocation.m_GlobalX, GetLocation(), tol) )
+         Float64 sign = (i < 3 ? -1 : 1);
+         if ( !IsEqual(left[i], sign*right[i], tol ) )
          {
-            if (influenceLoadLocation.m_LocationType == iflSingle && !IsEqual(left[FY], -right[FY], tol ) )
-            {
-               // dual-value
-               /////////////
-               // Tricky: Note that left and right are swapped here. This is due to the nature of how influence
-               // lines are built from force diagrams. Draw lots of pictures and think about it.
-               hr = pInflLines[FY]->Add(iflDualLeft,  influenceLoadLocation.m_GlobalX, -right[FY] );
-               hr = pInflLines[FY]->Add(iflDualRight, influenceLoadLocation.m_GlobalX,  left[FY] );
-            }
-            else if (influenceLoadLocation.m_LocationType==iflDualLeft)
-            {
-               hr = pInflLines[FY]->Add(iflDualLeft, influenceLoadLocation.m_GlobalX, -right[FY] );
-            }
-            else
-            {
-               hr = pInflLines[FY]->Add(influenceLoadLocation.m_LocationType, influenceLoadLocation.m_GlobalX, left[FY] );
-            }
+            // there is a jump in the influence line (probably due to a concentrated load)
+            pLeftInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,sign*right[i]);
+            pLeftInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,left[i]);
+
+            pRightInflLines[i]->Add(iflDualLeft,influenceLoadLocation.m_GlobalX,right[i]);
+            pRightInflLines[i]->Add(iflDualRight,influenceLoadLocation.m_GlobalX,sign*left[i]);
          }
          else
          {
-            hr = pInflLines[i]->Add(influenceLoadLocation.m_LocationType, influenceLoadLocation.m_GlobalX, left[i]);
+            pLeftInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,left[i]);
+            pRightInflLines[i]->Add(iflSingle,influenceLoadLocation.m_GlobalX,right[i]);
          }
       } // loop on i
    } // next influence load set
 
-   (*pLeftAxialInfl)  = pInflLines[FX]; (*pLeftAxialInfl)->AddRef();
-   (*pLeftShearInfl)  = pInflLines[FY]; (*pLeftShearInfl)->AddRef();
-   (*pLeftMomentInfl) = pInflLines[MZ]; (*pLeftMomentInfl)->AddRef();
-   (*pLeftDxInfl)     = pInflLines[DX]; (*pLeftDxInfl)->AddRef();
-   (*pLeftDyInfl)     = pInflLines[DY]; (*pLeftDyInfl)->AddRef();
-   (*pLeftRzInfl)     = pInflLines[RZ]; (*pLeftRzInfl)->AddRef();
+   (*pLeftAxialInfl)  = pLeftInflLines[FX]; (*pLeftAxialInfl)->AddRef();
+   (*pLeftShearInfl)  = pLeftInflLines[FY]; (*pLeftShearInfl)->AddRef();
+   (*pLeftMomentInfl) = pLeftInflLines[MZ]; (*pLeftMomentInfl)->AddRef();
+   (*pLeftDxInfl)     = pLeftInflLines[DX]; (*pLeftDxInfl)->AddRef();
+   (*pLeftDyInfl)     = pLeftInflLines[DY]; (*pLeftDyInfl)->AddRef();
+   (*pLeftRzInfl)     = pLeftInflLines[RZ]; (*pLeftRzInfl)->AddRef();
 
-   (*pRightAxialInfl)  = NULL;
-   (*pRightShearInfl)  = NULL;
-   (*pRightMomentInfl) = NULL;
-   (*pRightDxInfl)     = NULL;
-   (*pRightDyInfl)     = NULL;
-   (*pRightRzInfl)     = NULL;
+   (*pRightAxialInfl)  = pRightInflLines[FX]; (*pRightAxialInfl)->AddRef();
+   (*pRightShearInfl)  = pRightInflLines[FY]; (*pRightShearInfl)->AddRef();
+   (*pRightMomentInfl) = pRightInflLines[MZ]; (*pRightMomentInfl)->AddRef();
+   (*pRightDxInfl)     = pRightInflLines[DX]; (*pRightDxInfl)->AddRef();
+   (*pRightDyInfl)     = pRightInflLines[DY]; (*pRightDyInfl)->AddRef();
+   (*pRightRzInfl)     = pRightInflLines[RZ]; (*pRightRzInfl)->AddRef();
 }
 
 
@@ -659,7 +650,7 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
 
    // Member-mapped poi's always have left and right influence lines for force computations. 
    // This is done for simplicity. There are cases when the right influence line is not needed (i.e., it is equal to the left),
-   // such as when the poi is located at a hinge that is not over a support, or for My when the top of a support is hinged.
+   // such as when the poi is located at a hinge that is not over a support, or for Mz when the top of a support is hinged.
    // However, figuring this out is too much effort for very little optimization.
    // reserve some space
    CollectionIndexType num_pts = influenceLoadSet.size();
@@ -693,8 +684,22 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
 
       for ( int i = 0; i < 6; i++ )
       {
-         pInflLines[0][i]->Add(ifll.m_LocationType, ifll.m_GlobalX, left[i]);
-         pInflLines[1][i]->Add(ifll.m_LocationType, ifll.m_GlobalX, right[i]);
+         const Float64 tol = 1.0e-09;
+         if ( !IsEqual(left[i], -right[i], tol ) )
+         {
+            Float64 sign = (i < 3 ? -1 : 1);
+            // there is a jump in the influence line (probably due to a concentrated load)
+            pInflLines[0][i]->Add(iflDualLeft,ifll.m_GlobalX,sign*right[i]);
+            pInflLines[0][i]->Add(iflDualRight,ifll.m_GlobalX,left[i]);
+
+            pInflLines[1][i]->Add(iflDualLeft,ifll.m_GlobalX,right[i]);
+            pInflLines[1][i]->Add(iflDualRight,ifll.m_GlobalX,sign*left[i]);
+         }
+         else
+         {
+            pInflLines[0][i]->Add(iflSingle,ifll.m_GlobalX,left[i]);
+            pInflLines[1][i]->Add(iflSingle,ifll.m_GlobalX,right[i]);
+         }
       }
    }
 

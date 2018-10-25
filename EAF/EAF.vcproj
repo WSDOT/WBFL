@@ -533,6 +533,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFPluginState.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFReportView.cpp"
 				>
 				<FileConfiguration
@@ -678,10 +682,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\CustSiteVars.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Include\EAF\EAF.h"
 				>
 			</File>
@@ -727,6 +727,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFCommandLineInfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFCustSiteVars.h"
 				>
 			</File>
 			<File
@@ -787,6 +791,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFPluginManager.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFPluginState.h"
 				>
 			</File>
 			<File

@@ -25,6 +25,8 @@
 
 class CEAFDocument;
 
+#include <EAF\EAFCommandLineInfo.h>
+
 /////////////////////////////////////////////////////////////
 // IEAFDocumentPlugin
 //
@@ -51,4 +53,26 @@ interface IEAFDocumentPlugin : IUnknown
 
    // return the name of the plugin. This name is used throughout the user interface
    virtual CString GetName() = 0;
+};
+
+
+/////////////////////////////////////////////////////////////
+// IEAFDocCommandLine
+//
+// IEAFDocumentPlugin objects may implement this interface if they process
+// command line parameters.
+
+
+// {D1D07B6D-1ED6-44e7-A615-1B03CD04E827}
+DEFINE_GUID(IID_IEAFDocCommandLine, 
+0xd1d07b6d, 0x1ed6, 0x44e7, 0xa6, 0x15, 0x1b, 0x3, 0xcd, 0x4, 0xe8, 0x27);
+struct __declspec(uuid("{D1D07B6D-1ED6-44e7-A615-1B03CD04E827}")) IEAFDocCommandLine;// for __uuidof
+
+interface IEAFDocCommandLine : IUnknown
+{
+   // Called by the framework to give this application plugin an opportinuity
+   // to process command line options. The application plug-in may need to re-parse
+   // the command line parameters.
+   // Return TRUE if the command line was processed, otherwise return FALSE.
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo) = 0;
 };

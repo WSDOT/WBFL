@@ -52,8 +52,10 @@ LOG
 class LRFDCLASS lrfrVersionMgr
 {
 public:
-   enum Version { FirstEdition2008              = 1
-   };
+   enum Version { FirstEdition2008              = 1,
+                  // no interims in 2009
+                  FirstEditionWith2010Interims  = 2,
+};
 
    ~lrfrVersionMgr();
 

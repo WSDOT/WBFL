@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 // Command Identifiers
-// From MFC Tech Note 022, command identifiers should be in the rante 0x8000 (32768) to 0xDFFF (57343)
+// From MFC Tech Note 022, command identifiers should be in the range 0x8000 (32768) to 0xDFFF (57343)
 // EAF is going to reserve 256 command IDs
 #define EAF_RESERVED_COMMAND_BASE 32768 // base identifier for reserved commands
 #define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE // reserve commands IDs for the report popup menus
@@ -44,3 +44,4 @@
 #define ID_UNITS_US                     EAF_COMMAND_BASE+5
 #define ID_EDIT_UNITS                   EAF_COMMAND_BASE+6
 #define ID_TIPOFTHEDAY                  EAF_COMMAND_BASE+7
+#define ID_MANAGE_APP_PLUGINS           EAF_COMMAND_BASE+8

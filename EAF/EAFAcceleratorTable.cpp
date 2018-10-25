@@ -43,12 +43,6 @@ CEAFAcceleratorTable::CEAFAcceleratorTable()
    m_pCmdMgr = 0;
 }
 
-CEAFAcceleratorTable::CEAFAcceleratorTable(HACCEL hAccelTable,CEAFPluginCommandManager* pCmdMgr)
-{
-   m_hAccelTable = hAccelTable;
-   m_pCmdMgr = pCmdMgr;
-}
-
 CEAFAcceleratorTable::CEAFAcceleratorTable(const CEAFAcceleratorTable& rOther)
 {
 }
@@ -61,6 +55,41 @@ CEAFAcceleratorTable::~CEAFAcceleratorTable()
 void CEAFAcceleratorTable::Init(CEAFPluginCommandManager* pCmdMgr)
 {
    m_pCmdMgr = pCmdMgr;
+}
+
+BOOL CEAFAcceleratorTable::AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback* pCallback)
+{
+   int nAccelerators    = CopyAcceleratorTable(m_hAccelTable,NULL,0); // number in the current table
+   int nNewAccelerators = CopyAcceleratorTable(hAccelTable,NULL,0);   // number in the table that is being added
+
+   // allocate enough space for both
+   LPACCEL lpAccel = (LPACCEL)LocalAlloc(LPTR,(nAccelerators+nNewAccelerators)*sizeof(ACCEL));
+   if ( lpAccel != NULL )
+   {
+      // copy the current table into the new array
+      CopyAcceleratorTable(m_hAccelTable,lpAccel,nAccelerators);
+   }
+
+   // get the new accelerator mappings
+   LPACCEL lpAccelNew = (LPACCEL)LocalAlloc(LPTR,(nNewAccelerators)*sizeof(ACCEL));
+   CopyAcceleratorTable(hAccelTable,lpAccelNew,nNewAccelerators);
+
+   // create commands for the new values
+   for ( int i = 0; i < nNewAccelerators; i++ )
+   {
+      UINT nCmdID;
+      if ( !m_pCmdMgr->AddCommandCallback(lpAccelNew[i].cmd,pCallback,&nCmdID) )
+         return FALSE;
+
+      lpAccel[nAccelerators+i].cmd = nCmdID;
+      lpAccel[nAccelerators+i].fVirt = lpAccelNew[i].fVirt;
+      lpAccel[nAccelerators+i].key   = lpAccelNew[i].key;
+   }
+
+   DestroyAcceleratorTable(m_hAccelTable);
+   m_hAccelTable = CreateAcceleratorTable(lpAccel,nAccelerators+nNewAccelerators);
+
+   return TRUE;
 }
 
 BOOL CEAFAcceleratorTable::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback)

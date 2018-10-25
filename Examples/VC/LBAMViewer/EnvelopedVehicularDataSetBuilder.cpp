@@ -114,16 +114,18 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
    for (CollectionIndexType iopt=0; iopt<2; iopt++)
    {
       // first maximize
+      // For shear, BEAM max = -FE min
+      //            BEAM min = -FE max
       CString str;
       OptimizationType optimization;
-      if (iopt==0)
+      if (iopt == 0)
       {
-         optimization = optMaximize;
+         optimization = ( currRt==CLBAMViewerDoc::rtFy ? optMinimize : optMaximize);
          str.Format("Env. %s %d - Max", LL_NAMES[m_LlmType], m_VehicleIndex);
       }
       else
       {
-         optimization = optMinimize;
+         optimization = ( currRt==CLBAMViewerDoc::rtFy ? optMaximize : optMinimize);
          str.Format("Env. %s %d - Min", LL_NAMES[m_LlmType], m_VehicleIndex);
       }
 
@@ -137,7 +139,7 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
       dataset_p->get_DataPointFactory(&fac);
       CComQIPtr<iSymbolLegendEntry> entry(fac);
 
-      entry->put_Color(color);
+      entry->put_Color(iopt == 0 ? color : ~color);
       entry->put_SymbolCharacterCode(symbol_code);
       entry->put_DoDrawLine(TRUE);
 
@@ -150,17 +152,19 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
       CComPtr<ILiveLoadModelSectionResults> results;
 
       // get results
+      VARIANT_BOOL bApplyImpact = VARIANT_FALSE; // individual truck responses don't have impact so we need to be consistent with the envelopes
+      VARIANT_BOOL bComputePlacement = VARIANT_FALSE; // don't need the truck placements
 #pragma Reminder("Make distribution factor an option")
       if (is_force)
       {
 		   hr = m_pVehicularResponse->ComputeForces(poiList, currStg, m_LlmType, m_VehicleIndex, roGlobal,
-										                    fet, optimization, config_type, VARIANT_TRUE, dftNone, VARIANT_FALSE,
+										                    fet, optimization, config_type, bApplyImpact, dftNone, bComputePlacement,
                                                   &results);
       }
       else
       {
 		   hr = m_pVehicularResponse->ComputeDeflections(poiList, currStg, m_LlmType, m_VehicleIndex, 
-										                    fet, optimization, config_type, VARIANT_TRUE, dftNone, VARIANT_FALSE,
+										                    fet, optimization, config_type, bApplyImpact, dftNone, bComputePlacement,
                                                   &results);
       }
       PROCESS_HR(hr);
@@ -177,7 +181,8 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
          hr = results->GetResult(ipoi, &left_result, ppDummy, &right_result, ppDummy);
          PROCESS_HR(hr);
 
-         // convert shear force data into beam diagram coordinates
+         // For shear, BEAM max = -FE min
+         //            BEAM min = -FE max
          if (currRt==CLBAMViewerDoc::rtFy)
          {
             left_result  *= -1;
@@ -194,16 +199,12 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(ILongArray* poiList, I
          pnt->put_Y(left_result);
          dataset->Add(pnt);
 
-         right_result*=flip;
-         if (right_result != left_result)
-         {
-            CComPtr<IPoint2d> rpnt;
-            hr = rpnt.CoCreateInstance(CLSID_Point2d);
-            ATLASSERT(SUCCEEDED(hr));
-            rpnt->put_X(loc);
-            rpnt->put_Y(right_result);
-            dataset->Add(rpnt);
-         }
+         CComPtr<IPoint2d> rpnt;
+         hr = rpnt.CoCreateInstance(CLSID_Point2d);
+         ATLASSERT(SUCCEEDED(hr));
+         rpnt->put_X(loc);
+         rpnt->put_Y(flip*right_result);
+         dataset->Add(rpnt);
       }
 
       dataSets->push_back( dataset_p.Detach());
@@ -241,8 +242,10 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(ILongArray* poiList, 
 
    // get results
 #pragma Reminder("Stresses are only computed for maximized Moment. Need to come up with GUI to change this")
+   VARIANT_BOOL bApplyImpact = VARIANT_FALSE; // individual truck responses don't have impact so we need to be consistent with the envelopes
+   VARIANT_BOOL bComputePlacement = VARIANT_FALSE; // don't need the truck placements
 	hr = m_pVehicularResponse->ComputeStresses(poiList, currStg, m_LlmType, m_VehicleIndex,
-										                fetMz, optMaximize, config_type, VARIANT_TRUE, dftNone, VARIANT_FALSE,
+										                fetMz, optMaximize, config_type, bApplyImpact, dftNone, bComputePlacement,
                                               &results);
    PROCESS_HR(hr);
 
@@ -417,28 +420,30 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportli
 
    // get results
    CComPtr<ILiveLoadModelResults> fx_min, fy_min, fz_min;
+   VARIANT_BOOL bApplyImpact = VARIANT_FALSE; // individual truck responses don't have impact so we need to be consistent with the envelopes
+   VARIANT_BOOL bComputePlacement = VARIANT_FALSE; // don't need the truck placements
    if (is_force)
    {
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFx, optMinimize,
-                                                  config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fx_min);
+                                                  config_type,bApplyImpact, dftNone, bComputePlacement, &fx_min);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFy, optMinimize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fy_min);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fy_min);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetMz, optMinimize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fz_min);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fz_min);
       PROCESS_HR(hr);
    }
    else
    {
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFx, optMinimize,
-                                                  config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fx_min);
+                                                  config_type,bApplyImpact, dftNone, bComputePlacement, &fx_min);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFy, optMinimize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fy_min);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fy_min);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetMz, optMinimize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fz_min);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fz_min);
       PROCESS_HR(hr);
    }
 
@@ -465,25 +470,25 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(ILongArray* supportli
    if (is_force)
    {
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFx, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fx_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fx_max);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFy, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fy_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fy_max);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeReactions(supportlist, currStg, m_LlmType, m_VehicleIndex, fetMz, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fz_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fz_max);
       PROCESS_HR(hr);
    }
    else
    {
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFx, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fx_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fx_max);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetFy, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fy_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fy_max);
       PROCESS_HR(hr);
       hr = m_pVehicularResponse->ComputeSupportDeflections(supportlist, currStg, m_LlmType, m_VehicleIndex, fetMz, optMaximize,
-                                                      config_type,VARIANT_TRUE, dftNone, VARIANT_FALSE, &fz_max);
+                                                      config_type,bApplyImpact, dftNone, bComputePlacement, &fz_max);
       PROCESS_HR(hr);
    }
 

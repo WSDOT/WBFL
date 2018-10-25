@@ -93,8 +93,6 @@ void LiveLoadModelDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
    CollectionIndexType poi_cnt;
    poiList->get_Count(&poi_cnt);
 
-   double flip = is_force ? -1.0 : 1.0;
-
    for (Uint32 iopt=0; iopt<2; iopt++)
    {
       CString str;
@@ -134,17 +132,18 @@ void LiveLoadModelDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
 
       CComPtr<ILiveLoadModelSectionResults> results;
 
+      VARIANT_BOOL bApplyImpact = VARIANT_FALSE;
       // get results
       if (is_force)
       {
 		   hr = m_pLiveLoadModelResponse->ComputeForces(poiList, currStg, m_LlmType, roGlobal,
-										                   fet, optimization, config_type, VARIANT_TRUE, VARIANT_FALSE,
+										                   fet, optimization, config_type, bApplyImpact, VARIANT_FALSE,
                                                  VARIANT_FALSE, &results);
       }
       else
       {
 		   hr = m_pLiveLoadModelResponse->ComputeDeflections(poiList, currStg, m_LlmType,
-										                   fet, optimization, config_type, VARIANT_TRUE, VARIANT_FALSE,
+										                   fet, optimization, config_type, bApplyImpact, VARIANT_FALSE,
                                                  VARIANT_FALSE, &results);
       }
       PROCESS_HR(hr);
@@ -178,14 +177,13 @@ void LiveLoadModelDataSetBuilder::BuildForceDataSets(ILongArray* poiList, IDblAr
          pnt->put_Y(left_result);
          dataset->Add(pnt);
 
-         right_result*=flip;
          if (right_result!= left_result)
          {
             CComPtr<IPoint2d> rpnt;
             hr = rpnt.CoCreateInstance(CLSID_Point2d);
             ATLASSERT(SUCCEEDED(hr));
             rpnt->put_X(loc);
-            rpnt->put_Y(right_result);
+            rpnt->put_Y(-right_result);
             dataset->Add(rpnt);
          }
       }

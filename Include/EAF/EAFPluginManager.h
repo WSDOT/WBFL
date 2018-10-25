@@ -78,8 +78,21 @@ public:
       if ( pPlugin == NULL )
          return FALSE;
 
-      m_Plugins.insert(std::make_pair(clsid,pPlugin));
-      return TRUE;
+      std::pair<Plugins::iterator,bool> result = m_Plugins.insert(std::make_pair(clsid,pPlugin));
+      if ( result.second == true )
+      {
+         // plugin added to container
+         if ( !pPlugin->Init(m_pParent) )
+         {
+            // plugin did not initalize properly
+            // remove from container
+            m_Plugins.erase(result.first);
+            return FALSE; // plug-in not added
+         }
+         return TRUE; // plug-in added successfullly
+      }
+
+      return FALSE; // plugin not added to container
    }
 
 	virtual BOOL LoadPlugins()
@@ -107,7 +120,7 @@ public:
 
       pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
 
-      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+      CEAFApp* pApp = EAFGetApp();
 
       // load plug-ins 5 at a time
       CLSID clsid[5]; 
@@ -185,9 +198,37 @@ public:
       m_Plugins.clear();
    }
 
+   virtual void RemovePlugin(const CLSID& clsid)
+   {
+      Plugins::iterator found = m_Plugins.find(clsid);
+      if ( found != m_Plugins.end() )
+      {
+         // plug-in was found
+         CComPtr<T> plugin = found->second; // hang on to it
+         m_Plugins.erase(found); // erase if from the container
+
+         plugin->Terminate(); // terminate the plugin
+         plugin.Release(); // release it
+      }
+   }
+
    UINT GetPluginCount() const
    {
       return m_Plugins.size();
+   }
+
+   HRESULT GetPlugin(const CLSID& clsid,T** ppPlugin)
+   {
+      Plugins::iterator found = m_Plugins.find(clsid);
+      if ( found != m_Plugins.end() )
+      {
+         // plug-in was found
+         (*ppPlugin) = found->second; // hang on to it
+         (*ppPlugin)->AddRef();
+         return S_OK;
+      }
+
+      return E_FAIL;
    }
 
    HRESULT GetPlugin(UINT idx,T** ppPlugin)
@@ -204,11 +245,10 @@ public:
       return S_OK;
    }
 
-   void ManagePlugins()
+   void ManagePlugins(LPCTSTR lpszTitle)
    {
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      CWnd* pWnd = AfxGetMainWnd();
-      EAFManagePlugins(m_CATID,pWnd);
+      CWnd* pWnd = EAFGetMainFrame();
+      EAFManagePlugins(lpszTitle,m_CATID,pWnd);
    }
 
 protected:

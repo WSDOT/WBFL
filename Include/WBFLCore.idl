@@ -282,7 +282,9 @@ library WBFLCore
 	interface IBrokerInitEx : IUnknown
 	{
 		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] ILongArray** lErrIndex);
+		[helpstring("method LoadExtensionAgents")] HRESULT LoadExtensionAgents([in] CLSID* pClsid, [in] long nClsid,[out] ILongArray** lErrIndex);
 		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgentEx* pAgent);
+		[helpstring("method AddExtensionAgent")] HRESULT AddExtensionAgent([in] IAgentEx* pAgent);
 		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);
 		[helpstring("method RegInterface")] HRESULT RegInterface([in] REFIID riid,[in] IAgentEx* pAgent);
 	};
@@ -351,6 +353,18 @@ library WBFLCore
       [helpstring("method GetSaveMissingAgentDataFlag")] HRESULT GetSaveMissingAgentDataFlag([out]VARIANT_BOOL* bFlag);
    };
 
+   [
+      uuid(57EC999E-BCC8-4227-B415-AE9537668173),
+      pointer_default(unique)
+   ]
+   interface IManageAgents : IUnknown
+   {
+      [propget] HRESULT AgentCount([out,retval]CollectionIndexType* nAgents);
+      [propget] HRESULT Agent([in]CollectionIndexType idx,[out,retval]IAgent** ppAgent);
+      [propget] HRESULT ExtensionAgentCount([out,retval]CollectionIndexType* nAgents);
+      [propget] HRESULT ExtensionAgent([in]CollectionIndexType idx,[out,retval]IAgent** ppAgent);
+   };
+
 	[
 		uuid(C0E926D1-2620-11D2-8EB0-006097DF3C68),
 		helpstring("Broker Class")
@@ -360,6 +374,7 @@ library WBFLCore
 		[default] interface IBroker;
 		interface IBrokerInit;
 		interface IBrokerPersist;
+      interface IManageAgents;
 	};
 	[
 		uuid(CF37B1E5-F9B8-4e78-B8B3-B91E326131CD),

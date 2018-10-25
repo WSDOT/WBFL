@@ -52,25 +52,21 @@ public:
    BOOL LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback);
    BOOL LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback);
    BOOL AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszStrings,IEAFCommandCallback* pCallback);
+   BOOL InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCSTR lpszString,IEAFCommandCallback* pCallback);
    void RemoveButtons(IEAFCommandCallback* pCallback);
+   BOOL DeleteButton(int nIndex);
 
    DWORD GetOwnerID() const; // returns the key of the object creating this toolbar
    UINT GetToolBarID() const;   // returns the ID of this toolbar
-
-   // CEAFToolBar cannot expose the underlying CToolBar/CToolBarCtrl object because the command ID
-   // must be filtered.
-   //
-   // As needed, add duplicate methods for CToolBar/CToolBarCtrl here and delegate the implementation
-   // to the underlying tool bar object.
-
-   // CToolBarCtrl
    void SetExtendedStyle(DWORD dwStyleEx);
-   BOOL HideButton(int nID,BOOL bHide=TRUE);
+   BOOL HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide=TRUE);
    BOOL GetItemRect(int nIndex,LPRECT lpRect);
-   int CommandToIndex(UINT nID) const; // nID = the command id on the toolbar button
    int CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const; 
    void SetButtonStyle(int nIndex,UINT nStyle);
    UINT GetButtonStyle(int nIndex) const;
+   BOOL SetButtonText(int nIndex,LPCTSTR lpszText) const;
+   CString GetButtonText(int nIndex) const;
+   BOOL MoveButton(UINT nOldIndex,UINT nNewIndex);
 
    // CWnd
    BOOL IsWindowVisible();

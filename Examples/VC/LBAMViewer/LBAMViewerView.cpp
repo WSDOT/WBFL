@@ -343,7 +343,7 @@ void CLBAMViewerView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
          else 
          {
             // this will be a bit more time consuming - put up progress monitor window
-            pDoc->m_pProgressMonitorWindow->Show(CComBSTR("Processing..."));
+            pDoc->m_pProgressMonitorWindow->Show(CComBSTR("Processing..."),this->GetSafeHwnd());
             CProgressAutoHide autohide(pDoc->m_pProgressMonitorWindow); // make sure Hide() gets called even if exception gets thrown
 
             CWaitCursor cursor; // The rest can talk a while... Show the wait cursor

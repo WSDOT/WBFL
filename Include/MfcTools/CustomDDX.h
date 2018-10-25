@@ -27,6 +27,7 @@
 
 #include <MfcTools\MfcToolsExp.h>
 #include <Units\SysUnits.h>
+#include <limits>
 
 void MFCTOOLSFUNC DDX_String(CDataExchange* pDX,int nIDC, std::string& str);
 void MFCTOOLSFUNC DDX_LBString(CDataExchange* pDX, int nIDC, std::string& value);
@@ -82,6 +83,33 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
          DDX_Text(pDX,nIDC,CString(lpszKeyword));
       else
          DDX_Text(pDX,nIDC,value);
+   }
+}
+
+template <class U>
+void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR lpszKeyword,Float64& value, const U& umIndirectMeasure)
+{
+   if ( pDX->m_bSaveAndValidate )
+   {
+      CString strText;
+      pDX->m_pDlgWnd->GetDlgItem(nIDC)->GetWindowTextA(strText);
+      strText.Trim();
+      CString strKeyword = CString(lpszKeyword).Left(3);
+      if ( strText.GetLength() == 0 || strKeyword.CompareNoCase(strText.Left(3)) == 0 )
+      {
+         value = -1;
+      }
+      else
+      {
+         DDX_UnitValueAndTag(pDX,nIDC,nIDCTag,value, umIndirectMeasure );
+      }
+   }
+   else
+   {
+      if ( value < 0 )
+         DDX_Text(pDX,nIDC,CString(lpszKeyword));
+      else
+         DDX_UnitValueAndTag(pDX,nIDC,nIDCTag,value, umIndirectMeasure );
    }
 }
 
@@ -328,8 +356,8 @@ void DDX_Tag(CDataExchange* pDX, int nIDCTag, const U& umIndirectMeasure )
 }
 
 
-template <class T,class U>
-void DDX_UnitValue( CDataExchange* pDX, int nIDC, T& data, const U& umIndirectMeasure )
+template <class U>
+void DDX_UnitValue( CDataExchange* pDX, int nIDC, Float64& data, const U& umIndirectMeasure )
 {
 	if ( pDX->m_bSaveAndValidate )
 	{
@@ -340,14 +368,17 @@ void DDX_UnitValue( CDataExchange* pDX, int nIDC, T& data, const U& umIndirectMe
 	else
 	{
       CString strValue;
-      strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
-      strValue.TrimLeft();
+      if (data!=Float64_Inf) // Infinite values create a blank line
+      {
+         strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         strValue.TrimLeft();
+      }
       DDX_Text( pDX, nIDC, strValue );
 	}
 }
 
-template <class T,class U>
-void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, const U& umIndirectMeasure )
+template <class U>
+void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data, const U& umIndirectMeasure )
 {
 	if ( pDX->m_bSaveAndValidate )
 	{
@@ -358,8 +389,11 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, co
 	else
 	{
       CString strValue;
-      strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
-      strValue.TrimLeft();
+      if (data!=Float64_Inf) // Infinite values create a blank line
+      {
+         strValue.Format("%*.*f",umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         strValue.TrimLeft();
+      }
       DDX_Text( pDX, nIDC, strValue );
 
       CString strTag = umIndirectMeasure.UnitOfMeasure.UnitTag().c_str();

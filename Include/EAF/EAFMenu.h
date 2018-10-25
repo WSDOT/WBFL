@@ -43,6 +43,7 @@ class EAFCLASS CEAFMenu
 {
 public:
 	CEAFMenu(CWnd* pWnd,CEAFPluginCommandManager* pCmdMgr);
+	CEAFMenu(HMENU hMenu,CEAFPluginCommandManager* pCmdMgr);
 	CEAFMenu(const CEAFMenu& rOther);
 	virtual ~CEAFMenu();
 
@@ -50,7 +51,13 @@ public:
 
    CEAFMenu* GetSubMenu(INT pos);
 
+   // Creates a context menu
+   static CEAFMenu* CreateContextMenu(CEAFPluginCommandManager* pCmdMgr);
+
+   // Creates a pop-up menu at pos
    CEAFMenu* CreatePopupMenu(INT pos,LPCTSTR lpszName);
+
+   // Loads a menu resource into the menu.
    BOOL LoadMenu( UINT nIDResource,IEAFCommandCallback* pCallback );
    BOOL LoadMenu(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback );
 

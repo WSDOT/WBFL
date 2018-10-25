@@ -238,7 +238,7 @@ void CTestUBeam::TestIUBeam()
    
    TRY_TEST(beam->get_TopWidth(NULL),E_POINTER);
    TRY_TEST(beam->get_TopWidth(&val),S_OK);
-   TRY_TEST(IsEqual(val,76.857142857142857142857142857143),true);
+   TRY_TEST(IsEqual(val,76.85714),true);
 
    TRY_TEST(beam->get_TopFlangeWidth(NULL),E_POINTER);
    TRY_TEST(beam->get_TopFlangeWidth(&val),S_OK);
@@ -246,15 +246,15 @@ void CTestUBeam::TestIUBeam()
 
    TRY_TEST(beam->get_WebSpacing(NULL),E_POINTER);
    TRY_TEST(beam->get_WebSpacing(&val),S_OK);
-   TRY_TEST(IsEqual(val,61.50036075956309618456298495038),true);
+   TRY_TEST(IsEqual(val,61.500360),true);
 
    TRY_TEST(beam->get_WebLocation(0,NULL),E_POINTER);
    TRY_TEST(beam->get_WebLocation(-1,&val),E_INVALIDARG);
    TRY_TEST(beam->get_WebLocation(2,&val),E_INVALIDARG);
    TRY_TEST(beam->get_WebLocation(0,&val),S_OK);
-   TRY_TEST(IsEqual(val,-30.75018037978154809228149247519),true);
+   TRY_TEST(IsEqual(val,-30.75018),true);
    TRY_TEST(beam->get_WebLocation(1,&val),S_OK);
-   TRY_TEST(IsEqual(val,30.75018037978154809228149247519),true);
+   TRY_TEST(IsEqual(val, 30.75018),true);
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
@@ -336,14 +336,14 @@ void CTestUBeam::TestIShape()
    props->get_Ixy(&ixy);
    cg.Release();
    props->get_Centroid(&cg);
-   TRY_TEST( IsEqual(area,1372.2567379592), true );
-   TRY_TEST( IsEqual(ixx, 547953.47102718), true );
-   TRY_TEST( IsEqual(iyy, 1064138.5954649), true );
+   TRY_TEST( IsEqual(area,1279.67674), true );
+   TRY_TEST( IsEqual(ixx, 519561.213035), true );
+   TRY_TEST( IsEqual(iyy, 999211.50319), true );
    TRY_TEST( IsEqual(ixy,0.0), true );
    cg->get_X(&cgx);
    cg->get_Y(&cgy);
    TRY_TEST( IsEqual(cgx,0.0), true );
-   TRY_TEST( IsEqual(cgy,25.2940270280183), true );
+   TRY_TEST( IsEqual(cgy,24.73653), true );
    CoordinateSystemType cst;
    props->get_CoordinateSystem(&cst);
    TRY_TEST( cst, csCentroidal );
@@ -363,7 +363,7 @@ void CTestUBeam::TestIShape()
    //
    TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
-   TRY_TEST( IsEqual(val,371.35986279597), true );
+   TRY_TEST( IsEqual(val,371.35986), true );
 
    //
    // FurthestDistance
@@ -441,52 +441,52 @@ void CTestUBeam::TestIShape()
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.7867), true );
+   TRY_TEST( IsEqual(x,-27.643919092970400), true );
    TRY_TEST( IsEqual(y, 60.0000), true );
 
    points[6]->get_X(&x);
    points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.7867), true );
+   TRY_TEST( IsEqual(x,-27.643919), true );
    TRY_TEST( IsEqual(y, 55.5000), true );
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-29.7867), true );
+   TRY_TEST( IsEqual(x,-30.643919), true );
    TRY_TEST( IsEqual(y, 54.0000), true );
 
    points[8]->get_X(&x);
    points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-23.78614), true );
+   TRY_TEST( IsEqual(x,-24.64336), true );
    TRY_TEST( IsEqual(y, 12.000), true );
 
    points[9]->get_X(&x);
    points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-11.78614), true );
+   TRY_TEST( IsEqual(x,-12.64336), true );
    TRY_TEST( IsEqual(y,  6.000), true );
 
    points[10]->get_X(&x);
    points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,11.78614), true );
+   TRY_TEST( IsEqual(x,12.64336), true );
    TRY_TEST( IsEqual(y, 6.000), true );
 
    points[11]->get_X(&x);
    points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,23.78614), true );
+   TRY_TEST( IsEqual(x,24.64336), true );
    TRY_TEST( IsEqual(y,12.000), true );
 
    points[12]->get_X(&x);
    points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,29.7867), true );
+   TRY_TEST( IsEqual(x,30.643919), true );
    TRY_TEST( IsEqual(y,54.000), true );
 
    points[13]->get_X(&x);
    points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.7867), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 55.500), true );
 
    points[14]->get_X(&x);
    points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.7867), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 60.0000), true );
 
    points[15]->get_X(&x);
@@ -685,42 +685,42 @@ void CTestUBeam::TestIShape()
 
    points[4]->get_X(&x);
    points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.78669), true );
+   TRY_TEST( IsEqual(x,-27.643919), true );
    TRY_TEST( IsEqual(y, 60.000), true );
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.78669), true );
+   TRY_TEST( IsEqual(x,-27.643919), true );
    TRY_TEST( IsEqual(y, 55.5000), true );
 
    points[6]->get_X(&x);
    points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-29.78669), true );
+   TRY_TEST( IsEqual(x,-30.643919), true );
    TRY_TEST( IsEqual(y, 54.0000), true );
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.78651), true );
+   TRY_TEST( IsEqual(x,-28.6437339), true );
    TRY_TEST( IsEqual(y, 40.0000), true );
 
    points[8]->get_X(&x);
    points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.78651), true );
+   TRY_TEST( IsEqual(x, 28.6437339), true );
    TRY_TEST( IsEqual(y, 40.0000), true );
 
    points[9]->get_X(&x);
    points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 29.78669), true );
+   TRY_TEST( IsEqual(x, 30.643919), true );
    TRY_TEST( IsEqual(y, 54.0000), true );
 
    points[10]->get_X(&x);
    points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.78669), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 55.5000), true );
 
    points[11]->get_X(&x);
    points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.78669), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 60.0000), true );
 
    points[12]->get_X(&x);
@@ -898,52 +898,52 @@ void CTestUBeam::TestIXYPosition()
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 73.2133), true );
+   TRY_TEST( IsEqual(x, 72.35608), true );
    TRY_TEST( IsEqual(y,160.0000), true );
 
    points[6]->get_X(&x);
    points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 73.2133), true );
+   TRY_TEST( IsEqual(x, 72.35608), true );
    TRY_TEST( IsEqual(y,155.5000), true );
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  70.2133), true );
+   TRY_TEST( IsEqual(x,  69.35608), true );
    TRY_TEST( IsEqual(y, 154.0000), true );
 
    points[8]->get_X(&x);
    points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 76.21385), true );
+   TRY_TEST( IsEqual(x, 75.356636), true );
    TRY_TEST( IsEqual(y,112.0000), true );
 
    points[9]->get_X(&x);
    points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 88.21385), true );
+   TRY_TEST( IsEqual(x, 87.356636), true );
    TRY_TEST( IsEqual(y,106.0000), true );
 
    points[10]->get_X(&x);
    points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,111.78614), true );
+   TRY_TEST( IsEqual(x,112.64336), true );
    TRY_TEST( IsEqual(y,106.000), true );
 
    points[11]->get_X(&x);
    points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,123.78614), true );
+   TRY_TEST( IsEqual(x,124.64336), true );
    TRY_TEST( IsEqual(y,112.000), true );
 
    points[12]->get_X(&x);
    points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,129.78669), true );
+   TRY_TEST( IsEqual(x,130.643919), true );
    TRY_TEST( IsEqual(y,154.000), true );
 
    points[13]->get_X(&x);
    points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x,126.78669), true );
+   TRY_TEST( IsEqual(x,127.643919), true );
    TRY_TEST( IsEqual(y,155.500), true );
 
    points[14]->get_X(&x);
    points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 126.78669), true );
+   TRY_TEST( IsEqual(x, 127.643919), true );
    TRY_TEST( IsEqual(y, 160.0000), true );
 
    points[15]->get_X(&x);
@@ -1019,52 +1019,52 @@ void CTestUBeam::TestIXYPosition()
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.78669), true );
+   TRY_TEST( IsEqual(x,-27.643919), true );
    TRY_TEST( IsEqual(y, 60.0000), true );
 
    points[6]->get_X(&x);
    points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-26.78669), true );
+   TRY_TEST( IsEqual(x,-27.643919), true );
    TRY_TEST( IsEqual(y, 55.500), true );
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-29.78669), true );
+   TRY_TEST( IsEqual(x,-30.643919), true );
    TRY_TEST( IsEqual(y, 54.000), true );
 
    points[8]->get_X(&x);
    points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-23.78614), true );
+   TRY_TEST( IsEqual(x,-24.64336), true );
    TRY_TEST( IsEqual(y, 12.000), true );
 
    points[9]->get_X(&x);
    points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-11.78614), true );
+   TRY_TEST( IsEqual(x,-12.64336), true );
    TRY_TEST( IsEqual(y,  6.000), true );
 
    points[10]->get_X(&x);
    points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,11.78614), true );
+   TRY_TEST( IsEqual(x,12.64336), true );
    TRY_TEST( IsEqual(y, 6.000), true );
 
    points[11]->get_X(&x);
    points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,23.78614), true );
+   TRY_TEST( IsEqual(x,24.64336), true );
    TRY_TEST( IsEqual(y,12.000), true );
 
    points[12]->get_X(&x);
    points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,29.78669), true );
+   TRY_TEST( IsEqual(x,30.643919), true );
    TRY_TEST( IsEqual(y,54.000), true );
 
    points[13]->get_X(&x);
    points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.78669), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 55.500), true );
 
    points[14]->get_X(&x);
    points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.78669), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y, 60.0000), true );
 
    points[15]->get_X(&x);
@@ -1297,52 +1297,52 @@ void CTestUBeam::TestIXYPosition()
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.7867), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y,-60.0000), true );
 
    points[6]->get_X(&x);
    points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 26.7867), true );
+   TRY_TEST( IsEqual(x, 27.643919), true );
    TRY_TEST( IsEqual(y,-55.500), true );
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 29.7867), true );
+   TRY_TEST( IsEqual(x, 30.643919), true );
    TRY_TEST( IsEqual(y,-54.000), true );
 
    points[8]->get_X(&x);
    points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 23.78614), true );
+   TRY_TEST( IsEqual(x, 24.64336), true );
    TRY_TEST( IsEqual(y,-12.000), true );
 
    points[9]->get_X(&x);
    points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 11.78614), true );
+   TRY_TEST( IsEqual(x, 12.64336), true );
    TRY_TEST( IsEqual(y, -6.000), true );
 
    points[10]->get_X(&x);
    points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-11.78614), true );
+   TRY_TEST( IsEqual(x,-12.64336), true );
    TRY_TEST( IsEqual(y,-6.000), true );
 
    points[11]->get_X(&x);
    points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-23.78614), true );
+   TRY_TEST( IsEqual(x,-24.64336), true );
    TRY_TEST( IsEqual(y,-12.000), true );
 
    points[12]->get_X(&x);
    points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-29.7867), true );
+   TRY_TEST( IsEqual(x,-30.643919), true );
    TRY_TEST( IsEqual(y,-54.000), true );
 
    points[13]->get_X(&x);
    points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -26.7867), true );
+   TRY_TEST( IsEqual(x, -27.643919), true );
    TRY_TEST( IsEqual(y, -55.500), true );
 
    points[14]->get_X(&x);
    points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -26.7867), true );
+   TRY_TEST( IsEqual(x, -27.643919), true );
    TRY_TEST( IsEqual(y, -60.0000), true );
 
    points[15]->get_X(&x);

@@ -109,5 +109,5 @@ void CToolBarDlg::OnOK()
 //
 //void CToolBarDlg::OnHelp() 
 //{
-//   ::HtmlHelp( *this, AfxGetApp()->m_pszHelpFilePath , HH_HELP_CONTEXT, IDH_DIALOG_TOOLBARS );
+//   ::HtmlHelp( *this, EAFGetApp()->m_pszHelpFilePath , HH_HELP_CONTEXT, IDH_DIALOG_TOOLBARS );
 //}

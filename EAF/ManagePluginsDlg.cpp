@@ -34,10 +34,11 @@
 
 IMPLEMENT_DYNAMIC(CManagePluginsDlg, CDialog)
 
-CManagePluginsDlg::CManagePluginsDlg(const CATID& catid,CWnd* pParent /*=NULL*/)
+CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent /*=NULL*/)
 	: CDialog(CManagePluginsDlg::IDD, pParent),
    m_strSection("Plugins")
 {
+   m_Title = lpszTitle;
    m_CATID = catid;
 }
 
@@ -62,6 +63,9 @@ BOOL CManagePluginsDlg::OnInitDialog()
 {
    CDialog::OnInitDialog();
 
+   if ( !m_Title.IsEmpty() )
+      SetWindowText(m_Title);
+
    m_PluginList.SetCheckStyle( BS_AUTOCHECKBOX );
 
    InitList();
@@ -75,6 +79,8 @@ BOOL CManagePluginsDlg::InitList()
    USES_CONVERSION;
 
    CWaitCursor cursor;
+
+   m_PluginStates.clear();
 
    CComPtr<ICatRegister> pICatReg;
    HRESULT hr = pICatReg.CoCreateInstance(CLSID_StdComponentCategoriesMgr);
@@ -98,7 +104,7 @@ BOOL CManagePluginsDlg::InitList()
    ULONG nFetched = 0;
 
    // Load Importers
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    while ( SUCCEEDED(pIEnumCLSID->Next(nPlugins,clsid,&nFetched)) && 0 < nFetched)
    {
       for ( ULONG i = 0; i < nFetched; i++ )
@@ -110,15 +116,17 @@ BOOL CManagePluginsDlg::InitList()
          LPOLESTR pszCLSID;
          ::StringFromCLSID(clsid[i],&pszCLSID);
          
-         CString strState = pApp->GetProfileString(m_strSection,OLE2A(pszCLSID),_T("Enabled"));
-         m_CLSIDs.push_back(CString(pszCLSID));
+         CString strCLSID(pszCLSID);
+
+         CString strState = pApp->GetProfileString(m_strSection,strCLSID,_T("Enabled"));
+         
+         bool bInitiallyEnabled = (strState.CompareNoCase("Enabled") == 0 ? true : false);
+         m_PluginList.SetCheck(idx,bInitiallyEnabled);
+
+         CEAFPluginState state(clsid[i],strCLSID,bInitiallyEnabled);
+         m_PluginStates.push_back(state);
 
          ::CoTaskMemFree((void*)pszCLSID);
-
-         if ( strState.CompareNoCase("Enabled") == 0 )
-            m_PluginList.SetCheck(idx,TRUE);
-         else
-            m_PluginList.SetCheck(idx,FALSE);
       }
    }
 
@@ -127,15 +135,19 @@ BOOL CManagePluginsDlg::InitList()
 
 void CManagePluginsDlg::OnOK()
 {
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
-
    int nItems = m_PluginList.GetCount();
    for (int idx = 0; idx < nItems; idx++ )
    {
-      CString strCLSID = m_CLSIDs[idx];
       BOOL bEnabled = m_PluginList.GetCheck(idx);
 
-      pApp->WriteProfileString(m_strSection,strCLSID,(bEnabled ? _T("Enabled") : _T("Disabled")));
+      m_PluginStates[idx].SetState(bEnabled ? true : false);
    }
    CDialog::OnOK();
+}
+
+void CManagePluginsDlg::OnCancel()
+{
+   m_PluginStates.clear();
+
+   CDialog::OnCancel();
 }

@@ -267,7 +267,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,24901674.693427727),true);
+   TRY_TEST(IsEqual(value,23361276.303486),true);
 
    // Create bridge with non-composite deck
    bridge.Release();
@@ -280,7 +280,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,24901674.693427727),true);
+   TRY_TEST(IsEqual(value,23361276.303486),true);
 
    // Create bridge with composite deck
    bridge.Release();
@@ -294,7 +294,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,24901674.693427727),true);
+   TRY_TEST(IsEqual(value,23361276.303486),true);
 
    // results at/after composite stage
    section.Release();
@@ -304,7 +304,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,38968445.104456693),true);
+   TRY_TEST(IsEqual(value,37767619.516997069),true);
 
    // Repeat with stay in place deck panels
    bridge.Release();
@@ -317,7 +317,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,24901674.693427727),true);
+   TRY_TEST(IsEqual(value,23361276.303486355),true);
 
    // Create bridge with composite deck
    bridge.Release();
@@ -331,7 +331,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,24901674.693427727),true);
+   TRY_TEST(IsEqual(value,23361276.303486355),true);
 
    // results at/after composite stage
    section.Release();
@@ -341,7 +341,7 @@ void CTestSectionCutTool::Test()
    section->get_ElasticProperties(&eprops);
 
    eprops->get_EI11(&value);
-   TRY_TEST(IsEqual(value,38968445.104456693),true);
+   TRY_TEST(IsEqual(value,37767619.516997069),true);
    
 
 /// Use a different girder section - I beam with overlay deck

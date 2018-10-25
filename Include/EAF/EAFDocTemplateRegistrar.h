@@ -28,7 +28,7 @@
 #include <EAF\EAFDocTemplate.h>
 #include <map>
 
-// Manages the document templates
+// Manages the secondary document templates used for creating views
 class EAFCLASS CEAFDocTemplateRegistrar  
 {
 public:

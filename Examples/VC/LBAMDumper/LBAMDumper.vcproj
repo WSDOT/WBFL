@@ -25,7 +25,7 @@
 			UseOfMFC="0"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -53,7 +53,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;\ARP\WBFL\RegFreeCOM\$(ConfigurationName)&quot;;\ARP\WBFL\Include;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_AFXDLL;_HAS_ITERATOR_DEBUGGING=0;_SECURE_SCL=0"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -81,12 +81,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/libpath:&quot;/&quot; /libpath:&quot;/ARP/Lib&quot; "
+				RegisterOutput="false"
+				LinkLibraryDependencies="true"
+				ShowProgress="0"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+				AdditionalLibraryDirectories="$(OutDir)"
 				ModuleDefinitionFile=".\LBAMDumper.def"
 				GenerateDebugInformation="true"
+				GenerateMapFile="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -97,9 +100,9 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				EmbedManifest="false"
 				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
-				ComponentFileName="$(TargetDir)$(TargetName).dll"
+				ComponentFileName="$(TargetName).dll"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -117,6 +120,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Embedding WBFL.manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(OutDir)\WBFL.manifest -outputresource:&quot;$(TargetPath);#2&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -128,7 +133,7 @@
 			UseOfMFC="0"
 			UseOfATL="2"
 			ATLMinimizesCRunTimeLibraryUsage="true"
-			CharacterSet="2"
+			CharacterSet="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -184,10 +189,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				RegisterOutput="false"
+				IgnoreImportLibrary="false"
 				AdditionalOptions="/libpath:&quot;/ARP/Lib&quot;"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+				AdditionalLibraryDirectories="$(OutDir)"
 				ModuleDefinitionFile=".\LBAMDumper.def"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
@@ -199,7 +206,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)\WBFL.manifest"
+				EmbedManifest="false"
 				TypeLibraryFile="$(TargetDir)$(TargetName).tlb"
 				ComponentFileName="$(TargetDir)$(TargetName).dll"
 			/>
@@ -219,6 +226,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Embedding WBFL.manifest into $(TargetPath)"
+				CommandLine="&quot;$(FrameworkSDKDir)bin\mt.exe&quot; -nologo -manifest $(OutDir)\WBFL.manifest -outputresource:&quot;$(TargetPath);#2&quot;"
 			/>
 		</Configuration>
 	</Configurations>

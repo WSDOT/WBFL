@@ -103,6 +103,22 @@ inline void GetVehicularLoad(LiveLoadModelType type, VehicleIndexType vehicleInd
 }
 
 
+inline bool VehicularLoadConfigurationHasTruck(VehicularLoadConfigurationType vlc)
+{
+   if ( vlc == vlcTruckOnly || vlc == vlcTruckPlusLane || vlc == vlcTruckLaneEnvelope )
+      return true;
+
+   return false;
+}
+
+inline bool VehicularLoadConfigurationHasLane(VehicularLoadConfigurationType vlc)
+{
+   if ( vlc == vlcLaneOnly || vlc == vlcTruckPlusLane || vlc == vlcTruckLaneEnvelope || vlc == vlcSidewalkOnly )
+      return true;
+
+   return false;
+}
+
 inline VehicularLoadConfigurationType GetSelectedVehicularConfiguration(VehicularLoadConfigurationType requestedConfig, IVehicularLoad* pVl)
 {
    // Determine the vehicular configuration based on the client request and 
@@ -111,17 +127,28 @@ inline VehicularLoadConfigurationType GetSelectedVehicularConfiguration(Vehicula
    VehicularLoadConfigurationType veh_config;
    hr = pVl->get_Configuration(&veh_config);
    PROCESS_HR(hr);
-   if (requestedConfig==vlcDefault)
+   if (requestedConfig == vlcDefault)
    {
       // requested default - use application type from vehicularload
-      if (veh_config==vlcDefault)
+      if (veh_config == vlcDefault)
          return vlcTruckPlusLane; // this is the global default
       else
          return veh_config;
    }
    else
    {
+      if ( 
+         (VehicularLoadConfigurationHasTruck(requestedConfig) && VehicularLoadConfigurationHasTruck(veh_config) ) ||
+         (VehicularLoadConfigurationHasLane(requestedConfig)  && VehicularLoadConfigurationHasLane(veh_config) ) 
+         )
+      {
+         // compatible
          return requestedConfig;
+      }
+      else
+      {
+         return veh_config;
+      }
    }
 }
 

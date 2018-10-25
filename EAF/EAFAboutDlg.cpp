@@ -76,7 +76,7 @@ BOOL CEAFAboutDlg::OnInitDialog()
    CStatic* pIcon = (CStatic*)GetDlgItem(IDC_APPICON);
    if ( m_hIcon == NULL )
    {
-      CWnd* pWnd = AfxGetMainWnd();
+      CWnd* pWnd = EAFGetMainFrame();
       m_hIcon = pWnd->GetIcon(TRUE);
    }
 
@@ -94,7 +94,7 @@ BOOL CEAFAboutDlg::OnInitDialog()
    strTitle.Format("About %s",AfxGetAppName());
    SetWindowText( strTitle );
 
-   CString strExe = AfxGetApp()->m_pszAppName;
+   CString strExe = EAFGetApp()->m_pszAppName;
    strExe += ".exe";
 
    CVersionInfo verInfo;
@@ -108,7 +108,7 @@ BOOL CEAFAboutDlg::OnInitDialog()
    GetDlgItem(IDC_COPYRIGHT)->SetWindowText(strCopyright);
 
    // Fill the list control with plugin names
-   CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+   CEAFApp* pApp = EAFGetApp();
    CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
    UINT nPlugins = pComponentInfoMgr->GetPluginCount();
    
@@ -132,7 +132,7 @@ void CEAFAboutDlg::OnAppListSelChanged()
    int idx = m_AppList.GetCurSel();
    if ( idx != LB_ERR )
    {
-      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+      CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
       CComPtr<IEAFComponentInfo> component;
       pComponentInfoMgr->GetPlugin(idx,&component);
@@ -154,7 +154,7 @@ void CEAFAboutDlg::OnMoreInfo()
    int idx = m_AppList.GetCurSel();
    if ( idx != LB_ERR )
    {
-      CEAFApp* pApp = (CEAFApp*)AfxGetApp();
+      CEAFApp* pApp = EAFGetApp();
       CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
       CComPtr<IEAFComponentInfo> component;
       pComponentInfoMgr->GetPlugin(idx,&component);

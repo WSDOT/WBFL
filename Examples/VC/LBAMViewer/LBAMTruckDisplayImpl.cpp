@@ -98,9 +98,27 @@ STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::Init(iPointDisplayObject* pD
    case lltSpecial:
       hr = liveload->get_Special(&llm);
       break;
+
+   case lltLegalRoutineRating:
+      hr = liveload->get_LegalRoutineRating(&llm);
+      break;
+
+   case lltLegalSpecialRating:
+      hr = liveload->get_LegalSpecialRating(&llm);
+      break;
+
+   case lltPermitRoutineRating:
+      hr = liveload->get_PermitRoutineRating(&llm);
+      break;
+
+   case lltPermitSpecialRating:
+      hr = liveload->get_PermitSpecialRating(&llm);
+      break;
+
    default:
       ATLASSERT(0);
    };
+
 
    ATLASSERT(SUCCEEDED(hr));
 
@@ -654,7 +672,7 @@ void CLBAMTruckDisplayImpl::CacheTruckParameters()
    if (axle_cnt>0)
    {
       m_AxleLocations.reserve(axle_cnt);
-      m_ActiveAxles.reserve(axle_cnt);
+      m_ActiveAxles.assign(axle_cnt,false);
 
       AxleIndexType var_axle_idx;
       hr = m_VehicularLoad->get_VariableAxle(&var_axle_idx);

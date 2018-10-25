@@ -464,12 +464,6 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeForces(ILongArray* poiIDs, BS
 
       m_pResultsCache = &m_ForceInflResponse;
 
-      // need to place truck before and after pois to capture shear response jumps
-      if (effect==fetFy)
-         m_bCaptureJumps = true;
-      else
-         m_bCaptureJumps = false;
-
       m_bComputingReaction = false;
       m_bComputingMaximumInteriorSupportReaction = false;
       if ( effect == fetMz && optimization == optMinimize )
@@ -478,9 +472,10 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeForces(ILongArray* poiIDs, BS
          m_bComputingMinimumMoment = false;
          
 
+      this->m_RealOptimization = optimization;
       hr = this->ComputeResponse(poiIDs, stage, type, 
                                  vehicleIndex,
-                                 effect, optimization, 
+                                 effect,  
                                  vehConfiguration,
                                  doApplyImpact, distributionType,
                                  computePlacements,
@@ -529,16 +524,16 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeDeflections(ILongArray* poiID
       DeflectionLLApplicabilityStrategy ApplStrategy;
       m_pApplicabilityStrategy = &ApplStrategy;
 
-      m_bCaptureJumps = false;
       m_bComputingReaction = false;
       m_bComputingMaximumInteriorSupportReaction = false;
       m_bComputingMinimumMoment = false;
 
       m_pResultsCache = &m_DeflInflResponse;
 
+      this->m_RealOptimization = optimization;
       hr = this->ComputeResponse(poiIDs, stage, type, 
                                  vehicleIndex,  
-                                 effect, optimization, 
+                                 effect,  
                                  vehConfiguration,
                                  doApplyImpact, distributionType,
                                  computePlacements,
@@ -587,7 +582,6 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeReactions(ILongArray* support
       ReactionLLApplicabilityStrategy ApplStrategy(m_SupportLocations);
       m_pApplicabilityStrategy = &ApplStrategy;
 
-      m_bCaptureJumps = false;
       m_bComputingReaction = true;
       m_bComputingMaximumInteriorSupportReaction = false;
       m_bComputingMinimumMoment = false;
@@ -597,9 +591,10 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeReactions(ILongArray* support
       // compute left and right results and use max of both
       CComPtr<ILiveLoadModelSectionResults> sec_res;
 
+      this->m_RealOptimization = optimization;
       hr = this->ComputeResponse(supportIDs, stage, type, 
                                    vehicleIndex,  
-                                   effect, optimization, 
+                                   effect,  
                                    vehConfiguration,
                                    doApplyImpact, distributionType,
                                    computePlacements,
@@ -654,7 +649,6 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeSupportDeflections(ILongArray
       SupportDeflectionLLApplicabilityStrategy ApplStrategy;
       m_pApplicabilityStrategy = &ApplStrategy;
 
-      m_bCaptureJumps = false;
       m_bComputingReaction = false;
       m_bComputingMaximumInteriorSupportReaction = false;
       m_bComputingMinimumMoment = false;
@@ -663,9 +657,10 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeSupportDeflections(ILongArray
 
       // compute left and right results and use max of both
       CComPtr<ILiveLoadModelSectionResults> sec_res;
+      this->m_RealOptimization = optimization;
       hr = this->ComputeResponse(supportIDs, stage, type, 
                                    vehicleIndex,  
-                                   effect, optimization, 
+                                   effect,  
                                    vehConfiguration,
                                    doApplyImpact, distributionType,
                                    computePlacements,
@@ -738,7 +733,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeStresses(ILongArray* poiIDs, 
 
 STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, BSTR stage, LiveLoadModelType type, 
                                                            VehicleIndexType vehicleIndex, 
-                                                           ForceEffectType effect, OptimizationType optimization, 
+                                                           ForceEffectType effect, 
                                                            VehicularLoadConfigurationType vehConfiguration,
                                                            VARIANT_BOOL doApplyImpact, DistributionFactorType distributionType,
                                                            VARIANT_BOOL vbComputePlacements,
@@ -778,7 +773,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
             VARIANT_BOOL bIsInteriorSupport;
             m_SupportLocations->IsInteriorSupport(poi_id,&bIsInteriorSupport);
 
-            if ( bIsInteriorSupport == VARIANT_TRUE && optimization == optMaximize )
+            if ( bIsInteriorSupport == VARIANT_TRUE && m_RealOptimization == optMaximize )
             {
                m_bComputingMaximumInteriorSupportReaction = true;
             }
@@ -814,7 +809,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
          // see if our live load is applicable at this location
          ApplicabilityLoc applicabilityloc = m_pApplicabilityStrategy->GetApplicability(poi_id, stage, 
                                                                  VARIANT_TRUE, m_LiveLoadApplicability, 
-                                                                 effect, optimization);
+                                                                 effect, m_RealOptimization);
          if (applicabilityloc != appNone)
          {
 
@@ -822,105 +817,52 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
             CComPtr<IInfluenceLine> lft_infl_line, rgt_infl_line;
             hr = m_pInflStrategy->ComputeInfluenceLine(poi_id, stage, effect, &lft_infl_line, &rgt_infl_line);
 
-            // compute responses for left influence line
-            // the only time we don't compute left influence results is for right applicability with a valid right influence 
-            if ( !(applicabilityloc==appRight && rgt_infl_line!=NULL) )
-            {
-               ComputeInflResponse(poi_id,type, vehicleIndex, effect, optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
-                                   lft_infl_line, &left_result, &right_result, left_config, right_config);
 
-            }
-         
-            if (applicabilityloc==appLeft)
+            // Left face results come from left influence line
+            if ( lft_infl_line )
             {
-               // results only applicable to left side - zero out right
-               right_result=0.0;
+               Float64 bogus_result;
+               CComPtr<ILiveLoadConfiguration> bogus_config;
+               if (computePlacements)
+               {
+                  CComObject<CLiveLoadConfiguration>* pConfig;
+                  hr = CComObject<CLiveLoadConfiguration>::CreateInstance(&pConfig);
+
+                  bogus_config = pConfig;
+                  bogus_config->put_IsApplicable(VARIANT_FALSE);
+               }
+               ComputeInflResponse(poi_id,type, vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
+                                   lft_infl_line, &left_result, &bogus_result, left_config, bogus_config);
+            }
+
+
+            // Right face results come from right influence line
+            if ( rgt_infl_line )
+            {
+               Float64 bogus_result;
+               CComPtr<ILiveLoadConfiguration> bogus_config;
+               if (computePlacements)
+               {
+                  CComObject<CLiveLoadConfiguration>* pConfig;
+                  hr = CComObject<CLiveLoadConfiguration>::CreateInstance(&pConfig);
+
+                  bogus_config = pConfig;
+                  bogus_config->put_IsApplicable(VARIANT_FALSE);
+               }
+
+               OptimizationType loc_optimization = m_RealOptimization;
+               if (flip_factor == -1.0)
+               {
+                  loc_optimization = (m_RealOptimization==optMaximize) ? optMinimize : optMaximize;
+               }
+
+               ComputeInflResponse(poi_id,type, vehicleIndex, effect, loc_optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
+                                   rgt_infl_line, &bogus_result, &right_result, bogus_config, right_config);
 
                if (computePlacements)
-               {  
-                  right_config->put_IsApplicable(VARIANT_FALSE);
-               }
-            }
-            else if (applicabilityloc==appRight)
-            {
-
-               if (rgt_infl_line!=NULL)
                {
-                  // compute responses for right influence line
-                  // We have to fake out compute function because it does not know anything about left/right face 
-                  // sign conventions
-                  OptimizationType loc_optimization = optimization;
-                  if (flip_factor==-1.0)
-                  {
-                     loc_optimization = (optimization==optMaximize) ? optMinimize : optMaximize;
-                  }
-
-                  ComputeInflResponse(poi_id,type, vehicleIndex, effect, loc_optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
-                                      rgt_infl_line, &left_result, &right_result, left_config, right_config);
-
-                  if (computePlacements)
-                  {
-                     right_config->put_Optimization(optimization); // make sure we're in right sign convention
-                  }
+                  right_config->put_Optimization(m_RealOptimization); // make sure we're in right sign convention
                }
-               else
-               {
-                  // results were computed using left influence line above
-                  right_result *= flip_factor;
-               }
-
-               // only applicable to right side - zero out any computed left results
-               left_result=0.0;
-
-               if (computePlacements)
-               {  
-                  left_config->put_IsApplicable(VARIANT_FALSE);
-               }
-
-            }
-            else if (applicabilityloc==appBoth)
-            {
-               if (rgt_infl_line!=NULL)
-               {
-                  // compute responses for right influence line
-                  // create a bogus result and  configuration object to hold the left result since we won't be using it
-                  Float64 bog_left_result;
-                  CComPtr<ILiveLoadConfiguration> bog_left_config;
-                  if (computePlacements)
-                  {
-                     CComObject<CLiveLoadConfiguration>* pconfig;
-                     hr = CComObject<CLiveLoadConfiguration>::CreateInstance(&pconfig);
-
-                     bog_left_config =pconfig;
-                     bog_left_config->put_IsApplicable(VARIANT_FALSE);
-                  }
-
-                  // We have to fake out compute function because it does not know anything about left/right face 
-                  // sign conventions
-                  OptimizationType loc_optimization = optimization;
-                  if (flip_factor==-1.0)
-                  {
-                     loc_optimization = (optimization==optMaximize) ? optMinimize : optMaximize;
-                  }
-
-                  ComputeInflResponse(poi_id,type, vehicleIndex, effect, loc_optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
-                                      rgt_infl_line, &bog_left_result, &right_result, bog_left_config, right_config);
-
-                  if (computePlacements)
-                  {  
-                     right_config->put_Optimization(optimization); // make sure we're in right sign convention
-                  }
-               }
-               else
-               {
-                  // results were computed using left influence line above
-                  right_result *= flip_factor;
-               }
-
-            }
-            else
-            {
-               ATLASSERT(false); // should never get here
             }
          }
          else
@@ -950,19 +892,19 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(ILongArray* poiIDs, 
          }
 
          // add our result to the collection
-         if ( optimization == optMaximize )
+         if ( m_RealOptimization == optMaximize )
          {
-            if ( left_result > flip_factor*right_result )
+            if ( left_result > right_result )
                hr = results->Add(left_result, left_config, flip_factor*left_result, left_config);
             else
-               hr = results->Add(flip_factor*right_result, right_config, right_result, right_config);
+               hr = results->Add(right_result, right_config, flip_factor*right_result, right_config);
          }
          else
          {
-            if ( left_result < flip_factor*right_result )
+            if ( left_result < right_result )
                hr = results->Add(left_result, left_config, flip_factor*left_result, left_config);
             else
-               hr = results->Add(flip_factor*right_result, right_config, right_result, right_config);
+               hr = results->Add(right_result, right_config, flip_factor*right_result, right_config);
          }
       }
 
@@ -1009,11 +951,11 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
    // set up our class for doing value comparisons - remember this function works on left-face coordinates
    iLLCompare* left_compare = NULL;
    iLLCompare* right_compare = NULL;
-   if ( !GetInflResponse(poiID,type, vehicleIndex, effect, optimization, vehConfiguration, doApplyImpact, &left_compare, &right_compare ) )
+   if ( !GetInflResponse(poiID,type, vehicleIndex, effect, vehConfiguration, doApplyImpact, &left_compare, &right_compare ) )
    {
       IntializeCompare(optimization, &left_compare, &right_compare);
       EvaluateTruckLoad(type,vehicleIndex,effect,optimization,vehConfiguration,doApplyImpact,computePlacements,inflLine,truck_side,left_compare,right_compare,&left_truck_result,&right_truck_result,leftConfig,rightConfig);
-      SaveInflResponse(poiID,type,vehicleIndex,effect,optimization, vehConfiguration,doApplyImpact,left_compare,right_compare);
+      SaveInflResponse(poiID,type,vehicleIndex,effect, vehConfiguration,doApplyImpact,left_compare,right_compare);
    }
    else
    {
@@ -1032,11 +974,11 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
 
 
    // deal with lane and sidewalk results
-   Float64 lane_result = 0.0;
+   Float64 lane_result     = 0.0;
    Float64 sidewalk_result = 0.0;
    if (m_IsLane || m_IsSidewalk)
    {
-      InfluenceSideType lane_side = optimization==optMaximize ? ilsPositive : ilsNegative;
+      InfluenceSideType lane_side = (optimization == optMaximize ? ilsPositive : ilsNegative);
 
       Float64 area;
       hr = inflLine->ComputeArea(lane_side, &area);
@@ -1937,27 +1879,6 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
 
    AxleIndexType num_axles = m_Truck.GetNumAxles();
 
-   // set up loop parameters for truck placement. 
-   // We place truck before and after poi to pick up shear jumps due to axle loads
-   Float64 poi_offsets[3];
-   Uint32 nPoiOffsets = 0;
-   if (m_bCaptureJumps)
-   {
-      Float64 model_length;
-      hr = m_SupportLocations->get_TotalLength(&model_length);
-      m_TruckPlacementTolerance = model_length/10000.0;
-
-      nPoiOffsets = 3;
-      poi_offsets[0] = -m_TruckPlacementTolerance;
-      poi_offsets[1] = 0.0;
-      poi_offsets[2] =  m_TruckPlacementTolerance;
-   }
-   else
-   {
-      nPoiOffsets = 1;
-      poi_offsets[0] = 0.0;
-   }
-
    std::vector<bool> applied_axles;
 
    // loop over each axle spacing for the truck
@@ -1984,22 +1905,31 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
       }
       else
       {
-         // first, heaviest near center, last
-         pivotAxles[0] = 0;
-         pivotAxles[1] = m_Truck.HeaviestCentralAxle();
-         pivotAxles[2] = num_axles-1;
-
-         if ( pivotAxles[0] == pivotAxles[1] )
+         if ( effect == fetFy )
          {
-            // first and second are the same axle... use only 2 and move the 3rd to the second position
-            nAxlePositions = 2;
-            pivotAxles[1] = pivotAxles[2];
+            // if we are computing shear, then just the first and last axle positions 
+            pivotAxles[0] = num_axles-1;
+            nAxlePositions = 1;
          }
-
-         if ( pivotAxles[1] == pivotAxles[2] )
+         else
          {
-            // second and third are the same... use only 2 axle positions
-            nAxlePositions = 2;
+            // first, heaviest near center, last
+            pivotAxles[0] = 0;
+            pivotAxles[1] = m_Truck.HeaviestCentralAxle();
+            pivotAxles[2] = num_axles-1;
+
+            if ( pivotAxles[0] == pivotAxles[1] )
+            {
+               // first and second are the same axle... use only 2 and move the 3rd to the second position
+               nAxlePositions = 2;
+               pivotAxles[1] = pivotAxles[2];
+            }
+
+            if ( pivotAxles[1] == pivotAxles[2] )
+            {
+               // second and third are the same... use only 2 axle positions
+               nAxlePositions = 2;
+            }
          }
       }
 
@@ -2008,44 +1938,40 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
       {
          Float64 poi_loc = pli->Location;
 
-         // place truck slighly before and after poi
-         for (Uint32 poiOffset = 0; poiOffset < nPoiOffsets; poiOffset++)
+         Float64 truck_location = poi_loc;
+
+         for (AxleIndexType axleIndex = 0; axleIndex < nAxlePositions; axleIndex++)
          {
-            Float64 truck_location = poi_loc + poi_offsets[poiOffset];
+            AxleIndexType pivotAxleIndex = pivotAxles[axleIndex];
 
-            for (AxleIndexType axleIndex = 0; axleIndex < nAxlePositions; axleIndex++)
+            VARIANT_BOOL is_dual;
+            Float64 left_truck_result, right_truck_result;
+
+            for ( int truckDir = 0; truckDir < 2; truckDir++ )
             {
-               AxleIndexType pivotAxleIndex = pivotAxles[axleIndex];
+               TruckDirectionType direction = (truckDir == 0 ? ltdForward : ltdReverse);
 
-               VARIANT_BOOL is_dual;
-               Float64 left_truck_result, right_truck_result;
+               // set truck direction and pivot on the current axle
+               m_Truck.SetTruckDirection(direction,pivotAxleIndex);
 
-               for ( int truckDir = 0; truckDir < 2; truckDir++ )
+               m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine, 
+                                           &applied_axles, &is_dual, &left_truck_result, &right_truck_result);
+
+               WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << axle_spacing << " Dir " << (truckDir == 0 ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
+
+               // perform comparison and store data for new max if there is one.
+               if (pLeftCompare->CompareResults(left_truck_result))
                {
-                  TruckDirectionType direction = (truckDir == 0 ? ltdForward : ltdReverse);
+                  pLeftCompare->StoreState(left_truck_result, truck_location, direction, pivotAxleIndex, applied_axles, axle_spacing);
+               }
 
-                  // set truck direction and pivot on the current axle
-                  m_Truck.SetTruckDirection(direction,pivotAxleIndex);
-
-                  m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine, 
-                                              &applied_axles, &is_dual, &left_truck_result, &right_truck_result);
-
-                  WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << axle_spacing << " Dir " << (truckDir == 0 ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
-
-                  // perform comparison and store data for new max if there is one.
-                  if (pLeftCompare->CompareResults(left_truck_result))
-                  {
-                     pLeftCompare->StoreState(left_truck_result, truck_location, direction, pivotAxleIndex, applied_axles, axle_spacing);
-                  }
-
-                  if (pRightCompare->CompareResults(right_truck_result))
-                  {
-                     pRightCompare->StoreState(right_truck_result, truck_location, direction, pivotAxleIndex, applied_axles, axle_spacing);
-                  }
-               } // truck direction
-            } // next axle
-         } // next poi
-      } // next poi offset
+               if (pRightCompare->CompareResults(right_truck_result))
+               {
+                  pRightCompare->StoreState(right_truck_result, truck_location, direction, pivotAxleIndex, applied_axles, axle_spacing);
+               }
+            } // truck direction
+         } // next axle
+      } // next poi
    } // next axle spacing (variable axle)
 
    // get the enveloped results
@@ -2053,11 +1979,11 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
    *pRightResult  = pRightCompare->GetResult();
 }
 
-bool CBruteForceVehicularResponse2::GetInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
+bool CBruteForceVehicularResponse2::GetInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
                                                     VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                                                     iLLCompare** ppLeftCompare, iLLCompare** ppRightCompare)
 {
-   InflResponseRecord key(poiID,type,vehicleIndex, effect, optimization, vehConfiguration, doApplyImpact );
+   InflResponseRecord key(poiID,type,vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact );
 
    ConstInflResponseIterator found = m_pResultsCache->find(key);
    if ( found == m_pResultsCache->end() )
@@ -2072,11 +1998,11 @@ bool CBruteForceVehicularResponse2::GetInflResponse(PoiIDType poiID,LiveLoadMode
    return true;
 }
 
-void CBruteForceVehicularResponse2::SaveInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, OptimizationType optimization, 
+void CBruteForceVehicularResponse2::SaveInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect, 
                                                      VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,
                                                      iLLCompare* pLeftCompare, iLLCompare* pRightCompare)
 {
-   InflResponseRecord record(poiID, type, vehicleIndex, effect, optimization, vehConfiguration, doApplyImpact, pLeftCompare, pRightCompare);
+   InflResponseRecord record(poiID, type, vehicleIndex, effect, m_RealOptimization, vehConfiguration, doApplyImpact, pLeftCompare, pRightCompare);
 
    std::pair<InflResponseIterator,bool> result = m_pResultsCache->insert(record);
    ATLASSERT( result.second == true );

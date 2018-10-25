@@ -48,6 +48,7 @@ HRESULT CVoidedSlab2::FinalConstruct()
    m_W    = 0.00;
    m_C1   = 0.00;
    m_C2   = 0.00;
+   m_C3   = 0.00;
    m_Hext   = 0.00;
    m_Hint = 0.00;
    m_Dext = 0.00;
@@ -165,7 +166,11 @@ HRESULT CVoidedSlab2::UpdateShape()
       // Create the main slab rectangle
       CComPtr<IPolyShape> slab;
       slab.CoCreateInstance(CLSID_PolyShape);
-      slab->AddPoint( m_W/2,        0);  // bottom right corner
+
+      // bottom right corner
+      slab->AddPoint( m_W/2-m_C3, 0);
+      slab->AddPoint( m_W/2,      m_C3);  
+
       if ( m_bRightBlockOut == VARIANT_TRUE )
       {
          slab->AddPoint( m_W/2,        m_H - m_C1 - m_C2);
@@ -187,7 +192,10 @@ HRESULT CVoidedSlab2::UpdateShape()
       {
          slab->AddPoint(-m_W/2,m_H);
       }
-      slab->AddPoint(-m_W/2,        0); // bottom left corner
+
+      // bottom left corner
+      slab->AddPoint(-m_W/2,       m_C3);
+      slab->AddPoint(-m_W/2 + m_C3,0); 
 
       CComQIPtr<IShape> slabShape(slab);
       m_pShape->AddShape(slabShape,VARIANT_FALSE);
@@ -384,6 +392,25 @@ STDMETHODIMP CVoidedSlab2::put_C2(Float64 newVal)
       return Error(IDS_E_DIMENSION,IID_IVoidedSlab2,GEOMETRY_E_DIMENSION);
 
    m_C2 = newVal;
+   return S_OK;
+}
+
+STDMETHODIMP CVoidedSlab2::get_C3(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = m_C3;
+   return S_OK;
+}
+
+STDMETHODIMP CVoidedSlab2::put_C3(Float64 newVal)
+{
+   MakeDirty();
+
+   if ( newVal < 0.0 )
+      return Error(IDS_E_DIMENSION,IID_IVoidedSlab2,GEOMETRY_E_DIMENSION);
+
+   m_C3 = newVal;
    return S_OK;
 }
 
@@ -651,6 +678,7 @@ STDMETHODIMP CVoidedSlab2::Clone(IShape** pClone)
    pTheClone->put_Width( m_W );
    pTheClone->put_C1( m_C1 );
    pTheClone->put_C2( m_C2 );
+   pTheClone->put_C3( m_C3 );
    pTheClone->put_ExteriorVoidDiameter( m_Dext );
    pTheClone->put_InteriorVoidDiameter( m_Dint );
    pTheClone->put_ExteriorVoidSpacing( m_Sext );
@@ -874,11 +902,12 @@ STDMETHODIMP CVoidedSlab2::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("VoidedSlab2"),1.0);
+   pSave->BeginUnit(CComBSTR("VoidedSlab2"),2.0);
    pSave->put_Property(CComBSTR("Width"),CComVariant(m_W));
    pSave->put_Property(CComBSTR("Height"),CComVariant(m_H));
    pSave->put_Property(CComBSTR("C1"),CComVariant(m_C1));
    pSave->put_Property(CComBSTR("C2"),CComVariant(m_C2));
+   pSave->put_Property(CComBSTR("C3"),CComVariant(m_C3));
    pSave->put_Property(CComBSTR("LeftBlockOut"),CComVariant(m_bLeftBlockOut));
    pSave->put_Property(CComBSTR("RightBlockOut"),CComVariant(m_bRightBlockOut));
    pSave->put_Property(CComBSTR("ExteriorVoidDiameter"),CComVariant(m_Dext));
@@ -902,6 +931,9 @@ STDMETHODIMP CVoidedSlab2::Load(IStructuredLoad2* pLoad)
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("VoidedSlab2"));
    
+   Float64 version;
+   pLoad->get_Version(&version);
+
    pLoad->get_Property(CComBSTR("Width"),&var);
    m_W = var.dblVal;
    
@@ -913,6 +945,16 @@ STDMETHODIMP CVoidedSlab2::Load(IStructuredLoad2* pLoad)
    
    pLoad->get_Property(CComBSTR("C2"),&var);
    m_C2 = var.dblVal;
+
+   if ( version < 1 )
+   {
+      pLoad->get_Property(CComBSTR("C3"),&var);
+      m_C3 = var.dblVal;
+   }
+   else
+   {
+      m_C3 = 0;
+   }
 
    pLoad->get_Property(CComBSTR("LeftBlockOut"),&var);
    m_bLeftBlockOut = var.boolVal;

@@ -115,15 +115,8 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszS
    for ( int i = 0; i < nButtons; i++ )
    {
       UINT nCmdID;
-      if ( pCallback )
-      {
-         if ( !m_pCmdMgr->AddCommandCallback(nIDs[i],pCallback,&nCmdID) )
-            return FALSE;
-      }
-      else
-      {
-         nCmdID = nIDs[i];
-      }
+      if ( !m_pCmdMgr->AddCommandCallback(nIDs[i],pCallback,&nCmdID) )
+         return FALSE;
 
       TBBUTTON tbButton;
       tbButton.iBitmap = nFirstNewImage  + i;
@@ -149,6 +142,34 @@ BOOL CEAFToolBar::AddButtons(int nButtons,UINT* nIDs,UINT nBitmapID,LPCSTR lpszS
    return TRUE;
 }
 
+BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCSTR lpszString,IEAFCommandCallback* pCallback)
+{
+   CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
+
+   int nFirstNewImage  = tb.AddBitmap(1,nBitmapID);
+   int nFirstNewString = tb.AddStrings(lpszString);
+
+   UINT nCmdID;
+   if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
+        return FALSE;
+
+   TBBUTTON tbButton;
+   tbButton.iBitmap = nFirstNewImage;
+   tbButton.iString = nFirstNewString;
+
+   tbButton.idCommand = nCmdID;
+   tbButton.fsState = TBSTATE_ENABLED;
+   tbButton.fsStyle = TBSTYLE_BUTTON;
+   tbButton.dwData = 0;
+
+   if ( !tb.InsertButton(nIndex,&tbButton) )
+      return FALSE;
+
+   tb.AutoSize();
+
+   return TRUE;
+}
+
 void CEAFToolBar::RemoveButtons(IEAFCommandCallback* pCallback)
 {
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
@@ -162,6 +183,14 @@ void CEAFToolBar::RemoveButtons(IEAFCommandCallback* pCallback)
       UINT btnIdx = tb.CommandToIndex(nCmdID);
       tb.DeleteButton(btnIdx);
    }
+}
+
+BOOL CEAFToolBar::DeleteButton(int nIndex)
+{
+   if ( m_pToolBar )
+      return m_pToolBar->GetToolBarCtrl().DeleteButton(nIndex);
+
+   return FALSE;
 }
 
 UINT CEAFToolBar::GetToolBarID() const
@@ -182,10 +211,14 @@ BOOL CEAFToolBar::IsWindowVisible()
    return FALSE;
 }
 
-BOOL CEAFToolBar::HideButton(int nID,BOOL bHide)
+BOOL CEAFToolBar::HideButton(int nID,IEAFCommandCallback* pCallback,BOOL bHide)
 {
+   UINT nMappedCmdID; // unique command id
+   if ( !m_pCmdMgr->GetMappedCommandID(nID,pCallback,&nMappedCmdID) )
+      return FALSE;
+
    if ( m_pToolBar )
-      return m_pToolBar->GetToolBarCtrl().HideButton(nID,bHide);
+      return m_pToolBar->GetToolBarCtrl().HideButton(nMappedCmdID,bHide);
 
    return FALSE;
 }
@@ -210,16 +243,6 @@ void CEAFToolBar::ClientToScreen(LPRECT lpRect) const
       m_pToolBar->GetToolBarCtrl().ClientToScreen(lpRect);
 }
 
-int CEAFToolBar::CommandToIndex(UINT nID) const
-{
-   // NOTE: MFC documentation says return type is UINT, but looking at the header file, it is an int
-   // nID is the unique command ID
-   if ( m_pToolBar )
-      return m_pToolBar->GetToolBarCtrl().CommandToIndex(nID);
-
-   return -1;
-}
-
 int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback) const
 {
    // NOTE: MFC documentation says return type is UINT, but looking at the header file, it is an int
@@ -227,7 +250,10 @@ int CEAFToolBar::CommandToIndex(UINT nPluginCmdID,IEAFCommandCallback* pCallback
    if ( !m_pCmdMgr->GetMappedCommandID(nPluginCmdID,pCallback,&nMappedCmdID) )
       return -1;
 
-   return CommandToIndex(nMappedCmdID);
+   if ( m_pToolBar )
+      return m_pToolBar->GetToolBarCtrl().CommandToIndex(nMappedCmdID);
+
+   return -1;
 }
 
 void CEAFToolBar::SetExtendedStyle(DWORD dwStyleEx)
@@ -248,4 +274,28 @@ UINT CEAFToolBar::GetButtonStyle(int nIndex) const
       return m_pToolBar->GetButtonStyle(nIndex);
    
    return 0;
+}
+
+CString CEAFToolBar::GetButtonText(int nIndex) const
+{
+   if ( m_pToolBar )
+      return m_pToolBar->GetButtonText(nIndex);
+
+   return CString("");
+}
+
+BOOL CEAFToolBar::SetButtonText(int nIndex,LPCTSTR lpszText) const
+{
+   if ( m_pToolBar )
+      return m_pToolBar->SetButtonText(nIndex,lpszText);
+
+   return FALSE;
+}
+
+BOOL CEAFToolBar::MoveButton(UINT nOldIndex,UINT nNewIndex)
+{
+   if ( m_pToolBar )
+      return m_pToolBar->GetToolBarCtrl().MoveButton(nOldIndex,nNewIndex);
+
+   return FALSE;
 }

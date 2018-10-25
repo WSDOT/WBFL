@@ -51,39 +51,6 @@ static bool DetermineControl(Float64 truckResp, Float64 laneResp, OptimizationTy
       return truckResp<laneResp;
 }
 
-static void GetTruckSides(OptimizationType optimization, ForceEffectType effect, VARIANT_BOOL isNotional, 
-                          InfluenceSideType* truckSideFx, InfluenceSideType* truckSideFy, 
-                          InfluenceSideType* truckSideMz)
-{
-   // Determine side of influence line that truck response is to be computed. 
-   // Start off assuming not notional
-   *truckSideFx = ilsBoth;
-   *truckSideFy = ilsBoth;
-   *truckSideMz = ilsBoth;
-
-   if (isNotional == VARIANT_TRUE)
-   {
-      if (optimization == optMaximize)
-      {
-         if (effect==fetFx)
-            *truckSideFx = ilsPositive;
-         else if (effect==fetFy)
-            *truckSideFy = ilsPositive;
-         else
-            *truckSideMz = ilsPositive;
-      }
-      else
-      {
-         if (effect==fetFx)
-            *truckSideFx = ilsNegative;
-         else if (effect==fetFy)
-            *truckSideFy = ilsNegative;
-         else
-            *truckSideMz = ilsNegative;
-      }
-   }
-}
-
 static void  ComputeLaneAreas(ForceEffectType optimizedEffect, OptimizationType optimization, Float64 flipFactor,
                        IInfluenceLine* lftFxInf, IInfluenceLine* rgtFxInf, IInfluenceLine* lftFyInf, IInfluenceLine* rgtFyInf, IInfluenceLine* lftMzInf, IInfluenceLine* rgtMzInf,
                        Float64* lftFxArea, Float64* lftFyArea, Float64* lftMzArea, Float64* rgtFxArea, Float64* rgtFyArea, Float64* rgtMzArea)
@@ -270,7 +237,7 @@ void CBasicVehicularResponse::QuickInitialize(ILiveLoad* liveLoad, IInfluenceLin
       THROW_LBAMLL(LL_INITIALIZATION);
    }
 
-   m_LiveLoad = liveLoad;
+   m_LiveLoad                      = liveLoad;
    m_InfluenceLineResponse         = influenceLineResponse;
    m_LiveLoadNegativeMomentRegion  = llnmr;
    m_GetDistributionFactors        = getDistributionFactors;
@@ -306,9 +273,6 @@ STDMETHODIMP CBasicVehicularResponse::ComputeForces(ILongArray* POIs, BSTR stage
          // set up context and strategies
          ForceInfluenceLineStrategy InflStrategy(m_InfluenceLineResponse, orientation);
          m_InflStrategy = &InflStrategy;
-
-         ForceEffectType effect;
-         hr = config->get_ForceEffect(&effect);
 
          OptimizationType optimization;
          hr = config->get_Optimization(&optimization);
@@ -371,9 +335,6 @@ STDMETHODIMP CBasicVehicularResponse::ComputeDeflections(ILongArray* POIs, BSTR 
       // set up context and strategies
       DeflectionInfluenceLineStrategy InflStrategy(m_InfluenceLineResponse);
       m_InflStrategy = &InflStrategy;
-
-      ForceEffectType effect;
-      hr = config->get_ForceEffect(&effect);
 
       DeflectionDistributionFactorStrategy DfStrategy(m_GetDistributionFactors);
       m_DfStrategy = &DfStrategy;
@@ -676,23 +637,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
       // see if load placement is applicable
       VARIANT_BOOL is_applicable;
       hr = config->get_IsApplicable(&is_applicable);
-      if (is_applicable==VARIANT_FALSE)
-      {
-         // results are not applicable - just add empty results and return
-         for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
-         {
-            long poi_id;
-            hr = POIs->get_Item(ipoi, &poi_id);
-
-            // our result
-            CComPtr<ISectionResult3D> the_result;
-            hr = the_result.CoCreateInstance(CLSID_SectionResult3D);
-
-            // append result to collection
-            hr = the_results->Add(the_result);
-         }
-      }
-      else
+      if (is_applicable == VARIANT_TRUE)
       {
          // get vehicle
          LiveLoadModelType llm_type;
@@ -765,7 +710,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
          hr = pvl->get_Applicability(&llapplicability);
 
          // see if notional model is to be used
-         VARIANT_BOOL is_notional;
+         VARIANT_BOOL is_notional = VARIANT_FALSE;
          hr = pvl->get_UseNotional(&is_notional);
 
          OptimizationType optimization;
@@ -787,10 +732,6 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
             rgt_optimization = optimization==optMaximize ? optMinimize : optMaximize;
          }
 
-         // set up correct sides of influence lines for truck response
-         InfluenceSideType truck_side_fx, truck_side_fy, truck_side_mz;
-         GetTruckSides(optimization, optimized_effect, is_notional, &truck_side_fx, &truck_side_fy, &truck_side_mz);
-
          // loop over pois, get influence lines and evaluate answers
          for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
          {
@@ -807,7 +748,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
             ApplicabilityLoc applicabilityloc = m_ApplicabilityStrategy->GetApplicability(poi_id, stage, 
                                                                     VARIANT_TRUE, llapplicability, 
                                                                     optimized_effect, optimization);
-            if (applicabilityloc!=appNone)
+            if (applicabilityloc != appNone)
             {
                CComPtr<IInfluenceLine> fx_lft_inf, fy_lft_inf, mz_lft_inf;
                CComPtr<IInfluenceLine> fx_rgt_inf, fy_rgt_inf, mz_rgt_inf;
@@ -821,10 +762,13 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
                Float64 lft_truck_resp_mz = 0.0, rgt_truck_resp_mz = 0.0;
                if (is_truck)
                {
+                  // always evaluate with both sides of the influence line. We want the truck
+                  // response in its current location and configuration (disappearing axle trick has
+                  // already happened when determining the configuration, see truck.Initialize() above)
                   VARIANT_BOOL is_dual;
-                  truck.EvaluatePrimary(truck_position, truck_side_fx, flip_factor, fx_lft_inf, fx_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fx, &rgt_truck_resp_fx);
-                  truck.EvaluatePrimary(truck_position, truck_side_fy, flip_factor, fy_lft_inf, fy_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fy, &rgt_truck_resp_fy);
-                  truck.EvaluatePrimary(truck_position, truck_side_mz, flip_factor, mz_lft_inf, mz_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_mz, &rgt_truck_resp_mz);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fx_lft_inf, fx_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fx, &rgt_truck_resp_fx);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fy_lft_inf, fy_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fy, &rgt_truck_resp_fy);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, mz_lft_inf, mz_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_mz, &rgt_truck_resp_mz);
                }
 
                // Compute lane and sidewalk responses if requested
@@ -839,6 +783,8 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
                   Float64 lft_fx_area, lft_fy_area, lft_mz_area;
                   Float64 rgt_fx_area, rgt_fy_area, rgt_mz_area;
 
+                  // vehicle config doesn't have the actual lane load configuraiton so
+                  // we have to figure it out based on the optimization type and force effect
                   ComputeLaneAreas(optimized_effect, optimization, flip_factor,
                                    fx_lft_inf, fx_rgt_inf, fy_lft_inf, fy_rgt_inf,mz_lft_inf, mz_rgt_inf,
                                    &lft_fx_area, &lft_fy_area, &lft_mz_area, &rgt_fx_area, &rgt_fy_area, &rgt_mz_area);
@@ -1012,6 +958,22 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(ILongArray* POIs, BSTR sta
             hr = the_result->SetResult(lft_fx_result, lft_fy_result, lft_mz_result,
                                        rgt_fx_result, rgt_fy_result, rgt_mz_result);
 
+            hr = the_results->Add(the_result);
+         }
+      }
+      else
+      {
+         // results are not applicable - just add empty results and return
+         for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+         {
+            long poi_id;
+            hr = POIs->get_Item(ipoi, &poi_id);
+
+            // our result
+            CComPtr<ISectionResult3D> the_result;
+            hr = the_result.CoCreateInstance(CLSID_SectionResult3D);
+
+            // append result to collection
             hr = the_results->Add(the_result);
          }
       }

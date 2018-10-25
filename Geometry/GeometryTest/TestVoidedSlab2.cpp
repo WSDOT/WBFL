@@ -298,14 +298,14 @@ void CTestVoidedSlab2::TestIShape()
 
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 8 );
+   TRY_TEST( cPoints, 10 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   CComPtr<IPoint2d> points[8];
+   CComPtr<IPoint2d> points[10];
    ULONG fetched;
-   Enum->Next(8,&points[0],&fetched);
-   TRY_TEST( fetched, 8 );
+   Enum->Next(10,&points[0],&fetched);
+   TRY_TEST( fetched, 10 );
 
    Float64 x,y;
 
@@ -317,7 +317,7 @@ void CTestVoidedSlab2::TestIShape()
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,130.0), true );
-   TRY_TEST( IsEqual(y, 36.0), true );
+   TRY_TEST( IsEqual(y,  0.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
@@ -331,8 +331,8 @@ void CTestVoidedSlab2::TestIShape()
 
    points[4]->get_X(&x);
    points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.0), true );
-   TRY_TEST( IsEqual(y,  36.0), true );
+   TRY_TEST( IsEqual(x,130.0), true );
+   TRY_TEST( IsEqual(y, 36.0), true );
 
    points[5]->get_X(&x);
    points[5]->get_Y(&y);
@@ -346,6 +346,16 @@ void CTestVoidedSlab2::TestIShape()
 
    points[7]->get_X(&x);
    points[7]->get_Y(&y);
+   TRY_TEST( IsEqual(x,-130.0), true );
+   TRY_TEST( IsEqual(y,  36.0), true );
+
+   points[8]->get_X(&x);
+   points[8]->get_Y(&y);
+   TRY_TEST( IsEqual(x,-130.0), true );
+   TRY_TEST( IsEqual(y,   0.0), true );
+
+   points[9]->get_X(&x);
+   points[9]->get_Y(&y);
    TRY_TEST( IsEqual(x,-130.0), true );
    TRY_TEST( IsEqual(y,   0.0), true );
 

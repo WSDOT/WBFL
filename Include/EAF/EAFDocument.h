@@ -145,6 +145,10 @@ public:
    // user interface of the application. Plug-ins can add toolbars, menu items, and keyboard accelerators
    virtual void DoIntegrateWithUI(BOOL bIntegrate);
 
+   // Called by the framework to give plug-ins an opportunity to process command line options
+   // Return TRUE if the command line options where handled
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo);
+
    ///////////////////////////////////////////////////////////
    // Toolbars
 
@@ -164,8 +168,8 @@ public:
    //////////////////////////////////////////////////////////////
    // Views
 
-   // registers a view with the doc/view model. returns a that is used to identify the view
-   virtual long RegisterView(CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
+   // registers a view with the doc/view model. returns a key value that is used to identify the view
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
 
    // removes a previously created view
    virtual void RemoveView(long key);

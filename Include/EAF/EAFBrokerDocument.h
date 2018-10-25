@@ -78,7 +78,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-   void BuildReportMenu(CMenu* pMenu,bool bQuickReport);
    void BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport);
 
    // Generated message map functions
@@ -120,6 +119,10 @@ protected:
    // Called by the framework to give plug-ins the opportunity to
    // integrate with the user interface
    virtual void DoIntegrateWithUI(BOOL bIntegrate);
+
+   // Called by the framework to give plug-ins an opportunity to process command line options
+   // Return TRUE if the command line options where handled
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo);
 
    // creates the broker
    virtual BOOL CreateBroker();

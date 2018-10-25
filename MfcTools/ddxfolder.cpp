@@ -77,6 +77,8 @@ BOOL CGetFolderControl::SubclassEdit(HWND hEdit,int nIDC)
 
 BOOL CGetFolderControl::AddEditButton(int nIDC)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
   CRect Rect;
   GetWindowRect(Rect);
   GetParent()->ScreenToClient(Rect);
@@ -105,6 +107,7 @@ void CGetFolderControl::EnableButton(BOOL bEnable)
 
 void CGetFolderControl::Edit()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	CChooseDirDlg dlg;
   CString sDir;
   GetWindowText(sDir);
@@ -175,6 +178,7 @@ void DDX_FolderValue(CDataExchange* pDX, CGetFolderControl& rCGetFolderControl, 
 
 void DDV_FolderControl(CDataExchange* pDX, CGetFolderControl& rCGetFolderControl, DWORD dwFlags)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	if (dwFlags & GFLDR_FOLDER_MUST_EXIST)
   {
     BOOL bFolderExists = FALSE;

@@ -50,7 +50,7 @@
 #import <mshtml.tlb>
 
 #include "custsite.h"
-#include "CustSiteVars.h"
+#include <EAF\EAFCustSiteVars.h>
 #include <system\tokenizer.h>
 #include <Reporter\HtmlHelper.h>
 
@@ -77,13 +77,17 @@ ULONG FAR EXPORT  CCustomControlSite::XDocHostUIHandler::AddRef()
 
 ULONG FAR EXPORT  CCustomControlSite::XDocHostUIHandler::Release()
 {                            
-    METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
 	return pThis->ExternalRelease();
 }
 
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::QueryInterface(REFIID riid, void **ppvObj)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     HRESULT hr = (HRESULT)pThis->ExternalQueryInterface(&riid, ppvObj);
 	return hr;
 }
@@ -94,8 +98,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::QueryInterface(REFIID
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetHostInfo( DOCHOSTUIINFO* pInfo )
 {
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
 	pInfo->dwFlags = DOCHOSTUIFLAG_NO3DBORDER;
     pInfo->dwDoubleClick = DOCHOSTUIDBLCLK_DEFAULT;
 
@@ -113,8 +118,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowUI(
 				IOleInPlaceFrame* pFrame,
 				IOleInPlaceUIWindow * /*pDoc*/)
 {
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
 	// We've already got our own UI in place so just return S_OK
     return S_OK;
 }
@@ -125,7 +131,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowUI(
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::HideUI(void)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return S_OK;
 }
 
@@ -135,7 +143,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::HideUI(void)
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::UpdateUI(void)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
 	// MFC is pretty good about updating it's UI in it's Idle loop so I don't do anything here
 	return S_OK;
 }
@@ -146,7 +156,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::UpdateUI(void)
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::EnableModeless(BOOL /*fEnable*/)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
 
@@ -156,7 +168,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::EnableModeless(BOOL /
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::OnDocWindowActivate(BOOL /*fActivate*/)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
 
@@ -166,7 +180,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::OnDocWindowActivate(B
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::OnFrameWindowActivate(BOOL /*fActivate*/)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
 
@@ -179,7 +195,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ResizeBorder(
 				IOleInPlaceUIWindow* /*pUIWindow*/,
 				BOOL /*fRameWindow*/)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
 
@@ -193,7 +211,8 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 				IUnknown* pCommandTarget,
 				IDispatch* pdispObject)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    // get the document 
 	if (pdispObject != NULL )
@@ -337,7 +356,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::TranslateAccelerator(
             /* [in] */ const GUID __RPC_FAR *pguidCmdGroup,
             /* [in] */ DWORD nCmdID)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return S_FALSE;
 }
 
@@ -348,8 +369,9 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::TranslateAccelerator(
 // *
 HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::GetOptionKeyPath(BSTR* pbstrKey, DWORD)
 {
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
 	return E_NOTIMPL;
 }
 
@@ -357,7 +379,9 @@ STDMETHODIMP CCustomControlSite::XDocHostUIHandler::GetDropTarget(
             /* [in] */ IDropTarget __RPC_FAR *pDropTarget,
             /* [out] */ IDropTarget __RPC_FAR *__RPC_FAR *ppDropTarget)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    return E_NOTIMPL;
 }
 
@@ -379,7 +403,9 @@ STDMETHODIMP CCustomControlSite::XDocHostUIHandler::TranslateUrl(
             /* [in] */ OLECHAR __RPC_FAR *pchURLIn,
             /* [out] */ OLECHAR __RPC_FAR *__RPC_FAR *ppchURLOut)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
         
@@ -387,7 +413,9 @@ STDMETHODIMP CCustomControlSite::XDocHostUIHandler::FilterDataObject(
             /* [in] */ IDataObject __RPC_FAR *pDO,
             /* [out] */ IDataObject __RPC_FAR *__RPC_FAR *ppDORet)
 {
-	METHOD_PROLOGUE(CCustomControlSite, DocHostUIHandler)
+	METHOD_PROLOGUE_(CCustomControlSite, DocHostUIHandler)
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
     return E_NOTIMPL;
 }
 

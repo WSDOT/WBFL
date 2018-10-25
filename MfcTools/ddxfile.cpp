@@ -211,6 +211,8 @@ void CGetFilenameControl::EnableButton(BOOL bEnable)
 
 void CGetFilenameControl::Edit()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
   //bring up the common file open dialog to select the filename
 
   //retreive the current filename to use as the initial value
@@ -242,6 +244,8 @@ void CGetFilenameControl::Edit()
 
 void DDX_FilenameControl(CDataExchange* pDX, int nIDC, int nIDCBtn, CGetFilenameControl& rCGetFilenameControl, DWORD dwFlags, const CString& sDialogTitle, const CString& sExtFilter)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
   if (!pDX->m_bSaveAndValidate && rCGetFilenameControl.m_hWnd == NULL)    // not subclassed yet
   {
@@ -260,6 +264,8 @@ void DDX_FilenameControl(CDataExchange* pDX, int nIDC, int nIDCBtn, CGetFilename
 
 void DDX_FilenameValue(CDataExchange* pDX, CGetFilenameControl& rCGetFilenameControl, CString& sFile)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
   if (pDX->m_bSaveAndValidate)
     rCGetFilenameControl.GetWindowText(sFile); 
   else
@@ -270,6 +276,8 @@ void DDX_FilenameValue(CDataExchange* pDX, CGetFilenameControl& rCGetFilenameCon
 
 void DDV_FilenameControl(CDataExchange* pDX, CGetFilenameControl& rCGetFilenameControl)
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
   BOOL bFileExists = FALSE;
   DWORD dwFlags = rCGetFilenameControl.GetFlags();
 	if (dwFlags & GF_FILEMUSTEXIST)

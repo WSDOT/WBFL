@@ -29,6 +29,9 @@
 #include <sys\stat.h>
 #include <sys\types.h>
 
+#include <EAF\EAFApp.h>
+#include <EAF\EAFUtilities.h>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -54,7 +57,7 @@ CTipDlg::CTipDlg(LPCSTR lpszTipeFile,CWnd* pParent /*=NULL*/)
 
 	// We need to find out what the startup and file position parameters are
 	// If startup does not exist, we assume that the Tips on startup is checked TRUE.
-	CWinApp* pApp = AfxGetApp();
+	CEAFApp* pApp = EAFGetApp();
 	m_bStartup = pApp->GetProfileInt(szSection, szIntStartup, 0);
 	UINT iFilePos = pApp->GetProfileInt(szSection, szIntFilePos, 0);
 
@@ -103,7 +106,7 @@ CTipDlg::~CTipDlg()
 	// But make sure the tips file existed in the first place....
 	if (m_pStream != NULL) 
 	{
-		CWinApp* pApp = AfxGetApp();
+		CEAFApp* pApp = EAFGetApp();
 		pApp->WriteProfileInt(szSection, szIntFilePos, ftell(m_pStream));
 		fclose(m_pStream);
 	}
@@ -180,7 +183,7 @@ void CTipDlg::OnOK()
 	CDialog::OnOK();
 	
     // Update the startup information stored in the INI file
-	CWinApp* pApp = AfxGetApp();
+	CEAFApp* pApp = EAFGetApp();
 	pApp->WriteProfileInt(szSection, szIntStartup, m_bStartup);
 }
 

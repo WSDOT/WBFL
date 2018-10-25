@@ -169,6 +169,10 @@ HRESULT CUBeam::UpdateShape()
       else
          slope = rise/run;
 
+      Float64 T = m_T;
+      if ( !IsZero(slope) )
+         T = m_T*sqrt(slope*slope+1)/slope;
+
       // start at the bottom center and go around clockwise
       // Hook point is at bottom center (0,0)
       // Compute left side points, mirror for right side
@@ -187,7 +191,7 @@ HRESULT CUBeam::UpdateShape()
       Float64 p5_x =  -m_W2/2;
       Float64 p5_y =  m_D1;
 
-      Float64 p6_x =  -m_W2/2 + m_W4 + m_W5 + (IsZero(slope) ? m_T : m_T*sqrt(slope*slope+1)/slope) + (IsZero(slope) ? 0 : (m_D6+m_D7)/slope);
+      Float64 p6_x =  -m_W2/2 + m_W4 + m_W5 + T;
       Float64 p6_y =  m_D1;
 
       Float64 p7_x =  p6_x;
