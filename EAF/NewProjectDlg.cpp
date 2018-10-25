@@ -41,8 +41,8 @@ CNewProjectDlg::CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pPare
 CDialog(CNewProjectDlg::IDD,pParent)
 {
    m_pRootTemplateGroup = pRootTemplateGroup;
-	m_pSelectedTemplate = NULL;
-   m_pTemplateItem = NULL;
+	m_pSelectedTemplate = nullptr;
+   m_pTemplateItem = nullptr;
 }
 
 CNewProjectDlg::~CNewProjectDlg()
@@ -96,8 +96,8 @@ void CNewProjectDlg::AddProjectGroup(HTREEITEM hParent,HTREEITEM hAfter,const CE
                                      bool isInSelectedProject,HTREEITEM* pDefaultItem)
 {
    HICON hIcon = pGroup->GetIcon();
-   int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
-   int seletedImageIdx = (hIcon == NULL ? m_DefaultSelectedIconIdx : imageIdx);
+   int imageIdx        = (hIcon == nullptr ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
+   int seletedImageIdx = (hIcon == nullptr ? m_DefaultSelectedIconIdx : imageIdx);
 
    HTREEITEM hGroup = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,pGroup->GetGroupName(),imageIdx,seletedImageIdx,0,0,(LPARAM)(pGroup),hParent,hAfter);
 
@@ -183,8 +183,8 @@ BOOL CNewProjectDlg::OnInitDialog()
       bool isSelectedProject(strTypeName == strLastSelectedApp);
 
       HICON hIcon = pTemplateGroup->GetIcon();
-      int imageIdx        = (hIcon == NULL ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
-      int seletedImageIdx = (hIcon == NULL ? m_DefaultSelectedIconIdx : imageIdx);
+      int imageIdx        = (hIcon == nullptr ? m_DefaultIconIdx         : m_ProjectTypeImageList.Add(hIcon));
+      int seletedImageIdx = (hIcon == nullptr ? m_DefaultSelectedIconIdx : imageIdx);
 
       HTREEITEM hPrevItem = TVI_ROOT;
       hPrevItem = m_ctrlProjectTypes.InsertItem(TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE,strTypeName,imageIdx,seletedImageIdx,0,0,(LPARAM)(pTemplateGroup),TVI_ROOT,hPrevItem);
@@ -213,7 +213,7 @@ BOOL CNewProjectDlg::OnInitDialog()
 
    SetOKButtonState();
 
-   SetWindowPos(NULL,0,0,cx,cy,SWP_NOMOVE); // restore original dialog size
+   SetWindowPos(nullptr,0,0,cx,cy,SWP_NOMOVE); // restore original dialog size
    
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE
@@ -335,7 +335,7 @@ BOOL CNewProjectDlg::OnToolTipNotify(UINT id,NMHDR* pNMHDR, LRESULT* pResult)
       {
          //::SendMessage(pNMHDR->hwndFrom,TTM_SETMAXTIPWIDTH,0,300); // makes it a multi-line tooltip
          pTTT->lpszText = m_strToolTipText.LockBuffer();
-         pTTT->hinst = NULL;
+         pTTT->hinst = nullptr;
          return TRUE;
       }
       else
@@ -394,7 +394,7 @@ void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
    CWnd* pLarge  = GetDlgItem(IDC_LARGE);
    CWnd* pSmall  = GetDlgItem(IDC_SMALL);
 
-   if ( pOK == NULL || pCancel == NULL || pDesc == NULL)
+   if ( pOK == nullptr || pCancel == nullptr || pDesc == nullptr)
       return;
 
    CRect rCancel, rOK, rDesc, rLarge, rSmall, rProjects, rTemplates;
@@ -446,17 +446,17 @@ void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
    rTemplates.bottom += ptOffset.y;
 
    // move OK and Cancel
-   pOK->SetWindowPos(NULL,rOK.left,rOK.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
-   pCancel->SetWindowPos(NULL,rCancel.left,rCancel.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+   pOK->SetWindowPos(nullptr,rOK.left,rOK.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
+   pCancel->SetWindowPos(nullptr,rCancel.left,rCancel.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
    // move and stretch horizontally Description
-   pDesc->SetWindowPos(NULL,rDesc.left,rDesc.top,rDesc.Width(),rDesc.Height(),SWP_NOZORDER);
+   pDesc->SetWindowPos(nullptr,rDesc.left,rDesc.top,rDesc.Width(),rDesc.Height(),SWP_NOZORDER);
 
-   pLarge->SetWindowPos(NULL,rLarge.left,rLarge.top,rLarge.Width(),rLarge.Height(),SWP_NOZORDER);
-   pSmall->SetWindowPos(NULL,rSmall.left,rSmall.top,rSmall.Width(),rSmall.Height(),SWP_NOZORDER);
+   pLarge->SetWindowPos(nullptr,rLarge.left,rLarge.top,rLarge.Width(),rLarge.Height(),SWP_NOZORDER);
+   pSmall->SetWindowPos(nullptr,rSmall.left,rSmall.top,rSmall.Width(),rSmall.Height(),SWP_NOZORDER);
 
-   m_ctrlProjectTypes.SetWindowPos(NULL,rProjects.left,rProjects.top,rProjects.Width(),rProjects.Height(),SWP_NOZORDER);
-   m_ctrlTemplates.SetWindowPos(NULL,rTemplates.left,rTemplates.top,rTemplates.Width(),rTemplates.Height(),SWP_NOZORDER);
+   m_ctrlProjectTypes.SetWindowPos(nullptr,rProjects.left,rProjects.top,rProjects.Width(),rProjects.Height(),SWP_NOZORDER);
+   m_ctrlTemplates.SetWindowPos(nullptr,rTemplates.left,rTemplates.top,rTemplates.Width(),rTemplates.Height(),SWP_NOZORDER);
 
    Invalidate();
 }
@@ -480,7 +480,7 @@ void CNewProjectDlg::OnDestroy()
    while(true)
    {
       HTREEITEM hparent = m_ctrlProjectTypes.GetParentItem(hItem);
-      if (hparent==NULL)
+      if (hparent==nullptr)
       {
          // name of app is at top level
          strSelection = m_ctrlProjectTypes.GetItemText(hItem);

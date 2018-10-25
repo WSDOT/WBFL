@@ -66,19 +66,19 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarSection"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarSectionItem");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarSectionItem* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarSectionItem* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarSectionItem* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarSectionItem* *ppItem);
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarSection
 public:
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   //STDMETHOD(get_Item)(/*[in]*/ long index, /*[out, retval]*/ IRebarSectionItem* *pVal);
-   //STDMETHOD(get_Count)(/*[out,retval]*/ long* count);
-   STDMETHOD(get__EnumRebarSectionItem)(/*[out,retval]*/IEnumRebarSectionItem* *enumRSI);
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   //STDMETHOD(get_Item)(/*[in]*/ long index, /*[out, retval]*/ IRebarSectionItem* *pVal) override;
+   //STDMETHOD(get_Count)(/*[out,retval]*/ long* count) override;
+   STDMETHOD(get__EnumRebarSectionItem)(/*[out,retval]*/IEnumRebarSectionItem* *enumRSI) override;
 };
 
 #endif //__RebarSection_H_

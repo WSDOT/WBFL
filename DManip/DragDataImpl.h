@@ -56,9 +56,9 @@ BEGIN_COM_MAP(CDragDataSourceImpl)
 END_COM_MAP()
 
    // iDragDataSource Implementation
-   STDMETHOD_(void,SetDataObject)(COleDataObject* pDataObj);
-   STDMETHOD_(void,PrepareFormat)(UINT cfFormat);
-   STDMETHOD_(UINT,Read)(UINT format,void* pBuf,UINT nMax);
+   STDMETHOD_(void,SetDataObject)(COleDataObject* pDataObj) override;
+   STDMETHOD_(void,PrepareFormat)(UINT cfFormat) override;
+   STDMETHOD_(UINT,Read)(UINT format,void* pBuf,UINT nMax) override;
 
 private:
    class DataSource
@@ -94,8 +94,8 @@ BEGIN_COM_MAP(CDragDataSinkImpl)
 END_COM_MAP()
 
    // iDragDataSink Implementation
-   STDMETHOD_(void,CreateFormat)(UINT cfFormat);
-   STDMETHOD_(BOOL,Write)(UINT cfFormat,void* pBuf,UINT nMax);
+   STDMETHOD_(void,CreateFormat)(UINT cfFormat) override;
+   STDMETHOD_(BOOL,Write)(UINT cfFormat,void* pBuf,UINT nMax) override;
 
    // Puts the data onto the clipboard
    void CacheGlobalData(COleDataSource* pODS);

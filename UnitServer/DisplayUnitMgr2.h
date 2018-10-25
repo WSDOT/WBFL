@@ -86,17 +86,17 @@ private:
 
 // ISupportErrorInfo
 public:
-   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDisplayUnitMgr2
 public:
-   STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval);
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval);
-   STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup);
-   STDMETHOD(Clear)();
-   STDMETHOD(Remove)(BSTR bstrGroup);
-   STDMETHOD(get__EnumDisplayUnitGroups)(/*[out,retval]*/ IEnumDisplayUnitGroups** enumDisplayUnitGroups);
+   STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval) override;
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(Remove)(BSTR bstrGroup) override;
+   STDMETHOD(get__EnumDisplayUnitGroups)(/*[out,retval]*/ IEnumDisplayUnitGroups** enumDisplayUnitGroups) override;
 
 // IDisplayUnitGroupEvents
 public:

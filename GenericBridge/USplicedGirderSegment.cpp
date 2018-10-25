@@ -62,7 +62,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
    }
 
    CComQIPtr<IUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;

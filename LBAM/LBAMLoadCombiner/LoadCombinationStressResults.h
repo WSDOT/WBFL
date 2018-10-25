@@ -58,20 +58,20 @@ BEGIN_COM_MAP(CLoadCombinationStressResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationStressResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult** leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/IStressResult** rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig);
-	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clear)();
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult** leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/IStressResult** rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clear)() override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 private:
    struct ComboRes

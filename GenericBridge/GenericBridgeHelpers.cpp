@@ -195,7 +195,7 @@ HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 dis
    Float64 distAlongPath = distAlongSegment + brgOffset - endDist;
 
    CComPtr<IPoint2d> pnt;
-   gdrPath->LocatePoint(distAlongPath,omtNormal,0.00,CComVariant(NULL),&pnt);
+   gdrPath->LocatePoint(distAlongPath,omtNormal,0.00,CComVariant(0),&pnt);
    Float64 x,y;
    pnt->Location(&x,&y);
 

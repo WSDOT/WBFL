@@ -67,24 +67,24 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRoundColumn
 public:
-   STDMETHOD(put_Diameter)(/*[in]*/Float64 dia);
-   STDMETHOD(get_Diameter)(/*[out,retval]*/Float64* dia);
-   STDMETHOD(put_Cover)(/*[in]*/Float64 cover);
-   STDMETHOD(get_Cover)(/*[out,retval]*/Float64* cover);
-   STDMETHOD(put_As)(/*[in]*/Float64 as);
-   STDMETHOD(get_As)(/*[out,retval]*/Float64* as);
-   STDMETHOD(put_fc)(/*[in]*/Float64 fc);
-   STDMETHOD(get_fc)(/*[out,retval]*/Float64* fc);
-   STDMETHOD(put_fy)(/*[in]*/Float64 fy);
-   STDMETHOD(get_fy)(/*[out,retval]*/Float64* fy);
-   STDMETHOD(put_Es)(/*[in]*/Float64 es);
-   STDMETHOD(get_Es)(/*[out,retval]*/Float64* es);
-   STDMETHOD(ComputeInteraction)(/*[in]*/ long nSteps,/*[out,retval]*/IPoint2dCollection* *points);
-   STDMETHOD(ComputeInteractionEx)(/*[in]*/long nSteps,/*[in]*/Float64 ecl,/*[in]*/Float64 etl,/*[out]*/IPoint2dCollection** ppUnfactored,/*[out]*/IPoint2dCollection** ppFactored);
+   STDMETHOD(put_Diameter)(/*[in]*/Float64 dia) override;
+   STDMETHOD(get_Diameter)(/*[out,retval]*/Float64* dia) override;
+   STDMETHOD(put_Cover)(/*[in]*/Float64 cover) override;
+   STDMETHOD(get_Cover)(/*[out,retval]*/Float64* cover) override;
+   STDMETHOD(put_As)(/*[in]*/Float64 as) override;
+   STDMETHOD(get_As)(/*[out,retval]*/Float64* as) override;
+   STDMETHOD(put_fc)(/*[in]*/Float64 fc) override;
+   STDMETHOD(get_fc)(/*[out,retval]*/Float64* fc) override;
+   STDMETHOD(put_fy)(/*[in]*/Float64 fy) override;
+   STDMETHOD(get_fy)(/*[out,retval]*/Float64* fy) override;
+   STDMETHOD(put_Es)(/*[in]*/Float64 es) override;
+   STDMETHOD(get_Es)(/*[out,retval]*/Float64* es) override;
+   STDMETHOD(ComputeInteraction)(/*[in]*/ long nSteps,/*[out,retval]*/IPoint2dCollection* *points) override;
+   STDMETHOD(ComputeInteractionEx)(/*[in]*/long nSteps,/*[in]*/Float64 ecl,/*[in]*/Float64 etl,/*[out]*/IPoint2dCollection** ppUnfactored,/*[out]*/IPoint2dCollection** ppFactored) override;
 
 private:
    HRESULT ComputeInteractionCurve(long nSteps,bool bFactor,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored);

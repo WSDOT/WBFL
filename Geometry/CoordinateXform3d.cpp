@@ -47,7 +47,7 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CCoordinateXform3d::FinalConstruct()
 {
    HRESULT hr;
-   hr = CreatePoint(0.00,0.00,0.00,NULL,&m_pNewOrigin);
+   hr = CreatePoint(0.00,0.00,0.00,nullptr,&m_pNewOrigin);
    if ( FAILED(hr) ) return hr;
 
    hr = CreateVector(0.00,0.00,1.00,&m_pRotationVector);
@@ -65,7 +65,7 @@ STDMETHODIMP CCoordinateXform3d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ICoordinateXform3d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -147,11 +147,11 @@ STDMETHODIMP CCoordinateXform3d::XformEx(IPoint3d* point, XformType type, IPoint
    CHECK_IN(point);
    CHECK_RETOBJ(result);
 
-   CreatePoint(point,NULL,result);
+   CreatePoint(point,nullptr,result);
    return Xform(result,type);
 }
 
-STDMETHODIMP CCoordinateXform3d::NewToOld(IPoint3d *point)
+HRESULT CCoordinateXform3d::NewToOld(IPoint3d *point)
 {
    CComPtr<IVector3d> origin;
    CreateVector(m_pNewOrigin,&origin);
@@ -196,7 +196,7 @@ STDMETHODIMP CCoordinateXform3d::NewToOld(IPoint3d *point)
    return S_OK;
 }
 
-STDMETHODIMP CCoordinateXform3d::OldToNew(IPoint3d *point)
+HRESULT CCoordinateXform3d::OldToNew(IPoint3d *point)
 {
    CComPtr<IVector3d> origin;
    CreateVector(m_pNewOrigin,&origin);

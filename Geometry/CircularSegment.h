@@ -73,58 +73,58 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICircularSegment
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Rotation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Rotation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_InteriorAngle)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_InteriorAngle)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MidOrdinate)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_MidOrdinate)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Center)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_Center)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Radius)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_HookPoint)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Rotation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Rotation)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_InteriorAngle)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_InteriorAngle)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MidOrdinate)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_MidOrdinate)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Center)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_Center)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Radius)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_HookPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 
 // IShape
-	STDMETHOD(get_ShapeProperties)(IShapeProperties * * pVal);
-	STDMETHOD(get_BoundingBox)(IRect2d * * pVal);
-	STDMETHOD(get_PolyPoints)(IPoint2dCollection * * ppPolyPoints);
-	STDMETHOD(Clone)(IShape** pClone);
-	STDMETHOD(PointInShape)(IPoint2d * pPoint, VARIANT_BOOL * pbResult);
-	STDMETHOD(ClipWithLine)(ILine2d * pLine, IShape * * pShape);
-	STDMETHOD(ClipIn)(IRect2d * pRect, IShape * * pShape);
-	STDMETHOD(get_Perimeter)(Float64 * pVal);
-	STDMETHOD(FurthestDistance)(ILine2d * line, Float64 * pVal);
+	STDMETHOD(get_ShapeProperties)(IShapeProperties * * pVal) override;
+	STDMETHOD(get_BoundingBox)(IRect2d * * pVal) override;
+	STDMETHOD(get_PolyPoints)(IPoint2dCollection * * ppPolyPoints) override;
+	STDMETHOD(Clone)(IShape** pClone) override;
+	STDMETHOD(PointInShape)(IPoint2d * pPoint, VARIANT_BOOL * pbResult) override;
+	STDMETHOD(ClipWithLine)(ILine2d * pLine, IShape * * pShape) override;
+	STDMETHOD(ClipIn)(IRect2d * pRect, IShape * * pShape) override;
+	STDMETHOD(get_Perimeter)(Float64 * pVal) override;
+	STDMETHOD(FurthestDistance)(ILine2d * line, Float64 * pVal) override;
 
 // IXYPosition
-	STDMETHOD(Offset)(Float64 dx, Float64 dy);
-	STDMETHOD(OffsetEx)(ISize2d * pSize);
-	STDMETHOD(get_LocatorPoint)(LocatorPointType lp, IPoint2d * * point);
-	STDMETHOD(put_LocatorPoint)(LocatorPointType lp, IPoint2d * point);
-	STDMETHOD(MoveEx)(IPoint2d * pFrom, IPoint2d * pTo);
-	STDMETHOD(RotateEx)(IPoint2d * pPoint, Float64 angle);
-	STDMETHOD(Rotate)(Float64 cx, Float64 cy, Float64 angle);
+	STDMETHOD(Offset)(Float64 dx, Float64 dy) override;
+	STDMETHOD(OffsetEx)(ISize2d * pSize) override;
+	STDMETHOD(get_LocatorPoint)(LocatorPointType lp, IPoint2d * * point) override;
+	STDMETHOD(put_LocatorPoint)(LocatorPointType lp, IPoint2d * point) override;
+	STDMETHOD(MoveEx)(IPoint2d * pFrom, IPoint2d * pTo) override;
+	STDMETHOD(RotateEx)(IPoint2d * pPoint, Float64 angle) override;
+	STDMETHOD(Rotate)(Float64 cx, Float64 cy, Float64 angle) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPoint2dEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 
 private:
 	Float64 m_Radius;

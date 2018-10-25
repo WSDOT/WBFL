@@ -45,7 +45,7 @@ HRESULT COffsetTendon::FinalConstruct()
    m_StrandCount  = 0;
    m_JackingEnd   = jeLeft;
 
-   m_pSSMbr = NULL;
+   m_pSSMbr = nullptr;
 
    return S_OK;
 }
@@ -62,7 +62,7 @@ STDMETHODIMP COffsetTendon::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ITendon,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -196,7 +196,7 @@ STDMETHODIMP COffsetTendon::putref_Material(IPrestressingStrand* psMaterial)
 {
    CHECK_IN(psMaterial);
    CComQIPtr<IMaterial> material(psMaterial);
-   if ( material == NULL )
+   if ( material == nullptr )
    {
       ATLASSERT(false); // psMaterial must implement IMaterial
       return E_INVALIDARG;
@@ -335,7 +335,7 @@ STDMETHODIMP COffsetTendon::get_Centerline(TendonMeasure measure,IPoint3dCollect
    CComPtr<IPoint3d> point;
    CComPtr<IEnumPoint3d> enumPoints;
    (*ppPoints)->get__Enum(&enumPoints);
-   while ( enumPoints->Next(0,&point,NULL) != S_FALSE )
+   while ( enumPoints->Next(0,&point,nullptr) != S_FALSE )
    {
       Float64 z;
       point->get_Z(&z);

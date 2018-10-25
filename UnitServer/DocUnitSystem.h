@@ -55,19 +55,19 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDocUnitSystem
 public:
-	STDMETHOD(get_AppUnitSystem)(/*[out, retval]*/ IAppUnitSystem* *pVal);
-	STDMETHOD(putref_AppUnitSystem)(/*[in]*/ IAppUnitSystem* newVal);
-	STDMETHOD(get_UnitModeController)(/*[out, retval]*/ IUnitModeController* *pVal);
-	STDMETHOD(get_UnitMode)(/*[out, retval]*/ UnitModeType *pVal);
-	STDMETHOD(put_UnitMode)(/*[in]*/ UnitModeType newVal);
-	STDMETHOD(ConvertToDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result);
-	STDMETHOD(ConvertFromDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result);
-	STDMETHOD(get_Tag)(/*[in]*/ BSTR group,/*[out,retval]*/BSTR* tag);
-	STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ BSTR group,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/BSTR* fmtString);
+	STDMETHOD(get_AppUnitSystem)(/*[out, retval]*/ IAppUnitSystem* *pVal) override;
+	STDMETHOD(putref_AppUnitSystem)(/*[in]*/ IAppUnitSystem* newVal) override;
+	STDMETHOD(get_UnitModeController)(/*[out, retval]*/ IUnitModeController* *pVal) override;
+	STDMETHOD(get_UnitMode)(/*[out, retval]*/ UnitModeType *pVal) override;
+	STDMETHOD(put_UnitMode)(/*[in]*/ UnitModeType newVal) override;
+	STDMETHOD(ConvertToDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result) override;
+	STDMETHOD(ConvertFromDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result) override;
+	STDMETHOD(get_Tag)(/*[in]*/ BSTR group,/*[out,retval]*/BSTR* tag) override;
+	STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ BSTR group,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/BSTR* fmtString) override;
 
 // _IUnitModeControllerEvents
 public:

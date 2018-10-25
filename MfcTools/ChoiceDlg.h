@@ -31,7 +31,7 @@ class CChoiceDlg : public CDialog
 	DECLARE_DYNAMIC(CChoiceDlg)
 
 public:
-	CChoiceDlg(CWnd* pParent = NULL);   // standard constructor
+	CChoiceDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CChoiceDlg();
 
 // Dialog Data
@@ -48,10 +48,10 @@ public:
 protected:
    CStatic m_Icon;
 
-   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+   virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
    void OnHelp();
 };

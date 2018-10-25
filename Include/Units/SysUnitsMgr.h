@@ -182,7 +182,7 @@ private:
 
    // Prevent accidental copying and assignment
    unitSysUnitsMgr(const unitSysUnitsMgr&);
-   unitSysUnitsMgr& operator=(const unitSysUnitsMgr&);
+   unitSysUnitsMgr& operator=(const unitSysUnitsMgr&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

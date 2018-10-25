@@ -65,7 +65,7 @@ void CTitlePageBuilder::SetReportTitle(LPCTSTR title)
    m_Title = title;
 }
 
-bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec)
+bool CTitlePageBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec)
 {
    // be conservative... assume report title pages needs updating
    // Override this method if you want an different outcome

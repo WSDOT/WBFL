@@ -70,7 +70,7 @@ void CTestUsingBogusContext::Test()
 
    // initialize our load combiner with the context
    CComQIPtr<IDependOnLoadCombinationAnalysisContext> depctx(lc_response);
-   TRY_TEST(depctx!=NULL, true);
+   TRY_TEST(depctx!=nullptr, true);
    TRY_TEST(depctx->Initialize(plclc), S_OK);
 
    // get list of pois from context
@@ -97,21 +97,21 @@ void CTestUsingBogusContext::Test()
    stages->get_Count(&num_stages);
    loadcases->get_Count(&num_loadcases);
 
-   for (StageIndexType istg=0; istg<num_stages; istg++)
+   for (StageIndexType istg = 0; istg<num_stages; istg++)
    {
       CComPtr<IStage> ostg;
       stages->get_Item(istg, &ostg);
       CComBSTR stage;
       ostg->get_Name(&stage);
 
-      for (CollectionIndexType ilc=0; ilc<num_loadcases; ilc++)
+      for (CollectionIndexType ilc = 0; ilc<num_loadcases; ilc++)
       {
          CComPtr<ILoadCase> olc;
          loadcases->get_Item(ilc, &olc);
          CComBSTR load_case;
          olc->get_Name(&load_case);
 
-         for (long isumm=0; isumm<2; isumm++)
+         for (long isumm = 0; isumm<2; isumm++)
          {
             // need both incremental and cumulative results
             ResultsSummationType summ = (isumm==0)? rsIncremental:rsCumulative;
@@ -170,7 +170,7 @@ void CTestUsingBogusContext::Test()
    CollectionIndexType num_loadcombos;
    loadcombos->get_Count(&num_loadcombos);
 
-   for (StageIndexType istg=0; istg<num_stages; istg++)
+   for (StageIndexType istg = 0; istg<num_stages; istg++)
    {
       CComPtr<IStage> ostg;
       stages->get_Item(istg, &ostg);
@@ -179,7 +179,7 @@ void CTestUsingBogusContext::Test()
 
       VARIANT_BOOL compute_ll = istg==num_stages-1 ? VARIANT_TRUE : VARIANT_FALSE;
 
-      for (CollectionIndexType ilc=0; ilc<num_loadcombos; ilc++)
+      for (CollectionIndexType ilc = 0; ilc<num_loadcombos; ilc++)
       {
          CComPtr<ILoadCombination> olc;
          loadcombos->get_Item(ilc, &olc);
@@ -187,12 +187,12 @@ void CTestUsingBogusContext::Test()
          olc->get_Name(&load_combo);
 
          // need both incremental and cumulative results
-         for (long isumm=0; isumm<2; isumm++)
+         for (long isumm = 0; isumm<2; isumm++)
          {
             ResultsSummationType summ = (isumm==0)? rsIncremental:rsCumulative;
 
             // need all dof's
-            for (long idof=0; idof<3; idof++)
+            for (long idof = 0; idof<3; idof++)
             {
                ForceEffectType feff;
                if (idof==0)
@@ -203,7 +203,7 @@ void CTestUsingBogusContext::Test()
                   feff = fetMz;
 
                // maximize and minimize
-               for (long iopt=0; iopt<2; iopt++)
+               for (long iopt = 0; iopt<2; iopt++)
                {
                   OptimizationType opt = iopt==0 ? optMinimize : optMaximize;
 
@@ -217,7 +217,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> left_config, right_config;
                      Float64 left_val, right_val;
@@ -241,7 +241,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> left_config, right_config;
                      Float64 left_val, right_val;
@@ -265,7 +265,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> config;
                      Float64 val;
@@ -286,7 +286,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> config;
                      Float64 val;
@@ -307,7 +307,7 @@ void CTestUsingBogusContext::Test()
                   TRY_TEST(hr, S_OK);
 
                   // loop over all pois to get concurrent results
-                  for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+                  for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
                   {
                      CComPtr<ILoadCombinationResultConfiguration> leftconfig, rightconfig;
                      CComPtr<IStressResult> leftval, rightval;

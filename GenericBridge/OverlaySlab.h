@@ -47,7 +47,7 @@ public:
    COverlaySlab()
 	{
       m_GrossDepth = 0;
-      m_pDeckBoundary = NULL;
+      m_pDeckBoundary = nullptr;
 	}
 
    HRESULT FinalConstruct();
@@ -73,24 +73,24 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeck
 public:
-   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary);
-   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary);
+   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary) override;
+   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary) override;
 
 // IOverlaySlab
 public:
-	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth);
+	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
 
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__OVERLAYSLAB_H_

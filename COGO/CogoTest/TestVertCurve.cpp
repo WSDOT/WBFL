@@ -72,9 +72,9 @@ void CTestVertCurve::Test1()
    pfg->put_Station(CComVariant(400));
    pfg->put_Elevation(100);
 
-   TRY_TEST( vc->putref_PBG(NULL), E_INVALIDARG );
-   TRY_TEST( vc->putref_PVI(NULL), E_INVALIDARG );
-   TRY_TEST( vc->putref_PFG(NULL), E_INVALIDARG );
+   TRY_TEST( vc->putref_PBG(nullptr), E_INVALIDARG );
+   TRY_TEST( vc->putref_PVI(nullptr), E_INVALIDARG );
+   TRY_TEST( vc->putref_PFG(nullptr), E_INVALIDARG );
 
    TRY_TEST( vc->putref_PBG(pbg), S_OK );
    TRY_TEST( vc->putref_PVI(pvi), S_OK );
@@ -89,21 +89,21 @@ void CTestVertCurve::Test1()
    TRY_TEST( vc->put_L2(200),S_OK);
 
    Float64 g1, g2;
-   TRY_TEST( vc->get_EntryGrade(NULL), E_POINTER );
+   TRY_TEST( vc->get_EntryGrade(nullptr), E_POINTER );
    TRY_TEST( vc->get_EntryGrade(&g1), S_OK );
    TRY_TEST( IsEqual(g1,-0.5), true );
 
-   TRY_TEST( vc->get_ExitGrade(NULL), E_POINTER );
+   TRY_TEST( vc->get_ExitGrade(nullptr), E_POINTER );
    TRY_TEST( vc->get_ExitGrade(&g2), S_OK );
    TRY_TEST( IsEqual(g2,0.25), true );
 
    Float64 L;
-   TRY_TEST( vc->get_Length(NULL), E_POINTER );
+   TRY_TEST( vc->get_Length(nullptr), E_POINTER );
    TRY_TEST( vc->get_Length(&L), S_OK );
    TRY_TEST( IsEqual( L, 300.), true );
 
    Float64 elev;
-   TRY_TEST( vc->Elevation(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Elevation(CComVariant(150),nullptr),E_POINTER );
    TRY_TEST( vc->Elevation(CComVariant(150),&elev), S_OK );
    TRY_TEST( IsEqual(elev,81.25), true );
    TRY_TEST( vc->Elevation(CComVariant(200),&elev), S_OK );
@@ -112,7 +112,7 @@ void CTestVertCurve::Test1()
    TRY_TEST( IsEqual(elev,76.5625), true );
 
    Float64 grade;
-   TRY_TEST( vc->Grade(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Grade(CComVariant(150),nullptr),E_POINTER );
    TRY_TEST( vc->Grade(CComVariant(150),&grade), S_OK );
    TRY_TEST( IsEqual(grade,-0.25), true );
    TRY_TEST( vc->Grade(CComVariant(200),&grade), S_OK );
@@ -128,7 +128,7 @@ void CTestVertCurve::Test1()
    CComPtr<IProfilePoint> point;
    CComPtr<IStation> station;
    Float64 sta;
-   TRY_TEST( vc->get_HighPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_HighPoint(nullptr), E_POINTER );
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    point->get_Station(&station);
    station->get_Value(&sta);
@@ -138,7 +138,7 @@ void CTestVertCurve::Test1()
 
    // low point between ends
    point.Release();
-   TRY_TEST( vc->get_LowPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_LowPoint(nullptr), E_POINTER );
    TRY_TEST( vc->get_LowPoint(&point), S_OK );
    station.Release();
    point->get_Station(&station);
@@ -240,7 +240,7 @@ void CTestVertCurve::Test1()
 
 
    point.Release();
-   TRY_TEST( vc->get_HighPoint(NULL), E_POINTER);
+   TRY_TEST( vc->get_HighPoint(nullptr), E_POINTER);
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    station.Release();
    point->get_Station(&station);
@@ -250,7 +250,7 @@ void CTestVertCurve::Test1()
    TRY_TEST(IsEqual(elev,441.14),true);
 
    point.Release();
-   TRY_TEST( vc->get_LowPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_LowPoint(nullptr), E_POINTER );
    TRY_TEST( vc->get_LowPoint(&point), S_OK );
    station.Release();
    point->get_Station(&station);
@@ -268,22 +268,22 @@ void CTestVertCurve::Test1()
    vc->get_ExitGrade(&g2);
 
    Float64 A;
-   TRY_TEST( vc->get_A(NULL), E_POINTER );
+   TRY_TEST( vc->get_A(nullptr), E_POINTER );
    TRY_TEST( vc->get_A(&A), S_OK);
    TRY_TEST( IsEqual(g2-g1,A),true);
 
    Float64 K;
-   TRY_TEST( vc->get_K(NULL), E_POINTER );
+   TRY_TEST( vc->get_K(nullptr), E_POINTER );
    TRY_TEST( vc->get_K(&K), S_OK );
    TRY_TEST( IsEqual( A/(2*L), K), true);
 
    Float64 H;
-   TRY_TEST( vc->get_H(NULL), E_POINTER );
+   TRY_TEST( vc->get_H(nullptr), E_POINTER );
    TRY_TEST( vc->get_H(&H), S_OK );
    TRY_TEST( IsEqual( A*L1*L2/(2*L), H), true);
 
    Float64 e;
-   TRY_TEST( vc->get_E(0,NULL), E_POINTER );
+   TRY_TEST( vc->get_E(0,nullptr), E_POINTER );
    TRY_TEST( vc->get_E(0,&e), S_OK );
    TRY_TEST( IsZero(e), true);
 
@@ -330,7 +330,7 @@ void CTestVertCurve::Test1()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(vc);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVertCurve ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -354,9 +354,9 @@ void CTestVertCurve::Test2()
    profile->AddEx(vc);
 
    profile.Release();
-   TRY_TEST(vc->get_Profile(NULL),E_POINTER);
+   TRY_TEST(vc->get_Profile(nullptr),E_POINTER);
    TRY_TEST(vc->get_Profile(&profile),S_OK);
-   TRY_TEST(profile!=NULL,true);
+   TRY_TEST(profile!=nullptr,true);
 
    // create station equation
    CComPtr<IStationEquationCollection> equations;
@@ -498,20 +498,20 @@ void CTestVertCurve::Test3()
    TRY_TEST(vc->put_ExitGrade(0.25),S_OK);
 
    Float64 l1, l2;
-   TRY_TEST(vc->get_L1(NULL), E_POINTER);
+   TRY_TEST(vc->get_L1(nullptr), E_POINTER);
    TRY_TEST(vc->get_L1(&l1),  S_OK);
-   TRY_TEST(vc->get_L2(NULL), E_POINTER);
+   TRY_TEST(vc->get_L2(nullptr), E_POINTER);
    TRY_TEST(vc->get_L2(&l2),  S_OK);
    TRY_TEST(IsEqual(l1,100.0),true);
    TRY_TEST(IsEqual(l2,200.0),true);
 
    Float64 L;
-   TRY_TEST( vc->get_Length(NULL), E_POINTER );
+   TRY_TEST( vc->get_Length(nullptr), E_POINTER );
    TRY_TEST( vc->get_Length(&L), S_OK );
    TRY_TEST( IsEqual( L, 300.), true );
 
    Float64 elev;
-   TRY_TEST( vc->Elevation(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Elevation(CComVariant(150),nullptr),E_POINTER );
    TRY_TEST( vc->Elevation(CComVariant(150),&elev), S_OK );
    TRY_TEST( IsEqual(elev,81.25), true );
    TRY_TEST( vc->Elevation(CComVariant(200),&elev), S_OK );
@@ -520,7 +520,7 @@ void CTestVertCurve::Test3()
    TRY_TEST( IsEqual(elev,76.5625), true );
 
    Float64 grade;
-   TRY_TEST( vc->Grade(CComVariant(150),NULL),E_POINTER );
+   TRY_TEST( vc->Grade(CComVariant(150),nullptr),E_POINTER );
    TRY_TEST( vc->Grade(CComVariant(150),&grade), S_OK );
    TRY_TEST( IsEqual(grade,-0.25), true );
    TRY_TEST( vc->Grade(CComVariant(200),&grade), S_OK );
@@ -536,7 +536,7 @@ void CTestVertCurve::Test3()
    CComPtr<IProfilePoint> point;
    CComPtr<IStation> station;
    Float64 sta;
-   TRY_TEST( vc->get_HighPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_HighPoint(nullptr), E_POINTER );
    TRY_TEST( vc->get_HighPoint(&point), S_OK );
    point->get_Station(&station);
    station->get_Value(&sta);
@@ -546,7 +546,7 @@ void CTestVertCurve::Test3()
 
    // low point between ends
    point.Release();
-   TRY_TEST( vc->get_LowPoint(NULL), E_POINTER );
+   TRY_TEST( vc->get_LowPoint(nullptr), E_POINTER );
    TRY_TEST( vc->get_LowPoint(&point), S_OK );
    station.Release();
    point->get_Station(&station);
@@ -570,7 +570,7 @@ void CTestVertCurve::Test3()
 
 STDMETHODIMP CTestVertCurve::OnVertCurveChanged(IVertCurve* pp)
 {
-   //::MessageBox(NULL,"OnVertCurveChanged","Event",MB_OK);
+   //::MessageBox(nullptr,"OnVertCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

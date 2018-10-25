@@ -41,7 +41,7 @@ STDMETHODIMP CLiveLoadModelResults::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoadModelResults
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -107,7 +107,7 @@ STDMETHODIMP CLiveLoadModelResults::GetResult(CollectionIndexType index, Float64
 
       *result     = rresult.m_Result;
 
-      if (config!=NULL)
+      if (config!=nullptr)
          rresult.m_Config.CopyTo(config);
    }
    else
@@ -147,7 +147,7 @@ STDMETHODIMP CLiveLoadModelResults::Load(IStructuredLoad2 * pload)
       long cnt = var;
       m_Results.reserve(cnt);
 
-      for (long ic=0; ic<cnt; ic++)
+      for (long ic = 0; ic<cnt; ic++)
       {
          LlmResults reshldr;
 
@@ -167,7 +167,7 @@ STDMETHODIMP CLiveLoadModelResults::Load(IStructuredLoad2 * pload)
          // null configurations are written out as longs (see Save)
          if (var.vt==VT_I4)
          {
-            reshldr.m_Config = NULL;
+            reshldr.m_Config = nullptr;
          }
          else
          {
@@ -209,7 +209,7 @@ STDMETHODIMP CLiveLoadModelResults::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 
@@ -217,7 +217,7 @@ STDMETHODIMP CLiveLoadModelResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_Config!=NULL)
+         if (llres.m_Config!=nullptr)
             hr = psave->put_Property(CComBSTR("Config"),_variant_t(llres.m_Config));
          else
             hr = psave->put_Property(CComBSTR("Config"),_variant_t((long)0));

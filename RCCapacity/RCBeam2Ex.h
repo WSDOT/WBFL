@@ -91,60 +91,60 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRCBeam2Ex
 public:
-	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Eps)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Eps)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpe)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpe)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_FcBeam)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_FcBeam)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_FcSlab)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_FcSlab)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpu)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpu)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_hf)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_hf)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_b)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_b)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Beam)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(putref_Beam)(/*[in]*/ IShape* newVal);
+	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Eps)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Eps)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpe)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpe)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_FcBeam)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_FcBeam)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_FcSlab)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_FcSlab)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpu)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpu)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_hf)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_hf)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_b)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_b)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Beam)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(putref_Beam)(/*[in]*/ IShape* newVal) override;
 
-   STDMETHOD(AddRebarLayer)(/*[in]*/ Float64 ds,/*[in]*/ Float64 As,/*[in]*/ Float64 devFactor);
-   STDMETHOD(get_RebarLayerCount)(/*[out,retval]*/ CollectionIndexType * count);
-   STDMETHOD(get_RebarLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * ds);
-   STDMETHOD(get_RebarLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * As);
-   STDMETHOD(get_RebarLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor);
-   STDMETHOD(GetRebarLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64* devFactor);
-   STDMETHOD(RemoveRebarLayer)(/*[in]*/ CollectionIndexType index);
-   STDMETHOD(ClearRebarLayers)();
+   STDMETHOD(AddRebarLayer)(/*[in]*/ Float64 ds,/*[in]*/ Float64 As,/*[in]*/ Float64 devFactor) override;
+   STDMETHOD(get_RebarLayerCount)(/*[out,retval]*/ CollectionIndexType * count) override;
+   STDMETHOD(get_RebarLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * ds) override;
+   STDMETHOD(get_RebarLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * As) override;
+   STDMETHOD(get_RebarLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor) override;
+   STDMETHOD(GetRebarLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64* devFactor) override;
+   STDMETHOD(RemoveRebarLayer)(/*[in]*/ CollectionIndexType index) override;
+   STDMETHOD(ClearRebarLayers)() override;
 
-   STDMETHOD(AddStrandLayer)(/*[in]*/ Float64 dps,/*[in]*/ Float64 Aps, /*[in]*/ Float64 devFactor);
-   STDMETHOD(get_StrandLayerCount)(/*[out,retval]*/ CollectionIndexType * count);
-   STDMETHOD(get_StrandLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * dps);
-   STDMETHOD(get_StrandLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * Aps);
-   STDMETHOD(get_StrandLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor);
-   STDMETHOD(GetStrandLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * dps, /*[out]*/ Float64 * Aps, /*[out]*/ Float64* devFactor);
-   STDMETHOD(RemoveStrandLayer)(/*[in]*/ CollectionIndexType index);
-   STDMETHOD(ClearStrandLayers)();
+   STDMETHOD(AddStrandLayer)(/*[in]*/ Float64 dps,/*[in]*/ Float64 Aps, /*[in]*/ Float64 devFactor) override;
+   STDMETHOD(get_StrandLayerCount)(/*[out,retval]*/ CollectionIndexType * count) override;
+   STDMETHOD(get_StrandLayerDepth)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * dps) override;
+   STDMETHOD(get_StrandLayerSteel)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * Aps) override;
+   STDMETHOD(get_StrandLayerDevFactor)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ Float64 * devFactor) override;
+   STDMETHOD(GetStrandLayer)(/*[in]*/ CollectionIndexType index,/*[out]*/ Float64 * dps, /*[out]*/ Float64 * Aps, /*[out]*/ Float64* devFactor) override;
+   STDMETHOD(RemoveStrandLayer)(/*[in]*/ CollectionIndexType index) override;
+   STDMETHOD(ClearStrandLayers)() override;
 
 // ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
+		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__RCBEAM2EX_H_

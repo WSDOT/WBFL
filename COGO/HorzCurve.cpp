@@ -131,7 +131,7 @@ STDMETHODIMP CHorzCurve::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IHorzCurve,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -524,7 +524,7 @@ STDMETHODIMP CHorzCurve::get_TS(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   if ( m_TS == NULL )
+   if ( m_TS == nullptr )
    {
       m_PointFactory->CreatePoint(&m_TS);
 
@@ -552,7 +552,7 @@ STDMETHODIMP CHorzCurve::get_ST(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   if ( m_ST == NULL )
+   if ( m_ST == nullptr )
    {
       m_PointFactory->CreatePoint(&m_ST);
 
@@ -814,7 +814,7 @@ STDMETHODIMP CHorzCurve::get_CC(IPoint2d** pVal)
 #endif // _DEBUG
 
    p.QueryInterface(pVal);
-   ATLASSERT( *pVal != NULL );
+   ATLASSERT( *pVal != nullptr );
 
 	return S_OK;
 }
@@ -984,7 +984,7 @@ STDMETHODIMP CHorzCurve::get_PCI(IPoint2d **pVal)
    m_GeomUtil->LineLineIntersect(l1,l2,&p);
 
    p.QueryInterface(pVal);
-   ATLASSERT( *pVal != NULL );
+   ATLASSERT( *pVal != nullptr );
 
 	return S_OK;
 }
@@ -1042,7 +1042,7 @@ STDMETHODIMP CHorzCurve::get_CCC(IPoint2d **pVal)
    m_GeomUtil->LineLineIntersect(l1,l2,&p);
 
    p.QueryInterface(pVal);
-   ATLASSERT( *pVal != NULL );
+   ATLASSERT( *pVal != nullptr );
 
 	return S_OK;
 }
@@ -1464,9 +1464,9 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
    CHECK_RETOBJ(p1);
    CHECK_RETOBJ(p2);
 
-   // make this equal to NULL to indicate intersections not found
-   (*p1) = NULL;
-   (*p2) = NULL;
+   // make this equal to nullptr to indicate intersections not found
+   (*p1) = nullptr;
+   (*p2) = nullptr;
 
    //
    // First check to see if the line intersects the circular curve
@@ -1523,7 +1523,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
          pnt2.CopyTo(&pntCurve2);
    }
 
-   if ( pntCurve1 == NULL && pntCurve2 != NULL )
+   if ( pntCurve1 == nullptr && pntCurve2 != nullptr )
    {
       pntCurve1 = pntCurve2;
       pntCurve2.Release();
@@ -1813,7 +1813,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( bkTangentPoint )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          bkTangentPoint.CopyTo(p1);
       else
          bkTangentPoint.CopyTo(p2);
@@ -1821,7 +1821,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( pntEntrySpiral )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          pntEntrySpiral.CopyTo(p1);
       else
          pntEntrySpiral.CopyTo(p2);
@@ -1829,7 +1829,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( pntCurve1 )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          pntCurve1.CopyTo(p1);
       else
          pntCurve1.CopyTo(p2);
@@ -1837,7 +1837,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( pntCurve2 )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          pntCurve2.CopyTo(p1);
       else
          pntCurve2.CopyTo(p2);
@@ -1845,7 +1845,7 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( pntExitSpiral )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          pntExitSpiral.CopyTo(p1);
       else
          pntExitSpiral.CopyTo(p2);
@@ -1853,13 +1853,13 @@ STDMETHODIMP CHorzCurve::Intersect(ILine2d* line,VARIANT_BOOL bProjectBack,VARIA
 
    if ( fwdTangentPoint )
    {
-      if ( *p1 == NULL )
+      if ( *p1 == nullptr )
          fwdTangentPoint.CopyTo(p1);
       else
          fwdTangentPoint.CopyTo(p2);
    }
 
-   if ( *p1 == NULL && *p2 == NULL )
+   if ( *p1 == nullptr && *p2 == nullptr )
       return S_FALSE;
 
    return S_OK;
@@ -1918,7 +1918,7 @@ STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
 #ifdef _DEBUG
    // Better be listening only to IPoint2d objects
    CComQIPtr<IPoint2d> pointEx(point);
-   ATLASSERT( pointEx != NULL );
+   ATLASSERT( pointEx != nullptr );
 #endif // _DEBUG
 
    if ( m_bHoldEvents )
@@ -2284,7 +2284,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       {
          // Point projects onto the back tangent bearing (it is before the curve)
          p1.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != NULL );
+         ATLASSERT( *pNewPoint != nullptr );
 
          CComPtr<IPoint2d> ts;
          get_TS(&ts);
@@ -2297,7 +2297,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       {
          // Point projects onto the forward tangent bearing (it is after the curve)
          p2.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != NULL );
+         ATLASSERT( *pNewPoint != nullptr );
 
          Float64 Lt; // Total length of curve
          get_TotalLength(&Lt);
@@ -2326,7 +2326,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       CComPtr<IPoint2d> p;
       m_GeomUtil->PointOnLineNearest(line,point,&p);
       p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != NULL );
+      ATLASSERT( *pNewPoint != nullptr );
 
       CComPtr<IPoint2d> ts;
       get_TS(&ts);
@@ -2405,7 +2405,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       {
          // Entry spiral
          ProjectPointOnEntrySpiral(point,pDistFromStart,pNewPoint);
-         ATLASSERT(pNewPoint != NULL);
+         ATLASSERT(pNewPoint != nullptr);
       }
       else if ( 0 <= x1 && 0 <= x2 )
       {
@@ -2430,7 +2430,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
          get_SC(&sc);
 
          cogoUtil::LineCircleIntersect(line,circle,point,m_PointFactory,pNewPoint);
-         ATLASSERT(pNewPoint != NULL);
+         ATLASSERT(pNewPoint != nullptr);
 
          CurveDirectionType dir;
          get_Direction(&dir);
@@ -2461,7 +2461,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       {
          // Exit spiral
          ProjectPointOnExitSpiral(point,pDistFromStart,pNewPoint);
-         ATLASSERT(pNewPoint != NULL);
+         ATLASSERT(pNewPoint != nullptr);
       }
       else
       {
@@ -2485,7 +2485,7 @@ void CHorzCurve::ProjectPoint(IPoint2d* point,Float64* pDistFromStart, IPoint2d*
       CComPtr<IPoint2d> p;
       m_GeomUtil->PointOnLineNearest(line,point,&p);
       p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != NULL );
+      ATLASSERT( *pNewPoint != nullptr );
 
       Float64 Lt;
       get_TotalLength(&Lt);
@@ -2577,14 +2577,14 @@ void CHorzCurve::GetCurveCenterNormalIntersectPoints(IPoint2d** pPOBT,IPoint2d**
    GetBkTangentLine(&bkTangentLine);
 
    m_GeomUtil->LineLineIntersect(line,bkTangentLine,pPOBT);
-   ATLASSERT(pPOBT != NULL);
+   ATLASSERT(pPOBT != nullptr);
 
    // intersect line with forward tangent
    CComPtr<ILine2d> fwdTangentLine;
    GetFwdTangentLine(&fwdTangentLine);
 
    m_GeomUtil->LineLineIntersect(line,fwdTangentLine,pPOFT);
-   ATLASSERT(pPOFT != NULL);
+   ATLASSERT(pPOFT != nullptr);
 }
 
 bool CHorzCurve::IsPointOnCurve(IPoint2d* pPoint)

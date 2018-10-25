@@ -61,7 +61,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::InterfaceSupportsErrorInfo(REFIID riid
 	{
 		&IID_ILoadCombinationResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -93,7 +93,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
       std::vector< CAdapt< CComPtr<ILoadCombinationSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -157,7 +157,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       std::vector< CAdapt< CComPtr<ILoadCombinationSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -222,7 +222,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       std::vector< CAdapt< CComPtr<ILoadCombinationResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -282,7 +282,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       std::vector< CAdapt< CComPtr<ILoadCombinationResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -353,7 +353,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
       hr = single_poi->ReDim(1);
 
       // loop over all pois and compute stresses due to optimization at that poi for the correct model
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          // use configuration object from force results to compute stresses
          // get left and right config objects
@@ -828,7 +828,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILoadCombinationResultConfiguration> lconf1, lconf2, rconf1, rconf2;
       Float64 lval1, lval2, rval1, rval2;
@@ -889,7 +889,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationResults(ILoadCombinatio
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILoadCombinationResultConfiguration> conf1, conf2;
       Float64 val1, val2;

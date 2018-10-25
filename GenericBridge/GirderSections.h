@@ -46,7 +46,7 @@ public:
       Float64 t1,t2;
       m_Beam->get_T1(&t1);
       m_Beam->get_T2(&t2);
-      *tWeb = _cpp_min(t1,t2);
+      *tWeb = Min(t1,t2);
       return S_OK;
    }
 
@@ -104,7 +104,7 @@ public:
       Float64 t1,t2;
       m_Beam->get_T1(&t1);
       m_Beam->get_T2(&t2);
-      *tWeb = _cpp_min(t1,t2);
+      *tWeb = Min(t1,t2);
       return S_OK;
    }
 

@@ -29,9 +29,11 @@
 
 #include <GraphManager\GraphManagerExp.h>
 #include <GraphManager\GraphBuilder.h>
-#include <boost\shared_ptr.hpp>
+
 #include <map>
 #include <vector>
+
+#include <memory>
 
 class GRAPHMANAGERCLASS CGraphManager
 {
@@ -41,19 +43,19 @@ public:
    virtual void ClearAll();  // deletes all graph builders
 
    bool AddGraphBuilder(CGraphBuilder* pBuilder);
-   bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
+   bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder);
    CollectionIndexType GetGraphBuilderCount() const;
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName);
-   boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
-   boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName);
+   std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
+   std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
    std::vector<std::_tstring> GetGraphNames() const;
    const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
    const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
 
 private:
-   typedef std::pair<std::_tstring, boost::shared_ptr<CGraphBuilder>> GraphBuilderEntry;
-   typedef std::map<std::_tstring, boost::shared_ptr<CGraphBuilder>> GraphBuilderContainer;
+   typedef std::pair<std::_tstring, std::shared_ptr<CGraphBuilder>> GraphBuilderEntry;
+   typedef std::map<std::_tstring, std::shared_ptr<CGraphBuilder>> GraphBuilderContainer;
    GraphBuilderContainer m_GraphBuilders;
 };

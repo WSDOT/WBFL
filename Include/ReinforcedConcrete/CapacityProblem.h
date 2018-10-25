@@ -28,7 +28,7 @@
 // SYSTEM INCLUDES
 //
 #include <map>
-#include <boost\shared_ptr.hpp>
+
 #include <ReinforcedConcrete\ReinfConcExp.h>
 #include <System\Exception.h>
 #include <GeometricPrimitives\GeometricPrimitives.h>
@@ -558,7 +558,7 @@ protected:
    // DoCalculateCompressionBlockBoundary
    // Sets the location of the compression block boundary.  The offset is 
    // measured normal to the neutral axis line.
-   virtual Float64 DoCalculateCompressionBlockBoundary()=0;
+   virtual Float64 DoCalculateCompressionBlockBoundary() = 0;
 
    //------------------------------------------------------------------------
    // DoCalculateFurthestDistance
@@ -619,24 +619,24 @@ private:
    // GROUP: DATA MEMBERS
 
    // first some typedefs...
-   typedef boost::shared_ptr<matYieldStressStrainCurve> MatCurvePtr;
+   typedef std::shared_ptr<matYieldStressStrainCurve> MatCurvePtr;
    typedef std::pair<CollectionIndexType, MatCurvePtr>               MatCurveEntry;
    typedef std::map<CollectionIndexType,MatCurvePtr>                 MatCurveContainer;
    typedef MatCurveContainer::iterator                  MatCurveIterator;
    typedef MatCurveContainer::const_iterator            ConstMatCurveIterator;
 
-   typedef boost::shared_ptr<matConcrete>           ConcretePtr;
+   typedef std::shared_ptr<matConcrete>           ConcretePtr;
    typedef std::vector<ConcretePtr>                 ConcreteContainer;
    typedef ConcreteContainer::iterator              ConcreteIterator;
    typedef ConcreteContainer::const_iterator        ConstConcreteIterator;
 
-   typedef boost::shared_ptr<rcaConcreteElement> ConcElementPtr;
+   typedef std::shared_ptr<rcaConcreteElement> ConcElementPtr;
    typedef std::pair<CollectionIndexType, ConcElementPtr>     ConcElementEntry;
    typedef std::map<CollectionIndexType,ConcElementPtr>       ConcElementContainer;
    typedef ConcElementContainer::iterator        ConcElementIterator;
    typedef ConcElementContainer::const_iterator  ConstConcElementIterator;
 
-   typedef boost::shared_ptr<rcaReinforcementElement> ReinfElementPtr;
+   typedef std::shared_ptr<rcaReinforcementElement> ReinfElementPtr;
    typedef std::pair<CollectionIndexType, ReinfElementPtr>         ReinfElementEntry;
    typedef std::map<CollectionIndexType,ReinfElementPtr>           ReinfElementContainer;
    typedef ReinfElementContainer::iterator            ReinfElementIterator;

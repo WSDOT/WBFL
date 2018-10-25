@@ -120,7 +120,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const sysSectionValue& rOther);
-   virtual void MakeAssignment(const sysSectionValue& rOther);
+   void MakeAssignment(const sysSectionValue& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

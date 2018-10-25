@@ -43,8 +43,8 @@ static char THIS_FILE[]=__FILE__;
 CEAFToolBar::CEAFToolBar()
 {
    bOwnsToolBar = false;
-   m_pToolBar = NULL;
-   m_pCmdMgr  = NULL;
+   m_pToolBar = nullptr;
+   m_pCmdMgr  = nullptr;
 
    m_OwnerID = -1;
    m_ToolBarID = -1;
@@ -56,7 +56,7 @@ CEAFToolBar::~CEAFToolBar()
    {
       m_pToolBar->DestroyWindow();
       delete m_pToolBar;
-      m_pToolBar = NULL;
+      m_pToolBar = nullptr;
    }
 }
 
@@ -157,7 +157,7 @@ BOOL CEAFToolBar::InsertButton(int nIndex,UINT nID,UINT nBitmapID,LPCTSTR lpszSt
    CToolBarCtrl& tb = m_pToolBar->GetToolBarCtrl();
 
    int nFirstNewImage  = (nBitmapID == -1 ? -1 : tb.AddBitmap(1,nBitmapID));
-   int nFirstNewString = (lpszString == NULL ? -1 : tb.AddStrings(lpszString));
+   int nFirstNewString = (lpszString == nullptr ? -1 : tb.AddStrings(lpszString));
 
    UINT nCmdID;
    if ( !m_pCmdMgr->AddCommandCallback(nID,pCallback,&nCmdID) )
@@ -296,7 +296,7 @@ void CEAFToolBar::GetItemID(int nIndex,UINT* pID,IEAFCommandCallback** ppCallbac
       if ( !m_pCmdMgr->GetCommandCallback(nMappedCmdID,pID,ppCallback) )
       {
          *pID = nMappedCmdID;
-         *ppCallback = NULL;
+         *ppCallback = nullptr;
       }
    }
 }

@@ -92,7 +92,7 @@ public:
    // GROUP: OPERATIONS
    // All classes derived from sysXBase must implement this method as follows:
    // void myClass::Throw() const { throw *static_cast<myClass*>this; }
-   virtual void Throw() const;
+   virtual void Throw() const override;
 
    //------------------------------------------------------------------------
    // Returns a reason code for the exception.  Concrete classes derived
@@ -100,7 +100,7 @@ public:
    // returns an enum value as the actual enum type (Recall that enum's
    // can be safely converted to integer values, but not the other way
    // around).
-   virtual Int32 GetReason() const;
+   virtual Int32 GetReason() const override;
 
    //------------------------------------------------------------------------
    // Get the reason using an enum our direct clients can understand
@@ -123,7 +123,7 @@ public:
    // reason is the reason code returned by GetReason(),
    // filename is the filename returned by GetFile(),  and
    // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::_tstring* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const override;
 
 
    // GROUP: ACCESS
@@ -138,7 +138,7 @@ protected:
    void MakeCopy(const sysXStructuredLoad& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const sysXStructuredLoad& rOther);
+   void MakeAssignment(const sysXStructuredLoad& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

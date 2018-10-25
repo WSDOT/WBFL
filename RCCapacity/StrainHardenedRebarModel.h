@@ -65,31 +65,31 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStrainHardenedRebarModel
 public:
-	STDMETHOD(Init)(/*[in]*/ Float64 fy,/*[in]*/ Float64 fu,/*[in]*/ Float64 Es,/*[in]*/ Float64 esh,/*[in]*/ Float64 efr);
-	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fu)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fu)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_esh)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_esh)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_efr)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_efr)(/*[in]*/ Float64 newVal);
+	STDMETHOD(Init)(/*[in]*/ Float64 fy,/*[in]*/ Float64 fu,/*[in]*/ Float64 Es,/*[in]*/ Float64 esh,/*[in]*/ Float64 efr) override;
+	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fu)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fu)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_esh)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_esh)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_efr)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_efr)(/*[in]*/ Float64 newVal) override;
 
 // IStressStrain
 public:
-   STDMETHOD(put_Name)(/*[in]*/BSTR name);
-	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name);
-   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal);
-   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain);
-   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey);
-   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE);
-   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain);
+   STDMETHOD(put_Name)(/*[in]*/BSTR name) override;
+	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name) override;
+   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal) override;
+   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain) override;
+   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
+   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
+   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 };
 
 #endif //__StrainHardenedRebarModel_H_

@@ -70,55 +70,55 @@ void CTestNUBeam::TestINUBeam()
    Float64 val;
    CComPtr<IPoint2d> pntVal;
 
-   TRY_TEST( beam->get_D1(NULL), E_POINTER );
+   TRY_TEST( beam->get_D1(nullptr), E_POINTER );
    TRY_TEST( beam->get_D1(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_D2(NULL), E_POINTER );
+   TRY_TEST( beam->get_D2(nullptr), E_POINTER );
    TRY_TEST( beam->get_D2(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_D3(NULL), E_POINTER );
+   TRY_TEST( beam->get_D3(nullptr), E_POINTER );
    TRY_TEST( beam->get_D3(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_D4(NULL), E_POINTER );
+   TRY_TEST( beam->get_D4(nullptr), E_POINTER );
    TRY_TEST( beam->get_D4(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_D5(NULL), E_POINTER );
+   TRY_TEST( beam->get_D5(nullptr), E_POINTER );
    TRY_TEST( beam->get_D5(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_T(NULL), E_POINTER );
+   TRY_TEST( beam->get_T(nullptr), E_POINTER );
    TRY_TEST( beam->get_T(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_W1(NULL), E_POINTER );
+   TRY_TEST( beam->get_W1(nullptr), E_POINTER );
    TRY_TEST( beam->get_W1(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_W2(NULL), E_POINTER );
+   TRY_TEST( beam->get_W2(nullptr), E_POINTER );
    TRY_TEST( beam->get_W2(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_R1(NULL), E_POINTER );
+   TRY_TEST( beam->get_R1(nullptr), E_POINTER );
    TRY_TEST( beam->get_R1(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_R2(NULL), E_POINTER );
+   TRY_TEST( beam->get_R2(nullptr), E_POINTER );
    TRY_TEST( beam->get_R2(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_R3(NULL), E_POINTER );
+   TRY_TEST( beam->get_R3(nullptr), E_POINTER );
    TRY_TEST( beam->get_R3(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_R4(NULL), E_POINTER );
+   TRY_TEST( beam->get_R4(nullptr), E_POINTER );
    TRY_TEST( beam->get_R4(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_HookPoint(NULL), E_POINTER );
+   TRY_TEST( beam->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( beam->get_HookPoint(&pntVal), S_OK );
    pntVal->get_X(&val);
    TRY_TEST( IsZero(val), true );
@@ -187,7 +187,7 @@ void CTestNUBeam::TestINUBeam()
    TRY_TEST( IsEqual(val,50.0), true );
 
    pntVal->Move(14,14);
-   TRY_TEST( beam->putref_HookPoint(NULL), E_INVALIDARG );
+   TRY_TEST( beam->putref_HookPoint(nullptr), E_INVALIDARG );
    TRY_TEST( beam->putref_HookPoint(pntVal), S_OK );
    pntVal.Release();
    beam->get_HookPoint(&pntVal);
@@ -201,33 +201,33 @@ void CTestNUBeam::TestINUBeam()
    beam->putref_HookPoint(pntVal);
 
    // Test propertyes
-   TRY_TEST(beam->get_Height(NULL), E_POINTER );
+   TRY_TEST(beam->get_Height(nullptr), E_POINTER );
    TRY_TEST(beam->get_Height(&val), S_OK );
    TRY_TEST(IsEqual(val,2400.), true );
 
-   TRY_TEST(beam->get_TopFlangeWidth(NULL), E_POINTER );
+   TRY_TEST(beam->get_TopFlangeWidth(nullptr), E_POINTER );
    TRY_TEST(beam->get_TopFlangeWidth(&val), S_OK );
    TRY_TEST(IsEqual(val,1225.), true );
 
-   TRY_TEST(beam->get_BottomFlangeWidth(NULL), E_POINTER );
+   TRY_TEST(beam->get_BottomFlangeWidth(nullptr), E_POINTER );
    TRY_TEST(beam->get_BottomFlangeWidth(&val), S_OK );
    TRY_TEST(IsEqual(val,975.), true );
 
-   TRY_TEST(beam->get_AvgWebWidth(NULL), E_POINTER );
+   TRY_TEST(beam->get_AvgWebWidth(nullptr), E_POINTER );
    TRY_TEST(beam->get_AvgWebWidth(&val), S_OK );
    TRY_TEST(IsEqual(val,150.), true );
 
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
-   TRY_TEST(beam->get_Shape(NULL), E_POINTER );
+   TRY_TEST(beam->get_Shape(nullptr), E_POINTER );
    TRY_TEST(beam->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(beam->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(beam->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(beam->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -277,8 +277,8 @@ void CTestNUBeam::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(100,100);
 
-   TRY_TEST( position->MoveEx(NULL,to), E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from,NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to), S_OK );
 
    //
@@ -293,7 +293,7 @@ void CTestNUBeam::TestIXYPosition()
    size->put_Dx(100);
    size->put_Dy(100);
 
-   TRY_TEST(position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST(position->OffsetEx(size), S_OK);
 
    //
@@ -305,7 +305,7 @@ void CTestNUBeam::TestIXYPosition()
    c->put_X(0);
    c->put_Y(0);
 
-   TRY_TEST( position->RotateEx(NULL,M_PI), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,M_PI), E_INVALIDARG );
    TRY_TEST( position->RotateEx(c,M_PI), S_OK );
 }
 

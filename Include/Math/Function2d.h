@@ -113,7 +113,7 @@ protected:
    void MakeCopy( const mathXEvalError& rOther );
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const mathXEvalError& rOther );
+   void MakeAssignment( const mathXEvalError& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -196,7 +196,7 @@ protected:
 
    // Prevent accidental copying and assignment
    mathFunction2d(const mathFunction2d&);
-   mathFunction2d& operator=(const mathFunction2d&);
+   mathFunction2d& operator=(const mathFunction2d&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

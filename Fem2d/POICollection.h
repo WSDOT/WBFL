@@ -70,13 +70,13 @@ BEGIN_COM_MAP(CPOICollection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dPOICollection
 public:
-	STDMETHOD(Create)(/*[in]*/PoiIDType ID, /*[in]*/MemberIDType memberID, /*[in]*/Float64 loc, /*[out, retval]*/ IFem2dPOI* *pVal);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid);
-	STDMETHOD(Clear)();
+	STDMETHOD(Create)(/*[in]*/PoiIDType ID, /*[in]*/MemberIDType memberID, /*[in]*/Float64 loc, /*[out, retval]*/ IFem2dPOI* *pVal) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid) override;
+	STDMETHOD(Clear)() override;
 };
 
 #endif //__POICollection_H_

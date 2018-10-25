@@ -139,7 +139,7 @@ void CTestStrainLoad::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestStrainLoad"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pStrainLoad2.QueryInterface(&piss2), S_OK);
 
          // Load 

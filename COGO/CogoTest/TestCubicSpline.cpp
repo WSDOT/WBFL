@@ -90,7 +90,7 @@ void CTestCubicSpline::Test()
    spline->put_StartDirection(CComVariant( atan2(-0.2,1) ));
    spline->put_EndDirection(CComVariant( atan2(-2.5,1) ));
 
-   TRY_TEST(spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,NULL), E_POINTER );
+   TRY_TEST(spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
 
    spline->Evaluate(-1,VARIANT_TRUE,VARIANT_TRUE,&y); TRY_TEST( IsEqual(y,1.2), true);
    spline->Evaluate(0,VARIANT_TRUE,VARIANT_TRUE,&y);  TRY_TEST( IsEqual(y,1.0), true);
@@ -104,7 +104,7 @@ void CTestCubicSpline::Test()
 
    // test spline slope (derivative = bearing)
    Float64 dy;
-   TRY_TEST(spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,NULL), E_POINTER );
+   TRY_TEST(spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,nullptr), E_POINTER );
 
    spline->Slope(-1,VARIANT_TRUE,VARIANT_TRUE,&dy); TRY_TEST( IsEqual(dy,-0.2), true);
    spline->Slope(0,VARIANT_TRUE,VARIANT_TRUE,&dy);  TRY_TEST( IsEqual(dy,-0.2), true);
@@ -145,7 +145,7 @@ void CTestCubicSpline::Test()
 
    // test bearing at start and end... should match the start/end direction values
    CComPtr<IDirection> direction;
-   TRY_TEST(spline->Bearing(0,NULL),E_POINTER);
+   TRY_TEST(spline->Bearing(0,nullptr),E_POINTER);
    TRY_TEST(spline->Bearing(0,&direction),S_OK);
 
    Float64 value;
@@ -160,7 +160,7 @@ void CTestCubicSpline::Test()
 
    // check the normal
    direction.Release();
-   TRY_TEST(spline->Normal(0,NULL),E_POINTER);
+   TRY_TEST(spline->Normal(0,nullptr),E_POINTER);
    TRY_TEST(spline->Normal(0,&direction),S_OK);
    direction->get_Value(&value);
    TRY_TEST( IsEqual(1/0.2,tan(value),0.001), true );
@@ -197,8 +197,8 @@ void CTestCubicSpline::Test()
    p->Move(4,0);
 
    CComPtr<IPoint2d> pntOnSpline;
-   TRY_TEST(spline->ProjectPoint(NULL,&pntOnSpline),E_INVALIDARG);
-   TRY_TEST(spline->ProjectPoint(p,   NULL        ),E_POINTER);
+   TRY_TEST(spline->ProjectPoint(nullptr,&pntOnSpline),E_INVALIDARG);
+   TRY_TEST(spline->ProjectPoint(p,   nullptr        ),E_POINTER);
    TRY_TEST(spline->ProjectPoint(p,&pntOnSpline),   S_OK);
    pntOnSpline->get_X(&x);
    pntOnSpline->get_Y(&y);
@@ -208,8 +208,8 @@ void CTestCubicSpline::Test()
 
    // get distance from start of spline to the point p, projected onto the spline
    Float64 dist_from_start;
-   TRY_TEST(spline->DistanceFromStart(NULL,&dist_from_start),E_INVALIDARG);
-   TRY_TEST(spline->DistanceFromStart(p,   NULL),            E_POINTER);
+   TRY_TEST(spline->DistanceFromStart(nullptr,&dist_from_start),E_INVALIDARG);
+   TRY_TEST(spline->DistanceFromStart(p,   nullptr),            E_POINTER);
    TRY_TEST(spline->DistanceFromStart(p,&dist_from_start),S_OK);
    TRY_TEST( IsEqual(dist_from_start,3.8186,0.001), true );
 
@@ -256,8 +256,8 @@ void CTestCubicSpline::Test()
    line->ThroughPoints(pntStart,pntEnd);
 
    CComPtr<IPoint2dCollection> points;
-   TRY_TEST(spline->Intersect(NULL,VARIANT_TRUE,VARIANT_TRUE,&points),E_INVALIDARG);
-   TRY_TEST(spline->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,NULL),E_POINTER);
+   TRY_TEST(spline->Intersect(nullptr,VARIANT_TRUE,VARIANT_TRUE,&points),E_INVALIDARG);
+   TRY_TEST(spline->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,nullptr),E_POINTER);
    TRY_TEST(spline->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&points),S_OK);
    CollectionIndexType nPoints;
    points->get_Count(&nPoints);

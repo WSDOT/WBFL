@@ -136,7 +136,7 @@ void rptReportItem::MakeCopy(const rptReportItem& rItem)
    // styles get copied
 
    ClearStyle();
-   if( rItem.m_pStyleName != NULL)
+   if( rItem.m_pStyleName != nullptr)
       m_pStyleName = new rptStyleName( *rItem.m_pStyleName );
    else
       m_pStyleName = 0;

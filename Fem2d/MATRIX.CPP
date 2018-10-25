@@ -42,7 +42,7 @@ Matrix::Matrix(LONG nr,LONG nc)
 {
    m_NRows = 0;
    m_NCols = 0;
-   m_pMatrix = NULL;
+   m_pMatrix = nullptr;
    Resize(nr,nc);
 }
 
@@ -50,7 +50,7 @@ Matrix::Matrix()
 {
    m_NRows = 0;
    m_NCols = 0;
-   m_pMatrix = NULL;
+   m_pMatrix = nullptr;
 }
 
 Matrix::~Matrix()

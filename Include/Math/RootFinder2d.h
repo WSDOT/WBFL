@@ -237,7 +237,7 @@ private:
 
    // Prevent accidental copying and assignment
    mathRootFinder2d(const mathRootFinder2d&);
-   mathRootFinder2d& operator=(const mathRootFinder2d&);
+   mathRootFinder2d& operator=(const mathRootFinder2d&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

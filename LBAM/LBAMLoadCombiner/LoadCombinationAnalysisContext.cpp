@@ -45,7 +45,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::InterfaceSupportsErrorInfo(REFIID 
 	{
 		&IID_ILoadCombinationAnalysisContext
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -125,7 +125,7 @@ void CLoadCombinationAnalysisContext::FinalRelease()
    HRESULT hr;
 
    // unwire events
-   if (m_pModel!=NULL)
+   if (m_pModel!=nullptr)
    {
       hr = CrUnadvise(m_pModel, this, IID_ILBAMModelEvents, m_ModelEventsCookie);
       ATLASSERT(SUCCEEDED(hr));
@@ -151,7 +151,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::Initialize(ILBAMModel *model, ILoa
    {
       CHRException hr;
 
-      if (m_pModel != NULL)
+      if (m_pModel != nullptr)
       {
          // can only initialize once
          THROW_LBAMC(LC_INITIALIZATION);
@@ -321,7 +321,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::ComputeStresses(IIDArray* poiIDs, 
 STDMETHODIMP CLoadCombinationAnalysisContext::GetActiveLoadGroups(IBstrArray* *pVal)
 {
    CComQIPtr<IGetActiveLoadGroups> algs(m_pLoadGroupResponse);
-   ATLASSERT(algs!=NULL);
+   ATLASSERT(algs!=nullptr);
 
    return algs->GetActiveLoadGroups(pVal);
 }
@@ -382,7 +382,7 @@ STDMETHODIMP CLoadCombinationAnalysisContext::GetSupportCombinationFactors(Suppo
          CComPtr<ITemporarySupport> temporary_support;
          FindTemporarySupport(m_pModel, supportID, &temporary_support, &spanIdx);
 
-         if (temporary_support!=NULL) 
+         if (temporary_support!=nullptr) 
          {
             hr = temporary_support->GetLoadModifier(type, minLoadModifier, maxLoadModifier);
          }
@@ -620,7 +620,7 @@ void CLoadCombinationAnalysisContext::GetLoadModifier(MemberType mbrType, Member
          Float64 xloc, yloc;
          hr = m_pModel->ComputeLocation(mbrID, mbrType, mbrLocation, &xloc, &yloc);
 
-         MemberIDType span_no=0;
+         MemberIDType span_no = 0;
          bool found = false;
          std::vector<Float64>::iterator its( m_SpanEnds.begin() );
          std::vector<Float64>::iterator itsend( m_SpanEnds.end() );
@@ -659,7 +659,7 @@ void CLoadCombinationAnalysisContext::GetLoadModifier(MemberType mbrType, Member
          CComPtr<ITemporarySupport> temporary_support;
          FindTemporarySupport(m_pModel, mbrID, &temporary_support, &spanno);
 
-         if (temporary_support!=NULL) 
+         if (temporary_support!=nullptr) 
          {
             hr = temporary_support->GetLoadModifier(type, minFactor, maxFactor);
          }
@@ -691,7 +691,7 @@ void CLoadCombinationAnalysisContext::ComputeSpanEnds()
    hr = spans->get_Count(&span_cnt);
 
    Float64 loc = 0.0;
-   for (SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for (SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       hr = spans->get_Item(ispan, &span);

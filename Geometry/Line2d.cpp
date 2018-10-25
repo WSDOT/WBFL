@@ -37,10 +37,10 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT explicit_to_implicit(IPoint2d* pU, IVector2d* pV, Float64* pC, IVector2d** pN)
 {
-   ATLASSERT( pU != NULL );
-   ATLASSERT( pV != NULL );
-   ATLASSERT( pC != NULL );
-   ATLASSERT( pN != NULL && *pN == NULL );
+   ATLASSERT( pU != nullptr );
+   ATLASSERT( pV != nullptr );
+   ATLASSERT( pC != nullptr );
+   ATLASSERT( pN != nullptr && *pN == nullptr );
 
    CComPtr<IVector2d> pVN;
    Float64 x,y;
@@ -61,9 +61,9 @@ HRESULT explicit_to_implicit(IPoint2d* pU, IVector2d* pV, Float64* pC, IVector2d
 
 HRESULT point_on_explicit_nearest(Float64 C, IVector2d* pN, IPoint2d* pPoint,IPoint2d** pPOLN)
 {
-   ATLASSERT( pN != NULL );
-   ATLASSERT( pPoint != NULL );
-   ATLASSERT( pPOLN != NULL && *pPOLN == NULL );
+   ATLASSERT( pN != nullptr );
+   ATLASSERT( pPoint != nullptr );
+   ATLASSERT( pPOLN != nullptr && *pPOLN == nullptr );
 
    // don't need to normalize N since it already should be
    Float64 x,y;
@@ -87,19 +87,19 @@ HRESULT point_on_explicit_nearest(Float64 C, IVector2d* pN, IPoint2d* pPoint,IPo
    pScaled->get_X(&sx);
    pScaled->get_Y(&sy);
 
-   CreatePoint( (x - sx), (y - sy), NULL, pPOLN );   
+   CreatePoint( (x - sx), (y - sy), nullptr, pPOLN );   
 
    return S_OK;
 }
 
 HRESULT implicit_to_explicit(Float64 C, IVector2d* pN, IPoint2d** pU, IVector2d** pV)
 {
-   ATLASSERT( pN != NULL );
-   ATLASSERT( pU != NULL && *pU == NULL );
-   ATLASSERT( pV != NULL && *pV == NULL );
+   ATLASSERT( pN != nullptr );
+   ATLASSERT( pU != nullptr && *pU == nullptr );
+   ATLASSERT( pV != nullptr && *pV == nullptr );
 
    CComPtr<IPoint2d> pOrigin;
-   CreatePoint(0.0,0.0,NULL,&pOrigin);
+   CreatePoint(0.0,0.0,nullptr,&pOrigin);
 
    point_on_explicit_nearest(C,pN,pOrigin,pU);
    pN->Normal( pV );
@@ -111,16 +111,16 @@ HRESULT implicit_to_explicit(Float64 C, IVector2d* pN, IPoint2d** pU, IVector2d*
 HRESULT point_to_implicit(IPoint2d* pPoint1, IPoint2d* pPoint2, 
                           Float64* pC, IVector2d** pN)
 {
-   ATLASSERT( pPoint1 != NULL );
-   ATLASSERT( pPoint2 != NULL );
-   ATLASSERT( pC != NULL );
-   ATLASSERT( pN != NULL && *pN == NULL );
+   ATLASSERT( pPoint1 != nullptr );
+   ATLASSERT( pPoint2 != nullptr );
+   ATLASSERT( pC != nullptr );
+   ATLASSERT( pN != nullptr && *pN == nullptr );
 
    // Can't make a line if the end points are identical
    ATLASSERT( !IsEqualPoint(pPoint1,pPoint2) );
 
    CComPtr<IPoint2d> plu;
-   CreatePoint(0.0,0.0,NULL,&plu);
+   CreatePoint(0.0,0.0,nullptr,&plu);
    Float64 x1,y1;
    pPoint1->get_X(&x1);
    pPoint1->get_Y(&y1);
@@ -146,7 +146,7 @@ STDMETHODIMP CLine2d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ILine2d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

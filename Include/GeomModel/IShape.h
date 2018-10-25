@@ -99,37 +99,37 @@ public:
    //------------------------------------------------------------------------
    // Translate
    // Translates a shape by a delta amount.
-   virtual void Translate(const gpSize2d& delta) =0;
+   virtual void Translate(const gpSize2d& delta)  = 0;
 
    //------------------------------------------------------------------------
    // Move
    // Move a shape by moving from one point in space to another. 
-   virtual void Move(LocatorPoint point,const gpPoint2d& to) =0;
-   virtual void Move(const gpPoint2d& from,const gpPoint2d& to) =0;
+   virtual void Move(LocatorPoint point,const gpPoint2d& to)  = 0;
+   virtual void Move(const gpPoint2d& from,const gpPoint2d& to)  = 0;
 
    //------------------------------------------------------------------------
    // Rotate
    // Rotates a shape.  The rotation is centered about point center.  The 
    // rotation angle is measured in radians counter clockwise.
-   virtual void Rotate(const gpPoint2d& center, Float64 angle) =0;
+   virtual void Rotate(const gpPoint2d& center, Float64 angle)  = 0;
 
    //------------------------------------------------------------------------
    // GetProperties
    // Assigns a gmProperties object to the object pointed to by pProperties. 
    // The origin of the shape properties object is the centroid of this shape
    // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const =0;
+   virtual void GetProperties(gmProperties* pProperties) const  = 0;
 
    //------------------------------------------------------------------------
    // GetBoundingBox
    // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const =0;
+   virtual gpRect2d GetBoundingBox() const  = 0;
 
    //------------------------------------------------------------------------
    // GetLocatorPoint
    // Returns a point located at the specified location on the bounding box 
    // around the shape.
-   virtual gpPoint2d GetLocatorPoint(LocatorPoint point) const =0;
+   virtual gpPoint2d GetLocatorPoint(LocatorPoint point) const  = 0;
 
    //------------------------------------------------------------------------
    // IsContained
@@ -142,7 +142,7 @@ public:
    // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
    // listeners are registered with the clone.  This is a factory method,  
    // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const =0;
+   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const  = 0;
 
    //------------------------------------------------------------------------
    // CreateClippedShape
@@ -179,12 +179,12 @@ public:
    // MakeSolid
    // Makes this shape represent a solid area if isSolid is true. If not shape
    // is hollow
-   virtual void MakeSolid(bool isSolid) =0;
+   virtual void MakeSolid(bool isSolid)  = 0;
 
    //------------------------------------------------------------------------
    // IsSolid
    // Returns true if this shape represents a solid,  otherwise returns false.
-   virtual bool IsSolid() const =0;
+   virtual bool IsSolid() const  = 0;
 
    //------------------------------------------------------------------------
    // GetPerimeter
@@ -200,46 +200,46 @@ public:
    // true,  a border will be drawn around the shape in the border color.  
    // Border mode is enabled by default.  Returns the previous border mode 
    // setting.
-   virtual bool EnableBorderMode(bool bEnable) =0;
+   virtual bool EnableBorderMode(bool bEnable)  = 0;
 
    //------------------------------------------------------------------------
    // IsBorderModeEnabled
    // Returns true if the border mode is enabled,  otherwise false.
-   virtual bool IsBorderModeEnabled() const =0;
+   virtual bool IsBorderModeEnabled() const  = 0;
 
    //------------------------------------------------------------------------
    // SetBorderColor
    // Sets the border color to color.  Returns the previous color setting.  
    // Notifies listeners through the OnDisplayAttributesChanged() method.
-   virtual COLORREF SetBorderColor(COLORREF color) =0;
+   virtual COLORREF SetBorderColor(COLORREF color)  = 0;
 
    //------------------------------------------------------------------------
    // GetBorderColor
    // Returns the border color.
-   virtual COLORREF GetBorderColor() const =0;
+   virtual COLORREF GetBorderColor() const  = 0;
 
    //------------------------------------------------------------------------
    // EnableFillMode
    // Enables/disables the fill mode of the shape.  If bEnable is true,  
    // the shape will be filled with the fill color.  Fill mode is enabled by 
    // default.  Returns the previous fill mode setting.
-   virtual bool EnableFillMode(bool bEnable) =0;
+   virtual bool EnableFillMode(bool bEnable)  = 0;
 
    //------------------------------------------------------------------------
    // IsFillModeEnabled
    // Returns true if the fill mode is enabled, otherwise false.
-   virtual bool IsFillModeEnabled() const =0;
+   virtual bool IsFillModeEnabled() const  = 0;
 
    //------------------------------------------------------------------------
    // SetFillColor
    // Sets the fill color to color. Returns the previous color setting. 
    // Notifies listeners through the OnDisplayAttributesChanged() method.
-   virtual COLORREF SetFillColor(COLORREF color) =0;
+   virtual COLORREF SetFillColor(COLORREF color)  = 0;
 
    //------------------------------------------------------------------------
    // GetFillColor
    // Returns the fill color.
-   virtual COLORREF GetFillColor() const =0;
+   virtual COLORREF GetFillColor() const  = 0;
 
    //------------------------------------------------------------------------
    // Draw
@@ -261,22 +261,22 @@ public:
    // return zero.  If your subclass supports the gmCompositeShape interface,
    // and you wish to expose it,  override this method and return a pointer 
    // to your implementation of the gmCompositeShape interface.
-   virtual gmCompositeShape* GetComposite() =0;
-   virtual const gmCompositeShape* GetComposite() const =0;
+   virtual gmCompositeShape* GetComposite()  = 0;
+   virtual const gmCompositeShape* GetComposite() const  = 0;
 
    //------------------------------------------------------------------------
    // GetParent
    // Returns a pointer to the parent composite if this shape is a member of 
    // a composite,  otherwise returns 0.
-   virtual gmCompositeShape* GetParent() =0;
-   virtual const gmCompositeShape* GetParent() const =0;
+   virtual gmCompositeShape* GetParent()  = 0;
+   virtual const gmCompositeShape* GetParent() const  = 0;
 
    //------------------------------------------------------------------------
    // RegisterListener
    // Registers the listener pointed to by pListener with this object.  
    // Calls gmShapeListener::OnRegistered().  Listeners are notified of 
    // changes to this object through the gmShapeListener interface.
-   virtual void RegisterListener(gmShapeListener* pListener) =0;
+   virtual void RegisterListener(gmShapeListener* pListener)  = 0;
 
    //------------------------------------------------------------------------
    // UnregisterListener
@@ -287,12 +287,12 @@ public:
    // previously registered with this broadcaster, this method does nothing 
    // (DEBUG builds should issue a WARNing).  If pListener is zero, all 
    // listeners are unregistered.
-   virtual void UnregisterListener(const gmShapeListener* pListener) =0;
+   virtual void UnregisterListener(const gmShapeListener* pListener)  = 0;
 
    //------------------------------------------------------------------------
    // ListenerCount
    // Returns the number of listeners registered with this broadcaster.
-   virtual CollectionIndexType ListenerCount() const =0;
+   virtual CollectionIndexType ListenerCount() const  = 0;
 
    //------------------------------------------------------------------------
    // BeginDamage
@@ -301,7 +301,7 @@ public:
    // listener notification mechanism.  In the damaged state,  a broadcaster 
    // does not broadcast.  This call must be paired with a call to EndDamage().
    // This method increments the damaged count by one. .
-   virtual void BeginDamage() =0;
+   virtual void BeginDamage()  = 0;
 
    //------------------------------------------------------------------------
    // EndDamage
@@ -313,19 +313,19 @@ public:
    // This call must be paired with a call to BeginDamage().  This call 
    // decrements the damage count by one.  If the damage count is at zero,
    // this method does nothing.
-   virtual void EndDamage() =0;
+   virtual void EndDamage()  = 0;
 
    //------------------------------------------------------------------------
    // IsDamaged
    // Returns true if the broadcaster is in a damaged state (damaged count is 
    // greater than zero), otherwise returns false.
-   virtual bool IsDamaged() const =0;
+   virtual bool IsDamaged() const  = 0;
 
    //------------------------------------------------------------------------
    // DamagedCount
    // Returns the number of times EndDamage() must be called to enable the 
    // listener notification mechanism.
-   virtual Int32 DamagedCount() const =0;
+   virtual Int32 DamagedCount() const  = 0;
 
    //------------------------------------------------------------------------
    // NotifyAllListeners
@@ -334,7 +334,7 @@ public:
    // what type of change was made as described in gmShapeListener.h
    // NOTE: Derived versions of this function must call NotifyAllListeners()
    //       for their parents if they are in a composite.
-   virtual void NotifyAllListeners( Int32 lHint )=0;
+   virtual void NotifyAllListeners( Int32 lHint ) = 0;
 
 
    // GROUP: ACCESS
@@ -344,11 +344,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const =0;
+   virtual bool AssertValid() const  = 0;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const =0;
+   virtual void Dump(dbgDumpContext& os) const  = 0;
 #endif // _DEBUG
 
 protected:
@@ -361,7 +361,7 @@ protected:
    // classes. This means that you should always notify the parent composite
    // by calling the appropriate SetDirty() function when your class has
    // been modified.
-   virtual void SetParent(gmCompositeShape* pParent) =0;
+   virtual void SetParent(gmCompositeShape* pParent)  = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

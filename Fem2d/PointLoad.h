@@ -55,8 +55,8 @@ public:
    void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Float64 location=0.0, Float64 Fx=0.0, Float64 Fy=0.0, Float64 Mz=0.0, Fem2dLoadOrientation orientation=lotMember);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -67,26 +67,26 @@ BEGIN_COM_MAP(CPointLoad)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dPointLoad
 public:
-	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal);
-	STDMETHOD(GetForce)(/*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz);
-	STDMETHOD(SetForce)(/*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz);
-	STDMETHOD(get_Mz)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Mz)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Fy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Fy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Fx)(/*[out, retval]*/ Float64  *pVal);
-	STDMETHOD(put_Fx)(/*[in]*/ Float64  newVal);
-	STDMETHOD(get_Orientation)(/*[out, retval]*/ Fem2dLoadOrientation *pVal);
-	STDMETHOD(put_Orientation)(/*[in]*/ Fem2dLoadOrientation newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal);
-	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal);
+	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetForce)(/*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz) override;
+	STDMETHOD(SetForce)(/*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz) override;
+	STDMETHOD(get_Mz)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Mz)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Fy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Fy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Fx)(/*[out, retval]*/ Float64  *pVal) override;
+	STDMETHOD(put_Fx)(/*[in]*/ Float64  newVal) override;
+	STDMETHOD(get_Orientation)(/*[out, retval]*/ Fem2dLoadOrientation *pVal) override;
+	STDMETHOD(put_Orientation)(/*[in]*/ Fem2dLoadOrientation newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal) override;
+	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
 
 private:
    LoadIDType m_ID;

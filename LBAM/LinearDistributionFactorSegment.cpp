@@ -43,7 +43,7 @@ STDMETHODIMP CLinearDistributionFactorSegment::InterfaceSupportsErrorInfo(REFIID
 		&IID_ILinearDistributionFactorSegment,
       &IID_IDistributionFactorSegment
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -67,7 +67,7 @@ void CLinearDistributionFactorSegment::FinalRelease()
    }
 }
 
-STDMETHODIMP CLinearDistributionFactorSegment::FinalConstruct( )
+HRESULT CLinearDistributionFactorSegment::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty df and set up connection point

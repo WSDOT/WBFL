@@ -74,26 +74,26 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICoordinateXform2d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(XformEx)(IPoint2d* point, XformType type, IPoint2d** result);
-   STDMETHOD(Xform)(/*[in,out]*/ IPoint2d** point,/*[in]*/ XformType type);
-	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint2d* newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(XformEx)(IPoint2d* point, XformType type, IPoint2d** result) override;
+   STDMETHOD(Xform)(/*[in,out]*/ IPoint2d** point,/*[in]*/ XformType type) override;
+	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint2d* newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__COORDINATEXFORM2D_H_

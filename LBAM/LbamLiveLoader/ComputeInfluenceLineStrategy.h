@@ -33,10 +33,10 @@ public:
    virtual void GetInfluenceLineResponse(IInfluenceLineResponse** ppResponse) = 0;
 
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
-                                        IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)=0;
+                                        IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine) = 0;
 
    // returns -1.0 if sign convention flips results for left/right faces, 1.0 if not
-   virtual Float64 SignFlip()=0;
+   virtual Float64 SignFlip() = 0;
 };
 
 // strategy for force results
@@ -47,7 +47,7 @@ public:
    m_Response(response),
    m_Orientation(or)
    {
-      ATLASSERT(response!=NULL);
+      ATLASSERT(response!=nullptr);
    }
 
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
@@ -81,7 +81,7 @@ public:
    DeflectionInfluenceLineStrategy(IInfluenceLineResponse* response):
    m_Response(response)
    {
-      ATLASSERT(response!=NULL);
+      ATLASSERT(response!=nullptr);
    }
 
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
@@ -112,14 +112,14 @@ public:
    ReactionInfluenceLineStrategy(IInfluenceLineResponse* response):
    m_Response(response)
    {
-      ATLASSERT(response!=NULL);
+      ATLASSERT(response!=nullptr);
    }
 
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       // no left/right for reactions
-      *rgtInflLine = NULL;
+      *rgtInflLine = nullptr;
       return m_Response->ComputeReactionInfluenceLine(poiID, stage, effect, lftInflLine);
    }
 
@@ -145,14 +145,14 @@ public:
    SupportDeflectionInfluenceLineStrategy(IInfluenceLineResponse* response):
    m_Response(response)
    {
-      ATLASSERT(response!=NULL);
+      ATLASSERT(response!=nullptr);
    }
 
    virtual HRESULT ComputeInfluenceLine(PoiIDType poiID, BSTR stage, ForceEffectType effect, 
                                         IInfluenceLine* *lftInflLine, IInfluenceLine* *rgtInflLine)
    {
       // no left/right for support defl's
-      *rgtInflLine = NULL;
+      *rgtInflLine = nullptr;
       return m_Response->ComputeSupportDeflectionInfluenceLine(poiID, stage, effect, lftInflLine);
    }
 

@@ -136,7 +136,7 @@ protected:
    void MakeCopy(const lrfdCreepCoefficient2005& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdCreepCoefficient2005& rOther);
+   void MakeAssignment(const lrfdCreepCoefficient2005& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

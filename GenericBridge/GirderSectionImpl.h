@@ -54,7 +54,7 @@ public:
       m_Beam.CoCreateInstance(*pbeamclsid);
 
       CComQIPtr<IShape> beamShape(m_Beam);
-      ATLASSERT(beamShape != NULL); // must implement IShape interface
+      ATLASSERT(beamShape != nullptr); // must implement IShape interface
 
       m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
 
@@ -96,7 +96,7 @@ public:
          &IID_ICompositeShape,
          &IID_IXYPosition,
 	   };
-	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	   {
 		   if (InlineIsEqualGUID(*arr[i],riid))
 			   return S_OK;

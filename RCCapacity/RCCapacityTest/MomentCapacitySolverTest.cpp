@@ -133,11 +133,11 @@ void CMomentCapacitySolverTest::Test()
    CComQIPtr<IStressStrain> material1(concrete);
    CComQIPtr<IStressStrain> material2(rebar);
 
-   section->AddShape(shape1,material1,NULL,0); // beam
-   section->AddShape(shape2,material2,NULL,0); // bar 1
-   section->AddShape(shape3,material2,NULL,0); // bar 2
-   section->AddShape(shape4,material2,NULL,0); // bar 3
-   section->AddShape(shape5,material2,NULL,0); // bar 4
+   section->AddShape(shape1,material1,nullptr,0); // beam
+   section->AddShape(shape2,material2,nullptr,0); // bar 1
+   section->AddShape(shape3,material2,nullptr,0); // bar 2
+   section->AddShape(shape4,material2,nullptr,0); // bar 3
+   section->AddShape(shape5,material2,nullptr,0); // bar 4
 
 
    CComPtr<IMomentCapacitySolver> solver;
@@ -186,9 +186,9 @@ void CMomentCapacitySolverTest::Test()
 //   TestISupportUnitServer(concrete);
 //
 //   CComQIPtr<IStressStrain> ss(concrete);
-//   TRY_TEST( ss != NULL, true );
+//   TRY_TEST( ss != nullptr, true );
 //
-//   TRY_TEST( ss->ComputeStress(0.00764,NULL), E_POINTER);
+//   TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
 //   TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
 //   TRY_TEST( IsEqual(val,0.00), true );
 //   TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
@@ -197,7 +197,7 @@ void CMomentCapacitySolverTest::Test()
 //   TRY_TEST( IsEqual(val,-86277115.), true );
 //
 //   CComQIPtr<ISupportErrorInfo> eInfo(ss);
-//   TRY_TEST( eInfo != NULL, true);
+//   TRY_TEST( eInfo != nullptr, true);
 //   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IUnconfinedConcrete), S_OK);
 //   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
 //   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);

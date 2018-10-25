@@ -97,7 +97,7 @@ public:
 
    //------------------------------------------------------------------------
    // virtual way to make a copy.
-   virtual rptReportContent* CreateClone() const;
+   virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const rptFormattedLengthUnitValue& rOther)
@@ -116,7 +116,7 @@ public:
 
    //------------------------------------------------------------------------
    // Override base class method
-   virtual std::_tstring AsString() const;
+   virtual std::_tstring AsString() const override;
 
 private:
    bool m_bEnglish;

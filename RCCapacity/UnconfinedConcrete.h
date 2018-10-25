@@ -75,36 +75,36 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IUnconfinedConcrete
 public:
-	STDMETHOD(get_fc)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fc)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_fc)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fc)(/*[in]*/ Float64 newVal) override;
 
 // IStressStrain
 public:
-   STDMETHOD(put_Name)(/*[in]*/BSTR name);
-	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name);
-   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal);
-   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain);
-   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey);
-   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE);
-   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain);
+   STDMETHOD(put_Name)(/*[in]*/BSTR name) override;
+	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name) override;
+   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal) override;
+   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain) override;
+   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
+   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
+   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 
 // ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
+		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 };
 
 #endif //__UNCONFINEDCONCRETE_H_

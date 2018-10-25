@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CThickenedFlangeBulbTeeSegment
 HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Orientation = 0;
    m_HaunchDepth[0] = 0;
    m_HaunchDepth[1] = 0;
@@ -51,7 +51,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::FinalConstruct()
 
 void CThickenedFlangeBulbTeeSegment::FinalRelease()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -62,7 +62,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::InterfaceSupportsErrorInfo(REFIID r
 		&IID_ISegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -89,7 +89,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_SuperstructureMember(ISuperstru
    }
    else
    {
-      (*ssMbr) = NULL;
+      (*ssMbr) = nullptr;
    }
 
    return S_OK;
@@ -111,7 +111,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderLine(IGirderLine** girder
    }
    else
    {
-      (*girderLine) = NULL;
+      (*girderLine) = nullptr;
    }
 
    return S_OK;
@@ -121,7 +121,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_PrevSegment(ISegment* segmen
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = NULL;
+   m_pPrevSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -141,7 +141,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrevSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -150,7 +150,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::putref_NextSegment(ISegment* segmen
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = NULL;
+   m_pNextSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -170,7 +170,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_NextSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -209,7 +209,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    section.CoCreateInstance(CLSID_CompositeSectionEx);
 
    section->QueryInterface(IID_ISection,(void**)ppSection);
-   ATLASSERT(*ppSection != NULL);
+   ATLASSERT(*ppSection != nullptr);
 
    // add the primary shape
    Float64 Efg = 0;
@@ -285,7 +285,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 distAlongS
    }
 
    CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
@@ -369,7 +369,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    shape->AddPoint(0.0,0.0);
 
    CComQIPtr<IBulbTeeSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // get dimensions of beam shape at start and end of segment
    CComPtr<IBulbTee> pcBeam;
@@ -497,7 +497,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::AddShape(IShape* pShape,IMaterial* 
    if ( m_Shapes.size() == 0 )
    {
       CComQIPtr<IBulbTeeSection> beam(pShape);
-      if ( beam == NULL )
+      if ( beam == nullptr )
       {
          ATLASSERT(false); // first shape must be a flanged girder section
          return E_INVALIDARG;

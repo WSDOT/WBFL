@@ -55,7 +55,7 @@ public:
    }
 
    void Init(IUnitServer* pUnitServer, BSTR bstrLabel, Float64 m,Float64 l,Float64 t,Float64 k,Float64 a);
-   STDMETHOD(AddUnit)(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTerm,UnitSystemType unitSystem);
+   HRESULT AddUnit(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTerm,UnitSystemType unitSystem);
    HRESULT FinalConstruct();
    void FinalRelease();
 
@@ -110,14 +110,14 @@ END_CONNECTION_POINT_MAP()
 
 // IUnitType
 public:
-   STDMETHOD(get_UnitServer)(/*[out,retval]*/IUnitServer** unitServer);
-   STDMETHOD(get_Mass)(/*[out,retval]*/Float64 *pMass);
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength);
-   STDMETHOD(get_Time)(/*[out,retval]*/ Float64* pTime);
-   STDMETHOD(get_Temperature)(/*[out,retval]*/ Float64* pTemp);
-   STDMETHOD(get_Angle)(/*[out,retval]*/ Float64* pAngle);
-   STDMETHOD(get_Label)(/*[out, retval]*/ BSTR *pLabel);
-   STDMETHOD(get_Units)(/*[out,retval]*/ IUnits** ppUnits);
+   STDMETHOD(get_UnitServer)(/*[out,retval]*/IUnitServer** unitServer) override;
+   STDMETHOD(get_Mass)(/*[out,retval]*/Float64 *pMass) override;
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
+   STDMETHOD(get_Time)(/*[out,retval]*/ Float64* pTime) override;
+   STDMETHOD(get_Temperature)(/*[out,retval]*/ Float64* pTemp) override;
+   STDMETHOD(get_Angle)(/*[out,retval]*/ Float64* pAngle) override;
+   STDMETHOD(get_Label)(/*[out, retval]*/ BSTR *pLabel) override;
+   STDMETHOD(get_Units)(/*[out,retval]*/ IUnits** ppUnits) override;
 
 // IUnitsEventSink
 public:

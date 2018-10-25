@@ -37,7 +37,7 @@
 #include <ReportManager\TitlePageBuilder.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
 
-#include <boost\shared_ptr.hpp>
+
 
 class rptReport;
 
@@ -56,24 +56,24 @@ public:
    bool IncludeTimingChapter() const;
 
    LPCTSTR GetName() const;
-   void AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
-   boost::shared_ptr<CTitlePageBuilder> GetTitlePageBuilder();
-   void AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder);
-   bool InsertChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder,LPCTSTR strAfterChapter);
+   void AddTitlePageBuilder(std::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder);
+   std::shared_ptr<CTitlePageBuilder> GetTitlePageBuilder();
+   void AddChapterBuilder(std::shared_ptr<CChapterBuilder>& pChapterBuilder);
+   bool InsertChapterBuilder(std::shared_ptr<CChapterBuilder>& pChapterBuilder,LPCTSTR strAfterChapter);
    bool RemoveChapterBuilder(LPCTSTR lpszChapterName);
    CollectionIndexType GetChapterBuilderCount() const;
-   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(CollectionIndexType idx);
-   boost::shared_ptr<CChapterBuilder> GetChapterBuilder(LPCTSTR strKey);
+   std::shared_ptr<CChapterBuilder> GetChapterBuilder(CollectionIndexType idx);
+   std::shared_ptr<CChapterBuilder> GetChapterBuilder(LPCTSTR strKey);
    CReportDescription GetReportDescription();
-   void SetReportSpecificationBuilder(boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
-   boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder();
+   void SetReportSpecificationBuilder(std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
+   std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder();
    
-   virtual boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual std::shared_ptr<rptReport> CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec);
 
    void SetMenuBitmap(const CBitmap* pBmp);
    const CBitmap* GetMenuBitmap();
 
-   virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual bool NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec);
 
 private:
    std::_tstring m_Name;
@@ -81,10 +81,10 @@ private:
    bool m_bIncludeTimingChapter;
    const CBitmap* m_pBitmap;
 
-   boost::shared_ptr<CTitlePageBuilder> m_pTitlePageBuilder;
-   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
+   std::shared_ptr<CTitlePageBuilder> m_pTitlePageBuilder;
+   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
 
-   typedef std::vector<boost::shared_ptr<CChapterBuilder>> ChapterBuilderContainer;
+   typedef std::vector<std::shared_ptr<CChapterBuilder>> ChapterBuilderContainer;
    ChapterBuilderContainer m_ChapterBuilders;
 };
 

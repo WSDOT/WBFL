@@ -83,32 +83,32 @@ private:
    void EventsOn(bool bFire=true);
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILineSegment2d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ILineSegment2d** ppClone);
-   STDMETHOD(ThroughPoints)(/*[in]*/ IPoint2d* p1, /*[in]*/ IPoint2d* p2);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-   STDMETHOD(Offset2)(/*[in]*/ Float64 distance);
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle);
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint2d* newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ILineSegment2d** ppClone) override;
+   STDMETHOD(ThroughPoints)(/*[in]*/ IPoint2d* p1, /*[in]*/ IPoint2d* p2) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+   STDMETHOD(Offset2)(/*[in]*/ Float64 distance) override;
+	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pCenter,/*[in]*/ Float64 angle) override;
+	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint2d* newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 public :
 
 // IPoint2dEvents

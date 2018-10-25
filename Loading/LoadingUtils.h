@@ -354,7 +354,7 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
 //   if (tsId<0 || tsId>num_spans)
 //   {
 //
-//      for (long ispan=0; ispan<num_spans; ispan++)
+//      for (long ispan = 0; ispan<num_spans; ispan++)
 //      {
 //         CComPtr<ISpan> span;
 //         hr = spans->get_Item(ispan, &span);
@@ -365,7 +365,7 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
 //         long ts_cnt;
 //         hr = tss->get_Count(&ts_cnt);
 //
-//         for (long its=0; its<ts_cnt; its++)
+//         for (long its = 0; its<ts_cnt; its++)
 //         {
 //            CComPtr<ITemporarySupport> ts;
 //            hr = tss->get_Item(its, &ts);
@@ -403,7 +403,7 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
 //
 //   T operator[] (long i) const
 //   {
-//      ATLASSERT(m_Arr!=NULL);
+//      ATLASSERT(m_Arr!=nullptr);
 //      T val;
 //      CHRException hr;
 //      hr = m_Arr->get_Item(i, &val);

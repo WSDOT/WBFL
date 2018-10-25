@@ -39,4 +39,6 @@ DESCRIPTION
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 
+#include <memory>
+
 #endif // INCLUDED_GEOMMODEL_GEOMMODELLIB_H_

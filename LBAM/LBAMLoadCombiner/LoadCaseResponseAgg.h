@@ -59,15 +59,15 @@ BEGIN_CONNECTION_POINT_MAP(CLoadCaseResponseAgg)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCaseResponse
 public:
-	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-	STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-	STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-	STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults** results);
+	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+	STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+	STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results) override;
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results) override;
+	STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadCase, /*[in]*/IIDArray* POIs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults** results) override;
 
 private:
    // internal implementation

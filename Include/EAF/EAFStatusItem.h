@@ -90,7 +90,7 @@ public:
 class EAFCLASS CEAFStatusItemCallback : public iStatusCallback
 {
 public:
-   CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,LPCTSTR lpszDocSetName=NULL,UINT helpID=0);
+   CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
    virtual eafTypes::StatusSeverityType GetSeverity();
    virtual void Execute(CEAFStatusItem* pItem);
 

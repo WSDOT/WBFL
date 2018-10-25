@@ -161,6 +161,13 @@ library WBFLLBAMUtility
                                      [in]Float64 imLane, 
                                      [in]IUnitServer* pUnitServer);
 
+      [helpstring("method ConfigureEmergencyRatingLoad"), helpcontext(IDH_LBAMLRFDFactory_ConfigureNotionalRatingLoad)]
+      HRESULT ConfigureEmergencyRatingLoad([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,
+         [in] Float64 imTruck,
+         [in]Float64 imLane,
+         [in]VARIANT_BOOL bIncludeLaneLoad, // if true, includes a 0.20 k/ft lane load
+         [in]IUnitServer* pUnitServer);
+
  	 [helpstring("method ConfigureSpecializedHaulingUnits"), helpcontext(IDH_LBAMLRFDFactory_ConfigureSpecializedHaulingUnits)] 
       HRESULT ConfigureSpecializedHaulingUnits([in]ILBAMModel* pModel, [in] LiveLoadModelType llmt,
                                      [in] Float64 imTruck,

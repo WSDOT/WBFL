@@ -51,11 +51,11 @@ void CTestStationEquationCollection::Test()
    TRY_TEST(alignment.CoCreateInstance(CLSID_Alignment),S_OK);
 
    CComPtr<IStationEquationCollection> equations;
-   TRY_TEST(alignment->get_StationEquations(NULL),E_POINTER);
+   TRY_TEST(alignment->get_StationEquations(nullptr),E_POINTER);
    TRY_TEST(alignment->get_StationEquations(&equations),S_OK);
 
    IndexType count;
-   TRY_TEST(equations->get_Count(NULL),E_POINTER);
+   TRY_TEST(equations->get_Count(nullptr),E_POINTER);
    TRY_TEST(equations->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -125,7 +125,7 @@ void CTestStationEquationCollection::Test()
    TRY_TEST(IsEqual(normalizedStation,1850.0),true);
 
    CComPtr<IStation> objStation;
-   TRY_TEST(equations->ConvertToNormalizedStationEx(CComVariant(station),NULL),E_POINTER);
+   TRY_TEST(equations->ConvertToNormalizedStationEx(CComVariant(station),nullptr),E_POINTER);
    TRY_TEST(equations->ConvertToNormalizedStationEx(CComVariant(station),&objStation),S_OK);
    ZoneIndexType idx;
    Float64 value;
@@ -139,7 +139,7 @@ void CTestStationEquationCollection::Test()
    TRY_TEST(IsEqual(normalizedStation,1700.0),true);
 
    station.Release();
-   TRY_TEST(equations->ConvertFromNormalizedStation(1200.0,NULL),E_POINTER);
+   TRY_TEST(equations->ConvertFromNormalizedStation(1200.0,nullptr),E_POINTER);
    TRY_TEST(equations->ConvertFromNormalizedStation(1200.0,&station),S_OK);
    TRY_TEST(station->GetStation(&idx,&value),S_OK);
    TRY_TEST(idx,0);
@@ -243,7 +243,7 @@ void CTestStationEquationCollection::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(equations);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStationEquationCollection ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

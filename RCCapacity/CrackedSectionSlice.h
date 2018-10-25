@@ -70,16 +70,16 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICrackedSectionSlice
 public:
-   STDMETHOD(InitSlice)(/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 Efg,/*[in]*/Float64 Ebg);
-   STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea);
-	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG);
-	STDMETHOD(get_Efg)(/*[out,retval]*/Float64* pEfg);
-	STDMETHOD(get_Ebg)(/*[out,retval]*/Float64* pEbg);
-   STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape);
+   STDMETHOD(InitSlice)(/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 Efg,/*[in]*/Float64 Ebg) override;
+   STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea) override;
+	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG) override;
+	STDMETHOD(get_Efg)(/*[out,retval]*/Float64* pEfg) override;
+	STDMETHOD(get_Ebg)(/*[out,retval]*/Float64* pEbg) override;
+   STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape) override;
 };
 
 #endif //__CrackedSectionSlice_H_

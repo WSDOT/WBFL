@@ -43,7 +43,7 @@ public:
    int m_ViewMode;
 
 public:
-   CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent = NULL);
+   CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent = nullptr);
 	virtual ~CNewProjectDlg();
 
 // Dialog Data

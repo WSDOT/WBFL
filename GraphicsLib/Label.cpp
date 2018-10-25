@@ -97,7 +97,7 @@ void grLabel::Draw(HDC hDC, const grlibPointMapper& mapper) const
       mapper.WPtoDP(wbox.Left(), wbox.Top(), &dvx, &dvy);
       dvy += tm.tmAscent;
 
-      for (IndexType i=0; i<siz; i++)
+      for (IndexType i = 0; i<siz; i++)
       {
          ::TextOut( hDC, dvx, dvy, m_Labels[i].c_str(), (int)m_Labels[i].size());
          dvy += line_hgt;
@@ -311,7 +311,7 @@ void grLabel::Dump(dbgDumpContext& os) const
    os << "  m_HookPoint :"<< endl; 
    m_HookPoint.Dump(os);
    IndexType siz = m_Labels.size();
-   for (IndexType i=0; i<siz; i++)
+   for (IndexType i = 0; i<siz; i++)
    {
       os << " m_Labels["<<i<<"] = "<<m_Labels[i]<<endl;
    }
@@ -343,7 +343,7 @@ std::_tstring UnParseLabel(const std::vector<std::_tstring> labels)
    std::_tstring tmp;
    std::_tostringstream os;
    IndexType siz = labels.size();
-   for (IndexType i=0; i<siz; i++)
+   for (IndexType i = 0; i<siz; i++)
    {
       os << labels[i];
       if (i!=siz-1)
@@ -363,7 +363,7 @@ void GetLabelSize(HDC hDC, const std::vector<std::_tstring>& labels, LONG pointS
 
    // max width
    IndexType siz = labels.size();
-   for (IndexType i=0; i<siz; i++)
+   for (IndexType i = 0; i<siz; i++)
    {
       SIZE tsiz;
       ::GetTextExtentPoint32(hDC,labels[i].c_str(), (int)labels[i].size(), &tsiz);

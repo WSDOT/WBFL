@@ -49,7 +49,7 @@ class ATL_NO_VTABLE CLibraryMgr :
    public PersistentCollection,
    public ILibraryEvents,
    public CProxyDLibraryMgrEvents< CLibraryMgr >,
-   public ISupportTransactionsImpl,
+   public IWBFLSupportTransactionsImpl,
    public ISupportDocUnitSystemImpl<&LIBID_WBFLLibrary>
 {
 public:
@@ -71,7 +71,7 @@ BEGIN_COM_MAP(CLibraryMgr)
 	COM_INTERFACE_ENTRY(IConnectionPointContainer)
 	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(ISupportDocUnitSystem)
-   COM_INTERFACE_ENTRY(ISupportTransactions)
+   COM_INTERFACE_ENTRY(IWBFLSupportTransactions)
    COM_INTERFACE_ENTRY_CHAIN(PersistentCollection)
 END_COM_MAP()
 
@@ -86,41 +86,41 @@ END_CONNECTION_POINT_MAP()
    virtual CComBSTR GetCollectionName() { return CComBSTR("LibraryManager"); }
    virtual CComBSTR GetStoredName() { return CComBSTR("Library"); }
 
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
-   virtual HRESULT OnAfterAdd(StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnBeforeRemove( StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnAfterRemove( CollectionIndexType idx);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd(StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnBeforeRemove( StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnAfterRemove( CollectionIndexType idx) override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILibraryMgr
 public:
-   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumLibrary** ppenum);
-//	STDMETHOD(Clear)();
-	STDMETHOD(get_Item)(/*[in]*/ BSTR name, /*[out, retval]*/ ILibrary* *pVal);
-//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal);
-//	STDMETHOD(get_Count)(/*[out, retval]*/ Uint32 *pVal);
-//	STDMETHOD(RemoveLibrary)(/*[in]*/ BSTR name);
-//	STDMETHOD(AddLibrary)(/*[in]*/ ILibrary* newLibrary);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumLibrary** ppenum) override;
+//	STDMETHOD(Clear)() override;
+	STDMETHOD(get_Item)(/*[in]*/ BSTR name, /*[out, retval]*/ ILibrary* *pVal) override;
+//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
+//	STDMETHOD(get_Count)(/*[out, retval]*/ Uint32 *pVal) override;
+//	STDMETHOD(RemoveLibrary)(/*[in]*/ BSTR name) override;
+//	STDMETHOD(AddLibrary)(/*[in]*/ ILibrary* newLibrary) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 // ILibraryEvents
 public:
-   STDMETHOD(OnNameChanged)(/*[in]*/ BSTR oldName,/*[in]*/ BSTR newName);
-   STDMETHOD(OnLibraryChanged)(/*[in]*/ ILibrary* lib);
-   STDMETHOD(OnEntryNameChanged)(/*[in]*/ ILibrary* lib,/*[in]*/ BSTR oldName,/*[in]*/ BSTR newName);
-   STDMETHOD(OnEntryChanged)(/*[in]*/ ILibrary* lib,/*[in]*/ ILibraryEntry* entry);
+   STDMETHOD(OnNameChanged)(/*[in]*/ BSTR oldName,/*[in]*/ BSTR newName) override;
+   STDMETHOD(OnLibraryChanged)(/*[in]*/ ILibrary* lib) override;
+   STDMETHOD(OnEntryNameChanged)(/*[in]*/ ILibrary* lib,/*[in]*/ BSTR oldName,/*[in]*/ BSTR newName) override;
+   STDMETHOD(OnEntryChanged)(/*[in]*/ ILibrary* lib,/*[in]*/ ILibraryEntry* entry) override;
 
 
 // ISupportDocUnitSystem
 public:
-   STDMETHOD(putref_UnitSystem)(IDocUnitSystem* unitSystem);
+   STDMETHOD(putref_UnitSystem)(IDocUnitSystem* unitSystem) override;
 
-// ISupportTransactions
+// IWBFLSupportTransactions
 public:
-   STDMETHOD(putref_TransactionMgr)(/*[in]*/ITransactionMgr* txnMgr);
+   STDMETHOD(putref_TransactionMgr)(/*[in]*/IWBFLTransactionMgr* txnMgr) override;
 
 private:
    CComBSTR m_bstrName;

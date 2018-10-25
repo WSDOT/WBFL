@@ -62,11 +62,11 @@ BEGIN_COM_MAP(CResult3Ds)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IResult3Ds
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ IResult3Ds** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ IResult3Ds** clone) override;
 
    virtual HRESULT OnBeforeAdd ( FRVectorImpl::StoredType* pVal)
    {

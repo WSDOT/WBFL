@@ -40,7 +40,7 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 rptCDRatio::rptCDRatio():
 rptRcString(_T("Undef")),
-m_RcSymbolInfinity(rptRcSymbol::INFINITY),
+m_RcSymbolInfinity(rptRcSymbol::infinity),
 m_Capacity(0.0), m_Demand(0.0), m_Passed(false)
 {
    Init();
@@ -48,7 +48,7 @@ m_Capacity(0.0), m_Demand(0.0), m_Passed(false)
 
 rptCDRatio::rptCDRatio(Float64 capacity, Float64 demand, bool passed):
 rptRcString(_T("Undef")),
-m_RcSymbolInfinity(rptRcSymbol::INFINITY),
+m_RcSymbolInfinity(rptRcSymbol::infinity),
 m_Capacity(capacity), m_Demand(demand), m_Passed(passed)
 {
    Init();
@@ -64,7 +64,7 @@ void rptCDRatio::Init()
 
 
 rptCDRatio::rptCDRatio(const rptCDRatio& rOther) :
-m_RcSymbolInfinity(rptRcSymbol::INFINITY),
+m_RcSymbolInfinity(rptRcSymbol::infinity),
 rptRcString(rOther)
 {
    MakeCopy( rOther );

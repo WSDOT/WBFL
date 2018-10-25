@@ -61,7 +61,7 @@ STDMETHODIMP CGenericShape::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -82,7 +82,7 @@ HRESULT CGenericShape::FinalConstruct()
    m_Ytop      = 0.0;
    m_Ybottom   = 0.0;
 
-   HRESULT hr = CreatePoint(0.00,0.00,NULL,&m_pCG);
+   HRESULT hr = CreatePoint(0.00,0.00,nullptr,&m_pCG);
    if (FAILED(hr))
    {
       return hr;
@@ -100,7 +100,7 @@ HRESULT CGenericShape::FinalConstruct()
       return hr;
    }
 
-   ATLASSERT(gs_MohrCircle != NULL);
+   ATLASSERT(gs_MohrCircle != nullptr);
 
    return S_OK;
 }
@@ -390,7 +390,7 @@ STDMETHODIMP CGenericShape::Clone(IShape** pClone)
    pTheClone->put_Ybottom(m_Ybottom);
 
    CComPtr<IPoint2d> cg;
-   hr = CreatePoint(m_pCG,NULL,&cg);
+   hr = CreatePoint(m_pCG,nullptr,&cg);
    pTheClone->putref_Centroid( cg );
    pTheClone->RotateEx( m_pCG, m_Rotation );
 
@@ -412,7 +412,7 @@ STDMETHODIMP CGenericShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    if ( d < 0 )
    {
       // CG is on the left side of the line
-      *pShape = NULL;
+      *pShape = nullptr;
    }
    else
    {
@@ -438,7 +438,7 @@ STDMETHODIMP CGenericShape::ClipIn(IRect2d* pRect,IShape** pShape)
    else
    {
       // shape is outside of clipping rect
-      *pShape = NULL;
+      *pShape = nullptr;
    }
 
    return S_OK;

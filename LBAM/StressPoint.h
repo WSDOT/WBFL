@@ -64,23 +64,23 @@ BEGIN_COM_MAP(CStressPoint)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStressPoint
 public:
-	STDMETHOD(get_Sm)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Sm)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Sa)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Sa)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_Sm)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Sm)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Sa)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Sa)(/*[in]*/ Float64 newVal) override;
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    Float64 m_Sm;
    Float64 m_Sa;
 public :
-	STDMETHOD(Clone)(/*[out]*/IStressPoint** clone);
+	STDMETHOD(Clone)(/*[out]*/IStressPoint** clone) override;
 
 BEGIN_CONNECTION_POINT_MAP(CStressPoint)
 CONNECTION_POINT_ENTRY(IID_IStressPointEvents)

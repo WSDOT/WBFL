@@ -70,21 +70,21 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMomentCurvatureSolver
 public:
-   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
-	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-   STDMETHOD(put_Slices)(/*[in]*/long nSlices);
-	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices);
-   STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance);
-	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance);
-	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter);
-	STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter);
-   STDMETHOD(put_InitialCurvatureStep)(/*[in]*/Float64 k);
-	STDMETHOD(get_InitialCurvatureStep)(/*[out,retval]*/Float64* k);
-   STDMETHOD(Solve)(/*[in]*/ Float64 Fz,/*[in]*/ Float64 angle,/*[out,retval]*/IMomentCurvatureSolution** solution);
+   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
+	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
+   STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
+	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+   STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
+	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance) override;
+	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;
+	STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter) override;
+   STDMETHOD(put_InitialCurvatureStep)(/*[in]*/Float64 k) override;
+	STDMETHOD(get_InitialCurvatureStep)(/*[out,retval]*/Float64* k) override;
+   STDMETHOD(Solve)(/*[in]*/ Float64 Fz,/*[in]*/ Float64 angle,/*[out,retval]*/IMomentCurvatureSolution** solution) override;
 };
 
 #endif //__MomentCurvatureSolver_H_

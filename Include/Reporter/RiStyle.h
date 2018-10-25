@@ -514,7 +514,7 @@ private:
    void Init();
 
    void MakeCopy(const rptRiStyle& rOther);
-   virtual void MakeAssignment(const rptRiStyle& rOther);
+   void MakeAssignment(const rptRiStyle& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

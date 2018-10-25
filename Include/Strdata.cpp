@@ -362,7 +362,7 @@ HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* p
 
 #define BEGIN_STRSTORAGEMAP(cls,name,version) \
                                             bool cls::_LoadMap() { \
-                                            _strstgmap = std::auto_ptr<StrStorageDataMap<cls> >(new StrStorageDataMap<cls>(TEXT(""),(name),(version)));
+                                            _strstgmap = std::make_unique<StrStorageDataMap<cls>>(TEXT(""),(name),(version));
 #define BEGIN_UNIT(name,desc,version) _strstgmap->BeginUnit((desc),(name),(version));
 #define PROPERTY(name,type,var) _strstgmap->Property((name),(type),(void*)(&var));
 #define PROP_CALLBACK(fn) _strstgmap->Callback( &(fn), this );

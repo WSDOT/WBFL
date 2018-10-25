@@ -30,7 +30,9 @@
 #include <ReportManager\ReportManagerExp.h>
 #include <string>
 #include <vector>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 class CChapterBuilder;
 class CReportSpecification;
@@ -63,9 +65,9 @@ public:
    std::vector<CChapterInfo> GetChapterInfo() const;
    IndexType GetChapterCount() const;
 
-   void ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const;
-   void ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo,boost::shared_ptr<CReportSpecification>& pRptSpec) const;
-   void ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const;
+   void ConfigureReportSpecification(std::shared_ptr<CReportSpecification>& pRptSpec) const;
+   void ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo, std::shared_ptr<CReportSpecification>& pRptSpec) const;
+   void ConfigureReportSpecification(const std::vector<std::_tstring>& chList, std::shared_ptr<CReportSpecification>& pRptSpec) const;
 
 private:
    std::_tstring m_ReportName;

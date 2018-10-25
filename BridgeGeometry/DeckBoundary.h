@@ -117,10 +117,10 @@ END_COM_MAP()
    HRESULT CreateEdgePath(PathIDType edgePathID, IPoint2d* pntStart, IPoint2d* pntEnd,IPath** pPath);
 
 public:
-   STDMETHOD(get_Perimeter)(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** points);
-   STDMETHOD(get_PerimeterEx)(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** points);
-   STDMETHOD(get_TransverseEdgePoints)(EndType endType,IPoint2d** ppLeft,IPoint2d** ppLeftBreak,IPoint2d** ppRightBreak,IPoint2d** ppRight);
-   STDMETHOD(get_EdgePath)(SideType side,VARIANT_BOOL vbLayoutLine,IPath** path);
+   STDMETHOD(get_Perimeter)(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** points) override;
+   STDMETHOD(get_PerimeterEx)(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** points) override;
+   STDMETHOD(get_TransverseEdgePoints)(EndType endType,IPoint2d** ppLeft,IPoint2d** ppLeftBreak,IPoint2d** ppRightBreak,IPoint2d** ppRight) override;
+   STDMETHOD(get_EdgePath)(SideType side,VARIANT_BOOL vbLayoutLine,IPath** path) override;
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(DeckBoundary), CDeckBoundary)

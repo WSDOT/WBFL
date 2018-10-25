@@ -63,7 +63,7 @@ private:
 // CSurfaceTemplateCollection
 HRESULT CSurfaceTemplateCollection::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
    return S_OK;
 }
 
@@ -79,7 +79,7 @@ STDMETHODIMP CSurfaceTemplateCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISurfaceTemplateCollection,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -107,7 +107,7 @@ STDMETHODIMP CSurfaceTemplateCollection::putref_Surface(ISurface* pSurface)
    get__EnumSurfaceTemplates(&enumSurfaceTemplates);
 
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumSurfaceTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumSurfaceTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       surfaceTemplate->putref_Surface(m_pSurface);
       surfaceTemplate.Release();
@@ -274,7 +274,7 @@ STDMETHODIMP CSurfaceTemplateCollection::Clone(ISurfaceTemplateCollection* *clon
    get__EnumSurfaceTemplates(&enumSurfaceTemplates);
 
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumSurfaceTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumSurfaceTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       CComPtr<ISurfaceTemplate> surfaceTemplateClone;
       surfaceTemplate->Clone(&surfaceTemplateClone);
@@ -334,7 +334,7 @@ STDMETHODIMP CSurfaceTemplateCollection::get__EnumSurfaceTemplates(IEnumSurfaceT
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -456,7 +456,7 @@ HRESULT CSurfaceTemplateCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
 //   if ( FAILED(hr) )
 //      return hr;
 //
-//   if ( m_pProfile == NULL )
+//   if ( m_pProfile == nullptr )
 //   {
 //      ZoneIndexType staEqnZoneIdx;
 //      (*station)->get_StationZoneIndex(&staEqnZoneIdx);

@@ -306,7 +306,14 @@ void lrfdCreepCoefficient::Update() const
 
    m_kc = (a/b)*(c/2.587);
 
-   m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H/120.)*pow(ti,-0.118) * (  pow(t - ti,0.6)/(10.0 + pow(t - ti,0.6) ) );
+   if (t < ti)
+   {
+      m_Ct = 0;
+   }
+   else
+   {
+      m_Ct = 3.5*m_kc*m_kf*(1.58 - m_H / 120.)*pow(ti, -0.118) * (pow(t - ti, 0.6) / (10.0 + pow(t - ti, 0.6)));
+   }
 
    m_bUpdate = false;
 }

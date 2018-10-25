@@ -36,7 +36,7 @@ public:
    void SetBroker(IBroker* pBroker);
    HRESULT GetBroker(IBroker** ppBroker);
 
-   virtual HRESULT Validate() const;
+   virtual HRESULT Validate() const override;
 
 protected:
    CComPtr<IBroker> m_pBroker;

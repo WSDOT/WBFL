@@ -191,10 +191,10 @@ STDMETHODIMP_(void) CDimensionLineImpl::GetBoundingBox(IRect2d** rect)
    CComPtr<IRect2d> bounding_box;
    bounding_box.CoCreateInstance(CLSID_Rect2d);
 
-   bounding_box->put_Top(_cpp_max(top, bottom) );
-   bounding_box->put_Left(_cpp_min(left,right) );
-   bounding_box->put_Bottom(_cpp_min(top, bottom) );
-   bounding_box->put_Right(_cpp_max(left,right) );
+   bounding_box->put_Top(Max(top, bottom) );
+   bounding_box->put_Left(Min(left,right) );
+   bounding_box->put_Bottom(Min(top, bottom) );
+   bounding_box->put_Right(Max(left,right) );
 
    (*rect) = bounding_box;
    (*rect)->AddRef();

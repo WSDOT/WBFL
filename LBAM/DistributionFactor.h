@@ -88,13 +88,13 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDistributionFactor
 public:
-	STDMETHOD(get_GTMul)(/*[out, retval]*/ Float64  *pVal);
-	STDMETHOD(put_GTMul)(/*[in]*/ Float64  newVal);
-	STDMETHOD(Clone)(/*[out, retval]*/IDistributionFactor**);
+	STDMETHOD(get_GTMul)(/*[out, retval]*/ Float64  *pVal) override;
+	STDMETHOD(put_GTMul)(/*[in]*/ Float64  newVal) override;
+	STDMETHOD(Clone)(/*[out, retval]*/IDistributionFactor**) override;
 	STDMETHOD(SetG)(/*[in]*/ Float64 PMSgl, /*[in]*/ Float64 PMMul, /*[in]*/ Float64 NMSgl,
                    /*[in]*/ Float64 NMMul, /*[in]*/ Float64 VSgl,  /*[in]*/ Float64 VMul, 
                    /*[in]*/ Float64 DSgl,  /*[in]*/ Float64 DMul,  /*[in]*/ Float64 RSgl, 
@@ -105,36 +105,36 @@ public:
                    /*[out]*/ Float64* DSgl,  /*[out]*/ Float64* DMul,  /*[out]*/ Float64* RSgl, 
                    /*[out]*/ Float64* RMul,  /*[out]*/ Float64* TSgl,  /*[out]*/ Float64* TMul,
                    /*[out]*/ Float64* FatM,  /*[out]*/ Float64* FatV,  /*[out]*/ Float64* Pedestrian);
-	STDMETHOD(get_GPedestrian)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GPedestrian)(/*[in]*/ Float64 newVal);
-	STDMETHOD(GetGFat)(/*[out]*/ Float64 *pMom, /*[out]*/ Float64 *pShear);
-	STDMETHOD(SetGFat)(/*[in]*/  Float64 gMom,  /*[in]*/  Float64 gShear);
-	STDMETHOD(get_GRMul)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GRMul)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GRSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GRSgl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GTSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GTSgl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GDMul)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GDMul)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GDSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GDSgl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GVMul)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GVMul)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GVSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GVSgl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GNMMul)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GNMMul)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GNMSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GNMSgl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GPMMul)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GPMMul)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_GPMSgl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_GPMSgl)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_GPedestrian)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GPedestrian)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetGFat)(/*[out]*/ Float64 *pMom, /*[out]*/ Float64 *pShear) override;
+	STDMETHOD(SetGFat)(/*[in]*/  Float64 gMom,  /*[in]*/  Float64 gShear) override;
+	STDMETHOD(get_GRMul)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GRMul)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GRSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GRSgl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GTSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GTSgl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GDMul)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GDMul)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GDSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GDSgl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GVMul)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GVMul)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GVSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GVSgl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GNMMul)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GNMMul)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GNMSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GNMSgl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GPMMul)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GPMMul)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_GPMSgl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_GPMSgl)(/*[in]*/ Float64 newVal) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    Float64 m_GPedestrian;

@@ -30,7 +30,7 @@ class CEAFRenameReportDlg : public CDialog
 	DECLARE_DYNAMIC(CEAFRenameReportDlg)
 
 public:
-	CEAFRenameReportDlg(CWnd* pParent = NULL);   // standard constructor
+	CEAFRenameReportDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CEAFRenameReportDlg();
 
 // Dialog Data

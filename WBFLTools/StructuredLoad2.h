@@ -60,17 +60,17 @@ BEGIN_COM_MAP(CStructuredLoad2)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStructuredLoad2
-		STDMETHOD(Open)(/*[in]*/ BSTR bstrFile);
-		STDMETHOD(BeginUnit)(/*[in]*/ BSTR bstrUnit);
-		STDMETHOD(EndUnit)(/*[out,retval]*/VARIANT_BOOL* bEnd);
-		STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
-		STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal);
-		STDMETHOD(get_Property)(/*[in]*/ BSTR bstrPropName, /*[out, retval]*/ VARIANT *pVal);
-		STDMETHOD(EndOfStorage)(/*[out,retval]*/VARIANT_BOOL* bEnd);
-		STDMETHOD(Close)();
+		STDMETHOD(Open)(/*[in]*/ BSTR bstrFile) override;
+		STDMETHOD(BeginUnit)(/*[in]*/ BSTR bstrUnit) override;
+		STDMETHOD(EndUnit)(/*[out,retval]*/VARIANT_BOOL* bEnd) override;
+		STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal) override;
+		STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal) override;
+		STDMETHOD(get_Property)(/*[in]*/ BSTR bstrPropName, /*[out, retval]*/ VARIANT *pVal) override;
+		STDMETHOD(EndOfStorage)(/*[out,retval]*/VARIANT_BOOL* bEnd) override;
+		STDMETHOD(Close)() override;
 
 private:
    CComPtr<IStream>                m_pIStream;

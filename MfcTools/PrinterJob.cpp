@@ -43,7 +43,7 @@ bool bGfxUserAbort;
 BOOL CALLBACK EXPORT _GfxAbortProc( HDC, int )
 {
 	MSG msg;
-	while (!bGfxUserAbort && ::PeekMessage(&msg, NULL, NULL, NULL, PM_NOREMOVE))
+	while (!bGfxUserAbort && ::PeekMessage(&msg, 0, 0, 0, PM_NOREMOVE))
 	{
 		if (!AfxGetThread()->PumpMessage()) return FALSE;
 	}
@@ -52,7 +52,7 @@ BOOL CALLBACK EXPORT _GfxAbortProc( HDC, int )
 
 CPrinterJob::CPrinterJob()
 {
-	pParent = NULL;
+	pParent = nullptr;
 	strTitle = _T("Print Job");
 	bAlreadyAskedPageOpt = false;
 }
@@ -88,8 +88,8 @@ bool CPrinterJob::DoPreparePrinting(CPrintInfo * pInfo)
    // rdp 2/00 
    // ripped code straight from out of the cview class - not very safe, but the mfc
    // folks did not make it a static, so rip i did.
-	ASSERT(pInfo != NULL);
-	ASSERT(pInfo->m_pPD != NULL);
+	ASSERT(pInfo != nullptr);
+	ASSERT(pInfo->m_pPD != nullptr);
 
 	if (pInfo->m_pPD->m_pd.nMinPage > pInfo->m_pPD->m_pd.nMaxPage)
 		pInfo->m_pPD->m_pd.nMaxPage = pInfo->m_pPD->m_pd.nMinPage;
@@ -101,7 +101,7 @@ bool CPrinterJob::DoPreparePrinting(CPrintInfo * pInfo)
 	if (pInfo->m_bPreview || pInfo->m_bDirect ||
 		(pInfo->m_bDocObject && !(pInfo->m_dwFlags & PRINTFLAG_PROMPTUSER)))
 	{
-		if (pInfo->m_pPD->m_pd.hDC == NULL)
+		if (pInfo->m_pPD->m_pd.hDC == nullptr)
 		{
 			// if no printer set then, get default printer DC and create DC without calling
 			//   print dialog.
@@ -113,10 +113,10 @@ bool CPrinterJob::DoPreparePrinting(CPrintInfo * pInfo)
 						return FALSE;
 			}
 
-			if (pInfo->m_pPD->m_pd.hDC == NULL)
+			if (pInfo->m_pPD->m_pd.hDC == nullptr)
 			{
 				// call CreatePrinterDC if DC was not created by above
-				if (pInfo->m_pPD->CreatePrinterDC() == NULL)
+				if (pInfo->m_pPD->CreatePrinterDC() == nullptr)
 					return FALSE;
 			}
 		}
@@ -136,9 +136,9 @@ bool CPrinterJob::DoPreparePrinting(CPrintInfo * pInfo)
 			return FALSE;       // do not print
 	}
 
-	ASSERT(pInfo->m_pPD != NULL);
-	ASSERT(pInfo->m_pPD->m_pd.hDC != NULL);
-	if (pInfo->m_pPD->m_pd.hDC == NULL)
+	ASSERT(pInfo->m_pPD != nullptr);
+	ASSERT(pInfo->m_pPD->m_pd.hDC != nullptr);
+	if (pInfo->m_pPD->m_pd.hDC == nullptr)
 		return FALSE;
 
 	pInfo->m_nNumPreviewPages = pApp->m_nNumPreviewPages;
@@ -149,14 +149,14 @@ bool CPrinterJob::DoPreparePrinting(CPrintInfo * pInfo)
 void CPrinterJob::OnFilePrint(bool direct)
 {
 	CPrintInfo printInfo;
-	ASSERT(printInfo.m_pPD != NULL);    // must be set
+	ASSERT(printInfo.m_pPD != nullptr);    // must be set
 
    printInfo.m_bDirect = (direct ? TRUE : FALSE);
 
 	if (OnPreparePrinting(&printInfo))
 	{
 		// hDC must be set (did you remember to call DoPreparePrinting?)
-		ASSERT(printInfo.m_pPD->m_pd.hDC != NULL);
+		ASSERT(printInfo.m_pPD->m_pd.hDC != nullptr);
 
 		// gather file to print to if print-to-file selected
 		CString strOutput;
@@ -181,7 +181,7 @@ void CPrinterJob::OnFilePrint(bool direct)
 		int nFormatID;
 		if (strOutput.IsEmpty())
 		{
-			docInfo.lpszOutput = NULL;
+			docInfo.lpszOutput = nullptr;
 			strPortName = printInfo.m_pPD->GetPortName();
 			nFormatID = AFX_IDS_PRINTONPORT;
 		}
@@ -325,7 +325,7 @@ void CPrinterJob::OnPrepareDC(CDC * pDC, CPrintInfo * pInfo)
 	UNUSED(pDC); // unused in release builds
 
 	// Default to one page printing if doc length not known
-	if (pInfo != NULL)
+	if (pInfo != nullptr)
 		pInfo->m_bContinuePrinting =
 			(pInfo->GetMaxPage() != 0xffff || (pInfo->m_nCurPage == 1));
 }

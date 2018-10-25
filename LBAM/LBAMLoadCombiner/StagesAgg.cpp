@@ -41,7 +41,7 @@ STDMETHODIMP CStagesAgg::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISegmentItem
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -52,78 +52,78 @@ STDMETHODIMP CStagesAgg::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CStagesAgg::get_Item(/*[in]*/StageIndexType index, /*[out,retval]*/ IStage* *pVal)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->get_Item( index, pVal);
 }
 
 STDMETHODIMP CStagesAgg::get__NewEnum(/*[out,retval]*/ IUnknown** retval)  
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->get__NewEnum(retval);
 }
 
 STDMETHODIMP CStagesAgg::get_Count(/*[out,retval]*/ StageIndexType *pVal)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->get_Count(pVal);
 }
 
 STDMETHODIMP CStagesAgg::get__EnumElements(/*[out,retval]*/ IEnumStage* *pVal)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->get__EnumElements(pVal);
 }
 
 STDMETHODIMP CStagesAgg::Add(/*[in]*/IStage* Stage)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->Add(Stage);
 }
 
 STDMETHODIMP CStagesAgg::RemoveByName(/*[in]*/BSTR name)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->RemoveByName(name);
 }
 
 STDMETHODIMP CStagesAgg::RemoveByIndex(/*[in]*/StageIndexType index)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->RemoveByIndex(index);
 }
 
 STDMETHODIMP CStagesAgg::Clone(/*[out,retval]*/IStages** Stages)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->Clone(Stages);
 }
 
 STDMETHODIMP CStagesAgg::Clear()
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->Clear();
 }
 
 STDMETHODIMP CStagesAgg::Insert(/*[in]*/StageIndexType relPosition, /*[in]*/IStage* member)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->Insert(relPosition, member);
 }
 
 STDMETHODIMP CStagesAgg::MoveTo(/*[in]*/ StageIndexType fromPosition, /*[in]*/ StageIndexType toPosition)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->MoveTo(fromPosition, toPosition);
 }
 
 STDMETHODIMP CStagesAgg::Reverse()
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->Reverse();
 }
 
 STDMETHODIMP CStagesAgg::FindIndex(/*[in]*/BSTR name, /*[out,retval]*/StageIndexType* index)
 {
-   ATLASSERT(m_Stages!=NULL);
+   ATLASSERT(m_Stages!=nullptr);
    return m_Stages->FindIndex(name, index);
 }

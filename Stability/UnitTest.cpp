@@ -108,7 +108,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
    stabilityProblem.SetImpact( 0.0, 0.0 );
    stabilityProblem.EvaluateStressesForPlumbGirder(false);
 
-   stbStabilityEngineer engineer(NULL);
+   stbStabilityEngineer engineer(nullptr);
 
    stbLiftingResults result = engineer.AnalyzeLifting(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
@@ -118,7 +118,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
 
-         BOOST_FOREACH(stbLiftingSectionResult& sectionResult,result.vSectionResults)
+         for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],1.850,0.001) );
 
@@ -139,7 +139,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
       for ( int j = 0; j < 2; j++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
-         BOOST_FOREACH(stbLiftingSectionResult& sectionResult,result.vSectionResults)
+         for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],impact == stbTypes::ImpactDown ? 1.714 : 1.850,0.001) );
          }
@@ -158,7 +158,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
       for ( int j = 0; j < 2; j++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
-         BOOST_FOREACH(stbLiftingSectionResult& sectionResult,result.vSectionResults)
+         for( const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],wind == stbTypes::Left ? 2.556 : 1.197/*1.581*/,0.001) );
             TRY_TESTME( sectionResult.CrackedFlange[impact][wind] == (wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight) );
@@ -177,7 +177,7 @@ bool stbUnitTest::PCILiftingExamples(dbgLog& rlog)
       for ( int j = 0; j < 2; j++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
-         BOOST_FOREACH(stbLiftingSectionResult& sectionResult,result.vSectionResults)
+         for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[impact][wind],wind == stbTypes::Left ? 2.425 : 1.349/*1.633*/,0.001) );
             TRY_TESTME( sectionResult.CrackedFlange[impact][wind] == (wind == stbTypes::Left ? stbTypes::TopLeft : stbTypes::TopRight) );
@@ -241,7 +241,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
    stabilityProblem.SetHeightOfRollAxisAboveRoadway(::ConvertToSysUnits(24.,unitMeasure::Inch));
 
 
-   stbStabilityEngineer engineer(NULL);
+   stbStabilityEngineer engineer(nullptr);
 
    stbHaulingResults result = engineer.AnalyzeHauling(&girder,&stabilityProblem);
    for ( int i = 0; i < 3; i++ )
@@ -250,7 +250,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
       for ( int j = 0; j < 2; j++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
-         BOOST_FOREACH(stbHaulingSectionResult& sectionResult,result.vSectionResults)
+         for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind],1.476/*1.429*/,0.001) );
 
@@ -276,7 +276,7 @@ bool stbUnitTest::PCIHaulingExamples(dbgLog& rlog)
       for ( int j = 0; j < 2; j++ )
       {
          stbTypes::WindDirection wind = (stbTypes::WindDirection)j;
-         BOOST_FOREACH(stbHaulingSectionResult& sectionResult,result.vSectionResults)
+         for(const auto& sectionResult : result.vSectionResults)
          {
             TRY_TESTME( ::IsEqual(sectionResult.FScr[stbTypes::Superelevation][impact][wind],1.002/*0.970*/,0.001) );
 

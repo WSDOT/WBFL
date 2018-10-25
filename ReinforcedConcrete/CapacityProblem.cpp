@@ -253,18 +253,18 @@ CollectionIndexType rcaCapacityProblem::GetBaseConcreteMaterial() const
 
 CollectionIndexType rcaCapacityProblem::AddMildSteel(const matMetal& steel)
 {
-   matYieldStressStrainCurve* pcurv = DoCreateMildSteelMaterialModel(steel);
+   std::shared_ptr<matYieldStressStrainCurve> pcurv(DoCreateMildSteelMaterialModel(steel));
    CollectionIndexType key = GetNextAvailableKey();
-   m_MsCurveContainer.insert(MatCurveEntry(key,boost::shared_ptr<matYieldStressStrainCurve>(pcurv)));
+   m_MsCurveContainer.insert(MatCurveEntry(key,pcurv));
 
    return key;
 }
 
 StrandIndexType rcaCapacityProblem::AddStrand(const matPsStrand& strand)
 {
-   matYieldStressStrainCurve* pcurv = DoCreateStrandMaterialModel(strand);
+   std::shared_ptr<matYieldStressStrainCurve> pcurv(DoCreateStrandMaterialModel(strand));
    StrandIndexType key = GetNextAvailableKey();
-   m_PsCurveContainer.insert(MatCurveEntry(key,boost::shared_ptr<matYieldStressStrainCurve>(pcurv)));
+   m_PsCurveContainer.insert(MatCurveEntry(key,pcurv));
 
    return key;
 }
@@ -819,7 +819,7 @@ void rcaCapacityProblem::Dump(dbgDumpContext& os) const
    os << endl;
 
    os << "Concrete" << endl;
-   Int32 i=0;
+   Int32 i = 0;
    for (ConstConcreteIterator citer=m_ConcreteContainer.begin(); 
         citer!=m_ConcreteContainer.end(); citer++)
    {
@@ -984,7 +984,7 @@ void rcaCapacityProblem::OnGeometryChange()
 
 Float64 rcaCapacityProblem::GetClippedConcreteArea(const gpLine2d& clipLine, gpLine2d::Side side) const
 {
-   Float64 area=0;
+   Float64 area = 0;
    for (ConstConcElementIterator citer = m_ConcElementContainer.begin(); 
         citer!=m_ConcElementContainer.end(); citer++)
    {
@@ -999,7 +999,7 @@ Float64 rcaCapacityProblem::GetClippedConcreteArea(CollectionIndexType concreteI
 {
    CHECK(0 <= concreteIdx && concreteIdx < m_ConcreteContainer.size());
 
-   Float64 area=0;
+   Float64 area = 0;
    for (ConstConcElementIterator citer = m_ConcElementContainer.begin(); 
         citer!=m_ConcElementContainer.end(); citer++)
    {
@@ -1050,7 +1050,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
       matYieldStressStrainCurve* pt = 
          dynamic_cast<matYieldStressStrainCurve*>(mcpt->CreateClone());
       CHECK(pt);
-	  boost::shared_ptr<matYieldStressStrainCurve> tmp(pt);
+	  std::shared_ptr<matYieldStressStrainCurve> tmp(pt);
       CollectionIndexType key = msiter->first;
       m_MsCurveContainer.insert(MatCurveEntry(key,tmp));
    }
@@ -1065,7 +1065,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
       matYieldStressStrainCurve* pt = 
          dynamic_cast<matYieldStressStrainCurve*>(mcpt->CreateClone());
       CHECK(pt);
-	  boost::shared_ptr<matYieldStressStrainCurve> tmp(pt);
+      std::shared_ptr<matYieldStressStrainCurve> tmp(pt);
       CollectionIndexType key = (*psiter).first;
       m_MsCurveContainer.insert(MatCurveEntry(key,tmp));
    }
@@ -1075,7 +1075,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
         ceiter!=rOther.m_ConcElementContainer.end(); ceiter++)
    {
       // if concrete element has siblings, will need to add a createclone here.
-	   boost::shared_ptr<rcaConcreteElement> tmp(new rcaConcreteElement(*((*ceiter).second)));
+      std::shared_ptr<rcaConcreteElement> tmp(std::make_shared<rcaConcreteElement>(*((*ceiter).second)));
       CollectionIndexType key = (*ceiter).first;
       m_ConcElementContainer.insert(ConcElementEntry(key,tmp));
    }
@@ -1085,7 +1085,7 @@ void rcaCapacityProblem::MakeCopy(const rcaCapacityProblem& rOther)
         riter!=m_ReinfElementContainer.end(); riter++)
    {
       // if reinf element has siblings, will need to add a createclone here.
-	  boost::shared_ptr<rcaReinforcementElement> tmp(new rcaReinforcementElement(*((*riter).second)));
+	   std::shared_ptr<rcaReinforcementElement> tmp(std::make_shared<rcaReinforcementElement>(*((*riter).second)));
       CollectionIndexType key = (*riter).first;
       m_ReinfElementContainer.insert(ReinfElementEntry(key,tmp));
    }
@@ -1137,9 +1137,9 @@ void rcaCapacityProblem::GetGlobalSectionForcesEx(Float64* pFz,
                                                   Float64* compRes, gpPoint2d* compLoc,
                                                   Float64* tensRes, gpPoint2d* tensLoc) const
 {
-   Float64 fz=0,mx=0, my=0;
-   Float64 tensfz=0, tensmx=0, tensmy=0;  // tensile only
-   Float64 compfz=0, compmx=0, compmy=0;  // compression only
+   Float64 fz=0,mx=0, my = 0;
+   Float64 tensfz=0, tensmx=0, tensmy = 0;  // tensile only
+   Float64 compfz=0, compmx=0, compmy = 0;  // compression only
    Float64 efz, emx, emy;
    gpPoint2d cg;
 

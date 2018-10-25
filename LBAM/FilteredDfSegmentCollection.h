@@ -57,7 +57,7 @@ BEGIN_COM_MAP(CFilteredDfSegmentCollection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFilteredDfSegmentCollection
 public:

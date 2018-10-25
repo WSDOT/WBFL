@@ -303,14 +303,14 @@ void lrfdCreepCoefficient2005::Update() const
 
    if ( bSI )
    {
-      m_kvs = _cpp_max(kvs_limit, 1.45-0.0051*::ConvertFromSysUnits(VS,unitMeasure::Millimeter));
+      m_kvs = Max(kvs_limit, 1.45-0.0051*::ConvertFromSysUnits(VS,unitMeasure::Millimeter));
       m_kf = 35.0 / ( 7.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) );
       m_ktd = t / ( 61. - 0.58*::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) + t);
       ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
    }
    else
    {
-      m_kvs = _cpp_max(kvs_limit, 1.45-0.13*::ConvertFromSysUnits(VS,unitMeasure::Inch));
+      m_kvs = Max(kvs_limit, 1.45-0.13*::ConvertFromSysUnits(VS,unitMeasure::Inch));
       m_kf =  5.0 / ( 1.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::KSI) );
 
       if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims )
@@ -347,12 +347,15 @@ void lrfdCreepCoefficient2005::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdCreepCoefficient2005::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdCreepCoefficient2005");
 
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
+   lrfdAutoVersion av;
+   lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
    lrfdVersionMgr::SetVersion(lrfdVersionMgr::ThirdEditionWith2005Interims);
+
 
    lrfdCreepCoefficient2005 creep;
    creep.SetCuringMethod(lrfdCreepCoefficient2005::Accelerated);
@@ -364,13 +367,11 @@ bool lrfdCreepCoefficient2005::TestMe(dbgLog& rlog)
    creep.SetSurfaceArea( ::ConvertToSysUnits(1.0,unitMeasure::Inch2) );
    creep.SetVolume( ::ConvertToSysUnits(2.88,unitMeasure::Inch3) );
 
-   TRY_TESTME( IsEqual( creep.GetKvs(), 1.0769248 ) );
-   TRY_TESTME( IsEqual( creep.GetKf(),  0.56308 ) );
+   TRY_TESTME( IsEqual( creep.GetKvs(), 1.0756 ) );
+   TRY_TESTME( IsEqual( creep.GetKf(),  0.55555 ) );
    TRY_TESTME( IsEqual( creep.GetKhc(), 0.96 ) );
-   TRY_TESTME( IsEqual( creep.GetKtd(), 0.805324 ) );
-   TRY_TESTME( IsEqual( creep.GetCreepCoefficient(), 0.70799) );
-
-   lrfdVersionMgr::SetVersion(version);
+   TRY_TESTME( IsEqual( creep.GetKtd(), 0.805369) );
+   TRY_TESTME( IsEqual( creep.GetCreepCoefficient(), 0.877805) );
 
    TESTME_EPILOG("lrfdCreepCoefficient2005");
 }

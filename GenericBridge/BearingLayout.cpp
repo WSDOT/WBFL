@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CBearingLayout
 HRESULT CBearingLayout::FinalConstruct()
 {
-   m_pPier = NULL;
+   m_pPier = nullptr;
 
    // Start with one bearing line
    BearingLineData brgLineData;
@@ -58,7 +58,7 @@ STDMETHODIMP CBearingLayout::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IBearingLayout,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -346,7 +346,7 @@ STDMETHODIMP CBearingLayout::get_BearingLayoutWidth(IndexType brgLineIdx,Float64
 {
    CHECK_RETVAL(pCLW);
    Float64 width = 0;
-   BOOST_FOREACH(Float64 space,m_BearingLines[brgLineIdx].m_Spacing)
+   for(const auto& space : m_BearingLines[brgLineIdx].m_Spacing)
    {
       width += space;
    }

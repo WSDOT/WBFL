@@ -84,7 +84,7 @@ public:
    // Return true if edit is to be accepted, false if edit is cancelled.
    // It is up to the implementer of this class to insure that the entry
    // is not changed if the edit is cancelled.
-   virtual bool Edit(bool allowEditing,int nPage=0)=0;
+   virtual bool Edit(bool allowEditing,int nPage=0) = 0;
 
    //------------------------------------------------------------------------
    // Change the name of the entry
@@ -129,11 +129,11 @@ public:
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave)=0;
+   virtual bool SaveMe(sysIStructuredSave* pSave) = 0;
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   virtual bool LoadMe(sysIStructuredLoad* pLoad)=0;
+   virtual bool LoadMe(sysIStructuredLoad* pLoad) = 0;
 
    // ACCESS
    
@@ -149,7 +149,7 @@ protected:
    void MakeCopy(const libLibraryEntry& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const libLibraryEntry& rOther);
+   void MakeAssignment(const libLibraryEntry& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

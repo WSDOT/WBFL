@@ -82,18 +82,18 @@ public:
 
    //------------------------------------------------------------------------
    // Edit the entry
-   virtual bool Edit(bool allowEditing,int nPage=0) {return false;}
+   virtual bool Edit(bool allowEditing,int nPage=0) override {return false;}
 
    void Notify(int hint) {}
 
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave);
+   virtual bool SaveMe(sysIStructuredSave* pSave) override;
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   virtual bool LoadMe(sysIStructuredLoad* pLoad);
+   virtual bool LoadMe(sysIStructuredLoad* pLoad) override;
 
     // GROUP: ACCESS
    //------------------------------------------------------------------------
@@ -138,7 +138,8 @@ protected:
    void MakeCopy(const libConcreteMaterial& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const libConcreteMaterial& rOther);
+   void MakeAssignment(const libConcreteMaterial& rOther);
+
   // GROUP: ACCESS
   // GROUP: INQUIRY
 
@@ -160,11 +161,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

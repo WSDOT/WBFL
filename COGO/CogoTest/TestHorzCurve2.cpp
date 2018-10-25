@@ -583,26 +583,26 @@ void CTestHorzCurve::Test7()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(NULL), E_INVALIDARG );
+   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
 
    TRY_TEST( hc->putref_PBT(pbt), S_OK );
    TRY_TEST( hc->putref_PI(pi), S_OK );
    TRY_TEST( hc->putref_PFT(pft), S_OK );
 
    CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PBT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pbt), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PI(NULL), E_POINTER );
+   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
    TRY_TEST( hc->get_PI(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pi), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PFT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PFT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pft), true );
 
@@ -617,7 +617,7 @@ void CTestHorzCurve::Test7()
    TRY_TEST( hc->put_SpiralLength(spExit,700), S_OK);
 
    CComPtr<IAngle> angle;
-   TRY_TEST( hc->get_CircularCurveAngle(NULL), E_POINTER );
+   TRY_TEST( hc->get_CircularCurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CircularCurveAngle(&angle), COGO_E_SPIRALSOVERLAP );
 }
 
@@ -665,15 +665,15 @@ void CTestHorzCurve::Test8a()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -686,8 +686,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -699,8 +699,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -712,8 +712,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -735,8 +735,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -760,8 +760,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -784,8 +784,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -802,8 +802,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -828,8 +828,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -846,8 +846,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -871,8 +871,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -884,8 +884,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -901,8 +901,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -914,8 +914,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -931,8 +931,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -948,8 +948,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -959,8 +959,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -975,8 +975,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -987,8 +987,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -999,8 +999,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,1000);
@@ -1010,8 +1010,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1026,8 +1026,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1042,8 +1042,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -1053,15 +1053,15 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1077,8 +1077,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1089,8 +1089,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1105,8 +1105,8 @@ void CTestHorzCurve::Test8a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 void CTestHorzCurve::Test8b()
@@ -1154,15 +1154,15 @@ void CTestHorzCurve::Test8b()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -1175,8 +1175,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1188,8 +1188,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1201,8 +1201,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1226,8 +1226,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1251,8 +1251,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1275,8 +1275,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1293,8 +1293,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1317,8 +1317,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1335,8 +1335,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1360,8 +1360,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1373,8 +1373,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1390,8 +1390,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1403,8 +1403,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1420,8 +1420,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1437,8 +1437,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -1448,8 +1448,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1464,8 +1464,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1476,8 +1476,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -1488,8 +1488,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,1000);
@@ -1499,8 +1499,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1515,8 +1515,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1531,8 +1531,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -1542,15 +1542,15 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1566,8 +1566,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1578,8 +1578,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1594,8 +1594,8 @@ void CTestHorzCurve::Test8b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 
@@ -1644,15 +1644,15 @@ void CTestHorzCurve::Test9a()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -1665,8 +1665,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1678,8 +1678,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1691,8 +1691,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1714,8 +1714,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1739,8 +1739,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1763,8 +1763,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1781,8 +1781,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1807,8 +1807,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1825,8 +1825,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1850,8 +1850,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1863,8 +1863,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1880,8 +1880,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1893,8 +1893,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1910,8 +1910,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1927,8 +1927,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -1938,8 +1938,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1954,8 +1954,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -1966,8 +1966,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -1978,8 +1978,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,1000);
@@ -1989,8 +1989,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2005,8 +2005,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2021,8 +2021,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -2032,15 +2032,15 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2056,8 +2056,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2068,8 +2068,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2084,8 +2084,8 @@ void CTestHorzCurve::Test9a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 void CTestHorzCurve::Test9b()
@@ -2133,15 +2133,15 @@ void CTestHorzCurve::Test9b()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -2154,8 +2154,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2167,8 +2167,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2180,8 +2180,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2205,8 +2205,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2230,8 +2230,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2254,8 +2254,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2272,8 +2272,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2296,8 +2296,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2314,8 +2314,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2339,8 +2339,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2352,8 +2352,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2369,8 +2369,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2382,8 +2382,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2399,8 +2399,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2416,8 +2416,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,1100);
@@ -2427,8 +2427,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2443,8 +2443,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2455,8 +2455,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -2467,8 +2467,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,1000);
@@ -2478,8 +2478,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2494,8 +2494,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2510,8 +2510,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,1000);
@@ -2521,15 +2521,15 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2545,8 +2545,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2557,8 +2557,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2573,8 +2573,8 @@ void CTestHorzCurve::Test9b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 
@@ -2623,15 +2623,15 @@ void CTestHorzCurve::Test10a()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -2644,8 +2644,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2657,8 +2657,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2670,8 +2670,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2693,8 +2693,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2718,8 +2718,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2742,8 +2742,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2760,8 +2760,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2786,8 +2786,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2804,8 +2804,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2829,8 +2829,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2842,8 +2842,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2859,8 +2859,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2872,8 +2872,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2889,8 +2889,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2906,8 +2906,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -2917,8 +2917,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2933,8 +2933,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2945,8 +2945,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -2957,8 +2957,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,-1000);
@@ -2968,8 +2968,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -2984,8 +2984,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3000,8 +3000,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -3011,15 +3011,15 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3035,8 +3035,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3047,8 +3047,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3063,8 +3063,8 @@ void CTestHorzCurve::Test10a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 
@@ -3113,15 +3113,15 @@ void CTestHorzCurve::Test10b()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -3134,8 +3134,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3147,8 +3147,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3160,8 +3160,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3185,8 +3185,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3210,8 +3210,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3234,8 +3234,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3252,8 +3252,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3276,8 +3276,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3294,8 +3294,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3319,8 +3319,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3332,8 +3332,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3349,8 +3349,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3362,8 +3362,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3379,8 +3379,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3396,8 +3396,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -3407,8 +3407,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3423,8 +3423,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3435,8 +3435,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -3447,8 +3447,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(600,-1000);
@@ -3458,8 +3458,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3474,8 +3474,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3490,8 +3490,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -3501,15 +3501,15 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3525,8 +3525,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3537,8 +3537,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3553,8 +3553,8 @@ void CTestHorzCurve::Test10b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 void CTestHorzCurve::Test11a()
@@ -3602,15 +3602,15 @@ void CTestHorzCurve::Test11a()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect entry spiral
    line->ThroughPoints(cc,spi1);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -3623,8 +3623,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3636,8 +3636,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3649,8 +3649,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3672,8 +3672,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3697,8 +3697,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3721,8 +3721,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3739,8 +3739,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3765,8 +3765,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3783,8 +3783,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3808,8 +3808,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3821,8 +3821,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3838,8 +3838,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3851,8 +3851,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3868,8 +3868,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3885,8 +3885,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -3896,8 +3896,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3912,8 +3912,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3924,8 +3924,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -3936,8 +3936,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,-1000);
@@ -3947,8 +3947,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3963,8 +3963,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -3979,8 +3979,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -3990,15 +3990,15 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4014,8 +4014,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4026,8 +4026,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4042,8 +4042,8 @@ void CTestHorzCurve::Test11a()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 void CTestHorzCurve::Test11b()
@@ -4091,15 +4091,15 @@ void CTestHorzCurve::Test11b()
    // A couple of points to be used for results
    CComPtr<IPoint2d> p1, p2;
 
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,NULL),E_POINTER);
-   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,NULL,&p2),E_POINTER);
-   TRY_TEST(hc->Intersect(NULL,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,nullptr),E_POINTER);
+   TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,nullptr,&p2),E_POINTER);
+   TRY_TEST(hc->Intersect(nullptr,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2), E_INVALIDARG);
 
    // make line intersect exit spiral
    line->ThroughPoints(cc,spi2);
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    Float64 px,py;
    p1->get_X(&px);
@@ -4112,8 +4112,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4125,8 +4125,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4138,8 +4138,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4163,8 +4163,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4188,8 +4188,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4212,8 +4212,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4230,8 +4230,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4254,8 +4254,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4272,8 +4272,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4297,8 +4297,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4310,8 +4310,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4327,8 +4327,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4340,8 +4340,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4357,8 +4357,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4374,8 +4374,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(0,-1100);
@@ -4385,8 +4385,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4401,8 +4401,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4413,8 +4413,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line parallel to exit tangent
    // outside of curve
@@ -4425,8 +4425,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // again, but on inside of curve (intersect with curve)
    cp1->Move(-600,-1000);
@@ -4436,8 +4436,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4452,8 +4452,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4468,8 +4468,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // no intersection with line that cross both entry/entry tangent (inside of curve)
    cp1->Move(0,-1000);
@@ -4479,15 +4479,15 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 
    // intersection with line that cross both entry/entry tangent (inside of curve) - project curve
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 != nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4503,8 +4503,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4515,8 +4515,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_FALSE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 != nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
    
    p1->get_X(&px);
    p1->get_Y(&py);
@@ -4531,8 +4531,8 @@ void CTestHorzCurve::Test11b()
    p1.Release();
    p2.Release();
    TRY_TEST(hc->Intersect(line,VARIANT_FALSE,VARIANT_FALSE,&p1,&p2),S_FALSE);
-   TRY_TEST(p1 == NULL,true);
-   TRY_TEST(p2 == NULL,true);
+   TRY_TEST(p1 == nullptr,true);
+   TRY_TEST(p2 == nullptr,true);
 }
 
 void CTestHorzCurve::TestEvents()
@@ -4619,7 +4619,7 @@ void CTestHorzCurve::TestEvents()
 
 STDMETHODIMP CTestHorzCurve::OnHorzCurveChanged(IHorzCurve* pp)
 {
-//   ::MessageBox(NULL,"OnHorzCurveChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnHorzCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

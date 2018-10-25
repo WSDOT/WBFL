@@ -41,7 +41,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILBAMAnalysisEngine
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -51,7 +51,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CLBAMAnalysisEngine::Initialize(ILBAMModel *model, AnalysisType forceOrDeflection)
 {
-   return InitializeEx(model,forceOrDeflection,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+   return InitializeEx(model,forceOrDeflection,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr,nullptr);
 }
 
 STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType forceOrDeflection,
@@ -75,7 +75,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
    try
    {
-      if (m_pModel!=NULL)
+      if (m_pModel!=nullptr)
       {
          THROW_LBAMAU(ENGINE_INIT_ONCE)
       }
@@ -110,7 +110,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
       // associate the load group response with the model
       CComQIPtr<IDependOnLBAM> lgctx(m_pLoadGroupResponse);
-      if(lgctx==NULL)
+      if(lgctx==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI context interface from load group component"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -128,7 +128,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<IUnitLoadResponse> unitLoadResponse(m_pLoadGroupResponse);
-         if(unitLoadResponse==NULL)
+         if(unitLoadResponse==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI unit load response component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -146,7 +146,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<IInfluenceLineResponse> influence(m_pLoadGroupResponse);
-         if(influence==NULL)
+         if(influence==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI influence response component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -163,7 +163,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<IContraflexureResponse> contraflexure(m_pLoadGroupResponse);
-         if(contraflexure==NULL)
+         if(contraflexure==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI contraflexure response component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -181,7 +181,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<ILiveLoadNegativeMomentRegion> llnmr(m_pLoadGroupResponse);
-         if(llnmr==NULL)
+         if(llnmr==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI ILiveLoadNegativeMomentRegion response component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -199,7 +199,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<IAnalysisPOIs> analysispois(m_pLoadGroupResponse);
-         if(analysispois==NULL)
+         if(analysispois==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI analysis pois component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -209,14 +209,14 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       }
 
       CComQIPtr<IGetStressPoints> get_sps(m_pLoadGroupResponse);
-      if(get_sps==NULL)
+      if(get_sps==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI IGetStressPoints"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
       }
 
       CComQIPtr<IGetDistributionFactors> get_df(m_pLoadGroupResponse);
-      if(get_df==NULL)
+      if(get_df==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI IGetDistributionFactors"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -250,7 +250,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       }
 
       CComQIPtr<IDependOnVehicularAnalysisContext> depcontxt(m_pBvResponse);
-      if(depcontxt==NULL)
+      if(depcontxt==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI Vehicular Analysis Context Dependency component"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -273,7 +273,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       }
       depcontxt.Release();
       m_pEnvResponse->QueryInterface(&depcontxt);
-      if(depcontxt==NULL)
+      if(depcontxt==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI Vehicular Analysis Context Dependency component"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -304,7 +304,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
 
       CComQIPtr<IDependOnVehicularAnalysisContext> envdepcontxt(m_pLiveLoadModelResponse);
-      if(envdepcontxt==NULL)
+      if(envdepcontxt==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI analysis pois component"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -316,7 +316,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       if ( !m_pEnvResponse )
       {
          CComQIPtr<IEnvelopingStrategy> envstrategy(m_pLiveLoadModelResponse);
-         if(envstrategy==NULL)
+         if(envstrategy==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI LiveLoadModelResponse component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -356,7 +356,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
 
       // initialize our load combiner with the context
       CComQIPtr<IDependOnLoadCombinationAnalysisContext> depctx(m_pLoadCaseResponse);
-      if (depctx==NULL)
+      if (depctx==nullptr)
       {
          CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI DependOnLoadCombinationAnalysisContext component"));
          THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -371,7 +371,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<ILoadCombinationResponse> lcr_response(m_pLoadCaseResponse);
-         if (lcr_response==NULL)
+         if (lcr_response==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI LoadCombinationResponse component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -387,7 +387,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeEx(ILBAMModel* model,AnalysisType fo
       else
       {
          CComQIPtr<IConcurrentLoadCombinationResponse> clcr_response(m_pLoadCaseResponse);
-         if (clcr_response==NULL)
+         if (clcr_response==nullptr)
          {
             CComBSTR msg = CreateErrorMsg1S(IDS_E_INVALID_CONTEXT, CComBSTR("Unable to QI ConcurrentLoadCombinationResponse component"));
             THROW_LBAMAU_MSG(INVALID_CONTEXT, msg);
@@ -410,10 +410,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_UnitLoadResponse(IUnitLoadResponse* *pVal)
 
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pUnitLoadResponse!=NULL);
+      ATLASSERT(m_pUnitLoadResponse!=nullptr);
 
       return m_pUnitLoadResponse.CopyTo(pVal);
    }
@@ -431,10 +431,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_LoadGroupResponse(ILoadGroupResponse **pVa
 
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pLoadGroupResponse!=NULL);
+      ATLASSERT(m_pLoadGroupResponse!=nullptr);
 
       return m_pLoadGroupResponse.CopyTo(pVal);
    }
@@ -452,10 +452,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_ContraflexureResponse(IContraflexureRespon
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pContraflexureResponse!=NULL);
+      ATLASSERT(m_pContraflexureResponse!=nullptr);
 
       return m_pContraflexureResponse.CopyTo(pVal);
    }
@@ -473,10 +473,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_InfluenceLineResponse(IInfluenceLineRespon
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pInfluenceLineResponse!=NULL);
+      ATLASSERT(m_pInfluenceLineResponse!=nullptr);
 
       return m_pInfluenceLineResponse.CopyTo(pVal);
    }
@@ -494,10 +494,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_AnalysisPOIs(IAnalysisPOIs **pVal)
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pAnalysisPOIs!=NULL);
+      ATLASSERT(m_pAnalysisPOIs!=nullptr);
 
       return m_pAnalysisPOIs.CopyTo(pVal);
    }
@@ -514,10 +514,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_BasicVehicularResponse(IBasicVehicularResp
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pBvResponse!=NULL);
+      ATLASSERT(m_pBvResponse!=nullptr);
 
       return m_pBvResponse.CopyTo(pVal);
    }
@@ -534,10 +534,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_LiveLoadModelResponse(ILiveLoadModelRespon
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pLiveLoadModelResponse!=NULL);
+      ATLASSERT(m_pLiveLoadModelResponse!=nullptr);
 
       return m_pLiveLoadModelResponse.CopyTo(pVal);
    }
@@ -554,10 +554,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_EnvelopedVehicularResponse(IEnvelopedVehic
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pEnvResponse!=NULL);
+      ATLASSERT(m_pEnvResponse!=nullptr);
 
       return m_pEnvResponse.CopyTo(pVal);
    }
@@ -575,10 +575,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_LoadCaseResponse(ILoadCaseResponse **pVal)
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pLoadCaseResponse!=NULL);
+      ATLASSERT(m_pLoadCaseResponse!=nullptr);
 
       return m_pLoadCaseResponse.CopyTo(pVal);
    }
@@ -595,10 +595,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_LoadCombinationResponse(ILoadCombinationRe
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pLoadCombinationResponse!=NULL);
+      ATLASSERT(m_pLoadCombinationResponse!=nullptr);
 
       return m_pLoadCombinationResponse.CopyTo(pVal);
    }
@@ -615,10 +615,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_ConcurrentLoadCombinationResponse(IConcurr
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pConcurrentLoadCombinationResponse!=NULL);
+      ATLASSERT(m_pConcurrentLoadCombinationResponse!=nullptr);
 
       return m_pConcurrentLoadCombinationResponse.CopyTo(pVal);
    }
@@ -635,7 +635,7 @@ STDMETHODIMP CLBAMAnalysisEngine::get_Model(ILBAMModel **pVal)
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
       return m_pModel.CopyTo(pVal);
@@ -653,10 +653,10 @@ STDMETHODIMP CLBAMAnalysisEngine::get_LiveLoadNegativeMomentRegion(ILiveLoadNega
    CHECK_RETOBJ(pVal);
    try
    {
-	   if (m_pModel==NULL)
+	   if (m_pModel==nullptr)
          THROW_LBAMAU(ENGINE_INIT);
 
-      ATLASSERT(m_pLiveLoadNegativeMomentRegion!=NULL);
+      ATLASSERT(m_pLiveLoadNegativeMomentRegion!=nullptr);
 
       return m_pLiveLoadNegativeMomentRegion.CopyTo(pVal);
    }
@@ -682,7 +682,7 @@ STDMETHODIMP CLBAMAnalysisEngine::get_AnalysisType(AnalysisType *pVal)
 STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor * iPm, LONG loadGroupCookie, LONG liveLoadCookie, LONG loadCombinationCookie)
 {
    CHRException hr;
-   if (m_pModel==NULL)
+   if (m_pModel==nullptr)
    {
       // engine must be initialized before calling this
       ATLASSERT(FALSE); 
@@ -693,7 +693,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
    {
       // load group, influence line, and contraflexure response - we know our components well
       CComQIPtr<ISupportProgressMonitor> lgispm(m_pLoadGroupResponse);
-      if (lgispm==NULL)
+      if (lgispm==nullptr)
       {
          ATLASSERT(false);
          return E_FAIL;
@@ -703,7 +703,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
 
       // load combiner
       CComQIPtr<ISupportProgressMonitor> cispm(m_pLoadCombinationResponse);
-      if (cispm==NULL)
+      if (cispm==nullptr)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
          ATLASSERT(false);
@@ -714,7 +714,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
 
       // basic live load
       CComQIPtr<ISupportProgressMonitor> bvispm(m_pBvResponse);
-      if (bvispm==NULL)
+      if (bvispm==nullptr)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
          ATLASSERT(false);
@@ -725,7 +725,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
 
       // enveloped live load
       CComQIPtr<ISupportProgressMonitor> evlispm(m_pEnvResponse);
-      if (evlispm==NULL)
+      if (evlispm==nullptr)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
          ATLASSERT(false);
@@ -736,7 +736,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
 
       // live load model response
       CComQIPtr<ISupportProgressMonitor> llmispm(m_pLiveLoadModelResponse);
-      if (llmispm==NULL)
+      if (llmispm==nullptr)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
          ATLASSERT(false);

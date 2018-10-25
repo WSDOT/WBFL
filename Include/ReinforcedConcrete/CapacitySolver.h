@@ -29,7 +29,7 @@
 //
 #include <memory>
 #include <fstream>
-#include <boost\shared_ptr.hpp>
+
 
 // PROJECT INCLUDES
 //
@@ -321,8 +321,8 @@ private:
    Float64  m_AxialForce;
    mutable Float64  m_MomentAngle;
    Int32    m_MaxIterations;
-   boost::shared_ptr<mathRootFinder2d> m_pAxialSolver;
-   boost::shared_ptr<mathRootFinder2d> m_pAngleSolver;
+   std::shared_ptr<mathRootFinder2d> m_pAxialSolver;
+   std::shared_ptr<mathRootFinder2d> m_pAngleSolver;
 
    // solver status state variables
    enum EvalMode {AngleMode, AxialMode};

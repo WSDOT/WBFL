@@ -94,7 +94,7 @@ STDMETHODIMP CUnits::get__EnumUnits(IEnumUnits** enumUnits)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -107,7 +107,7 @@ STDMETHODIMP CUnits::Add(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTer
 {
    CHECK_IN(bstrTag);
 
-   if ( ppUnit != NULL )
+   if ( ppUnit != nullptr )
    {
       CHECK_RETOBJ(ppUnit);
    }
@@ -125,7 +125,7 @@ STDMETHODIMP CUnits::Add(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTer
    pUnit->Init(m_pUnitServer,m_pUnitType,preTerm,cf,postTerm,bstrTag,unitSystem);
    CComPtr<IUnit> unit(pUnit);
 
-   if ( ppUnit != NULL )
+   if ( ppUnit != nullptr )
    {
       *ppUnit = unit;
       (*ppUnit)->AddRef();

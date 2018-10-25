@@ -218,8 +218,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   gpGeomOp2d(const gpGeomOp2d&);
-   gpGeomOp2d& operator=(const gpGeomOp2d&);
+   gpGeomOp2d(const gpGeomOp2d&) = delete;
+   gpGeomOp2d& operator=(const gpGeomOp2d&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

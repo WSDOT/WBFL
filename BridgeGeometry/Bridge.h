@@ -132,32 +132,32 @@ END_COM_MAP()
 #endif
 
 public:
-   STDMETHOD(putref_CogoModel)(ICogoModel* pCogoModel);
-   STDMETHOD(get_CogoModel)(ICogoModel** pCogoModel);
-   STDMETHOD(putref_Alignment)(CogoObjectID ID,IAlignment* pAligment);
-   STDMETHOD(get_Alignment)(CogoObjectID ID,IAlignment** pAlignment);
-   STDMETHOD(put_BridgeAlignmentID)(CogoObjectID ID);
-   STDMETHOD(get_BridgeAlignmentID)(CogoObjectID* ID);
-   STDMETHOD(get_BridgeAlignment)(IAlignment** alignment);
-   STDMETHOD(put_AlignmentOffset)(Float64 offset);
-   STDMETHOD(get_AlignmentOffset)(Float64* offset);
-   STDMETHOD(get_BridgeLine)(IPath** path);
-   STDMETHOD(CreateLayoutLines)(ILayoutLineFactory* pFactory);
-   STDMETHOD(FindLayoutLine)(LineIDType ID,IPath** path);
-   STDMETHOD(get_LayoutLineCount)(CollectionIndexType* pVal);
-   STDMETHOD(CreatePierLine)(PierIDType ID, CogoObjectID alignmentID,VARIANT station, BSTR orientation, Float64 width, Float64 offset,IPierLine** ppPier);
-   STDMETHOD(GetPierLine)(PierIndexType idx, IPierLine** ppPier);
-   STDMETHOD(FindPierLine)(PierIDType ID, IPierLine** ppPier);
-   STDMETHOD(get_PierLineCount)(PierIndexType* pVal);
-   STDMETHOD(CreateGirderLines)(IGirderLineFactory* pFactory);
-   STDMETHOD(FindGirderLine)(GirderIDType ID,IGirderLine** ppGirderLine);
-   STDMETHOD(get_GirderLineCount)(CollectionIndexType* pVal);
-   STDMETHOD(CreateDiaphragmLines)(IDiaphragmLineFactory* pFactory);
-   STDMETHOD(FindDiaphragmLine)(LineIDType ID,IDiaphragmLine** ppDiaphragmLine);
-   STDMETHOD(get_DiaphragmLineCount)(CollectionIndexType* pVal);
-   STDMETHOD(CreateDeckBoundary)(IDeckBoundaryFactory* pFactory);
-   STDMETHOD(get_DeckBoundary)(IDeckBoundary** ppDeckBoundary);
-   STDMETHOD(UpdateGeometry)();
+   STDMETHOD(putref_CogoModel)(ICogoModel* pCogoModel) override;
+   STDMETHOD(get_CogoModel)(ICogoModel** pCogoModel) override;
+   STDMETHOD(putref_Alignment)(CogoObjectID ID,IAlignment* pAligment) override;
+   STDMETHOD(get_Alignment)(CogoObjectID ID,IAlignment** pAlignment) override;
+   STDMETHOD(put_BridgeAlignmentID)(CogoObjectID ID) override;
+   STDMETHOD(get_BridgeAlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(get_BridgeAlignment)(IAlignment** alignment) override;
+   STDMETHOD(put_AlignmentOffset)(Float64 offset) override;
+   STDMETHOD(get_AlignmentOffset)(Float64* offset) override;
+   STDMETHOD(get_BridgeLine)(IPath** path) override;
+   STDMETHOD(CreateLayoutLines)(ILayoutLineFactory* pFactory) override;
+   STDMETHOD(FindLayoutLine)(LineIDType ID,IPath** path) override;
+   STDMETHOD(get_LayoutLineCount)(CollectionIndexType* pVal) override;
+   STDMETHOD(CreatePierLine)(PierIDType ID, CogoObjectID alignmentID,VARIANT station, BSTR orientation, Float64 width, Float64 offset,IPierLine** ppPier) override;
+   STDMETHOD(GetPierLine)(PierIndexType idx, IPierLine** ppPier) override;
+   STDMETHOD(FindPierLine)(PierIDType ID, IPierLine** ppPier) override;
+   STDMETHOD(get_PierLineCount)(PierIndexType* pVal) override;
+   STDMETHOD(CreateGirderLines)(IGirderLineFactory* pFactory) override;
+   STDMETHOD(FindGirderLine)(GirderIDType ID,IGirderLine** ppGirderLine) override;
+   STDMETHOD(get_GirderLineCount)(CollectionIndexType* pVal) override;
+   STDMETHOD(CreateDiaphragmLines)(IDiaphragmLineFactory* pFactory) override;
+   STDMETHOD(FindDiaphragmLine)(LineIDType ID,IDiaphragmLine** ppDiaphragmLine) override;
+   STDMETHOD(get_DiaphragmLineCount)(CollectionIndexType* pVal) override;
+   STDMETHOD(CreateDeckBoundary)(IDeckBoundaryFactory* pFactory) override;
+   STDMETHOD(get_DeckBoundary)(IDeckBoundary** ppDeckBoundary) override;
+   STDMETHOD(UpdateGeometry)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(BridgeGeometry), CBridge)

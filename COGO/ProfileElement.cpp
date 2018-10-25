@@ -64,7 +64,7 @@ STDMETHODIMP CProfileElement::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IProfileElement,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -91,7 +91,7 @@ void CProfileElement::Advise()
 
 void CProfileElement::Unadvise()
 {
-   if ( m_Value == NULL )
+   if ( m_Value == nullptr )
       return;
 
    //
@@ -138,12 +138,12 @@ STDMETHODIMP CProfileElement::putref_Value(IUnknown* dispVal)
    CComQIPtr<IProfilePoint> point(dispVal);
    CComQIPtr<IVertCurve> vc(dispVal);
 
-   if( point == NULL && vc == NULL )
+   if( point == nullptr && vc == nullptr )
       return E_INVALIDARG;
 
 
    Unadvise();
-   m_Type = (point != NULL ? pePoint : peVertCurve);
+   m_Type = (point != nullptr ? pePoint : peVertCurve);
    m_Value = dispVal;
    Advise();
 

@@ -81,38 +81,38 @@ CONNECTION_POINT_ENTRY(IID_ISuperelevationCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("Superelevations"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("Superelevation"); }
+   CComBSTR GetCollectionName() { return CComBSTR("Superelevations"); }
+   CComBSTR GetItemName() { return CComBSTR("Superelevation"); }
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperelevationCollection
 public:
-   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal);
-   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal);
-	STDMETHOD(Clear)();
-   STDMETHOD(Add)(/*[in]*/ VARIANT varBeginStation,/*[in]*/ VARIANT varBeginFullStation, /*[in]*/ VARIANT varEndFullStation,/*[in]*/ VARIANT varEndStation,/*[in]*/ Float64 rate,/*[in]*/IndexType pivotPoint,/*[in]*/SuperTransitionType beginType,/*[in]*/Float64 beginL1,/*[in]*/Float64 beginL2,/*[in]*/SuperTransitionType endType,/*[in]*/Float64 endL1,/*[in]*/Float64 endL2,/*[out,retval]*/ISuperelevation* *pSuperelevation);
-	STDMETHOD(AddEx)(ISuperelevation* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISuperelevation* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISuperelevation* newVal);
-   STDMETHOD(GetSuperelevation)(/*[in]*/VARIANT varStation,/*[out,retval]*/ISuperelevation** superelevation);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumSuperelevations)(/*[out,retval]*/ IEnumSuperelevations** ppenum);
-   STDMETHOD(Clone)(/*[out,retval]*/ ISuperelevationCollection* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
+   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal) override;
+	STDMETHOD(Clear)() override;
+   STDMETHOD(Add)(/*[in]*/ VARIANT varBeginStation,/*[in]*/ VARIANT varBeginFullStation, /*[in]*/ VARIANT varEndFullStation,/*[in]*/ VARIANT varEndStation,/*[in]*/ Float64 rate,/*[in]*/IndexType pivotPoint,/*[in]*/SuperTransitionType beginType,/*[in]*/Float64 beginL1,/*[in]*/Float64 beginL2,/*[in]*/SuperTransitionType endType,/*[in]*/Float64 endL1,/*[in]*/Float64 endL2,/*[out,retval]*/ISuperelevation* *pSuperelevation) override;
+	STDMETHOD(AddEx)(ISuperelevation* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISuperelevation* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISuperelevation* newVal) override;
+   STDMETHOD(GetSuperelevation)(/*[in]*/VARIANT varStation,/*[out,retval]*/ISuperelevation** superelevation) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumSuperelevations)(/*[out,retval]*/ IEnumSuperelevations** ppenum) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ISuperelevationCollection* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // ISuperelevationEvents
 public:
-   STDMETHOD(OnSuperelevationChanged)(/*[in]*/ ISuperelevation* widening);
+   STDMETHOD(OnSuperelevationChanged)(/*[in]*/ ISuperelevation* widening) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

@@ -70,11 +70,11 @@ public:
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& rVisitor );
+   virtual void Accept( rptRcVisitor& rVisitor ) override;
 
    //------------------------------------------------------------------------
    // Make a virtual copy
-   virtual rptReportContent* CreateClone() const;
+   virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
    std::_tstring AsString() const;
@@ -85,11 +85,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 };

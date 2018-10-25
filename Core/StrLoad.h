@@ -47,6 +47,10 @@ public:
 	{
 	}
 
+   virtual ~CStrLoad()
+   {
+   }
+
 DECLARE_REGISTRY_RESOURCEID(IDR_STRLOAD)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -58,17 +62,17 @@ END_COM_MAP()
 
 // IStructuredLoad
 public:
-	STDMETHOD(Open)(/*[in]*/ LPCTSTR name);
-	STDMETHOD(BeginUnit)(/*[in]*/ LPCTSTR name);
-	STDMETHOD(EndUnit)();
-	STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_ParentVersion)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Property)(/*[in]*/ LPCTSTR name, /*[out, retval]*/ VARIANT *pVal);
-   STDMETHOD(get_ParentUnit)(BSTR* pParentUnit);
-   STDMETHOD(EndOfStorage)();
-	STDMETHOD(Close)();
-   STDMETHOD(LoadRawUnit)(/*[out]*/ BSTR* pbstrUnit);
+	STDMETHOD(Open)(/*[in]*/ LPCTSTR name) override;
+	STDMETHOD(BeginUnit)(/*[in]*/ LPCTSTR name) override;
+	STDMETHOD(EndUnit)() override;
+	STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_ParentVersion)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Property)(/*[in]*/ LPCTSTR name, /*[out, retval]*/ VARIANT *pVal) override;
+   STDMETHOD(get_ParentUnit)(BSTR* pParentUnit) override;
+   STDMETHOD(EndOfStorage)() override;
+	STDMETHOD(Close)() override;
+   STDMETHOD(LoadRawUnit)(/*[out]*/ BSTR* pbstrUnit) override;
 
 private:
    sysStructuredLoadXmlPrs m_StrLoad;

@@ -53,31 +53,31 @@ BEGIN_COM_MAP(CLegendEntryImpl)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // iLegendEntry
 public:
-   STDMETHOD_(void,get_Name)(BSTR *pVal);
-   STDMETHOD_(void,put_Name)(BSTR newVal);
-   STDMETHOD_(void,Draw)(CDC* pDC, CRect& drawRect, BOOL beingDragged);
-   STDMETHOD_(HRESULT,GetClassID)(CLSID *pClassID); // same as IPersist
-   STDMETHOD_(void,WriteDragData)(iDragDataSink* pSink, UINT cfFormat);
-   STDMETHOD_(void,ReadDragData)(iDragDataSource* pSource, UINT cfFormat);
+   STDMETHOD_(void,get_Name)(BSTR *pVal) override;
+   STDMETHOD_(void,put_Name)(BSTR newVal) override;
+   STDMETHOD_(void,Draw)(CDC* pDC, CRect& drawRect, BOOL beingDragged) override;
+   STDMETHOD_(HRESULT,GetClassID)(CLSID *pClassID) override; // same as IPersist
+   STDMETHOD_(void,WriteDragData)(iDragDataSink* pSink, UINT cfFormat) override;
+   STDMETHOD_(void,ReadDragData)(iDragDataSource* pSource, UINT cfFormat) override;
 
 // iSymbolLegendEntry 
-   STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal);
-   STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal);
-   STDMETHOD_(long,get_SymbolSize)();
-   STDMETHOD_(void,put_SymbolSize)(long code);
-   STDMETHOD_(DWORD,get_SymbolCharacterCode)();
-   STDMETHOD_(void,put_SymbolCharacterCode)(DWORD code);
-   STDMETHOD_(COLORREF,get_Color)();
-   STDMETHOD_(void,put_Color)(COLORREF color);
-   STDMETHOD_(void,get_DoDrawLine)(BOOL* doDraw);
-   STDMETHOD_(void,put_DoDrawLine)(BOOL doDraw);
+   STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal) override;
+   STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal) override;
+   STDMETHOD_(long,get_SymbolSize)() override;
+   STDMETHOD_(void,put_SymbolSize)(long code) override;
+   STDMETHOD_(DWORD,get_SymbolCharacterCode)() override;
+   STDMETHOD_(void,put_SymbolCharacterCode)(DWORD code) override;
+   STDMETHOD_(COLORREF,get_Color)() override;
+   STDMETHOD_(void,put_Color)(COLORREF color) override;
+   STDMETHOD_(void,get_DoDrawLine)(BOOL* doDraw) override;
+   STDMETHOD_(void,put_DoDrawLine)(BOOL doDraw) override;
 
 // iDataPointFactory
-   STDMETHOD_(HRESULT,CreateDataPoint)(Float64 dataX, Float64 dataY, Float64 graphX, Float64 graphY, iDisplayObject** dataPoint);
+   STDMETHOD_(HRESULT,CreateDataPoint)(Float64 dataX, Float64 dataY, Float64 graphX, Float64 graphY, iDisplayObject** dataPoint) override;
 
 private:
    CComBSTR m_Name;

@@ -66,7 +66,7 @@ protected:
      // ClassWizard generated virtual function overrides
      //{{AFX_VIRTUAL(CCoolButton)
      public:
-     virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
+     virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct) override;
      //}}AFX_VIRTUAL
 
 // Implementation

@@ -97,18 +97,18 @@ public:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   virtual void VisitRcTable(rptRcTable*)=0;
-   virtual void VisitRcString(rptRcString*)=0;
-   virtual void VisitRcStringLiteral(rptRcStringLiteral*)=0;
-   virtual void VisitRcInt(rptRcInt*)=0;
-   virtual void VisitRcUnsigned(rptRcUnsigned*)=0;
-   virtual void VisitRcFlowModifier(rptRcFlowModifier*)=0;
-   virtual void VisitRcFontModifier(rptRcFontModifier*)=0;
-   virtual void VisitRcColor(rptRcColor*)=0;
-   virtual void VisitRcDateTime(rptRcDateTime*)=0;
-   virtual void VisitRcHyperTarget(rptRcHyperTarget*)=0;
-   virtual void VisitRcImage(rptRcImage*)=0;
-   virtual void VisitRcSymbol(rptRcSymbol*)=0;
+   virtual void VisitRcTable(rptRcTable*) = 0;
+   virtual void VisitRcString(rptRcString*) = 0;
+   virtual void VisitRcStringLiteral(rptRcStringLiteral*) = 0;
+   virtual void VisitRcInt(rptRcInt*) = 0;
+   virtual void VisitRcUnsigned(rptRcUnsigned*) = 0;
+   virtual void VisitRcFlowModifier(rptRcFlowModifier*) = 0;
+   virtual void VisitRcFontModifier(rptRcFontModifier*) = 0;
+   virtual void VisitRcColor(rptRcColor*) = 0;
+   virtual void VisitRcDateTime(rptRcDateTime*) = 0;
+   virtual void VisitRcHyperTarget(rptRcHyperTarget*) = 0;
+   virtual void VisitRcImage(rptRcImage*) = 0;
+   virtual void VisitRcSymbol(rptRcSymbol*) = 0;
    virtual void VisitRcScalar(rptRcScalar*) = 0;
    virtual void VisitRcPercentage(rptRcPercentage*) = 0;
    virtual void VisitRcUnitTag(rptRcUnitTag*) = 0;

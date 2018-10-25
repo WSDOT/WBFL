@@ -41,7 +41,7 @@ STDMETHODIMP CLiveLoadModel::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoad
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -49,7 +49,7 @@ STDMETHODIMP CLiveLoadModel::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CLiveLoadModel::FinalConstruct( )
+HRESULT CLiveLoadModel::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set

@@ -121,7 +121,7 @@ STDMETHODIMP CAlignmentCollection::Remove(CogoObjectID id)
 
 STDMETHODIMP CAlignmentCollection::Add(CogoObjectID id, IAlignment* *pAlignment)
 {
-   if ( pAlignment != NULL )
+   if ( pAlignment != nullptr )
    {
       CHECK_RETOBJ(pAlignment);
    }
@@ -129,7 +129,7 @@ STDMETHODIMP CAlignmentCollection::Add(CogoObjectID id, IAlignment* *pAlignment)
    CComPtr<IAlignment> newAlignment;
    m_Factory->CreateAlignment(&newAlignment);
 
-   if ( pAlignment != NULL )
+   if ( pAlignment != nullptr )
    {
       (*pAlignment) = newAlignment;
       (*pAlignment)->AddRef();
@@ -184,7 +184,7 @@ STDMETHODIMP CAlignmentCollection::FindID(IAlignment* pp,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IAlignment> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(pp) )
       {
          *id = item.first;
@@ -205,7 +205,7 @@ STDMETHODIMP CAlignmentCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -258,7 +258,7 @@ STDMETHODIMP CAlignmentCollection::get__EnumAlignments(IEnumAlignments** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -281,7 +281,7 @@ STDMETHODIMP CAlignmentCollection::Clone(IAlignmentCollection* *clone)
    CComPtr<IEnumAlignments> enumAlignments;
    get__EnumAlignments(&enumAlignments);
    CComPtr<IAlignment> alignment;
-   while ( enumAlignments->Next(1,&alignment,NULL) != S_FALSE )
+   while ( enumAlignments->Next(1,&alignment,nullptr) != S_FALSE )
    {
       CComPtr<IAlignment> cloneAlignment;
       alignment->Clone(&cloneAlignment);

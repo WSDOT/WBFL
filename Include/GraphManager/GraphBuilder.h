@@ -63,7 +63,7 @@ public:
    // Creates a clone of this graph builder. Implementation of this
    // method is essential if your application permits multiple views
    // of the same graph
-   virtual CGraphBuilder* Clone() = 0;
+   virtual CGraphBuilder* Clone() const = 0;
 
    // Called by the framework when the view class OnUpdate is called
    virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);

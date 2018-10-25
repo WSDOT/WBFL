@@ -37,7 +37,7 @@ class CEAFSelectReportDlg : public CDialog
 {
 // Construction
 public:
-   CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent = NULL);   // standard constructor
+   CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CEAFSelectReportDlg)

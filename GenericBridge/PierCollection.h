@@ -89,20 +89,20 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPierCollection
 public:
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   //STDMETHOD(get_Item)(/*[in]*/ PierIndexType index, /*[out, retval]*/ ISpan* *pVal);
-   //STDMETHOD(get_Count)(/*[out,retval]*/ PierIndexType* count);
-   STDMETHOD(get_PierIndex)(/*[in]*/ IBridgePier* pier,/*[out,retval]*/PierIndexType* index);
-   STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPiers* *enumPiers);
-   STDMETHOD(FindPier)(/*[in]*/Float64 station,/*[out,retval]*/IBridgePier** ppPier);
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   //STDMETHOD(get_Item)(/*[in]*/ PierIndexType index, /*[out, retval]*/ ISpan* *pVal) override;
+   //STDMETHOD(get_Count)(/*[out,retval]*/ PierIndexType* count) override;
+   STDMETHOD(get_PierIndex)(/*[in]*/ IBridgePier* pier,/*[out,retval]*/PierIndexType* index) override;
+   STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPiers* *enumPiers) override;
+   STDMETHOD(FindPier)(/*[in]*/Float64 station,/*[out,retval]*/IBridgePier** ppPier) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Load)(IStructuredLoad2 *pload);
+   STDMETHOD(Load)(IStructuredLoad2 *pload) override;
 };
 
 #endif //__PIERCOLLECTION_H_

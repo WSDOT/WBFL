@@ -27,7 +27,7 @@
 
 #define STRING_REFRESH_OFFSET 1000000
 
-
+/*
 struct AFX_DLLVERSIONINFO
 {
 		DWORD cbSize;
@@ -49,11 +49,11 @@ DWORD AFXAPI _AfxGetComCtlVersion()
 
 	// otherwise determine comctl32.dll version via DllGetVersion
 	HINSTANCE hInst = afxComCtlWrapper->GetModuleHandle();
-	ASSERT(hInst != NULL);
+	ASSERT(hInst != nullptr);
 	AFX_DLLGETVERSIONPROC pfn;
 	pfn = (AFX_DLLGETVERSIONPROC)GetProcAddress(hInst, "DllGetVersion");
 	DWORD dwVersion = VERSION_WIN4;
-	if (pfn != NULL)
+	if (pfn != nullptr)
 	{
 		AFX_DLLVERSIONINFO dvi;
 		memset(&dvi, 0, sizeof(dvi));
@@ -69,7 +69,7 @@ DWORD AFXAPI _AfxGetComCtlVersion()
 	_afxComCtlVersion = dwVersion;
 	return dwVersion;
 }
-
+*/
 int _afxDropDownWidth = -1;
 
 int AFXAPI _AfxGetDropDownWidth()
@@ -79,19 +79,19 @@ int AFXAPI _AfxGetDropDownWidth()
 		return _afxDropDownWidth;
 
 	// otherwise calculate it...
-	HDC hDC = GetDC(NULL);
-	ASSERT(hDC != NULL);
-	HFONT hFont = NULL, hFontOld = NULL;
+	HDC hDC = GetDC(nullptr);
+	ASSERT(hDC != nullptr);
+	HFONT hFont = nullptr, hFontOld = nullptr;
 	if ((hFont = CreateFont(GetSystemMetrics(SM_CYMENUCHECK), 0, 0, 0, 
-		FW_NORMAL, 0, 0, 0, SYMBOL_CHARSET, 0, 0, 0, 0, _T("Marlett"))) != NULL)
+		FW_NORMAL, 0, 0, 0, SYMBOL_CHARSET, 0, 0, 0, 0, _T("Marlett"))) != nullptr)
 		hFontOld = (HFONT)SelectObject(hDC, hFont);
 	VERIFY(GetCharWidth(hDC, '6', '6', &_afxDropDownWidth));
-	if (hFont != NULL)
+	if (hFont != nullptr)
 	{
 		SelectObject(hDC, hFontOld);
 		DeleteObject(hFont);
 	}
-	ReleaseDC(NULL, hDC);
+	ReleaseDC(nullptr, hDC);
 	ASSERT(_afxDropDownWidth != -1);
 	return _afxDropDownWidth;
 }
@@ -163,7 +163,7 @@ void CMyToolBar::_SetButton(int nIndex, TBBUTTON* pButton)
 
 void CMyToolBar::SizeToolBar(TBBUTTON* pData, int nCount, int nLength, BOOL bVert)
 {
-	ASSERT(pData != NULL && nCount > 0);
+	ASSERT(pData != nullptr && nCount > 0);
 
 	if (!bVert)
 	{
@@ -249,7 +249,7 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 		ASSERT(dwMode & LM_HORZ);
 
 	int nCount;
-	TBBUTTON* pData = NULL;
+	TBBUTTON* pData = nullptr;
 	CSize sizeResult(0,0);
 
 	//BLOCK: Load Buttons
@@ -296,7 +296,7 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 
 		if (dwMode & LM_COMMIT)
 		{
-			_AFX_CONTROLPOS* pControl = NULL;
+			_AFX_CONTROLPOS* pControl = nullptr;
 			int nControlCount = 0;
 			BOOL bIsDelayed = m_bDelayedButtonLayout;
 			m_bDelayedButtonLayout = FALSE;
@@ -339,14 +339,14 @@ CSize CMyToolBar::CalcLayout(DWORD dwMode, int nLength)
 				for (i = 0; i < nControlCount; i++)
 				{
 					CWnd* pWnd = GetDlgItem(pControl[i].nID);
-					if (pWnd != NULL)
+					if (pWnd != nullptr)
 					{
 						CRect rect;
 						pWnd->GetWindowRect(&rect);
 						CPoint pt = rect.TopLeft() - pControl[i].rectOldPos.TopLeft();
 						GetItemRect(pControl[i].nIndex, &rect);
 						pt = rect.TopLeft() + pt;
-						pWnd->SetWindowPos(NULL, pt.x, pt.y, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
+						pWnd->SetWindowPos(nullptr, pt.x, pt.y, 0, 0, SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
 					}
 				}
 				delete[] pControl;
@@ -392,7 +392,7 @@ CSize CMyToolBar::CalcDynamicLayout(int nLength, DWORD dwMode)
 
 CSize CMyToolBar::CalcSize(TBBUTTON* pData, int nCount)
 {
-	ASSERT(pData != NULL && nCount > 0);
+	ASSERT(pData != nullptr && nCount > 0);
 
 	CPoint cur(0,0);
 	CSize sizeResult(0,0);
@@ -408,9 +408,9 @@ CSize CMyToolBar::CalcSize(TBBUTTON* pData, int nCount)
 		//	This is actually a bug which should be fixed in IE 4.01, so we
 		//	only do the 100% calculation specifically for IE4.
 		int cySep = pData[i].iBitmap;
-		ASSERT(_AfxGetComCtlVersion() != -1);
-		if (!(GetStyle() & TBSTYLE_FLAT) && _AfxGetComCtlVersion() != VERSION_IE4)
-			cySep = cySep * 2 / 3;
+		//ASSERT(_AfxGetComCtlVersion() != -1);
+		//if (!(GetStyle() & TBSTYLE_FLAT) && _AfxGetComCtlVersion() != VERSION_IE4)
+		//	cySep = cySep * 2 / 3;
 
 		if (pData[i].fsState & TBSTATE_HIDDEN)
 			continue;

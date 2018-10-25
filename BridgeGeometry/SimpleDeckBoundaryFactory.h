@@ -88,19 +88,19 @@ END_COM_MAP()
    VARIANT_BOOL m_vbBreakEdge[2][2];
 
 public:
-   STDMETHOD(put_TransverseEdgeID)(EndType end,LineIDType ID);
-   STDMETHOD(get_TransverseEdgeID)(EndType end,LineIDType* ID);
-   STDMETHOD(put_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType edgeType);
-   STDMETHOD(get_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType* edgeType);
-   STDMETHOD(put_EdgeID)(SideType side,PathIDType ID);
-   STDMETHOD(get_EdgeID)(SideType side,PathIDType* ID);
-   STDMETHOD(put_EdgeBreakID)(SideType side,LineIDType ID);
-   STDMETHOD(get_EdgeBreakID)(SideType side,LineIDType* ID);
-   STDMETHOD(put_BreakEdge)(EndType end,SideType side,VARIANT_BOOL bBreak);
-   STDMETHOD(get_BreakEdge)(EndType end,SideType side,VARIANT_BOOL* bBreak);
+   STDMETHOD(put_TransverseEdgeID)(EndType end,LineIDType ID) override;
+   STDMETHOD(get_TransverseEdgeID)(EndType end,LineIDType* ID) override;
+   STDMETHOD(put_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType edgeType) override;
+   STDMETHOD(get_TransverseEdgeType)(EndType end,DeckBoundaryEdgeType* edgeType) override;
+   STDMETHOD(put_EdgeID)(SideType side,PathIDType ID) override;
+   STDMETHOD(get_EdgeID)(SideType side,PathIDType* ID) override;
+   STDMETHOD(put_EdgeBreakID)(SideType side,LineIDType ID) override;
+   STDMETHOD(get_EdgeBreakID)(SideType side,LineIDType* ID) override;
+   STDMETHOD(put_BreakEdge)(EndType end,SideType side,VARIANT_BOOL bBreak) override;
+   STDMETHOD(get_BreakEdge)(EndType end,SideType side,VARIANT_BOOL* bBreak) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IDeckBoundary** ppDeckBoundary);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IDeckBoundary** ppDeckBoundary) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(SimpleDeckBoundaryFactory), CSimpleDeckBoundaryFactory)

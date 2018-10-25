@@ -49,7 +49,7 @@ STDMETHODIMP CRebarLayout::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IRebarLayout,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -76,7 +76,7 @@ HRESULT CRebarLayout::DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem)
 //   CComObject<CSpan>::CreateInstance(&pSpan);
 //   CComPtr<ISpan> newSpan = pSpan;
 //
-//   ATLASSERT(m_pBridge != NULL);
+//   ATLASSERT(m_pBridge != nullptr);
 //   pSpan->SetBridge(m_pBridge);
 //
 //   CComQIPtr<IStructuredStorage2> ssSpan(newSpan);
@@ -104,7 +104,7 @@ STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,StageIndexType
    get__EnumRebarLayoutItems(&enumItems);
    
    CComPtr<IRebarLayoutItem> rebarLayoutItem;
-   while ( enumItems->Next(1,&rebarLayoutItem,NULL) != S_FALSE )
+   while ( enumItems->Next(1,&rebarLayoutItem,nullptr) != S_FALSE )
    {
       VARIANT_BOOL bContainsLocation;
       rebarLayoutItem->ContainsLocation(cutLocation,&bContainsLocation);
@@ -118,7 +118,7 @@ STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,StageIndexType
          rebarLayoutItem->get_Length(&length);
 
          CComPtr<IRebarPattern> rebarPattern;
-         while ( enumPatterns->Next(1,&rebarPattern,NULL) != S_FALSE )
+         while ( enumPatterns->Next(1,&rebarPattern,nullptr) != S_FALSE )
          {
             CComPtr<IRebar> rebar;
             rebarPattern->get_Rebar(&rebar);

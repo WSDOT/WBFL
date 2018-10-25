@@ -159,7 +159,7 @@ void CEAFChildFrame::Unsnap()
    if ( m_bIsSnapped )
    {
       m_wndPlacement.rcNormalPosition;
-      SetWindowPos(NULL,m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.top,m_wndPlacement.rcNormalPosition.right-m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.bottom - m_wndPlacement.rcNormalPosition.top,SWP_NOZORDER | SWP_NOMOVE);
+      SetWindowPos(nullptr,m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.top,m_wndPlacement.rcNormalPosition.right-m_wndPlacement.rcNormalPosition.left,m_wndPlacement.rcNormalPosition.bottom - m_wndPlacement.rcNormalPosition.top,SWP_NOZORDER | SWP_NOMOVE);
       m_bIsSnapped = false;
    }
 }

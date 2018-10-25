@@ -70,28 +70,28 @@ CONNECTION_POINT_ENTRY(IID_ILoadCaseEvents)
 END_CONNECTION_POINT_MAP()
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCase
 public:
-	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ILoadCase** clone);
-	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/CollectionIndexType index);
-	STDMETHOD(RemoveLoadGroup)(/*[in]*/BSTR loadGroupName);
-	STDMETHOD(SetLoadGroup)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR newName);
-	STDMETHOD(GetLoadGroup)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadGroupName);
-	STDMETHOD(AddLoadGroup)(/*[in]*/BSTR loadGroupName);
-	STDMETHOD(Clear)();
-	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal);
-	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal);
-	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ILoadCase** clone) override;
+	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/CollectionIndexType index) override;
+	STDMETHOD(RemoveLoadGroup)(/*[in]*/BSTR loadGroupName) override;
+	STDMETHOD(SetLoadGroup)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR newName) override;
+	STDMETHOD(GetLoadGroup)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadGroupName) override;
+	STDMETHOD(AddLoadGroup)(/*[in]*/BSTR loadGroupName) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal) override;
+	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal) override;
+	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 protected:
    CComBSTR     m_Name;

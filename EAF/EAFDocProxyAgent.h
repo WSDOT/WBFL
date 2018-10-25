@@ -64,7 +64,7 @@ public:
 		IUnknown** pp = m_vec.begin();
 		while (pp < m_vec.end())
 		{
-			if (*pp != NULL)
+			if (*pp != nullptr)
 			{
 				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
 				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanging();
@@ -89,7 +89,7 @@ public:
 		IUnknown** pp = m_vec.begin();
 		while (pp < m_vec.end())
 		{
-			if (*pp != NULL)
+			if (*pp != nullptr)
 			{
 				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
 				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanged(newUnitsMode);
@@ -163,130 +163,130 @@ END_CONNECTION_POINT_MAP()
 
    // IAgentEx
 public:
-   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
-	STDMETHOD(RegInterfaces)();
-	STDMETHOD(Init)();
-	STDMETHOD(Init2)();
-	STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
-   STDMETHOD(GetClassID)(CLSID* pCLSID);
+   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
+	STDMETHOD(RegInterfaces)() override;
+	STDMETHOD(Init)() override;
+	STDMETHOD(Init2)() override;
+	STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
+   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
 
 // IEAFViewRegistrar
 public:
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
-   virtual void RemoveView(long key);
-   virtual CView* CreateView(long key,LPVOID pData=0);
-   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint);
-   virtual std::vector<CView*> GetRegisteredView(long key);
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount=-1) override;
+   virtual void RemoveView(long key) override;
+   virtual CView* CreateView(long key,LPVOID pData=0) override;
+   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) override;
+   virtual std::vector<CView*> GetRegisteredView(long key) override;
 
 // IEAFMainMenu
 public:
-   virtual CEAFMenu* GetMainMenu();
-   virtual CEAFMenu* CreateContextMenu();
+   virtual CEAFMenu* GetMainMenu() override;
+   virtual CEAFMenu* CreateContextMenu() override;
 
 // IEAFToolbars
 public:
-   virtual UINT CreateToolBar(LPCTSTR lpszName);
-   virtual CEAFToolBar* GetToolBar(UINT toolbarID);
-   virtual void DestroyToolBar(CEAFToolBar* pToolBar);
-   virtual void DestroyToolBar(UINT toolbarID);
+   virtual UINT CreateToolBar(LPCTSTR lpszName) override;
+   virtual CEAFToolBar* GetToolBar(UINT toolbarID) override;
+   virtual void DestroyToolBar(CEAFToolBar* pToolBar) override;
+   virtual void DestroyToolBar(UINT toolbarID) override;
 
 // IEAFAcceleratorTable
 public:
-   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback);
-   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback);
-   virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback);
-   virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key);
+   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback) override;
+   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback) override;
+   virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback) override;
+   virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key) override;
 
 
 // IEAFDocument
 public:
-   virtual BOOL IsModified();
-   virtual void SetModified(BOOL bModified);
-   virtual void Save();
-   virtual void SaveAs(LPCTSTR strPathName,BOOL bReplace);
-   virtual CString GetFileName();
-   virtual CString GetFileTitle();
-   virtual CString GetFilePath();
-   virtual CString GetFileRoot();
-   virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = NULL);
+   virtual BOOL IsModified() override;
+   virtual void SetModified(BOOL bModified) override;
+   virtual void Save() override;
+   virtual void SaveAs(LPCTSTR strPathName,BOOL bReplace) override;
+   virtual CString GetFileName() override;
+   virtual CString GetFileTitle() override;
+   virtual CString GetFilePath() override;
+   virtual CString GetFileRoot() override;
+   virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = nullptr) override;
 
 // IEAFDisplayUnits
 public:
-   virtual void                            SetUnitMode(eafTypes::UnitMode unitMode);
-	virtual eafTypes::UnitMode              GetUnitMode();
- 	virtual const unitStationFormat&        GetStationFormat();
-   virtual const unitmgtScalar&            GetScalarFormat();
-   virtual const unitmgtScalar&            GetPercentageFormat();
-   virtual const unitmgtLengthData&        GetComponentDimUnit();
-   virtual const unitmgtLengthData&        GetXSectionDimUnit();
-   virtual const unitmgtLengthData&        GetSpanLengthUnit();
-   virtual const unitmgtLengthData&        GetDeflectionUnit() ;
-   virtual const unitmgtLengthData&        GetAlignmentLengthUnit();
-   virtual const unitmgtLength2Data&       GetAreaUnit();
-   virtual const unitmgtLength4Data&       GetMomentOfInertiaUnit();
-   virtual const unitmgtLength3Data&       GetSectModulusUnit();
-   virtual const unitmgtPressureData&      GetStressUnit();
-   virtual const unitmgtPressureData&      GetModEUnit();
-   virtual const unitmgtForceData&         GetGeneralForceUnit();
-   virtual const unitmgtForceData&         GetTonnageUnit();
-   virtual const unitmgtForceData&         GetShearUnit();
-   virtual const unitmgtMomentData&        GetMomentUnit();
-   virtual const unitmgtMomentData&        GetSmallMomentUnit();
-   virtual const unitmgtAngleData&         GetAngleUnit();
-   virtual const unitmgtAngleData&         GetRadAngleUnit();  // Radians always
-   virtual const unitmgtDensityData&       GetDensityUnit();
-   virtual const unitmgtMassPerLengthData& GetMassPerLengthUnit();
-   virtual const unitmgtForcePerLengthData& GetForcePerLengthUnit();
-   virtual const unitmgtMomentPerAngleData& GetMomentPerAngleUnit();
-   virtual const unitmgtTimeData&          GetShortTimeUnit();
-   virtual const unitmgtTimeData&          GetWholeDaysUnit();
-   virtual const unitmgtTimeData&          GetFractionalDaysUnit();
-   virtual const unitmgtAreaPerLengthData& GetAvOverSUnit();
-   virtual const unitmgtForceLength2Data&  GetStiffnessUnit();
-   virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit();
-   virtual const unitmgtPerLengthData&      GetPerLengthUnit();
-   virtual const unitmgtPerLengthData&      GetCurvatureUnit();
-   virtual const unitmgtPressureData&       GetSidewalkPressureUnit();
-   virtual const unitmgtPressureData&       GetOverlayWeightUnit();
-   virtual const unitmgtPressureData&       GetWindPressureUnit();
-   virtual const unitmgtVelocityData&       GetVelocityUnit();
+   virtual void                            SetUnitMode(eafTypes::UnitMode unitMode) override;
+	virtual eafTypes::UnitMode              GetUnitMode() override;
+ 	virtual const unitStationFormat&        GetStationFormat() override;
+   virtual const unitmgtScalar&            GetScalarFormat() override;
+   virtual const unitmgtScalar&            GetPercentageFormat() override;
+   virtual const unitmgtLengthData&        GetComponentDimUnit() override;
+   virtual const unitmgtLengthData&        GetXSectionDimUnit() override;
+   virtual const unitmgtLengthData&        GetSpanLengthUnit() override;
+   virtual const unitmgtLengthData&        GetDeflectionUnit()  override;
+   virtual const unitmgtLengthData&        GetAlignmentLengthUnit() override;
+   virtual const unitmgtLength2Data&       GetAreaUnit() override;
+   virtual const unitmgtLength4Data&       GetMomentOfInertiaUnit() override;
+   virtual const unitmgtLength3Data&       GetSectModulusUnit() override;
+   virtual const unitmgtPressureData&      GetStressUnit() override;
+   virtual const unitmgtPressureData&      GetModEUnit() override;
+   virtual const unitmgtForceData&         GetGeneralForceUnit() override;
+   virtual const unitmgtForceData&         GetTonnageUnit() override;
+   virtual const unitmgtForceData&         GetShearUnit() override;
+   virtual const unitmgtMomentData&        GetMomentUnit() override;
+   virtual const unitmgtMomentData&        GetSmallMomentUnit() override;
+   virtual const unitmgtAngleData&         GetAngleUnit() override;
+   virtual const unitmgtAngleData&         GetRadAngleUnit() override;  // Radians always
+   virtual const unitmgtDensityData&       GetDensityUnit() override;
+   virtual const unitmgtMassPerLengthData& GetMassPerLengthUnit() override;
+   virtual const unitmgtForcePerLengthData& GetForcePerLengthUnit() override;
+   virtual const unitmgtMomentPerAngleData& GetMomentPerAngleUnit() override;
+   virtual const unitmgtTimeData&          GetShortTimeUnit() override;
+   virtual const unitmgtTimeData&          GetWholeDaysUnit() override;
+   virtual const unitmgtTimeData&          GetFractionalDaysUnit() override;
+   virtual const unitmgtAreaPerLengthData& GetAvOverSUnit() override;
+   virtual const unitmgtForceLength2Data&  GetStiffnessUnit() override;
+   virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit() override;
+   virtual const unitmgtPerLengthData&      GetPerLengthUnit() override;
+   virtual const unitmgtPerLengthData&      GetCurvatureUnit() override;
+   virtual const unitmgtPressureData&       GetSidewalkPressureUnit() override;
+   virtual const unitmgtPressureData&       GetOverlayWeightUnit() override;
+   virtual const unitmgtPressureData&       GetWindPressureUnit() override;
+   virtual const unitmgtVelocityData&       GetVelocityUnit() override;
 
 // IEAFStatusCenter
 public:
-   virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback);
-   virtual StatusGroupIDType CreateStatusGroupID();
-   virtual StatusItemIDType Add(CEAFStatusItem* pItem);
-   virtual bool RemoveByID(StatusItemIDType id);
-   virtual bool RemoveByIndex(CollectionIndexType index);
-   virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID);
-   virtual CEAFStatusItem* GetByID(StatusItemIDType id);
-   virtual CEAFStatusItem* GetByIndex(CollectionIndexType index);
-   virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem);
-   virtual eafTypes::StatusSeverityType GetSeverity();
-   virtual CollectionIndexType Count();
+   virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback) override;
+   virtual StatusGroupIDType CreateStatusGroupID() override;
+   virtual StatusItemIDType Add(CEAFStatusItem* pItem) override;
+   virtual bool RemoveByID(StatusItemIDType id) override;
+   virtual bool RemoveByIndex(CollectionIndexType index) override;
+   virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) override;
+   virtual CEAFStatusItem* GetByID(StatusItemIDType id) override;
+   virtual CEAFStatusItem* GetByIndex(CollectionIndexType index) override;
+   virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) override;
+   virtual eafTypes::StatusSeverityType GetSeverity() override;
+   virtual CollectionIndexType Count() override;
 
 // IEAFTransactions
 public:
-   virtual void Execute(txnTransaction& rTxn);
-   virtual void Execute(txnTransaction* pTxn);
-   virtual void Undo();
-   virtual void Redo();
-   virtual void Repeat();
-   virtual bool CanUndo();
-   virtual bool CanRedo();
-   virtual bool CanRepeat();
-   virtual std::_tstring UndoName();
-   virtual std::_tstring RedoName();
-   virtual std::_tstring RepeatName();
-   virtual CollectionIndexType GetTxnCount();
-   virtual CollectionIndexType GetUndoCount();
+   virtual void Execute(txnTransaction& rTxn) override;
+   virtual void Execute(txnTransaction* pTxn) override;
+   virtual void Undo() override;
+   virtual void Redo() override;
+   virtual void Repeat() override;
+   virtual bool CanUndo() override;
+   virtual bool CanRedo() override;
+   virtual bool CanRepeat() override;
+   virtual std::_tstring UndoName() override;
+   virtual std::_tstring RedoName() override;
+   virtual std::_tstring RepeatName() override;
+   virtual CollectionIndexType GetTxnCount() override;
+   virtual CollectionIndexType GetUndoCount() override;
 
 // IEAFProjectLog
 public:
-   virtual CString GetName();
-   virtual void LogMessage( LPCTSTR lpszMsg );
-   virtual void Destroy();
+   virtual CString GetName() override;
+   virtual void LogMessage( LPCTSTR lpszMsg ) override;
+   virtual void Destroy() override;
 
 protected:
    DECLARE_EAF_AGENT_DATA;

@@ -239,8 +239,9 @@ library WBFLLBAM
       lltSpecial         = 5,
 		lltLegalRoutineRating = 6,
       lltLegalSpecialRating = 7,
-      lltPermitRoutineRating = 8,
-      lltPermitSpecialRating = 9
+      lltLegalEmergencyRating = 8,
+      lltPermitRoutineRating = 9,
+      lltPermitSpecialRating = 10
    } LiveLoadModelType;
 
    typedef
@@ -1263,10 +1264,15 @@ library WBFLLBAM
 		[propputref, helpstring("property LegalRoutineRating"),helpcontext(IDH_LiveLoad_LegalRoutineRating)] 
       HRESULT LegalRoutineRating([in] ILiveLoadModel* newVal);
 
-      [propget, helpstring("property LegalSpecialRating"),helpcontext(IDH_LiveLoad_LegalSpecialRating)] 
+      [propget, helpstring("property LegalSpecialRating"), helpcontext(IDH_LiveLoad_LegalSpecialRating)]
       HRESULT LegalSpecialRating([out, retval] ILiveLoadModel* *pVal);
-		[propputref, helpstring("property LegalSpecialRating"),helpcontext(IDH_LiveLoad_LegalSpecialRating)] 
+      [propputref, helpstring("property LegalSpecialRating"), helpcontext(IDH_LiveLoad_LegalSpecialRating)]
       HRESULT LegalSpecialRating([in] ILiveLoadModel* newVal);
+
+      [propget, helpstring("property LegalEmergencyRating"), helpcontext(IDH_LiveLoad_LegalSpecialRating)]
+      HRESULT LegalEmergencyRating([out, retval] ILiveLoadModel* *pVal);
+      [propputref, helpstring("property LegalEmergencyRating"), helpcontext(IDH_LiveLoad_LegalSpecialRating)]
+      HRESULT LegalEmergencyRating([in] ILiveLoadModel* newVal);
 
       [propget, helpstring("property PermitRoutineRating"),helpcontext(IDH_LiveLoad_PermitRoutineRating)] 
       HRESULT PermitRoutineRating([out, retval] ILiveLoadModel* *pVal);

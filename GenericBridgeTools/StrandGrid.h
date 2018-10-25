@@ -65,7 +65,7 @@ BEGIN_COM_MAP(CStrandGrid)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStrandGrid
 public:
@@ -73,83 +73,83 @@ public:
    // Grid points use a compacted numbering sequence where points with positive X values
    // are placed symmetrically (e.g., represent two actual strand locations)
    // Grid points are in Girder Section Coordinates (0,0 is at top center of girder)
-   STDMETHOD(AddGridPoint)(/*[in]*/IPoint2d* point);
-   STDMETHOD(AddGridPoints)(/*[in]*/IPoint2dCollection* points);
-   STDMETHOD(get_GridPointCount)(/*[out,retval]*/GridIndexType* count);
-   STDMETHOD(get_GridPoint)(/*[in]*/ GridIndexType idx,/*[out,retval]*/IPoint2d** point);
-   STDMETHOD(get_GridPoints)(/*[out,retval]*/IPoint2dCollection** point);
-   STDMETHOD(RemoveGridPoint)(/*[in]*/ GridIndexType idx);
-   STDMETHOD(ClearGridPoints)();
+   STDMETHOD(AddGridPoint)(/*[in]*/IPoint2d* point) override;
+   STDMETHOD(AddGridPoints)(/*[in]*/IPoint2dCollection* points) override;
+   STDMETHOD(get_GridPointCount)(/*[out,retval]*/GridIndexType* count) override;
+   STDMETHOD(get_GridPoint)(/*[in]*/ GridIndexType idx,/*[out,retval]*/IPoint2d** point) override;
+   STDMETHOD(get_GridPoints)(/*[out,retval]*/IPoint2dCollection** point) override;
+   STDMETHOD(RemoveGridPoint)(/*[in]*/ GridIndexType idx) override;
+   STDMETHOD(ClearGridPoints)() override;
 
-   STDMETHOD(GridBoundingBox)(/*[out,retval]*/IRect2d** box);
+   STDMETHOD(GridBoundingBox)(/*[out,retval]*/IRect2d** box) override;
 
 // IStrandGridFiller
 // Functions below have to do with filling of grid points and query for filled strands
 public:      
    // Max number strands that can be filled
-   STDMETHOD(get_MaxStrandCount)(/*[out,retval]*/StrandIndexType* count);
+   STDMETHOD(get_MaxStrandCount)(/*[out,retval]*/StrandIndexType* count) override;
 
    // Returns a vector of integers GridPointCount long indicating the max number of strands
    // that can be placed at each Grid point (1, or 2)
-   STDMETHOD(GetMaxStrandFill)(/*[out,retval]*/IIndexArray** maxFill);
+   STDMETHOD(GetMaxStrandFill)(/*[out,retval]*/IIndexArray** maxFill) override;
 
    // Set or get vector of integers indicated number of strands filled at each Grid point
    // Possible values are 0, 1, or 2. Length of vector is GridPointCount
    // If Grid point has positive X value and 1 is input, the strand is placed at X=0.0
    // If Grid point has zero X value and 2 is input, one strand is placed at X=0.0
-   STDMETHOD(get_StrandFill)(/*[out,retval]*/IIndexArray** fill);
-   STDMETHOD(putref_StrandFill)(/*[in]*/IIndexArray* fill);
+   STDMETHOD(get_StrandFill)(/*[out,retval]*/IIndexArray** fill) override;
+   STDMETHOD(putref_StrandFill)(/*[in]*/IIndexArray* fill) override;
 
-   STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[in]*/IStrandMover* mover);
-   STDMETHOD(GetStrandMover)(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover);
+   STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[in]*/IStrandMover* mover) override;
+   STDMETHOD(GetStrandMover)(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover) override;
 
-   STDMETHOD(get_VerticalStrandAdjustment)(/*[out,retval]*/Float64* adjustment);
-   STDMETHOD(put_VerticalStrandAdjustment)(/*[in]*/Float64 adjustment);
+   STDMETHOD(get_VerticalStrandAdjustment)(/*[out,retval]*/Float64* adjustment) override;
+   STDMETHOD(put_VerticalStrandAdjustment)(/*[in]*/Float64 adjustment) override;
 
    // Return number of currently filled strand locations
-	STDMETHOD(GetStrandCount)(/*[out,retval]*/ StrandIndexType* count);
+	STDMETHOD(GetStrandCount)(/*[out,retval]*/ StrandIndexType* count) override;
 
-	STDMETHOD(RemoveAllStrands)();
+	STDMETHOD(RemoveAllStrands)() override;
 
    // Returns a collection of all currently filled strand locations
-	STDMETHOD(GetStrandPositions)(/*[out,retval]*/IPoint2dCollection** points);
+	STDMETHOD(GetStrandPositions)(/*[out,retval]*/IPoint2dCollection** points) override;
 
    // Convert strand index (defined in IPoint2dCollection's above) to Grid index
-   STDMETHOD(StrandIndexToGridIndex)(/*[in]*/StrandIndexType pstnIndex, /*[out,retval]*/ GridIndexType* gridIndex);
-   STDMETHOD(GridIndexToStrandIndex)(/*[in]*/ GridIndexType gridIndex, /*[out,retval]*/ StrandIndexType* strandIndex1, /*[out,retval]*/ StrandIndexType* strandIndex2);
+   STDMETHOD(StrandIndexToGridIndex)(/*[in]*/StrandIndexType pstnIndex, /*[out,retval]*/ GridIndexType* gridIndex) override;
+   STDMETHOD(GridIndexToStrandIndex)(/*[in]*/ GridIndexType gridIndex, /*[out,retval]*/ StrandIndexType* strandIndex1, /*[out,retval]*/ StrandIndexType* strandIndex2) override;
    // Return CG of currently filled strands - adjusted for vertical offset
-	STDMETHOD(get_CG)(/*[out]*/Float64* cgx, /*[out]*/Float64* cgy);
+	STDMETHOD(get_CG)(/*[out]*/Float64* cgx, /*[out]*/Float64* cgy) override;
 
    // bounding box - adjusted for vertical offset
-	STDMETHOD(get_StrandBoundingBox)(/*[out,retval]*/IRect2d** box);
+	STDMETHOD(get_StrandBoundingBox)(/*[out,retval]*/IRect2d** box) override;
 
    // upper and lower bounds for filled strands -NOT adjusted for vertical offset
-	STDMETHOD(get_FilledGridBounds)(/*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
+	STDMETHOD(get_FilledGridBounds)(/*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev) override;
 
-	STDMETHOD(get_RowsWithStrand)(/*[out,retval]*/RowIndexType* nRows);
-	STDMETHOD(get_NumStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
-	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes);
+	STDMETHOD(get_RowsWithStrand)(/*[out,retval]*/RowIndexType* nRows) override;
+	STDMETHOD(get_NumStrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
+	STDMETHOD(get_StrandsInRow)(/*[in]*/RowIndexType rowIdx,/*[out,retval]*/IIndexArray** gridIndexes) override;
 
    // Ex methods are typically for testing a new fill.
    // they allow input of a temporary fill array. Internal fill array is not changed
-	STDMETHOD(GetStrandCountEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/ StrandIndexType* count);
-	STDMETHOD(GetStrandPositionsEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points);
-	STDMETHOD(get_CGEx)(/*[in]*/IIndexArray* fill,/*[out]*/Float64* cgx, /*[out]*/Float64* cgy);
-	STDMETHOD(get_StrandBoundingBoxEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IRect2d** box);
-	STDMETHOD(get_FilledGridBoundsEx)(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev);
-   STDMETHOD(StrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex);
+	STDMETHOD(GetStrandCountEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/ StrandIndexType* count) override;
+	STDMETHOD(GetStrandPositionsEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IPoint2dCollection** points) override;
+	STDMETHOD(get_CGEx)(/*[in]*/IIndexArray* fill,/*[out]*/Float64* cgx, /*[out]*/Float64* cgy) override;
+	STDMETHOD(get_StrandBoundingBoxEx)(/*[in]*/IIndexArray* fill, /*[out,retval]*/IRect2d** box) override;
+	STDMETHOD(get_FilledGridBoundsEx)(/*[in]*/IIndexArray* fill, /*[out]*/Float64* bottomElev, /*[out]*/Float64* topElev) override;
+   STDMETHOD(StrandIndexToGridIndexEx)(/*[in]*/IIndexArray* fill, /*[in]*/ StrandIndexType strandIndex, /*[out,retval]*/ GridIndexType* gridIndex) override;
 
    // Debonding
-	STDMETHOD(DebondStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2);
-	STDMETHOD(GetDebondedStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes);
-	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
+	STDMETHOD(DebondStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2) override;
+	STDMETHOD(GetDebondedStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes) override;
+	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
 
    // rough count of debonded strands for current fill
-   STDMETHOD(GetStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count);
+   STDMETHOD(GetStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count) override;
 
    // Debonded  strands based on Positions index (i.e., from get_StrandPositions)
-	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2);
-	STDMETHOD(GetStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes);
+	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
+	STDMETHOD(GetStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes) override;
 
    STDMETHOD(GetBondedLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
                                   /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
@@ -157,14 +157,14 @@ public:
    STDMETHOD(GetBondedLengthByGridIndex)(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
                                   /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
-	STDMETHOD(get_StrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands);
-	STDMETHOD(IsExteriorStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult);
+	STDMETHOD(get_StrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
+	STDMETHOD(IsExteriorStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult) override;
 
-	STDMETHOD(GetDebondSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight);
-	STDMETHOD(GetDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes);
-	STDMETHOD(GetDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes);
+	STDMETHOD(GetDebondSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight) override;
+	STDMETHOD(GetDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes) override;
+	STDMETHOD(GetDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes) override;
 
-	STDMETHOD(ClearDebonding)();
+	STDMETHOD(ClearDebonding)() override;
 
 
 private: // methods

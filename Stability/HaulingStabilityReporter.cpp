@@ -173,7 +173,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
       else
       {
-         *pPara << symbol(INFINITY) << rptNewLine;
+         *pPara << symbol(infinity) << rptNewLine;
       }
 
       fcReqd = pArtifact->RequiredFcTension(slope);
@@ -290,7 +290,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
 
       RowIndexType row = pStressTable->GetNumberOfHeaderRows();
-      BOOST_FOREACH(const stbHaulingSectionResult& sectionResult,results.vSectionResults)
+      for( const auto& sectionResult : results.vSectionResults)
       {
          ColumnIndexType col = 0;
 
@@ -798,7 +798,8 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    if ( bDirectCamber )
    {
       *pPara << _T("Camber, ") << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(camber) << rptNewLine;
-      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(" + ") << Sub2(_T("F"),_T("o")) << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Camber Multipler, m = ") << pStabilityProblem->GetCamberMultiplier() << rptNewLine;
+      *pPara << _T("Location of center of gravity above roll axis, ") << Sub2(_T("y"),_T("r")) << _T(" = ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("Y"),_T("t")) << _T(" + ") << Sub2(_T("F"),_T("o")) << _T("(m)") << Sub2(symbol(DELTA),_T("camber")) << _T(" = ") << shortLength.SetValue(pResults->Dra[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
@@ -861,7 +862,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    *pPara << _T("Total Wind Load, ") << Sub2(_T("W"),_T("wind")) << _T(" = ") << force.SetValue(pResults->Wwind) << rptNewLine;
    if ( bDirectCamber )
    {
-      *pPara << _T("Location of resultant wind force above roll axis, ") << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("F"),_T("o")) << _T("(") << Sub2(symbol(DELTA),_T("camber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
+      *pPara << _T("Location of resultant wind force above roll axis, ") << Sub2(_T("y"),_T("wind")) << _T(" = ") << Sub2(_T("H"),_T("g")) << _T("/2 + ") << Sub2(_T("y"),_T("rc")) << _T(" - ") << Sub2(_T("F"),_T("o")) << _T("(m)") << _T("(") << Sub2(symbol(DELTA),_T("camber")) << _T(") = ") << shortLength.SetValue(pResults->Ywind[stbTypes::NoImpact]) << rptNewLine;
    }
    else
    {
@@ -1033,7 +1034,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
    RowIndexType mrow = pMomentTable->GetNumberOfHeaderRows();
    RowIndexType srow = pStressTable->GetNumberOfHeaderRows();
-   BOOST_FOREACH(const stbHaulingSectionResult& sectionResult,pResults->vSectionResults)
+   for( const auto& sectionResult : pResults->vSectionResults)
    {
       col = 0;
 
@@ -1092,12 +1093,13 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
 
       LPCTSTR strImpact[3];
       stbTypes::ImpactDirection impactDir[3];
-      Float64 impactFactor[3];
-      IndexType impactIndex[3];
+      Float64 impactFactor[3] = { -1,-1,-1 };
+      IndexType impactIndex[3] = { INVALID_INDEX,INVALID_INDEX < INVALID_INDEX };
 
       Float64 ImpactUp, ImpactDown;
       pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
       IndexType nImpactCases = 0;
+      
       strImpact[nImpactCases] = _T("No impact");
       impactDir[nImpactCases] = stbTypes::NoImpact;
       impactFactor[nImpactCases] = 1.0;
@@ -1310,7 +1312,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             (*pCrackingTable)(0,col++) << Sub2(_T("FS"),_T("cr"));
 
 
-            rptRcTable* pRebarTable = NULL;
+            rptRcTable* pRebarTable = nullptr;
             if ( segment )
             {
                pRebarTable = rptStyleManager::CreateDefaultTable(7,_T("Bonded reinforcement requirements [C5.9.4.1.2]"));
@@ -1336,7 +1338,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             RowIndexType srow = pTotalStressTable->GetNumberOfHeaderRows();
             RowIndexType crow = pCrackingTable->GetNumberOfHeaderRows();
             RowIndexType rrow = (pRebarTable ? pRebarTable->GetNumberOfHeaderRows() : 0);
-            BOOST_FOREACH(const stbHaulingSectionResult& sectionResult,pResults->vSectionResults)
+            for( const auto& sectionResult : pResults->vSectionResults)
             {
                col = 0;
 
@@ -1504,7 +1506,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       if ( bLabelImpact && !bLabelWind )
       {
          // more than one impact case but no wind
-         strTitle.Format(_T("%s"),strImpact[pResults->FScrImpactDirection[slope]]);
+         strTitle.Format(_T("%s"),strImpact[impactIndex[pResults->FScrImpactDirection[slope]]]);
       }
       else if ( !bLabelImpact && bLabelWind )
       {
@@ -1514,7 +1516,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       else if ( bLabelImpact && bLabelWind )
       {
          // more than one impact case and wind cases
-         strTitle.Format(_T("%s, Wind towards the %s"),strImpact[pResults->FScrImpactDirection[slope]],strWindDir[pResults->FScrWindDirection[slope]]);
+         strTitle.Format(_T("%s, Wind towards the %s"),strImpact[impactIndex[pResults->FScrImpactDirection[slope]]],strWindDir[pResults->FScrWindDirection[slope]]);
       }
       else
       {

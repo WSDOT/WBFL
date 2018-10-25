@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CUnitsDlg dialog
 
 
-CUnitsDlg::CUnitsDlg(CWnd* pParent /*=NULL*/)
+CUnitsDlg::CUnitsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CUnitsDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CUnitsDlg)

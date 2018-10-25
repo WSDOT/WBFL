@@ -172,7 +172,7 @@ void CTestPointLoad::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestPointLoad"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pPointLoad2.QueryInterface(&piss2), S_OK);
 
          // Load 

@@ -296,13 +296,13 @@ void matConcreteBase::OnChanged()
    // by default, do nothing
 }
 
-void matConcreteBase::InitializeShrinkageDetails(Float64 t,matConcreteBaseShrinkageDetails* pDetails) const
+void matConcreteBase::InitializeShrinkageDetails(Float64 t,std::shared_ptr<matConcreteBaseShrinkageDetails>& pDetails) const
 {
    pDetails->cureMethod = GetCureMethod();
    pDetails->shrinkage_duration = t - (m_CureTime + m_TimeAtCasting);
 }
 
-void matConcreteBase::InitializeCreepDetails(Float64 t,Float64 tla,matConcreteBaseCreepDetails* pDetails) const
+void matConcreteBase::InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<matConcreteBaseCreepDetails>& pDetails) const
 {
    pDetails->age = GetAge(t);
    pDetails->age_at_loading = GetAge(tla);

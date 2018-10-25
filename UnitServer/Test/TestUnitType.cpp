@@ -64,37 +64,37 @@ void CTestUnitType::Test()
    unitTypes->Add(CComBSTR("MyUnitType"),20,20,20,20,20,&unitType);
 
    Float64 val;
-   TRY_TEST( unitType->get_Angle(NULL),E_POINTER);
+   TRY_TEST( unitType->get_Angle(nullptr),E_POINTER);
    TRY_TEST( unitType->get_Angle(&val), S_OK );
    TRY_TEST( IsEqual(val,20.0), true );
 
-   TRY_TEST( unitType->get_Length(NULL),E_POINTER);
+   TRY_TEST( unitType->get_Length(nullptr),E_POINTER);
    TRY_TEST( unitType->get_Length(&val), S_OK );
    TRY_TEST( IsEqual(val,20.0), true );
 
-   TRY_TEST( unitType->get_Mass(NULL),E_POINTER);
+   TRY_TEST( unitType->get_Mass(nullptr),E_POINTER);
    TRY_TEST( unitType->get_Mass(&val), S_OK );
    TRY_TEST( IsEqual(val,20.0), true );
 
-   TRY_TEST( unitType->get_Temperature(NULL),E_POINTER);
+   TRY_TEST( unitType->get_Temperature(nullptr),E_POINTER);
    TRY_TEST( unitType->get_Temperature(&val), S_OK );
    TRY_TEST( IsEqual(val,20.0), true );
 
-   TRY_TEST( unitType->get_Time(NULL),E_POINTER);
+   TRY_TEST( unitType->get_Time(nullptr),E_POINTER);
    TRY_TEST( unitType->get_Time(&val), S_OK );
    TRY_TEST( IsEqual(val,20.0), true );
 
    CComPtr<IUnits> units;
-   TRY_TEST( unitType->get_Units(NULL), E_POINTER );
+   TRY_TEST( unitType->get_Units(nullptr), E_POINTER );
    TRY_TEST( unitType->get_Units(&units), S_OK );
 
    CComPtr<IUnitServer> testUnitServer;
-   TRY_TEST( unitType->get_UnitServer(NULL), E_POINTER );
+   TRY_TEST( unitType->get_UnitServer(nullptr), E_POINTER );
    TRY_TEST( unitType->get_UnitServer(&testUnitServer), S_OK );
    TRY_TEST( testUnitServer.IsEqualObject(unitServer), true );
 
    CComBSTR bstrLabel;
-   TRY_TEST( unitType->get_Label(NULL), E_POINTER );
+   TRY_TEST( unitType->get_Label(nullptr), E_POINTER );
    TRY_TEST( unitType->get_Label(&bstrLabel), S_OK );
    TRY_TEST( wcscmp(bstrLabel,CComBSTR("MyUnitType")),0);
 

@@ -137,7 +137,7 @@ std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
    
    // Check if the specified with is adequate
    if ( (m_Width > 0) &&
-        (format != Scientific || format != Engineering ) &&
+        (format != Scientific && format != Engineering ) &&
         ( (get_width_demand( left_value, m_Precision ) > m_Width) || (get_width_demand(right_value, m_Precision) > m_Width) )
       )
    {

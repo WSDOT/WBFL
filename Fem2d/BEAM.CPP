@@ -1277,17 +1277,17 @@ void TrapezoidalLdBeam::ComputeAxialReactions()
       m_Fxl = -(W + m_Fxr); // Fxl + W + Fxr = 0 -> Fxl = -W - Fxr = -(W + Fxr)
    }
 
-   m_Fyl=0;
-   m_Fyr=0;
-   m_Mzl=0;
-   m_Mzr=0;
-   m_Fyl_u=0;
-   m_Fyl_t=0;
-   m_Fyr_t=0;
-   m_Mzl_u=0;
-   m_Mzl_t=0;
-   m_Fyr_u=0;
-   m_Mzr_u=0;
+   m_Fyl = 0;
+   m_Fyr = 0;
+   m_Mzl = 0;
+   m_Mzr = 0;
+   m_Fyl_u = 0;
+   m_Fyl_t = 0;
+   m_Fyr_t = 0;
+   m_Mzl_u = 0;
+   m_Mzl_t = 0;
+   m_Fyr_u = 0;
+   m_Mzr_u = 0;
 }
 
 void TrapezoidalLdBeam::ComputeBendingReactions()
@@ -2772,8 +2772,14 @@ Float64 TrapezoidalLdBeam::ComputeFreeEndDeltaX(Float64 EA, Float64 W, Float64 w
    ATLASSERT(IsGE(a,x,ZTOL) && IsLE(x,b,ZTOL));
    ATLASSERT(EA!=0);
    ATLASSERT(IsEqual(W, (wb+wa)/2.*(b-a),ZTOL));
-   Float64 d = W*a - wa*(x*x - a*x) - 0.5*(wb-wa)*(x*x*x/3 - a*x*x - a*a*x)/(b-a);
+
+   Float64 x2 = x*x;
+   Float64 x3 = x2*x;
+   Float64 a2 = a*a;
+   Float64 a3 = a2*a;
+   Float64 d = W*x - (wb - wa)/(b - a)*(x3/6. - a*x2/2. + a2*x/2. - a3/6.) - wa*(x2/2. - a*x + a2/2.);
    d /= EA;
+
    return d;
 }
 

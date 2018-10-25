@@ -111,7 +111,7 @@ private:
    // Prevent accidental copying and assignment and Default constructor
    rptHtmlParagraphVisitor();
    rptHtmlParagraphVisitor(const rptHtmlParagraphVisitor&);
-   rptHtmlParagraphVisitor& operator=(const rptHtmlParagraphVisitor&);
+   rptHtmlParagraphVisitor& operator=(const rptHtmlParagraphVisitor&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

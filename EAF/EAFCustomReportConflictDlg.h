@@ -30,7 +30,7 @@ class CEAFCustomReportConflictDlg : public CDialog
 	DECLARE_DYNAMIC(CEAFCustomReportConflictDlg)
 
 public:
-	CEAFCustomReportConflictDlg(CWnd* pParent = NULL);   // standard constructor
+	CEAFCustomReportConflictDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CEAFCustomReportConflictDlg();
 
 // Dialog Data

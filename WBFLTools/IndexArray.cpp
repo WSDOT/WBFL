@@ -43,7 +43,7 @@ STDMETHODIMP CIndexArray::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IIndexArray
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -211,7 +211,7 @@ STDMETHODIMP CIndexArray::get__NewEnum(IUnknown** ppUnk)
 {
    CHECK_RETOBJ(ppUnk);
 
-	*ppUnk = NULL;
+	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
    typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyIndex, ContainerType > VecEnumType;
@@ -240,7 +240,7 @@ STDMETHODIMP CIndexArray::get__EnumElements(/*[out, retval]*/ IEnumIndexArray* *
 
    CComPtr<IEnumIndexArray> pHolder(pEnum); // memory leak avoidance
 
-   hr = pEnum->Init( NULL, m_Values );
+   hr = pEnum->Init( nullptr, m_Values );
    if ( FAILED(hr) )
       return hr;
 
@@ -300,7 +300,7 @@ STDMETHODIMP CIndexArray::Find(CollectionIndexType value, CollectionIndexType *f
 {
    HRESULT hr = E_FAIL;
 
-   CollectionIndexType idx=0;
+   CollectionIndexType idx = 0;
    for(ContainerIterator it=m_Values.begin(); it!=m_Values.end(); it++)
    {
       if(value == *it)

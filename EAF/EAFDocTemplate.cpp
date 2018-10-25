@@ -45,20 +45,20 @@ CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
                                  int maxViewCount) :
 CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
 {
-   m_pPlugin = NULL;
+   m_pPlugin = nullptr;
    m_pCommandCallback = pCallback;
 
-   m_pCreateData = NULL;
+   m_pCreateData = nullptr;
 
    m_bSharedMenu = FALSE;
-   if ( hSharedMenu != NULL )
+   if ( hSharedMenu != nullptr )
    {
       m_bSharedMenu = TRUE;
       m_hMenuShared = hSharedMenu;
    }
    m_MaxViewCount = maxViewCount;
 
-   m_pTemplateItem = NULL;
+   m_pTemplateItem = nullptr;
 
    CString strFileNewName;
    GetDocString(strFileNewName,CDocTemplate::fileNewName);
@@ -71,11 +71,11 @@ CEAFDocTemplate::~CEAFDocTemplate()
    {
       // This prevents the base class virtual destructor from
       // destroying the menu resource (i.e. it checks to make
-      // sure the handle isn't NULL)
+      // sure the handle isn't nullptr)
       //
       // See MSKB Article ID: Q118435, "Sharing Menus Between MDI Child Windows"
 
-      m_hMenuShared = NULL;
+      m_hMenuShared = nullptr;
    }
 }
 
@@ -85,7 +85,7 @@ void CEAFDocTemplate::LoadTemplate()
 
    m_AccelTable.Init(EAFGetApp()->GetPluginCommandManager());
    m_AccelTable.AddAccelTable(m_hAccelTable,GetCommandCallback());
-   m_hAccelTable = NULL;
+   m_hAccelTable = nullptr;
 }
 
 void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
@@ -102,26 +102,26 @@ void CEAFDocTemplate::CreateDefaultItem(HICON hIcon)
    else
       strItemName = strFileName;
  
-   m_TemplateGroup.AddItem( new CEAFTemplateItem(this,strItemName,NULL,hIcon) );
+   m_TemplateGroup.AddItem( new CEAFTemplateItem(this,strItemName,nullptr,hIcon) );
 }
 
-CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible)
+CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible)
 {
    // We don't want to call the base class version
-   //CDocument* pDocument = CMultiDocTemplate::OpenDocumentFile(lpszPathName,bMakeVisible);
+   //CDocument* pDocument = CMultiDocTemplate::OpenDocumentFile(lpszPathName, bAddToMRU, bMakeVisible);
 
-   CDocument* pDocument = NULL;
-   CEAFDocument* pEAFDoc = NULL;
-   CFrameWnd* pFrame = NULL;
+   CDocument* pDocument = nullptr;
+   CEAFDocument* pEAFDoc = nullptr;
+   CFrameWnd* pFrame = nullptr;
 
    try
    {
 	   pDocument = CreateNewDocument();
-	   if (pDocument == NULL)
+	   if (pDocument == nullptr)
 	   {
-		   TRACE(traceAppMsg, 0, _T("CEAFDocTemplate::CreateNewDocument returned NULL.\n"));
+		   TRACE(traceAppMsg, 0, _T("CEAFDocTemplate::CreateNewDocument returned nullptr.\n"));
 		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
-		   return NULL;
+		   return nullptr;
 	   }
 	   ASSERT_VALID(pDocument);
       ASSERT_KINDOF(CEAFDocument,pDocument);
@@ -129,14 +129,14 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
 	   BOOL bAutoDelete = pDocument->m_bAutoDelete; // capture current state
 	   pDocument->m_bAutoDelete = FALSE;   // don't destroy if something goes wrong during CreateNewFrame
-	   pFrame = CreateNewFrame(pDocument, NULL);
+	   pFrame = CreateNewFrame(pDocument, nullptr);
 	   pDocument->m_bAutoDelete = bAutoDelete; // reset state
 
-	   if (pFrame == NULL)
+	   if (pFrame == nullptr)
 	   {
 		   AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
 		   delete pDocument;       // explicit delete on error
-		   return NULL;
+		   return nullptr;
 	   }
 	   ASSERT_VALID(pFrame);
 
@@ -144,7 +144,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 
       if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
       {
-         return NULL;
+         return nullptr;
       }
    }
    catch(sysXStructuredLoad& e)
@@ -159,7 +159,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
       pDocument->m_bAutoDelete = TRUE; // pDocument will be deleted when the frame window is destroyed
       pFrame->DestroyWindow();
 
-      return NULL;
+      return nullptr;
    }
 
 	InitialUpdateFrame(pFrame, pDocument, bMakeVisible);
@@ -176,7 +176,7 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisi
 BOOL CEAFDocTemplate::DoOpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible,CEAFDocument* pDocument,CFrameWnd* pFrame)
 {
    SetDefaultTitle(pDocument);
-	if (lpszPathName == NULL)
+	if (lpszPathName == nullptr)
 	{
 		// create a new document - with default document name
 
@@ -270,12 +270,12 @@ CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDoc
 {
    // There seems to be a bug in the base-class version so we are going to do this ourselves.
 
-	ASSERT(lpszPathName != NULL);
-	rpDocMatch = NULL;
+	ASSERT(lpszPathName != nullptr);
+	rpDocMatch = nullptr;
 
 	// go through all documents
 	POSITION pos = GetFirstDocPosition();
-	while (pos != NULL)
+	while (pos != nullptr)
 	{
 		CDocument* pDoc = GetNextDoc(pos);
 		if (AfxComparePath(pDoc->GetPathName(), lpszPathName))
@@ -296,7 +296,7 @@ CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDoc
       // one valid extension in the strFilterExt string, separated with ;.
 		ASSERT(strFilterExt[0] == '.');
 		LPCTSTR lpszDot = ::PathFindExtension(lpszPathName);
-		if (lpszDot != NULL)
+		if (lpszDot != nullptr)
         {
            int iStart = 0;
            do

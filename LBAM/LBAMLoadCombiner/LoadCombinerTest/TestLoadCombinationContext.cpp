@@ -115,19 +115,19 @@ void TestLoadCombinationContext::Test()
 
       // get influence and contraflexure interfaces
       CComQIPtr<IInfluenceLineResponse> influence(response);
-      TRY_TEST(influence!=NULL, true);
+      TRY_TEST(influence!=nullptr, true);
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> contraflexure(response);
-      TRY_TEST(contraflexure!=NULL, true);
+      TRY_TEST(contraflexure!=nullptr, true);
 
       CComQIPtr<IAnalysisPOIs> an_pois(response);
-      TRY_TEST(an_pois!=NULL, true);
+      TRY_TEST(an_pois!=nullptr, true);
 
       CComQIPtr<IGetDistributionFactors> dfs(response);
-      TRY_TEST(dfs!=NULL, true);
+      TRY_TEST(dfs!=nullptr, true);
 
       CComQIPtr<IGetStressPoints> css(response);
-      TRY_TEST(css!=NULL, true);
+      TRY_TEST(css!=nullptr, true);
 
       // need a live load analysis context
       CComPtr<IVehicularAnalysisContext> plvlc;
@@ -138,13 +138,13 @@ void TestLoadCombinationContext::Test()
       CComPtr<ILiveLoadModelResponse> llmr;
       TRY_TEST(llmr.CoCreateInstance(CLSID_LiveLoadModelResponse), S_OK);
       CComQIPtr<IDependOnVehicularAnalysisContext> idvc(llmr);
-      TRY_TEST(idvc!=NULL, true);
+      TRY_TEST(idvc!=nullptr, true);
       TRY_TEST(idvc->Initialize(plvlc), S_OK);
 
       CComPtr<IBasicVehicularResponse> bvr;
       TRY_TEST(bvr.CoCreateInstance(CLSID_BasicVehicularResponse), S_OK);
       CComQIPtr<IDependOnVehicularAnalysisContext> idvcb(bvr);
-      TRY_TEST(idvcb!=NULL, true);
+      TRY_TEST(idvcb!=nullptr, true);
       TRY_TEST(idvcb->Initialize(plvlc), S_OK);
 
       // now can initilize load combination context
@@ -397,7 +397,7 @@ HRESULT CreateSimpleLBAM(ILBAMModel** model)
    TRY_TEST( dl->put_EndLocation(-1.0), S_OK);
    TRY_TEST( dl->put_WStart(-2.0), S_OK);
    TRY_TEST( dl->put_WEnd(-2.0), S_OK);
-   TRY_TEST(  dls->Add(CComBSTR("Stage 1"), CComBSTR("Self Weight"),dl,NULL), S_OK);
+   TRY_TEST(  dls->Add(CComBSTR("Stage 1"), CComBSTR("Self Weight"),dl,nullptr), S_OK);
 
    // add some live load action
    ConfigureLrfdLiveLoadModelInKipFeet(*model);

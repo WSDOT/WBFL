@@ -34,7 +34,7 @@ class CUnitsDlg : public CDialog
 {
 // Construction
 public:
-	CUnitsDlg(CWnd* pParent = NULL);   // standard constructor
+	CUnitsDlg(CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CUnitsDlg)

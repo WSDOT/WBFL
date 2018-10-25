@@ -75,7 +75,7 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // Evaluates the function at x.
-   Float64 Evaluate(Float64 x) const=0;
+   Float64 Evaluate(Float64 x) const = 0;
 
    //------------------------------------------------------------------------
    // GetRange
@@ -85,22 +85,22 @@ public:
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of points which define the segments of the function.
-   virtual CollectionIndexType GetNumPoints() const=0;
+   virtual CollectionIndexType GetNumPoints() const = 0;
 
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const=0;
+   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const = 0;
 
    //------------------------------------------------------------------------
    // GetPoints
    // Returns all points for the line segments which make up the function.
-   virtual std::vector<gpPoint2d> GetPoints() const=0;
+   virtual std::vector<gpPoint2d> GetPoints() const = 0;
 
 protected:
    // Prevent accidental copying and assignment
-   mathPwLinearFunction2d(const mathPwLinearFunction2d&);
-   mathPwLinearFunction2d& operator=(const mathPwLinearFunction2d&);
+   mathPwLinearFunction2d(const mathPwLinearFunction2d&) = delete;
+   mathPwLinearFunction2d& operator=(const mathPwLinearFunction2d&) = delete;
 
 public:
    // GROUP: DEBUG

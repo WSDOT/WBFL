@@ -32,14 +32,14 @@ class CQuestionDlg : public CDialog
 	DECLARE_DYNAMIC(CQuestionDlg)
 
 public:
-	CQuestionDlg(CWnd* pParent = NULL);   // standard constructor
+	CQuestionDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CQuestionDlg();
 
 // Dialog Data
 	enum { IDD = IDD_QUESTION };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 private:
@@ -50,5 +50,5 @@ public:
    CString m_Question;
    CString m_Answer;
 
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
 };

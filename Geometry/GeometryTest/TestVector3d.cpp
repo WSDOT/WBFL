@@ -64,17 +64,17 @@ void CTestVector3d::Test()
    y = -20.0;
    z = -30.0;
    TRY_TEST(pVec->put_X(x),S_OK);
-   TRY_TEST(pVec->get_X(NULL),E_POINTER);
+   TRY_TEST(pVec->get_X(nullptr),E_POINTER);
    TRY_TEST(pVec->get_X(&x1),S_OK);
    TRY_TEST(IsEqual(x,x1),true);
 
    TRY_TEST(pVec->put_Y(y),S_OK);
-   TRY_TEST(pVec->get_Y(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Y(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Y(&y1),S_OK);
    TRY_TEST(IsEqual(y,y1),true);
 
    TRY_TEST(pVec->put_Z(z),S_OK);
-   TRY_TEST(pVec->get_Z(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Z(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Z(&z1),S_OK);
    TRY_TEST(IsEqual(z,z1),true);
 
@@ -82,7 +82,7 @@ void CTestVector3d::Test()
    // Test Size Property
    //
    CComPtr<ISize3d> pSize;
-   TRY_TEST(pVec->get_Size(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Size(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Size(&pSize),S_OK);
    pSize->get_Dx(&x1);
    pSize->get_Dy(&y1);
@@ -99,7 +99,7 @@ void CTestVector3d::Test()
    pVec->put_X(3);
    pVec->put_Y(4);
    pVec->put_Z(5);
-   TRY_TEST(pVec->get_Magnitude(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Magnitude(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Magnitude(&mag),S_OK);
    TRY_TEST(IsEqual(mag,7.07106781187),true);
 
@@ -141,7 +141,7 @@ void CTestVector3d::Test()
    //
    // Test IsZero
    //
-   TRY_TEST(pVec->IsZero(NULL),E_POINTER);
+   TRY_TEST(pVec->IsZero(nullptr),E_POINTER);
    VARIANT_BOOL bIsZero;
    pVec->put_X(10);
    pVec->put_Y(0);
@@ -189,7 +189,7 @@ void CTestVector3d::Test()
    pOffset->put_Dx(-20);
    pOffset->put_Dy(-20);
    pOffset->put_Dz(-20);
-   TRY_TEST(pVec->OffsetEx(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->OffsetEx(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->OffsetEx(pOffset),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -205,8 +205,8 @@ void CTestVector3d::Test()
    CComPtr<IVector3d> pVec2;
    pVec2.CoCreateInstance( CLSID_Vector3d );
 
-   TRY_TEST(pVec->Projection(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->Projection(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->Projection(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->Projection(pVec2,nullptr),E_POINTER);
 
    // Vector is zero length
    pVec2->put_X(0);
@@ -304,8 +304,8 @@ void CTestVector3d::Test()
    //
    Float64 dot;
 
-   TRY_TEST(pVec->Dot(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->Dot(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->Dot(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->Dot(pVec2,nullptr),E_POINTER);
 
    pVec->put_X(10);
    pVec->put_Y(20);
@@ -319,8 +319,8 @@ void CTestVector3d::Test()
    //
    // Test AngleBetween
    //
-   TRY_TEST(pVec->AngleBetween(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->AngleBetween(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->AngleBetween(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->AngleBetween(pVec2,nullptr),E_POINTER);
    pVec->put_X(10);
    pVec->put_Y(0);
    pVec->put_Z(0);
@@ -366,8 +366,8 @@ void CTestVector3d::Test()
    pVec2->put_Z(4);
 
    CComPtr<IVector3d> cross;
-   TRY_TEST( pVec->Cross(NULL,NULL), E_INVALIDARG);
-   TRY_TEST( pVec->Cross(pVec2,NULL), E_POINTER);
+   TRY_TEST( pVec->Cross(nullptr,nullptr), E_INVALIDARG);
+   TRY_TEST( pVec->Cross(pVec2,nullptr), E_POINTER);
    TRY_TEST( pVec->Cross(pVec2,&cross), S_OK );
    cross->get_X(&x);
    cross->get_Y(&y);
@@ -394,7 +394,7 @@ void CTestVector3d::Test()
    pVec2->put_X(50);
    pVec2->put_Y(60);
    pVec2->put_Z(70);
-   TRY_TEST(pVec->Increment(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->Increment(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->Increment(pVec2),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -404,8 +404,8 @@ void CTestVector3d::Test()
    TRY_TEST(IsEqual(z1,100.),true);
 
    CComPtr<IVector3d> pVec3;
-   TRY_TEST(pVec->IncrementBy(NULL,&pVec3),E_INVALIDARG);
-   TRY_TEST(pVec->IncrementBy(pVec2,NULL), E_POINTER);
+   TRY_TEST(pVec->IncrementBy(nullptr,&pVec3),E_INVALIDARG);
+   TRY_TEST(pVec->IncrementBy(pVec2,nullptr), E_POINTER);
    TRY_TEST(pVec->IncrementBy(pVec2,&pVec3),S_OK);
    pVec->get_X(&x1); // vector 1 unchanged
    pVec->get_Y(&y1);
@@ -426,7 +426,7 @@ void CTestVector3d::Test()
    pVec2->put_X(50);
    pVec2->put_Y(60);
    pVec2->put_Z(70);
-   TRY_TEST(pVec->Decrement(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->Decrement(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->Decrement(pVec2),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -436,8 +436,8 @@ void CTestVector3d::Test()
    TRY_TEST(IsEqual(z1,-40.),true);
 
    pVec3.Release();
-   TRY_TEST(pVec->DecrementBy(NULL,&pVec3),E_INVALIDARG);
-   TRY_TEST(pVec->DecrementBy(pVec2,NULL), E_POINTER);
+   TRY_TEST(pVec->DecrementBy(nullptr,&pVec3),E_INVALIDARG);
+   TRY_TEST(pVec->DecrementBy(pVec2,nullptr), E_POINTER);
    TRY_TEST(pVec->DecrementBy(pVec2,&pVec3),S_OK);
    pVec->get_X(&x1); // vector 1, unchanged
    pVec->get_Y(&y1);

@@ -44,7 +44,7 @@ CComModule _Module;
 
 int main(int argc, char* argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
    {
 
       CTestPoiPlacement tpp;

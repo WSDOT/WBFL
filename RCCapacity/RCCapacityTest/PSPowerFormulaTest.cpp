@@ -59,10 +59,10 @@ void CPSPowerFormulaTest::Test()
    TestISupportUnitServer(ps);
 
    CComQIPtr<IStressStrain> ss(ps);
-   TRY_TEST( ss != NULL, true );
+   TRY_TEST( ss != nullptr, true );
 
    Float64 val;
-   TRY_TEST( ss->ComputeStress(0.00764,NULL), E_POINTER);
+   TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
    TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,1446556950.5987,0.0001), true );
    TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
@@ -73,7 +73,7 @@ void CPSPowerFormulaTest::Test()
    TRY_TEST( IsEqual(val,-1861584469.1559,0.0001), true );
 
    CComQIPtr<ISupportErrorInfo> eInfo(ss);
-   TRY_TEST( eInfo != NULL, true);
+   TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);

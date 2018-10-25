@@ -64,22 +64,22 @@ void CTestRect2d::Test()
 
    Float64 l,r,t,b;
    TRY_TEST(pRect->put_Left(left),S_OK);
-   TRY_TEST(pRect->get_Left(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Left(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Left(&l),S_OK);
    TRY_TEST(IsEqual(l,left),true);
 
    TRY_TEST(pRect->put_Top(top),S_OK);
-   TRY_TEST(pRect->get_Top(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Top(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Top(&t),S_OK);
    TRY_TEST(IsEqual(t,top),true);
 
    TRY_TEST(pRect->put_Right(right),S_OK);
-   TRY_TEST(pRect->get_Right(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Right(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Right(&r),S_OK);
    TRY_TEST(IsEqual(r,right),true);
 
    TRY_TEST(pRect->put_Bottom(bottom),S_OK);
-   TRY_TEST(pRect->get_Bottom(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Bottom(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Bottom(&b),S_OK);
    TRY_TEST(IsEqual(b,bottom),true);
 
@@ -89,17 +89,17 @@ void CTestRect2d::Test()
 
    // Height and Width
    Float64 w,h;
-   TRY_TEST(pRect->get_Width(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Width(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Width(&w),S_OK);
    TRY_TEST(IsEqual(w,right-left),true);
 
-   TRY_TEST(pRect->get_Height(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Height(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Height(&h),S_OK);
    TRY_TEST(IsEqual(h,top-bottom),true);
 
    // Area
    Float64 area;
-   TRY_TEST(pRect->get_Area(NULL),E_POINTER);
+   TRY_TEST(pRect->get_Area(nullptr),E_POINTER);
    TRY_TEST(pRect->get_Area(&area),S_OK);
    TRY_TEST(IsEqual(area,(right-left)*(top-bottom)),true);
 
@@ -111,7 +111,7 @@ void CTestRect2d::Test()
    pRect->put_Bottom(-10);
    CComPtr<IPoint2d> pPoint;
    Float64 x,y;
-   TRY_TEST(pRect->get_TopLeft(NULL),E_POINTER);
+   TRY_TEST(pRect->get_TopLeft(nullptr),E_POINTER);
    TRY_TEST(pRect->get_TopLeft(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -119,7 +119,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y, 10.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_TopCenter(NULL),E_POINTER);
+   TRY_TEST(pRect->get_TopCenter(nullptr),E_POINTER);
    TRY_TEST(pRect->get_TopCenter(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -127,7 +127,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y, 10.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_TopRight(NULL),E_POINTER);
+   TRY_TEST(pRect->get_TopRight(nullptr),E_POINTER);
    TRY_TEST(pRect->get_TopRight(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -135,7 +135,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y, 10.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_CenterLeft(NULL),E_POINTER);
+   TRY_TEST(pRect->get_CenterLeft(nullptr),E_POINTER);
    TRY_TEST(pRect->get_CenterLeft(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -143,7 +143,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y,  0.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_CenterCenter(NULL),E_POINTER);
+   TRY_TEST(pRect->get_CenterCenter(nullptr),E_POINTER);
    TRY_TEST(pRect->get_CenterCenter(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -151,7 +151,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y,  0.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_CenterRight(NULL),E_POINTER);
+   TRY_TEST(pRect->get_CenterRight(nullptr),E_POINTER);
    TRY_TEST(pRect->get_CenterRight(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -159,7 +159,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y,  0.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_BottomLeft(NULL),E_POINTER);
+   TRY_TEST(pRect->get_BottomLeft(nullptr),E_POINTER);
    TRY_TEST(pRect->get_BottomLeft(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -167,7 +167,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y,-10.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_BottomCenter(NULL),E_POINTER);
+   TRY_TEST(pRect->get_BottomCenter(nullptr),E_POINTER);
    TRY_TEST(pRect->get_BottomCenter(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -175,7 +175,7 @@ void CTestRect2d::Test()
    TRY_TEST(IsEqual(y,-10.0),true);
 
    pPoint.Release();
-   TRY_TEST(pRect->get_BottomRight(NULL),E_POINTER);
+   TRY_TEST(pRect->get_BottomRight(nullptr),E_POINTER);
    TRY_TEST(pRect->get_BottomRight(&pPoint),S_OK);
    pPoint->get_X(&x);
    pPoint->get_Y(&y);
@@ -190,8 +190,8 @@ void CTestRect2d::Test()
    pPoint->put_X(5);
    pPoint->put_Y(5);
    VARIANT_BOOL bContains;
-   TRY_TEST(pRect->ContainsPoint(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pRect->ContainsPoint(pPoint,NULL),E_POINTER);
+   TRY_TEST(pRect->ContainsPoint(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pRect->ContainsPoint(pPoint,nullptr),E_POINTER);
    TRY_TEST(pRect->ContainsPoint(pPoint,&bContains),S_OK);
    TRY_TEST(bContains,VARIANT_TRUE);
 
@@ -258,13 +258,13 @@ void CTestRect2d::Test()
    pRect2->put_Top(10);
    pRect2->put_Bottom(0);
 
-   TRY_TEST(pRect->ContainsRect(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pRect->ContainsRect(pRect2,NULL),E_POINTER);
+   TRY_TEST(pRect->ContainsRect(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pRect->ContainsRect(pRect2,nullptr),E_POINTER);
    TRY_TEST(pRect->ContainsRect(pRect2,&bContains),S_OK);
    TRY_TEST(bContains,VARIANT_FALSE);
 
-   TRY_TEST(pRect->Touches(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pRect->Touches(pRect2,NULL),E_POINTER);
+   TRY_TEST(pRect->Touches(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pRect->Touches(pRect2,nullptr),E_POINTER);
    TRY_TEST(pRect->Touches(pRect2,&bTouches),S_OK);
    TRY_TEST(bTouches,VARIANT_FALSE);
 
@@ -340,7 +340,7 @@ void CTestRect2d::Test()
    pRect->put_Top(100);
    pRect->put_Bottom(0);
    VARIANT_BOOL bIsNormalized;
-   TRY_TEST(pRect->IsNormalized(NULL), E_POINTER);
+   TRY_TEST(pRect->IsNormalized(nullptr), E_POINTER);
    TRY_TEST(pRect->IsNormalized(&bIsNormalized),S_OK);
    TRY_TEST(bIsNormalized,VARIANT_FALSE);
 
@@ -383,7 +383,7 @@ void CTestRect2d::Test()
    pRect->put_Top(100);
    pRect->put_Bottom(0);
    VARIANT_BOOL bIsNull;
-   TRY_TEST(pRect->IsNull(NULL),E_POINTER);
+   TRY_TEST(pRect->IsNull(nullptr),E_POINTER);
    TRY_TEST(pRect->IsNull(&bIsNull),S_OK);
    TRY_TEST(bIsNull,VARIANT_FALSE);
 
@@ -422,7 +422,7 @@ void CTestRect2d::Test()
    pRect2->put_Top(10);
    pRect2->put_Bottom(0);
 
-   TRY_TEST(pRect->Union(NULL),E_INVALIDARG);
+   TRY_TEST(pRect->Union(nullptr),E_INVALIDARG);
 
    TRY_TEST(pRect->Union(pRect2),S_OK);
    pRect->get_Left(&l);
@@ -542,8 +542,8 @@ void CTestRect2d::Test()
    pRect2->put_Top(10);
    pRect2->put_Bottom(0);
 
-   TRY_TEST(pRect->UnionBy(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pRect->UnionBy(pRect2,NULL),E_POINTER);
+   TRY_TEST(pRect->UnionBy(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pRect->UnionBy(pRect2,nullptr),E_POINTER);
 
    TRY_TEST(pRect->UnionBy(pRect2,&pUnion),S_OK);
    pUnion->get_Left(&l);
@@ -647,7 +647,7 @@ void CTestRect2d::Test()
 
    pPoint->put_X(20);
    pPoint->put_Y(20);
-   TRY_TEST(pRect->BoundPointEx(NULL),E_INVALIDARG);
+   TRY_TEST(pRect->BoundPointEx(nullptr),E_INVALIDARG);
    TRY_TEST(pRect->BoundPointEx(pPoint),S_OK); // Grow left and up
    TRY_TEST(pRect->BoundPoint(-10,-10), S_OK); // Grow right and down
    pRect->get_Left(&l);
@@ -689,7 +689,7 @@ void CTestRect2d::Test()
    pInflate->put_Dx(10);
    pInflate->put_Dy(10);
 
-   TRY_TEST(pRect->InflateEx(NULL),E_INVALIDARG);
+   TRY_TEST(pRect->InflateEx(nullptr),E_INVALIDARG);
    TRY_TEST(pRect->InflateEx(pInflate),S_OK);
    pRect->get_Left(&l);
    pRect->get_Right(&r);
@@ -719,7 +719,7 @@ void CTestRect2d::Test()
    pRect->put_Bottom(0);
 
    CComPtr<ISize2d> pSize;
-   TRY_TEST(pRect->Size(NULL),E_POINTER);
+   TRY_TEST(pRect->Size(nullptr),E_POINTER);
    TRY_TEST(pRect->Size(&pSize),S_OK);
    Float64 dx,dy;
    pSize->get_Dx(&dx);
@@ -752,7 +752,7 @@ void CTestRect2d::Test()
    pOffset->put_Dx(10);
    pOffset->put_Dy(10);
 
-   TRY_TEST(pRect->OffsetEx(NULL),E_INVALIDARG);
+   TRY_TEST(pRect->OffsetEx(nullptr),E_INVALIDARG);
    TRY_TEST(pRect->OffsetEx(pOffset),S_OK);
    pRect->get_Left(&l);
    pRect->get_Right(&r);
@@ -783,8 +783,8 @@ void CTestRect2d::Test()
 
 
    CComPtr<IRect2d> pIntersect;
-   TRY_TEST(pRect->Intersect(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pRect->Intersect(pRect2,NULL),E_POINTER);
+   TRY_TEST(pRect->Intersect(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pRect->Intersect(pRect2,nullptr),E_POINTER);
 
    // Rectangles don't intersect
 

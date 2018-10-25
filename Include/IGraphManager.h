@@ -24,7 +24,7 @@
 #pragma once
 
 #include <GraphManager\GraphManager.h>
-#include <boost\shared_ptr.hpp>
+
 
 // {FBA71046-0C05-4946-83DD-4C71A973C18D}
 DEFINE_GUID(IID_IGraphManager, 
@@ -32,13 +32,13 @@ DEFINE_GUID(IID_IGraphManager,
 interface IGraphManager : IUnknown
 {
    virtual bool AddGraphBuilder(CGraphBuilder* pRptBuilder) = 0;
-   virtual bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder) = 0;
+   virtual bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder) = 0;
    virtual CollectionIndexType GetGraphBuilderCount() const = 0;
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index) = 0;
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) = 0;
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) = 0;
-   virtual boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
-   virtual boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index) = 0;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) = 0;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) = 0;
+   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
+   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
    virtual std::vector<std::_tstring> GetGraphNames() const = 0;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) = 0;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) = 0;

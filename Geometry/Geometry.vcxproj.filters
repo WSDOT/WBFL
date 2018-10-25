@@ -1,0 +1,434 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="BoxBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BulbTee.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CircularSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeShapeItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateXform2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CoordinateXform3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeckedSlabBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FasterPolyShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeomUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Line2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegment2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegment3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiWeb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiWeb2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NUBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlateGirder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2dCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Point3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Point3dCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyShape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrecastBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimitiveFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Size2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Size3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficBarrier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UBeam2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoidedSlab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoidedSlab2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BulbTee2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BoxBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BulbTee.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeShapeItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateXform2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoordinateXform3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeckedSlabBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FasterPolyShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Geometry.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeomUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Line2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegment2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegment3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiWeb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiWeb2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NUBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlateGirder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2dCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Point3dCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PolyShape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrecastBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrimitiveFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Primitives.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Size2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Size3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrafficBarrier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UBeam2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoidedSlab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoidedSlab2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BulbTee2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLGeometry.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Geometry.def" />
+    <None Include="BoxBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BulbTee.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CircularSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Circle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompositeShape.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompositeShapeItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CoordinateXform2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CoordinateXform3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FasterPolyShape.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GenericShape.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GeomUtil.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Line2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LineSegment2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LineSegment3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MultiWeb.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MultiWeb2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NUBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Plane3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PlateGirder.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Point2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Point2dCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Point3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Point3dCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PolyShape.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrecastBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrimitiveFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Rect2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Rectangle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ShapeCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ShapeProperties.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Size2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Size3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TrafficBarrier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Triangle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UBeam2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Vector2d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Vector3d.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VoidedSlab.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VoidedSlab2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BulbTee2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{9329a1f9-f915-4fd0-988c-8f0ca3449e7f}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0735736a-a935-44b9-b093-cab43926fa7f}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1a0f466e-b703-4728-a40e-180056002416}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Geometry.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

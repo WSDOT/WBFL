@@ -92,10 +92,10 @@ bool gpLineSegment2d::Contains(const gpPoint2d& point,Float64 tol) const
    // stole implemenation from unidraw's LineObj class and added tolerance. We might
    // want to consider having a global geometric tolerance for the gp package.
    
-	if ((point.X() >= _cpp_min(m_P1.X(), m_P2.X())-tol) && 
-       (point.X() <= _cpp_max(m_P1.X(), m_P2.X())+tol) &&
-	    (point.Y() >= _cpp_min(m_P1.Y(), m_P2.Y())-tol) && 
-       (point.Y() <= _cpp_max(m_P1.Y(), m_P2.Y())+tol))
+	if ((point.X() >= Min(m_P1.X(), m_P2.X())-tol) && 
+       (point.X() <= Max(m_P1.X(), m_P2.X())+tol) &&
+	    (point.Y() >= Min(m_P1.Y(), m_P2.Y())-tol) && 
+       (point.Y() <= Max(m_P1.Y(), m_P2.Y())+tol))
    {
       Float64 prod = (point.Y() - m_P1.Y())*(m_P2.X() - m_P1.X()) - 
                      (m_P2.Y() - m_P1.Y() )*(point.X() - m_P1.X());

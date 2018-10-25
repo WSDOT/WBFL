@@ -56,14 +56,14 @@ void CTestPoint2dCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_Point2dCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(NULL),E_INVALIDARG);
+   TRY_TEST(pColl->Add(nullptr),E_INVALIDARG);
 
    // add some points and see if we get them back
    CComPtr<IPoint2d> p1;
@@ -97,7 +97,7 @@ void CTestPoint2dCollection::Test()
    CComPtr<IPoint2d> pnt;
    TRY_TEST(pColl->get_Item(-1,&pnt),E_INVALIDARG); // invalid index
    TRY_TEST(pColl->get_Item(10,&pnt),E_INVALIDARG); // index out of range - too high
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(0,&pnt),S_OK);
    Float64 x,y;
    pnt->get_X(&x);
@@ -205,7 +205,7 @@ void CTestPoint2dCollection::Test()
    pColl->Add(p3);
    pColl->Add(p4);
    CComPtr<IEnumPoint2d> pEnum;
-   TRY_TEST(pColl->get__Enum(NULL), E_POINTER );
+   TRY_TEST(pColl->get__Enum(nullptr), E_POINTER );
    TRY_TEST( pColl->get__Enum(&pEnum), S_OK );
 
    ULONG fetched;
@@ -234,7 +234,7 @@ void CTestPoint2dCollection::TestISupportErrorInfo()
 
 STDMETHODIMP CTestPoint2dCollection::OnPointChanged(IPoint2d* point)
 {
-//   MessageBox(NULL,"PointChanged","Event",MB_OK);
+//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
    Pass();
 
    return S_OK;
@@ -242,7 +242,7 @@ STDMETHODIMP CTestPoint2dCollection::OnPointChanged(IPoint2d* point)
 
 STDMETHODIMP CTestPoint2dCollection::OnPointAdded(CollectionIndexType index,IPoint2d* point)
 {
-//   MessageBox(NULL,"PointAdded","Event",MB_OK);
+//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
    if ( index == m_expectedIndex )
       Pass();
 
@@ -251,7 +251,7 @@ STDMETHODIMP CTestPoint2dCollection::OnPointAdded(CollectionIndexType index,IPoi
 
 STDMETHODIMP CTestPoint2dCollection::OnPointRemoved(CollectionIndexType index)
 {
-//   MessageBox(NULL,"PointRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
    if ( index == m_expectedIndex )
       Pass();
 
@@ -260,7 +260,7 @@ STDMETHODIMP CTestPoint2dCollection::OnPointRemoved(CollectionIndexType index)
 
 STDMETHODIMP CTestPoint2dCollection::OnPointsCleared()
 {
-//   MessageBox(NULL,"PointCleared","Event",MB_OK);
+//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

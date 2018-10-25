@@ -48,8 +48,6 @@ public:
 	{
       m_nSlices = 25;
       m_Tolerance = 0.001;
-      m_StrandDevLengthFactor = 1.0;
-      m_RebarDevLengthFactor = 1.0;
       m_bCflangeOverhangOnly = VARIANT_FALSE;
       m_ec = 0.003;
       m_bUserSlabConcrete = false;
@@ -83,7 +81,7 @@ private:
       CComPtr<IShape> Shape;
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
-   };
+   } SHAPEINFO;
 
    typedef struct SLICEINFO
    {
@@ -103,8 +101,8 @@ private:
 
    long m_nSlices;
    Float64 m_Tolerance;
-   Float64 m_StrandDevLengthFactor;
-   Float64 m_RebarDevLengthFactor;
+   //Float64 m_StrandDevLengthFactor;
+   //Float64 m_RebarDevLengthFactor;
    Float64 m_ec; // concrete crushing strain
    bool m_bUserSlabConcrete; // keeps track of concrete model origin
    bool m_bUserBeamConcrete; // keeps track of concrete model origin
@@ -145,50 +143,46 @@ private:
 
 // IRCSolver2Ex
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ IRCSolutionEx* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ IRCSolutionEx* *solution) override;
 
 // IRCSolver2
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolutionEx* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolutionEx* *solution) override;
 
 // IRCSolver
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution) override;
 
 // IRCCrackedSectionSolver2Ex
 public:
-   STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution) override;
 
 // IRCCrackedSectionSolver2
 public:
-   STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution) override;
 
 // IRCCrackedSectionSolver
 public:
-   STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution);
+   STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ ICrackedSectionSolution* *solution) override;
 
 // INLSolver
 public:
-	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal);
-   STDMETHOD(put_Slices)(/*[in]*/ long nSlices);
-   STDMETHOD(get_Slices)(/*[out,retval]*/ long* nSlices);
-   STDMETHOD(put_Tolerance)(/*[in]*/ Float64 tolerance);
-   STDMETHOD(get_Tolerance)(/*[out,retval]*/ Float64* tolerance);
-   STDMETHOD(putref_BeamConcreteModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_BeamConcreteModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(putref_SlabConcreteModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_SlabConcreteModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(putref_StrandModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_StrandModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(put_StrandDevLengthFactor)(/*[in]*/ Float64 devLengthFactor);
-   STDMETHOD(get_StrandDevLengthFactor)(/*[out,retval]*/ Float64* devLengthFactor);
-   STDMETHOD(put_RebarDevLengthFactor)(/*[in]*/ Float64 devLengthFactor);
-   STDMETHOD(get_RebarDevLengthFactor)(/*[out,retval]*/ Float64* devLengthFactor);
-   STDMETHOD(put_ConcreteCrushingStrain)(/*[in]*/ Float64 ec);
-   STDMETHOD(get_ConcreteCrushingStrain)(/*[out,retval]*/ Float64* ec);
+	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal) override;
+   STDMETHOD(put_Slices)(/*[in]*/ long nSlices) override;
+   STDMETHOD(get_Slices)(/*[out,retval]*/ long* nSlices) override;
+   STDMETHOD(put_Tolerance)(/*[in]*/ Float64 tolerance) override;
+   STDMETHOD(get_Tolerance)(/*[out,retval]*/ Float64* tolerance) override;
+   STDMETHOD(putref_BeamConcreteModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_BeamConcreteModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(putref_SlabConcreteModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_SlabConcreteModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(putref_StrandModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_StrandModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(put_ConcreteCrushingStrain)(/*[in]*/ Float64 ec) override;
+   STDMETHOD(get_ConcreteCrushingStrain)(/*[out,retval]*/ Float64* ec) override;
 };
 
 #endif //__NLSOLVER_H_

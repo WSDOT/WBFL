@@ -32,12 +32,12 @@ class txnChangeUnits : public txnTransaction
 {
 public:
    txnChangeUnits(IBroker* pBroker,eafTypes::UnitMode oldUnits,eafTypes::UnitMode newUnits);
-   virtual std::_tstring Name() const;
-   virtual txnTransaction* CreateClone() const;
-   virtual bool Execute();
-   virtual void Undo();
-   virtual bool IsUndoable();
-   virtual bool IsRepeatable();
+   virtual std::_tstring Name() const override;
+   virtual txnTransaction* CreateClone() const override;
+   virtual bool Execute() override;
+   virtual void Undo() override;
+   virtual bool IsUndoable() override;
+   virtual bool IsRepeatable() override;
 
 private:
    bool DoExecute(int i);

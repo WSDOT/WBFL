@@ -107,6 +107,9 @@ public:
    // by which to increasing the height from the CG to the roll center to estimate the effect of camber
    virtual void GetCamber(bool* pbDirectCamber,Float64* pCamber) const = 0;
 
+   // returns the camber multiplier used to modify direct camber
+   virtual Float64 GetCamberMultiplier() const = 0;
+
    // returns the impact up and down (fractional value, both positive)
    virtual void GetImpact(Float64* pIMup,Float64* pIMdown) const = 0;
 

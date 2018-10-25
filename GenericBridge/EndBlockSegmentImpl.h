@@ -98,9 +98,9 @@ private:
 public:
    TEndBlockSegmentImpl()
 	{
-      m_pSSMbr       = NULL;
-      m_pPrevSegment = NULL;
-      m_pNextSegment = NULL;
+      m_pSSMbr       = nullptr;
+      m_pPrevSegment = nullptr;
+      m_pNextSegment = nullptr;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(T_IDR)
@@ -120,7 +120,7 @@ END_COM_MAP()
 public:
    HRESULT FinalConstruct()
    {
-      m_pGirderLine = NULL;
+      m_pGirderLine = nullptr;
 
       m_Orientation = 0;
 
@@ -138,7 +138,7 @@ public:
 
    void FinalRelease()
    {
-      m_pGirderLine = NULL;
+      m_pGirderLine = nullptr;
       m_Shapes.clear();
    }
 
@@ -151,7 +151,7 @@ public:
 		   &IID_ISegment,
          &IID_IStructuredStorage2,
 	   };
-	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	   {
 		   if (InlineIsEqualGUID(*arr[i],riid))
 			   return S_OK;
@@ -177,7 +177,7 @@ public:
       }
       else
       {
-         (*ssMbr) = NULL;
+         (*ssMbr) = nullptr;
       }
       return S_OK;
    }
@@ -198,7 +198,7 @@ public:
       }
       else
       {
-         (*girderLine) = NULL;
+         (*girderLine) = nullptr;
       }
       return S_OK;
    }
@@ -207,7 +207,7 @@ public:
    {
       CHECK_IN(segment);
       ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-      m_pPrevSegment = NULL;
+      m_pPrevSegment = nullptr;
       HRESULT hr = segment->QueryInterface(&m_pPrevSegment);
       if ( FAILED(hr) )
       {
@@ -225,7 +225,7 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment)
    {
       ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-      m_pNextSegment = NULL;
+      m_pNextSegment = nullptr;
       HRESULT hr = segment->QueryInterface(&m_pNextSegment);
       if ( FAILED(hr) )
       {
@@ -242,13 +242,13 @@ public:
 
    STDMETHOD(get_Length)(Float64 *pVal)
    {
-      ATLASSERT(m_pGirderLine != NULL);
+      ATLASSERT(m_pGirderLine != nullptr);
       return m_pGirderLine->get_GirderLength(pVal);
    }
 
    STDMETHOD(get_LayoutLength)(Float64 *pVal)
    {
-      ATLASSERT(m_pGirderLine != NULL);
+      ATLASSERT(m_pGirderLine != nullptr);
       return m_pGirderLine->get_LayoutLength(pVal);
    }
 
@@ -263,7 +263,7 @@ public:
       }
 
       CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
-      ATLASSERT(beam); // if this is NULL... how did it get in the system????
+      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
       // This object reprsents a prismatic shape... all sections are the same
       HRESULT hr = S_OK;
@@ -299,7 +299,7 @@ public:
       section.CoCreateInstance(CLSID_CompositeSectionEx);
 
       section->QueryInterface(IID_ISection,(void**)ppSection);
-      ATLASSERT(*ppSection != NULL);
+      ATLASSERT(*ppSection != nullptr);
 
       // add the primary shape
       Float64 Efg = 0;
@@ -375,7 +375,7 @@ public:
       }
 
       CComQIPtr<T_IBeamSection> beam(m_Shapes.front().Shape);
-      ATLASSERT(beam); // if this is NULL... how did it get in the system????
+      ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
       // This object reprsents a prismatic shape... all sections are the same
       HRESULT hr = S_OK;
@@ -535,7 +535,7 @@ public:
       if ( m_Shapes.size() == 0 )
       {
          CComQIPtr<T_IBeamSection> beam(pShape);
-         if ( beam == NULL )
+         if ( beam == nullptr )
          {
             ATLASSERT(false); // first shape must implement the T_IBeamSection interfvace
             return E_INVALIDARG;

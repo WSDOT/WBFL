@@ -76,10 +76,10 @@ CONNECTION_POINT_ENTRY(IID_ldIStrainLoadsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldIStrainLoadEvents
-   STDMETHOD(OnStrainLoadChanged)(/*[in]*/ldIStrainLoad* StrainLoad)
+   STDMETHOD(OnStrainLoadChanged)(/*[in]*/ldIStrainLoad* StrainLoad) override
    {
       // Load can be in more than one item
       for (iterator i=begin(); i!=end(); i++)
@@ -121,23 +121,22 @@ public:
       Fire_OnStrainLoadsChanged(pitem);
    }
 
-   virtual HRESULT MakeConnection(CStrainLoadItem* pitem)
+   virtual HRESULT MakeConnection(CStrainLoadItem* pitem) override
    {
       return CrAdvise(pitem->m_Load, this, IID_ldIStrainLoadEvents, &(pitem->m_LoadCookie));
    }
 
-   virtual HRESULT BreakConnection(CStrainLoadItem* pitem)
+   virtual HRESULT BreakConnection(CStrainLoadItem* pitem) override
    {
       return CrUnadvise(pitem->m_Load, this, IID_ldIStrainLoadEvents, pitem->m_LoadCookie);
    }
 
-   STDMETHOD(FinalRelease)()
+   void FinalRelease()
    {
       for (iterator i=begin(); i!=end(); i++)
       {
          OnBeforeRemove(*i);
       }
-      return S_OK;
    }
 
 };

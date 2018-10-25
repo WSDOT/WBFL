@@ -320,7 +320,7 @@ void CDisplayListImpl::UnregisterEventSink()
 
 void CDisplayListImpl::GetEventSink(iDisplayListEvents** pEventSink)
 {
-   if ( pEventSink == NULL )
+   if ( pEventSink == nullptr )
       return;
 
    (*pEventSink) = m_EventSink;

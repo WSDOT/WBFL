@@ -74,14 +74,14 @@ public:
    void MakeCopy(const lrfdLiveLoadDistributionFactorMixin& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther);
+   void MakeAssignment(const lrfdLiveLoadDistributionFactorMixin& rOther);
 
 
 private:
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl) const;
+   lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang, Float64 wLane,IndexType Nl) const;
    //------------------------------------------------------------------------
-   virtual Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
+   Float64 GetDistanceToAxle(Float64 S,Float64 roadOverhang,Float64 wLane,GirderIndexType nbeam,AxleIndexType naxle,bool bAlignLeft) const;
 
 
    bool m_IgnoreMpfForLeverRuleSingleLane;
@@ -132,25 +132,25 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual Float64 MomentDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
-   virtual DFResult MomentDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
+   virtual Float64 MomentDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
+   virtual DFResult MomentDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
 
    //------------------------------------------------------------------------
-   virtual Float64 ShearDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
-   virtual DFResult ShearDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
+   virtual Float64 ShearDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
+   virtual DFResult ShearDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
    
    //------------------------------------------------------------------------
-   virtual Float64 ReactionDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
-   virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const;
+   virtual Float64 ReactionDF(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
+   virtual DFResult ReactionDFEx(Location loc,NumLoadedLanes numLanes,lrfdTypes::LimitState ls) const override;
 
    //------------------------------------------------------------------------
    virtual Float64 MomentSkewCorrectionFactor() const = 0;
    virtual Float64 ShearSkewCorrectionFactor() const = 0;
 
    //------------------------------------------------------------------------
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const;
-   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeMomentByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeShearByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
+   virtual lrfdILiveLoadDistributionFactor::DFResult DistributeReactionByLeverRule(Location loc,NumLoadedLanes numLanes) const override;
 
    virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes) const;
 
@@ -197,7 +197,7 @@ protected:
    void MakeCopy(const lrfdLiveLoadDistributionFactorBase& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther);
+   void MakeAssignment(const lrfdLiveLoadDistributionFactorBase& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -39,7 +39,7 @@ class  CFem2dCollection : public CComKeyedCollection< T, ItemType, StoredType, E
 {
 protected:
    // virtual function for initializing newly-created StoredTypes
-   virtual void CallOnCreate(StoredType* pcreate)=0;
+   virtual void CallOnCreate(StoredType* pcreate) = 0;
 
 public:
 
@@ -68,7 +68,7 @@ public:
 
       CollectionIndexType count = varlong.ulVal;
 
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          // create a new joint
          CComObject<StoredType>* pjnt;

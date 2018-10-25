@@ -56,11 +56,11 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CToolPalette)
 	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
-	virtual void PreSubclassWindow();
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam) override;
+	virtual void PreSubclassWindow() override;
 	//}}AFX_VIRTUAL
 
 public:

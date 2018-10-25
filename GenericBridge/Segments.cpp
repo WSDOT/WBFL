@@ -101,7 +101,7 @@ HRESULT CSegments::get_Length(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   Float64 length=0;
+   Float64 length = 0;
 
    for (VectorIteratorType it = m_Segments.begin(); it != m_Segments.end(); it++)
    {
@@ -542,14 +542,14 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
 
       // let's build the left half by calling ourself for a non-symmetrical section
       // half our length
-      IFilteredSegmentCollection* piifcol=NULL;
+      IFilteredSegmentCollection* piifcol=nullptr;
       hr = this->GetMemberSegments(length2, VARIANT_FALSE, &piifcol);
       if (FAILED(hr))
          return hr;
 
       // need to cast so we can call Add below
       CFilteredSegmentCollection* pifcol = static_cast<CFilteredSegmentCollection*>(piifcol);
-      if (piifcol==NULL)
+      if (piifcol==nullptr)
       {
          ATLASSERT(false);
          return E_FAIL; // we know our collection so this should never happen
@@ -602,7 +602,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       //   return hr;
 
       // now let's fill in the rest by copying from the left side to the right
-      for (CollectionIndexType lfcnt = count-2; lfcnt>=0; lfcnt--)
+      for (CollectionIndexType lfcnt = count-2; lfcnt >= 0; lfcnt--)
       {
          CComPtr<ISegment> plft;
          hr = pifcol->get_Item(lfcnt, &plft);
@@ -648,7 +648,7 @@ STDMETHODIMP CSegments::Load(IStructuredLoad2 * pload)
 
    CollectionIndexType segment_count = var.iVal;
    var.Clear();
-   for (CollectionIndexType iseg=0; iseg < segment_count; iseg++)
+   for (CollectionIndexType iseg = 0; iseg < segment_count; iseg++)
    {
       // Create a new segment object
       CComObject<CSegment>* pSegment;
@@ -731,12 +731,12 @@ void CSegments::Clear()
 
 void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
 {
-   CollectionIndexType i=0;
+   CollectionIndexType i = 0;
    for(VectorIteratorType itv=pvec->begin(); itv!=pvec->end(); itv++)
    {
       // have to cast stored item to get access to put method
       CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->m_T.p);
-      if (psegi==NULL)
+      if (psegi==nullptr)
       {
          ATLASSERT(false); // should never happen since we are eating our own dog food here
       }

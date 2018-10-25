@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CReportSpecDlg dialog
 
 
-CReportSpecDlg::CReportSpecDlg(const CReportDescription* pRptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent /*=NULL*/)
+CReportSpecDlg::CReportSpecDlg(const CReportDescription* pRptDesc, std::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent /*=nullptr*/)
 	: CDialog(CReportSpecDlg::IDD, pParent), m_pRptDesc(pRptDesc), m_pInitRptSpec(pRptSpec)
 {
 	//{{AFX_DATA_INIT(CReportSpecDlg)

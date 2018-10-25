@@ -71,25 +71,25 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadGroupEvents
-   STDMETHOD(OnLoadGroupChanged)(/*[in]*/ILoadGroup* LoadGroup,ChangeType type);
-   STDMETHOD(OnLoadGroupRenamed)(BSTR oldNam, BSTR newNam);
+   STDMETHOD(OnLoadGroupChanged)(/*[in]*/ILoadGroup* LoadGroup,ChangeType type) override;
+   STDMETHOD(OnLoadGroupRenamed)(BSTR oldNam, BSTR newNam) override;
 
 // ILoadGroups
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ILoadGroups** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ILoadGroups** clone) override;
 
 protected:
    // implementations of virtual functions for collection
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
-   virtual HRESULT OnAfterAdd( StoredType* pVal);
-   virtual HRESULT OnBeforeRemove ( StoredType* pVal);
-   virtual HRESULT OnAfterRemove( BSTR name);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd( StoredType* pVal) override;
+   virtual HRESULT OnBeforeRemove ( StoredType* pVal) override;
+   virtual HRESULT OnAfterRemove( BSTR name) override;
 
 public:
-   virtual void FinalRelease();
+   void FinalRelease();
 };
 
 #endif //__LOADGROUPS_H_

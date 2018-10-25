@@ -121,7 +121,7 @@ STDMETHODIMP CPathCollection::Remove(CogoObjectID id)
 
 STDMETHODIMP CPathCollection::Add(CogoObjectID id, IPath* *path)
 {
-   if ( path != NULL )
+   if ( path != nullptr )
    {
       CHECK_RETOBJ(path);
    }
@@ -129,7 +129,7 @@ STDMETHODIMP CPathCollection::Add(CogoObjectID id, IPath* *path)
    CComPtr<IPath> newPath;
    m_Factory->CreatePath(&newPath);
 
-   if ( path != NULL )
+   if ( path != nullptr )
    {
       (*path) = newPath;
       (*path)->AddRef();
@@ -184,7 +184,7 @@ STDMETHODIMP CPathCollection::FindID(IPath* pp,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IPath> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(pp) )
       {
          *id = item.first;
@@ -205,7 +205,7 @@ STDMETHODIMP CPathCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -258,7 +258,7 @@ STDMETHODIMP CPathCollection::get__EnumPaths(IEnumPaths** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -281,7 +281,7 @@ STDMETHODIMP CPathCollection::Clone(IPathCollection* *clone)
    CComPtr<IEnumPaths> enumPaths;
    get__EnumPaths(&enumPaths);
    CComPtr<IPath> Path;
-   while ( enumPaths->Next(1,&Path,NULL) != S_FALSE )
+   while ( enumPaths->Next(1,&Path,nullptr) != S_FALSE )
    {
       CComPtr<IPath> clonePath;
       Path->Clone(&clonePath);

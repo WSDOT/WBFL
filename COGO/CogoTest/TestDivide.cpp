@@ -56,14 +56,14 @@ void CTestDivide::Test()
    TRY_TEST(divide.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(divide);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,0,NULL);
-   points->Add(3,-10,0,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,0,nullptr);
+   points->Add(3,-10,0,nullptr);
 
    CComPtr<IPoint2d> pnt;
    Float64 x,y;
@@ -107,8 +107,8 @@ void CTestDivide::Test()
 
    // Test Divide BetweenPoints
    points->Clear();
-   points->Add(1,10,10,NULL);
-   points->Add(2,110,110,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,110,110,nullptr);
 
    TRY_TEST(divide->BetweenPoints(3,1,1,2,-1),  E_INVALIDARG);
    TRY_TEST(divide->BetweenPoints(3,1,1,2, 0),  E_INVALIDARG);
@@ -132,15 +132,15 @@ void CTestDivide::Test()
 
    // Test Divide LineSegment
    points->Clear();
-   points->Add(1,10,10,NULL);
-   points->Add(2,110,110,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,110,110,nullptr);
    CComPtr<IPoint2d> p1, p2;
    points->get_Item(1,&p1);
    points->get_Item(2,&p2);
 
    CComPtr<ILineSegmentCollection> lines;
    model->get_LineSegments(&lines);
-   lines->Add(1,p1,p2,NULL);
+   lines->Add(1,p1,p2,nullptr);
 
    TRY_TEST(divide->LineSegment(3,1,1,-1),  E_INVALIDARG);
    TRY_TEST(divide->LineSegment(3,1,1, 0),  E_INVALIDARG);
@@ -162,9 +162,9 @@ void CTestDivide::Test()
    }
 
    // Test HorzCurve
-   points->Add(101,0,1000,NULL);
-   points->Add(102,700,1000,NULL);
-   points->Add(103,1000,700,NULL);
+   points->Add(101,0,1000,nullptr);
+   points->Add(102,700,1000,nullptr);
+   points->Add(103,1000,700,nullptr);
    CComPtr<IHorzCurveCollection> hcurves;
    model->get_HorzCurves(&hcurves);
 
@@ -173,7 +173,7 @@ void CTestDivide::Test()
    points->get_Item(102,&pi);
    points->get_Item(103,&pft);
 
-   hcurves->Add(1,pbt,pi,pft,500,100,200,NULL);
+   hcurves->Add(1,pbt,pi,pft,500,100,200,nullptr);
 
    TRY_TEST(divide->HorzCurve(150,1,1,-1),E_INVALIDARG);
    TRY_TEST(divide->HorzCurve(150,0,1,5),E_INVALIDARG);

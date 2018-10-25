@@ -174,11 +174,11 @@ public:
    Float64 PermanentStrand_ImmediatelyAfterXferLosses() const;
 
    //-------------------------------------------------------------
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 TimeDependentLossesBeforeDeck() const;
-   virtual Float64 TimeDependentLossesAfterDeck() const;
-   virtual Float64 TimeDependentLosses() const;
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 TimeDependentLossesBeforeDeck() const override;
+   virtual Float64 TimeDependentLossesAfterDeck() const override;
+   virtual Float64 TimeDependentLosses() const override;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -192,9 +192,9 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
 
-   virtual void ValidateParameters() const;
-   virtual void UpdateLongTermLosses() const;
-   virtual void UpdateHaulingLosses() const;
+   virtual void ValidateParameters() const override;
+   virtual void UpdateLongTermLosses() const override;
+   virtual void UpdateHaulingLosses() const override;
 
    mutable Float64 m_dfpSR;
    mutable Float64 m_dfpCR;
@@ -204,7 +204,7 @@ protected:
 
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdRefinedLosses& rOther );
+   void MakeAssignment( const lrfdRefinedLosses& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -64,8 +64,8 @@ void CTestPoint2d::Test()
    TRY_TEST( pPoint->get_Y(&y), S_OK);
    TRY_TEST( IsEqual(y,y1),true );
 
-   TRY_TEST( pPoint->get_X(NULL), E_POINTER );
-   TRY_TEST( pPoint->get_Y(NULL), E_POINTER );
+   TRY_TEST( pPoint->get_X(nullptr), E_POINTER );
+   TRY_TEST( pPoint->get_Y(nullptr), E_POINTER );
 
    // Test Move method
    TRY_TEST( pPoint->Move(x2,y2),S_OK );
@@ -91,7 +91,7 @@ void CTestPoint2d::Test()
    TRY_TEST( IsEqual(x,x1),true );
    TRY_TEST( pPoint->get_Y(&y), S_OK);
    TRY_TEST( IsEqual(y,y1),true );
-   TRY_TEST( pPoint->MoveEx( NULL ), E_INVALIDARG );
+   TRY_TEST( pPoint->MoveEx( nullptr ), E_INVALIDARG );
 
    // Test OffsetEx Method
    Float64 dx,dy;
@@ -101,7 +101,7 @@ void CTestPoint2d::Test()
    pSize.CoCreateInstance(CLSID_Size2d);
    pSize->put_Dx(dx);
    pSize->put_Dy(dy);
-   TRY_TEST( pPoint->OffsetEx(NULL),  E_INVALIDARG );
+   TRY_TEST( pPoint->OffsetEx(nullptr),  E_INVALIDARG );
    pPoint->put_X(0.0);
    pPoint->put_Y(0.0);
    TRY_TEST( pPoint->OffsetEx(pSize), S_OK);
@@ -138,7 +138,7 @@ void CTestPoint2d::Test()
    TRY_TEST( IsEqual(y,0.0),true );
 
    // Test RotateEx Method
-   TRY_TEST( pPoint->RotateEx( NULL, M_PI ), E_INVALIDARG );
+   TRY_TEST( pPoint->RotateEx( nullptr, M_PI ), E_INVALIDARG );
    CComPtr<IPoint2d> pCenter;
    pCenter.CoCreateInstance(CLSID_Point2d);
    pCenter->put_X(10);
@@ -215,7 +215,7 @@ void CTestPoint2d::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pPoint);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPoint2d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

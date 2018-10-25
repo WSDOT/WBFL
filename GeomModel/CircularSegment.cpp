@@ -31,6 +31,7 @@
 #include <GeometricPrimitives\GeomOp2d.h>
 #include <MathEx.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -274,23 +275,23 @@ gpRect2d gmCircularSegment::GetBoundingBox() const
    if ( (IsZero(nx) && m_Radius < m_MidOrdinate) || 0.0 < nx )
       left = cx - m_Radius;
    else
-      left = _cpp_min(p1x,p2x);
+      left = Min(p1x,p2x);
 
    // right
    if ( (IsZero(nx) && m_Radius < m_MidOrdinate) || nx < 0.0 )
       right = cx + m_Radius;
    else
-      right = _cpp_max(p1x,p2x);
+      right = Max(p1x,p2x);
 
    // top
    if ( (IsZero(ny) && m_MidOrdinate < m_Radius) || 0.0 < ny )
-      top = _cpp_max(p1y,p2y);
+      top = Max(p1y,p2y);
    else
       top = cy + m_Radius;
 
    // bottom
    if ( (IsZero(ny) && m_MidOrdinate < m_Radius) || ny < 0.0 )
-      bottom = _cpp_min(p1y,p2y);
+      bottom = Min(p1y,p2y);
    else
       bottom = cy - m_Radius;
 
@@ -299,7 +300,7 @@ gpRect2d gmCircularSegment::GetBoundingBox() const
 
 gmIShape* gmCircularSegment::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmCircularSegment> ph(new gmCircularSegment( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmCircularSegment> ph(new gmCircularSegment( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -313,7 +314,7 @@ gmIShape* gmCircularSegment::CreateClippedShape(const gpLine2d& line,
 {
    // boundary case: if radius is zero - return zero
    if (m_Radius<=0)
-      return 0;
+      return nullptr;
 
    // This routine always clips away the left side of the line, leaving
    // the portion of the shape on the right side.
@@ -367,7 +368,7 @@ gmIShape* gmCircularSegment::CreateClippedShape(const gpLine2d& line,
          // Lines are in opposite direct
 
          // Make shape into a Polygon and use its clip
-         std::auto_ptr<gmPolygon> polygon( CreatePolygon() );
+         std::unique_ptr<gmPolygon> polygon( CreatePolygon() );
          return polygon->CreateClippedShape(line,side);
       }
       else
@@ -386,7 +387,7 @@ gmIShape* gmCircularSegment::CreateClippedShape(const gpLine2d& line,
          {
             // Clipping line intersects straight edge of shape
             // Make shape into a Polygon and use its clip
-            std::auto_ptr<gmPolygon> polygon( CreatePolygon() );
+            std::unique_ptr<gmPolygon> polygon( CreatePolygon() );
             return polygon->CreateClippedShape(line,side);
          }
          else
@@ -418,11 +419,11 @@ gmIShape* gmCircularSegment::CreateClippedShape(const gpLine2d& line,
    else
    {
       // circle is entirely outside of clipping region
-      return 0;
+      return nullptr;
    }
 
    CHECK(false); // should never get here
-   return 0;
+   return nullptr;
 }
 
 gmIShape* gmCircularSegment::CreateClippedShape(const gpRect2d& r,
@@ -430,7 +431,7 @@ gmIShape* gmCircularSegment::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
@@ -462,7 +463,7 @@ Float64 gmCircularSegment::GetFurthestDistance(const gpLine2d& line, gpLine2d::S
       EdgePoints(&p1,&p2);
       d1 = line.DistanceToPoint(p1);
       d2 = line.DistanceToPoint(p2);
-      dist = _cpp_max(d1,d2);
+      dist = Max(d1,d2);
    }
    else
    {
@@ -481,7 +482,7 @@ Float64 gmCircularSegment::GetFurthestDistance(const gpLine2d& line, gpLine2d::S
 
 void gmCircularSegment::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 
@@ -578,7 +579,7 @@ gmPolygon* gmCircularSegment::CreatePolygon() const
    ASSERTVALID;
 
    // make an empty polygon with same traits as this.
-   std::auto_ptr<gmPolygon> ph(new gmPolygon());
+   std::unique_ptr<gmPolygon> ph(std::make_unique<gmPolygon>());
    gmShapeUtils::CopyTraits(*this, ph.get());
 
    // number of vertex points used to describe a polyline version of a circle
@@ -794,7 +795,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
    circseg.SetMidOrdinate(40);
    circseg.SetCenter(gpPoint2d(10,10));
 
-   std::auto_ptr<gmPolygon> polygon( circseg.CreatePolygon() );
+   std::unique_ptr<gmPolygon> polygon( circseg.CreatePolygon() );
 
    CollectionIndexType nPoints = sizeof(px)/sizeof(Float64);
    CollectionIndexType cPoints = polygon->GetNumPoints();
@@ -821,14 +822,14 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
 
    // clipping line well below shape (shape on right of line)
    gpLine2d line(gpPoint2d(100,-70),gpPoint2d(-100,-70));
-   std::auto_ptr<gmIShape> clipShape(circseg.CreateClippedShape(line,gpLine2d::Left));
+   std::unique_ptr<gmIShape> clipShape(circseg.CreateClippedShape(line,gpLine2d::Left));
    clipShape->GetProperties(&props);
    TRY_TESTME(IsEqual(props.Area(),M_PI*radius*radius/2));
 
    // reverse clipping line (shape on left of line)
    // entire shape clipped away
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
-   TRY_TESTME(clipShape.get() == NULL);
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
+   TRY_TESTME(clipShape.get() == nullptr);
 
    // clip shape in such a way that we are left with a quarter circle
    circseg.SetCenter(gpPoint2d(100,100));
@@ -840,7 +841,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
 
    line.SetPoints(gpPoint2d(100,-500),gpPoint2d(100,500));
 
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
    clipShape->GetProperties(&props);
    Float64 val1 = props.Area();
    Float64 val2 = M_PI*radius*radius/4;
@@ -861,7 +862,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
    circseg.SetMidOrdinate(mo);
    circseg.SetRotation(0);
    line.SetPoints(gpPoint2d(40,-100),gpPoint2d(40,100));
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
    gmCircularSegment* clip = dynamic_cast<gmCircularSegment*>(clipShape.get());
    TRY_TESTME(clip != 0);
    // center and radius should be the same
@@ -883,7 +884,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
    clip->GetProperties(&props);
    area2 = props.Area();
 
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
 
    clipShape->GetProperties(&props);
    area3 = props.Area();
@@ -901,11 +902,11 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
    area1 = props.Area();
 
    line.SetPoints(gpPoint2d(90,90),gpPoint2d(20,-60));
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
    clipShape->GetProperties(&props);
    area2 = props.Area();
 
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
    clipShape->GetProperties(&props);
    area3 = props.Area();
 
@@ -922,7 +923,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
 
    line.SetPoints(gpPoint2d(-50,-50),gpPoint2d(50,50));
 
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Left));
    clipShape->GetProperties(&props);
    area2 = props.Area();
    TRY_TESTME(IsEqual(area2*2,area1,0.001)); // clip shape half circle
@@ -931,7 +932,7 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
    cgx1 = props.Centroid().X();
    cgy1 = props.Centroid().Y();
 
-   clipShape = std::auto_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
+   clipShape = std::unique_ptr<gmIShape>(circseg.CreateClippedShape(line,gpLine2d::Right));
    clipShape->GetProperties(&props);
    area3 = props.Area();
    TRY_TESTME(IsEqual(area3*2,area1,0.5)); // clip shape half circle
@@ -978,13 +979,13 @@ bool gmCircularSegment::TestMe(dbgLog& rlog)
 //   rt.SetRadius(40);
 //   rt.SetHookPoint(gpPoint2d(0,40));
 //   gpLine2d at45(gpPoint2d(0,40), gpVector2d(gpSize2d(1,1)));
-//   std::auto_ptr<gmIShape> phemi(rt.CreateClippedShape(at45, gpLine2d::Right));
+//   std::unique_ptr<gmIShape> phemi(rt.CreateClippedShape(at45, gpLine2d::Right));
 //   phemi->GetProperties(&aprops);
 //   TRY_TESTME (IsEqual(aprops.Area(), 2513.2,.1)) 
 //
 //   // clip should return entire circle
 //   rt.SetHookPoint(gpPoint2d(60,0));
-//   std::auto_ptr<gmIShape> prt(rt.CreateClippedShape(at45, gpLine2d::Right));
+//   std::unique_ptr<gmIShape> prt(rt.CreateClippedShape(at45, gpLine2d::Right));
 //   prt->GetProperties(&aprops);
 //   TRY_TESTME (IsEqual(aprops.Area(), 5026.55,.1)) 
 //

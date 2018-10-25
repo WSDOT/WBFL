@@ -74,7 +74,7 @@ bool IsZeroCapacityProblem(rcaCapacityProblem& problem)
       return true;
 
    Float64 fc=0.0;
-   for (CollectionIndexType i=0; i<nc; i++)
+   for (CollectionIndexType i = 0; i<nc; i++)
        fc = max(fc, problem.GetConcrete(i).GetFc());
 
    if ( IsZero(fc) )

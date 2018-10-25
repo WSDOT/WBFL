@@ -86,7 +86,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXPsLosses();
+   virtual ~lrfdXPsLosses() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -96,10 +96,10 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void Throw() const;
+   virtual void Throw() const override;
 
    //------------------------------------------------------------------------
-   virtual Int32 GetReason() const;
+   virtual Int32 GetReason() const override;
 
    //------------------------------------------------------------------------
    Reason GetReasonCode() const;
@@ -128,7 +128,7 @@ protected:
    void MakeCopy(const lrfdXPsLosses& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdXPsLosses& rOther);
+   void MakeAssignment(const lrfdXPsLosses& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

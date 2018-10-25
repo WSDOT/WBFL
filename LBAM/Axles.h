@@ -71,14 +71,14 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAxleEvents
-   STDMETHOD(OnAxleChanged)(/*[in]*/IAxle* Axle);
+   STDMETHOD(OnAxleChanged)(/*[in]*/IAxle* Axle) override;
 
 // IAxles
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ IAxles** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ IAxles** clone) override;
 
 
 private:
@@ -154,7 +154,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      AxleIndexType cnt=0;
+      AxleIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

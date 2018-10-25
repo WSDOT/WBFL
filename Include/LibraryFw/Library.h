@@ -29,7 +29,9 @@
 //
 #include <map>
 #include <set>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 // PROJECT INCLUDES
 //
@@ -276,7 +278,7 @@ public:
       }
       else
       {
-         return 0;
+         return nullptr;
       }
    }
 
@@ -342,7 +344,7 @@ public:
          if (tmp != m_EntryList.end() )
          {
             // must continue to use same pointer
-            boost::shared_ptr<T> apentry = (*tmp).second;
+            std::shared_ptr<T> apentry = (*tmp).second;
             // erase old entry
             CollectionIndexType st = m_EntryList.erase(oldKey);
             CHECK(st==1);
@@ -547,7 +549,7 @@ public:
    // Is the library empty?
    bool IsEmpty( ) const
    {
-      return m_EntryList.size()==0;
+      return m_EntryList.size() == 0;
    }
 
    bool IsDepreciated() const
@@ -557,12 +559,12 @@ public:
 
    //------------------------------------------------------------------------
    // Get a const pointer to an entry by index
-   // Returns NULL if out of range and asserts
+   // Returns nullptr if out of range and asserts
    // DOES NOT INCREASE REFERENCE COUNT!
    const libLibraryEntry* GetEntry(LPCTSTR key) const
    {
       const libLibraryEntry* pent = LookupEntry(key);
-      if (pent!=0)
+      if (pent != nullptr)
       {
          pent->Release();
       }
@@ -640,7 +642,7 @@ public:
       else
       {
          CHECK(0); // bad key
-         return 0;
+         return false;
       }
    }
 
@@ -676,7 +678,7 @@ public:
       // name will be in the form on lpszBaseNamenn where nn is some number.
       bool unique=false;
       std::_tostringstream sstr;
-      for (int i=0; true; i++)
+      for (int i = 0; true; i++)
       {
          std::_tostringstream sstr;
          sstr << lpszBaseName << i;
@@ -728,7 +730,7 @@ public:
       }
       else
       {
-         return 0;
+         return nullptr;
       }
    }
 
@@ -767,7 +769,7 @@ protected:
    bool m_bIsDepreciated;
    libLibraryManager* m_pLibraryManager;
 
-   typedef boost::shared_ptr<T>         LibItem;
+   typedef std::shared_ptr<T>         LibItem;
    typedef typename std::map<std::_tstring, LibItem >        EntryList;
    typedef typename EntryList::iterator                    EntryListIterator;
    typedef typename EntryList::const_iterator              EntryListConstIterator;
@@ -784,7 +786,7 @@ protected:
 
    // Prevent accidental copying and assignment
    libLibrary(const libLibrary&) {}
-   libLibrary& operator=(const libLibrary&) {return *this;}
+   libLibrary& operator=(const libLibrary&) = delete;// {return *this;}
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -797,7 +799,7 @@ protected:
       // if the name is on the reserved list, get outta here
       if ( IsReservedName(key) )
       {
-         return 0;
+         return nullptr;
       }
 
       EntryListIterator tmp = m_EntryList.find(key);
@@ -807,7 +809,7 @@ protected:
       }
       else
       {
-         return 0;
+         return nullptr;
       }
    }
 

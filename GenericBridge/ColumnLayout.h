@@ -95,36 +95,36 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IColumnLayout
 public:
-   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier);
-   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier);
-   STDMETHOD(get_Uniform)(/*[out,retval]*/ VARIANT_BOOL* bUniform);
-   STDMETHOD(put_Uniform)(/*[in]*/ VARIANT_BOOL bUniform);
-   STDMETHOD(get_Spacing)(/*[in]*/ SpacingIndexType spaceIdx,/*[out,retval]*/ Float64* space);
-   STDMETHOD(put_Spacing)(/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ Float64 space);
-   STDMETHOD(get_Overhang)(/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* overhang);
-   STDMETHOD(put_Overhang)(/*[in]*/ DirectionType side ,/*[in]*/ Float64 overhang);
-   STDMETHOD(get_ColumnCount)(/*[out,retval]*/ ColumnIndexType* nColumns);
-   STDMETHOD(put_ColumnCount)(/*[in]*/ColumnIndexType nColumns);
-   STDMETHOD(Add)(/*[in]*/ ColumnIndexType nColumns);
-   STDMETHOD(Insert)(/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ SpacingIndexType nInsert);
-   STDMETHOD(Remove)(/*[in]*/ ColumnIndexType columnIdx,/*[in]*/ ColumnIndexType nRemove);
-   STDMETHOD(SetReferenceColumn)(/*[in]*/ColumnIndexType colIdx,/*[in]*/Float64 alignmentOffset);
-   STDMETHOD(GetReferenceColumn)(/*[out]*/ColumnIndexType* pColIdx,/*[out]*/Float64* pAlignmentOffset);
-   STDMETHOD(get_Column)(/*[in]*/ ColumnIndexType colIdx,/*[out,retval]*/ IColumn* *column);
-   STDMETHOD(get_ColumnLayoutWidth)(/*[out,retval]*/Float64* pCLW);
-   STDMETHOD(get_ColumnLocation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pXxb);
-   STDMETHOD(get_ColumnOffset)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pOffset);
-   STDMETHOD(get_TopColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev);
-   STDMETHOD(get_BottomColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev);
+   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier) override;
+   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier) override;
+   STDMETHOD(get_Uniform)(/*[out,retval]*/ VARIANT_BOOL* bUniform) override;
+   STDMETHOD(put_Uniform)(/*[in]*/ VARIANT_BOOL bUniform) override;
+   STDMETHOD(get_Spacing)(/*[in]*/ SpacingIndexType spaceIdx,/*[out,retval]*/ Float64* space) override;
+   STDMETHOD(put_Spacing)(/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ Float64 space) override;
+   STDMETHOD(get_Overhang)(/*[in]*/ DirectionType side,/*[out,retval]*/ Float64* overhang) override;
+   STDMETHOD(put_Overhang)(/*[in]*/ DirectionType side ,/*[in]*/ Float64 overhang) override;
+   STDMETHOD(get_ColumnCount)(/*[out,retval]*/ ColumnIndexType* nColumns) override;
+   STDMETHOD(put_ColumnCount)(/*[in]*/ColumnIndexType nColumns) override;
+   STDMETHOD(Add)(/*[in]*/ ColumnIndexType nColumns) override;
+   STDMETHOD(Insert)(/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ SpacingIndexType nInsert) override;
+   STDMETHOD(Remove)(/*[in]*/ ColumnIndexType columnIdx,/*[in]*/ ColumnIndexType nRemove) override;
+   STDMETHOD(SetReferenceColumn)(/*[in]*/ColumnIndexType colIdx,/*[in]*/Float64 alignmentOffset) override;
+   STDMETHOD(GetReferenceColumn)(/*[out]*/ColumnIndexType* pColIdx,/*[out]*/Float64* pAlignmentOffset) override;
+   STDMETHOD(get_Column)(/*[in]*/ ColumnIndexType colIdx,/*[out,retval]*/ IColumn* *column) override;
+   STDMETHOD(get_ColumnLayoutWidth)(/*[out,retval]*/Float64* pCLW) override;
+   STDMETHOD(get_ColumnLocation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pXxb) override;
+   STDMETHOD(get_ColumnOffset)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pOffset) override;
+   STDMETHOD(get_TopColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev) override;
+   STDMETHOD(get_BottomColumnElevation)(/*[in]*/ColumnIndexType colIdx,/*[out,retval]*/Float64* pElev) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__ColumnLayout_H_

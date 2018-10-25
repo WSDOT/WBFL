@@ -39,8 +39,8 @@ static char THIS_FILE[] = __FILE__;
 // CLinearTendonSegment
 HRESULT CLinearTendonSegment::FinalConstruct()
 {
-   m_pPrevSegment = NULL;
-   m_pNextSegment = NULL;
+   m_pPrevSegment = nullptr;
+   m_pNextSegment = nullptr;
 
    HRESULT hr;
    hr = m_Start.CoCreateInstance(CLSID_Point3d);
@@ -61,7 +61,7 @@ HRESULT CLinearTendonSegment::FinalConstruct()
       return hr;
    }
 
-   m_pTendon = NULL;
+   m_pTendon = nullptr;
 
    return S_OK;
 }
@@ -78,7 +78,7 @@ STDMETHODIMP CLinearTendonSegment::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ITendonSegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {

@@ -63,28 +63,28 @@ BEGIN_COM_MAP(CCompositeSectionItemEx)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICompositeSectionItemEx
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Structural)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_Structural)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_Dfg)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dfg)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Dbg)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dbg)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Efg)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Efg)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Ebg)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Ebg)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Structural)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_Structural)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_Dfg)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dfg)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Dbg)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dbg)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Efg)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Efg)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Ebg)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Ebg)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    VARIANT_BOOL m_bStructural;

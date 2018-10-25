@@ -76,7 +76,7 @@ void TestResults::TestLoadCombinationResults()
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 
-   TRY_TEST(presult->Add(1.3, NULL), S_OK);
+   TRY_TEST(presult->Add(1.3, nullptr), S_OK);
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 2);
 
@@ -88,15 +88,15 @@ void TestResults::TestLoadCombinationResults()
 
    TRY_TEST(presult->GetResult(1, &val, &cfg3), S_OK);
    TRY_TEST(val, 1.3);
-   TRY_TEST(cfg3, NULL);
+   TRY_TEST(cfg3, nullptr);
 
-   TRY_TEST(presult->SetResult(0, 1.4, NULL), S_OK);
+   TRY_TEST(presult->SetResult(0, 1.4, nullptr), S_OK);
    cfg2.Release();
    TRY_TEST(presult->GetResult(0, &val, &cfg2), S_OK);
    TRY_TEST(val, 1.4);
-   TRY_TEST(cfg2,NULL);
+   TRY_TEST(cfg2,nullptr);
 
-   TRY_TEST(presult->SetResult(2, 1.4, NULL), E_INVALIDARG);
+   TRY_TEST(presult->SetResult(2, 1.4, nullptr), E_INVALIDARG);
    TRY_TEST(presult->GetResult(2, &val, &cfg2), E_INVALIDARG);
 
    TestPersistance(presult.p, CLSID_LoadCombinationResults);
@@ -118,7 +118,7 @@ void TestResults::TestLoadCombinationSectionResults()
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 
-   TRY_TEST(presult->Add(1.3, NULL, 2.3, NULL), S_OK);
+   TRY_TEST(presult->Add(1.3, nullptr, 2.3, nullptr), S_OK);
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 2);
 
@@ -135,19 +135,19 @@ void TestResults::TestLoadCombinationSectionResults()
    TRY_TEST(presult->GetResult(1, &val1, &cfg1, &val2, &cfg2), S_OK);
    TRY_TEST(val1, 1.3);
    TRY_TEST(val2, 2.3);
-   TRY_TEST(cfg1, NULL);
-   TRY_TEST(cfg2, NULL);
+   TRY_TEST(cfg1, nullptr);
+   TRY_TEST(cfg2, nullptr);
 
-   TRY_TEST(presult->SetResult(0, 1.4, NULL, 2.4, NULL), S_OK);
+   TRY_TEST(presult->SetResult(0, 1.4, nullptr, 2.4, nullptr), S_OK);
    cfg1.Release();
    cfg2.Release();
    TRY_TEST(presult->GetResult(0, &val1, &cfg1, &val2, &cfg2), S_OK);
    TRY_TEST(val1, 1.4);
    TRY_TEST(val2, 2.4);
-   TRY_TEST(cfg1, NULL);
-   TRY_TEST(cfg2, NULL);
+   TRY_TEST(cfg1, nullptr);
+   TRY_TEST(cfg2, nullptr);
 
-   TRY_TEST(presult->SetResult(2, 1.4, NULL, 2.4, NULL), E_INVALIDARG);
+   TRY_TEST(presult->SetResult(2, 1.4, nullptr, 2.4, nullptr), E_INVALIDARG);
    cfg1.Release();
    cfg2.Release();
    TRY_TEST(presult->GetResult(2, &val1, &cfg1, &val2, &cfg2), E_INVALIDARG);
@@ -176,7 +176,7 @@ void TestResults::TestLoadCombinationStressResults()
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 1);
 
-   TRY_TEST(presult->Add(stressr3, NULL, stressr4, NULL), S_OK);
+   TRY_TEST(presult->Add(stressr3, nullptr, stressr4, nullptr), S_OK);
    TRY_TEST(presult->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 2);
 
@@ -195,10 +195,10 @@ void TestResults::TestLoadCombinationStressResults()
    TRY_TEST(presult->GetResult(1, &sr1, &cfg1, &sr2, &cfg2), S_OK);
    TRY_TEST(sr1.IsEqualObject(stressr3), true);
    TRY_TEST(sr2.IsEqualObject(stressr4), true);
-   TRY_TEST(cfg1, NULL);
-   TRY_TEST(cfg2, NULL);
+   TRY_TEST(cfg1, nullptr);
+   TRY_TEST(cfg2, nullptr);
 
-   TRY_TEST(presult->SetResult(0, stressr3, NULL, stressr4, NULL), S_OK);
+   TRY_TEST(presult->SetResult(0, stressr3, nullptr, stressr4, nullptr), S_OK);
    sr1.Release();
    sr2.Release();
    cfg1.Release();
@@ -206,11 +206,11 @@ void TestResults::TestLoadCombinationStressResults()
    TRY_TEST(presult->GetResult(0, &sr1, &cfg1, &sr2, &cfg2), S_OK);
    TRY_TEST(sr1.IsEqualObject(stressr3), true);
    TRY_TEST(sr2.IsEqualObject(stressr4), true);
-   TRY_TEST(cfg1, NULL);
-   TRY_TEST(cfg2, NULL);
+   TRY_TEST(cfg1, nullptr);
+   TRY_TEST(cfg2, nullptr);
 
    // out of bounds
-   TRY_TEST(presult->SetResult(2, stressr3, NULL, stressr4, NULL), E_INVALIDARG);
+   TRY_TEST(presult->SetResult(2, stressr3, nullptr, stressr4, nullptr), E_INVALIDARG);
    sr1.Release();
    sr2.Release();
    cfg1.Release();

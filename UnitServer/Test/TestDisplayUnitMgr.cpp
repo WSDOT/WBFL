@@ -81,7 +81,7 @@ void CTestDisplayUnitMgr::Test()
    CComPtr<IDisplayUnitGroup> pGroup;
    CComBSTR bstrTest;
 
-   TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Length"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Length"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Baseball"),&pGroup),UNITS_E_BADUNITTYPE);
 
    pMe->InitEventTest();
@@ -182,23 +182,23 @@ void CTestDisplayUnitMgr::Test()
 
    // Test Count
    CollectionIndexType count;
-   TRY_TEST(pDisplayUnitMgr->get_Count(NULL), E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get_Count(nullptr), E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get_Count(&count),S_OK);
    TRY_TEST(count,3);
 
    // Test Item
    pGroup.Release();
-   TRY_TEST(pDisplayUnitMgr->get_Item(NULL,&pGroup),E_INVALIDARG);
-   TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get_Item(nullptr,&pGroup),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("Junk"),&pGroup),UNITS_E_BADDISPLAYUNITGROUP);
    TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),&pGroup),S_OK);
    pGroup->get_Name(&bstrTest);
    TRY_TEST(wcscmp( bstrTest, CComBSTR("LittleForce") ), 0);
 
    // Test Format
-   TRY_TEST(pDisplayUnitMgr->Format(10.0,NULL,VARIANT_TRUE,&bstrTest),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->Format(10.0,nullptr,VARIANT_TRUE,&bstrTest),E_INVALIDARG);
    TRY_TEST(pDisplayUnitMgr->Format(10.0,CComBSTR("Junk"),VARIANT_TRUE,&bstrTest),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(pDisplayUnitMgr->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,nullptr),E_POINTER);
 
    TRY_TEST(pDisplayUnitMgr->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,&bstrTest),S_OK);
    TRY_TEST(wcscmp( bstrTest, CComBSTR("10.000 m") ), 0);
@@ -209,7 +209,7 @@ void CTestDisplayUnitMgr::Test()
    // Test scientific notation
    pLengthFormatter->FormatSpecifiers(5,3,tjRight,nftScientific,0.0001);
    TRY_TEST(pDisplayUnitMgr->Format(11000.0,CComBSTR("LongLength"),VARIANT_TRUE,&bstrTest),S_OK);
-   TRY_TEST(wcscmp( bstrTest, CComBSTR("1.100e+004 m") ), 0);
+   TRY_TEST(wcscmp( bstrTest, CComBSTR("1.100e+04 m") ), 0);
 
    // Test engineering notation
    pLengthFormatter->FormatSpecifiers(6,3,tjRight,nftEngineering,0.0001);
@@ -232,9 +232,9 @@ void CTestDisplayUnitMgr::Test()
 
    // Test Tag property
    CComBSTR tag;
-   TRY_TEST(pDisplayUnitMgr->get_Tag(NULL,&tag),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->get_Tag(nullptr,&tag),E_INVALIDARG);
    TRY_TEST(pDisplayUnitMgr->get_Tag(CComBSTR("Junk"),&tag),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(pDisplayUnitMgr->get_Tag(CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get_Tag(CComBSTR("LongLength"),nullptr),E_POINTER);
    pUMC->put_UnitMode(umSI);
    TRY_TEST(pDisplayUnitMgr->get_Tag(CComBSTR("LongLength"),&tag),S_OK);
    TRY_TEST( wcscmp(tag,CComBSTR("m")), 0 );
@@ -246,18 +246,18 @@ void CTestDisplayUnitMgr::Test()
    Float64 result;
    pUMC->put_UnitMode(umSI);
    TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,CComBSTR("Junk"),&result),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,NULL,&result),E_INVALIDARG);
-   TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,nullptr,&result),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),&result),S_OK);
    pUMC->put_UnitMode(umUS);
    TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(10.0,CComBSTR("Junk"),&result),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(10.0,NULL,&result),E_INVALIDARG);
-   TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(10.0,CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(10.0,nullptr,&result),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(10.0,CComBSTR("LongLength"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->ConvertFromDisplayUnits(result,CComBSTR("LongLength"),&result),S_OK);
    TRY_TEST( IsEqual(result,3.048),true);
 
    // Test Remove
-   TRY_TEST( pDisplayUnitMgr->Remove(NULL), E_INVALIDARG );
+   TRY_TEST( pDisplayUnitMgr->Remove(nullptr), E_INVALIDARG );
    TRY_TEST( pDisplayUnitMgr->Remove(CComBSTR("Junk")), UNITS_E_BADDISPLAYUNITGROUP );
 
    pMe->InitEventTest();
@@ -279,7 +279,7 @@ void CTestDisplayUnitMgr::Test()
    //* Test _EnumDisplayUnitGroups
    //******************************************
    CComPtr<IEnumDisplayUnitGroups> pEnum;
-   TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(&pEnum),S_OK);
 
    //////////////////////////////////////////////////////////////

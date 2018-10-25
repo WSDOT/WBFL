@@ -44,7 +44,7 @@ STDMETHODIMP CAlignmentFactory::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IAlignmentFactory,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -58,7 +58,7 @@ STDMETHODIMP CAlignmentFactory::CreateAlignment(IAlignment **pVal)
    CComObject<CAlignment>* pAlign;
    CComObject<CAlignment>::CreateInstance(&pAlign);
    CComQIPtr<IAlignment> alignment(pAlign);
-   ATLASSERT(alignment != NULL);
+   ATLASSERT(alignment != nullptr);
    (*pVal) = alignment;
    (*pVal)->AddRef();
 	return S_OK;

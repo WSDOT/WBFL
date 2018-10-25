@@ -78,21 +78,21 @@ END_COM_MAP()
    GirderIDType m_RightGirderID;
 
 public:
-   STDMETHOD(put_Point)(IPoint2d* point);
-   STDMETHOD(get_Point)(IPoint2d** point);
-   STDMETHOD(put_Direction)(IDirection* direction);
-   STDMETHOD(get_Direction)(IDirection** direction);
-   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal);
-   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal);
-   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered);
-   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered);
-   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID);
-   STDMETHOD(put_RightGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID);
+   STDMETHOD(put_Point)(IPoint2d* point) override;
+   STDMETHOD(get_Point)(IPoint2d** point) override;
+   STDMETHOD(put_Direction)(IDirection* direction) override;
+   STDMETHOD(get_Direction)(IDirection** direction) override;
+   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal) override;
+   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered) override;
+   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered) override;
+   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID) override;
+   STDMETHOD(put_RightGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(ThroughPointDiaphragmLineFactory), CThroughPointDiaphragmLineFactory)

@@ -306,7 +306,7 @@ protected:
    void MakeCopy(const lrfdLimitStateCalculator& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLimitStateCalculator& rOther);
+   void MakeAssignment(const lrfdLimitStateCalculator& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

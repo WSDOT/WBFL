@@ -43,7 +43,7 @@ STDMETHODIMP CLoadCase::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ldILoadCase
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -325,7 +325,7 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
       CollectionIndexType count = var.iVal;
       m_LoadGroups.clear();
       m_LoadGroups.reserve(count);
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          var.Clear();
          hr = pload->get_Property(CComBSTR("LoadGroup"),&var);
@@ -361,7 +361,7 @@ STDMETHODIMP CLoadCase::Save(IStructuredSave2 * psave)
       CollectionIndexType count = m_LoadGroups.size();
       hr = psave->put_Property(CComBSTR("Count"),CComVariant(count));
 
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          hr = psave->put_Property(CComBSTR("LoadGroup"),CComVariant(m_LoadGroups[i]));
       }

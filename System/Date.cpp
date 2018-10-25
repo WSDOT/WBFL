@@ -467,7 +467,7 @@ static LPCTSTR  ParseMonth( std::_tistream  & s )
 //
 void sysDate::ParseFrom( std::_tistream  & s )
 {
-    Uint16 d,m,y;
+    Uint16 d(0),m(0),y(0);
     Julnum = 0;                 // Assume failure
 
     if (s.good())

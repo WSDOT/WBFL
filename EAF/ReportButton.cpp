@@ -32,7 +32,7 @@ IMPLEMENT_DYNAMIC(CReportButton, CButton)
 
 CReportButton::CReportButton():
 m_bIsButtonDown(false),
-m_pListener(NULL)
+m_pListener(nullptr)
 {
 }
 
@@ -69,7 +69,7 @@ void CReportButton::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CReportButton::Register(CEAFReportView* pView)
 {
-   ATLASSERT(m_pListener==NULL);
+   ATLASSERT(m_pListener==nullptr);
    m_pListener = pView;
 }
 

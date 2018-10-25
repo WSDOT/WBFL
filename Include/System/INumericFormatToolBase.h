@@ -64,7 +64,7 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // Convert a Float64 to a string. That's the main purpose for this class
-   virtual std::_tstring AsString(Float64 value) const=0;
+   virtual std::_tstring AsString(Float64 value) const = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

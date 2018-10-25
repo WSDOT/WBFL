@@ -44,7 +44,7 @@ STDMETHODIMP CProgressMonitorWindow::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IProgressMonitorWindow
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -70,9 +70,9 @@ HRESULT CProgressMonitorWindow::FinalConstruct()
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    // dialog must be created in the current context, or problems
-   m_pDlg = std::auto_ptr<CProgressMonitorDlg>(new CProgressMonitorDlg());
+   m_pDlg = std::make_unique<CProgressMonitorDlg>();
 
-   if (m_pDlg.get() != NULL)
+   if (m_pDlg.get() != nullptr)
       return S_OK;
    else
       return E_POINTER;

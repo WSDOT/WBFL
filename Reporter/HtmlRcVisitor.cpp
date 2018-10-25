@@ -225,7 +225,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    RowIndexType num_head_rows = pTable->GetNumberOfHeaderRows();
 
    bool bHeading = false;
-   for (RowIndexType rowno=0; rowno<num_rows; rowno++)
+   for (RowIndexType rowno = 0; rowno<num_rows; rowno++)
    {
       if (rowno == 0)
       {
@@ -245,7 +245,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       // row information
       *m_pOstream << _T("<TR>");
 
-      for (ColumnIndexType colno=0; colno<num_cols; colno++)
+      for (ColumnIndexType colno = 0; colno<num_cols; colno++)
       {
          Uint32 column_width_px = (Uint32)(pTable->GetColumnWidth(colno)*m_LogPixelsX);
 
@@ -346,7 +346,7 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    // a new line
 
    Uint16 nt = pMyFlow->GetNumberOfTimes();
-   for (Uint16 i=0; i<nt; i++)
+   for (Uint16 i = 0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
          *m_pOstream << _T("<BR/>")<<std::endl;

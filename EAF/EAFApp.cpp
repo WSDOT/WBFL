@@ -80,7 +80,7 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bTipsEnabled = false;
    m_bUseOnlineDocumentation = TRUE;
 
-   m_pHelpWindowThread = NULL;
+   m_pHelpWindowThread = nullptr;
 
    // if this assert fires, we've used more than commands then are
    // reserved for EAF standard processing
@@ -113,7 +113,7 @@ int CEAFApp::Run()
 BOOL CEAFApp::InitInstance()
 {
    // Initialize OLE libraries
-	if (!SUCCEEDED(OleInitialize(NULL)))
+	if (!SUCCEEDED(OleInitialize(nullptr)))
 	{
 		AfxMessageBox(_T("OLE initialization failed. Make sure that the OLE libraries are the correct version."));
 		return FALSE;
@@ -260,7 +260,7 @@ int CEAFApp::ExitInstance()
       delete m_pDocManager;
    }
 
-   m_pDocManager = NULL;
+   m_pDocManager = nullptr;
    
    GetAppPluginManager()->UnloadPlugins();
    m_PluginCommandMgr.Clear();
@@ -366,7 +366,7 @@ eafTypes::HelpResult CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nH
    {
       // look in the documentation sets of our app plug-ins
       POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-      while ( pos != NULL )
+      while ( pos != nullptr )
       {
          CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_pDocManager->GetNextDocTemplate( pos );
          CComPtr<IEAFAppPlugin> pAppPlugin;
@@ -408,7 +408,7 @@ BOOL CEAFApp::UseOnlineDocumentation() const
 
 void CEAFApp::HelpWindowNavigate(LPCTSTR lpszURL)
 {
-   ATLASSERT(m_pHelpWindowThread != NULL);
+   ATLASSERT(m_pHelpWindowThread != nullptr);
    m_pHelpWindowThread->Navigate(lpszURL);
 }
 
@@ -457,7 +457,7 @@ CMDIFrameWnd* CEAFApp::CreateMainFrame()
 	if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
    {
       delete pMainFrame;
-		return NULL;
+		return nullptr;
    }
 
    return pMainFrame;
@@ -491,7 +491,7 @@ CString CEAFApp::GetAppLocation()
 
 void CEAFApp::EnableTipOfTheDay(LPCTSTR lpszTipFile)
 {
-   if ( lpszTipFile == NULL )
+   if ( lpszTipFile == nullptr )
    {
       m_bTipsEnabled = false;
       m_TipFiles.clear();
@@ -540,7 +540,7 @@ BOOL CEAFApp::IsDocLoaded()
 {
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    CEAFDocument* pDoc = pMainFrame->GetDocument();
-   return (pDoc == NULL ? FALSE : TRUE);
+   return (pDoc == nullptr ? FALSE : TRUE);
 }
 
 BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
@@ -686,7 +686,7 @@ void CEAFApp::OnUpdateUSUnits(CCmdUI* pCmdUI)
 CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName) 
 {
    // make sure the document has a valid file extension before opening
-   CDocument* pDoc = NULL;
+   CDocument* pDoc = nullptr;
 
    CString file_ext;
    CString file_name(lpszFileName);
@@ -699,7 +699,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    bool bExtensionMatched = false;
    int templateIdx = 0; // keep track of which template is assocated with the file that got opened. we'll need to record this in the registry so that the File > Open dialog uses this type next time
    POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-   while ( pos != NULL )
+   while ( pos != nullptr )
    {
       CDocTemplate* pTemplate = m_pDocManager->GetNextDocTemplate( pos );
 
@@ -718,7 +718,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
             if ( file_ext.CompareNoCase(strExt) == 0 )
             {
                bExtensionMatched = true;
-               pos = NULL; // kills the outer while loop
+               pos = nullptr; // kills the outer while loop
                break; // break out of this while loop
             }
 
@@ -803,7 +803,7 @@ LRESULT CEAFApp::ProcessWndProcException(CException* e, const MSG* pMsg)
 
       if ( retval == IDYES )
       {
-         ForEachDoc( save_doc, NULL );
+         ForEachDoc( save_doc, nullptr );
       }
 
       lResult = 1L;
@@ -833,12 +833,12 @@ void CEAFApp::ForEachDoc(DocCallback pfn,void* pStuff)
 {
    CEAFApp* pApp = EAFGetApp();
    POSITION tplpos = pApp->GetFirstDocTemplatePosition();
-   while ( tplpos != NULL )
+   while ( tplpos != nullptr )
    {
       CDocTemplate* pTpl = pApp->GetNextDocTemplate( tplpos );
 
       POSITION docpos = pTpl->GetFirstDocPosition();
-      while ( docpos != NULL )
+      while ( docpos != nullptr )
       {
          CDocument* pDoc = pTpl->GetNextDoc( docpos );
          (*pfn)(pDoc,pStuff);
@@ -975,7 +975,7 @@ CEAFMDISnapper& CEAFApp::GetMDIWndSnapper()
 
 void CEAFApp::Fire_UnitsChanging()
 {
-   BOOST_FOREACH(iUnitModeListener* pListener,m_UnitModeListeners)
+   for ( const auto& pListener : m_UnitModeListeners)
    {
       pListener->OnUnitsModeChanging();
    }
@@ -983,7 +983,7 @@ void CEAFApp::Fire_UnitsChanging()
 
 void CEAFApp::Fire_UnitsChanged()
 {
-   BOOST_FOREACH(iUnitModeListener* pListener,m_UnitModeListeners)
+   for (const auto& pListener : m_UnitModeListeners)
    {
       pListener->OnUnitsModeChanged(m_Units);
    }
@@ -1181,12 +1181,12 @@ void CEAFApp::WriteWindowPlacement(const CString& strSection,const CString& strK
 // key is not created if missing (
 HKEY CEAFApp::GetAppLocalMachineRegistryKey(REGSAM samDesired)
 {
-	ASSERT(m_pszRegistryKey != NULL);
-	ASSERT(m_pszProfileName != NULL);
+	ASSERT(m_pszRegistryKey != nullptr);
+	ASSERT(m_pszProfileName != nullptr);
 
-	HKEY hAppKey = NULL;
-	HKEY hSoftKey = NULL;
-	HKEY hCompanyKey = NULL;
+	HKEY hAppKey = nullptr;
+	HKEY hSoftKey = nullptr;
+	HKEY hCompanyKey = nullptr;
 
 
    // open the "software" key
@@ -1202,12 +1202,12 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey(REGSAM samDesired)
 		}
 	}
 
-	if (hSoftKey != NULL)
+	if (hSoftKey != nullptr)
    {
 		RegCloseKey(hSoftKey);
    }
 	
-   if (hCompanyKey != NULL)
+   if (hCompanyKey != nullptr)
    {
 		RegCloseKey(hCompanyKey);
    }
@@ -1221,9 +1221,9 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey(REGSAM samDesired)
 HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection,REGSAM samDesired)
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey(samDesired);
-	if (hAppKey == NULL)
+	if (hAppKey == nullptr)
    {
-		return NULL;
+		return nullptr;
    }
 
    return GetLocalMachineSectionKey(hAppKey,lpszSection,samDesired);
@@ -1231,9 +1231,9 @@ HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection,REGSAM samDesired)
 
 HKEY CEAFApp::GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection,REGSAM samDesired)
 {
-	ASSERT(lpszSection != NULL);
+	ASSERT(lpszSection != nullptr);
 
-	HKEY hSectionKey = NULL;
+	HKEY hSectionKey = nullptr;
 
 	LONG result = RegOpenKeyEx(hAppKey, lpszSection, 0, samDesired, &hSectionKey);
 	RegCloseKey(hAppKey);
@@ -1243,7 +1243,7 @@ HKEY CEAFApp::GetLocalMachineSectionKey(HKEY hAppKey,LPCTSTR lpszSection,REGSAM 
 UINT CEAFApp::GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault)
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey(KEY_READ);
-	if (hAppKey == NULL)
+	if (hAppKey == nullptr)
    {
 		return nDefault;
    }
@@ -1253,12 +1253,12 @@ UINT CEAFApp::GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDef
 
 UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault)
 {
-	ASSERT(lpszSection != NULL);
-	ASSERT(lpszEntry != NULL);
-	ASSERT(m_pszRegistryKey != NULL);
+	ASSERT(lpszSection != nullptr);
+	ASSERT(lpszEntry != nullptr);
+	ASSERT(m_pszRegistryKey != nullptr);
 
 	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection,KEY_READ);
-	if (hSecKey == NULL)
+	if (hSecKey == nullptr)
    {
 		return nDefault;
    }
@@ -1266,7 +1266,7 @@ UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszE
 	DWORD dwValue;
 	DWORD dwType;
 	DWORD dwCount = sizeof(DWORD);
-	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType,(LPBYTE)&dwValue, &dwCount);
+	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, nullptr, &dwType,(LPBYTE)&dwValue, &dwCount);
 
 	RegCloseKey(hSecKey);
 	if (lResult == ERROR_SUCCESS)
@@ -1281,7 +1281,7 @@ UINT CEAFApp::GetLocalMachineInt(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszE
 CString CEAFApp::GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault)
 {
 	HKEY hAppKey = GetAppLocalMachineRegistryKey(KEY_READ);
-	if (hAppKey == NULL)
+	if (hAppKey == nullptr)
    {
 		return lpszDefault;
    }
@@ -1291,21 +1291,21 @@ CString CEAFApp::GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LP
 
 CString CEAFApp::GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault)
 {
-	ASSERT(lpszSection != NULL);
-	ASSERT(lpszEntry != NULL);
-	ASSERT(m_pszRegistryKey != NULL);
+	ASSERT(lpszSection != nullptr);
+	ASSERT(lpszEntry != nullptr);
+	ASSERT(m_pszRegistryKey != nullptr);
 	HKEY hSecKey = GetLocalMachineSectionKey(hAppKey,lpszSection,KEY_READ);
-	if (hSecKey == NULL)
+	if (hSecKey == nullptr)
    {
 		return lpszDefault;
    }
 	CString strValue;
 	DWORD dwType, dwCount;
-	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType, NULL, &dwCount);
+	LONG lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, nullptr, &dwType, nullptr, &dwCount);
 	if (lResult == ERROR_SUCCESS)
 	{
 		ASSERT(dwType == REG_SZ);
-		lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, NULL, &dwType,
+		lResult = RegQueryValueEx(hSecKey, (LPTSTR)lpszEntry, nullptr, &dwType,
 			(LPBYTE)strValue.GetBuffer(dwCount/sizeof(TCHAR)), &dwCount);
 		strValue.ReleaseBuffer();
 	}
@@ -1320,11 +1320,11 @@ CString CEAFApp::GetLocalMachineString(HKEY hAppKey,LPCTSTR lpszSection, LPCTSTR
 
 HKEY CEAFApp::GetUninstallRegistryKey()
 {
-	HKEY hSoftKey = NULL;
-	HKEY hCompanyKey = NULL;
-   HKEY hWinKey = NULL;
-   HKEY hCVKey = NULL;
-   HKEY hUninstallKey = NULL;
+	HKEY hSoftKey = nullptr;
+	HKEY hCompanyKey = nullptr;
+   HKEY hWinKey = nullptr;
+   HKEY hCVKey = nullptr;
+   HKEY hUninstallKey = nullptr;
 
 
    // open the "software" key
@@ -1351,22 +1351,22 @@ HKEY CEAFApp::GetUninstallRegistryKey()
 		}
 	}
 
-	if (hSoftKey != NULL)
+	if (hSoftKey != nullptr)
    {
 		RegCloseKey(hSoftKey);
    }
 	
-   if (hCompanyKey != NULL)
+   if (hCompanyKey != nullptr)
    {
 		RegCloseKey(hCompanyKey);
    }
 	
-   if (hWinKey != NULL)
+   if (hWinKey != nullptr)
    {
 		RegCloseKey(hWinKey);
    }
 	
-   if (hCVKey != NULL)
+   if (hCVKey != nullptr)
    {
 		RegCloseKey(hCVKey);
    }
@@ -1431,7 +1431,8 @@ CString CEAFApp::GetDocumentationMapFile()
 
 void CEAFApp::LoadDocumentationMap()
 {
-   VERIFY(EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics));
+   CString mapFileName(GetDocumentationMapFile());
+   VERIFY(EAFLoadDocumentationMap(mapFileName,m_HelpTopics));
 }
 
 
@@ -1474,8 +1475,8 @@ void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),NULL,GetAppPluginCategoryID(),EAFGetMainFrame());
-   BOOST_FOREACH(CEAFPluginState& state,pluginStates)
+   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),nullptr,GetAppPluginCategoryID(),EAFGetMainFrame());
+   for ( const auto& state : pluginStates)
    {
       CEAFAppPluginManager* pPluginMgr = GetAppPluginManager();
 
@@ -1491,7 +1492,7 @@ void CEAFPluginApp::OnManageApplicationPlugins()
             pPluginMgr->RemovePlugin(state.GetCLSID());
 
             POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
-            while ( pos != NULL )
+            while ( pos != nullptr )
             {
                POSITION current_pos = pos;
                CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)(m_pDocManager->GetNextDocTemplate( pos ));
@@ -1500,7 +1501,7 @@ void CEAFPluginApp::OnManageApplicationPlugins()
                if ( my_plugin.IsEqualObject(plugin) )
                {
                   ((CEAFDocManager*)m_pDocManager)->RemoveDocTemplate(current_pos);
-                  pos = NULL;
+                  pos = nullptr;
                }
             }
 
@@ -1516,7 +1517,7 @@ void CEAFPluginApp::OnManageApplicationPlugins()
                plugin->IntegrateWithUI(TRUE); // must come after AddPlugin
 
                std::vector<CEAFDocTemplate*> vDocTemplates = plugin->CreateDocTemplates();
-               BOOST_FOREACH(CEAFDocTemplate* pDocTemplate,vDocTemplates)
+               for ( const auto& pDocTemplate : vDocTemplates)
                {
                   if ( pDocTemplate )
                   {

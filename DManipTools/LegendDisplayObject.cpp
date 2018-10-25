@@ -83,7 +83,7 @@ STDMETHODIMP CLegendDisplayObject::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_iLegendDisplayObject
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -562,7 +562,7 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
 
    CRect draw_box;
    ColumnIndexType ientry = 0;
-   for (ColumnIndexType icol=0; icol<num_cols; icol++)
+   for (ColumnIndexType icol = 0; icol<num_cols; icol++)
    {
       draw_box.left = location.x + lx_datum + lcwidth*(LONG)icol;
       draw_box.right = draw_box.left + ldraw_box_width;
@@ -570,7 +570,7 @@ void CLegendDisplayObject::Draw(CDC* pDC, iCoordinateMap* pMap, const CPoint& lo
       draw_box.top    = LONG(location.y - (lcheight-min_cheight)/2 - font_twips*ly_per_twip/2);
       draw_box.bottom = draw_box.top - ldraw_box_height;
 
-      for (RowIndexType irow=0; irow<m_NumRows; irow++)
+      for (RowIndexType irow = 0; irow<m_NumRows; irow++)
       {
          if (num_entries <= ientry)
          {
@@ -759,7 +759,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::OnDrop(iDragDataSource* pSource)
    // legend entries
    m_Container.clear();
    pSource->Read(ms_cfFormat,&len,sizeof(long));
-   for (long ii=0; ii<len; ii++)
+   for (long ii = 0; ii<len; ii++)
    {
       CLSID guid;
       pSource->Read(ms_cfFormat,&guid,sizeof(CLSID));
@@ -920,13 +920,13 @@ bool CLegendDisplayObject::OnRButtonDown(UINT nFlags,CPoint point)
 
       // need to create a new window in this gui thread in order to catch menu
       // messages
-      m_pMessageCatcher = std::auto_ptr<CLegendMessageCatcher>(new CLegendMessageCatcher(this));
-      m_pMessageCatcher->Create(NULL, _T("MessageCatcher\0"), WS_DISABLED, CRect(), view, NULL);
+      m_pMessageCatcher = std::make_unique<CLegendMessageCatcher>(this);
+      m_pMessageCatcher->Create(nullptr, _T("MessageCatcher\0"), WS_DISABLED, CRect(), view, 0);
 
       menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, m_pMessageCatcher.get());
 
 //      m_pDlg = new CLegendRowsDlg(point, nrows, this);
-//      m_pDlg->Create(IDD_LEGEND_ROWS, NULL);
+//      m_pDlg->Create(IDD_LEGEND_ROWS, nullptr);
 //      m_pDlg->ShowWindow(SW_SHOW);
 
 //      CLegendRowsDlg dlg(point, nrows, this);

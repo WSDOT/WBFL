@@ -78,7 +78,7 @@ private:
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
       Float64 ei; // initial strain
-   };
+   } SHAPEINFO;
 
    typedef struct SLICEINFO
    {
@@ -106,17 +106,17 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IGeneralSectionSolver
 public:
-   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
-   STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-   STDMETHOD(put_Slices)(/*[in]*/long nSlices);
-   STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices);
-   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor);
-   STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor);
-   STDMETHOD(Solve)(/*[in]*/ IPlane3d* strainPlane,/*[out,retval]*/IGeneralSectionSolution** solution);
+   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
+   STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
+   STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
+   STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor) override;
+   STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
+   STDMETHOD(Solve)(/*[in]*/ IPlane3d* strainPlane,/*[out,retval]*/IGeneralSectionSolution** solution) override;
 };
 
 #endif //__GeneralSectionSolver_H_

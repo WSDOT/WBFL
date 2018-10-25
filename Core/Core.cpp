@@ -72,7 +72,7 @@ STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
     HRESULT hr = E_FAIL;
     static const wchar_t szUserSwitch[] = _T("user");
 
-    if (pszCmdLine != NULL)
+    if (pszCmdLine != nullptr)
     {
     	if (_wcsnicmp(pszCmdLine, szUserSwitch, _countof(szUserSwitch)) == 0)
     	{

@@ -58,7 +58,7 @@ inline HRESULT CombSectionToStressResults(IIDArray* POIs, BSTR stage, ILoadCombi
 
 
    // loop over all pois and compute stresses due to optimization at that poi
-   for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
    {
       // use configuration object from force results to compute stresses
       // get left and right config objects

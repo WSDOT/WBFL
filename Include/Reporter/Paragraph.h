@@ -29,7 +29,7 @@
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ParagraphVisitor.h>
 #include <Reporter\ReportContent.h>
-#include <boost\shared_ptr.hpp>
+
 
 // LOCAL INCLUDES
 //
@@ -56,7 +56,7 @@ class REPORTERCLASS rptParagraph : public rptReportItem
 {
 public:
 
-   typedef std::vector<boost::shared_ptr<rptReportContent> > ContentVec;
+   typedef std::vector<std::shared_ptr<rptReportContent> > ContentVec;
    typedef ContentVec::iterator ParagraphContentIterator;
    typedef ContentVec::const_iterator ConstParagraphContentIterator;
 
@@ -180,7 +180,7 @@ protected:
    
    //------------------------------------------------------------------------
    // utility function to be used for assignment
-   virtual void MakeAssignment(const rptParagraph& rOther);
+   void MakeAssignment(const rptParagraph& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -77,7 +77,7 @@ STDMETHODIMP CCogoEngine::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IDivide2,
       &IID_ITangent2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -166,7 +166,7 @@ STDMETHODIMP CCogoEngine::putref_PointFactory(/*[in]*/IPoint2dFactory* factory)
    CComQIPtr<IGeomUtil> gu(m_GeomUtil);
 
    CComQIPtr<IPoint2dFactory> factory2d(factory);
-   if ( factory2d == NULL )
+   if ( factory2d == nullptr )
       return E_FAIL; // object must also support IPoint2dFactory
 
    gu->putref_Point2dFactory(factory2d);
@@ -181,7 +181,7 @@ STDMETHODIMP CCogoEngine::get_PointFactory(/*[out,retval]*/ IPoint2dFactory** fa
    CComPtr<IPoint2dFactory> f;
    gu->get_Point2dFactory(&f);
    f.QueryInterface(factory);
-   ATLASSERT( factory != NULL ); // There should be no way for anything other than an Ex factory
+   ATLASSERT( factory != nullptr ); // There should be no way for anything other than an Ex factory
                                  // to get in here
    return S_OK;
 }
@@ -192,7 +192,7 @@ STDMETHODIMP CCogoEngine::putref_LineSegmentFactory(/*[in]*/ ILineSegment2dFacto
    CComQIPtr<IGeomUtil> gu(m_GeomUtil);
 
    CComQIPtr<ILineSegment2dFactory> factory2d(factory);
-   if ( factory2d == NULL )
+   if ( factory2d == nullptr )
       return E_FAIL; // object must also support IPoint2dFactory
 
    gu->putref_LineSegment2dFactory(factory2d);
@@ -207,7 +207,7 @@ STDMETHODIMP CCogoEngine::get_LineSegmentFactory(/*[out,retval]*/ILineSegment2dF
    CComQIPtr<ILineSegment2dFactory> f;
    gu->get_LineSegment2dFactory(&f);
    f.QueryInterface(factory);
-   ATLASSERT( factory != NULL ); // There should be no way for anything other than an Ex factory
+   ATLASSERT( factory != nullptr ); // There should be no way for anything other than an Ex factory
                                  // to get in here
    return S_OK;
 }
@@ -538,13 +538,13 @@ STDMETHODIMP CCogoEngine::Bearings(/*[in]*/ IPoint2d* p1, /*[in]*/ VARIANT varDi
    if ( FAILED(hr) )
       return hr;
 
-   if ( p != NULL )
+   if ( p != nullptr )
    {
       p->QueryInterface(point);
    }
    else
    {
-      *point = NULL;
+      *point = nullptr;
    }
 
    return S_OK;
@@ -744,10 +744,10 @@ STDMETHODIMP CCogoEngine::LinesByPoints(/*[in]*/ IPoint2d* p11, /*[in]*/ IPoint2
    CComPtr<IPoint2d> pnt;
    hr = m_GeomUtil->LineLineIntersect(offsetLine1,offsetLine2,&pnt);
 
-   if ( pnt != NULL )
+   if ( pnt != nullptr )
       pnt.QueryInterface(point);
    else
-      (*point) = NULL;
+      (*point) = nullptr;
 
    return S_OK;
 }
@@ -787,10 +787,10 @@ STDMETHODIMP CCogoEngine::Lines(/*[in]*/ILineSegment2d* l1,/*[in]*/Float64 offse
    if ( FAILED(hr) )
       return hr;
 
-   if ( pnt != NULL )
+   if ( pnt != nullptr )
       pnt.QueryInterface(point);
    else
-      (*point) = NULL;
+      (*point) = nullptr;
 
    return S_OK;
 }
@@ -972,7 +972,7 @@ STDMETHODIMP CCogoEngine::HorzCurve(/*[in]*/ IHorzCurve* curve, /*[in]*/ Collect
    Float64 Lt; // Total length of curve
    curve->get_TotalLength(&Lt);
 
-   hr = ::CoCreateInstance(CLSID_Point2dCollection,NULL,CLSCTX_ALL,IID_IPoint2dCollection,(void**)points);
+   hr = ::CoCreateInstance(CLSID_Point2dCollection,nullptr,CLSCTX_ALL,IID_IPoint2dCollection,(void**)points);
    ATLASSERT(SUCCEEDED(hr));
 
    Float64 stepSize = Lt/nParts;
@@ -998,7 +998,7 @@ STDMETHODIMP CCogoEngine::Path(IPath* pPath,CollectionIndexType nParts,Float64 s
    if ( nParts <= 1 )
       return E_INVALIDARG;
 
-   HRESULT hr = ::CoCreateInstance(CLSID_Point2dCollection,NULL,CLSCTX_ALL,IID_IPoint2dCollection,(void**)points);
+   HRESULT hr = ::CoCreateInstance(CLSID_Point2dCollection,nullptr,CLSCTX_ALL,IID_IPoint2dCollection,(void**)points);
    ATLASSERT(SUCCEEDED(hr));
 
 

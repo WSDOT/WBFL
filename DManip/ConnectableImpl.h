@@ -165,7 +165,7 @@ private:
 
    SocketContainer::iterator GetSocket_Private(IDType key,AccessType access,iSocket** socket)
    {
-      *socket = NULL;
+      *socket = nullptr;
       if ( access == atByIndex )
       {
          IndexType index = (IndexType)key;

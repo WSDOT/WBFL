@@ -106,21 +106,21 @@ Float64 CPierImpl::GetDelta()
 }
 
 /////////////////////////////////////////////////////////////////////////////
-// IPier
-STDMETHODIMP CPierImpl::put_Type(PierType type)
+// IPier - delegate
+HRESULT  CPierImpl::put_Type(PierType type)
 {
    m_Type = type;
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_Type(PierType* type)
+HRESULT  CPierImpl::get_Type(PierType* type)
 {
    CHECK_RETVAL(type);
    *type = m_Type;
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
+HRESULT  CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
 {
    CHECK_RETVAL(pWcc);
    Float64 LCO, RCO;
@@ -130,20 +130,20 @@ STDMETHODIMP CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Fl
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::putref_SkewAngle(/*[in]*/IAngle* pSkew)
+HRESULT  CPierImpl::putref_SkewAngle(/*[in]*/IAngle* pSkew)
 {
    CHECK_IN(pSkew);
    m_Skew = pSkew;
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_SkewAngle(/*[out,retval]*/IAngle** ppSkew)
+HRESULT  CPierImpl::get_SkewAngle(/*[out,retval]*/IAngle** ppSkew)
 {
    CHECK_RETOBJ(ppSkew);
    return m_Skew.CopyTo(ppSkew);
 }
 
-STDMETHODIMP CPierImpl::putref_CrossBeam(ICrossBeam* pCrossBeam)
+HRESULT  CPierImpl::putref_CrossBeam(ICrossBeam* pCrossBeam)
 {
    CHECK_IN(pCrossBeam);
    m_CrossBeam = pCrossBeam;
@@ -151,13 +151,13 @@ STDMETHODIMP CPierImpl::putref_CrossBeam(ICrossBeam* pCrossBeam)
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_CrossBeam(ICrossBeam** ppCrossBeam)
+HRESULT  CPierImpl::get_CrossBeam(ICrossBeam** ppCrossBeam)
 {
    CHECK_RETOBJ(ppCrossBeam);
    return m_CrossBeam.CopyTo(ppCrossBeam);
 }
 
-STDMETHODIMP CPierImpl::putref_BearingLayout(IBearingLayout* pBearingLayout)
+HRESULT  CPierImpl::putref_BearingLayout(IBearingLayout* pBearingLayout)
 {
    CHECK_IN(pBearingLayout);
    m_BearingLayout = pBearingLayout;
@@ -165,13 +165,13 @@ STDMETHODIMP CPierImpl::putref_BearingLayout(IBearingLayout* pBearingLayout)
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_BearingLayout(IBearingLayout** ppBearingLayout)
+HRESULT  CPierImpl::get_BearingLayout(IBearingLayout** ppBearingLayout)
 {
    CHECK_RETOBJ(ppBearingLayout);
    return m_BearingLayout.CopyTo(ppBearingLayout);
 }
 
-STDMETHODIMP CPierImpl::putref_ColumnLayout(IColumnLayout* pColumnLayout)
+HRESULT  CPierImpl::putref_ColumnLayout(IColumnLayout* pColumnLayout)
 {
    CHECK_IN(pColumnLayout);
    m_ColumnLayout = pColumnLayout;
@@ -179,18 +179,18 @@ STDMETHODIMP CPierImpl::putref_ColumnLayout(IColumnLayout* pColumnLayout)
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_ColumnLayout(IColumnLayout** ppColumnLayout)
+HRESULT  CPierImpl::get_ColumnLayout(IColumnLayout** ppColumnLayout)
 {
    CHECK_RETOBJ(ppColumnLayout);
    return m_ColumnLayout.CopyTo(ppColumnLayout);
 }
 
-STDMETHODIMP CPierImpl::get_Column(ColumnIndexType columnIdx,IColumn* *column)
+HRESULT  CPierImpl::get_Column(ColumnIndexType columnIdx,IColumn* *column)
 {
    return m_ColumnLayout->get_Column(columnIdx,column);
 }
 
-STDMETHODIMP CPierImpl::ConvertCrossBeamToCurbLineCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXcl)
+HRESULT  CPierImpl::ConvertCrossBeamToCurbLineCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXcl)
 {
    CHECK_RETVAL(pXcl);
    Float64 delta = GetDelta();
@@ -198,7 +198,7 @@ STDMETHODIMP CPierImpl::ConvertCrossBeamToCurbLineCoordinate(/*[in]*/Float64 Xxb
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::ConvertCurbLineToCrossBeamCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb)
+HRESULT  CPierImpl::ConvertCurbLineToCrossBeamCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb)
 {
    CHECK_RETVAL(pXxb);
    Float64 delta = GetDelta();
@@ -206,7 +206,7 @@ STDMETHODIMP CPierImpl::ConvertCurbLineToCrossBeamCoordinate(/*[in]*/Float64 Xcl
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::ConvertPierToCrossBeamCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb)
+HRESULT  CPierImpl::ConvertPierToCrossBeamCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb)
 {
    CHECK_RETVAL(pXxb);
 
@@ -220,7 +220,7 @@ STDMETHODIMP CPierImpl::ConvertPierToCrossBeamCoordinate(/*[in]*/Float64 Xp,/*[o
    return ConvertCurbLineToCrossBeamCoordinate(Xcl,pXxb);
 }
 
-STDMETHODIMP CPierImpl::ConvertCrossBeamToPierCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp)
+HRESULT  CPierImpl::ConvertCrossBeamToPierCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp)
 {
    CHECK_RETVAL(pXp);
 
@@ -234,7 +234,7 @@ STDMETHODIMP CPierImpl::ConvertCrossBeamToPierCoordinate(/*[in]*/Float64 Xxb,/*[
    return ConvertCurbLineToPierCoordinate(Xcl,pXp);
 }
 
-STDMETHODIMP CPierImpl::ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl)
+HRESULT  CPierImpl::ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl)
 {
    CHECK_RETVAL(pXcl);
    Float64 leftCLO;
@@ -247,7 +247,7 @@ STDMETHODIMP CPierImpl::ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[ou
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp)
+HRESULT  CPierImpl::ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp)
 {
    CHECK_RETVAL(pXp);
    Float64 leftCLO;
@@ -260,7 +260,7 @@ STDMETHODIMP CPierImpl::ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[o
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev)
+HRESULT  CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev)
 {
    CHECK_RETVAL(pElev);
 
@@ -278,7 +278,7 @@ STDMETHODIMP CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,
    return S_OK;
 }
 
-STDMETHODIMP CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev)
+HRESULT  CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev)
 {
    CHECK_RETVAL(pElev);
 
@@ -300,7 +300,7 @@ void CPierImpl::CreateDeckProfileFunction(mathPwLinearFunction2dUsingPoints* pFN
    deckProfile->get__Enum(&enumPoints);
    mathPwLinearFunction2dUsingPoints fn;
    CComPtr<IPoint2d> pnt;
-   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       Float64 x,y;
       pnt->Location(&x,&y);

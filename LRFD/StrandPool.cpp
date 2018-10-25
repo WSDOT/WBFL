@@ -27,6 +27,7 @@
 #include <Lrfd\VersionMgr.h>
 #include <Lrfd\AutoVersion.h>
 #include <Units\SysUnits.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -40,8 +41,8 @@ CLASS
 ****************************************************************************/
 
 lrfdStrandPool* lrfdStrandPool::ms_pInstance = 0;
-std::map<Int32, boost::shared_ptr<matPsStrand> > lrfdStrandPool::ms_USStrand;
-std::map<Int32, boost::shared_ptr<matPsStrand> > lrfdStrandPool::ms_SIStrand;
+std::map<Int32, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_USStrand;
+std::map<Int32, std::shared_ptr<matPsStrand> > lrfdStrandPool::ms_SIStrand;
 lrfdStrandPool::Killer lrfdStrandPool::ms_Killer;
 
 Int32 hash( matPsStrand::Grade grade, matPsStrand::Type type, matPsStrand::Coating coating, matPsStrand::Size size )
@@ -73,19 +74,19 @@ lrfdStrandPool* lrfdStrandPool::GetInstance()
 
 const matPsStrand* lrfdStrandPool::GetStrand(Int32 key,lrfdVersionMgr::Units units)
 {
-   std::map<Int32,boost::shared_ptr<matPsStrand> >::iterator found;
+   std::map<Int32, std::shared_ptr<matPsStrand> >::iterator found;
 
    if ( units == lrfdVersionMgr::US )
    {
       found = ms_USStrand.find( key );
       if ( found == ms_USStrand.end() )
-         return 0;
+         return nullptr;
    }
    else
    {
       found = ms_SIStrand.find( key );
       if ( found == ms_SIStrand.end() )
-      return 0;
+      return nullptr;
    }
 
    return (*found).second.get();
@@ -136,10 +137,10 @@ void lrfdStrandPool::Dump(dbgDumpContext& os) const
 //======================== LIFECYCLE  =======================================
 
 #define NEW_US_STRAND(name,grade,type,coasting,size,fpu,fpy,e,d,a) \
-   ms_USStrand.insert( std::make_pair(hash(grade,type,coating,size), boost::shared_ptr<matPsStrand>(new matPsStrand(_T(name),grade,type,coating,size,::ConvertToSysUnits(fpu,unitMeasure::KSI), ::ConvertToSysUnits(fpy, unitMeasure::KSI), ::ConvertToSysUnits(e, unitMeasure::KSI), ::ConvertToSysUnits(d,unitMeasure::Inch), ::ConvertToSysUnits(a, unitMeasure::Inch2) ) ) ) );
+   ms_USStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<matPsStrand>(_T(name),grade,type,coating,size,::ConvertToSysUnits(fpu,unitMeasure::KSI), ::ConvertToSysUnits(fpy, unitMeasure::KSI), ::ConvertToSysUnits(e, unitMeasure::KSI), ::ConvertToSysUnits(d,unitMeasure::Inch), ::ConvertToSysUnits(a, unitMeasure::Inch2) ) ) );
 
 #define NEW_SI_STRAND(name,grade,type,coating,size,fpu,fpy,e,d,a) \
-ms_SIStrand.insert( std::make_pair(hash(grade,type,coating,size), boost::shared_ptr<matPsStrand>(new matPsStrand(_T(name),grade,type,coating,size,::ConvertToSysUnits(fpu,unitMeasure::MPa), ::ConvertToSysUnits(fpy, unitMeasure::MPa), ::ConvertToSysUnits(e, unitMeasure::MPa), ::ConvertToSysUnits(d,unitMeasure::Millimeter), ::ConvertToSysUnits(a, unitMeasure::Millimeter2) ) ) ) );
+ms_SIStrand.insert( std::make_pair(hash(grade,type,coating,size), std::make_shared<matPsStrand>(_T(name),grade,type,coating,size,::ConvertToSysUnits(fpu,unitMeasure::MPa), ::ConvertToSysUnits(fpy, unitMeasure::MPa), ::ConvertToSysUnits(e, unitMeasure::MPa), ::ConvertToSysUnits(d,unitMeasure::Millimeter), ::ConvertToSysUnits(a, unitMeasure::Millimeter2) ) ) );
 
 lrfdStrandPool::lrfdStrandPool()
 { 
@@ -292,16 +293,16 @@ void lrfdStrandIter::Begin()
    m_Strands.clear();
    CHECK(m_Strands.size() == 0);
    CHECK(m_Strands.empty() == true);
-   std::map< Int32, boost::shared_ptr<matPsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
-   std::map< Int32, boost::shared_ptr<matPsStrand> >::const_iterator iter;
+   std::map< Int32, std::shared_ptr<matPsStrand> >* pStrands = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI) ? &lrfdStrandPool::ms_SIStrand : &lrfdStrandPool::ms_USStrand;
+   std::map< Int32, std::shared_ptr<matPsStrand> >::const_iterator iter;
    for ( iter = pStrands->begin(); iter != pStrands->end(); iter++ )
    {
       // The following two lines are from the original implementation.  When we upgraded to
       // VC++ 6.0, the lrfdStrandPool::ms_Strand container started loosing ownership of the
       // of the matPsStrand objects.  This implementation seems to fix the problem.
-      //const std::pair< Int32, std::auto_ptr<matPsStrand> >& pair = *iter;
-      //const std::auto_ptr<matPsStrand>& AutoPtr = pair.second;
-      const boost::shared_ptr<matPsStrand>& AutoPtr = iter->second;
+      //const std::pair< Int32, std::unique_ptr<matPsStrand> >& pair = *iter;
+      //const std::unique_ptr<matPsStrand>& AutoPtr = pair.second;
+      const std::shared_ptr<matPsStrand>& AutoPtr = iter->second;
       const matPsStrand* pStrand = AutoPtr.get();
       if ( pStrand->GetGrade() == m_Grade && pStrand->GetType() == m_Type && pStrand->GetCoating() == m_Coating )
          m_Strands.push_back( pStrand );
@@ -347,7 +348,7 @@ lrfdStrandIter::operator void*() const
    if ( m_Current != m_End )
       return (void*)1;
    else
-      return 0;
+      return nullptr;
 }
 
 const matPsStrand* lrfdStrandIter::GetCurrentStrand() const
@@ -355,7 +356,7 @@ const matPsStrand* lrfdStrandIter::GetCurrentStrand() const
    if ( *this )
       return (*m_Current);
    else
-      return 0;
+      return nullptr;
 }
 
 //======================== ACCESS     =======================================

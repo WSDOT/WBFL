@@ -1,0 +1,419 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AxialInteractionCurveSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CapacityReductionFactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CircularManderSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrackedSectionSlice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrackedSectionSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrackedSectionSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralSectionSlice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralSectionSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneralSectionSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionCapacityCurveSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionCurveSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractionCurveSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LFDSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDPrestressFormula.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDSolutionEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDSolver2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ManderModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MixedSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentCapacitySolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentCapacitySolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentCurvatureSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentCurvatureSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MomentInteractionCurveSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NLSolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCISolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCISolutionEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCISolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PSPowerFormula.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCBeam2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCBeam2Ex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCCapacity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCSolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RCSolutionEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundColumn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrainHardenedRebarModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnconfinedConcrete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AxialInteractionCurveSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapacityReductionFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularManderSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrackedSectionSlice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrackedSectionSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrackedSectionSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralSectionSlice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralSectionSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneralSectionSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractionCapacityCurveSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractionCurveSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractionCurveSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LFDSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LRFDPrestressFormula.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LRFDSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LRFDSolutionEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LRFDSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LRFDSolver2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ManderModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MixedSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentCapacitySolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentCapacitySolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentCurvatureSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentCurvatureSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MomentInteractionCurveSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NLSolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PCISolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PCISolutionEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PCISolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PSPowerFormula.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCBeam2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCBeam2Ex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCSolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RCSolutionEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundColumn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrainHardenedRebarModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnconfinedConcrete.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLRCCapacity.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RCCapacity.def" />
+    <None Include="AxialInteractionCurveSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CapacityReductionFactor.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CircularManderSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrackedSectionSlice.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrackedSectionSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrackedSectionSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GeneralSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GeneralSectionSlice.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GeneralSectionSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GeneralSectionSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="InteractionCapacityCurveSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="InteractionCurveSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="InteractionCurveSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LFDSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LRFDPrestressFormula.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LRFDSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LRFDSolutionEx.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LRFDSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LRFDSolver2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ManderModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MixedSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MomentCapacitySolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MomentCapacitySolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MomentCurvatureSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MomentCurvatureSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MomentInteractionCurveSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NLSolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PCISolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PCISolutionEx.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PCISolver.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PSPowerFormula.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RCBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RCBeam2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RCBeam2Ex.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RCSolution.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RCSolutionEx.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RoundColumn.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SectionBuilder.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainHardenedRebarModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UnconfinedConcrete.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{adb5ccdb-0159-483b-9325-ece4528159b5}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{267f4791-963f-47cf-b113-c369b554471d}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{081d68c8-c05c-4a65-bf4e-c34ac64256c9}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RCCapacity.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

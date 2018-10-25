@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // CToolBarDlg dialog
 
 
-CToolBarDlg::CToolBarDlg(CWnd* pParent /*=NULL*/)
+CToolBarDlg::CToolBarDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CToolBarDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CToolBarDlg)

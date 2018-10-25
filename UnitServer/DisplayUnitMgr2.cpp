@@ -129,7 +129,7 @@ STDMETHODIMP CDisplayUnitMgr2::InterfaceSupportsErrorInfo(REFIID riid)
 	{
       &IID_IDisplayUnitMgr2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -162,7 +162,7 @@ STDMETHODIMP CDisplayUnitMgr2::get_Count(CollectionIndexType* retval)
    return S_OK;
 }
 
-//STDMETHODIMP CDisplayUnitMgr2::get__NewEnum(IUnknown** retval);
+//STDMETHODIMP CDisplayUnitMgr2::get__NewEnum(IUnknown** retval) override;
 //{
 //   // Implemented by ATL
 //   return S_OK;
@@ -271,7 +271,7 @@ STDMETHODIMP CDisplayUnitMgr2::get__EnumDisplayUnitGroups(IEnumDisplayUnitGroups
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 

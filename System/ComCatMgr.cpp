@@ -44,9 +44,9 @@ static char THIS_FILE[] = __FILE__;
 HRESULT sysComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
 {
    // Create the standard COM Category Manager
-   ICatRegister* pICatReg = NULL;
+   ICatRegister* pICatReg = nullptr;
    HRESULT hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                                    NULL,
+                                    nullptr,
                                     CLSCTX_ALL,
                                     IID_ICatRegister,
                                     (void**)&pICatReg );
@@ -74,9 +74,9 @@ HRESULT sysComCatMgr::CreateCategory(OLECHAR* lpszDesc,const CATID& catid)
 HRESULT sysComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
 {
    // Create the standard COM Category Manager
-   ICatRegister* pICatReg = NULL;
+   ICatRegister* pICatReg = nullptr;
    HRESULT hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                                    NULL,
+                                    nullptr,
                                     CLSCTX_ALL,
                                     IID_ICatRegister,
                                     (void**)&pICatReg );
@@ -87,14 +87,14 @@ HRESULT sysComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
    CATID ID[nID];
    ID[0] = catid;
 
-   ICatInformation* pICatInfo = NULL;
+   ICatInformation* pICatInfo = nullptr;
    hr = pICatReg->QueryInterface( IID_ICatInformation, (void**)&pICatInfo );
 
-   IEnumCLSID* pIEnumCLSID = NULL;
-   hr = pICatInfo->EnumClassesOfCategories( nID, ID, 0, NULL, &pIEnumCLSID );
+   IEnumCLSID* pIEnumCLSID = nullptr;
+   hr = pICatInfo->EnumClassesOfCategories( nID, ID, 0, nullptr, &pIEnumCLSID );
 
    CLSID clsid;
-   hr = pIEnumCLSID->Next(1,&clsid,NULL);
+   hr = pIEnumCLSID->Next(1,&clsid,nullptr);
    if ( hr != S_FALSE && bLeaveIfUsed )
    {
       // Do nothing
@@ -114,9 +114,9 @@ HRESULT sysComCatMgr::RemoveCategory(const CATID& catid,bool bLeaveIfUsed)
 HRESULT sysComCatMgr::RegWithCategory(const CLSID& clsid,const CATID& catid,bool bReg)
 {
    HRESULT hr = S_OK;
-   ICatRegister* pICatReg = NULL;
+   ICatRegister* pICatReg = nullptr;
    hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                            NULL,
+                            nullptr,
                             CLSCTX_ALL,
                             IID_ICatRegister,
                             (void**)&pICatReg );

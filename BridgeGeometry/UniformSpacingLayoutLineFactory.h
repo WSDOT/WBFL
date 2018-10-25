@@ -83,29 +83,29 @@ END_COM_MAP()
    LineIDType m_LayoutLineIDInc; // Layout line ID increment
 
 public:
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths) override;
+   STDMETHOD(Reset)() override;
 
-   STDMETHOD(get_AlignmentID)(CogoObjectID* ID);
-   STDMETHOD(put_AlignmentID)(CogoObjectID ID);
-   STDMETHOD(get_StartPierID)(PierIDType* pVal);
-   STDMETHOD(put_StartPierID)(PierIDType newVal);
-   STDMETHOD(get_EndPierID)(PierIDType* pVal);
-   STDMETHOD(put_EndPierID)(PierIDType newVal);
-   STDMETHOD(get_PierIDInc)(PierIDType* pVal);
-   STDMETHOD(put_PierIDInc)(PierIDType newVal);
-   STDMETHOD(get_StartSpacingOffset)(Float64* pVal);
-   STDMETHOD(put_StartSpacingOffset)(Float64 newVal);
-   STDMETHOD(get_EndSpacingOffset)(Float64* pVal);
-   STDMETHOD(put_EndSpacingOffset)(Float64 newVal);
-   STDMETHOD(get_StartSpacing)(IDblArray** pVal);
-   STDMETHOD(put_StartSpacing)(IDblArray* newVal);
-   STDMETHOD(get_EndSpacing)(IDblArray** pVal);
-   STDMETHOD(put_EndSpacing)(IDblArray* newVal);
-   STDMETHOD(put_LayoutLineID)(LineIDType ID);
-   STDMETHOD(get_LayoutLineID)(LineIDType* ID);
-   STDMETHOD(put_LayoutLineIDInc)(LineIDType inc);
-   STDMETHOD(get_LayoutLineIDInc)(LineIDType* inc);
+   STDMETHOD(get_AlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(put_AlignmentID)(CogoObjectID ID) override;
+   STDMETHOD(get_StartPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_StartPierID)(PierIDType newVal) override;
+   STDMETHOD(get_EndPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_EndPierID)(PierIDType newVal) override;
+   STDMETHOD(get_PierIDInc)(PierIDType* pVal) override;
+   STDMETHOD(put_PierIDInc)(PierIDType newVal) override;
+   STDMETHOD(get_StartSpacingOffset)(Float64* pVal) override;
+   STDMETHOD(put_StartSpacingOffset)(Float64 newVal) override;
+   STDMETHOD(get_EndSpacingOffset)(Float64* pVal) override;
+   STDMETHOD(put_EndSpacingOffset)(Float64 newVal) override;
+   STDMETHOD(get_StartSpacing)(IDblArray** pVal) override;
+   STDMETHOD(put_StartSpacing)(IDblArray* newVal) override;
+   STDMETHOD(get_EndSpacing)(IDblArray** pVal) override;
+   STDMETHOD(put_EndSpacing)(IDblArray* newVal) override;
+   STDMETHOD(put_LayoutLineID)(LineIDType ID) override;
+   STDMETHOD(get_LayoutLineID)(LineIDType* ID) override;
+   STDMETHOD(put_LayoutLineIDInc)(LineIDType inc) override;
+   STDMETHOD(get_LayoutLineIDInc)(LineIDType* inc) override;
 
 };
 

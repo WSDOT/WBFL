@@ -33,11 +33,11 @@
 
 IMPLEMENT_DYNAMIC(CChoiceDlg, CDialog)
 
-CChoiceDlg::CChoiceDlg(CWnd* pParent /*=NULL*/)
+CChoiceDlg::CChoiceDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CChoiceDlg::IDD, pParent)
 {
    m_Choice = 0;
-   m_pHelpHandler = NULL;
+   m_pHelpHandler = nullptr;
 }
 
 CChoiceDlg::~CChoiceDlg()
@@ -78,9 +78,9 @@ BOOL CChoiceDlg::OnInitDialog()
 
    CDialog::OnInitDialog();
 
-   m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
+   m_Icon.SetIcon(::LoadIcon(nullptr,IDI_QUESTION));
 
-   if ( m_bCancel && m_pHelpHandler == NULL )
+   if ( m_bCancel && m_pHelpHandler == nullptr )
    {
       // [OK][Cancel]
       CWnd* pOK     = GetDlgItem(IDOK);
@@ -99,7 +99,7 @@ BOOL CChoiceDlg::OnInitDialog()
       pCancel->MoveWindow(rHelp);
       pOK->MoveWindow(rCancel);
    }
-   else if ( !m_bCancel && m_pHelpHandler != NULL )
+   else if ( !m_bCancel && m_pHelpHandler != nullptr )
    {
       // [OK][Help]
       CWnd* pOK     = GetDlgItem(IDOK);
@@ -113,7 +113,7 @@ BOOL CChoiceDlg::OnInitDialog()
       pOK->MoveWindow(rCancel);
       ModifyStyle(WS_SYSMENU,0);
    }
-   else if ( !m_bCancel && m_pHelpHandler == NULL )
+   else if ( !m_bCancel && m_pHelpHandler == nullptr )
    {
       // [OK]
       CWnd* pOK     = GetDlgItem(IDOK);

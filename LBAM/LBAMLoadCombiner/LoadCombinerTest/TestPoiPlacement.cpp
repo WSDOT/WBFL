@@ -78,11 +78,11 @@ HRESULT CTestPoiPlacement::Test()
    // request results for tenth points in spans 0 and 1
    CComPtr<IIDArray> poilist;
    poilist.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i=0; i<11; i++)
+   for (CollectionIndexType i = 0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (CollectionIndexType i=0; i<11; i++)
+   for (CollectionIndexType i = 0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -120,7 +120,7 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
    Float64 loc = 0.0;
    span_ends.push_back(loc);  // spans start at 0.0
 
-   for(SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for(SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       spans->get_Item(ispan, &span);
@@ -142,7 +142,7 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -158,7 +158,7 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
 
    CollectionIndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i,&poi_id);
@@ -403,7 +403,7 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
 
    // ssms
    loc = 0.0;
-   for (MemberIDType i=0; i<=2; i++)
+   for (MemberIDType i = 0; i<=2; i++)
    {
       PoiIDType poi_id = (PoiIDType)(300+i*3);
       CComPtr<IPOI> pPOI0, pPOI1, pPOI2;
@@ -450,7 +450,7 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
    TCHAR* lgns[]={_T("Self Weight")};
-   for (long i=0; i<1; i++)
+   for (long i = 0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
@@ -489,9 +489,9 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    TRY_TEST(pDistributedLoad2s2->put_WStart(-15), S_OK);
    TRY_TEST(pDistributedLoad2s2->put_WEnd(-15), S_OK);
 
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 2"), _bstr_t("Self Weight"), pDistributedLoad0s2, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 2"), _bstr_t("Self Weight"), pDistributedLoad2s2, &pDLtmp), S_OK);
 
    // Self Weight - stage 2 - use cloning to reduce # of calls
@@ -512,11 +512,11 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    TRY_TEST(pDistributedLoad2s3->put_WStart(-5), S_OK);
    TRY_TEST(pDistributedLoad2s3->put_WEnd(-5), S_OK);
 
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad0s3, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad1s3, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad2s3, &pDLtmp), S_OK);
 
    // add lrfd live loads

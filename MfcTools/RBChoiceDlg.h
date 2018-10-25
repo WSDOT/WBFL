@@ -32,7 +32,7 @@ class CRBChoiceDlg : public CDialog
 	DECLARE_DYNAMIC(CRBChoiceDlg)
 
 public:
-	CRBChoiceDlg(CWnd* pParent = NULL);   // standard constructor
+	CRBChoiceDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CRBChoiceDlg();
 
 // Dialog Data
@@ -49,10 +49,10 @@ public:
 protected:
    CStatic m_Icon;
 
-   virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+   virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
    void OnHelp();
 };

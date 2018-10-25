@@ -42,7 +42,7 @@ STDMETHODIMP CSegmentCrossSection::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISegmentCrossSection
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -50,7 +50,7 @@ STDMETHODIMP CSegmentCrossSection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSegmentCrossSection::FinalConstruct( )
+HRESULT CSegmentCrossSection::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set

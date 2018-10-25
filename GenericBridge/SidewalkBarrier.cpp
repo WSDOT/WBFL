@@ -64,7 +64,7 @@ STDMETHODIMP CSidewalkBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISidewalkBarrier,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -165,7 +165,7 @@ STDMETHODIMP CSidewalkBarrier::get_SidewalkShape(IShape** shape)
    else
    {
       ATLASSERT(false); 
-      *shape = NULL;
+      *shape = nullptr;
    }
 
    return S_OK;
@@ -177,7 +177,7 @@ STDMETHODIMP CSidewalkBarrier::get_StructuralShape(IShape** shape)
         m_bSidewalkStructurallyContinuous == VARIANT_FALSE &&
         m_bInteriorStructurallyContinuous == VARIANT_FALSE )
    {
-      (*shape) = NULL;
+      (*shape) = nullptr;
       return S_OK;
    }
 

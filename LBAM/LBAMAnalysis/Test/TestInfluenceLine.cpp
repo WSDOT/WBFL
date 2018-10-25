@@ -353,7 +353,7 @@ HRESULT CTestInfluenceLine::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestInfluenceLine"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pInfluenceLine2.QueryInterface(&piss2), S_OK);
 
          // Load 

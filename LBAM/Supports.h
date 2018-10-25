@@ -72,18 +72,18 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // _ISupportEvents
-   STDMETHOD(OnSupportChanged)(/*[in]*/ISupport* Support, BSTR stage, ChangeType change);
+   STDMETHOD(OnSupportChanged)(/*[in]*/ISupport* Support, BSTR stage, ChangeType change) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISupports
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ISupports** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ISupports** clone) override;
 
 
 private:
@@ -158,7 +158,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      SupportIndexType cnt=0;
+      SupportIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it,cnt++);

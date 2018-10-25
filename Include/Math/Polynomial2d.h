@@ -51,8 +51,8 @@ public:
    void SetCoefficients(const std::vector<Float64>& coefficients);
    const std::vector<Float64>& GetCoefficients() const;
    
-   virtual Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const;
+   virtual Float64 Evaluate(Float64 x) const override;
+   virtual mathFunction2d* Clone() const override;
 
    mathPolynomial2d GetDerivative() const;
 

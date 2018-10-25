@@ -41,7 +41,7 @@ STDMETHODIMP CLoadCombinationsAgg::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISegmentItem
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -52,61 +52,61 @@ STDMETHODIMP CLoadCombinationsAgg::InterfaceSupportsErrorInfo(REFIID riid)
 
 STDMETHODIMP CLoadCombinationsAgg::get_Item(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCombination* *pVal)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get_Item( index, pVal);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::get__NewEnum(/*[out,retval]*/ IUnknown** retval)  
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get__NewEnum(retval);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::get_Count(/*[out,retval]*/ CollectionIndexType *pVal)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get_Count(pVal);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::get__EnumElements(/*[out,retval]*/ IEnumLoadCombination* *pVal)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->get__EnumElements(pVal);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::Find(/*[in]*/BSTR name, /*[out,retval]*/ILoadCombination** loadCombination)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->Find(name, loadCombination);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::Add(/*[in]*/ILoadCombination* loadCombination)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->Add(loadCombination);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::RemoveByName(/*[in]*/BSTR name)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->RemoveByName(name);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::RemoveByIndex(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->RemoveByIndex(index, name);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::Clone(/*[out,retval]*/ILoadCombinations** loadCombinations)
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->Clone(loadCombinations);
 }
 
 STDMETHODIMP CLoadCombinationsAgg::Clear()
 {
-   ATLASSERT(m_LoadCombinations!=NULL);
+   ATLASSERT(m_LoadCombinations!=nullptr);
    return m_LoadCombinations->Clear();
 }
 

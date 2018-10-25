@@ -31,7 +31,7 @@
 #include "resource.h"       // main symbols
 #include <vector>
 #include <fstream>
-#include <boost\shared_ptr.hpp>
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CErrorLog
@@ -58,12 +58,12 @@ END_COM_MAP()
 
 // IWBFLErrorLog
 public:
-   STDMETHOD(Open)(/*[in]*/ BSTR fileName,/*[out,retval]*/ DWORD* dwCookie);
-   STDMETHOD(LogMessage)(/*[in]*/DWORD dwCookie,/*[in]*/ BSTR msg);
-   STDMETHOD(Close)(/*[in]*/ DWORD dwCookie);
+   STDMETHOD(Open)(/*[in]*/ BSTR fileName,/*[out,retval]*/ DWORD* dwCookie) override;
+   STDMETHOD(LogMessage)(/*[in]*/DWORD dwCookie,/*[in]*/ BSTR msg) override;
+   STDMETHOD(Close)(/*[in]*/ DWORD dwCookie) override;
 
 private:
-   std::vector<boost::shared_ptr<std::_tofstream> > m_LogFiles;
+   std::vector<std::shared_ptr<std::_tofstream> > m_LogFiles;
 };
 
 #endif //__ERRORLOG_H_

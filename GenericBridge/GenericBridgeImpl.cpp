@@ -67,7 +67,7 @@ STDMETHODIMP CGenericBridge::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IGenericBridge,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -198,7 +198,7 @@ STDMETHODIMP CGenericBridge::get_LeftBarrier(ISidewalkBarrier** barrier)
 STDMETHODIMP CGenericBridge::putref_LeftBarrier(ISidewalkBarrier* barrier)
 {
    CHECK_IN(barrier);
-   if ( (m_LeftBarrier == NULL && barrier == NULL) || m_LeftBarrier.IsEqualObject(barrier) )
+   if ( (m_LeftBarrier == nullptr && barrier == nullptr) || m_LeftBarrier.IsEqualObject(barrier) )
       return S_OK;
 
    m_LeftBarrier = barrier;
@@ -219,7 +219,7 @@ STDMETHODIMP CGenericBridge::get_RightBarrier(ISidewalkBarrier** barrier)
 STDMETHODIMP CGenericBridge::putref_RightBarrier(ISidewalkBarrier* barrier)
 {
    CHECK_IN(barrier);
-   if ( (m_RightBarrier == NULL && barrier == NULL) || m_RightBarrier.IsEqualObject(barrier) )
+   if ( (m_RightBarrier == nullptr && barrier == nullptr) || m_RightBarrier.IsEqualObject(barrier) )
       return S_OK;
 
    m_RightBarrier = barrier;
@@ -324,7 +324,7 @@ STDMETHODIMP CGenericBridge::get_SuperstructureMember(GirderIDType id,ISuperstru
    std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>::iterator found(m_SuperstructureMembers.find(id));
    if ( found == m_SuperstructureMembers.end() )
    {
-      (*ppMbr) = NULL;
+      (*ppMbr) = nullptr;
       return E_FAIL;
    }
    else
@@ -337,12 +337,12 @@ STDMETHODIMP CGenericBridge::get__EnumSuperstructureMembers(IEnumSuperstructureM
 {
    typedef _CopyInterfacePair<ISuperstructureMember,std::pair<const GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>> _CopyType;
 
-   CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>* pEnum = NULL;
+   CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>* pEnum = nullptr;
    HRESULT hr = CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init(NULL,m_SuperstructureMembers);
+   hr = pEnum->Init(nullptr,m_SuperstructureMembers);
    if ( SUCCEEDED(hr) )
       hr = pEnum->QueryInterface(enumSSMbrs);
 
@@ -482,8 +482,8 @@ STDMETHODIMP CGenericBridge::Save(IStructuredSave2* save)
 //      CSpan* pPrevSpan = pPier->GetPrevSpan();
 //      CSpan* pNextSpan = pPier->GetNextSpan();
 //
-//      CPier* pPrevPier = (pNextSpan ? pNextSpan->GetPrevPier() : NULL);
-//      CPier* pNextPier = (pPrevSpan ? pPrevSpan->GetNextPier() : NULL);
+//      CPier* pPrevPier = (pNextSpan ? pNextSpan->GetPrevPier() : nullptr);
+//      CPier* pNextPier = (pPrevSpan ? pPrevSpan->GetNextPier() : nullptr);
 //
 //      dc << "Prev Span " << (void*)pPrevSpan << " (Next Pier " << (void*)pNextPier << ")\n";
 //      dc << "Pier " << (i+1) << "                        " << (void*)pPier << "\n";

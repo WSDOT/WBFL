@@ -90,34 +90,34 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBearingLayout
 public:
-   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier);
-   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier);
-   STDMETHOD(get_BearingLineCount)(/*[out,retval]*/IndexType* pnBearingLines);
-   STDMETHOD(put_BearingLineCount)(/*[in]*/IndexType nBearingLines);
-   STDMETHOD(get_BearingLineOffset)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/Float64* pOffset);
-   STDMETHOD(put_BearingLineOffset)(/*[in]*/IndexType brgLineIdx,/*[in]*/Float64 offset);
-   STDMETHOD(get_BearingCount)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/ IndexType* nBearings);
-   STDMETHOD(put_BearingCount)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType nBearings);
-   STDMETHOD(get_Spacing)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[out,retval]*/ Float64* space);
-   STDMETHOD(put_Spacing)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ Float64 space);
-   STDMETHOD(Add)(/*[in]*/IndexType brgLineIdx,/*[in]*/ IndexType nBearings);
-   STDMETHOD(Insert)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ SpacingIndexType nInsert);
-   STDMETHOD(Remove)(/*[in]*/IndexType brgLineIdx,/*[in]*/ IndexType brgIdx,/*[in]*/ IndexType nRemove);
-   STDMETHOD(SetReferenceBearing)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[in]*/Float64 alignmentOffset);
-   STDMETHOD(GetReferenceBearing)(/*[in]*/IndexType brgLineIdx,/*[out]*/IndexType* pBrgIdx,/*[out]*/Float64* pAlignmentOffset);
-   STDMETHOD(get_BearingLayoutWidth)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/Float64* pCLW);
-   STDMETHOD(get_BearingLocation)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pXxb);
-   STDMETHOD(get_BearingOffset)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pOffset);
-   STDMETHOD(get_BearingElevation)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pElev);
+   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier) override;
+   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier) override;
+   STDMETHOD(get_BearingLineCount)(/*[out,retval]*/IndexType* pnBearingLines) override;
+   STDMETHOD(put_BearingLineCount)(/*[in]*/IndexType nBearingLines) override;
+   STDMETHOD(get_BearingLineOffset)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/Float64* pOffset) override;
+   STDMETHOD(put_BearingLineOffset)(/*[in]*/IndexType brgLineIdx,/*[in]*/Float64 offset) override;
+   STDMETHOD(get_BearingCount)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/ IndexType* nBearings) override;
+   STDMETHOD(put_BearingCount)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType nBearings) override;
+   STDMETHOD(get_Spacing)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[out,retval]*/ Float64* space) override;
+   STDMETHOD(put_Spacing)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ Float64 space) override;
+   STDMETHOD(Add)(/*[in]*/IndexType brgLineIdx,/*[in]*/ IndexType nBearings) override;
+   STDMETHOD(Insert)(/*[in]*/IndexType brgLineIdx,/*[in]*/ SpacingIndexType spaceIdx,/*[in]*/ SpacingIndexType nInsert) override;
+   STDMETHOD(Remove)(/*[in]*/IndexType brgLineIdx,/*[in]*/ IndexType brgIdx,/*[in]*/ IndexType nRemove) override;
+   STDMETHOD(SetReferenceBearing)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[in]*/Float64 alignmentOffset) override;
+   STDMETHOD(GetReferenceBearing)(/*[in]*/IndexType brgLineIdx,/*[out]*/IndexType* pBrgIdx,/*[out]*/Float64* pAlignmentOffset) override;
+   STDMETHOD(get_BearingLayoutWidth)(/*[in]*/IndexType brgLineIdx,/*[out,retval]*/Float64* pCLW) override;
+   STDMETHOD(get_BearingLocation)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pXxb) override;
+   STDMETHOD(get_BearingOffset)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pOffset) override;
+   STDMETHOD(get_BearingElevation)(/*[in]*/IndexType brgLineIdx,/*[in]*/IndexType brgIdx,/*[out,retval]*/Float64* pElev) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__BearingLayout_H_

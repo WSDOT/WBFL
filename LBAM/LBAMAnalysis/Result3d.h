@@ -61,28 +61,28 @@ BEGIN_COM_MAP(CResult3D)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IResult3D
 public:
-	STDMETHOD(SetSingleResult)(/*[in]*/ForceEffectType fet, /*[in]*/Float64 val);
-	STDMETHOD(GetSingleResult)(/*[in]*/ForceEffectType fet, /*[out,retval]*/Float64* val);
-	STDMETHOD(GetResult)(/*[out]*/Float64* X, /*[out]*/Float64* Y, /*[out]*/Float64* Z);
-	STDMETHOD(SetResult)(/*[in]*/Float64 X, /*[in]*/Float64 Y, /*[in]*/Float64 Z);
-	STDMETHOD(Zero)();
-	STDMETHOD(Sum)(/*[in]*/Float64 X, /*[in]*/Float64 Y, /*[in]*/Float64 Z);
-	STDMETHOD(FactorAndSum)(/*[in]*/IResult3D* res, /*[in]*/Float64 factor);
-	STDMETHOD(Clone)(/*[out,retval]*/IResult3D** clone);
-	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_X)(/*[in]*/ Float64 newVal);
+	STDMETHOD(SetSingleResult)(/*[in]*/ForceEffectType fet, /*[in]*/Float64 val) override;
+	STDMETHOD(GetSingleResult)(/*[in]*/ForceEffectType fet, /*[out,retval]*/Float64* val) override;
+	STDMETHOD(GetResult)(/*[out]*/Float64* X, /*[out]*/Float64* Y, /*[out]*/Float64* Z) override;
+	STDMETHOD(SetResult)(/*[in]*/Float64 X, /*[in]*/Float64 Y, /*[in]*/Float64 Z) override;
+	STDMETHOD(Zero)() override;
+	STDMETHOD(Sum)(/*[in]*/Float64 X, /*[in]*/Float64 Y, /*[in]*/Float64 Z) override;
+	STDMETHOD(FactorAndSum)(/*[in]*/IResult3D* res, /*[in]*/Float64 factor) override;
+	STDMETHOD(Clone)(/*[out,retval]*/IResult3D** clone) override;
+	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
 
 protected:
    union

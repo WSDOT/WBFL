@@ -41,9 +41,9 @@ STDMETHODIMP CMacroAdapter::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IMacroAdapter
+		&IID_IWBFLMacroAdapter
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -76,7 +76,7 @@ STDMETHODIMP CMacroAdapter::get_IsRepeatable(VARIANT_BOOL *pVal)
    return (m_Macro ? m_Macro->get_IsRepeatable(pVal) : S_OK);
 }
 
-STDMETHODIMP CMacroAdapter::get_Macro(IMacroTransaction* *pVal)
+STDMETHODIMP CMacroAdapter::get_Macro(IWBFLMacroTransaction* *pVal)
 {
    CHECK_RETOBJ(pVal);
    (*pVal) = m_Macro;
@@ -84,7 +84,7 @@ STDMETHODIMP CMacroAdapter::get_Macro(IMacroTransaction* *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CMacroAdapter::putref_Macro(IMacroTransaction* newVal)
+STDMETHODIMP CMacroAdapter::putref_Macro(IWBFLMacroTransaction* newVal)
 {
    CHECK_IN(newVal);
    m_Macro = newVal;

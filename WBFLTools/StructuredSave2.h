@@ -58,17 +58,17 @@ BEGIN_COM_MAP(CStructuredSave2)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStructuredSave2
 public:
-	STDMETHOD(Open)(/*[in]*/ BSTR bstrFileName);
-	STDMETHOD(BeginUnit)(/*[in]*/ BSTR bstrUnit,/*[in]*/ Float64 ver);
-	STDMETHOD(EndUnit)();
-	STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Property)(/*[in]*/ BSTR bstrPropName, /*[in]*/ VARIANT newVal);
-	STDMETHOD(Close)();
+	STDMETHOD(Open)(/*[in]*/ BSTR bstrFileName) override;
+	STDMETHOD(BeginUnit)(/*[in]*/ BSTR bstrUnit,/*[in]*/ Float64 ver) override;
+	STDMETHOD(EndUnit)() override;
+	STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Property)(/*[in]*/ BSTR bstrPropName, /*[in]*/ VARIANT newVal) override;
+	STDMETHOD(Close)() override;
 
 private:
    // Data Members

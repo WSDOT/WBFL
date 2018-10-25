@@ -80,23 +80,23 @@ END_COM_MAP()
    GirderIDType m_RightGirderID;
 
 public:
-   STDMETHOD(put_AlignmentID)(CogoObjectID ID);
-   STDMETHOD(get_AlignmentID)(CogoObjectID* ID);
-   STDMETHOD(put_Station)(Float64 station);
-   STDMETHOD(get_Station)(Float64* pStation);
-   STDMETHOD(put_Orientation)(BSTR orientation);
-   STDMETHOD(get_Orientation)(BSTR* orientation);
-   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal);
-   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal);
-   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered);
-   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered);
-   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID);
-   STDMETHOD(put_RightGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID);
+   STDMETHOD(put_AlignmentID)(CogoObjectID ID) override;
+   STDMETHOD(get_AlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(put_Station)(Float64 station) override;
+   STDMETHOD(get_Station)(Float64* pStation) override;
+   STDMETHOD(put_Orientation)(BSTR orientation) override;
+   STDMETHOD(get_Orientation)(BSTR* orientation) override;
+   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal) override;
+   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered) override;
+   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered) override;
+   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID) override;
+   STDMETHOD(put_RightGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(SingleDiaphragmLineFactory), CSingleDiaphragmLineFactory)

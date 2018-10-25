@@ -105,7 +105,7 @@ public:
    // Called by the subject gmSection object whenever it changes.  lHint 
    // contains one or more of the hints given above.
    virtual void OnUpdate(const gmSection* pSection, Int32 lHint,
-                         const gmSectionComponent* pComp)=0;
+                         const gmSectionComponent* pComp) = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

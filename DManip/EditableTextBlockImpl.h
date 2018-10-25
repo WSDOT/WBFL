@@ -67,133 +67,133 @@ END_COM_MAP()
 
    // iInplaceEdit Implementation
    // (not implemented by CInplaceEditDefaultImpl)
-   STDMETHOD_(void,CreateEditControl)();
-   STDMETHOD_(void,DestroyEditControl)();
-   STDMETHOD_(BOOL,ValidateData)();
-   STDMETHOD_(void,OnDataChanged)();
+   STDMETHOD_(void,CreateEditControl)() override;
+   STDMETHOD_(void,DestroyEditControl)() override;
+   STDMETHOD_(BOOL,ValidateData)() override;
+   STDMETHOD_(void,OnDataChanged)() override;
 
    // iDisplayObject overrides
-   STDMETHOD_(void,SetID)(IDType id);
-   STDMETHOD_(IDType,GetID)();
+   STDMETHOD_(void,SetID)(IDType id) override;
+   STDMETHOD_(IDType,GetID)() override;
 
-   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete);
-   STDMETHOD_(void,GetItemData)(void** ppItemData);
+   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) override;
+   STDMETHOD_(void,GetItemData)(void** ppItemData) override;
 
-   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL);
-   STDMETHOD_(void,GetDisplayList)(iDisplayList** list);
+   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) override;
+   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) override;
 
-   STDMETHOD_(void,Visible)(BOOL bVisible);
-   STDMETHOD_(BOOL,IsVisible)();
+   STDMETHOD_(void,Visible)(BOOL bVisible) override;
+   STDMETHOD_(BOOL,IsVisible)() override;
 
    // Drawing
-   STDMETHOD_(void,Draw)(CDC* pDC);
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite);
+   STDMETHOD_(void,Draw)(CDC* pDC) override;
+   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) override;
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWell)(CDC* pDC);
+   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) override;
 #endif
 
    // Size and Hit Testing
-   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy);
-   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy);
-   STDMETHOD_(BOOL,HitTest)(CPoint point);
-   STDMETHOD_(CRect,GetBoundingBox)();
-   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect);
-   STDMETHOD_(BOOL,TouchesRect)(CRect r);
+   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) override;
+   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy) override;
+   STDMETHOD_(BOOL,HitTest)(CPoint point) override;
+   STDMETHOD_(CRect,GetBoundingBox)() override;
+   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) override;
+   STDMETHOD_(BOOL,TouchesRect)(CRect r) override;
 
    // Selection
-   STDMETHOD_(void,Select)(BOOL bSelect);
-   STDMETHOD_(BOOL,IsSelected)();
-   STDMETHOD_(void,SetSelectionType)(SelectionType st);
-   STDMETHOD_(SelectionType,GetSelectionType)();
+   STDMETHOD_(void,Select)(BOOL bSelect) override;
+   STDMETHOD_(BOOL,IsSelected)() override;
+   STDMETHOD_(void,SetSelectionType)(SelectionType st) override;
+   STDMETHOD_(SelectionType,GetSelectionType)() override;
 
    // Tool Tips
 //   virtual BOOL ToolTipHitTest(CPoint point) = 0;
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText);
-   STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth);
-   STDMETHOD_(INT,GetMaxTipWidth)();
-   STDMETHOD_(void,SetTipDisplayTime)(INT iTime);
-   STDMETHOD_(INT,GetTipDisplayTime)();
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) override;
+   STDMETHOD_(CString,GetToolTipText)() override;
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) override;
+   STDMETHOD_(INT,GetMaxTipWidth)() override;
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) override;
+   STDMETHOD_(INT,GetTipDisplayTime)() override;
 
    // Interface Events
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point);
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point);
+   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) override;
+   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) override;
 
    // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink);
-   STDMETHOD_(void,UnregisterEventSink)();
-   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink);
+   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink) override;
+   STDMETHOD_(void,UnregisterEventSink)() override;
+   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) override;
 
    // Drag Drop
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite);
-   STDMETHOD_(void,UnregisterDropSite)();
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite);
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override;
+   STDMETHOD_(void,UnregisterDropSite)() override;
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override;
 
    // iTextBlock overrides
-   STDMETHOD_(void,SetPosition)(IPoint2d* pos);
-   STDMETHOD_(void,GetPosition)(IPoint2d** pos);
+   STDMETHOD_(void,SetPosition)(IPoint2d* pos) override;
+   STDMETHOD_(void,GetPosition)(IPoint2d** pos) override;
 
    // Use CDC::SetTextAlign constants
-   STDMETHOD_(void,SetTextAlign)(UINT nFlags);
-   STDMETHOD_(UINT,GetTextAlign)();
+   STDMETHOD_(void,SetTextAlign)(UINT nFlags) override;
+   STDMETHOD_(UINT,GetTextAlign)() override;
 
-   STDMETHOD_(void,SetAngle)(LONG angle);
-   STDMETHOD_(LONG,GetAngle)();
+   STDMETHOD_(void,SetAngle)(LONG angle) override;
+   STDMETHOD_(LONG,GetAngle)() override;
 
-   STDMETHOD_(void,SetText)(LPCTSTR lpszText);
-   STDMETHOD_(CString,GetText)();
+   STDMETHOD_(void,SetText)(LPCTSTR lpszText) override;
+   STDMETHOD_(CString,GetText)() override;
 
-   STDMETHOD_(void,SetFont)(const LOGFONT& Font);
-   STDMETHOD_(void,GetFont)(LOGFONT* pFont);
+   STDMETHOD_(void,SetFont)(const LOGFONT& Font) override;
+   STDMETHOD_(void,GetFont)(LOGFONT* pFont) override;
 
-   STDMETHOD_(void,SetTextColor)(COLORREF color);
-   STDMETHOD_(COLORREF,GetTextColor)();
+   STDMETHOD_(void,SetTextColor)(COLORREF color) override;
+   STDMETHOD_(COLORREF,GetTextColor)() override;
 
-   STDMETHOD_(void,SetBkColor)(COLORREF color);
-   STDMETHOD_(COLORREF,GetBkColor)();
+   STDMETHOD_(void,SetBkColor)(COLORREF color) override;
+   STDMETHOD_(COLORREF,GetBkColor)() override;
 
-   STDMETHOD_(void,SetBkMode)(int bkMode);
-   STDMETHOD_(int,GetBkMode)();
+   STDMETHOD_(void,SetBkMode)(int bkMode) override;
+   STDMETHOD_(int,GetBkMode)() override;
 
    // iEditableTextBlock
-   STDMETHOD_(void,EnableAutoUpdate)(BOOL bEnable);
-   STDMETHOD_(BOOL,IsAutoUpdateEnabled)();
-   STDMETHOD_(CString,GetEditedText)();
-   STDMETHOD_(void,SetFormat)(EditableTextBlockFormatType format);
-   STDMETHOD_(EditableTextBlockFormatType,GetFormat)();
+   STDMETHOD_(void,EnableAutoUpdate)(BOOL bEnable) override;
+   STDMETHOD_(BOOL,IsAutoUpdateEnabled)() override;
+   STDMETHOD_(CString,GetEditedText)() override;
+   STDMETHOD_(void,SetFormat)(EditableTextBlockFormatType format) override;
+   STDMETHOD_(EditableTextBlockFormatType,GetFormat)() override;
 
    // iDisplayObjectEvents
    // Receive events from TextBlock and forward to anyone listing to events on
    // this display object
-   STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-   STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-   STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-   STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-   STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-   STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-   STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-   STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
+   STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point) override;
+   STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point) override;
+   STDMETHOD_(void,OnChanged)(iDisplayObject* pDO) override;
+   STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset) override;
+   STDMETHOD_(void,OnMoved)(iDisplayObject* pDO) override;
+   STDMETHOD_(void,OnCopied)(iDisplayObject* pDO) override;
+   STDMETHOD_(void,OnSelect)(iDisplayObject* pDO) override;
+   STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO) override;
 
 
 public:
-   virtual CDisplayView* GetDisplayView();
-   virtual CInplaceEdit* GetEditObject();
+   virtual CDisplayView* GetDisplayView() override;
+   virtual CInplaceEdit* GetEditObject() override;
 
 private:
    CComPtr<iTextBlock> m_TextBlock;
@@ -201,7 +201,7 @@ private:
    BOOL m_bAutoUpdate;
    iDisplayObjectEvents* m_pEventSink; // weak reference
    CString m_strCtrlText; // Text that was in the edit control immedately before it was destroyed
-   CFont* m_pFont; // Pointer to the font used by the edit control. NULL when m_pEdit's window handle is invalid
+   CFont* m_pFont; // Pointer to the font used by the edit control. nullptr when m_pEdit's window handle is invalid
    EditableTextBlockFormatType m_Format;
    COnMouseOverCursor* m_pOnMouseOverCursor;
 };

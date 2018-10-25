@@ -63,34 +63,34 @@ BEGIN_COM_MAP(CSectionResult3D)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISectionResult3D
 public:
-	STDMETHOD(GetSingleResult)(/*[in]*/ForceEffectType effect, /*[out]*/ Float64 *leftVal, /*[out]*/ Float64 *rightVal);
-	STDMETHOD(SetSingleResult)(/*[in]*/ForceEffectType effect, /*[in]*/ Float64 leftVal, /*[in]*/ Float64 rightVal);
-	STDMETHOD(Zero)();
-	STDMETHOD(Sum)(/*[in]*/Float64 XLeft, /*[in]*/Float64 YLeft, /*[in]*/Float64 ZLeft, /*[in]*/Float64 XRight, /*[in]*/Float64 YRight, /*[in]*/Float64 ZRight);
-	STDMETHOD(FactorAndSum)(/*[in]*/ISectionResult3D* res,/*[in]*/Float64 leftFactor,/*[in]*/Float64 rightFactor);
-	STDMETHOD(Clone)(/*[out,retval]*/ISectionResult3D** clone);
-	STDMETHOD(GetResult)(/*[out]*/Float64* XLeft, /*[out]*/Float64* YLeft, /*[out]*/Float64* ZLeft, /*[out]*/Float64* XRight, /*[out]*/Float64* YRight, /*[out]*/Float64* ZRight);
-	STDMETHOD(SetResult)(/*[in]*/Float64 XLeft, /*[in]*/Float64 YLeft, /*[in]*/Float64 ZLeft, /*[in]*/Float64 XRight, /*[in]*/Float64 YRight, /*[in]*/Float64 ZRight);
-	STDMETHOD(get_ZRight)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_ZRight)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_ZLeft)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_ZLeft)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_YRight)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_YRight)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_YLeft)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_YLeft)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_XRight)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_XRight)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_XLeft)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_XLeft)(/*[in]*/ Float64 newVal);
+	STDMETHOD(GetSingleResult)(/*[in]*/ForceEffectType effect, /*[out]*/ Float64 *leftVal, /*[out]*/ Float64 *rightVal) override;
+	STDMETHOD(SetSingleResult)(/*[in]*/ForceEffectType effect, /*[in]*/ Float64 leftVal, /*[in]*/ Float64 rightVal) override;
+	STDMETHOD(Zero)() override;
+	STDMETHOD(Sum)(/*[in]*/Float64 XLeft, /*[in]*/Float64 YLeft, /*[in]*/Float64 ZLeft, /*[in]*/Float64 XRight, /*[in]*/Float64 YRight, /*[in]*/Float64 ZRight) override;
+	STDMETHOD(FactorAndSum)(/*[in]*/ISectionResult3D* res,/*[in]*/Float64 leftFactor,/*[in]*/Float64 rightFactor) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ISectionResult3D** clone) override;
+	STDMETHOD(GetResult)(/*[out]*/Float64* XLeft, /*[out]*/Float64* YLeft, /*[out]*/Float64* ZLeft, /*[out]*/Float64* XRight, /*[out]*/Float64* YRight, /*[out]*/Float64* ZRight) override;
+	STDMETHOD(SetResult)(/*[in]*/Float64 XLeft, /*[in]*/Float64 YLeft, /*[in]*/Float64 ZLeft, /*[in]*/Float64 XRight, /*[in]*/Float64 YRight, /*[in]*/Float64 ZRight) override;
+	STDMETHOD(get_ZRight)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_ZRight)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_ZLeft)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_ZLeft)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_YRight)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_YRight)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_YLeft)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_YLeft)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_XRight)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_XRight)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_XLeft)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_XLeft)(/*[in]*/ Float64 newVal) override;
 
 protected:
    // pack data members so we can get at them by name or index

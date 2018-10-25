@@ -134,7 +134,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcUnsigned& rOther);
-   virtual void MakeAssignment(const rptRcUnsigned& rOther);
+   void MakeAssignment(const rptRcUnsigned& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -71,19 +71,19 @@ CONNECTION_POINT_ENTRY(IID_IStagesEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISpanEvents
-   STDMETHOD(OnStageChanged)(/*[in]*/IStage* Stage, ChangeType change);
+   STDMETHOD(OnStageChanged)(/*[in]*/IStage* Stage, ChangeType change) override;
 
 public:
 // IStages
-	STDMETHOD(Clone)(/*[out, retval]*/ IStages** clone);
-	STDMETHOD(Add)(/*[in]*/ IStage* stage);
-	STDMETHOD(Insert)(/*[in]*/ StageIndexType relpos, /*[in]*/ IStage* stage);
-	STDMETHOD(RemoveByIndex)(/*[in]*/ StageIndexType relpos);
-	STDMETHOD(RemoveByName)(/*[in]*/ BSTR name);
-	STDMETHOD(FindIndex)(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexType* index);
+	STDMETHOD(Clone)(/*[out, retval]*/ IStages** clone) override;
+	STDMETHOD(Add)(/*[in]*/ IStage* stage) override;
+	STDMETHOD(Insert)(/*[in]*/ StageIndexType relpos, /*[in]*/ IStage* stage) override;
+	STDMETHOD(RemoveByIndex)(/*[in]*/ StageIndexType relpos) override;
+	STDMETHOD(RemoveByName)(/*[in]*/ BSTR name) override;
+	STDMETHOD(FindIndex)(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexType* index) override;
 
 private:
    IStage* Find(const CComBSTR& name);
@@ -163,7 +163,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      StageIndexType cnt=0;
+      StageIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

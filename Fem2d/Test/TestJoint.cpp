@@ -139,8 +139,8 @@ void CTestJoint::Test()
    TRY_TEST_HR(pJoints->get__EnumElements(&penum));
 
    IFem2dJoint* pj;
-   unsigned long num_fetched=0;
-   long i=0;
+   unsigned long num_fetched = 0;
+   long i = 0;
    TRY_TEST_HR(penum->Next(1, &pj, &num_fetched));
    while (num_fetched==1)
    {
@@ -329,7 +329,7 @@ void CTestJoint::Test()
 
    // set the model's pointer to zero to make sure memory counting is working
    ReleaseModel(pmodel);
-   pmodel=0;
+   pmodel = 0;
 
    // test enum nonsense that can come out of vb
    TRY_TEST_HR(psj->Support());

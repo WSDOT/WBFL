@@ -117,7 +117,7 @@ protected:
 
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   virtual void MakeAssignment(const rptRcColor& rOther);
+   void MakeAssignment(const rptRcColor& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -41,7 +41,7 @@ STDMETHODIMP CStressPoints::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStressPoints
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -52,7 +52,7 @@ STDMETHODIMP CStressPoints::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CStressPoints::OnStressPointChanged(/*[in]*/IStressPoint* pStressPoint)
 {
    // find stress point in our collection - will only fire on first found
-   CollectionIndexType i=0;
+   CollectionIndexType i = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)

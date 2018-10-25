@@ -126,7 +126,7 @@ protected:
    void MakeCopy(const rptRcInt& rOther);
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   virtual void MakeAssignment(const rptRcInt& rOther);
+   void MakeAssignment(const rptRcInt& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -47,7 +47,7 @@ STDMETHODIMP CTrafficBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -73,7 +73,7 @@ HRESULT CTrafficBarrier::FinalConstruct()
    hr = CreatePolyShape(&m_pShape);
    if ( FAILED(hr) ) return hr;
 
-   hr = CreatePoint(0,0,NULL,&m_pHookPoint);
+   hr = CreatePoint(0,0,nullptr,&m_pHookPoint);
    if ( FAILED(hr) ) return hr;
 
    hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
@@ -164,29 +164,29 @@ void CTrafficBarrier::UpdateShape()
       CComPtr<IPoint2d> p0;
       Float64 x0,y0;
       x0 = y0 = 0.00;
-      CreatePoint(x0,y0,NULL,&p0);
+      CreatePoint(x0,y0,nullptr,&p0);
 
       // Work clockwise around the left oriented shape.
       CComPtr<IPoint2d> p1;
-      CreatePoint(sign*(x0 + m_X2), y0, NULL, &p1 );
+      CreatePoint(sign*(x0 + m_X2), y0, nullptr, &p1 );
 
       CComPtr<IPoint2d> p2;
-      CreatePoint( sign*(x0 + m_X2), y0 + m_Y1, NULL, &p2 );
+      CreatePoint( sign*(x0 + m_X2), y0 + m_Y1, nullptr, &p2 );
 
       CComPtr<IPoint2d> p3;
-      CreatePoint( sign*(x0 + m_X2 - m_X5), y0 + m_Y1 + m_Y2, NULL, &p3 );
+      CreatePoint( sign*(x0 + m_X2 - m_X5), y0 + m_Y1 + m_Y2, nullptr, &p3 );
 
       CComPtr<IPoint2d> p4;
-      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4), y0 + m_Y3, NULL, &p4 );
+      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4), y0 + m_Y3, nullptr, &p4 );
 
       CComPtr<IPoint2d> p5;
-      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4 - m_X3), y0 + m_Y3, NULL, &p5 );
+      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4 - m_X3), y0 + m_Y3, nullptr, &p5 );
 
       CComPtr<IPoint2d> p6;
-      CreatePoint( sign*(x0 - m_X1), y0 - m_Y4, NULL, &p6 );
+      CreatePoint( sign*(x0 - m_X1), y0 - m_Y4, nullptr, &p6 );
 
       CComPtr<IPoint2d> p7;
-      CreatePoint( x0 , y0 - m_Y4, NULL, &p7 );
+      CreatePoint( x0 , y0 - m_Y4, nullptr, &p7 );
    
       m_pShape->AddPointEx(p0);
       m_pShape->AddPointEx(p1);
@@ -485,7 +485,7 @@ STDMETHODIMP CTrafficBarrier::Clone(IShape** pClone)
    pTheClone->put_Orientation(m_Orientation);
 
    CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,NULL,&hookPnt);
+   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
    pTheClone->putref_HookPoint(hookPnt);
 
    pTheClone->QueryInterface(pClone);
@@ -559,7 +559,7 @@ STDMETHODIMP CTrafficBarrier::get_LocatorPoint(LocatorPointType lp, IPoint2d** p
    UpdateShape();
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CTrafficBarrier::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

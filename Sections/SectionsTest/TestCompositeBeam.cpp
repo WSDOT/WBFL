@@ -66,50 +66,50 @@ void CTestCompositeBeam::TestICompositeBeam()
    CComPtr<IShape> shape;
    Float64 val;
 
-   TRY_TEST(comp->get_Beam(NULL),E_POINTER);
+   TRY_TEST(comp->get_Beam(nullptr),E_POINTER);
    TRY_TEST(comp->get_Beam(&shape),S_OK);
    TRY_TEST(shape != 0, true);
 
    CComQIPtr<IRectangle> rect(shape);
    TRY_TEST(rect != 0,true);
 
-   TRY_TEST(comp->get_BeamDensity(NULL),E_POINTER);
+   TRY_TEST(comp->get_BeamDensity(nullptr),E_POINTER);
    TRY_TEST(comp->get_BeamDensity(&val),S_OK);
    TRY_TEST(IsEqual(val,1.0),true);
 
-   TRY_TEST(comp->get_BeamE(NULL),E_POINTER);
+   TRY_TEST(comp->get_BeamE(nullptr),E_POINTER);
    TRY_TEST(comp->get_BeamE(&val),S_OK);
    TRY_TEST(IsEqual(val,1.0),true);
 
-   TRY_TEST(comp->get_EffectiveSlabWidth(NULL),E_POINTER);
+   TRY_TEST(comp->get_EffectiveSlabWidth(nullptr),E_POINTER);
    TRY_TEST(comp->get_EffectiveSlabWidth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
-   TRY_TEST(comp->get_GrossSlabDepth(NULL),E_POINTER);
+   TRY_TEST(comp->get_GrossSlabDepth(nullptr),E_POINTER);
    TRY_TEST(comp->get_GrossSlabDepth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
-   TRY_TEST(comp->get_HaunchDepth(NULL),E_POINTER);
+   TRY_TEST(comp->get_HaunchDepth(nullptr),E_POINTER);
    TRY_TEST(comp->get_HaunchDepth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
-   TRY_TEST(comp->get_HaunchWidth(NULL),E_POINTER);
+   TRY_TEST(comp->get_HaunchWidth(nullptr),E_POINTER);
    TRY_TEST(comp->get_HaunchWidth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
-   TRY_TEST(comp->get_SacrificialDepth(NULL),E_POINTER);
+   TRY_TEST(comp->get_SacrificialDepth(nullptr),E_POINTER);
    TRY_TEST(comp->get_SacrificialDepth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
-   TRY_TEST(comp->get_SlabDensity(NULL),E_POINTER);
+   TRY_TEST(comp->get_SlabDensity(nullptr),E_POINTER);
    TRY_TEST(comp->get_SlabDensity(&val),S_OK);
    TRY_TEST(IsEqual(val,1.0),true);
 
-   TRY_TEST(comp->get_SlabE(NULL),E_POINTER);
+   TRY_TEST(comp->get_SlabE(nullptr),E_POINTER);
    TRY_TEST(comp->get_SlabE(&val),S_OK);
    TRY_TEST(IsEqual(val,1.0),true);
 
-   TRY_TEST(comp->get_TributarySlabWidth(NULL),E_POINTER);
+   TRY_TEST(comp->get_TributarySlabWidth(nullptr),E_POINTER);
    TRY_TEST(comp->get_TributarySlabWidth(&val),S_OK);
    TRY_TEST(IsEqual(val,0.0),true);
 
@@ -167,12 +167,12 @@ void CTestCompositeBeam::TestICompositeBeam()
    comp->put_SlabE(0.125);  // N = 8
 
    Float64 Q;
-   TRY_TEST(comp->get_QSlab(NULL),E_POINTER);
+   TRY_TEST(comp->get_QSlab(nullptr),E_POINTER);
    TRY_TEST(comp->get_QSlab(&Q),S_OK);
    TRY_TEST(IsEqual(Q,3651.6,0.1),true);
 
    // q top flange + slab
-   TRY_TEST(comp->get_Q(124.25,NULL),E_POINTER);
+   TRY_TEST(comp->get_Q(124.25,nullptr),E_POINTER);
    TRY_TEST(comp->get_Q(-1,&Q),E_INVALIDARG);
    TRY_TEST(comp->get_Q(124.25,&Q),S_OK);
    TRY_TEST(IsEqual(Q,4867.5,0.1),true);
@@ -237,7 +237,7 @@ void CTestCompositeBeam::TestISection()
    CComQIPtr<ISection> section(comp);
    // test bounding box
    CComPtr<IRect2d> box;
-   TRY_TEST(section->get_BoundingBox(NULL),E_POINTER);
+   TRY_TEST(section->get_BoundingBox(nullptr),E_POINTER);
    TRY_TEST(section->get_BoundingBox(&box),S_OK);
    Float64 l,r,t,b;
    box->get_Left(&l);
@@ -251,7 +251,7 @@ void CTestCompositeBeam::TestISection()
 
    // Elastic Properties
    CComPtr<IElasticProperties> props;
-   TRY_TEST(section->get_ElasticProperties(NULL),E_POINTER);
+   TRY_TEST(section->get_ElasticProperties(nullptr),E_POINTER);
    TRY_TEST(section->get_ElasticProperties(&props),S_OK);
    Float64 val;
    props->get_EA(&val);
@@ -287,7 +287,7 @@ void CTestCompositeBeam::TestISection()
 
    // Check mass properties
    CComPtr<IMassProperties> mprops;
-   TRY_TEST(section->get_MassProperties(NULL),E_POINTER);
+   TRY_TEST(section->get_MassProperties(nullptr),E_POINTER);
    TRY_TEST(section->get_MassProperties(&mprops),S_OK);
    mprops->get_MassPerLength(&val);
    TRY_TEST(IsEqual(val,150623.12),true);
@@ -302,8 +302,8 @@ void CTestCompositeBeam::TestISection()
    clipRect->put_Top(1000);
 
    CComPtr<ISection> clipSection;
-   TRY_TEST(section->ClipIn(NULL,&clipSection),E_INVALIDARG);
-   TRY_TEST(section->ClipIn(clipRect,NULL),E_POINTER);
+   TRY_TEST(section->ClipIn(nullptr,&clipSection),E_INVALIDARG);
+   TRY_TEST(section->ClipIn(clipRect,nullptr),E_POINTER);
    TRY_TEST(section->ClipIn(clipRect,&clipSection),S_OK);
    props.Release();
    clipSection->get_ElasticProperties(&props);
@@ -321,8 +321,8 @@ void CTestCompositeBeam::TestISection()
    clipLine->ThroughPoints(p1,p2);
 
    clipSection.Release();
-   TRY_TEST(section->ClipWithLine(NULL,&clipSection),E_INVALIDARG);
-   TRY_TEST(section->ClipWithLine(clipLine,NULL),E_POINTER);
+   TRY_TEST(section->ClipWithLine(nullptr,&clipSection),E_INVALIDARG);
+   TRY_TEST(section->ClipWithLine(clipLine,nullptr),E_POINTER);
    TRY_TEST(section->ClipWithLine(clipLine,&clipSection),S_OK);
 
    props.Release();
@@ -332,11 +332,11 @@ void CTestCompositeBeam::TestISection()
 
    // Test Clone
    CComPtr<ISection> cloneSection;
-   TRY_TEST(section->Clone(NULL),E_POINTER);
+   TRY_TEST(section->Clone(nullptr),E_POINTER);
    TRY_TEST(section->Clone(&cloneSection),S_OK);
 
    CComQIPtr<ICompositeBeam> cloneComp(cloneSection);
-   TRY_TEST(cloneComp != NULL,true);
+   TRY_TEST(cloneComp != nullptr,true);
    cloneComp->get_GrossSlabDepth(&val);
    TRY_TEST(IsEqual(val,7.),true);
    cloneComp->get_EffectiveSlabWidth(&val);
@@ -351,7 +351,7 @@ void CTestCompositeBeam::TestISection()
    CComPtr<IShape> cloneShape;
    cloneComp->get_Beam(&cloneShape);
    CComQIPtr<IPlateGirder> cloneBeam(cloneShape);
-   TRY_TEST(cloneBeam != NULL,true);
+   TRY_TEST(cloneBeam != nullptr,true);
    cloneBeam->get_WebHeight(&val);
    TRY_TEST(IsEqual(val,122.),true);
    cloneBeam->get_WebThick(&val);
@@ -406,7 +406,7 @@ void CTestCompositeBeam::TestIXYPosition()
    size.CoCreateInstance( CLSID_Size2d );
    size->put_Dx(10);
    size->put_Dy(20);
-   TRY_TEST( position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
    hookPnt->get_X(&x);
@@ -434,8 +434,8 @@ void CTestCompositeBeam::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(110,110);
 
-   TRY_TEST( position->MoveEx(NULL,to),    E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from, NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to),    E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from, nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to),    S_OK );
 
    hookPnt->get_X(&x);
@@ -457,8 +457,8 @@ void CTestCompositeBeam::TestIXYPosition()
    TRY_TEST( IsEqual(x,0.), true );
    TRY_TEST( IsEqual(y,0.), true );
 
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    to->Move(58,100);
@@ -611,7 +611,7 @@ void CTestCompositeBeam::TestIXYPosition()
    TRY_TEST( position->put_LocatorPoint(lpBottomCenter,to), S_OK );
    rotPoint->Move(0,0);
 
-   TRY_TEST( position->RotateEx(NULL,PI_OVER_2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,PI_OVER_2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(rotPoint,PI_OVER_2), S_OK );
 
    CComQIPtr<ISection> section(position);

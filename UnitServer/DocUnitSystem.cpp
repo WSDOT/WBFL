@@ -59,7 +59,7 @@ STDMETHODIMP CDocUnitSystem::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IDocUnitSystem
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -102,7 +102,7 @@ STDMETHODIMP CDocUnitSystem::get_AppUnitSystem(IAppUnitSystem **pVal)
    (*pVal) = m_pAppUnitSys;
 
    // If this DocUnitSystem hasn't been associated with an AppUnitSystem
-   // yet, a call to AddRef on m_pAppUnitSys (a NULL pointer) will cause
+   // yet, a call to AddRef on m_pAppUnitSys (a nullptr pointer) will cause
    // an access violation. Check the pointer first.
    if ( *pVal )
       (*pVal)->AddRef();
@@ -125,7 +125,7 @@ STDMETHODIMP CDocUnitSystem::ConvertToDisplayUnits(/*[in]*/ Float64 value,/*[in]
    CHECK_IN(group);
    CHECK_RETVAL(result);
 
-   if ( m_pAppUnitSys == NULL )
+   if ( m_pAppUnitSys == nullptr )
       return CComCoClass<CDocUnitSystem>::Error(IDS_E_APPUNITSYSNOTSET,IDH_E_APPUNITSYSNOTSET, GetHelpFile(),IID_IDocUnitSystem,UNITS_E_APPUNITSYSNOTSET);
 
    CComPtr<IDisplayUnitMgr2> pDUM;
@@ -163,7 +163,7 @@ STDMETHODIMP CDocUnitSystem::ConvertFromDisplayUnits(/*[in]*/ Float64 value,/*[i
    CHECK_IN(group);
    CHECK_RETVAL(result);
 
-   if ( m_pAppUnitSys == NULL )
+   if ( m_pAppUnitSys == nullptr )
       return CComCoClass<CDocUnitSystem>::Error(IDS_E_APPUNITSYSNOTSET,IDH_E_APPUNITSYSNOTSET, GetHelpFile(),IID_IDocUnitSystem,UNITS_E_APPUNITSYSNOTSET);
 
    CComPtr<IDisplayUnitMgr2> pDUM;
@@ -201,7 +201,7 @@ STDMETHODIMP CDocUnitSystem::get_Tag(BSTR group,BSTR* tag)
    CHECK_IN(group);
    CHECK_RETSTRING(tag);
 
-   if ( m_pAppUnitSys == NULL )
+   if ( m_pAppUnitSys == nullptr )
       return CComCoClass<CDocUnitSystem>::Error(IDS_E_APPUNITSYSNOTSET,IDH_E_APPUNITSYSNOTSET, GetHelpFile(),IID_IDocUnitSystem,UNITS_E_APPUNITSYSNOTSET);
 
    CComPtr<IDisplayUnitMgr2> pDUM;
@@ -249,7 +249,7 @@ STDMETHODIMP CDocUnitSystem::Format(Float64 val,BSTR bstrGroup,VARIANT_BOOL bSho
    CHECK_IN(bstrGroup);
    CHECK_RETSTRING(fmtString);
 
-   if ( m_pAppUnitSys == NULL )
+   if ( m_pAppUnitSys == nullptr )
       return CComCoClass<CDocUnitSystem>::Error(IDS_E_APPUNITSYSNOTSET,IDH_E_APPUNITSYSNOTSET, GetHelpFile(),IID_IDocUnitSystem,UNITS_E_APPUNITSYSNOTSET);
 
    CComPtr<IDisplayUnitMgr2> pDUM;

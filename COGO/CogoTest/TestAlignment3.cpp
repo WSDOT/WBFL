@@ -64,7 +64,7 @@ void CTestAlignment3::Test1()
 
    CComPtr<IAlignment> subAlignment;
    // sub path that captures entire element
-   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),nullptr), E_POINTER);
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
    CollectionIndexType nElements;
@@ -219,7 +219,7 @@ void CTestAlignment3::Test2()
 
    CComPtr<IAlignment> subAlignment;
    // sub alignment that captures entire element
-   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),nullptr), E_POINTER);
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);
 
    CollectionIndexType nElements;
@@ -387,7 +387,7 @@ void CTestAlignment3::Test3()
    CComPtr<IAlignment> subAlignment;
 
    // sub alignment that captures entire element
-   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),NULL), E_POINTER);
+   TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),nullptr), E_POINTER);
 
    // start on back tangent, end in circular curve
    TRY_TEST(alignment->CreateSubAlignment(CComVariant(-10.0),CComVariant(300),&subAlignment), S_OK);

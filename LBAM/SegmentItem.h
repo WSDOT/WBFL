@@ -72,19 +72,19 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegmentItem
 public:
-	STDMETHOD(get_Segment)(/*[out, retval]*/ ISegment* *pVal);
-	STDMETHOD(get_RelPosition)(/*[out, retval]*/ SegmentIndexType *pVal);
-	STDMETHOD(get_Stage)(/*[out, retval]*/ BSTR *pVal);
-   STDMETHOD(Clone)(ISegmentItem** pclone);
+	STDMETHOD(get_Segment)(/*[out, retval]*/ ISegment* *pVal) override;
+	STDMETHOD(get_RelPosition)(/*[out, retval]*/ SegmentIndexType *pVal) override;
+	STDMETHOD(get_Stage)(/*[out, retval]*/ BSTR *pVal) override;
+   STDMETHOD(Clone)(ISegmentItem** pclone) override;
 
 	HRESULT PutSegment(ISegment* pVal);
 
    // _ISegmentEvents
-   STDMETHOD(OnSegmentChanged)(/*[in]*/ISegment* segment, /*[in]*/ChangeType type);
+   STDMETHOD(OnSegmentChanged)(/*[in]*/ISegment* segment, /*[in]*/ChangeType type) override;
 
 protected:
    CComBSTR m_Stage;

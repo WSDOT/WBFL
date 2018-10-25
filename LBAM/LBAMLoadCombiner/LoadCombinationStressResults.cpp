@@ -41,7 +41,7 @@ STDMETHODIMP CLoadCombinationStressResults::InterfaceSupportsErrorInfo(REFIID ri
 	{
 		&IID_ILoadCombinationStressResults
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -124,7 +124,7 @@ STDMETHODIMP CLoadCombinationStressResults::GetResult(CollectionIndexType index,
       return hr;
 
    // only copy config if valid pointer
-   if (leftConfig!=NULL && rightConfig!=NULL)
+   if (leftConfig!=nullptr && rightConfig!=nullptr)
    {
       hr = rres.m_LeftConfig.CopyTo(leftConfig);
       if (FAILED(hr))
@@ -169,7 +169,7 @@ STDMETHODIMP CLoadCombinationStressResults::Load(IStructuredLoad2 * pload)
       long cnt = var;
       m_ComboResults.reserve(cnt);
 
-      for (long ic=0; ic<cnt; ic++)
+      for (long ic = 0; ic<cnt; ic++)
       {
          ComboRes reshldr;
 
@@ -195,7 +195,7 @@ STDMETHODIMP CLoadCombinationStressResults::Load(IStructuredLoad2 * pload)
          // null configurations are written out as longs (see Save)
          if (var.vt==VT_I4)
          {
-            reshldr.m_LeftConfig = NULL;
+            reshldr.m_LeftConfig = nullptr;
          }
          else
          {
@@ -228,7 +228,7 @@ STDMETHODIMP CLoadCombinationStressResults::Load(IStructuredLoad2 * pload)
 
          if (var.vt==VT_I4)
          {
-            reshldr.m_RightConfig = NULL;
+            reshldr.m_RightConfig = nullptr;
          }
          else
          {
@@ -273,7 +273,7 @@ STDMETHODIMP CLoadCombinationStressResults::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          const ComboRes& llres = m_ComboResults[ic];
 
@@ -281,7 +281,7 @@ STDMETHODIMP CLoadCombinationStressResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_LeftConfig!=NULL)
+         if (llres.m_LeftConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t(llres.m_LeftConfig));
          else
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t((long)0));
@@ -293,7 +293,7 @@ STDMETHODIMP CLoadCombinationStressResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_RightConfig!=NULL)
+         if (llres.m_RightConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t(llres.m_RightConfig));
          else
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t((long)0));

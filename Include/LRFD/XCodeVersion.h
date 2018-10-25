@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXCodeVersion();
+   virtual ~lrfdXCodeVersion() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -87,8 +87,8 @@ public:
    lrfdXCodeVersion& operator = (const lrfdXCodeVersion& rOther);
 
    // GROUP: OPERATIONS
-   virtual void Throw() const;
-   virtual Int32 GetReason() const;
+   virtual void Throw() const override;
+   virtual Int32 GetReason() const override;
    Reason GetReasonCode() const;
 
    // GROUP: ACCESS
@@ -115,7 +115,7 @@ protected:
    void MakeCopy(const lrfdXCodeVersion& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdXCodeVersion& rOther);
+   void MakeAssignment(const lrfdXCodeVersion& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

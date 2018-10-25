@@ -76,7 +76,7 @@ STDMETHODIMP CPath::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPath,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -183,7 +183,7 @@ STDMETHODIMP CPath::InsertEx(CollectionIndexType idx, IUnknown* dispElement)
    CComQIPtr<ICubicSpline> spline(dispElement);
    CComQIPtr<IPath> path(dispElement);
 
-   if ( point == NULL && curve == NULL && ls == NULL && spline == NULL && path == NULL )
+   if ( point == nullptr && curve == nullptr && ls == nullptr && spline == nullptr && path == nullptr )
    {
       return Error(IDS_E_PATHELEMENTTYPE,IID_IPath,COGO_E_PATHELEMENTTYPE);
    }
@@ -249,11 +249,11 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
       CComQIPtr<ICubicSpline> spline(varID.punkVal);
 
       // The input object is not of the correct type
-      if ( element == NULL && 
-           point   == NULL &&
-           ls      == NULL &&
-           hc      == NULL &&
-           spline  == NULL)
+      if ( element == nullptr && 
+           point   == nullptr &&
+           ls      == nullptr &&
+           hc      == nullptr &&
+           spline  == nullptr)
       {
          return E_INVALIDARG;
       }
@@ -267,11 +267,11 @@ STDMETHODIMP CPath::Remove(VARIANT varID)
          CComQIPtr<IPathElement> ae(varElement.punkVal);
          CComPtr<IUnknown> dispVal;
          ae->get_Value(&dispVal);
-         if ( element != NULL && element.IsEqualObject(varElement.punkVal) ||
-              point   != NULL && point.IsEqualObject(dispVal)              ||
-              ls      != NULL && ls.IsEqualObject(dispVal)                 ||
-              spline  != NULL && ls.IsEqualObject(dispVal)                 ||
-              hc      != NULL && hc.IsEqualObject(dispVal) )
+         if ( element != nullptr && element.IsEqualObject(varElement.punkVal) ||
+              point   != nullptr && point.IsEqualObject(dispVal)              ||
+              ls      != nullptr && ls.IsEqualObject(dispVal)                 ||
+              spline  != nullptr && ls.IsEqualObject(dispVal)                 ||
+              hc      != nullptr && hc.IsEqualObject(dispVal) )
          {
             UnadviseElement(iter - m_coll.begin());
             m_coll.erase(iter);
@@ -321,7 +321,7 @@ STDMETHODIMP CPath::LocatePoint( Float64 distance, OffsetMeasureType offsetMeasu
       }
    }
 
-   if ( offsetMeasure == omtNormal && !IsZero(offset) && dir != NULL)
+   if ( offsetMeasure == omtNormal && !IsZero(offset) && dir != nullptr)
    {
       // add offset so that it is along direction
       CComPtr<IDirection> normal;
@@ -548,7 +548,7 @@ STDMETHODIMP CPath::ProjectPoint(IPoint2d* point, IPoint2d* *newPoint)
    Float64 shortestDistance = DBL_MAX;
    CComPtr<IPoint2d> nearestPoint;
 
-   BOOST_FOREACH(Element& element,vElements)
+   for(const auto& element : vElements)
    {
       CComPtr<IPathElement> path_element(element.pathElement);
 
@@ -612,7 +612,7 @@ STDMETHODIMP CPath::IntersectEx(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vb
    CComPtr<IEnumPoint2d> enumPoints;
    points->get__Enum(&enumPoints);
    CComPtr<IPoint2d> p;
-   while ( enumPoints->Next(1,&p,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&p,nullptr) != S_FALSE )
    {
       Float64 dist;
       CComPtr<IDirection> dir;
@@ -663,7 +663,7 @@ STDMETHODIMP CPath::get__EnumPathElements(IEnumPathElements** pVal)
       return hr;
    }
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
    {
       return hr;
@@ -1597,7 +1597,7 @@ HRESULT CPath::DistanceAndOffset(IPoint2d* point,Float64* pDistance,Float64* pOf
    // The distance we are looking for is the one that corrosponds to the shortest offset
    Float64 minOffset = DBL_MAX;
    Float64 distAtOffset = -DBL_MAX;
-   BOOST_FOREACH(Element& element,vElements)
+   for (const auto& element : vElements)
    {
       Float64 startDistance = element.start;
       CComPtr<IPathElement> path_element = element.pathElement;
@@ -1739,7 +1739,7 @@ STDMETHODIMP CPath::Clone(IPath* *clone)
    CComPtr<IEnumPathElements> enumPathElements;
    get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> path_element;
-   while ( enumPathElements->Next(1,&path_element,NULL) != S_FALSE )
+   while ( enumPathElements->Next(1,&path_element,nullptr) != S_FALSE )
    {
       CComPtr<IPathElement> clonePE;
       path_element->Clone(&clonePE);
@@ -1774,7 +1774,7 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
    (*path)->putref_PointFactory(m_PointFactory);
 
    std::vector<Element>& vElements = GetPathElements();
-   BOOST_FOREACH(Element& element,vElements)
+   for (const auto& element : vElements)
    {
       CComPtr<IPathElement> path_element = element.pathElement;
 
@@ -1866,7 +1866,7 @@ STDMETHODIMP CPath::CreateConnectedPath(IPath** path)
    (*path)->putref_PointFactory(m_PointFactory);
    
    std::vector<Element>& vElements = GetPathElements();
-   BOOST_FOREACH(Element& element,vElements)
+   for (const auto& element : vElements)
    {
       CComPtr<IPathElement> path_element = element.pathElement;
 
@@ -1895,7 +1895,7 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
    (*path)->putref_PointFactory(m_PointFactory);
 
    std::vector<Element>& vElements = GetPathElements();
-   BOOST_FOREACH(Element& element,vElements)
+   for (const auto& element : vElements)
    {
       CComPtr<IPathElement> path_element = element.pathElement;
 
@@ -2004,7 +2004,7 @@ STDMETHODIMP CPath::Move(Float64 dist,IDirection* direction)
    CComPtr<IEnumPathElements> enumPathElements;
    get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> path_element;
-   while ( enumPathElements->Next(1,&path_element,NULL) != S_FALSE )
+   while ( enumPathElements->Next(1,&path_element,nullptr) != S_FALSE )
    {
       path_element->Offset(dx,dy);
       path_element.Release();
@@ -2219,12 +2219,12 @@ void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IP
       GetStartPoint(nextElement,&nextPoint);
    }
 
-   if (prevPoint == NULL && nextPoint == NULL )
+   if (prevPoint == nullptr && nextPoint == nullptr )
    {
       // nothing before or after this point, assume straight line due East
       (*pPoint)->Offset(0,offset);
    }
-   else if ( prevPoint != NULL && nextPoint != NULL )
+   else if ( prevPoint != nullptr && nextPoint != nullptr )
    {
       CComPtr<ILine2d> l1,l2;
       l1.CoCreateInstance(CLSID_Line2d);
@@ -2243,7 +2243,7 @@ void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IP
       pnt->Location(&x,&y);
       (*pPoint)->Move(x,y);
    }
-   else if ( prevPoint == NULL && nextPoint != NULL )
+   else if ( prevPoint == nullptr && nextPoint != nullptr )
    {
       CComPtr<ILine2d> l;
       l.CoCreateInstance(CLSID_Line2d);
@@ -2258,7 +2258,7 @@ void CPath::CreateParallelPoint(CollectionIndexType elementIdx,Float64 offset,IP
       pnt->Location(&x,&y);
       (*pPoint)->Move(x,y);
    }
-   else if ( prevPoint != NULL && nextPoint == NULL )
+   else if ( prevPoint != nullptr && nextPoint == nullptr )
    {
       CComPtr<ILine2d> l;
       l.CoCreateInstance(CLSID_Line2d);
@@ -2299,7 +2299,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
       )
    {
       // this line segment is not part of the sub-path
-      (*ppLineSegment) = NULL;
+      (*ppLineSegment) = nullptr;
       return S_OK;
    }
    else if ( start <= lsStart && lsEnd <= end )
@@ -2350,7 +2350,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
       if ( IsZero(length) )
       {
          // this line segment is not part of the sub-path
-         (*ppLineSegment) = NULL;
+         (*ppLineSegment) = nullptr;
       }
       else
       {
@@ -2376,9 +2376,9 @@ typedef enum RelativePointLocation
 
 HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3)
 {
-   (*ppResult1) = NULL;
-   (*ppResult2) = NULL;
-   (*ppResult3) = NULL;
+   (*ppResult1) = nullptr;
+   (*ppResult2) = nullptr;
+   (*ppResult3) = nullptr;
 
    CollectionIndexType nSplinePoints = 7;
 
@@ -2477,8 +2477,8 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
       if ( (StartPoint == StartBeforeTS || StartPoint == StartInEntrySpiral) && EndPoint == EndInEntrySpiral )
       {
          CComPtr<ICubicSpline> spline;
-         Float64 start_distance = _cpp_max(0.,start-hcStart);
-         Float64 end_distance   = _cpp_min(end - hcStart,Ls1);
+         Float64 start_distance = Max(0.,start-hcStart);
+         Float64 end_distance   = Min(end - hcStart,Ls1);
          CreateSubCurveSpline(start_distance,end_distance,nSplinePoints,pHC,&spline);
          
          (*ppResult1) = spline;
@@ -2488,8 +2488,8 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
       else if ( StartPoint == StartInExitSpiral && (EndPoint == EndInExitSpiral || EndPoint == EndAfterST) )
       {
          CComPtr<ICubicSpline> spline;
-         Float64 start_distance = _cpp_max(Ls1+L,start-hcStart);
-         Float64 end_distance   = _cpp_min(end - hcStart,Lt);
+         Float64 start_distance = Max(Ls1+L,start-hcStart);
+         Float64 end_distance   = Min(end - hcStart,Lt);
          CreateSubCurveSpline(start_distance,end_distance,nSplinePoints,pHC,&spline);
 
          (*ppResult1) = spline;
@@ -2514,8 +2514,8 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
          if ( StartPoint == StartInEntrySpiral )
          {
             CComPtr<ICubicSpline> spline;
-            Float64 start_distance = _cpp_max(0.,start-hcStart);
-            Float64 end_distance = _cpp_min(end - hcStart,Ls1);
+            Float64 start_distance = Max(0.,start-hcStart);
+            Float64 end_distance = Min(end - hcStart,Ls1);
             CreateSubCurveSpline(start_distance,end_distance,nSplinePoints,pHC,&spline);
          
             (*ppResult1) = spline;
@@ -2541,8 +2541,8 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IU
          if ( EndPoint == EndInExitSpiral )
          {
             CComPtr<ICubicSpline> spline;
-            Float64 start_distance = _cpp_max(Ls1+L,start-hcStart);
-            Float64 end_distance = _cpp_min(end - hcStart,Lt);
+            Float64 start_distance = Max(Ls1+L,start-hcStart);
+            Float64 end_distance = Min(end - hcStart,Lt);
             CreateSubCurveSpline(start_distance,end_distance,nSplinePoints,pHC,&spline);
 
             (*ppResult3) = spline;
@@ -2605,7 +2605,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
       )
    {
       // this spline is not part of the sub-path
-      (*ppResult) = NULL;
+      (*ppResult) = nullptr;
       return S_OK;
    }
    else if ( start <= splineStart && splineEnd <= end )
@@ -2688,12 +2688,12 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
       subSpline->put_StartDirection( CComVariant(dirStart) );
 
       // distance from start of sub-path range to start of spline, or 0 if spline starts after sub-path range
-      Float64 start_distance = _cpp_max(0.,start-splineStart);
+      Float64 start_distance = Max(0.,start-splineStart);
 
       // distance from start of sub-path range to the end of spline, or the lengt of spline if the sub-path ends after the spline
       Float64 splineLength;
       pSpline->get_Length(&splineLength);
-      Float64 end_distance = _cpp_min(end - splineStart,splineLength);
+      Float64 end_distance = Min(end - splineStart,splineLength);
 
       // keep track of the number of points added to the sub-spline between the start and end points
       long nSubPoints = 0;
@@ -2866,7 +2866,7 @@ Float64 CPath::GetElementLength(IPathElement* pElement)
 void CPath::DumpPathElements()
 {
    std::vector<Element>& vElements = GetPathElements();
-   BOOST_FOREACH(Element& element,vElements)
+   for (const auto& element : vElements)
    {
       CComPtr<IPathElement> path_element = element.pathElement;
 

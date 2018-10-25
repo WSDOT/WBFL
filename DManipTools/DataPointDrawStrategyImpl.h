@@ -36,26 +36,26 @@ public:
    DECLARE_INTERFACE_MAP()
 
    BEGIN_INTERFACE_PART(Strategy,iDataPointDrawStrategy)
-      STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal);
-      STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal);
+      STDMETHOD_(void,get_SymbolFontFace)(TCHAR* *pVal) override;
+      STDMETHOD_(void,put_SymbolFontFace)(LPCTSTR newVal) override;
       // character font size in 1/10 points
-      STDMETHOD_(long,get_SymbolSize)();
-      STDMETHOD_(void,put_SymbolSize)(long code);
-      STDMETHOD_(DWORD,get_SymbolCharacterCode)();
-      STDMETHOD_(void,put_SymbolCharacterCode)(DWORD code);
-      STDMETHOD_(COLORREF,get_Color)();
-      STDMETHOD_(void,put_Color)(COLORREF color);
+      STDMETHOD_(long,get_SymbolSize)() override;
+      STDMETHOD_(void,put_SymbolSize)(long code) override;
+      STDMETHOD_(DWORD,get_SymbolCharacterCode)() override;
+      STDMETHOD_(void,put_SymbolCharacterCode)(DWORD code) override;
+      STDMETHOD_(COLORREF,get_Color)() override;
+      STDMETHOD_(void,put_Color)(COLORREF color) override;
    END_INTERFACE_PART(Strategy)
 
    BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
-      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
-      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** box);
+      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC) override;
+      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
+      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite) override;
+      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** box) override;
    END_INTERFACE_PART(DrawPointStrategy)
 
 private:
-   virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
+   void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
 
    CString  m_FontFace;
    long     m_FontSize;

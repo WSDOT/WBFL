@@ -79,12 +79,12 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFApp)
 	public:
-	virtual int Run();
-	virtual BOOL InitInstance();
-	virtual int ExitInstance();
-	virtual LRESULT ProcessWndProcException(CException* e, const MSG* pMsg);
-	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
-   virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
+	virtual int Run() override;
+	virtual BOOL InitInstance() override;
+	virtual int ExitInstance() override;
+	virtual LRESULT ProcessWndProcException(CException* e, const MSG* pMsg) override;
+	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) override;
+   virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName) override;
    virtual void ReplaceDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
@@ -280,7 +280,7 @@ private:
 
 public:
    afx_msg void OnAppAbout();
-   virtual BOOL PreTranslateMessage(MSG* pMsg);
+   virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -313,8 +313,8 @@ protected:
 
    BOOL RegisterDocTemplates();
    BOOL AppPluginUIIntegration(BOOL bIntegrate);
-   virtual BOOL CreateApplicationPlugins();
+   virtual BOOL CreateApplicationPlugins() override;
    virtual BOOL CreatePlugins();
-   virtual void LoadDocumentationMap();
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+   virtual void LoadDocumentationMap() override;
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL) override;
 };

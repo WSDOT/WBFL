@@ -81,11 +81,11 @@ HRESULT CTestSpliced::Test()
    // request results for tenth points in spans 0 and 1
    CComPtr<IIDArray> poilist;
    poilist.CoCreateInstance(CLSID_IDArray);
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -121,19 +121,19 @@ HRESULT CTestSpliced::Test()
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), roGlobal, rsIncremental, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 3"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -145,13 +145,13 @@ HRESULT CTestSpliced::Test()
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), rsIncremental, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 3"), rsIncremental, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -165,31 +165,31 @@ HRESULT CTestSpliced::Test()
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist, _bstr_t("Stage 2"), rsIncremental, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist, _bstr_t("Stage 3"), rsIncremental, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist, _bstr_t("Stage 1"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist, _bstr_t("Stage 2"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist, _bstr_t("Stage 3"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -251,7 +251,7 @@ void CTestSpliced::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    Float64 loc = 0.0;
    span_ends.push_back(loc);  // spans start at 0.0
 
-   for(SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for(SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       spans->get_Item(ispan, &span);
@@ -273,7 +273,7 @@ void CTestSpliced::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -289,7 +289,7 @@ void CTestSpliced::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
 
    CollectionIndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i,&poi_id);
@@ -508,7 +508,7 @@ ILBAMModel* CTestSpliced::CreateModel()
 
    // ssms
    loc = 0.0;
-   for (MemberIDType i=0; i<=2; i++)
+   for (MemberIDType i = 0; i<=2; i++)
    {
       PoiIDType poi_id = PoiIDType(300+i*2);
       CComPtr<IPOI> pPOI0, pPOI1;
@@ -547,7 +547,7 @@ ILBAMModel* CTestSpliced::CreateModel()
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
    TCHAR* lgns[]={_T("Self Weight")};
-   for (int i=0; i<1; i++)
+   for (int i = 0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
@@ -586,9 +586,9 @@ ILBAMModel* CTestSpliced::CreateModel()
    TRY_TEST(pDistributedLoad2s2->put_WStart(-15), S_OK);
    TRY_TEST(pDistributedLoad2s2->put_WEnd(-15), S_OK);
 
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 2"), _bstr_t("Self Weight"), pDistributedLoad0s2, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 2"), _bstr_t("Self Weight"), pDistributedLoad2s2, &pDLtmp), S_OK);
 
    // Self Weight - stage 2 - use cloning to reduce # of calls
@@ -609,11 +609,11 @@ ILBAMModel* CTestSpliced::CreateModel()
    TRY_TEST(pDistributedLoad2s3->put_WStart(-5), S_OK);
    TRY_TEST(pDistributedLoad2s3->put_WEnd(-5), S_OK);
 
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad0s3, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad1s3, &pDLtmp), S_OK);
-   pDLtmp= NULL;
+   pDLtmp= nullptr;
    TRY_TEST(pDistributedLoads->Add(_bstr_t("Stage 3"), _bstr_t("Self Weight"), pDistributedLoad2s3, &pDLtmp), S_OK);
 
    // add lrfd live loads

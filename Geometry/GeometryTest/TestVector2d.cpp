@@ -63,11 +63,11 @@ void CTestVector2d::Test()
    x = -10.0;
    y = -20.0;
    TRY_TEST(pVec->put_X(x),S_OK);
-   TRY_TEST(pVec->get_X(NULL),E_POINTER);
+   TRY_TEST(pVec->get_X(nullptr),E_POINTER);
    TRY_TEST(pVec->get_X(&x1),S_OK);
    TRY_TEST(IsEqual(x,x1),true);
    TRY_TEST(pVec->put_Y(y),S_OK);
-   TRY_TEST(pVec->get_Y(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Y(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Y(&y1),S_OK);
    TRY_TEST(IsEqual(y,y1),true);
 
@@ -75,7 +75,7 @@ void CTestVector2d::Test()
    // Test Size Property
    //
    CComPtr<ISize2d> pSize;
-   TRY_TEST(pVec->get_Size(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Size(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Size(&pSize),S_OK);
    pSize->get_Dx(&x1);
    pSize->get_Dy(&y1);
@@ -90,7 +90,7 @@ void CTestVector2d::Test()
    // use a 3,4,5 triangle
    pVec->put_X(3);
    pVec->put_Y(4);
-   TRY_TEST(pVec->get_Magnitude(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Magnitude(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Magnitude(&mag),S_OK);
    TRY_TEST(IsEqual(mag,5.0),true);
    // Set magnitude to 15 (9,12,15 triangle, 
@@ -114,7 +114,7 @@ void CTestVector2d::Test()
    pVec->put_X(1.0);
    pVec->put_Y(1.0);
    Float64 dir;
-   TRY_TEST(pVec->get_Direction(NULL),E_POINTER);
+   TRY_TEST(pVec->get_Direction(nullptr),E_POINTER);
    TRY_TEST(pVec->get_Direction(&dir),S_OK);
    TRY_TEST(IsEqual(dir,M_PI/4),true);
 
@@ -148,7 +148,7 @@ void CTestVector2d::Test()
    //
    // Test IsZero
    //
-   TRY_TEST(pVec->IsZero(NULL),E_POINTER);
+   TRY_TEST(pVec->IsZero(nullptr),E_POINTER);
    VARIANT_BOOL bIsZero;
    pVec->put_X(10);
    pVec->put_Y(0);
@@ -173,7 +173,7 @@ void CTestVector2d::Test()
    // Make source vector point to the right. Normal will be up
    pVec->put_X(10);
    pVec->put_Y(0); 
-   TRY_TEST(pVec->Normal(NULL),E_POINTER);
+   TRY_TEST(pVec->Normal(nullptr),E_POINTER);
    TRY_TEST(pVec->Normal(&pNormal),S_OK);
    pNormal->get_X(&x1);
    pNormal->get_Y(&y1);
@@ -267,7 +267,7 @@ void CTestVector2d::Test()
    pOffset.CoCreateInstance(CLSID_Size2d);
    pOffset->put_Dx(-20);
    pOffset->put_Dy(-20);
-   TRY_TEST(pVec->OffsetEx(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->OffsetEx(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->OffsetEx(pOffset),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -281,8 +281,8 @@ void CTestVector2d::Test()
    CComPtr<IVector2d> pVec2;
    pVec2.CoCreateInstance( CLSID_Vector2d );
 
-   TRY_TEST(pVec->Projection(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->Projection(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->Projection(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->Projection(pVec2,nullptr),E_POINTER);
 
    // Vector is zero length
    pVec2->put_X(0);
@@ -383,8 +383,8 @@ void CTestVector2d::Test()
    //
    Float64 dot;
 
-   TRY_TEST(pVec->Dot(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->Dot(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->Dot(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->Dot(pVec2,nullptr),E_POINTER);
 
    pVec->put_X(10);
    pVec->put_Y(20);
@@ -396,8 +396,8 @@ void CTestVector2d::Test()
    //
    // Test AngleBetween
    //
-   TRY_TEST(pVec->AngleBetween(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pVec->AngleBetween(pVec2,NULL),E_POINTER);
+   TRY_TEST(pVec->AngleBetween(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pVec->AngleBetween(pVec2,nullptr),E_POINTER);
    pVec->put_X(10);
    pVec->put_Y(0);
    pVec2->put_X(10);
@@ -425,7 +425,7 @@ void CTestVector2d::Test()
    pVec->put_Y(20);
    pVec2->put_X(50);
    pVec2->put_Y(60);
-   TRY_TEST(pVec->Increment(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->Increment(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->Increment(pVec2),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -433,8 +433,8 @@ void CTestVector2d::Test()
    TRY_TEST(IsEqual(y1,80.),true);
 
    CComPtr<IVector2d> pVec3;
-   TRY_TEST(pVec->IncrementBy(NULL,&pVec3),E_INVALIDARG);
-   TRY_TEST(pVec->IncrementBy(pVec2,NULL), E_POINTER);
+   TRY_TEST(pVec->IncrementBy(nullptr,&pVec3),E_INVALIDARG);
+   TRY_TEST(pVec->IncrementBy(pVec2,nullptr), E_POINTER);
    TRY_TEST(pVec->IncrementBy(pVec2,&pVec3),S_OK);
    pVec->get_X(&x1); // vector 1, unchanged
    pVec->get_Y(&y1);
@@ -449,7 +449,7 @@ void CTestVector2d::Test()
    pVec->put_Y(20);
    pVec2->put_X(50);
    pVec2->put_Y(60);
-   TRY_TEST(pVec->Decrement(NULL),E_INVALIDARG);
+   TRY_TEST(pVec->Decrement(nullptr),E_INVALIDARG);
    TRY_TEST(pVec->Decrement(pVec2),S_OK);
    pVec->get_X(&x1);
    pVec->get_Y(&y1);
@@ -457,8 +457,8 @@ void CTestVector2d::Test()
    TRY_TEST(IsEqual(y1,-40.),true);
 
    pVec3.Release();
-   TRY_TEST(pVec->DecrementBy(NULL,&pVec3),E_INVALIDARG);
-   TRY_TEST(pVec->DecrementBy(pVec2,NULL), E_POINTER);
+   TRY_TEST(pVec->DecrementBy(nullptr,&pVec3),E_INVALIDARG);
+   TRY_TEST(pVec->DecrementBy(pVec2,nullptr), E_POINTER);
    TRY_TEST(pVec->DecrementBy(pVec2,&pVec3),S_OK);
    pVec->get_X(&x1); // vector 1, unchanged
    pVec->get_Y(&y1);

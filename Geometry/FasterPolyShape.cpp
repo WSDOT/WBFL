@@ -67,7 +67,7 @@ HRESULT CFasterPolyShape::FinalConstruct()
 
 void CFasterPolyShape::GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y)
 {
-   ATLASSERT( x != NULL && y != NULL );
+   ATLASSERT( x != nullptr && y != nullptr );
 
    UpdateBoundingBox();
 
@@ -142,7 +142,7 @@ STDMETHODIMP CFasterPolyShape::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
       &IID_IStructuredStorage2
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -309,9 +309,9 @@ void CFasterPolyShape::UpdateShapeProperties()
       Float64 x1,y1;
       Float64 dy, dx;
       Float64 ar, at;
-      Float64 g_ixx=0, g_iyy=0, g_ixy=0; // moments of inertia about the global axes
-      Float64 c_ixx=0, c_iyy=0, c_ixy=0; // moments of inertia about the centroid
-      Float64 area_local =0;
+      Float64 g_ixx=0, g_iyy=0, g_ixy = 0; // moments of inertia about the global axes
+      Float64 c_ixx=0, c_iyy=0, c_ixy = 0; // moments of inertia about the centroid
+      Float64 area_local  = 0;
 
       // loop over all points - make sure of closure
       CollectionIndexType idx0, idx1;
@@ -466,10 +466,10 @@ void CFasterPolyShape::UpdateBoundingBox()
             Float64 x = it->X();
             Float64 y = it->Y();
 
-            left   = _cpp_min( x, left);
-            right  = _cpp_max( x, right);
-            bottom = _cpp_min( y, bottom);
-            top    = _cpp_max( y, top);
+            left   = Min( x, left);
+            right  = Max( x, right);
+            bottom = Min( y, bottom);
+            top    = Max( y, top);
          }
 
          m_BoundingRect.Left() = left;
@@ -497,7 +497,7 @@ STDMETHODIMP CFasterPolyShape::get_PolyPoints(IPoint2dCollection** coll)
       Float64 y = it->Y();
 
       CComPtr<IPoint2d> point;
-      hr = CreatePoint(x,y,NULL,&point);
+      hr = CreatePoint(x,y,nullptr,&point);
       if (FAILED(hr))
          return hr;
 
@@ -716,7 +716,7 @@ STDMETHODIMP CFasterPolyShape::ClipWithLine(ILine2d* pcLine,IShape** pShape)
 }
 
 
-STDMETHODIMP CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
+HRESULT CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
 {
    UpdateBoundingBox();
 
@@ -726,7 +726,7 @@ STDMETHODIMP CFasterPolyShape::ClipWithgpLine(gpLine2d& theLine,IShape** pShape)
    if ( cPoints < 3 )
    {
       ATLTRACE("*** WARNING: FasterPolyShapes must have at least 3 points\n");
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -875,7 +875,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
    CHECK_RETOBJ(pShape);
 
    // Assume no clip
-   *pShape = NULL;
+   *pShape = nullptr;
 
    // Before we do anything, make sure there is a chance for this shape to be clipped
    // Check if we are inside, outside, or intersect this rect
@@ -917,7 +917,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
       Clone(&pClipTop);
    }
 
-   if ( pClipTop == NULL ) // Resulting Shape is Nothing
+   if ( pClipTop == nullptr ) // Resulting Shape is Nothing
    {
       ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
@@ -1011,7 +1011,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 //   // Clip using Top edge
 //   pRect->get_TopRight( &pStart );
 //   pRect->get_TopLeft( &pEnd );
-//   CreateLine( pStart, pEnd, NULL, &pLine );
+//   CreateLine( pStart, pEnd, nullptr, &pLine );
 //
 //   CComPtr<IShape> pClipTop;
 //   ClipWithLine(pLine,&pClipTop);
@@ -1107,7 +1107,7 @@ STDMETHODIMP CFasterPolyShape::FurthestDistance(ILine2d* pcLine, Float64 *pVal)
 
       // Multiply by -1.0 becase gp convention is opposite com convention
       Float64 dist = -1.0 * theLine.DistanceToPoint(rPoint);
-      maxDist = _cpp_max( maxDist, dist );
+      maxDist = Max( maxDist, dist );
    }
 
    *pVal = maxDist;
@@ -1149,7 +1149,7 @@ STDMETHODIMP CFasterPolyShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** 
 
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CFasterPolyShape::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)
@@ -1262,7 +1262,7 @@ STDMETHODIMP CFasterPolyShape::Load(IStructuredLoad2* pLoad)
       return STRLOAD_E_INVALIDFORMAT;
 
    CollectionIndexType num_pts = var.iVal;
-   for(CollectionIndexType i=0; i<num_pts; i++)
+   for(CollectionIndexType i = 0; i<num_pts; i++)
    {
       hr = pLoad->BeginUnit(CComBSTR("Point"));
       if (FAILED(hr))

@@ -116,20 +116,20 @@ END_COM_MAP()
    HRESULT GetGirderSpacingLine(EndType endType,IPierLine* pPierLine,ILine2d** ppLine);
 
 public:
-   STDMETHOD(get_BearingOffset)(EndType endType,Float64* pBrgOffset);
-   STDMETHOD(get_EndDistance)(EndType endType,Float64* pEndDistance);
-   STDMETHOD(get_Direction)(IDirection** ppDirection);
-   STDMETHOD(get_Path)(IPath** pVal);
-   STDMETHOD(GetEndPoints)(IPoint2d** pntPier1,IPoint2d** pntEnd1,IPoint2d** pntBrg1,IPoint2d** pntBrg2,IPoint2d** pntEnd2,IPoint2d** pntPier2);
-   STDMETHOD(get_EndPoint)(EndType endType,IPoint2d** ppPoint);
-   STDMETHOD(get_PierPoint)(EndType endType,IPoint2d** ppPoint);
-   STDMETHOD(get_BearingPoint)(EndType endType,IPoint2d** ppPoint);
-   STDMETHOD(get_GirderLength)(Float64* pLength);
-   STDMETHOD(get_SpanLength)(Float64* pLength);
-   STDMETHOD(get_LayoutLength)(Float64* pLength);
-   STDMETHOD(get_StartPier)(IPierLine** pVal);
-   STDMETHOD(get_EndPier)(IPierLine** pVal);
-   STDMETHOD(get_ID)(GirderIDType* pVal);
+   STDMETHOD(get_BearingOffset)(EndType endType,Float64* pBrgOffset) override;
+   STDMETHOD(get_EndDistance)(EndType endType,Float64* pEndDistance) override;
+   STDMETHOD(get_Direction)(IDirection** ppDirection) override;
+   STDMETHOD(get_Path)(IPath** pVal) override;
+   STDMETHOD(GetEndPoints)(IPoint2d** pntPier1,IPoint2d** pntEnd1,IPoint2d** pntBrg1,IPoint2d** pntBrg2,IPoint2d** pntEnd2,IPoint2d** pntPier2) override;
+   STDMETHOD(get_EndPoint)(EndType endType,IPoint2d** ppPoint) override;
+   STDMETHOD(get_PierPoint)(EndType endType,IPoint2d** ppPoint) override;
+   STDMETHOD(get_BearingPoint)(EndType endType,IPoint2d** ppPoint) override;
+   STDMETHOD(get_GirderLength)(Float64* pLength) override;
+   STDMETHOD(get_SpanLength)(Float64* pLength) override;
+   STDMETHOD(get_LayoutLength)(Float64* pLength) override;
+   STDMETHOD(get_StartPier)(IPierLine** pVal) override;
+   STDMETHOD(get_EndPier)(IPierLine** pVal) override;
+   STDMETHOD(get_ID)(GirderIDType* pVal) override;
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(GirderLine), CGirderLine)

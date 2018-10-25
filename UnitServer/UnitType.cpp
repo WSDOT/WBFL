@@ -81,7 +81,7 @@ void CUnitType::FinalRelease()
 
 }
 
-STDMETHODIMP CUnitType::AddUnit(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTerm,UnitSystemType unitSystem)
+HRESULT CUnitType::AddUnit(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTerm,UnitSystemType unitSystem)
 {
    CHECK_IN(bstrTag);
 

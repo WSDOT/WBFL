@@ -27,6 +27,7 @@
 #include <System\SysExp.h>
 #include <System\IStructuredLoad.h>
 #include <System\XStructuredLoad.h>
+#include <memory>
 
 
 // FORWARD DECLARATIONS
@@ -85,26 +86,26 @@ public:
    // advanced. If false is returned, the file pointer does not advance.
    // After a unit has been entered, GetVersion may be called to get its
    // version
-   virtual bool BeginUnit(LPCTSTR name);
+   virtual bool BeginUnit(LPCTSTR name) override;
 
    //------------------------------------------------------------------------
    // Check for the end of a structured data chunk that was started by a call to 
    // BeginUnit.
-   virtual bool EndUnit();
+   virtual bool EndUnit() override;
 
    //------------------------------------------------------------------------
    // Get the version number of the current unit
-   virtual Float64 GetVersion();
+   virtual Float64 GetVersion() override;
 
    //------------------------------------------------------------------------
    // Get the version number of the unit that is the parent to this unit
-   virtual Float64 GetParentVersion();
+   virtual Float64 GetParentVersion() override;
 
-   virtual std::_tstring GetParentUnit();
+   virtual std::_tstring GetParentUnit() override;
 
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion();
+   virtual Float64 GetTopVersion() override;
 
    //------------------------------------------------------------------------
    // Property read routines. All of these calls try to read a property at the
@@ -113,60 +114,60 @@ public:
    // the property was not at the current locaton and the file pointer does not
    // advance.
    // Read a string property
-   virtual bool Property(LPCTSTR name, std::_tstring* pvalue);
+   virtual bool Property(LPCTSTR name, std::_tstring* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read a real number property
-   virtual bool Property(LPCTSTR name, Float64* pvalue);
+   virtual bool Property(LPCTSTR name, Float64* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int16* pvalue);
+   virtual bool Property(LPCTSTR name, Int16* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint16* pvalue);
+   virtual bool Property(LPCTSTR name, Uint16* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int32* pvalue);
+   virtual bool Property(LPCTSTR name, Int32* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint32* pvalue);
+   virtual bool Property(LPCTSTR name, Uint32* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int64* pvalue);
+   virtual bool Property(LPCTSTR name, Int64* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint64* pvalue);
+   virtual bool Property(LPCTSTR name, Uint64* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, LONG* pvalue);
+   virtual bool Property(LPCTSTR name, LONG* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, ULONG* pvalue);
+   virtual bool Property(LPCTSTR name, ULONG* pvalue) override;
 
    //------------------------------------------------------------------------
    // Read a bool property
-   virtual bool Property(LPCTSTR name, bool* pvalue);
+   virtual bool Property(LPCTSTR name, bool* pvalue) override;
 
    //------------------------------------------------------------------------
    // Am I at the end of the "File"?
-   virtual bool Eof() const;
+   virtual bool Eof() const override;
 
    //------------------------------------------------------------------------
    // Dump state as a text string. This is primarily to be used for
    // error handling.
-   virtual std::_tstring GetStateDump() const;
+   virtual std::_tstring GetStateDump() const override;
 
    //------------------------------------------------------------------------
    // Returns the current unit as a text string
-   virtual std::_tstring GetUnit() const;
+   virtual std::_tstring GetUnit() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -182,13 +183,13 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    // hidden implemenation class
-   std::auto_ptr<sysStructuredLoadXmlPrs_Impl> m_pImp;
+   std::unique_ptr<sysStructuredLoadXmlPrs_Impl> m_pImp;
    // have to keep track of recursive data structure
 
    // GROUP: LIFECYCLE
    // Prevent accidental copying and assignment
    sysStructuredLoadXmlPrs(const sysStructuredLoadXmlPrs&);
-   sysStructuredLoadXmlPrs& operator=(const sysStructuredLoadXmlPrs&);
+   sysStructuredLoadXmlPrs& operator=(const sysStructuredLoadXmlPrs&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

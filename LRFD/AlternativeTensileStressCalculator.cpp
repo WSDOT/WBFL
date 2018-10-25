@@ -322,7 +322,7 @@ void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirement
       pRebarSection->get__EnumRebarSectionItem(&enumItems);
 
       CComPtr<IRebarSectionItem> rebarSectionItem;
-      while ( enumItems->Next(1,&rebarSectionItem,NULL) != S_FALSE )
+      while ( enumItems->Next(1,&rebarSectionItem,nullptr) != S_FALSE )
       {
          CComPtr<IRebar> rebar;
          rebarSectionItem->get_Rebar(&rebar);

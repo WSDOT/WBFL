@@ -37,7 +37,7 @@ class IGetEdit
 {
 public:
    virtual ~IGetEdit() {}
-   virtual void Edit()=0;
+   virtual void Edit() = 0;
 };
 
 /////////////////////////// Classes /////////////////////////////////
@@ -50,7 +50,7 @@ public:
 protected:
   //{{AFX_VIRTUAL(CModifyButton)
   public:
-  virtual BOOL PreTranslateMessage(MSG* pMsg);
+  virtual BOOL PreTranslateMessage(MSG* pMsg) override;
   //}}AFX_VIRTUAL
 
   //{{AFX_MSG(CModifyButton)

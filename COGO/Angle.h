@@ -61,28 +61,29 @@ BEGIN_COM_MAP(CAngle)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+public:
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAngle
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IAngle* *clone);
-   STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IAngle* *pVal);
-   STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle);
-   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varAngle);
-	STDMETHOD(FromString)(/*[in]*/ BSTR bstrAngle);
-	STDMETHOD(FromDMS)(/*[in]*/ long deg,/*[in]*/ long min,/*[in]*/ Float64 sec);
-	STDMETHOD(Normalize)();
-	STDMETHOD(get_Second)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Minute)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(get_Degree)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IAngle* *clone) override;
+   STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IAngle* *pVal) override;
+   STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle) override;
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varAngle) override;
+	STDMETHOD(FromString)(/*[in]*/ BSTR bstrAngle) override;
+	STDMETHOD(FromDMS)(/*[in]*/ long deg,/*[in]*/ long min,/*[in]*/ Float64 sec) override;
+	STDMETHOD(Normalize)() override;
+	STDMETHOD(get_Second)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Minute)(/*[out, retval]*/ long *pVal) override;
+	STDMETHOD(get_Degree)(/*[out, retval]*/ long *pVal) override;
+	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    HRESULT BadAngle();

@@ -45,8 +45,8 @@ struct EAFCLASS CEAFGraphViewCreationData
    CEAFGraphViewCreationData()
    {
       m_GraphIndex = 0;
-      m_pGraphMgr  = NULL;
-      m_pIGraphMgr = NULL;
+      m_pGraphMgr  = nullptr;
+      m_pIGraphMgr = nullptr;
    }
 };
 
@@ -75,7 +75,7 @@ public:
    virtual CRect GetDrawingRect();
 
    CEAFGraphChildFrame* GetFrame();
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder();
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder();
 
 	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 

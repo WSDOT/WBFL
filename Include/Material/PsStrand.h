@@ -216,7 +216,7 @@ protected:
    void MakeCopy(const matPsStrand& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matPsStrand& rOther);
+   void MakeAssignment(const matPsStrand& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

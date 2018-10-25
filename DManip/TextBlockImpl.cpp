@@ -234,10 +234,10 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    CPoint p3( int((bl.x - crotate.x)*c + (bl.y - crotate.y)*s + crotate.x), int(-(bl.x - crotate.x)*s + (bl.y - crotate.y)*c + crotate.y) );
    CPoint p4( int((br.x - crotate.x)*c + (br.y - crotate.y)*s + crotate.x), int(-(br.x - crotate.x)*s + (br.y - crotate.y)*c + crotate.y) );
 
-   box.left   = _cpp_min( _cpp_min(p1.x,p2.x), _cpp_min(p3.x,p4.x) );
-   box.right  = _cpp_max( _cpp_max(p1.x,p2.x), _cpp_max(p3.x,p4.x) );
-   box.bottom = _cpp_max( _cpp_max(p1.y,p2.y), _cpp_max(p3.y,p4.y) );
-   box.top    = _cpp_min( _cpp_min(p1.y,p2.y), _cpp_min(p3.y,p4.y) );
+   box.left   = Min( Min(p1.x,p2.x), Min(p3.x,p4.x) );
+   box.right  = Max( Max(p1.x,p2.x), Max(p3.x,p4.x) );
+   box.bottom = Max( Max(p1.y,p2.y), Max(p3.y,p4.y) );
+   box.top    = Min( Min(p1.y,p2.y), Min(p3.y,p4.y) );
 
    return box;
 }

@@ -74,13 +74,13 @@ CONNECTION_POINT_ENTRY(IID_IStressPointsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStressPoints
-   STDMETHOD(Clone)(/*[out]*/IStressPoints** clone);
+   STDMETHOD(Clone)(/*[out]*/IStressPoints** clone) override;
 
 // _IStressPointEvents
-   STDMETHOD(OnStressPointChanged)(/*[in]*/IStressPoint* StressPoint);
+   STDMETHOD(OnStressPointChanged)(/*[in]*/IStressPoint* StressPoint) override;
 
 private:
 // implementation of needed virtual functions
@@ -139,7 +139,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt=0;
+      CollectionIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

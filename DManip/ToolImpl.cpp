@@ -39,11 +39,11 @@ m_ID(-1),
 m_strToolTipText(""),
 m_hIconInstance(0),
 m_IconResId(0),
-m_Icon(NULL),
+m_Icon(nullptr),
 m_First(true),
 m_bDrawIcon(true)
 {
-   m_pDragData = NULL;
+   m_pDragData = nullptr;
 }
 
 CToolImpl::~CToolImpl()
@@ -100,7 +100,7 @@ STDMETHODIMP_(void) CToolImpl::PrepareDrag(iDragDataSink* pSink)
    pSink->Write(ms_cfFormat,(void*)&m_IconResId,sizeof(m_IconResId));
 
    if ( m_pDragData )
-      m_pDragData->PrepareForDrag(NULL,pSink);
+      m_pDragData->PrepareForDrag(nullptr,pSink);
 }
 
 STDMETHODIMP_(void) CToolImpl::OnDrop(iDragDataSource* pSource)
@@ -116,7 +116,7 @@ STDMETHODIMP_(void) CToolImpl::OnDrop(iDragDataSource* pSource)
    }
 
    if ( m_pDragData )
-      m_pDragData->OnDrop(NULL,pSource);
+      m_pDragData->OnDrop(nullptr,pSource);
 }
 
 STDMETHODIMP_(void) CToolImpl::OnDragMoved(ISize2d* offset)
@@ -136,7 +136,7 @@ STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, cons
    CSize offset(-16,-32);
 
 
-   if (m_Icon != NULL)
+   if (m_Icon != nullptr)
    {
       // move icon so bottom center is at point
       CPoint newPoint(dragPoint);
@@ -187,7 +187,7 @@ STDMETHODIMP_(HRESULT) CToolImpl::SetIcon(HINSTANCE hInstance, WORD iconResId)
 
    this->LoadIcon();
 
-   if (m_Icon != NULL)
+   if (m_Icon != nullptr)
       return S_OK;
    else
       return E_FAIL;

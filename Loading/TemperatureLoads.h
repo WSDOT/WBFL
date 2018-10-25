@@ -73,10 +73,10 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldITemperatureLoadEvents
-   STDMETHOD(OnTemperatureLoadChanged)(/*[in]*/ldITemperatureLoad* TemperatureLoad)
+   STDMETHOD(OnTemperatureLoadChanged)(/*[in]*/ldITemperatureLoad* TemperatureLoad) override
    {
       // Load can be in more than one item
       for (iterator i=begin(); i!=end(); i++)
@@ -118,23 +118,22 @@ public:
       Fire_OnTemperatureLoadsChanged(pitem);
    }
 
-   virtual HRESULT MakeConnection(CTemperatureLoadItem* pitem)
+   virtual HRESULT MakeConnection(CTemperatureLoadItem* pitem) override
    {
       return CrAdvise(pitem->m_Load, this, IID_ldITemperatureLoadEvents, &(pitem->m_LoadCookie));
-   }
+   } 
 
-   virtual HRESULT BreakConnection(CTemperatureLoadItem* pitem)
+   virtual HRESULT BreakConnection(CTemperatureLoadItem* pitem) override
    {
       return CrUnadvise(pitem->m_Load, this, IID_ldITemperatureLoadEvents, pitem->m_LoadCookie);
-   }
+   } 
 
-   STDMETHOD(FinalRelease)()
+   void FinalRelease()
    {
       for (iterator i=begin(); i!=end(); i++)
       {
          OnBeforeRemove(*i);
       }
-      return S_OK;
    }
 
 };

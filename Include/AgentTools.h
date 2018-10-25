@@ -66,7 +66,7 @@ public:
 	ATL::_NoAddRefReleaseOnCComPtr<T>* operator->() const throw()
 	{
       m_bUsed = true;
-		ATLASSERT(p!=NULL);
+		ATLASSERT(p!=nullptr);
 		return (ATL::_NoAddRefReleaseOnCComPtr<T>*)p;
 	}
 
@@ -80,42 +80,42 @@ protected:
 #define GET_IFACE(_i_,_ptr_) \
    CIFacePtr<_i_> _ptr_; \
    m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE_(_ns_,_i_,_ptr_) \
    CIFacePtr<_ns_::_i_> _ptr_; \
    m_pBroker->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE_NOCHECK(_i_,_ptr_) \
    CComPtr<_i_> _ptr_; \
    m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE_NOCHECK_(_ns_,_i_,_ptr_) \
    CComPtr<_ns_::_i_> _ptr_; \
    m_pBroker->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE2(_b_,_i_,_ptr_) \
    CIFacePtr<_i_> _ptr_; \
    _b_->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE2_(_ns_,_b_,_i_,_ptr_) \
    CIFacePtr<_ns_::_i_> _ptr_; \
    _b_->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE2_NOCHECK(_b_,_i_,_ptr_) \
    CComPtr<_i_> _ptr_; \
    _b_->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 #define GET_IFACE2_NOCHECK_(_ns_,_b_,_i_,_ptr_) \
    CComPtr<_i_> _ptr_; \
    _b_->GetInterface( ##_ns_::IID_##_i_, (IUnknown**)&_ptr_ ); \
-   ASSERT( _ptr_.p != NULL )
+   ASSERT( _ptr_.p != nullptr )
 
 
 #endif // INCLUDED_AGENTTOOLS_H_

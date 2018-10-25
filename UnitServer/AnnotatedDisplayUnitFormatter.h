@@ -88,24 +88,24 @@ private:
 
 // ISupportErrorInfo
 public:
-   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAnnotatedDisplayUnitFormatter
 public:
-	STDMETHOD(FormatSpecifiers)(/*[in]*/Uint32 width,/*[in]*/ Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType notation,/*[in]*/ Float64 zeroVal);
-	STDMETHOD(get_Width)(/*[out, retval]*/ Uint32 *width);
-	STDMETHOD(get_Precision)(/*[out, retval]*/ Uint32 *precision);
-   STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation);
-	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify);
-	STDMETHOD(get_ZeroTolerance)(/*[out,retval]*/ Float64* zeroTol);
-   STDMETHOD(Format)(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString);
-   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL* bUsesTag);
-	STDMETHOD(put_OffsetDigits)(/*[in]*/ Uint32 nDigits);
-	STDMETHOD(get_OffsetDigits)(/*[out,retval]*/ Uint32* nDigits);
-	STDMETHOD(put_Multiplier)(/*[in]*/ Float64 multiplier);
-	STDMETHOD(get_Multiplier)(/*[out,retval]*/ Float64 *multiplier);
-	STDMETHOD(put_Annotation)(/*[in]*/ BSTR bstrAnnotation);
-	STDMETHOD(get_Annotation)(/*[out,retval]*/ BSTR* bstrAnnotation);
+	STDMETHOD(FormatSpecifiers)(/*[in]*/Uint32 width,/*[in]*/ Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType notation,/*[in]*/ Float64 zeroVal) override;
+	STDMETHOD(get_Width)(/*[out, retval]*/ Uint32 *width) override;
+	STDMETHOD(get_Precision)(/*[out, retval]*/ Uint32 *precision) override;
+   STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation) override;
+	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify) override;
+	STDMETHOD(get_ZeroTolerance)(/*[out,retval]*/ Float64* zeroTol) override;
+   STDMETHOD(Format)(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString) override;
+   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL* bUsesTag) override;
+	STDMETHOD(put_OffsetDigits)(/*[in]*/ Uint32 nDigits) override;
+	STDMETHOD(get_OffsetDigits)(/*[out,retval]*/ Uint32* nDigits) override;
+	STDMETHOD(put_Multiplier)(/*[in]*/ Float64 multiplier) override;
+	STDMETHOD(get_Multiplier)(/*[out,retval]*/ Float64 *multiplier) override;
+	STDMETHOD(put_Annotation)(/*[in]*/ BSTR bstrAnnotation) override;
+	STDMETHOD(get_Annotation)(/*[out,retval]*/ BSTR* bstrAnnotation) override;
 };
 
 #endif //__ANNOTATEDDISPLAYUNITFORMATTER_H_

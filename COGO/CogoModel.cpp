@@ -176,7 +176,7 @@ STDMETHODIMP CCogoModel::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ITangent,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -830,7 +830,7 @@ STDMETHODIMP CCogoModel::Bearings(CogoObjectID newID, CogoObjectID id1, VARIANT 
    if ( FAILED(hr) )
       return hr;
 
-   if (newPnt == NULL )
+   if (newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -878,7 +878,7 @@ STDMETHODIMP CCogoModel::BearingCircle(CogoObjectID newID, CogoObjectID id1, VAR
    CComQIPtr<IIntersect2> intersect(m_Engine);
    hr = intersect->BearingCircle(pnt1,varDir,offset,pntCenter,radius,pntNearest,&newPnt);
 
-   if ( newPnt == NULL )
+   if ( newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -925,7 +925,7 @@ STDMETHODIMP CCogoModel::Circles(CogoObjectID newID, CogoObjectID id1, Float64 r
    if ( FAILED(hr) )
       return hr;
 
-   if ( newPnt == NULL )
+   if ( newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -975,7 +975,7 @@ STDMETHODIMP CCogoModel::LineByPointsCircle(CogoObjectID newID, CogoObjectID id1
    CComQIPtr<IIntersect2> intersect(m_Engine);
    hr = intersect->LineByPointsCircle(pnt1,pnt2,offset,pntCenter,radius,pntNearest,&pnt);
 
-   if ( pnt == NULL )
+   if ( pnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -1022,7 +1022,7 @@ STDMETHODIMP CCogoModel::LinesByPoints(CogoObjectID newID, CogoObjectID id11, Co
    if ( FAILED(hr) )
       return hr;
 
-   if ( newPnt == NULL )
+   if ( newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -1065,7 +1065,7 @@ STDMETHODIMP CCogoModel::Lines(CogoObjectID newID,CogoObjectID id1,Float64 offse
    if ( FAILED(hr) )
       return hr;
 
-   if ( newPnt == NULL )
+   if ( newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
       return S_OK;
@@ -1114,7 +1114,7 @@ STDMETHODIMP CCogoModel::LineSegmentCircle(CogoObjectID newID,CogoObjectID lineI
    if ( FAILED(hr) )
       return hr;
 
-   if ( newPnt == NULL )
+   if ( newPnt == nullptr )
    {
       *bFound = VARIANT_FALSE;
    }
@@ -1283,7 +1283,7 @@ STDMETHODIMP CCogoModel::Arc(CogoObjectID firstID, CogoObjectID idInc, CogoObjec
     
       // m_GeomUtil's factory must create a IPoint2d object.
       // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != NULL);
+      ATLASSERT(pEx != nullptr);
 
       hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
@@ -1341,7 +1341,7 @@ STDMETHODIMP CCogoModel::BetweenPoints(CogoObjectID firstID, CogoObjectID idInc,
 
       // m_GeomUtil's factory must create a IPoint2d object.
       // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != NULL);
+      ATLASSERT(pEx != nullptr);
 
       hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
@@ -1394,7 +1394,7 @@ STDMETHODIMP CCogoModel::LineSegment(CogoObjectID firstID, CogoObjectID idInc, C
 
       // m_GeomUtil's factory must create a IPoint2d object.
       // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != NULL);
+      ATLASSERT(pEx != nullptr);
 
       hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       ATLASSERT(SUCCEEDED(hr));
@@ -1441,7 +1441,7 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
    points->get__Enum(&enum_points);
    CComPtr<IPoint2d> p;
    CogoObjectID i = 0;
-   while ( enum_points->Next(1,&p,NULL) != S_FALSE )
+   while ( enum_points->Next(1,&p,nullptr) != S_FALSE )
    {
       CogoObjectID id = firstID + i*idInc;
 
@@ -1449,7 +1449,7 @@ STDMETHODIMP CCogoModel::HorzCurve(CogoObjectID firstID, CogoObjectID idInc, Cog
 
       // m_GeomUtil's factory must create a IPoint2d object.
       // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != NULL);
+      ATLASSERT(pEx != nullptr);
 
       hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       if ( FAILED(hr) )
@@ -1500,7 +1500,7 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
    points->get__Enum(&enum_points);
    CComPtr<IPoint2d> p;
    CogoObjectID i = 0;
-   while ( enum_points->Next(1,&p,NULL) != S_FALSE )
+   while ( enum_points->Next(1,&p,nullptr) != S_FALSE )
    {
       CogoObjectID id = firstID + i*idInc;
 
@@ -1508,7 +1508,7 @@ STDMETHODIMP CCogoModel::Path(CogoObjectID firstID,CogoObjectID idInc,CogoObject
 
       // m_GeomUtil's factory must create a IPoint2d object.
       // If not, a factory got let in that shouldn't have
-      ATLASSERT(pEx != NULL);
+      ATLASSERT(pEx != nullptr);
 
       hr = m_Points->AddEx(id,pEx); // add it to the cogo model
       if ( FAILED(hr) )

@@ -96,24 +96,24 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
          OpenBridgeML::Units::ExtendedUnitTypeType::UnitType_sequence::iterator end(extendedUnits->UnitTypes()->UnitType().end());
          for ( ; iter != end; iter++ )
          {
-            OpenBridgeML::Units::UnitTypeType& UnitType(*iter);
+            OpenBridgeML::Units::UnitTypeType& unitType(*iter);
 
             // Create a new WBFL Unit Type
             CComPtr<IUnitType> objUnitType;
-            objUnitTypes->Add(T2BSTR(UnitType.name().c_str()),
-                              UnitType.mass(),
-                              UnitType.length(),
-                              UnitType.time(),
-                              UnitType.temperature(),
-                              UnitType.angle(),
+            objUnitTypes->Add(T2BSTR(unitType.name().c_str()),
+               unitType.mass(),
+               unitType.length(),
+               unitType.time(),
+               unitType.temperature(),
+               unitType.angle(),
                               &objUnitType);
 
             CComPtr<IUnits> units;
             objUnitType->get_Units(&units);
 
             // Add units of measure
-            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umIter(UnitType.UnitOfMeasure().begin());
-            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umEnd(UnitType.UnitOfMeasure().end());
+            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umIter(unitType.UnitOfMeasure().begin());
+            OpenBridgeML::Units::UnitTypeType::UnitOfMeasure_sequence::iterator umEnd(unitType.UnitOfMeasure().end());
             for ( ; umIter != umEnd; umIter++ )
             {
                OpenBridgeML::Units::UnitOfMeasureType& unitOfMeasure(*umIter);

@@ -59,7 +59,7 @@ public:
 class CRectSelectFSMDoneState : public CRectSelectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -68,10 +68,10 @@ public:
 class CRectSelectFSMWaitingForSecondPointState : public CRectSelectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForSecondPoint"); }
-   virtual void MouseMove(CRectSelectFSM& fsm);
-   virtual void MouseUp(CRectSelectFSM& fsm);
-   virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm);
+   virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
+   virtual void MouseMove(CRectSelectFSM& fsm) override;
+   virtual void MouseUp(CRectSelectFSM& fsm) override;
+   virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -80,8 +80,8 @@ public:
 class CRectSelectFSMStartState : public CRectSelectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CRectSelectFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("Start"); }
+   virtual void Do(CRectSelectFSM& fsm) override;
 };
 
 class CRectSelectFSM : public iRectSelectTask

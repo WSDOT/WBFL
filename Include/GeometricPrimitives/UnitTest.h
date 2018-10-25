@@ -80,7 +80,7 @@ private:
 
    // Prevent accidental copying and assignment
    gpUnitTest(const gpUnitTest&);
-   gpUnitTest& operator=(const gpUnitTest&);
+   gpUnitTest& operator=(const gpUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -48,7 +48,7 @@ BOOL CreateAlignmentsCollection(IUnitServer* obmlUnitServer,IUnitServer* pOurUni
 BOOL COGOFUNC GetAlignments(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::AlignmentsType& obmlAlignments,IAlignmentCollection* pAlignments)
 {
    CogoObjectID id = 0; 
-   BOOST_FOREACH(OpenBridgeML::Alignments::Alignment& obmlAlignment,obmlAlignments.Alignment())
+   for(OpenBridgeML::Alignments::Alignment& obmlAlignment : obmlAlignments.Alignment())
    {
       CComPtr<IAlignment> alignment;
       if ( CreateAlignment(obmlUnitServer,pOurUnitServer,obmlAlignment,&alignment) )
@@ -286,7 +286,7 @@ void ConvertToOurUnits(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,O
    ConvertBetweenBaseUnits(obmlAlignmentPath.Start().X(), obmlUnitServer, pOurUnitServer);
    ConvertBetweenBaseUnits(obmlAlignmentPath.Start().Y(), obmlUnitServer, pOurUnitServer);
 
-   BOOST_FOREACH(OpenBridgeML::Alignments::PointOfInterestionType& poi,obmlAlignmentPath.PI())
+   for (OpenBridgeML::Alignments::PointOfInterestionType& poi : obmlAlignmentPath.PI())
    {
       ConvertBetweenBaseUnits(poi.X(), obmlUnitServer, pOurUnitServer);
       ConvertBetweenBaseUnits(poi.Y(), obmlUnitServer, pOurUnitServer);
@@ -318,7 +318,7 @@ void ConvertToOurUnits(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,O
 
 void ConvertToOurUnits(IUnitServer* obmlUnitServer,IUnitServer* pOurUnitServer,OpenBridgeML::Alignments::EquationsType& obmlAlignmentPathEquations)
 {
-   BOOST_FOREACH(OpenBridgeML::Alignments::EquationType& equation,obmlAlignmentPathEquations.Equation())
+   for(OpenBridgeML::Alignments::EquationType& equation : obmlAlignmentPathEquations.Equation())
    {
       ConvertToOurUnits(obmlUnitServer,pOurUnitServer,equation);
    }

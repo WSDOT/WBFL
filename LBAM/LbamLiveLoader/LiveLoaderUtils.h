@@ -69,6 +69,9 @@ inline void GetLiveLoadModel(LiveLoadModelType type, ILiveLoad* pll, ILiveLoadMo
    case lltLegalSpecialRating:
       hr = pll->get_LegalSpecialRating(ppLlm);
       break;
+   case lltLegalEmergencyRating:
+      hr = pll->get_LegalEmergencyRating(ppLlm);
+      break;
    case lltPermitRoutineRating:
       hr = pll->get_PermitRoutineRating(ppLlm);
       break;
@@ -181,7 +184,7 @@ inline HRESULT LLSectionToStressResults(IIDArray* POIs, BSTR stage, ILiveLoadMod
       return hr;
 
    // loop over all pois and compute stresses due to optimization at that poi
-   for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
    {
       // use configuration object from force results to compute stresses
       // get left and right config objects

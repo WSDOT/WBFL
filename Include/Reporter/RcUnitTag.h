@@ -74,7 +74,7 @@ public:
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& rVisitor );
+   virtual void Accept( rptRcVisitor& rVisitor ) override;
 
    //------------------------------------------------------------------------
    // Make a virtual copy

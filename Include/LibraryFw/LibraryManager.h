@@ -28,7 +28,9 @@
 // SYSTEM INCLUDES
 //
 #include <vector>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 // PROJECT INCLUDES
 //
@@ -175,7 +177,7 @@ public:
 
 protected:
    // GROUP: DATA MEMBERS
-   typedef boost::shared_ptr<libILibrary> LibraryEntryType;
+   typedef std::shared_ptr<libILibrary> LibraryEntryType;
    typedef std::vector<LibraryEntryType>  LibraryContainerType;
    typedef LibraryContainerType::iterator LibraryIterator;
    typedef LibraryContainerType::const_iterator ConstLibraryIterator;
@@ -202,7 +204,7 @@ private:
 
    // Prevent accidental copying and assignment
    libLibraryManager(const libLibraryManager&);
-   libLibraryManager& operator=(const libLibraryManager&);
+   libLibraryManager& operator=(const libLibraryManager&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -30,7 +30,7 @@ class CTipDlg : public CDialog
 {
 // Construction
 public:
-   CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent = NULL);	 // standard constructor
+   CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent = nullptr);	 // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CTipDlg)

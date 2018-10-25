@@ -70,7 +70,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
             hr = pVehicularLoad->get_VariableMaxSpacing(&m_MaxVariableAxleSpacing);
 
             // get initial axle spacing if placement
-            if (config != NULL)
+            if (config != nullptr)
             {
                hr = config->get_VariableSpacing(&m_VariableAxleSpacing);
             }
@@ -80,7 +80,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
       // See if we are picking up any axles
       bool is_axle_config = false;
       CComPtr<IIndexArray> axle_config;
-      if (config != NULL)
+      if (config != nullptr)
       {
          hr = config->get_AxleConfig(&axle_config);
 
@@ -140,7 +140,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
             // we are at variable axle
             // set initial spacing to min if not specified by placement
             m_MinVariableAxleSpacing = spacing;
-            if (config == NULL)
+            if (config == nullptr)
             {
                m_VariableAxleSpacing =  m_MinVariableAxleSpacing;
             }
@@ -159,7 +159,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
 
       // deal with factoring axle weights and truck direction
       m_TruckDirection = ltdForward;
-      if (config != NULL)
+      if (config != nullptr)
       {
          hr = config->get_TruckDirection(&m_TruckDirection);
          hr = config->get_PivotAxleIndex(&m_PivotAxleIndex);
@@ -284,7 +284,7 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
             left_response  += left_inf_resp * axle_wgt;
             right_response += right_inf_resp * axle_wgt;
 
-            if (appliedAxles != NULL)
+            if (appliedAxles != nullptr)
                appliedAxles->push_back(AxleOn);
          }
          else
@@ -295,26 +295,26 @@ void FixedTruck::EvaluatePrimaryInfl(Float64 position, InfluenceSideType side, I
             {
                left_response  += response;
                right_response += response;
-               if (appliedAxles!=NULL)
+               if (appliedAxles!=nullptr)
                   appliedAxles->push_back(AxleOn);
             }
             else
             {
-               if (appliedAxles!=NULL)
+               if (appliedAxles!=nullptr)
                   appliedAxles->push_back(AxleOff);
             }
          }
       }
       else
       {
-         if (appliedAxles!=NULL)
+         if (appliedAxles!=nullptr)
             appliedAxles->push_back(AxleOff);
       }
 
       axleIndex++;
    }
 
-   ATLASSERT(appliedAxles!=NULL ? appliedAxles->size() ==  m_Axles.size() : true );
+   ATLASSERT(appliedAxles!=nullptr ? appliedAxles->size() ==  m_Axles.size() : true );
 
    *leftValue  = left_response;
    *rightValue = right_response;
@@ -508,7 +508,7 @@ Float64 FixedTruck::MinAxleSpacing()
    for (; iter != axleEnd-1; iter++ )
    {
       FtAxle axle( *iter );
-      minSpacing = _cpp_min(minSpacing,axle.m_OriginalSpacing);
+      minSpacing = Min(minSpacing,axle.m_OriginalSpacing);
    }
 
    return minSpacing;
@@ -523,7 +523,7 @@ Float64 FixedTruck::MaxAxleSpacing()
    for (; iter != axleEnd; iter++ )
    {
       FtAxle axle( *iter );
-      maxSpacing = _cpp_max(maxSpacing,axle.m_OriginalSpacing);
+      maxSpacing = Max(maxSpacing,axle.m_OriginalSpacing);
    }
 
    return maxSpacing;

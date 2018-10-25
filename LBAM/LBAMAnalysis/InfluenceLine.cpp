@@ -48,7 +48,7 @@ STDMETHODIMP CInfluenceLine::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IInfluenceLine
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -519,7 +519,7 @@ STDMETHODIMP CInfluenceLine::Clone(IInfluenceLine* *pColl)
    pnew->m_StartBound    = m_StartBound;
    pnew->m_EndBound      = m_EndBound;
 
-   for (long i=0; i<3; i++)
+   for (long i = 0; i<3; i++)
    {
       pnew->m_InfluencePoints[i] = m_InfluencePoints[i];
       pnew->m_IsComputed[i]      = m_IsComputed[i];
@@ -571,7 +571,7 @@ STDMETHODIMP CInfluenceLine::Load(IStructuredLoad2 * pload)
       InfluencePointContainer& container = GetContainer(ilsBoth);
 
       long count = var;
-      for (long i=0; i<count; i++)
+      for (long i = 0; i<count; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t("Value"),&var);
@@ -654,7 +654,7 @@ STDMETHODIMP CInfluenceLine::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          const InflPoint& curr = container[i];
 
@@ -722,8 +722,8 @@ void CInfluenceLine::ComputeMainValues()
 
       if (container.empty())
       {
-         m_StartBound=0;
-         m_EndBound=0;
+         m_StartBound = 0;
+         m_EndBound = 0;
       }
       else
       {
@@ -829,7 +829,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
 
 #if defined(_DEBUG_LOGGING)
    ATLTRACE(_T("Misfits - %4d of them\n"), mis_size);
-   for (long im=0; im<mis_size; im++)
+   for (long im = 0; im<mis_size; im++)
    {
       ATLTRACE(_T("%4d, %4d\n"), im, misfits[im]);
    }
@@ -844,8 +844,8 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
       target.clear();
       target.reserve(source_size-mis_size);
 
-      CollectionIndexType mfc=0;
-      CollectionIndexType i=0;
+      CollectionIndexType mfc = 0;
+      CollectionIndexType i = 0;
       while(i<source_size)
       {
          if (  mfc<mis_size  && i==misfits[mfc] )
@@ -1147,7 +1147,7 @@ void CInfluenceLine::TraceInfluenceLine(InfluenceSideType side)
    long size = container.size();
    ATLTRACE(_T("Number of Influence Values = %d\n"),size);
 
-   long i=0;
+   long i = 0;
    for (ConstInfluencePointIterator it=container.begin(); it!=container.end(); it++)
    {
       const InflPoint& ifl = *it;
@@ -1289,7 +1289,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it2( container.begin() );
             InfluencePointIterator it1( it2++ );
 
-            int iseg=0;
+            int iseg = 0;
             CollectionIndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
@@ -1353,7 +1353,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it2( container.begin() );
             InfluencePointIterator it1( it2++ );
 
-            int iseg=0;
+            int iseg = 0;
             CollectionIndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
@@ -1418,7 +1418,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it2( container.begin() );
             InfluencePointIterator it1( it2++ );
 
-            int iseg=0;
+            int iseg = 0;
             CollectionIndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
@@ -1481,7 +1481,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
       CHRException hr;
       hr = locs.CoCreateInstance(CLSID_DblArray);
       hr = locs->Reserve(size);
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          hr = locs->Add(zone_locations[i]);
       }

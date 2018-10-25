@@ -48,17 +48,17 @@ STDMETHODIMP CErrorLog::Open(BSTR fileName,DWORD* dwCookie)
       return E_POINTER;
 
    // Try to create a stream... Could fail in one of two ways.  Failed allocation could throw
-   // and bad_alloc exception or return NULL.
-   boost::shared_ptr<std::_tofstream> pofile;
+   // and bad_alloc exception or return nullptr.
+   std::shared_ptr<std::_tofstream> pofile;
    try
    {
-	   pofile = boost::shared_ptr<std::_tofstream>( new std::_tofstream(OLE2T(fileName)) );
+	   pofile = std::make_shared<std::_tofstream>(OLE2T(fileName));
    }
    catch ( ... )
    {
       return E_OUTOFMEMORY;
    }
-   if ( pofile.get() == 0 )
+   if ( pofile.get() == nullptr )
    {
       return E_OUTOFMEMORY;
    }
@@ -102,7 +102,7 @@ STDMETHODIMP CErrorLog::LogMessage(DWORD dwCookie,BSTR msg)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    try
    {
@@ -122,7 +122,7 @@ STDMETHODIMP CErrorLog::Close(DWORD dwCookie)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    // Write a little postscript
    try

@@ -75,33 +75,33 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IManderModel
 public:
-   STDMETHOD(putref_Section)(/*[in]*/IManderModelSection* section);
-	STDMETHOD(get_Section)(/*[out,retval]*/IManderModelSection** section);
-	STDMETHOD(put_fco)(/*[in]*/Float64 fco);
-	STDMETHOD(get_fco)(/*[out,retval]*/Float64* fco);
-	STDMETHOD(put_eco)(/*[in]*/Float64 eco);
-	STDMETHOD(get_eco)(/*[out,retval]*/Float64* eco);
-	STDMETHOD(put_R)(/*[in]*/Float64 r);
-	STDMETHOD(get_R)(/*[out,retval]*/Float64* r);
+   STDMETHOD(putref_Section)(/*[in]*/IManderModelSection* section) override;
+	STDMETHOD(get_Section)(/*[out,retval]*/IManderModelSection** section) override;
+	STDMETHOD(put_fco)(/*[in]*/Float64 fco) override;
+	STDMETHOD(get_fco)(/*[out,retval]*/Float64* fco) override;
+	STDMETHOD(put_eco)(/*[in]*/Float64 eco) override;
+	STDMETHOD(get_eco)(/*[out,retval]*/Float64* eco) override;
+	STDMETHOD(put_R)(/*[in]*/Float64 r) override;
+	STDMETHOD(get_R)(/*[out,retval]*/Float64* r) override;
 
 // IStressStrain
 public:
-   STDMETHOD(put_Name)(/*[in]*/BSTR name);
-	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name);
-   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal);
-   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain);
-   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey);
-   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE);
-   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain);
+   STDMETHOD(put_Name)(/*[in]*/BSTR name) override;
+	STDMETHOD(get_Name)(/*[out,retval]*/BSTR *name) override;
+   STDMETHOD(ComputeStress)(/*[in]*/ Float64 strain,/*[out,retval]*/Float64* pVal) override;
+   STDMETHOD(StrainLimits)(/*[out]*/Float64* minStrain,/*[out]*/Float64* maxStrain) override;
+   STDMETHOD(get_YieldStrain)(/*[out,retval]*/Float64* pey) override;
+   STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
+   STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 
 // ISupportUnitServer
 public:
-	STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
-	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+	STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
+	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
 };
 
 #endif //__ManderModel_H_

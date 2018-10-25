@@ -106,7 +106,7 @@ public:
 
    //------------------------------------------------------------------------
    // Called by lrfdVersion when ever the code version or unit system changes
-   virtual void OnUpdate();
+   virtual void OnUpdate() override;
 
    //------------------------------------------------------------------------
    // Input Parameters
@@ -444,7 +444,7 @@ protected:
    
    void UpdateTemporaryStrandRemovalEffect() const;
 
-   virtual void MakeAssignment( const lrfdLosses& rOther );
+   void MakeAssignment( const lrfdLosses& rOther );
    void MakeCopy( const lrfdLosses& rOther );
 
    // Input Parameters

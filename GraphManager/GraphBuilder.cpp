@@ -40,7 +40,7 @@ static char THIS_FILE[]=__FILE__;
 
 CGraphBuilder::CGraphBuilder()
 {
-   m_pBitmap = NULL;
+   m_pBitmap = nullptr;
    m_nHelpID = 0;
 }
 

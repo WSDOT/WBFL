@@ -57,11 +57,11 @@ void CReportBuilderManager::ClearAll()
 void CReportBuilderManager::AddReportBuilder(CReportBuilder* pRptBuilder)
 {
    std::_tstring strName = pRptBuilder->GetName();
-   boost::shared_ptr<CReportBuilder> p(pRptBuilder);
+   std::shared_ptr<CReportBuilder> p(pRptBuilder);
    m_RptBuilders.insert( std::make_pair( strName, p ) );
 }
 
-void CReportBuilderManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& pRptBuilder)
+void CReportBuilderManager::AddReportBuilder(std::shared_ptr<CReportBuilder>& pRptBuilder)
 {
    std::_tstring strName = pRptBuilder->GetName();
    m_RptBuilders.insert( std::make_pair( strName, pRptBuilder ) );
@@ -89,36 +89,36 @@ CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHi
    return nReportBuilders;
 }
 
-boost::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(LPCTSTR strReportName)
 {
    return GetReportBuilder(std::_tstring(strReportName));
 }
 
-boost::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const std::_tstring& strReportName)
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
    {
-      return boost::shared_ptr<CReportBuilder>();
+      return nullptr;
    }
 
    return (*found).second;
 }
 
-boost::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(LPCTSTR strReportName)
 {
    return RemoveReportBuilder(std::_tstring(strReportName));
 }
 
-boost::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const std::_tstring& strReportName)
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
    {
-      return boost::shared_ptr<CReportBuilder>();
+      return nullptr;
    }
 
-   boost::shared_ptr<CReportBuilder> rptBuilder = (*found).second;
+   std::shared_ptr<CReportBuilder> rptBuilder = (*found).second;
 
    m_RptBuilders.erase(found);
 
@@ -147,8 +147,8 @@ CReportDescription CReportBuilderManager::GetReportDescription(LPCTSTR strReport
 
 CReportDescription CReportBuilderManager::GetReportDescription(const std::_tstring& strReportName)
 {
-   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
-   ATLASSERT( pRptBuilder != NULL ); // report builder not found
+   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   ATLASSERT( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetReportDescription();
 }
@@ -160,48 +160,47 @@ const CBitmap* CReportBuilderManager::GetMenuBitmap(LPCTSTR strReportName)
 
 const CBitmap* CReportBuilderManager::GetMenuBitmap(const std::_tstring& strReportName)
 {
-   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
-   ATLASSERT( pRptBuilder != NULL ); // report builder not found
+   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   ATLASSERT( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetMenuBitmap();
 }
 
-boost::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(LPCTSTR strReportName)
+std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(LPCTSTR strReportName)
 {
    return GetReportSpecificationBuilder(std::_tstring(strReportName));
 }
 
-boost::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const std::_tstring& strReportName)
+std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const std::_tstring& strReportName)
 {
-   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
-   if ( pRptBuilder == NULL )
+   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   if ( pRptBuilder == nullptr )
    {
-      return boost::shared_ptr<CReportSpecificationBuilder>();
+      return nullptr;
    }
 
-   boost::shared_ptr<CReportSpecificationBuilder> pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
-   return pRptSpecBuilder;
+   return pRptBuilder->GetReportSpecificationBuilder();
 }
 
-boost::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const CReportDescription& rptDesc)
+std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const CReportDescription& rptDesc)
 {
    return GetReportSpecificationBuilder( rptDesc.GetReportName() );
 }
 
-boost::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec,std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
-   boost::shared_ptr<rptReport> pReport = CreateReport(pRptSpec);
-   boost::shared_ptr<CReportBrowser> pBrowser( new CReportBrowser() );
+   std::shared_ptr<rptReport> pReport = CreateReport(pRptSpec);
+   std::shared_ptr<CReportBrowser> pBrowser( std::make_shared<CReportBrowser>() );
    bool bSuccess = pBrowser->Initialize(hwndParent,this,pRptSpec,pRptSpecBuilder,pReport);
    if ( !bSuccess )
    {
-      pBrowser = boost::shared_ptr<CReportBrowser>();
+      pBrowser = nullptr;
    }
 
    return pBrowser;
 }
 
-INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
 {
    // flags will be used in the future to control attribues of the dialog
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
@@ -209,8 +208,8 @@ INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags,boost::shared_ptr
    return dlg.DoModal();
 }
 
-boost::shared_ptr<rptReport> CReportBuilderManager::CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<rptReport> CReportBuilderManager::CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec)
 {
-   boost::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(pRptSpec->GetReportName());
+   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(pRptSpec->GetReportName());
    return pRptBuilder->CreateReport( pRptSpec );
 }

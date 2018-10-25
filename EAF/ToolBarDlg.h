@@ -33,7 +33,7 @@ class CToolBarDlg : public CDialog
 {
 // Construction
 public:
-	CToolBarDlg(CWnd* pParent = NULL);   // standard constructor
+	CToolBarDlg(CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CToolBarDlg)

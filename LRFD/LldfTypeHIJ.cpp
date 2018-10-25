@@ -201,6 +201,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeHIJ::GetMomentDF_Int_1_Str
       g.EqnData.C = C;
       g.EqnData.K = K;
       g.EqnData.e = 1.0;
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
       g.EqnData.mg = S/D;
       g.mg = g.EqnData.mg;
    }
@@ -411,10 +412,12 @@ void lrfdLldfTypeHIJ::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdLldfTypeHIJ::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeHIJ");
 
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
@@ -452,9 +455,6 @@ bool lrfdLldfTypeHIJ::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.6667, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.5, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.6667, 0.001) );
-
-   
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdLldfTypeHIJ");
 }

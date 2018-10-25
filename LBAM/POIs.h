@@ -71,25 +71,25 @@ CONNECTION_POINT_ENTRY(IID_IPOIsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPOIEvents
-   STDMETHOD(OnPOIChanged)(/*[in]*/IPOI* POI,ChangeType type);
-   STDMETHOD(OnPOIRenamed)(/*[in]*/PoiIDType oldID, /*[in]*/ PoiIDType newID);
+   STDMETHOD(OnPOIChanged)(/*[in]*/IPOI* POI,ChangeType type) override;
+   STDMETHOD(OnPOIRenamed)(/*[in]*/PoiIDType oldID, /*[in]*/ PoiIDType newID) override;
 
 // IPOIs
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ IPOIs** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ IPOIs** clone) override;
 
 protected:
    // implementations of virtual functions for collection
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
-   virtual HRESULT OnAfterAdd( StoredType* pVal);
-   virtual HRESULT OnBeforeRemove ( StoredType* pVal);
-   virtual HRESULT OnAfterRemove( PoiIDType id);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd( StoredType* pVal) override;
+   virtual HRESULT OnBeforeRemove ( StoredType* pVal) override;
+   virtual HRESULT OnAfterRemove( PoiIDType id) override;
 
 public:
-   virtual void FinalRelease();
+   void FinalRelease();
 };
 
 #endif //__POIS_H_

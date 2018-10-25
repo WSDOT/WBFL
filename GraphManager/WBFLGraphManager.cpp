@@ -20,7 +20,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	int nRetCode = 0;
 
 	// initialize MFC and print and error on failure
-	if (!AfxWinInit(::GetModuleHandle(NULL), NULL, ::GetCommandLine(), 0))
+	if (!AfxWinInit(::GetModuleHandle(nullptr), nullptr, ::GetCommandLine(), 0))
 	{
 		// TODO: change error code to suit your needs
 		_tprintf(_T("Fatal Error: MFC initialization failed\n"));

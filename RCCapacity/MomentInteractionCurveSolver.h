@@ -61,21 +61,21 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMomentInteractionCurveSolver
 public:
-	STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
-	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-	STDMETHOD(put_Slices)(/*[in]*/long nSlices);
-	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices);
-	STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance);
-	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance);
-	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter);
-	STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter);
-   STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo);
-   STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo);
-   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/Float64 startNA,/*[in]*/Float64 endNA,/*[in]*/long nSteps,/*[out,retval]*/IInteractionCapacityCurveSolution** solution);
+	STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
+	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
+	STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
+	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+	STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
+	STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance) override;
+	STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;
+	STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter) override;
+   STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
+   STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
+   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/Float64 startNA,/*[in]*/Float64 endNA,/*[in]*/long nSteps,/*[out,retval]*/IInteractionCapacityCurveSolution** solution) override;
 };
 
 #endif //__MomentInteractionCurveSolver_H_

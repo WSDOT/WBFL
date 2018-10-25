@@ -33,7 +33,7 @@ class iLLApplicabilityStrategy
 public:
    virtual ApplicabilityLoc GetApplicability(PoiIDType poiId, BSTR stage,  
                                           VARIANT_BOOL isApplicable, LiveLoadApplicabilityType llapplicability, 
-                                          ForceEffectType optimizedEffect, OptimizationType optimization)=0;
+                                          ForceEffectType optimizedEffect, OptimizationType optimization) = 0;
 };
 
 //////////////////////////

@@ -37,7 +37,7 @@ public:
    {
       // initialize all factors to 1.0
       Float64* pnt = &m_LoadModifiers[0][0];
-      for (int i=0; i<LM_ARRSIZE*2; i++)
+      for (int i = 0; i<LM_ARRSIZE*2; i++)
       {
          *pnt++ = 1.0;
       }

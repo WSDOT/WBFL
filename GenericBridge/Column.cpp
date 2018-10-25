@@ -50,7 +50,7 @@ HRESULT CColumn::FinalConstruct()
 
    m_Index = INVALID_INDEX;
 
-   m_pColumnLayout = NULL;
+   m_pColumnLayout = nullptr;
 
    return S_OK;
 }
@@ -66,7 +66,7 @@ STDMETHODIMP CColumn::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IColumn,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

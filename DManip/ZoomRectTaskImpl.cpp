@@ -42,8 +42,8 @@ static char THIS_FILE[]=__FILE__;
 
 CZoomRectTaskImpl::CZoomRectTaskImpl()
 {
-   m_pTrackPen = NULL;
-   m_Cursor = NULL;
+   m_pTrackPen = nullptr;
+   m_Cursor = nullptr;
 }
 
 CZoomRectTaskImpl::~CZoomRectTaskImpl()
@@ -63,7 +63,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::Start()
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    m_pView->SetCapture();
-   if ( m_Cursor == NULL )
+   if ( m_Cursor == nullptr )
       m_Cursor = AfxGetApp()->LoadCursor(IDC_MAGNIFY);
 
    m_OldCursor = ::SetCursor(m_Cursor);
@@ -79,7 +79,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& poi
 
    CComPtr<iDisplayMgr> pDispMgr;
    m_pView->GetDisplayMgr(&pDispMgr);
-   pDispMgr->SetTask(NULL);
+   pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(void) CZoomRectTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
@@ -128,7 +128,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT 
       EscKey();
       CComPtr<iDisplayMgr> pDispMgr;
       m_pView->GetDisplayMgr(&pDispMgr);
-      pDispMgr->SetTask(NULL);
+      pDispMgr->SetTask(nullptr);
    }
 }
 

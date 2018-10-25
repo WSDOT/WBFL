@@ -115,7 +115,7 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
    ATLASSERT(m_nBaseID   != INVALID_ID);
    ATLASSERT(m_nCommands != INVALID_ID);
 
-   if ( pCallback == NULL )
+   if ( pCallback == nullptr )
    {
       // plug-in commands without an associated callback cannot be in the plugin command mapping range
       ATLASSERT(nPluginCmdID < CEAFPluginCommandManager::ms_MinID || CEAFPluginCommandManager::ms_MaxID < nPluginCmdID);
@@ -150,7 +150,7 @@ BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandC
 
 BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedCmdID)
 {
-   if ( pCallback == NULL )
+   if ( pCallback == nullptr )
    {
       *pMappedCmdID = nPluginCmdID;
       return TRUE;
@@ -159,7 +159,7 @@ BOOL CEAFPluginCommandManager::GetMappedCommandID(UINT nPluginCmdID,IEAFCommandC
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
 
 
-   BOOST_FOREACH(CallbackEntry callbackEntry,m_Callbacks)
+   for ( const auto& callbackEntry : m_Callbacks)
    {
       CCallbackItem callbackItem = callbackEntry.second;
 
@@ -192,7 +192,7 @@ BOOL CEAFPluginCommandManager::GetCommandCallback(UINT nMappedID,UINT* pPluginCm
       return TRUE;
    }
 
-   (*ppCallback) = NULL;
+   (*ppCallback) = nullptr;
    return TRUE;
 }
 
@@ -211,7 +211,7 @@ std::vector<UINT> CEAFPluginCommandManager::GetMappedCommandIDs(IEAFCommandCallb
    std::vector<UINT> nMappedIDs;
    CComQIPtr<IUnknown, &IID_IUnknown> pUnk1(pCallback);
 
-   BOOST_FOREACH(CallbackEntry callbackEntry,m_Callbacks)
+   for ( const auto& callbackEntry : m_Callbacks)
    {
       CCallbackItem callbackItem = callbackEntry.second;
 

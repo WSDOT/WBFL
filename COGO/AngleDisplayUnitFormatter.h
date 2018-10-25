@@ -69,25 +69,26 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+public:
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDisplayUnitFormatter
 public:
-	STDMETHOD(FormatSpecifiers)(/*[in]*/ Uint32 width,/*[in]*/Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType fmt,/*[in]*/ Float64 zeroVal);
-	STDMETHOD(get_Width)(/*[out,retval]*/ Uint32* val);
-	STDMETHOD(get_Precision)(/*[out,retval]*/ Uint32* val);
-	STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation);
-	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify);
-	STDMETHOD(get_ZeroTolerance)(/*[out,retval]*/ Float64* zeroTol);
-   STDMETHOD(Format)(/*[in]*/ Float64 val, /*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString);
-   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL *bUsesTag);
+	STDMETHOD(FormatSpecifiers)(/*[in]*/ Uint32 width,/*[in]*/Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType fmt,/*[in]*/ Float64 zeroVal) override;
+	STDMETHOD(get_Width)(/*[out,retval]*/ Uint32* val) override;
+	STDMETHOD(get_Precision)(/*[out,retval]*/ Uint32* val) override;
+	STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation) override;
+	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify) override;
+	STDMETHOD(get_ZeroTolerance)(/*[out,retval]*/ Float64* zeroTol) override;
+   STDMETHOD(Format)(/*[in]*/ Float64 val, /*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString) override;
+   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL *bUsesTag) override;
 
 // IAngleDisplayUnitFormatter
 public:
-	STDMETHOD(get_Signed)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_Signed)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_CondensedFormat)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_CondensedFormat)(/*[in]*/ VARIANT_BOOL newVal);
+	STDMETHOD(get_Signed)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_Signed)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_CondensedFormat)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_CondensedFormat)(/*[in]*/ VARIANT_BOOL newVal) override;
 
 private:
    VARIANT_BOOL m_bSigned;

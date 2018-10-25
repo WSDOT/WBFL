@@ -57,18 +57,20 @@ END_COM_MAP()
 BEGIN_CONNECTION_POINT_MAP(CDataSet2dImpl)
 END_CONNECTION_POINT_MAP()
 
+   HRESULT Clone(iDataSet2d** clone);
+
+
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDataSet2d
 public:
-   STDMETHOD_(HRESULT,get_Item)(CollectionIndexType idx, IPoint2d** pVal);
-   STDMETHOD_(void,get_Count)(CollectionIndexType *pVal);
-   STDMETHOD_(void,Add)(IPoint2d *pVal);
-   STDMETHOD_(HRESULT,Insert)(CollectionIndexType index, IPoint2d *pVal);
-   STDMETHOD_(HRESULT,Remove)(CollectionIndexType index);
-   STDMETHOD_(void,Clear)();
-	STDMETHOD(Clone)(/*[out, retval]*/ iDataSet2d** clone);
+   STDMETHOD_(HRESULT,get_Item)(CollectionIndexType idx, IPoint2d** pVal) override;
+   STDMETHOD_(void,get_Count)(CollectionIndexType *pVal) override;
+   STDMETHOD_(void,Add)(IPoint2d *pVal) override;
+   STDMETHOD_(HRESULT,Insert)(CollectionIndexType index, IPoint2d *pVal) override;
+   STDMETHOD_(HRESULT,Remove)(CollectionIndexType index) override;
+   STDMETHOD_(void,Clear)() override;
 
 protected:
    typedef CAdapt<CComPtr<IPoint2d> > ContainerItem;

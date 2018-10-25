@@ -47,8 +47,8 @@ public:
    const std::_tstring& GetReportTitle() const;
    void SetReportTitle(LPCTSTR title);
 
-   virtual rptChapter* Build(boost::shared_ptr<CReportSpecification>& pRptSpec) = 0;
-   virtual bool NeedsUpdate(CReportHint* pHint,boost::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual rptChapter* Build(std::shared_ptr<CReportSpecification>& pRptSpec) = 0;
+   virtual bool NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec);
 
    // polymorphic copy
    virtual CTitlePageBuilder* Clone() const = 0;

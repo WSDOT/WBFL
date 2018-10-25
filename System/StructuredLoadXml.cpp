@@ -138,7 +138,7 @@ bool sysStructuredLoadXml::BeginUnit(LPCTSTR name)
       {
          // was a BeginUnit and the name matches
          if (!m_LineParser.GetValue(&unit_version))
-            unit_version=0;
+            unit_version = 0;
          // push unit onto stack
          m_Level++;
          m_UnitList.push_back(ListItem(unit_name,unit_version));

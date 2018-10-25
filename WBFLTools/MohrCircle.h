@@ -59,22 +59,22 @@ private:
 
 // IMohrCircle
 public:
-	STDMETHOD(ComputeSxx)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* sxx);
-	STDMETHOD(ComputeSxy)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* sxy);
-	STDMETHOD(ComputeSyy)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* syy);
-	STDMETHOD(ComputeState)(/*[in]*/ Float64 angle,/*[out]*/ Float64* S11,/*[out]*/ Float64* S22, /*[out]*/ Float64* S12);
-	STDMETHOD(get_Tmax)(/*[out, retval]*/ Float64 *Tmax);
-	STDMETHOD(get_Smin)(/*[out, retval]*/ Float64 *Smin);
-	STDMETHOD(get_Smax)(/*[out, retval]*/ Float64 *Smax);
-	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *dir);
-	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *radius);
-	STDMETHOD(get_Center)(/*[out, retval]*/ Float64 *center);
-	STDMETHOD(get_Sij)(/*[out, retval]*/ Float64 *sij);
-	STDMETHOD(put_Sij)(/*[in]*/ Float64 sij);
-	STDMETHOD(get_Sjj)(/*[out, retval]*/ Float64 *sjj);
-	STDMETHOD(put_Sjj)(/*[in]*/ Float64 sjj);
-	STDMETHOD(get_Sii)(/*[out, retval]*/ Float64 *sii);
-	STDMETHOD(put_Sii)(/*[in]*/ Float64 sii);
+	STDMETHOD(ComputeSxx)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* sxx) override;
+	STDMETHOD(ComputeSxy)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* sxy) override;
+	STDMETHOD(ComputeSyy)(/*[in]*/ Float64 angle,/*[out,retval]*/Float64* syy) override;
+	STDMETHOD(ComputeState)(/*[in]*/ Float64 angle,/*[out]*/ Float64* S11,/*[out]*/ Float64* S22, /*[out]*/ Float64* S12) override;
+	STDMETHOD(get_Tmax)(/*[out, retval]*/ Float64 *Tmax) override;
+	STDMETHOD(get_Smin)(/*[out, retval]*/ Float64 *Smin) override;
+	STDMETHOD(get_Smax)(/*[out, retval]*/ Float64 *Smax) override;
+	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *dir) override;
+	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *radius) override;
+	STDMETHOD(get_Center)(/*[out, retval]*/ Float64 *center) override;
+	STDMETHOD(get_Sij)(/*[out, retval]*/ Float64 *sij) override;
+	STDMETHOD(put_Sij)(/*[in]*/ Float64 sij) override;
+	STDMETHOD(get_Sjj)(/*[out, retval]*/ Float64 *sjj) override;
+	STDMETHOD(put_Sjj)(/*[in]*/ Float64 sjj) override;
+	STDMETHOD(get_Sii)(/*[out, retval]*/ Float64 *sii) override;
+	STDMETHOD(put_Sii)(/*[in]*/ Float64 sii) override;
 };
 
 #endif //__MOHRCIRCLE_H_

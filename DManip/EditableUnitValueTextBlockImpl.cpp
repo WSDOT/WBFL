@@ -80,7 +80,7 @@ void CEditableUnitValueTextBlockImpl::FinalRelease()
    m_EditableTextBlock.Release();
 
    delete m_pctlUnitTag;
-   m_pctlUnitTag = NULL;
+   m_pctlUnitTag = nullptr;
 
    m_UnitSystem.Release();
 }
@@ -630,7 +630,7 @@ STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::IsStation(bool bIsStation)
       m_bIsStation = bIsStation;
       m_EditableTextBlock->SetFormat(m_bIsStation ? etbfText : etbfNumeric);
 
-      if ( m_bIsStation && m_Station == NULL )
+      if ( m_bIsStation && m_Station == nullptr )
          m_Station.CoCreateInstance(CLSID_Station);
    }
 }

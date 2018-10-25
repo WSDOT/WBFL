@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "UGirderSection2.h"
 #include <MathEx.h>
-#include <xutility> // for _cpp_min
+#include <xutility> // for Min
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,7 +46,7 @@ HRESULT CUGirderSection2::FinalConstruct()
  
    m_Beam.CoCreateInstance(CLSID_UBeam2);
    CComQIPtr<IShape> beamShape(m_Beam);
-   ATLASSERT(beamShape != NULL); // must implement IShape interface
+   ATLASSERT(beamShape != nullptr); // must implement IShape interface
    m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
 
    return S_OK;
@@ -66,7 +66,7 @@ STDMETHODIMP CUGirderSection2::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -83,7 +83,7 @@ void CUGirderSection2::GetSplittingZone(Float64* pH,SplittingDirection* pSD)
    m_Beam->get_W1(&w1);
    m_Beam->get_W2(&w2);
 
-   long idx = MinIndex(h,w1,w2);
+   IndexType idx = MinIndex(h,w1,w2);
    if ( idx == 0 )
    {
       *pH = h;

@@ -38,11 +38,11 @@
 #include <WBFLAll.h>
 #include <WBFLVersion.h>
 
-#define VC_EXTRALEAN
-
-#ifndef STRICT
-#define STRICT
-#endif
+//#define VC_EXTRALEAN
+//
+//#ifndef STRICT
+//#define STRICT
+//#endif
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions

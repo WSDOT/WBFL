@@ -51,7 +51,7 @@ public:
 
 protected:
    // Prevent accidental copying and assignment
-   CEAFCommandLineInfo(const CEAFCommandLineInfo&);
+   CEAFCommandLineInfo(const CEAFCommandLineInfo&) = delete;
 
    CString m_strErrorMsg;
    CString m_strTargetApp; // name of EAF Application Plugin that is to process the command line options

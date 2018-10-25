@@ -28,6 +28,7 @@
 #include <GraphicsLib\PointMapper.h>
 #include <mathex.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -177,7 +178,7 @@ gpRect2d gmPolygon::GetBoundingBox() const
 
 gmIShape* gmPolygon::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmPolygon> ph(new gmPolygon( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmPolygon> ph(new gmPolygon( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -196,14 +197,16 @@ gmIShape* gmPolygon::CreateClippedShape(const gpLine2d& line, gpLine2d::Side sid
    // if nothing there, return
    if (pt!=0)
    {
-      std::auto_ptr<gpPolygon2d> pi(pt);
+      std::unique_ptr<gpPolygon2d> pi(pt);
       // construct gmPolygon and copy this' traits to it
-      std::auto_ptr<gmPolygon> ph(new gmPolygon( *pi ));
+      std::unique_ptr<gmPolygon> ph(new gmPolygon( *pi ));
       gmShapeUtils::CopyTraits(*this, ph.get());
       return ph.release();
    }
    else
-      return 0;
+   {
+      return nullptr;
+   }
 }
 
 gmIShape* gmPolygon::CreateClippedShape(const gpRect2d& rect, gmShapeImp::ClipRegion region) const
@@ -216,15 +219,17 @@ gmIShape* gmPolygon::CreateClippedShape(const gpRect2d& rect, gmShapeImp::ClipRe
       gpr=gpPolygon2d::Out;
 
    // create a clipped polygon of this' polgonimp
-   std::auto_ptr<gpPolygon2d> pi( m_PolygonImp.CreateClippedPolygon(rect,gpr) );
-   if (pi.get()!=0)
+   std::unique_ptr<gpPolygon2d> pi( m_PolygonImp.CreateClippedPolygon(rect,gpr) );
+   if (pi.get() != nullptr)
    {
-      std::auto_ptr<gmPolygon> ph(new gmPolygon( *pi ));
+      std::unique_ptr<gmPolygon> ph(new gmPolygon( *pi ));
       gmShapeUtils::CopyTraits(*this, ph.get());
       return ph.release();
    }
    else
-      return 0;
+   {
+      return nullptr;
+   }
 }
 
 void gmPolygon::ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
@@ -235,8 +240,8 @@ void gmPolygon::ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
    // than it is for gmIShape. For this reason, side must be reversed.
    gpLine2d::Side local_side = (side == gpLine2d::Left ? gpLine2d::Right : gpLine2d::Left); 
 
-   std::auto_ptr<gpPolygon2d> pclipped( m_PolygonImp.CreateClippedPolygon(line,local_side) );
-   if (pclipped.get()!=0)
+   std::unique_ptr<gpPolygon2d> pclipped( m_PolygonImp.CreateClippedPolygon(line,local_side) );
+   if (pclipped.get() != nullptr)
    {
       pclipped->GetArea(pArea, pCG);
 
@@ -278,7 +283,7 @@ void gmPolygon::Draw(HDC hDC, const grlibPointMapper& mapper) const
 
    device_points = new POINT[num_points+1];  // add one for closure point
 
-   LONG point=0;
+   LONG point = 0;
    gpPolyPointIter2d it(&(this->m_PolygonImp));
    for (it.Begin(); it; it.Next())
    {
@@ -462,7 +467,7 @@ gmPolyPointIter::operator void *()
    if (m_pPolygon)
       return m_Iterator;
    else
-      return 0;
+      return nullptr;
 }
 
 // code duplication of above -- watch out!!
@@ -471,7 +476,7 @@ gmPolyPointIter::operator void *() const
    if (m_pPolygon)
       return m_Iterator;
    else
-      return 0;
+      return nullptr;
 }
 
 const gpPoint2d* gmPolyPointIter::CurrentPoint() const
@@ -634,7 +639,7 @@ bool gmPolygon::TestMe(dbgLog& rlog)
    p4 = rect.AddPoint(gpPoint2d(40,0));
    gpLine2d up_left(gpPoint2d(0,0), gpVector2d(gpSize2d(1,1)));
    gpLine2d up_rgt(gpPoint2d(40,0), gpVector2d(gpSize2d(-3,5)));
-   std::auto_ptr<gmIShape> pfirst(rect.CreateClippedShape(up_left, gpLine2d::Left));
+   std::unique_ptr<gmIShape> pfirst(rect.CreateClippedShape(up_left, gpLine2d::Left));
    pfirst->GetProperties(&aprops);
    TRY_TESTME( IsEqual(aprops.Area(), 800.) );
 
@@ -644,7 +649,7 @@ bool gmPolygon::TestMe(dbgLog& rlog)
    TRY_TESTME(area==aprops.Area());
    TRY_TESTME(cg==aprops.Centroid());
 
-   std::auto_ptr<gmIShape> ptriang(pfirst->CreateClippedShape(up_rgt, gpLine2d::Right));
+   std::unique_ptr<gmIShape> ptriang(pfirst->CreateClippedShape(up_rgt, gpLine2d::Right));
    ptriang->GetProperties(&aprops);
    TRY_TESTME ( IsEqual(aprops.Area(), 500.)) ;
    TRY_TESTME (ptriang->GetBoundingBox() == gpRect2d(0,0,40,25)) ;
@@ -656,7 +661,7 @@ bool gmPolygon::TestMe(dbgLog& rlog)
 
    // clip triangle into a right triangle
    gpRect2d clip_box(0,5,20,25);
-   std::auto_ptr<gmIShape> prtri(ptriang->CreateClippedShape(clip_box, gmShapeImp::In));
+   std::unique_ptr<gmIShape> prtri(ptriang->CreateClippedShape(clip_box, gmShapeImp::In));
    prtri->GetProperties(&aprops);
    TRY_TESTME ( IsEqual(aprops.Area(), 112.5)) ;
    TRY_TESTME (prtri->GetBoundingBox() == gpRect2d(5,5,20,20)) ;

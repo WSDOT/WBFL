@@ -74,19 +74,19 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDistributionFactorSegmentEvents
-	STDMETHOD(OnDistributionFactorSegmentChanged)();
+	STDMETHOD(OnDistributionFactorSegmentChanged)() override;
 
 // IDistributionFactors
-   STDMETHOD(get_Length)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/ Float64 *pVal);
-   STDMETHOD(GetFactorForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactor** leftLLDF, /*[out]*/IDistributionFactor** rightLLDF);
-   STDMETHOD(GetSegmentForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactorSegment** leftSegment, /*[out]*/IDistributionFactorSegment** rightSegment);
-   STDMETHOD(GetMemberSegments)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/IFilteredDfSegmentCollection** segments);
-   STDMETHOD(Clone)(/*[out,retval]*/IDistributionFactors** clone);
-   STDMETHOD(get_IsSymmetrical)(/*[out,retval]*/ VARIANT_BOOL *pVal);
-   STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal);
+   STDMETHOD(get_Length)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/ Float64 *pVal) override;
+   STDMETHOD(GetFactorForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactor** leftLLDF, /*[out]*/IDistributionFactor** rightLLDF) override;
+   STDMETHOD(GetSegmentForLocation)(/*[in]*/Float64 location, /*[in]*/Float64 superstructureLength, /*[out]*/IDistributionFactorSegment** leftSegment, /*[out]*/IDistributionFactorSegment** rightSegment) override;
+   STDMETHOD(GetMemberSegments)(/*[in]*/Float64 superstructureLength, /*[out,retval]*/IFilteredDfSegmentCollection** segments) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IDistributionFactors** clone) override;
+   STDMETHOD(get_IsSymmetrical)(/*[out,retval]*/ VARIANT_BOOL *pVal) override;
+   STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal) override;
 
 public:
    // implementations of virtual functions for collection
@@ -158,8 +158,8 @@ public:
    }
 
 public:
-   virtual void FinalRelease();
-   virtual HRESULT FinalConstruct();
+   void FinalRelease();
+   HRESULT FinalConstruct();
 
 
    // virtual functions to allow saving properties along with collection
@@ -191,7 +191,7 @@ public:
 
 protected:
    VARIANT_BOOL m_IsSymmetrical;
-   STDMETHOD(GetMemberSegments)(Float64 superstructureLength, VARIANT_BOOL isSymmetrical, IFilteredDfSegmentCollection** segments);
+   HRESULT GetMemberSegments(Float64 superstructureLength, VARIANT_BOOL isSymmetrical, IFilteredDfSegmentCollection** segments);
    HRESULT LayoutSegments(Float64 layoutLength, Float64 totalLength, CFilteredDfSegmentCollection* pnew_coll);
 
 private:

@@ -43,7 +43,7 @@ STDMETHODIMP CPOI::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IPOI
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -54,7 +54,7 @@ STDMETHODIMP CPOI::InterfaceSupportsErrorInfo(REFIID riid)
 void CPOI::FinalRelease()
 {
    HRESULT hr;
-   if (m_POIStressPoints!=NULL)
+   if (m_POIStressPoints!=nullptr)
    {
       hr = CrUnadvise(m_POIStressPoints, this, IID_IPOIStressPointsEvents, m_POIStressPointsCookie);
       if (FAILED(hr))
@@ -159,7 +159,7 @@ STDMETHODIMP CPOI::putref_POIStressPoints(IPOIStressPoints *poiStressPoints)
    CHECK_IN(poiStressPoints);
 
    // break existing connection
-   if (m_POIStressPoints!=NULL)
+   if (m_POIStressPoints!=nullptr)
    {
       hr = CrUnadvise(m_POIStressPoints, this, IID_IPOIStressPointsEvents, m_POIStressPointsCookie);
       if (FAILED(hr))
@@ -189,7 +189,7 @@ STDMETHODIMP CPOI::get_POIStressPoints(IPOIStressPoints **poiStressPoints)
    HRESULT hr;
 
    // create stress point collections on demand if needed
-   if (m_POIStressPoints==NULL)
+   if (m_POIStressPoints==nullptr)
    {
       CComObject<CPOIStressPoints>* pcsp;
       hr = CComObject<CPOIStressPoints>::CreateInstance(&pcsp);
@@ -225,7 +225,7 @@ STDMETHODIMP CPOI::Clone(IPOI **ppCS)
    pnew->m_MemberID   = m_MemberID;
 
 
-   if (m_POIStressPoints!=NULL)
+   if (m_POIStressPoints!=nullptr)
    {
       CComPtr<IPOIStressPoints> spclone;
       hr = m_POIStressPoints->Clone(&spclone);
@@ -378,7 +378,7 @@ STDMETHODIMP CPOI::Save(IStructuredSave2 * psave)
          // stress points 
          hr = psave->BeginUnit(CComBSTR("POIStressPoints"), MY_VER);
 
-         if (m_POIStressPoints==NULL)
+         if (m_POIStressPoints==nullptr)
          {
             hr = psave->put_Property(CComBSTR("IsPOIStressPoints"),_variant_t((long)0));
          }

@@ -65,25 +65,25 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILBAMAnalysisEngine
 public:
-	STDMETHOD(get_ContraflexureResponse)(/*[out, retval]*/ IContraflexureResponse* *pVal);
-	STDMETHOD(get_LiveLoadNegativeMomentRegion)(/*[out, retval]*/ ILiveLoadNegativeMomentRegion* *pVal);
-	STDMETHOD(get_AnalysisType)(/*[out, retval]*/ AnalysisType *pVal);
-	STDMETHOD(get_Model)(/*[out, retval]*/ ILBAMModel* *pVal);
-	STDMETHOD(get_LoadCaseResponse)(/*[out, retval]*/ ILoadCaseResponse* *pVal);
-	STDMETHOD(get_EnvelopedVehicularResponse)(/*[out, retval]*/ IEnvelopedVehicularResponse* *pVal);
-	STDMETHOD(get_LiveLoadModelResponse)(/*[out, retval]*/ ILiveLoadModelResponse* *pVal);
-	STDMETHOD(get_BasicVehicularResponse)(/*[out, retval]*/ IBasicVehicularResponse* *pVal);
-	STDMETHOD(get_AnalysisPOIs)(/*[out, retval]*/ IAnalysisPOIs* *pVal);
-	STDMETHOD(get_InfluenceLineResponse)(/*[out, retval]*/ IInfluenceLineResponse* *pVal);
-   STDMETHOD(get_UnitLoadResponse)(/*[out, retval]*/ IUnitLoadResponse* *pVal);
-	STDMETHOD(get_LoadGroupResponse)(/*[out, retval]*/ ILoadGroupResponse* *pVal);
-	STDMETHOD(get_LoadCombinationResponse)(/*[out, retval]*/ ILoadCombinationResponse* *pVal);
-	STDMETHOD(get_ConcurrentLoadCombinationResponse)(/*[out, retval]*/ IConcurrentLoadCombinationResponse* *pVal);
-	STDMETHOD(Initialize)(/*[in]*/ILBAMModel* model, /*[in]*/AnalysisType forceOrDeflection);
+	STDMETHOD(get_ContraflexureResponse)(/*[out, retval]*/ IContraflexureResponse* *pVal) override;
+	STDMETHOD(get_LiveLoadNegativeMomentRegion)(/*[out, retval]*/ ILiveLoadNegativeMomentRegion* *pVal) override;
+	STDMETHOD(get_AnalysisType)(/*[out, retval]*/ AnalysisType *pVal) override;
+	STDMETHOD(get_Model)(/*[out, retval]*/ ILBAMModel* *pVal) override;
+	STDMETHOD(get_LoadCaseResponse)(/*[out, retval]*/ ILoadCaseResponse* *pVal) override;
+	STDMETHOD(get_EnvelopedVehicularResponse)(/*[out, retval]*/ IEnvelopedVehicularResponse* *pVal) override;
+	STDMETHOD(get_LiveLoadModelResponse)(/*[out, retval]*/ ILiveLoadModelResponse* *pVal) override;
+	STDMETHOD(get_BasicVehicularResponse)(/*[out, retval]*/ IBasicVehicularResponse* *pVal) override;
+	STDMETHOD(get_AnalysisPOIs)(/*[out, retval]*/ IAnalysisPOIs* *pVal) override;
+	STDMETHOD(get_InfluenceLineResponse)(/*[out, retval]*/ IInfluenceLineResponse* *pVal) override;
+   STDMETHOD(get_UnitLoadResponse)(/*[out, retval]*/ IUnitLoadResponse* *pVal) override;
+	STDMETHOD(get_LoadGroupResponse)(/*[out, retval]*/ ILoadGroupResponse* *pVal) override;
+	STDMETHOD(get_LoadCombinationResponse)(/*[out, retval]*/ ILoadCombinationResponse* *pVal) override;
+	STDMETHOD(get_ConcurrentLoadCombinationResponse)(/*[out, retval]*/ IConcurrentLoadCombinationResponse* *pVal) override;
+	STDMETHOD(Initialize)(/*[in]*/ILBAMModel* model, /*[in]*/AnalysisType forceOrDeflection) override;
    STDMETHOD(InitializeEx)(/*[in]*/ILBAMModel* model, /*[in]*/AnalysisType forceOrDeflection,
 		                     /*[in]*/ ILoadGroupResponse* plgResponse,
 		                     /*[in]*/ IUnitLoadResponse* pUnitLoadResponse,
@@ -96,10 +96,10 @@ public:
 		                     /*[in]*/ ILoadCombinationResponse* plcomboResponse,
 		                     /*[in]*/ IConcurrentLoadCombinationResponse* pclcResponse,
 		                     /*[in]*/ ILiveLoadNegativeMomentRegion* pllnmRegion,
-		                     /*[in]*/ IContraflexureResponse* pcontraResponse );
+		                     /*[in]*/ IContraflexureResponse* pcontraResponse ) override;
 
 // ISupportProgressMonitorForEngine
-	STDMETHOD(InitializeProgressMonitor4E)(IProgressMonitor* newVal, LONG loadGroupCookie, LONG liveLoadCookie, LONG loadCombinationCookie);
+	STDMETHOD(InitializeProgressMonitor4E)(IProgressMonitor* newVal, LONG loadGroupCookie, LONG liveLoadCookie, LONG loadCombinationCookie) override;
 
 private:
    AnalysisType                                 m_AnalysisType;

@@ -52,7 +52,7 @@ HRESULT CSectionCutTool::FinalConstruct()
 {
    CComObject<CEffectiveFlangeWidthTool>* pTool;
    HRESULT hr = CComObject<CEffectiveFlangeWidthTool>::CreateInstance(&pTool);
-   if ( FAILED(hr) || pTool == NULL )
+   if ( FAILED(hr) || pTool == nullptr )
    {
       return E_FAIL;
    }
@@ -62,7 +62,7 @@ HRESULT CSectionCutTool::FinalConstruct()
 
    CComObject<CBridgeGeometryTool>* pBGTool;
    hr = CComObject<CBridgeGeometryTool>::CreateInstance(&pBGTool);
-   if ( FAILED(hr) || pBGTool == NULL )
+   if ( FAILED(hr) || pBGTool == nullptr )
    {
       return E_FAIL;
    }
@@ -84,7 +84,7 @@ STDMETHODIMP CSectionCutTool::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISectionCutTool
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -118,7 +118,7 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    // Get left top point
    CComPtr<IStation> offsetStation;
    Float64 left_deck_offset; // distance from alignment to left edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbLeft,&offsetStation,&left_deck_offset);
+   m_BridgeGeometryTool->DeckOffset(bridge,station,nullptr,qcbLeft,&offsetStation,&left_deck_offset);
 
    Float64 elev;
    profile->Elevation(CComVariant(offsetStation),left_deck_offset,&elev);
@@ -126,9 +126,9 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    CComPtr<ISidewalkBarrier> left_barrier;
    bridge->get_LeftBarrier(&left_barrier);
 
-   if ( left_barrier == NULL )
+   if ( left_barrier == nullptr )
    {
-      *section = NULL;
+      *section = nullptr;
       return S_FALSE;
    }
 
@@ -149,7 +149,7 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
 
    if ( !shape )
    {
-      *section = NULL;
+      *section = nullptr;
       return S_FALSE;
    }
 
@@ -200,7 +200,7 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    // Get right top point
    CComPtr<IStation> offsetStation;
    Float64 right_deck_offset; // distance from alignment to right edge of deck
-   m_BridgeGeometryTool->DeckOffset(bridge,station,NULL,qcbRight,&offsetStation,&right_deck_offset);
+   m_BridgeGeometryTool->DeckOffset(bridge,station,nullptr,qcbRight,&offsetStation,&right_deck_offset);
 
    Float64 elev;
    profile->Elevation(CComVariant(offsetStation),right_deck_offset,&elev);
@@ -208,9 +208,9 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    CComPtr<ISidewalkBarrier> right_barrier;
    bridge->get_RightBarrier(&right_barrier);
 
-   if ( right_barrier == NULL )
+   if ( right_barrier == nullptr )
    {
-      *section = NULL;
+      *section = nullptr;
       return S_FALSE;
    }
 
@@ -230,7 +230,7 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
 
    if ( !shape )
    {
-      *section = NULL;
+      *section = nullptr;
       return S_FALSE;
    }
 
@@ -291,7 +291,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
    CComPtr<IDirection> dirCutLine;
    bool bIsNormal = false;
-   if ( pDirection == NULL )
+   if ( pDirection == nullptr )
    {
       alignment->Normal(CComVariant(objStation),&dirCutLine); // normal to the right
       dirCutLine->IncrementBy(CComVariant(M_PI)); // normal to the left
@@ -317,7 +317,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComQIPtr<ICastSlab> cip(deck);
    CComQIPtr<IPrecastSlab> sip(deck);
    CComQIPtr<IOverlaySlab> overlay(deck);
-   ATLASSERT(cip != NULL || sip != NULL || overlay != NULL);
+   ATLASSERT(cip != nullptr || sip != nullptr || overlay != nullptr);
 
    // create the deck shape object
    CComPtr<IPolyShape> slab_shape;
@@ -349,7 +349,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    // Get roadway surface at cut station
    CComPtr<ISurface> surface;
    profile->GetSurface(COGO_FINISHED_SURFACE_ID,CComVariant(objStation),&surface);
-   ATLASSERT(surface != NULL); // there must be a surface
+   ATLASSERT(surface != nullptr); // there must be a surface
 
    // get the alignment point
    IndexType alignmentPointIdx;
@@ -403,7 +403,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       surface->CreateSurfaceTemplate(CComVariant(objStation),VARIANT_TRUE,&surfaceTemplate);
       surfaceTemplate->get_Count(&nRidgePoints); // this is number of segments
       nRidgePoints++; // this is the number of ridge points
-      for ( IndexType ridgePointIdx = nRidgePoints; 0 < ridgePointIdx; ridgePointIdx-- )
+      for ( IndexType ridgePointIdx = nRidgePoints-1; ridgePointIdx != INVALID_INDEX; ridgePointIdx-- )
       {
          // get offset (measured from the alignment) and the elevation of the ridge point
          Float64 offset, elev;
@@ -419,8 +419,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    else
    {
       surface->CreateSurfaceProfile(CComVariant(objStation),CComVariant(dirCutLine),VARIANT_TRUE,&surfaceProfile);
-      surfaceProfile->get_Count(&nRidgePoints);
-      for ( IndexType ridgePointIdx = nRidgePoints-1; 0 < ridgePointIdx; ridgePointIdx-- )
+      surfaceProfile->get_Count(&nRidgePoints); // this is the number of segments
+      for ( IndexType ridgePointIdx = nRidgePoints-1; ridgePointIdx != INVALID_INDEX; ridgePointIdx-- )
       {
          // get offset (measured from the alignment) and the elevation of the ridge point
          Float64 offset, elev;
@@ -478,7 +478,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          //             |      |
          //             3------4
          //
-         BOOST_FOREACH(GirderPointRecord& girderPoint,vGirderPoints)
+         for ( const auto& girderPoint : vGirderPoints)
          {
             CComPtr<ISuperstructureMember> ssmbr;
             bridge->get_SuperstructureMember(girderPoint.girderID,&ssmbr);
@@ -664,7 +664,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
    bridge->get_Deck(&deck);
 
    // No deck, no surface area or volume
-   if ( deck == NULL )
+   if ( deck == nullptr )
    {
       *pSurfaceArea = 0;
       *pVolume = 0;
@@ -693,7 +693,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
 
    Float64 station = startStation;
    CComPtr<IShape> prevDeckShape;
-   CreateSlabShape(bridge,startStation,NULL,VARIANT_TRUE/*include haunch*/,&prevDeckShape);
+   CreateSlabShape(bridge,startStation,nullptr,VARIANT_TRUE/*include haunch*/,&prevDeckShape);
 
    Float64 prevPerimeter;
    prevDeckShape->get_Perimeter(&prevPerimeter);
@@ -720,7 +720,7 @@ STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType
          station += increment;
 
          CComPtr<IShape> deckShape;
-         CreateSlabShape(bridge,station,NULL,VARIANT_TRUE/*include haunch*/,&deckShape);
+         CreateSlabShape(bridge,station,nullptr,VARIANT_TRUE/*include haunch*/,&deckShape);
 
          Float64 perimeter;
          deckShape->get_Perimeter(&perimeter);
@@ -826,7 +826,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
    CComPtr<IEnumSuperstructureMembers> enumSSMbrs;
    bridge->get__EnumSuperstructureMembers(&enumSSMbrs);
    CComPtr<ISuperstructureMember> ssMbr;
-   while ( enumSSMbrs->Next(1,&ssMbr,NULL) != S_FALSE )
+   while ( enumSSMbrs->Next(1,&ssMbr,nullptr) != S_FALSE )
    {
       GirderIDType ssMbrID;
       ssMbr->get_ID(&ssMbrID);
@@ -875,7 +875,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
             CComPtr<ISection> girder_section;
             CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,stageIdx,spmGross,&girder_section);
 
-            if ( girder_section == NULL )
+            if ( girder_section == nullptr )
             {
                continue; // this girder does not cross the section cut... must be a short, highly skewed bridge
             }
@@ -885,7 +885,7 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
             Float64 top;
             boundbox->get_Top(&top);
 
-            bottom_deck_elevation = _cpp_max(bottom_deck_elevation,top);
+            bottom_deck_elevation = Max(bottom_deck_elevation,top);
             
             // Store into a composite container
             CComQIPtr<ICompositeSectionEx> cmpsection(girder_section);
@@ -1061,7 +1061,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    bridge->get_Deck(&deck);
 
    // this model doesn't have a deck... get the heck outta here
-   if ( deck == NULL )
+   if ( deck == nullptr )
    {
       return S_FALSE;
    }
@@ -1134,7 +1134,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
       rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
 
       CComPtr<IRebarSectionItem> rebarSectionItem;
-      while ( enumRebarSectionItem->Next(1,&rebarSectionItem,NULL) != S_FALSE )
+      while ( enumRebarSectionItem->Next(1,&rebarSectionItem,nullptr) != S_FALSE )
       {
          CComPtr<IPoint2d> pntRebar;
          rebarSectionItem->get_Location(&pntRebar);
@@ -1269,7 +1269,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    bridge->get_Deck(&deck);
    Float64 sacDepth;
    bridge->get_SacrificialDepth(&sacDepth);
-   if ( deck == NULL && !IsZero(sacDepth) )
+   if ( deck == nullptr && !IsZero(sacDepth) )
    {
       // The bridge does not have a deck and there is a sacrifical depth that
       // must be deducted from the top of the girder to account for the girder 
@@ -1320,9 +1320,9 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    ATLASSERT(item_data); // segments must have item data
    CComPtr<IUnknown> punk;
    item_data->GetItemData(CComBSTR("Precast Girder"),&punk);
-   ATLASSERT(punk != NULL);
+   ATLASSERT(punk != nullptr);
    CComQIPtr<IPrecastGirder> girder(punk);
-   ATLASSERT(girder != NULL);
+   ATLASSERT(girder != nullptr);
 
    // need to make sure the location we are looking at is actually
    // on the precast girder or if it is in a closure pour region
@@ -1386,7 +1386,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
             CComPtr<IEnumPoint2d> enum_points;
             strandLocations->get__Enum(&enum_points);
             StrandIndexType strandIndex = 0;
-            while ( enum_points->Next(1,&point,NULL) != S_FALSE )
+            while ( enum_points->Next(1,&point,nullptr) != S_FALSE )
             {
                // x measured from CL girder
                // y measured from top of girder
@@ -1672,7 +1672,7 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
    rebarSection->get__EnumRebarSectionItem(&enumRebarSectionItem);
 
    CComPtr<IRebarSectionItem> rebarSectionItem;
-   while ( enumRebarSectionItem->Next(1,&rebarSectionItem,NULL) != S_FALSE )
+   while ( enumRebarSectionItem->Next(1,&rebarSectionItem,nullptr) != S_FALSE )
    {
       CComPtr<IPoint2d> pntRebar;
       rebarSectionItem->get_Location(&pntRebar);
@@ -1737,7 +1737,7 @@ HRESULT CSectionCutTool::CreateBridgeDeckSection(IGenericBridge* bridge,Float64 
    // of the rectangular approximation.
    HRESULT hr = S_OK;
 
-   (*deckitem) = NULL;
+   (*deckitem) = nullptr;
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
    if ( deck )
@@ -1863,7 +1863,7 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
    bridge->get_Deck(&deck);
    Float64 sacDepth;
    bridge->get_SacrificialDepth(&sacDepth);
-   if ( deck == NULL && !IsZero(sacDepth) )
+   if ( deck == nullptr && !IsZero(sacDepth) )
    {
       // The bridge does not have a deck and there is a sacrifical depth that
       // must be deducted from the top of the girder to account for the girder 
@@ -1930,9 +1930,9 @@ HRESULT CSectionCutTool::CreateGirderShape(IGenericBridge* bridge,GirderIDType s
          CComPtr<IPoint3d> pntCG;
          tendon->get_CG(Xg,tmPath,&pntCG); // Xg is in Girder Coordinates
 
-         ATLASSERT(pntCG != NULL);
+         ATLASSERT(pntCG != nullptr);
 
-         if ( pntCG == NULL )
+         if ( pntCG == nullptr )
          {
             // this code was put here to deal with the case that tendon->get_CG() fails
             // and allows processing to continue
@@ -2040,7 +2040,7 @@ HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppS
    CComPtr<IPoint2d> pnt;
    CComPtr<IEnumPoint2d> enumPoints;
    points->get__Enum(&enumPoints);
-   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       Float64 x;
       pnt->get_X(&x);
@@ -2076,7 +2076,7 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    objStation->SetStation(INVALID_INDEX,station); // normalized station
 
    CComPtr<IDirection> dirCutLine;
-   if ( pDirection == NULL )
+   if ( pDirection == nullptr )
    {
       alignment->Normal(CComVariant(objStation),&dirCutLine); // normal to the right
       dirCutLine->IncrementBy(CComVariant(M_PI)); // normal to the left
@@ -2184,7 +2184,7 @@ std::vector<CSectionCutTool::GirderPointRecord> CSectionCutTool::GetGirderPoints
    pBridge->get__EnumSuperstructureMembers(&enumMbrs);
 
    CComPtr<ISuperstructureMember> mbr;
-   while ( enumMbrs->Next(1,&mbr,NULL) != S_FALSE )
+   while ( enumMbrs->Next(1,&mbr,nullptr) != S_FALSE )
    {
       GirderIDType girderID;
       mbr->get_ID(&girderID);
@@ -2209,7 +2209,7 @@ std::vector<CSectionCutTool::GirderPointRecord> CSectionCutTool::GetGirderPoints
 
          CComPtr<IPoint2d> pntIntersect;
          geomUtil->IntersectLineWithLineSegment(cutLine,lineSegment,&pntIntersect);
-         if ( pntIntersect != NULL )
+         if ( pntIntersect != nullptr )
          {
             CComPtr<IStation> objGirderStation;
             Float64 normalOffset;

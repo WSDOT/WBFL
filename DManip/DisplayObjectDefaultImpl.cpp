@@ -51,14 +51,14 @@ CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
    m_ID = -1;
    m_bIsVisible = TRUE;
 
-   m_pDropSite  = NULL;
+   m_pDropSite  = nullptr;
 
    m_SelectionType = stNone;
 
    // we will be using this a lot so allocate once, use many
    m_ReusableRect.CoCreateInstance(CLSID_Rect2d);
 
-   m_pItemData = NULL;
+   m_pItemData = nullptr;
 }
 
 CDisplayObjectDefaultImpl::~CDisplayObjectDefaultImpl()
@@ -66,7 +66,7 @@ CDisplayObjectDefaultImpl::~CDisplayObjectDefaultImpl()
    if ( m_pItemData && m_bDeleteItemData )
    {
       delete m_pItemData;
-      m_pItemData = NULL;
+      m_pItemData = nullptr;
    }
 }
 
@@ -257,7 +257,7 @@ void CDisplayObjectDefaultImpl::Do_SetItemData(void* pVoid,bool bDelete)
    if ( m_pItemData && m_bDeleteItemData )
    {
       delete m_pItemData;
-      m_pItemData = NULL;
+      m_pItemData = nullptr;
    }
 
    m_pItemData = pVoid;
@@ -274,7 +274,7 @@ void CDisplayObjectDefaultImpl::Do_Visible(BOOL bVisible)
    BOOL bRedraw = (m_bIsVisible != bVisible);
    m_bIsVisible = bVisible;
 
-   if ( bRedraw && m_pDispList != NULL )
+   if ( bRedraw && m_pDispList != nullptr )
    {
       CComPtr<iDisplayMgr> pDispMgr;
       m_pDispList->GetDisplayMgr(&pDispMgr);
@@ -353,7 +353,7 @@ BOOL CDisplayObjectDefaultImpl::Do_HitTest(CPoint point)
    {
       CRgn rgn;
       m_pGravityWellStrategy->GetGravityWell(m_pParent,&rgn);
-      if ( rgn.m_hObject != NULL )
+      if ( rgn.m_hObject != nullptr )
          return rgn.PtInRegion(point);
       else
          return FALSE;
@@ -546,7 +546,7 @@ void CDisplayObjectDefaultImpl::Do_RegisterEventSink(iDisplayObjectEvents* pEven
 
 void CDisplayObjectDefaultImpl::Do_UnregisterEventSink()
 {
-   m_EventSink = NULL;
+   m_EventSink = nullptr;
 }
 
 void CDisplayObjectDefaultImpl::Do_GetEventSink(iDisplayObjectEvents** pEventSink)
@@ -568,8 +568,8 @@ void CDisplayObjectDefaultImpl::Do_UnregisterDropSite()
 {
    if ( m_pDropSite )
    {
-      m_pDropSite->SetDisplayObject(NULL);
-      m_pDropSite = NULL;
+      m_pDropSite->SetDisplayObject(nullptr);
+      m_pDropSite = nullptr;
    }
 }
 

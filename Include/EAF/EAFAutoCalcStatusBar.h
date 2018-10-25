@@ -32,11 +32,11 @@ public:
 	CEAFAutoCalcStatusBar();
 	virtual ~CEAFAutoCalcStatusBar();
 
-   virtual void GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount);
+   virtual void GetStatusIndicators(const UINT** lppIDArray,int* pnIDCount) override;
 
    int GetAutoCalcPaneIndex();
 
-   virtual void Reset();
+   virtual void Reset() override;
 
    void AutoCalcEnabled( bool bEnable );
 

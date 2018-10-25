@@ -29,10 +29,10 @@ IMPLEMENT_DYNAMIC(CEAFTemplateItem,CObject)
 
 CEAFTemplateItem::CEAFTemplateItem()
 {
-   m_pDocTemplate = NULL;
+   m_pDocTemplate = nullptr;
    m_Name = "unnamed";
    m_Path = "";
-   m_hIcon = NULL;
+   m_hIcon = nullptr;
 }
 
 CEAFTemplateItem::CEAFTemplateItem(CEAFDocTemplate* pDocTemplate,LPCTSTR name,LPCTSTR path,HICON hIcon)
@@ -97,7 +97,7 @@ IMPLEMENT_DYNAMIC(CEAFTemplateGroup,CObject)
 
 CEAFTemplateGroup::CEAFTemplateGroup()
 {
-   m_hIcon = NULL;
+   m_hIcon = nullptr;
 }
 
 CEAFTemplateGroup::~CEAFTemplateGroup()
@@ -207,12 +207,12 @@ const CEAFTemplateGroup* CEAFTemplateGroup::FindGroup(LPCTSTR lpszGroupName) con
       for ( GroupIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
       {
          CEAFTemplateGroup* pSubGroup = pGroup->GetGroup(grpIdx);
-         if ( pSubGroup->FindGroup(lpszGroupName) != NULL )
+         if ( pSubGroup->FindGroup(lpszGroupName) != nullptr )
             return pSubGroup;
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 CEAFTemplateGroup* CEAFTemplateGroup::FindGroup(LPCTSTR lpszGroupName)
@@ -229,12 +229,12 @@ CEAFTemplateGroup* CEAFTemplateGroup::FindGroup(LPCTSTR lpszGroupName)
       for ( GroupIndexType grpIdx = 0; grpIdx < nGroups; grpIdx++ )
       {
          CEAFTemplateGroup* pSubGroup = pGroup->GetGroup(grpIdx);
-         if ( pSubGroup->FindGroup(lpszGroupName) != NULL )
+         if ( pSubGroup->FindGroup(lpszGroupName) != nullptr )
             return pSubGroup;
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void CEAFTemplateGroup::RemoveGroup(GroupIndexType grpIdx)

@@ -122,7 +122,7 @@ protected:
    void MakeCopy(const lrfdAutoVersion& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdAutoVersion& rOther);
+   void MakeAssignment(const lrfdAutoVersion& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

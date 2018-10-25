@@ -48,7 +48,7 @@ static char THIS_FILE[] = __FILE__;
 
 int main(int argc, TCHAR* argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
    {
       CTestMassProperties::Test();
       CTestElasticProperties::Test();

@@ -81,40 +81,40 @@ CONNECTION_POINT_ENTRY(IID_ISurfaceTemplateCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("SurfaceTemplates"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("SurfaceTemplate"); }
+   CComBSTR GetCollectionName() { return CComBSTR("SurfaceTemplates"); }
+   CComBSTR GetItemName() { return CComBSTR("SurfaceTemplate"); }
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISurfaceTemplateCollection
 public:
-   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal);
-   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Add)(ISurfaceTemplate* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISurfaceTemplate* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISurfaceTemplate* newVal);
-   STDMETHOD(GetBoundingTemplates)(/*[in]*/VARIANT varStation,/*[out]*/ISurfaceTemplate** ppStart,/*[out]*/ISurfaceTemplate** ppEnd);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumSurfaceTemplates)(/*[out,retval]*/ IEnumSurfaceTemplates** ppenum);
-   STDMETHOD(Clone)(/*[out,retval]*/ ISurfaceTemplateCollection* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
+   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Add)(ISurfaceTemplate* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISurfaceTemplate* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISurfaceTemplate* newVal) override;
+   STDMETHOD(GetBoundingTemplates)(/*[in]*/VARIANT varStation,/*[out]*/ISurfaceTemplate** ppStart,/*[out]*/ISurfaceTemplate** ppEnd) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumSurfaceTemplates)(/*[out,retval]*/ IEnumSurfaceTemplates** ppenum) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ISurfaceTemplateCollection* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // ISurfaceTemplateEvents
 public:
-   STDMETHOD(OnSurfaceTemplateChanged)(ISurfaceTemplate* pTemplate);
-   STDMETHOD(OnTemplateSegmentAdded)(ISurfaceTemplate* pTemplate,ITemplateSegment* pSegment);
-   STDMETHOD(OnTemplateSegmentRemoved)(ISurfaceTemplate* pTemplate);
-   STDMETHOD(OnTemplateSegmentsCleared)(ISurfaceTemplate* pTemplate);
+   STDMETHOD(OnSurfaceTemplateChanged)(ISurfaceTemplate* pTemplate) override;
+   STDMETHOD(OnTemplateSegmentAdded)(ISurfaceTemplate* pTemplate,ITemplateSegment* pSegment) override;
+   STDMETHOD(OnTemplateSegmentRemoved)(ISurfaceTemplate* pTemplate) override;
+   STDMETHOD(OnTemplateSegmentsCleared)(ISurfaceTemplate* pTemplate) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

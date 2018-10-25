@@ -206,7 +206,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdNoncompositeApproximateLosses2005& rOther );
+   void MakeAssignment( const lrfdNoncompositeApproximateLosses2005& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

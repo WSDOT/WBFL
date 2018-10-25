@@ -47,7 +47,7 @@ STDMETHODIMP CRect2d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IRect2d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -157,7 +157,7 @@ STDMETHODIMP CRect2d::get_BottomLeft(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint(m_Left,m_Bottom,NULL,pVal);
+   return CreatePoint(m_Left,m_Bottom,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_BottomCenter(IPoint2d **pVal)
@@ -165,14 +165,14 @@ STDMETHODIMP CRect2d::get_BottomCenter(IPoint2d **pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 cx = (m_Left + m_Right)/2.0;
-   return CreatePoint(cx,m_Bottom,NULL,pVal);
+   return CreatePoint(cx,m_Bottom,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_BottomRight(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint(m_Right,m_Bottom,NULL,pVal);
+   return CreatePoint(m_Right,m_Bottom,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_CenterCenter(IPoint2d **pVal)
@@ -181,7 +181,7 @@ STDMETHODIMP CRect2d::get_CenterCenter(IPoint2d **pVal)
 
    Float64 cx = (m_Left + m_Right)/2.0;
    Float64 cy = (m_Top + m_Bottom)/2.0;
-   return CreatePoint(cx,cy,NULL,pVal);
+   return CreatePoint(cx,cy,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_CenterLeft(IPoint2d **pVal)
@@ -189,7 +189,7 @@ STDMETHODIMP CRect2d::get_CenterLeft(IPoint2d **pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 cy = (m_Top + m_Bottom)/2.0;
-   return CreatePoint(m_Left,cy,NULL,pVal);
+   return CreatePoint(m_Left,cy,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_CenterRight(IPoint2d **pVal)
@@ -197,14 +197,14 @@ STDMETHODIMP CRect2d::get_CenterRight(IPoint2d **pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 cy = (m_Top + m_Bottom)/2.0;
-   return CreatePoint(m_Right,cy,NULL,pVal);
+   return CreatePoint(m_Right,cy,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_TopLeft(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint(m_Left,m_Top,NULL,pVal);
+   return CreatePoint(m_Left,m_Top,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_TopCenter(IPoint2d **pVal)
@@ -212,14 +212,14 @@ STDMETHODIMP CRect2d::get_TopCenter(IPoint2d **pVal)
    CHECK_RETOBJ(pVal);
 
    Float64 cx = (m_Left + m_Right)/2.0;
-   return CreatePoint(cx,m_Top,NULL,pVal);
+   return CreatePoint(cx,m_Top,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::get_TopRight(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint(m_Right,m_Top,NULL,pVal);
+   return CreatePoint(m_Right,m_Top,nullptr,pVal);
 }
 
 STDMETHODIMP CRect2d::BoundPoint(Float64 x, Float64 y)
@@ -230,10 +230,10 @@ STDMETHODIMP CRect2d::BoundPoint(Float64 x, Float64 y)
    if ( bIsNormalized == VARIANT_FALSE )
       return Error(IDS_E_NOTNORMALIZED,IID_IRect2d,GEOMETRY_E_NOTNORMALIZED);
 
-   m_Left   = _cpp_min(x,  m_Left);
-   m_Bottom = _cpp_min(y,  m_Bottom);
-   m_Right  = _cpp_max(x,  m_Right);
-   m_Top    = _cpp_max(y,  m_Top);
+   m_Left   = Min(x,  m_Left);
+   m_Bottom = Min(y,  m_Bottom);
+   m_Right  = Max(x,  m_Right);
+   m_Top    = Max(y,  m_Top);
 
 	return S_OK;
 }
@@ -356,10 +356,10 @@ STDMETHODIMP CRect2d::Intersect(IRect2d *pRect, IRect2d **ppIntersection)
    Touches(pRect,&bTouches);
    if ( bTouches == VARIANT_TRUE )
    {
-      pIntersection->put_Left(   _cpp_max(left,   m_Left) );
-      pIntersection->put_Bottom( _cpp_max(bottom, m_Bottom) );
-      pIntersection->put_Right(  _cpp_min(right,  m_Right) );
-      pIntersection->put_Top(    _cpp_min(top,    m_Top) );
+      pIntersection->put_Left(   Max(left,   m_Left) );
+      pIntersection->put_Bottom( Max(bottom, m_Bottom) );
+      pIntersection->put_Right(  Min(right,  m_Right) );
+      pIntersection->put_Top(    Min(top,    m_Top) );
    }
    else
    {
@@ -400,10 +400,10 @@ STDMETHODIMP CRect2d::UnionBy(IRect2d *pRect, IRect2d **ppUnion)
    CComPtr<IRect2d> pUnion;
    CreateRect(0,0,0,0,&pUnion);
 
-   pUnion->put_Left(   _cpp_min(left,   m_Left) );
-   pUnion->put_Bottom( _cpp_min(bottom, m_Bottom) );
-   pUnion->put_Right(  _cpp_max(right,  m_Right) );
-   pUnion->put_Top(    _cpp_max(top,    m_Top) );
+   pUnion->put_Left(   Min(left,   m_Left) );
+   pUnion->put_Bottom( Min(bottom, m_Bottom) );
+   pUnion->put_Right(  Max(right,  m_Right) );
+   pUnion->put_Top(    Max(top,    m_Top) );
 
    if ( *ppUnion )
       (*ppUnion)->Release();
@@ -430,10 +430,10 @@ STDMETHODIMP CRect2d::Union(IRect2d *pRect)
    pRect->get_Right(&right);
    pRect->get_Bottom(&bottom);
 
-   m_Left   = _cpp_min(left,   m_Left);
-   m_Bottom = _cpp_min(bottom, m_Bottom);
-   m_Right  = _cpp_max(right,  m_Right);
-   m_Top    = _cpp_max(top,    m_Top);
+   m_Left   = Min(left,   m_Left);
+   m_Bottom = Min(bottom, m_Bottom);
+   m_Right  = Max(right,  m_Right);
+   m_Top    = Max(top,    m_Top);
 
    return S_OK;
 }

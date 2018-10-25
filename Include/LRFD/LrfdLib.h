@@ -38,5 +38,6 @@ DESCRIPTION
 
 #include <Private\WBFLPackage.h>
 #include <MathEx.h>
+#include <memory>
 
 #endif // INCLUDED_LRFD_LRFDLIB_H_

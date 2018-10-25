@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CEAFAboutDlg, CDialog)
 
-CEAFAboutDlg::CEAFAboutDlg(HICON hIcon,UINT nIDTemplate,CWnd* pParent /*=NULL*/)
+CEAFAboutDlg::CEAFAboutDlg(HICON hIcon,UINT nIDTemplate,CWnd* pParent /*=nullptr*/)
 : CDialog(nIDTemplate == 0 ? IDD_ABOUTBOX : nIDTemplate, pParent)
 {
    m_hIcon = hIcon;
@@ -73,7 +73,7 @@ BOOL CEAFAboutDlg::OnInitDialog()
 
    // put the icon in the dialog
    CStatic* pIcon = (CStatic*)GetDlgItem(IDC_APPICON);
-   if ( m_hIcon == NULL )
+   if ( m_hIcon == nullptr )
    {
       CWnd* pWnd = EAFGetMainFrame();
       m_hIcon = pWnd->GetIcon(TRUE);

@@ -51,7 +51,7 @@ void CTestHorzCurveCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_HorzCurveCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -65,25 +65,25 @@ void CTestHorzCurveCollection::Test()
    pft->Move(1000,700);
 
    CComPtr<IHorzCurveFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST( factory != NULL, true );
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST( factory != nullptr, true );
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(1,NULL,pi,pft,500,100,200,NULL),  E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,NULL,pft,500,100,200,NULL), E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,pi,NULL,500,100,200,NULL),  E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,-500,100,200,NULL),  E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,0,100,200,NULL),     E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,-100,200,NULL),  E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,-200,NULL),  E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,nullptr,pi,pft,500,100,200,nullptr),  E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,nullptr,pft,500,100,200,nullptr), E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,pi,nullptr,500,100,200,nullptr),  E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,-500,100,200,nullptr),  E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,0,100,200,nullptr),     E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,-100,200,nullptr),  E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,-200,nullptr),  E_INVALIDARG);
 
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,NULL),S_OK);
-   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,NULL),COGO_E_HORZCURVEALREADYDEFINED);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,nullptr),S_OK);
+   TRY_TEST(pColl->Add(1,pbt,pi,pft,500,100,200,nullptr),COGO_E_HORZCURVEALREADYDEFINED);
    CComPtr<IHorzCurve> hc;
    TRY_TEST(pColl->get_Item(1,&hc),S_OK);
    TRY_TEST(pColl->get_Count(&count),S_OK);
@@ -92,13 +92,13 @@ void CTestHorzCurveCollection::Test()
    //
    // Test AddEx method
    //
-   TRY_TEST(pColl->AddEx(0,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->AddEx(0,nullptr),E_INVALIDARG);
 
 
    // Test Item property
    hc.Release();
    TRY_TEST(pColl->get_Item(-1,&hc),COGO_E_HORZCURVENOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&hc),S_OK);
 
    //
@@ -110,7 +110,7 @@ void CTestHorzCurveCollection::Test()
    //
    // Test Clear
    //
-   pColl->Add(1,pbt,pi,pft,500,100,200,NULL);
+   pColl->Add(1,pbt,pi,pft,500,100,200,nullptr);
    pColl->get_Count(&count);
    TRY_TEST(count,1);
    TRY_TEST( pColl->Clear(), S_OK );
@@ -122,7 +122,7 @@ void CTestHorzCurveCollection::Test()
    //
    TRY_TEST(pColl->AddEx(1,hc),S_OK);
 
-   TRY_TEST(pColl->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,hc),COGO_E_HORZCURVENOTFOUND);
    TRY_TEST(pColl->putref_Item(1,hc),S_OK);
 
@@ -130,8 +130,8 @@ void CTestHorzCurveCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(hc,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(hc,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(hc,&id),S_OK);
    TRY_TEST(id,1);
 
@@ -139,14 +139,14 @@ void CTestHorzCurveCollection::Test()
    // Test ID
    //
    pColl->Clear();
-   pColl->Add(1,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(2,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(3,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(4,pbt,pi,pft,500,100,200,NULL);
+   pColl->Add(1,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(2,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(3,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(4,pbt,pi,pft,500,100,200,nullptr);
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -156,16 +156,16 @@ void CTestHorzCurveCollection::Test()
    //
    CComPtr<IHorzCurve> hcurve[4];
    pColl->Clear();
-   pColl->Add(1,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(2,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(3,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(4,pbt,pi,pft,500,100,200,NULL);
+   pColl->Add(1,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(2,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(3,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(4,pbt,pi,pft,500,100,200,nullptr);
    pColl->get_Item(1,&hcurve[0]);
    pColl->get_Item(2,&hcurve[1]);
    pColl->get_Item(3,&hcurve[2]);
    pColl->get_Item(4,&hcurve[3]);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -183,16 +183,16 @@ void CTestHorzCurveCollection::Test()
    hcurve[2].Release();
    hcurve[3].Release();
    pColl->Clear();
-   pColl->Add(1,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(2,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(3,pbt,pi,pft,500,100,200,NULL);
-   pColl->Add(4,pbt,pi,pft,500,100,200,NULL);
+   pColl->Add(1,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(2,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(3,pbt,pi,pft,500,100,200,nullptr);
+   pColl->Add(4,pbt,pi,pft,500,100,200,nullptr);
    pColl->get_Item(1,&hcurve[0]);
    pColl->get_Item(2,&hcurve[1]);
    pColl->get_Item(3,&hcurve[2]);
    pColl->get_Item(4,&hcurve[3]);
    CComPtr<IEnumHorzCurves> pEnumHorzCurves;
-   TRY_TEST(pColl->get__EnumHorzCurves(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumHorzCurves(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumHorzCurves(&pEnumHorzCurves), S_OK );
 
    for ( long i = 0; i < 4; i++ )
@@ -258,7 +258,7 @@ void CTestHorzCurveCollection::Test()
 
 STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID id,IHorzCurve* hc)
 {
-//   MessageBox(NULL,"HorzCurveChanged","Event",MB_OK);
+//   MessageBox(nullptr,"HorzCurveChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -267,7 +267,7 @@ STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveChanged(CogoObjectID id,IHorzC
 
 STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID id,IHorzCurve* hc)
 {
-//   MessageBox(NULL,"HorzCurveAdded","Event",MB_OK);
+//   MessageBox(nullptr,"HorzCurveAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -276,7 +276,7 @@ STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveAdded(CogoObjectID id,IHorzCur
 
 STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID id)
 {
-//   MessageBox(NULL,"HorzCurveRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"HorzCurveRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -285,7 +285,7 @@ STDMETHODIMP CTestHorzCurveCollection::OnHorzCurveRemoved(CogoObjectID id)
 
 STDMETHODIMP CTestHorzCurveCollection::OnHorzCurvesCleared()
 {
-//   MessageBox(NULL,"HorzCurveCleared","Event",MB_OK);
+//   MessageBox(nullptr,"HorzCurveCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

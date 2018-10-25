@@ -58,27 +58,27 @@ private:
 
 // IAgentEx
 public:
-   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
-   STDMETHOD(RegInterfaces)();
-	STDMETHOD(Init)();
-	STDMETHOD(Init2)();
-	STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
-   STDMETHOD(GetClassID)(CLSID* pCLSID);
+   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
+   STDMETHOD(RegInterfaces)() override;
+	STDMETHOD(Init)() override;
+	STDMETHOD(Init2)() override;
+	STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
+   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
 
 
 // IGraphManager
 public:
-   virtual bool AddGraphBuilder(CGraphBuilder* pGraphBuilder);
-   virtual bool AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder);
-   virtual CollectionIndexType GetGraphBuilderCount() const;
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index);
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName);
-   virtual boost::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName);
-   virtual boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName);
-   virtual boost::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName);
-   virtual std::vector<std::_tstring> GetGraphNames() const;
-   virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName);
-   virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName);
+   virtual bool AddGraphBuilder(CGraphBuilder* pGraphBuilder) override;
+   virtual bool AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder) override;
+   virtual CollectionIndexType GetGraphBuilderCount() const override;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(CollectionIndexType index) override;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(LPCTSTR strGraphName) override;
+   virtual std::shared_ptr<CGraphBuilder> GetGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) override;
+   virtual std::shared_ptr<CGraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) override;
+   virtual std::vector<std::_tstring> GetGraphNames() const override;
+   virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) override;
+   virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) override;
 };
 

@@ -62,7 +62,7 @@ public:
    rptCDRatio& operator = (const rptCDRatio& rOther);
 
    //------------------------------------------------------------------------
-   virtual rptReportContent* CreateClone() const;
+   virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
    virtual rptReportContent& SetValue(Float64 cdr);
@@ -74,7 +74,7 @@ public:
 
 protected:
    void MakeCopy(const rptCDRatio& rOther);
-   virtual void MakeAssignment(const rptCDRatio& rOther);
+   void MakeAssignment(const rptCDRatio& rOther);
 
 private:
    void Init();

@@ -72,26 +72,26 @@ BEGIN_COM_MAP(CLBAMModelEnveloper)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISupportProgressMonitor
-	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
+	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie) override;
 
 
 // ILBAMModelEnveloper
 public:
-	STDMETHOD(get_LoadGroupResponse)(/*[in]*/ ForceEffectType forceEffect, /*[in]*/ OptimizationType optimization, /*[out,retval]*/ ILoadGroupResponse** pVal);
-   STDMETHOD(get_LoadCaseResponse)(/*[in]*/ ForceEffectType forceEffect, /*[in]*/ OptimizationType optimization, /*[out,retval]*/ ILoadCaseResponse** pVal);
-	STDMETHOD(get_LoadCombinationResponse)(/*[out, retval]*/ ILoadCombinationResponse* *pVal);
-   STDMETHOD(get_EnvelopedVehicularResponse)(/*[out, retval]*/ IEnvelopedVehicularResponse* *pVal);
-   STDMETHOD(get_LiveLoadModelResponse)(/*[out,retval]*/ ILiveLoadModelResponse* *pVal);
-	STDMETHOD(Initialize)(/*[in]*/ IUnkArray* models, AnalysisType aType,/*[in]*/OptimizationType opType);
-	STDMETHOD(get_Engines)(/*[out]*/ IUnkArray* * models);
-	STDMETHOD(get_AnalysisType)(/*[out]*/ AnalysisType* type);
-   STDMETHOD(get_OptimizationType)(/*[out]*/ OptimizationType* opType);
+	STDMETHOD(get_LoadGroupResponse)(/*[in]*/ ForceEffectType forceEffect, /*[in]*/ OptimizationType optimization, /*[out,retval]*/ ILoadGroupResponse** pVal) override;
+   STDMETHOD(get_LoadCaseResponse)(/*[in]*/ ForceEffectType forceEffect, /*[in]*/ OptimizationType optimization, /*[out,retval]*/ ILoadCaseResponse** pVal) override;
+	STDMETHOD(get_LoadCombinationResponse)(/*[out, retval]*/ ILoadCombinationResponse* *pVal) override;
+   STDMETHOD(get_EnvelopedVehicularResponse)(/*[out, retval]*/ IEnvelopedVehicularResponse* *pVal) override;
+   STDMETHOD(get_LiveLoadModelResponse)(/*[out,retval]*/ ILiveLoadModelResponse* *pVal) override;
+	STDMETHOD(Initialize)(/*[in]*/ IUnkArray* models, AnalysisType aType,/*[in]*/OptimizationType opType) override;
+	STDMETHOD(get_Engines)(/*[out]*/ IUnkArray* * models) override;
+	STDMETHOD(get_AnalysisType)(/*[out]*/ AnalysisType* type) override;
+   STDMETHOD(get_OptimizationType)(/*[out]*/ OptimizationType* opType) override;
 
-	STDMETHOD(AddModel)(/*[in]*/ILBAMModel* pModel);
-   STDMETHOD(AddEngine)(/*[in]*/ILBAMAnalysisEngine* pEngine);
+	STDMETHOD(AddModel)(/*[in]*/ILBAMModel* pModel) override;
+   STDMETHOD(AddEngine)(/*[in]*/ILBAMAnalysisEngine* pEngine) override;
 
    CollectionIndexType EngineCount();
    void GetEngine(CollectionIndexType idx, ILBAMAnalysisEngine* *engine);

@@ -118,7 +118,7 @@ public:
     void PutSilent(bool silent = false);	// (if true, dialog and message
                                             //  boxes may not be shown)
 
-	IHTMLDocument2 *GetDocument();			// get document interface; returns NULL 
+	IHTMLDocument2 *GetDocument();			// get document interface; returns nullptr 
 											// if interface is not available 
 											// (which is the case if you've navigated to
 											//  something that's NOT an HTML document,
@@ -134,7 +134,7 @@ public:
 								   CString	headers);
 
         // called before navigation begins; URL is destination, frame
-        // is frame name ("" if none), post_data is HTTP POST data (NULL if none),
+        // is frame name ("" if none), post_data is HTTP POST data (nullptr if none),
 		// and headers are HTTP headers sent to server;
 		// return true to cancel navigation, false to continue
 
@@ -228,7 +228,7 @@ public:
 
     //{{AFX_VIRTUAL(CWebBrowser)
 	public:
-	virtual void PostNcDestroy();
+	virtual void PostNcDestroy() override;
 	//}}AFX_VIRTUAL
 
 protected:

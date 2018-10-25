@@ -45,7 +45,7 @@ HRESULT CEffectiveFlangeWidthTool::FinalConstruct()
 {
    CComObject<CBridgeGeometryTool>* pBGTool;
    HRESULT hr = CComObject<CBridgeGeometryTool>::CreateInstance(&pBGTool);
-   if ( FAILED(hr) || pBGTool == NULL )
+   if ( FAILED(hr) || pBGTool == nullptr )
       return E_FAIL;
 
    m_BridgeGeometryTool = pBGTool;
@@ -59,7 +59,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IEffectiveFlangeWidthTool
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -101,7 +101,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
    Float64 leftSpacing;
    if ( leftSSMbrID == INVALID_ID )
    {
-      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbLeft,&leftSpacing);
+      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,nullptr,qcbLeft,&leftSpacing);
    }
    else
    {
@@ -111,7 +111,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
    Float64 rightSpacing;
    if ( rightSSMbrID == INVALID_ID )
    {
-      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbRight,&rightSpacing);
+      m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,nullptr,qcbRight,&rightSpacing);
    }
    else
    {
@@ -273,7 +273,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
 
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
-   if ( deck == NULL )
+   if ( deck == nullptr )
       return Error(IDS_E_NODECK,IID_IEffectiveFlangeWidthTool,GBMT_E_NODECK);
 
    VARIANT_BOOL bComposite;
@@ -287,7 +287,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
    CComQIPtr<IPrecastSlab> sip(deck);
    CComQIPtr<IOverlaySlab> overlay(deck);
 
-   if ( cip == NULL && sip == NULL && overlay == NULL )
+   if ( cip == nullptr && sip == nullptr && overlay == nullptr )
       return Error(IDS_E_UNKNOWNDECKTYPE,IID_IEffectiveFlangeWidthTool,GBMT_E_UNKNOWNDECKTYPE);
 
    // Get slab parameters
@@ -299,8 +299,8 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
    Float64 left_overhang;
    Float64 right_overhang;
 
-   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbLeft,&left_overhang);
-   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,NULL,qcbRight,&right_overhang);
+   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,nullptr,qcbLeft,&left_overhang);
+   m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,nullptr,qcbRight,&right_overhang);
 
    // Get parameters for each top flange on the girder
    CollectionIndexType nFlanges;

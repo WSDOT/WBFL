@@ -76,7 +76,7 @@ STDMETHODIMP CLibraryMgr::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILibraryMgr
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -105,7 +105,7 @@ HRESULT CLibraryMgr::OnBeforeAdd( StoredType* pVal)
 HRESULT CLibraryMgr::OnAfterAdd(StoredType* pVal, CollectionIndexType idx)
 {
    // Give the entry a reference to the transaction server if it supports undo
-   CComQIPtr<ISupportTransactions> supportTxns(pVal->second.m_T);
+   CComQIPtr<IWBFLSupportTransactions> supportTxns(pVal->second.m_T);
    if ( supportTxns )
    {
       supportTxns->putref_TransactionMgr(m_TxnMgr);
@@ -272,7 +272,7 @@ STDMETHODIMP CLibraryMgr::get_Item(BSTR name, ILibrary **pVal)
 //   if ( FAILED(hr) )
 //      return hr;
 //
-//   hr = pEnum->Init( NULL, m_coll );
+//   hr = pEnum->Init( nullptr, m_coll );
 //   if ( FAILED(hr) )
 //      return hr;
 //
@@ -291,7 +291,7 @@ STDMETHODIMP CLibraryMgr::get__Enum(IEnumLibrary** ppenum)
 //   if ( FAILED(hr) )
 //      return hr;
 //
-//   hr = pEnum->Init( NULL, m_coll );
+//   hr = pEnum->Init( nullptr, m_coll );
 //   if ( FAILED(hr) )
 //      return hr;
 //
@@ -341,7 +341,7 @@ STDMETHODIMP CLibraryMgr::putref_UnitSystem(IDocUnitSystem* unitSystem)
    get__Enum(&enumLib);
 
    CComPtr<ILibrary> lib;
-   while ( enumLib->Next(1,&lib,NULL) != S_FALSE )
+   while ( enumLib->Next(1,&lib,nullptr) != S_FALSE )
    {
       CComQIPtr<ISupportDocUnitSystem> supportUnitSystem(lib);
       if ( supportUnitSystem )
@@ -356,11 +356,11 @@ STDMETHODIMP CLibraryMgr::putref_UnitSystem(IDocUnitSystem* unitSystem)
 }
 
 ///////////////////////////////////////////////////////////
-// ISupportTransactions
-STDMETHODIMP CLibraryMgr::putref_TransactionMgr(ITransactionMgr* txnMgr)
+// IWBFLSupportTransactions
+STDMETHODIMP CLibraryMgr::putref_TransactionMgr(IWBFLTransactionMgr* txnMgr)
 {
    // Extend the base class implementation
-   HRESULT hr = ISupportTransactionsImpl::putref_TransactionMgr(txnMgr);
+   HRESULT hr = IWBFLSupportTransactionsImpl::putref_TransactionMgr(txnMgr);
    if ( FAILED(hr) )
       return hr;
 
@@ -368,9 +368,9 @@ STDMETHODIMP CLibraryMgr::putref_TransactionMgr(ITransactionMgr* txnMgr)
    get__Enum(&enumLib);
 
    CComPtr<ILibrary> lib;
-   while ( enumLib->Next(1,&lib,NULL) != S_FALSE )
+   while ( enumLib->Next(1,&lib,nullptr) != S_FALSE )
    {
-      CComQIPtr<ISupportTransactions> supportTxns(lib);
+      CComQIPtr<IWBFLSupportTransactions> supportTxns(lib);
       if ( supportTxns )
       {
          supportTxns->putref_TransactionMgr(m_TxnMgr);

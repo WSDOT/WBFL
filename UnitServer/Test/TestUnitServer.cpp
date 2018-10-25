@@ -63,11 +63,11 @@ void CTestUnitServer::Test()
    DWORD dwCookie;
    TRY_TEST(AtlAdvise(unitServer,punk,IID_IUnitServerEventSink,&dwCookie),S_OK);
 
-   TRY_TEST(unitServer->SetBaseUnits(NULL,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),NULL,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),NULL,CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),NULL,CComBSTR("rad")),E_INVALIDARG);
-   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),NULL),E_INVALIDARG);
+   TRY_TEST(unitServer->SetBaseUnits(nullptr,CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),nullptr,CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),nullptr,CComBSTR("C"),CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),nullptr,CComBSTR("rad")),E_INVALIDARG);
+   TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),nullptr),E_INVALIDARG);
 
    TRY_TEST(unitServer->SetBaseUnits(CComBSTR("Junk"),CComBSTR("m"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
    TRY_TEST(unitServer->SetBaseUnits(CComBSTR("kg"),CComBSTR("Junk"),CComBSTR("sec"),CComBSTR("C"),CComBSTR("rad")),UNITS_E_BADUNITTAG);
@@ -82,39 +82,39 @@ void CTestUnitServer::Test()
 
    // Get properties
    CComBSTR bstr;
-   TRY_TEST(unitServer->get_Mass(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_Mass(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_Mass(&bstr),S_OK);
    TRY_TEST(wcscmp(bstr,CComBSTR("kg")),0);
 
-   TRY_TEST(unitServer->get_Length(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_Length(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_Length(&bstr),S_OK);
    TRY_TEST(wcscmp(bstr,CComBSTR("m")),0);
 
-   TRY_TEST(unitServer->get_Time(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_Time(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_Time(&bstr),S_OK);
    TRY_TEST(wcscmp(bstr,CComBSTR("sec")),0);
 
-   TRY_TEST(unitServer->get_Temperature(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_Temperature(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_Temperature(&bstr),S_OK);
    TRY_TEST(wcscmp(bstr,CComBSTR("C")),0);
 
-   TRY_TEST(unitServer->get_Angle(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_Angle(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_Angle(&bstr),S_OK);
    TRY_TEST(wcscmp(bstr,CComBSTR("rad")),0);
 
    CComPtr<IUnitTypes> pUnitTypes;
-   TRY_TEST(unitServer->get_UnitTypes(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_UnitTypes(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_UnitTypes(&pUnitTypes),S_OK);
-   TRY_TEST(pUnitTypes != NULL, true );
+   TRY_TEST(pUnitTypes != nullptr, true );
 
    CComPtr<IUnitConvert> pConv;
-   TRY_TEST(unitServer->get_UnitConvert(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_UnitConvert(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_UnitConvert(&pConv),S_OK);
    TRY_TEST(pConv != 0, true );
    TRY_TEST(pConv.IsEqualObject(unitServer),true);
 
    CComPtr<IUnitConvert2> pConv2;
-   TRY_TEST(unitServer->get_UnitConvert2(NULL),E_POINTER);
+   TRY_TEST(unitServer->get_UnitConvert2(nullptr),E_POINTER);
    TRY_TEST(unitServer->get_UnitConvert2(&pConv2),S_OK);
    TRY_TEST(pConv2 != 0, true );
    TRY_TEST(pConv2.IsEqualObject(unitServer),true);
@@ -125,12 +125,12 @@ void CTestUnitServer::Test()
    // Te following tests provides coverage for IUnitConvert and IUnitConvert2
    // Test Convert
    Float64 val;
-   TRY_TEST(pConv->Convert(1.0,NULL,CComBSTR("ft"),&val),E_INVALIDARG);
-   TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),NULL,&val),E_INVALIDARG);
+   TRY_TEST(pConv->Convert(1.0,nullptr,CComBSTR("ft"),&val),E_INVALIDARG);
+   TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),nullptr,&val),E_INVALIDARG);
    TRY_TEST(pConv->Convert(1.0,CComBSTR("Junk"),CComBSTR("ft"),&val),UNITS_E_BADUNITTAG);
    TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),CComBSTR("Junk"),&val),UNITS_E_BADUNITTAG);
    TRY_TEST(pConv->Convert(1.0,CComBSTR("kg"),CComBSTR("ft"),&val),UNITS_E_UNITTYPEMISMATCH);
-   TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),CComBSTR("ft"),NULL),E_POINTER);
+   TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),CComBSTR("ft"),nullptr),E_POINTER);
    TRY_TEST(pConv->Convert(1.0,CComBSTR("m"),CComBSTR("ft"),&val),S_OK);
    TRY_TEST(IsEqual(val,3.2808,0.0001),true);
 
@@ -141,9 +141,9 @@ void CTestUnitServer::Test()
    TRY_TEST(IsEqual(val,-9.44444444,0.0001),true);
 
    // Test ConvertFromBaseUnits
-   TRY_TEST(pConv->ConvertFromBaseUnits(1.0,NULL,&val),E_INVALIDARG);
+   TRY_TEST(pConv->ConvertFromBaseUnits(1.0,nullptr,&val),E_INVALIDARG);
    TRY_TEST(pConv->ConvertFromBaseUnits(1.0,CComBSTR("Junk"),&val),UNITS_E_BADUNITTAG);
-   TRY_TEST(pConv->ConvertFromBaseUnits(1.0,CComBSTR("ft"),NULL),E_POINTER);
+   TRY_TEST(pConv->ConvertFromBaseUnits(1.0,CComBSTR("ft"),nullptr),E_POINTER);
    TRY_TEST(pConv->ConvertFromBaseUnits(1.0,CComBSTR("ft"),&val),S_OK);
    TRY_TEST(IsEqual(val,3.2808,0.0001),true);
 
@@ -151,9 +151,9 @@ void CTestUnitServer::Test()
    TRY_TEST(IsEqual(val,10.76391042,0.0001),true);
 
    // Test ConvertToBaseUnits
-   TRY_TEST(pConv->ConvertToBaseUnits(1.0,NULL,&val),E_INVALIDARG);
+   TRY_TEST(pConv->ConvertToBaseUnits(1.0,nullptr,&val),E_INVALIDARG);
    TRY_TEST(pConv->ConvertToBaseUnits(1.0,CComBSTR("Junk"),&val),UNITS_E_BADUNITTAG);
-   TRY_TEST(pConv->ConvertToBaseUnits(1.0,CComBSTR("ft"),NULL),E_POINTER);
+   TRY_TEST(pConv->ConvertToBaseUnits(1.0,CComBSTR("ft"),nullptr),E_POINTER);
    TRY_TEST(pConv->ConvertToBaseUnits(1.0,CComBSTR("ft"),&val),S_OK);
    TRY_TEST(IsEqual(val,0.3048),true);
 

@@ -351,49 +351,49 @@ void CTestDistributionFactor::TestDfCollection()
    TRY_TEST( pss_o1->put_IsSymmetrical(VARIANT_FALSE), S_OK);
    TRY_TEST( pss_o1->GetSegmentForLocation(0.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(2.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(8.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(12.3, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    TRY_TEST( pss_o1->put_IsSymmetrical(VARIANT_TRUE), S_OK);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(0.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(2.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(8.0, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    spsiL1.Release();spsiR1.Release();
 
    TRY_TEST( pss_o1->GetSegmentForLocation(12.3, 12.3, &spsiL1, &spsiR1), S_OK);
    TRY_TEST(spsiL1.IsEqualObject(ps4), true);
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
 
    TRY_TEST( pss_ts->put_IsSymmetrical(VARIANT_FALSE), S_OK);
    TRY_TEST( pss_ts->GetSegmentForLocation(0.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST( spsiL2->get_Length(&d), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss2), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    // location is at junction where segments meet
@@ -404,31 +404,31 @@ void CTestDistributionFactor::TestDfCollection()
 
    TRY_TEST( pss_ts->GetSegmentForLocation(8.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    // right at end of last segment
    TRY_TEST( pss_ts->GetSegmentForLocation(10.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    // right at end of last segment
    TRY_TEST( pss_ts->GetSegmentForLocation(11.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->GetSegmentForLocation(12.3, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->put_IsSymmetrical(VARIANT_TRUE), S_OK);
    TRY_TEST( pss_ts->GetSegmentForLocation(0.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST( spsiL2->get_Length(&d), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss2), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->GetSegmentForLocation(4.1, 12.3, &spsiL2, &spsiR2), S_OK);
@@ -443,33 +443,33 @@ void CTestDistributionFactor::TestDfCollection()
 
    TRY_TEST( pss_ts->GetSegmentForLocation(4.101, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->GetSegmentForLocation(5.1, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->GetSegmentForLocation(8.0, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    spsiL2.Release();spsiR2.Release();
 
    TRY_TEST( pss_ts->GetSegmentForLocation(12.3, 12.3, &spsiL2, &spsiR2), S_OK);
    TRY_TEST(spsiL2.IsEqualObject(pss2), true);
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
 
    TRY_TEST( pss_tl->put_IsSymmetrical(VARIANT_FALSE), S_OK);
    TRY_TEST( pss_tl->GetSegmentForLocation(0.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST( spsiL3->get_Length(&d), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(4.1, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(8.2, 12.3, &spsiL3, &spsiR3), S_OK);
@@ -479,46 +479,46 @@ void CTestDistributionFactor::TestDfCollection()
 
    TRY_TEST( pss_tl->GetSegmentForLocation(12.3, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss3), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->put_IsSymmetrical(VARIANT_TRUE), S_OK);
    TRY_TEST( pss_tl->GetSegmentForLocation(0.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST( spsiL3->get_Length(&d), S_OK);
    TRY_TEST( spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(4.1, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(4.101, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(5.1, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(8.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_tl->GetSegmentForLocation(12.3, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss1), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->put_IsSymmetrical(VARIANT_FALSE), S_OK);
    TRY_TEST( pss_fr->GetSegmentForLocation(0.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST( spsiL3->get_Length(&d), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(-0.5, 12.3, &spsiL3, &spsiR3), S_OK);
@@ -528,7 +528,7 @@ void CTestDistributionFactor::TestDfCollection()
 
    TRY_TEST( pss_fr->GetSegmentForLocation(4.1, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(8.2, 12.3, &spsiL3, &spsiR3), S_OK);
@@ -537,39 +537,39 @@ void CTestDistributionFactor::TestDfCollection()
 
    TRY_TEST( pss_fr->GetSegmentForLocation(8.3, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(12.3, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pss2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->put_IsSymmetrical(VARIANT_TRUE), S_OK);
    TRY_TEST( pss_fr->GetSegmentForLocation(0.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST( spsiL3->get_Length(&d), S_OK);
    TRY_TEST( spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST( spsiR3, NULL);
+   TRY_TEST( spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(4.1, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(4.101, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(8.0, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    spsiL3.Release();spsiR3.Release();
 
    TRY_TEST( pss_fr->GetSegmentForLocation(12.3, 12.3, &spsiL3, &spsiR3), S_OK);
    TRY_TEST(spsiL3.IsEqualObject(pssf2), true);
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
 }
 
 void CTestDistributionFactor::TestDfOnly()
@@ -821,7 +821,7 @@ void CTestDistributionFactor::TestDfOnly()
 
          TRY_TEST( psl->BeginUnit(CComBSTR("TestDF")), S_OK);
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( psm2.QueryInterface(&piss2), S_OK);
 
          // Load 

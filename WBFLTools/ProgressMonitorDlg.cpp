@@ -40,7 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // CProgressMonitorDlg dialog
 
 
-CProgressMonitorDlg::CProgressMonitorDlg(CWnd* pParent /*=NULL*/)
+CProgressMonitorDlg::CProgressMonitorDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CProgressMonitorDlg::IDD, pParent),
      m_WasCancelled(VARIANT_FALSE),
      m_HasCancel(VARIANT_TRUE),
@@ -128,7 +128,7 @@ BOOL CProgressMonitorDlg::OnInitDialog()
 	m_WasCancelled = VARIANT_FALSE;
 
    // set cursor to waiting
-   m_Cursor = LoadCursor(NULL, IDC_APPSTARTING);
+   m_Cursor = LoadCursor(nullptr, IDC_APPSTARTING);
 
 	
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -161,7 +161,7 @@ void CProgressMonitorDlg::PumpMessage()
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    MSG msg;
-   while (::PeekMessage(&msg,NULL,NULL,NULL, PM_NOREMOVE) )
+   while (::PeekMessage(&msg,0,0,0,PM_NOREMOVE) )
    {
       AfxGetThread()->PumpMessage();
    }
@@ -208,5 +208,5 @@ void CProgressMonitorDlg::Close()
    m_HasCancel = VARIANT_TRUE;
    m_CancelBtn.SetWindowText(_T("Close"));
    m_CancelBtn.ShowWindow(SW_SHOW);
-   m_Cursor = LoadCursor(NULL,IDC_ARROW); // set cursor to normal arrow
+   m_Cursor = LoadCursor(nullptr,IDC_ARROW); // set cursor to normal arrow
 }

@@ -92,37 +92,37 @@ END_COM_MAP()
                                           // the centerline of the pier or the centerline of bearing
 
 public:
-   STDMETHOD(get_GirderLineID)(GirderIDType* pVal);
-   STDMETHOD(put_GirderLineID)(GirderIDType newVal);
-   STDMETHOD(get_GirderLineIDInc)(GirderIDType* pVal);
-   STDMETHOD(put_GirderLineIDInc)(GirderIDType newVal);
-   STDMETHOD(get_LeftLayoutLineID)(LineIDType* pVal);
-   STDMETHOD(put_LeftLayoutLineID)(LineIDType newVal);
-   STDMETHOD(get_RightLayoutLineID)(LineIDType* pVal);
-   STDMETHOD(put_RightLayoutLineID)(LineIDType newVal);
-   STDMETHOD(get_LayoutLineIDInc)(LineIDType* pVal);
-   STDMETHOD(put_LayoutLineIDInc)(LineIDType newVal);
-   STDMETHOD(get_Type)(GirderLineType* pVal);
-   STDMETHOD(put_Type)(GirderLineType newVal);
-   STDMETHOD(get_StartPierID)(PierIDType* pVal);
-   STDMETHOD(put_StartPierID)(PierIDType newVal);
-   STDMETHOD(get_EndPierID)(PierIDType* pVal);
-   STDMETHOD(put_EndPierID)(PierIDType newVal);
-   STDMETHOD(get_PierIDInc)(PierIDType* pVal);
-   STDMETHOD(put_PierIDInc)(PierIDType newVal);
-   STDMETHOD(get_Continuous)(VARIANT_BOOL* pbContinuous);
-   STDMETHOD(put_Continuous)(VARIANT_BOOL bContinuous);
-   STDMETHOD(get_StartMeasurementType)(MeasurementType* pVal);
-   STDMETHOD(put_StartMeasurementType)(MeasurementType newVal);
-   STDMETHOD(get_StartMeasurementLocation)(MeasurementLocation* pVal);
-   STDMETHOD(put_StartMeasurementLocation)(MeasurementLocation newVal);
-   STDMETHOD(get_EndMeasurementType)(MeasurementType* pVal);
-   STDMETHOD(put_EndMeasurementType)(MeasurementType newVal);
-   STDMETHOD(get_EndMeasurementLocation)(MeasurementLocation* pVal);
-   STDMETHOD(put_EndMeasurementLocation)(MeasurementLocation newVal);
+   STDMETHOD(get_GirderLineID)(GirderIDType* pVal) override;
+   STDMETHOD(put_GirderLineID)(GirderIDType newVal) override;
+   STDMETHOD(get_GirderLineIDInc)(GirderIDType* pVal) override;
+   STDMETHOD(put_GirderLineIDInc)(GirderIDType newVal) override;
+   STDMETHOD(get_LeftLayoutLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_LeftLayoutLineID)(LineIDType newVal) override;
+   STDMETHOD(get_RightLayoutLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_RightLayoutLineID)(LineIDType newVal) override;
+   STDMETHOD(get_LayoutLineIDInc)(LineIDType* pVal) override;
+   STDMETHOD(put_LayoutLineIDInc)(LineIDType newVal) override;
+   STDMETHOD(get_Type)(GirderLineType* pVal) override;
+   STDMETHOD(put_Type)(GirderLineType newVal) override;
+   STDMETHOD(get_StartPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_StartPierID)(PierIDType newVal) override;
+   STDMETHOD(get_EndPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_EndPierID)(PierIDType newVal) override;
+   STDMETHOD(get_PierIDInc)(PierIDType* pVal) override;
+   STDMETHOD(put_PierIDInc)(PierIDType newVal) override;
+   STDMETHOD(get_Continuous)(VARIANT_BOOL* pbContinuous) override;
+   STDMETHOD(put_Continuous)(VARIANT_BOOL bContinuous) override;
+   STDMETHOD(get_StartMeasurementType)(MeasurementType* pVal) override;
+   STDMETHOD(put_StartMeasurementType)(MeasurementType newVal) override;
+   STDMETHOD(get_StartMeasurementLocation)(MeasurementLocation* pVal) override;
+   STDMETHOD(put_StartMeasurementLocation)(MeasurementLocation newVal) override;
+   STDMETHOD(get_EndMeasurementType)(MeasurementType* pVal) override;
+   STDMETHOD(put_EndMeasurementType)(MeasurementType newVal) override;
+   STDMETHOD(get_EndMeasurementLocation)(MeasurementLocation* pVal) override;
+   STDMETHOD(put_EndMeasurementLocation)(MeasurementLocation newVal) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayGirderLines);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayGirderLines) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(SimpleGirderLineFactory), CSimpleGirderLineFactory)

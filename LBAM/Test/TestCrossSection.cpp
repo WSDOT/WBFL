@@ -223,13 +223,11 @@ void CTestCrossSection::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestCS"));
 
-         IStructuredStorage2* piss2=NULL;
+         CComPtr<IStructuredStorage2> piss2;
          TRY_TEST( pcs2.QueryInterface(&piss2), S_OK);
 
          // Load 
          TRY_TEST( piss2->Load(psl), S_OK );
-
-         piss2->Release();
 
          VARIANT_BOOL end;
          hr = psl->EndUnit(&end);
@@ -246,6 +244,9 @@ void CTestCrossSection::Test()
          TRY_TEST( piss2->Save(pss2), S_OK );
          hr = pss2->EndUnit();
          TRY_TEST( pss2->Close(), S_OK );
+
+         piss2.Release();
+         pss2.Release();
       }
    }
 

@@ -149,7 +149,7 @@ STDMETHODIMP CBridge::CreatePierLine(PierIDType ID, CogoObjectID alignmentID,VAR
    // see if a pier with this ID already exists
    CComPtr<IPierLine> otherPierLine;
    m_PierLines->FindPierLine(ID,&otherPierLine);
-   if ( otherPierLine != NULL )
+   if ( otherPierLine != nullptr )
    {
       return Error(IDS_E_ID,IID_IBridgeGeometry,BRIDGEGEOMETRY_E_ID);
    }
@@ -220,7 +220,7 @@ STDMETHODIMP CBridge::CreateGirderLines(IGirderLineFactory* pFactory)
       arrUnks->get_Item(idx,&pUnk);
 
       CComQIPtr<IGirderLine> girderLine(pUnk);
-      ATLASSERT( girderLine != NULL );
+      ATLASSERT( girderLine != nullptr );
 
       GirderIDType ID;
       girderLine->get_ID(&ID);
@@ -281,7 +281,7 @@ STDMETHODIMP CBridge::CreateDiaphragmLines(IDiaphragmLineFactory* pFactory)
       arrUnks->get_Item(idx,&pUnk);
 
       CComQIPtr<IDiaphragmLine> diaphragmLine(pUnk);
-      ATLASSERT( diaphragmLine != NULL );
+      ATLASSERT( diaphragmLine != nullptr );
 
       LineIDType ID;
       diaphragmLine->get_ID(&ID);
@@ -420,7 +420,7 @@ HRESULT CBridge::UpdatePierGeometry()
    CComPtr<IEnumPierLines> pEnum;
    m_PierLines->get__EnumPiers(&pEnum);
    CComPtr<IPierLine> pier;
-   while( pEnum->Next(1,&pier,NULL) != S_FALSE )
+   while( pEnum->Next(1,&pier,nullptr) != S_FALSE )
    {
       CPierLine* pPier = (CPierLine*)pier.p;
       hr = pPier->UpdateGeometry();
@@ -437,7 +437,7 @@ HRESULT CBridge::UpdatePierGeometry()
 
 HRESULT CBridge::UpdateGirderGeometry()
 {
-   BOOST_FOREACH(GirderLineEntry gdrLineEntry,m_GirderLines)
+   for( const auto& gdrLineEntry : m_GirderLines)
    {
       CComPtr<IGirderLine> girderLine( gdrLineEntry.second );
       CGirderLine* pGirderLine = (CGirderLine*)girderLine.p;
@@ -453,7 +453,7 @@ HRESULT CBridge::UpdateGirderGeometry()
 
 HRESULT CBridge::UpdateDiaphragmGeometry()
 {
-   BOOST_FOREACH(DiaphragmLineEntry diaphragmLineEntry,m_DiaphragmLines)
+   for( const auto& diaphragmLineEntry : m_DiaphragmLines)
    {
       CComPtr<IDiaphragmLine> DiaphragmLine( diaphragmLineEntry.second );
       CDiaphragmLine* pDiaphragmLine = (CDiaphragmLine*)DiaphragmLine.p;

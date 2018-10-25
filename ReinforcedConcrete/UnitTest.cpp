@@ -725,7 +725,7 @@ bool Example9::Run(dbgDumpContext& os,int solverType)
 
 void Example9::Build(matConcrete* pconc_mat, matMetal* prebar_mat, matPsStrand* pstrand_mat)
 {
-   std::auto_ptr<matConcrete> p_my_conc( pconc_mat->CreateClone() );
+   std::unique_ptr<matConcrete> p_my_conc( pconc_mat->CreateClone() );
    p_my_conc->SetFc(0);
    CollectionIndexType conc_idx = m_pProblem->AddConcrete(*p_my_conc);
    CollectionIndexType msid = m_pProblem->AddMildSteel(*prebar_mat);
@@ -1039,7 +1039,7 @@ bool run_integration_tests(dbgLog& rlog)
    TRY_TESTME ( example1.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example1.Run(os,RCA_BISECTION)); 
 
-   Example2 example2(-987325,.192);
+   Example2 example2(-987389,.192);
    example2.Build(&conc_5000, &rebar_60, 0);
    TRY_TESTME ( example2.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example2.Run(os,RCA_BISECTION)); 
@@ -1054,12 +1054,12 @@ bool run_integration_tests(dbgLog& rlog)
    TRY_TESTME ( example4.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example4.Run(os,RCA_BISECTION)); 
 
-   Example5 example5(-1.839858e6,-.177);
+   Example5 example5(-1839380,-.177);
    example5.Build(&conc_7500, 0, &ps_270);
    TRY_TESTME ( example5.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example5.Run(os,RCA_BISECTION)); 
 
-   Example6 example6(-1385419,-0.125);
+   Example6 example6(-1385110,-0.125);
    example6.Build(&conc_7500, &rebar_60, &ps_270);
    TRY_TESTME ( example6.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example6.Run(os,RCA_BISECTION)); 
@@ -1079,7 +1079,7 @@ bool run_integration_tests(dbgLog& rlog)
    TRY_TESTME ( example9.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( example9.Run(os,RCA_BISECTION)); 
 
-   Example10 example10(-8826707,0.67940299466364);
+   Example10 example10(-8817956,0.67940299466364);
    example10.Build(&conc_6000,&rebar_60,&ps_270);
    TRY_TESTME( example10.Run(os,RCA_BRENTS) );
    TRY_TESTME( example10.Run(os,RCA_BISECTION) );
@@ -1100,7 +1100,7 @@ bool run_integration_tests(dbgLog& rlog)
    TRY_TESTME ( n_example1.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( n_example1.Run(os,RCA_BISECTION)); 
 
-   Example2 n_example2(-987270,.192);
+   Example2 n_example2(-987332,.192);
    n_example2.Build(&conc_5000, &rebar_60, 0);
    TRY_TESTME ( n_example2.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( n_example2.Run(os,RCA_BISECTION)); 
@@ -1115,12 +1115,12 @@ bool run_integration_tests(dbgLog& rlog)
    TRY_TESTME ( n_example4.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( n_example4.Run(os,RCA_BISECTION)); 
 
-   Example5 n_example5(-1.839858e06,-.177);
+   Example5 n_example5(-1.83938e+06,-.178);
    n_example5.Build(&conc_7500, 0, &ps_270);
    TRY_TESTME ( n_example5.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( n_example5.Run(os,RCA_BISECTION)); 
 
-   Example6 n_example6(-1384469,-0.127);
+   Example6 n_example6(-1.38416e+06,-0.127);
    n_example6.Build(&conc_7500, &rebar_60, &ps_270);
    TRY_TESTME ( n_example6.Run(os,RCA_BRENTS)); 
    TRY_TESTME ( n_example6.Run(os,RCA_BISECTION)); 
@@ -1148,7 +1148,7 @@ bool run_integration_tests(dbgLog& rlog)
    }
 #endif
 
-   Example10 n_example10(-8558671,0.550);
+   Example10 n_example10(-8.54437e+06,0.543);
    n_example10.Build(&conc_6000,&rebar_60,&ps_270);
    TRY_TESTME( n_example10.Run(os,RCA_BRENTS) );
    TRY_TESTME( n_example10.Run(os,RCA_BISECTION) );

@@ -92,7 +92,7 @@ public:
 
    //------------------------------------------------------------------------
    // overload mfc error message
-   virtual BOOL GetErrorMessage( LPTSTR lpszError, INT nChar, UINT nMaxError, PUINT pnHelpContext = NULL);
+   virtual BOOL GetErrorMessage( LPTSTR lpszError, INT nChar, UINT nMaxError, PUINT pnHelpContext = nullptr);
 
    //------------------------------------------------------------------------
    // Returns true if the catch block should offer the user the chance to

@@ -75,8 +75,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   sysUnitTest(const sysUnitTest&);
-   sysUnitTest& operator=(const sysUnitTest&);
+   sysUnitTest(const sysUnitTest&) = delete;
+   sysUnitTest& operator=(const sysUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

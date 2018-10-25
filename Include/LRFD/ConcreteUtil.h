@@ -213,8 +213,8 @@ private:
    lrfdConcreteUtil();
 
    // Prevent accidental copying and assignment
-   lrfdConcreteUtil(const lrfdConcreteUtil&);
-   lrfdConcreteUtil& operator=(const lrfdConcreteUtil&);
+   lrfdConcreteUtil(const lrfdConcreteUtil&) = delete;
+   lrfdConcreteUtil& operator=(const lrfdConcreteUtil&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

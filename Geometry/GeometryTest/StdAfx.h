@@ -55,7 +55,7 @@ inline bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptio
    CComPtr<IObjectSafety> safety;
    safety.CoCreateInstance(rclsid);
 
-   if ( safety == NULL )
+   if ( safety == nullptr )
       return false;
 
 

@@ -53,7 +53,7 @@ HRESULT CSysAgent::FinalConstruct()
    m_pBroker = 0;
    m_bEndLines = TRUE;
    m_cProgressRef = 0;
-   m_pThread = NULL;
+   m_pThread = nullptr;
    return S_OK;
 }
 
@@ -154,7 +154,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    // Run the progress window in a UI thread
    m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
 
-   CWnd* pMainWnd = NULL;
+   CWnd* pMainWnd = nullptr;
    {
       AFX_MANAGE_STATE(AfxGetAppModuleState());
       pMainWnd = AfxGetMainWnd();
@@ -166,7 +166,7 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
    {
       m_cProgressRef--;
       m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
-      m_pThread = NULL;
+      m_pThread = nullptr;
       return PROGRESS_E_CREATE;
    }
 
@@ -215,7 +215,7 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    {
       // if there is at least one creater of the progress window
       // the thread had better still be alive
-      ATLASSERT(m_pThread != NULL);
+      ATLASSERT(m_pThread != nullptr);
    }
 #endif
 
@@ -225,7 +225,7 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    if ( m_cProgressRef == 0 )
    {
       m_pThread->DestroyProgressWindow();
-      if ( m_pThread != NULL )
+      if ( m_pThread != nullptr )
       {
          m_pThread->PostThreadMessage(WM_KILLTHREAD,0,0);
          DWORD result = ::WaitForSingleObject(m_pThread->m_hThread,10000/*INFINITE*/);
@@ -235,7 +235,7 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
             m_pThread->OnKillThread(0,0);
          }
       }
-      m_pThread = NULL;
+      m_pThread = nullptr;
    }
    else
    {
@@ -261,17 +261,17 @@ STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
       return E_POINTER;
 
    // Try to create a stream... Could fail in one of two ways.  Failed allocation could throw
-   // and bad_alloc exception or return NULL.
-   boost::shared_ptr<std::_tofstream> pofile;
+   // and bad_alloc exception or return nullptr.
+   std::shared_ptr<std::_tofstream> pofile;
    try
    {
-      pofile = boost::shared_ptr<std::_tofstream>( new std::_tofstream(name) );
+      pofile = std::make_shared<std::_tofstream>(name);
    }
    catch ( ... )
    {
       return E_OUTOFMEMORY;
    }
-   if ( pofile.get() == 0 )
+   if ( pofile.get() == nullptr )
    {
       return E_OUTOFMEMORY;
    }
@@ -337,7 +337,7 @@ STDMETHODIMP CSysAgent::LogMessage(DWORD dwCookie,LPCTSTR msg)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    try
    {
@@ -359,7 +359,7 @@ STDMETHODIMP CSysAgent::Close(DWORD dwCookie)
    if ( !is_valid_cookie( dwCookie, m_LogFiles.size() ) )
       return LOGFILE_E_NOLOGFILE;
 
-   boost::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
+   std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[ idx_from_cookie(dwCookie) ];
 
    // Write a little postscript
    sysTime now;

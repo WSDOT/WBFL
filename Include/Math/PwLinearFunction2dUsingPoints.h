@@ -80,27 +80,27 @@ public:
    // Evaluates the function at x.
    Float64 Evaluate(Float64 x) const;
 
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
    //------------------------------------------------------------------------
    // GetRange
    // Returns the range over which the function is valid.
-   virtual math1dRange GetRange() const;
+   virtual math1dRange GetRange() const override;
 
    //------------------------------------------------------------------------
    // GetNumPoints
    // Returns the number of points which define the segments of the function.
-   virtual CollectionIndexType GetNumPoints() const;
+   virtual CollectionIndexType GetNumPoints() const override;
 
    //------------------------------------------------------------------------
    // GetPoint
    // Returns the ith point. (zero-based)
-   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const;
+   virtual gpPoint2d GetPoint(CollectionIndexType pnum) const override;
 
    //------------------------------------------------------------------------
    // GetPoints
    // Returns all points for the line segments which make up the function.
-   virtual std::vector<gpPoint2d> GetPoints() const;
+   virtual std::vector<gpPoint2d> GetPoints() const override;
 
    //------------------------------------------------------------------------
    // SetPoints
@@ -160,8 +160,8 @@ public:
 
 protected:
    // Prevent accidental copying and assignment
-   mathPwLinearFunction2dUsingPoints(const mathPwLinearFunction2dUsingPoints&);
-   mathPwLinearFunction2dUsingPoints& operator=(const mathPwLinearFunction2dUsingPoints&);
+   mathPwLinearFunction2dUsingPoints(const mathPwLinearFunction2dUsingPoints&) = delete;
+   mathPwLinearFunction2dUsingPoints& operator=(const mathPwLinearFunction2dUsingPoints&) = delete;
 
 private:
    // GROUP: DATA MEMBERS
@@ -183,11 +183,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

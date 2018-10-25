@@ -67,19 +67,19 @@ CONNECTION_POINT_ENTRY(IID_IStageEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStage
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/IStage* *clone);
-	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(Clone)(/*[out,retval]*/IStage* *clone) override;
+	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 protected:
    CComBSTR m_Name;

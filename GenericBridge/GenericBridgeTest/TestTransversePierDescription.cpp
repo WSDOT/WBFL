@@ -69,26 +69,26 @@ void CTestTransversePierDescription::Test()
    //CComPtr<ITransversePierDescription> tpd;
    //pier->get_TransversePierDescription(&tpd);
 
-   //TRY_TEST(tpd != NULL, true);
+   //TRY_TEST(tpd != nullptr, true);
 
    //// Verify default values
    //CComPtr<IPier> parentPier;
-   //TRY_TEST(tpd->get_Pier(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_Pier(nullptr),E_POINTER);
    //TRY_TEST(tpd->get_Pier(&parentPier),S_OK);
    //TRY_TEST(pier.IsEqualObject(parentPier),true);
 
    //CComPtr<IColumnSpacing> columnSpacing;
-   //TRY_TEST(tpd->get_ColumnSpacing(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_ColumnSpacing(nullptr),E_POINTER);
    //TRY_TEST(tpd->get_ColumnSpacing(&columnSpacing),S_OK);
 
    //CComPtr<ICrossBeam> crossBeam;
-   //TRY_TEST(tpd->get_CrossBeam(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_CrossBeam(nullptr),E_POINTER);
    //TRY_TEST(tpd->get_CrossBeam(&crossBeam),S_OK);
 
    //CComPtr<IColumn> column;
    //TRY_TEST(tpd->get_Column(-1,&column),E_INVALIDARG);
    //TRY_TEST(tpd->get_Column(10,&column),E_INVALIDARG);
-   //TRY_TEST(tpd->get_Column(0,NULL),E_POINTER);
+   //TRY_TEST(tpd->get_Column(0,nullptr),E_POINTER);
    //TRY_TEST(tpd->get_Column(0,&column),S_OK);
 
 

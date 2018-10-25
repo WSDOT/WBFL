@@ -151,7 +151,7 @@ void sysColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pLi
 
 void sysColorConverter::HSVtoRGB(Float64 hue,Float64 saturation,Float64 value,BYTE* pRed,BYTE* pGreen,BYTE* pBlue)
 {
-   Float64 red,green,blue;
+   Float64 red(0),green(0),blue(0);
    Float64 f,p,q,t;
    int i;
 

@@ -42,7 +42,7 @@ STDMETHODIMP CSpan::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISpan
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -50,7 +50,7 @@ STDMETHODIMP CSpan::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSpan::FinalConstruct( )
+HRESULT CSpan::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set
@@ -290,7 +290,7 @@ STDMETHODIMP CSpan::RemoveStage(BSTR stage)
    if (FAILED(hr))
       return hr;
 
-   for (SupportIndexType i=0; i<cnt; i++)
+   for (SupportIndexType i = 0; i<cnt; i++)
    {
       CComPtr<ITemporarySupport> its;
       hr = m_TemporarySupports->get_Item(i, &its);

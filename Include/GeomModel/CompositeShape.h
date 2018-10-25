@@ -27,10 +27,11 @@
 
 // SYSTEM INCLUDES
 //
-#include<map>
+
 #include <GeomModel\GeomModelExp.h>
 #include <GeomModel\ShapeImp.h>
-#include <boost\shared_ptr.hpp>
+#include <map>
+#include <memory>
 
 // LOCAL INCLUDES
 //
@@ -83,7 +84,7 @@ public:
    // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
    // listeners are registered with the clone.  This is a factory method,  
    // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const;
+   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
 
    //------------------------------------------------------------------------
    // CreateClippedShape
@@ -93,20 +94,19 @@ public:
    // memory allocated by this method.  If the section lies entirely on the 
    // clipping side of the line 0 is returned. Any listeners to the original
    // section are not transferred to this new section.
-   virtual gmIShape* CreateClippedShape(const gpLine2d& line, gpLine2d::Side side
-                                       ) const;
+   virtual gmIShape* CreateClippedShape(const gpLine2d& line, gpLine2d::Side side) const override;
 
    //------------------------------------------------------------------------
    // GetProperties
    // Assigns a gmProperties object to the object pointed to by pProperties. 
    // The origin of the shape properties object is the centroid of this shape
    // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const;
+   virtual void GetProperties(gmProperties* pProperties) const override;
 
    //------------------------------------------------------------------------
    // GetBoundingBox
    // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const;
+   virtual gpRect2d GetBoundingBox() const override;
 
    //------------------------------------------------------------------------
    // CreateClippedShape
@@ -119,23 +119,23 @@ public:
    // to the original section are not transferred to this new section.
    virtual gmIShape* CreateClippedShape(const gpRect2d& r,
                                         gmShapeImp::ClipRegion region
-                                       ) const;
+                                       ) const override;
 
    //------------------------------------------------------------------------
    // MakeSolid
    // Calls MakeSolid() for all shapes in the composite.
-   virtual void MakeSolid(bool flag);
+   virtual void MakeSolid(bool flag) override;
 
    //------------------------------------------------------------------------
    // EnableBorderMode
    // Enables or disables the border drawing mode of the composite.  This method enables/disables the border mode of all the shapes currently in the composite.  
-   virtual bool EnableBorderMode(bool bEnable);
+   virtual bool EnableBorderMode(bool bEnable) override;
 
    //------------------------------------------------------------------------
    // SetBorderColor
    // Sets the border color of all the shapes currently in the composite to 
    // color.  Returns the previous color setting.
-   virtual COLORREF SetBorderColor(COLORREF color);
+   virtual COLORREF SetBorderColor(COLORREF color) override;
 
    //------------------------------------------------------------------------
    // EnableFillMode
@@ -143,18 +143,18 @@ public:
    // of all the shapes currently in the composite.  All shapes subsequently
    // added to the composite will have their fill mode set as well.  Returns
    // the previous fill mode setting.
-   virtual bool EnableFillMode(bool bEnable);
+   virtual bool EnableFillMode(bool bEnable) override;
 
    //------------------------------------------------------------------------
    // SetFillColor
    // Sets the fill color of all the shapes currently in the composite to 
    // color. Returns the previous color setting.
-   virtual COLORREF SetFillColor(COLORREF color);
+   virtual COLORREF SetFillColor(COLORREF color) override;
 
    //------------------------------------------------------------------------
    // Draw
    // Draws the composite by calling Draw() for every shape in the composite.
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const;
+   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
 
    //------------------------------------------------------------------------
    // AddShape
@@ -199,7 +199,7 @@ public:
    // Returns the distance to a line that is parallel to line, on specified 
    // side of line,  that passes through the furthest point on the shape 
    // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const;
+   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -242,25 +242,25 @@ protected:
    //------------------------------------------------------------------------
    // DoTranslate
    // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta);
+   virtual void DoTranslate(const gpSize2d& delta) override;
 
    //------------------------------------------------------------------------
    // DoRotate
    // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle);
+   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const gmCompositeShape& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmCompositeShape& rOther);
+   void MakeAssignment(const gmCompositeShape& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS
-   typedef boost::shared_ptr<gmIShape>         ShapePtr;
+   typedef std::shared_ptr<gmIShape>         ShapePtr;
    typedef std::pair<Uint32, ShapePtr>    ShapeEntry;
    typedef std::map<Uint32,ShapePtr,std::less<Uint32>,std::allocator<ShapePtr> >      ShapeContainer;
    typedef ShapeContainer::iterator       ShapeIterator;

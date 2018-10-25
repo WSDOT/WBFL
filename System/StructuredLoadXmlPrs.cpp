@@ -91,7 +91,7 @@ private:
 
    // Prevent accidental copying and assignment
    sysStructuredLoadXmlPrs_Impl(const sysStructuredLoadXmlPrs_Impl&);
-   sysStructuredLoadXmlPrs_Impl& operator=(const sysStructuredLoadXmlPrs_Impl&);
+   sysStructuredLoadXmlPrs_Impl& operator=(const sysStructuredLoadXmlPrs_Impl&) = delete;
 
    MSXML::IXMLDOMNodePtr GetCurrentNode(LPCTSTR name);
    bool GetProperty(LPCTSTR name, _variant_t* pval);
@@ -123,7 +123,7 @@ CLASS
 sysStructuredLoadXmlPrs::sysStructuredLoadXmlPrs():
 m_pImp(new sysStructuredLoadXmlPrs_Impl())
 {
-   PRECONDITION(m_pImp.get()!=0);
+   PRECONDITION(m_pImp.get() != nullptr);
 }
 
 sysStructuredLoadXmlPrs::~sysStructuredLoadXmlPrs()
@@ -310,7 +310,7 @@ m_pIStream(0),
 m_spDoc(0)
 {
    // make sure com is up and ready
-   ::CoInitialize(NULL);
+   HRESULT hr = ::CoInitialize(nullptr);
 }
 
 sysStructuredLoadXmlPrs_Impl::~sysStructuredLoadXmlPrs_Impl()
@@ -330,9 +330,9 @@ sysStructuredLoadXmlPrs_Impl::~sysStructuredLoadXmlPrs_Impl()
 void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
 {
 
-   PRECONDITION( pis != NULL );
+   PRECONDITION( pis != nullptr );
    CHECK(!(bool)m_spDoc);   //  previously used and not cleaned up?
-   CHECK(m_pIStream==NULL); // "                                   "
+   CHECK(m_pIStream==nullptr); // "                                   "
 
    if (!m_UnitList.empty())
       m_UnitList.clear();
@@ -355,7 +355,7 @@ void sysStructuredLoadXmlPrs_Impl::BeginLoad(IStream* pis)
 
       // Load document and make sure it loads correctly
       m_spDoc->load(m_pIStream);
-      if (m_pIStream==NULL)
+      if (m_pIStream==nullptr)
       {
          THROW_LOAD(InvalidFileFormat,this);
       }
@@ -426,13 +426,13 @@ void sysStructuredLoadXmlPrs_Impl::EndLoad()
 
    // free up com resources
    m_pIStream->Release();
-   m_pIStream=0;
+   m_pIStream = 0;
 
    if (!m_UnitList.empty())
       m_UnitList.clear();
 
    m_spDoc.Release();
-   m_spDoc=0;
+   m_spDoc = 0;
 
 }
 
@@ -711,7 +711,7 @@ bool sysStructuredLoadXmlPrs_Impl::Property(LPCTSTR name, Uint64* pvalue)
          // variant couldn't parse, so try brute force
          _bstr_t bval(val);
          TCHAR* sv = (TCHAR*)bval;
-         Uint64 uval = _tcstoui64(sv,NULL,10);
+         Uint64 uval = _tcstoui64(sv,nullptr,10);
          if ( uval == 0 && *sv != _T('0'))
             THROW_LOAD(InvalidFileFormat,this);
 
@@ -952,10 +952,10 @@ MSXML::IXMLDOMNodePtr sysStructuredLoadXmlPrs_Impl::GetCurrentNode(LPCTSTR name)
       if (nodenm == bname)
          return rback;
       else
-         return 0;
+         return nullptr;
    }
    else
-      return 0;
+      return nullptr;
 }
 
 bool sysStructuredLoadXmlPrs_Impl::GetProperty(LPCTSTR name, _variant_t* pval)

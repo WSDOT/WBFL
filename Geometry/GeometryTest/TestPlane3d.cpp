@@ -58,14 +58,14 @@ void CTestPlane3d::Test()
    // XY Plane at Altitude = 10.0
    Float64 val;
    TRY_TEST(plane->ThroughAltitude(10),S_OK);
-   TRY_TEST(plane->GetZ(5,5,NULL),E_POINTER);
+   TRY_TEST(plane->GetZ(5,5,nullptr),E_POINTER);
    TRY_TEST(plane->GetZ(5,5,&val),S_OK);
    TRY_TEST(IsEqual(val,10.),true);
 
-   TRY_TEST( plane->GetX(5,5,NULL),E_POINTER);
+   TRY_TEST( plane->GetX(5,5,nullptr),E_POINTER);
    TRY_TEST( plane->GetX(5,5,&val),GEOMETRY_E_NOSOLUTIONS);
 
-   TRY_TEST( plane->GetY(5,5,NULL),E_POINTER);
+   TRY_TEST( plane->GetY(5,5,nullptr),E_POINTER);
    TRY_TEST( plane->GetY(5,5,&val),GEOMETRY_E_INFINITESOLUTIONS);
 
    // Plane through three points
@@ -81,9 +81,9 @@ void CTestPlane3d::Test()
    p3.CoCreateInstance( CLSID_Point3d );
    p3->Move(10,10,0);
 
-   TRY_TEST(plane->ThroughPoints(NULL,NULL,NULL),E_INVALIDARG);
-   TRY_TEST(plane->ThroughPoints(p1,  NULL,NULL),E_INVALIDARG);
-   TRY_TEST(plane->ThroughPoints(p1,  p2,  NULL),E_INVALIDARG);
+   TRY_TEST(plane->ThroughPoints(nullptr,nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(plane->ThroughPoints(p1,  nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(plane->ThroughPoints(p1,  p2,  nullptr),E_INVALIDARG);
    TRY_TEST(plane->ThroughPoints(p1,  p2,  p3),  S_OK);
 
    TRY_TEST(plane->GetX(5,5,&val),S_OK);
@@ -99,8 +99,8 @@ void CTestPlane3d::Test()
    line.CoCreateInstance( CLSID_Line2d ); // Line on the X axis
    line->Rotate(0,0,PI_OVER_2); // Line is now in the pos Y direction
    p3->Move(10,0,10);
-   TRY_TEST(plane->ThroughLineEx(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(plane->ThroughLineEx(line,NULL),E_INVALIDARG);
+   TRY_TEST(plane->ThroughLineEx(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(plane->ThroughLineEx(line,nullptr),E_INVALIDARG);
    TRY_TEST(plane->ThroughLineEx(line,p3),  S_OK);
 
    TRY_TEST(plane->GetX(5,5,&val),S_OK);

@@ -80,7 +80,7 @@ private:
 
    // Prevent accidental copying and assignment
    rcaUnitTest(const rcaUnitTest&);
-   rcaUnitTest& operator=(const rcaUnitTest&);
+   rcaUnitTest& operator=(const rcaUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

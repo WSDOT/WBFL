@@ -89,7 +89,7 @@ bool CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
    return m_GraphManager.AddGraphBuilder(pGraphBuilder);
 }
 
-bool CGraphManagerAgent::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool CGraphManagerAgent::AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder)
 {
    return m_GraphManager.AddGraphBuilder(pGraphBuilder);
 }
@@ -99,27 +99,27 @@ CollectionIndexType CGraphManagerAgent::GetGraphBuilderCount() const
    return m_GraphManager.GetGraphBuilderCount();
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(CollectionIndexType index)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(CollectionIndexType index)
 {
    return m_GraphManager.GetGraphBuilder(index);
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::GetGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.GetGraphBuilder(strGraphName);
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManagerAgent::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    return m_GraphManager.RemoveGraphBuilder(strGraphName);
 }

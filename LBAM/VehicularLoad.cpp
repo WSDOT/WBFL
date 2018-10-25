@@ -43,7 +43,7 @@ STDMETHODIMP CVehicularLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IVehicularLoad
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -51,7 +51,7 @@ STDMETHODIMP CVehicularLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CVehicularLoad::FinalConstruct( )
+HRESULT CVehicularLoad::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set

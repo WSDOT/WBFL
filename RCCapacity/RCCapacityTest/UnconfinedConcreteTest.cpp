@@ -63,16 +63,16 @@ void CUnconfinedConcreteTest::Test()
    TRY_TEST( concrete->put_fc(20684271.88), S_OK);         // 3 KSI
    TRY_TEST( concrete->put_fc(89631844.81), S_OK);         // 13 KSI
    TRY_TEST( concrete->put_fc(117210874),E_INVALIDARG);   // 17 KSI
-   TRY_TEST( concrete->get_fc(NULL), E_POINTER );
+   TRY_TEST( concrete->get_fc(nullptr), E_POINTER );
    TRY_TEST( concrete->get_fc(&val), S_OK );
    TRY_TEST( IsEqual(val,89631844.810000), true);
 
    TestISupportUnitServer(concrete);
 
    CComQIPtr<IStressStrain> ss(concrete);
-   TRY_TEST( ss != NULL, true );
+   TRY_TEST( ss != nullptr, true );
 
-   TRY_TEST( ss->ComputeStress(0.00764,NULL), E_POINTER);
+   TRY_TEST( ss->ComputeStress(0.00764,nullptr), E_POINTER);
    TRY_TEST( ss->ComputeStress(0.00764,&val), S_OK );
    TRY_TEST( IsEqual(val,0.00), true );
    TRY_TEST( ss->ComputeStress(-0.00764,&val), S_OK );
@@ -81,7 +81,7 @@ void CUnconfinedConcreteTest::Test()
    TRY_TEST( IsEqual(val,-86277115.080388337), true );
 
    CComQIPtr<ISupportErrorInfo> eInfo(ss);
-   TRY_TEST( eInfo != NULL, true);
+   TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IUnconfinedConcrete), S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);

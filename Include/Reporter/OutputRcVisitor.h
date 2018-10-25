@@ -104,7 +104,7 @@ private:
    // Prevent accidental copying and assignment
    rptOutputRcVisitor();
    rptOutputRcVisitor(const rptOutputRcVisitor&);
-   rptOutputRcVisitor& operator=(const rptOutputRcVisitor&);
+   rptOutputRcVisitor& operator=(const rptOutputRcVisitor&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

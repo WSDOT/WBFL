@@ -47,7 +47,7 @@ STDMETHODIMP CCompositeSectionEx::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -183,7 +183,7 @@ STDMETHODIMP CCompositeSectionEx::get_ElasticProperties(IElasticProperties* *pVa
 {
    CHECK_RETOBJ(pVal);
 
-   CComPtr<IElasticProperties> elasticProps = NULL;
+   CComPtr<IElasticProperties> elasticProps = nullptr;
 
    ContainerIteratorType iter;
    for ( iter = m_coll.begin(); iter != m_coll.end(); iter++ )
@@ -241,15 +241,15 @@ STDMETHODIMP CCompositeSectionEx::get_ElasticProperties(IElasticProperties* *pVa
       epThisShape->put_Ytop(yt);
       epThisShape->put_Ybottom(yb);
 
-      if ( elasticProps == NULL )
+      if ( elasticProps == nullptr )
          elasticProps = epThisShape; // first time through the loop
       else
          elasticProps->AddProperties(epThisShape);
    }
 
-   // if elasticProps is still NULL, then there was nothing in the collection
+   // if elasticProps is still nullptr, then there was nothing in the collection
    // create a default set of properties
-   if ( elasticProps == NULL )
+   if ( elasticProps == nullptr )
    {
       CComObject<CElasticProperties>* ep;
       CComObject<CElasticProperties>::CreateInstance(&ep);
@@ -472,7 +472,7 @@ STDMETHODIMP CCompositeSectionEx::get_LocatorPoint(LocatorPointType lp, IPoint2d
    if ( m_coll.size() == 0 )
    {
       // If the collection is empty, just return a point at (0,0)
-      ::CoCreateInstance(CLSID_Point2d,NULL,CLSCTX_ALL,IID_IPoint2d,(void**)point);
+      ::CoCreateInstance(CLSID_Point2d,nullptr,CLSCTX_ALL,IID_IPoint2d,(void**)point);
       (*point)->Move(0,0);
       return S_OK;
    }

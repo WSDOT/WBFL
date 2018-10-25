@@ -80,44 +80,44 @@ BEGIN_CONNECTION_POINT_MAP(CCubicSpline)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICubicSpline
 public:
-   STDMETHOD(AddPoints)(/*[in]*/IPoint2dCollection* points);
-	STDMETHOD(AddPoint)(/*[in]*/Float64 x,/*[in]*/Float64 y);
-	STDMETHOD(AddPointEx)(/*[in]*/IPoint2d* point);
-   STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints);
-	STDMETHOD(get_Point)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPoint2d** point);
-   STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** ppPoints);
-	STDMETHOD(get_StartPoint)(/*[out,retval]*/IPoint2d** point);
-	STDMETHOD(get_EndPoint)(/*[out,retval]*/IPoint2d** point);
-	STDMETHOD(Clear)();
-	STDMETHOD(put_StartDirection)(/*[in]*/ VARIANT varDirection);
-	STDMETHOD(get_StartDirection)(/*[out,retval]*/IDirection** dir);
-	STDMETHOD(put_EndDirection)(/*[in]*/ VARIANT varDirection);
-	STDMETHOD(get_EndDirection)(/*[out,retval]*/IDirection** dir);
-   STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal);
-   STDMETHOD(BearingAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir);
-	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal);
-   STDMETHOD(NormalAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir);
-	STDMETHOD(PointOnSpline)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal);
-   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint);
-   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist);
-   STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ Float64* dist);
-	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/IPoint2dCollection** points);
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength);
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory);
-   STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory);
-   STDMETHOD(Clone)(/*[out,retval]*/ ICubicSpline* *clone);
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal);
-   STDMETHOD(Evaluate)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* y);
-	STDMETHOD(Slope)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* dy);
+   STDMETHOD(AddPoints)(/*[in]*/IPoint2dCollection* points) override;
+	STDMETHOD(AddPoint)(/*[in]*/Float64 x,/*[in]*/Float64 y) override;
+	STDMETHOD(AddPointEx)(/*[in]*/IPoint2d* point) override;
+   STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
+	STDMETHOD(get_Point)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPoint2d** point) override;
+   STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** ppPoints) override;
+	STDMETHOD(get_StartPoint)(/*[out,retval]*/IPoint2d** point) override;
+	STDMETHOD(get_EndPoint)(/*[out,retval]*/IPoint2d** point) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(put_StartDirection)(/*[in]*/ VARIANT varDirection) override;
+	STDMETHOD(get_StartDirection)(/*[out,retval]*/IDirection** dir) override;
+	STDMETHOD(put_EndDirection)(/*[in]*/ VARIANT varDirection) override;
+	STDMETHOD(get_EndDirection)(/*[out,retval]*/IDirection** dir) override;
+   STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
+   STDMETHOD(BearingAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir) override;
+	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
+   STDMETHOD(NormalAtPoint)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IDirection** pDir) override;
+	STDMETHOD(PointOnSpline)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
+   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint) override;
+   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist) override;
+   STDMETHOD(DistanceFromStartAtPoint)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ Float64* dist) override;
+	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/IPoint2dCollection** points) override;
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
+   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
+   STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ICubicSpline* *clone) override;
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
+   STDMETHOD(Evaluate)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* y) override;
+	STDMETHOD(Slope)(/*[in]*/Float64 x,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out,retval]*/Float64* dy) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    HRESULT UpdateSpline();
@@ -178,7 +178,7 @@ class CSplineSegmentLengthFunction : public mathFunction2d
 public:
    CSplineSegmentLengthFunction(const CSplineSegment& splineSegment);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
 private:
    const CSplineSegment& m_SplineSegment;
@@ -189,7 +189,7 @@ class CSplineSegmentPointFunction : public mathFunction2d
 public:
    CSplineSegmentPointFunction(Float64 distance,Float64 x0,const CSplineSegment& splineSegment);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
 private:
    Float64 m_Distance; // distance along segment where solution is sought
@@ -203,7 +203,7 @@ class CSplineSegmentProjectPointFunction : public mathFunction2d
 public:
    CSplineSegmentProjectPointFunction(const CSplineSegment& splineSegment,IPoint2d* tp,IGeomUtil2d* gu);
    Float64 Evaluate(Float64 x) const;
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
 private:
    const CSplineSegment& m_SplineSegment;

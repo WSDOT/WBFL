@@ -51,17 +51,17 @@ void CTestStation::Test()
    TRY_TEST(station.CoCreateInstance(CLSID_Station),S_OK);
 
    Float64 value;
-   TRY_TEST(station->get_Value(NULL),E_POINTER);
+   TRY_TEST(station->get_Value(nullptr),E_POINTER);
    TRY_TEST(station->get_Value(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
    ZoneIndexType zoneIdx;
-   TRY_TEST(station->get_StationZoneIndex(NULL),E_POINTER);
+   TRY_TEST(station->get_StationZoneIndex(nullptr),E_POINTER);
    TRY_TEST(station->get_StationZoneIndex(&zoneIdx),S_OK);
    TRY_TEST(zoneIdx == INVALID_INDEX,true);
 
-   TRY_TEST(station->GetStation(NULL,&value),E_POINTER);
-   TRY_TEST(station->GetStation(&zoneIdx,NULL),E_POINTER);
+   TRY_TEST(station->GetStation(nullptr,&value),E_POINTER);
+   TRY_TEST(station->GetStation(&zoneIdx,nullptr),E_POINTER);
    TRY_TEST(station->GetStation(&zoneIdx,&value),S_OK);
    TRY_TEST(IsZero(value),true);
    TRY_TEST(zoneIdx == INVALID_INDEX,true);

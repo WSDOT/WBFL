@@ -52,14 +52,14 @@ void CTestAngleDisplayUnitFormatter::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(fmtr);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IAngleDisplayUnitFormatter ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IDisplayUnitFormatter ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test back numeric formatting using default annotations
    CComBSTR bstrTest;
-   TRY_TEST(fmtr->Format(0.0,NULL,NULL),E_POINTER);
+   TRY_TEST(fmtr->Format(0.0,nullptr,nullptr),E_POINTER);
    TRY_TEST(fmtr->Format(0.0,CComBSTR("°,\',\""),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("0° 00\' 00.00\" L")), 0);
 
@@ -69,12 +69,12 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST(fmtr->Format(-M_PI/4,CComBSTR("°,\',\""),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("45° 00\' 00.00\" R")), 0);
 
-   TRY_TEST(fmtr->Format(-M_PI/4,NULL,&bstrTest),S_OK);
+   TRY_TEST(fmtr->Format(-M_PI/4,nullptr,&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("45 00 00.00 R")), 0);
 
    // test Signed angles
    VARIANT_BOOL bValue;
-   TRY_TEST( fmtr->get_Signed(NULL),E_POINTER);
+   TRY_TEST( fmtr->get_Signed(nullptr),E_POINTER);
    TRY_TEST( fmtr->get_Signed(&bValue),S_OK);
    TRY_TEST( bValue, VARIANT_FALSE );
    TRY_TEST( fmtr->put_Signed(VARIANT_TRUE), S_OK );
@@ -85,7 +85,7 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("-45° 00\' 00.00\"")), 0);
 
    // test condensed format
-   TRY_TEST( fmtr->get_CondensedFormat(NULL),E_POINTER);
+   TRY_TEST( fmtr->get_CondensedFormat(nullptr),E_POINTER);
    TRY_TEST( fmtr->get_CondensedFormat(&bValue),S_OK);
    TRY_TEST( bValue, VARIANT_FALSE );
    TRY_TEST(fmtr->put_CondensedFormat(VARIANT_TRUE),S_OK);
@@ -98,7 +98,7 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST(fmtr->Format(4*M_PI + (1.0/60.0)*M_PI/180.0 ,CComBSTR("°,\',\""),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("720° 01\' 00.00\"")), 0);
 
-   TRY_TEST( fmtr->get_UsesTag(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_UsesTag(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_UsesTag(&bValue), S_OK );
    TRY_TEST( bValue, VARIANT_TRUE );
 
@@ -121,26 +121,26 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST( fmtr->FormatSpecifiers(8,3,tjRight,nftScientific,1.0), S_OK );
 
    Uint32 lValue;
-   TRY_TEST( fmtr->get_Width(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_Width(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_Width(&lValue), S_OK );
    TRY_TEST( lValue, 8 );
 
-   TRY_TEST( fmtr->get_Precision(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_Precision(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_Precision(&lValue), S_OK );
    TRY_TEST( lValue, 3 );
 
    TextJustificationType tj;
-   TRY_TEST( fmtr->get_Justification(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_Justification(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_Justification(&tj), S_OK );
    TRY_TEST( tj, tjRight );
 
    NumericFormatType nft;
-   TRY_TEST( fmtr->get_Notation(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_Notation(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_Notation(&nft), S_OK );
    TRY_TEST( nft, nftScientific );
 
    Float64 dblValue;
-   TRY_TEST( fmtr->get_ZeroTolerance(NULL), E_POINTER );
+   TRY_TEST( fmtr->get_ZeroTolerance(nullptr), E_POINTER );
    TRY_TEST( fmtr->get_ZeroTolerance(&dblValue), S_OK );
    TRY_TEST( IsEqual(dblValue, 1.0), true );
 
@@ -184,7 +184,7 @@ void CTestAngleDisplayUnitFormatter::Test()
 
 STDMETHODIMP CTestAngleDisplayUnitFormatter::OnFormatChanged()
 {
-//   ::MessageBox(NULL,"OnFormatChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnFormatChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

@@ -93,9 +93,9 @@ void dbgMessage::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Precondition] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Precondition] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
 #endif
        _CrtDbgBreak();
 #else
@@ -107,9 +107,9 @@ void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Check] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Check] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
 #endif
        _CrtDbgBreak();
 #else
@@ -120,10 +120,10 @@ void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
 void dbgMessage::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
 {
 #if defined _DEBUG
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,NULL,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
 #if defined _UNICODE
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,NULL,_T("[Assert Valid Failed] %s\n"),s) == 1 )
+    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
 #endif
        _CrtDbgBreak();
 #else

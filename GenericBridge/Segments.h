@@ -79,7 +79,7 @@ public:
    m_pOwner(pown)
 	{
       m_bFractional = false;
-      m_pBridge = NULL;
+      m_pBridge = nullptr;
 	}
 
    ~CSegments();
@@ -110,8 +110,8 @@ public:
    void Clear();
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	HRESULT Load(IStructuredLoad2 * Load);
+	HRESULT Save(IStructuredSave2 * Save);
 
 
    typedef  ISegmentItem* ItemType;

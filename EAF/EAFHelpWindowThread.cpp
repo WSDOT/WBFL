@@ -55,7 +55,7 @@ BOOL CEAFHelpWindowThread::InitInstance()
    m_pMainWnd = new CEAFHelpWindow;
    if ( !((CEAFHelpWindow*)m_pMainWnd)->LoadFrame(IDR_HELP,WS_OVERLAPPEDWINDOW) )
    {
-      m_pMainWnd = NULL;
+      m_pMainWnd = nullptr;
       bResult = FALSE;
    }
 
@@ -69,7 +69,7 @@ BOOL CEAFHelpWindowThread::InitInstance()
 int CEAFHelpWindowThread::ExitInstance()
 {
    int result = CWinThread::ExitInstance();
-   EAFGetApp()->m_pHelpWindowThread = NULL;
+   EAFGetApp()->m_pHelpWindowThread = nullptr;
 
    TRACE0("EAFHelpWindowThread exiting");
 

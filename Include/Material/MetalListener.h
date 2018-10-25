@@ -124,7 +124,7 @@ private:
 
    // Prevent accidental copying and assignment
    matMetalListener(const matMetalListener&);
-   matMetalListener& operator=(const matMetalListener&);
+   matMetalListener& operator=(const matMetalListener&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -41,7 +41,7 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISegment
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -59,7 +59,7 @@ void CSegment::FinalRelease()
    }
 }
 
-STDMETHODIMP CSegment::FinalConstruct( )
+HRESULT CSegment::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection of stress points and set

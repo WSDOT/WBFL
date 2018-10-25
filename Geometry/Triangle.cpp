@@ -49,7 +49,7 @@ HRESULT CTriangle::FinalConstruct()
 
    hr = CreatePolyShape( &m_pShape );
    if (FAILED(hr)) return hr;
-   hr = CreatePoint(0.00,0.00,NULL,&m_pHookPoint);
+   hr = CreatePoint(0.00,0.00,nullptr,&m_pHookPoint);
    if (FAILED(hr)) return hr;
    hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
    if (FAILED(hr)) return hr;
@@ -74,7 +74,7 @@ STDMETHODIMP CTriangle::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -108,7 +108,7 @@ void CTriangle::UpdateShape()
 
 void CTriangle::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 {
-   ATLASSERT(px != NULL && py != NULL );
+   ATLASSERT(px != nullptr && py != nullptr );
 
    UpdateShape();
 
@@ -302,7 +302,7 @@ STDMETHODIMP CTriangle::Clone(IShape** pClone)
    pTheClone->put_Offset(m_Offset);
 
    CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,NULL,&hookPnt);
+   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
    pTheClone->putref_HookPoint(hookPnt);
 
    return pTheClone->QueryInterface( pClone );
@@ -376,7 +376,7 @@ STDMETHODIMP CTriangle::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
    UpdateShape();
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CTriangle::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

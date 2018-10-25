@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "VoidedSlabSection2.h"
 #include <math.h>
-#include <xutility> // for _cpp_min
+#include <xutility> // for Min
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,7 +65,7 @@ STDMETHODIMP CVoidedSlabSection2::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -325,7 +325,7 @@ STDMETHODIMP CVoidedSlabSection2::get_MinWebThickness(Float64* tWeb)
       Float64 end_webs, int_webs;
       GetWebs(&int_webs,&end_webs);
 
-      *tWeb = _cpp_min(int_webs,end_webs);
+      *tWeb = Min(int_webs,end_webs);
    }
 
    return S_OK;

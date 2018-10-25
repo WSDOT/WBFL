@@ -100,7 +100,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptHyperLinkDefinition& rOther);
-   virtual void MakeAssignment(const rptHyperLinkDefinition& rOther);
+   void MakeAssignment(const rptHyperLinkDefinition& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

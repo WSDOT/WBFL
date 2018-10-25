@@ -36,9 +36,9 @@
 // CTransactionMgr
 class ATL_NO_VTABLE CTransactionMgr : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CTransactionMgr, &CLSID_TransactionMgr>,
+	public CComCoClass<CTransactionMgr, &CLSID_WBFLTransactionMgr>,
 	public ISupportErrorInfo,
-	public ITransactionMgr
+	public IWBFLTransactionMgr
 {
 public:
 	CTransactionMgr()
@@ -58,57 +58,57 @@ DECLARE_REGISTRY_RESOURCEID(IDR_TRANSACTIONMGR)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CTransactionMgr)
-	COM_INTERFACE_ENTRY(ITransactionMgr)
+	COM_INTERFACE_ENTRY(IWBFLTransactionMgr)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
 private:
-   typedef CAdapt<CComPtr<ITransaction> > TxnType;
+   typedef CAdapt<CComPtr<IWBFLTransaction> > TxnType;
    typedef std::list<TxnType> TxnContainer;
    TxnContainer m_TxnHistory;
    TxnContainer m_UndoHistory;
 
    TxnModeType m_Mode;
 
-   CComPtr<IMacroTransaction> m_TargetMacro;
-   std::list<CAdapt<CComPtr<IMacroTransaction> > > m_Macros;
+   CComPtr<IWBFLMacroTransaction> m_TargetMacro;
+   std::list<CAdapt<CComPtr<IWBFLMacroTransaction> > > m_Macros;
 
    // Finds the first undoable transaction.  The m_TxnHistory container
    // retains ownership of the transaction pointer.
-   HRESULT FindFirstUndoableTxn(ITransaction* *txn) const;
+   HRESULT FindFirstUndoableTxn(IWBFLTransaction* *txn) const;
 
    // Returns the first undoable transaction.  This transaction is
    // removed from the m_TxnHistory container.  The returned pointer
    // is un-owned.
-   HRESULT GetFirstUndoableTxn(ITransaction* *txn);
+   HRESULT GetFirstUndoableTxn(IWBFLTransaction* *txn);
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// ITransactionMgr
+// IWBFLTransactionMgr
 public:
-	STDMETHOD(get_Mode)(/*[out, retval]*/ TxnModeType* mode);
-	STDMETHOD(Clear)();
-	STDMETHOD(ClearUndoHistory)();
-	STDMETHOD(ClearTransactionHistory)();
-   STDMETHOD(PeekTransaction)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ ITransaction* *txn);
-   STDMETHOD(PeekUndo)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ ITransaction* *txn);
-	STDMETHOD(get_UndoCount)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_TransactionCount)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_RepeatName)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(get_RedoName)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(get_UndoName)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(get_CanRepeat)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_CanRedo)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_CanUndo)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(Repeat)();
-	STDMETHOD(Redo)();
-	STDMETHOD(Undo)();
-	STDMETHOD(Execute)(/*[in]*/ITransaction* txn);
-   STDMETHOD(BeginMacro)(/*[in]*/  VARIANT nameOrMacro);
-   STDMETHOD(ExecuteMacro)();
-   STDMETHOD(AbortMacro)();
+	STDMETHOD(get_Mode)(/*[out, retval]*/ TxnModeType* mode) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(ClearUndoHistory)() override;
+	STDMETHOD(ClearTransactionHistory)() override;
+   STDMETHOD(PeekTransaction)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ IWBFLTransaction* *txn) override;
+   STDMETHOD(PeekUndo)(/*[in]*/ CollectionIndexType idx,/*[out,retval]*/ IWBFLTransaction* *txn) override;
+	STDMETHOD(get_UndoCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_TransactionCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_RepeatName)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(get_RedoName)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(get_UndoName)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(get_CanRepeat)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_CanRedo)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_CanUndo)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(Repeat)() override;
+	STDMETHOD(Redo)() override;
+	STDMETHOD(Undo)() override;
+	STDMETHOD(Execute)(/*[in]*/IWBFLTransaction* txn) override;
+   STDMETHOD(BeginMacro)(/*[in]*/  VARIANT nameOrMacro) override;
+   STDMETHOD(ExecuteMacro)() override;
+   STDMETHOD(AbortMacro)() override;
 };
 
 #endif //__TRANSACTIONMGR_H_

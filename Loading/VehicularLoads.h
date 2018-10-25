@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-   virtual void FinalRelease();
+   void FinalRelease();
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_VEHICULARLOADS)
@@ -74,22 +74,21 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // Events
-   STDMETHOD(OnVehicularLoadChanged)(/*[in]*/ldIVehicularLoad* VehicularLoad,ldLoadingChangeType type);
-   STDMETHOD(OnVehicularLoadRenamed)(BSTR oldNam, BSTR newNam);
+   STDMETHOD(OnVehicularLoadChanged)(/*[in]*/ldIVehicularLoad* VehicularLoad,ldLoadingChangeType type) override;
 
 // ldIVehicularLoads
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ldIVehicularLoads** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ldIVehicularLoads** clone) override;
 
 protected:
    // implementations of virtual functions for collection
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
-   virtual HRESULT OnAfterAdd( StoredType* pVal, VehicleIndexType idx);
-   virtual HRESULT OnBeforeRemove ( StoredType* pVal, VehicleIndexType idx);
-   virtual HRESULT OnAfterRemove( VehicleIndexType id);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd( StoredType* pVal, VehicleIndexType idx) override;
+   virtual HRESULT OnBeforeRemove ( StoredType* pVal, VehicleIndexType idx) override;
+   virtual HRESULT OnAfterRemove( VehicleIndexType id) override;
 
 };
 

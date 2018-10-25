@@ -60,18 +60,18 @@ BEGIN_COM_MAP(CPathFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPathFactory
 public:
-	STDMETHOD(CreatePath)(/*[out,retval]*/IPath* *pVal);
-	STDMETHOD(IsValidType)(/*[in]*/IPath* path,/*[out,retval]*/VARIANT_BOOL* bIsValid);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+	STDMETHOD(CreatePath)(/*[out,retval]*/IPath* *pVal) override;
+	STDMETHOD(IsValidType)(/*[in]*/IPath* path,/*[out,retval]*/VARIANT_BOOL* bIsValid) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__PATHFACTORY_H_

@@ -24,6 +24,7 @@
 #include <Material\MatLib.h>
 #include <Material\ConcreteEx.h>
 #include <MathEx.h>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -100,7 +101,7 @@ bool matConcreteEx::operator!=(const matConcreteEx& rOther) const
 //======================== OPERATIONS =======================================
 matConcrete* matConcreteEx::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<matConcreteEx> ap( new matConcreteEx(*this) );
+   std::unique_ptr<matConcreteEx> ap( new matConcreteEx(*this) );
    if ( bRegisterListeners )
       RegisterListenersWithOther( ap.get() );
 

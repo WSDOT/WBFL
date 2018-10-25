@@ -170,8 +170,8 @@ public:
 
    //------------------------------------------------------------------------
    // Time dependent losses at shipping (assumed to occur at 10 days)
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
 
    //------------------------------------------------------------------------
    Float64 TimeDependentLosses() const;
@@ -179,9 +179,9 @@ public:
    Float64 TimeDependentLossesBeforeDeck() const;
    Float64 TimeDependentLossesAfterDeck() const;
 
-   virtual Float64 PermanentStrand_Final() const;
-   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const;
-   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const;
+   virtual Float64 PermanentStrand_Final() const override;
+   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const override;
+   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const override;
 
    Float64 GetHumidityFactor() const;
    Float64 GetStrengthFactor() const;
@@ -204,7 +204,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdApproximateLosses2005& rOther );
+   void MakeAssignment( const lrfdApproximateLosses2005& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -224,13 +224,13 @@ private:
    void MakeCopy( const lrfdApproximateLosses2005& rOther );
 
    //------------------------------------------------------------------------
-   virtual void ValidateParameters() const;
+   virtual void ValidateParameters() const override;
 
    //------------------------------------------------------------------------
-   virtual void UpdateLongTermLosses() const;
+   virtual void UpdateLongTermLosses() const override;
    
    //------------------------------------------------------------------------
-   virtual void UpdateHaulingLosses() const;
+   virtual void UpdateHaulingLosses() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

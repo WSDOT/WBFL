@@ -31,19 +31,19 @@
 class IStageOrder
 {
 public:
-   virtual StageIndexType StageCount()=0;
-   virtual CComBSTR Stage(StageIndexType index)=0;
+   virtual StageIndexType StageCount() = 0;
+   virtual CComBSTR Stage(StageIndexType index) = 0;
    virtual bool GetStageIndex(BSTR stage,StageIndexType* pStageIdx) = 0;
 };
 
 class ILoadGroupOrder
 {
 public:
-   virtual CollectionIndexType LoadGroupCount()=0;
-   virtual CComBSTR LoadGroup(CollectionIndexType index)=0;
-   virtual void GetLoadGroupInfo(BSTR LoadGroup, LoadGroupIDType* femLgId, bool* isTransient)=0;
-   virtual void GetLoadGroupInfoByIndex(CollectionIndexType index, LoadCaseIDType* femLcId, bool* isTransient)=0;
-   virtual void SetLoadGroupAsActive(BSTR LoadGroup)=0;
+   virtual CollectionIndexType LoadGroupCount() = 0;
+   virtual CComBSTR LoadGroup(CollectionIndexType index) = 0;
+   virtual void GetLoadGroupInfo(BSTR LoadGroup, LoadGroupIDType* femLgId, bool* isTransient) = 0;
+   virtual void GetLoadGroupInfoByIndex(CollectionIndexType index, LoadCaseIDType* femLcId, bool* isTransient) = 0;
+   virtual void SetLoadGroupAsActive(BSTR LoadGroup) = 0;
 };
 
 

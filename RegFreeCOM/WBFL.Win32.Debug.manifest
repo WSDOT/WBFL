@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <!-- 
 	<dependency>
 		<dependentAssembly>
 			<assemblyIdentity type="win32" name="Microsoft.VC90.DebugCRT" version="9.0.21022.8" processorArchitecture="x86"
@@ -23,6 +24,7 @@
 				 publicKeyToken="1fc8b3b9a1e18e3b"/>
 		</dependentAssembly>
 	</dependency>
+  -->
    <file name="WBFLBridgeGeometry.dll" hashalg="SHA1">
       <comClass clsid="{24D75303-8425-4590-913E-FF2908F65BD1}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
 			 description="Bridge Class"/>
@@ -169,6 +171,13 @@
                 threadingModel="Apartment"
                 progid="WBFLGeometry.BulbTee">
          <progid>WBFLGeometry.BulbTee.1</progid>
+      </comClass>
+      <comClass clsid="{05EB3E1B-4844-43F3-A104-D85B204DEFE2}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="BulbTee2 Class"
+                threadingModel="Apartment"
+                progid="WBFLGeometry.BulbTee2">
+         <progid>WBFLGeometry.BulbTee2.1</progid>
       </comClass>
       <comClass clsid="{2558CFC2-03CE-11D3-8CDF-EBFB6612CA35}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"

@@ -56,7 +56,7 @@ inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR lo
    TRY_TEST( dl->put_EndLocation(-1.0), S_OK);
    TRY_TEST( dl->put_WStart(ldVal), S_OK);
    TRY_TEST( dl->put_WEnd(ldVal), S_OK);
-   TRY_TEST( dls->Add(stage, loadGroup,dl,NULL), S_OK);
+   TRY_TEST( dls->Add(stage, loadGroup,dl,nullptr), S_OK);
    return S_OK;
 }
 
@@ -155,7 +155,7 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
          <<std::setw(16)<< right_val<<std::endl;
 
       // then right config if there was one
-      if (right_config!=NULL)
+      if (right_config!=nullptr)
       {
          res3Ds.Release();
          TRY_TEST(basicResponse->ComputeForces(singlePOI, CComBSTR("Stage 1"), roGlobal, right_config, &res3Ds), S_OK);

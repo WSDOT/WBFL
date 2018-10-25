@@ -27,6 +27,7 @@
 #include <vector>
 #include <MathEx.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -104,7 +105,7 @@ const gpPoint2d* gpPolygon2d::GetPoint(Uint32 key) const
    }
    else
    {
-      return 0;
+      return nullptr;
    }
 }
 
@@ -163,7 +164,7 @@ Float64 gpPolygon2d::Perimeter() const
 {
    if ( GetNumPoints() < 2) return 0.;
 
-   Float64 len=0;
+   Float64 len = 0;
    Float64 x0,y0;
    Float64 x1,y1;
    Float64 dy, dx;
@@ -233,9 +234,9 @@ void gpPolygon2d::GetProperties(Float64* area,Float64* ixx,Float64* iyy,
    Float64 x1,y1;
    Float64 dy, dx;
    Float64 ar, at;
-   Float64 g_ixx=0, g_iyy=0, g_ixy=0; // moments of inertia about the global axes
-   Float64 c_ixx=0, c_iyy=0, c_ixy=0; // moments of inertia about the centroid
-   Float64 area_local =0;
+   Float64 g_ixx=0, g_iyy=0, g_ixy = 0; // moments of inertia about the global axes
+   Float64 c_ixx=0, c_iyy=0, c_ixy = 0; // moments of inertia about the centroid
+   Float64 area_local  = 0;
    gpPoint2d cg;
 
    // loop over all points - make sure of closure
@@ -341,7 +342,7 @@ void gpPolygon2d::GetArea(Float64* area, gpPoint2d* centroid) const
    Float64 x1,y1;
    Float64 dy, dx;
    Float64 ar, at;
-   Float64 area_local =0;
+   Float64 area_local  = 0;
    gpPoint2d cg;
 
    // loop over all points - make sure of closure
@@ -417,7 +418,7 @@ void gpPolygon2d::GetArea(Float64* area, gpPoint2d* centroid) const
 
 gpRect2d gpPolygon2d::GetBoundingBox() const
 {
-   Float64 left=0, right=0, top=0, bottom=0;
+   Float64 left=0, right=0, top=0, bottom = 0;
    bool first = true;
    for (ConstPointIterator iter=m_PointContainer.begin(); iter!=m_PointContainer.end();iter++)
    {
@@ -432,10 +433,10 @@ gpRect2d gpPolygon2d::GetBoundingBox() const
       }
       else
       {
-         left   = _cpp_min( point.X(), left);
-         right  = _cpp_max( point.X(), right);
-         bottom = _cpp_min( point.Y(), bottom);
-         top    = _cpp_max( point.Y(), top);
+         left   = Min( point.X(), left);
+         right  = Max( point.X(), right);
+         bottom = Min( point.Y(), bottom);
+         top    = Max( point.Y(), top);
       }
     }
 
@@ -471,10 +472,10 @@ gpPolygon2d* gpPolygon2d::CreateClippedPolygon(const gpLine2d& line, gpLine2d::S
    // If the polyPolygon isn't at least a triangle, just get the heck outta here.
    CollectionIndexType num_points = this->GetNumPoints();
    if ( num_points  < 3 )
-      return 0;
+      return nullptr;
 
    // create an empty clipped Polygon - return empty if need be
-   std::auto_ptr<gpPolygon2d> clipped_Polygon(new gpPolygon2d);
+   std::unique_ptr<gpPolygon2d> clipped_Polygon(std::make_unique<gpPolygon2d>());
    clipped_Polygon->Reserve(num_points+1); // assume clip might add a point
 
    dx = pnt_b.X() - pnt_a.X();
@@ -575,7 +576,7 @@ gpPolygon2d* gpPolygon2d::CreateClippedPolygon(const gpLine2d& line, gpLine2d::S
 
    // make sure clipped Polygon has enough points to be interesting
    if ( clipped_Polygon->GetNumPoints() < 3 )
-      return 0;
+      return nullptr;
    else
       return clipped_Polygon.release();
 }
@@ -588,7 +589,7 @@ gpPolygon2d* gpPolygon2d::CreateClippedPolygon(const gpRect2d& r, gpPolygon2d::C
    else
      side = gpLine2d::Left;
 
-   typedef std::auto_ptr<gpPolygon2d> Aps;
+   typedef std::unique_ptr<gpPolygon2d> Aps;
 
    // Clip by consecutively clipping against each edge of the rectangle
    Aps clip_top   (       this->CreateClippedPolygon(gpLine2d(r.TopLeft(), r.TopRight()), side ));
@@ -622,7 +623,7 @@ bool gpPolygon2d::Contains(const gpPoint2d& pnt) const
    Float64 boundary_tolerance = edgelen / dist;
    boundary_tolerance = min( 1e-06, boundary_tolerance );
 
-   Float64 sum=0;
+   Float64 sum = 0;
 
    ConstPointIterator ip0 = m_PointContainer.begin();
    ConstPointIterator ip1 = ip0;
@@ -771,7 +772,7 @@ Float64 gpPolygon2d::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side si
          first = false;
       }
       else
-         max_dist = _cpp_max(dist,max_dist);
+         max_dist = Max(dist,max_dist);
    }
 
    return max_dist;
@@ -835,7 +836,7 @@ void gpPolygon2d::MakeAssignment(const gpPolygon2d& rOther)
 //======================== OPERATIONS =======================================
 void gpPolygon2d::Init()
 {
-   m_LastKey=0;
+   m_LastKey = 0;
 }
 
 //======================== ACCESS     =======================================
@@ -887,43 +888,43 @@ gpPolyPointIter2d& gpPolyPointIter2d::operator= (const gpPolyPointIter2d& rOther
 
 void gpPolyPointIter2d::SetPolygon(const gpPolygon2d* const pPolygon)
 {
-   PRECONDITION(pPolygon!=0);
+   PRECONDITION(pPolygon != nullptr);
    m_pPolygon = pPolygon;
    m_Iterator = pPolygon->m_PointContainer.begin();
 }
 
 void gpPolyPointIter2d::Begin()
 {
-   PRECONDITION(m_pPolygon!=0);
+   PRECONDITION(m_pPolygon != nullptr);
    m_Iterator = m_pPolygon->m_PointContainer.begin();
 }
 
 void gpPolyPointIter2d::End()
 {
-   PRECONDITION(m_pPolygon!=0);
+   PRECONDITION(m_pPolygon != nullptr);
    m_Iterator = m_pPolygon->m_PointContainer.end();
 }
 
 void gpPolyPointIter2d::Next()
 {
-   PRECONDITION(m_pPolygon!=0);
+   PRECONDITION(m_pPolygon != nullptr);
    CHECK(m_Iterator!=m_pPolygon->m_PointContainer.end());
    m_Iterator++;
 }
 
 void gpPolyPointIter2d::Prev()
 {
-   PRECONDITION(m_pPolygon!=0);
+   PRECONDITION(m_pPolygon != nullptr);
    CHECK(m_Iterator!=m_pPolygon->m_PointContainer.begin());
    m_Iterator--;
 }
 
 gpPolyPointIter2d::operator void *() 
 {
-   if (m_pPolygon==0)
-      return 0;
+   if (m_pPolygon == nullptr)
+      return nullptr;
    else if (m_Iterator==m_pPolygon->m_PointContainer.end())
-      return 0;
+      return nullptr;
    else
       return (void*)&(*m_Iterator).second;
 }
@@ -931,10 +932,10 @@ gpPolyPointIter2d::operator void *()
 // code duplication of above -- watch out!!
 gpPolyPointIter2d::operator void *() const
 {
-   if (m_pPolygon==0)
-      return 0;
+   if (m_pPolygon == nullptr)
+      return nullptr;
    else if (m_Iterator==m_pPolygon->m_PointContainer.end())
-      return 0;
+      return nullptr;
    else
       return (void*)&(*m_Iterator).second;
 }
@@ -995,7 +996,7 @@ void gpPolyPointIter2d::MakeAssignment(const gpPolyPointIter2d& rOther)
 //======================== OPERATIONS =======================================
 void gpPolyPointIter2d::Init()
 {
-   m_pPolygon = 0;
+   m_pPolygon = nullptr;
 }
 
 void gpPolyPointIter2d::Clean()
@@ -1116,13 +1117,13 @@ bool gpPolygon2d::TestMe(dbgLog& rlog)
    p4 = rect.AddPoint(gpPoint2d(40,0));
    gpLine2d up_left(gpPoint2d(0,0), gpVector2d(gpSize2d(1,1)));
    gpLine2d up_rgt(gpPoint2d(40,0), gpVector2d(gpSize2d(-3,5)));
-   std::auto_ptr<gpPolygon2d> pfirst(rect.CreateClippedPolygon(up_left, gpLine2d::Right));
+   std::unique_ptr<gpPolygon2d> pfirst(rect.CreateClippedPolygon(up_left, gpLine2d::Right));
    pfirst->GetProperties( &area, &ixx, &iyy, &ixy, &cg);
    TRY_TESTME(IsEqual(area,800.));
    TRY_TESTME(IsEqual(cg.X(),26.666666667));
    TRY_TESTME(IsEqual(cg.Y(),13.333333333));
 
-   std::auto_ptr<gpPolygon2d> ptriang(pfirst->CreateClippedPolygon(up_rgt, gpLine2d::Left));
+   std::unique_ptr<gpPolygon2d> ptriang(pfirst->CreateClippedPolygon(up_rgt, gpLine2d::Left));
    ptriang->GetProperties( &area, &ixx, &iyy, &ixy, &cg);
    TRY_TESTME (IsEqual(area, 500.));
    TRY_TESTME (ptriang->GetBoundingBox() == gpRect2d(0,0,40,25));
@@ -1133,7 +1134,7 @@ bool gpPolygon2d::TestMe(dbgLog& rlog)
 
    // clip triangle into a right triangle
    gpRect2d clip_box(0,5,20,25);
-   std::auto_ptr<gpPolygon2d> prtri(ptriang->CreateClippedPolygon(clip_box, gpPolygon2d::In));
+   std::unique_ptr<gpPolygon2d> prtri(ptriang->CreateClippedPolygon(clip_box, gpPolygon2d::In));
    prtri->GetProperties( &area, &ixx, &iyy, &ixy, &cg);
    TRY_TESTME (IsEqual(area, 112.5));
    TRY_TESTME (prtri->GetBoundingBox() == gpRect2d(5,5,20,20));

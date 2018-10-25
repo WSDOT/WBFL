@@ -127,7 +127,7 @@ STDMETHODIMP_(void) CSocketImpl::Disconnect(DWORD dwCookie)
    if ( found != m_Plugs.end() )
    {
       iPlug* pPlug = (*found).second;
-      pPlug->SetSocket(NULL);
+      pPlug->SetSocket(nullptr);
       m_Plugs.erase(found);
    }
 }
@@ -138,7 +138,7 @@ STDMETHODIMP_(void) CSocketImpl::DisconnectAll()
    for ( iter = m_Plugs.begin(); iter != m_Plugs.end(); iter++ )
    {
       iPlug* pPlug = (*iter).second;
-      pPlug->SetSocket(NULL);
+      pPlug->SetSocket(nullptr);
    }
 
    m_Plugs.clear();
@@ -166,6 +166,6 @@ STDMETHODIMP_(void) CSocketImpl::SetConnectable(iConnectable* pConnectable)
 STDMETHODIMP_(void) CSocketImpl::GetConnectable(iConnectable** connectable)
 {
    *connectable = m_pConnectable;
-   if (m_pConnectable!=NULL)
+   if (m_pConnectable!=nullptr)
       (*connectable)->AddRef();
 }

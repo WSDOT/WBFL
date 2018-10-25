@@ -73,10 +73,10 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldISettlementLoadEvents
-   STDMETHOD(OnSettlementLoadChanged)(/*[in]*/ldISettlementLoad* SettlementLoad)
+   STDMETHOD(OnSettlementLoadChanged)(/*[in]*/ldISettlementLoad* SettlementLoad) override
    {
       // Load can be in more than one item
       for (iterator i=begin(); i!=end(); i++)
@@ -118,23 +118,22 @@ public:
       Fire_OnSettlementLoadsChanged(pitem);
    }
 
-   virtual HRESULT MakeConnection(CSettlementLoadItem* pitem)
+   virtual HRESULT MakeConnection(CSettlementLoadItem* pitem) override
    {
       return CrAdvise(pitem->m_Load, this, IID_ldISettlementLoadEvents, &(pitem->m_LoadCookie));
    }
 
-   virtual HRESULT BreakConnection(CSettlementLoadItem* pitem)
+   virtual HRESULT BreakConnection(CSettlementLoadItem* pitem) override
    {
       return CrUnadvise(pitem->m_Load, this, IID_ldISettlementLoadEvents, pitem->m_LoadCookie);
    }
 
-   STDMETHOD(FinalRelease)()
+   void FinalRelease()
    {
       for (iterator i=begin(); i!=end(); i++)
       {
          OnBeforeRemove(*i);
       }
-      return S_OK;
    }
 };
 

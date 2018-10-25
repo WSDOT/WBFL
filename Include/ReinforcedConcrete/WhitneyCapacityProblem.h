@@ -73,7 +73,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~rcaWhitneyCapacityProblem();
+   virtual ~rcaWhitneyCapacityProblem() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -88,11 +88,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -112,7 +112,7 @@ protected:
    // DoCalculateCompressionBlockBoundary
    // Sets the location of the compression block boundary.  The offset is 
    // measured normal to the neutral axis line.
-   virtual Float64 DoCalculateCompressionBlockBoundary();
+   virtual Float64 DoCalculateCompressionBlockBoundary() override;
 
    //------------------------------------------------------------------------
    // DoCreateMildSteelMaterialModel
@@ -120,7 +120,7 @@ protected:
    // This is a factory method that creates a stress strain curve for mild steel.
    // The default behavior of this method is to create a matBilinearCurve 
    // material model.
-   virtual matYieldStressStrainCurve* DoCreateMildSteelMaterialModel(const matMetal& steel);
+   virtual matYieldStressStrainCurve* DoCreateMildSteelMaterialModel(const matMetal& steel) override;
 
    //------------------------------------------------------------------------
    // DoCreateStrandMaterialModel
@@ -128,20 +128,20 @@ protected:
    // This is a factory method that creates a stress strain curve for prestress
    // strands.  The default behavior of this method is to create a 
    // matPsStrandCurve material model.
-   virtual matYieldStressStrainCurve* DoCreateStrandMaterialModel(const matPsStrand& strand);
+   virtual matYieldStressStrainCurve* DoCreateStrandMaterialModel(const matPsStrand& strand) override;
 
    //------------------------------------------------------------------------
    // GetBeta1
    // Get Beta1 for the current nuetral axis configuration.
    // Calculated based on an average of the areas of the concrete elements above
    // the nuetral axis.
-   virtual Float64 GetBeta1() const;
+   virtual Float64 GetBeta1() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const rcaWhitneyCapacityProblem& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rcaWhitneyCapacityProblem& rOther);
+   void MakeAssignment(const rcaWhitneyCapacityProblem& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -64,7 +64,7 @@ void CTestCompositeShape::TestICompositeShape()
 
    // Test container property initialization
    CollectionIndexType count;
-   TRY_TEST(compShape->get_Count(NULL),E_POINTER);
+   TRY_TEST(compShape->get_Count(nullptr),E_POINTER);
    TRY_TEST(compShape->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -74,7 +74,7 @@ void CTestCompositeShape::TestICompositeShape()
    rectShape->put_Height(10);
    rectShape->put_Width(20);
    CComQIPtr<IShape> shape(rectShape);
-   TRY_TEST(compShape->AddShape(NULL,VARIANT_FALSE),E_INVALIDARG);
+   TRY_TEST(compShape->AddShape(nullptr,VARIANT_FALSE),E_INVALIDARG);
    TRY_TEST(compShape->AddShape(shape,VARIANT_FALSE),S_OK);
    TRY_TEST(compShape->get_Count(&count),S_OK);
    TRY_TEST(count,1);
@@ -84,7 +84,7 @@ void CTestCompositeShape::TestICompositeShape()
    CComPtr<ICompositeShapeItem> item;
    TRY_TEST(compShape->get_Item(-1,&item),E_INVALIDARG);
    TRY_TEST(compShape->get_Item(199,&item),E_INVALIDARG);
-   TRY_TEST(compShape->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(compShape->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(compShape->get_Item(0,&item),S_OK);
 
    shape.Release();
@@ -104,7 +104,7 @@ void CTestCompositeShape::TestICompositeShape()
    TRY_TEST(count,0);
 
    // Test AddShapeEx
-   TRY_TEST(compShape->AddShapeEx(NULL),E_INVALIDARG);
+   TRY_TEST(compShape->AddShapeEx(nullptr),E_INVALIDARG);
    TRY_TEST(compShape->AddShapeEx(item),S_OK);
    TRY_TEST(compShape->get_Count(&count),S_OK);
    TRY_TEST(count,1);
@@ -190,7 +190,7 @@ void CTestCompositeShape::TestIShape()
 
    CComQIPtr<IShape> shape(compShape);
    CComPtr<IShapeProperties> props;
-   TRY_TEST(shape->get_ShapeProperties(NULL),E_POINTER);
+   TRY_TEST(shape->get_ShapeProperties(nullptr),E_POINTER);
    TRY_TEST(shape->get_ShapeProperties(&props),S_OK);
 
    Float64 val;
@@ -215,7 +215,7 @@ void CTestCompositeShape::TestIShape()
    TRY_TEST(IsEqual(val,4.0),true);
 
    CComPtr<IRect2d> box;
-   TRY_TEST(shape->get_BoundingBox(NULL),E_POINTER);
+   TRY_TEST(shape->get_BoundingBox(nullptr),E_POINTER);
    TRY_TEST(shape->get_BoundingBox(&box),S_OK);
    box->get_Left(&val);
    TRY_TEST(IsEqual(val,0.0),true);
@@ -234,8 +234,8 @@ void CTestCompositeShape::TestIShape()
    box->put_Bottom(6.5);
    box->put_Top(100);
    CComPtr<IShape> clippedShape;
-   TRY_TEST(shape->ClipIn(NULL,&clippedShape),E_INVALIDARG);
-   TRY_TEST(shape->ClipIn(box,NULL),E_POINTER);
+   TRY_TEST(shape->ClipIn(nullptr,&clippedShape),E_INVALIDARG);
+   TRY_TEST(shape->ClipIn(box,nullptr),E_POINTER);
    TRY_TEST(shape->ClipIn(box,&clippedShape),S_OK);
 
    props.Release();
@@ -253,8 +253,8 @@ void CTestCompositeShape::TestIShape()
    line->ThroughPoints(start,end);
 
    clippedShape.Release();
-   TRY_TEST(shape->ClipWithLine(NULL,&clippedShape),E_INVALIDARG);
-   TRY_TEST(shape->ClipWithLine(line,NULL),E_POINTER);
+   TRY_TEST(shape->ClipWithLine(nullptr,&clippedShape),E_INVALIDARG);
+   TRY_TEST(shape->ClipWithLine(line,nullptr),E_POINTER);
    TRY_TEST(shape->ClipWithLine(line,&clippedShape),S_OK);
 
    props.Release();
@@ -264,7 +264,7 @@ void CTestCompositeShape::TestIShape()
 
    // Test clone
    CComPtr<IShape> clone;
-   TRY_TEST(shape->Clone(NULL),E_POINTER);
+   TRY_TEST(shape->Clone(nullptr),E_POINTER);
    TRY_TEST(shape->Clone(&clone),S_OK);
 
    CComQIPtr<ICompositeShape> compShapeClone(clone);
@@ -369,7 +369,7 @@ void CTestCompositeShape::TestIXYPosition()
    size.CoCreateInstance( CLSID_Size2d );
    size->put_Dx(10);
    size->put_Dy(20);
-   TRY_TEST( position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
    hookPnt->get_X(&x);
@@ -397,8 +397,8 @@ void CTestCompositeShape::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(110,110);
 
-   TRY_TEST( position->MoveEx(NULL,to),    E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from, NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to),    E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from, nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to),    S_OK );
 
    hookPnt->get_X(&x);
@@ -412,8 +412,8 @@ void CTestCompositeShape::TestIXYPosition()
    //
    hookPnt->Move(0,0);
 
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    to->Move(95,85);
@@ -565,7 +565,7 @@ void CTestCompositeShape::TestIXYPosition()
    // Rotate about the origin of the coordinate system and check the coordintes of the rectangle
    rotPoint->Move(0,0);
 
-   TRY_TEST( position->RotateEx(NULL,PI_OVER_2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,PI_OVER_2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(rotPoint,PI_OVER_2), S_OK );
 
    CComPtr<IPoint2dCollection> coll;

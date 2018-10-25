@@ -189,7 +189,7 @@ public:
    //------------------------------------------------------------------------
    // CreateClone
    // Creates a polymorphic type-safe clone of this curve.
-   virtual matStressStrainCurve * CreateClone() const =0;
+   virtual matStressStrainCurve * CreateClone() const  = 0;
 
    //------------------------------------------------------------------------
    // Computes the stress for the given strain.  Returns the strain state
@@ -249,7 +249,7 @@ protected:
    void MakeCopy(const matStressStrainCurve& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matStressStrainCurve& rOther);
+   void MakeAssignment(const matStressStrainCurve& rOther);
 
    // GROUP: ACCESS
 

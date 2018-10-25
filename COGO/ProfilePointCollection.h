@@ -71,30 +71,30 @@ BEGIN_CONNECTION_POINT_MAP(CProfilePointCollection)
    CONNECTION_POINT_ENTRY(IID_IProfilePointCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("ProfilePoints"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("ProfilePoint"); }
+   CComBSTR GetCollectionName() { return CComBSTR("ProfilePoints"); }
+   CComBSTR GetItemName() { return CComBSTR("ProfilePoint"); }
 
 // IProfilePointCollection
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfilePointCollection* *clone);
-   STDMETHOD(get__EnumProfilePoints)(/*[out,retval]*/ IEnumProfilePoints** ppenum);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IProfilePointFactory* *factory);
-   STDMETHOD(putref_Factory)(/*[in]*/IProfilePointFactory* factory);
-	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IProfilePoint* newVal);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
-	STDMETHOD(FindID)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* ID);
-	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
+   STDMETHOD(Clone)(/*[out,retval]*/ IProfilePointCollection* *clone) override;
+   STDMETHOD(get__EnumProfilePoints)(/*[out,retval]*/ IEnumProfilePoints** ppenum) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IProfilePointFactory* *factory) override;
+   STDMETHOD(putref_Factory)(/*[in]*/IProfilePointFactory* factory) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ VARIANT varStation,/*[in]*/ Float64 elevation,/*[out,retval]*/IProfilePoint* *pp) override;
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IProfilePoint* newVal) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum) override;
+	STDMETHOD(FindID)(/*[in]*/ IProfilePoint* pp,/*[out,retval]*/CogoObjectID* ID) override;
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
 // IProfilePointEvents
 public:
-	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp);
+	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

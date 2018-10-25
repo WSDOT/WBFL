@@ -58,14 +58,14 @@ END_COM_MAP()
 
 // ILRFDSolver
 public:
-   STDMETHOD(put_UnitMode)(/*[in]*/ SpecUnitType unitMode);
-   STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode);
+   STDMETHOD(put_UnitMode)(/*[in]*/ SpecUnitType unitMode) override;
+   STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode) override;
 
 // IRCSolver
 public:
-	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution);
+	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution) override;
 };
 
 #endif //__LRFDSOLVER_H_

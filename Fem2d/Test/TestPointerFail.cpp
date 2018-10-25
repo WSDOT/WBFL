@@ -71,7 +71,7 @@ void CTestPointerFail::Test()
    /////////////////////////////////////////////
    // Joints
    // null test pointers
-   TRY_TEST(pmodel->get_Joints(NULL),E_POINTER);
+   TRY_TEST(pmodel->get_Joints(nullptr),E_POINTER);
 
    // joints
    CComPtr<IFem2dJointCollection> pJoints;
@@ -80,24 +80,24 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dJoint> pJoint;
    TRY_TEST_MC(pJoints->Create(1,  0.0,   0.0, &pJoint));
 
-   TRY_TEST(pJoints->Create(1,  0.0,   0.0, NULL),E_POINTER);
-   TRY_TEST(pJoints->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pJoints->Find(0, NULL),E_POINTER);
-   TRY_TEST(pJoints->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pJoints->Create(1,  0.0,   0.0, nullptr),E_POINTER);
+   TRY_TEST(pJoints->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pJoints->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pJoints->get__EnumElements(nullptr),E_POINTER);
 
    // joint
-   TRY_TEST(pJoint->get_ID(NULL),E_POINTER);
-   TRY_TEST(pJoint->get_X(NULL),E_POINTER);
-   TRY_TEST(pJoint->get_Y(NULL),E_POINTER);
+   TRY_TEST(pJoint->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pJoint->get_X(nullptr),E_POINTER);
+   TRY_TEST(pJoint->get_Y(nullptr),E_POINTER);
 
-   TRY_TEST(pJoint->IsDofReleased(jrtNone, NULL),E_POINTER);
-   TRY_TEST(pJoint->IsSupport(NULL),E_POINTER);
+   TRY_TEST(pJoint->IsDofReleased(jrtNone, nullptr),E_POINTER);
+   TRY_TEST(pJoint->IsSupport(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // Members
    // null test pointers
 
-   TRY_TEST(pmodel->get_Members(NULL),E_POINTER);
+   TRY_TEST(pmodel->get_Members(nullptr),E_POINTER);
 
    // Members
    CComPtr<IFem2dMemberCollection> pMembers;
@@ -106,24 +106,24 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dMember> pMember;
    TRY_TEST_MC(pMembers->Create(1, 1, 2, 0.0, 0.0, &pMember));
 
-   TRY_TEST(pMembers->Create(1, 1, 2, 0.0, 0.0, NULL),E_POINTER);
-   TRY_TEST(pMembers->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pMembers->Find(0, NULL),E_POINTER);
-   TRY_TEST(pMembers->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pMembers->Create(1, 1, 2, 0.0, 0.0, nullptr),E_POINTER);
+   TRY_TEST(pMembers->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pMembers->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pMembers->get__EnumElements(nullptr),E_POINTER);
 
    // Member
-   TRY_TEST(pMember->get_ID(NULL),E_POINTER);
-   TRY_TEST(pMember->get_StartJoint(NULL),E_POINTER);
-   TRY_TEST(pMember->get_EndJoint(NULL),E_POINTER);
-   TRY_TEST(pMember->get_EA(NULL),E_POINTER);
-   TRY_TEST(pMember->get_EI(NULL),E_POINTER);
-   TRY_TEST(pMember->get_Length(NULL),E_POINTER);
-   TRY_TEST(pMember->IsReleased(metStart, mbrReleaseMz, NULL),E_POINTER);
+   TRY_TEST(pMember->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pMember->get_StartJoint(nullptr),E_POINTER);
+   TRY_TEST(pMember->get_EndJoint(nullptr),E_POINTER);
+   TRY_TEST(pMember->get_EA(nullptr),E_POINTER);
+   TRY_TEST(pMember->get_EI(nullptr),E_POINTER);
+   TRY_TEST(pMember->get_Length(nullptr),E_POINTER);
+   TRY_TEST(pMember->IsReleased(metStart, mbrReleaseMz, nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // POIs
    // null test pointers
-   TRY_TEST(pmodel->get_POIs(NULL),E_POINTER);
+   TRY_TEST(pmodel->get_POIs(nullptr),E_POINTER);
 
    // POIs
    CComPtr<IFem2dPOICollection> pPOIs;
@@ -132,23 +132,23 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dPOI> pPOI;
    TRY_TEST_HR(pPOIs->Create(1, 2, 0.0, &pPOI));
 
-   TRY_TEST(pPOIs->Create(1, 1, 0.0, NULL),E_POINTER);
-   TRY_TEST(pPOIs->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pPOIs->Find(0, NULL),E_POINTER);
-   TRY_TEST(pPOIs->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pPOIs->Create(1, 1, 0.0, nullptr),E_POINTER);
+   TRY_TEST(pPOIs->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pPOIs->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pPOIs->get__EnumElements(nullptr),E_POINTER);
 
    // POI
-   TRY_TEST(pPOI->get_ID(NULL),E_POINTER);
-   TRY_TEST(pPOI->get_MemberID(NULL),E_POINTER);
-   TRY_TEST(pPOI->get_Location(NULL),E_POINTER);
+   TRY_TEST(pPOI->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pPOI->get_MemberID(nullptr),E_POINTER);
+   TRY_TEST(pPOI->get_Location(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // Loadings
    // null test Loadingnters
-   IFem2dLoadingCollection** ppNullLoadingColl=0;
-   IFem2dEnumLoading** ppNullLoadingEnum=0;
-   IFem2dLoading* pNullLoading=0;
-   IFem2dLoading** ppNullLoading=0;
+   IFem2dLoadingCollection** ppNullLoadingColl = 0;
+   IFem2dEnumLoading** ppNullLoadingEnum = 0;
+   IFem2dLoading* pNullLoading = 0;
+   IFem2dLoading** ppNullLoading = 0;
 
    TRY_TEST(pmodel->get_Loadings(ppNullLoadingColl),E_POINTER);
 
@@ -165,12 +165,12 @@ void CTestPointerFail::Test()
    TRY_TEST(pLoadings->get__EnumElements(ppNullLoadingEnum),E_POINTER);
 
    // Loading
-   TRY_TEST(pLoading->get_ID(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_JointLoads(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_DistributedLoads(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_JointDeflections(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_PointLoads(NULL),E_POINTER);
-   TRY_TEST(pLoading->get_MemberStrains(NULL),E_POINTER);
+   TRY_TEST(pLoading->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pLoading->get_JointLoads(nullptr),E_POINTER);
+   TRY_TEST(pLoading->get_DistributedLoads(nullptr),E_POINTER);
+   TRY_TEST(pLoading->get_JointDeflections(nullptr),E_POINTER);
+   TRY_TEST(pLoading->get_PointLoads(nullptr),E_POINTER);
+   TRY_TEST(pLoading->get_MemberStrains(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // JointLoads
@@ -182,26 +182,26 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dJointLoad> pJointLoad;
    TRY_TEST_LC(pJointLoads->Create(1, 1, 0.0, 0.0, 0.0, &pJointLoad));
 
-   TRY_TEST(pJointLoads->Create(1, 1, 0.0, 0.0, 0.0, NULL),E_POINTER);
-   TRY_TEST(pJointLoads->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pJointLoads->Find(0, NULL),E_POINTER);
-   TRY_TEST(pJointLoads->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pJointLoads->Create(1, 1, 0.0, 0.0, 0.0, nullptr),E_POINTER);
+   TRY_TEST(pJointLoads->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pJointLoads->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pJointLoads->get__EnumElements(nullptr),E_POINTER);
 
    // JointLoad
-   TRY_TEST(pJointLoad->get_ID(NULL),E_POINTER);
-   TRY_TEST(pJointLoad->get_JointID(NULL),E_POINTER);
-   TRY_TEST(pJointLoad->get_Fx(NULL),E_POINTER);
-   TRY_TEST(pJointLoad->get_Fy(NULL),E_POINTER);
-   TRY_TEST(pJointLoad->get_Mz(NULL),E_POINTER);
-   TRY_TEST(pJointLoad->GetForce(NULL,NULL,NULL),E_POINTER);
-   TRY_TEST(pJointLoad->get_Loading(NULL),E_POINTER);
+   TRY_TEST(pJointLoad->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->get_JointID(nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->get_Fx(nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->get_Fy(nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->get_Mz(nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->GetForce(nullptr,nullptr,nullptr),E_POINTER);
+   TRY_TEST(pJointLoad->get_Loading(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // JointDeflections
    // null test pointers
-   IFem2dEnumJointDeflection** ppNullJointDeflectionEnum=0;
-   IFem2dJointDeflection* pNullJointDeflection=0;
-   IFem2dJointDeflection** ppNullJointDeflection=0;
+   IFem2dEnumJointDeflection** ppNullJointDeflectionEnum = 0;
+   IFem2dJointDeflection* pNullJointDeflection = 0;
+   IFem2dJointDeflection** ppNullJointDeflection = 0;
 
    // JointDeflections
    CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
@@ -210,19 +210,19 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dJointDeflection> pJointDeflection;
    TRY_TEST_LC(pJointDeflections->Create(1, 1, 0.0, 0.0, 0.0, &pJointDeflection));
 
-   TRY_TEST(pJointDeflections->Create(1, 1, 0.0, 0.0, 0.0, NULL),E_POINTER);
-   TRY_TEST(pJointDeflections->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pJointDeflections->Find(0, NULL),E_POINTER);
-   TRY_TEST(pJointDeflections->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pJointDeflections->Create(1, 1, 0.0, 0.0, 0.0, nullptr),E_POINTER);
+   TRY_TEST(pJointDeflections->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pJointDeflections->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pJointDeflections->get__EnumElements(nullptr),E_POINTER);
 
    // JointDeflection
-   TRY_TEST(pJointDeflection->get_ID(NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->get_JointID(NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->get_Dx(NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->get_Dy(NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->get_Rz(NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->GetDeflection(NULL,NULL,NULL),E_POINTER);
-   TRY_TEST(pJointDeflection->get_Loading(NULL),E_POINTER);
+   TRY_TEST(pJointDeflection->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->get_JointID(nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Dx(nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Dy(nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Rz(nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->GetDeflection(nullptr,nullptr,nullptr),E_POINTER);
+   TRY_TEST(pJointDeflection->get_Loading(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // PointLoads
@@ -234,21 +234,21 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dPointLoad> pPointLoad;
    TRY_TEST_LC(pPointLoads->Create(1, 1, 0.0, 0.0, 0.0, 0.0, lotMember, &pPointLoad));
 
-   TRY_TEST(pPointLoads->Create(1, 1, 0.0, 0.0, 0.0, 0.0, lotMember, NULL),E_POINTER);
-   TRY_TEST(pPointLoads->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pPointLoads->Find(0, NULL),E_POINTER);
-   TRY_TEST(pPointLoads->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pPointLoads->Create(1, 1, 0.0, 0.0, 0.0, 0.0, lotMember, nullptr),E_POINTER);
+   TRY_TEST(pPointLoads->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pPointLoads->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pPointLoads->get__EnumElements(nullptr),E_POINTER);
 
    // PointLoad
-   TRY_TEST(pPointLoad->get_ID(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_MemberID(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Fx(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Fy(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Mz(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Location(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Orientation(NULL),E_POINTER);
-   TRY_TEST(pPointLoad->GetForce(NULL,NULL,NULL),E_POINTER);
-   TRY_TEST(pPointLoad->get_Loading(NULL),E_POINTER);
+   TRY_TEST(pPointLoad->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_MemberID(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Fx(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Fy(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Mz(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Location(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Orientation(nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->GetForce(nullptr,nullptr,nullptr),E_POINTER);
+   TRY_TEST(pPointLoad->get_Loading(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // DistributedLoads
@@ -261,21 +261,21 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dDistributedLoad> pDistributedLoad;
    TRY_TEST_LC(pDistributedLoads->Create(1, 1, loadDirFy, 0.0, 0.0, 0.0, 0.0, lotMember, &pDistributedLoad));
 
-   TRY_TEST(pDistributedLoads->Create(1, 1, loadDirFy, 0.0, 0.0, 0.0, 0.0, lotMember, NULL),E_POINTER);
-   TRY_TEST(pDistributedLoads->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pDistributedLoads->Find(0, NULL),E_POINTER);
-   TRY_TEST(pDistributedLoads->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pDistributedLoads->Create(1, 1, loadDirFy, 0.0, 0.0, 0.0, 0.0, lotMember, nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoads->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoads->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoads->get__EnumElements(nullptr),E_POINTER);
 
    // DistributedLoad
-   TRY_TEST(pDistributedLoad->get_ID(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_MemberID(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_Orientation(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_Direction(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_WStart(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_WEnd(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_StartLocation(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_EndLocation(NULL),E_POINTER);
-   TRY_TEST(pDistributedLoad->get_Loading(NULL),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_MemberID(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_Orientation(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_Direction(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_WStart(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_WEnd(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_StartLocation(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_EndLocation(nullptr),E_POINTER);
+   TRY_TEST(pDistributedLoad->get_Loading(nullptr),E_POINTER);
 
    /////////////////////////////////////////////
    // MemberStrains
@@ -288,29 +288,29 @@ void CTestPointerFail::Test()
    CComPtr<IFem2dMemberStrain> pMemberStrain;
    TRY_TEST_HR(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.0, &pMemberStrain));
 
-   TRY_TEST(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.0, NULL),E_POINTER);
-   TRY_TEST(pMemberStrains->get_Item(0, NULL),E_POINTER);
-   TRY_TEST(pMemberStrains->Find(0, NULL),E_POINTER);
-   TRY_TEST(pMemberStrains->get__EnumElements(NULL),E_POINTER);
+   TRY_TEST(pMemberStrains->Create(1, 1, 0.0, -1.0, 0.0, 0.0, nullptr),E_POINTER);
+   TRY_TEST(pMemberStrains->get_Item(0, nullptr),E_POINTER);
+   TRY_TEST(pMemberStrains->Find(0, nullptr),E_POINTER);
+   TRY_TEST(pMemberStrains->get__EnumElements(nullptr),E_POINTER);
 
    // MemberStrain
-   TRY_TEST(pMemberStrain->get_ID(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_MemberID(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_AxialStrain(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_CurvatureStrain(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_StartLocation(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_EndLocation(NULL),E_POINTER);
-   TRY_TEST(pMemberStrain->get_Loading(NULL),E_POINTER);
+   TRY_TEST(pMemberStrain->get_ID(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_MemberID(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_AxialStrain(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_CurvatureStrain(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_StartLocation(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_EndLocation(nullptr),E_POINTER);
+   TRY_TEST(pMemberStrain->get_Loading(nullptr),E_POINTER);
 
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   TRY_TEST(presults->ComputeJointDeflections(0, 4, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputeMemberDeflections(0, 1, NULL, NULL, NULL, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputePOIDeflections(2, 10,  lotGlobal, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputeReactions(0, 3, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputeMemberForces(0, 6, NULL, NULL, NULL, NULL, NULL, NULL),E_POINTER);
-   TRY_TEST(presults->ComputePOIForces(0, 14, mftRight, lotGlobal, NULL, NULL, NULL),E_POINTER);
+   TRY_TEST(presults->ComputeJointDeflections(0, 4, nullptr, nullptr, nullptr),E_POINTER);
+   TRY_TEST(presults->ComputeMemberDeflections(0, 1, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr),E_POINTER);
+   TRY_TEST(presults->ComputePOIDeflections(2, 10,  lotGlobal, nullptr, nullptr, nullptr),E_POINTER);
+   TRY_TEST(presults->ComputeReactions(0, 3, nullptr, nullptr, nullptr),E_POINTER);
+   TRY_TEST(presults->ComputeMemberForces(0, 6, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr),E_POINTER);
+   TRY_TEST(presults->ComputePOIForces(0, 14, mftRight, lotGlobal, nullptr, nullptr, nullptr),E_POINTER);
 
    ReleaseModel(pmodel);
 }

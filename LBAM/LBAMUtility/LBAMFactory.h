@@ -56,27 +56,27 @@ BEGIN_COM_MAP(CLBAMFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILBAMFactory
 public:
-	STDMETHOD(CreateSimpleModel)(/*[in]*/IDblArray* SpanLengths, /*[in]*/Float64 E, /*[in]*/Float64 A, /*[in]*/Float64 I, /*[in]*/Float64 Depth, /*[out,retval]*/ILBAMModel** newModel);
-	STDMETHOD(GetSupportIDsForStage)(/*[in]*/ILBAMModel* pModel, /*[in]*/BSTR stage, /*[out]*/IIDArray* *supportIDs);
-   STDMETHOD(MapLoadGroupToLoadCase)(/*[in]*/ILBAMModel* pModel,/*[in]*/ BSTR lgName,/*[in]*/ BSTR lgDesc,/*[in]*/ BSTR lcName);
-   STDMETHOD(CreateSelfWeightDeadLoad)(/*[in]*/ILBAMModel* pModel,/*[in]*/BSTR stage,/*[in]*/BSTR lgName,/*[in]*/Float64 unitWgt,/*[in]*/Float64 E);
-	STDMETHOD(GetSuperstructurePOIs)(/*[in]*/ILBAMModel* Model, /*[out,retval]*/IIDArray* *PoiIDs, /*[out]*/IDblArray* *PoiLocations);
-	STDMETHOD(GeneratePOIsOnSuperstructure)(/*[in]*/ILBAMModel* Model, /*[in]*/PoiIDType startID, /*[in]*/PoiIDType Increment,/*[out,retval]*/PoiIDType* lastVal);
+	STDMETHOD(CreateSimpleModel)(/*[in]*/IDblArray* SpanLengths, /*[in]*/Float64 E, /*[in]*/Float64 A, /*[in]*/Float64 I, /*[in]*/Float64 Depth, /*[out,retval]*/ILBAMModel** newModel) override;
+	STDMETHOD(GetSupportIDsForStage)(/*[in]*/ILBAMModel* pModel, /*[in]*/BSTR stage, /*[out]*/IIDArray* *supportIDs) override;
+   STDMETHOD(MapLoadGroupToLoadCase)(/*[in]*/ILBAMModel* pModel,/*[in]*/ BSTR lgName,/*[in]*/ BSTR lgDesc,/*[in]*/ BSTR lcName) override;
+   STDMETHOD(CreateSelfWeightDeadLoad)(/*[in]*/ILBAMModel* pModel,/*[in]*/BSTR stage,/*[in]*/BSTR lgName,/*[in]*/Float64 unitWgt,/*[in]*/Float64 E) override;
+	STDMETHOD(GetSuperstructurePOIs)(/*[in]*/ILBAMModel* Model, /*[out,retval]*/IIDArray* *PoiIDs, /*[out]*/IDblArray* *PoiLocations) override;
+	STDMETHOD(GeneratePOIsOnSuperstructure)(/*[in]*/ILBAMModel* Model, /*[in]*/PoiIDType startID, /*[in]*/PoiIDType Increment,/*[out,retval]*/PoiIDType* lastVal) override;
 
 // ILBAMLRFDFactory
 public:
-	STDMETHOD(ConfigureLiveLoad)(/*[in]*/ILBAMModel* pModel,/*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
-   STDMETHOD(ConfigureLoadCombinations)(/*[in]*/ILBAMModel* pModel);
+	STDMETHOD(ConfigureLiveLoad)(/*[in]*/ILBAMModel* pModel,/*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer) override;
+   STDMETHOD(ConfigureLoadCombinations)(/*[in]*/ILBAMModel* pModel) override;
 
 // ILBAMLRFDFactory2
 public:
-   STDMETHOD(ConfigureDesignLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane, /*[in]*/VARIANT_BOOL includeDualTrucks, /*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
-   STDMETHOD(ConfigureFatigueLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
-   STDMETHOD(ConfigureDeflectionLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer);
+   STDMETHOD(ConfigureDesignLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt, /*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane, /*[in]*/VARIANT_BOOL includeDualTrucks, /*[in]*/VARIANT_BOOL includeLowBoy, /*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer) override;
+   STDMETHOD(ConfigureFatigueLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/ Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer) override;
+   STDMETHOD(ConfigureDeflectionLiveLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/ LiveLoadModelType llmt,/*[in]*/Float64 imTruck,/*[in]*/Float64 imLane,/*[in]*/SpecUnitType units,/*[in]*/IUnitServer* pUnitServer) override;
 
 // ILBAMLRFDFactory3
 public:
@@ -86,21 +86,27 @@ public:
                                      /*[in]*/VARIANT_BOOL includeType33, // 0.75Type3-3 + Lane
                                      /*[in]*/VARIANT_BOOL includeDualType33, // 2@0.75Type3-3 + Lane
                                      /*[in]*/VARIANT_BOOL removeLaneLoad, // removes lane from Type33 and Dual Type 33 and uses a factor of 1.0
-                                     /*[in]*/IUnitServer* pUnitServer);
+                                     /*[in]*/IUnitServer* pUnitServer) override;
 
    STDMETHOD(ConfigureNotionalRatingLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/LiveLoadModelType llmt,
                                      /*[in]*/Float64 imTruck,
                                      /*[in]*/Float64 imLane, 
-                                     /*[in]*/IUnitServer* pUnitServer);
+                                     /*[in]*/IUnitServer* pUnitServer) override;
+
+   STDMETHOD(ConfigureEmergencyRatingLoad)(/*[in]*/ILBAMModel* pModel, /*[in]*/LiveLoadModelType llmt,
+      /*[in]*/Float64 imTruck,
+      /*[in]*/Float64 imLane,
+      /*[in]*/VARIANT_BOOL bIncludeLiveLoad,
+      /*[in]*/IUnitServer* pUnitServer) override;
 
    STDMETHOD(ConfigureSpecializedHaulingUnits)(/*[in]*/ILBAMModel* pModel, /*[in]*/LiveLoadModelType llmt,
                                      /*[in]*/Float64 imTruck,
                                      /*[in]*/Float64 imLane, 
-                                     /*[in]*/IUnitServer* pUnitServer);
+                                     /*[in]*/IUnitServer* pUnitServer) override;
 
 private:
-	STDMETHOD(CreatePOI)(/*[in]*/PoiIDType ID, /*[in]*/MemberType Type, /*[in]*/MemberIDType memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);
-   STDMETHOD(GetLiveLoadModel)(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel);
+	HRESULT CreatePOI(/*[in]*/PoiIDType ID, /*[in]*/MemberType Type, /*[in]*/MemberIDType memberID, /*[in]*/Float64 Location,/*[out,retval]*/IPOI** newPOI);
+   HRESULT GetLiveLoadModel(ILBAMModel* pModel,LiveLoadModelType llmt,ILiveLoadModel** ppLiveLoadModel);
 
    void AddLoadCase(ILoadCases* loadCases, BSTR name, BSTR description);
    void ApplyTypicalLoadFactors(ILoadCombination* loadCombo, bool Strength4);

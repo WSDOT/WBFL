@@ -54,6 +54,8 @@ extern CComModule _Module;
 #include <WbflAtlExt.h> // WBFL ATL Extensions
 #include <WBFLComCollections.h>
 
+#include <memory>
+
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 

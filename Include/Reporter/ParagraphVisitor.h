@@ -75,7 +75,7 @@ public:
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
    // Visit a paragraph
-   virtual void VisitParagraph(rptParagraph*)=0;
+   virtual void VisitParagraph(rptParagraph*) = 0;
    // GROUP: OPERATIONS
    // GROUP: ACCESS
    // GROUP: INQUIRY

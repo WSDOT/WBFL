@@ -35,12 +35,12 @@ static char THIS_FILE[] = __FILE__;
 void TestISupportUnitServer(IUnknown* punk)
 {
    CComQIPtr<ISupportUnitServer> sus(punk);
-   TRY_TEST( sus != NULL, true );
+   TRY_TEST( sus != nullptr, true );
 
    CComPtr<IUnitServer> unitServer;
-   TRY_TEST(sus->get_UnitServer(NULL),E_POINTER);
+   TRY_TEST(sus->get_UnitServer(nullptr),E_POINTER);
    TRY_TEST(sus->get_UnitServer(&unitServer), S_OK );
-   TRY_TEST(unitServer != NULL, true );
-   TRY_TEST(sus->putref_UnitServer(NULL),E_INVALIDARG);
+   TRY_TEST(unitServer != nullptr, true );
+   TRY_TEST(sus->putref_UnitServer(nullptr),E_INVALIDARG);
    TRY_TEST(sus->putref_UnitServer(unitServer),S_OK);
 }

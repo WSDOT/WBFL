@@ -54,7 +54,7 @@ static int _gnColumnWidth[NUM_COLUMNS] =
 };
 
 
-CDocTemplateDialog::CDocTemplateDialog(CWnd* pParent /*=NULL*/)
+CDocTemplateDialog::CDocTemplateDialog(CWnd* pParent /*=nullptr*/)
 	: CDialog(CDocTemplateDialog::IDD, pParent),
    m_pTabList(0),
    m_pSelectedTabHelper(0),
@@ -183,7 +183,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
    // list control data items
 	TC_ITEM TabCtrlItem;
    int igen=-1;
-   int i=0;
+   int i = 0;
    for(TabListIterator it=m_pTabList->begin(); it!=m_pTabList->end(); it++)
    {
       i++;
@@ -240,7 +240,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
    CRect tab_client_rect;
    m_TabCtrl.GetClientRect(&tab_client_rect);
    tab_client_rect.bottom = tab_height;
-   m_TabCtrl.SetWindowPos(NULL,0,0,tab_client_rect.Width(),tab_client_rect.Height(),SWP_NOMOVE);
+   m_TabCtrl.SetWindowPos(nullptr,0,0,tab_client_rect.Width(),tab_client_rect.Height(),SWP_NOMOVE);
 
    // Position the list control below the tabs and above the status item
    CRect tab_window_rect;
@@ -311,7 +311,7 @@ void CDocTemplateDialog::SelectTab(const std::_tstring& key)
       m_pSelectedTabHelper->GetFileList(&file_list);
 
       TCHAR buf[MAX_PATH];
-      int i=0;
+      int i = 0;
       LV_ITEM lvi;
       lvi.mask = LVIF_TEXT | LVIF_IMAGE;
 	   lvi.iItem = 0;

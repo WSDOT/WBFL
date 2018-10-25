@@ -85,17 +85,17 @@ void CTestDisplayUnit::Test()
    //* Test Formatter property
    //******************************************
    CComPtr<IDisplayUnitFormatter> pTestFormatter;
-   TRY_TEST( pDispUnit->get_Formatter(NULL), E_POINTER );
+   TRY_TEST( pDispUnit->get_Formatter(nullptr), E_POINTER );
    TRY_TEST( pDispUnit->get_Formatter(&pTestFormatter), S_OK );
    TRY_TEST( pTestFormatter.IsEqualObject(formatter), true );
-   TRY_TEST( pDispUnit->putref_Formatter(NULL), E_INVALIDARG );
+   TRY_TEST( pDispUnit->putref_Formatter(nullptr), E_INVALIDARG );
    TRY_TEST( pDispUnit->putref_Formatter(pTestFormatter), S_OK );
 
    //******************************************
    //* Test UnitTag
    //******************************************
    CComBSTR bstrTest;
-   TRY_TEST( pDispUnit->get_UnitTag(NULL), E_POINTER );
+   TRY_TEST( pDispUnit->get_UnitTag(nullptr), E_POINTER );
    TRY_TEST( pDispUnit->get_UnitTag(&bstrTest), S_OK );
    TRY_TEST( wcscmp( bstrTest, CComBSTR("m")), 0);
 
@@ -103,7 +103,7 @@ void CTestDisplayUnit::Test()
    //* Test UnitSystem
    //******************************************
    UnitSystemType unitSystem;
-   TRY_TEST( pDispUnit->get_UnitSystem(NULL), E_POINTER );
+   TRY_TEST( pDispUnit->get_UnitSystem(nullptr), E_POINTER );
    TRY_TEST( pDispUnit->get_UnitSystem(&unitSystem), S_OK );
    TRY_TEST( unitSystem, unitsSI );
 
@@ -111,14 +111,14 @@ void CTestDisplayUnit::Test()
    //* Test IsDefault
    //******************************************
    VARIANT_BOOL bIsDefault;
-   TRY_TEST( pDispUnit->IsDefault(NULL), E_POINTER );
+   TRY_TEST( pDispUnit->IsDefault(nullptr), E_POINTER );
    TRY_TEST( pDispUnit->IsDefault(&bIsDefault), S_OK );
    TRY_TEST( bIsDefault, VARIANT_TRUE );
 
    //******************************************
    //* Test Format
    //******************************************
-   TRY_TEST( pDispUnit->Format(12.3456,VARIANT_TRUE,NULL), E_POINTER );
+   TRY_TEST( pDispUnit->Format(12.3456,VARIANT_TRUE,nullptr), E_POINTER );
    TRY_TEST( pDispUnit->Format(12.3456,VARIANT_TRUE,&bstrTest), S_OK );
    TRY_TEST( wcscmp( bstrTest, CComBSTR("12.346 m")), 0);
    TRY_TEST( pDispUnit->Format(12.3456,VARIANT_FALSE,&bstrTest), S_OK );

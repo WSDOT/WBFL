@@ -28,36 +28,36 @@ class testUndoableTxn : public txnTransaction
 {
 public:
    testUndoableTxn();
-   virtual bool Execute();
-   virtual void Undo();
-   virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::_tostream& os) const;
-   virtual std::_tstring Name() const;
-   virtual bool IsUndoable();
-   virtual bool IsRepeatable();
+   virtual bool Execute() override;
+   virtual void Undo() override;
+   virtual txnTransaction* CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() override;
+   virtual bool IsRepeatable() override;
 };
 
 class testNotUndoableTxn : public txnTransaction
 {
 public:
    testNotUndoableTxn();
-   virtual bool Execute();
-   virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::_tostream& os) const;
-   virtual std::_tstring Name() const;
-   virtual bool IsUndoable();
-   virtual bool IsRepeatable();
+   virtual bool Execute() override;
+   virtual txnTransaction* CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() override;
+   virtual bool IsRepeatable() override;
 };
 
 class testNotRepeatableTxn : public txnTransaction
 {
 public:
    testNotRepeatableTxn();
-   virtual bool Execute();
-   virtual void Undo();
-   virtual txnTransaction* CreateClone() const;
-   virtual void Log(std::_tostream& os) const;
-   virtual std::_tstring Name() const;
-   virtual bool IsUndoable();
-   virtual bool IsRepeatable();
+   virtual bool Execute() override;
+   virtual void Undo() override;
+   virtual txnTransaction* CreateClone() const override;
+   virtual void Log(std::_tostream& os) const override;
+   virtual std::_tstring Name() const override;
+   virtual bool IsUndoable() override;
+   virtual bool IsRepeatable() override;
 };

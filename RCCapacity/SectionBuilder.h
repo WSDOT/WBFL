@@ -59,12 +59,12 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISectionBuilder
 public:
-   STDMETHOD(RectangularColumn)(/*[in]*/Float64 H,/*[in]*/Float64 W,/*[in]*/Float64 cover,/*[in]*/long Nh,/*[in]*/long Nw,/*[in]*/Float64 As,/*[in]*/IStressStrain* concrete,/*[in]*/IStressStrain* rebar,/*[out,retval]*/IGeneralSection** section);
-   STDMETHOD(CircularColumn)(/*[in]*/Float64 D,/*[in]*/Float64 cover,/*[in]*/long Nb,/*[in]*/Float64 As,/*[in]*/IStressStrain* concrete,/*[in]*/IStressStrain* rebar,/*[out,retval]*/IGeneralSection** section);
+   STDMETHOD(RectangularColumn)(/*[in]*/Float64 H,/*[in]*/Float64 W,/*[in]*/Float64 cover,/*[in]*/long Nh,/*[in]*/long Nw,/*[in]*/Float64 As,/*[in]*/IStressStrain* concrete,/*[in]*/IStressStrain* rebar,/*[out,retval]*/IGeneralSection** section) override;
+   STDMETHOD(CircularColumn)(/*[in]*/Float64 D,/*[in]*/Float64 cover,/*[in]*/long Nb,/*[in]*/Float64 As,/*[in]*/IStressStrain* concrete,/*[in]*/IStressStrain* rebar,/*[out,retval]*/IGeneralSection** section) override;
 };
 
 #endif //__SectionBuilder_H_

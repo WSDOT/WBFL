@@ -61,7 +61,7 @@ STDMETHODIMP CPathElement::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPathElement,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -95,7 +95,7 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
    CComQIPtr<ILineSegment2d> ls(newVal);
    CComQIPtr<ICubicSpline> spline(newVal);
 
-   if( point == NULL && hc == NULL && ls == NULL && spline == NULL)
+   if( point == nullptr && hc == nullptr && ls == nullptr && spline == nullptr)
    {
       return E_INVALIDARG;
    }
@@ -332,7 +332,7 @@ void CPathElement::Advise()
 
 void CPathElement::Unadvise()
 {
-   if ( m_Value == NULL )
+   if ( m_Value == nullptr )
    {
       return;
    }

@@ -60,24 +60,24 @@ BEGIN_COM_MAP(CLoadCombinationResultConfiguration)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationResultConfiguration
 public:
-	STDMETHOD(get_SummationType)(/*[out, retval]*/ ResultsSummationType *pVal);
-	STDMETHOD(put_SummationType)(/*[in]*/ ResultsSummationType newVal);
-	STDMETHOD(GetLiveLoadConfigurationCount)(/*[out,retval]*/CollectionIndexType* count);
-	STDMETHOD(GetLiveLoadConfiguration)(/*[in]*/CollectionIndexType index,/*[out,retval]*/ILiveLoadConfiguration* *Config);
-	STDMETHOD(AddLiveLoadConfiguration)(/*[in]*/ILiveLoadConfiguration* Config);
-	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal);
-	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCase, /*[in]*/Float64 factor);
-	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadCase, /*[out]*/Float64* factor);
-	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal);
+	STDMETHOD(get_SummationType)(/*[out, retval]*/ ResultsSummationType *pVal) override;
+	STDMETHOD(put_SummationType)(/*[in]*/ ResultsSummationType newVal) override;
+	STDMETHOD(GetLiveLoadConfigurationCount)(/*[out,retval]*/CollectionIndexType* count) override;
+	STDMETHOD(GetLiveLoadConfiguration)(/*[in]*/CollectionIndexType index,/*[out,retval]*/ILiveLoadConfiguration* *Config) override;
+	STDMETHOD(AddLiveLoadConfiguration)(/*[in]*/ILiveLoadConfiguration* Config) override;
+	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCase, /*[in]*/Float64 factor) override;
+	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadCase, /*[out]*/Float64* factor) override;
+	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    struct LoadCaseFactor

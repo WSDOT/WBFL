@@ -80,22 +80,22 @@ BEGIN_CONNECTION_POINT_MAP(CStationEquationCollection)
 	CONNECTION_POINT_ENTRY(IID_IStationEquationCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("StationEquations"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("StationEquation"); }
+   CComBSTR GetCollectionName() { return CComBSTR("StationEquations"); }
+   CComBSTR GetItemName() { return CComBSTR("StationEquation"); }
 
-   STDMETHOD(putref_Alignment)(/*[in]*/IAlignment* pAlignment);
+   HRESULT putref_Alignment(/*[in]*/IAlignment* pAlignment);
    Float64 ComputeNormalizedStation(Float64 back);
    HRESULT BackStationError();
    HRESULT AheadStationError();
    HRESULT StationEquationError(UINT nHelpString,HRESULT hRes);
 
-   virtual HRESULT OnAfterAdd( StoredType* pVal, IndexType idx)
+   virtual HRESULT OnAfterAdd( StoredType* pVal, IndexType idx) override
    { 
       Fire_OnEquationAdded(idx,pVal->second.m_T);
       return S_OK; 
    }
    
-   virtual HRESULT OnAfterRemove( IndexType idx)
+   virtual HRESULT OnAfterRemove( IndexType idx) override
    {
       if ( !m_bClearing )
          Fire_OnEquationRemoved(idx);
@@ -103,12 +103,12 @@ END_CONNECTION_POINT_MAP()
       return S_OK; 
    }
 
-   virtual HRESULT OnBeforeClear()
+   virtual HRESULT OnBeforeClear() override
    { 
       m_bClearing = true;
       return S_OK; 
    }
-   virtual HRESULT OnAfterClear() 
+   virtual HRESULT OnAfterClear() override 
    { 
       m_bClearing = false;
       Fire_OnEquationsCleared();
@@ -120,27 +120,27 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStationEquationCollection
 public:
-   STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   //STDMETHOD(get_Item)(CollectionIndexType idx, IStationEquation* *pVal);
-   //STDMETHOD(get_Count)(CollectionIndexType *pVal);
-   STDMETHOD(Add)(Float64 back,Float64 ahead,IStationEquation* *pp);
-   //STDMETHOD(Remove)(CollectionIndexType idx);
-   STDMETHOD(Clear)();
-   STDMETHOD(get__EnumStationEquations)(IEnumStationEquations** ppenum);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   //STDMETHOD(get_Item)(CollectionIndexType idx, IStationEquation* *pVal) override;
+   //STDMETHOD(get_Count)(CollectionIndexType *pVal) override;
+   STDMETHOD(Add)(Float64 back,Float64 ahead,IStationEquation* *pp) override;
+   //STDMETHOD(Remove)(CollectionIndexType idx) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(get__EnumStationEquations)(IEnumStationEquations** ppenum) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
-   STDMETHOD(Distance)(VARIANT varStation1,VARIANT varStation2,Float64* pDist);
-   STDMETHOD(Increment)(VARIANT varStation,Float64 value,IStation** station);
-   STDMETHOD(IncrementBy)(IStation* station,Float64 value);
-   STDMETHOD(ConvertToNormalizedStation)(VARIANT varStation,Float64* station);
-   STDMETHOD(ConvertToNormalizedStationEx)(VARIANT varStation,IStation** station);
-   STDMETHOD(ConvertFromNormalizedStation)(Float64 normalizedStation,IStation** station);
-   STDMETHOD(ConvertFromNormalizedStationEx)(VARIANT varStation,IStation** station);
+   STDMETHOD(Distance)(VARIANT varStation1,VARIANT varStation2,Float64* pDist) override;
+   STDMETHOD(Increment)(VARIANT varStation,Float64 value,IStation** station) override;
+   STDMETHOD(IncrementBy)(IStation* station,Float64 value) override;
+   STDMETHOD(ConvertToNormalizedStation)(VARIANT varStation,Float64* station) override;
+   STDMETHOD(ConvertToNormalizedStationEx)(VARIANT varStation,IStation** station) override;
+   STDMETHOD(ConvertFromNormalizedStation)(Float64 normalizedStation,IStation** station) override;
+   STDMETHOD(ConvertFromNormalizedStationEx)(VARIANT varStation,IStation** station) override;
 };
 
 #endif //__StationEquationCOLLECTION_H_

@@ -62,7 +62,7 @@ CEAFDocTemplate* CEAFDocTemplateRegistrar::GetDocTemplate(long key)
    found = m_Templates.find(key);
    if ( found == m_Templates.end() )
    {
-      return NULL;
+      return nullptr;
    }
 
    return (*found).second;

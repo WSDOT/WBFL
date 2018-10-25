@@ -230,7 +230,7 @@ protected:
    void MakeCopy(const grDimension& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const grDimension& rOther);
+   void MakeAssignment(const grDimension& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

@@ -48,10 +48,10 @@ class ATL_NO_VTABLE ISplicedGirderSegmentImpl :
 public:
    ISplicedGirderSegmentImpl()
    {
-      m_pSSMbr       = NULL;
-      m_pGirderLine = NULL;
-      m_pPrevSegment = NULL;
-      m_pNextSegment = NULL;
+      m_pSSMbr       = nullptr;
+      m_pGirderLine = nullptr;
+      m_pPrevSegment = nullptr;
+      m_pNextSegment = nullptr;
 
       m_Orientation = 0;
 
@@ -78,11 +78,11 @@ public:
       m_bSegmentHeightProfile = false;
       m_bBottomFlangeHeightProfile = false;
 
-      m_ClosureJointFgMaterial[etStart] = NULL;
-      m_ClosureJointFgMaterial[etEnd]   = NULL;
+      m_ClosureJointFgMaterial[etStart] = nullptr;
+      m_ClosureJointFgMaterial[etEnd]   = nullptr;
 
-      m_ClosureJointBgMaterial[etStart] = NULL;
-      m_ClosureJointBgMaterial[etEnd]   = NULL;
+      m_ClosureJointBgMaterial[etStart] = nullptr;
+      m_ClosureJointBgMaterial[etEnd]   = nullptr;
    }
 
 protected:
@@ -142,7 +142,7 @@ public:
 		   &IID_ISplicedGirderSegment,
          &IID_IStructuredStorage2,
 	   };
-	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	   {
 		   if (InlineIsEqualGUID(*arr[i],riid))
 			   return S_OK;
@@ -169,7 +169,7 @@ public:
       }
       else
       {
-         (*ssMbr) = NULL;
+         (*ssMbr) = nullptr;
       }
 
       return S_OK;
@@ -192,7 +192,7 @@ public:
       }
       else
       {
-         (*girderLine) = NULL;
+         (*girderLine) = nullptr;
       }
 
       return S_OK;
@@ -206,7 +206,7 @@ public:
       ATLASSERT(prevSegment); // all segments must be spliced girder segments
    #endif
       ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-      m_pPrevSegment = NULL;
+      m_pPrevSegment = nullptr;
       HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
       if ( FAILED(hr) )
       {
@@ -226,7 +226,7 @@ public:
       }
       else
       {
-         *segment = NULL;
+         *segment = nullptr;
          return E_FAIL;
       }
    }
@@ -241,7 +241,7 @@ public:
    #endif
 
       ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-      m_pNextSegment = NULL;
+      m_pNextSegment = nullptr;
       HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
       if ( FAILED(hr) )
       {
@@ -261,7 +261,7 @@ public:
       }
       else
       {
-         *segment = NULL;
+         *segment = nullptr;
          return E_FAIL;
       }
    }
@@ -450,7 +450,7 @@ public:
       if ( m_Shapes.size() == 0 )
       {
          CComQIPtr<T_IBeamSection> beam(pShape);
-         if ( beam == NULL )
+         if ( beam == nullptr )
          {
             ATLASSERT(false); // first shape must implement the IFlangedSplicedGirderSegment interfvace
             return E_INVALIDARG;
@@ -634,7 +634,7 @@ public:
    {
       CHECK_RETVAL(pLength);
 
-      if ( (m_pPrevSegment == NULL && endType == etStart) || (m_pNextSegment == NULL && endType == etEnd) )
+      if ( (m_pPrevSegment == nullptr && endType == etStart) || (m_pNextSegment == nullptr && endType == etEnd) )
       {
          // if this the start of the first segment or the end of the last segment there there isn't a closure
          *pLength = 0;
@@ -764,7 +764,7 @@ protected:
       section.CoCreateInstance(CLSID_CompositeSectionEx);
 
       section->QueryInterface(IID_ISection,(void**)ppSection);
-      ATLASSERT(*ppSection != NULL);
+      ATLASSERT(*ppSection != nullptr);
 
       int isClosureJoint = IsClosureJoint(Xs);
 
@@ -777,7 +777,7 @@ protected:
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
-         if ( m_ClosureJointFgMaterial[endType] == NULL )
+         if ( m_ClosureJointFgMaterial[endType] == nullptr )
          {
             m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
          }
@@ -812,7 +812,7 @@ protected:
       else
       {
          EndType endType(isClosureJoint < 0 ? etStart : etEnd);
-         if ( m_ClosureJointFgMaterial[endType] == NULL )
+         if ( m_ClosureJointFgMaterial[endType] == nullptr )
          {
             m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
          }
@@ -1180,7 +1180,7 @@ protected:
             // 4) the next segment has a linear transition
             if (
                  0 < right_prismatic_length || // parabola ends in this segment -OR-
-                 nextSegment == NULL        || // this is the last segment (parabola ends here) -OR-
+                 nextSegment == nullptr        || // this is the last segment (parabola ends here) -OR-
                  0 < next_segment_left_prismatic_length || // next segment starts with prismatic section -OR-
                  (nextVariationType == svtNone || nextVariationType == svtLinear || nextVariationType == svtDoubleLinear) // next segment is linear 
                )
@@ -1254,7 +1254,7 @@ protected:
             // 2) right prismatic section length > 0
             // 3) next segment is not parabolic
             if ( 0 < right_prismatic_length || 
-                 nextSegment == NULL        || 
+                 nextSegment == nullptr        || 
                  (nextVariationType == svtNone || nextVariationType == svtLinear || nextVariationType == svtDoubleLinear) // next segment is linear 
                )
             {

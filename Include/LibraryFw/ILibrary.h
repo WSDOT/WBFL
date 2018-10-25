@@ -83,55 +83,55 @@ public:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // tell library who its manager is
-   virtual void SetLibraryManager(libLibraryManager* pLibraryManager)=0;
+   virtual void SetLibraryManager(libLibraryManager* pLibraryManager) = 0;
 
    //------------------------------------------------------------------------
-   virtual libLibraryManager* GetLibraryManager() const=0;
+   virtual libLibraryManager* GetLibraryManager() const = 0;
 
    //------------------------------------------------------------------------
    // See if an entry exists in the library. Return false if not.
-   virtual bool IsEntry(LPCTSTR key) const=0;
+   virtual bool IsEntry(LPCTSTR key) const = 0;
 
    //------------------------------------------------------------------------
    // Get the number of references to this entry
-   virtual Uint32 GetEntryRefCount(LPCTSTR key) const=0;
+   virtual Uint32 GetEntryRefCount(LPCTSTR key) const = 0;
 
    //------------------------------------------------------------------------
    // Returns true if entry can be edited
-   virtual bool IsEditingEnabled(LPCTSTR key) const=0;
+   virtual bool IsEditingEnabled(LPCTSTR key) const = 0;
 
    //------------------------------------------------------------------------
    // set flag which enables entry to be edited
-   virtual void EnableEditing(LPCTSTR key, bool enable)=0;
+   virtual void EnableEditing(LPCTSTR key, bool enable) = 0;
 
    //------------------------------------------------------------------------
    // set flag which enables all entries in the library to be edited
-   virtual void EnableEditingForAll(bool enable)=0;
+   virtual void EnableEditingForAll(bool enable) = 0;
 
    virtual void EnableCopy(LPCTSTR key,bool enable) = 0;
    virtual bool IsCopyingEnabled(LPCTSTR key) const = 0;
 
    //------------------------------------------------------------------------
    // Add a new default entry with the given name. Returns false if unsuccessful.
-   virtual bool NewEntry(LPCTSTR key)=0;
+   virtual bool NewEntry(LPCTSTR key) = 0;
 
    //------------------------------------------------------------------------
    // Create a clone of an existing entry (named key) and create a new entry
    // named newkey. key must be in the library and newkey must not. 
    // Returns false if unsuccessful.
-   virtual bool CloneEntry(LPCTSTR key, LPCTSTR newkey)=0;
+   virtual bool CloneEntry(LPCTSTR key, LPCTSTR newkey) = 0;
 
    //------------------------------------------------------------------------
    // Create a polymorphic clone of a library entry into this library. 
    // The type of newentry is checked to make sure it is correct and will 
    // ASSERT if it is not.
    // Returns false if newkey is not a unique name
-   virtual bool  AddEntry(const libLibraryEntry& rnewentry, LPCTSTR newkey)=0;
+   virtual bool  AddEntry(const libLibraryEntry& rnewentry, LPCTSTR newkey) = 0;
 
    //------------------------------------------------------------------------
    // Factory function to create an external polymorphic clone of a library entry. 
    // You are responsible for deleting it.
-   virtual libLibraryEntry* CreateEntryClone(LPCTSTR key) const=0;
+   virtual libLibraryEntry* CreateEntryClone(LPCTSTR key) const = 0;
 
    //------------------------------------------------------------------------
    // Open the editing interface for the given entry. Returns the following
@@ -145,11 +145,11 @@ public:
                                           // edits retained.
                            
    //------------------------------------------------------------------------
-   virtual EntryEditOutcome EditEntry( LPCTSTR key,UINT nPage=0)=0;
+   virtual EntryEditOutcome EditEntry( LPCTSTR key,UINT nPage=0) = 0;
 
    //------------------------------------------------------------------------
    // Rename an entry
-   virtual bool RenameEntry( LPCTSTR oldKey, LPCTSTR newKey)=0;
+   virtual bool RenameEntry( LPCTSTR oldKey, LPCTSTR newKey) = 0;
 
    //------------------------------------------------------------------------
    // Remove an entry. Returns the following possble values:
@@ -159,45 +159,45 @@ public:
                                             // cannot be removed
 
    //------------------------------------------------------------------------
-   virtual EntryRemoveOutcome RemoveEntry( LPCTSTR key )=0;
+   virtual EntryRemoveOutcome RemoveEntry( LPCTSTR key ) = 0;
 
    //------------------------------------------------------------------------
    // Remove all entries. Will assert if entries have outstanding references
-   virtual void RemoveAll()=0;
+   virtual void RemoveAll() = 0;
 
    //------------------------------------------------------------------------
    // Save to structured storage
-   virtual bool SaveMe(sysIStructuredSave* pSave)=0;
+   virtual bool SaveMe(sysIStructuredSave* pSave) = 0;
 
    //------------------------------------------------------------------------
    // Load from structured storage
-   virtual bool LoadMe(sysIStructuredLoad* pLoad)=0;
+   virtual bool LoadMe(sysIStructuredLoad* pLoad) = 0;
 
    //------------------------------------------------------------------------
    // Change the display name of the library.
-   virtual void SetDisplayName(LPCTSTR name)=0;
+   virtual void SetDisplayName(LPCTSTR name) = 0;
 
    //------------------------------------------------------------------------
    // Get the display name of the library
-   virtual std::_tstring GetDisplayName() const=0;
+   virtual std::_tstring GetDisplayName() const = 0;
 
    //------------------------------------------------------------------------
    // Get the identification name of the library
-   virtual std::_tstring GetIdName() const=0;
+   virtual std::_tstring GetIdName() const = 0;
 
    //------------------------------------------------------------------------
    // Generate a name that's guaranteed not to be in the library
-   virtual std::_tstring GetUniqueEntryName(LPCTSTR lpszBaseName=_T("New Entry-")) const=0; 
+   virtual std::_tstring GetUniqueEntryName(LPCTSTR lpszBaseName=_T("New Entry-")) const = 0; 
 
    // ACCESS
    //------------------------------------------------------------------------
    // return a list of the names of all entries in the library.
-   virtual void KeyList(libKeyListType& rList) const=0;
+   virtual void KeyList(libKeyListType& rList) const = 0;
 
    // INQUIRY
    //------------------------------------------------------------------------
    // Get the number of entries in the library
-   virtual CollectionIndexType GetCount( ) const=0;
+   virtual CollectionIndexType GetCount( ) const = 0;
 
    //------------------------------------------------------------------------
    // Returns the minimum number of required library entires
@@ -205,14 +205,14 @@ public:
 
    //------------------------------------------------------------------------
    // Get a const pointer to an entry by index
-   // Returns NULL if out of range and asserts
+   // Returns nullptr if out of range and asserts
    // DOES NOT INCREASE REFERENCE COUNT!
-   virtual const libLibraryEntry* GetEntry(LPCTSTR key) const =0;
+   virtual const libLibraryEntry* GetEntry(LPCTSTR key) const  = 0;
 
 
    //------------------------------------------------------------------------
    // Is the library empty?
-   virtual bool IsEmpty( ) const=0;
+   virtual bool IsEmpty( ) const = 0;
 
    //------------------------------------------------------------------------
    // Returns true if this is an old library that is no longer used
@@ -227,7 +227,7 @@ public:
 #if defined _DEBUG
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const=0;
+   virtual void Dump(dbgDumpContext& os) const = 0;
 #endif // _DEBUG
 
 protected:

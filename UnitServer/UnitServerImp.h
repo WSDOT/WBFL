@@ -91,31 +91,31 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IUnitServer
 public:
-	STDMETHOD(SetBaseUnits)(/*[in]*/ BSTR bstrMass, /*[in]*/ BSTR bstrLength, /*[in]*/ BSTR bstrTime, /*[in]*/ BSTR bstrTemp, /*[in]*/ BSTR bstrAngle);
-	STDMETHOD(get_Mass)(/*[out,retval]*/ BSTR* pMass);
-	STDMETHOD(get_Length)(/*[out,retval]*/ BSTR* pLength);
-	STDMETHOD(get_Time)(/*[out,retval]*/ BSTR* pTime);
-	STDMETHOD(get_Temperature)(/*[out,retval]*/ BSTR* pTemperature);
-	STDMETHOD(get_Angle)(/*[out,retval]*/ BSTR* pAngle);
-	STDMETHOD(get_UnitTypes)(/*[out,retval]*/ IUnitTypes** ppUnitTypes);
-	STDMETHOD(get_UnitConvert)(/*[out,retval]*/ IUnitConvert** convert);
-	STDMETHOD(get_UnitConvert2)(/*[out,retval]*/ IUnitConvert2** convert);
+	STDMETHOD(SetBaseUnits)(/*[in]*/ BSTR bstrMass, /*[in]*/ BSTR bstrLength, /*[in]*/ BSTR bstrTime, /*[in]*/ BSTR bstrTemp, /*[in]*/ BSTR bstrAngle) override;
+	STDMETHOD(get_Mass)(/*[out,retval]*/ BSTR* pMass) override;
+	STDMETHOD(get_Length)(/*[out,retval]*/ BSTR* pLength) override;
+	STDMETHOD(get_Time)(/*[out,retval]*/ BSTR* pTime) override;
+	STDMETHOD(get_Temperature)(/*[out,retval]*/ BSTR* pTemperature) override;
+	STDMETHOD(get_Angle)(/*[out,retval]*/ BSTR* pAngle) override;
+	STDMETHOD(get_UnitTypes)(/*[out,retval]*/ IUnitTypes** ppUnitTypes) override;
+	STDMETHOD(get_UnitConvert)(/*[out,retval]*/ IUnitConvert** convert) override;
+	STDMETHOD(get_UnitConvert2)(/*[out,retval]*/ IUnitConvert2** convert) override;
 
 // IUnitConvert
 public:
-	STDMETHOD(Convert)(/*[in]*/ Float64 from, /*[in]*/ BSTR fromUnit, /*[in]*/ BSTR toUnit, /*[out,retval]*/ Float64* pTo);
-	STDMETHOD(ConvertToBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ BSTR fromUnit, /*[out,retval]*/ Float64* pConvVal);
-	STDMETHOD(ConvertFromBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ BSTR toUnit, /*[out,retval]*/ Float64* pConvVal);
+	STDMETHOD(Convert)(/*[in]*/ Float64 from, /*[in]*/ BSTR fromUnit, /*[in]*/ BSTR toUnit, /*[out,retval]*/ Float64* pTo) override;
+	STDMETHOD(ConvertToBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ BSTR fromUnit, /*[out,retval]*/ Float64* pConvVal) override;
+	STDMETHOD(ConvertFromBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ BSTR toUnit, /*[out,retval]*/ Float64* pConvVal) override;
 
 // IUnitConvert2
 public:
-	STDMETHOD(Convert)(/*[in]*/ Float64 from, /*[in]*/ IUnit* pFromUnit, /*[in]*/ IUnit* pToUnit, /*[out,retval]*/ Float64* pTo);
-	STDMETHOD(ConvertToBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ IUnit* pFromUnit, /*[out,retval]*/ Float64* pConvVal);
-	STDMETHOD(ConvertFromBaseUnits)(/*[in]*/ Float64 val, /*[in]*/ IUnit* pToUnit, /*[out,retval]*/ Float64* pConvVal);
+	STDMETHOD(Convert)(/*[in]*/ Float64 from, /*[in]*/ IUnit* pFromUnit, /*[in]*/ IUnit* pToUnit, /*[out,retval]*/ Float64* pTo) override;
+	STDMETHOD(ConvertToBaseUnits)(/*[in]*/ Float64 val,/*[in]*/ IUnit* pFromUnit, /*[out,retval]*/ Float64* pConvVal) override;
+	STDMETHOD(ConvertFromBaseUnits)(/*[in]*/ Float64 val, /*[in]*/ IUnit* pToUnit, /*[out,retval]*/ Float64* pConvVal) override;
 
 // IUnitTypesEventSink
 public:

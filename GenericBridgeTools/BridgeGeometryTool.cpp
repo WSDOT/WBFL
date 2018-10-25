@@ -122,7 +122,7 @@ STDMETHODIMP CBridgeGeometryTool::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IBridgeGeometryTool
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -233,7 +233,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
    // Going to use the geometric utility object
    CComPtr<IGeomUtil2d> geom_util;
    geom_util.CoCreateInstance(CLSID_GeomUtil);
-   ATLASSERT(geom_util != NULL);
+   ATLASSERT(geom_util != nullptr);
 
    // Find the shortest distance from the point on the alignment to the
    // line representing the girder path. If the alignment point is on the right
@@ -299,7 +299,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
       // Going to use the geometric utility object
       HRESULT hr = m_GeomUtil->LineLineIntersect(cutLine,gdrLine,ppPoint);
       ATLASSERT(SUCCEEDED(hr));
-      ATLASSERT(*ppPoint != NULL);
+      ATLASSERT(*ppPoint != nullptr);
    }
    else
    {
@@ -311,7 +311,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathPoint(IGenericBridge* bridge,GirderI
       // Going to use the geometric utility object
       m_GeomUtil->IntersectLineWithLineSegment(cutLine,gdrLine,ppPoint);
 
-      if ( *ppPoint == NULL )
+      if ( *ppPoint == nullptr )
       {
          return E_FAIL;
       }
@@ -448,7 +448,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
    bridge->get_Alignment(&alignment);
 
    CComPtr<IDirection> objDirection;
-   if ( direction == NULL )
+   if ( direction == nullptr )
    {
       alignment->Normal(CComVariant(station),&objDirection);
    }
@@ -556,7 +556,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 {
    // Computes the offset from the superstructure member identified by "ssMbrID" to the edge of deck
    // on the side of the bridge specified by "side". The offset is measured along a line in
-   // the direction specified by "direction" passing through "station". If "direction" is NULL, the line 
+   // the direction specified by "direction" passing through "station". If "direction" is nullptr, the line 
    // is taken to be normal to the alignment at "station"
 
    //
@@ -568,11 +568,11 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    bridge->get_Alignment(&alignment);
 
    // use a local object so that direction is reference counted
-   // if dir is NULL, the alignment normal is not ref counted and it leaks
+   // if dir is nullptr, the alignment normal is not ref counted and it leaks
    CComPtr<IDirection> dir(direction);
 
-   // if dir is NULL, use the normal to the alignment
-   if ( dir == NULL )
+   // if dir is nullptr, use the normal to the alignment
+   if ( dir == nullptr )
    {
       alignment->Normal(CComVariant(station),&dir);
    }
@@ -625,7 +625,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
       CComPtr<IPoint2d> pntIntersect;
       m_GeomUtil->IntersectLineWithLineSegment(m_Line2,m_LineSegment1,&pntIntersect);
-      if ( pntIntersect != NULL )
+      if ( pntIntersect != nullptr )
       {
          // an intersection was found
          pntSegment = pntIntersect;
@@ -633,7 +633,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
       }
    }
 
-   if ( pntSegment == NULL )
+   if ( pntSegment == nullptr )
    {
       // extend the last segment until there is an intersection
       CComPtr<ISuperstructureMemberSegment> segment;
@@ -653,7 +653,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
       m_GeomUtil->LineLineIntersect(m_Line2,m_Line1,&pntSegment);
    }
 
-   ATLASSERT(pntSegment != NULL);
+   ATLASSERT(pntSegment != nullptr);
 
    //
    // Get the deck edge point
@@ -739,11 +739,11 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
    bridge->get_Alignment(&alignment);
 
    // use a local object so that direction is reference counted
-   // if dir is NULL, the alignment normal is not ref counted and it leaks
+   // if dir is nullptr, the alignment normal is not ref counted and it leaks
    CComPtr<IDirection> direction(dir);
 
-   // if direction is NULL, use the normal to the alignment
-   if ( direction == NULL )
+   // if direction is nullptr, use the normal to the alignment
+   if ( direction == nullptr )
    {
       alignment->Normal(CComVariant(objStation),&direction);
    }
@@ -833,7 +833,7 @@ HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionTyp
    CComPtr<IBridgeDeck> deck;
    bridge->get_Deck(&deck);
 
-   if ( deck == NULL )
+   if ( deck == nullptr )
    {
       // no deck...use the traffic barrier path
       CComPtr<ISidewalkBarrier> barrier;
@@ -1019,7 +1019,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
          // Intersect normal line and other girder line
          if ( m_GeomUtil->IntersectLineWithLineSegment(m_Line1,m_LineSegment1,&pntOnOtherGirder) == S_OK )
          {
-            if ( pntOnOtherGirder != NULL )
+            if ( pntOnOtherGirder != nullptr )
             {
                // point found
                break;
@@ -1029,7 +1029,7 @@ STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,
    }
 
    // Big problems if we couldn't find intersection. This will likely end in a bust
-   if ( pntOnOtherGirder == NULL )
+   if ( pntOnOtherGirder == nullptr )
    {
       ATLASSERT(false); // point not found, and it should have been???
       return E_FAIL;

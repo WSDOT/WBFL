@@ -169,9 +169,9 @@ void CTestStressPoint::Test()
    CComPtr<IEnumStressPoint> penum;
    psc->get__EnumElements(&penum);// , S_OK);
 
-   IStressPoint* pj=0;
-   unsigned long num_fetched=0;
-   long i=0;
+   IStressPoint* pj = 0;
+   unsigned long num_fetched = 0;
+   long i = 0;
    penum->Next(1, &pj, &num_fetched);//, S_OK);
    while (num_fetched==1)
    {

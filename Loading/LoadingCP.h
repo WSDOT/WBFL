@@ -42,12 +42,12 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[1] = riid;
 //				pvars[0] = ppvObj;
-//				DISPPARAMS disp = { pvars, NULL, 2, 0 };
-//				pDispatch->Invoke(0x60000000, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 2, 0 };
+//				pDispatch->Invoke(0x60000000, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -66,11 +66,11 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				VariantClear(&varResult);
-//				DISPPARAMS disp = { NULL, NULL, 0, 0 };
-//				pDispatch->Invoke(0x60000001, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, &varResult, NULL, NULL);
+//				DISPPARAMS disp = { nullptr, nullptr, 0, 0 };
+//				pDispatch->Invoke(0x60000001, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, &varResult, nullptr, nullptr);
 //			}
 //		}
 //		return varResult.ulVal;
@@ -89,11 +89,11 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				VariantClear(&varResult);
-//				DISPPARAMS disp = { NULL, NULL, 0, 0 };
-//				pDispatch->Invoke(0x60000002, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, &varResult, NULL, NULL);
+//				DISPPARAMS disp = { nullptr, nullptr, 0, 0 };
+//				pDispatch->Invoke(0x60000002, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, &varResult, nullptr, nullptr);
 //			}
 //		}
 //		return varResult.ulVal;
@@ -112,11 +112,11 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[0] = pctinfo;
-//				DISPPARAMS disp = { pvars, NULL, 1, 0 };
-//				pDispatch->Invoke(0x60010000, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 1, 0 };
+//				pDispatch->Invoke(0x60010000, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -135,13 +135,13 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[2] = itinfo;
 //				pvars[1] = lcid;
 //				pvars[0] = pptinfo;
-//				DISPPARAMS disp = { pvars, NULL, 3, 0 };
-//				pDispatch->Invoke(0x60010001, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 3, 0 };
+//				pDispatch->Invoke(0x60010001, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -160,15 +160,15 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[4] = riid;
 //				pvars[3] = rgszNames;
 //				pvars[2] = cNames;
 //				pvars[1] = lcid;
 //				pvars[0] = rgdispid;
-//				DISPPARAMS disp = { pvars, NULL, 5, 0 };
-//				pDispatch->Invoke(0x60010002, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 5, 0 };
+//				pDispatch->Invoke(0x60010002, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -187,7 +187,7 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[7] = dispidMember;
 //				pvars[6] = riid;
@@ -197,8 +197,8 @@
 //				pvars[2] = pvarResult;
 //				pvars[1] = pexcepinfo;
 //				pvars[0] = puArgErr;
-//				DISPPARAMS disp = { pvars, NULL, 8, 0 };
-//				pDispatch->Invoke(0x60010003, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 8, 0 };
+//				pDispatch->Invoke(0x60010003, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -217,12 +217,12 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[1] = Load;
 //				pvars[0] = change;
-//				DISPPARAMS disp = { pvars, NULL, 2, 0 };
-//				pDispatch->Invoke(cttLoadCasesChanged, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 2, 0 };
+//				pDispatch->Invoke(cttLoadCasesChanged, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -241,12 +241,12 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[1] = oldName;
 //				pvars[0] = newName;
-//				DISPPARAMS disp = { pvars, NULL, 2, 0 };
-//				pDispatch->Invoke(cttLoadCasesRenamed, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 2, 0 };
+//				pDispatch->Invoke(cttLoadCasesRenamed, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -265,11 +265,11 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[0] = Load;
-//				DISPPARAMS disp = { pvars, NULL, 1, 0 };
-//				pDispatch->Invoke(cttLoadCasesAdded, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 1, 0 };
+//				pDispatch->Invoke(cttLoadCasesAdded, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -288,11 +288,11 @@
 //			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 //			pT->Unlock();
 //			IDispatch* pDispatch = reinterpret_cast<IDispatch*>(sp.p);
-//			if (pDispatch != NULL)
+//			if (pDispatch != nullptr)
 //			{
 //				pvars[0] = Load;
-//				DISPPARAMS disp = { pvars, NULL, 1, 0 };
-//				pDispatch->Invoke(cttLoadCasesBeforeRemove, IID_NULL, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, NULL, NULL, NULL);
+//				DISPPARAMS disp = { pvars, nullptr, 1, 0 };
+//				pDispatch->Invoke(cttLoadCasesBeforeRemove, IID_nullptr, LOCALE_USER_DEFAULT, DISPATCH_METHOD, &disp, nullptr, nullptr, nullptr);
 //			}
 //		}
 //		delete[] pvars;
@@ -1186,7 +1186,7 @@ public:
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadEvents* pIPointLoadEvents = reinterpret_cast<ldIPointLoadEvents*>(sp.p);
-			if (pIPointLoadEvents != NULL)
+			if (pIPointLoadEvents != nullptr)
 				ret = pIPointLoadEvents->OnPointLoadChanged(me);
 		}	return ret;
 	
@@ -1211,7 +1211,7 @@ public:
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
-			if (pIPointLoadsEvents != NULL)
+			if (pIPointLoadsEvents != nullptr)
 				ret = pIPointLoadsEvents->OnPointLoadChanged(Load);
 		}	return ret;
 	
@@ -1229,7 +1229,7 @@ public:
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
-			if (pIPointLoadsEvents != NULL)
+			if (pIPointLoadsEvents != nullptr)
 				ret = pIPointLoadsEvents->OnPointLoadAdded(Load);
 		}	return ret;
 	
@@ -1247,7 +1247,7 @@ public:
 			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
 			ldIPointLoadsEvents* pIPointLoadsEvents = reinterpret_cast<ldIPointLoadsEvents*>(sp.p);
-			if (pIPointLoadsEvents != NULL)
+			if (pIPointLoadsEvents != nullptr)
 				ret = pIPointLoadsEvents->OnPointLoadRemoved();
 		}	return ret;
 	

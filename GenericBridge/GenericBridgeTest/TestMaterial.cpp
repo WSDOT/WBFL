@@ -62,14 +62,14 @@ void CTestMaterial::Test()
    Float64 value;
    TRY_TEST(material->put_E(0,-12.2),E_INVALIDARG);
    TRY_TEST(material->put_E(0,100),S_OK);
-   TRY_TEST(material->get_E(0,NULL),E_POINTER);;
+   TRY_TEST(material->get_E(0,nullptr),E_POINTER);;
    TRY_TEST(material->get_E(0,&value),S_OK);;
    TRY_TEST(IsEqual(value,100.0),true);
 
    TRY_TEST(material->put_Density(0,-12.2),S_OK);
    TRY_TEST(material->put_Density(1,0),S_OK);
    TRY_TEST(material->put_Density(2,100),S_OK);
-   TRY_TEST(material->get_Density(0,NULL),E_POINTER);;
+   TRY_TEST(material->get_Density(0,nullptr),E_POINTER);;
    TRY_TEST(material->get_Density(2,&value),S_OK);;
    TRY_TEST(IsEqual(value,100.0),true);
 

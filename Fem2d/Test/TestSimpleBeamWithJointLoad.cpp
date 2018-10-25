@@ -122,14 +122,13 @@ void CTestSimpleBeamWithJointLoad::Test()
    CComQIPtr<IFem2dModelResults> presults(pmodel);
    CComQIPtr<IFem2dModelResultsEx> presultsex(pmodel);
 
-   Float64 dx, dy, rz;
-   TRY_TEST(presults->ComputeJointDeflections(0, 0, &dx, &dy, &rz),FEM2D_E_POI_REFERENCES_MEMBER_NOT_EXISTS);
 
    PoiIDType id;
    TRY_TEST_HR(pPOIs->Remove(13, atID, &id));
    TRY_TEST( id, 13 );
 
    // get joint Deflections
+   Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDeflections(0, 0, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );

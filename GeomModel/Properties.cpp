@@ -110,8 +110,8 @@ gmProperties gmProperties::operator+ (const gmProperties& rhs) const
 
 gmProperties& gmProperties::operator+= (const gmProperties& rhs)
 {
-   Float64 ixx=0, iyy=0, ixy=0; // about global axes
-   Float64 mxx=0, myy=0;        // first moments
+   Float64 ixx=0, iyy=0, ixy = 0; // about global axes
+   Float64 mxx=0, myy = 0;        // first moments
 
    mxx = m_Area * m_Centroid.Y() + rhs.m_Area * rhs.m_Centroid.Y();
    myy = m_Area * m_Centroid.X() + rhs.m_Area * rhs.m_Centroid.X();

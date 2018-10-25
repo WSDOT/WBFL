@@ -73,50 +73,50 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperstructureMember
 public:
-   STDMETHOD(get_LinkMember)(/*[out,retval]*/VARIANT_BOOL* pbIsLinkMember);
-   STDMETHOD(put_LinkMember)(/*[in]*/VARIANT_BOOL bIsLinkMember);
-   STDMETHOD(RemoveStage)(/*[in]*/BSTR stage);
-	STDMETHOD(get_IsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ISuperstructureMember** clone);
-	STDMETHOD(GetMemberSegments)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments);
-	STDMETHOD(GetSegmentsForStage)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments);
-	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/BSTR stage, /*[in]*/Float64 location, /*[out]*/ ISegmentItem** ppLeftSegi, ISegmentItem** ppRightSegi);
-	STDMETHOD(ReverseSegments)(/*[in]*/BSTR stage);
-	STDMETHOD(RemoveSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition);
-	STDMETHOD(CopySegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition);
-	STDMETHOD(MoveSegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition);
-	STDMETHOD(InsertSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ISegment*);
-	STDMETHOD(AddSegment)(/*[in]*/BSTR stage, /*[in]*/ISegment*);
-	STDMETHOD(get_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[out, retval]*/ ISegment* *pVal);
-	STDMETHOD(putref_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ ISegment* newVal);
-	STDMETHOD(get_SegmentCount)(/*[in]*/BSTR stage, /*[out, retval]*/ SegmentIndexType *pVal);
-	STDMETHOD(get_SegmentLength)(/*[in]*/BSTR stage, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(IsEndReleased)(/*[in]*/Side side, /*[in]*/ MemberReleaseType releaseType,/*[out,retval]*/VARIANT_BOOL* pvbIsReleased);
-	STDMETHOD(SetEndRelease)(/*[in]*/Side side, /*[in]*/ MemberReleaseType newVal);
-	STDMETHOD(GetEndReleaseRemovalStage)(/*[in]*/Side side, /*[out]*/ BSTR* removalStage);
-	STDMETHOD(SetEndReleaseRemovalStage)(/*[in]*/Side side,  /*[in]*/ BSTR removalStage);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-	STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSegmentItem* *pVal);
+   STDMETHOD(get_LinkMember)(/*[out,retval]*/VARIANT_BOOL* pbIsLinkMember) override;
+   STDMETHOD(put_LinkMember)(/*[in]*/VARIANT_BOOL bIsLinkMember) override;
+   STDMETHOD(RemoveStage)(/*[in]*/BSTR stage) override;
+	STDMETHOD(get_IsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ISuperstructureMember** clone) override;
+	STDMETHOD(GetMemberSegments)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments) override;
+	STDMETHOD(GetSegmentsForStage)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments) override;
+	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/BSTR stage, /*[in]*/Float64 location, /*[out]*/ ISegmentItem** ppLeftSegi, ISegmentItem** ppRightSegi) override;
+	STDMETHOD(ReverseSegments)(/*[in]*/BSTR stage) override;
+	STDMETHOD(RemoveSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition) override;
+	STDMETHOD(CopySegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition) override;
+	STDMETHOD(MoveSegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition) override;
+	STDMETHOD(InsertSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ISegment*) override;
+	STDMETHOD(AddSegment)(/*[in]*/BSTR stage, /*[in]*/ISegment*) override;
+	STDMETHOD(get_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[out, retval]*/ ISegment* *pVal) override;
+	STDMETHOD(putref_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ ISegment* newVal) override;
+	STDMETHOD(get_SegmentCount)(/*[in]*/BSTR stage, /*[out, retval]*/ SegmentIndexType *pVal) override;
+	STDMETHOD(get_SegmentLength)(/*[in]*/BSTR stage, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(IsEndReleased)(/*[in]*/Side side, /*[in]*/ MemberReleaseType releaseType,/*[out,retval]*/VARIANT_BOOL* pvbIsReleased) override;
+	STDMETHOD(SetEndRelease)(/*[in]*/Side side, /*[in]*/ MemberReleaseType newVal) override;
+	STDMETHOD(GetEndReleaseRemovalStage)(/*[in]*/Side side, /*[out]*/ BSTR* removalStage) override;
+	STDMETHOD(SetEndReleaseRemovalStage)(/*[in]*/Side side,  /*[in]*/ BSTR removalStage) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSegmentItem* *pVal) override;
 
    // CSegmentsOwner
-   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie);
-   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie);
-   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change);
-   virtual Float64 Length() { return m_Length;}
+   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie) override;
+   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie) override;
+   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change) override;
+
+   Float64 Length() { return m_Length;}
 
 // _ISegmentItemEvents
-   STDMETHOD(OnSegmentItemChanged)(/*[in]*/ISegmentItem* SegmentItem, BSTR Stage, /*[in]*/ChangeType type);
+   STDMETHOD(OnSegmentItemChanged)(/*[in]*/ISegmentItem* SegmentItem, BSTR Stage, /*[in]*/ChangeType type) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
    // implementation
    HRESULT FinalConstruct();

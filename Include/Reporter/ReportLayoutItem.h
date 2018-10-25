@@ -106,7 +106,7 @@ protected:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    void MakeCopy(const rptReportLayoutItem& rOther);
-   virtual void MakeAssignment(const rptReportLayoutItem& rOther);
+   void MakeAssignment(const rptReportLayoutItem& rOther);
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS

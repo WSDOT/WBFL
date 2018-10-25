@@ -39,7 +39,7 @@ public:
                    CRuntimeClass* pDocClass,
                    CRuntimeClass* pFrameClass,
                    CRuntimeClass* pViewClass,
-                   HMENU hSharedMenu = NULL,
+                   HMENU hSharedMenu = nullptr,
                    int maxViewCount = -1);
    virtual ~CEAFDocTemplate();
 
@@ -49,7 +49,8 @@ public:
    virtual void CreateDefaultItem(HICON hIcon);
 
    // Redefines the base-class implementation
-   virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName,BOOL bMakeVisible=TRUE);
+   //virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bMakeVisible = TRUE); // we did an override of this for MFC 9.0... the implementation was changed
+   virtual CDocument* OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMRU, BOOL bMakeVisible); // we now override this for MFC 14.0
 
    // Returns the document template group associated with this document type
    // The template group is seen on the left hand side of the New dialog

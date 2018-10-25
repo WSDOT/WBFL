@@ -73,60 +73,60 @@ END_CONNECTION_POINT_MAP()
 
 
 // SupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISupport
 public:
-	STDMETHOD(AddAssociatedSupport)(/*[in]*/SupportIDType id);
-   STDMETHOD(GetAssociatedSupportCount)(/*[out,retval]*/SupportIndexType* pCount);
-   STDMETHOD(GetAssociatedSupportID)(/*[in]*/IndexType index,/*[out,retval]*/SupportIDType* pID);
-   STDMETHOD(get_TopRelease)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_TopRelease)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal);
-	STDMETHOD(putref_DistributionFactor)(/*[in]*/ IDistributionFactor* newVal);
-	STDMETHOD(GetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[out]*/ Float64 *minVal, /*[out]*/ Float64 *maxVal);
-	STDMETHOD(SetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[in]*/ Float64 minVal, /*[in]*/ Float64 maxVal);
-	STDMETHOD(RemoveStage)(/*[in]*/BSTR stage);
-	STDMETHOD(get_IsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ISupport** clone);
-	STDMETHOD(GetMemberSegments)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments);
-	STDMETHOD(GetSegmentsForStage)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments);
-	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/BSTR stage, /*[in]*/Float64 location, ISegmentItem** ppLeftSegi, ISegmentItem** ppRightSegi);
-	STDMETHOD(ReverseSegments)(/*[in]*/BSTR stage);
-	STDMETHOD(RemoveSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition);
-	STDMETHOD(CopySegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition);
-	STDMETHOD(MoveSegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition);
-	STDMETHOD(InsertSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ISegment*);
-	STDMETHOD(AddSegment)(/*[in]*/BSTR stage, /*[in]*/ISegment*);
-	STDMETHOD(get_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[out, retval]*/ ISegment* *pVal);
-	STDMETHOD(putref_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ ISegment* newVal);
-	STDMETHOD(get_SegmentCount)(/*[in]*/BSTR stage, /*[out, retval]*/ SegmentIndexType *pVal);
-	STDMETHOD(get_SegmentLength)(/*[in]*/BSTR stage, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_BoundaryCondition)(/*[out, retval]*/ BoundaryConditionType *pVal);
-	STDMETHOD(put_BoundaryCondition)(/*[in]*/ BoundaryConditionType newVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_BottomOffset)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_BottomOffset)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-	STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSegmentItem* *pVal);
+	STDMETHOD(AddAssociatedSupport)(/*[in]*/SupportIDType id) override;
+   STDMETHOD(GetAssociatedSupportCount)(/*[out,retval]*/SupportIndexType* pCount) override;
+   STDMETHOD(GetAssociatedSupportID)(/*[in]*/IndexType index,/*[out,retval]*/SupportIDType* pID) override;
+   STDMETHOD(get_TopRelease)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_TopRelease)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal) override;
+	STDMETHOD(putref_DistributionFactor)(/*[in]*/ IDistributionFactor* newVal) override;
+	STDMETHOD(GetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[out]*/ Float64 *minVal, /*[out]*/ Float64 *maxVal) override;
+	STDMETHOD(SetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[in]*/ Float64 minVal, /*[in]*/ Float64 maxVal) override;
+	STDMETHOD(RemoveStage)(/*[in]*/BSTR stage) override;
+	STDMETHOD(get_IsSymmetrical)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsSymmetrical)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ISupport** clone) override;
+	STDMETHOD(GetMemberSegments)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments) override;
+	STDMETHOD(GetSegmentsForStage)(/*[in]*/BSTR stage, /*[out,retval]*/IFilteredSegmentCollection** segments) override;
+	STDMETHOD(GetSegmentForMemberLocation)(/*[in]*/BSTR stage, /*[in]*/Float64 location, ISegmentItem** ppLeftSegi, ISegmentItem** ppRightSegi) override;
+	STDMETHOD(ReverseSegments)(/*[in]*/BSTR stage) override;
+	STDMETHOD(RemoveSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition) override;
+	STDMETHOD(CopySegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition) override;
+	STDMETHOD(MoveSegmentTo)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType fromRelPosition, /*[in]*/SegmentIndexType toRelPosition) override;
+	STDMETHOD(InsertSegment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ISegment*) override;
+	STDMETHOD(AddSegment)(/*[in]*/BSTR stage, /*[in]*/ISegment*) override;
+	STDMETHOD(get_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[out, retval]*/ ISegment* *pVal) override;
+	STDMETHOD(putref_Segment)(/*[in]*/BSTR stage, /*[in]*/SegmentIndexType relPosition, /*[in]*/ ISegment* newVal) override;
+	STDMETHOD(get_SegmentCount)(/*[in]*/BSTR stage, /*[out, retval]*/ SegmentIndexType *pVal) override;
+	STDMETHOD(get_SegmentLength)(/*[in]*/BSTR stage, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_BoundaryCondition)(/*[out, retval]*/ BoundaryConditionType *pVal) override;
+	STDMETHOD(put_BoundaryCondition)(/*[in]*/ BoundaryConditionType newVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_BottomOffset)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_BottomOffset)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSegmentItem* *pVal) override;
 
    // CSegmentsOwner
-   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie);
-   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie);
-   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change);
-   virtual Float64 Length() { return m_Length;}
+   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie) override;
+   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie) override;
+   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change) override;
+
+   Float64 Length() { return m_Length;}
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
    // _ISegmentItemEvents
-   STDMETHOD(OnSegmentItemChanged)(/*[in]*/ISegmentItem* SegmentItem, BSTR stage, /*[in]*/ChangeType type);
+   STDMETHOD(OnSegmentItemChanged)(/*[in]*/ISegmentItem* SegmentItem, BSTR stage, /*[in]*/ChangeType type) override;
 
    // IDistributionFactorEvents
-   STDMETHOD(OnDistributionFactorChanged)(IDistributionFactor* factor);
+   STDMETHOD(OnDistributionFactorChanged)(IDistributionFactor* factor) override;
 
    // implementation
    HRESULT FinalConstruct();

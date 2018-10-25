@@ -49,8 +49,8 @@ HRESULT CCrossBeamRebarPattern::FinalConstruct()
    m_HookType[qcbLeft]  = htNone;
    m_HookType[qcbRight] = htNone;
 
-   m_pCrossBeam = NULL;
-   m_pRebarLayoutItem = NULL;
+   m_pCrossBeam = nullptr;
+   m_pRebarLayoutItem = nullptr;
 
    return S_OK;
 }
@@ -66,7 +66,7 @@ STDMETHODIMP CCrossBeamRebarPattern::InterfaceSupportsErrorInfo(REFIID riid)
   	  &IID_ICrossBeamRebarPattern,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -82,7 +82,7 @@ STDMETHODIMP CCrossBeamRebarPattern::putref_Rebar(IRebar* rebar)
 {
    CHECK_IN(rebar);
    CComQIPtr<IMaterial> material(rebar);
-   if ( material == NULL )
+   if ( material == nullptr )
    {
       ATLASSERT(false); // must implement the IMaterial interface
       return E_INVALIDARG;
@@ -153,7 +153,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,CollectionIndexTyp
    CComPtr<IEnumPoint2d> enumPoints;
    profile->get__Enum(&enumPoints);
    CComPtr<IPoint2d> point;
-   while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
    {
       Float64 x,y;
       point->Location(&x,&y);

@@ -66,7 +66,7 @@ public:
 // IPShape
 	STDMETHOD(get_X)(Float64 * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = m_X;
@@ -80,7 +80,7 @@ public:
 	}
 	STDMETHOD(get_Y)(Float64 * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = m_Y;
@@ -93,7 +93,7 @@ public:
 	}
 	STDMETHOD(get_IsComposite)(BOOL * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = FALSE;
@@ -102,14 +102,14 @@ public:
 	}
 	STDMETHOD(get_Count)(CollectionIndexType * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
 		return E_NOTIMPL;
 	}
 	STDMETHOD(get_Item)(CollectionIndexType index, IPShape * * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
 		return E_NOTIMPL;
@@ -169,7 +169,7 @@ private:
 // IPersist
 	STDMETHOD(GetClassID)(GUID * pClassID)
 	{
-		if (pClassID == NULL)
+		if (pClassID == nullptr)
 			return E_POINTER;
 			
       *pClassID = this->GetObjectCLSID();

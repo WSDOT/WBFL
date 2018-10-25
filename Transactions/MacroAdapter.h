@@ -34,9 +34,9 @@
 // CMacroAdapter
 class ATL_NO_VTABLE CMacroAdapter : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CMacroAdapter, &CLSID_MacroAdapter>,
+	public CComCoClass<CMacroAdapter, &CLSID_WBFLMacroAdapter>,
 	public ISupportErrorInfo,
-	public IMacroAdapter
+	public IWBFLMacroAdapter
 {
 public:
 	CMacroAdapter()
@@ -48,26 +48,26 @@ DECLARE_REGISTRY_RESOURCEID(IDR_MACROADAPTER)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CMacroAdapter)
-	COM_INTERFACE_ENTRY(IMacroAdapter)
+	COM_INTERFACE_ENTRY(IWBFLMacroAdapter)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
 private:
-   CComPtr<IMacroTransaction> m_Macro;
+   CComPtr<IWBFLMacroTransaction> m_Macro;
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IMacroAdapter
+// IWBFLMacroAdapter
 public:
-	STDMETHOD(Execute)();
-	STDMETHOD(Undo)();
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-   STDMETHOD(get_IsUndoable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_IsRepeatable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_Macro)(/*[out, retval]*/ IMacroTransaction* *pVal);
-	STDMETHOD(putref_Macro)(/*[in]*/ IMacroTransaction* newVal);
+	STDMETHOD(Execute)() override;
+	STDMETHOD(Undo)() override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+   STDMETHOD(get_IsUndoable)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_IsRepeatable)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_Macro)(/*[out, retval]*/ IWBFLMacroTransaction* *pVal) override;
+	STDMETHOD(putref_Macro)(/*[in]*/ IWBFLMacroTransaction* newVal) override;
 };
 
 #endif //__MACROADAPTER_H_

@@ -262,7 +262,7 @@ void mathPwLinearFunction2dUsingPoints::Clear()
 {
    ASSERTVALID;
    m_Points.clear();
-   m_LastSegment=0;
+   m_LastSegment = 0;
 }
 
 Int16 mathPwLinearFunction2dUsingPoints::Intersect(const mathPwLinearFunction2dUsingPoints& rOther, 
@@ -521,7 +521,7 @@ void mathPwLinearFunction2dUsingPoints::Dump(dbgDumpContext& os) const
    mathPwLinearFunction2d::Dump( os );
    CollectionIndexType siz = GetNumPoints();
    os << _T("Number of Points = ") <<siz<<endl;
-   for (CollectionIndexType i=0; i<siz; i++)
+   for (CollectionIndexType i = 0; i<siz; i++)
    {
       os <<i<<_T("  (")<< m_Points[i].X()<<_T(", ")<<m_Points[i].Y()<<_T(")")<<endl;
    }

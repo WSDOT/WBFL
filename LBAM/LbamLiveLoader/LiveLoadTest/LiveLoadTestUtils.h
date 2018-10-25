@@ -79,7 +79,7 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -94,7 +94,7 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -122,7 +122,7 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
          <<std::setw(16)<< right_val<<std::endl;
 
       // then right config if there was one
-      if (right_config!=NULL)
+      if (right_config!=nullptr)
       {
          res3Ds.Release();
          TRY_TEST(basicResponse->ComputeForces(apoi, Stage, roGlobal, right_config, &res3Ds), S_OK);
@@ -192,7 +192,7 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -207,7 +207,7 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -235,7 +235,7 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
          <<std::setw(16)<< right_val<<std::endl;
 
       // then right config if there was one
-      if (right_config!=NULL)
+      if (right_config!=nullptr)
       {
          res3Ds.Release();
          TRY_TEST(basicResponse->ComputeDeflections(apoi, Stage, right_config, &res3Ds), S_OK);

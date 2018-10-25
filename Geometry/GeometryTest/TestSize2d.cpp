@@ -61,18 +61,18 @@ void CTestSize2d::Test()
    dx = -10.0;
    dy = -20.0;
    TRY_TEST(pSize->put_Dx(dx),S_OK);
-   TRY_TEST(pSize->get_Dx(NULL),E_POINTER);
+   TRY_TEST(pSize->get_Dx(nullptr),E_POINTER);
    TRY_TEST(pSize->get_Dx(&dx1),S_OK);
    TRY_TEST(IsEqual(dx,dx1),true);
    TRY_TEST(pSize->put_Dy(dy),S_OK);
-   TRY_TEST(pSize->get_Dy(NULL),E_POINTER);
+   TRY_TEST(pSize->get_Dy(nullptr),E_POINTER);
    TRY_TEST(pSize->get_Dy(&dy1),S_OK);
    TRY_TEST(IsEqual(dy,dy1),true);
 
    // Test Magnitude
    Float64 target = sqrt(dx*dx + dy*dy);
    Float64 mag;
-   TRY_TEST(pSize->get_Magnitude(NULL),E_POINTER);
+   TRY_TEST(pSize->get_Magnitude(nullptr),E_POINTER);
    TRY_TEST(pSize->get_Magnitude(&mag),S_OK);
    TRY_TEST(IsEqual(mag,target),true);
 

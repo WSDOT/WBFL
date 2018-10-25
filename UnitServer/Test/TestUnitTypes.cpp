@@ -62,7 +62,7 @@ void CTestUnitTypes::Test()
    /////////////////////////////////////////////////////
    // Test Count
    CollectionIndexType count;
-   TRY_TEST(unitTypes->get_Count(NULL),E_POINTER);
+   TRY_TEST(unitTypes->get_Count(nullptr),E_POINTER);
    TRY_TEST(unitTypes->get_Count(&count),S_OK);
    TRY_TEST(count,16); // Default configuration
 
@@ -70,9 +70,9 @@ void CTestUnitTypes::Test()
    // Test Add
    //
    CComPtr<IUnitType> unitType;
-   TRY_TEST( unitTypes->Add(NULL,0,1,-1,0,0,&unitType), E_INVALIDARG );
+   TRY_TEST( unitTypes->Add(nullptr,0,1,-1,0,0,&unitType), E_INVALIDARG );
    TRY_TEST( unitTypes->Add(CComBSTR("Mass"),0,1,-1,0,0,&unitType), UNITS_E_UNITTYPEALREADYDEFINED );
-   TRY_TEST( unitTypes->Add(CComBSTR("Acceleration"),0,1,-2,0,0,NULL), S_OK );
+   TRY_TEST( unitTypes->Add(CComBSTR("Acceleration"),0,1,-2,0,0,nullptr), S_OK );
    TRY_TEST( unitTypes->Add(CComBSTR("Velocity"),0,1,-1,0,0,&unitType), S_OK );
    TRY_TEST( unitType != 0, true );
 
@@ -109,7 +109,7 @@ void CTestUnitTypes::Test()
    TRY_TEST( unitTypes->get_Item(CComVariant(1000L),&unitType), E_INVALIDARG);
    TRY_TEST( unitTypes->get_Item(CComVariant(),&unitType), E_INVALIDARG );
    TRY_TEST( unitTypes->get_Item(CComVariant("Junk"),&unitType), E_INVALIDARG );
-   TRY_TEST( unitTypes->get_Item(CComVariant(0L),NULL), E_POINTER);
+   TRY_TEST( unitTypes->get_Item(CComVariant(0L),nullptr), E_POINTER);
    TRY_TEST( unitTypes->get_Item(CComVariant(0L),&unitType), S_OK );
 
    unitType->get_Label(&bstrType);
@@ -144,7 +144,7 @@ void CTestUnitTypes::Test()
    ///////////////////////////////////////////////////////
    // Test EnumUnitTypes
    CComPtr<IEnumUnitTypes> Enum;
-   TRY_TEST( unitTypes->get__EnumUnitTypes(NULL), E_POINTER );
+   TRY_TEST( unitTypes->get__EnumUnitTypes(nullptr), E_POINTER );
    TRY_TEST( unitTypes->get__EnumUnitTypes(&Enum), S_OK );
    TRY_TEST( Enum != 0 , true );
 

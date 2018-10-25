@@ -50,7 +50,7 @@ void CFavoriteReportsPage::DoDataExchange(CDataExchange* pDX)
    if (pDX->m_bSaveAndValidate)
    {
       m_pParentDlg->m_FavoriteReports.clear();
-      for (int cnt=0; cnt <m_FavoritesList.GetCount(); cnt++)
+      for (int cnt = 0; cnt <m_FavoritesList.GetCount(); cnt++)
       {
          int chk = m_FavoritesList.GetCheck(cnt);
          TCHAR str[128];

@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "BoxBeamSection.h"
 #include <math.h>
-#include <xutility> // for _cpp_min
+#include <xutility> // for Min
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,7 +65,7 @@ STDMETHODIMP CBoxBeamSection::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

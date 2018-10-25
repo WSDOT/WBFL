@@ -162,7 +162,7 @@ protected:
    void MakeCopy(const rcaReinforcementElement& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rcaReinforcementElement& rOther);
+   void MakeAssignment(const rcaReinforcementElement& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

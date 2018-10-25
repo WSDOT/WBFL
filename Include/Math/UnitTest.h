@@ -81,7 +81,7 @@ private:
 
    // Prevent accidental copying and assignment
    mathUnitTest(const mathUnitTest&);
-   mathUnitTest& operator=(const mathUnitTest&);
+   mathUnitTest& operator=(const mathUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

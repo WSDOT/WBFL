@@ -61,11 +61,11 @@ BEGIN_COM_MAP(CStressResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStressResults
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ IStressResults** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ IStressResults** clone) override;
 
 protected:
 

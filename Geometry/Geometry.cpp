@@ -69,6 +69,7 @@
 #include "NUBeam.h"
 #include "UBeam.h"
 #include "BulbTee.h"
+#include "BulbTee2.h"
 #include "MultiWeb.h"
 #include "MultiWeb2.h"
 #include "UBeam2.h"
@@ -119,7 +120,8 @@ OBJECT_ENTRY(CLSID_ShapeCollection, CShapeCollection)
 OBJECT_ENTRY(CLSID_PlateGirder, CPlateGirder)
 OBJECT_ENTRY(CLSID_UBeam, CUBeam)
 OBJECT_ENTRY(CLSID_NUBeam, CNUBeam)
-OBJECT_ENTRY(CLSID_BulbTee,CBulbTee)
+OBJECT_ENTRY(CLSID_BulbTee, CBulbTee)
+OBJECT_ENTRY(CLSID_BulbTee2, CBulbTee2)
 OBJECT_ENTRY(CLSID_MultiWeb,CMultiWeb)
 OBJECT_ENTRY(CLSID_MultiWeb2,CMultiWeb2)
 OBJECT_ENTRY(CLSID_UBeam2,CUBeam2)

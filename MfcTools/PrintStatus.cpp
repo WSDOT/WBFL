@@ -37,7 +37,7 @@ extern bool bGfxUserAbort;
 /////////////////////////////////////////////////////////////////////////////
 // CPrintStatus dialog
 
-CPrintStatus::CPrintStatus(CWnd* pParent /*=NULL*/)
+CPrintStatus::CPrintStatus(CWnd* pParent /*=nullptr*/)
 	: CDialog(CPrintStatus::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CPrintStatus)

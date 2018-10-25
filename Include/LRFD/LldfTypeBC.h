@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdLldfTypeBC();
+   virtual ~lrfdLldfTypeBC() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -114,26 +114,26 @@ protected:
    void MakeCopy(const lrfdLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLldfTypeBC& rOther);
+   void MakeAssignment(const lrfdLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   virtual DFResult GetMomentDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
+   virtual DFResult GetShearDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
+   virtual DFResult GetShearDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
 
    // Rules for ROA
@@ -159,11 +159,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -228,7 +228,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdWsdotLldfTypeBC();
+   virtual ~lrfdWsdotLldfTypeBC() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -246,20 +246,20 @@ protected:
    // GROUP: OPERATIONS
    
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdWsdotLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdWsdotLldfTypeBC& rOther);
+   void MakeAssignment(const lrfdWsdotLldfTypeBC& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -280,11 +280,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -347,7 +347,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdTxDotLldfTypeBC();
+   virtual ~lrfdTxDotLldfTypeBC() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -365,38 +365,38 @@ protected:
    // GROUP: OPERATIONS
    //------------------------------------------------------------------------
    // TxDOT is more lax than aashto
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
    
    //------------------------------------------------------------------------
    // Override this method so 90% of lever rule is applied to exterior beams for continuity.
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   virtual DFResult GetMomentDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
+   virtual DFResult GetShearDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
+   virtual DFResult GetShearDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxDotLldfTypeBC& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdTxDotLldfTypeBC& rOther);
+   void MakeAssignment(const lrfdTxDotLldfTypeBC& rOther);
 
    // GROUP: ACCESS
-   virtual bool DoApplySkew() const;
+   virtual bool DoApplySkew() const override;
    // GROUP: INQUIRY
 
 private:
@@ -415,11 +415,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

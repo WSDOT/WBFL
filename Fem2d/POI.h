@@ -59,8 +59,8 @@ public:
    HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, PoiIDType ID, MemberIDType memberID=-1, Float64 location=0.0);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -71,15 +71,15 @@ BEGIN_COM_MAP(CPOI)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dPOI
 public:
-	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ PoiIDType *pVal);
+	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ PoiIDType *pVal) override;
 
 private:
    PoiIDType m_ID;

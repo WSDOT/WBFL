@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CSuperstructureMember::FinalConstruct()
 {
    m_ID = INVALID_ID;
-   m_pBridge = NULL;
+   m_pBridge = nullptr;
    m_LocationType = ltInteriorGirder;
 
    m_Release[etStart] = rtNone;
@@ -69,7 +69,7 @@ STDMETHODIMP CSuperstructureMember::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISuperstructureMember,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

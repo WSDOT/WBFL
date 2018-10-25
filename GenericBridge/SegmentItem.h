@@ -48,7 +48,7 @@ public:
 	}
 
    void FinalRelease();
-	STDMETHOD(PutRefSegment)(/*[in]*/ ISegment* pVal);
+	HRESULT PutRefSegment(/*[in]*/ ISegment* pVal);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SEGMENTITEM)
 
@@ -62,14 +62,14 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegmentItem
 public:
-	STDMETHOD(get_Segment)(/*[out, retval]*/ ISegment* *pVal);
-//	STDMETHOD(putref_Segment)(/*[in]*/ ISegment* pVal);
-	STDMETHOD(get_RelPosition)(/*[out, retval]*/ CollectionIndexType *pVal);
-//   STDMETHOD(Clone)(ISegmentItem** pclone);
+	STDMETHOD(get_Segment)(/*[out, retval]*/ ISegment* *pVal) override;
+//	STDMETHOD(putref_Segment)(/*[in]*/ ISegment* pVal) override;
+	STDMETHOD(get_RelPosition)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+//   STDMETHOD(Clone)(ISegmentItem** pclone) override;
 
 protected:
    CollectionIndexType     m_RelPosition;

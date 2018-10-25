@@ -60,9 +60,9 @@ void CTestMohrCircle::Test()
    TRY_TEST(mc->put_Sij(3),  S_OK);
 
    Float64 val;
-   TRY_TEST( mc->get_Sii(NULL), E_POINTER );
-   TRY_TEST( mc->get_Sjj(NULL), E_POINTER );
-   TRY_TEST( mc->get_Sij(NULL), E_POINTER );
+   TRY_TEST( mc->get_Sii(nullptr), E_POINTER );
+   TRY_TEST( mc->get_Sjj(nullptr), E_POINTER );
+   TRY_TEST( mc->get_Sij(nullptr), E_POINTER );
 
    TRY_TEST( mc->get_Sii(&val), S_OK );
    TRY_TEST( IsEqual(val,12.0), true );
@@ -73,34 +73,34 @@ void CTestMohrCircle::Test()
    TRY_TEST( mc->get_Sij(&val), S_OK );
    TRY_TEST( IsEqual(val,3.0), true );
 
-   TRY_TEST( mc->get_Center(NULL), E_POINTER );
+   TRY_TEST( mc->get_Center(nullptr), E_POINTER );
    TRY_TEST( mc->get_Center(&val), S_OK );
    TRY_TEST( IsEqual(val,8.0), true );
 
-   TRY_TEST( mc->get_Radius(NULL), E_POINTER );
+   TRY_TEST( mc->get_Radius(nullptr), E_POINTER );
    TRY_TEST( mc->get_Radius(&val), S_OK );
    TRY_TEST( IsEqual(val,5.0), true );
 
-   TRY_TEST( mc->get_Smax(NULL), E_POINTER );
+   TRY_TEST( mc->get_Smax(nullptr), E_POINTER );
    TRY_TEST( mc->get_Smax(&val), S_OK );
    TRY_TEST( IsEqual(val,13.0), true );
 
-   TRY_TEST( mc->get_Smin(NULL), E_POINTER );
+   TRY_TEST( mc->get_Smin(nullptr), E_POINTER );
    TRY_TEST( mc->get_Smin(&val), S_OK );
    TRY_TEST( IsEqual(val,3.0), true );
 
-   TRY_TEST( mc->get_Tmax(NULL), E_POINTER );
+   TRY_TEST( mc->get_Tmax(nullptr), E_POINTER );
    TRY_TEST( mc->get_Tmax(&val), S_OK );
    TRY_TEST( IsEqual(val,5.0), true );
 
-   TRY_TEST( mc->get_PrincipleDirection(NULL), E_POINTER );
+   TRY_TEST( mc->get_PrincipleDirection(nullptr), E_POINTER );
    TRY_TEST( mc->get_PrincipleDirection(&val), S_OK );
    TRY_TEST( IsEqual(val,M_PI*18.43/180.,0.02), true );
 
    Float64 s1,s2,s12;
-   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,NULL,&s2,&s12), E_POINTER );
-   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,&s1,NULL,&s12), E_POINTER );
-   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,&s1,&s2,NULL),  E_POINTER );
+   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,nullptr,&s2,&s12), E_POINTER );
+   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,&s1,nullptr,&s12), E_POINTER );
+   TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,&s1,&s2,nullptr),  E_POINTER );
    TRY_TEST( mc->ComputeState(M_PI*15.0/180.0,&s1,&s2,&s12),  S_OK );
    TRY_TEST( IsEqual(s1,12.964,0.002), true );
    TRY_TEST( IsEqual(s2, 3.036,0.002), true );

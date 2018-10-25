@@ -119,7 +119,7 @@ void TestLiveLoadConfiguration::Test()
    axles->Add(5);
    TRY_TEST( pllc->put_AxleConfig(axles), S_OK);
    TEST_FIRED();
-   axles = NULL;
+   axles = nullptr;
    TRY_TEST( pllc->get_AxleConfig(&axles), S_OK);
    axles->get_Count(&size);
    TRY_TEST(size, 2);
@@ -169,7 +169,7 @@ void TestLiveLoadConfiguration::Test()
    TRY_TEST( vlc, vlcTruckOnly);
 
    // error conditions
-   axles = NULL;
+   axles = nullptr;
    TRY_TEST( pllc->put_AxleConfig(axles), E_INVALIDARG);
    TRY_TEST( pllc->put_VariableSpacing(-12.0), E_INVALIDARG);
 //   TRY_TEST( pllc->put_VehicleIndex(-1), E_INVALIDARG);
@@ -206,7 +206,7 @@ void TestLiveLoadConfiguration::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestCS"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pcs2.QueryInterface(&piss2), S_OK);
 
          // Load 

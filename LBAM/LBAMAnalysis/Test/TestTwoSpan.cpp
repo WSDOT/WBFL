@@ -64,7 +64,7 @@ inline void GetSa(PoiIDType poiID, BSTR stage, IGetSegmentCrossSection* igsp, Fl
 
    CComPtr<IStressPoint> isp_left, isp_right;
    TRY_TEST(isps_left->get_Item(0,&isp_left), S_OK);
-   if (isps_right!=NULL)
+   if (isps_right!=nullptr)
    {
       TRY_TEST(isps_right->get_Item(0,&isp_right), S_OK);
    }
@@ -112,11 +112,11 @@ HRESULT CTestTwoSpan::Test()
    CComPtr<IIDArray> poilist;
    poilist.CoCreateInstance(CLSID_IDArray);
    poilist->Reserve(22);
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -152,13 +152,13 @@ HRESULT CTestTwoSpan::Test()
 
    DumpSectionForceResults( os, poilist, sectionResults, poi_locs);
 
-   sectionResults = NULL;
+   sectionResults = nullptr;
    hr = loadGroupResponse->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), roGlobal, rsIncremental, &sectionResults);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, sectionResults, poi_locs);
 
-   sectionResults = NULL;
+   sectionResults = nullptr;
    hr = loadGroupResponse->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), roGlobal, rsCumulative, &sectionResults);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -170,7 +170,7 @@ HRESULT CTestTwoSpan::Test()
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = loadGroupResponse->ComputeDeflections(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), rsIncremental, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -184,19 +184,19 @@ HRESULT CTestTwoSpan::Test()
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = loadGroupResponse->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 2"), rsIncremental, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = loadGroupResponse->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 1"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = loadGroupResponse->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 2"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -226,19 +226,19 @@ HRESULT CTestTwoSpan::Test()
 
    DumpSupportDeflectionResults( os, sptlist_stg1, prdefls);
 
-   prdefls = NULL;
+   prdefls = nullptr;
    hr = loadGroupResponse->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsIncremental, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSupportDeflectionResults( os, sptlist_stg2, prdefls);
 
-   prdefls=NULL;
+   prdefls=nullptr;
    hr = loadGroupResponse->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg1, _bstr_t("Stage 1"), rsCumulative, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSupportDeflectionResults( os, sptlist_stg1, prdefls);
 
-   prdefls = NULL;
+   prdefls = nullptr;
    hr = loadGroupResponse->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsCumulative, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -251,19 +251,19 @@ HRESULT CTestTwoSpan::Test()
 
    DumpReactionResults( os, sptlist_stg1, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = loadGroupResponse->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsIncremental, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpReactionResults( os, sptlist_stg2, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = loadGroupResponse->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg1, _bstr_t("Stage 1"), rsCumulative, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpReactionResults( os, sptlist_stg1, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = loadGroupResponse->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsCumulative, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -288,7 +288,7 @@ HRESULT CTestTwoSpan::Test()
    CComPtr<IPointLoadItem> pPLI1;
    TRY_TEST(pPointLoads->Add(_bstr_t("Stage 1"), _bstr_t("Point Loads"), pPointLoad1, &pPLI1), S_OK);
 
-   sectionResults = NULL;
+   sectionResults = nullptr;
    hr = loadGroupResponse->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 1"), roGlobal, rsIncremental, &sectionResults);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -307,7 +307,7 @@ HRESULT CTestTwoSpan::Test()
    TRY_TEST( pPOI->put_Location(-0.5), S_OK );
    TRY_TEST(pPOIs->Add(pPOI), S_OK);
 
-   sectionResults = NULL;
+   sectionResults = nullptr;
    hr = loadGroupResponse->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 1"), roGlobal, rsIncremental, &sectionResults);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -315,7 +315,7 @@ HRESULT CTestTwoSpan::Test()
 
    // test influence line computation
    CComQIPtr<IInfluenceLineResponse> pinfl(loadGroupResponse);
-   ATLASSERT(pinfl!=NULL);
+   ATLASSERT(pinfl!=nullptr);
 
    CComPtr<IInfluenceLine> lft_ifl, rgt_ifl;
    hr = pinfl->ComputeForceInfluenceLine(106,CComBSTR("Stage 2"),fetFy, roGlobal, &lft_ifl, &rgt_ifl);
@@ -391,7 +391,7 @@ HRESULT CTestTwoSpan::Test()
    TRY_TEST(support->put_TopRelease(VARIANT_TRUE), S_OK);
 
    // an exception will throw in LoadGroupResponse::ValidateModels - this is by design
-   sectionResults=NULL;
+   sectionResults=nullptr;
    hr = loadGroupResponse->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), roGlobal, rsCumulative, &sectionResults);
    TRY_TEST(hr,LBAMA_E_SUPPORT_ROLLER_RELEASE);
 
@@ -411,7 +411,7 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    Float64 loc = 0.0;
    span_ends.push_back(loc);  // spans start at 0.0
 
-   for(SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for(SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       spans->get_Item(ispan, &span);
@@ -433,7 +433,7 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -449,7 +449,7 @@ void CTestTwoSpan::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::vec
 
    CollectionIndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i, &poi_id);
@@ -738,7 +738,7 @@ ILBAMModel* CTestTwoSpan::CreateModel()
                   _T("Point Loads At Supports")
    };
 
-   for (int i=0; i<7; i++)
+   for (int i = 0; i<7; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );

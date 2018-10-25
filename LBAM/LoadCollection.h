@@ -90,7 +90,7 @@ END_CONNECTION_POINT_MAP()
 	   {
 		   piid
 	   };
-	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	   {
 		   if (InlineIsEqualGUID(*arr[i],riid))
 			   return S_OK;
@@ -279,12 +279,12 @@ private:
    // some virtual methods for dealing with adding and 
    // removing items from this collection
 protected:
-   virtual void    FireAfterAdd(IItemType* pitem)=0;
-   virtual void    FireBeforeRemove(IItemType* pitem)=0;
-   virtual void    FireOnChanged(IItemType* pitem)=0;
+   virtual void    FireAfterAdd(IItemType* pitem) = 0;
+   virtual void    FireBeforeRemove(IItemType* pitem) = 0;
+   virtual void    FireOnChanged(IItemType* pitem) = 0;
    // connection point routines must be at bottom of class hiearch becase of Release calls 
-   virtual HRESULT MakeConnection(CItemType* pitem)=0;
-   virtual HRESULT BreakConnection(CItemType* pitem)=0;
+   virtual HRESULT MakeConnection(CItemType* pitem) = 0;
+   virtual HRESULT BreakConnection(CItemType* pitem) = 0;
 
 public:
    CLoadCollection():
@@ -310,7 +310,7 @@ public:
          return E_INVALIDARG;
 
       ContainerIteratorType it( m_Container.begin() );
-      for (CollectionIndexType i=0; i<index; i++)
+      for (CollectionIndexType i = 0; i<index; i++)
          it++;
 
       if (it != m_Container.end())
@@ -333,9 +333,9 @@ public:
       if (FAILED(hr))
          return hr;
 
-      if (tmp==NULL)
+      if (tmp==nullptr)
       {
-         *pVal=NULL;
+         *pVal=nullptr;
          return E_INVALIDARG;
       }
 
@@ -377,7 +377,7 @@ public:
       if ( FAILED(hr) )
          return hr;
 
-      hr = pEnum->Init( NULL, m_Container );
+      hr = pEnum->Init( nullptr, m_Container );
       if ( FAILED(hr) )
          return hr;
 
@@ -389,10 +389,10 @@ public:
 
    STDMETHOD(get__NewEnum)(IUnknown** ppUnk)
    {
-	   if (ppUnk == NULL)
+	   if (ppUnk == nullptr)
 		   return E_POINTER;
 
-	   *ppUnk = NULL;
+	   *ppUnk = nullptr;
 	   HRESULT hRes = S_OK;
 
       typedef _CopyMapOfCComVariants<ContainerType> CopyVariantType;
@@ -442,7 +442,7 @@ public:
       if (FAILED(hr))
          return hr;
 
-      if (Item!=NULL)
+      if (Item!=nullptr)
       {
          *Item = pitem;
          (*Item)->AddRef(); // for client
@@ -501,7 +501,7 @@ public:
          return E_INVALIDARG;
 
       ContainerIteratorType it( m_Container.begin() );
-      for (CollectionIndexType i=0; i<index; i++, it++)
+      for (CollectionIndexType i = 0; i<index; i++, it++)
       ;
 
       if (it != m_Container.end())
@@ -580,7 +580,7 @@ public:
 
       *filteredcoll = pcoll;
 
-      if (pcoll!=NULL)
+      if (pcoll!=nullptr)
          (*filteredcoll)->AddRef();
 
 	   return S_OK;
@@ -812,7 +812,7 @@ public:
 
       CollectionIndexType count = varlong;
       m_LastUniqueKey = 1;
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
 
          // items are not creatable, so we need to create and load manually
@@ -837,7 +837,7 @@ public:
          // this sets up the connection points
          // add new item
          CComPtr<LoadType> tmp = pitem->m_Load;
-         pitem->m_Load = NULL;
+         pitem->m_Load = nullptr;
 
          hr = PutLoad(pitem, tmp);
          if (FAILED(hr))

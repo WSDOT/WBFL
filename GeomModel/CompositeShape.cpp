@@ -59,7 +59,7 @@ public:
                                gpLine2d::Side side) const {return 0;}
    void DoTranslate(const gpSize2d& delta) {}
    void DoRotate(const gpPoint2d& center, Float64 angle) {}
-   virtual gpRect2d GetBoundingBox() const {return gpRect2d(
+   virtual gpRect2d GetBoundingBox() const override {return gpRect2d(
                                      m_Props.Xleft(),m_Props.Ybottom(),
                                      m_Props.Xright(),m_Props.Ytop());}
    bool operator==(const gmTestShape& rhs) const{return m_Props==rhs.m_Props;}
@@ -87,7 +87,7 @@ gmCompositeShape::~gmCompositeShape()
 
 gmIShape* gmCompositeShape::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmCompositeShape> ph(new gmCompositeShape( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmCompositeShape> ph(new gmCompositeShape( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -127,41 +127,50 @@ gpRect2d gmCompositeShape::GetBoundingBox() const
    return tmp;
 }
 
-gmIShape* gmCompositeShape::CreateClippedShape(const gpLine2d& line, gpLine2d::Side side
-                            ) const
+gmIShape* gmCompositeShape::CreateClippedShape(const gpLine2d& line, gpLine2d::Side side) const
 {
-   std::auto_ptr<gmCompositeShape> pclipped(new gmCompositeShape());
+   std::unique_ptr<gmCompositeShape> pclipped(std::make_unique<gmCompositeShape>());
    // cycle through all shapes and clip 'em
    for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
    {
-      std::auto_ptr<gmIShape> tmp((*it).second->CreateClippedShape(line, side));
-      if(tmp.get())
+      std::unique_ptr<gmIShape> tmp((*it).second->CreateClippedShape(line, side));
+      if (tmp.get())
+      {
          pclipped->AddShape(*tmp);
+      }
    }
 
-   if (pclipped->GetNumShapes() > 0)
+   if (0 < pclipped->GetNumShapes())
+   {
       return pclipped.release();
+   }
    else
-      return 0;
+   {
+      return nullptr;
+   }
 }
 
 gmIShape* gmCompositeShape::CreateClippedShape(const gpRect2d& r,
                              gmShapeImp::ClipRegion region
                             ) const
 {
-   std::auto_ptr<gmCompositeShape> pclipped(new gmCompositeShape());
+   std::unique_ptr<gmCompositeShape> pclipped(std::make_unique<gmCompositeShape>());
    // cycle through all shapes and clip 'em
    for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
    {
-      std::auto_ptr<gmIShape> tmp((*it).second->CreateClippedShape(r, region));
+      std::unique_ptr<gmIShape> tmp((*it).second->CreateClippedShape(r, region));
       if(tmp.get())
          pclipped->AddShape(*tmp);
    }
 
-   if (pclipped->GetNumShapes() > 0)
+   if (0 < pclipped->GetNumShapes())
+   {
       return pclipped.release();
+   }
    else
-      return 0;
+   {
+      return nullptr;
+   }
 }
 
 void gmCompositeShape::MakeSolid(bool flag)
@@ -343,7 +352,7 @@ void gmCompositeShape::Dump(dbgDumpContext& os) const
    os << _T("Contained shapes in gmCompositeShape") << endl;
    os << _T("   m_LastKey   = ")<<m_LastKey<<endl;
    os << _T("   # of Shapes = ")<<m_ShapeContainer.size()<<endl;
-   Uint32 i=0;
+   Uint32 i = 0;
    for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
    {
       os<<_T(" Shape Number: ")<<++i<<_T(" Key = ")<<(*it).first<<endl;
@@ -521,12 +530,18 @@ void gmShapeIter::Prev()
 
 gmShapeIter::operator void *() const
 {
-   if (m_pComposite==0)
-      return 0;
-   else if (m_Iterator==m_pComposite->m_ShapeContainer.end())
-      return 0;
+   if (m_pComposite == 0)
+   {
+      return nullptr;
+   }
+   else if (m_Iterator == m_pComposite->m_ShapeContainer.end())
+   {
+      return nullptr;
+   }
    else
+   {
       return (*m_Iterator).second.get();
+   }
 }
 
 gmIShape* gmShapeIter::CurrentShape() const
@@ -681,12 +696,18 @@ void gmConstShapeIter::Prev()
 
 gmConstShapeIter::operator void *() const
 {
-   if (m_pComposite==0)
-      return 0;
-   else if (m_Iterator==m_pComposite->m_ShapeContainer.end())
-      return 0;
+   if (m_pComposite == 0)
+   {
+      return nullptr;
+   }
+   else if (m_Iterator == m_pComposite->m_ShapeContainer.end())
+   {
+      return nullptr;
+   }
    else
+   {
       return (*m_Iterator).second.get();
+   }
 }
 
 const gmIShape* gmConstShapeIter::CurrentShape() const
@@ -776,7 +797,7 @@ bool gmCompositeShape::TestMe(dbgLog& rlog)
    ikey = anglec.AddShape(inner);
    TRY_TESTME( ikey >= 0 ) ;
    sp = anglec.GetShape(ikey);
-   TRY_TESTME( sp != NULL ) ;
+   TRY_TESTME( sp != nullptr ) ;
    sp->MakeSolid(false);  // set inner shape to be hollow (does nothing for gmtestshape)
 
    gmProperties aprops;

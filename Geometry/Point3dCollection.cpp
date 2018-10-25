@@ -44,7 +44,7 @@ STDMETHODIMP CPoint3dCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPoint3dCollection,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -113,7 +113,7 @@ HRESULT CPoint3dCollection::OnAfterRemove ( CollectionIndexType idx)
 void CPoint3dCollection::UnadviseAll()
 {
    // free up all of our connectionpoints on destruct
-   CollectionIndexType cnt=0;
+   CollectionIndexType cnt = 0;
    for (iterator it= begin(); it != end(); it++)
    {
       OnBeforeRemove(*it, cnt++);

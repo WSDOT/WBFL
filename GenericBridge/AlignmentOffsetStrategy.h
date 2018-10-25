@@ -71,21 +71,21 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IOverhangPathStrategy
 public:
-   STDMETHOD(get_Path)(/*[out,retval]*/IPath** path);
+   STDMETHOD(get_Path)(/*[out,retval]*/IPath** path) override;
 
 // IAlignmentOffsetStrategy
 public:
-   STDMETHOD(putref_Alignment)(/*[in]*/IAlignment* alignment);
-	STDMETHOD(put_Offset)(/*[in]*/Float64 offset);
+   STDMETHOD(putref_Alignment)(/*[in]*/IAlignment* alignment) override;
+	STDMETHOD(put_Offset)(/*[in]*/Float64 offset) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__ALIGNMENTOFFSETSTRATEGY_H_

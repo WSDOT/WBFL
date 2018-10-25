@@ -97,36 +97,36 @@ BEGIN_COM_MAP(CDisplayListImpl)
 END_COM_MAP()
 
    // iDisplayList Implementation
-   STDMETHOD_(void,SetDisplayMgr)(iDisplayMgr* pDispMgr);
-   STDMETHOD_(void,GetDisplayMgr)(iDisplayMgr** dispMgr);
+   STDMETHOD_(void,SetDisplayMgr)(iDisplayMgr* pDispMgr) override;
+   STDMETHOD_(void,GetDisplayMgr)(iDisplayMgr** dispMgr) override;
 
-   STDMETHOD_(void,SetID)(IDType id);
-   STDMETHOD_(IDType,GetID)();
+   STDMETHOD_(void,SetID)(IDType id) override;
+   STDMETHOD_(IDType,GetID)() override;
 
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO);
-   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj);
-   STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj);
-   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access);
-   STDMETHOD_(void,Clear)();
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)();
+   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) override;
+   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj) override;
+   STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj) override;
+   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) override;
+   STDMETHOD_(void,Clear)() override;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() override;
 
-   STDMETHOD_(void,FindDisplayObjects)(CRect rect,     DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,FindDisplayObjects)(CPoint point,   DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs);
+   STDMETHOD_(void,FindDisplayObjects)(CRect rect,     DisplayObjectContainer* dispObjs) override;
+   STDMETHOD_(void,FindDisplayObjects)(CPoint point,   DisplayObjectContainer* dispObjs) override;
+   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs) override;
 
-   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC,bool bSkipSelected);
-   STDMETHOD_(void,HideDisplayObjects)(bool bHide);
+   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC,bool bSkipSelected) override;
+   STDMETHOD_(void,HideDisplayObjects)(bool bHide) override;
 
-   STDMETHOD_(void,GetWorldExtents)(ISize2d* *ext);
+   STDMETHOD_(void,GetWorldExtents)(ISize2d* *ext) override;
 
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWells)(CDC* pDC);
+   STDMETHOD_(void,DrawGravityWells)(CDC* pDC) override;
 #endif 
 
    // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayListEvents* pEventSink);
-   STDMETHOD_(void,UnregisterEventSink)();
-   STDMETHOD_(void,GetEventSink)(iDisplayListEvents** pEventSink);
+   STDMETHOD_(void,RegisterEventSink)(iDisplayListEvents* pEventSink) override;
+   STDMETHOD_(void,UnregisterEventSink)() override;
+   STDMETHOD_(void,GetEventSink)(iDisplayListEvents** pEventSink) override;
 
 
 protected:

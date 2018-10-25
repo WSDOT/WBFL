@@ -1930,7 +1930,165 @@ library WBFLGeometry
       HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
    };
 
-	[
+   [
+      object,
+      uuid(08EA1719-7EF6-44EC-9B49-FF4E967DF74A),
+      oleautomation,
+      helpstring("IBulbTee2 Interface"),
+      helpcontext(IDH_IBulbTee),
+      pointer_default(unique)
+   ]
+   interface IBulbTee2 : IUnknown
+   {
+      [propget, helpstring("property W1"), helpcontext(IDH_IBulbTee_W1)]
+      HRESULT W1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W1"), helpcontext(IDH_IBulbTee_W1)]
+      HRESULT W1([in] Float64 newVal);
+
+      [propget, helpstring("property W2"), helpcontext(IDH_IBulbTee_W2)]
+      HRESULT W2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W2"), helpcontext(IDH_IBulbTee_W2)]
+      HRESULT W2([in] Float64 newVal);
+
+      [propget, helpstring("property W3"), helpcontext(IDH_IBulbTee_W3)]
+      HRESULT W3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W3"), helpcontext(IDH_IBulbTee_W3)]
+      HRESULT W3([in] Float64 newVal);
+
+      [propget, helpstring("property W4"), helpcontext(IDH_IBulbTee_W4)]
+      HRESULT W4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W4"), helpcontext(IDH_IBulbTee_W4)]
+      HRESULT W4([in] Float64 newVal);
+
+      [propget, helpstring("property W5"), helpcontext(IDH_IBulbTee_W5)]
+      HRESULT W5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W5"), helpcontext(IDH_IBulbTee_W5)]
+      HRESULT W5([in] Float64 newVal);
+
+      [propget, helpstring("property W6"), helpcontext(IDH_IBulbTee_W5)]
+      HRESULT W6([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property W6"), helpcontext(IDH_IBulbTee_W5)]
+      HRESULT W6([in] Float64 newVal);
+
+      [propget, helpstring("property C1"), helpcontext(IDH_IBulbTee_C1)]
+      HRESULT C1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property C1"), helpcontext(IDH_IBulbTee_C1)]
+      HRESULT C1([in] Float64 newVal);
+
+      [propget, helpstring("property C2"), helpcontext(IDH_IBulbTee_C1)]
+      HRESULT C2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property C2"), helpcontext(IDH_IBulbTee_C1)]
+      HRESULT C2([in] Float64 newVal);
+
+      [propget, helpstring("property D1"), helpcontext(IDH_IBulbTee_D1)]
+      HRESULT D1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D1"), helpcontext(IDH_IBulbTee_D1)]
+      HRESULT D1([in] Float64 newVal);
+
+      [propget, helpstring("property D2"), helpcontext(IDH_IBulbTee_D2)]
+      HRESULT D2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D2"), helpcontext(IDH_IBulbTee_D2)]
+      HRESULT D2([in] Float64 newVal);
+
+      [propget, helpstring("property D3"), helpcontext(IDH_IBulbTee_D3)]
+      HRESULT D3([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D3"), helpcontext(IDH_IBulbTee_D3)]
+      HRESULT D3([in] Float64 newVal);
+
+      [propget, helpstring("property D4"), helpcontext(IDH_IBulbTee_D4)]
+      HRESULT D4([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D4"), helpcontext(IDH_IBulbTee_D4)]
+      HRESULT D4([in] Float64 newVal);
+
+      [propget, helpstring("property D5"), helpcontext(IDH_IBulbTee_D5)]
+      HRESULT D5([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D5"), helpcontext(IDH_IBulbTee_D5)]
+      HRESULT D5([in] Float64 newVal);
+
+      [propget, helpstring("property D6"), helpcontext(IDH_IBulbTee_D6)]
+      HRESULT D6([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D6"), helpcontext(IDH_IBulbTee_D6)]
+      HRESULT D6([in] Float64 newVal);
+
+      [propget, helpstring("property D7"), helpcontext(IDH_IBulbTee_D7)]
+      HRESULT D7([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property D7"), helpcontext(IDH_IBulbTee_D7)]
+      HRESULT D7([in] Float64 newVal);
+
+      [propget, helpstring("property T1"), helpcontext(IDH_IBulbTee_T1)]
+      HRESULT T1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T1"), helpcontext(IDH_IBulbTee_T1)]
+      HRESULT T1([in] Float64 newVal);
+
+      [propget, helpstring("property T2"), helpcontext(IDH_IBulbTee_T2)]
+      HRESULT T2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property T2"), helpcontext(IDH_IBulbTee_T2)]
+      HRESULT T2([in] Float64 newVal);
+      
+      [propget, helpstring("property n1"), helpcontext(IDH_IBulbTee_T1)]
+      HRESULT n1([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property n1"), helpcontext(IDH_IBulbTee_T1)]
+      HRESULT n1([in] Float64 newVal);
+
+      [propget, helpstring("property n2"), helpcontext(IDH_IBulbTee_T2)]
+      HRESULT n2([out, retval] Float64 *pVal);
+
+      [propput, helpstring("property n2"), helpcontext(IDH_IBulbTee_T2)]
+      HRESULT n2([in] Float64 newVal);
+
+      [propget, helpstring("property HookPoint"), helpcontext(IDH_IBulbTee_HookPoint)]
+      HRESULT HookPoint([out, retval] IPoint2d** hookPnt);
+
+      [propputref, helpstring("property HookPoint"), helpcontext(IDH_IBulbTee_HookPoint)]
+      HRESULT HookPoint([in] IPoint2d* hookPnt);
+
+      [propget, helpstring("property MinHeight"), helpcontext(IDH_IBulbTee_Height)]
+      HRESULT MinHeight([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property MaxHeight"), helpcontext(IDH_IBulbTee_Height)]
+      HRESULT MaxHeight([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property CLHeight"), helpcontext(IDH_IBulbTee_Height)]
+      HRESULT CLHeight([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property AvgWebWidth"), helpcontext(IDH_IBulbTee_AvgWebWidth)]
+      HRESULT AvgWebWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property BottomFlangeWidth"), helpcontext(IDH_IBulbTee_BottomFlangeWidth)]
+      HRESULT BottomFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property TopFlangeWidth"), helpcontext(IDH_IBulbTee_TopFlangeWidth)]
+      HRESULT TopFlangeWidth([out, retval] Float64 *pVal);
+
+      [propget, helpstring("property XYPosition"), helpcontext(IDH_IBulbTee_XYPosition)]
+      HRESULT XYPosition([out, retval] IXYPosition* *pVal);
+
+      [propget, helpstring("property Shape"), helpcontext(IDH_IBulbTee_Shape)]
+      HRESULT Shape([out, retval] IShape* *pVal);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/]
+      HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pStrStg);
+   };
+   
+   [
 		object,
 		uuid(754A6B13-2256-41d9-8D48-B40E95C9A117),
 		oleautomation,
@@ -3591,7 +3749,20 @@ library WBFLGeometry
       interface IStructuredStorage2;
         // interface IPersist;
 	};
-	[
+   [
+      uuid(05EB3E1B-4844-43F3-A104-D85B204DEFE2),
+      helpstring("BulbTee2 Class"),
+      helpcontext(IDH_IBulbTee)
+   ]
+   coclass BulbTee2
+   {
+      [default] interface IBulbTee2;
+      interface IShape;
+      interface IXYPosition;
+      interface IStructuredStorage2;
+      // interface IPersist;
+   };
+   [
 		uuid(2558CFC2-03CE-11D3-8CDF-EBFB6612CA35),
 		helpstring("TrafficBarrier Class"),
 		helpcontext(IDH_ITrafficBarrier)

@@ -47,7 +47,7 @@ public:
 	enum { IDD = IDD_CUSTOM_REPORTS_PAGE };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 
@@ -63,7 +63,7 @@ protected:
    afx_msg void OnLvnItemchangedCustomReportList(NMHDR *pNMHDR, LRESULT *pResult);
    afx_msg void OnNMDblclkCustomReportList(NMHDR *pNMHDR, LRESULT *pResult);
 
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
 
    void EditSelectedReport();
 public:

@@ -33,7 +33,7 @@
 #include <GraphManager\GraphBuilder.h>
 #include <IGraphManager.h>
 
-#include <boost\shared_ptr.hpp>
+
 #include <map>
 
 class CEAFGraphView;
@@ -64,7 +64,7 @@ public:
 // Implementation
 public:
    CEAFGraphView* GetGraphView();
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder();
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder();
 
 protected:
 	virtual ~CEAFGraphChildFrame();
@@ -83,21 +83,21 @@ protected:
  
 
    // pointer to the graph manager
-   // one of these is NULL, the other is not
+   // one of these is nullptr, the other is not
    CGraphManager* m_pGraphMgr;  // for use with regular MFC Doc/View
    IGraphManager* m_pIGraphMgr; // for use with Agent/Broker
 
-   boost::shared_ptr<CGraphBuilder> m_pMyGraphBuilder; 
+   std::shared_ptr<CGraphBuilder> m_pMyGraphBuilder;
 
 protected:
    // New version of MFC's CWnd::RepositionBars... deals with module state issues
 	void MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nIDLeftOver,
-		UINT nFlag = reposDefault, LPRECT lpRectParam = NULL,
-		LPCRECT lpRectClient = NULL, BOOL bStretch = TRUE);
+		UINT nFlag = reposDefault, LPRECT lpRectParam = nullptr,
+		LPCRECT lpRectClient = nullptr, BOOL bStretch = TRUE);
 
    // returns a graph builder from the graph manager (not the close stored in m_pMyGraphBuilders)
    // This graph builder does not have access to the actual graph control window.
-   boost::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index);
+   std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index);
 
    friend CEAFGraphView; 
 };

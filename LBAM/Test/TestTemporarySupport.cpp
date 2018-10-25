@@ -190,7 +190,7 @@ void CTestTemporarySupport::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestSSM"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( psm2.QueryInterface(&piss2), S_OK);
 
          // Load 

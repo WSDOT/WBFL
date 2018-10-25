@@ -56,7 +56,7 @@ void CTestLocate::Test()
    TRY_TEST(locate.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(locate);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
@@ -64,8 +64,8 @@ void CTestLocate::Test()
    CComPtr<IPoint2d> pnt;
    Float64 x,y;
 
-   points->Add(1,0.0,0.0,NULL);
-   points->Add(2,10.0,0.0,NULL);
+   points->Add(1,0.0,0.0,nullptr);
+   points->Add(2,10.0,0.0,nullptr);
 
    // Locate ByDistDir
    TRY_TEST(locate->ByDistDir(1,2,10.0,CComVariant(PI_OVER_2),0.00),COGO_E_POINTALREADYDEFINED);
@@ -142,8 +142,8 @@ void CTestLocate::Test()
 
    // Locate ByDistAngle
    points->Clear();
-   points->Add(1,10,10,NULL);
-   points->Add(2,0,0,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,0,0,nullptr);
 
    TRY_TEST(locate->ByDistAngle(1,1,2,10.0,CComVariant(M_PI),0.0),COGO_E_POINTALREADYDEFINED);
    TRY_TEST(locate->ByDistAngle(3,-1,2,10.0,CComVariant(M_PI),0.0),COGO_E_POINTNOTFOUND);
@@ -192,8 +192,8 @@ void CTestLocate::Test()
 
    // Locate ByDistDefAngle
    points->Clear();
-   points->Add(1,10,10,NULL);
-   points->Add(2,0,0,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,0,0,nullptr);
 
    TRY_TEST(locate->ByDistDefAngle(1,1,2,10.0,CComVariant(M_PI),0.0),COGO_E_POINTALREADYDEFINED);
    TRY_TEST(locate->ByDistDefAngle(3,-1,2,10.0,CComVariant(M_PI),0.0),COGO_E_POINTNOTFOUND);
@@ -242,8 +242,8 @@ void CTestLocate::Test()
 
    // Locate PointOnLine
    points->Clear();
-   points->Add(1,10,10,NULL);
-   points->Add(2,20,20,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,20,20,nullptr);
 
    TRY_TEST(locate->PointOnLine(3,1,2,20.0,0.0),S_OK);
    pnt.Release();
@@ -284,8 +284,8 @@ void CTestLocate::Test()
    // Test ParallelLineSegment and ParallelLineByPoints
    //
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,20,20,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,20,20,nullptr);
    CComPtr<IPoint2d> p1, p2;
    points->get_Item(1,&p1);
    points->get_Item(2,&p2);
@@ -295,7 +295,7 @@ void CTestLocate::Test()
    model->get_LineSegments(&lines);
 
    lines->Clear();
-   lines->Add(1,p1,p2,NULL);
+   lines->Add(1,p1,p2,nullptr);
 
    TRY_TEST(locate->ParallelLineSegment(1,3,4,1,5.0),COGO_E_LINESEGMENTALREADYDEFINED);
    TRY_TEST(locate->ParallelLineSegment(2,1,4,1,5.0),COGO_E_POINTALREADYDEFINED);

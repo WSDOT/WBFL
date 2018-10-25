@@ -113,10 +113,10 @@ HRESULT CDiaphragmLine::LocatePoints()
    leftPath->Intersect( m_Line,p,&m_Point[etStart]);
    rightPath->Intersect(m_Line,p,&m_Point[etEnd]);
 
-   ATLASSERT(m_Point[etStart] != NULL);
-   ATLASSERT(m_Point[etEnd]   != NULL);
+   ATLASSERT(m_Point[etStart] != nullptr);
+   ATLASSERT(m_Point[etEnd]   != nullptr);
 
-   if ( m_Point[etStart] == NULL || m_Point[etEnd] == NULL )
+   if ( m_Point[etStart] == nullptr || m_Point[etEnd] == nullptr )
       return E_FAIL;
 
    //

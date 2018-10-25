@@ -268,7 +268,7 @@ private:
    Float64 GetBestFitScale(Float64 refScale);
 
    void MakeCopy(const grlibPointMapper& rOther);
-   virtual void MakeAssignment(const grlibPointMapper& rOther);
+   void MakeAssignment(const grlibPointMapper& rOther);
 
    // GROUP: ACCESS
 

@@ -34,7 +34,7 @@
 #include <Lrfd\PsStrand.h>
 #include <System\SingletonKiller.h>
 #include <Lrfd\VersionMgr.h>
-#include <boost\shared_ptr.hpp>
+
 
 // PROJECT INCLUDES
 //
@@ -123,8 +123,8 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdStrandPool* ms_pInstance;
-   static std::map<Int32,boost::shared_ptr<matPsStrand> > ms_USStrand;
-   static std::map<Int32,boost::shared_ptr<matPsStrand> > ms_SIStrand;
+   static std::map<Int32, std::shared_ptr<matPsStrand> > ms_USStrand;
+   static std::map<Int32, std::shared_ptr<matPsStrand> > ms_SIStrand;
 
    typedef sysSingletonKillerT<lrfdStrandPool> Killer;
    friend Killer;
@@ -138,7 +138,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdStrandPool(const lrfdStrandPool&);
-   lrfdStrandPool& operator=(const lrfdStrandPool&);
+   lrfdStrandPool& operator=(const lrfdStrandPool&) = delete;
 
    virtual ~lrfdStrandPool();
 
@@ -270,7 +270,7 @@ protected:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   virtual void MakeAssignment(const lrfdStrandIter& rOther);
+   void MakeAssignment(const lrfdStrandIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

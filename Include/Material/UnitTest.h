@@ -80,7 +80,7 @@ private:
 
    // Prevent accidental copying and assignment
    matUnitTest(const matUnitTest&);
-   matUnitTest& operator=(const matUnitTest&);
+   matUnitTest& operator=(const matUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

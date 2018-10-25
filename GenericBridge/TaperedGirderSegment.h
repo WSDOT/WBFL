@@ -46,9 +46,9 @@ class ATL_NO_VTABLE CTaperedGirderSegment :
 public:
    CTaperedGirderSegment()
 	{
-      m_pSSMbr       = NULL;
-      m_pPrevSegment = NULL;
-      m_pNextSegment = NULL;
+      m_pSSMbr       = nullptr;
+      m_pPrevSegment = nullptr;
+      m_pNextSegment = nullptr;
 	}
 
    HRESULT FinalConstruct();
@@ -92,49 +92,49 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr);
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr);
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine);
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine);
-   STDMETHOD(putref_PrevSegment)(ISegment* segment);
-   STDMETHOD(get_PrevSegment)(ISegment** segment);
-   STDMETHOD(putref_NextSegment)(ISegment* segment);
-   STDMETHOD(get_NextSegment)(ISegment** segment);
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection);
-	STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal);
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal);
-   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal);
-   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet);
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet);
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override;
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override;
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override;
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override;
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override;
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override;
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override;
+   STDMETHOD(get_NextSegment)(ISegment** segment) override;
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection) override;
+	STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape) override;
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override;
+	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override;
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal) override;
+   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal) override;
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal) override;
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override;
+	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override;
 
 // ITaperedGirderSegment
 public:
-	STDMETHOD(AddShape)(IShape* pStartShape,IShape* pEndShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial);
-   STDMETHOD(get_ShapeCount)(IndexType* nShapes);
-   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material);
-   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material);
+	STDMETHOD(AddShape)(IShape* pStartShape,IShape* pEndShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial) override;
+   STDMETHOD(get_ShapeCount)(IndexType* nShapes) override;
+   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material) override;
+   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material) override;
 
 // IItemData
 public:
-   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data);
-   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data);
-   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name);
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count);
+   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
+   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
+   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
    Float64 GetSuperstructureMemberLength();

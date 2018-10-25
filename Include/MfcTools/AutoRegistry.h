@@ -29,7 +29,7 @@
 class MFCTOOLSCLASS CAutoRegistry
 {
 public:
-   CAutoRegistry(LPCTSTR lpszProfile,CWinApp* pApp=NULL);
+   CAutoRegistry(LPCTSTR lpszProfile,CWinApp* pApp=nullptr);
    ~CAutoRegistry();
 
 private:

@@ -83,52 +83,52 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRCBeam
 public:
-	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Eps)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Eps)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_h)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_h)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpe)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpe)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_dps)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_dps)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_ds)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_ds)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_FcBeam)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_FcBeam)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_FcSlab)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_FcSlab)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fpu)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fpu)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Aps)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Aps)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_As)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_As)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_hf)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_hf)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_bw)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_bw)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_b)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_b)(/*[in]*/ Float64 newVal);
+	STDMETHOD(get_Es)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Es)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Eps)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Eps)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_h)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_h)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpe)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpe)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_dps)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_dps)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_ds)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_ds)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_FcBeam)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_FcBeam)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_FcSlab)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_FcSlab)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fpu)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fpu)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Aps)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Aps)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_fy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_fy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_As)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_As)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_hf)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_hf)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_bw)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_bw)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_b)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_b)(/*[in]*/ Float64 newVal) override;
 
 // ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal );
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal );
+		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
+		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__RCBEAM_H_

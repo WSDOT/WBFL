@@ -91,21 +91,21 @@ END_COM_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 
 // IDependOnLoadCombinationAnalysisContext
-	STDMETHOD(Initialize)(/*[in]*/IUnknown* context);
+	STDMETHOD(Initialize)(/*[in]*/IUnknown* context) override;
 
 // ILoadCombinationAnalysisContextEvents 
-   STDMETHOD(OnCombinationChanged)(/*[in]*/ComboType ctype, /*[in]*/ BSTR combination);
-   STDMETHOD(OnResultsChanged)();
+   STDMETHOD(OnCombinationChanged)(/*[in]*/ComboType ctype, /*[in]*/ BSTR combination) override;
+   STDMETHOD(OnResultsChanged)() override;
 
 // ISupportProgressMonitor
-	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
+	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie) override;
 
 // IGetActiveLoadCases
-	STDMETHOD(GetActiveLoadCases)(/*[out,retval]*/IBstrArray* *loadCases);
+	STDMETHOD(GetActiveLoadCases)(/*[out,retval]*/IBstrArray* *loadCases) override;
 
 private:
    void AssertValid();

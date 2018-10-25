@@ -54,7 +54,7 @@ struct FtAxle
 struct FixedTruck
 {
    // use an initializer function 
-   void Initialize(IVehicularLoad* pVl, bool applyImpact, ILiveLoadConfiguration* config=NULL);
+   void Initialize(IVehicularLoad* pVl, bool applyImpact, ILiveLoadConfiguration* config=nullptr);
 
    // Evaluate the primary truck response at a position along an influence line
    // This function attempts to apply all possible axles and returns a list of the axles that were

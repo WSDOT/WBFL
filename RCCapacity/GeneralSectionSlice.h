@@ -75,19 +75,19 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IGeneralSectionSlice
 public:
-   STDMETHOD(InitSlice)(/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 strain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial);
-   STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea);
-	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG);
-	STDMETHOD(get_Strain)(/*[out,retval]*/Float64* pStrain);
-	STDMETHOD(get_ForegroundStress)(/*[out,retval]*/Float64* pfgStress);
-	STDMETHOD(get_BackgroundStress)(/*[out,retval]*/Float64* pbgStress);
-   STDMETHOD(get_ForegroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial);
-   STDMETHOD(get_BackgroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial);
-   STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape);
+   STDMETHOD(InitSlice)(/*[in]*/IShape* pShape,/*[in]*/Float64 A,/*[in]*/Float64 cgX,/*[in]*/Float64 cgY,/*[in]*/Float64 strain,/*[in]*/Float64 fgStress,/*[in]*/Float64 bgStress,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial) override;
+   STDMETHOD(get_Area)(/*[out,retval]*/Float64* pArea) override;
+	STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pCG) override;
+	STDMETHOD(get_Strain)(/*[out,retval]*/Float64* pStrain) override;
+	STDMETHOD(get_ForegroundStress)(/*[out,retval]*/Float64* pfgStress) override;
+	STDMETHOD(get_BackgroundStress)(/*[out,retval]*/Float64* pbgStress) override;
+   STDMETHOD(get_ForegroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial) override;
+   STDMETHOD(get_BackgroundMaterial)(/*[out,retval]*/IStressStrain** pMaterial) override;
+   STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape) override;
 };
 
 #endif //__GeneralSectionSlice_H_

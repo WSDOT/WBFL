@@ -59,7 +59,7 @@ bool grGraphTool::TextOutRotated(HDC hDC, LONG x, LONG y, LONG rotation,
 
    HFONT new_font = CreateRotatedFont( hDC, rotation,nPointSize, lpszFacename);
    CHECK(new_font);
-   if(new_font==NULL) return false;
+   if(new_font==nullptr) return false;
 
    int old_bk = ::SetBkMode(hDC,TRANSPARENT);
    HGDIOBJ old_font = ::SelectObject(hDC, new_font);
@@ -97,7 +97,7 @@ bool grGraphTool::TextOutRotated(HDC hDC, LONG x, LONG y, LONG rotation,
 
 HFONT grGraphTool::CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCTSTR lpszFaceName)
 {
-   CHECK(hDC!=NULL);
+   CHECK(hDC!=nullptr);
 
    if (rotation>3600 || rotation<0) 
       rotation %= 3600; 
@@ -189,7 +189,7 @@ void grGraphTool::CalculateNiceRange(const Float64 originalMin, const Float64 or
 
 //     test each scale and keep the largest one that works
 
-   for (CollectionIndexType i=0; i<nscale; i++)
+   for (CollectionIndexType i = 0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
        nmin = (LONG)floor(niceMin/test_scale);

@@ -43,7 +43,7 @@ STDMETHODIMP CStrandGrid::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStrandGrid
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -114,7 +114,7 @@ STDMETHODIMP CStrandGrid::AddGridPoints(/*[in]*/IPoint2dCollection* points)
 
    m_GridPoints.reserve(cur_cnt + cnt);
 
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       CComPtr<IPoint2d> point;
       points->get_Item(i, &point);
@@ -459,9 +459,9 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
      return E_INVALIDARG;
   }
 
-  StrandIndexType idx=0;
+  StrandIndexType idx = 0;
   StrandIndexType fll;
-  for (CollectionIndexType gridx=0; gridx<=gridIndex; gridx++)
+  for (CollectionIndexType gridx = 0; gridx<=gridIndex; gridx++)
   {
      maxFill->get_Item(gridx, &fll);
 
@@ -1448,17 +1448,17 @@ STDMETHODIMP CStrandGrid::GetDebondSections(/*[out]*/IDblArray** arrLeft,/*[out]
    objLeft.CoCreateInstance(CLSID_DblArray);
    objRight.CoCreateInstance(CLSID_DblArray);
 
-   std::set<DebondSection>::iterator iter;
+   std::set<DebondSection>::const_iterator iter;
    for ( iter = m_LeftSections.begin(); iter != m_LeftSections.end(); iter++ )
    {
-      DebondSection& section = *iter;
+      const DebondSection& section = *iter;
       objLeft->Add( section.Location );
    }
 
    std::set<DebondSection>::reverse_iterator riter;
    for ( riter = m_RightSections.rbegin(); riter != m_RightSections.rend(); riter++ )
    {
-      DebondSection& section = *riter;
+      const DebondSection& section = *riter;
       objRight->Add( section.Location );
    }
 
@@ -1487,7 +1487,7 @@ STDMETHODIMP CStrandGrid::GetDebondAtLeftSection(/*[in]*/SectionIndexType sectio
 
    ATLASSERT(iter != m_LeftSections.end() && idx == sectionIdx );
 
-   DebondSection& rsection = *iter;
+   DebondSection& rsection = const_cast<DebondSection&>(*iter); // be sure not to change Location member, otherwise sort order of set will be ruined
 
    return GetDebondAtSection(rsection,strandIndexes);
 }
@@ -1508,7 +1508,7 @@ STDMETHODIMP CStrandGrid::GetDebondAtRightSection(/*[in]*/SectionIndexType secti
 
    ATLASSERT(riter != m_RightSections.rend() && idx == sectionIdx );
  
-   DebondSection& rsection = *riter;
+   DebondSection& rsection = const_cast<DebondSection&>(*riter); // do not change Location member or sort order of container will be ruined
 
    return GetDebondAtSection(rsection,strandIndexes);
 }
@@ -1547,7 +1547,7 @@ void CStrandGrid::AddDebondSection(GridIndexType gridIdx,Float64 left,Float64 ri
       std::set<DebondSection>::iterator found = m_LeftSections.find(target);
       if ( found != m_LeftSections.end() )
       {
-         DebondSection& section = *found;
+         DebondSection& section = const_cast<DebondSection&>(*found);
          section.GridPoints.insert(gridIdx);
       }
       else
@@ -1566,7 +1566,7 @@ void CStrandGrid::AddDebondSection(GridIndexType gridIdx,Float64 left,Float64 ri
       std::set<DebondSection>::iterator found = m_RightSections.find(target);
       if ( found != m_RightSections.end() )
       {
-         DebondSection& section = *found;
+         DebondSection& section = const_cast<DebondSection&>(*found);
          section.GridPoints.insert(gridIdx);
       }
       else
@@ -1593,7 +1593,7 @@ void CStrandGrid::ValidateGrid()
       m_GridBoundingBox->SetEmpty();
       m_MaxFill->Clear();
       m_MaxFill->Reserve(m_GridPoints.size());
-      m_MaxCount=0;
+      m_MaxCount = 0;
 
       GridCollectionIterator begin(m_GridPoints.begin());
       GridCollectionIterator iter(begin);
@@ -1710,7 +1710,7 @@ HRESULT CStrandGrid::ValidateFill()
                std::set<Row>::iterator found = m_Rows.find(target);
                if ( found != m_Rows.end() )
                {
-                  Row& row = *found;
+                  Row& row = const_cast<Row&>(*found);
                   row.GridPoints.push_back(gridPointIdx);
                }
                else

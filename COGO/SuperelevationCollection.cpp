@@ -63,7 +63,7 @@ private:
 // CSuperelevationCollection
 HRESULT CSuperelevationCollection::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
    return S_OK;
 }
 
@@ -79,7 +79,7 @@ STDMETHODIMP CSuperelevationCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISuperelevationCollection,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -108,7 +108,7 @@ STDMETHODIMP CSuperelevationCollection::putref_Surface(ISurface* pSurface)
    get__EnumSuperelevations(&enumSuperelevations);
 
    CComPtr<ISuperelevation> superelevation;
-   while ( enumSuperelevations->Next(1,&superelevation,NULL) != S_FALSE )
+   while ( enumSuperelevations->Next(1,&superelevation,nullptr) != S_FALSE )
    {
       superelevation->putref_Surface(m_pSurface);
       superelevation.Release();
@@ -172,7 +172,7 @@ STDMETHODIMP CSuperelevationCollection::GetSuperelevation(VARIANT varStation,ISu
 {
    // searches for the Superelevation that contains the specified station
    CHECK_RETOBJ(superelevation);
-   *superelevation = NULL;
+   *superelevation = nullptr;
 
    CComPtr<IStation> station;
    HRESULT hr = cogoUtil::StationFromVariant(varStation,false,&station);
@@ -236,7 +236,7 @@ STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* superelevation)
 
 STDMETHODIMP CSuperelevationCollection::Add(VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2,ISuperelevation* *pSuperelevation)
 {
-   if ( pSuperelevation != NULL )
+   if ( pSuperelevation != nullptr )
    {
       CHECK_RETOBJ(pSuperelevation);
    }
@@ -250,7 +250,7 @@ STDMETHODIMP CSuperelevationCollection::Add(VARIANT varBeginStation,VARIANT varB
    if ( FAILED(hr) )
       return hr;
 
-   if ( pSuperelevation != NULL )
+   if ( pSuperelevation != nullptr )
    {
       (*pSuperelevation) = newSuperelevation;
       (*pSuperelevation)->AddRef();
@@ -294,7 +294,7 @@ STDMETHODIMP CSuperelevationCollection::Clone(ISuperelevationCollection* *clone)
    get__EnumSuperelevations(&enumSuperelevations);
 
    CComPtr<ISuperelevation> superelevation;
-   while ( enumSuperelevations->Next(1,&superelevation,NULL) != S_FALSE )
+   while ( enumSuperelevations->Next(1,&superelevation,nullptr) != S_FALSE )
    {
       CComPtr<ISuperelevation> superelevationClone;
       superelevation->Clone(&superelevationClone);
@@ -336,7 +336,7 @@ STDMETHODIMP CSuperelevationCollection::get__EnumSuperelevations(IEnumSupereleva
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -458,7 +458,7 @@ HRESULT CSuperelevationCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
 //   if ( FAILED(hr) )
 //      return hr;
 //
-//   if ( m_pProfile == NULL )
+//   if ( m_pProfile == nullptr )
 //   {
 //      ZoneIndexType staEqnZoneIdx;
 //      (*station)->get_StationZoneIndex(&staEqnZoneIdx);

@@ -268,6 +268,8 @@ bool Test_GetDesignLaneWidth(dbgLog& rlog)
    TESTME_PROLOGUE("lrfdUtility - Test_GetDesignLaneWidth");
    lrfdAutoVersion av;
 
+   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
+
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
    TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(10.,unitMeasure::Feet) ), ::ConvertToSysUnits( 10., unitMeasure::Feet ) ) );
    TRY_TESTME( IsEqual( lrfdUtility::GetDesignLaneWidth(::ConvertToSysUnits(18.,unitMeasure::Feet) ), ::ConvertToSysUnits( 12., unitMeasure::Feet ) ) );
@@ -290,6 +292,8 @@ bool Test_GetNumDesignLanes(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdUtility - Test_GetNumDesignLanes");
    lrfdAutoVersion av;
+
+   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
 
    lrfdVersionMgr::SetUnits( lrfdVersionMgr::US );
    TRY_TESTME( lrfdUtility::GetNumDesignLanes(::ConvertToSysUnits(10.,unitMeasure::Feet) ) == 1 );

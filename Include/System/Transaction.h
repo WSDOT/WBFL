@@ -117,7 +117,7 @@ private:
    txnTransaction(const txnTransaction& /*rOther*/); 
 
    // GROUP: OPERATORS
-   txnTransaction& operator = (const txnTransaction& /*rOther*/);
+   txnTransaction& operator = (const txnTransaction& /*rOther*/) = delete;
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS

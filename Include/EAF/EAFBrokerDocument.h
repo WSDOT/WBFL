@@ -67,12 +67,12 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFBrokerDocument)
 	protected:
-   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName);
-   virtual void OnCloseDocument();
-   virtual void DeleteContents();
-   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo);
+   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+   virtual void OnCloseDocument() override;
+   virtual void DeleteContents() override;
+   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) override;
    // called after the document data is created/loaded
-   virtual void OnCreateFinalize();
+   virtual void OnCreateFinalize() override;
 
 	//}}AFX_VIRTUAL
 
@@ -81,8 +81,8 @@ public:
 	virtual ~CEAFBrokerDocument();
 
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+	virtual void AssertValid() const override;
+	virtual void Dump(CDumpContext& dc) const override;
 #endif
 
    void BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport);
@@ -115,10 +115,10 @@ public:
    virtual void ShowCustomReportDefinitionHelp() = 0;
 
    // Causes the documentation map file to be loaded
-   virtual void LoadDocumentationMap();
+   virtual void LoadDocumentationMap() override;
 
    // Returns the full documentation URL for the given URL
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL) override;
 
    // Returns TRUE if the command id (nID) is for a report.
    BOOL IsReportCommand(UINT nID,BOOL bQuickReport);
@@ -153,7 +153,7 @@ protected:
    virtual CATID GetExtensionAgentCategoryID();
    
    /// called when a document is created (New or Open)
-   virtual BOOL Init(); 
+   virtual BOOL Init() override; 
 
    /// called during initialization
    virtual BOOL LoadAgents(); 
@@ -173,11 +173,11 @@ protected:
 
    // Called by the framework to give plug-ins the opportunity to
    // integrate with the user interface
-   virtual void DoIntegrateWithUI(BOOL bIntegrate);
+   virtual void DoIntegrateWithUI(BOOL bIntegrate) override;
 
    // Called by the framework to give plug-ins an opportunity to process command line options
    // Return TRUE if the command line options where handled
-   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo);
+   virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo) override;
 
    // creates the broker
    virtual BOOL CreateBroker();
@@ -187,8 +187,8 @@ protected:
 
    // Called by the base-class when thte document is to be loaded
    // and saved. Calls Load and Save on the IBrokerPersist interface
-   virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad);
-   virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave);
+   virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad) override;
+   virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave) override;
 
    // Application logging
    virtual CString GetLogFileName(); // returns the log file name (AppName.log is default)
@@ -221,7 +221,7 @@ protected:
    void OnGraph(UINT nID);
    virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
 
-   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = NULL);
+   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = nullptr) override;
 
 protected:  
 	//{{AFX_MSG(CEAFBrokerDocument)

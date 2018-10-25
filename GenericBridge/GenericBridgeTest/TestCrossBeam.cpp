@@ -69,27 +69,27 @@ void CTestCrossBeam::Test()
    //pier->get_TransversePierDescription(&tpd);
 
    //CComPtr<ICrossBeam> crossBeam;
-   //TRY_TEST(tpd->get_CrossBeam(NULL),E_POINTER);
+   //TRY_TEST(tpd->get_CrossBeam(nullptr),E_POINTER);
    //TRY_TEST(tpd->get_CrossBeam(&crossBeam),S_OK);
-   //TRY_TEST(crossBeam != NULL,true);
+   //TRY_TEST(crossBeam != nullptr,true);
 
    //Float64 length;
-   //TRY_TEST(crossBeam->get_Length(NULL),E_POINTER);
+   //TRY_TEST(crossBeam->get_Length(nullptr),E_POINTER);
    //TRY_TEST(crossBeam->get_Length(&length),S_OK);
    //TRY_TEST(IsEqual(length,0.0),true);
 
    //CollectionIndexType count;
-   //TRY_TEST(crossBeam->get_SegmentCount(NULL),E_POINTER);
+   //TRY_TEST(crossBeam->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(crossBeam->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);
 
    //VARIANT_BOOL bFractional;
-   //TRY_TEST(crossBeam->get_Fractional(NULL),E_POINTER);
+   //TRY_TEST(crossBeam->get_Fractional(nullptr),E_POINTER);
    //TRY_TEST(crossBeam->get_Fractional(&bFractional),S_OK);
    //TRY_TEST(bFractional,VARIANT_FALSE);
 
    //VARIANT_BOOL bSymmetrical;
-   //TRY_TEST(crossBeam->get_Symmetrical(NULL),E_POINTER);
+   //TRY_TEST(crossBeam->get_Symmetrical(nullptr),E_POINTER);
    //TRY_TEST(crossBeam->get_Symmetrical(&bSymmetrical),S_OK);
    //TRY_TEST(bSymmetrical,VARIANT_FALSE);
 

@@ -32,7 +32,7 @@
 
 IMPLEMENT_DYNAMIC(CQuestionDlg, CDialog)
 
-CQuestionDlg::CQuestionDlg(CWnd* pParent /*=NULL*/)
+CQuestionDlg::CQuestionDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CQuestionDlg::IDD, pParent)
    , m_Answer(_T(""))
 {
@@ -64,7 +64,7 @@ BOOL CQuestionDlg::OnInitDialog()
 
    SetWindowText(m_Title);
 
-   m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
+   m_Icon.SetIcon(::LoadIcon(nullptr,IDI_QUESTION));
 
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE

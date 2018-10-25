@@ -61,7 +61,7 @@ STDMETHODIMP CCoordinateXform2d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ICoordinateXform2d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -121,7 +121,7 @@ STDMETHODIMP CCoordinateXform2d::XformEx(IPoint2d* point, XformType type, IPoint
 {
    CHECK_IN(point);
    CHECK_RETOBJ(result);
-   CreatePoint(point,NULL,result);
+   CreatePoint(point,nullptr,result);
    return Xform(result,type);
 }
 

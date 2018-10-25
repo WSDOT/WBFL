@@ -33,6 +33,7 @@
 #include <string>
 #include <fstream>
 #include <COMDEF.H>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -57,7 +58,7 @@ CTestStructuredStorage2::~CTestStructuredStorage2()
 void CTestStructuredStorage2::Test()
 {
    // create a saver, open a file and save ourself
-   typedef std::auto_ptr<CTestStructuredStorage2> MePtr;
+   typedef std::unique_ptr<CTestStructuredStorage2> MePtr;
 
    {
       MePtr pSaved;
@@ -66,7 +67,7 @@ void CTestStructuredStorage2::Test()
       TRY_TEST( pss->Open( OLESTR("Test.xml")), S_OK );
 
       // make one of us to work with and initialize
-      pSaved = MePtr(new CTestStructuredStorage2());
+      pSaved = std::make_unique<CTestStructuredStorage2>();
       pSaved->Initialize();
 
       // save ourself
@@ -202,13 +203,13 @@ HRESULT CTestStructuredStorage2::LoadMe(IStructuredLoad2* pload)
 
    long cnt = (long)vcnt;
    // now load container objects
-   for (long i=0; i<cnt; i++)
+   for (long i = 0; i<cnt; i++)
    {
       _variant_t cp;
       TRY_TEST( pload->get_Property(OLESTR("Shape"), &cp), S_OK);
 
       IUnknown* piu = cp.punkVal;
-      IPShape*  pis = NULL;
+      IPShape*  pis = nullptr;
       TRY_TEST( piu->QueryInterface(IID_IPShape, (void**)&pis), S_OK);
 
       m_TestShapes.push_back(pis);

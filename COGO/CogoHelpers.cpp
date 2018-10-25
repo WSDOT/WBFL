@@ -149,7 +149,7 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
    {
    case VT_UNKNOWN:
       varAngle.punkVal->QueryInterface(&objAngle);
-      if ( objAngle == NULL )
+      if ( objAngle == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -159,7 +159,7 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
 
    case VT_DISPATCH:
       varAngle.pdispVal->QueryInterface(&objAngle);
-      if ( objAngle == NULL )
+      if ( objAngle == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -209,7 +209,7 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
    {
    case VT_UNKNOWN:
       varDir.punkVal->QueryInterface(&objDir);
-      if ( objDir == NULL )
+      if ( objDir == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -219,7 +219,7 @@ HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
 
    case VT_DISPATCH:
       varDir.pdispVal->QueryInterface(&objDir);
-      if ( objDir == NULL )
+      if ( objDir == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -268,13 +268,13 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** s
    switch( varStation.vt )
    {
    case VT_UNKNOWN:
-      if ( varStation.punkVal == NULL )
+      if ( varStation.punkVal == nullptr )
       {
          return E_INVALIDARG;
       }
 
       varStation.punkVal->QueryInterface(&objStation);
-      if ( objStation.p == NULL )
+      if ( objStation.p == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -290,13 +290,13 @@ HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** s
       break;
 
    case VT_DISPATCH:
-      if ( varStation.pdispVal == NULL )
+      if ( varStation.pdispVal == nullptr )
       {
          return E_INVALIDARG;
       }
 
       varStation.pdispVal->QueryInterface(&objStation);
-      if ( objStation.p == NULL )
+      if ( objStation.p == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -457,7 +457,7 @@ HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir
 
 void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2dFactory* pFactory,IPoint2d** newPnt)
 {
-   (*newPnt) = NULL;
+   (*newPnt) = nullptr;
 
    CComPtr<IGeomUtil2d> geomUtil;
    geomUtil.CoCreateInstance(CLSID_GeomUtil);
@@ -475,7 +475,7 @@ void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNe
 
    if ( nIntersect == 0 )
    {
-      (*newPnt) = NULL;
+      (*newPnt) = nullptr;
    }
    else if ( nIntersect == 1 )
    {

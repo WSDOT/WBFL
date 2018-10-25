@@ -71,23 +71,23 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ldITemperatureLoad
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/ldITemperatureLoad** clone);
-	STDMETHOD(get_TBottom)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_TBottom)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_TTop)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_TTop)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-//	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
-//	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
+	STDMETHOD(Clone)(/*[out,retval]*/ldITemperatureLoad** clone) override;
+	STDMETHOD(get_TBottom)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_TBottom)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_TTop)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_TTop)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+//	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal) override;
+//	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal) override;
 
 protected:
 //   MemberType   m_MemberType;

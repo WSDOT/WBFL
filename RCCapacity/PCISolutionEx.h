@@ -61,21 +61,21 @@ END_COM_MAP()
 
 // IRCSolutionEx
 public:
-	STDMETHOD(get_Yweb)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Yflange)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_T)(/*[out,retval]*/ Float64 *pVal);
-	STDMETHOD(get_Cweb)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Cflange)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ IDblArray* fs,/*[in]*/ IDblArray* fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb);
-	STDMETHOD(get_Mn)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_NeutralAxisDepth)(/*[out, retval]*/ Float64* pVal);
-   STDMETHOD(get_fps)(/*[out,retval]*/ IDblArray** fps);
-   STDMETHOD(get_fs)(/*[out,retval]*/ IDblArray** fs);
+	STDMETHOD(get_Yweb)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Yflange)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_T)(/*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Cweb)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Cflange)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ IDblArray* fs,/*[in]*/ IDblArray* fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb) override;
+	STDMETHOD(get_Mn)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_NeutralAxisDepth)(/*[out, retval]*/ Float64* pVal) override;
+   STDMETHOD(get_fps)(/*[out,retval]*/ IDblArray** fps) override;
+   STDMETHOD(get_fs)(/*[out,retval]*/ IDblArray** fs) override;
 
 // IPCISolutionEx
 public:
-	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ IDblArray* fs,/*[in]*/ IDblArray* fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb,/*[in]*/ Float64 avgBeta1);
-   STDMETHOD(get_AvgBeta1)(/*[out, retval]*/ Float64 *pVal);
+	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ IDblArray* fs,/*[in]*/ IDblArray* fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb,/*[in]*/ Float64 avgBeta1) override;
+   STDMETHOD(get_AvgBeta1)(/*[out, retval]*/ Float64 *pVal) override;
 };
 
 #endif //__PCISOLUTIONEX_H_

@@ -75,10 +75,10 @@ END_COM_MAP()
    CComPtr<IPathCollection> m_Paths;
 
 public:
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths) override;
+   STDMETHOD(Reset)() override;
 
-   STDMETHOD(AddPath)(LineIDType ID,IPath* path);
+   STDMETHOD(AddPath)(LineIDType ID,IPath* path) override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(SimpleLayoutLineFactory), CSimpleLayoutLineFactory)

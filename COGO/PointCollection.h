@@ -72,34 +72,34 @@ BEGIN_CONNECTION_POINT_MAP(CPointCollection)
    CONNECTION_POINT_ENTRY(IID_IPointCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("Points"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("Point"); }
+   CComBSTR GetCollectionName() { return CComBSTR("Points"); }
+   CComBSTR GetItemName() { return CComBSTR("Point"); }
 
 //// ISupportsErrorInfo
-//	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+//	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPointCollection
 public:
-//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/IPointCollection* *clone);
-	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPoint2d* newVal);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
-	STDMETHOD(FindID)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* ID);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
-	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
-   STDMETHOD(get__EnumPoints)(/*[out,retval]*/ IEnumPoint2d** ppenum);
+//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IPointCollection* *clone) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[out,retval]*/ IPoint2d* *point) override;
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPoint2d* newVal) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum) override;
+	STDMETHOD(FindID)(/*[in]*/ IPoint2d* point,/*[out,retval]*/CogoObjectID* ID) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
+	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
+   STDMETHOD(get__EnumPoints)(/*[out,retval]*/ IEnumPoint2d** ppenum) override;
 
 // IPointEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 
 private:
    CComPtr<IPoint2dFactory> m_Factory;

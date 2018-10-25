@@ -75,33 +75,33 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISurfaceTemplate
 public:
-   STDMETHOD(get_Surface)(ISurface* *pVal);
-   STDMETHOD(putref_Surface)(ISurface* newVal);
-   STDMETHOD(put_Station)(VARIANT varStation);
-   STDMETHOD(get_Station)(IStation** station);
-   STDMETHOD(AddSegment)(Float64 width,Float64 slope,TemplateSlopeType slopeType);
-   STDMETHOD(AddSegmentEx)(ITemplateSegment* segment);
-   STDMETHOD(RemoveSegment)(CollectionIndexType idx);
-   STDMETHOD(get_Item)(CollectionIndexType idx,ITemplateSegment** segment);
-   STDMETHOD(get_Count)(CollectionIndexType* count);
-   STDMETHOD(Clear)();
-   STDMETHOD(GetRidgePointElevationChange)(CollectionIndexType ridgePointIdx1,CollectionIndexType ridgePointIdx2,Float64* deltaElevation);
-   STDMETHOD(GetElevationChange)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* deltaElevation);
-   STDMETHOD(GetSlope)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope);
-   STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope);
-   STDMETHOD(GetRidgePointOffset)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
-   STDMETHOD(GetRidgePointElevation)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
-   STDMETHOD(Clone)(ISurfaceTemplate* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(get_Surface)(ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(ISurface* newVal) override;
+   STDMETHOD(put_Station)(VARIANT varStation) override;
+   STDMETHOD(get_Station)(IStation** station) override;
+   STDMETHOD(AddSegment)(Float64 width,Float64 slope,TemplateSlopeType slopeType) override;
+   STDMETHOD(AddSegmentEx)(ITemplateSegment* segment) override;
+   STDMETHOD(RemoveSegment)(CollectionIndexType idx) override;
+   STDMETHOD(get_Item)(CollectionIndexType idx,ITemplateSegment** segment) override;
+   STDMETHOD(get_Count)(CollectionIndexType* count) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(GetRidgePointElevationChange)(CollectionIndexType ridgePointIdx1,CollectionIndexType ridgePointIdx2,Float64* deltaElevation) override;
+   STDMETHOD(GetElevationChange)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* deltaElevation) override;
+   STDMETHOD(GetSlope)(CollectionIndexType ridgePointIdx,Float64 offset,Float64* pSlope) override;
+   STDMETHOD(GetSegmentSlope)(CollectionIndexType segmentIdx,Float64* pSlope) override;
+   STDMETHOD(GetRidgePointOffset)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset) override;
+   STDMETHOD(GetRidgePointElevation)(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev) override;
+   STDMETHOD(Clone)(ISurfaceTemplate* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    ISurface* m_pSurface; // weak reference

@@ -84,7 +84,7 @@ private:
       CComPtr<IShape> Shape;
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
-   };
+   } SHAPEINFO;
 
    typedef struct SLICEINFO
    {
@@ -117,21 +117,21 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICrackedSectionSolver
 public:
-   STDMETHOD(put_CGTolerance)(/*[in]*/Float64 tolerance);
-   STDMETHOD(get_CGTolerance)(/*[out,retval]*/Float64* tolerance);
-   STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter);
-   STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter);
-   STDMETHOD(put_Slices)(/*[in]*/long nSlices);
-	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices);
-   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor);
-	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor);
-   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
-	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-   STDMETHOD(Solve)(/*[in]*/Float64 naAngle,/*[out,retval]*/ICrackedSectionSolution** solution);
+   STDMETHOD(put_CGTolerance)(/*[in]*/Float64 tolerance) override;
+   STDMETHOD(get_CGTolerance)(/*[out,retval]*/Float64* tolerance) override;
+   STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;
+   STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter) override;
+   STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
+	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor) override;
+	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
+   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
+	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
+   STDMETHOD(Solve)(/*[in]*/Float64 naAngle,/*[out,retval]*/ICrackedSectionSolution** solution) override;
 };
 
 #endif //__CrackedSectionSolver_H_

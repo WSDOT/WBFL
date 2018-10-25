@@ -175,7 +175,7 @@ STDMETHODIMP CCompositeBeam::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -724,7 +724,7 @@ STDMETHODIMP CCompositeBeam::get_Q(Float64 location, Float64 *pVal)
    CComPtr<ISection> section;
    ClipWithLine(line,&section); // Removes all portions of the section left of the line
 
-   if ( section == NULL )
+   if ( section == nullptr )
    {
       *pVal = 0;
       return S_OK;

@@ -291,11 +291,11 @@ void CTestGenericBridge::CreateGirders(IGenericBridge* bridge)
 
       CComQIPtr<IShape> shape(section);
       ATLASSERT(shape);
-      segment->AddShape(shape,material,NULL);
+      segment->AddShape(shape,material,nullptr);
       
       CComPtr<IGirderLine> girderline;
       geometry->FindGirderLine(gdrID,&girderline);
-      TRY_TEST(girderline != NULL,true);
+      TRY_TEST(girderline != nullptr,true);
       segment->putref_GirderLine(girderline);
 
       TRY_TEST(ssmbr->AddSegment(segment),S_OK);

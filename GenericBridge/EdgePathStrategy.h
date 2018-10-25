@@ -68,20 +68,20 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IOverhangPathStrategy
 public:
-   STDMETHOD(get_Path)(/*[out,retval]*/IPath** path);
+   STDMETHOD(get_Path)(/*[out,retval]*/IPath** path) override;
 
 // IEdgePathStrategy
 public:
-   STDMETHOD(putref_Path)(/*[in]*/IPath* path);
+   STDMETHOD(putref_Path)(/*[in]*/IPath* path) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__EDGEPATHSTRATEGY_H_

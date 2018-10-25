@@ -77,7 +77,7 @@ private:
    // GROUP: LIFECYCLE
    rptHtmlUnitTagFormat();
    rptHtmlUnitTagFormat(const rptHtmlUnitTagFormat&);
-   rptHtmlUnitTagFormat& operator=(const rptHtmlUnitTagFormat&) const;
+   rptHtmlUnitTagFormat& operator=(const rptHtmlUnitTagFormat&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

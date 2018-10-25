@@ -36,18 +36,18 @@ static char THIS_FILE[] = __FILE__;
 SymBandedMatrix::SymBandedMatrix(LONG size, LONG bw)
 {
    m_Size = 0;
-   m_BandWidth=0;
+   m_BandWidth = 0;
    m_ppMatrix = 0;
-   m_pData=0;
+   m_pData = 0;
    Resize(size,bw);
 }
 
 SymBandedMatrix::SymBandedMatrix()
 {
    m_Size = 0;
-   m_BandWidth=0;
-   m_ppMatrix = NULL;
-   m_pData=0;
+   m_BandWidth = 0;
+   m_ppMatrix = nullptr;
+   m_pData = 0;
 }
 
 SymBandedMatrix::~SymBandedMatrix()
@@ -73,7 +73,7 @@ void SymBandedMatrix::Resize(LONG size, LONG bw)
       // allocate entire matrix in a single chunk rather than multiple allocations
       m_pData =    new Float64[m_Size*m_BandWidth];
 
-      for (LONG i=0; i<m_Size; i++)
+      for (LONG i = 0; i<m_Size; i++)
          m_ppMatrix[i] = m_pData+(i*m_BandWidth);
    }
 }
@@ -84,7 +84,7 @@ void SymBandedMatrix::Zero()
    ATLASSERT(m_ppMatrix!=0);
 
    Float64* p = m_pData;
-   for (LONG i=0; i<m_Size*m_BandWidth; i++)
+   for (LONG i = 0; i<m_Size*m_BandWidth; i++)
    {
        *p= 0.0;
        ++p;
@@ -168,7 +168,7 @@ void SymBandedMatrix::Factor()
    for (n = 1; n <= nrs; n++)
    {
       m = n - 1;
-      mr = _cpp_min(m_BandWidth,nr-m);
+      mr = Min(m_BandWidth,nr-m);
       pivot = m_ppMatrix[n-1][0];
       if (pivot<=0.0)
       {
@@ -206,7 +206,7 @@ void SymBandedMatrix::Solve(Float64 *F)
    for (n = 1;n <= nrs;n++)
    {
       m = n - 1;
-      mr = _cpp_min(m_BandWidth,nr-m);
+      mr = Min(m_BandWidth,nr-m);
       cp = F[n-1];
       cd = m_ppMatrix[n-1][0];
       if ( cd != 0.0) // don't allow divide by zero
@@ -241,7 +241,7 @@ void SymBandedMatrix::Solve(Float64 *F)
    {
       n = nr - i;
       m = n - 1;
-      mr = _cpp_min(m_BandWidth,nr-m);
+      mr = Min(m_BandWidth,nr-m);
       for (k = 2;k <= mr;k++)
       {
          l = m + k;

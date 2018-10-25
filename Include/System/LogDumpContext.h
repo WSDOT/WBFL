@@ -71,9 +71,9 @@ public:
    //------------------------------------------------------------------------
    // Inserters for various built-ins
 #if defined UNICODE
-   virtual dbgDumpContext& operator<<(const std::_tstring& s);
+   virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
 #else
-   virtual dbgDumpContext& operator<<(const std::_tstring& s);
+   virtual dbgDumpContext& operator<<(const std::_tstring& s) override;
 #endif
    virtual dbgDumpContext& operator<<(LPCTSTR s);
    dbgDumpContext& operator<<(TCHAR c);    
@@ -117,7 +117,7 @@ private:
 
    // Prevent accidental copying and assignment
    dbgLogDumpContext(const dbgLogDumpContext&);
-   dbgLogDumpContext& operator=(const dbgLogDumpContext&);
+   dbgLogDumpContext& operator=(const dbgLogDumpContext&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

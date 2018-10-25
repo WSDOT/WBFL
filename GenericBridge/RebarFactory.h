@@ -63,16 +63,16 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarFactory
 public:
-   STDMETHOD(CreateRebar)(/*[in]*/ MaterialSpec spec, /*[in]*/ RebarGrade grade, /*[in]*/ BarSize size, /*[in]*/ IUnitConvert* convert,/*[in]*/ StageIndexType stageIdx,/*[out,retval]*/ IRebar** rebar);
+   STDMETHOD(CreateRebar)(/*[in]*/ MaterialSpec spec, /*[in]*/ RebarGrade grade, /*[in]*/ BarSize size, /*[in]*/ IUnitConvert* convert,/*[in]*/ StageIndexType stageIdx,/*[out,retval]*/ IRebar** rebar) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__RebarFactory_H_

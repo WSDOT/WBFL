@@ -40,7 +40,7 @@ class CProgressMonitorDlg : public CDialog
 {
 // Construction
 public:
-	CProgressMonitorDlg(CWnd* pParent = NULL);   // standard constructor
+	CProgressMonitorDlg(CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CProgressMonitorDlg)
@@ -56,7 +56,7 @@ public:
 	//{{AFX_VIRTUAL(CProgressMonitorDlg)
 public:
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -76,7 +76,7 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CProgressMonitorDlg)
 	afx_msg void OnCancelProgress();
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	//}}AFX_MSG

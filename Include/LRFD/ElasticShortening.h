@@ -187,7 +187,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdElasticShortening& rOther );
+   void MakeAssignment( const lrfdElasticShortening& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

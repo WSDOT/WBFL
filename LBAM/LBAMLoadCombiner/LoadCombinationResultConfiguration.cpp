@@ -41,7 +41,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::InterfaceSupportsErrorInfo(REF
 	{
 		&IID_ILoadCombinationResultConfiguration
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -101,7 +101,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::put_LiveLoadFactor(Float64 new
 
 STDMETHODIMP CLoadCombinationResultConfiguration::AddLiveLoadConfiguration(ILiveLoadConfiguration *Config)
 {
-   // it is OK if this is a NULL Config
+   // it is OK if this is a nullptr Config
    m_LLConfig.push_back(Config);
 
 	return S_OK;
@@ -246,7 +246,7 @@ STDMETHODIMP CLoadCombinationResultConfiguration::Load(IStructuredLoad2 * pload)
 
       long cnt = var;
 
-      for (long i=0; i<cnt; i++)
+      for (long i = 0; i<cnt; i++)
       {
          LoadCaseFactor lcf;
 

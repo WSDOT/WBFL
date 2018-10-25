@@ -88,7 +88,7 @@ void CTestProfile::Test1()
    element->putref_Value(point);
 
    // add it to the profile
-   TRY_TEST(profile->Add(NULL),E_INVALIDARG);
+   TRY_TEST(profile->Add(nullptr),E_INVALIDARG);
    TRY_TEST(profile->Add(element),S_OK);
 
    //
@@ -102,7 +102,7 @@ void CTestProfile::Test1()
    point->put_Elevation(10);
 
    // add it to the profile
-   TRY_TEST(profile->AddEx(NULL),E_INVALIDARG);
+   TRY_TEST(profile->AddEx(nullptr),E_INVALIDARG);
    TRY_TEST(profile->AddEx(profile),COGO_E_PROFILEELEMENTTYPE);
    TRY_TEST(profile->AddEx(point), S_OK);
 
@@ -134,7 +134,7 @@ void CTestProfile::Test1()
    // Test Count
    //
    CollectionIndexType count;
-   TRY_TEST(profile->get_Count(NULL),E_POINTER);
+   TRY_TEST(profile->get_Count(nullptr),E_POINTER);
    TRY_TEST(profile->get_Count(&count),S_OK);
    TRY_TEST(count,3);
 
@@ -146,7 +146,7 @@ void CTestProfile::Test1()
    element.Release();
    TRY_TEST(profile->get_Item(-1,&element),E_INVALIDARG);
    TRY_TEST(profile->get_Item(100,&element),E_INVALIDARG);
-   TRY_TEST(profile->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(profile->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(profile->get_Item(0,&element),S_OK);
    ProfileElementType type;
    element->get_Type(&type);
@@ -195,7 +195,7 @@ void CTestProfile::Test1()
    TRY_TEST(IsEqual(sta,200.0),true);
    TRY_TEST(IsEqual(elev,250.0),true);
 
-   TRY_TEST(profile->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(profile->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(profile->putref_Item(-1,element),E_INVALIDARG);
    TRY_TEST(profile->putref_Item(100,element),E_INVALIDARG);
    TRY_TEST(profile->putref_Item(1,element),S_OK);
@@ -224,9 +224,9 @@ void CTestProfile::Test1()
    // Test Surfaces
    //
    CComPtr<ISurfaceCollection> surfaces;
-   TRY_TEST(profile->get_Surfaces(NULL),E_POINTER);
+   TRY_TEST(profile->get_Surfaces(nullptr),E_POINTER);
    TRY_TEST(profile->get_Surfaces(&surfaces),S_OK);
-   TRY_TEST(profile->putref_Surfaces(NULL),E_INVALIDARG);
+   TRY_TEST(profile->putref_Surfaces(nullptr),E_INVALIDARG);
    TRY_TEST(profile->putref_Surfaces(surfaces),S_OK);
 
    //
@@ -243,7 +243,7 @@ void CTestProfile::Test1()
    profile->Add(element);
    profile->Add(element);
    CComPtr<IEnumProfileElements> pEnum;
-   TRY_TEST(profile->get__EnumProfileElements(NULL), E_POINTER );
+   TRY_TEST(profile->get__EnumProfileElements(nullptr), E_POINTER );
    TRY_TEST(profile->get__EnumProfileElements(&pEnum), S_OK );
 
    ULONG fetched;
@@ -295,7 +295,7 @@ void CTestProfile::Test1()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(profile);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IProfile ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -456,7 +456,7 @@ void CTestProfile::Test2()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -643,7 +643,7 @@ void CTestProfile::Test3()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -843,7 +843,7 @@ void CTestProfile::Test4()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -1041,7 +1041,7 @@ void CTestProfile::Test5()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -1246,7 +1246,7 @@ void CTestProfile::Test6()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -1707,8 +1707,8 @@ void CTestProfile::Test12()
    //
    // Station 4+00 back = 8+00 ahead
    // Station 12+00 back = 10+00 ahead
-   equations->Add(400,800,NULL);
-   equations->Add(1200,1000,NULL);
+   equations->Add(400,800,nullptr);
+   equations->Add(1200,1000,nullptr);
    //
    //
    // Profile Point: Station 10+00,1 Elev 80.0 (6+00 normalized)
@@ -1882,7 +1882,7 @@ void CTestProfile::Test12()
    CComPtr<IEnumSurfaceTemplates> enumTemplates;
    templates->get__EnumSurfaceTemplates(&enumTemplates);
    CComPtr<ISurfaceTemplate> surfaceTemplate;
-   while ( enumTemplates->Next(1,&surfaceTemplate,NULL) != S_FALSE )
+   while ( enumTemplates->Next(1,&surfaceTemplate,nullptr) != S_FALSE )
    {
       IndexType nSegments;
       surfaceTemplate->get_Count(&nSegments);
@@ -2250,7 +2250,7 @@ void CTestProfile::Test15()
 
 STDMETHODIMP CTestProfile::OnProfileChanged(IProfile* pp)
 {
-//   ::MessageBox(NULL,"OnProfileChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfileChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

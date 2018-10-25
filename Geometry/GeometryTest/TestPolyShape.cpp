@@ -67,7 +67,7 @@ void CTestPolyShape::TestIPolyShape()
    TRY_TEST( polyShape.CoCreateInstance( CLSID_PolyShape ), S_OK );
 
    CollectionIndexType nPoints;
-   TRY_TEST( polyShape->get_NumPoints(NULL), E_POINTER );
+   TRY_TEST( polyShape->get_NumPoints(nullptr), E_POINTER );
    TRY_TEST( polyShape->get_NumPoints(&nPoints), S_OK );
    TRY_TEST( nPoints, 0 );
 
@@ -79,7 +79,7 @@ void CTestPolyShape::TestIPolyShape()
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->put_X(10);
    pnt->put_Y(0);
-   TRY_TEST( polyShape->AddPointEx( NULL), E_INVALIDARG );
+   TRY_TEST( polyShape->AddPointEx( nullptr), E_INVALIDARG );
    TRY_TEST( polyShape->AddPointEx( pnt ), S_OK );
    polyShape->get_NumPoints(&nPoints);
    TRY_TEST( nPoints, 2 );
@@ -90,7 +90,7 @@ void CTestPolyShape::TestIPolyShape()
    TRY_TEST( nPoints, 4 );
 
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( polyShape->get_Points(NULL), E_POINTER );
+   TRY_TEST( polyShape->get_Points(nullptr), E_POINTER );
    TRY_TEST( polyShape->get_Points(&coll), S_OK );
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
@@ -135,7 +135,7 @@ void CTestPolyShape::TestIPolyShape()
    TRY_TEST( nPoints, 4 );
    polyShape->get_NumPoints(&nPoints);
    TRY_TEST( nPoints, 0 );
-   TRY_TEST( polyShape->AddPoints(NULL), E_INVALIDARG );
+   TRY_TEST( polyShape->AddPoints(nullptr), E_INVALIDARG );
    TRY_TEST( polyShape->AddPoints(coll), S_OK );
    polyShape->get_NumPoints(&nPoints);
    TRY_TEST( nPoints, 4 );
@@ -143,7 +143,7 @@ void CTestPolyShape::TestIPolyShape()
    pnt.Release();
    TRY_TEST( polyShape->get_Point(-1,&pnt),  E_INVALIDARG ); // Neg index
    TRY_TEST( polyShape->get_Point(100,&pnt), E_INVALIDARG ); // Index too large
-   TRY_TEST( polyShape->get_Point(3,NULL),   E_POINTER );
+   TRY_TEST( polyShape->get_Point(3,nullptr),   E_POINTER );
    TRY_TEST( polyShape->get_Point(2,&pnt),   S_OK );
    pnt->get_X(&x);
    pnt->get_Y(&y);
@@ -161,14 +161,14 @@ void CTestPolyShape::TestIPolyShape()
    TRY_TEST( IsEqual(y,10.0), true );
 
    CComPtr<IShape> shape;
-   TRY_TEST(polyShape->get_Shape(NULL), E_POINTER );
+   TRY_TEST(polyShape->get_Shape(nullptr), E_POINTER );
    TRY_TEST(polyShape->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(polyShape->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(polyShape->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(polyShape->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -265,7 +265,7 @@ void CTestPolyShape::TestIShapeOpen()
 
    // Properties of a degenerate shape
    CComPtr<IShapeProperties> props;
-   TRY_TEST(shape->get_ShapeProperties( NULL ), E_POINTER );
+   TRY_TEST(shape->get_ShapeProperties( nullptr ), E_POINTER );
    TRY_TEST(shape->get_ShapeProperties(&props), S_OK );
    Float64 area, ixx, iyy, ixy, cgx, cgy;
    CComPtr<IPoint2d> cg;
@@ -313,7 +313,7 @@ void CTestPolyShape::TestIShapeOpen()
    //
    Float64 val;
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    box->get_Left(&val);
    TRY_TEST( IsEqual(val,0.0), true );
@@ -339,7 +339,7 @@ void CTestPolyShape::TestIShapeOpen()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
    CComPtr<IEnumPoint2d> Enum;
@@ -375,7 +375,7 @@ void CTestPolyShape::TestIShapeOpen()
    // Perimeter
    //
    Float64 perimeter;
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&perimeter), S_OK );
    TRY_TEST( IsEqual(perimeter,30.0), true );
 
@@ -396,8 +396,8 @@ void CTestPolyShape::TestIShapeOpen()
    p2->Move(100,20);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,20.0), true );
 
@@ -412,10 +412,10 @@ void CTestPolyShape::TestIShapeOpen()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST( shape->Clone(NULL), E_POINTER );
+   TRY_TEST( shape->Clone(nullptr), E_POINTER );
    TRY_TEST( shape->Clone(&clone), S_OK );
    CComQIPtr<IPolyShape> ps(clone);
-   TRY_TEST(ps != NULL, true );
+   TRY_TEST(ps != nullptr, true );
    props.Release();
    TRY_TEST(clone->get_ShapeProperties(&props), S_OK );
    props->get_Area(&area);
@@ -443,8 +443,8 @@ void CTestPolyShape::TestIShapeOpen()
    CComPtr<IPoint2d> pnt;
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(3,3);
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 
@@ -467,8 +467,8 @@ void CTestPolyShape::TestIShapeOpen()
    p2->Move(100,100);
    line->ThroughPoints(p1,p2);
    CComPtr<IShape> clip;
-   TRY_TEST( shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipWithLine(line,NULL), E_POINTER );
+   TRY_TEST( shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipWithLine(line,nullptr), E_POINTER );
    TRY_TEST( shape->ClipWithLine(line,&clip), S_OK );
 
    coll.Release();
@@ -515,7 +515,7 @@ void CTestPolyShape::TestIShapeOpen()
    TRY_TEST( clip == 0, true );
 
    // Clip such that the resulting polygon is simply a line
-   // Since the resulting shape is not a polygon, the clip shape is NULL
+   // Since the resulting shape is not a polygon, the clip shape is nullptr
    p1->Move(0,0);
    p2->Move(10,0);
    line->ThroughPoints(p1,p2);
@@ -564,8 +564,8 @@ void CTestPolyShape::TestIShapeOpen()
    clipRect->put_Bottom(5);
 
    clip.Release();
-   TRY_TEST( shape->ClipIn(NULL,&clip),     E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL),  E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip),     E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr),  E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
 
    coll.Release();
@@ -654,8 +654,8 @@ void CTestPolyShape::TestIShapeClosed()
    CComPtr<IPoint2d> pnt;
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(3,3);
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 
@@ -698,8 +698,8 @@ void CTestPolyShape::TestIXYPosition()
    to->put_X(110);
    to->put_Y(110);
 
-   TRY_TEST( position->MoveEx(NULL,to), E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from,NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to), S_OK );
 
    TestPoints(polyShape);
@@ -718,7 +718,7 @@ void CTestPolyShape::TestIXYPosition()
    size->put_Dx(100);
    size->put_Dy(100);
 
-   TRY_TEST( position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
    TestPoints(polyShape);
@@ -732,8 +732,8 @@ void CTestPolyShape::TestIXYPosition()
    polyShape->AddPoint(5,10);
    polyShape->AddPoint(0,10);
 
-   TRY_TEST(position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST(position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER);
+   TRY_TEST(position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST(position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER);
 
    // Bottom Left
    Float64 x,y;
@@ -867,7 +867,7 @@ void CTestPolyShape::TestIXYPosition()
    polyShape->AddPoint(0,10);
 
    to->Move(5,10); // Use "to" as the center of rotation
-   TRY_TEST( position->RotateEx(NULL,M_PI/2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,M_PI/2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(to,M_PI/2), S_OK );
 
    CComPtr<IPoint2dCollection> coll;

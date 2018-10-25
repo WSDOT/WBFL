@@ -79,7 +79,7 @@ int main(int argc, TCHAR* argv[])
 {
    //_crtBreakAlloc = 782229; // causes program to break at a specific memory allocation
 
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    CTestAngle::Test();
    CTestDirection::Test();
@@ -128,13 +128,13 @@ HRESULT CheckPointType(IPoint2d* point)
    CComPtr<IConnectionPointContainer> pCPC;
    point->QueryInterface(&pCPC);
 
-   if ( pCPC == NULL )
+   if ( pCPC == nullptr )
       return E_FAIL;
 
    CComPtr<IConnectionPoint> pCP;
    pCPC->FindConnectionPoint(IID_IPoint2dEvents,&pCP);
    
-   if ( pCP == NULL )
+   if ( pCP == nullptr )
       return E_FAIL;
 
    return S_OK;
@@ -145,7 +145,7 @@ bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions)
    CComPtr<IObjectSafety> safety;
    safety.CoCreateInstance(rclsid);
 
-   if ( safety == NULL )
+   if ( safety == nullptr )
       return false;
 
 

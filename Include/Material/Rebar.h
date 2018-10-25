@@ -186,7 +186,7 @@ protected:
    void MakeCopy(const matRebar& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matRebar& rOther);
+   void MakeAssignment(const matRebar& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

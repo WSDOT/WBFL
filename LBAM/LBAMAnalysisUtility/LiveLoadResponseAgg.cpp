@@ -60,7 +60,7 @@ STDMETHODIMP CLiveLoadResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoadModelResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -95,7 +95,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeForces(IIDArray* pois, BSTR stage, Liv
       std::vector< CAdapt< CComPtr<ILiveLoadModelSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -163,7 +163,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeDeflections(IIDArray* pois, BSTR stage
       std::vector< CAdapt< CComPtr<ILiveLoadModelSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -231,7 +231,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeReactions(IIDArray* supports, BSTR sta
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -290,7 +290,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeSupportDeflections(IIDArray* supports,
       std::vector< CAdapt< CComPtr<ILiveLoadModelResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -356,7 +356,7 @@ STDMETHODIMP CLiveLoadResponseAgg::ComputeStresses(IIDArray* pois, BSTR stage, L
       hr = single_poi->ReDim(1);
 
       // loop over all pois and compute stresses due to optimization at that poi for the correct model
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          // use configuration object from force results to compute stresses
          // get left and right config objects
@@ -442,7 +442,7 @@ void CLiveLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoadModelSectionR
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILiveLoadConfiguration> lconf1, lconf2, rconf1, rconf2;
       Float64 lval1, lval2, rval1, rval2;
@@ -503,7 +503,7 @@ void CLiveLoadResponseAgg::EnvelopeLiveLoadResults(ILiveLoadModelResults* res1, 
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILiveLoadConfiguration> conf1, conf2;
       Float64 val1, val2;

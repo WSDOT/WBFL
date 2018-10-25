@@ -80,7 +80,7 @@ private:
 
    // Prevent accidental copying and assignment
    libUnitTest(const libUnitTest&);
-   libUnitTest& operator=(const libUnitTest&);
+   libUnitTest& operator=(const libUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

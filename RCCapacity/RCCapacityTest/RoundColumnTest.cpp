@@ -126,7 +126,7 @@ void CRoundColumnTest::Test()
 
 
    CComQIPtr<ISupportErrorInfo> eInfo(column);
-   TRY_TEST( eInfo != NULL, true);
+   TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IRoundColumn),       S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

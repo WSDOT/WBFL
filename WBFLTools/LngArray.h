@@ -57,23 +57,23 @@ BEGIN_COM_MAP(CLongArray)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILngArray
 public:
-	STDMETHOD(Find)(/*[in]*/LONG value, /*[out,retval]*/CollectionIndexType* fndIndex);
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clone)(/*[out,retval]*/ILongArray* *clone);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/LONG item);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/LONG item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ LONG *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ LONG newVal);
-	STDMETHOD(get__NewEnum)(struct IUnknown ** );
-	STDMETHOD(get__EnumElements)(struct IEnumLongArray ** );
+	STDMETHOD(Find)(/*[in]*/LONG value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ILongArray* *clone) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/LONG item) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Add)(/*[in]*/LONG item) override;
+	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ LONG *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ LONG newVal) override;
+	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
+	STDMETHOD(get__EnumElements)(struct IEnumLongArray ** ) override;
 
 protected:
    typedef std::vector<LONG>       ContainerType;

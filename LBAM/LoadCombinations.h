@@ -70,25 +70,25 @@ CONNECTION_POINT_ENTRY(IID_ILoadCombinationsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationEvents
-   STDMETHOD(OnLoadCombinationChanged)(/*[in]*/ILoadCombination* LoadCombination,ChangeType type);
-   STDMETHOD(OnLoadCombinationRenamed)(BSTR oldNam, BSTR newNam);
+   STDMETHOD(OnLoadCombinationChanged)(/*[in]*/ILoadCombination* LoadCombination,ChangeType type) override;
+   STDMETHOD(OnLoadCombinationRenamed)(BSTR oldNam, BSTR newNam) override;
 
 // ILoadCombinations
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ILoadCombinations** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ILoadCombinations** clone) override;
 
 protected:
    // implementations of virtual functions for collection
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
-   virtual HRESULT OnAfterAdd( StoredType* pVal);
-   virtual HRESULT OnBeforeRemove ( StoredType* pVal);
-   virtual HRESULT OnAfterRemove( BSTR name);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd( StoredType* pVal) override;
+   virtual HRESULT OnBeforeRemove ( StoredType* pVal) override;
+   virtual HRESULT OnAfterRemove( BSTR name) override;
 
 public:
-   virtual void FinalRelease();
+   void FinalRelease();
 
 };
 

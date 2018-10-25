@@ -76,7 +76,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
    CComPtr<ILiveLoadModelResults> results(cresults);
    hr = results->Reserve(ressize);
 
-   for (CollectionIndexType is=0; is<ressize; is++)
+   for (CollectionIndexType is = 0; is<ressize; is++)
    {
       Float64 left_val, right_val;
       CComPtr<ILiveLoadConfiguration> left_config, right_config;
@@ -143,9 +143,9 @@ m_ModelDirty(true),
 m_LiveLoadDirty(true),
 m_MinVariableAxleIncrement(0.5),
 m_ContextCookie(0),
-m_InflStrategy(NULL),
-m_DfStrategy(NULL),
-m_ApplicabilityStrategy(NULL)
+m_InflStrategy(nullptr),
+m_DfStrategy(nullptr),
+m_ApplicabilityStrategy(nullptr)
 {
 }
 
@@ -155,7 +155,7 @@ STDMETHODIMP CBruteForceVehicularResponse::InterfaceSupportsErrorInfo(REFIID rii
 	{
 		&IID_IEnvelopedVehicularResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -176,7 +176,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
    CHRException hr;
    try
    {
-      if (m_LiveLoad != NULL)
+      if (m_LiveLoad != nullptr)
       {
          // can only initialize once
          THROW_LBAMLL(LL_INITIALIZATION);
@@ -189,7 +189,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
 
       // Latch onto the parts of the context we need 
       CComQIPtr<ILiveLoad> pll(context);
-      if (pll!=NULL)
+      if (pll!=nullptr)
       {
          m_LiveLoad = pll;
       }
@@ -200,7 +200,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IInfluenceLineResponse> presp(context);
-      if (presp!=NULL)
+      if (presp!=nullptr)
       {
          m_InfluenceLineResponse = presp;
       }
@@ -211,7 +211,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> pcf(context);
-      if (pcf!=NULL)
+      if (pcf!=nullptr)
       {
          m_LiveLoadNegativeMomentRegion = pcf;
       }
@@ -222,7 +222,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetDistributionFactors> pdf(context);
-      if (pdf!=NULL)
+      if (pdf!=nullptr)
       {
          m_GetDistributionFactors = pdf;
       }
@@ -233,7 +233,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ISupportLocations> sup_locs(m_Context);
-      if (sup_locs!=NULL)
+      if (sup_locs!=nullptr)
       {
          m_SupportLocations = sup_locs;
       }
@@ -244,7 +244,7 @@ STDMETHODIMP CBruteForceVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetStressPoints> gsp(context);
-      if (gsp!=NULL)
+      if (gsp!=nullptr)
       {
          m_GetStressPoints = gsp;
       }
@@ -314,16 +314,16 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeForces(IIDArray* poiIDs, BSTR 
                            computePlacements,
                            pResults);
 
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
    }
    catch(...)
    {
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -367,15 +367,15 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeDeflections(IIDArray* pois, BS
                                    computePlacements,
                                    pResults);
 
-      m_InflStrategy = NULL;
-      m_DfStrategy = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy = nullptr;
+      m_DfStrategy = nullptr;
+      m_ApplicabilityStrategy = nullptr;
    }
    catch(...)
    {
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -423,9 +423,9 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeReactions(IIDArray* supports, 
                                    computePlacements,
                                    &sec_res);
 
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
       // copy section results to non-section based - taking local maxes along the way
       CComPtr<ILiveLoadModelResults> results;
@@ -435,9 +435,9 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeReactions(IIDArray* supports, 
    }
    catch(...)
    {
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -484,8 +484,8 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeSupportDeflections(IIDArray* s
                                    computePlacements,
                                    &sec_res);
 
-      m_InflStrategy = NULL;
-      m_DfStrategy = NULL;
+      m_InflStrategy = nullptr;
+      m_DfStrategy = nullptr;
 
       // copy section results to non-section based - taking local maxes along the way
       CComPtr<ILiveLoadModelResults> results;
@@ -495,9 +495,9 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeSupportDeflections(IIDArray* s
    }
    catch(...)
    {
-      m_InflStrategy          = NULL;
-      m_DfStrategy            = NULL;
-      m_ApplicabilityStrategy = NULL;
+      m_InflStrategy          = nullptr;
+      m_DfStrategy            = nullptr;
+      m_ApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -600,7 +600,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BST
             left_config = pconfig;
             left_config->put_IsApplicable(VARIANT_FALSE);
 
-            pconfig = NULL;
+            pconfig = nullptr;
             hr = CComObject<CLiveLoadConfiguration>::CreateInstance(&pconfig);
             right_config = pconfig;
             right_config->put_IsApplicable(VARIANT_FALSE);
@@ -619,7 +619,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BST
 
             // compute responses for left influence line
             // the only time we don't compute left influence results is for right applicability with a valid right influence 
-            if ( !(applicabilityloc==appRight && rgt_infl_line!=NULL) )
+            if ( !(applicabilityloc==appRight && rgt_infl_line!=nullptr) )
             {
                ComputeInflResponse(type, vehicleIndex, effect, optimization, vehConfiguration, doApplyImpact, vbComputePlacements, 
                                    lft_infl_line, &left_result, &right_result, left_config, right_config);
@@ -639,7 +639,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BST
             else if (applicabilityloc == appRight)
             {
 
-               if (rgt_infl_line != NULL)
+               if (rgt_infl_line != nullptr)
                {
                   // compute responses for right influence line
                   // We have to fake out compute function because it does not know anything about left/right face 
@@ -675,7 +675,7 @@ STDMETHODIMP CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BST
             }
             else if (applicabilityloc == appBoth)
             {
-               if (rgt_infl_line != NULL)
+               if (rgt_infl_line != nullptr)
                {
                   // compute responses for right influence line
                   // create a bogus result and  configuration object to hold the left result since we won't be using it
@@ -852,7 +852,7 @@ void CBruteForceVehicularResponse::ComputeInflResponse(LiveLoadModelType type, V
                {
                   Float64 poi_loc = pli->Location;
                   // place truck slighly before and after poi, but only for shear response
-                  for (long ipls=0; ipls<pls_loops; ipls++)
+                  for (long ipls = 0; ipls<pls_loops; ipls++)
                   {
                      Float64 bumper_loc = poi_loc + plc_delta[ipls];
 
@@ -1199,9 +1199,9 @@ void CBruteForceVehicularResponse::IntializeCompare(OptimizationType optimizatio
 
 void CBruteForceVehicularResponse::AssertValid()
 {
-   ATLASSERT(m_InflStrategy != NULL);
+   ATLASSERT(m_InflStrategy != nullptr);
 
-   if (m_LiveLoad == NULL)
+   if (m_LiveLoad == nullptr)
    {
       // must be initialized before use
       THROW_LBAMLL(LL_INITIALIZATION);

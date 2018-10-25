@@ -101,7 +101,7 @@ HRESULT TestStressPoints::Test()
    hr = pctx->putref_Model(psm);
 
    CComQIPtr<IGetStressPoints> pigsp(plgr);
-   TRY_TEST(pigsp!=NULL, true);
+   TRY_TEST(pigsp!=nullptr, true);
 
    TestSpsAtPoi(pigsp, CComBSTR("Stage 1"), 1, 2.0, 2.0, 2.0, 0.0, 2.0,-2.0);
    TestSpsAtPoi(pigsp, CComBSTR("Stage 2"), 1, 2.0, 2.0, 2.0, 0.0, 2.0,-2.0);
@@ -249,7 +249,7 @@ ILBAMModel* TestStressPoints::CreateModel(bool doPois)
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
    TCHAR* lgns[]={_T("Point Loads"),_T("Distributed Loads")};
-   for (int i=0; i<2; i++)
+   for (int i = 0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );

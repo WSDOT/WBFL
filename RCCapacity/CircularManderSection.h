@@ -71,31 +71,31 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IManderModelSection
 public:
-   STDMETHOD(put_TransvYieldStrength)(/*[in]*/Float64 fyh);
-	STDMETHOD(get_TransvYieldStrength)(/*[out,retval]*/Float64* fyh);
-	STDMETHOD(get_TransvReinforcementRatio)(/*[out,retval]*/Float64* ps);
-	STDMETHOD(get_ConfinementEffectivenessCoefficient)(/*[out,retval]*/Float64* ke);
+   STDMETHOD(put_TransvYieldStrength)(/*[in]*/Float64 fyh) override;
+	STDMETHOD(get_TransvYieldStrength)(/*[out,retval]*/Float64* fyh) override;
+	STDMETHOD(get_TransvReinforcementRatio)(/*[out,retval]*/Float64* ps) override;
+	STDMETHOD(get_ConfinementEffectivenessCoefficient)(/*[out,retval]*/Float64* ke) override;
 
 // ICircularManderSection
 public:
-   STDMETHOD(put_TransvReinforcementType)(/*[in]*/TransvReinforcementType trt);
-	STDMETHOD(get_TransvReinforcementType)(/*[out,retval]*/TransvReinforcementType* trt);
-	STDMETHOD(put_Asp)(/*[in]*/Float64 asp);
-	STDMETHOD(get_Asp)(/*[out,retval]*/Float64* asp);
-	STDMETHOD(put_As)(/*[in]*/Float64 as);
-	STDMETHOD(get_As)(/*[out,retval]*/Float64* as);
-	STDMETHOD(put_db)(/*[in]*/Float64 db);
-	STDMETHOD(get_db)(/*[out,retval]*/Float64* db);
-	STDMETHOD(put_S)(/*[in]*/Float64 s);
-	STDMETHOD(get_S)(/*[out,retval]*/Float64* s);
-	STDMETHOD(put_Diameter)(/*[in]*/Float64 d);
-	STDMETHOD(get_Diameter)(/*[out,retval]*/Float64* d);
-	STDMETHOD(put_Cover)(/*[in]*/Float64 c);
-	STDMETHOD(get_Cover)(/*[out,retval]*/Float64* c);
+   STDMETHOD(put_TransvReinforcementType)(/*[in]*/TransvReinforcementType trt) override;
+	STDMETHOD(get_TransvReinforcementType)(/*[out,retval]*/TransvReinforcementType* trt) override;
+	STDMETHOD(put_Asp)(/*[in]*/Float64 asp) override;
+	STDMETHOD(get_Asp)(/*[out,retval]*/Float64* asp) override;
+	STDMETHOD(put_As)(/*[in]*/Float64 as) override;
+	STDMETHOD(get_As)(/*[out,retval]*/Float64* as) override;
+	STDMETHOD(put_db)(/*[in]*/Float64 db) override;
+	STDMETHOD(get_db)(/*[out,retval]*/Float64* db) override;
+	STDMETHOD(put_S)(/*[in]*/Float64 s) override;
+	STDMETHOD(get_S)(/*[out,retval]*/Float64* s) override;
+	STDMETHOD(put_Diameter)(/*[in]*/Float64 d) override;
+	STDMETHOD(get_Diameter)(/*[out,retval]*/Float64* d) override;
+	STDMETHOD(put_Cover)(/*[in]*/Float64 c) override;
+	STDMETHOD(get_Cover)(/*[out,retval]*/Float64* c) override;
 };
 
 #endif //__CircularManderSection_H_

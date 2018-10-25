@@ -93,7 +93,7 @@ public:
    //------------------------------------------------------------------------
    // Clear parent for chain of responsibility. This will typically be done
    // after a ReportItem is copied.
-   virtual void ClearParent(){m_pParent=0;}
+   virtual void ClearParent(){m_pParent = 0;}
 
    //
    // GROUP: ACCESS
@@ -133,7 +133,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptReportItem& rItem);
-   virtual void MakeAssignment(const rptReportItem& rOther);
+   void MakeAssignment(const rptReportItem& rOther);
 
    // GROUP: ACCESS
 

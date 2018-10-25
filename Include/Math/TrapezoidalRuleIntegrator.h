@@ -60,7 +60,7 @@ class MATHCLASS mathTrapezoidalRuleIntegrator : public mathNumericIntegrator2d
 {
 public:
    // GROUP: LIFECYCLE
-   virtual Float64 Evaluate(const mathFunction2d& f,Float64 xMin,Float64 xMax,Uint16 nIntervals);
+   virtual Float64 Evaluate(const mathFunction2d& f,Float64 xMin,Float64 xMax,Uint16 nIntervals) override;
 
 };
 

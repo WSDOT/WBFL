@@ -77,7 +77,7 @@ private:
 
    // Prevent accidental copying and assignment
    rkUnitTest(const rkUnitTest&);
-   rkUnitTest& operator=(const rkUnitTest&);
+   rkUnitTest& operator=(const rkUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -87,7 +87,7 @@ public:
    //------------------------------------------------------------------------
    Float64 Evaluate(Float64 x) const;
 
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
    Float64 GetSlope() const;
    void SetSlope(Float64 slope);
@@ -102,11 +102,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 protected:
@@ -118,7 +118,7 @@ protected:
    void MakeCopy(const mathLinFunc2d& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const mathLinFunc2d& rOther);
+   void MakeAssignment(const mathLinFunc2d& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

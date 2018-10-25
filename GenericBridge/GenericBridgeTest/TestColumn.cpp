@@ -71,32 +71,32 @@ void CTestColumn::Test()
    //CComPtr<IColumn> column;
    //TRY_TEST(tpd->get_Column(-1,&column),E_INVALIDARG);
    //TRY_TEST(tpd->get_Column(100,&column),E_INVALIDARG);
-   //TRY_TEST(tpd->get_Column(0,NULL),E_POINTER);
+   //TRY_TEST(tpd->get_Column(0,nullptr),E_POINTER);
    //TRY_TEST(tpd->get_Column(0,&column),S_OK);
-   //TRY_TEST(column != NULL,true);
+   //TRY_TEST(column != nullptr,true);
 
    //Float64 height;
-   //TRY_TEST(column->get_Height(NULL),E_POINTER);
+   //TRY_TEST(column->get_Height(nullptr),E_POINTER);
    //TRY_TEST(column->get_Height(&height),S_OK);
    //TRY_TEST(IsEqual(height,0.0),true);
 
    //Float64 baseOffset;
-   //TRY_TEST(column->get_BaseOffset(NULL),E_POINTER);
+   //TRY_TEST(column->get_BaseOffset(nullptr),E_POINTER);
    //TRY_TEST(column->get_BaseOffset(&baseOffset),S_OK);
    //TRY_TEST(IsEqual(baseOffset,0.0),true);
 
    //CollectionIndexType count;
-   //TRY_TEST(column->get_SegmentCount(NULL),E_POINTER);
+   //TRY_TEST(column->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(column->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);
 
    //VARIANT_BOOL bFractional;
-   //TRY_TEST(column->get_Fractional(NULL),E_POINTER);
+   //TRY_TEST(column->get_Fractional(nullptr),E_POINTER);
    //TRY_TEST(column->get_Fractional(&bFractional),S_OK);
    //TRY_TEST(bFractional,VARIANT_FALSE);
 
    //VARIANT_BOOL bSymmetrical;
-   //TRY_TEST(column->get_Symmetrical(NULL),E_POINTER);
+   //TRY_TEST(column->get_Symmetrical(nullptr),E_POINTER);
    //TRY_TEST(column->get_Symmetrical(&bSymmetrical),S_OK);
    //TRY_TEST(bSymmetrical,VARIANT_FALSE);
 

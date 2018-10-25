@@ -72,8 +72,10 @@ gmCompositeShape* gmShapeUtils::GetRootNode(gmIShape& rShape)
       return pold;
    }
    else
+   {
       // shape is not in a composite
-      return 0;
+      return nullptr;
+   }
 }
 
 const gmCompositeShape* gmShapeUtils::GetRootNode(const gmIShape& rShape)
@@ -94,7 +96,9 @@ const gmCompositeShape* gmShapeUtils::GetRootNode(const gmIShape& rShape)
       return pold;
    }
    else
-      return 0;
+   {
+      return nullptr;
+   }
 }
 
 gmProperties gmShapeUtils::TransformProperties(const gmElasticProperties& ep,Float64 e)

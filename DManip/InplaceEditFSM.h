@@ -59,7 +59,7 @@ public:
 class CInplaceEditFSMDoneState : public CInplaceEditFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -68,7 +68,7 @@ public:
 class CInplaceEditFSMCancelledState : public CInplaceEditFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Cancelled"); }
+   virtual LPCTSTR StateName() const  override { return _T("Cancelled"); }
 };
 
 //----------------------------------------------
@@ -77,9 +77,9 @@ public:
 class CInplaceEditFSMEnteringTextState : public CInplaceEditFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("EnteringText"); }
-   virtual void LButtonDown(CInplaceEditFSM& fsm);
-	virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("EnteringText"); }
+   virtual void LButtonDown(CInplaceEditFSM& fsm) override;
+	virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -88,8 +88,8 @@ public:
 class CInplaceEditFSMStartState : public CInplaceEditFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CInplaceEditFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("Start"); }
+   virtual void Do(CInplaceEditFSM& fsm) override;
 };
 
 class CInplaceEditFSM : public iInplaceEditTask

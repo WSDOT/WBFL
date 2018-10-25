@@ -45,7 +45,7 @@ STDMETHODIMP CVehicularAnalysisContext::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IVehicularAnalysisContext
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -112,7 +112,7 @@ void CVehicularAnalysisContext::ComputeSupportLocations()
 
    Float64 loc = 0.0;
    m_SupportLocations->Add(loc); // always a support at 0.0
-   for (SpanIndexType i=0; i<num_spans; i++)
+   for (SpanIndexType i = 0; i<num_spans; i++)
    {
       CComPtr<ISpan> span;
       hr = spans->get_Item(i, &span);
@@ -179,7 +179,7 @@ STDMETHODIMP CVehicularAnalysisContext::Initialize(ILBAMModel *model, /*[in]*/II
    try
    {
 
-      if (m_pModel != NULL)
+      if (m_pModel != nullptr)
       {
          // can only initialize once
          THROW_LBAMLL(LL_INITIALIZATION);
@@ -433,12 +433,22 @@ STDMETHODIMP CVehicularAnalysisContext::putref_LegalRoutineRating(ILiveLoadModel
 
 STDMETHODIMP CVehicularAnalysisContext::get_LegalSpecialRating(ILiveLoadModel* *pVal)
 {
-	return m_pLiveLoad->get_LegalSpecialRating(pVal);
+   return m_pLiveLoad->get_LegalSpecialRating(pVal);
 }
 
 STDMETHODIMP CVehicularAnalysisContext::putref_LegalSpecialRating(ILiveLoadModel* newVal)
 {
-	return m_pLiveLoad->putref_LegalSpecialRating(newVal);
+   return m_pLiveLoad->putref_LegalSpecialRating(newVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::get_LegalEmergencyRating(ILiveLoadModel* *pVal)
+{
+   return m_pLiveLoad->get_LegalEmergencyRating(pVal);
+}
+
+STDMETHODIMP CVehicularAnalysisContext::putref_LegalEmergencyRating(ILiveLoadModel* newVal)
+{
+   return m_pLiveLoad->putref_LegalEmergencyRating(newVal);
 }
 
 STDMETHODIMP CVehicularAnalysisContext::get_PermitRoutineRating(ILiveLoadModel* *pVal)

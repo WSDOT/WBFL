@@ -131,7 +131,7 @@ STDMETHODIMP CVertCurveCollection::Add(CogoObjectID id, IProfilePoint* pbg, IPro
       return E_INVALIDARG;
    }
 
-   if ( vc != NULL )
+   if ( vc != nullptr )
    {
       CHECK_RETOBJ(vc);
    }
@@ -144,7 +144,7 @@ STDMETHODIMP CVertCurveCollection::Add(CogoObjectID id, IProfilePoint* pbg, IPro
    newVC->put_L1(l1);
    newVC->put_L2(l2);
 
-   if ( vc != NULL )
+   if ( vc != nullptr )
    {
       (*vc) = newVC;
       (*vc)->AddRef();
@@ -199,7 +199,7 @@ STDMETHODIMP CVertCurveCollection::FindID(IVertCurve* vc,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IVertCurve> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(vc) )
       {
          *id = item.first;
@@ -220,7 +220,7 @@ STDMETHODIMP CVertCurveCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -239,7 +239,7 @@ STDMETHODIMP CVertCurveCollection::get__EnumVertCurves(IEnumVertCurves** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -311,7 +311,7 @@ STDMETHODIMP CVertCurveCollection::Clone(IVertCurveCollection* *clone)
 
    CollectionIndexType count = 0;
    CComPtr<IVertCurve> vc;
-   while ( enumVC->Next(1,&vc,NULL) != S_FALSE )
+   while ( enumVC->Next(1,&vc,nullptr) != S_FALSE )
    {
       CComPtr<IVertCurve> cloneVC;
       vc->Clone(&cloneVC);

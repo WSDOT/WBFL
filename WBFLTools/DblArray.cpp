@@ -43,7 +43,7 @@ STDMETHODIMP CDblArray::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IDblArray
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -217,7 +217,7 @@ STDMETHODIMP CDblArray::get__NewEnum(IUnknown** ppUnk)
 {
    CHECK_RETOBJ(ppUnk);
 
-	*ppUnk = NULL;
+	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
    typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyFloat64, ContainerType > VecEnumType;
@@ -246,7 +246,7 @@ STDMETHODIMP CDblArray::get__EnumElements(/*[out, retval]*/ IEnumDblArray* *ppen
 
    CComPtr<IEnumDblArray> pHolder(pEnum); // memory leak avoidance
 
-   hr = pEnum->Init( NULL, m_Values );
+   hr = pEnum->Init( nullptr, m_Values );
    if ( FAILED(hr) )
       return hr;
 

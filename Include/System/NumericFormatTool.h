@@ -90,7 +90,7 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual std::_tstring AsString(Float64 value) const;
+   virtual std::_tstring AsString(Float64 value) const override;
    virtual std::_tstring AsString(const sysSectionValue& value) const;
 
    // GROUP: ACCESS
@@ -120,7 +120,7 @@ protected:
    void MakeCopy(const sysNumericFormatTool& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const sysNumericFormatTool& rOther);
+   void MakeAssignment(const sysNumericFormatTool& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

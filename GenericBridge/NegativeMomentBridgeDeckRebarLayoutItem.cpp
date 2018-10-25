@@ -47,7 +47,7 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::InterfaceSupportsErrorInf
 		&IID_INegativeMomentBridgeDeckRebarLayoutItem,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -74,7 +74,7 @@ HRESULT CNegativeMomentBridgeDeckRebarLayoutItem::DoLoadItem(IStructuredLoad2* l
 //   CComObject<CSpan>::CreateInstance(&pSpan);
 //   CComPtr<ISpan> newSpan = pSpan;
 //
-//   ATLASSERT(m_pBridge != NULL);
+//   ATLASSERT(m_pBridge != nullptr);
 //   pSpan->SetBridge(m_pBridge);
 //
 //   CComQIPtr<IStructuredStorage2> ssSpan(newSpan);
@@ -147,7 +147,7 @@ STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::putref_Bridge(IGenericBri
 
 STDMETHODIMP CNegativeMomentBridgeDeckRebarLayoutItem::put_PierID(PierIDType pierID)
 {
-   ATLASSERT(m_pBridge != NULL); // call putref_Bridge before setting the pier
+   ATLASSERT(m_pBridge != nullptr); // call putref_Bridge before setting the pier
    CComPtr<IPierCollection> piers;
    m_pBridge->get_Piers(&piers);
 

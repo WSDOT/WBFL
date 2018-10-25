@@ -81,27 +81,27 @@ END_COM_MAP()
    GirderIDType m_RightGirderID;
 
 public:
-   STDMETHOD(put_AlignmentID)(CogoObjectID ID);
-   STDMETHOD(get_AlignmentID)(CogoObjectID* ID);
-   STDMETHOD(put_StartStation)(Float64 station);
-   STDMETHOD(get_StartStation)(Float64* pStation);
-   STDMETHOD(put_EndStation)(Float64 station);
-   STDMETHOD(get_EndStation)(Float64* pStation);
-   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal);
-   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal);
-   STDMETHOD(put_DiaphragmLineIDInc)(LineIDType newVal);
-   STDMETHOD(get_DiaphragmLineIDInc)(LineIDType* pVal);
-   STDMETHOD(put_Divisor)(Int16 divisor);
-   STDMETHOD(get_Divisor)(Int16* divisor);
-   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered);
-   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered);
-   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID);
-   STDMETHOD(put_RightGirderLineID)(GirderIDType ID);
-   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID);
+   STDMETHOD(put_AlignmentID)(CogoObjectID ID) override;
+   STDMETHOD(get_AlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(put_StartStation)(Float64 station) override;
+   STDMETHOD(get_StartStation)(Float64* pStation) override;
+   STDMETHOD(put_EndStation)(Float64 station) override;
+   STDMETHOD(get_EndStation)(Float64* pStation) override;
+   STDMETHOD(put_DiaphragmLineID)(LineIDType newVal) override;
+   STDMETHOD(get_DiaphragmLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_DiaphragmLineIDInc)(LineIDType newVal) override;
+   STDMETHOD(get_DiaphragmLineIDInc)(LineIDType* pVal) override;
+   STDMETHOD(put_Divisor)(Int16 divisor) override;
+   STDMETHOD(get_Divisor)(Int16* divisor) override;
+   STDMETHOD(put_Staggered)(VARIANT_BOOL bStaggered) override;
+   STDMETHOD(get_Staggered)(VARIANT_BOOL* bStaggered) override;
+   STDMETHOD(put_LeftGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_LeftGirderLineID)(GirderIDType* ID) override;
+   STDMETHOD(put_RightGirderLineID)(GirderIDType ID) override;
+   STDMETHOD(get_RightGirderLineID)(GirderIDType* ID) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayDiaphagmLines) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(EqualSpaceDiaphragmLineFactory), CEqualSpaceDiaphragmLineFactory)

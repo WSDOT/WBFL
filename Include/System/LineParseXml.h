@@ -136,7 +136,7 @@ private:
 
    // Prevent accidental copying and assignment
    sysLineParseXml(const sysLineParseXml&);
-   sysLineParseXml& operator=(const sysLineParseXml&);
+   sysLineParseXml& operator=(const sysLineParseXml&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

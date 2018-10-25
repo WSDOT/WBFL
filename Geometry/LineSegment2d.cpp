@@ -47,7 +47,7 @@ STDMETHODIMP CLineSegment2d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ILineSegment2d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -59,7 +59,7 @@ HRESULT CLineSegment2d::FinalConstruct()
 {
    HRESULT hr = S_OK;
 
-   hr = CreatePoint(0.00,0.00,NULL,&m_pStart );
+   hr = CreatePoint(0.00,0.00,nullptr,&m_pStart );
    if ( FAILED(hr) )
       return hr;
 
@@ -67,7 +67,7 @@ HRESULT CLineSegment2d::FinalConstruct()
    if ( FAILED(hr) )
       return hr;
 
-   hr = CreatePoint(1.00,0.00,NULL,&m_pEnd );
+   hr = CreatePoint(1.00,0.00,nullptr,&m_pEnd );
    if ( FAILED(hr) )
       return hr;
 

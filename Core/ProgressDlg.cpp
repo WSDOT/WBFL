@@ -38,7 +38,7 @@ static char THIS_FILE[] = __FILE__;
 // CProgressDlg dialog
 
 
-CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
+CProgressDlg::CProgressDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CProgressDlg::IDD, pParent)
 {
    m_dwMask = 0;
@@ -46,8 +46,8 @@ CProgressDlg::CProgressDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CProgressDlg)
 	m_Message = _T("Working...");
 	//}}AFX_DATA_INIT
-   m_pwndFocus = NULL;
-   m_pwndCapture = NULL;
+   m_pwndFocus = nullptr;
+   m_pwndCapture = nullptr;
 }
 
 CProgressDlg::~CProgressDlg()

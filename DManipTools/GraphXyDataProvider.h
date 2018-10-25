@@ -50,17 +50,17 @@ BEGIN_COM_MAP(CGraphXyDataProvider)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 HRESULT FinalConstruct();
 
 // iGraphXyDataProvider
 public:
-   STDMETHOD_(void,put_DataSet)(iDataSet2d* dataSet);
-   STDMETHOD_(void,get_DataSet)(iDataSet2d** dataSet);
+   STDMETHOD_(void,put_DataSet)(iDataSet2d* dataSet) override;
+   STDMETHOD_(void,get_DataSet)(iDataSet2d** dataSet) override;
 
-   STDMETHOD_(void,put_DataPointFactory)(iDataPointFactory* factory);
-   STDMETHOD_(void,get_DataPointFactory)(iDataPointFactory** factory);
+   STDMETHOD_(void,put_DataPointFactory)(iDataPointFactory* factory) override;
+   STDMETHOD_(void,get_DataPointFactory)(iDataPointFactory** factory) override;
 
 private:
    CComPtr<iDataSet2d>          m_DataSet;

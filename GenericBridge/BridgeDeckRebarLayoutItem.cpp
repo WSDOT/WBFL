@@ -47,7 +47,7 @@ STDMETHODIMP CBridgeDeckRebarLayoutItem::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IBridgeDeckRebarLayoutItem,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -74,7 +74,7 @@ HRESULT CBridgeDeckRebarLayoutItem::DoLoadItem(IStructuredLoad2* load,IRebarPatt
 //   CComObject<CSpan>::CreateInstance(&pSpan);
 //   CComPtr<ISpan> newSpan = pSpan;
 //
-//   ATLASSERT(m_pBridge != NULL);
+//   ATLASSERT(m_pBridge != nullptr);
 //   pSpan->SetBridge(m_pBridge);
 //
 //   CComQIPtr<IStructuredStorage2> ssSpan(newSpan);

@@ -84,7 +84,7 @@ void CTestDocUnitSystem::Test()
    TRY_TEST(AtlAdvise(unitSystem,punk,IID_IDocUnitSystemEvents,&dwCookie),S_OK);
 
    CComPtr<IUnitModeController> umc;
-   TRY_TEST( unitSystem->get_UnitModeController(NULL), E_POINTER );
+   TRY_TEST( unitSystem->get_UnitModeController(nullptr), E_POINTER );
    TRY_TEST( unitSystem->get_UnitModeController(&umc), S_OK );
    TRY_TEST( umc != 0, true );
 
@@ -94,11 +94,11 @@ void CTestDocUnitSystem::Test()
    // error.
 
    // Get the AppUnitSystem
-   // Call should not succeeded. Point is NULL because DocUnitSystem
+   // Call should not succeeded. Point is nullptr because DocUnitSystem
    // hasn't been associated with an AppUnitSystem yet
    CComPtr<IAppUnitSystem> appUnitSys;
    TRY_TEST(unitSystem->get_AppUnitSystem(&appUnitSys),S_OK);
-   TRY_TEST(appUnitSys == NULL,true);
+   TRY_TEST(appUnitSys == nullptr,true);
 
    // Test Format
    CComBSTR bstrTest;
@@ -118,10 +118,10 @@ void CTestDocUnitSystem::Test()
    // Create AppUnitSystem and associated with DocUnitSystem
    CComPtr<IAppUnitSystem> appUnitSystem;
    appUnitSystem.CoCreateInstance(CLSID_AppUnitSystem);
-   TRY_TEST(unitSystem->putref_AppUnitSystem(NULL), E_INVALIDARG);
+   TRY_TEST(unitSystem->putref_AppUnitSystem(nullptr), E_INVALIDARG);
    TRY_TEST(unitSystem->putref_AppUnitSystem(appUnitSystem), S_OK);
    CComPtr<IAppUnitSystem> testAppUnitSystem;
-   TRY_TEST(unitSystem->get_AppUnitSystem(NULL), E_POINTER);
+   TRY_TEST(unitSystem->get_AppUnitSystem(nullptr), E_POINTER);
    TRY_TEST(unitSystem->get_AppUnitSystem(&testAppUnitSystem),S_OK);
    TRY_TEST(appUnitSystem.IsEqualObject(testAppUnitSystem),true);
    testAppUnitSystem.Release();
@@ -145,9 +145,9 @@ void CTestDocUnitSystem::Test()
 
    ////////////////////////////////////////////////////
    // Test Format
-   TRY_TEST(unitSystem->Format(10.0,NULL,VARIANT_TRUE,&bstrTest),E_INVALIDARG);
+   TRY_TEST(unitSystem->Format(10.0,nullptr,VARIANT_TRUE,&bstrTest),E_INVALIDARG);
    TRY_TEST(unitSystem->Format(10.0,CComBSTR("Junk"),VARIANT_TRUE,&bstrTest),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(unitSystem->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,NULL),E_POINTER);
+   TRY_TEST(unitSystem->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,nullptr),E_POINTER);
 
    TRY_TEST(unitSystem->Format(10.0,CComBSTR("LongLength"),VARIANT_TRUE,&bstrTest),S_OK);
    TRY_TEST(wcscmp( bstrTest, CComBSTR("10.000 m") ), 0);
@@ -158,7 +158,7 @@ void CTestDocUnitSystem::Test()
    // Test scientific notation
    pLengthFormatter->FormatSpecifiers(5,3,tjRight,nftScientific,0.0001);
    TRY_TEST(unitSystem->Format(11000.0,CComBSTR("LongLength"),VARIANT_TRUE,&bstrTest),S_OK);
-   TRY_TEST(wcscmp( bstrTest, CComBSTR("1.100e+004 m") ), 0);
+   TRY_TEST(wcscmp( bstrTest, CComBSTR("1.100e+04 m") ), 0);
 
    // Test engineering notation
    pLengthFormatter->FormatSpecifiers(6,3,tjRight,nftEngineering,0.0001);
@@ -179,9 +179,9 @@ void CTestDocUnitSystem::Test()
 
    //////////////////////////////////////////////
    // Test Tag property
-   TRY_TEST(unitSystem->get_Tag(NULL,&tag),E_INVALIDARG);
+   TRY_TEST(unitSystem->get_Tag(nullptr,&tag),E_INVALIDARG);
    TRY_TEST(unitSystem->get_Tag(CComBSTR("Junk"),&tag),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(unitSystem->get_Tag(CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(unitSystem->get_Tag(CComBSTR("LongLength"),nullptr),E_POINTER);
    unitSystem->put_UnitMode(umSI);
    TRY_TEST(unitSystem->get_Tag(CComBSTR("LongLength"),&tag),S_OK);
    TRY_TEST( wcscmp(tag,CComBSTR("m")), 0 );
@@ -193,13 +193,13 @@ void CTestDocUnitSystem::Test()
    // Test ConvertToDisplayUnits and ConvertFromDisplayUnits
    unitSystem->put_UnitMode(umSI);
    TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,CComBSTR("Junk"),&result),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,NULL,&result),E_INVALIDARG);
-   TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,nullptr,&result),E_INVALIDARG);
+   TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),nullptr),E_POINTER);
    TRY_TEST(unitSystem->ConvertToDisplayUnits(10.0,CComBSTR("LongLength"),&result),S_OK);
    unitSystem->put_UnitMode(umUS);
    TRY_TEST(unitSystem->ConvertFromDisplayUnits(10.0,CComBSTR("Junk"),&result),UNITS_E_BADDISPLAYUNITGROUP);
-   TRY_TEST(unitSystem->ConvertFromDisplayUnits(10.0,NULL,&result),E_INVALIDARG);
-   TRY_TEST(unitSystem->ConvertFromDisplayUnits(10.0,CComBSTR("LongLength"),NULL),E_POINTER);
+   TRY_TEST(unitSystem->ConvertFromDisplayUnits(10.0,nullptr,&result),E_INVALIDARG);
+   TRY_TEST(unitSystem->ConvertFromDisplayUnits(10.0,CComBSTR("LongLength"),nullptr),E_POINTER);
    TRY_TEST(unitSystem->ConvertFromDisplayUnits(result,CComBSTR("LongLength"),&result),S_OK);
    TRY_TEST( IsEqual(result,3.048),true);
 

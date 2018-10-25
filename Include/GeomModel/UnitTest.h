@@ -80,8 +80,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   gmUnitTest(const gmUnitTest&);
-   gmUnitTest& operator=(const gmUnitTest&);
+   gmUnitTest(const gmUnitTest&) = delete;
+   gmUnitTest& operator=(const gmUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Axle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Axles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributedLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributedLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCases.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCombination.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCombinations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGroups.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Loading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettlementLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettlementLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrainLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrainLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemperatureLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemperatureLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicularLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicularLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Axle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Axles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ComCollections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributedLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributedLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCases.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCombination.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCombinations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGroups.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Loading.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LoadingErrors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettlementLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettlementLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrainLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrainLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemperatureLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemperatureLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicularLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicularLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLLoading.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Loading.def" />
+    <None Include="Axle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Axles.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributedLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributedLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributedLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCase.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCases.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCombination.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCombinations.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadGroup.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadGroups.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SettlementLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SettlementLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SettlementLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemperatureLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemperatureLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemperatureLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VehicularLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VehicularLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{b7ddeec8-f6ec-4414-a75d-c2c7b4b59bd7}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{e5668ca5-da77-45bd-839d-fe49624fa6af}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{26fe0e31-c7b8-4201-a5ff-574518f60ee3}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Loading.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

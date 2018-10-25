@@ -81,7 +81,7 @@ void CEAFGraphView::OnDraw(CDC* pDC)
       m_bIsPrinting = true;
 
    CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
    pGraphBuilder->DrawGraph(this,pDC);
 
    if ( m_bIsPrinting )
@@ -111,7 +111,7 @@ void CEAFGraphView::Dump(CDumpContext& dc) const
 // CEAFGraphView message handlers
 void CEAFGraphView::OnUpdateFilePrint(CCmdUI* pCmdUI) 
 {
-   boost::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
+   std::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
    BOOL bCanPrint = FALSE;
    if ( pBuilder )
    {
@@ -125,7 +125,7 @@ void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
    CEAFView::OnUpdate( pSender, lHint, pHint ); // base class
 
-   boost::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
+   std::shared_ptr<CGraphBuilder> pBuilder(GetGraphBuilder());
    pBuilder->OnUpdate(pSender,lHint,pHint);
 }
 
@@ -151,7 +151,7 @@ CEAFGraphChildFrame* CEAFGraphView::GetFrame()
    return pFrame;
 }
 
-boost::shared_ptr<CGraphBuilder> CEAFGraphView::GetGraphBuilder()
+std::shared_ptr<CGraphBuilder> CEAFGraphView::GetGraphBuilder()
 {
    CEAFGraphChildFrame* pFrame = GetFrame();
    return pFrame->GetGraphBuilder();
@@ -167,13 +167,13 @@ void CEAFGraphView::OnInitialUpdate()
 
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDocTemplate;
       CEAFGraphViewCreationData* pCreateData = (CEAFGraphViewCreationData*)pTemplate->GetViewCreationData();
-      ASSERT(pCreateData != NULL);
+      ASSERT(pCreateData != nullptr);
 
       CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
 
       pParent->m_pGraphMgr  = pCreateData->m_pGraphMgr;
       pParent->m_pIGraphMgr = pCreateData->m_pIGraphMgr;
-      ATLASSERT(pCreateData->m_pGraphMgr != NULL || pCreateData->m_pIGraphMgr != NULL); // one of these should not be NULL
+      ATLASSERT(pCreateData->m_pGraphMgr != nullptr || pCreateData->m_pIGraphMgr != nullptr); // one of these should not be nullptr
 
       if ( !pParent->CreateGraph(pCreateData->m_GraphIndex) )
       {
@@ -220,7 +220,7 @@ void CEAFGraphView::UpdateViewTitle()
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    CEAFGraphChildFrame* pParent = (CEAFGraphChildFrame*)GetParent();
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
+   std::shared_ptr<CGraphBuilder> pGraphBuilder(pParent->GetGraphBuilder());
    if ( pGraphBuilder )
    {
       CString strTitle;

@@ -24,7 +24,7 @@
 #pragma once
 
 #include <ReportManager\ReportManager.h>
-#include <boost\shared_ptr.hpp>
+
 
 // {61C524E8-7D77-4345-8954-B53539516BEB}
 DEFINE_GUID(IID_IReportManager, 
@@ -32,20 +32,20 @@ DEFINE_GUID(IID_IReportManager,
 interface IReportManager : IUnknown
 {
    virtual void AddReportBuilder(CReportBuilder* pRptBuilder) = 0;
-   virtual void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder) = 0;
+   virtual void AddReportBuilder(std::shared_ptr<CReportBuilder>& pReportBuilder) = 0;
    virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
-   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName) = 0;
-   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName) = 0;
-   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) = 0;
-   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) = 0;
+   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName) = 0;
+   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName) = 0;
+   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) = 0;
+   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) = 0;
    virtual std::vector<std::_tstring> GetReportNames(bool bIncludeHidden = false) const = 0;
    virtual CReportDescription GetReportDescription(LPCTSTR strReportName) = 0;
    virtual CReportDescription GetReportDescription(const std::_tstring& strReportName) = 0;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strReportName) = 0;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strReportName) = 0;
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) = 0;
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) = 0;
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) = 0;
-   virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) = 0;
-   virtual INT_PTR DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) = 0;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) = 0;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) = 0;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) = 0;
+   virtual std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) = 0;
+   virtual INT_PTR DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) = 0;
 };

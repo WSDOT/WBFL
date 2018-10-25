@@ -94,7 +94,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXRangeOfApplicability();
+   virtual ~lrfdXRangeOfApplicability() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -107,7 +107,7 @@ public:
    void Throw() const { throw *static_cast<const lrfdXRangeOfApplicability*>(this); }
    Int32 GetReason() const { return (Int32)m_Reason; }
    lrfdXRangeOfApplicability::Reason GetReasonCode() const { return m_Reason; }
-   virtual void GetErrorMessage(std::_tstring* pMsg) const;
+   virtual void GetErrorMessage(std::_tstring* pMsg) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -118,7 +118,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const lrfdXRangeOfApplicability& rOther);
-   virtual void MakeAssignment(const lrfdXRangeOfApplicability& rOther);
+   void MakeAssignment(const lrfdXRangeOfApplicability& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

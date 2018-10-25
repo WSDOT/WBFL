@@ -59,7 +59,7 @@ class LoadCombinationEngineBase
       hr = POIs->get_Count(&numres);
 
       // initialize list of combination factors in same order as our pois
-      for (CollectionIndexType i=0; i<numres; i++)
+      for (CollectionIndexType i = 0; i<numres; i++)
       {
          // get load modifiers
          PoiIDType id;
@@ -132,7 +132,7 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
       CHRException hr;
       // loop over all pois
       CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          CComPtr<IResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -187,7 +187,7 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
       CHRException hr;
       // loop over all pois
       CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          Float64 llresult;
          CComPtr<ILiveLoadConfiguration> llconfig;
@@ -253,7 +253,7 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
       CHRException hr;
       // loop over all pois
       CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          CComPtr<ISectionResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -332,7 +332,7 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
       CHRException hr;
       // loop over all pois
       CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          Float64 left_llresult, right_llresult;
          CComPtr<ILiveLoadConfiguration> left_llconfig, right_llconfig;
@@ -474,7 +474,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::InterfaceSupportsErrorInfo(REFIID riid
 	{
 		&IID_ILoadCombinationResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -495,7 +495,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       // make sure our combination table is up to date
       m_pCombiner->Validate();
@@ -519,7 +519,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
 
       // loop over load case results and apply them to combination
       CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
+      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -657,7 +657,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       // make sure our combination table is up to date
       m_pCombiner->Validate();
@@ -680,7 +680,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
 
       // loop over load case results and apply them to combination
       CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
+      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -808,7 +808,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       // make sure our combination table is up to date
       m_pCombiner->Validate();
@@ -831,7 +831,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
 
       // loop over load case results and apply them to combination
       CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
+      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -958,7 +958,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       // make sure our combination table is up to date
       m_pCombiner->Validate();
@@ -981,7 +981,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
 
       // loop over load case results and apply them to combination
       CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo=0; i_combo<num_combos; i_combo++)
+      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -1098,7 +1098,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       // need to get configuration from force response and use it to compute stresses
       CComPtr<ILoadCombinationSectionResults> force_res;

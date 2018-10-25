@@ -63,7 +63,7 @@ void CTestOverlaySlab::Test()
    //////////////////////
    // Test default values
    Float64 value;
-   TRY_TEST(slab->get_GrossDepth(NULL),E_POINTER);
+   TRY_TEST(slab->get_GrossDepth(nullptr),E_POINTER);
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 

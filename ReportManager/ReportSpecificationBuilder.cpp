@@ -50,7 +50,7 @@ CReportSpecificationBuilder::~CReportSpecificationBuilder()
 
 }
 
-boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec)
 {
    if ( 0 < rptDesc.GetChapterCount() )
    {
@@ -62,7 +62,7 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateRepor
       }
       else
       {
-         return boost::shared_ptr<CReportSpecification>();
+         return nullptr;
       }
    }
    else
@@ -71,22 +71,22 @@ boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateRepor
    }
 }
 
-boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
+std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
 {
    std::vector<CChapterInfo> vChInfo = rptDesc.GetChapterInfo();
    return DoCreateReportSpec(rptDesc,vChInfo);
 }
 
-boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
+std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo)
 {
-   boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
+   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CReportSpecification>(rptDesc.GetReportName()) );
    rptDesc.ConfigureReportSpecification(vChInfo,pRptSpec);
    return pRptSpec;
 }
 
-boost::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList)
+std::shared_ptr<CReportSpecification> CReportSpecificationBuilder::DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList)
 {
-   boost::shared_ptr<CReportSpecification> pRptSpec( new CReportSpecification(rptDesc.GetReportName()) );
+   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CReportSpecification>(rptDesc.GetReportName()) );
    rptDesc.ConfigureReportSpecification(vChList,pRptSpec);
    return pRptSpec;
 }

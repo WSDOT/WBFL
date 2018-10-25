@@ -57,32 +57,32 @@ BEGIN_COM_MAP(CForeignDragDropTaskImpl)
 END_COM_MAP()
 
    // CForeignDragDropTask methods (from CForeignDragDropFSM)
-	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
-	STDMETHOD_(void,InitTask)();
-   STDMETHOD_(void,CreateDragObjects)();
-   STDMETHOD_(void,DestroyDragObjects)();
-   STDMETHOD_(DROPEFFECT,DetermineDropEffect)();
-   STDMETHOD_(void,TrackDragObjects)();
-   STDMETHOD_(void,NotifyDropTarget)();
+	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) override;
+	STDMETHOD_(void,InitTask)() override;
+   STDMETHOD_(void,CreateDragObjects)() override;
+   STDMETHOD_(void,DestroyDragObjects)() override;
+   STDMETHOD_(DROPEFFECT,DetermineDropEffect)() override;
+   STDMETHOD_(void,TrackDragObjects)() override;
+   STDMETHOD_(void,NotifyDropTarget)() override;
 
    // iTask methods
-   STDMETHOD_(void,Start)();
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point);
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point);
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(void,OnDragLeave)();
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point);
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point);
+   STDMETHOD_(void,Start)() override;
+	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point) override;
+   STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point) override;
+   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point) override;
+   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point) override;
+   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point) override;
+   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point) override;
+   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point) override;
+   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point) override;
+   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point) override;
+   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+   STDMETHOD_(void,OnDragLeave)() override;
+   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point) override;
+   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
 private:
    CComPtr<iDisplayMgr> m_pDispMgr;

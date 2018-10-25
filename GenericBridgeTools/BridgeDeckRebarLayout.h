@@ -65,8 +65,8 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarLayout"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarLayoutItems");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
    CComPtr<IEffectiveFlangeWidthTool> m_EffFlangeTool;
    CComPtr<IGenericBridge> m_Bridge;
@@ -74,18 +74,18 @@ protected:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeckRebarLayout
 public:
-   STDMETHOD(putref_Bridge)(IGenericBridge* pBridge);
-	STDMETHOD(get_Bridge)(IGenericBridge** ppBridge);
-   STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool);
-	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool);
-   STDMETHOD(CreateRebarSection)(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section);
-//   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli);
-//	STDMETHOD(get_Count)(/*[out,retval]*/ long* count);
-//	STDMETHOD(Add)(/*[in]*/IBridgeDeckRebarLayoutItem* rli);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get__EnumRebarLayoutItems)(/*[out,retval]*/IEnumBridgeDeckRebarLayoutItems** enumRebarLayoutItems);
+   STDMETHOD(putref_Bridge)(IGenericBridge* pBridge) override;
+	STDMETHOD(get_Bridge)(IGenericBridge** ppBridge) override;
+   STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool) override;
+	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool) override;
+   STDMETHOD(CreateRebarSection)(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section) override;
+//   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli) override;
+//	STDMETHOD(get_Count)(/*[out,retval]*/ long* count) override;
+//	STDMETHOD(Add)(/*[in]*/IBridgeDeckRebarLayoutItem* rli) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get__EnumRebarLayoutItems)(/*[out,retval]*/IEnumBridgeDeckRebarLayoutItems** enumRebarLayoutItems) override;
 };

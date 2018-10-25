@@ -42,30 +42,30 @@ private:
 
 // IPier (partial implementation)
 public:
-   STDMETHOD(put_Type)(/*[in]*/PierType type);
-   STDMETHOD(get_Type)(/*[out,retval]*/PierType* type);
-   //STDMETHOD(get_DeckElevation)(/*[out,retval]*/Float64* pElev);
-   //STDMETHOD(get_CrownPointOffset)(/*[out,retval]*/Float64* pCPO);
-   //STDMETHOD(get_CrownSlope)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
-   //STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
-   STDMETHOD(get_CurbToCurbWidth)(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc);
-   STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew);
-   STDMETHOD(get_SkewAngle)(/*[out,retval]*/ IAngle* *skewAngle);
-   STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pCrossBeam);
-   STDMETHOD(get_CrossBeam)(/*[out,retval]*/ICrossBeam** ppCrossBeam);
-   STDMETHOD(putref_BearingLayout)(/*[in]*/IBearingLayout* pBearingLayout);
-   STDMETHOD(get_BearingLayout)(/*[out,retval]*/IBearingLayout** ppBearingLayout);
-   STDMETHOD(putref_ColumnLayout)(/*[in]*/IColumnLayout* pColumnLayout);
-   STDMETHOD(get_ColumnLayout)(/*[out,retval]*/IColumnLayout** ppColumnLayout);
-   STDMETHOD(get_Column)(/*[in]*/ ColumnIndexType columnIdx,/*[out,retval]*/IColumn* *column);
-   STDMETHOD(ConvertCrossBeamToCurbLineCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXcl);
-   STDMETHOD(ConvertCurbLineToCrossBeamCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb);
-   STDMETHOD(ConvertPierToCrossBeamCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb);
-   STDMETHOD(ConvertCrossBeamToPierCoordinate)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp);
-   STDMETHOD(ConvertPierToCurbLineCoordinate)(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl);
-   STDMETHOD(ConvertCurbLineToPierCoordinate)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp);
-   STDMETHOD(get_Elevation)(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev);
-   STDMETHOD(get_CurbLineElevation)(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev);
+   HRESULT put_Type(/*[in]*/PierType type);
+   HRESULT get_Type(/*[out,retval]*/PierType* type);
+   //HRESULT get_DeckElevation(/*[out,retval]*/Float64* pElev);
+   //HRESULT get_CrownPointOffset(/*[out,retval]*/Float64* pCPO);
+   //HRESULT get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
+   //HRESULT get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
+   HRESULT get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc);
+   HRESULT putref_SkewAngle(/*[in]*/IAngle* pSkew);
+   HRESULT get_SkewAngle(/*[out,retval]*/ IAngle* *skewAngle);
+   HRESULT putref_CrossBeam(/*[in]*/ICrossBeam* pCrossBeam);
+   HRESULT get_CrossBeam(/*[out,retval]*/ICrossBeam** ppCrossBeam);
+   HRESULT putref_BearingLayout(/*[in]*/IBearingLayout* pBearingLayout);
+   HRESULT get_BearingLayout(/*[out,retval]*/IBearingLayout** ppBearingLayout);
+   HRESULT putref_ColumnLayout(/*[in]*/IColumnLayout* pColumnLayout);
+   HRESULT get_ColumnLayout(/*[out,retval]*/IColumnLayout** ppColumnLayout);
+   HRESULT get_Column(/*[in]*/ ColumnIndexType columnIdx,/*[out,retval]*/IColumn* *column);
+   HRESULT ConvertCrossBeamToCurbLineCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXcl);
+   HRESULT ConvertCurbLineToCrossBeamCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXxb);
+   HRESULT ConvertPierToCrossBeamCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXxb);
+   HRESULT ConvertCrossBeamToPierCoordinate(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pXp);
+   HRESULT ConvertPierToCurbLineCoordinate(/*[in]*/Float64 Xp,/*[out,retval]*/Float64* pXcl);
+   HRESULT ConvertCurbLineToPierCoordinate(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pXp);
+   HRESULT get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* pElev);
+   HRESULT get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pElev);
 
 public:
    IPier* m_pPier; // weak reference

@@ -55,10 +55,10 @@ library WBFLTransactions
 		object,
 		uuid(DBB7742C-CD24-45d6-897B-58A91DD205F7),
 		oleautomation,
-		helpstring("ITransaction Interface"),
+		helpstring("IWBFLTransaction Interface"),
 		pointer_default(unique)
 	]
-	interface ITransaction : IUnknown
+	interface IWBFLTransaction : IUnknown
 	{
 		[helpstring("method Execute")] HRESULT Execute();
 		[helpstring("method Undo")] HRESULT Undo();
@@ -71,16 +71,16 @@ library WBFLTransactions
 		object,
 		uuid(1B39F34E-247E-47EF-B750-50854784D0C4),
 		oleautomation,
-		helpstring("IMacroTransaction Interface"),
+		helpstring("IWBFLMacroTransaction Interface"),
 		pointer_default(unique)
 	]
-	interface IMacroTransaction : IUnknown
+	interface IWBFLMacroTransaction : IUnknown
 	{
 		[helpstring("method Execute")] HRESULT Execute();
 		[helpstring("method Undo")] HRESULT Undo();
 		[propget, helpstring("property Name")] HRESULT Name([out, retval] BSTR *pVal);
 		[propput, helpstring("property Name")] HRESULT Name([in] BSTR newVal);
-		[helpstring("method AddTransaction")] HRESULT AddTransaction([in] ITransaction* txn);
+		[helpstring("method AddTransaction")] HRESULT AddTransaction([in] IWBFLTransaction* txn);
 		[propget, helpstring("property IsUndoable")] HRESULT IsUndoable([out, retval] VARIANT_BOOL *pVal);
 		[propget, helpstring("property IsRepeatable")] HRESULT IsRepeatable([out, retval] VARIANT_BOOL *pVal);
 		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
@@ -90,25 +90,25 @@ library WBFLTransactions
 		object,
 		uuid(2F8F8D41-5D23-45DC-9C94-EC70CFE53F07),
 		oleautomation,
-		helpstring("IMacroAdapter Interface"),
+		helpstring("IWBFLMacroAdapter Interface"),
 		pointer_default(unique)
 	]
-	interface IMacroAdapter : ITransaction
+	interface IWBFLMacroAdapter : IWBFLTransaction
 	{
-		[propget, helpstring("property Macro")] HRESULT Macro([out, retval] IMacroTransaction* *pVal);
-		[propputref, helpstring("property Macro")] HRESULT Macro([in] IMacroTransaction* newVal);
+		[propget, helpstring("property Macro")] HRESULT Macro([out, retval] IWBFLMacroTransaction* *pVal);
+		[propputref, helpstring("property Macro")] HRESULT Macro([in] IWBFLMacroTransaction* newVal);
 	};
 
 	[
 		object,
 		uuid(AF78349C-CBC3-46AE-ACD8-08408F0A6231),
 		oleautomation,
-		helpstring("ITransactionMgr Interface"),
+		helpstring("IWBFLTransactionMgr Interface"),
 		pointer_default(unique)
 	]
-	interface ITransactionMgr : IUnknown
+	interface IWBFLTransactionMgr : IUnknown
 	{
-		[helpstring("method Execute")] HRESULT Execute([in]ITransaction* txn);
+		[helpstring("method Execute")] HRESULT Execute([in]IWBFLTransaction* txn);
 		[helpstring("method Undo")] HRESULT Undo();
 		[helpstring("method Redo")] HRESULT Redo();
 		[helpstring("method Repeat")] HRESULT Repeat();
@@ -120,8 +120,8 @@ library WBFLTransactions
 		[propget, helpstring("property RepeatName")] HRESULT RepeatName([out, retval] BSTR *pVal);
 		[propget, helpstring("property TransactionCount")] HRESULT TransactionCount([out, retval] CollectionIndexType *pVal);
 		[propget, helpstring("property UndoCount")] HRESULT UndoCount([out, retval] CollectionIndexType *pVal);
-      [helpstring("method PeekTransaction")] HRESULT PeekTransaction([in] CollectionIndexType idx,[out,retval] ITransaction* *txn);
-      [helpstring("method PeekUndo")] HRESULT PeekUndo([in] CollectionIndexType idx,[out,retval] ITransaction* *txn);
+      [helpstring("method PeekTransaction")] HRESULT PeekTransaction([in] CollectionIndexType idx,[out,retval] IWBFLTransaction* *txn);
+      [helpstring("method PeekUndo")] HRESULT PeekUndo([in] CollectionIndexType idx,[out,retval] IWBFLTransaction* *txn);
 		[helpstring("method ClearTransactionHistory")] HRESULT ClearTransactionHistory();
 		[helpstring("method ClearUndoHistory")] HRESULT ClearUndoHistory();
 		[helpstring("method Clear")] HRESULT Clear();
@@ -134,36 +134,36 @@ library WBFLTransactions
    [
       object,
       uuid(01D989A2-2D02-462f-BD20-DB2BAA426021),
-      helpstring("ISupportTransactions"),
+      helpstring("IWBFLSupportTransactions"),
       pointer_default(unique)
    ]
-   interface ISupportTransactions : IUnknown
+   interface IWBFLSupportTransactions : IUnknown
    {
-      [propputref,helpstring("property TransactionMgr")] HRESULT TransactionMgr([in]ITransactionMgr* txnMgr);
+      [propputref,helpstring("property TransactionMgr")] HRESULT TransactionMgr([in]IWBFLTransactionMgr* txnMgr);
    };
    
    [
 		uuid(05773828-07E0-4BE1-B99C-EF6D8E0326AE),
-		helpstring("TransactionMgr Class")
+		helpstring("WBFLTransactionMgr Class")
 	]
-	coclass TransactionMgr
+	coclass WBFLTransactionMgr
 	{
-		[default] interface ITransactionMgr;
+		[default] interface IWBFLTransactionMgr;
 	};
 	[
 		uuid(8CF1CDEA-D489-41C3-8A90-010D89474297),
-		helpstring("MacroTransaction Class")
+		helpstring("WBFLMacroTransaction Class")
 	]
-	coclass MacroTransaction
+	coclass WBFLMacroTransaction
 	{
-		[default] interface IMacroTransaction;
+		[default] interface IWBFLMacroTransaction;
 	};
 	[
 		uuid(125EC02E-C6FD-4385-931D-E9C44BEFB956),
-		helpstring("MacroAdapter Class")
+		helpstring("WBFLMacroAdapter Class")
 	]
-	coclass MacroAdapter
+	coclass WBFLMacroAdapter
 	{
-		[default] interface IMacroAdapter;
+		[default] interface IWBFLMacroAdapter;
 	};
 };

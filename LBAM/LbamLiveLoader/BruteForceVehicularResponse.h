@@ -67,7 +67,7 @@ END_COM_MAP()
    void FinalRelease();
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IEnvelopedVehicularResponse
 public: 
@@ -76,47 +76,47 @@ public:
                            /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                            /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                            /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
-                           /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results);
+                           /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results) override;
 
 	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                  /*[in]*/VehicleIndexType vehicleIndex, 
                                  /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                  /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                  /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
-                                 /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results);
+                                 /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelSectionResults** results) override;
 
 	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                /*[in]*/VehicleIndexType vehicleIndex, 
                                /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
-                               /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results);
+                               /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results) override;
 
 	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                /*[in]*/VehicleIndexType vehicleIndex, 
                                /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
-                               /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results);
+                               /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelResults** results) override;
 
 	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                               /*[in]*/VehicleIndexType vehicleIndex, 
                               /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration,
                               /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/DistributionFactorType distributionType,
-                              /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelStressResults** results);
+                              /*[in]*/VARIANT_BOOL computePlacements, /*[out]*/ILiveLoadModelStressResults** results) override;
 
 public:
 // IDependOnVehicularAnalysisContext
-	STDMETHOD(Initialize)(/*[in]*/IUnknown* context);
+	STDMETHOD(Initialize)(/*[in]*/IUnknown* context) override;
 
 // IVehicularAnalysisContextEvents
 public:
-   STDMETHOD(OnLiveLoadChanged)( LiveLoadModelType type);
-   STDMETHOD(OnStiffnessResponseChanged)(ChangeScopeType scope, PoiIDType poiID);
+   STDMETHOD(OnLiveLoadChanged)( LiveLoadModelType type) override;
+   STDMETHOD(OnStiffnessResponseChanged)(ChangeScopeType scope, PoiIDType poiID) override;
 
 // ISupportProgressMonitor
-	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
+	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie) override;
 
 private:
    // progress monitoring
@@ -137,7 +137,7 @@ private:
    long                                     m_ProgressCookie;
 
 
-	STDMETHOD(ComputeResponse)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	HRESULT ComputeResponse(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                               /*[in]*/VehicleIndexType vehicleIndex, 
                               /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization,
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration,
@@ -235,7 +235,7 @@ private:
       }
 
       // virtual function that can be overloaded to customize class
-      virtual bool DoCompare(Float64 newVal, Float64 oldVal)=0;
+      virtual bool DoCompare(Float64 newVal, Float64 oldVal) = 0;
 
       bool CompareResults(Float64 newVal)
       {

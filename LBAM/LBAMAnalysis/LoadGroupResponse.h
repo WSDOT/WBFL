@@ -33,7 +33,9 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 #include "LBAMAnalysisCP.h"
 
@@ -131,171 +133,171 @@ BEGIN_CONNECTION_POINT_MAP(CLoadGroupResponse)
 END_CONNECTION_POINT_MAP()
 
    // pure virtual function to support type-specific com exception handling
-   virtual HRESULT DealWithMyExceptions()=0;
+   virtual HRESULT DealWithMyExceptions() = 0;
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadGroupResponse
 public:
-	STDMETHOD(get_Model)(/*[out, retval]*/ ILBAMModel* *pVal);
-	STDMETHOD(putref_Model)(/*[in]*/ ILBAMModel* newVal);
-	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results);
+	STDMETHOD(get_Model)(/*[out, retval]*/ ILBAMModel* *pVal) override;
+	STDMETHOD(putref_Model)(/*[in]*/ ILBAMModel* newVal) override;
+	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results) override;
+   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results) override;
+   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results) override;
 
 // IDiagnostics
 public:
-   STDMETHOD(DumpFEMModels)();
+   STDMETHOD(DumpFEMModels)() override;
 
 // IUnitLoadReponse
 public:
-   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs,/*[in]*/PoiIDType ldPoiID,/*[in]*/BSTR bstrStage,/*[in]*/ForceEffectType forceEffectType,/*[in]*/ResultsOrientation orientation, /*[out,retval]*/ISectionResult3Ds** results);
+   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs,/*[in]*/PoiIDType ldPoiID,/*[in]*/BSTR bstrStage,/*[in]*/ForceEffectType forceEffectType,/*[in]*/ResultsOrientation orientation, /*[out,retval]*/ISectionResult3Ds** results) override;
 
 
 // IInfluenceLineResponse
 public:
-   STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);
-   STDMETHOD(ComputeDeflectionInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);
-   STDMETHOD(ComputeReactionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType ReactionEffect, /*[out,retval]*/ IInfluenceLine** newVal);
-   STDMETHOD(ComputeSupportDeflectionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType ReactionEffect, /*[out,retval]*/ IInfluenceLine** newVal);
-	STDMETHOD(SetZeroTolerance)(/*[in]*/Float64 forceTolerance, /*[in]*/Float64 deflectionTolerance);
-	STDMETHOD(GetZeroTolerance)(/*[out]*/Float64* forceTolerance, /*[out]*/Float64* deflectionTolerance);
+   STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl) override;
+   STDMETHOD(ComputeDeflectionInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl) override;
+   STDMETHOD(ComputeReactionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType ReactionEffect, /*[out,retval]*/ IInfluenceLine** newVal) override;
+   STDMETHOD(ComputeSupportDeflectionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType ReactionEffect, /*[out,retval]*/ IInfluenceLine** newVal) override;
+	STDMETHOD(SetZeroTolerance)(/*[in]*/Float64 forceTolerance, /*[in]*/Float64 deflectionTolerance) override;
+	STDMETHOD(GetZeroTolerance)(/*[out]*/Float64* forceTolerance, /*[out]*/Float64* deflectionTolerance) override;
 
 // IContraflexureResponse
 public:
-   STDMETHOD(ComputeContraflexureLocations)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations);
-   STDMETHOD(ComputeContraflexureResponse)(/*[in]*/BSTR stage,/*[in]*/ForceEffectType effect, /*[out,retval]*/IInfluenceLine** results);
-   STDMETHOD(get_IsPOIInContraflexureZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone);
+   STDMETHOD(ComputeContraflexureLocations)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations) override;
+   STDMETHOD(ComputeContraflexureResponse)(/*[in]*/BSTR stage,/*[in]*/ForceEffectType effect, /*[out,retval]*/IInfluenceLine** results) override;
+   STDMETHOD(get_IsPOIInContraflexureZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone) override;
 
 // ILiveLoadNegativeMomentRegion
 public:
-   STDMETHOD(get_IsPOIInNegativeLiveLoadMomentZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone);
-   STDMETHOD(ComputeNegativeMomentRegions)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations);
+   STDMETHOD(get_IsPOIInNegativeLiveLoadMomentZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone) override;
+   STDMETHOD(ComputeNegativeMomentRegions)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations) override;
 
 
 // IGetFemForLoadGroupResponse
 public:
-   STDMETHOD(SaveFem2D)(/*[in]*/BSTR Stage, /*[in]*/IStructuredSave2* Save);
+   STDMETHOD(SaveFem2D)(/*[in]*/BSTR Stage, /*[in]*/IStructuredSave2* Save) override;
 
 // IAnalysisPOIs
 public:
-   STDMETHOD(get_SpanPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal);
-   STDMETHOD(put_SpanPoiIncrement)(/*[in]*/ PoiIDType newVal);
-   STDMETHOD(get_CantileverPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal);
-   STDMETHOD(put_CantileverPoiIncrement)(/*[in]*/ PoiIDType newVal);
-   STDMETHOD(GetSuperstructurePois)(/*[in]*/BSTR stage, /*[out]*/IIDArray* *poiIDs, /*[out]*/IDblArray* *poiLocations);
-   STDMETHOD(GetPoiInfo)(/*[in]*/BSTR stage, /*[in]*/PoiIDType poiID, /*[out]*/MemberType* lbamMemberType, /*[out]*/MemberIDType* memberID, /*[out]*/Float64* memberLocation);
+   STDMETHOD(get_SpanPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal) override;
+   STDMETHOD(put_SpanPoiIncrement)(/*[in]*/ PoiIDType newVal) override;
+   STDMETHOD(get_CantileverPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal) override;
+   STDMETHOD(put_CantileverPoiIncrement)(/*[in]*/ PoiIDType newVal) override;
+   STDMETHOD(GetSuperstructurePois)(/*[in]*/BSTR stage, /*[out]*/IIDArray* *poiIDs, /*[out]*/IDblArray* *poiLocations) override;
+   STDMETHOD(GetPoiInfo)(/*[in]*/BSTR stage, /*[in]*/PoiIDType poiID, /*[out]*/MemberType* lbamMemberType, /*[out]*/MemberIDType* memberID, /*[out]*/Float64* memberLocation) override;
 
 // IGetActiveLoadGroups
 public:
-   STDMETHOD(GetActiveLoadGroups)(/*[out,retval]*/IBstrArray* *loadGroups);
+   STDMETHOD(GetActiveLoadGroups)(/*[out,retval]*/IBstrArray* *loadGroups) override;
 
 // IGetDistributionFactors
 public:
-   STDMETHOD(GetPOIDistributionFactor)(/*[in]*/PoiIDType POI, /*[in]*/BSTR stage, /*[out]*/IDistributionFactor* *leftFactor, /*[out]*/IDistributionFactor* *rightFactor);
-	STDMETHOD(GetSupportDistributionFactor)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[out,retval]*/IDistributionFactor* *Factor);
+   STDMETHOD(GetPOIDistributionFactor)(/*[in]*/PoiIDType POI, /*[in]*/BSTR stage, /*[out]*/IDistributionFactor* *leftFactor, /*[out]*/IDistributionFactor* *rightFactor) override;
+	STDMETHOD(GetSupportDistributionFactor)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[out,retval]*/IDistributionFactor* *Factor) override;
 
 // IGetSegmentCrossSection
 public:
-   STDMETHOD(GetSegmentCrossSectionAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/ISegmentCrossSection* *leftCs,  /*[out]*/ISegmentCrossSection* *rightCs);
+   STDMETHOD(GetSegmentCrossSectionAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/ISegmentCrossSection* *leftCs,  /*[out]*/ISegmentCrossSection* *rightCs) override;
 
 // IGetStressPoints
 public:
-   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs);
+   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs) override;
 
 // ISupportProgressMonitor
 public:
-	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
+	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie) override;
 
 // Events we are interested in
 // ILBAMModelEvents
 public:
-   STDMETHOD(OnModelChanged)(ILBAMModel* me, ChangeType change);
+   STDMETHOD(OnModelChanged)(ILBAMModel* me, ChangeType change) override;
 
 // ISuperstructureMembersEvents
 public:
-   STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index);
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index);
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnSuperstructureMembersReverse)();
-	STDMETHOD(OnSuperstructureMembersOffset)();
+   STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index) override;
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index) override;
+	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnSuperstructureMembersReverse)() override;
+	STDMETHOD(OnSuperstructureMembersOffset)() override;
 
 // ISupportsEvents
 public:
-   STDMETHOD(OnSupportsChanged)(ISupport* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSupportsAdded)(ISupport* item, PierIndexType index);
-   STDMETHOD(OnSupportsBeforeRemove)(ISupport* item, PierIndexType index);
-	STDMETHOD(OnSupportsMoveTo)(PierIndexType from, PierIndexType to);
-	STDMETHOD(OnSupportsCopyTo)(PierIndexType from, PierIndexType to);
-	STDMETHOD(OnSupportsReverse)();
+   STDMETHOD(OnSupportsChanged)(ISupport* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSupportsAdded)(ISupport* item, PierIndexType index) override;
+   STDMETHOD(OnSupportsBeforeRemove)(ISupport* item, PierIndexType index) override;
+	STDMETHOD(OnSupportsMoveTo)(PierIndexType from, PierIndexType to) override;
+	STDMETHOD(OnSupportsCopyTo)(PierIndexType from, PierIndexType to) override;
+	STDMETHOD(OnSupportsReverse)() override;
 
 // ISpansEvents
 public:
-   STDMETHOD(OnSpansChanged)(ISpan* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSpansAdded)(ISpan* item, SpanIndexType index);
-   STDMETHOD(OnSpansBeforeRemove)(ISpan* item, SpanIndexType index);
-	STDMETHOD(OnSpansMoveTo)(SpanIndexType from, SpanIndexType to);
-	STDMETHOD(OnSpansCopyTo)(SpanIndexType from, SpanIndexType to);
-	STDMETHOD(OnSpansReverse)();
+   STDMETHOD(OnSpansChanged)(ISpan* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSpansAdded)(ISpan* item, SpanIndexType index) override;
+   STDMETHOD(OnSpansBeforeRemove)(ISpan* item, SpanIndexType index) override;
+	STDMETHOD(OnSpansMoveTo)(SpanIndexType from, SpanIndexType to) override;
+	STDMETHOD(OnSpansCopyTo)(SpanIndexType from, SpanIndexType to) override;
+	STDMETHOD(OnSpansReverse)() override;
 
 // IPOIsEvents
 public:
-   STDMETHOD(OnPOIsChanged)(IPOI* poi, ChangeType change);
-   STDMETHOD(OnPOIsRenamed)(PoiIDType oldID, PoiIDType newID);
-   STDMETHOD(OnPOIsAdded)(IPOI* poi);
-   STDMETHOD(OnPOIsBeforeRemove)(IPOI* poi);
+   STDMETHOD(OnPOIsChanged)(IPOI* poi, ChangeType change) override;
+   STDMETHOD(OnPOIsRenamed)(PoiIDType oldID, PoiIDType newID) override;
+   STDMETHOD(OnPOIsAdded)(IPOI* poi) override;
+   STDMETHOD(OnPOIsBeforeRemove)(IPOI* poi) override;
 
 // IStagesEvents
 public:
-   STDMETHOD(OnStagesChanged)(IStage* item, ChangeType change);
-   STDMETHOD(OnStagesAdded)(IStage* item, StageIndexType index);
-   STDMETHOD(OnStagesBeforeRemove)(IStage* item, StageIndexType index);
-	STDMETHOD(OnStagesMoveTo)(StageIndexType from, StageIndexType to);
-	STDMETHOD(OnStagesCopyTo)(StageIndexType from, StageIndexType to);
-	STDMETHOD(OnStagesReverse)();
+   STDMETHOD(OnStagesChanged)(IStage* item, ChangeType change) override;
+   STDMETHOD(OnStagesAdded)(IStage* item, StageIndexType index) override;
+   STDMETHOD(OnStagesBeforeRemove)(IStage* item, StageIndexType index) override;
+	STDMETHOD(OnStagesMoveTo)(StageIndexType from, StageIndexType to) override;
+	STDMETHOD(OnStagesCopyTo)(StageIndexType from, StageIndexType to) override;
+	STDMETHOD(OnStagesReverse)() override;
 
 // ILoadGroupsEvents
 public:
-   STDMETHOD(OnLoadGroupsChanged)(ILoadGroup* item, ChangeType change);
-   STDMETHOD(OnLoadGroupsRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadGroupsAdded)(ILoadGroup* item);
-   STDMETHOD(OnLoadGroupsBeforeRemove)(ILoadGroup* item);
+   STDMETHOD(OnLoadGroupsChanged)(ILoadGroup* item, ChangeType change) override;
+   STDMETHOD(OnLoadGroupsRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadGroupsAdded)(ILoadGroup* item) override;
+   STDMETHOD(OnLoadGroupsBeforeRemove)(ILoadGroup* item) override;
 
 // IPointLoadsEvents
 public:
-   STDMETHOD(OnPointLoadsChanged)(IPointLoadItem* item);
-   STDMETHOD(OnPointLoadsAdded)(IPointLoadItem* item);
-   STDMETHOD(OnPointLoadsBeforeRemove)(IPointLoadItem* item);
+   STDMETHOD(OnPointLoadsChanged)(IPointLoadItem* item) override;
+   STDMETHOD(OnPointLoadsAdded)(IPointLoadItem* item) override;
+   STDMETHOD(OnPointLoadsBeforeRemove)(IPointLoadItem* item) override;
 
 // IDistributedLoadsEvents
 public:
-   STDMETHOD(OnDistributedLoadsChanged)(IDistributedLoadItem* item);
-   STDMETHOD(OnDistributedLoadsAdded)(IDistributedLoadItem* item);
-   STDMETHOD(OnDistributedLoadsBeforeRemove)(IDistributedLoadItem* item);
+   STDMETHOD(OnDistributedLoadsChanged)(IDistributedLoadItem* item) override;
+   STDMETHOD(OnDistributedLoadsAdded)(IDistributedLoadItem* item) override;
+   STDMETHOD(OnDistributedLoadsBeforeRemove)(IDistributedLoadItem* item) override;
 
 // ITemperatureLoadsEvents
 public:
-   STDMETHOD(OnTemperatureLoadsChanged)(ITemperatureLoadItem* item);
-   STDMETHOD(OnTemperatureLoadsAdded)(ITemperatureLoadItem* item);
-   STDMETHOD(OnTemperatureLoadsBeforeRemove)(ITemperatureLoadItem* item);
+   STDMETHOD(OnTemperatureLoadsChanged)(ITemperatureLoadItem* item) override;
+   STDMETHOD(OnTemperatureLoadsAdded)(ITemperatureLoadItem* item) override;
+   STDMETHOD(OnTemperatureLoadsBeforeRemove)(ITemperatureLoadItem* item) override;
 
 // ISettlementLoadsEvents
 public:
-   STDMETHOD(OnSettlementLoadsChanged)(ISettlementLoadItem* item);
-   STDMETHOD(OnSettlementLoadsAdded)(ISettlementLoadItem* item);
-   STDMETHOD(OnSettlementLoadsBeforeRemove)(ISettlementLoadItem* item);
+   STDMETHOD(OnSettlementLoadsChanged)(ISettlementLoadItem* item) override;
+   STDMETHOD(OnSettlementLoadsAdded)(ISettlementLoadItem* item) override;
+   STDMETHOD(OnSettlementLoadsBeforeRemove)(ISettlementLoadItem* item) override;
 
 // IStrainLoadsEvents
 public:
-   STDMETHOD(OnStrainLoadsChanged)(IStrainLoadItem* item);
-   STDMETHOD(OnStrainLoadsAdded)(IStrainLoadItem* item);
-   STDMETHOD(OnStrainLoadsBeforeRemove)(IStrainLoadItem* item);
+   STDMETHOD(OnStrainLoadsChanged)(IStrainLoadItem* item) override;
+   STDMETHOD(OnStrainLoadsAdded)(IStrainLoadItem* item) override;
+   STDMETHOD(OnStrainLoadsBeforeRemove)(IStrainLoadItem* item) override;
 
 private: // helper methods
    
@@ -478,7 +480,7 @@ private:
    void ValidateTemporarySupportForces();
 
    // our list of models
-   typedef std::vector< boost::shared_ptr<CAnalysisModel> > Models; 
+   typedef std::vector< std::shared_ptr<CAnalysisModel> > Models;
    typedef Models::iterator ModelsIterator;
    Models m_Models;
 

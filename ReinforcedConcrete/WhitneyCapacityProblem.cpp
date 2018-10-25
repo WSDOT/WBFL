@@ -86,7 +86,7 @@ Float64 rcaWhitneyCapacityProblem::GetBeta1() const
 
    Float64 mom=0.0, area=0.0;
    CollectionIndexType numconc = GetNumConcretes();
-   for (CollectionIndexType ic=0; ic<numconc; ic++)
+   for (CollectionIndexType ic = 0; ic<numconc; ic++)
    {
       Float64 fc = GetConcrete(ic).GetFc();
       Float64 a  = GetClippedConcreteArea(ic, na_line, gpLine2d::Right);

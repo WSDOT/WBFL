@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 
 // live load names. Note that this sequence must match the enums in LiveLoadModelType
 static LPCTSTR LL_NAMES[]={_T("Deflection"),_T("Design"),_T("Pedestrian"),_T("Fatigue"),_T("Permit"),_T("Special"),
-_T("LegalRoutineRating"),_T("LegalSpecialRating"),_T("PermitRoutineRating"),_T("PermitSpecialRating")};
+_T("LegalRoutineRating"),_T("LegalSpecialRating"),_T("LegalEmergencyRating"),_T("PermitRoutineRating"),_T("PermitSpecialRating")};
 
 static const int NUM_LLM = sizeof(LL_NAMES)/sizeof(LPCTSTR);
 
@@ -49,7 +49,7 @@ STDMETHODIMP CLiveLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoad
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -59,15 +59,15 @@ STDMETHODIMP CLiveLoad::InterfaceSupportsErrorInfo(REFIID riid)
 
 CLiveLoad::CLiveLoad()
 {
-   for (int i=0; i<NUM_LLM; i++)
-      m_Cookies[i]=0;
+   for (int i = 0; i<NUM_LLM; i++)
+      m_Cookies[i] = 0;
 }
 
-STDMETHODIMP CLiveLoad::FinalConstruct( )
+HRESULT CLiveLoad::FinalConstruct( )
 {
    HRESULT hr;
 
-   for (int i=0; i<NUM_LLM; i++)
+   for (int i = 0; i<NUM_LLM; i++)
    {
    
       CComObject<CLiveLoadModel>* poll;
@@ -87,9 +87,9 @@ void CLiveLoad::FinalRelease()
 {
    // say goodbye to our models
    HRESULT hr;
-   for (int i=0; i<NUM_LLM; i++)
+   for (int i = 0; i<NUM_LLM; i++)
    {
-      if (m_Models[i] != NULL)
+      if (m_Models[i] != nullptr)
       {
          hr = CrUnadvise(m_Models[i], this, IID_ILiveLoadModelEvents, m_Cookies[i]);
          ATLASSERT(SUCCEEDED(hr));
@@ -113,7 +113,7 @@ HRESULT CLiveLoad::PutLiveLoadModel(LiveLoadModelType modelType, ILiveLoadModel 
 
    // first we must break our cp with old collection if we had one
    HRESULT hr;
-   if (m_Models[mt] != NULL)
+   if (m_Models[mt] != nullptr)
    {
       hr = CrUnadvise(m_Models[mt], this, IID_ILiveLoadModelEvents, m_Cookies[mt]);
       if (FAILED(hr))
@@ -215,6 +215,16 @@ STDMETHODIMP CLiveLoad::putref_LegalSpecialRating(ILiveLoadModel* newVal)
    return PutLiveLoadModel(lltLegalSpecialRating,newVal);
 }
 
+STDMETHODIMP CLiveLoad::get_LegalEmergencyRating(ILiveLoadModel* *pVal)
+{
+   return m_Models[lltLegalEmergencyRating].CopyTo(pVal);
+}
+
+STDMETHODIMP CLiveLoad::putref_LegalEmergencyRating(ILiveLoadModel* newVal)
+{
+   return PutLiveLoadModel(lltLegalEmergencyRating, newVal);
+}
+
 STDMETHODIMP CLiveLoad::get_PermitRoutineRating(ILiveLoadModel* *pVal)
 {
    return m_Models[lltPermitRoutineRating].CopyTo(pVal);
@@ -237,7 +247,7 @@ STDMETHODIMP CLiveLoad::putref_PermitSpecialRating(ILiveLoadModel* newVal)
 
 STDMETHODIMP CLiveLoad::Clear()
 {
-   for (int i=0; i<NUM_LLM; i++)
+   for (int i = 0; i<NUM_LLM; i++)
    {
       m_Models[i]->Clear();
       Fire_OnLiveLoadChanged(this, (LiveLoadModelType)i );
@@ -248,7 +258,7 @@ STDMETHODIMP CLiveLoad::Clear()
 STDMETHODIMP CLiveLoad::OnLiveLoadModelChanged(/*[in]*/ILiveLoadModel* model, ChangeType change)
 {
    bool found=false;
-   for (int i=0; i<NUM_LLM; i++)
+   for (int i = 0; i<NUM_LLM; i++)
    {
       if (m_Models[i].IsEqualObject(model))
       {
@@ -265,7 +275,7 @@ STDMETHODIMP CLiveLoad::OnLiveLoadModelChanged(/*[in]*/ILiveLoadModel* model, Ch
 
 
 // IStructuredStorage2
-static const Float64 MY_VER=1.0;
+static const Float64 MY_VER=2.0;
 
 STDMETHODIMP CLiveLoad::Load(IStructuredLoad2 * pload)
 {
@@ -289,7 +299,11 @@ STDMETHODIMP CLiveLoad::Load(IStructuredLoad2 * pload)
       CComVariant var;
 
       // loop over llm types
-      for (int i=0; i<NUM_LLM; i++)
+      int end = NUM_LLM;
+      if (ver < 2.0)
+         end--; // had one fewer in version 1.0
+
+      for (int i = 0; i<end; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t(LL_NAMES[i]),&var);
@@ -330,7 +344,7 @@ STDMETHODIMP CLiveLoad::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (int i=0; i<NUM_LLM; i++)
+      for (int i = 0; i<NUM_LLM; i++)
       {
          hr = psave->put_Property(CComBSTR(LL_NAMES[i]),_variant_t(m_Models[i]));
          if (FAILED(hr))
@@ -360,7 +374,7 @@ STDMETHODIMP CLiveLoad::Clone(ILiveLoad **clone)
    CComPtr<ILiveLoad> pscs(pnew); // for reference count
 
    // live load models
-   for (int i=0; i<NUM_LLM; i++)
+   for (int i = 0; i<NUM_LLM; i++)
    {
       CComPtr<ILiveLoadModel> psp;
       hr = m_Models[i]->Clone(&psp);

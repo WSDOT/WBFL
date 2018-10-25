@@ -27,6 +27,7 @@
 #include <GeomModel\ShapeUtils.h>
 #include <GeomModel\Polygon.h>
 #include <MathEx.h>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -129,7 +130,7 @@ gpRect2d gmTrafficBarrier::GetBoundingBox() const
 
 gmIShape* gmTrafficBarrier::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmTrafficBarrier> ph(new gmTrafficBarrier( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmTrafficBarrier> ph(new gmTrafficBarrier( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -142,7 +143,7 @@ gmIShape* gmTrafficBarrier::CreateClippedShape(const gpLine2d& line,
                                                gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(line,side);
 }
 
@@ -150,7 +151,7 @@ gmIShape* gmTrafficBarrier::CreateClippedShape(const gpRect2d& r,
                                                gmShapeImp::ClipRegion region ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
@@ -158,13 +159,13 @@ Float64 gmTrafficBarrier::GetFurthestDistance(const gpLine2d& line,
                                               gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->GetFurthestDistance(line,side);
 }
 
 void gmTrafficBarrier::Draw(HDC hDC,const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 
@@ -384,15 +385,15 @@ void gmTrafficBarrier::MakeAssignment(const gmTrafficBarrier& rOther)
 void gmTrafficBarrier::Init()
 {
    m_HookPoint = gpPoint2d(0,0);
-   m_Rotation=0;
-   m_X1=0;
-   m_X2=0;
-   m_X3=0;
-   m_X4=0;
-   m_X5=0;
-   m_Y1=0;
-   m_Y2=0;
-   m_Y3=0;
+   m_Rotation = 0;
+   m_X1 = 0;
+   m_X2 = 0;
+   m_X3 = 0;
+   m_X4 = 0;
+   m_X5 = 0;
+   m_Y1 = 0;
+   m_Y2 = 0;
+   m_Y3 = 0;
    m_tSlab = 0;
    m_PolyImp.Clear();
 }
@@ -400,7 +401,7 @@ void gmTrafficBarrier::Init()
 gmPolygon* gmTrafficBarrier::CreatePolygon() const
 {
    // Make a polygon with same traits as this.
-   std::auto_ptr<gmPolygon> ph(new gmPolygon(m_PolyImp));
+   std::unique_ptr<gmPolygon> ph(new gmPolygon(m_PolyImp));
    gmShapeUtils::CopyTraits(*this, ph.get());
    return ph.release();
 }

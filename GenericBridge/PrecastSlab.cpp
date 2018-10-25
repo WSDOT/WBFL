@@ -53,7 +53,7 @@ STDMETHODIMP CPrecastSlab::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IBridgeDeck,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -100,7 +100,7 @@ STDMETHODIMP CPrecastSlab::get_DeckBoundary(IDeckBoundary** deckBoundary)
    }
    else
    {
-      (*deckBoundary) = NULL;
+      (*deckBoundary) = nullptr;
    }
 
    return S_OK;
@@ -109,23 +109,6 @@ STDMETHODIMP CPrecastSlab::get_DeckBoundary(IDeckBoundary** deckBoundary)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastSlab implementation
-STDMETHODIMP CPrecastSlab::get_CastingStage(StageIndexType* pStageIdx)
-{
-   CHECK_RETVAL(pStageIdx);
-   (*pStageIdx) = m_CastingStageIdx;
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::put_CastingStage(StageIndexType stageIdx)
-{
-   if ( m_CastingStageIdx == stageIdx )
-      return S_OK;
-
-   m_CastingStageIdx = stageIdx;
-
-   return S_OK;
-}
-
 STDMETHODIMP CPrecastSlab::get_PanelDepth(Float64* depth)
 {
    CHECK_RETVAL(depth);
@@ -184,25 +167,6 @@ STDMETHODIMP CPrecastSlab::put_OverhangDepth(Float64 depth)
    return S_OK;
 }
 
-STDMETHODIMP CPrecastSlab::get_Fillet(Float64* fillet)
-{
-   CHECK_RETVAL(fillet);
-   *fillet = m_Fillet;
-   return S_OK;
-}
-
-STDMETHODIMP CPrecastSlab::put_Fillet(Float64 fillet)
-{
-   if ( fillet < 0 )
-      return E_INVALIDARG;
-
-   if ( IsEqual(m_Fillet,fillet) )
-      return S_OK;
-
-   m_Fillet = fillet;
-   return S_OK;
-}
-
 STDMETHODIMP CPrecastSlab::get_OverhangTaper(DeckOverhangTaper* taper)
 {
    CHECK_RETVAL(taper);
@@ -230,9 +194,6 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
 
    CComVariant var;
 
-   load->get_Property(CComBSTR("Fillet"),&var);
-   m_Fillet = var.dblVal;
-
    load->get_Property(CComBSTR("PanelDepth"),&var);
    m_PanelDepth = var.dblVal;
 
@@ -245,10 +206,6 @@ STDMETHODIMP CPrecastSlab::Load(IStructuredLoad2* load)
    load->get_Property(CComBSTR("Taper"),&var);
    m_Taper = (DeckOverhangTaper)var.lVal;
 
-   var.vt = VT_INDEX;
-   load->get_Property(CComBSTR("CastingStage"),&var);
-   m_CastingStageIdx = VARIANT2INDEX(var);
-
    IBridgeDeckImpl<CPrecastSlab>::Load(load);
 
    VARIANT_BOOL bEnd;
@@ -260,12 +217,10 @@ STDMETHODIMP CPrecastSlab::Save(IStructuredSave2* save)
 {
    save->BeginUnit(CComBSTR("PrecastSlab"),1.0);
 
-   save->put_Property(CComBSTR("Fillet"),CComVariant(m_Fillet));
    save->put_Property(CComBSTR("PanelDepth"),CComVariant(m_PanelDepth));
    save->put_Property(CComBSTR("CastDepth"),CComVariant(m_CastDepth));
    save->put_Property(CComBSTR("OverhangDepth"),CComVariant(m_OverhangDepth));
    save->put_Property(CComBSTR("Taper"),CComVariant(m_Taper));
-   save->put_Property(CComBSTR("CastingStage"),CComVariant(m_CastingStageIdx));
    
    IBridgeDeckImpl<CPrecastSlab>::Save(save);
 

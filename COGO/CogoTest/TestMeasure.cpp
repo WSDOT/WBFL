@@ -56,18 +56,18 @@ void CTestMeasure::Test()
    TRY_TEST(measure.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(measure);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
-   points->Add(1,10.0,10.0,NULL);
-   points->Add(2,40.0,20.0,NULL);
-   points->Add(3,40.0, 0.0,NULL);
+   points->Add(1,10.0,10.0,nullptr);
+   points->Add(2,40.0,20.0,nullptr);
+   points->Add(3,40.0, 0.0,nullptr);
 
    // Test Distance
    Float64 dist;
-   TRY_TEST(measure->Distance(1,2,NULL),E_POINTER);
+   TRY_TEST(measure->Distance(1,2,nullptr),E_POINTER);
    TRY_TEST(measure->Distance(-1,2,&dist),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Distance(1,-2,&dist),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Distance(1,2,&dist),S_OK);
@@ -80,13 +80,13 @@ void CTestMeasure::Test()
    // Angle is implemented by WBFLGeometry...
    // All we need here is a simple intergration test
    points->Clear();
-   points->Add(1,10.0, 0.0,NULL);
-   points->Add(2, 0.0, 0.0,NULL);
-   points->Add(3, 0.0,10.0,NULL);
+   points->Add(1,10.0, 0.0,nullptr);
+   points->Add(2, 0.0, 0.0,nullptr);
+   points->Add(3, 0.0,10.0,nullptr);
 
    CComPtr<IAngle> angle;
    Float64 val;
-   TRY_TEST(measure->Angle(2,1,3,NULL),E_POINTER);
+   TRY_TEST(measure->Angle(2,1,3,nullptr),E_POINTER);
    TRY_TEST(measure->Angle(-2,1,3,&angle),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Angle(2,-1,3,&angle),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Angle(2,1,-3,&angle),COGO_E_POINTNOTFOUND);
@@ -107,10 +107,10 @@ void CTestMeasure::Test()
    // Test Direction
    //
    points->Clear();
-   points->Add(1,10.0,10.0,NULL);
-   points->Add(2,20.0,20.0,NULL);
+   points->Add(1,10.0,10.0,nullptr);
+   points->Add(2,20.0,20.0,nullptr);
    CComPtr<IDirection> dir;
-   TRY_TEST(measure->Direction( 1,2,NULL),E_POINTER);
+   TRY_TEST(measure->Direction( 1,2,nullptr),E_POINTER);
    TRY_TEST(measure->Direction(-1,2,&dir),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Direction(1,-2,&dir),COGO_E_POINTNOTFOUND);
    TRY_TEST(measure->Direction( 1,2,&dir),S_OK);
@@ -158,10 +158,10 @@ void CTestMeasure::Test()
 
    // Test Area
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,0,NULL);
-   points->Add(3,10,10,NULL);
-   points->Add(4,0,10,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,0,nullptr);
+   points->Add(3,10,10,nullptr);
+   points->Add(4,0,10,nullptr);
 
    SAFEARRAY* keys;
    SAFEARRAYBOUND bounds = { 4, 10 };
@@ -176,7 +176,7 @@ void CTestMeasure::Test()
    CComVariant varKeys;
    varKeys.vt = VT_ARRAY | VT_I4;
    varKeys.parray = keys;
-   TRY_TEST(measure->Area(varKeys,NULL),E_POINTER);
+   TRY_TEST(measure->Area(varKeys,nullptr),E_POINTER);
    TRY_TEST(measure->Area(varKeys,&area),S_OK);
    TRY_TEST(IsEqual(area,100.),true);
    SafeArrayDestroy(keys);

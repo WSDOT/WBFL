@@ -123,7 +123,7 @@ private:
 
    // Prevent accidental copying and assignment
    matConcreteListener(const matConcreteListener&);
-   matConcreteListener& operator=(const matConcreteListener&);
+   matConcreteListener& operator=(const matConcreteListener&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

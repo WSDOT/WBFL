@@ -417,6 +417,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
       // Additional rule here is that we must exceed the interior value for both lever and equation cases
       if (gext.ControllingMethod & SPEC_EQN)
       {
+         gext.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
+
          if (gext.EqnData.e < 1.0)
          {
            // interior controls, reset e to 1.0
@@ -505,6 +507,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
             gext.ControllingMethod |= INTERIOR_OVERRIDE;
             gext.ControllingMethod ^=  E_OVERRIDE; // negate e override
          }
+         gext.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
       }
       else if (gext.ControllingMethod & LEVER_RULE)
       {
@@ -565,9 +568,14 @@ void lrfdWsdotLldfTypeAEK::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdWsdotLldfTypeAEK");
+
+   lrfdAutoVersion av;
+   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
+   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    Float64 S = ::ConvertToSysUnits( 2000., unitMeasure::Millimeter );
    Float64 de = ::ConvertToSysUnits( 910., unitMeasure::Millimeter );
@@ -591,23 +599,23 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );
+   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.705, 0.001) );
+   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.711, 0.001) );
    
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.623, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.721, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.623, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.705, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.721, 0.001) );
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.400, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.400, 0.001) );
+   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.705, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.519, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.519, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueI), 0.705, 0.001) );
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.400, 0.001) );
-   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.400, 0.001) );
+   TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.705, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.519, 0.001) );
-   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.519, 0.001) );
+   TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.705, 0.001) );
 
    overhang = ::ConvertToSysUnits(1100, unitMeasure::Millimeter);
    lrfdWsdotLldfTypeAEK df2(1,S,spacings,de,de,

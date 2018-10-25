@@ -61,8 +61,8 @@ public:
 class CForeignDragDropFSMStartState : public CForeignDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CForeignDragDropFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("Start"); }
+   virtual void Do(CForeignDragDropFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -71,7 +71,7 @@ public:
 class CForeignDragDropFSMDoneState : public CForeignDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -80,9 +80,9 @@ public:
 class CForeignDragDropFSMWaitingForDragEnterState : public CForeignDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForDragEnter"); }
-   virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point);
-	virtual DROPEFFECT DragEnter(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
+   virtual LPCTSTR StateName() const  override { return _T("WaitingForDragEnter"); }
+   virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point) override;
+	virtual DROPEFFECT DragEnter(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
 };
 
 //----------------------------------------------
@@ -91,12 +91,12 @@ public:
 class CForeignDragDropFSMWaitingForDropState : public CForeignDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForDrop"); }
-	virtual void DragLeave(CForeignDragDropFSM& fsm);
-	virtual DROPEFFECT DragOver(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point);
-	virtual BOOL Drop(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point);
-   virtual DROPEFFECT DropEx(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point);
+   virtual LPCTSTR StateName() const override { return _T("WaitingForDrop"); }
+	virtual void DragLeave(CForeignDragDropFSM& fsm) override;
+	virtual DROPEFFECT DragOver(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+   virtual DROPEFFECT DragScroll(CForeignDragDropFSM& fsm,DWORD dwKeyState,CPoint point) override;
+	virtual BOOL Drop(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+   virtual DROPEFFECT DropEx(CForeignDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 };
 
 class CForeignDragDropFSM : public iForeignDragDropTask

@@ -72,18 +72,18 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IEffectiveFlangeWidthDetails
 public:
-	STDMETHOD(put_EffectiveSpanLength)(/*[in]*/ Float64 length);
-	STDMETHOD(get_EffectiveSpanLength)(/*[out,retval]*/ Float64* length);
-	STDMETHOD(put_SlabThickness)(/*[in]*/ Float64 tSlab);
-	STDMETHOD(get_SlabThickness)(/*[out,retval]*/ Float64* tSlab);
-	STDMETHOD(AddFlangeParameters)(/*[in]*/Float64 tFlange,/*[in]*/Float64 wFlange,/*[in]*/Float64 lSpacing,/*[in]*/Float64 rSpacing);
-	STDMETHOD(get_FlangeCount)(/*[out,retval]*/FlangeIndexType* nFlanges);
-	STDMETHOD(GetFlangeParameters)(/*[in]*/ FlangeIndexType flangeIdx,/*[out]*/Float64* tFlange,/*[out]*/Float64* wFlange,/*[out]*/Float64* lSpacing,/*[out]*/Float64* rSpacing);
-   STDMETHOD(EffectiveFlangeWidth)(/*[out,retval]*/ Float64* effFlangeWidth);
+	STDMETHOD(put_EffectiveSpanLength)(/*[in]*/ Float64 length) override;
+	STDMETHOD(get_EffectiveSpanLength)(/*[out,retval]*/ Float64* length) override;
+	STDMETHOD(put_SlabThickness)(/*[in]*/ Float64 tSlab) override;
+	STDMETHOD(get_SlabThickness)(/*[out,retval]*/ Float64* tSlab) override;
+	STDMETHOD(AddFlangeParameters)(/*[in]*/Float64 tFlange,/*[in]*/Float64 wFlange,/*[in]*/Float64 lSpacing,/*[in]*/Float64 rSpacing) override;
+	STDMETHOD(get_FlangeCount)(/*[out,retval]*/FlangeIndexType* nFlanges) override;
+	STDMETHOD(GetFlangeParameters)(/*[in]*/ FlangeIndexType flangeIdx,/*[out]*/Float64* tFlange,/*[out]*/Float64* wFlange,/*[out]*/Float64* lSpacing,/*[out]*/Float64* rSpacing) override;
+   STDMETHOD(EffectiveFlangeWidth)(/*[out,retval]*/ Float64* effFlangeWidth) override;
 };
 
 #endif //__EFFECTIVEFLANGEWIDTHDETAILS_H_

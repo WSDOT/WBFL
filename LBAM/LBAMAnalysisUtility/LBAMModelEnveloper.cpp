@@ -46,7 +46,7 @@ STDMETHODIMP CLBAMModelEnveloper::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILBAMModelEnveloper
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -189,7 +189,7 @@ STDMETHODIMP CLBAMModelEnveloper::Initialize(IUnkArray* pModels, AnalysisType aT
       return hr;
 
 
-   for (CollectionIndexType im=0; im < nModels; im++)
+   for (CollectionIndexType im = 0; im < nModels; im++)
    {
       CComPtr<IUnknown> unk;
       hr = pModels->get_Item(im, &unk);
@@ -197,7 +197,7 @@ STDMETHODIMP CLBAMModelEnveloper::Initialize(IUnkArray* pModels, AnalysisType aT
          return hr;
 
       CComQIPtr<ILBAMModel> mdl(unk);
-      if (mdl==NULL)
+      if (mdl==nullptr)
       {
          m_Engines.clear();
          return E_INVALIDARG;
@@ -274,7 +274,7 @@ STDMETHODIMP CLBAMModelEnveloper::get_Engines(IUnkArray* *pVal)
       return hr;
 
    CollectionIndexType cnt = m_Engines.size();
-   for (CollectionIndexType im=0; im<cnt; im++)
+   for (CollectionIndexType im = 0; im<cnt; im++)
    {
      
       hr = unka->Add(m_Engines[im].m_T);
@@ -320,7 +320,7 @@ void CLBAMModelEnveloper::GetEngine(CollectionIndexType idx, ILBAMAnalysisEngine
    catch(...)
    {
       ATLASSERT(false);
-      *engine = NULL;
+      *engine = nullptr;
    }
 }
 

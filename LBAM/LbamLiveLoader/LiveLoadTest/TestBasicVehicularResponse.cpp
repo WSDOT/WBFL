@@ -91,22 +91,22 @@ void TestBasicVehicularResponse::Test()
 
    // get influence and contraflexure interfaces
    CComQIPtr<IInfluenceLineResponse> influence(response);
-   TRY_TEST(influence!=NULL, true);
+   TRY_TEST(influence!=nullptr, true);
 
    CComQIPtr<IContraflexureResponse> contraflexure(response);
-   TRY_TEST(contraflexure!=NULL, true);
+   TRY_TEST(contraflexure!=nullptr, true);
 
    CComQIPtr<ILiveLoadNegativeMomentRegion> llnmr(response);
-   TRY_TEST(contraflexure!=NULL, true);
+   TRY_TEST(contraflexure!=nullptr, true);
 
    CComQIPtr<IAnalysisPOIs> an_pois(response);
-   TRY_TEST(an_pois!=NULL, true);
+   TRY_TEST(an_pois!=nullptr, true);
 
    CComQIPtr<IGetDistributionFactors> igdf(response);
-   TRY_TEST(igdf!=NULL, true);
+   TRY_TEST(igdf!=nullptr, true);
 
    CComQIPtr<IGetStressPoints> igcs(response);
-   TRY_TEST(igcs!=NULL, true);
+   TRY_TEST(igcs!=nullptr, true);
 
    TRY_TEST(pllc->Initialize(model, influence, llnmr, an_pois, igdf, igcs), S_OK);
 
@@ -114,7 +114,7 @@ void TestBasicVehicularResponse::Test()
    TRY_TEST(bvresponse.CoCreateInstance( CLSID_BasicVehicularResponse ), S_OK );
 
    CComQIPtr<IDependOnVehicularAnalysisContext> depcontxt(bvresponse);
-   ATLASSERT(depcontxt!=NULL);
+   ATLASSERT(depcontxt!=nullptr);
 
    TRY_TEST(depcontxt->Initialize(pllc), S_OK);
 
@@ -127,7 +127,7 @@ void TestBasicVehicularResponse::Test()
 /*
    long numcfs = cflocs.Size();
    long id=500;
-   for (long icf=0; icf<numcfs; icf++)
+   for (long icf = 0; icf<numcfs; icf++)
    {
       Float64 loc = cflocs[icf];
 
@@ -176,7 +176,7 @@ void TestBasicVehicularResponse::Test()
    hr = contraflexure->ComputeContraflexureLocations(CComBSTR("Stage 1"), &cflocs2);
 /*
    numcfs = cflocs2.Size();
-   for (icf=0; icf<numcfs; icf++)
+   for (icf = 0; icf<numcfs; icf++)
    {
       Float64 loc = cflocs2[icf];
    }
@@ -203,7 +203,7 @@ void TestBasicVehicularResponse::Test()
 */
    // save model off to a file so we can load it in other applications for comparisons
    CComQIPtr<IStructuredStorage2> piss(model);
-   ATLASSERT(piss!=NULL);
+   ATLASSERT(piss!=nullptr);
 
    CComPtr<IStructuredSave2> pss;
    TRY_TEST( pss.CoCreateInstance(CLSID_StructuredSave2), S_OK );
@@ -335,7 +335,7 @@ void GenerateLoadGroups(ILBAMModel* model, Float64 overhang)
       u1->put_StartLocation(0.0);
       u1->put_EndLocation(-1.0);
 
-      distributedloads->Add(stage_nm, name, u1, NULL);
+      distributedloads->Add(stage_nm, name, u1, nullptr);
    }
 }
 

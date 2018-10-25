@@ -72,15 +72,15 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISpanEvents
-   STDMETHOD(OnSpanChanged)(/*[in]*/ISpan* Span, BSTR stage, ChangeType change);
+   STDMETHOD(OnSpanChanged)(/*[in]*/ISpan* Span, BSTR stage, ChangeType change) override;
 
 // ISpans
 public:
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(Clone)(/*[out, retval]*/ ISpans** clone);
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(Clone)(/*[out, retval]*/ ISpans** clone) override;
 
 
 private:
@@ -156,7 +156,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      SpanIndexType cnt=0;
+      SpanIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

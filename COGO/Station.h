@@ -72,27 +72,27 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStation
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal);
-   STDMETHOD(Clone)(/*[out,retval]*/ IStation* *clone);
-	STDMETHOD(AsString)(/*[in]*/ UnitModeType unitMode,/*[in]*/ VARIANT_BOOL vbIncludeStationZone, /*[out,retval]*/ BSTR* station);
-	STDMETHOD(FromString)(/*[in]*/ BSTR station,/*[in]*/ UnitModeType unitMode);
-	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal);
-   STDMETHOD(get_NormalizedValue)(/*[in]*/IAlignment* pAlignment,/*[out,retval]*/Float64* pValue);
-   STDMETHOD(GetStation)(ZoneIndexType* pZoneIdx,Float64* pStation);
-   STDMETHOD(SetStation)(ZoneIndexType zoneIdx,Float64 station);
-   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varStation);
-   STDMETHOD(get_StationZoneIndex)(ZoneIndexType *pVal);
-	STDMETHOD(put_StationZoneIndex)(ZoneIndexType newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IStation* *clone) override;
+	STDMETHOD(AsString)(/*[in]*/ UnitModeType unitMode,/*[in]*/ VARIANT_BOOL vbIncludeStationZone, /*[out,retval]*/ BSTR* station) override;
+	STDMETHOD(FromString)(/*[in]*/ BSTR station,/*[in]*/ UnitModeType unitMode) override;
+	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal) override;
+   STDMETHOD(get_NormalizedValue)(/*[in]*/IAlignment* pAlignment,/*[out,retval]*/Float64* pValue) override;
+   STDMETHOD(GetStation)(ZoneIndexType* pZoneIdx,Float64* pStation) override;
+   STDMETHOD(SetStation)(ZoneIndexType zoneIdx,Float64 station) override;
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varStation) override;
+   STDMETHOD(get_StationZoneIndex)(ZoneIndexType *pVal) override;
+	STDMETHOD(put_StationZoneIndex)(ZoneIndexType newVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 public :
 
 BEGIN_CONNECTION_POINT_MAP(CStation)

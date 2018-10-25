@@ -53,11 +53,11 @@ BEGIN_COM_MAP(CEnvelopedVehicularResponseFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IEnvelopedVehicularResponseFactory
 public:
-	STDMETHOD(CreateEnvelopedVehicularResponse)(/*[out,retval]*/IEnvelopedVehicularResponse** pEVR);
+	STDMETHOD(CreateEnvelopedVehicularResponse)(/*[out,retval]*/IEnvelopedVehicularResponse** pEVR) override;
 };
 
 #endif //_ENVELOPEDVEHICULARRESPONSEFACTORY_H_

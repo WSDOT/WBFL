@@ -51,7 +51,7 @@
 
 	}; // class GenericCopy
 
-	template <class MapType, class DestinationType = MapType::referent_type>
+	template <class MapType, class DestinationType = MapType::mapped_type>
 	class MapCopy
 	{
 	public :
@@ -59,7 +59,7 @@
 		typedef typename MapType::value_type		source_type;
 		
 		typedef MapType					map_type;
-		typedef typename MapType::referent_type	pseudosource_type;
+		typedef typename MapType::mapped_type	pseudosource_type;
 
 		static void init(destination_type* p)
 		{
@@ -97,7 +97,7 @@
 		typedef typename MapType::value_type		source_type;
 		
 		typedef MapType					map_type;
-		typedef typename MapType::referent_type	pseudosource_type;
+		typedef typename MapType::mapped_type	pseudosource_type;
 
 		static void init(interface_type* p)
 		{
@@ -109,7 +109,7 @@
          if ( (*p) )
          {
             (*p)->Release();
-            (*p) = NULL;
+            (*p) = nullptr;
          }
 		}
 		static HRESULT copy(interface_type* pTo, const source_type* pFrom)
@@ -210,7 +210,7 @@
          if ( (*p) )
          {
             (*p)->Release();
-            (*p) = NULL;
+            (*p) = nullptr;
          }
       }
 		static HRESULT copy(interface_type* pTo, const pair_type* pFrom)
@@ -254,8 +254,8 @@ BEGIN_COM_MAP(_ThisClass)
    COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("Collection"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("Item"); }
+   CComBSTR GetCollectionName() { return CComBSTR("Collection"); }
+   CComBSTR GetItemName() { return CComBSTR("Item"); }
 
    virtual HRESULT OnBeforeSave(IStructuredSave2* pSave) { return S_OK; }
    virtual HRESULT OnAfterSave(IStructuredSave2* pSave) { return S_OK; }
@@ -269,7 +269,7 @@ END_COM_MAP()
 		   piid,
          &IID_IStructuredStorage2,
 	   };
-	   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	   {
 		   if (InlineIsEqualGUID(*arr[i],riid))
 			   return S_OK;

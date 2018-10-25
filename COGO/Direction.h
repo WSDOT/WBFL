@@ -61,38 +61,38 @@ BEGIN_COM_MAP(CDirection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDirection
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IDirection* *clone);
-	STDMETHOD(AngleBetween)(/*[in]*/ IDirection* dir,/*[out,retval]*/IAngle** pVal);
-   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varDirection);
-   STDMETHOD(FromAzimuth)(/*[in]*/ Float64 azimuth);
-	STDMETHOD(FromAzimuthEx)(/*[in]*/ long Degree, /*[in]*/ long Minute, /*[in]*/ Float64 Second);
-	STDMETHOD(FromDMS)(/*[in]*/ NSDirectionType ns,/*[in]*/ long Degree,/*[in]*/ long Minute, /*[in]*/ Float64 Second, /*[in]*/ EWDirectionType ew);
-	STDMETHOD(FromString)(/*[in]*/ BSTR bstrDir);
-	STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle);
-	STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IDirection* *pVal);
-	STDMETHOD(get_Second)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Second)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Minute)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(put_Minute)(/*[in]*/ long newVal);
-	STDMETHOD(get_Degree)(/*[out, retval]*/ long *pVal);
-	STDMETHOD(put_Degree)(/*[in]*/ long newVal);
-	STDMETHOD(get_EWDirection)(/*[out, retval]*/ EWDirectionType *pVal);
-	STDMETHOD(put_EWDirection)(/*[in]*/ EWDirectionType newVal);
-	STDMETHOD(get_NSDirection)(/*[out, retval]*/ NSDirectionType *pVal);
-	STDMETHOD(put_NSDirection)(/*[in]*/ NSDirectionType newVal);
-	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal);
-   STDMETHOD(get_Azimuth)(/*[out, retval]*/ Float64 *pVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IDirection* *clone) override;
+	STDMETHOD(AngleBetween)(/*[in]*/ IDirection* dir,/*[out,retval]*/IAngle** pVal) override;
+   STDMETHOD(FromVariant)(/*[in]*/ VARIANT varDirection) override;
+   STDMETHOD(FromAzimuth)(/*[in]*/ Float64 azimuth) override;
+	STDMETHOD(FromAzimuthEx)(/*[in]*/ long Degree, /*[in]*/ long Minute, /*[in]*/ Float64 Second) override;
+	STDMETHOD(FromDMS)(/*[in]*/ NSDirectionType ns,/*[in]*/ long Degree,/*[in]*/ long Minute, /*[in]*/ Float64 Second, /*[in]*/ EWDirectionType ew) override;
+	STDMETHOD(FromString)(/*[in]*/ BSTR bstrDir) override;
+	STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle) override;
+	STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IDirection* *pVal) override;
+	STDMETHOD(get_Second)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Second)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Minute)(/*[out, retval]*/ long *pVal) override;
+	STDMETHOD(put_Minute)(/*[in]*/ long newVal) override;
+	STDMETHOD(get_Degree)(/*[out, retval]*/ long *pVal) override;
+	STDMETHOD(put_Degree)(/*[in]*/ long newVal) override;
+	STDMETHOD(get_EWDirection)(/*[out, retval]*/ EWDirectionType *pVal) override;
+	STDMETHOD(put_EWDirection)(/*[in]*/ EWDirectionType newVal) override;
+	STDMETHOD(get_NSDirection)(/*[out, retval]*/ NSDirectionType *pVal) override;
+	STDMETHOD(put_NSDirection)(/*[in]*/ NSDirectionType newVal) override;
+	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal) override;
+   STDMETHOD(get_Azimuth)(/*[out, retval]*/ Float64 *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    HRESULT BadDirectionString();

@@ -70,8 +70,8 @@ interface IEAFDisplayUnits : IUnknown
    virtual const unitmgtTimeData&           GetShortTimeUnit() = 0;
    virtual const unitmgtTimeData&           GetWholeDaysUnit() = 0;
    virtual const unitmgtTimeData&           GetFractionalDaysUnit() = 0;
-   virtual const unitmgtAreaPerLengthData&  GetAvOverSUnit()=0;
-   virtual const unitmgtForceLength2Data&   GetStiffnessUnit()=0;
+   virtual const unitmgtAreaPerLengthData&  GetAvOverSUnit() = 0;
+   virtual const unitmgtForceLength2Data&   GetStiffnessUnit() = 0;
    virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit() = 0;
    virtual const unitmgtPerLengthData&      GetPerLengthUnit() = 0;
    virtual const unitmgtPerLengthData&      GetCurvatureUnit() = 0;

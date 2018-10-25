@@ -66,33 +66,33 @@ private:
 	Float64 m_Angle; // Angle of rotation about the rotation vector
 	CComPtr<IPoint3d> m_pNewOrigin;
 
-   STDMETHOD(OldToNew)(/*[in]*/ IPoint3d* point);
-	STDMETHOD(NewToOld)(/*[in]*/ IPoint3d* point);
+   HRESULT OldToNew(/*[in]*/ IPoint3d* point);
+	HRESULT NewToOld(/*[in]*/ IPoint3d* point);
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICoordinateXform3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(XformEx)(/*[in]*/ IPoint3d* point,/*[in]*/ XformType type,/*[out,retval]*/ IPoint3d** result);
-   STDMETHOD(Xform)(/*[in,out]*/ IPoint3d** point,/*[in]*/ XformType type);
-	STDMETHOD(get_RotationVector)(/*[out, retval]*/ IVector3d **pVal);
-	STDMETHOD(putref_RotationVector)(/*[in]*/ IVector3d *newVal);
-	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint3d **pVal);
-	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint3d *newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(XformEx)(/*[in]*/ IPoint3d* point,/*[in]*/ XformType type,/*[out,retval]*/ IPoint3d** result) override;
+   STDMETHOD(Xform)(/*[in,out]*/ IPoint3d** point,/*[in]*/ XformType type) override;
+	STDMETHOD(get_RotationVector)(/*[out, retval]*/ IVector3d **pVal) override;
+	STDMETHOD(putref_RotationVector)(/*[in]*/ IVector3d *newVal) override;
+	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint3d **pVal) override;
+	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint3d *newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__COORDINATEXFORM3D_H_

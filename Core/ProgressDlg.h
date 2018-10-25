@@ -38,7 +38,7 @@ class CProgressDlg : public CDialog
 {
 // Construction
 public:
-	CProgressDlg(CWnd* pParent = NULL);   // standard constructor
+	CProgressDlg(CWnd* pParent = nullptr);   // standard constructor
 
    ~CProgressDlg();
 // Dialog Data
@@ -57,7 +57,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CProgressDlg)
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 public:
@@ -79,9 +79,9 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CProgressDlg)
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	//}}AFX_MSG
-   virtual void OnCancel();
+   virtual void OnCancel() override;
 	DECLARE_MESSAGE_MAP()
 };
 

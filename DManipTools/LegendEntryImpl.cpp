@@ -55,7 +55,7 @@ STDMETHODIMP CLegendEntryImpl::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_iLegendEntry
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -202,7 +202,7 @@ STDMETHODIMP_(HRESULT) CLegendEntryImpl::CreateDataPoint(Float64 dataX, Float64 
 
    // data point
    CComPtr<iPointDisplayObject> dp_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&dp_rep);
+   ::CoCreateInstance(CLSID_PointDisplayObject,nullptr,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&dp_rep);
 
    CDataPointDrawStrategyImpl* pDisplayImpl = new CDataPointDrawStrategyImpl();
    iDrawPointStrategy* pidp = (iDrawPointStrategy*)pDisplayImpl->GetInterface(&IID_iDrawPointStrategy);
@@ -218,7 +218,7 @@ STDMETHODIMP_(HRESULT) CLegendEntryImpl::CreateDataPoint(Float64 dataX, Float64 
    iunk->Release();
 
    CComQIPtr<iDataPointDrawStrategy,&IID_iDataPointDrawStrategy> dp_draw(pDisplayImpl->GetInterface(&IID_IUnknown));
-   ATLASSERT(dp_draw!=NULL);
+   ATLASSERT(dp_draw!=nullptr);
    dp_draw->put_Color(m_Color);
    dp_draw->put_SymbolCharacterCode(m_CharCode);
    dp_draw->put_SymbolSize(m_FontSize);

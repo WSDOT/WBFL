@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stack>
+#include <memory>
 
 interface IProgress;
 interface IStructuredSave;
@@ -113,7 +114,7 @@ private:
 };
 
 #define DECLARE_STRSTORAGEMAP(cls) \
-   std::auto_ptr<StrStorageDataMap<cls> > _strstgmap; \
+   std::unique_ptr<StrStorageDataMap<cls> > _strstgmap; \
    bool _LoadMap();
 
 #endif // INCLUDED_STRDATA_H_

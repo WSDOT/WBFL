@@ -27,6 +27,7 @@
 #include <GeomModel\ShapeUtils.h>
 #include <GeomModel\Polygon.h>
 #include <MathEx.h>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -342,22 +343,22 @@ Float64 gmPrecastBeam::GetMatingSurfaceLocation(MatingSurfaceIndexType idx) cons
 void gmPrecastBeam::GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const
 {
    IPlane3d* pPlane;
-   ::CoCreateInstance(CLSID_Plane3d,NULL,CLSCTX_INPROC_SERVER,IID_IPlane3d,(void**)&pPlane);
+   ::CoCreateInstance(CLSID_Plane3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPlane3d,(void**)&pPlane);
 
    IPoint2d* pP1;
-   ::CoCreateInstance(CLSID_Point2d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint2d,(void**)&pP1);
+   ::CoCreateInstance(CLSID_Point2d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint2d,(void**)&pP1);
    pP1->Move(0,0);
 
    IPoint2d* pP2;
-   ::CoCreateInstance(CLSID_Point2d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint2d,(void**)&pP2);
+   ::CoCreateInstance(CLSID_Point2d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint2d,(void**)&pP2);
    pP2->Move(100,0);
 
    ILine2d* pLine;
-   ::CoCreateInstance(CLSID_Line2d,NULL,CLSCTX_INPROC_SERVER,IID_ILine2d,(void**)&pLine);
+   ::CoCreateInstance(CLSID_Line2d,nullptr,CLSCTX_INPROC_SERVER,IID_ILine2d,(void**)&pLine);
    pLine->ThroughPoints(pP1,pP2);
 
    IPoint3d* pP3;
-   ::CoCreateInstance(CLSID_Point3d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP3);
+   ::CoCreateInstance(CLSID_Point3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP3);
    pP3->Move(0,100,0);
 
    pPlane->ThroughLineEx(pLine,pP3);
@@ -379,7 +380,7 @@ Float64 gmPrecastBeam::GetShearWidth() const
 
 Float64 gmPrecastBeam::GetMinWebWidth() const
 {
-   return _cpp_min(m_T1,m_T2);
+   return Min(m_T1,m_T2);
 }
 
 Float64 gmPrecastBeam::GetMinBottomFlangeThickness() const
@@ -425,7 +426,7 @@ gpRect2d gmPrecastBeam::GetBoundingBox() const
 
 gmIShape* gmPrecastBeam::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmPrecastBeam> ph(new gmPrecastBeam( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmPrecastBeam> ph(new gmPrecastBeam( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -438,7 +439,7 @@ gmIShape* gmPrecastBeam::CreateClippedShape(const gpLine2d& line,
                                     gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(line,side);
 }
 
@@ -447,20 +448,20 @@ gmIShape* gmPrecastBeam::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
 Float64 gmPrecastBeam::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->GetFurthestDistance(line,side);
 }
 
 void gmPrecastBeam::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 
@@ -580,7 +581,7 @@ void gmPrecastBeam::MakeAssignment(const gmPrecastBeam& rOther)
 gmPolygon* gmPrecastBeam::CreatePolygon() const
 {
    // make a polygon with same traits as this.
-   std::auto_ptr<gmPolygon> ph(new gmPolygon(m_PolyImp));
+   std::unique_ptr<gmPolygon> ph(new gmPolygon(m_PolyImp));
    gmShapeUtils::CopyTraits(*this, ph.get());
 
    return ph.release();
@@ -644,20 +645,20 @@ void gmPrecastBeam::UpdatePolygon()
 void gmPrecastBeam::Init()
 {
    m_HookPoint = gpPoint2d(0,0);
-   m_Rotation=0;
-   m_W1=0;
-   m_W2=0;
-   m_W3=0;
-   m_W4=0;
-   m_D1=0;
-   m_D2=0;
-   m_D3=0;
-   m_D4=0;
-   m_D5=0;
-   m_D6=0;
-   m_D7=0;
-   m_T1=0;
-   m_T2=0;
+   m_Rotation = 0;
+   m_W1 = 0;
+   m_W2 = 0;
+   m_W3 = 0;
+   m_W4 = 0;
+   m_D1 = 0;
+   m_D2 = 0;
+   m_D3 = 0;
+   m_D4 = 0;
+   m_D5 = 0;
+   m_D6 = 0;
+   m_D7 = 0;
+   m_T1 = 0;
+   m_T2 = 0;
    m_PolyImp.Clear();
 }
 

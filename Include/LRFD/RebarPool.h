@@ -33,7 +33,7 @@
 #include <Material\Rebar.h>
 #include <map>
 #include <System\SingletonKiller.h>
-#include <boost\shared_ptr.hpp>
+
 
 // PROJECT INCLUDES
 //
@@ -130,7 +130,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdRebarPool* ms_pInstance;
-   typedef std::map<Int32,boost::shared_ptr<matRebar> > RebarPool;
+   typedef std::map<Int32, std::shared_ptr<matRebar> > RebarPool;
    static RebarPool ms_Rebar;
 
    typedef sysSingletonKillerT<lrfdRebarPool> Killer;
@@ -145,7 +145,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdRebarPool(const lrfdRebarPool&);
-   lrfdRebarPool& operator=(const lrfdRebarPool&);
+   lrfdRebarPool& operator=(const lrfdRebarPool&) = delete;
 
    //------------------------------------------------------------------------
    virtual ~lrfdRebarPool();
@@ -264,7 +264,7 @@ protected:
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   virtual void MakeAssignment(const lrfdRebarIter& rOther);
+   void MakeAssignment(const lrfdRebarIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

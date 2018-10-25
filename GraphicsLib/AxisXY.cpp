@@ -152,7 +152,7 @@ void grAxisXY::Draw(HDC hDC)
          Float64 tic_prev;
          Float64 inc = (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement;
          Int32 num_incrs = (IsEqual(inc,Float64((int)inc)) ? (Int32)inc : (Int32)ceil(inc));
-         for (Int32 i=0; i<=num_incrs; i++)
+         for (Int32 i = 0; i<=num_incrs; i++)
          {
             Int32 tic_l = (Int32)Round( axis_mapper.GetB(tic_value) );
 
@@ -716,7 +716,7 @@ void grAxisXY::UpdateAxisMetrics(HDC hDC)
    HFONT valuefont = grGraphTool::CreateRotatedFont(hDC, m_ValueAngle, m_AxisValueSize);
    ::SelectObject(hDC, valuefont);
    LONG num_incrs = (LONG)ceil( (m_RightAxisValue-m_LeftAxisValue)/m_AxisIncrement);
-   for (LONG i=0; i<=num_incrs; i++)
+   for (LONG i = 0; i<=num_incrs; i++)
    {
       std::_tstring value_text(m_pValueFormat->AsString(curr_value));
       boost::trim(value_text);
@@ -909,14 +909,14 @@ void grAxisXY::Init()
 ////////////////
 grAxisXY::AxisMetrics::AxisMetrics()
 {
-   TicSize=0;
-   MajorTicBottom=0;
-   MajorTicTop=0;
-   MinorTicBottom=0;
-   MinorTicTop=0;
-   ValueTextLoc=0;
-   TitleTextLoc=0;
-   SubtitleTextLoc=0;
+   TicSize = 0;
+   MajorTicBottom = 0;
+   MajorTicTop = 0;
+   MinorTicBottom = 0;
+   MinorTicTop = 0;
+   ValueTextLoc = 0;
+   TitleTextLoc = 0;
+   SubtitleTextLoc = 0;
 }
 
 grAxisXY::AxisMetrics::~AxisMetrics()

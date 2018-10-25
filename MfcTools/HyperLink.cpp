@@ -58,7 +58,7 @@ COLORREF CHyperLink::g_crLinkColor		= RGB(0, 0, 255);	// Blue
 COLORREF CHyperLink::g_crActiveColor	= RGB(0, 128, 128);	// Dark cyan
 COLORREF CHyperLink::g_crVisitedColor	= RGB(128, 0, 128);	// Purple
 COLORREF CHyperLink::g_crHoverColor		= RGB(255, 0, 0	);	// Red
-HCURSOR	 CHyperLink::g_hLinkCursor		= NULL;				// No cursor
+HCURSOR	 CHyperLink::g_hLinkCursor		= nullptr;				// No cursor
 
 CHyperLink::CHyperLink()
 {
@@ -112,14 +112,14 @@ void CHyperLink::PreSubclassWindow()
     GetWindowText(strWndText);
     if (strWndText.IsEmpty()) {
 		// Set the URL string as the window text
-        ASSERT(!m_strURL.IsEmpty());    // window text and URL both NULL!
+        ASSERT(!m_strURL.IsEmpty());    // window text and URL both nullptr!
 		CStatic::SetWindowText(m_strURL);
     }
 
     // Get the current window font	
     CFont* pFont = GetFont();	
 	
-	if (pFont != NULL) {
+	if (pFont != nullptr) {
 		LOGFONT lf;
 		pFont->GetLogFont(&lf);
 		lf.lfUnderline = BITSET(m_dwStyle, StyleUnderline);
@@ -129,7 +129,7 @@ void CHyperLink::PreSubclassWindow()
 		AdjustWindow();
 	}
 	else {		
-		// if GetFont() returns NULL then probably the static
+		// if GetFont() returns nullptr then probably the static
 		// control is not of a text type: it's better to set
 		// auto-resizing off
 		CLEARBITS(m_dwStyle,StyleAutoSize);
@@ -283,10 +283,10 @@ void CHyperLink::GetColors(HYPERLINKCOLORS& linkColors) {
 }
 
 void CHyperLink::SetLinkCursor(HCURSOR hCursor) {
-	ASSERT(hCursor != NULL);
+	ASSERT(hCursor != nullptr);
 
 	g_hLinkCursor = hCursor;
-	if (g_hLinkCursor == NULL)
+	if (g_hLinkCursor == nullptr)
 		SetDefaultCursor();
 }
 
@@ -339,7 +339,7 @@ CString CHyperLink::GetURL() const {
 
 void CHyperLink::SetWindowText(LPCTSTR lpszText)
 {
-	ASSERT(lpszText != NULL);
+	ASSERT(lpszText != nullptr);
 
 	if (::IsWindow(GetSafeHwnd())) {
 		// Set the window text and adjust its size while the window
@@ -356,7 +356,7 @@ void CHyperLink::SetWindowText(LPCTSTR lpszText)
 void CHyperLink::SetFont(CFont* pFont)
 {
 	ASSERT(::IsWindow(GetSafeHwnd()));
-	ASSERT(pFont != NULL);
+	ASSERT(pFont != nullptr);
 	
 	// Set the window font and adjust its size while the window
 	// is kept hidden in order to allow dynamic modification
@@ -378,7 +378,7 @@ void CHyperLink::SwitchUnderline()
 {	
 	LOGFONT lf;
 	CFont* pFont = GetFont();
-	if (pFont != NULL) {
+	if (pFont != nullptr) {
 		pFont->GetLogFont(&lf);		
 		lf.lfUnderline = BITSET(m_dwStyle,StyleUnderline);
 		m_Font.DeleteObject();
@@ -459,15 +459,15 @@ BOOL CHyperLink::IsVisited() const {
 
 void CHyperLink::SetDefaultCursor()
 {
-   if ( g_hLinkCursor == NULL ) // No cursor handle - load the hand cursor from Windows
+   if ( g_hLinkCursor == nullptr ) // No cursor handle - load the hand cursor from Windows
    {
-      g_hLinkCursor = ::LoadCursor(NULL, IDC_HAND ); // NOTE: Kludgy method to get IDC_HAND... see top of file
+      g_hLinkCursor = ::LoadCursor(nullptr, IDC_HAND ); // NOTE: Kludgy method to get IDC_HAND... see top of file
    }
 
    // The following function appeared in Paul DiLascia's Jan 1998 
    // MSJ articles. It loads a "hand" cursor from "winhlp32.exe"
    // resources
-	if (g_hLinkCursor == NULL)		// Still no cursor handle - load from winhlp32
+	if (g_hLinkCursor == nullptr)		// Still no cursor handle - load from winhlp32
 	{
         // Get the windows directory
 		CString strWndDir;
@@ -494,7 +494,7 @@ LONG CHyperLink::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
     if (retval == ERROR_SUCCESS) {
         long datasize = MAX_PATH;
 		TCHAR data[MAX_PATH];
-		RegQueryValue(hkey, NULL, data, &datasize);
+		RegQueryValue(hkey, nullptr, data, &datasize);
 		lstrcpy(retdata,data);
 		RegCloseKey(hkey);
     }
@@ -503,7 +503,7 @@ LONG CHyperLink::GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata)
 }
 
 // Error report function
-void CHyperLink::ReportError(int nError)
+void CHyperLink::ReportError(UINT nError)
 {
 	CString str;
    
@@ -532,27 +532,30 @@ void CHyperLink::ReportError(int nError)
 
 // "GotoURL" function by Stuart Patterson
 // As seen in the August, 1997 Windows Developer's Journal.
-HINSTANCE CHyperLink::GotoURL(LPCTSTR url, int showcmd)
+UINT CHyperLink::GotoURL(LPCTSTR url, int showcmd)
 {
    USES_CONVERSION;
 
     TCHAR key[MAX_PATH + MAX_PATH];	
 
     // First try ShellExecute()
-    HINSTANCE result = ShellExecute(NULL, _T("open"), url, NULL,NULL, showcmd);
+    HINSTANCE result = ShellExecute(nullptr, _T("open"), url, nullptr,nullptr, showcmd);
 
+    UINT retval = PtrToUint(result);
     // If it failed, get the .htm regkey and lookup the program
-    if ((UINT)result <= HINSTANCE_ERROR) {		
-		
-        if (GetRegKey(HKEY_CLASSES_ROOT, _T(".htm"), key) == ERROR_SUCCESS) {
+    if (result <= (HINSTANCE)HINSTANCE_ERROR)
+    {		
+        if (GetRegKey(HKEY_CLASSES_ROOT, _T(".htm"), key) == ERROR_SUCCESS) 
+        {
             lstrcat(key, _T("\\shell\\open\\command"));
 
-            if (GetRegKey(HKEY_CLASSES_ROOT,key,key) == ERROR_SUCCESS) {
+            if (GetRegKey(HKEY_CLASSES_ROOT,key,key) == ERROR_SUCCESS) 
+            {
                 TCHAR *pos;
                 pos = _tcsstr(key, _T("\"%1\""));
-                if (pos == NULL) {                     // No quotes found
+                if (pos == nullptr) {                     // No quotes found
                     pos = _tcsstr(key, _T("%1"));       // Check for %1, without quotes
-                    if (pos == NULL)                   // No parameter at all...
+                    if (pos == nullptr)                   // No parameter at all...
                         pos = key+lstrlen(key)-1;
                     else
                         *pos = '\0';                   // Remove the parameter
@@ -562,19 +565,19 @@ HINSTANCE CHyperLink::GotoURL(LPCTSTR url, int showcmd)
 
                 lstrcat(pos, _T(" "));
                 lstrcat(pos, url);
-                result = (HINSTANCE) WinExec(T2A(key),showcmd);
+                retval = WinExec(T2A(key),showcmd);
             }
         }
 	}
-	  
-    return result;
+
+    return retval;
 }
 
 // Activate the link
 void CHyperLink::FollowLink() 
 {	
-	int result = (int) GotoURL(m_strURL, SW_SHOW);
-    if (result <= HINSTANCE_ERROR) {
+   UINT result = GotoURL(m_strURL, SW_SHOW);
+    if (result <= 32) {
         MessageBeep(MB_ICONEXCLAMATION);	// Unable to follow link
         ReportError(result);
     } else {

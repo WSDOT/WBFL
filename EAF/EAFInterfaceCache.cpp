@@ -28,7 +28,7 @@
 
 CEAFInterfaceCache::CEAFInterfaceCache(void)
 {
-   m_pBroker = NULL;
+   m_pBroker = nullptr;
 }
 
 CEAFInterfaceCache::~CEAFInterfaceCache(void)
@@ -102,7 +102,7 @@ void CEAFInterfaceCache::ClearCache()
    for ( ; iter != end; iter++ )
    {
       (*iter).second->Release();
-      (*iter).second = NULL;
+      (*iter).second = nullptr;
    }
    m_Interfaces.clear();
 }

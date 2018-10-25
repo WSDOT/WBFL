@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CUIHintsDlg, CDialog)
 
 
-CUIHintsDlg::CUIHintsDlg(CWnd* pParent /*=NULL*/)
+CUIHintsDlg::CUIHintsDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CUIHintsDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CUIHintsDlg)

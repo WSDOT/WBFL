@@ -48,6 +48,9 @@ extern CComModule _Module;
 #include <WbflAtlExt.h> // WBFL ATL Extensions
 #include <MathEx.h>
 
+#include <OpenBridgeML_Units.hxx> // must include this here so that the DLL linkage, and exported template methods, are included before we generate our own template methods
+// during the port to VS2015, this DLL would not link because std::string<>.c_str() was defined in DisplayUnitsFormatter.obj and OpenBridgeML.lib
+// Moving this #include here resolved the issue
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

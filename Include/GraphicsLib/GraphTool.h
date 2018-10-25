@@ -133,8 +133,8 @@ private:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   grGraphTool(const grGraphTool&);
-   grGraphTool& operator=(const grGraphTool&);
+   grGraphTool(const grGraphTool&) = delete;
+   grGraphTool& operator=(const grGraphTool&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

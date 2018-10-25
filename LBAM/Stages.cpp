@@ -41,7 +41,7 @@ STDMETHODIMP CStages::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStages
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -146,7 +146,7 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
 
    // linear search
    CComBSTR cnam(name);
-   StageIndexType i=0;
+   StageIndexType i = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)
@@ -156,7 +156,7 @@ STDMETHODIMP CStages::FindIndex(/*[in]*/ BSTR name, /*[out,retval]*/StageIndexTy
       if (FAILED(hr))
       {
          ATLASSERT(false);
-         return 0;
+         return hr;
       }
 
       if ( cnam == bnam )
@@ -185,14 +185,14 @@ IStage* CStages::Find(const CComBSTR& name)
       if (FAILED(hr))
       {
          ATLASSERT(false);
-         return 0;
+         return nullptr;
       }
 
       if ( name == bnam )
          return it->second.m_T;
    }
 
-   return 0;
+   return nullptr;
 }
 
 STDMETHODIMP CStages::RemoveByIndex(StageIndexType idx)

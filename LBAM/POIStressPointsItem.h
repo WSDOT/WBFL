@@ -66,17 +66,17 @@ BEGIN_CONNECTION_POINT_MAP(CPOIStressPointsItem)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPOIStressPointsItem
 public:
-	STDMETHOD(get_RightStressPoints)(/*[out, retval]*/ IStressPoints* *pVal);
-	STDMETHOD(get_LeftStressPoints)(/*[out, retval]*/ IStressPoints* *pVal);
-	STDMETHOD(get_Stage)(/*[out, retval]*/ BSTR *pVal);
+	STDMETHOD(get_RightStressPoints)(/*[out, retval]*/ IStressPoints* *pVal) override;
+	STDMETHOD(get_LeftStressPoints)(/*[out, retval]*/ IStressPoints* *pVal) override;
+	STDMETHOD(get_Stage)(/*[out, retval]*/ BSTR *pVal) override;
 
    // IStructuredStorage2 (not officially)
-   STDMETHOD(Load)(IStructuredLoad2 * pload);
-   STDMETHOD(Save)(IStructuredSave2 * psave);
+   STDMETHOD(Load)(IStructuredLoad2 * pload) override;
+   STDMETHOD(Save)(IStructuredSave2 * psave) override;
 
 
 private:

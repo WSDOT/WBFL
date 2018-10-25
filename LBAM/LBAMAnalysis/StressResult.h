@@ -62,25 +62,25 @@ BEGIN_COM_MAP(CStressResult)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStressResult
-	STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(AddResult)(/*[in]*/ Float64 newVal);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal);
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ IStressResult* *pClone);
+	STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(AddResult)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ IStressResult* *pClone) override;
 
 // IHpStressResult
-	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals);
-	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals);
+	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals) override;
+	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType num, /*[in]*/Float64* Vals) override;
 
 public:
-	STDMETHOD(FactorAndSum)(IStressResult* incRes, Float64 factor);
+	STDMETHOD(FactorAndSum)(IStressResult* incRes, Float64 factor) override;
    typedef std::vector<Float64> Float64Vec;
    typedef Float64Vec::iterator Float64Iterator;
    Float64Vec m_Results;

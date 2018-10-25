@@ -51,7 +51,7 @@ public:
 	{
 	}
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -75,28 +75,28 @@ CONNECTION_POINT_ENTRY(IID_ILiveLoadModelEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILiveLoadModel
 public:
-	STDMETHOD(get_VehicularLoads)(/*[out, retval]*/ IVehicularLoads* *pVal);
-	STDMETHOD(putref_VehicularLoads)(/*[in]*/ IVehicularLoads* newVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Clone)(ILiveLoadModel **ppCS);
-	STDMETHOD(get_DistributionFactorType)(/*[out, retval]*/ DistributionFactorType *pVal);
-	STDMETHOD(put_DistributionFactorType)(/*[in]*/ DistributionFactorType newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(get_VehicularLoads)(/*[out, retval]*/ IVehicularLoads* *pVal) override;
+	STDMETHOD(putref_VehicularLoads)(/*[in]*/ IVehicularLoads* newVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Clone)(ILiveLoadModel **ppCS) override;
+	STDMETHOD(get_DistributionFactorType)(/*[out, retval]*/ DistributionFactorType *pVal) override;
+	STDMETHOD(put_DistributionFactorType)(/*[in]*/ DistributionFactorType newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 // IVehicularLoadsEvents
-   STDMETHOD(OnVehicularLoadsChanged)(IVehicularLoad* item, ChangeType change);
-   STDMETHOD(OnVehicularLoadsRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnVehicularLoadsAdded)(IVehicularLoad* item);
-   STDMETHOD(OnVehicularLoadsBeforeRemove)(IVehicularLoad* item);
+   STDMETHOD(OnVehicularLoadsChanged)(IVehicularLoad* item, ChangeType change) override;
+   STDMETHOD(OnVehicularLoadsRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnVehicularLoadsAdded)(IVehicularLoad* item) override;
+   STDMETHOD(OnVehicularLoadsBeforeRemove)(IVehicularLoad* item) override;
    
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    CComBSTR               m_Name;

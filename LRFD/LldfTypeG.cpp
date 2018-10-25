@@ -299,6 +299,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetMomentDF_Int_1_Stren
       g.EqnData.C = C;
       g.EqnData.K = K;
       g.EqnData.mg = S/D;
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
       g.mg = g.EqnData.mg;
    }
    else
@@ -436,6 +437,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Int_1_Streng
 
          g.EqnData.mg = K1*pow( b/(K2*L), 0.15) * pow( I/J, 0.05 );
          g.EqnData.e = 1.0;
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
          g.mg = g.EqnData.mg;
       }
       else
@@ -498,6 +500,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeG::GetShearDF_Int_2_Stren
 
          g.EqnData.mg = pow(b/K1,0.4) * pow(b/(K2*L),0.1) * pow(I/J,0.05) * K4;
          g.EqnData.e = 1.0;
+         g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
          g.mg = g.EqnData.mg;
       }
       else
@@ -724,10 +727,12 @@ void lrfdLldfTypeG::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdLldfTypeG::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeG");
 
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
@@ -769,9 +774,6 @@ bool lrfdLldfTypeG::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.5043, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII),  0.5000, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2604, 0.001) );
-
-   
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdLldfTypeG");
 }
@@ -865,6 +867,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_1_Stren
       g.ControllingMethod = SPEC_EQN;
       g.EqnData.bWasUsed = true;
       g.EqnData.e = 1.0;
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
       g.EqnData.mg = mg;
       g.mg = g.EqnData.mg;
    }
@@ -913,6 +916,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeF::GetMomentDF_Int_2_Stren
       g.ControllingMethod = SPEC_EQN;
       g.EqnData.e = 1.0;
       g.EqnData.bWasUsed = true;
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
       g.EqnData.mg = mg;
       g.mg = mg;
    }
@@ -1004,10 +1008,12 @@ void lrfdLldfTypeF::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdLldfTypeF::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeF");
 
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
@@ -1047,9 +1053,6 @@ bool lrfdLldfTypeF::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.3757, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4057, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.4894, 0.001) );
-
-   
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdLldfTypeF");
 }
@@ -1282,10 +1285,12 @@ void lrfdTxdotVoidedSlab::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdTxdotVoidedSlab::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdTxdotVoidedSlab");
  
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Int16 Nb = 5;
@@ -1325,8 +1330,6 @@ bool lrfdTxdotVoidedSlab::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.2903, 0.001) );
-
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdTxdotVoidedSlab");
 }

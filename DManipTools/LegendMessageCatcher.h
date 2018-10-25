@@ -35,7 +35,7 @@
 
 interface iMessageListener
 {
-   virtual void OnCaughtMessage(int msg)=0;
+   virtual void OnCaughtMessage(int msg) = 0;
 };
 
 

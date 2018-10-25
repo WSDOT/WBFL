@@ -62,7 +62,7 @@ STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPier,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

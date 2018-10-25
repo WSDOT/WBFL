@@ -81,38 +81,38 @@ CONNECTION_POINT_ENTRY(IID_ISurfaceCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("Surfaces"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("Surface"); }
+   CComBSTR GetCollectionName() { return CComBSTR("Surfaces"); }
+   CComBSTR GetItemName() { return CComBSTR("Surface"); }
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISurfaceCollection
 public:
-   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
-   STDMETHOD(putref_Profile)(/*[in]*/ IProfile* newVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Add)(ISurface* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISurface* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISurface* newVal);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumSurfaces)(/*[out,retval]*/ IEnumSurfaces** ppenum);
-   STDMETHOD(FindSurface)(/*[in]*/CogoObjectID id,/*[out,retval]*/ISurface** ppSurface);
-   STDMETHOD(GetSurface)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[out,retval]*/ISurface** ppSurface);
-   STDMETHOD(Clone)(/*[out,retval]*/ ISurfaceCollection* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
+   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal) override;
+   STDMETHOD(putref_Profile)(/*[in]*/ IProfile* newVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Add)(ISurface* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ISurface* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ ISurface* newVal) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumSurfaces)(/*[out,retval]*/ IEnumSurfaces** ppenum) override;
+   STDMETHOD(FindSurface)(/*[in]*/CogoObjectID id,/*[out,retval]*/ISurface** ppSurface) override;
+   STDMETHOD(GetSurface)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[out,retval]*/ISurface** ppSurface) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ISurfaceCollection* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // ISurfaceEvents
 public:
-   STDMETHOD(OnSurfaceChanged)(/*[in]*/ ISurface* widening);
+   STDMETHOD(OnSurfaceChanged)(/*[in]*/ ISurface* widening) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

@@ -249,19 +249,19 @@ public:
    // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
    // listeners are registered with the clone.  This is a factory method,  
    // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const;
+   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
 
    //------------------------------------------------------------------------
    // GetProperties
    // Assigns a gmProperties object to the object pointed to by pProperties. 
    // The origin of the shape properties object is the centroid of this shape
    // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const;
+   virtual void GetProperties(gmProperties* pProperties) const override;
 
    //------------------------------------------------------------------------
    // GetBoundingBox
    // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const;
+   virtual gpRect2d GetBoundingBox() const override;
 
    //------------------------------------------------------------------------
    // CreateClippedShape
@@ -291,7 +291,7 @@ public:
    // Returns the distance to a line that is parallel to line, on specified 
    // side of line,  that passes through the furthest point on the shape 
    // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const;
+   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
 
    //------------------------------------------------------------------------
    // Draw
@@ -304,7 +304,7 @@ public:
    // would most likely delegate its drawing responsibility to the gmShapeImp 
    // object it represents.
    // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const;
+   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
 
    //------------------------------------------------------------------------
    // Contains
@@ -314,36 +314,36 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the top flange width of the girder
-   virtual Float64 GetTopFlangeWidth() const;
+   virtual Float64 GetTopFlangeWidth() const override;
 
    //------------------------------------------------------------------------
    // Returns the bottom flange width of the girder
-   virtual Float64 GetBottomFlangeWidth() const;
+   virtual Float64 GetBottomFlangeWidth() const override;
 
    //------------------------------------------------------------------------
    // Returns the total top width of the girder
-   virtual Float64 GetTopWidth() const;
+   virtual Float64 GetTopWidth() const override;
 
    //------------------------------------------------------------------------
    // Returns the web width for shear
-   virtual Float64 GetShearWidth() const;
+   virtual Float64 GetShearWidth() const override;
 
    //------------------------------------------------------------------------
    // Returns the web width
-   virtual Float64 GetMinWebWidth() const;
+   virtual Float64 GetMinWebWidth() const override;
 
    //------------------------------------------------------------------------
    // Returns the minimum bottom flange thickness
-   virtual Float64 GetMinBottomFlangeThickness() const;
+   virtual Float64 GetMinBottomFlangeThickness() const override;
 
    //------------------------------------------------------------------------
    // Returns the minimum top flange thickness
-   virtual Float64 GetMinTopFlangeThickness() const;
+   virtual Float64 GetMinTopFlangeThickness() const override;
 
-   virtual MatingSurfaceIndexType GetNumberOfMatingSurfaces() const;
-   virtual Float64 GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const;
-   virtual Float64 GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const;
-   virtual void GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const;
+   virtual MatingSurfaceIndexType GetNumberOfMatingSurfaces() const override;
+   virtual Float64 GetMatingSurfaceWidth(MatingSurfaceIndexType idx) const override;
+   virtual Float64 GetMatingSurfaceLocation(MatingSurfaceIndexType idx) const override;
+   virtual void GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -352,11 +352,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 
 #endif // _DEBUG
 
@@ -377,18 +377,18 @@ protected:
    //------------------------------------------------------------------------
    // DoTranslate
    // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta);
+   virtual void DoTranslate(const gpSize2d& delta) override;
 
    //------------------------------------------------------------------------
    // DoRotate
    // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle);
+   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const gmUBeam& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmUBeam& rOther);
+   void MakeAssignment(const gmUBeam& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

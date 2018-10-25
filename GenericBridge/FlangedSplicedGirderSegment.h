@@ -63,7 +63,7 @@ BEGIN_COM_MAP(CFlangedSplicedGirderSegment)
 END_COM_MAP()
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape);
+   HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape);
    void GetEndBlockWidth(Float64 x,Float64* pWtop,Float64* pWbot);
 };
 

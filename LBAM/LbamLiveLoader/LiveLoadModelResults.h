@@ -58,20 +58,20 @@ BEGIN_COM_MAP(CLiveLoadModelResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ILiveLoadModelResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* result, /*[out]*/ILiveLoadConfiguration* *Config);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config);
-	STDMETHOD(Add)(/*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clear)();
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* result, /*[out]*/ILiveLoadConfiguration* *Config) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config) override;
+	STDMETHOD(Add)(/*[in]*/Float64 result, /*[in]*/ILiveLoadConfiguration* Config) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clear)() override;
 
 private:
    struct LlmResults

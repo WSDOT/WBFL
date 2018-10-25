@@ -66,21 +66,21 @@ void CTestSuperstructureMemberCollection::TestDefaults()
 //   CComPtr<ISuperstructureMemberCollection> members;
 //   bridge->get_SuperstructureMembers(0,&members);
 //
-//   TRY_TEST(members != NULL,true);
+//   TRY_TEST(members != nullptr,true);
 //
 //   // Validate Defaults
 //   long nMembers;
-//   TRY_TEST(members->get_Count(NULL),E_POINTER);
+//   TRY_TEST(members->get_Count(nullptr),E_POINTER);
 //   TRY_TEST(members->get_Count(&nMembers),S_OK);
 //   TRY_TEST(nMembers,0);
 //
 //   Float64 length;
-//   TRY_TEST(members->get_MemberLength(NULL),E_POINTER);
+//   TRY_TEST(members->get_MemberLength(nullptr),E_POINTER);
 //   TRY_TEST(members->get_MemberLength(&length),S_OK);
 //   TRY_TEST(IsEqual(length,0.0),true);
 //
 //   VARIANT_BOOL bSymmetrical;
-//   TRY_TEST(members->get_Symmetrical(NULL),E_POINTER);
+//   TRY_TEST(members->get_Symmetrical(nullptr),E_POINTER);
 //   TRY_TEST(members->get_Symmetrical(&bSymmetrical),S_OK);
 //   TRY_TEST(bSymmetrical,VARIANT_FALSE);
 //

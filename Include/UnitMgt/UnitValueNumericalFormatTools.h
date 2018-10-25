@@ -35,8 +35,8 @@ public:
       {
       }
 
-   virtual Float64 Convert(Float64 value) const=0;
-   virtual std::_tstring UnitTag() const =0;
+   virtual Float64 Convert(Float64 value) const = 0;
+   virtual std::_tstring UnitTag() const  = 0;
 };
 
 // a template class for printing out physical values

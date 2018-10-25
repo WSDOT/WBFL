@@ -273,7 +273,7 @@ Float64 rcaNaamanCapacityProblem::Evaluate(Float64 x) const
 mathFunction2d* rcaNaamanCapacityProblem::Clone() const
 {
    ASSERT(false); // this method should never be called
-   return NULL;
+   return nullptr;
 }
 
 void rcaNaamanCapacityProblem::Init()

@@ -45,9 +45,9 @@ class ATL_NO_VTABLE CBasicVehicularResponse :
 {
 public:
    CBasicVehicularResponse():
-   m_InflStrategy(NULL),
-   m_DfStrategy(NULL),
-   m_ApplicabilityStrategy(NULL)
+   m_InflStrategy(nullptr),
+   m_DfStrategy(nullptr),
+   m_ApplicabilityStrategy(nullptr)
 	{
 	}
  
@@ -64,30 +64,30 @@ BEGIN_COM_MAP(CBasicVehicularResponse)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBasicVehicularResponse
 public:
 	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation,
-                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
 
 	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
-                                /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+                                /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
 
 	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
-                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
 
 	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supports, /*[in]*/BSTR stage,
-                                        /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+                                        /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
 
 	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
-                              /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
+                              /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionStressResults* *results) override;
 public:
 // IDependOnVehicularAnalysisContext
-	STDMETHOD(Initialize)(/*[in]*/IUnknown* context);
+	STDMETHOD(Initialize)(/*[in]*/IUnknown* context) override;
 
 // ISupportProgressMonitor
-	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
+	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie) override;
 
 public: // but not COM
    // quick initialization for local clients
@@ -96,8 +96,7 @@ public: // but not COM
                         ISupportLocations* supportLocations, IGetStressPoints* getStressPoints);
 
 private:
-	STDMETHOD(ComputeResponse)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,
-                              /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+	HRESULT ComputeResponse(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage,/*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
 
 
    void GetStressPoints(PoiIDType poiID, BSTR stage, IStressPoints* *leftSps, IStressPoints* *rightSps);

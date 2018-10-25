@@ -99,7 +99,7 @@ void rptRcInt::Accept( rptRcVisitor& MyVisitor )
 //
 rptRcInt* rptRcInt::Sv(Int64 MyInt)
 {
-   std::auto_ptr<rptRcInt> tmp( new rptRcInt(MyInt) );
+   std::unique_ptr<rptRcInt> tmp( std::make_unique<rptRcInt>(MyInt) );
    tmp->m_Width= m_Width;
    return tmp.release();
 }

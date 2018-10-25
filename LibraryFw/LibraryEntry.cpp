@@ -211,7 +211,7 @@ void libLibraryEntry::Dump(dbgDumpContext& os) const
 {
    os << _T(" Dump for libLibraryEntry") << endl;
    os << _T("  m_Name             : ") << m_Name << endl;
-   os << _T("  m_pLibrary         : ") << (long)m_pLibrary << endl;
+   //os << _T("  m_pLibrary         : ") << m_pLibrary << endl;
    os << _T("  m_RefCnt           : ") << m_RefCnt << endl;
    os << _T("  m_IsEditingEnabled : ") << m_IsEditingEnabled << endl;
 }

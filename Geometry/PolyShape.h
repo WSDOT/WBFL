@@ -70,57 +70,57 @@ END_COM_MAP()
 
 // ISupportErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPolyShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** coll);
-	STDMETHOD(Clear)();
-	STDMETHOD(get_Point)(/*[in]*/ CollectionIndexType index, /*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_NumPoints)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(RemovePoint)(/*[in]*/ CollectionIndexType index);
-	STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints);
-	STDMETHOD(AddPointEx)(/*[in]*/ IPoint2d* pPoint);
-   STDMETHOD(AddPoint)(/*[in]*/ Float64 x,/*[in]*/ Float64 y);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** coll) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(get_Point)(/*[in]*/ CollectionIndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_NumPoints)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(RemovePoint)(/*[in]*/ CollectionIndexType index) override;
+	STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
+	STDMETHOD(AddPointEx)(/*[in]*/ IPoint2d* pPoint) override;
+   STDMETHOD(AddPoint)(/*[in]*/ Float64 x,/*[in]*/ Float64 y) override;
 
 // IShape
-	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal);
-	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal);
-	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints);
-	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone);
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape);
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape);
+	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
+	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
+	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints) override;
+	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone) override;
+	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape) override;
+	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape) override;
 
 // IXYPosition
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point);
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point);
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo);
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle);
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle);
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
+	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
+	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
+	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
+	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPoint2dCollectionEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
-	STDMETHOD(OnPointAdded)(CollectionIndexType index,IPoint2d* point);
-	STDMETHOD(OnPointRemoved)(CollectionIndexType index);
-	STDMETHOD(OnPointsCleared)();
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
+	STDMETHOD(OnPointAdded)(CollectionIndexType index,IPoint2d* point) override;
+	STDMETHOD(OnPointRemoved)(CollectionIndexType index) override;
+	STDMETHOD(OnPointsCleared)() override;
 
 private:
    CComPtr<IPoint2dCollection> m_pPoints;
