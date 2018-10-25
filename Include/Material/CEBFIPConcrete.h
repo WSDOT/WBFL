@@ -28,33 +28,46 @@
 
 /*****************************************************************************
 CLASS 
-   matACI209Concrete
+   matCEBFIPConcrete
 
-   Time-dependent concrete model based on ACI 209R-92
+   Time-dependent concrete model based on CEB-FIP Model Code 1990
 *****************************************************************************/
 
-class MATCLASS matACI209Concrete : public matConcreteBase
+class MATCLASS matCEBFIPConcrete : public matConcreteBase
 {
 public:
-   enum CementType { TypeI, TypeII };
-   static void GetModelParameters(CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
+   typedef enum CementType 
+   {
+      RS, // rapid hardening, high strength
+      N,  // normal hardining
+      R,  // rapid hardening
+      SL  // slow hardening
+   };
 
-   matACI209Concrete(LPCTSTR name = _T("Unknown"));
+   static LPCTSTR GetCementType(CementType type);
+   static Float64 GetS(CementType type);
 
-   // Set/Get the a parameter (days)
-   void SetA(Float64 a);
-   Float64 GetA() const;
+   // Computes what the 28 day strength needs to be for a concrete strength
+   // fc occuring at concrete age for the specified cement type
+   static Float64 ComputeFc28(Float64 fc,Float64 age,CementType type);
+   static Float64 ComputeEc28(Float64 Ec,Float64 age,CementType type);
 
-   // Set/Get the beta parameter
-   void SetBeta(Float64 b);
-   Float64 GetBeta() const;
+   matCEBFIPConcrete(LPCTSTR name = _T("Unknown"));
+
+   // Set/Get the cement type. Setting the cement type will set the S parameter
+   void SetCementType(CementType type);
+   CementType GetCementType() const;
+
+   // Set/Get the s parameter
+   void SetS(Float64 s);
+   Float64 GetS() const;
 
    // Set/Get the 28 day concrete strength
    void SetFc28(Float64 fc);
    Float64 GetFc28() const;
 
    // Sets the 28 day strength by computing what it needs to be
-   // based on the current values of alpha and beta for
+   // based on the current values of s for
    // a given concrete strength and the time that strength occurs
    void SetFc28(Float64 fc,Float64 t);
 
@@ -68,19 +81,9 @@ public:
    Float64 GetEc28() const;
 
    // Sets the 28 day scent modulus by compute what it need to be
-   // based on the current values of alpha and beta for the given
+   // based on the current values of s for the given
    // value of Ec and the time that that modulus occurs
    void SetEc28(Float64 Ec,Float64 t);
-
-   // Computes what the 28 day strength needs to be for a concrete strength
-   // fc occuring at concrete age with parameters a (alpha, days) and b (beta)
-   static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
-   static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
-
-   // Computes the values for Alpha and Beta giving a concrete strength (fc1) at at age of t1,
-   // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
-   // Alpha is in system units, Beta is unitless
-   static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
@@ -105,55 +108,40 @@ public:
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
 
+   Float64 GetH() const;
+
+   // Shrinkage Parameters
+   Float64 GetBetaSC() const;
+   Float64 GetBetaRH() const;
+   Float64 GetEpsilonS() const;
+   Float64 GetNotionalShrinkageCoefficient() const;
+
+   // Creep Parameters
+   Float64 GetPhiRH() const;
+   Float64 GetBetaFcm() const;
+   Float64 GetBetaH() const;
+
    // Creates a clone of this object
    virtual matConcreteBase* CreateClone() const;
 
-   // Set/Get ultimate shrinkage strain
-   void SetUltimateShrinkageStrain(Float64 eu);
-   Float64 GetUltimateShrinkageStrain() const;
-
-   // Set/Get ultimate creep coefficient
-   void SetUltimateCreepCoefficient(Float64 cu);
-   Float64 GetUltimateCreepCoefficient() const;
-
-   Float64 GetInitialMoistCureFactor() const;
-   Float64 GetRelativeHumidityFactorCreep() const;
-   Float64 GetRelativeHumidityFactorShrinkage() const;
-   Float64 GetSizeFactorCreep() const;
-   Float64 GetSizeFactorShrinkage() const;
-
-
 protected:
    // prevent copying and assignment (use CreateClone instead)
-   matACI209Concrete(const matACI209Concrete& rOther);
-   matACI209Concrete& operator = (const matACI209Concrete& rOther);
+   matCEBFIPConcrete(const matCEBFIPConcrete& rOther);
+   matCEBFIPConcrete& operator = (const matCEBFIPConcrete& rOther);
 
    virtual void OnChanged();
 
 private:
-   Float64 m_Eshu; // ultimate shrinkage strain
-   Float64 m_Cu;   // ultimate creep coefficient
    Float64 m_Fc28;
    Float64 m_Ec28;
-   Float64 m_A; // in system units
-   mutable Float64 m_Alpha; // converted to days
-   Float64 m_Beta; // unitless
+   CementType m_CementType;
+   Float64 m_S;
    bool m_bUserEc;
 
    mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
 
-   mutable Float64 m_CP;  // initial moist cure factor
-   mutable Float64 m_RHS; // relative humidity factor for shrinkage
-   mutable Float64 m_RHC; // relative humidity factor for creep
-
-   mutable Float64 m_VSC; // size correction factor (V/S method) creep
-   mutable Float64 m_VSS; // size correction factor (V/S method) shrinkage
-
    mutable bool m_bIsValid;
    void Validate() const;
-
-   mutable bool m_bCorrectionFactorsValidated;
-   void ValidateCorrectionFactors() const;
 
    Float64 GetFr(Float64 t) const;
    Float64 ModE(Float64 fc,Float64 density) const;

@@ -38,7 +38,6 @@ class MATCLASS matConcreteBase
 public:
    enum Type { Normal, AllLightweight, SandLightweight };
    enum CureMethod { Moist, Steam };
-   enum CementType { TypeI, TypeII };
 
    matConcreteBase(LPCTSTR name = _T("Unknown"));
    virtual ~matConcreteBase();

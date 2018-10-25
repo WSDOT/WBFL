@@ -38,6 +38,7 @@ CLASS
 class LRFDCLASS lrfdLRFDTimeDependentConcrete : public matConcreteBase
 {
 public:
+   enum CementType { TypeI, TypeII };
    static void GetModelParameters(CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
 
    lrfdLRFDTimeDependentConcrete(LPCTSTR name = _T("Unknown"));
