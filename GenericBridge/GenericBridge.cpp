@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 2009  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -52,6 +52,8 @@
 #include "Segment.h"
 #include "FlangedGirderEndBlockSegment.h"
 #include "VoidedSlabEndBlockSegment.h"
+#include "DeckedSlabBeamEndBlockSegment.h"
+#include "BoxBeamEndBlockSegment.h"
 #include "TaperedGirderSegment.h"
 #include "ThickenedFlangeBulbTeeSegment.h"
 #include "SegmentItem.h"
@@ -83,6 +85,7 @@
 #include "VoidedSlabSection.h"
 #include "VoidedSlabSection2.h"
 #include "BoxBeamSection.h"
+#include "DeckedSlabBeamSection.h" 
 
 #include "FShapeBarrier.h"
 #include "SidewalkBarrier.h"
@@ -108,6 +111,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_PrismaticSegment, CSegment)
    OBJECT_ENTRY(CLSID_FlangedGirderEndBlockSegment, CFlangedGirderEndBlockSegment)
    OBJECT_ENTRY(CLSID_VoidedSlabEndBlockSegment, CVoidedSlabEndBlockSegment)
+   OBJECT_ENTRY(CLSID_DeckedSlabBeamEndBlockSegment, CDeckedSlabBeamEndBlockSegment)
+   OBJECT_ENTRY(CLSID_BoxBeamEndBlockSegment, CBoxBeamEndBlockSegment)
    OBJECT_ENTRY(CLSID_TaperedGirderSegment, CTaperedGirderSegment)
    OBJECT_ENTRY(CLSID_ThickenedFlangeBulbTeeSegment, CThickenedFlangeBulbTeeSegment)
    OBJECT_ENTRY(CLSID_Material, CMaterial)
@@ -124,6 +129,7 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_MultiWebSection2,CMultiWebSection2)
    OBJECT_ENTRY(CLSID_VoidedSlabSection,CVoidedSlabSection)
    OBJECT_ENTRY(CLSID_VoidedSlabSection2,CVoidedSlabSection2)
+   OBJECT_ENTRY(CLSID_DeckedSlabBeamSection,CDeckedSlabBeamSection)
    OBJECT_ENTRY(CLSID_BoxBeamSection,CBoxBeamSection)
    OBJECT_ENTRY(CLSID_FShapeBarrier,CFShapeBarrier)
    OBJECT_ENTRY(CLSID_SidewalkBarrier,CSidewalkBarrier)

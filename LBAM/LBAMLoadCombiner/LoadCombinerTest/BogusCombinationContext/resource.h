@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // BogusCombinationContext - Test driver for LBAM load combinations
-// Copyright © 2001  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Material - Analytical and Product modeling of civil engineering materials
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -82,7 +82,8 @@ public:
                D1111 = 0x0080, 
                D1270 = 0x0100,
                D1524 = 0x0200,
-               D1778 = 0x0400};
+               D1778 = 0x0400,
+               D1320 = 0x0800}; // 1/2 HBS (Special)
 
    // GROUP: LIFECYCLE
 

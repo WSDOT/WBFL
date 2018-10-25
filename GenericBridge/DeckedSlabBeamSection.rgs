@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.DeckedSlabBeamSection.1 = s 'DeckedSlabBeamSection Class'
+	{
+		CLSID = s '{DED3DC73-280E-4fd2-8C1D-BCE96BB78750}'
+	}
+	WBFLGenericBridge.DeckedSlabBeamSection = s 'DeckedSlabBeamSection Class'
+	{
+		CLSID = s '{DED3DC73-280E-4fd2-8C1D-BCE96BB78750}'
+		CurVer = s 'WBFLGenericBridge.DeckedSlabBeamSection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {DED3DC73-280E-4fd2-8C1D-BCE96BB78750} = s 'DeckedSlabBeamSection Class'
+		{
+			ProgID = s 'WBFLGenericBridge.DeckedSlabBeamSection.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.DeckedSlabBeamSection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -87,8 +87,10 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
    // load resource and set it to static
 
    HRSRC hResInfo = ::FindResource( hInstance, lpName, lpType );
+   DWORD dwError(0);
    if ( hResInfo == 0 )
-      DWORD dwError = ::GetLastError();
+      dwError = ::GetLastError();
+
    DWORD dwSize = ::SizeofResource( hInstance, hResInfo );
    HGLOBAL hResData = ::LoadResource( hInstance, hResInfo );
    LPVOID pVoid = ::LockResource( hResData );

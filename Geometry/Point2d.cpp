@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -28,7 +28,7 @@
 #include "WBFLGeometry.h"
 #include "Point2d.h"
 
-#include <Math.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -111,8 +111,7 @@ STDMETHODIMP CPoint2d::MoveEx(IPoint2d *pPoint)
    CHECK_IN(pPoint);
 
    Float64 x,y;
-   pPoint->get_X(&x);
-   pPoint->get_Y(&y);
+   pPoint->Location(&x,&y);
 
    return Move(x,y);
 }
@@ -131,8 +130,7 @@ STDMETHODIMP CPoint2d::OffsetEx(ISize2d *pSize)
    CHECK_IN(pSize);
 
    Float64 dx, dy;
-   pSize->get_Dx(&dx);
-   pSize->get_Dy(&dy);
+   pSize->Dimensions(&dx,&dy);
 
    return Offset(dx,dy);
 }
@@ -155,8 +153,7 @@ STDMETHODIMP CPoint2d::RotateEx(IPoint2d *pCenter, Float64 angle)
    CHECK_IN(pCenter);
 
    Float64 cx,cy;
-   pCenter->get_X(&cx);
-   pCenter->get_Y(&cy);
+   pCenter->Location(&cx,&cy);
 
    return Rotate(cx,cy,angle);
 }
@@ -165,6 +162,29 @@ STDMETHODIMP CPoint2d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
+}
+
+STDMETHODIMP CPoint2d::SameLocation(IPoint2d* pOther)
+{
+   CHECK_IN(pOther);
+
+   Float64 x,y;
+   pOther->Location(&x,&y);
+
+   if ( IsEqual(m_X,x) && IsEqual(m_Y,y) )
+      return S_OK;
+   else
+      return S_FALSE;
+}
+
+STDMETHODIMP CPoint2d::Location(Float64* pX,Float64* pY)
+{
+   CHECK_RETVAL(pX);
+   CHECK_RETVAL(pY);
+
+   *pX = m_X;
+   *pY = m_Y;
+   return S_OK;
 }
 
 // IPersist

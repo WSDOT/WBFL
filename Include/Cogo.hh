@@ -318,7 +318,8 @@
 #define IDH_HorzCurve_Clone                                   1844
 #define IDH_HorzCurve_External                                1845
 #define IDH_HorzCurve_Intersect                               1846
-#define IDH_HorzCurve_DegreeCurvature					      1847
+#define IDH_HorzCurve_DegreeCurvature					           1847
+#define IDH_HorzCurve_Offset                                  1848
 
 
 #define IDH_HorzCurveCollection                               1900

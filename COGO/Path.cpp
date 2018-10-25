@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // COGO - Coordinate Geometry Library
-// Copyright © 2001  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -1941,7 +1941,11 @@ void CPath::IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBa
 
       bool bBeforeStart = cogoUtil::IsPointBeforeStart(start,end,p);
       bool bAfterEnd    = cogoUtil::IsPointAfterEnd(start,end,p);
-      if ( (bBeforeStart && bProjectBack) || (bAfterEnd && bProjectAhead) || (!bBeforeStart && !bAfterEnd) )
+      if ( start->SameLocation(p) == S_OK ||
+           end->SameLocation(p)   == S_OK ||
+           (bBeforeStart && bProjectBack) || 
+           (bAfterEnd && bProjectAhead)   || 
+           (!bBeforeStart && !bAfterEnd) )
       {
          points->Add(p);
       }
@@ -2373,8 +2377,8 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
 
             Float64 sx,sy;
             Float64 ex,ey;
-            start->get_X(&sx); start->get_Y(&sy);
-            end->get_X(&ex);   end->get_Y(&ey);
+            start->Location(&sx,&sy);
+            end->Location(&ex,&ey);
 
             Float64 dx,dy;
             dx = ex - sx;
@@ -2488,9 +2492,6 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
       CComPtr<IUnknown> punk;
       path_element->get_Value(&punk);
 
-      bool bProjectBack = (iter == elements.begin() ? true : false);
-      bool bProjectAhead = (iter == elements.end() - 1 ? true : false);
-
       HRESULT hr;
       switch(type)
       {
@@ -2504,7 +2505,7 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
          {
             CComQIPtr<ILineSegment2d> ls(punk);
             CComPtr<ILineSegment2d> newLS;
-            hr = CreateSubPathElement(start,end,ls,bProjectBack,bProjectAhead,&newLS);
+            hr = CreateSubPathElement(start,end,ls,&newLS);
             if ( SUCCEEDED(hr) )
             {
                SavePathElement(*path,newLS);
@@ -2516,7 +2517,7 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
          {
             CComQIPtr<IHorzCurve> hc(punk);
             CComPtr<IUnknown> result1,result2,result3;
-            hr = CreateSubPathElement(start,end,hc,bProjectBack,bProjectAhead,&result1,&result2,&result3);
+            hr = CreateSubPathElement(start,end,hc,&result1,&result2,&result3);
             if ( SUCCEEDED(hr) )
             {
                if ( result1 )
@@ -2535,7 +2536,7 @@ STDMETHODIMP CPath::CreateSubPath(Float64 start,Float64 end,IPath** path)
          {
             CComQIPtr<ICubicSpline> spline(punk);
             CComPtr<IUnknown> result;
-            hr = CreateSubPathElement(start,end,spline,bProjectBack,bProjectAhead,&result);
+            hr = CreateSubPathElement(start,end,spline,&result);
             if ( SUCCEEDED(hr) )
             {
                SavePathElement(*path,result);
@@ -2800,7 +2801,7 @@ void CPath::CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint
       CComPtr<IPoint2d> pnt;
       m_GeomUtil->LineLineIntersect(line1,line2,&pnt);
       Float64 x,y;
-      pnt->get_X(&x); pnt->get_Y(&y);
+      pnt->Location(&x,&y);
       (*pPoint)->Move(x,y);
    }
    else if ( prevPoint == NULL && nextPoint != NULL )
@@ -2815,7 +2816,7 @@ void CPath::CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint
       CComPtr<IPoint2d> pnt;
       m_GeomUtil->PointOnLineNearest(line,*pPoint,&pnt);
       Float64 x,y;
-      pnt->get_X(&x); pnt->get_Y(&y);
+      pnt->Location(&x,&y);
       (*pPoint)->Move(x,y);
    }
    else if ( prevPoint != NULL && nextPoint == NULL )
@@ -2830,12 +2831,12 @@ void CPath::CreateParallelPoint(long elementIdx,Float64 offset,IPoint2d** pPoint
       CComPtr<IPoint2d> pnt;
       m_GeomUtil->PointOnLineNearest(line,*pPoint,&pnt);
       Float64 x,y;
-      pnt->get_X(&x); pnt->get_Y(&y);
+      pnt->Location(&x,&y);
       (*pPoint)->Move(x,y);
    }
 }
 
-HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,bool bProjectAhead,bool bProjectBack,ILineSegment2d** ppLineSegment)
+HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pLS,ILineSegment2d** ppLineSegment)
 {
    // get distance from the start of the path to the start and end of the line segment
    CComPtr<IPoint2d> lsStartPoint, lsEndPoint;
@@ -2847,12 +2848,10 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
    DistanceAndOffset(lsEndPoint,  &lsEnd,  &offset);
 
    Float64 xs,ys;
-   lsStartPoint->get_X(&xs);
-   lsStartPoint->get_Y(&ys);
+   lsStartPoint->Location(&xs,&ys);
 
    Float64 xe,ye;
-   lsEndPoint->get_X(&xe);
-   lsEndPoint->get_Y(&ye);
+   lsEndPoint->Location(&xe,&ye);
 
    CComQIPtr<ILocate2> locate(m_CogoEngine);
 
@@ -2860,26 +2859,9 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
         (end < lsStart)    // line segment starts after end of sub-path range
       )
    {
-      if ( bProjectAhead || bProjectBack )
-      {
-         CComPtr<IPoint2d> pntStart,pntEnd;
-         locate->PointOnLine(lsStartPoint,lsEndPoint,start - lsStart, 0.00, &pntStart);
-         locate->PointOnLine(lsStartPoint,lsEndPoint,end   - lsStart, 0.00, &pntEnd);
-
-         CComPtr<ILineSegment2d> clone;
-         clone.CoCreateInstance(CLSID_LineSegment2d);
-         clone->putref_StartPoint(pntStart);
-         clone->putref_EndPoint(pntEnd);
-
-         (*ppLineSegment) = clone;
-         (*ppLineSegment)->AddRef();
-      }
-      else
-      {
-         // this line segment is not part of the sub-path
-         (*ppLineSegment) = NULL;
-         return S_OK;
-      }
+      // this line segment is not part of the sub-path
+      (*ppLineSegment) = NULL;
+      return S_OK;
    }
    else if ( start <= lsStart && lsEnd <= end )
    {
@@ -2945,7 +2927,19 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ILineSegment2d* pL
    return S_OK;
 }
 
-HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,bool bProjectAhead,bool bProjectBack,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3)
+typedef enum RelativePointLocation
+{
+   StartBeforeTS        = 1,
+   StartInEntrySpiral   = 2,
+   StartInCircularCurve = 3,
+   StartInExitSpiral    = 4,
+   EndAfterST           = 5,
+   EndInEntrySpiral     = 6,
+   EndInCircularCurve   = 7,
+   EndInExitSpiral      = 8
+} RelativePointLocation;
+
+HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,IUnknown** ppResult1,IUnknown** ppResult2,IUnknown** ppResult3)
 {
    (*ppResult1) = NULL;
    (*ppResult2) = NULL;
@@ -2966,27 +2960,8 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,bo
         (end < hcStart)    // curve starts after end of sub-path range
       )
    {
-      if ( bProjectAhead || bProjectBack )
-      {
-         // before or after curve limits, but projecting tangents
-         // get point on tangents and create a line segment
-         CComPtr<IPoint2d> pntStart, pntEnd;
-         pHC->PointOnCurve(start - hcStart,&pntStart);
-         pHC->PointOnCurve(end   - hcStart,&pntEnd  );
-         CComPtr<ILineSegment2d> ls;
-         ls.CoCreateInstance(CLSID_LineSegment2d);
-         ls->putref_StartPoint(pntStart);
-         ls->putref_EndPoint(pntEnd);
-
-         (*ppResult1) = ls;
-         (*ppResult1)->AddRef();
-         return S_OK;
-      }
-      else
-      {
-         // this curve is not part of the sub-path
-         return S_OK;
-      }
+      // this curve is not part of the sub-path
+      return S_OK;
    }
    else if ( start <= hcStart && hcEnd <= end )
    {
@@ -3009,18 +2984,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,bo
       pHC->get_CurveLength(&L);
       pHC->get_TotalLength(&Lt);
 
-      // define some constants that describe the locations of the start and end points
-      // of the sub-path
-      const int StartBeforeTS        = 1;
-      const int StartInEntrySpiral   = 2;
-      const int StartInCircularCurve = 3;
-      const int StartInExitSpiral    = 4;
-      const int EndAfterST           = 5;
-      const int EndInEntrySpiral     = 6;
-      const int EndInCircularCurve   = 7;
-      const int EndInExitSpiral      = 8;
-      int StartPoint, EndPoint;
-
+      RelativePointLocation StartPoint, EndPoint;
 
       // determine the start point of the sub-path curve
       if ( start < hcStart )
@@ -3190,7 +3154,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,IHorzCurve* pHC,bo
    return S_OK;
 }
 
-HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpline,bool bProjectAhead,bool bProjectBack,IUnknown** ppResult)
+HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpline,IUnknown** ppResult)
 {
    // get distance from the start of the path to the start and end of the spline
    CComPtr<IPoint2d> splineStartPoint, splineEndPoint;
@@ -3205,28 +3169,9 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
         (end < splineStart)    // spline starts after end of sub-path range
       )
    {
-      if ( bProjectAhead || bProjectBack )
-      {
-         // before or after spline limits, but projecting tangents
-         // get point on tangents and create a line segment
-         CComPtr<IPoint2d> pntStart, pntEnd;
-         pSpline->PointOnSpline(start - splineStart,&pntStart);
-         pSpline->PointOnSpline(end   - splineStart,&pntEnd  );
-         CComPtr<ILineSegment2d> ls;
-         ls.CoCreateInstance(CLSID_LineSegment2d);
-         ls->putref_StartPoint(pntStart);
-         ls->putref_EndPoint(pntEnd);
-
-         (*ppResult) = ls;
-         (*ppResult)->AddRef();
-         return S_OK;
-      }
-      else
-      {
-         // this spline is not part of the sub-path
-         (*ppResult) = NULL;
-         return S_OK;
-      }
+      // this spline is not part of the sub-path
+      (*ppResult) = NULL;
+      return S_OK;
    }
    else if ( start <= splineStart && splineEnd <= end )
    {
@@ -3260,8 +3205,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
 
 #if defined _DEBUG
          Float64 x1,y1;
-         pntStart->get_X(&x1);
-         pntStart->get_Y(&y1);
+         pntStart->Location(&x1,&y1);
          
          Float64 y2;
          pSpline->Evaluate(x1,VARIANT_FALSE,VARIANT_FALSE,&y2);
@@ -3290,8 +3234,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
 
 #if defined _DEBUG
          Float64 x1,y1;
-         pntEnd->get_X(&x1);
-         pntEnd->get_Y(&y1);
+         pntEnd->Location(&x1,&y1);
          
          Float64 y2;
          pSpline->Evaluate(x1,VARIANT_FALSE,VARIANT_FALSE,&y2);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManagerAgent - Provides report manager as an Agent
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -89,6 +89,11 @@ void CReportManager::AddReportBuilder(CReportBuilder* pReportBuilder)
    m_RptMgr.AddReportBuilder(pReportBuilder);
 }
 
+void CReportManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder)
+{
+   m_RptMgr.AddReportBuilder(pReportBuilder);
+}
+
 Uint32 CReportManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    return m_RptMgr.GetReportBuilderCount(bIncludeHidden);
@@ -102,6 +107,16 @@ boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(const char* s
 boost::shared_ptr<CReportBuilder> CReportManager::GetReportBuilder(const std::string& strReportName)
 {
    return m_RptMgr.GetReportBuilder(strReportName);
+}
+
+boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(const char* strReportName)
+{
+   return m_RptMgr.RemoveReportBuilder(strReportName);
+}
+
+boost::shared_ptr<CReportBuilder> CReportManager::RemoveReportBuilder(const std::string& strReportName)
+{
+   return m_RptMgr.RemoveReportBuilder(strReportName);
 }
 
 std::vector<std::string> CReportManager::GetReportNames(bool bIncludeHidden) const

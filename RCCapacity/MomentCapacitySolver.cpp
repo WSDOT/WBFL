@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
 // Copyright © 2003  Washington State Department of Transportation
-//                   Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -507,7 +507,10 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
 
    HRESULT hr;
 
-   // solve with method of false position
+   // solve with method of false position (aka regula falsi method)
+   // http://en.wikipedia.org/wiki/False_position_method
+   // http://mathworld.wolfram.com/MethodofFalsePosition.html
+
    Float64 Fz_lower, Fz_upper;
    Float64 eo_lower, eo_upper;
    hr = GetNeutralAxisParameterRange(k_or_ec,solutionMethod,angle,Fz,&eo_lower,&eo_upper,&Fz_lower,&Fz_upper);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
 // Copyright © 2006  Washington State Department of Transportation
-//                   Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -59,6 +59,8 @@ HRESULT CMultiWeb2::FinalConstruct()
    m_C1       = 0.00;
    m_C2       = 0.00;
    m_WebCount = 0;
+   m_bLeftBlockOut = VARIANT_TRUE;
+   m_bRightBlockOut = VARIANT_TRUE;
 
    CreatePoint( 0.00, 0.00, NULL, &m_pHookPoint );
    HRESULT hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
@@ -170,12 +172,12 @@ HRESULT CMultiWeb2::UpdateShape()
       // start at top left and go around clockwise
 
       // top left
-      Float64 p1_x = m_C2;
+      Float64 p1_x = (m_bLeftBlockOut==VARIANT_FALSE) ? 0.0 : m_C2;
       Float64 p1_y = 0.;
       m_pShape->AddPoint( p1_x, p1_y );
 
       // top right
-      Float64 p2_x = W-m_C2;
+      Float64 p2_x = (m_bRightBlockOut==VARIANT_FALSE) ? W : W-m_C2;
       Float64 p2_y = 0;
       m_pShape->AddPoint( p2_x, p2_y );
 
@@ -693,6 +695,34 @@ STDMETHODIMP CMultiWeb2::put_WebCount(WebIndexType newVal)
    return S_OK;
 }
 
+STDMETHODIMP CMultiWeb2::put_LeftBlockOut(VARIANT_BOOL bLeftBlockOut)
+{
+   MakeDirty();
+   m_bLeftBlockOut = bLeftBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWeb2::get_LeftBlockOut(VARIANT_BOOL* pbLeftBlockOut)
+{
+   CHECK_RETVAL(pbLeftBlockOut);
+   *pbLeftBlockOut = m_bLeftBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWeb2::put_RightBlockOut(VARIANT_BOOL bRightBlockOut)
+{
+   MakeDirty();
+   m_bRightBlockOut = bRightBlockOut;
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWeb2::get_RightBlockOut(VARIANT_BOOL* pbRightBlockOut)
+{
+   CHECK_RETVAL(pbRightBlockOut);
+   *pbRightBlockOut = m_bRightBlockOut;
+   return S_OK;
+}
+
 STDMETHODIMP CMultiWeb2::get_WebLocation(WebIndexType webIdx,Float64* location)
 {
    CHECK_RETVAL(location);
@@ -868,6 +898,8 @@ STDMETHODIMP CMultiWeb2::Clone(IShape** pClone)
    pTheClone->put_C1( m_C1 );
    pTheClone->put_C2( m_C2 );
    pTheClone->put_WebCount( m_WebCount );
+   pTheClone->put_LeftBlockOut(m_bLeftBlockOut);
+   pTheClone->put_RightBlockOut(m_bRightBlockOut);
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,NULL,&hookPnt);
@@ -1026,7 +1058,7 @@ STDMETHODIMP CMultiWeb2::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("MultiWeb2"),2.0);
+   pSave->BeginUnit(CComBSTR("MultiWeb2"),3.0);
    pSave->put_Property(CComBSTR("H1"),CComVariant(m_H1));
    pSave->put_Property(CComBSTR("H2"),CComVariant(m_H2));
    pSave->put_Property(CComBSTR("H3"),CComVariant(m_H3));
@@ -1044,6 +1076,8 @@ STDMETHODIMP CMultiWeb2::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("WebCount"),CComVariant(m_WebCount));
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
+   pSave->put_Property(CComBSTR("LeftBlockOut"),CComVariant(m_bLeftBlockOut));
+   pSave->put_Property(CComBSTR("RightBlockOut"),CComVariant(m_bRightBlockOut));
    pSave->EndUnit();
 
    return S_OK;
@@ -1122,6 +1156,20 @@ STDMETHODIMP CMultiWeb2::Load(IStructuredLoad2* pLoad)
    pLoad->get_Property(CComBSTR("HookPoint"),&var);
    if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_pHookPoint,&var)) )
       return STRLOAD_E_INVALIDFORMAT;
+
+   if ( 3.0 <= version )
+   {
+      pLoad->get_Property(CComBSTR("LeftBlockOut"),&var);
+      m_bLeftBlockOut = var.boolVal;
+
+      pLoad->get_Property(CComBSTR("RightBlockOut"),&var);
+      m_bRightBlockOut = var.boolVal;
+   }
+   else
+   {
+      m_bLeftBlockOut = VARIANT_TRUE;
+      m_bRightBlockOut = VARIANT_TRUE;
+   }
 
    VARIANT_BOOL bEnd;
    pLoad->EndUnit(&bEnd);

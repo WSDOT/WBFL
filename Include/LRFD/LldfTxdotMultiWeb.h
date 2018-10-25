@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -74,7 +74,7 @@ public:
    // Default constructor
    lrfdTxdotLldfMultiWeb(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
                          Uint32 Nl, Float64 wLane,
-                         Float64 W, Float64 L, Uint32 Nwebs,
+                         Float64 W, Float64 L, Float64 Kfactor,
                          Float64 skewAngle1, Float64 skewAngle2);
 
    //------------------------------------------------------------------------
@@ -105,7 +105,7 @@ protected:
    // GROUP: DATA MEMBERS
    Float64 m_L;
    Float64 m_W;
-   Uint32  m_Nwebs;
+   Float64 m_Kfactor;
    Float64 m_SkewAngle1;
    Float64 m_SkewAngle2;
 

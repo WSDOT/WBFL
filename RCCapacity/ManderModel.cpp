@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity - Reinforced Concrete Capacity Analysis Library
 // Copyright © 2003  Washington State Department of Transportation
-//                   Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -213,7 +213,7 @@ STDMETHODIMP CManderModel::get_ModulusOfElasticity(Float64* pE)
    // The stress is in PSI, convert it to base units because that is what the caller expects
    CComPtr<IUnitConvert> convert;
    m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertFromBaseUnits(Ec,CComBSTR("psi"),&Ec);
+   convert->ConvertToBaseUnits(Ec,CComBSTR("psi"),&Ec);
 
    *pE = Ec;
    return S_OK;

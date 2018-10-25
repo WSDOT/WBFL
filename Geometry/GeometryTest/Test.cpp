@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -74,6 +74,7 @@
 #include "TestVoidedSlab.h"
 #include "TestVoidedSlab2.h"
 #include "TestBoxBeam.h"
+#include "TestDeckedSlabBeam.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -123,6 +124,7 @@ int main(int argc, char* argv[])
    CTestVoidedSlab2::Test();
 
    CTestBoxBeam::Test();
+   CTestDeckedSlabBeam::Test();
 
    ::CoUninitialize();
 

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 2000  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -28,6 +28,7 @@
 #include "WBFLGeometry.h"
 #include "Point3d.h"
 
+#include <MathEx.h>
 #include "CoordinateXform3d.h"
 #include "Helper.h"
 
@@ -115,9 +116,7 @@ STDMETHODIMP CPoint3d::MoveEx(IPoint3d *pPoint)
    CHECK_IN(pPoint);
 
    Float64 x,y,z;
-   pPoint->get_X(&x);
-   pPoint->get_Y(&y);
-   pPoint->get_Z(&z);
+   pPoint->Location(&x,&y,&z);
 
    return Move(x,y,z);
 }
@@ -136,9 +135,7 @@ STDMETHODIMP CPoint3d::OffsetEx(ISize3d *pSize)
    CHECK_IN(pSize);
 
    Float64 dx,dy,dz;
-   pSize->get_Dx(&dx);
-   pSize->get_Dy(&dy);
-   pSize->get_Dz(&dz);
+   pSize->Dimensions(&dx,&dy,&dz);
 
    return Offset(dx,dy,dz);
 }
@@ -182,10 +179,8 @@ STDMETHODIMP CPoint3d::RotateEx(IPoint3d* center,IVector3d* vector,Float64 angle
    CHECK_IN(center);
    CHECK_IN(vector);
 
-   Float64 cx,cy, cz;
-   center->get_X(&cx);
-   center->get_Y(&cy);
-   center->get_Z(&cz);
+   Float64 cx,cy,cz;
+   center->Location(&cx,&cy,&cz);
 
    return Rotate(cx,cy,cz,vector,angle);
 }
@@ -194,6 +189,31 @@ STDMETHODIMP CPoint3d::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);
    return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
+}
+
+STDMETHODIMP CPoint3d::SameLocation(IPoint3d* pOther)
+{
+   CHECK_IN(pOther);
+
+   Float64 x,y,z;
+   pOther->Location(&x,&y,&z);
+
+   if ( IsEqual(m_X,x) && IsEqual(m_Y,y) && IsEqual(m_Z,z) )
+      return S_OK;
+   else
+      return S_FALSE;
+}
+
+STDMETHODIMP CPoint3d::Location(Float64* pX,Float64* pY,Float64* pZ)
+{
+   CHECK_RETVAL(pX);
+   CHECK_RETVAL(pY);
+   CHECK_RETVAL(pZ);
+
+   *pX = m_X;
+   *pY = m_Y;
+   *pZ = m_Z;
+   return S_OK;
 }
 
 // IPersist

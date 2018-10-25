@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -61,6 +61,12 @@ void CReportBuilderManager::AddReportBuilder(CReportBuilder* pRptBuilder)
    m_RptBuilders.insert( std::make_pair( strName, p ) );
 }
 
+void CReportBuilderManager::AddReportBuilder(boost::shared_ptr<CReportBuilder>& pRptBuilder)
+{
+   std::string strName = pRptBuilder->GetName();
+   m_RptBuilders.insert( std::make_pair( strName, pRptBuilder ) );
+}
+
 Uint32 CReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    if ( bIncludeHidden )
@@ -90,6 +96,24 @@ boost::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const 
       return boost::shared_ptr<CReportBuilder>();
 
    return (*found).second;
+}
+
+boost::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const char* strReportName)
+{
+   return RemoveReportBuilder(std::string(strReportName));
+}
+
+boost::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const std::string& strReportName)
+{
+   RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
+   if ( found == m_RptBuilders.end() )
+      return boost::shared_ptr<CReportBuilder>();
+
+   boost::shared_ptr<CReportBuilder> rptBuilder = (*found).second;
+
+   m_RptBuilders.erase(found);
+
+   return rptBuilder;
 }
 
 std::vector<std::string> CReportBuilderManager::GetReportNames(bool bIncludeHidden) const

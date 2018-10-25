@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
 // Copyright © 2005  Washington State Department of Transportation
-//                     Bridge and Structures Office
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -58,6 +58,7 @@ HRESULT CBoxBeam::FinalConstruct()
    m_F1 = 0;
    m_F2 = 0;
    m_C1 = 0;
+   m_VoidCount = 1;
 
    CreatePoint( 0.00, 0.00, NULL, &m_pHookPoint );
    HRESULT hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
@@ -209,15 +210,21 @@ HRESULT CBoxBeam::UpdateShape()
       y[np++] = m_H7 + m_H6;
 
       // top of the right key way
-      x[np]   = x[np-1];
-      y[np++] = hgt - m_H4 - m_H5;
+      if(m_H5>0.0 || m_H4>0.0)
+      {
+         x[np]   = x[np-1];
+         y[np++] = hgt - m_H4 - m_H5;
+      }
 
       // right edge near top, H4
-      x[np]   = wtop/2;
-      y[np++] = hgt - m_H4;
+      if(m_H4>0.0)
+      {
+         x[np]   = wtop/2;
+         y[np++] = hgt - m_H4; 
+      }
 
       // top right corner
-      x[np]   = x[np-1];
+      x[np]   = wtop/2;
       y[np] = hgt;
 
       ATLASSERT(np<9);
@@ -233,47 +240,50 @@ HRESULT CBoxBeam::UpdateShape()
          outer->AddPoint(-x[ip], y[ip]);
       }
 
+      CComQIPtr<IShape> outer_shape(outer);
+      m_pShape->AddShape(outer_shape,VARIANT_FALSE);
 
       // inner shape
-      CComPtr<IPolyShape> inner;
-      inner.CoCreateInstance(CLSID_PolyShape);
+      if (m_VoidCount>0)
+      {
+         CComPtr<IPolyShape> inner;
+         inner.CoCreateInstance(CLSID_PolyShape);
 
-      Float64 x1,y1;
-      Float64 x2,y2;
-      Float64 x3,y3;
-      Float64 x4,y4;
-      Float64 x5,y5;
+         Float64 x1,y1;
+         Float64 x2,y2;
+         Float64 x3,y3;
+         Float64 x4,y4;
+         Float64 x5,y5;
 
-      x1 = 0;
-      y1 = m_H3;
+         x1 = 0;
+         y1 = m_H3;
 
-      x2 = m_W3/2 - m_F1;
-      y2 = y1;
+         x2 = m_W3/2 - m_F1;
+         y2 = y1;
 
-      x3 = x2 + m_F1;
-      y3 = y2 + m_F1;
+         x3 = x2 + m_F1;
+         y3 = y2 + m_F1;
 
-      x4 = x3;
-      y4 = m_H3 + m_H2 - m_F2;
+         x4 = x3;
+         y4 = m_H3 + m_H2 - m_F2;
 
-      x5 = x4 - m_F2;
-      y5 = y4 + m_F2;
+         x5 = x4 - m_F2;
+         y5 = y4 + m_F2;
 
-      inner->AddPoint(x1,y1);
-      inner->AddPoint(x2,y2);
-      inner->AddPoint(x3,y3);
-      inner->AddPoint(x4,y4);
-      inner->AddPoint(x5,y5);
-      inner->AddPoint(-x5,y5);
-      inner->AddPoint(-x4,y4);
-      inner->AddPoint(-x3,y3);
-      inner->AddPoint(-x2,y2);
-      inner->AddPoint(-x1,y1);
+         inner->AddPoint(x1,y1);
+         inner->AddPoint(x2,y2);
+         inner->AddPoint(x3,y3);
+         inner->AddPoint(x4,y4);
+         inner->AddPoint(x5,y5);
+         inner->AddPoint(-x5,y5);
+         inner->AddPoint(-x4,y4);
+         inner->AddPoint(-x3,y3);
+         inner->AddPoint(-x2,y2);
+         inner->AddPoint(-x1,y1);
 
-      CComQIPtr<IShape> outer_shape(outer);
-      CComQIPtr<IShape> inner_shape(inner);
-      m_pShape->AddShape(outer_shape,VARIANT_FALSE);
-      m_pShape->AddShape(inner_shape,VARIANT_TRUE);
+         CComQIPtr<IShape> inner_shape(inner);
+         m_pShape->AddShape(inner_shape,VARIANT_TRUE);
+      }
 
       CComQIPtr<IXYPosition> pPosition(m_pShape);
 
@@ -546,12 +556,41 @@ STDMETHODIMP CBoxBeam::put_C1(Float64 newVal)
    return S_OK;
 }
 
+STDMETHODIMP CBoxBeam::get_VoidCount(CollectionIndexType *pVal)
+{
+   CHECK_RETVAL(pVal);
+
+   *pVal = m_VoidCount;
+   return S_OK;
+}
+
+STDMETHODIMP CBoxBeam::put_VoidCount(CollectionIndexType newVal)
+{
+   MakeDirty();
+
+   // can only have 0 or 1 void
+   if ( newVal < 0 || newVal>1)
+      return Error(IDS_E_DIMENSION,IID_IBoxBeam,GEOMETRY_E_DIMENSION);
+
+   m_VoidCount = newVal;
+
+   return S_OK;
+}
 
 STDMETHODIMP CBoxBeam::get_WebWidth(Float64 *pVal)
 {
-
    CHECK_RETVAL(pVal);
-   *pVal = 2.0 * m_W2;
+
+   bool bSmallShearKey    = (m_W1 < m_W2/2 || m_W4 < m_W2/2)       ? true : false;
+   bool bShearKeyAtTop    = (m_H4 < m_H1 && m_H2+m_H3-m_F1 < m_H7) ? true : false;
+   bool bShearKeyAtBottom = (m_H7 < m_H3 && m_H1+m_H2-m_F2 < m_H4) ? true : false;
+
+   if ( bSmallShearKey && bShearKeyAtTop )
+      *pVal = 2.0*(m_W2 + m_W4);
+   else if ( bSmallShearKey && bShearKeyAtBottom )
+      *pVal = 2.0*(m_W1 + m_W2);
+   else
+      *pVal = 2.0*m_W2;
 
    return S_OK;
 }
@@ -680,6 +719,7 @@ STDMETHODIMP CBoxBeam::Clone(IShape** pClone)
    pTheClone->put_F1(m_F1);
    pTheClone->put_F2(m_F2);
    pTheClone->put_C1(m_C1);
+   pTheClone->put_VoidCount( m_VoidCount );
 
    CComPtr<IPoint2d> hookPnt;
    CreatePoint(m_pHookPoint,NULL,&hookPnt);
@@ -924,7 +964,7 @@ STDMETHODIMP CBoxBeam::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("BoxBeam"),2.0);
+   pSave->BeginUnit(CComBSTR("BoxBeam"),3.0);
    pSave->put_Property(CComBSTR("H1"),CComVariant(m_H1));
    pSave->put_Property(CComBSTR("H2"),CComVariant(m_H2));
    pSave->put_Property(CComBSTR("H3"),CComVariant(m_H3));
@@ -939,6 +979,7 @@ STDMETHODIMP CBoxBeam::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("F1"),CComVariant(m_F1));
    pSave->put_Property(CComBSTR("F2"),CComVariant(m_F2));
    pSave->put_Property(CComBSTR("C1"),CComVariant(m_C1));
+   pSave->put_Property(CComBSTR("VoidCount"),CComVariant(m_VoidCount));
    pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
    pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
    pSave->EndUnit();
@@ -1049,6 +1090,15 @@ STDMETHODIMP CBoxBeam::Load(IStructuredLoad2* pLoad)
    
    pLoad->get_Property(CComBSTR("C1"),&var);
    m_C1 = var.dblVal;
+
+   pLoad->get_Property(CComBSTR("C1"),&var);
+   m_C1 = var.dblVal;
+
+   if (version >= 3.0)
+   {
+      pLoad->get_Property(CComBSTR("VoidCount"),&var);
+      m_VoidCount = var.lVal;
+   }
 
    pLoad->get_Property(CComBSTR("Rotation"),&var);
    m_Rotation = var.dblVal;

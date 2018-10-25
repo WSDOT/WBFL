@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.DeckedSlabBeamEndBlockSegment.1 = s 'DeckedSlabBeamEndBlockSegment Class'
+	{
+		CLSID = s '{F952F1A6-7FDD-4c6c-96BE-891E500390EF}'
+	}
+	WBFLGenericBridge.DeckedSlabBeamEndBlockSegment = s 'DeckedSlabBeamEndBlockSegment Class'
+	{
+		CLSID = s '{F952F1A6-7FDD-4c6c-96BE-891E500390EF}'
+		CurVer = s 'WBFLGenericBridge.DeckedSlabBeamEndBlockSegment.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {F952F1A6-7FDD-4c6c-96BE-891E500390EF} = s 'DeckedSlabBeamEndBlockSegment Class'
+		{
+			ProgID = s 'WBFLGenericBridge.DeckedSlabBeamEndBlockSegment.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.DeckedSlabBeamEndBlockSegment'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

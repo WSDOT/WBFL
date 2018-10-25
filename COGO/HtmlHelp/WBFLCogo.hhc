@@ -1207,6 +1207,10 @@
           <param name="Local" value="Objects\HorzCurve\Normal_Method_(HorzCurve_Object).htm">
         </object>
         <li><object type="text/sitemap">
+          <param name="Name" value="Offset">
+          <param name="Local" value="Objects\HorzCurve\Offset_Method_(HorzCurve_Object).htm">
+        </object>
+        <li><object type="text/sitemap">
           <param name="Name" value="PointOnCurve">
           <param name="Local" value="Objects\HorzCurve\PointOnCurve_Method_(HorzCurve_Object).htm">
         </object>

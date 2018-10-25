@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -86,15 +86,31 @@ void rptHtmlRcVisitor::VisitRcString(rptRcString* pString)
 {
    HyperStart(pString); // deal with hyperlinks
 
-   if ( pString->GetString().size()>0)
+   std::string str = pString->GetString();
+
+   // "strings that look like <this>" would report as
+   // "strings that look like " if we don't replace < and > with their HTML equivalent
+
+   std::string::size_type pos;
+   while( (pos = str.find("<")) != std::string::npos )
+   {
+      str.replace(pos,1,"&lt;");
+   }
+
+   while( (pos = str.find(">")) != std::string::npos )
+   {
+      str.replace(pos,1,"&gt;");
+   }
+
+   if ( 0 < str.size() )
    {
       if ( pString->NoWrap() )
       {
-         *m_pOstream<< "<span style=\"white-space: nowrap\">" << pString->GetString() << "</span>";
+         *m_pOstream<< "<span style=\"white-space: nowrap\">" << str << "</span>";
       }
       else
       {
-         *m_pOstream << pString->GetString();
+         *m_pOstream << str;
       }
    }
    else

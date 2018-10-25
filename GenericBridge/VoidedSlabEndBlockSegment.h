@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 2009  Washington State Department of Transportation
-//                   Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -27,106 +27,12 @@
 
 #pragma once
 
+
 #include "resource.h"       // main symbols
 #include "GenericBridgeCP.h"
 #include "Segments.h"
+#include "EndBlockSegmentImpl.h"
 
-/////////////////////////////////////////////////////////////////////////////
-// CVoidedSlabEndBlockSegment
-class ATL_NO_VTABLE CVoidedSlabEndBlockSegment : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-//   public CComRefCountTracer<CSegment,CComObjectRootEx<CComSingleThreadModel> >,
-	public CComCoClass<CVoidedSlabEndBlockSegment, &CLSID_VoidedSlabEndBlockSegment>,
-	public ISupportErrorInfo,
-   public CProxyDSegmentEvents< CVoidedSlabEndBlockSegment >,
-   public IConnectionPointContainerImpl<CVoidedSlabEndBlockSegment>,
-   public IObjectSafetyImpl<CVoidedSlabEndBlockSegment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IVoidedSlabEndBlockSegment,
-   public IMaterialEvents,
-   public IStructuredStorage2
-{
-   friend CVoidedSlabEndBlockSegment; // for easy cloning
-public:
-   CVoidedSlabEndBlockSegment()
-	{
-      m_pSegmentMeasure = 0;
-      m_Orientation = 0;
-	}
+// Template takes care of all
 
-   HRESULT FinalConstruct();
-   void FinalRelease();
-
-
-DECLARE_REGISTRY_RESOURCEID(IDR_VOIDEDSLABENDBLOCKSEGMENT)
-
-DECLARE_PROTECT_FINAL_CONSTRUCT()
-
-BEGIN_COM_MAP(CVoidedSlabEndBlockSegment)
-	COM_INTERFACE_ENTRY(IVoidedSlabEndBlockSegment)
-	COM_INTERFACE_ENTRY(ISegment)
-   COM_INTERFACE_ENTRY(IMaterialEvents)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(ISupportErrorInfo)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IObjectSafety)
-END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CVoidedSlabEndBlockSegment)
-	CONNECTION_POINT_ENTRY(IID_ISegmentEvents)
-END_CONNECTION_POINT_MAP()
-
-private:
-   Float64 m_Length;
-   CComPtr<IVoidedSlabSection2> m_Beam;
-   ISegmentMeasure* m_pSegmentMeasure; // weak reference because it is SuperstructureMember
-                                       // that implements this interface. Strong reference
-                                       // creates a circular reference situation
-
-   Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
-
-   CComPtr<IMaterial> m_Material;
-   DWORD m_dwMaterialCookie;
-
-   // index is EndType
-   Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
-
-// ISupportsErrorInfo
-public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
-
-// ISegment
-public:
-   STDMETHOD(putref_SegmentMeasure)(/*[in]*/ISegmentMeasure* sm);
-	STDMETHOD(Clone)(/*[out,retval]*/ISegment** ppClone);
-	STDMETHOD(get_Shape)(/*[in]*/ Float64 distAlongSegment,/*[out,retval]*/IShape** ppShape);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
-   STDMETHOD(get_SegmentLength)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(putref_Material)(/*[in]*/IMaterial* material);
-   STDMETHOD(get_Material)(/*[out,retval]*/IMaterial* *material);
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
-
-// IVoidedSlabEndBlockSegment
-public:
-	STDMETHOD(putref_VoidedSlabSection)(/*[in]*/ IVoidedSlabSection2* pPrecastBeam);
-   STDMETHOD(put_EndBlockLength)(/*[in]*/EndType endType,/*[in]*/ Float64 length);
-   STDMETHOD(get_EndBlockLength)(/*[in]*/EndType endType,/*[out,retval]*/ Float64* pLength);
-
-// IMaterialEvents
-public:
-	STDMETHOD(OnMaterialChanged)(IMaterial* material)
-   {
-      Fire_OnSegmentChanged(this);
-      return S_OK;
-   }
-
-// IStructuredStorage2
-public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
-
-private:
-   Float64 GetSuperstructureMemberLength();
-};
-
+typedef TEndBlockSegmentImpl<IVoidedSlabEndBlockSegment, IVoidedSlabSection2, IVoidedSlab2, &CLSID_VoidedSlabEndBlockSegment, IDR_VOIDEDSLABENDBLOCKSEGMENT> CVoidedSlabEndBlockSegment;

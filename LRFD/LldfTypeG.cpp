@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -611,6 +611,9 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
                K5 = 1.0;
 
             Float64 K6 = (de + b/K2 - K3)/K4;
+
+            if ( K6 < 0 )
+               K6 = 0; // This isn't in AASHTO, but we don't want to take the square root of a negative number
 
             Float64 e = 1 + pow(K6,0.5);
 

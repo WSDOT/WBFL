@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -195,8 +195,6 @@ STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask,UINT nDelay)
 
 STDMETHODIMP CSysAgent::Init(short begin, short end, short inc)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
    m_ProgressDlg.m_ProgressBar.SetStep( inc );
@@ -207,8 +205,6 @@ STDMETHODIMP CSysAgent::Init(short begin, short end, short inc)
 
 STDMETHODIMP CSysAgent::Increment()
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_ProgressBar.StepIt();
 
@@ -217,8 +213,6 @@ STDMETHODIMP CSysAgent::Increment()
 
 STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_Message = msg;
    m_ProgressDlg.UpdateMessage(msg);
@@ -228,8 +222,6 @@ STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 
 STDMETHODIMP CSysAgent::Continue()
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    HRESULT hr = S_OK;
 
    hr = m_ProgressDlg.Continue() ? S_OK : S_FALSE;
@@ -239,16 +231,12 @@ STDMETHODIMP CSysAgent::Continue()
 
 STDMETHODIMP CSysAgent::get_EnableCancel(BOOL* pbEnable)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    *pbEnable = m_bCancelEnabled;
    return S_OK;
 }
 
 STDMETHODIMP CSysAgent::put_EnableCancel(BOOL bEnable)
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    m_bCancelEnabled = bEnable;
    m_ProgressDlg.m_Cancel.ShowWindow( bEnable ? SW_SHOW : SW_HIDE );
    m_ProgressDlg.m_Cancel.EnableWindow(bEnable);
@@ -257,8 +245,6 @@ STDMETHODIMP CSysAgent::put_EnableCancel(BOOL bEnable)
 
 STDMETHODIMP CSysAgent::DestroyProgressWindow()
 {
-   AFX_MANAGE_STATE(AfxGetStaticModuleState());
-
    m_cProgressRef--;
    ATLASSERT( m_cProgressRef >= 0 );
 

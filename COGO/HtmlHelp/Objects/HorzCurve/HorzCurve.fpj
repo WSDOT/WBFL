@@ -8,17 +8,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>ShortTangent_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>PFT_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>PCI_Property_(HorzCurve_Object).htm</name>
+			<name>Bearing_Method_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -28,7 +18,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>PBT_Property_(HorzCurve_Object).htm</name>
+			<name>PFT_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>ShortTangent_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -38,22 +33,7 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Bearing_Method_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>DistanceFromStart_Method_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Normal_Method_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>OnHorzCurveChanged_Event_(HorzCurve_Object).htm</name>
+			<name>PointOnCurve_Method_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -63,7 +43,17 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>PointOnCurve_Method_(HorzCurve_Object).htm</name>
+			<name>OnHorzCurveChanged_Event_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Normal_Method_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>DistanceFromStart_Method_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -73,7 +63,22 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>CurveLength_Property_(HorzCurve_Object).htm</name>
+			<name>PCI_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>DE_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>MidOrdinate_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>PBT_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -93,12 +98,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>DF_Property_(HorzCurve_Object).htm</name>
+			<name>DH_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>DE_Property_(HorzCurve_Object).htm</name>
+			<name>CurveLength_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -108,22 +113,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>MidOrdinate_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>DH_Property_(HorzCurve_Object).htm</name>
+			<name>DF_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
 			<name>Intersect_Method_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Tangent_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -153,12 +148,17 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>SpiralChord_Property_(HorzCurve_Object).htm</name>
+			<name>Tangent_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Throw_Property_(HorzCurve_Object).htm</name>
+			<name>PointFactory_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>SpiralChord_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -178,22 +178,37 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Q_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>Radius_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>PointFactory_Property_(HorzCurve_Object).htm</name>
+			<name>Throw_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Q_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
 			<name>External_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>HorzCurve_Object.htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>CCC_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>CC_Property_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -233,22 +248,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>CCC_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>HorzCurve_Object.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>CC_Property_(HorzCurve_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>DegreeCurvature_Property_(HorzCurve_Object).htm</name>
+			<comments></comments>
+			<frameset>0</frameset>
+		</topic>
+		<topic>
+			<name>Offset_Method_(HorzCurve_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

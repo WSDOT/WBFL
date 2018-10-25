@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2010  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -48,9 +48,12 @@ public:
    virtual void ClearAll();  // deletes all report builders
 
    void AddReportBuilder(CReportBuilder* pRptBuilder);
+   void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pRptBuilder);
    Uint32 GetReportBuilderCount(bool bIncludeHidden = false) const;
    boost::shared_ptr<CReportBuilder> GetReportBuilder(const char* strReportName);
-   boost::shared_ptr<CReportBuilder>GetReportBuilder(const std::string& strReportName);
+   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::string& strReportName);
+   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const char* strReportName);
+   boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::string& strReportName);
    std::vector<std::string> GetReportNames(bool bIncludeHidden = false) const;
    CReportDescription GetReportDescription(const char* strReportName);
    CReportDescription GetReportDescription(const std::string& strReportName);
