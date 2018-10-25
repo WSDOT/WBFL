@@ -295,7 +295,7 @@ CLASS
    lrfdTxdotVoidedSlab
 
    Live load distribution factor calculator for cross section types F and G
-   accounting for WSDOT modifications.
+   accounting for TxDOT modifications.
 
 
 DESCRIPTION
@@ -310,6 +310,8 @@ DESCRIPTION
 
    2) Do not apply the skew correction factors for moment as suggested in 
       Article 4.6.2.2.2e nor for shear as suggested in Article 4.6.2.2.3c.
+
+   3) TxDOT equations do not deal with slab overhangs. Force user to overrride for this case.
 
 
 COPYRIGHT
@@ -379,6 +381,9 @@ protected:
    virtual DFResult GetShearDF_Ext_1_Strength() const;
    //------------------------------------------------------------------------
    virtual DFResult GetShearDF_Ext_2_Strength() const;
+
+   //------------------------------------------------------------------------
+   virtual bool TestRangeOfApplicability(Location loc) const;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxdotVoidedSlab& rOther);

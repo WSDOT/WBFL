@@ -47,11 +47,12 @@ public:
 	//{{AFX_DATA(CReportSpecDlg)
 	enum { IDD = IDD_REPORTSPEC };
 	CString	m_ReportName;
-	CCheckListBox	m_ChapterList;
+	CCheckListBox	m_clbChapterList;
 	//}}AFX_DATA
 
    const CReportDescription* m_pRptDesc;
    std::vector<CChapterInfo> m_ChapterInfo;
+   std::vector<std::_tstring> m_ChapterList;
 
 
 // Overrides

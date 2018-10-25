@@ -1173,6 +1173,23 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotVoidedSlab::GetShearDF_Ext_2_
    return g;
 }
 
+bool lrfdTxdotVoidedSlab::TestRangeOfApplicability(Location loc) const
+{
+   if (!DoCheckApplicablity())
+      return true;
+
+   bool doThrow=true;
+   Float64 w2 = m_b/2.0; // half of girder width
+   if (LeftSide == m_Side && m_LeftCurbOverhang-w2 >  TOLERANCE ||
+       RightSide== m_Side && m_RightCurbOverhang-w2 > TOLERANCE)
+   {
+      THROW_DF(lrfdXRangeOfApplicability, CurbLineOffset, _T("The TxDOT live load distribution factor method does not allow for deck overhangs on slab beams. To fix this you can input factors manually or change settings to ignore the range of applicability requirements."));
+   }
+
+   return lrfdLldfTypeG::TestRangeOfApplicability(loc);
+}
+
+
 void lrfdTxdotVoidedSlab::MakeCopy(const lrfdTxdotVoidedSlab& rOther)
 {
    lrfdLldfTypeG::MakeCopy(rOther);

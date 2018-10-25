@@ -38,7 +38,9 @@ static char THIS_FILE[] = __FILE__;
 bool TestDll(LPCTSTR plibname, dbgLog& rlog);
 
 // put names of all dll's to be tested here:
-static LPCTSTR lib_list[] = {_T("WBFLSystem.dll"),
+static LPCTSTR lib_list[] = {
+                                 _T("WBFLStability.dll"),
+                                 _T("WBFLSystem.dll"),
                                  _T("WBFLRoark.dll"),
                                  _T("WBFLGeometricPrimitives.dll"),
                                  _T("WBFLGraphicsLib.dll"),
@@ -51,7 +53,8 @@ static LPCTSTR lib_list[] = {_T("WBFLSystem.dll"),
                                  _T("WBFLUnitMgt.dll"),
                                  _T("WBFLUnits.dll"),
                                  _T("WBFLBridgeAnalysis.dll"),
-                                 _T("WBFLBridgeModeling.dll")};
+                                 _T("WBFLBridgeModeling.dll")
+                                };
 
 int main()
 {

@@ -258,6 +258,7 @@ DECLARE_PHYSICAL_UNIT( 10, 20,-20,  0,-10, unitMomentPerAngle );
 DECLARE_PHYSICAL_UNIT(  5, -5,-10,  0,  0, unitSqrtPressure );
 DECLARE_PHYSICAL_UNIT(  0,-10,  0,  0,  0, unitPerLength );
 DECLARE_PHYSICAL_UNIT( 10, 30,-20,  0,  0, unitForceLength2 );  // Used for E*I
+DECLARE_PHYSICAL_UNIT(  0, 10,-10,  0,  0, unitVelocity );
 
 // Other aliases
 typedef unitLength2       unitArea;

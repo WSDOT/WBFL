@@ -70,6 +70,7 @@ public:
    CEAFStatusCenter& GetStatusCenter();
 
    // iUnitModeListener
+   virtual void OnUnitsModeChanging();
    virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode);
 
    // Transactions

@@ -53,26 +53,28 @@ void CReportSpecDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CReportSpecDlg)
 	DDX_Text(pDX, IDC_NAME, m_ReportName);
-	DDX_Control(pDX, IDC_CHAPTER_LIST, m_ChapterList);
+	DDX_Control(pDX, IDC_CHAPTER_LIST, m_clbChapterList);
 	//}}AFX_DATA_MAP
 
    if ( pDX->m_bSaveAndValidate )
    {
       m_ChapterInfo.clear();
+      m_ChapterList.clear();
 
-      int cChapters = m_ChapterList.GetCount();
+      int cChapters = m_clbChapterList.GetCount();
       for ( int ch = 0; ch < cChapters; ch++ )
       {
-         if ( m_ChapterList.GetCheck( ch ) == 1 )
+         if ( m_clbChapterList.GetCheck( ch ) == 1 )
          {
             CChapterInfo chInfo;
             CString strBuffer;
-            m_ChapterList.GetText( ch, strBuffer);
+            m_clbChapterList.GetText( ch, strBuffer);
             chInfo.Key = strBuffer;
             chInfo.Name = strBuffer;
-            chInfo.MaxLevel = (Uint16)m_ChapterList.GetItemData(ch);
+            chInfo.MaxLevel = (Uint16)m_clbChapterList.GetItemData(ch);
 
             m_ChapterInfo.push_back(chInfo);
+            m_ChapterList.push_back(chInfo.Name);
          }
       }
 
@@ -110,29 +112,29 @@ BOOL CReportSpecDlg::OnInitDialog()
 void CReportSpecDlg::UpdateChapterList()
 {
    // Clear out the list box
-   m_ChapterList.ResetContent();
+   m_clbChapterList.ResetContent();
 
    std::vector<CChapterInfo> vchInfo = m_pRptDesc->GetChapterInfo();
    std::vector<CChapterInfo>::iterator iter;
    for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
    {
       CChapterInfo chInfo = *iter;
-      int idx = m_ChapterList.AddString( chInfo.Name.c_str() );
+      int idx = m_clbChapterList.AddString( chInfo.Name.c_str() );
       if ( idx != LB_ERR )
       {
-         m_ChapterList.SetCheck(idx,chInfo.Select ? 1 : 0); // turn check on
-         m_ChapterList.SetItemData(idx,chInfo.MaxLevel);
+         m_clbChapterList.SetCheck(idx,chInfo.Select ? 1 : 0); // turn check on
+         m_clbChapterList.SetItemData(idx,chInfo.MaxLevel);
       }
    }
-   m_ChapterList.SetCurSel(-1);
+   m_clbChapterList.SetCurSel(-1);
 }
 
 void CReportSpecDlg::ClearChapterCheckMarks()
 {
-   int cChapters = m_ChapterList.GetCount();
+   int cChapters = m_clbChapterList.GetCount();
    for ( int ch = 0; ch < cChapters; ch++ )
    {
-      m_ChapterList.SetCheck(ch,0);
+      m_clbChapterList.SetCheck(ch,0);
    }
 }
 
@@ -144,14 +146,14 @@ void CReportSpecDlg::InitChapterListFromSpec()
    for ( iter = chInfo.begin(); iter != chInfo.end(); iter++ )
    {
       CChapterInfo& ch = *iter;
-      int cChapters = m_ChapterList.GetCount();
+      int cChapters = m_clbChapterList.GetCount();
       for ( int idx = 0; idx < cChapters; idx++ )
       {
          CString strChapter;
-         m_ChapterList.GetText(idx,strChapter);
+         m_clbChapterList.GetText(idx,strChapter);
          if ( strChapter == ch.Name.c_str() )
          {
-            m_ChapterList.SetCheck(idx,1);
+            m_clbChapterList.SetCheck(idx,1);
             break;
          }
       }

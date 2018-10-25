@@ -117,6 +117,7 @@ DECLARE_INDIRECT_MEASURE_DATA( unitMoment,         unitmgtMomentData         );
 DECLARE_INDIRECT_MEASURE_DATA( unitPerLength,      unitmgtPerLengthData      );
 DECLARE_INDIRECT_MEASURE_DATA( unitForceLength2,   unitmgtForceLength2Data   );
 DECLARE_INDIRECT_MEASURE_DATA( unitSqrtPressure,   unitmgtSqrtPressureData   );
+DECLARE_INDIRECT_MEASURE_DATA( unitVelocity,       unitmgtVelocityData       );
 
 typedef unitmgtPressureData unitmgtStressData;
 typedef unitmgtLengthData   unitmgtAreaPerLengthData;
@@ -166,6 +167,7 @@ public:
    unitmgtAreaPerLengthData  AvOverS;
    unitmgtPressureData       Stress;
    unitmgtPressureData       SmallStress;
+   unitmgtPressureData       WindPressure;
    unitmgtPressureData       ModE;
    unitmgtForceData          GeneralForce;
    unitmgtForceData          Tonnage;
@@ -185,6 +187,7 @@ public:
    unitmgtPerLengthData      Curvature;
    unitmgtForceLength2Data   ForceLength2;
    unitmgtSqrtPressureData   SqrtPressure;
+   unitmgtVelocityData       Velocity;
 
    // GROUP: LIFECYCLE
    unitmgtIndirectMeasure();

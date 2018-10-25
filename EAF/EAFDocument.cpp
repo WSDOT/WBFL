@@ -1340,6 +1340,11 @@ CEAFStatusCenter& CEAFDocument::GetStatusCenter()
    return *m_pStatusCenter;
 }
 
+void CEAFDocument::OnUnitsModeChanging()
+{
+   OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGING,0);
+}
+
 void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 {
    OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);

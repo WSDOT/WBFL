@@ -1370,6 +1370,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\CDRatio.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CompositeFunction2d.cpp"
 				>
 			</File>
@@ -2628,6 +2632,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Math\BrentsRootFinder2d.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Math\CDRatio.h"
 				>
 			</File>
 			<File

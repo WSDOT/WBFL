@@ -29,6 +29,7 @@
 #define Super(a) superscript(ON) << a << superscript(OFF)
 #define Sub(a) subscript(ON) << a << subscript(OFF)
 #define Sub2(a,b) a << subscript(ON) << b << subscript(OFF)
+#define Super2(a,b) a << superscript(ON) << b << superscript(OFF)
 #define Bold(a) bold(ON) << a << bold(OFF)
 #define Italic(a) italic(ON) << a << italic(OFF)
 #define Underline(a) underline(ON) << a << underline(OFF)

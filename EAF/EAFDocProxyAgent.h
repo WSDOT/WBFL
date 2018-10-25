@@ -49,6 +49,31 @@ public:
 
 //IEAFDisplayUnitsEventSink : IUnknown
 public:
+	HRESULT Fire_UnitsChanging()
+	{
+		T* pT = (T*)this;
+
+      //if ( pT->m_bHoldingEvents )
+      //{
+      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   return S_OK;
+      //}
+
+      pT->Lock();
+		HRESULT ret = S_OK;
+		IUnknown** pp = m_vec.begin();
+		while (pp < m_vec.end())
+		{
+			if (*pp != NULL)
+			{
+				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
+				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanging();
+			}
+			pp++;
+		}
+		pT->Unlock();
+		return ret;
+	}
 	HRESULT Fire_UnitsChanged(eafTypes::UnitMode newUnitsMode)
 	{
 		T* pT = (T*)this;
@@ -126,12 +151,17 @@ END_CONNECTION_POINT_MAP()
    CEAFMainFrame* GetMainFrame();
 
 // iUnitModeListener
+   void OnUnitsModeChanging()
+   {
+      Fire_UnitsChanging();
+   }
+
    void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
    {
       Fire_UnitsChanged(newUnitMode);
    }
 
-// IAgentEx
+   // IAgentEx
 public:
    STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
 	STDMETHOD(RegInterfaces)();
@@ -218,6 +248,8 @@ public:
    virtual const unitmgtPerLengthData&      GetCurvatureUnit();
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit();
    virtual const unitmgtPressureData&       GetOverlayWeightUnit();
+   virtual const unitmgtPressureData&       GetWindPressureUnit();
+   virtual const unitmgtVelocityData&       GetVelocityUnit();
 
 // IEAFStatusCenter
 public:

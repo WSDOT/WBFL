@@ -916,6 +916,7 @@ void CEAFApp::SetUnitsMode(eafTypes::UnitMode newVal)
 {
    if ( m_Units != newVal )
    {
+      Fire_UnitsChanging();
       m_Units = newVal;
       UpdateDisplayUnits();
       Fire_UnitsChanged();
@@ -960,6 +961,14 @@ BOOL CEAFApp::IsFirstRun()
 CEAFMDISnapper& CEAFApp::GetMDIWndSnapper()
 {
    return m_MDISnapper;
+}
+
+void CEAFApp::Fire_UnitsChanging()
+{
+   BOOST_FOREACH(iUnitModeListener* pListener,m_UnitModeListeners)
+   {
+      pListener->OnUnitsModeChanging();
+   }
 }
 
 void CEAFApp::Fire_UnitsChanged()
@@ -1584,14 +1593,14 @@ unitmgtIndirectMeasure init_si_units()
    im.SectModulus.Update(     unitMeasure::Millimeter3,               0.001, 7, 0, sysNumericFormatTool::Engineering );
    im.AvOverS.Update(         unitMeasure::Millimeter2PerMeter,      1.0e-6, 9, 3, sysNumericFormatTool::Fixed );
    im.Stress.Update(          unitMeasure::MPa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::MPa,                       0.001,12, 0, sysNumericFormatTool::Fixed );
+   im.ModE.Update(            unitMeasure::MPa,                       0.001,13, 2, sysNumericFormatTool::Fixed );
    im.GeneralForce.Update(    unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.Tonnage.Update(         unitMeasure::Kilonewton,                0.001, 9, 0, sysNumericFormatTool::Fixed );
    im.Shear.Update(           unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.Moment.Update(          unitMeasure::KilonewtonMeter,           0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SmallMoment.Update(     unitMeasure::NewtonMillimeter,          0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.Angle.Update(           unitMeasure::Degree,                    0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,                   1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
+   im.RadAngle.Update(        unitMeasure::Radian,                   1.0e-5, 9, 5, sysNumericFormatTool::Fixed );
    im.Density.Update(         unitMeasure::KgPerMeter3,               0.001, 6, 0, sysNumericFormatTool::Fixed );
    im.MassPerLength.Update(   unitMeasure::KgPerMeter,                0.001, 5, 0, sysNumericFormatTool::Fixed );
    im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
@@ -1604,6 +1613,8 @@ unitmgtIndirectMeasure init_si_units()
    im.PerLength.Update( unitMeasure::PerMeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.WindPressure.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
+   im.Velocity.Update( unitMeasure::KilometerPerHour, 0.001, 9, 2, sysNumericFormatTool::Fixed);
 
    return im;
 }
@@ -1630,14 +1641,14 @@ unitmgtIndirectMeasure init_english_units()
    im.SectModulus.Update(     unitMeasure::Inch3,           0.001,12, 1, sysNumericFormatTool::Fixed );
    im.Stress.Update(          unitMeasure::KSI,            1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
    im.AvOverS.Update(         unitMeasure::Inch2PerFoot,   1.0e-7, 9, 3, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::KSI,            1.0e-5,14, 0, sysNumericFormatTool::Fixed );
+   im.ModE.Update(            unitMeasure::KSI,            1.0e-5,10, 3, sysNumericFormatTool::Fixed );
    im.GeneralForce.Update(    unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
    im.Tonnage.Update(         unitMeasure::Ton,             0.001, 9, 0, sysNumericFormatTool::Fixed );
    im.Shear.Update(           unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
    im.Moment.Update(          unitMeasure::KipFeet,        1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
    im.SmallMoment.Update(     unitMeasure::KipInch,        1.0e-5, 9, 0, sysNumericFormatTool::Fixed );
    im.Angle.Update(           unitMeasure::Degree,          0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
+   im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 5, sysNumericFormatTool::Fixed );
    im.Density.Update(         unitMeasure::KipPerFeet3,     0.001, 6, 3, sysNumericFormatTool::Fixed );
    im.MassPerLength.Update(   unitMeasure::LbfPerFeet,      0.001, 5, 0, sysNumericFormatTool::Fixed );
    im.ForcePerLength.Update(  unitMeasure::KipPerFoot,     1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
@@ -1650,6 +1661,8 @@ unitmgtIndirectMeasure init_english_units()
    im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
    im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.SmallStress.Update(          unitMeasure::KSF,              1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
+   im.WindPressure.Update(         unitMeasure::PSF,             1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
+   im.Velocity.Update( unitMeasure::MilePerHour, 1.0e-5, 8, 2, sysNumericFormatTool::Fixed );
 
    return im;
 }

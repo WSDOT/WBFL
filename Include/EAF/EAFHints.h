@@ -33,5 +33,6 @@
 // Doc/View update hints
 #define EAF_HINT_BASE                     1000        
 #define EAF_HINT_UPDATEERROR              EAF_HINT_BASE + 0
-#define EAF_HINT_UNITS_CHANGED            EAF_HINT_BASE + 1
-#define EAF_HINT_FAVORITE_REPORTS_CHANGED EAF_HINT_BASE + 2
+#define EAF_HINT_UNITS_CHANGING           EAF_HINT_BASE + 1 // units are about to be changed
+#define EAF_HINT_UNITS_CHANGED            EAF_HINT_BASE + 2 // units have changed
+#define EAF_HINT_FAVORITE_REPORTS_CHANGED EAF_HINT_BASE + 3

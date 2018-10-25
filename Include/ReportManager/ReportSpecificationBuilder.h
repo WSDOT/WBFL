@@ -51,6 +51,7 @@ public:
 
 protected:
    boost::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo);
+   boost::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList);
 };
 
 #endif // !defined(AFX_REPORTSPECIFICATIONBUILDER_H__61D4A42A_E3A2_417F_AFAA_A62C9E163716__INCLUDED_)

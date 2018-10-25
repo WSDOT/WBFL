@@ -48,6 +48,7 @@ typedef void(*DocCallback)(CDocument* pDoc,void* pStuff);
 class iUnitModeListener
 {
 public:
+   virtual void OnUnitsModeChanging() = 0;
    virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode) = 0;
 };
 
@@ -258,6 +259,7 @@ private:
    const unitmgtIndirectMeasure* m_pDisplayUnits; // current setting
    eafTypes::UnitMode m_Units;
    std::set<iUnitModeListener*> m_UnitModeListeners;
+   void Fire_UnitsChanging();
    void Fire_UnitsChanged();
 
    CEAFPluginCommandManager m_PluginCommandMgr;

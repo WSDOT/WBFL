@@ -76,6 +76,8 @@ interface IEAFDisplayUnits : IUnknown
    virtual const unitmgtPerLengthData&      GetCurvatureUnit() = 0;
    virtual const unitmgtPressureData&       GetSidewalkPressureUnit() = 0;
    virtual const unitmgtPressureData&       GetOverlayWeightUnit() = 0;
+   virtual const unitmgtPressureData&       GetWindPressureUnit() = 0;
+   virtual const unitmgtVelocityData&       GetVelocityUnit() = 0;
 };
 
 /*****************************************************************************
@@ -92,6 +94,7 @@ DEFINE_GUID(IID_IEAFDisplayUnitsEventSink,
 0x015A4130, 0x272C, 0x11d2, 0x8E, 0xB0, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
 interface IEAFDisplayUnitsEventSink : IUnknown
 {
+   virtual HRESULT OnUnitsChanging() = 0;
    virtual HRESULT OnUnitsChanged(eafTypes::UnitMode newUnitsMode) = 0;
 };
 

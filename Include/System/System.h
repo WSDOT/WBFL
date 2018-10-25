@@ -54,7 +54,9 @@
 #include <System\SectionAction.h>
 #include <System\SingletonKiller.h>
 #include <System\StructuredLoadXml.h>
+#include <System\StructuredLoadXmlPrs.h>
 #include <System\StructuredSaveXml.h>
+#include <System\StructuredSaveXmlPrs.h>
 #include <System\SubjectT.h>
 #include <System\Tokenizer.h>
 #include <System\Time.h>
@@ -64,5 +66,7 @@
 #include <System\XStructuredLoad.h>
 #include <System\XStructuredSave.h>
 #include <System\ComCatMgr.h>
+#include <System\FileStream.h>
+#include <SysTem\XStructuredLoad.h>
 
 #endif // INCLUDED_SYSTEM_SYSTEM_H_

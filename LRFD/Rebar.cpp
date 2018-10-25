@@ -157,6 +157,8 @@ void lrfdRebar::GetMaxStirrupSpacing(Float64* sUnderLimit, Float64* sOverLimit)
 
 Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc)
 {
+   ATLASSERT(lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SeventhEditionWith2015Interims);
+
    Float64 dl=0.0;
 
    Float64 ab = rebar.GetNominalArea();

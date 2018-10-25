@@ -60,5 +60,8 @@
 #include <Reporter\HtmlReportVisitor.h>
 #include <Reporter\FormattedLengthUnitValue.h>
 #include <Reporter\ReportingUtils.h>
+#include <Reporter\RiStyle.h>
+#include <Reporter\StyleManager.h>
+#include <Reporter\CDRatio.h>
 
 #endif // INCLUDED_REPORTER_REPORTER_H_

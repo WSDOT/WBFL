@@ -199,6 +199,11 @@ public:
    static const unitForceLength2 NewtonMillimeter2;
    static const unitForceLength2 KilonewtonMeter2;
 
+   static const unitVelocity KilometerPerHour;
+   static const unitVelocity MeterPerSecond;
+   static const unitVelocity MilePerHour;
+   static const unitVelocity FeetPerSecond;
+
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
