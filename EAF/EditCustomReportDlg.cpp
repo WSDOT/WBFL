@@ -143,6 +143,10 @@ BEGIN_MESSAGE_MAP(CEditCustomReportDlg, CDialog)
    ON_BN_CLICKED(IDC_MOVE_DOWN_BUTTON, &CEditCustomReportDlg::OnBnClickedMoveDownButton)
    ON_LBN_SELCHANGE(IDC_AVAILABLE_LIST, &CEditCustomReportDlg::OnLbnSelchangeAvailableList)
    ON_LBN_SELCHANGE(IDC_SELECTED_LIST, &CEditCustomReportDlg::OnLbnSelchangeSelectedList)
+   ON_BN_CLICKED(IDC_ADD_ALL_BUTTON, &CEditCustomReportDlg::OnBnClickedAddAllButton)
+   ON_BN_CLICKED(IDC_REMOVE_ALL_BUTTON, &CEditCustomReportDlg::OnBnClickedRemoveAllButton)
+   ON_LBN_DBLCLK(IDC_AVAILABLE_LIST, &CEditCustomReportDlg::OnLbnDblclkAvailableList)
+   ON_LBN_DBLCLK(IDC_SELECTED_LIST, &CEditCustomReportDlg::OnLbnDblclkSelectedList)
 END_MESSAGE_MAP()
 
 // CEditCustomReportDlg message handlers
@@ -252,6 +256,50 @@ void CEditCustomReportDlg::OnBnClickedRemoveButton()
       ATLASSERT(0);
 }
 
+void CEditCustomReportDlg::OnBnClickedAddAllButton()
+{
+   int cnt = m_AvailableChaptersList.GetCount();
+   // Move strings,
+   for (int il=0; il<cnt; il++)
+   {
+      CString strSel;
+      m_AvailableChaptersList.GetText(il, strSel);
+      m_SelectedChaptersList.AddString(strSel);
+   }
+
+   // then delete them
+   for (int il=0; il<cnt; il++)
+   {
+      m_AvailableChaptersList.DeleteString(0);
+   }
+
+   m_SelectedChaptersList.SetCurSel(-1);
+   m_AvailableChaptersList.SetCurSel(-1);
+   OnSelectSelected( FALSE );
+}
+
+void CEditCustomReportDlg::OnBnClickedRemoveAllButton()
+{
+   int cnt = m_SelectedChaptersList.GetCount();
+   // Move strings,
+   for (int il=0; il<cnt; il++)
+   {
+      CString strSel;
+      m_SelectedChaptersList.GetText(il, strSel);
+      m_AvailableChaptersList.AddString(strSel);
+   }
+
+   // then delete them
+   for (int il=0; il<cnt; il++)
+   {
+      m_SelectedChaptersList.DeleteString(0);
+   }
+
+   m_SelectedChaptersList.SetCurSel(-1);
+   m_AvailableChaptersList.SetCurSel(-1);
+   OnSelectSelected( FALSE );
+}
+
 void CEditCustomReportDlg::OnBnClickedMoveUpButton()
 {
    int sel = m_SelectedChaptersList.GetCurSel();
@@ -324,3 +372,12 @@ void CEditCustomReportDlg::OnSelectSelected(BOOL sel)
 }
 
 
+void CEditCustomReportDlg::OnLbnDblclkAvailableList()
+{
+   OnBnClickedAddButton();
+}
+
+void CEditCustomReportDlg::OnLbnDblclkSelectedList()
+{
+   OnBnClickedRemoveButton();
+}

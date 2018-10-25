@@ -72,4 +72,8 @@ public:
    afx_msg void OnLbnSelchangeAvailableList();
    afx_msg void OnLbnSelchangeSelectedList();
    BOOL m_bIsFavorite;
+   afx_msg void OnBnClickedAddAllButton();
+   afx_msg void OnBnClickedRemoveAllButton();
+   afx_msg void OnLbnDblclkAvailableList();
+   afx_msg void OnLbnDblclkSelectedList();
 };
