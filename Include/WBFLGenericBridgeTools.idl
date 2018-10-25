@@ -396,6 +396,9 @@ library WBFLGenericBridgeTools
 	   [propput,helpstring("property AllowOddNumberOfHarpedStrands")] HRESULT AllowOddNumberOfHarpedStrands([in]VARIANT_BOOL bUseMin);
 	   [propget,helpstring("property AllowOddNumberOfHarpedStrands")] HRESULT AllowOddNumberOfHarpedStrands([out,retval]VARIANT_BOOL* bUseMin);
 
+	   [propput,helpstring("property UseDifferentHarpedGridsAtEnds")] HRESULT UseDifferentHarpedGridsAtEnds([in]VARIANT_BOOL bUseDifferent);
+	   [propget,helpstring("property UseDifferentHarpedGridsAtEnds")] HRESULT UseDifferentHarpedGridsAtEnds([out,retval]VARIANT_BOOL* bUseDifferent);
+
       // default design increments for vertical adjustment of strands at end and harping points
       // NOTE: If this value is less than zero, NO adjustment will be made.
       [propget,helpstring("property HarpedEndAdjustmentIncrement")] HRESULT HarpedEndAdjustmentIncrement([out,retval]Float64* increment);

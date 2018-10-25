@@ -57,6 +57,7 @@ public:
       m_HP1 = 0.4;
       m_HP2 = 0.6;
       m_AllowOddNumberOfHarpedStrands=VARIANT_FALSE;
+      m_UseDifferentHarpedGirdAtEnds=VARIANT_TRUE;
 
       m_bUseMinHpDistance = VARIANT_FALSE;
       m_MinHpDist = 0;
@@ -106,6 +107,10 @@ private:
    // If this is true, it is possible that the one-to-one relationship between strand grid fill locations
    // at the girder ends and harping points is broken. i.e., different fills are are needed for each.
    VARIANT_BOOL m_AllowOddNumberOfHarpedStrands;
+
+   // If this is true, different harped grids are used at the ends of the girder than at the
+   // harping point.
+   VARIANT_BOOL m_UseDifferentHarpedGirdAtEnds;
 
    // data and functions required to compute harped grid if odd strands are allowed
    CComPtr<IIndexArray> m_OddHpFill;
@@ -165,6 +170,9 @@ public:
 
 	STDMETHOD(put_AllowOddNumberOfHarpedStrands)(/*[in]*/VARIANT_BOOL bUseMin);
 	STDMETHOD(get_AllowOddNumberOfHarpedStrands)(/*[out,retval]*/VARIANT_BOOL* bUseMin);
+
+	STDMETHOD(put_UseDifferentHarpedGridsAtEnds)(/*[in]*/VARIANT_BOOL bUseDifferent);
+	STDMETHOD(get_UseDifferentHarpedGridsAtEnds)(/*[out,retval]*/VARIANT_BOOL* bUseDifferent);
 
 	STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* top);
 

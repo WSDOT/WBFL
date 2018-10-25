@@ -211,6 +211,17 @@ STDMETHODIMP CPrecastGirder::get_AllowOddNumberOfHarpedStrands(VARIANT_BOOL* bUs
    return S_OK;
 }
 
+STDMETHODIMP CPrecastGirder::put_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL bUseDifferent)
+{
+   m_UseDifferentHarpedGirdAtEnds = bUseDifferent;
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_UseDifferentHarpedGridsAtEnds(VARIANT_BOOL* bUseDifferent)
+{
+   *bUseDifferent = m_UseDifferentHarpedGirdAtEnds;
+   return S_OK;
+}
 
 STDMETHODIMP CPrecastGirder::get_HarpedStrandAdjustmentEnd(Float64* offset)
 {
@@ -1940,8 +1951,8 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
          ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
 #endif
 
-         StrandIndexType running_cnt = 2;
-         m_OddHpFill->Add(running_cnt); // start with 2 strands
+         StrandIndexType running_cnt = (m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE ? 2 : 1);
+         m_OddHpFill->Add(running_cnt); 
 
          for (CollectionIndexType is = 1; is < fill_size; is++)
          {
@@ -1962,7 +1973,11 @@ HRESULT CPrecastGirder::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFill
                else
                {
                   // we are at the end... add the odd strand
-                  m_OddHpFill->Add(fill_val-1);
+                  if ( m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE )
+                     m_OddHpFill->Add(fill_val-1);
+                  else
+                     m_OddHpFill->Add(fill_val);
+
                   running_cnt--;
                }
             }
