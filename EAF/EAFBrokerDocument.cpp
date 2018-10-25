@@ -28,6 +28,7 @@
 #include <EAF\EAFResources.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFUtilities.h>
+#include <EAF\EAFHints.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
 
@@ -604,11 +605,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
 
       // list all or favorites
       bool dolist = false;
-      if (!bQuickReport && m_DisplayFavoriteReports==FALSE)
-      {
-         dolist = true;
-      }
-      else if( m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName))
+      if ( m_DisplayFavoriteReports == FALSE || IsFavoriteReport(rptName) )
       {
          dolist = true;
       }
@@ -775,7 +772,12 @@ bool CEAFBrokerDocument::GetDoDisplayFavoriteReports() const
 
 void CEAFBrokerDocument::SetDoDisplayFavoriteReports(bool doDisplay)
 {
-   m_DisplayFavoriteReports = doDisplay ? TRUE : FALSE;
+   BOOL bDoDisplay = doDisplay == true ? TRUE : FALSE;
+   if ( m_DisplayFavoriteReports != bDoDisplay )
+   {
+      m_DisplayFavoriteReports = bDoDisplay;
+      UpdateAllViews(NULL,EAF_HINT_FAVORITE_REPORTS_CHANGED,NULL);
+   }
 }
 
 const std::vector<std::_tstring>& CEAFBrokerDocument::GetFavoriteReports() const
@@ -786,6 +788,11 @@ const std::vector<std::_tstring>& CEAFBrokerDocument::GetFavoriteReports() const
 void CEAFBrokerDocument::SetFavoriteReports(const std::vector<std::_tstring>& reports)
 {
    m_FavoriteReports = reports;
+}
+
+bool CEAFBrokerDocument::IsFavoriteReport(const std::_tstring& rptName)
+{
+   return (m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName));
 }
 
 const CEAFCustomReports& CEAFBrokerDocument::GetCustomReports() const
@@ -865,8 +872,7 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
 void CEAFBrokerDocument::OnReportMenuDisplayMode()
 {
    // flip value
-   m_DisplayFavoriteReports = !m_DisplayFavoriteReports;
-
+   SetDoDisplayFavoriteReports(!m_DisplayFavoriteReports);
    OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE, true);
 }
 
