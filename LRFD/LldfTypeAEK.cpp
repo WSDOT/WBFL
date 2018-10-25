@@ -117,9 +117,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_1_Str
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
 
       skew = MomentSkewCorrectionFactor();
-      if ( g.RigidData.mg*skew > g.mg )
+      if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         if ( m_bSkewMoment )
+         {
+            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -141,9 +145,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetMomentDF_Ext_2_Str
       // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
       skew = MomentSkewCorrectionFactor();
-      if ( g.RigidData.mg*skew > g.mg )
+      if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         if ( m_bSkewMoment )
+         {
+            g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -166,9 +174,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_1_Stre
       g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane, 1, 1);
 
       skew = ShearSkewCorrectionFactor();
-      if ( g.RigidData.mg*skew > g.mg )
+      if ( g.mg < g.RigidData.mg*skew )
       {
          g.ControllingMethod = RIGID_METHOD;
+         if ( m_bSkewShear )
+         {
+            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+         }
          g.mg = g.RigidData.mg*skew;
          g.SkewCorrectionFactor = skew;
       }
@@ -190,9 +202,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEK::GetShearDF_Ext_2_Stre
          // cross-section deflects and rotates as a rigid cross-section. 4.6.2.2.2d
          g.RigidData = DistributeByStaticalMethod(m_Side, m_Spacings, m_LeftCurbOverhang, m_RightCurbOverhang, m_wLane,2,m_Nl);
          skew = ShearSkewCorrectionFactor();
-         if ( g.RigidData.mg*skew > g.mg )
+         if ( g.mg < g.RigidData.mg*skew )
          {
             g.ControllingMethod = RIGID_METHOD;
+            if ( m_bSkewShear )
+            {
+               g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+            }
             g.mg = g.RigidData.mg*skew;
             g.SkewCorrectionFactor = skew;
          }
@@ -356,8 +372,13 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
 
       Float64 skew = MomentSkewCorrectionFactor();
 
-      if (gext.LeverRuleData.mg*skew >= gi.mg)
+      if (gi.mg <= gext.LeverRuleData.mg*skew)
       {
+         if ( m_bSkewMoment )
+         {
+            gext.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+         }
+
          gext.mg = gext.LeverRuleData.mg*skew;
          gext.SkewCorrectionFactor = skew;
 
@@ -402,7 +423,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
       {
          // We are into the lever rule, only additional rule here is that we must exceed the interior value
          lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_Strength();
-         if (gint.mg > gext.mg)
+         if (gext.mg < gint.mg)
          {
             gint.ControllingMethod |= INTERIOR_OVERRIDE;
             gext = gint;
@@ -434,8 +455,12 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
 
       Float64 skew = ShearSkewCorrectionFactor();
 
-      if (gext.LeverRuleData.mg*skew >= gi.mg)
+      if (gi.mg <= gext.LeverRuleData.mg*skew)
       {
+         if ( m_bSkewShear )
+         {
+            gext.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+         }
          gext.mg = gext.LeverRuleData.mg*skew;
          gext.SkewCorrectionFactor = skew;
 
@@ -479,7 +504,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
       else if (gext.ControllingMethod & LEVER_RULE)
       {
          lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeAEKIJ::GetShearDF_Int_2_Strength();
-         if (gint.mg > gext.mg)
+         if (gext.mg < gint.mg)
          {
             gint.ControllingMethod |= INTERIOR_OVERRIDE;
             gext = gint;

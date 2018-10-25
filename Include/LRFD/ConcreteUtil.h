@@ -164,8 +164,8 @@ public:
    static HsAvfOverSMinType AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
 
    //------------------------------------------------------------------------
-   // Max bar spacing 5.8.4.1
-   static Float64 MaxStirrupSpacingForHoriz();
+   // Max bar spacing 5.8.4.1/2
+   static Float64 MaxStirrupSpacingForHoriz(Float64 Hg);
 
    //------------------------------------------------------------------------
    // Calculate required Avf for horizontal shear

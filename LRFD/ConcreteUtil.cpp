@@ -55,9 +55,9 @@ static const Float64 g_60_KSI    = ::ConvertToSysUnits(60.0,unitMeasure::KSI);
 static const Float64 g_0p6_M = ::ConvertToSysUnits(0.6, unitMeasure::Meter);
 static const Float64 g_0p9_M = ::ConvertToSysUnits(0.9, unitMeasure::Meter);
 
+static const Float64 g_48_IN = ::ConvertToSysUnits(48.0, unitMeasure::Inch);
 static const Float64 g_36_IN = ::ConvertToSysUnits(36.0, unitMeasure::Inch);
-
-static const Float64 g_2_FT = ::ConvertToSysUnits(2.0, unitMeasure::Feet);
+static const Float64 g_24_IN = ::ConvertToSysUnits(24.0, unitMeasure::Inch);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -552,12 +552,24 @@ lrfdConcreteUtil::HsAvfOverSMinType lrfdConcreteUtil::AvfOverSMin(Float64 bv, Fl
    return hsAvfOverSMin;
 }
 
-Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()
+Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz(Float64 Hg)
 {
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
-      return g_0p6_M;
+   if ( lrfdVersionMgr::SeventhEdition2014 <= lrfdVersionMgr::GetVersion() )
+   {
+      ATLASSERT(lrfdVersionMgr::GetUnits() == lrfdVersionMgr::US);
+      return min(Hg,g_48_IN);
+   }
    else
-      return g_2_FT;
+   {
+      if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+      {
+         return g_0p6_M;
+      }
+      else
+      {
+         return g_24_IN;
+      }
+   }
 }
 
 Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,

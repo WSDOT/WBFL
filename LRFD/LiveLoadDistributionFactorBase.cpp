@@ -496,14 +496,17 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
 //======================== LIFECYCLE  =======================================
 lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane):
+                                      CollectionIndexType Nl, Float64 wLane,
+                                      bool bSkewMoment,bool bSkewShear):
  m_GdrNum(gdr),
  m_Spacings(gdrSpacings),
  m_Savg(Savg),  
  m_LeftCurbOverhang(leftOverhang),
  m_RightCurbOverhang(rightOverhang),
  m_Nl(Nl),
- m_wLane(wLane)
+ m_wLane(wLane),
+ m_bSkewMoment(bSkewMoment),
+ m_bSkewShear(bSkewShear)
 {
     // Cache nb
     m_Nb = gdrSpacings.size()+1;
@@ -951,6 +954,9 @@ void lrfdLiveLoadDistributionFactorBase::MakeCopy(const lrfdLiveLoadDistribution
    m_wLane         = rOther.m_wLane;
    m_Side          = rOther.m_Side;
 
+   m_bSkewMoment = rOther.m_bSkewMoment;
+   m_bSkewShear  = rOther.m_bSkewShear;
+
    m_Nb            = rOther.m_Nb;
 }
 
@@ -1080,6 +1086,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = MomentSkewCorrectionFactor();
+   if ( m_bSkewMoment )
+   {
+      g.ControllingMethod |= MOMENT_SKEW_CORRECTION_APPLIED;
+   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;
@@ -1095,6 +1105,10 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Di
    g.mg = g.LeverRuleData.mg;
 
    Float64 skew = ShearSkewCorrectionFactor();
+   if ( m_bSkewShear )
+   {
+      g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+   }
 
    g.SkewCorrectionFactor = skew;
    g.mg *= skew;

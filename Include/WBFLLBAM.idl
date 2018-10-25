@@ -2877,6 +2877,27 @@ library WBFLLBAM
 	};
 
 	[
+		object,
+		uuid(176038BE-9484-469d-97DD-D2764B0FBAE9),
+		oleautomation,
+		helpstring("ILinearDistributionFactorSegment Interface"), ,helpcontext(IDH_DistributionFactorSegment),
+		pointer_default(unique)
+	]
+	interface ILinearDistributionFactorSegment : IDistributionFactorSegment
+	{
+      // distribution factor at the end of the segment...
+      // the inherited method provides the distribution factor at the start of the segment
+		[propget, helpstring("property EndDistributionFactor"),helpcontext(IDH_DistributionFactorSegment_DistributionFactor)] 
+		HRESULT EndDistributionFactor([out, retval] IDistributionFactor* *pVal);
+		[propputref, helpstring("property EndDistributionFactor"),helpcontext(IDH_DistributionFactorSegment_DistributionFactor)] 
+		HRESULT EndDistributionFactor([in] IDistributionFactor* newVal);
+
+      // creates a new distibution factor object at dist from the start of this segment.
+      // if dist < 0 it is considered a fraction of the segment length
+      HRESULT CreateDistributionFactor([in] Float64 dist,[out,retval]IDistributionFactor** pFactor);
+	};
+
+	[
 	   object,
 	   uuid(CA93AE99-EA30-4d83-97B1-16C93210F4AD),
 	   helpstring("IEnumDistributionFactorSegment Interface"),
@@ -2956,6 +2977,8 @@ library WBFLLBAM
 		HRESULT Reverse();
 		[helpstring("method GetSegmentForLocation"),helpcontext(IDH_DistributionFactors_GetSegmentForLocation)] 
 		HRESULT GetSegmentForLocation([in]Float64 location, [in]Float64 superstructureLength, [out]IDistributionFactorSegment** leftSegment, [out]IDistributionFactorSegment** rightSegment);
+		[helpstring("method GetFactorForLocation"),helpcontext(IDH_DistributionFactors_GetSegmentForLocation)] 
+		HRESULT GetFactorForLocation([in]Float64 location, [in]Float64 superstructureLength, [out]IDistributionFactor** leftLLDF, [out]IDistributionFactor** rightLLDF);
 		[helpstring("method GetMemberSegments"),helpcontext(IDH_DistributionFactors_GetMemberSegments)] 
 		HRESULT GetMemberSegments([in]Float64 superstructureLength, [out,retval]IFilteredDfSegmentCollection** segments);
 		[helpstring("method Clone"),helpcontext(IDH_DistributionFactors_Clone)] 
@@ -4085,7 +4108,18 @@ library WBFLLBAM
 		[default] interface IDistributionFactorSegment;
 		[default, source] interface IDistributionFactorSegmentEvents;
 	};
-	[
+
+   [
+      uuid(18CF521C-48EF-473d-856B-A7A83135D073),
+		helpstring("LinearDistributionFactorSegment Class")
+	]
+	coclass LinearDistributionFactorSegment
+	{
+		[default] interface ILinearDistributionFactorSegment;
+		[default, source] interface IDistributionFactorSegmentEvents;
+	};
+
+   [
 		uuid(6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4),
 		helpstring("FilteredDfSegmentCollection Class")
 	]

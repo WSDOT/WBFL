@@ -119,8 +119,6 @@ protected:
    Float64 m_eg;
    Float64 m_SkewAngle1;
    Float64 m_SkewAngle2;
-   bool m_bSkewMoment;
-   bool m_bSkewShear;
    bool m_bIgnoreDe; // not the best OO design, but some of our children would like to ignore the check for this
 
    Float64 m_Kg;
