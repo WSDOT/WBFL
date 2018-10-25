@@ -676,7 +676,7 @@ Float64 lrfdRefinedLosses2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
 
-   if ( m_CuringMethod == lrfdCreepCoefficient2005::Normal )
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 && m_CuringMethod == lrfdCreepCoefficient2005::Normal )
    {
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
@@ -1011,7 +1011,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
-   m_CreepDeckToFinal.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
+   m_CreepDeckToFinal.SetMaturity(m_tf- m_CreepDeckToFinal.GetAdjustedInitialAge());
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
@@ -1359,7 +1359,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          10368000.000000000,   // Time to deck placement
                          172800000.00000000,   // Final time
                          lrfdCreepCoefficient2005::Accelerated,
-                         7, // time scale factor for curing method
+                         ::ConvertToSysUnits(7,unitMeasure::Day), // time scale factor for curing method
                          false,true,Refined
                          );
 

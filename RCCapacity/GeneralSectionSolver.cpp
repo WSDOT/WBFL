@@ -349,15 +349,11 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
    // locate centroid of resultant compression and tension forces
    // up to this point the cgC and cgT objects contain the sum of Force*CG
    Float64 x,y;
-   cgC->get_X(&x);
-   cgC->get_Y(&y);
-   cgC->put_X( x/C );
-   cgC->put_Y( y/C );
+   cgC->Location(&x, &y);
+   cgC->Move(x / C, y / C);
 
-   cgT->get_X(&x);
-   cgT->get_Y(&y);
-   cgT->put_X( x/T );
-   cgT->put_Y( y/T );
+   cgT->Location(&x, &y);
+   cgT->Move(x / T, y / T);
 
    CComPtr<ILine2d> neutral_axis;
    neutral_axis.CoCreateInstance(CLSID_Line2d);
