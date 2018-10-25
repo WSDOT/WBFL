@@ -128,6 +128,7 @@ void CEAFReportView::OnDraw(CDC* pDC)
 #ifdef _DEBUG
 void CEAFReportView::AssertValid() const
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
 	CView::AssertValid();
 }
 
@@ -496,14 +497,21 @@ void CEAFReportView::OnInitialUpdate()
 
 void CEAFReportView::UpdateViewTitle()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
+
    if ( m_pReportSpec == NULL )
    {
       SetWindowText(_T("Report View"));
-      return;
+   }
+   else
+   {
+      CString strTitle( m_pReportSpec->GetReportTitle().c_str() );
+	   SetWindowText(strTitle);
    }
 
-   CString strTitle( m_pReportSpec->GetReportTitle().c_str() );
-   SetWindowText(strTitle);
+   CFrameWnd* pFrame = GetParentFrame();
+   pFrame->OnUpdateFrameTitle(TRUE);
+
    CDocument* pDoc = GetDocument();
    pDoc->UpdateFrameCounts();
 }
