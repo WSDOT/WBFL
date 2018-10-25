@@ -750,9 +750,10 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
 
       // see if ends are released
       BSTR start_rel_stage=NULL;
-      MemberReleaseType rel_type;
-      ssm->GetEndRelease(ssLeft, &start_rel_stage, &rel_type);
-      if (rel_type== mrtPinned)
+      ssm->GetEndReleaseRemovalStage(ssLeft,&start_rel_stage);
+      VARIANT_BOOL bIsReleased;
+      ssm->IsEndReleased(ssLeft, mrtMz, &bIsReleased);
+      if (bIsReleased == VARIANT_TRUE)
       {
          StageIndexType rel_index;
          stages->FindIndex(start_rel_stage,&rel_index);
@@ -765,8 +766,9 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       ::SysFreeString(start_rel_stage);
 
       BSTR end_rel_stage=NULL;
-      ssm->GetEndRelease(ssRight, &end_rel_stage, &rel_type);
-      if (rel_type== mrtPinned)
+      ssm->GetEndReleaseRemovalStage(ssRight,&end_rel_stage);
+      ssm->IsEndReleased(ssRight, mrtMz, &bIsReleased);
+      if (bIsReleased == VARIANT_TRUE)
       {
          StageIndexType rel_index;
          stages->FindIndex(end_rel_stage,&rel_index);

@@ -232,6 +232,11 @@ void CEAFDocProxyAgent::SetModified(BOOL bModified)
    m_pDoc->SetModifiedFlag(bModified);
 }
 
+void CEAFDocProxyAgent::Save()
+{
+   m_pDoc->SaveModified();
+}
+
 CString CEAFDocProxyAgent::GetFileName()
 {
    CFileFind finder;

@@ -118,7 +118,7 @@ void CTestPointerFail::Test()
    TRY_TEST(pMember->get_EA(NULL),E_POINTER);
    TRY_TEST(pMember->get_EI(NULL),E_POINTER);
    TRY_TEST(pMember->get_Length(NULL),E_POINTER);
-   TRY_TEST(pMember->IsReleased(metStart, NULL),E_POINTER);
+   TRY_TEST(pMember->IsReleased(metStart, mbrReleaseMz, NULL),E_POINTER);
 
    /////////////////////////////////////////////
    // POIs

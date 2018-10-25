@@ -133,23 +133,57 @@ void CTestMember::Test()
    TRY_TEST(EI, 4);
 
    VARIANT_BOOL rel;
-   TRY_TEST_HR(pMember0->IsReleased(metStart, &rel));
+   // members start life without any end releases
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseMz, &rel));
    TRY_TEST(rel, VARIANT_FALSE);
-   TRY_TEST_HR(pMember0->IsReleased(metEnd, &rel));
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseFx, &rel));
    TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_TRUE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseMz, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseFx, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_TRUE);
 
    TRY_TEST_MC(pMember0->ReleaseEnd(metStart, mbrReleaseMz));
-   TRY_TEST_HR(pMember0->IsReleased(metStart, &rel));
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseMz, &rel));
    TRY_TEST(rel, VARIANT_TRUE);
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseFx, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
    TRY_TEST_MC(pMember0->ReleaseEnd(metEnd, mbrReleaseMz));
-   TRY_TEST_HR(pMember0->IsReleased(metEnd, &rel));
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseMz, &rel));
    TRY_TEST(rel, VARIANT_TRUE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseFx, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
 
    TRY_TEST_MC(pMember0->ReleaseEnd(metStart, mbrReleaseNone));
    TRY_TEST_MC(pMember0->ReleaseEnd(metEnd, mbrReleaseNone));
-   TRY_TEST_HR(pMember0->IsReleased(metStart, &rel));
+   TRY_TEST_MC(pMember0->ReleaseEnd(metStart, mbrReleaseFx));
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseFx, &rel));
+   TRY_TEST(rel, VARIANT_TRUE);
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseMz, &rel));
    TRY_TEST(rel, VARIANT_FALSE);
-   TRY_TEST_HR(pMember0->IsReleased(metEnd, &rel));
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_MC(pMember0->ReleaseEnd(metEnd, mbrReleaseFx));
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseFx, &rel));
+   TRY_TEST(rel, VARIANT_TRUE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseMz, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseNone, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+
+   TRY_TEST_MC(pMember0->ReleaseEnd(metStart, mbrReleaseNone));
+   TRY_TEST_MC(pMember0->ReleaseEnd(metEnd, mbrReleaseNone));
+   TRY_TEST_HR(pMember0->IsReleased(metStart, mbrReleaseMz, &rel));
+   TRY_TEST(rel, VARIANT_FALSE);
+   TRY_TEST_HR(pMember0->IsReleased(metEnd, mbrReleaseMz, &rel));
    TRY_TEST(rel, VARIANT_FALSE);
 
    ReleaseModel(pmodel);

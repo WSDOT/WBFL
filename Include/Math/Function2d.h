@@ -171,8 +171,9 @@ public:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
+
    //------------------------------------------------------------------------
-   // Evaluatest the function at x.  If an error occurs during the evaluation,
+   // Evaluates the function at x.  If an error occurs during the evaluation,
    // a mathXEvalError exception will be thrown.
    virtual Float64 Evaluate(Float64 x) const = 0;
 

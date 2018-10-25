@@ -367,7 +367,7 @@ STDMETHODIMP CPointLoad::put_Location(Float64 newVal)
 	return S_OK;
 }
 
-void CPointLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector)
+void CPointLoad::GetForceVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 *vector)
 {
    Float64 La;
    Float64 Px,Py,Mz;
@@ -388,7 +388,7 @@ void CPointLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float6
 
    if (Px!=0.0)
    {
-      ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,1,1,type);
+      ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,1,1,leftBC,rightBC);
       Pbeam.GetReactions(Fx1,Fy1,Mz1,Fx2,Fy2,Mz2);
       vector[0] += Fx1;
       vector[1] += Fy1;
@@ -400,7 +400,7 @@ void CPointLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float6
 
    if (Py!=0.0)
    {
-      ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,1,1,type);
+      ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,1,1,leftBC,rightBC);
       Vbeam.GetReactions(Fx1,Fy1,Mz1,Fx2,Fy2,Mz2);
       vector[0] += Fx1;
       vector[1] += Fy1;
@@ -412,7 +412,7 @@ void CPointLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float6
 
    if (Mz!=0.0)
    {
-      ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,1,1,type);
+      ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,1,1,leftBC,rightBC);
       Mbeam.GetReactions(Fx1,Fy1,Mz1,Fx2,Fy2,Mz2);
       vector[0] += Fx1;
       vector[1] += Fy1;
@@ -423,7 +423,7 @@ void CPointLoad::GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float6
    }
 }
 
-void CPointLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
+void CPointLoad::GetDispVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                      Float64 EA,Float64 EI,
                                      Float64 *vector)
 {
@@ -443,9 +443,9 @@ void CPointLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
    vector[5] = 0;
 
    GetLoadComponents(Angle,&Px,&Py,&Mz);
-   ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,EA,EI,type);
-   ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,EA,EI,type);
-   ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,EA,EI,type);
+   ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,EA,EI,leftBC,rightBC);
+   ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,EA,EI,leftBC,rightBC);
+   ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,EA,EI,leftBC,rightBC);
 
    Pbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
    vector[0] += Dx1;
@@ -501,7 +501,7 @@ void CPointLoad::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dM
    *pMz = Mo + Py*(La-x);
 }
 
-void CPointLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+void CPointLoad::GetDeflection(Float64 x,long leftBC,long rightBC,Float64 Length,Float64 Angle,
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 
@@ -518,9 +518,9 @@ void CPointLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Ang
    *prz = 0;
 
    GetLoadComponents(Angle,&Px,&Py,&Mz);
-   ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,EA,EI,type);
-   ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,EA,EI,type);
-   ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,EA,EI,type);
+   ConcLdBeam Pbeam(Px,La,Beam::ForceX,Length,EA,EI,leftBC,rightBC);
+   ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,EA,EI,leftBC,rightBC);
+   ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,EA,EI,leftBC,rightBC);
 
    Pbeam.GetDeflection(x,Dx,Dy,Rz);
    *pdx += Dx;

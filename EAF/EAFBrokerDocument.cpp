@@ -29,6 +29,7 @@
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFHints.h>
+#include <EAF\EAFAutoProgress.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
 
@@ -277,11 +278,12 @@ BOOL CEAFBrokerDocument::LoadAgents()
       pIEnumCLSID.Release();
       pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
 
+      CWinApp* pApp = AfxGetApp();
+
       nAgentsLoaded = 0;
       while (SUCCEEDED(pIEnumCLSID->Next(nMaxAgents,clsid,&nAgentsLoaded)) && 0 < nAgentsLoaded )
       {
          // load the extension agents - do it one at a time so that disabled ones can be skipped
-         CEAFApp* pApp = EAFGetApp();
          for (ULONG i = 0; i < nAgentsLoaded; i++ )
          {
             USES_CONVERSION;
@@ -765,6 +767,14 @@ void CEAFBrokerDocument::CreateGraphView(CollectionIndexType graphIdx)
    // does nothing by default
 }
 
+void CEAFBrokerDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* pHint)
+{
+   GET_IFACE(IProgress,pProgress);
+   CEAFAutoProgress progress(pProgress);
+   pProgress->UpdateMessage(_T("Updating views"));
+   CEAFDocument::OnUpdateAllViews(pSender,lHint,pHint);
+}
+
 bool CEAFBrokerDocument::GetDoDisplayFavoriteReports() const
 {
    return m_DisplayFavoriteReports!=FALSE;
@@ -922,7 +932,13 @@ void CEAFBrokerDocument::OnCustomReportHelp(custRepportHelpType helpType)
 
 void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
 {
-   GET_IFACE(IReportManager,pReportMgr);
+   CComPtr<IReportManager> pReportMgr;
+   HRESULT hr = m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&pReportMgr);
+   if ( FAILED(hr) )
+   {
+      // reporting isn't supported
+      return;
+   }
 
    if (bFirst)
    {

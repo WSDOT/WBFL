@@ -195,6 +195,14 @@ bool SuperNodeLoc::IsPinned(Side side)
       return (m_Release & mrRightPinned)!= 0;
 }
 
+bool SuperNodeLoc::HasAxialRelease(Side side)
+{
+   if (side == ssLeft)
+      return (m_Release & mrLeftAxial) != 0;
+   else
+      return (m_Release & mrRightAxial)!= 0;
+}
+
 SubNodeLocs* SuperNodeLoc::GetSubNodeLocs()
 {
    ATLASSERT(m_Reason&nrSpanEnd || m_Reason&nrTemporarySupport);

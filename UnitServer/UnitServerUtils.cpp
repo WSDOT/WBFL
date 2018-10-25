@@ -63,7 +63,7 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
       {
          OpenBridgeML::Units::UnitOfMeasureExType& unitOfMeasure(*iter);
          CComPtr<IUnitType> unitType;
-         hr = objUnitTypes->get_Item(CComVariant(A2BSTR(unitOfMeasure.UnitType().c_str())),&unitType);
+         hr = objUnitTypes->get_Item(CComVariant(T2BSTR(unitOfMeasure.UnitType().c_str())),&unitType);
          ATLASSERT(SUCCEEDED(hr)); // if this fires, the unit type is invalid
 
          CComPtr<IUnits> units;
@@ -78,7 +78,7 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
             post = unitOfMeasure.PostConvertTerm().get();
 
          CComPtr<IUnit> unit;
-         hr = units->Add(A2BSTR(unitOfMeasure.name().c_str()),
+         hr = units->Add(T2BSTR(unitOfMeasure.name().c_str()),
                          pre,
                          unitOfMeasure.ConversionFactor(),
                          post,
@@ -100,7 +100,7 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
 
             // Create a new WBFL Unit Type
             CComPtr<IUnitType> objUnitType;
-            objUnitTypes->Add(A2BSTR(UnitType.name().c_str()),
+            objUnitTypes->Add(T2BSTR(UnitType.name().c_str()),
                               UnitType.mass(),
                               UnitType.length(),
                               UnitType.time(),
@@ -127,7 +127,7 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
                   post = unitOfMeasure.PostConvertTerm().get();
 
                CComPtr<IUnit> objUnit;
-               units->Add(A2BSTR(unitOfMeasure.name().c_str()),
+               units->Add(T2BSTR(unitOfMeasure.name().c_str()),
                           pre,
                           unitOfMeasure.ConversionFactor(),
                           post,
@@ -142,11 +142,11 @@ BOOL InitializeWBFLUnitServer(OpenBridgeML::Units::UnitsDeclarationType* pDeclar
    if ( consistentUnits.present() )
    {
       // The <ConsistantUnits> element is present
-      CComBSTR bstrMass(   A2BSTR(consistentUnits->mass().c_str())        );
-      CComBSTR bstrLength( A2BSTR(consistentUnits->length().c_str())      );
-      CComBSTR bstrTime(   A2BSTR(consistentUnits->time().c_str())        );
-      CComBSTR bstrTemp(   A2BSTR(consistentUnits->temperature().c_str()) );
-      CComBSTR bstrAngle(  A2BSTR(consistentUnits->angle().c_str())       );
+      CComBSTR bstrMass(   T2BSTR(consistentUnits->mass().c_str())        );
+      CComBSTR bstrLength( T2BSTR(consistentUnits->length().c_str())      );
+      CComBSTR bstrTime(   T2BSTR(consistentUnits->time().c_str())        );
+      CComBSTR bstrTemp(   T2BSTR(consistentUnits->temperature().c_str()) );
+      CComBSTR bstrAngle(  T2BSTR(consistentUnits->angle().c_str())       );
       hr = pUnitServer->SetBaseUnits(bstrMass,bstrLength,bstrTime,bstrTemp,bstrAngle);
       ATLASSERT(SUCCEEDED(hr)); // if this fires, one of the unit of measure is invalid
    }

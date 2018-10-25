@@ -67,9 +67,13 @@ BOOL CMemberListPage::OnInitDialog()
       Float64 length;
       mbr->get_Length(&length);
 
-      VARIANT_BOOL bStartRelease, bEndRelease;
-      mbr->IsReleased(metStart,&bStartRelease);
-      mbr->IsReleased(metEnd,  &bEndRelease);
+      VARIANT_BOOL bStartReleaseFx, bEndReleaseFx;
+      mbr->IsReleased(metStart,mbrReleaseFx,&bStartReleaseFx);
+      mbr->IsReleased(metEnd,  mbrReleaseFx,&bEndReleaseFx);
+
+      VARIANT_BOOL bStartReleaseMz, bEndReleaseMz;
+      mbr->IsReleased(metStart,mbrReleaseMz,&bStartReleaseMz);
+      mbr->IsReleased(metEnd,  mbrReleaseMz,&bEndReleaseMz);
 
       Float64 EA, EI;
       mbr->get_EA(&EA);
@@ -89,10 +93,10 @@ BOOL CMemberListPage::OnInitDialog()
       str.Format(_T("%f"),length);
       m_ctrlList.SetItemText((int)mbrIdx,3,str);
 
-      str.Format(_T("%s"),bStartRelease == VARIANT_TRUE ? _T("x") : _T(""));
+      str.Format(_T("%s%s"),bStartReleaseFx == VARIANT_TRUE ? _T("Fx") : _T(""),bStartReleaseMz == VARIANT_TRUE ? _T("Mz") : _T(""));
       m_ctrlList.SetItemText((int)mbrIdx,4,str);
 
-      str.Format(_T("%s"),bEndRelease == VARIANT_TRUE ? _T("x") : _T(""));
+      str.Format(_T("%s%s"),bEndReleaseFx == VARIANT_TRUE ? _T("Fx") : _T(""),bEndReleaseMz == VARIANT_TRUE ? _T("Mz") : _T(""));
       m_ctrlList.SetItemText((int)mbrIdx,5,str);
 
       str.Format(_T("%f"),EA);

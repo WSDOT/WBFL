@@ -463,18 +463,36 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
 
 }
 
-static std::_tstring GetMRTString(MemberReleaseType mrt)
+static std::_tstring GetMRTString(ISuperstructureMember* ssm,Side side)
 {
-   switch(mrt)
+   CHRException hr;
+   VARIANT_BOOL bIsReleasedNone, bIsReleasedFx, bIsReleasedMz;
+   hr = ssm->IsEndReleased(side, mrtNone, &bIsReleasedNone);
+   hr = ssm->IsEndReleased(side, mrtFx, &bIsReleasedFx);
+   hr = ssm->IsEndReleased(side, mrtMz, &bIsReleasedMz);
+
+   if ( bIsReleasedNone == VARIANT_TRUE )
    {
-   case mrtNone:
       return std::_tstring(_T("Cont."));
-   case mrtPinned:
-      return std::_tstring(_T("Pinned"));
-   default:
-      ATLASSERT(0);
-      return std::_tstring(_T("Error"));
    }
+   else
+   {
+      if (bIsReleasedFx == VARIANT_TRUE && bIsReleasedMz == VARIANT_FALSE)
+      {
+         return std::_tstring(_T("Fx"));
+      }
+      else if (bIsReleasedFx == VARIANT_FALSE && bIsReleasedMz == VARIANT_TRUE)
+      {
+         return std::_tstring(_T("Mz"));
+      }
+      else if (bIsReleasedFx == VARIANT_TRUE && bIsReleasedMz == VARIANT_TRUE)
+      {
+         return std::_tstring(_T("Fx, Mz"));
+      }
+   }
+
+   ATLASSERT(false);
+   return std::_tstring(_T("Error"));
 }
 
 void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
@@ -505,14 +523,14 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
          double length;
          hr = ssm->get_Length(&length);
          CComBSTR lft_stg, rgt_stg;
-         MemberReleaseType lft_mrt, rgt_mrt;
-         hr = ssm->GetEndRelease(ssLeft, &lft_stg, &lft_mrt);
-         hr = ssm->GetEndRelease(ssRight, &rgt_stg, &rgt_mrt);
+         hr = ssm->GetEndReleaseRemovalStage(ssLeft, &lft_stg);
+         hr = ssm->GetEndReleaseRemovalStage(ssRight,&rgt_stg);
+ 
          VARIANT_BOOL symm;
          hr = ssm->get_IsSymmetrical(&symm);
 
-         os <<right<<setw(3)<<i<<Fl(length)<<_T(" ")<<left<<setw(8)<<GetMRTString(lft_mrt)<<setw(21)<<W2A(lft_stg)
-            <<setw(7)<<GetMRTString(rgt_mrt)<<setw(21)<<W2A(rgt_stg)
+         os <<right<<setw(3)<<i<<Fl(length)<<_T(" ")<<left<<setw(8)<<GetMRTString(ssm,ssLeft)<<setw(21)<<W2A(lft_stg)
+            <<setw(7)<<GetMRTString(ssm,ssRight)<<setw(21)<<W2A(rgt_stg)
             <<setw(12)<<(symm!=VARIANT_FALSE?_T("True"):_T("False"))<<endl;
       }
 

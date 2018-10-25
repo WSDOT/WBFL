@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 // CEAFChildFrame
 
-IMPLEMENT_DYNAMIC(CEAFChildFrame, CMDIChildWnd)
+IMPLEMENT_DYNCREATE(CEAFChildFrame, CMDIChildWnd)
 
 CEAFChildFrame::CEAFChildFrame()
 {

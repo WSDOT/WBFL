@@ -93,10 +93,10 @@ public:
 
 // MbrLoad
 public:
-   void GetForceVector(MbrType type,Float64 Length,Float64 Angle,Float64 *vector);
+   void GetForceVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 *vector);
    void GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dMbrFaceType face,Float64* pFx,Float64* pFy,Float64* pMz);
-   void GetDispVector(MbrType type,Float64 Length,Float64 Angle,Float64 EA,Float64 EI,Float64 *vector);
-   void GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+   void GetDispVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 EA,Float64 EI,Float64 *vector);
+   void GetDeflection(Float64 x,long leftBC,long rightBC,Float64 Length,Float64 Angle,
                         Float64 EA,Float64 EI,
                         Float64* pdx,Float64* pdy,Float64* prz);
    void GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx,Float64* pFy,Float64* pMz);

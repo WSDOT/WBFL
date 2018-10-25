@@ -24,12 +24,23 @@
 #include "stdafx.h"
 #include <EAF\EAFPluginState.h>
 
-CEAFPluginState::CEAFPluginState(const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
+CEAFPluginState::CEAFPluginState(LPCTSTR lpszName,const CLSID& clsid,const CString& strCLSID,bool bInitiallyEnabled)
 {
+   m_Name = lpszName;
    m_CLSID = clsid;
    m_strCLSID = strCLSID;
    m_bInitiallyEnabled = bInitiallyEnabled;
    m_bNewState = m_bInitiallyEnabled;
+}
+
+bool CEAFPluginState::operator<(const CEAFPluginState& other)
+{
+   return m_Name < other.m_Name;
+}
+
+LPCTSTR CEAFPluginState::GetName() const
+{
+   return m_Name;
 }
 
 void CEAFPluginState::SetState(bool bNewState)
@@ -37,17 +48,17 @@ void CEAFPluginState::SetState(bool bNewState)
    m_bNewState = bNewState;
 }
 
-bool CEAFPluginState::InitiallyEnabled()
+bool CEAFPluginState::InitiallyEnabled() const
 {
    return m_bInitiallyEnabled;
 }
 
-bool CEAFPluginState::StateChanged()
+bool CEAFPluginState::StateChanged() const
 {
    return m_bInitiallyEnabled != m_bNewState ? true : false;
 }
 
-bool CEAFPluginState::IsEnabled()
+bool CEAFPluginState::IsEnabled() const
 {
    if ( (InitiallyEnabled() && !StateChanged()) || (!InitiallyEnabled() && StateChanged()) )
       return true;
@@ -55,12 +66,12 @@ bool CEAFPluginState::IsEnabled()
    return false;
 }
 
-CLSID CEAFPluginState::GetCLSID()
+CLSID CEAFPluginState::GetCLSID() const
 {
    return m_CLSID;
 }
 
-CString CEAFPluginState::GetCLSIDString()
+CString CEAFPluginState::GetCLSIDString() const
 {
    return m_strCLSID;
 }

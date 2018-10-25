@@ -60,9 +60,9 @@ UINT CEAFPluginCommandManager::GetCommandTotal()
 CEAFPluginCommandManager::CEAFPluginCommandManager()
 {
    // bogus values to detect if user forget to call ReseveCommandIDRange 
-   m_nBaseID   = -1;
-   m_nCommands = -1;
-   m_nNextID   = -1;
+   m_nBaseID   = INVALID_ID;
+   m_nCommands = INVALID_ID;
+   m_nNextID   = INVALID_ID;
 }
 
 CEAFPluginCommandManager::~CEAFPluginCommandManager()
@@ -106,9 +106,9 @@ void CEAFPluginCommandManager::GetReservedCommandIDRange(UINT* pFirst,UINT* pLas
 
 BOOL CEAFPluginCommandManager::AddCommandCallback(UINT nPluginCmdID,IEAFCommandCallback* pCallback,UINT* pMappedID)
 {
-   // If these asserts fire, you forgot to callReserveCommandIDRange
-   ATLASSERT(m_nBaseID != -1);
-   ATLASSERT(m_nCommands != -1);
+   // If these asserts fire, you forgot to call ReserveCommandIDRange
+   ATLASSERT(m_nBaseID   != INVALID_ID);
+   ATLASSERT(m_nCommands != INVALID_ID);
 
    if ( GetMappedCommandID(nPluginCmdID,pCallback,pMappedID) )
    {
