@@ -536,39 +536,14 @@ STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 stat
    Float64 distFromStartOfBridge = StationToDistance(bridge,station);
 
    // get connection length of barrier
-   CComPtr<ISidewalkBarrier> barrier;
+   CComPtr<IBarrier> barrier;
    if ( side == qcbLeft )
       bridge->get_LeftBarrier(&barrier);
    else
       bridge->get_RightBarrier(&barrier);
 
    Float64 connection_width;
-   barrier->get_ExteriorCurbWidth(&connection_width);
-   offset += (side == qcbLeft ? connection_width : -connection_width);
-
-   *pOffset = offset;
-
-   return S_OK;
-}
-
-STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Float64 station,IDirection* direction,DirectionType side,Float64* pOffset)
-{
-   Float64 offset;
-   HRESULT hr = DeckOffset(bridge,station,direction,side,&offset);
-   if ( FAILED(hr) )
-      return hr;
-
-   Float64 distFromStartOfBridge = StationToDistance(bridge,station);
-
-   // get interior connection length of barrier
-   CComPtr<ISidewalkBarrier> barrier;
-   if ( side == qcbLeft )
-      bridge->get_LeftBarrier(&barrier);
-   else
-      bridge->get_RightBarrier(&barrier);
-
-   Float64 connection_width;
-   barrier->get_CurbWidth(&connection_width);
+   barrier->get_ConnectionWidth(distFromStartOfBridge,&connection_width);
    offset += (side == qcbLeft ? connection_width : -connection_width);
 
    *pOffset = offset;

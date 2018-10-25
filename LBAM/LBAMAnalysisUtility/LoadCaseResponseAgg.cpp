@@ -70,7 +70,7 @@ STDMETHODIMP CLoadCaseResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // ILoadCaseResponse
-STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR loadCase, IIDArray* POIs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** pResults)
+STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR loadCase, ILongArray* POIs, BSTR Stage, ResultsOrientation orientation, ResultsSummationType summ, ISectionResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -126,7 +126,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR loadCase, IIDArray* POIs, 
    return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR loadCase, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** pResults)
+STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR loadCase, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -181,7 +181,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR loadCase, IIDArray* P
    return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR loadCase, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
+STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR loadCase, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -237,7 +237,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR loadCase, IIDArray* POI
    return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR loadCase, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
+STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR loadCase, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, IResult3Ds** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;
@@ -293,7 +293,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR loadCase, IIDA
    return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR loadCase, IIDArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionStressResults** pResults)
+STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR loadCase, ILongArray* POIs, BSTR Stage, ResultsSummationType summ, ISectionStressResults** pResults)
 {
    CHECK_RETOBJ(pResults);
    CHRException hr;

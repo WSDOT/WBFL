@@ -50,7 +50,7 @@ void CTestTemperatureLoad::Test()
    TRY_TEST(pTemperatureLoad.CoCreateInstance( CLSID_ldTemperatureLoad ), S_OK );
    CComBSTR bst;
    Float64 d;
-   MemberIDType i;
+   long i;
    TRY_TEST( pTemperatureLoad->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
    TRY_TEST( pTemperatureLoad->get_TTop(&d), S_OK );
@@ -67,7 +67,7 @@ void CTestTemperatureLoad::Test()
    // cause some events to fire
    TRY_TEST( pTemperatureLoad->put_MemberID(3), S_OK );
    TEST_LOAD_FIRED();
-   MemberIDType l;
+   long l;
    TRY_TEST( pTemperatureLoad->get_MemberID(&l), S_OK );
    TRY_TEST( l, 3 );
 

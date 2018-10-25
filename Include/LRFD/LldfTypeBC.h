@@ -388,7 +388,7 @@ protected:
    
    //------------------------------------------------------------------------
    // Override this method so 90% of lever rule is applied to exterior beams for continuity.
-   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const;
+   virtual lrfdILiveLoadDistributionFactor::LeverRuleMethod DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,Uint32 Nl) const;
 
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Int_1_Strength() const;

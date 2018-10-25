@@ -283,8 +283,8 @@ library WBFLCore
 	]
 	interface IBrokerInitEx : IUnknown
 	{
-		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] IIndexArray** lErrIndex);
-		[helpstring("method LoadExtensionAgents")] HRESULT LoadExtensionAgents([in] CLSID* pClsid, [in] long nClsid,[out] IIndexArray** lErrIndex);
+		[helpstring("method LoadAgents")] HRESULT LoadAgents([in] CLSID* pClsid, [in] long nClsid,[out] ILongArray** lErrIndex);
+		[helpstring("method LoadExtensionAgents")] HRESULT LoadExtensionAgents([in] CLSID* pClsid, [in] long nClsid,[out] ILongArray** lErrIndex);
 		[helpstring("method AddAgent")] HRESULT AddAgent([in] IAgentEx* pAgent);
 		[helpstring("method AddExtensionAgent")] HRESULT AddExtensionAgent([in] IAgentEx* pAgent);
 		[helpstring("method FindConnectionPoint")] HRESULT FindConnectionPoint([in] REFIID riid,[out] IConnectionPoint** ppCP);

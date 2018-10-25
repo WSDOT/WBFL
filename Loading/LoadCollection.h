@@ -78,7 +78,7 @@ END_CONNECTION_POINT_MAP()
 // TInterface
 public:
 
-   STDMETHOD(get_ID)(IDType *pVal)
+   STDMETHOD(get_ID)(long *pVal)
    {
 	   *pVal = m_ID;
 
@@ -146,7 +146,7 @@ public:
          if (FAILED(hr))
             return hr;
 
-         m_ID = var.iVal;
+         m_ID = var.lVal;
 
          var.Clear();
          hr = pload->get_Property(CComBSTR("Load"),&var);
@@ -205,9 +205,9 @@ public:
    CComPtr<TLoad>      m_Load;
    CComBSTR            m_Stage;
    CComBSTR            m_LoadGroup;
-   IDType              m_ID;
+   long                m_ID;
 
-   DWORD       m_LoadCookie; // for events
+   unsigned long       m_LoadCookie; // for events
 };
 
 
@@ -274,12 +274,12 @@ public:
 
 private:
    typedef CComPtr<IItemType>         StoredType;
-   typedef typename std::map<IDType, StoredType> ContainerType;
+   typedef typename std::map<long, StoredType> ContainerType;
    typedef typename ContainerType::iterator    ContainerIteratorType;
    typedef typename ContainerType::value_type  ContainerValueType;
 
    ContainerType m_Container; // key value pair
-   IDType        m_LastUniqueKey;
+   long          m_LastUniqueKey;
 
    Float64 m_Version;
 
@@ -336,7 +336,7 @@ public:
 	   return S_OK;
    }
 
-   STDMETHOD(get_Load)(IDType ID, LoadType* *pVal)
+   STDMETHOD(get_Load)(long ID, LoadType* *pVal)
    {
       CHECK_RETOBJ(pVal);
    
@@ -354,7 +354,7 @@ public:
       return tmp->get_Load(pVal);
    }
 
-   STDMETHOD(putref_Load)(IDType ID, LoadType* newLoad)
+   STDMETHOD(putref_Load)(long ID, LoadType* newLoad)
    {
       ContainerIteratorType it = m_Container.find(ID);
       if ( it == m_Container.end() )
@@ -434,7 +434,7 @@ public:
       CHECK_IN(LoadGroup);
       CHECK_IN(pLoad);
 
-      IDType ID = ++m_LastUniqueKey;
+      long ID = ++m_LastUniqueKey;
       typedef AddLoadParams Parameters;
       Parameters parameters(ID,Stage,LoadGroup,pLoad);
 
@@ -455,7 +455,7 @@ public:
 
    }
 
-   STDMETHOD(Find)(IDType ID, IItemType ** retVal )
+   STDMETHOD(Find)(long ID, IItemType ** retVal )
    {
       CHECK_RETOBJ(retVal);
 
@@ -473,7 +473,7 @@ public:
 	   return S_OK;
    }
 
-   STDMETHOD(RemoveByID)(IDType ID)
+   STDMETHOD(RemoveByID)(long ID)
    {
       // Get the item to remove
       ContainerIteratorType iter = m_Container.find(ID);
@@ -513,7 +513,7 @@ public:
       ATLASSERT(iter != m_Container.end()); // should be past at end because of check on index above
       
       StoredType item = iter->second;
-      IDType ID;
+      long ID;
       item->get_ID(&ID);
       return RemoveByID(ID);
    }
@@ -791,9 +791,9 @@ public:
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = varlong.iVal;
+      long count = varlong.lVal;
       m_LastUniqueKey = 1;
-      for (CollectionIndexType i=0; i<count; i++)
+      for (long i=0; i<count; i++)
       {
 
          // items are not creatable, so we need to create and load manually
@@ -991,10 +991,10 @@ protected:
    struct AddLoadParams
    {
       AddLoadParams() {}
-      AddLoadParams(IDType id,BSTR stage,BSTR loadGroup,LoadType* pload) :
+      AddLoadParams(long id,BSTR stage,BSTR loadGroup,LoadType* pload) :
          ID(id), bstrStage(stage), bstrLoadGroup(loadGroup), Load(pload) {}
 
-      IDType            ID;
+      long              ID;
       CComBSTR          bstrStage;
       CComBSTR          bstrLoadGroup;
       CComPtr<LoadType> Load;
@@ -1051,7 +1051,7 @@ protected:
       if ( FAILED(hr) )
          return hr;
 
-      IDType ID;
+      long ID;
       item->get_ID(&ID);
       ContainerType::size_type nRemoved = pThis->m_Container.erase(ID);
       ATLASSERT(nRemoved == 1);
@@ -1062,7 +1062,7 @@ protected:
    }
    static HRESULT UndoRemoveLoad(_ThisClass* pThis,StoredType& item)
    {
-      IDType ID;
+      long ID;
       item->get_ID(&ID);
       std::pair<ContainerIteratorType,bool> st;
       st = pThis->m_Container.insert(ContainerValueType(ID, item));

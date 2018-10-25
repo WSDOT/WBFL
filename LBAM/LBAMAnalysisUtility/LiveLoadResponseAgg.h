@@ -62,35 +62,35 @@ END_CONNECTION_POINT_MAP()
 
 // ILiveLoadModelResponse
 public:
-	STDMETHOD(ComputeForces)( /*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeForces)( /*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                              /*[in]*/ResultsOrientation orientation, /*[in]*/ForceEffectType effect, 
                              /*[in]*/OptimizationType optimization, 
                              /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                              /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
                              /*[in]*/VARIANT_BOOL computePlacement, /*[out,retval]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeDeflections)( /*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeDeflections)( /*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                              /*[in]*/ForceEffectType effect, 
                              /*[in]*/OptimizationType optimization, 
                              /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                              /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
                              /*[in]*/VARIANT_BOOL computePlacement, /*[out,retval]*/ILiveLoadModelSectionResults** results);
 
-	STDMETHOD(ComputeReactions)( /*[in]*/IIDArray* supports, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeReactions)( /*[in]*/ILongArray* supports, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                 /*[in]*/ForceEffectType effect, 
                                 /*[in]*/OptimizationType optimization, 
                                 /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                 /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
                                 /*[in]*/VARIANT_BOOL computePlacement, /*[out,retval]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeSupportDeflections)( /*[in]*/IIDArray* supports, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeSupportDeflections)( /*[in]*/ILongArray* supports, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                          /*[in]*/ForceEffectType effect, 
                                          /*[in]*/OptimizationType optimization, 
                                          /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                          /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
                                          /*[in]*/VARIANT_BOOL computePlacement, /*[out,retval]*/ILiveLoadModelResults** results);
 
-	STDMETHOD(ComputeStresses)( /*[in]*/IIDArray* pois , /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
+	STDMETHOD(ComputeStresses)( /*[in]*/ILongArray* pois , /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type, 
                                /*[in]*/ForceEffectType effect, /*[in]*/OptimizationType optimization, 
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,

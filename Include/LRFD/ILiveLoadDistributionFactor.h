@@ -116,7 +116,7 @@ public:
       Float64 Sright;
       Float64 m; // multiple presense factor
       Float64 de; // Used only for exterior girders
-      IndexType nLanesUsed; // number of live load lanes actually used
+      Uint32 nLanesUsed; // number of live load lanes actually used
       GirderIndexType Nb; // number of beams (girders)
       bool  bWasExterior; // true if an exterior beam was analyzed
 
@@ -141,7 +141,7 @@ public:
    struct LanesBeamsMethod : public WasUsed
    {
       Float64 mg;
-      IndexType Nl;
+      Uint32 Nl;
       GirderIndexType Nb;
       Float64 m; // multiple presense factor
 

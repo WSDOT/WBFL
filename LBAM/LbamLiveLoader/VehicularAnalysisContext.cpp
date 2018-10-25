@@ -546,7 +546,7 @@ HRESULT CVehicularAnalysisContext::put_CantileverPoiIncrement( PoiIDType newVal)
    return m_pAnalysisPOIs->put_CantileverPoiIncrement(newVal);
 }
 
-HRESULT CVehicularAnalysisContext::GetSuperstructurePois(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations)
+HRESULT CVehicularAnalysisContext::GetSuperstructurePois(BSTR stage, ILongArray* *poiIDs, IDblArray* *poiLocations)
 {
    return m_pAnalysisPOIs->GetSuperstructurePois(stage, poiIDs, poiLocations);
 }

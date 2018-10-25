@@ -1032,7 +1032,7 @@ lrfdTxDotLldfTypeBC& lrfdTxDotLldfTypeBC::operator= (const lrfdTxDotLldfTypeBC& 
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdTxDotLldfTypeBC::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const
+lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdTxDotLldfTypeBC::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,Uint32 Nl) const
 {
    lrfdILiveLoadDistributionFactor::LeverRuleMethod lrData(lrfdLldfTypeBC::DistributeByLeverRule(beamNum,Spacings,leftOverhang,rightOverhang,wLane,Nl));
 

@@ -92,7 +92,7 @@ STDMETHODIMP CLoadCaseResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 
 
 // ILoadCaseResponse
-STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, IIDArray* POIs, BSTR Stage, ResultsOrientation orientation, 
+STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, ILongArray* POIs, BSTR Stage, ResultsOrientation orientation, 
                                                  ResultsSummationType summ, ISectionResult3Ds **pResults)
 {
    CHECK_IN(LoadCase);
@@ -175,7 +175,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, IIDArray* POIs, 
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, ILongArray* POIs, BSTR Stage,
                                                  ResultsSummationType summ, ISectionResult3Ds **pResults)
 {
    CHECK_IN(LoadCase);
@@ -260,7 +260,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, IIDArray* P
 
 
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, ILongArray* POIs, BSTR Stage,
                                                  ResultsSummationType summ, IResult3Ds **pResults)
 {
    CHECK_IN(LoadCase);
@@ -343,7 +343,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, IIDArray* POI
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, ILongArray* POIs, BSTR Stage,
                                                  ResultsSummationType summ, IResult3Ds **pResults)
 {
    CHECK_IN(LoadCase);
@@ -426,7 +426,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, IIDA
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, IIDArray* POIs, BSTR Stage,
+STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, ILongArray* POIs, BSTR Stage,
                                                  ResultsSummationType summ, ISectionStressResults **pResults)
 {
    CHECK_IN(LoadCase);

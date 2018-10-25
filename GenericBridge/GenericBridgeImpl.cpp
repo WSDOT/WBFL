@@ -1820,7 +1820,7 @@ STDMETHODIMP CGenericBridge::Clone(IGenericBridge* *clone)
 //   return ssmbrs->GetSegmentPoint(dist_from_start,ssmbrIdx,segmentIdx,dist);
 //}
 
-STDMETHODIMP CGenericBridge::get_LeftBarrier(ISidewalkBarrier** barrier)
+STDMETHODIMP CGenericBridge::get_LeftBarrier(IBarrier** barrier)
 {
    CHECK_RETOBJ(barrier);
    (*barrier) = m_LeftBarrier;
@@ -1831,7 +1831,7 @@ STDMETHODIMP CGenericBridge::get_LeftBarrier(ISidewalkBarrier** barrier)
    return S_OK;
 }
 
-STDMETHODIMP CGenericBridge::putref_LeftBarrier(ISidewalkBarrier* barrier)
+STDMETHODIMP CGenericBridge::putref_LeftBarrier(IBarrier* barrier)
 {
    CHECK_IN(barrier);
    if ( (m_LeftBarrier == NULL && barrier == NULL) || m_LeftBarrier.IsEqualObject(barrier) )
@@ -1842,7 +1842,7 @@ STDMETHODIMP CGenericBridge::putref_LeftBarrier(ISidewalkBarrier* barrier)
    return S_OK;
 }
 
-STDMETHODIMP CGenericBridge::get_RightBarrier(ISidewalkBarrier** barrier)
+STDMETHODIMP CGenericBridge::get_RightBarrier(IBarrier** barrier)
 {
    CHECK_RETOBJ(barrier);
    (*barrier) = m_RightBarrier;
@@ -1853,7 +1853,7 @@ STDMETHODIMP CGenericBridge::get_RightBarrier(ISidewalkBarrier** barrier)
    return S_OK;
 }
 
-STDMETHODIMP CGenericBridge::putref_RightBarrier(ISidewalkBarrier* barrier)
+STDMETHODIMP CGenericBridge::putref_RightBarrier(IBarrier* barrier)
 {
    CHECK_IN(barrier);
    if ( (m_RightBarrier == NULL && barrier == NULL) || m_RightBarrier.IsEqualObject(barrier) )

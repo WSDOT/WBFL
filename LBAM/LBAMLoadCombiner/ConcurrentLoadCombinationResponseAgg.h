@@ -55,11 +55,11 @@ END_COM_MAP()
 
 // IConcurrentLoadCombinationResponseAgg
 public:
-	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
-	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
-	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
-	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
-	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
+	STDMETHOD(ComputeForces)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+	STDMETHOD(ComputeDeflections)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+	STDMETHOD(ComputeReactions)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+	STDMETHOD(ComputeSupportDeflections)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+	STDMETHOD(ComputeStresses)(/*[in]*/ILongArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
 
 private:
    // internal implementation

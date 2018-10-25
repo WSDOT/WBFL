@@ -26,7 +26,7 @@ ReactionInfluenceDataSetBuilder::~ReactionInfluenceDataSetBuilder()
 {
 }
 
-void ReactionInfluenceDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void ReactionInfluenceDataSetBuilder::BuildDataSets(ILongArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
                                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
 {

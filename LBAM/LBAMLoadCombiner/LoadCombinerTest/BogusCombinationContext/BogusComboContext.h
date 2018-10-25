@@ -309,25 +309,25 @@ public:
                          /*[in]*/IAnalysisPOIs* analysisPOIs, /*[in]*/IGetStressPoints* crossSection);
 public:
 // ILoadGroupResponse
-	STDMETHOD(ComputeForces)(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsOrientation Orientation, ResultsSummationType summ, ISectionResult3Ds * * results);
-	STDMETHOD(ComputeDeflections)(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, ISectionResult3Ds * * results);
-	STDMETHOD(ComputeReactions)(BSTR LoadGroup, IIDArray* Supports, BSTR stage, ResultsSummationType summ, IResult3Ds * * results);
-	STDMETHOD(ComputeSupportDeflections)(BSTR LoadGroup, IIDArray* Supports, BSTR stage, ResultsSummationType summ, IResult3Ds * * results);
-	STDMETHOD(ComputeStresses)(BSTR LoadGroup, IIDArray* POIs, BSTR stage, ResultsSummationType summ, ISectionStressResults * * results);
+	STDMETHOD(ComputeForces)(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsOrientation Orientation, ResultsSummationType summ, ISectionResult3Ds * * results);
+	STDMETHOD(ComputeDeflections)(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, ISectionResult3Ds * * results);
+	STDMETHOD(ComputeReactions)(BSTR LoadGroup, ILongArray* Supports, BSTR stage, ResultsSummationType summ, IResult3Ds * * results);
+	STDMETHOD(ComputeSupportDeflections)(BSTR LoadGroup, ILongArray* Supports, BSTR stage, ResultsSummationType summ, IResult3Ds * * results);
+	STDMETHOD(ComputeStresses)(BSTR LoadGroup, ILongArray* POIs, BSTR stage, ResultsSummationType summ, ISectionStressResults * * results);
 
 // ILiveLoadModelResponse
-	STDMETHOD(ComputeForces)(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ResultsOrientation Orientation, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * results);
-	STDMETHOD(ComputeDeflections)(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * results);
-	STDMETHOD(ComputeReactions)(IIDArray* Supports, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * results);
-	STDMETHOD(ComputeSupportDeflections)(IIDArray* Supports, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * results);
-	STDMETHOD(ComputeStresses)(IIDArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelStressResults * * results);
+	STDMETHOD(ComputeForces)(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ResultsOrientation Orientation, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * results);
+	STDMETHOD(ComputeDeflections)(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelSectionResults * * results);
+	STDMETHOD(ComputeReactions)(ILongArray* Supports, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * results);
+	STDMETHOD(ComputeSupportDeflections)(ILongArray* Supports, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelResults * * results);
+	STDMETHOD(ComputeStresses)(ILongArray* POIs, BSTR stage, LiveLoadModelType type, ForceEffectType effect, OptimizationType Optimization, VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL applyImpact, VARIANT_BOOL applyDistribution, VARIANT_BOOL computePlacement, ILiveLoadModelStressResults * * results);
 
 // IBasicVehicularResponse
-	STDMETHOD(ComputeForces)(IIDArray* POIs, BSTR stage, ResultsOrientation Orientation, ILiveLoadConfiguration * config, ISectionResult3Ds * * results);
-	STDMETHOD(ComputeDeflections)(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionResult3Ds * * results);
-	STDMETHOD(ComputeReactions)(IIDArray* Supports, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * results);
-	STDMETHOD(ComputeSupportDeflections)(IIDArray* Supports, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * results);
-	STDMETHOD(ComputeStresses)(IIDArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionStressResults * * results);
+	STDMETHOD(ComputeForces)(ILongArray* POIs, BSTR stage, ResultsOrientation Orientation, ILiveLoadConfiguration * config, ISectionResult3Ds * * results);
+	STDMETHOD(ComputeDeflections)(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionResult3Ds * * results);
+	STDMETHOD(ComputeReactions)(ILongArray* Supports, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * results);
+	STDMETHOD(ComputeSupportDeflections)(ILongArray* Supports, BSTR stage, ILiveLoadConfiguration * config, IResult3Ds * * results);
+	STDMETHOD(ComputeStresses)(ILongArray* POIs, BSTR stage, ILiveLoadConfiguration * config, ISectionStressResults * * results);
 
 // IGetActiveLoadGroups
 	STDMETHOD(GetActiveLoadGroups)(IBstrArray* *loadGroups);
@@ -341,7 +341,7 @@ public:
 	STDMETHOD(put_SpanPoiIncrement)(PoiIDType pVal);
 	STDMETHOD(get_CantileverPoiIncrement)(PoiIDType * pVal);
 	STDMETHOD(put_CantileverPoiIncrement)(PoiIDType pVal);
-	STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray* * poiIDs, IDblArray* *poiLocations);
+	STDMETHOD(GetSuperstructurePois)(BSTR stage, ILongArray* * poiIDs, IDblArray* *poiLocations);
 	STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType * lbamMemberType, MemberIDType * MemberID, Float64 * memberLocation);
 
 // ILoadCases

@@ -18,7 +18,7 @@ public:
 	virtual ~InfluenceLineDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                              COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 

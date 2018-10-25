@@ -124,7 +124,7 @@ public:
    void IsPOIInNegativeLiveLoadMomentZone(PoiIDType poiID, InZoneType* isInZone);
    void GetNegativeMomentRegions(IDblArray* *locations);
 
-   bool GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDType* ssmId, Float64* ssmXLoc);
+   bool GetSuperstructureMemberForGlobalX(Float64 xLoc, CollectionIndexType* ssmIdx, Float64* ssmXLoc);
 
    // save fem model to persistence
    void SaveModel(IStructuredSave2* Save);
@@ -135,7 +135,7 @@ public:
    HRESULT put_SpanPoiIncrement( PoiIDType newVal);
    HRESULT get_CantileverPoiIncrement(PoiIDType *pVal);
    HRESULT put_CantileverPoiIncrement( PoiIDType newVal);
-   HRESULT GetSuperstructurePois(IIDArray* *poiIDs, IDblArray* *poiLocations);
+   HRESULT GetSuperstructurePois(ILongArray* *poiIDs, IDblArray* *poiLocations);
    HRESULT GetPoiInfo(PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLoc);
 
 // IGetSegmentCrossSection

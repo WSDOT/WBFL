@@ -160,8 +160,8 @@ void TestBasicVehicularResponse::Test()
   
 
    // ready to compute something
-   CComPtr<IIDArray> apois;
-   apois.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> apois;
+   apois.CoCreateInstance(CLSID_LongArray);
    apois->Add( 3);  // midspan of both spans
    apois->Add(17);
 
@@ -239,7 +239,7 @@ static HRESULT CreateASimpleLBAM(ILBAMModel** model)
    TRY_TEST(ssm1->put_Length(160.0), S_OK);
 
    // add some pois
-   PoiIDType last_val;
+   long last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 10, &last_val), S_OK);
 
    return S_OK;

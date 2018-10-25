@@ -85,21 +85,3 @@ STDMETHODIMP CTemporarySupports::Clone(/*[out]*/ITemporarySupports* *pColl)
    return spisps.CopyTo(pColl);
 }
 
-STDMETHODIMP CTemporarySupports::Find(SupportIDType tsID,ITemporarySupport** ppTS)
-{
-   CHECK_RETOBJ(ppTS);
-
-   for (iterator it= begin(); it != end(); it++)
-   {
-      CComPtr<ITemporarySupport> ts = it->second;
-      SupportIDType id;
-      ts->get_ID(&id);
-
-      if ( id == tsID )
-      {
-         return ts.CopyTo(ppTS);
-      }
-   }
-
-   return S_OK;
-}

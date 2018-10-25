@@ -1443,7 +1443,7 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
    }
 
    Float64 tmp_len = locations.back();
-   ATLASSERT( IsEqual(mbrLength,locations.back()) );
+   ATLASSERT(mbrLength==locations.back());
 
    // loop through elements and apply loads
    bool did_end=false;
@@ -1916,18 +1916,18 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
    {
       Float64 min_spacing = m_LeftOverhang/m_MinCantileverPoiIncrement;
 
-      for (PoiIDType is=0; is<=m_MinCantileverPoiIncrement; is++)
+      for (long is=0; is<=m_MinCantileverPoiIncrement; is++)
       {
          Float64 xloc = -m_LeftOverhang + is*min_spacing;
-         MemberIDType ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc) )
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
             }
          }
          else
@@ -1948,15 +1948,15 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
       for (long is=0; is<=m_MinCantileverPoiIncrement; is++)
       {
          Float64 xloc = start_loc + is*min_spacing;
-         MemberIDType ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc) )
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
             }
          }
          else
@@ -2999,7 +2999,7 @@ bool CAnalysisModel::IsTempSupportInModel(SupportIDType tmpSupportID)
    return false;
 }
 
-bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDType* ssmId, Float64* ssmXLoc)
+bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, CollectionIndexType* ssmIdx, Float64* ssmXLoc)
 {
    CHRException hr;
 
@@ -3042,7 +3042,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
       if (xLoc <= end_loc)
       {
          Float64 ssm_loc = xLoc - start_loc;
-         *ssmId = i_ssm;
+         *ssmIdx = i_ssm;
          *ssmXLoc = ssm_loc;
          return true;
       }
@@ -3052,7 +3052,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
          // we hit the end and did not find our location - let's see if we're within tolerance
          if (xLoc-end_loc<LOC_TOL)
          {
-            *ssmId = i_ssm;
+            *ssmIdx = i_ssm;
             *ssmXLoc = ssm_length;
             return true;
          }
@@ -3174,17 +3174,6 @@ void CAnalysisModel::GenerateFemModel(SuperNodeLocs* pNodeLocs)
    // check for unstable nodes at ssm ends and supports
    CheckFemModelStability(pNodeLocs, pJoints, pMembers);
 
-
-   // uncomment this code to dump a fem2d model
-   // note that the file name is not parametric so every time
-   // this code is called, the file is replaced
-   //CComPtr<IStructuredSave2> pSave;
-   //pSave.CoCreateInstance(CLSID_StructuredSave2);
-   //pSave->Open(CComBSTR("Fem2d.xml"));
-   //CComPtr<IStructuredStorage2> storage;
-   //m_pFem2d->QueryInterface(&storage);
-   //storage->Save(pSave);
-   //pSave->Close();
 }
 
 void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection* pJoints, IFem2dMemberCollection* pMembers, MemberIDType* pNextFemMemberID)
@@ -3314,7 +3303,7 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
 
          if (joint != NULL)
          {
-            CComPtr<IIDArray> femMemberIDs;
+            CComPtr<ILongArray> femMemberIDs;
             joint->get_Members(&femMemberIDs);
 
             CollectionIndexType nMembers;
@@ -4850,16 +4839,16 @@ void CAnalysisModel::GenerateContraflexurePOIs()
       {
          Float64 xloc;
          hr = m_ContraflexureLocations->get_Item(icf, &xloc);
-         MemberIDType ssm_id;
+         CollectionIndexType ssm_idx;
          Float64 ssm_loc;
-         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_id, &ssm_loc))
+         if (GetSuperstructureMemberForGlobalX(xloc, &ssm_idx, &ssm_loc))
          {
             PoiIDType id_at_loc;
-            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_id, xloc, &id_at_loc) )
+            if ( !poi_tracker.IsPoiAtLocation(mtSuperstructureMember, ssm_idx, xloc, &id_at_loc) )
             {
                // Need to create an internally-generated poi on the cantilever
                m_LastInternalPoiID--;
-               CreateSsmPOI(m_LastInternalPoiID, ssm_id, ssm_loc);
+               CreateSsmPOI(m_LastInternalPoiID, ssm_idx, ssm_loc);
 
                m_ContraflexurePOIs.push_back(m_LastInternalPoiID);
             }
@@ -5479,14 +5468,13 @@ HRESULT CAnalysisModel::put_CantileverPoiIncrement( PoiIDType newVal)
    return S_OK;
 }
 
-HRESULT CAnalysisModel::GetSuperstructurePois(IIDArray* *poiIDs, IDblArray* *poiLocations)
+HRESULT CAnalysisModel::GetSuperstructurePois(ILongArray* *poiIDs, IDblArray* *poiLocations)
 {
    HRESULT hr;
    CollectionIndexType size = m_pPoiTracker->size();
 
-   CComPtr<IIDArray> poi_ids;
-   hr = poi_ids.CoCreateInstance(CLSID_IDArray);
-   ATLASSERT(SUCCEEDED(hr));
+   CComPtr<ILongArray> poi_ids;
+   hr = poi_ids.CoCreateInstance(CLSID_LongArray);
    if (FAILED(hr))
       return hr;
 

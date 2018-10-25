@@ -79,7 +79,7 @@ HRESULT CTestFourStage::Test()
    TRY_TEST( poiu.CoCreateInstance(CLSID_LRFDFactory), S_OK );
 
    // get pois for superstructure to request results
-   CComPtr<IIDArray> poilist;
+   CComPtr<ILongArray> poilist;
    CComPtr<IDblArray> loclist;
    hr = poiu->GetSuperstructurePOIs(psm, &poilist, &loclist);
 
@@ -259,7 +259,7 @@ HRESULT CTestFourStage::Test()
 }
 
 
-void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
+void CTestFourStage::GetSSPoiLocs(ILongArray* pPoilist, ILBAMModel* pModel, std::vector<Float64>* poiLocs)
 {
    HRESULT hr;
    // first determine locations of span and superstructuremember ends
@@ -307,7 +307,7 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    CComPtr<IPOIs> pois;
    pModel->get_POIs(&pois);
 
-   TIArrayHelper<PoiIDType, IIDArray, CollectionIndexType> ppoilist(pPoilist);
+   TIArrayHelper<PoiIDType, ILongArray, CollectionIndexType> ppoilist(pPoilist);
 
    CollectionIndexType cnt = ppoilist.Size();
    for (CollectionIndexType i=0; i<cnt; i++)

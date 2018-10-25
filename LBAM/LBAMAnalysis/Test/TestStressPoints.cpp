@@ -67,7 +67,7 @@ inline void TestStressPoint(IStressPoint* sp, Float64 Sa, Float64 Sm)
    TRY_TEST(sm, Sm);
 }
 
-inline void TestSpsAtPoi(IGetStressPoints* pigsp, CComBSTR Stage, PoiIDType poiID, 
+inline void TestSpsAtPoi(IGetStressPoints* pigsp, CComBSTR Stage, long poiID, 
                         Float64 Sa0, Float64 Sm0, Float64 Sa1, Float64 Sm1, Float64 Sa2, Float64 Sm2)
 {
    CComQIPtr<IStressPoints> left_sps, right_sps;
@@ -195,7 +195,7 @@ ILBAMModel* TestStressPoints::CreateModel(bool doPois)
 
    // span 0
    Float64 loc = 0.0;
-   for (PoiIDType i=1; i<11; i++)
+   for (long i=1; i<11; i++)
    {
       CComPtr<IPOI> pPOI;
       TRY_TEST(pPOI.CoCreateInstance( CLSID_POI ), S_OK );

@@ -79,7 +79,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
 
       // See if we are picking up any axles
       bool is_axle_config = false;
-      CComPtr<IIndexArray> axle_config;
+      CComPtr<ILongArray> axle_config;
       if (config != NULL)
       {
          hr = config->get_AxleConfig(&axle_config);

@@ -1575,14 +1575,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\IDArray.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\IndexArray.cpp"
-				>
-			</File>
-			<File
 				RelativePath="LegalWiz.cpp"
 				>
 				<FileConfiguration
@@ -2934,14 +2926,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\IDArray.h"
-				>
-			</File>
-			<File
-				RelativePath=".\IndexArray.h"
-				>
-			</File>
-			<File
 				RelativePath="LegalWiz.h"
 				>
 			</File>
@@ -3132,14 +3116,6 @@
 			</File>
 			<File
 				RelativePath="ErrorLog.rgs"
-				>
-			</File>
-			<File
-				RelativePath=".\IDArray.rgs"
-				>
-			</File>
-			<File
-				RelativePath=".\IndexArray.rgs"
 				>
 			</File>
 			<File

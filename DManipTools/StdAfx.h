@@ -34,8 +34,6 @@
 
 #include <Private\WbflPackage.h>
 
-#include <afxcontrolbars.h>	// MFC support for ribbon and control bars
-
 #include <afxdisp.h>
 #include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
 #include <afxctl.h>

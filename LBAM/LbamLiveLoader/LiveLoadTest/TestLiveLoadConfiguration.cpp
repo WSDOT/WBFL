@@ -76,7 +76,7 @@ void TestLiveLoadConfiguration::Test()
    TRY_TEST(AtlAdvise(pllc,punk,IID_ILiveLoadConfigurationEvents,&dwCookie),S_OK);
 
    // test some defaults
-   CComPtr<IIndexArray> axles;
+   CComPtr<ILongArray> axles;
    TRY_TEST( pllc->get_AxleConfig(&axles), S_OK);
    CollectionIndexType size;
    axles->get_Count(&size);

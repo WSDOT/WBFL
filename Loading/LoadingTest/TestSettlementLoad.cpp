@@ -50,7 +50,7 @@ void CTestSettlementLoad::Test()
    TRY_TEST(pSettlementLoad.CoCreateInstance( CLSID_ldSettlementLoad ), S_OK );
    CComBSTR bst;
    Float64 d;
-   MemberIDType i;
+   long i;
    TRY_TEST( pSettlementLoad->get_MemberID(&i), S_OK );
    TRY_TEST( i, -1 );
    TRY_TEST( pSettlementLoad->get_Dx(&d), S_OK );
@@ -70,7 +70,7 @@ void CTestSettlementLoad::Test()
    // cause some events to fire
    TRY_TEST( pSettlementLoad->put_MemberID(3), S_OK );
    TEST_LOAD_FIRED();
-   MemberIDType l;
+   long l;
    TRY_TEST( pSettlementLoad->get_MemberID(&l), S_OK );
    TRY_TEST( l, 3 );
 

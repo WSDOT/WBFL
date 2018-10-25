@@ -75,13 +75,13 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
-   CComPtr<IIDArray> apois;
-   apois.CoCreateInstance(CLSID_IDArray);
+   const long NUMPOIS=10;
+   CComPtr<ILongArray> apois;
+   apois.CoCreateInstance(CLSID_LongArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (long i=0; i<NUMPOIS; i++)
    {
-      apois->Add((PoiIDType)i);
+      apois->Add(i);
    }
 
    // compute enveloped results for all pois
@@ -90,13 +90,13 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
                                        vlcType, doApplyImpact, doApplyDistribution, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<IIDArray> apoi;
-   apoi.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> apoi;
+   apoi.CoCreateInstance(CLSID_LongArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (long j=0; j<NUMPOIS; j++)
    {
-      apoi->put_Item(0,(PoiIDType)j);
+      apoi->put_Item(0,j);
 
       // get enveloped value - with optimal configuration
       Float64 left_val, right_val;
@@ -188,13 +188,13 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
-   CComPtr<IIDArray> apois;
-   apois.CoCreateInstance(CLSID_IDArray);
+   const long NUMPOIS=10;
+   CComPtr<ILongArray> apois;
+   apois.CoCreateInstance(CLSID_LongArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (long i=0; i<NUMPOIS; i++)
    {
-      apois->Add((PoiIDType)i);
+      apois->Add(i);
    }
 
    // compute enveloped results for all pois
@@ -203,13 +203,13 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
                                             vlcType, doApplyImpact, doApplyDistribution, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<IIDArray> apoi;
-   apoi.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> apoi;
+   apoi.CoCreateInstance(CLSID_LongArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (long j=0; j<NUMPOIS; j++)
    {
-      apoi->put_Item(0,(PoiIDType)j);
+      apoi->put_Item(0,j);
 
       // get enveloped value - with optimal configuration
       Float64 left_val, right_val;
@@ -308,7 +308,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
    os << "-----  -------------"<<std::endl;
 
    // get list of supports for this stage
-   CComPtr<IIDArray> support_ids;
+   CComPtr<ILongArray> support_ids;
    CComPtr<ILBAMFactory> gen_util;
    hr = gen_util.CoCreateInstance(CLSID_LRFDFactory);
    ATLASSERT(SUCCEEDED(hr));
@@ -324,13 +324,13 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
                                           vlcType, doApplyImpact, doApplyDistribution, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<IIDArray> asup;
-   asup.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> asup;
+   asup.CoCreateInstance(CLSID_LongArray);
    asup->ReDim(1);
 
    for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
    {
-      asup->put_Item(0, (SupportIDType)supportIDIdx);
+      asup->put_Item(0, supportIDIdx);
 
       // get enveloped value - with optimal configuration
       Float64 llmval;
@@ -407,7 +407,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
    os << "-----  -------------"<<std::endl;
 
    // get list of supports for this stage
-   CComPtr<IIDArray> support_ids;
+   CComPtr<ILongArray> support_ids;
    CComPtr<ILBAMFactory> gen_util;
    hr = gen_util.CoCreateInstance(CLSID_LRFDFactory);
    ATLASSERT(SUCCEEDED(hr));
@@ -423,13 +423,13 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
                                           vlcType, doApplyImpact, doApplyDistribution, VARIANT_TRUE, &results), S_OK);
 
    // have to compute basic result for a single poi for each configuration optimized at that poi
-   CComPtr<IIDArray> asup;
-   asup.CoCreateInstance(CLSID_IDArray);
+   CComPtr<ILongArray> asup;
+   asup.CoCreateInstance(CLSID_LongArray);
    asup->ReDim(1);
 
    for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
    {
-      asup->put_Item(0, (SupportIDType)supportIDIdx);
+      asup->put_Item(0, supportIDIdx);
 
       // get enveloped value - with optimal configuration
       Float64 llmval;

@@ -169,7 +169,7 @@ STDMETHODIMP CLoadCase::GetLoadGroup(CollectionIndexType index, BSTR *loadGroupN
 {
    CHECK_RETOBJ(loadGroupName);
 
-   if (0 <= index && index < (CollectionIndexType)m_LoadGroups.size())
+   if (index>=0 && index<m_LoadGroups.size())
    {
       return m_LoadGroups[index].CopyTo(loadGroupName);
    }
@@ -183,7 +183,7 @@ STDMETHODIMP CLoadCase::SetLoadGroup(CollectionIndexType index, BSTR newName)
 
    try
    {
-      if (0 <= index && index < (CollectionIndexType)m_LoadGroups.size())
+      if (index>=0 && index<m_LoadGroups.size())
       {
          CComBSTR tmp(newName);
          if (tmp.Length()>0)
@@ -240,7 +240,7 @@ STDMETHODIMP CLoadCase::RemoveLoadGroupByIndex(CollectionIndexType index)
 {
    try
    {
-      if (0 <= index && index < (CollectionIndexType)m_LoadGroups.size())
+      if (index>=0 && index<m_LoadGroups.size())
       {
          LoadGroupIterator it=m_LoadGroups.begin();
          it += index;
@@ -322,10 +322,10 @@ STDMETHODIMP CLoadCase::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = var.iVal;
+      long count = var.lVal;
       m_LoadGroups.clear();
       m_LoadGroups.reserve(count);
-      for (CollectionIndexType i=0; i<count; i++)
+      for (long i=0; i<count; i++)
       {
          var.Clear();
          hr = pload->get_Property(CComBSTR("LoadGroup"),&var);

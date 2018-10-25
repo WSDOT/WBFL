@@ -20,7 +20,7 @@ public:
 	virtual ~LoadCombinationDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                              COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
@@ -38,18 +38,18 @@ public:
 
 
    // iReactionReportBuilder
-   void BuildReactionReport(IIDArray* supportlist, BSTR currStg,
+   void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                             std::_tostream& pos);
 
 private:
  	LoadCombinationDataSetBuilder();
 
-   void BuildForceDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                            CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
-   void BuildStressDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildStressDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                            CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 

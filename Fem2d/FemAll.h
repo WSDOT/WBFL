@@ -29,6 +29,7 @@
 #pragma once
 
 #include <string>
+#include <WBFLTypes.h>
 
 // This include file has stuff that is needed by all fem files
 
@@ -36,7 +37,7 @@
 #define MAX_ELEMENT_DOF 6 // used to avoid dynamic memory allocation
 
 #undef  EPS
-#define EPS  0.010
+#define EPS  1.0e-3
 #undef   zero_val
 #define  zero_val( x )     (((-EPS)<=(x)) && ((x)<=(EPS)))
 

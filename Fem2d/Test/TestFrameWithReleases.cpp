@@ -172,7 +172,7 @@ void CTestFrameWithReleases::Test()
    ////////////////////////////////
    // place a hinge at the start of member 2
    pMember2->ReleaseEnd(metStart, mbrReleaseMz);
-   LoadCaseIDType lc=0;
+   long lc=0;
 
    Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDisplacements(lc, 2, &dx, &dy, &rz));

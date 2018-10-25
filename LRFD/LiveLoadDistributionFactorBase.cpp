@@ -133,8 +133,8 @@ public:
    {
    }
 
-   Float64 ComputeMaxFactor(IndexType nL, ControllingStrategy* pControl); // compute factor only for Nl, return max strategy
-   lrfdILiveLoadDistributionFactor::LeverRuleMethod ComputeLrd(IndexType nL, ControllingStrategy strategy); // return filled in class
+   Float64 ComputeMaxFactor(Uint32 nL, ControllingStrategy* pControl); // compute factor only for Nl, return max strategy
+   lrfdILiveLoadDistributionFactor::LeverRuleMethod ComputeLrd(Uint32 nL, ControllingStrategy strategy); // return filled in class
 
 private:
    Float64 m_Sleft;      // girder spacing to left and right of our beam
@@ -341,7 +341,7 @@ void InteriorLeverRuleAxlePlacer::ComputeLaneLayout(Float64 laneSplitLoc, Float6
    }
 }
 
-Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingStrategy* pControl)
+Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(Uint32 nL, ControllingStrategy* pControl)
 {
    Compute();
 
@@ -432,7 +432,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
    return gmax;
 }
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::ComputeLrd(IndexType nL, ControllingStrategy strategy)
+lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::ComputeLrd(Uint32 nL, ControllingStrategy strategy)
 {
    Compute();
 
@@ -496,7 +496,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
 //======================== LIFECYCLE  =======================================
 lrfdLiveLoadDistributionFactorBase::lrfdLiveLoadDistributionFactorBase(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,
                                       Float64 leftOverhang,Float64 rightOverhang,
-                                      CollectionIndexType Nl, Float64 wLane):
+                                      Uint32 Nl, Float64 wLane):
  m_GdrNum(gdr),
  m_Spacings(gdrSpacings),
  m_Savg(Savg),  
@@ -1040,7 +1040,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorBase::Ge
 
 lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorBase::DistributeByLeverRuleEx(Location loc,NumLoadedLanes numLanes) const
 {
-   GirderIndexType nl = (numLanes==TwoOrMoreLoadedLanes) ? m_Nl : 1;
+   Uint32 nl = (numLanes==TwoOrMoreLoadedLanes) ? m_Nl : 1;
 
    // Pick adjacent girder if needed
    GirderIndexType gdr = m_GdrNum;
@@ -1186,11 +1186,11 @@ bool lrfdLiveLoadDistributionFactorMixin::IgnoreMpfLeverRule() const
    return m_IgnoreMpfForLeverRuleSingleLane;
 }
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType Nl) const
+lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRule(GirderIndexType beamNum,const std::vector<Float64>& Spacings, Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,Uint32 Nl) const
 {
    // control loop
-   IndexType firstL = 1; // assume single lane
-   IndexType topL = 2;
+   Uint32 firstL = 1; // assume single lane
+   Uint32 topL = 2;
    if (Nl>1)
    {
       firstL = 2;
@@ -1207,9 +1207,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       // Single girder structure, use lanes/beams method
 
       // Lanes beams method will max when Nl * MPF is maximized. 
-      IndexType   nl_at_max = 0;
+      Uint32   nl_at_max = 0;
       Float64 mfmpf_max = 0.0;
-      for ( IndexType i = firstL; i < topL; i++ )
+      for ( Uint32 i = firstL; i < topL; i++ )
       {
          Float64 nfmpf = Nl * lrfdUtility::GetMultiplePresenceFactor(i);
          if (nfmpf > mfmpf_max)
@@ -1245,7 +1245,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       }
 
       // Get max for all lane combinations
-      for ( IndexType i = firstL; i < topL; i++ )
+      for ( Uint32 i = firstL; i < topL; i++ )
       {
          lrfdILiveLoadDistributionFactor::LeverRuleMethod currLRD = DistributeByLeverRulePerLaneExterior(nb, S, curbOverhang, wLane, i);
          if ( currLRD.mg > lrd.mg )
@@ -1279,9 +1279,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
       // Save number of lanes that gives max df
       Float64 df_max = 0.0;
-      IndexType   idx_max = 0;
+      Uint32   idx_max = 0;
       InteriorLeverRuleAxlePlacer::ControllingStrategy strat_max = InteriorLeverRuleAxlePlacer::LeftAxleLeftShy;
-      for ( IndexType i = firstL; i < topL; i++ )
+      for ( Uint32 i = firstL; i < topL; i++ )
       {
          InteriorLeverRuleAxlePlacer::ControllingStrategy strat;
          Float64 df = strategy.ComputeMaxFactor(i,&strat);
@@ -1309,7 +1309,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 }
 
 
-lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang,Float64 wLane,IndexType Nl) const
+lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorMixin::DistributeByLeverRulePerLaneExterior(GirderIndexType Nb, Float64 S, Float64 curbOverhang,Float64 wLane,Uint32 Nl) const
 {
    lrfdILiveLoadDistributionFactor::LeverRuleMethod lrData;     // distribution factor
    lrData.bWasUsed = true;
@@ -1328,9 +1328,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
    // as far to the left as possible and axles within lanes to left as far as possible
    Float64 cummd=0;  // cummulative distance from first interior
                      // girder to axle under consideration
-   IndexType nLanesUsed=0;
+   Uint32 nLanesUsed=0;
 
-   for (IndexType ilane = 0; ilane < Nl; ilane++)
+   for (Uint32 ilane = 0; ilane < Nl; ilane++)
    {
       Float64 lft_ll = ilane*wLane; // left most location of current lane measured from curb
 
@@ -1384,7 +1384,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
 lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin::DistributeByStaticalMethod(
       lrfdILiveLoadDistributionFactor::DfSide side,const std::vector<Float64>& rSpacings, 
-      Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,IndexType firstLoadedLane,IndexType lastLoadedLane) const
+      Float64 leftOverhang, Float64 rightOverhang,Float64 wLane,Uint32 firstLoadedLane,Uint32 lastLoadedLane) const
 {
    // See Section 4.6.2.2.2d
    lrfdILiveLoadDistributionFactor::RigidMethod rmData;
@@ -1448,12 +1448,12 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
    rmData.Xext = Xext;
 
    // Determine which number of lanes will control
-   IndexType ln_ctrl =0;
+   Uint32 ln_ctrl =0;
    Float64 sume_max = -Float64_Max;
-   for (IndexType cur_nl=firstLoadedLane; cur_nl<=lastLoadedLane; cur_nl++)
+   for (Uint32 cur_nl=firstLoadedLane; cur_nl<=lastLoadedLane; cur_nl++)
    {
       sume = 0;
-      for (IndexType i = 0; i < cur_nl; i++)
+      for (Uint32 i = 0; i < cur_nl; i++)
       {
          e = cg - GetShyDistance() - 0.5*GetWheelLineSpacing() - i*wLane;
          sume += e;
@@ -1470,7 +1470,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
 
    // Now compute df data for maximal lane configuration
    sume = 0;
-   for (IndexType i = 0; i < ln_ctrl; i++)
+   for (Uint32 i = 0; i < ln_ctrl; i++)
    {
       e = cg - GetShyDistance() - 0.5*GetWheelLineSpacing() - i*wLane;
       sume += e;
@@ -1481,7 +1481,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
    rmData.m = lrfdUtility::GetMultiplePresenceFactor(ln_ctrl);
    rmData.mg = rmData.m * (((Float64)ln_ctrl)/((Float64)nb) + Xext*sume/sumx2);
    rmData.Nb = (Float64)nb;
-   rmData.Nl = (Float64)ln_ctrl;
+   rmData.Nl = ln_ctrl;
 
    return rmData;
 }
@@ -1571,7 +1571,7 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetDistanceToAxle(Float64 S,Float64
    return d;
 }
 
-lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorMixin::GetLanesBeamsMethod(IndexType Nl,GirderIndexType Nb) const
+lrfdILiveLoadDistributionFactor::DFResult lrfdLiveLoadDistributionFactorMixin::GetLanesBeamsMethod(Uint32 Nl,GirderIndexType Nb) const
 {
    lrfdILiveLoadDistributionFactor::DFResult g;
 

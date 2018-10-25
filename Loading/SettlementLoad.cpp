@@ -50,7 +50,7 @@ STDMETHODIMP CSettlementLoad::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSettlementLoad::get_MemberID(MemberIDType *pVal)
+STDMETHODIMP CSettlementLoad::get_MemberID(long *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_MemberID;
@@ -58,7 +58,7 @@ STDMETHODIMP CSettlementLoad::get_MemberID(MemberIDType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CSettlementLoad::put_MemberID(MemberIDType newVal)
+STDMETHODIMP CSettlementLoad::put_MemberID(long newVal)
 {
 	if (newVal<0)
       return E_INVALIDARG;
@@ -177,7 +177,7 @@ STDMETHODIMP CSettlementLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_MemberID = var.iVal;
+      m_MemberID = var.lVal;
 
       var.Clear();
       hr = pload->get_Property(CComBSTR("Dx"),&var);

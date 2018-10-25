@@ -19,7 +19,7 @@ public:
 	virtual ~LiveLoadModelDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                              COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
@@ -31,16 +31,16 @@ public:
    virtual CString GetDescription();
 
    // iReactionReportBuilder
-   void BuildReactionReport(IIDArray* supportlist, BSTR currStg,
+   void BuildReactionReport(ILongArray* supportlist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                             std::_tostream& pos);
 
 private:
-   void BuildForceDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildForceDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                            CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 
-   void BuildStressDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   void BuildStressDataSets(ILongArray* poilist, IDblArray* loclist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
                             COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
 

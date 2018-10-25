@@ -46,7 +46,7 @@ static char THIS_FILE[] = __FILE__;
 
 static HRESULT CreateASimpleLBAM(ILBAMModel** model);
 
-inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, MemberIDType mbrId, MemberType mType, Float64 ldVal)
+inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR loadGroup, long mbrId, MemberType mType, Float64 ldVal)
 {
    CComPtr<IDistributedLoad> dl;
    TRY_TEST( dl.CoCreateInstance(CLSID_DistributedLoad), S_OK);
@@ -627,8 +627,8 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    CComPtr<IDistributionFactor> end_df, mid_df;
    TRY_TEST(end_df.CoCreateInstance(CLSID_DistributionFactor), S_OK);
    TRY_TEST(mid_df.CoCreateInstance(CLSID_DistributionFactor), S_OK);
-   end_df->SetG(1,2,3,4,5,6,7,8,9,10,11,12,13,14);
-   mid_df->SetG(21,22,23,24,25,26,27,28,29,30,31,32,33,34);
+   end_df->SetG(1,2,3,4,5,6,7,8,9,10,11,12,13);
+   mid_df->SetG(21,22,23,24,25,26,27,28,29,30,31,32,33);
 
    CComPtr<IDistributionFactorSegment> end_seg, mid_seg;
    TRY_TEST( end_seg.CoCreateInstance( CLSID_DistributionFactorSegment ) , S_OK );
@@ -686,7 +686,7 @@ HRESULT CreateASimpleLBAM(ILBAMModel** model)
    lcdc->AddLoadGroup(lgn_sw);
 
    // add some pois
-   PoiIDType last_val;
+   long last_val;
    TRY_TEST(factory->GeneratePOIsOnSuperstructure(*model, 0, 10, &last_val), S_OK);
 
 

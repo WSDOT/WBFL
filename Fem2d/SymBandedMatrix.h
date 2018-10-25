@@ -32,7 +32,6 @@
 #pragma once
 
 #include <ostream>
-#include <WBFLTypes.h>
 
 // Hokey class to represent a symmetric banded matrix. 
 // Optimized and specialized for the Fem2d library

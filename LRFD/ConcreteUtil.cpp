@@ -538,35 +538,6 @@ Float64 lrfdConcreteUtil::MaxStirrupSpacingForHoriz()
       return g_2_FT;
 }
 
-Float64 lrfdConcreteUtil::AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
-                                              Float64 c, Float64 u, Float64 K1, Float64 K2,
-                                              Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
-                                              Float64 fc, Float64 fy)
-{
-   Float64 vuh = max(Vuh.Left(),Vuh.Right());
-
-   // Use existing function to get non-rebar related resistance values
-   Float64 VnEnqn1, VnEnqn2, VnEnqn3; // Note that equation numbers have changed in most recent spec version 2009
-   HorizontalShearResistances(c, u, K1, K2, Acv, Avf, Pc, fc, fy, &VnEnqn1, &VnEnqn2, &VnEnqn3);
-
-   Float64 VnMax = min(VnEnqn2, VnEnqn3);
-
-   if (VnMax < vuh/phi)
-   {
-      return Float64_Max; // we can't add enough steel to satisfy
-   }
-   else
-   {
-      // solve eqn 1 for Av
-      Float64 Avs_reqd = ( (vuh/phi - c*bv)/u - Pc )/fy;
-      Avs_reqd = max(Avs_reqd, AvfOverSMin);
-
-      return Avs_reqd;
-   }
-}
-
-
-
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================

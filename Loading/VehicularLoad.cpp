@@ -451,7 +451,7 @@ STDMETHODIMP CVehicularLoad::Load(IStructuredLoad2 * pload)
       if (FAILED(hr))
          return hr;
 
-      m_VariableAxle = var.iVal;
+      m_VariableAxle = var.lVal;
 
       var.Clear();
       hr = pload->get_Property(CComBSTR("VariableMaxSpacing"),&var);
@@ -538,9 +538,9 @@ STDMETHODIMP CVehicularLoad::Save(IStructuredSave2 * psave)
    {
       hr = psave->BeginUnit(CComBSTR("VehicularLoad"), MY_VER);
       hr = psave->put_Property(CComBSTR("Name"),CComVariant(m_Name));
-      hr = psave->put_Property(CComBSTR("VehicularLoadConfiguration"),CComVariant(m_VehicularLoadConfiguration));
+      hr = psave->put_Property(CComBSTR("VehicularLoadConfiguration"),CComVariant((long)m_VehicularLoadConfiguration));
       hr = psave->put_Property(CComBSTR("UseNotional"),CComVariant(m_UseNotional));
-      hr = psave->put_Property(CComBSTR("LiveLoadApplicability"),CComVariant(m_LiveLoadApplicability));
+      hr = psave->put_Property(CComBSTR("LiveLoadApplicability"),CComVariant((long)m_LiveLoadApplicability));
       hr = psave->put_Property(CComBSTR("VariableAxle"),CComVariant(m_VariableAxle));
       hr = psave->put_Property(CComBSTR("VariableMaxSpacing"),CComVariant(m_VariableMaxSpacing));
       hr = psave->put_Property(CComBSTR("LaneLoad"),CComVariant(m_LaneLoad));

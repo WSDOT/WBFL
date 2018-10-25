@@ -114,15 +114,15 @@ STDMETHODIMP CMember::Load(/*[in]*/ IStructuredLoad2 *pload)
       if (FAILED(hr))
          return hr;
 
-      JointIDType jnt = varlong.lVal;
-      m_JointKeeper.PutStartJoint(jnt);
+      long jnt = varlong.lVal;
+      m_JointKeeper.PutStartJoint(varlong.lVal);
 
       hr = pload->get_Property(CComBSTR("EndJoint"),&varlong);
       if (FAILED(hr))
          return hr;
 
       jnt = varlong.lVal;
-      m_JointKeeper.PutEndJoint(jnt);
+      m_JointKeeper.PutEndJoint(varlong.lVal);
 
       CComVariant vardbl;
       vardbl.vt = VT_R8;
@@ -857,7 +857,7 @@ void CMember::GetGlobalJntForces(JointIDType jntId,Float64 *force)
    }
 }
 
-JointIDType CMember::GetJointNum(CJoint* j)
+long CMember::GetJointNum(CJoint* j)
 {
 
    CJoint *StartJnt, *EndJnt;

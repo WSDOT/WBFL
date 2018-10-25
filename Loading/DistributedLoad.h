@@ -98,8 +98,8 @@ public:
 	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal);
 	STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64 *pVal);
 	STDMETHOD(put_StartLocation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ long *pVal);
+	STDMETHOD(put_MemberID)(/*[in]*/ long newVal);
 //	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
 //	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
 	STDMETHOD(Clone)(/*[out,retval]*/ldIDistributedLoad** clone);
@@ -112,7 +112,7 @@ protected:
    ldLoadDirection   m_Direction;
    ldLoadOrientation m_Orientation;
 //   MemberType      m_MemberType;
-   MemberIDType            m_MemberID;
+   long            m_MemberID;
 
    // Transaction callbacks
    static HRESULT PutStartLocation(CDistributedLoad* pThis,Float64 start);
@@ -121,7 +121,7 @@ protected:
    static HRESULT PutWEnd(CDistributedLoad* pThis,Float64 wEnd);
    static HRESULT PutDirection(CDistributedLoad* pThis,ldLoadDirection direction);
    static HRESULT PutOrientation(CDistributedLoad* pThis,ldLoadOrientation orientation);
-   static HRESULT PutMemberID(CDistributedLoad* pThis,MemberIDType id);
+   static HRESULT PutMemberID(CDistributedLoad* pThis,long id);
 };
 
 #endif //__DISTRIBUTEDLOAD_H_

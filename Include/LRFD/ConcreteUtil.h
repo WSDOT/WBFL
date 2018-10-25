@@ -153,13 +153,6 @@ public:
    // Max bar spacing 5.8.4.1
    static Float64 MaxStirrupSpacingForHoriz();
 
-   //------------------------------------------------------------------------
-   // Calculate required Avf for horizontal shear
-   static Float64 AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
-                                      Float64 c, Float64 u, Float64 K1, Float64 K2,
-                                      Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
-                                      Float64 fc, Float64 fy);
-
    // GROUP: ACCESS
    // GROUP: INQUIRY
    // GROUP: DEBUG

@@ -316,22 +316,22 @@ STDMETHODIMP CBrokerImp2::ShutDown()
 
 //////////////////////////////////////////////////////
 // IBrokerInitEx2/3
-STDMETHODIMP CBrokerImp2::LoadExtensionAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex )
+STDMETHODIMP CBrokerImp2::LoadExtensionAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex )
 {
    return LoadAgents(clsid,nClsid,plErrIndex,m_ExtensionAgents);
 }
 
-STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex )
+STDMETHODIMP CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex )
 {
    return LoadAgents(clsid,nClsid,plErrIndex,m_Agents);
 }
 
-HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,IIndexArray** plErrIndex, Agents& agents )
+HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, long nClsid,ILongArray** plErrIndex, Agents& agents )
 {
    CHECK_RETOBJ(plErrIndex);
 
-   CComPtr<IIndexArray> arr;
-   arr.CoCreateInstance(CLSID_IndexArray);
+   CComPtr<ILongArray> arr;
+   arr.CoCreateInstance(CLSID_LongArray);
    (*plErrIndex) = arr;
    (*plErrIndex)->AddRef();
 

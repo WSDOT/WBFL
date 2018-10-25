@@ -2699,6 +2699,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\StrandFillTool.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StrandGrid.cpp"
 				>
 				<FileConfiguration
@@ -2866,6 +2870,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\StrandFillTool.h"
+				>
+			</File>
+			<File
 				RelativePath="StrandGrid.h"
 				>
 			</File>
@@ -2920,6 +2928,10 @@
 			</File>
 			<File
 				RelativePath="SectionCutTool.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\StrandFillTool.rgs"
 				>
 			</File>
 			<File

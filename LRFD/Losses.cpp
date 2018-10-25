@@ -68,7 +68,6 @@ lrfdLosses::lrfdLosses(  Float64 x,
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim, // Live load moment
 
                          Float64 Ag,   // area of girder
                          Float64 Ig,   // moment of inertia of girder
@@ -119,7 +118,6 @@ lrfdLosses::lrfdLosses(  Float64 x,
    m_Mdlg                  = Mdlg;
    m_Madlg                 = Madlg;
    m_Msidl                 = Msidl;
-   m_Mllim                 = Mllim;
    
    m_bIgnoreInitialRelaxation = bIgnoreInitialRelaxation;
 
@@ -174,7 +172,6 @@ lrfdLosses::lrfdLosses()
    m_Mdlg                  = 0;
    m_Madlg                 = 0;
    m_Msidl                 = 0;
-   m_Mllim                 = 0;
    
    m_bIgnoreInitialRelaxation = true;
 
@@ -207,8 +204,6 @@ void lrfdLosses::Init()
    m_dfpES[1] = 0;
    m_dfpED = 0;
    m_dfpSIDL = 0;
-   m_dfpSS = 0;
-   m_dfpLL = 0;
    m_dfpp = 0;
    m_fpL = 0;
    m_fpD = 0;
@@ -227,8 +222,6 @@ void lrfdLosses::Init()
    m_dfptr = 0;
    m_Ptr = 0;
    m_DeltaFcd1 = 0;
-   m_DeltaFcd2 = 0;
-   m_DeltaFcdLL = 0;
    m_dfpF = 0;
    m_dfpFT = 0;
    m_dfpA = 0;
@@ -441,7 +434,7 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() - ElasticGainDueToDeckPlacement() + GetDeltaFptr();
+   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() + ElasticGainDueToDeckPlacement() + GetDeltaFptr();
 
    if ( m_TempStrandUsage != tsPretensioned )
       loss += GetDeltaFpp();//m_dfpp;
@@ -454,7 +447,7 @@ Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
    if ( m_IsDirty )
       UpdateLosses();
 
-   Float64 loss = PermanentStrand_AfterDeckPlacement() - ElasticGainDueToSIDL();
+   Float64 loss = PermanentStrand_AfterDeckPlacement() + ElasticGainDueToSIDL();
 
    return loss;
 }
@@ -465,15 +458,6 @@ Float64 lrfdLosses::PermanentStrand_Final() const
       UpdateLosses();
 
    Float64 loss = PermanentStrand_AfterSIDL() + TimeDependentLossesAfterDeck();
-   return loss;
-}
-
-Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad() const
-{
-   if ( m_IsDirty )
-      UpdateLosses();
-
-   Float64 loss = PermanentStrand_Final() - ElasticGainDueToLiveLoad();
    return loss;
 }
 
@@ -635,40 +619,14 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
 
 Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
 {
-   if ( m_IsDirty ) 
-      UpdateLosses();
-
+   if ( m_IsDirty ) UpdateLosses();
    return m_dfpED;
 }
 
 Float64 lrfdLosses::ElasticGainDueToSIDL() const
 {
-   if ( m_IsDirty ) 
-      UpdateLosses();
-
+   if ( m_IsDirty ) UpdateLosses();
    return m_dfpSIDL;
-}
-
-Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
-{
-   if ( m_IsDirty )
-      UpdateLosses();
-
-   return m_dfpSS;
-}
-
-Float64 lrfdLosses::ElasticGainDueToLiveLoad() const
-{
-   if ( m_IsDirty )
-      UpdateLosses();
-
-   return m_dfpLL;
-}
-
-void lrfdLosses::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
-{
-   *pA = 0;
-   *pM = 0;
 }
 
 Float64 lrfdLosses::FrictionLoss() const
@@ -837,14 +795,6 @@ Float64 lrfdLosses::GetDeltaFcd2() const
       UpdateLosses();
 
    return m_DeltaFcd2;
-}
-
-Float64 lrfdLosses::GetDeltaFcdLL() const
-{
-   if ( m_IsDirty )
-      UpdateLosses();
-
-   return m_DeltaFcdLL;
 }
 
 void lrfdLosses::UpdateLosses() const
@@ -1163,8 +1113,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
    m_Mdlg                  = rOther.m_Mdlg;
    m_Madlg                 = rOther.m_Madlg;
    m_Msidl                 = rOther.m_Msidl;
-   m_Mllim                 = rOther.m_Mllim;
-
    m_ti                    = rOther.m_ti;
    
    m_Ag                    = rOther.m_Ag;
@@ -1186,8 +1134,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 
    m_dfpED                 = rOther.m_dfpED;
    m_dfpSIDL               = rOther.m_dfpSIDL;
-   m_dfpSS                 = rOther.m_dfpSS;
-   m_dfpLL                 = rOther.m_dfpLL;
 
    m_dfpF                  = rOther.m_dfpF;
    m_dfpFT                 = rOther.m_dfpFT;
@@ -1221,8 +1167,6 @@ void lrfdLosses::MakeCopy( const lrfdLosses& rOther )
 
    m_DeltaFcd1             = rOther.m_DeltaFcd1;
    m_DeltaFcd2             = rOther.m_DeltaFcd2;
-
-   m_DeltaFcdLL            = rOther.m_DeltaFcdLL;
 
    m_ElasticShortening     = rOther.m_ElasticShortening;
 

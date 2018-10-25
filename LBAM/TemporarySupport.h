@@ -77,8 +77,6 @@ END_CONNECTION_POINT_MAP()
 
 // ITemporarySupport
 public:
-   STDMETHOD(get_OmitReaction)(VARIANT_BOOL* pbOmit);
-   STDMETHOD(put_OmitReaction)(VARIANT_BOOL bOmit);
 	STDMETHOD(get_TopRelease)(/*[out, retval]*/ VARIANT_BOOL *pVal);
 	STDMETHOD(put_TopRelease)(/*[in]*/ VARIANT_BOOL newVal);
 	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal);
@@ -151,7 +149,6 @@ public:
    BoundaryConditionType m_BoundaryCondition;
    CComBSTR m_StageRemoved;
    VARIANT_BOOL m_TopRelease;
-   VARIANT_BOOL m_bOmitReaction;
 
 
    CLoadModifierHelper m_LoadModifierHelper;
