@@ -41,7 +41,7 @@ static char THIS_FILE[]=__FILE__;
 
 CInplaceEditDefaultImpl::CInplaceEditDefaultImpl()
 {
-
+   m_pCompositeParent = nullptr;
 }
 
 CInplaceEditDefaultImpl::~CInplaceEditDefaultImpl()
@@ -63,6 +63,20 @@ STDMETHODIMP_(void) CInplaceEditDefaultImpl::DoInplaceEdit()
 
    CInplaceEdit* pEdit = GetEditObject();
    pEdit->SetTask(pTask);
+}
+
+void CInplaceEditDefaultImpl::Do_SetParent(iDisplayObject* pParent)
+{
+   m_pCompositeParent = pParent;
+}
+
+void CInplaceEditDefaultImpl::Do_GetParent(iDisplayObject** ppParent)
+{
+   (*ppParent) = m_pCompositeParent;
+   if (*ppParent)
+   {
+      (*ppParent)->AddRef();
+   }
 }
 
 void CInplaceEditDefaultImpl::CreateTask(iTask** task)

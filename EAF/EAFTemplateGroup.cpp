@@ -112,6 +112,23 @@ CEAFTemplateGroup* CEAFTemplateGroup::Clone() const
    return pGroup;
 }
 
+CollectionIndexType CEAFTemplateGroup::GetTemplateCount() const
+{
+   return DeepCount(this);
+}
+
+CollectionIndexType CEAFTemplateGroup::DeepCount(const CEAFTemplateGroup* pGroup) const
+{
+   CollectionIndexType nTemplates = 0;
+   for (const auto* pSubgroup : pGroup->m_Groups)
+   {
+      nTemplates += DeepCount(pSubgroup);
+   }
+
+   nTemplates += pGroup->m_Items.size();
+   return nTemplates;
+}
+
 void CEAFTemplateGroup::DeepCopy(const CEAFTemplateGroup* pGroup)
 {
    m_GroupName = pGroup->m_GroupName;

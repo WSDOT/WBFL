@@ -81,9 +81,9 @@ Float64 CPierImpl::GetDelta()
    {
       // Delta is the difference in location between the left curb line and 
       // the left edge of cross beam. If delta is greater than zero the
-      // curb line left of the left edge of the cross beam.
+      // curb line is left of the left edge of the cross beam.
       //
-      // This detal value is used in coordinate transformations
+      // This delta value is used in coordinate transformations
 
       // Location of the alignment measured from the left edge of the cross beam
       ColumnIndexType refColIdx;
@@ -99,6 +99,13 @@ Float64 CPierImpl::GetDelta()
       Float64 Xcl = -CLO; // in curb line coordinates
 
       m_Delta = Xcl - Xxb; // Xxb + delta = Xcl
+      m_Delta = IsZero(m_Delta) ? 0 : m_Delta;
+
+      CComQIPtr<ILinearCrossBeam> cb(m_CrossBeam);
+      Float64 X2;
+      cb->get_X2(&X2);
+      m_Delta += X2;
+
       m_bIsDirty = false;
    }
 

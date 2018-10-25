@@ -892,6 +892,7 @@
     <ClInclude Include="..\Include\MathEx.h" />
     <ClInclude Include="..\Include\Private\WbflPackage.h" />
     <ClInclude Include="..\Include\System\AutoLib.h" />
+    <ClInclude Include="..\Include\System\AutoVariable.h" />
     <ClInclude Include="..\Include\System\Checks.h" />
     <ClInclude Include="..\Include\System\ColorConverter.h" />
     <ClInclude Include="..\Include\System\ComCatMgr.h" />

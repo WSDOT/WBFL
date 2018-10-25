@@ -60,6 +60,8 @@ HRESULT CLinearCrossBeam::FinalConstruct()
 
    m_UXBProfile.CoCreateInstance(CLSID_Point2dCollection);
 
+   m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
+
    return S_OK;
 }
 
@@ -115,7 +117,7 @@ STDMETHODIMP CLinearCrossBeam::get_Pier(IPier** ppPier)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Length(Float64* length)
+STDMETHODIMP CLinearCrossBeam::get_Length(XBeamLocation location, Float64* length)
 {
    CHECK_RETVAL(length);
 
@@ -126,7 +128,19 @@ STDMETHODIMP CLinearCrossBeam::get_Length(Float64* length)
    columnLayout->get_Overhang(qcbLeft,&loh);
    columnLayout->get_Overhang(qcbRight,&roh);
 
-   (*length) = loh + w + roh;
+   (*length) = loh + w + roh; // this is the basic length at the top of the lower cross beam
+
+   if (location == xblTopLowerXBeam)
+   {
+      Float64 deltaXl, deltaXr;
+      GetUpperXBeamDeltas(&deltaXl, &deltaXr);
+      (*length) += deltaXl;
+      (*length) -= deltaXr;
+   }
+   else if (location == xblBottomXBeam)
+   {
+      (*length) -= m_X2 + m_X4;
+   }
 
    return S_OK;
 }
@@ -247,6 +261,171 @@ STDMETHODIMP CLinearCrossBeam::get_TopSurface(StageIndexType stageIdx,IPoint2dCo
 STDMETHODIMP CLinearCrossBeam::get_BottomSurface(StageIndexType stageIdx,IPoint2dCollection** ppPoints)
 {
    return GetBottomXBeamProfile(ppPoints);
+}
+
+STDMETHODIMP CLinearCrossBeam::get_Surface(CrossBeamRebarDatum datum, Float64 offset, IPoint2dCollection** ppPoints)
+{
+   CComPtr<IPoint2dCollection> uxbProfile; // top of upper xbeam profile
+   CComPtr<IPoint2dCollection> lxbProfile; // top of lower xbeam profile
+   CComPtr<IPoint2dCollection> bxbProfile; // bottom of lower xbeam profile
+   GetUpperXBeamProfile(&uxbProfile);
+   GetLowerXBeamProfile(&lxbProfile);
+   GetBottomXBeamProfile(&bxbProfile);
+
+   switch (datum)
+   {
+   case xbTop:
+      uxbProfile->Clone(ppPoints);
+      break;
+
+   case xbTopLowerXBeam:
+      lxbProfile->Clone(ppPoints);
+      break;
+
+   case xbBottom:
+      bxbProfile->Clone(ppPoints);
+      ATLASSERT(0 <= offset); // there is no xbeam below the bottom
+      break;
+
+   default:
+      ATLASSERT(false); // should never get here
+   }
+
+   (*ppPoints)->Offset(0, offset);
+
+   // create clipping lines along the ends of the cross beam
+   IndexType nPoints;
+   CComPtr<IPoint2d> pntLeft1, pntLeft2;
+   CComPtr<IPoint2d> pntRight1, pntRight2;
+
+   uxbProfile->get_Item(0, &pntLeft1);
+   bxbProfile->get_Item(0, &pntLeft2);
+
+   uxbProfile->get_Count(&nPoints);
+   uxbProfile->get_Item(nPoints - 1, &pntRight1);
+   bxbProfile->get_Count(&nPoints);
+   bxbProfile->get_Item(nPoints - 1, &pntRight2);
+
+   CComPtr<ILineSegment2d> lsLeft;
+   lsLeft.CoCreateInstance(CLSID_LineSegment2d);
+   lsLeft->ThroughPoints(pntLeft1, pntLeft2);
+
+   CComPtr<ILineSegment2d> lsRight;
+   lsRight.CoCreateInstance(CLSID_LineSegment2d);
+   lsRight->ThroughPoints(pntRight1, pntRight2);
+
+   // create line segments from the first 2 and last 2 points of the offset profile line
+   // and clip with end clipping lines
+
+   // left side
+   CComPtr<IPoint2d> pnt1, pnt2;
+   (*ppPoints)->get_Item(0, &pnt1);
+   (*ppPoints)->get_Item(1, &pnt2);
+
+   CComPtr<IPoint2d> pnt1Clone, pnt2Clone;
+   pnt1->Clone(&pnt1Clone);
+   pnt2->Clone(&pnt2Clone);
+
+   CComPtr<ILineSegment2d> ls;
+   ls.CoCreateInstance(CLSID_LineSegment2d);
+   ls->ThroughPoints(pnt1Clone, pnt2Clone);
+
+   CComPtr<IPoint2d> pntIntersect;
+   if (m_GeomUtil->SegSegIntersect(lsLeft, ls, &pntIntersect) == S_OK)
+   {
+      // there was an intersection... replace the left point with
+      // the intersection point
+      (*ppPoints)->Remove(0);
+      (*ppPoints)->Insert(0, pntIntersect);
+   }
+
+   // right side
+   (*ppPoints)->get_Count(&nPoints);
+   CComPtr<IPoint2d> pnt3, pnt4;
+   (*ppPoints)->get_Item(nPoints - 2, &pnt3);
+   (*ppPoints)->get_Item(nPoints - 1, &pnt4);
+
+   CComPtr<IPoint2d> pnt3Clone, pnt4Clone;
+   pnt3->Clone(&pnt3Clone);
+   pnt4->Clone(&pnt4Clone);
+
+   ls.Release();
+   ls.CoCreateInstance(CLSID_LineSegment2d);
+   ls->ThroughPoints(pnt3Clone, pnt4Clone);
+
+   pntIntersect.Release();
+   if (m_GeomUtil->SegSegIntersect(lsRight, ls, &pntIntersect) == S_OK)
+   {
+      // there was an intersection... replace the right point with
+      // the intersection point
+      (*ppPoints)->Remove(nPoints-1);
+      (*ppPoints)->Insert(nPoints-1, pntIntersect);
+   }
+
+   if (!IsZero(m_X1))
+   {
+      // there is a taper along the bottom of the xbeam
+      CComPtr<IPoint2d> pntLeft3;
+      bxbProfile->get_Item(1, &pntLeft3);
+
+      lsLeft->ThroughPoints(pntLeft2, pntLeft3);
+
+      CComPtr<IPoint2d> pnt1, pnt2;
+      (*ppPoints)->get_Item(0, &pnt1);
+      (*ppPoints)->get_Item(1, &pnt2);
+
+      CComPtr<IPoint2d> pnt1Clone, pnt2Clone;
+      pnt1->Clone(&pnt1Clone);
+      pnt2->Clone(&pnt2Clone);
+
+      CComPtr<ILineSegment2d> ls;
+      ls.CoCreateInstance(CLSID_LineSegment2d);
+      ls->ThroughPoints(pnt1Clone, pnt2Clone);
+
+      pntIntersect.Release();
+      if (m_GeomUtil->SegSegIntersect(lsLeft, ls, &pntIntersect) == S_OK)
+      {
+         // there was an intersection... replace the left point with
+         // the intersection point
+         (*ppPoints)->Remove(0);
+         (*ppPoints)->Insert(0, pntIntersect);
+      }
+   }
+
+   if (!IsZero(m_X3))
+   {
+      CComPtr<IPoint2d> pntRight3;
+      bxbProfile->get_Count(&nPoints);
+      bxbProfile->get_Item(nPoints - 2, &pntRight3);
+
+      lsRight->ThroughPoints(pntRight2, pntRight3);
+
+      CComPtr<IPoint2d> pnt1, pnt2;
+      (*ppPoints)->get_Count(&nPoints);
+      (*ppPoints)->get_Item(nPoints-2, &pnt1);
+      (*ppPoints)->get_Item(nPoints-1, &pnt2);
+
+      CComPtr<IPoint2d> pnt1Clone, pnt2Clone;
+      pnt1->Clone(&pnt1Clone);
+      pnt2->Clone(&pnt2Clone);
+
+      CComPtr<ILineSegment2d> ls;
+      ls.CoCreateInstance(CLSID_LineSegment2d);
+      ls->ThroughPoints(pnt1Clone, pnt2Clone);
+
+      pntIntersect.Release();
+      if (m_GeomUtil->SegSegIntersect(lsRight, ls, &pntIntersect) == S_OK)
+      {
+         // there was an intersection... replace the left point with
+         // the intersection point
+         (*ppPoints)->Remove(nPoints-1);
+         (*ppPoints)->Insert(nPoints-1, pntIntersect);
+      }
+   }
+
+   (*ppPoints)->RemoveDuplicatePoints();
+
+   return S_OK;
 }
 
 STDMETHODIMP CLinearCrossBeam::get_BasicShape(Float64 Xxb,IShape** ppShape)
@@ -526,11 +705,11 @@ STDMETHODIMP CLinearCrossBeam::Save(IStructuredSave2* save)
 }
 
 ////////////////////////////////////////////////////////////////
-HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints)
+HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
-   if ( m_bIsUXBDirty )
+   if (m_bIsUXBDirty)
    {
 #if defined _DEBUG
       IndexType nPoints;
@@ -546,49 +725,52 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints)
       // Get cross beam start and end in Pier Coordinates
       Float64 XxbStart = 0;
       Float64 XxbEnd;
-      get_Length(&XxbEnd);
+      get_Length(xblBottomXBeam, &XxbEnd);
 
       // Adjust for the end slopes
       // this is the start/end of the XBeam measured at the top of the upper xbeam
-      XxbStart -= m_X2*(m_H1+m_H5)/m_H1;
-      XxbEnd   += m_X4*(m_H3+m_H5)/m_H3;
+      Float64 deltaXl, deltaXr;
+      GetUpperXBeamDeltas(&deltaXl, &deltaXr);
+
+      XxbStart += deltaXl - m_X2;
+      XxbEnd   += deltaXr + m_X4;
 
       // Start and end in pier coordinates (this is the coordinate system we need)
       Float64 XpStart, XpEnd;
-      m_pPier->ConvertCrossBeamToPierCoordinate(XxbStart,&XpStart);
-      m_pPier->ConvertCrossBeamToPierCoordinate(XxbEnd,  &XpEnd);
+      m_pPier->ConvertCrossBeamToPierCoordinate(XxbStart, &XpStart);
+      m_pPier->ConvertCrossBeamToPierCoordinate(XxbEnd, &XpEnd);
 
       // Start and end in curb line coordinates so we can get deck elevations
       Float64 XclStart, XclEnd;
-      m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbStart,&XclStart);
-      m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbEnd,  &XclEnd);
+      m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbStart, &XclStart);
+      m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbEnd, &XclEnd);
 
       Float64 YxbStart, YxbEnd;
-      m_pPier->get_Elevation(XclStart,&YxbStart);
-      m_pPier->get_Elevation(XclEnd,  &YxbEnd);
+      m_pPier->get_Elevation(XclStart, &YxbStart);
+      m_pPier->get_Elevation(XclEnd, &YxbEnd);
       YxbStart -= tDeck;
-      YxbEnd   -= tDeck;
+      YxbEnd -= tDeck;
 
       CComPtr<IPoint2d> pntStart;
       pntStart.CoCreateInstance(CLSID_Point2d);
-      pntStart->Move(XpStart,YxbStart);
+      pntStart->Move(XpStart, YxbStart);
       m_UXBProfile->Add(pntStart);
 
       // Work left to right across the deck profile, offsetting by tDeck to get the top of Xbeam profile
       CComPtr<IEnumPoint2d> enumPoints;
       deckProfile->get__Enum(&enumPoints);
       CComPtr<IPoint2d> pnt;
-      while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
+      while (enumPoints->Next(1, &pnt, nullptr) != S_FALSE)
       {
-         Float64 x,y;
-         pnt->Location(&x,&y);
-         if ( XpStart < x && x < XpEnd && !IsEqual(XpStart,x) && !IsEqual(XpEnd,x) )
+         Float64 x, y;
+         pnt->Location(&x, &y);
+         if (XpStart < x && x < XpEnd && !IsEqual(XpStart, x) && !IsEqual(XpEnd, x))
          {
-            // point is within the extends of the cross beam
+            // point is within the extents of the cross beam
             y -= tDeck;
             CComPtr<IPoint2d> xbPoint;
             xbPoint.CoCreateInstance(CLSID_Point2d);
-            xbPoint->Move(x,y);
+            xbPoint->Move(x, y);
             m_UXBProfile->Add(xbPoint);
          }
          pnt.Release();
@@ -596,16 +778,25 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints)
 
       CComPtr<IPoint2d> pntEnd;
       pntEnd.CoCreateInstance(CLSID_Point2d);
-      pntEnd->Move(XpEnd,YxbEnd);
+      pntEnd->Move(XpEnd, YxbEnd);
       m_UXBProfile->Add(pntEnd);
+
+      m_UXBProfile->RemoveDuplicatePoints();
 
       m_bIsUXBDirty = false;
    }
 
-   return m_UXBProfile->Clone(ppPoints);
+   if (bClone)
+   {
+      return m_UXBProfile->Clone(ppPoints);
+   }
+   else
+   {
+      return m_UXBProfile.CopyTo(ppPoints);
+   }
 }
 
-HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints)
+HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
@@ -614,134 +805,206 @@ HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints)
       CComPtr<IPoint2dCollection> uxbProfile;
       GetUpperXBeamProfile(&uxbProfile);
 
-      m_LXBProfile.Release();
-      uxbProfile->Clone(&m_LXBProfile);
-      m_LXBProfile->Offset(0,-m_H5); // move profile down by the height of the upper xbeam
+      // Determine the horizontal limits of the lower xbeam top profile
+      Float64 deltaXl, deltaXr;
+      GetUpperXBeamDeltas(&deltaXl, &deltaXr);
 
       CComPtr<IPoint2d> uxbTL;
-      uxbProfile->get_Item(0,&uxbTL);
-
-      CComPtr<IPoint2d> pntOnLine;
-      uxbTL->Clone(&pntOnLine);
-      pntOnLine->Offset(m_X2,-m_H1);
-
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(uxbTL,pntOnLine);
-
-      TrimLeftToLine(m_LXBProfile,line);
+      uxbProfile->get_Item(0, &uxbTL);
 
       IndexType nPoints;
       uxbProfile->get_Count(&nPoints);
       CComPtr<IPoint2d> uxbTR;
-      uxbProfile->get_Item(nPoints-1,&uxbTR);
-      pntOnLine->MoveEx(uxbTR);
-      pntOnLine->Offset(-m_X4,-m_H3);
-      line->ThroughPoints(uxbTR,pntOnLine);
+      uxbProfile->get_Item(nPoints - 1, &uxbTR);
 
-      TrimRightToLine(m_LXBProfile,line);
+      Float64 Xl, Xr;
+      uxbTL->get_X(&Xl);
+      Xl -= deltaXl;
+
+      uxbTR->get_X(&Xr);
+      Xr -= deltaXr;
+
+      m_LXBProfile.Release();
+      m_LXBProfile.CoCreateInstance(CLSID_Point2dCollection);
+
+      // copy all points from the upper xbeam profile within the limits Xl and Xr
+      // to the lower xbeam profile, offsetting by H5
+      for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
+      {
+         CComPtr<IPoint2d> pnt;
+         uxbProfile->get_Item(idx, &pnt);
+         Float64 X;
+         pnt->get_X(&X);
+         if (InRange(Xl, X, Xr))
+         {
+            CComPtr<IPoint2d> pntLXB;
+            pnt->Clone(&pntLXB);
+            pntLXB->Offset(0, -m_H5);
+            m_LXBProfile->Insert(0,pntLXB);
+         }
+      }
+
+      // now locate and add the left and right points of the lower xbeam profile
+      // the horizonal position is Xl and Xr, which are in Pier Coordinates
+
+      // convert Xl and Xr to curb line coordinates
+      Float64 Xlcl, Xrcl;
+      m_pPier->ConvertPierToCurbLineCoordinate(Xl, &Xlcl);
+      m_pPier->ConvertPierToCurbLineCoordinate(Xr, &Xrcl);
+
+      // get deck elevations
+      Float64 Yl, Yr;
+      m_pPier->get_Elevation(Xlcl, &Yl);
+      m_pPier->get_Elevation(Xrcl, &Yr);
+
+      Float64 tDeck;
+      m_pPier->get_DeckThickness(&tDeck);
+
+      // adjust for deck thickness
+      Yl -= tDeck;
+      Yr -= tDeck;
+
+      CComPtr<IPoint2d> lxbTL;
+      lxbTL.CoCreateInstance(CLSID_Point2d);
+      lxbTL->Move(Xl, Yl - m_H5);
+      m_LXBProfile->Insert(0, lxbTL);
+
+      CComPtr<IPoint2d> lxbTR;
+      lxbTR.CoCreateInstance(CLSID_Point2d);
+      lxbTR->Move(Xr, Yr - m_H5);
+      m_LXBProfile->Add(lxbTR);
+
+      m_LXBProfile->RemoveDuplicatePoints();
 
       m_bIsLXBDirty = false;
    }
 
-   return m_LXBProfile->Clone(ppPoints);
+   if (bClone)
+   {
+      return m_LXBProfile->Clone(ppPoints);
+   }
+   else
+   {
+      return m_LXBProfile.CopyTo(ppPoints);
+   }
 }
 
-HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
+HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
    if ( m_bIsBXBDirty )
    {
+      // get top profile of lower cross beam
       CComPtr<IPoint2dCollection> lxbProfile;
       GetLowerXBeamProfile(&lxbProfile);
 
-      m_BXBProfile.Release();
-      lxbProfile->Clone(&m_BXBProfile);
-
-      // move down by the height of the lower xbeam
-      Float64 h1 = m_H1 + m_H2;
-      Float64 h2 = m_H3 + m_H4;
-      Float64 L;
-      get_Length(&L);
-
-      CComPtr<IEnumPoint2d> enumPoints;
-      m_BXBProfile->get__Enum(&enumPoints);
-      CComPtr<IPoint2d> bxbPoint;
-      while ( enumPoints->Next(1,&bxbPoint,nullptr) != S_FALSE )
-      {
-         Float64 x;
-         bxbPoint->get_X(&x);
-         Float64 dy = ::LinInterp(x+L/2,h1,h2,L);
-         bxbPoint->Offset(0,-dy);
-         bxbPoint.Release();
-      }
-
-      // Adjust bottom profile to account for edge slopes
-
-      // Left Edge - adjust for left edge slope
+      // get the top left point
       CComPtr<IPoint2d> lxbTL;
-      lxbProfile->get_Item(0,&lxbTL);
+      lxbProfile->get_Item(0, &lxbTL);
 
-      CComPtr<IPoint2d> pntOnLine;
-      lxbTL->Clone(&pntOnLine);
-      pntOnLine->Offset(m_X2,-m_H1);
-
-      CComPtr<ILine2d> line;
-      line.CoCreateInstance(CLSID_Line2d);
-      line->ThroughPoints(lxbTL,pntOnLine);
-
-      TrimLeftToLine(m_BXBProfile,line);
-
-      // Right Edge - adjust for right edge slope
       IndexType nPoints;
       lxbProfile->get_Count(&nPoints);
       CComPtr<IPoint2d> lxbTR;
-      lxbProfile->get_Item(nPoints-1,&lxbTR);
-      pntOnLine.Release();
-      lxbTR->Clone(&pntOnLine);
-      pntOnLine->Offset(-m_X4,-m_H3);
-      line->ThroughPoints(lxbTR,pntOnLine);
-      TrimRightToLine(m_BXBProfile,line);
+      lxbProfile->get_Item(nPoints - 1, &lxbTR);
 
-      // Bottom Left Surface - adjust for bottom taper
-      if ( !IsZero(m_H2) && !IsZero(m_X1) )
+      Float64 Xl, Xr;
+      lxbTL->get_X(&Xl);
+      lxbTR->get_X(&Xr);
+
+      // interpolation parameters for depth of lower xbeam between tapers
+      Float64 Xs = Xl;
+      Float64 dX = Xr - Xl;
+      Float64 dyL = m_H1 + m_H2;
+      Float64 dyR = m_H3 + m_H4;
+
+      // horizontal location of left/right tapers
+      Float64 Xlt = Xl + m_X1;
+      Float64 Xrt = Xr - m_X3;
+
+      // horizontal location of left/right end points of bottom of xbeam
+      Xl += m_X2;
+      Xr -= m_X4;
+
+      m_BXBProfile.Release();
+      m_BXBProfile.CoCreateInstance(CLSID_Point2dCollection);
+      for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
       {
-         CComPtr<IPoint2d> bxbBL;
-         lxbTL->Clone(&bxbBL);
-         bxbBL->Offset(m_X2,-m_H1);
+         CComPtr<IPoint2d> pnt;
+         lxbProfile->get_Item(idx, &pnt);
+         Float64 X;
+         pnt->get_X(&X);
+         if (InRange(Xlt, X, Xrt))
+         {
+            CComPtr<IPoint2d> pntBXB;
+            pnt->Clone(&pntBXB);
 
-         pntOnLine.Release();
-         bxbBL->Clone(&pntOnLine);
-         pntOnLine->Offset(m_X1-m_X2,-m_H2);
+            Float64 dy = ::LinInterp(X - Xs, dyL, dyR, dX);
 
-         line->ThroughPoints(bxbBL,pntOnLine);
-
-         TrimLeftToLine(m_BXBProfile,line);
-
-         m_BXBProfile->Insert(0,bxbBL);
+            pntBXB->Offset(0, -dy);
+            m_BXBProfile->Insert(0, pntBXB);
+         }
       }
 
-      // Bottom Right Surface - adjust for bottom taper
-      if ( !IsZero(m_H4) && !IsZero(m_X3) )
+      Float64 Xlcl, Xltcl, Xrtcl, Xrcl;
+      m_pPier->ConvertPierToCurbLineCoordinate(Xl,  &Xlcl);
+      m_pPier->ConvertPierToCurbLineCoordinate(Xlt, &Xltcl);
+      m_pPier->ConvertPierToCurbLineCoordinate(Xrt, &Xrtcl);
+      m_pPier->ConvertPierToCurbLineCoordinate(Xr,  &Xrcl);
+
+      Float64 Yl, Ylt, Yrt, Yr;
+      m_pPier->get_Elevation(Xlcl,  &Yl);
+      m_pPier->get_Elevation(Xltcl, &Ylt);
+      m_pPier->get_Elevation(Xrtcl, &Yrt);
+      m_pPier->get_Elevation(Xrcl,  &Yr);
+
+      Float64 tDeck;
+      m_pPier->get_DeckThickness(&tDeck);
+
+      Yl -= tDeck;
+      Ylt -= tDeck;
+      Yrt -= tDeck;
+      Yr -= tDeck;
+
+      CComPtr<IPoint2d> bxbL;
+      bxbL.CoCreateInstance(CLSID_Point2d);
+      bxbL->Move(Xl, Yl - m_H5 - m_H1);
+      m_BXBProfile->Insert(0, bxbL);
+
+      if (!IsZero(m_H2) && !IsZero(m_X1))
       {
-         CComPtr<IPoint2d> bxbBR;
-         lxbTR->Clone(&bxbBR);
-         bxbBR->Offset(-m_X4,-m_H3);
-
-         pntOnLine.Release();
-         bxbBR->Clone(&pntOnLine);
-         pntOnLine->Offset(-(m_X3-m_X4),-m_H4);
-         line->ThroughPoints(bxbBR,pntOnLine);
-         TrimRightToLine(m_BXBProfile,line);
-
-         m_BXBProfile->Add(bxbBR);
+         CComPtr<IPoint2d> bxbLT;
+         bxbLT.CoCreateInstance(CLSID_Point2d);
+         bxbLT->Move(Xlt, Ylt - m_H5 - m_H1 - m_H2);
+         m_BXBProfile->Insert(1, bxbLT);
       }
+
+      if (!IsZero(m_H4) && !IsZero(m_X3))
+      {
+         CComPtr<IPoint2d> bxbRT;
+         bxbRT.CoCreateInstance(CLSID_Point2d);
+         bxbRT->Move(Xrt, Yrt - m_H5 - m_H3 - m_H4);
+         m_BXBProfile->Add(bxbRT);
+      }
+
+      CComPtr<IPoint2d> bxbR;
+      bxbR.CoCreateInstance(CLSID_Point2d);
+      bxbR->Move(Xr, Yr - m_H5 - m_H3);
+      m_BXBProfile->Add(bxbR);
+
+      m_BXBProfile->RemoveDuplicatePoints();
 
       m_bIsBXBDirty = false;
    }
 
-   return m_BXBProfile->Clone(ppPoints);
+   if (bClone)
+   {
+      return m_BXBProfile->Clone(ppPoints);
+   }
+   else
+   {
+      return m_BXBProfile.CopyTo(ppPoints);
+   }
 }
 
 HRESULT CLinearCrossBeam::GetLowerXBeamShape(Float64 Xxb,IShape** ppShape)
@@ -888,70 +1151,16 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
    return S_OK;
 }
 
-HRESULT CLinearCrossBeam::TrimLeftToLine(IPoint2dCollection* pPoints,ILine2d* pLine)
+void CLinearCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft,Float64* pUXBright)
 {
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
-
-   CComPtr<ILineSegment2d> segment;
-   segment.CoCreateInstance(CLSID_LineSegment2d);
-
-   IndexType nPoints;
-   pPoints->get_Count(&nPoints);
-   for ( IndexType pntIdx = 0; pntIdx < nPoints-1; pntIdx++ )
+   *pUXBleft = 0.0;
+   *pUXBright = 0.0;
+   PierType pierType;
+   m_pPier->get_Type(&pierType);
+   if (pierType == ptIntegral)
    {
-      CComPtr<IPoint2d> pnt1, pnt2;
-      pPoints->get_Item(pntIdx,&pnt1);
-      pPoints->get_Item(pntIdx+1,&pnt2);
-      segment->ThroughPoints(pnt1,pnt2);
-
-      CComPtr<IPoint2d> pntIntersect;
-      geomUtil->IntersectLineWithLineSegment(pLine,segment,&pntIntersect);
-      if ( pntIntersect != nullptr )
-      {
-         for ( IndexType i = pntIdx; 0 <= i && i != INVALID_INDEX; i-- )
-         {
-            pPoints->Remove(i);
-         }
-         pPoints->Insert(0,pntIntersect);
-         return S_OK;
-      }
+      *pUXBleft = -m_X2*(m_H5) / m_H1;
+      *pUXBright = m_X4*(m_H5) / m_H3;
    }
-
-   ATLASSERT(false); // should never get here
-   return E_FAIL;
 }
 
-HRESULT CLinearCrossBeam::TrimRightToLine(IPoint2dCollection* pPoints,ILine2d* pLine)
-{
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
-
-   CComPtr<ILineSegment2d> segment;
-   segment.CoCreateInstance(CLSID_LineSegment2d);
-
-   IndexType nPoints;
-   pPoints->get_Count(&nPoints);
-   for ( IndexType pntIdx = nPoints-1; 0 < pntIdx ; pntIdx-- )
-   {
-      CComPtr<IPoint2d> pnt1, pnt2;
-      pPoints->get_Item(pntIdx-1,&pnt1);
-      pPoints->get_Item(pntIdx,&pnt2);
-      segment->ThroughPoints(pnt1,pnt2);
-
-      CComPtr<IPoint2d> pntIntersect;
-      geomUtil->IntersectLineWithLineSegment(pLine,segment,&pntIntersect);
-      if ( pntIntersect != nullptr )
-      {
-         for ( IndexType i = pntIdx; i < nPoints; i++ )
-         {
-            pPoints->Remove(pntIdx);
-         }
-         pPoints->Add(pntIntersect);
-         return S_OK;
-      }
-   }
-
-   ATLASSERT(false); // should never get here
-   return E_FAIL;
-}

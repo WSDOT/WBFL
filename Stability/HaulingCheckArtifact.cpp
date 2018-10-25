@@ -225,8 +225,32 @@ bool stbHaulingCheckArtifact::PassedDirectCompressionCheck(stbTypes::HaulingSlop
 
 bool stbHaulingCheckArtifact::PassedDirectTensionCheck(stbTypes::HaulingSlope slope) const
 {
-   Float64 fAllow = GetAllowableTension(slope, m_Results.vSectionResults[m_Results.MaxStressAnalysisPointIndex[slope]], m_Results.MaxStressImpactDirection[slope], m_Results.MaxStressWindDirection[slope]);
-   return (::IsLE(m_Results.MaxDirectStress[slope], fAllow) ? true : false);
+   // since the allowable tension can change based on the amount of reinforcement
+   // in the tension region, we have to check every point for every condition
+   // against its associted allowable
+   for (const auto& sectionResult : m_Results.vSectionResults)
+   {
+      for (IndexType i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (IndexType w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            for (IndexType c = 0; c < 4; c++)
+            {
+               stbTypes::Corner corner = (stbTypes::Corner)c;
+               Float64 fAllow = GetAllowableTension(slope, sectionResult, impact, wind);
+               Float64 f = sectionResult.fDirect[slope][impact][wind][corner];
+               if (::IsLE(fAllow, f))
+               {
+                  return false;
+               }
+            }
+         }
+      }
+   }
+
+   return true;
 }
 
 bool stbHaulingCheckArtifact::PassedCompressionCheck(stbTypes::HaulingSlope slope) const
@@ -236,8 +260,32 @@ bool stbHaulingCheckArtifact::PassedCompressionCheck(stbTypes::HaulingSlope slop
 
 bool stbHaulingCheckArtifact::PassedTensionCheck(stbTypes::HaulingSlope slope) const
 {
-   Float64 fAllow = GetAllowableTension(slope,m_Results.vSectionResults[m_Results.MaxStressAnalysisPointIndex[slope]],m_Results.MaxStressImpactDirection[slope],m_Results.MaxStressWindDirection[slope]);
-   return (::IsLE(m_Results.MaxStress[slope],fAllow) ? true : false);
+   // since the allowable tension can change based on the amount of reinforcement
+   // in the tension region, we have to check every point for every condition
+   // against its associted allowable
+   for (const auto& sectionResult : m_Results.vSectionResults)
+   {
+      for (IndexType i = 0; i < 3; i++)
+      {
+         stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)i;
+         for (IndexType w = 0; w < 2; w++)
+         {
+            stbTypes::WindDirection wind = (stbTypes::WindDirection)w;
+            for (IndexType c = 0; c < 4; c++)
+            {
+               stbTypes::Corner corner = (stbTypes::Corner)c;
+               Float64 fAllow = GetAllowableTension(slope, sectionResult, impact, wind);
+               Float64 f = sectionResult.f[slope][impact][wind][corner];
+               if (::IsLE(fAllow, f))
+               {
+                  return false;
+               }
+            }
+         }
+      }
+   }
+
+   return true;
 }
 
 Float64 stbHaulingCheckArtifact::GetAllowableTension(stbTypes::HaulingSlope slope,const stbHaulingSectionResult& sectionResult,stbTypes::ImpactDirection impact,stbTypes::WindDirection wind) const

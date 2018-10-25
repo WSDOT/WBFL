@@ -1491,6 +1491,7 @@ void CEAFPluginApp::OnManageApplicationPlugins()
             
             pPluginMgr->RemovePlugin(state.GetCLSID());
 
+            // find all document templates associated with this plugin and remove them
             POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
             while ( pos != nullptr )
             {
@@ -1501,7 +1502,6 @@ void CEAFPluginApp::OnManageApplicationPlugins()
                if ( my_plugin.IsEqualObject(plugin) )
                {
                   ((CEAFDocManager*)m_pDocManager)->RemoveDocTemplate(current_pos);
-                  pos = nullptr;
                }
             }
 

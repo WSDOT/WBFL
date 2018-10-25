@@ -132,6 +132,10 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(void,UnregisterDropSite)() override { m_pDisplayObject->UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { m_pDisplayObject->GetDropSite(dropSite); }
 
+   // Composite
+   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) override { m_pDisplayObject->SetParent(pParent); }
+   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { m_pDisplayObject->GetParent(ppParent); }
+
 // IPolyLineDisplayObject
 public:
    STDMETHOD_(void,Commit)() override;

@@ -157,6 +157,10 @@ END_COM_MAP()
    STDMETHOD_(void,UnregisterDropSite)() override { Do_UnregisterDropSite(); }
    STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { Do_GetDropSite(dropSite); }
 
+   // Composite
+   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) override { Do_SetParent(pParent); }
+   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
+
    // IDimensionLine Implementation
    STDMETHOD_(void,SetAngle)(Float64 angle) override;
    STDMETHOD_(Float64,GetAngle)() override;

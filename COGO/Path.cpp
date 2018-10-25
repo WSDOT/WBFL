@@ -735,11 +735,6 @@ void CPath::UnadviseAll()
    }
 }
 
-bool CompareElements(const Element& element,const Element& testElement)
-{
-   return (element.end < testElement.start);
-}
-
 void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement)
 {
    Element testElement;
@@ -747,7 +742,7 @@ void CPath::FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pEle
    testElement.end   = distance;
 
    std::vector<Element>& vElements = GetPathElements();
-   std::vector<Element>::iterator lowerBound = std::lower_bound(vElements.begin(),vElements.end(),testElement,CompareElements);
+   std::vector<Element>::iterator lowerBound = std::lower_bound(vElements.begin(), vElements.end(), testElement, [](const auto& v1, const auto& v2) {return v1.end < v2.start;});
    if ( lowerBound == vElements.end() )
    {
       if ( distance < vElements.front().start )
@@ -1817,9 +1812,26 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
    (*path)->putref_PointFactory(m_PointFactory);
 
    std::vector<Element>& vElements = GetPathElements();
-   for (const auto& element : vElements)
+   const auto& begin = vElements.cbegin();
+   auto& iter = vElements.cbegin();
+   const auto& end = vElements.cend();
+   for (; iter != end; iter++)
    {
+      const auto& element(*iter);
+
+      CComPtr<IPathElement> prev_path_element;
+      if (iter != begin)
+      {
+         prev_path_element = (iter - 1)->pathElement;
+      }
+
       CComPtr<IPathElement> path_element = element.pathElement;
+
+      CComPtr<IPathElement> next_path_element;
+      if (iter + 1 != end)
+      {
+         next_path_element = (iter + 1)->pathElement;
+      }
 
       // clone the path element
       CComPtr<IPathElement> clonePE;
@@ -1851,16 +1863,83 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
             start->Location(&sx,&sy);
             end->Location(&ex,&ey);
 
-            Float64 dx,dy;
-            dx = ex - sx;
-            dy = ey - sy;
+            Float64 dir = atan2(ey - sy, ex - sx);
 
-            Float64 dir = atan2(dy,dx);
+            Float64 dxStart, dyStart;
+            Float64 dxEnd, dyEnd;
+
+            dxStart = offset*sin(dir);
+            dyStart = -offset*cos(dir);
+
+            dxEnd = dxStart;
+            dyEnd = dyStart;
+
+            if (prev_path_element)
+            {
+               // if previous path element is a line segment, we need to adjust the offset
+               // distance and direction to be along a line that is half-way between
+               // the previous and this line segment.
+               PathElementType prevElementType;
+               prev_path_element->get_Type(&prevElementType);
+               if (prevElementType == petLineSegment)
+               {
+                  CComPtr<IUnknown> prev_element_punk;
+                  prev_path_element->get_Value(&prev_element_punk);
+                  CComQIPtr<ILineSegment2d> prev_ls(prev_element_punk);
+
+                  CComPtr<IPoint2d> prevStart, prevEnd;
+                  prev_ls->get_StartPoint(&prevStart);
+                  prev_ls->get_EndPoint(&prevEnd);
+
+                  Float64 psx, psy;
+                  Float64 pex, pey;
+                  prevStart->Location(&psx, &psy);
+                  prevEnd->Location(&pex, &pey);
+                  Float64 dirPrev = atan2(pey - psy, pex - psx);
+
+                  Float64 dirOffset = PI_OVER_2 + 0.5*(dir + dirPrev);
+
+                  Float64 adjOffset = offset / cos(0.5*(dir - dirPrev));
+
+                  dxStart = -adjOffset*cos(dirOffset);
+                  dyStart = -adjOffset*sin(dirOffset);
+               }
+            }
+
+            if (next_path_element)
+            {
+               // if next path element is a line segment, we need to adjust the offset
+               // distance and direction to be along a line that is half-way between
+               // the this and the next line segment.
+               PathElementType nextElementType;
+               next_path_element->get_Type(&nextElementType);
+               if (nextElementType == petLineSegment)
+               {
+                  CComPtr<IUnknown> next_element_punk;
+                  next_path_element->get_Value(&next_element_punk);
+                  CComQIPtr<ILineSegment2d> next_ls(next_element_punk);
+
+                  CComPtr<IPoint2d> nextStart, nextEnd;
+                  next_ls->get_StartPoint(&nextStart);
+                  next_ls->get_EndPoint(&nextEnd);
+
+                  Float64 nsx, nsy;
+                  Float64 nex, ney;
+                  nextStart->Location(&nsx, &nsy);
+                  nextEnd->Location(&nex, &ney);
+                  Float64 dirNext = atan2(ney - nsy, nex - nsx);
+
+                  Float64 dirOffset = PI_OVER_2 + 0.5*(dir + dirNext);
+
+                  Float64 adjOffset = offset / cos(0.5*(dirNext - dir));
+
+                  dxEnd = -adjOffset*cos(dirOffset);
+                  dyEnd = -adjOffset*sin(dirOffset);
+               }
+            }
    
-            Float64 ox =  offset*sin(dir);
-            Float64 oy = -offset*cos(dir);
-            
-            ls->Offset(ox,oy);
+            start->Offset(dxStart, dyStart);
+            end->Offset(dxEnd, dyEnd);
          }
          break;
 
@@ -1887,7 +1966,90 @@ STDMETHODIMP CPath::CreateParallelPath(Float64 offset,IPath** path)
          break;
       }
 
+      PathElementType cloneType;
+      clonePE->get_Type(&cloneType);
+      if (type == petHorzCurve && cloneType == petPoint)
+      {
+         // the horizontal curve degraded to a single point
+         if (iter == begin)
+         {
+            // this is the first element... add a point on the back tanget to make a straight line
+            CComQIPtr<IHorzCurve> hc(punk);
+
+            CComPtr<IDirection> tangent;
+            hc->get_BkTangentBrg(&tangent);
+            Float64 dir;
+            tangent->get_Value(&dir);
+
+            CComPtr<IUnknown> unk;
+            clonePE->get_Value(&unk);
+            CComPtr<IPoint2d> point;
+            unk.QueryInterface(&point);
+
+            Float64 px, py;
+            point->Location(&px, &py);
+
+            Float64 dist = -100;
+
+            px += dist*cos(dir);
+            py += dist*sin(dir);
+
+            CComPtr<IPoint2d> pnt;
+            m_PointFactory->CreatePoint(&pnt);
+            pnt->Move(px,py);
+
+            CComPtr<IUnknown> pntUnk(pnt);
+
+            CComPtr<IPathElement> pe;
+            pe.CoCreateInstance(CLSID_PathElement);
+            pe->putref_Value(pntUnk);
+
+            (*path)->Add(pe);
+         }
+      }
+
       (*path)->Add(clonePE);
+
+
+      if (type == petHorzCurve && cloneType == petPoint)
+      {
+         // the horizontal curve degraded to a single point
+         if (iter == end-1)
+         {
+            // this is the last element... add a point on the forward tanget to make a straight line
+            CComQIPtr<IHorzCurve> hc(punk);
+
+            CComPtr<IDirection> tangent;
+            hc->get_FwdTangentBrg(&tangent);
+            Float64 dir;
+            tangent->get_Value(&dir);
+
+            CComPtr<IUnknown> unk;
+            clonePE->get_Value(&unk);
+            CComPtr<IPoint2d> point;
+            unk.QueryInterface(&point);
+
+            Float64 px, py;
+            point->Location(&px, &py);
+
+            Float64 dist = 100;
+
+            px += dist*cos(dir);
+            py += dist*sin(dir);
+
+            CComPtr<IPoint2d> pnt;
+            m_PointFactory->CreatePoint(&pnt);
+            pnt->Move(px, py);
+
+            CComPtr<IUnknown> pntUnk(pnt);
+
+            CComPtr<IPathElement> pe;
+            pe.CoCreateInstance(CLSID_PathElement);
+            pe->putref_Value(pntUnk);
+
+            (*path)->Add(pe);
+         }
+      }
 
       path_element.Release();
    }
@@ -2143,10 +2305,14 @@ void CPath::CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** res
    l2->ThroughPoints(PI,PFT);
 
    // Deal with the case of the curve degrading to a single point
-   if ( ( curve_direction == cdRight && d1 <=  offset || d2 <=  offset ) ||
-        ( curve_direction == cdLeft  && d1 <= -offset || d2 <= -offset ) )
+   if ( ( curve_direction == cdRight && (d1 <=  offset || d2 <=  offset )) ||
+        ( curve_direction == cdLeft  && (d1 <= -offset || d2 <= -offset )) )
    {
       // The parallel curve is past the CC point... this degrades the curve to a point
+
+      // offset the curve tangents and intersect them
+      l1->Offset(-offset);
+      l2->Offset(-offset);
 
       CComPtr<IPoint2d> point;
       m_GeomUtil->LineLineIntersect(l1,l2,&point);
@@ -2660,7 +2826,7 @@ HRESULT CPath::CreateSubPathElement(Float64 start,Float64 end,ICubicSpline* pSpl
       (*ppResult) = nullptr;
       return S_OK;
    }
-   else if ( start <= splineStart && splineEnd <= end )
+   else if ( ::IsLE(start,splineStart) && ::IsLE(splineEnd,end) )
    {
       // entire spline is between the start and end... create a clone because the entire spline is part of the sub-path
       CComPtr<ICubicSpline> clone;

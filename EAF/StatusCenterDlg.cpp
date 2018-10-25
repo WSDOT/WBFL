@@ -30,6 +30,7 @@
 #include <EAF\EAFStatusItem.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFStatusBar.h> // for colors
+#include <EAF\EAFApp.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -129,12 +130,13 @@ void CStatusCenterDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CStatusCenterDlg, CDialog)
 	//{{AFX_MSG_MAP(CStatusCenterDlg)
-	ON_BN_CLICKED(IDCLOSE, OnClose)
-	ON_WM_SIZE()
+	ON_BN_CLICKED(IDCLOSE, OnClosePressed)
 	//}}AFX_MSG_MAP
    ON_NOTIFY(NM_DBLCLK,IDC_STATUSLIST,OnDoubleClick)
    ON_NOTIFY(HDN_ITEMCLICK,0,OnHeaderClicked)
    ON_WM_CTLCOLOR()
+   ON_WM_SHOWWINDOW()
+   ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -156,6 +158,13 @@ BOOL CStatusCenterDlg::OnInitDialog()
    m_ctrlList.SetSortColumn(0,m_bSortAscending);
 
    UpdateStatusItemCounts();
+
+   // minimum size of the window
+   CRect rect;
+   GetWindowRect(&rect);
+   m_cxMin = rect.Width();
+   m_cyMin = rect.Height();
+
 
    return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
@@ -295,43 +304,29 @@ void CStatusCenterDlg::OnDoubleClick(NMHDR* pNotifyStruct,LRESULT* pResult)
    }
 }
 
-void CStatusCenterDlg::OnClose() 
+void CStatusCenterDlg::OnClosePressed() 
 {
    ShowWindow(SW_HIDE);	
 }
 
-void CStatusCenterDlg::OnSize(UINT nType, int cx, int cy) 
+void CStatusCenterDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
-	CDialog::OnSize(nType, cx, cy);
-	
-	// TODO: Add your message handler code here
-	const int border = 10;
+   CDialog::OnShowWindow(bShow, nStatus);
 
-   CRect rc;
-   GetClientRect(&rc);
+   if (bShow)
+   {
+      RestoreWindowPosition();
+   }
+   else
+   {
+      SaveWindowPosition();
+   }
+}
 
-   CWnd* pBtn  = GetDlgItem(IDCLOSE);
-   CWnd* pLabel = GetDlgItem(IDC_LABEL);
-
-   if ( pBtn == nullptr )
-      return;
-
-   CRect rBtn;
-   pBtn->GetClientRect(&rBtn);
-   int x = rc.right - rBtn.Width() - border;
-   int y = rc.bottom - rBtn.Height() - border;
-   pBtn->SetWindowPos(nullptr,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
-
-   CRect rLabel;
-   pLabel->GetClientRect(&rLabel);
-   x = rc.left + border;
-   pLabel->SetWindowPos(nullptr,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
-
-   CRect rList;
-   m_ctrlList.GetClientRect(&rList);
-   int w = rc.Width() - 2*border;
-   int h = rc.Height() - 3*border - rBtn.Height();
-   m_ctrlList.SetWindowPos(nullptr,0,0,w,h,SWP_NOMOVE | SWP_NOZORDER);
+void CStatusCenterDlg::OnClose()
+{
+   SaveWindowPosition();
+   CDialog::OnClose();
 }
 
 void CStatusCenterDlg::UpdateStatusItemCounts()
@@ -367,4 +362,63 @@ HBRUSH CStatusCenterDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
    }
 
    return hbr;
+}
+
+void CStatusCenterDlg::SaveWindowPosition()
+{
+   WINDOWPLACEMENT wp;
+   if (GetWindowPlacement(&wp))
+   {
+      EAFGetApp()->WriteWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("StatusCenter"), &wp);
+   }
+}
+
+void CStatusCenterDlg::RestoreWindowPosition()
+{
+   WINDOWPLACEMENT wp;
+   if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("StatusCenter"), &wp))
+   {
+      SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+   }
+}
+
+LRESULT CStatusCenterDlg::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
+{
+   // prevent the dialog from getting smaller than the original size
+   if (message == WM_SIZING)
+   {
+      LPRECT rect = (LPRECT)lParam;
+      int cx = rect->right - rect->left;
+      int cy = rect->bottom - rect->top;
+
+      if (cx < m_cxMin || cy < m_cyMin)
+      {
+         // prevent the dialog from moving right or down
+         if (wParam == WMSZ_BOTTOMLEFT ||
+            wParam == WMSZ_LEFT ||
+            wParam == WMSZ_TOP ||
+            wParam == WMSZ_TOPLEFT ||
+            wParam == WMSZ_TOPRIGHT)
+         {
+            CRect r;
+            GetWindowRect(&r);
+            rect->left = r.left;
+            rect->top = r.top;
+         }
+
+         if (cx < m_cxMin)
+         {
+            rect->right = rect->left + m_cxMin;
+         }
+
+         if (cy < m_cyMin)
+         {
+            rect->bottom = rect->top + m_cyMin;
+         }
+
+         return TRUE;
+      }
+   }
+
+   return CDialog::WindowProc(message, wParam, lParam);
 }

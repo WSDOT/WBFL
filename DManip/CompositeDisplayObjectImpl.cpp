@@ -72,6 +72,7 @@ void CCompositeDisplayObjectImpl::FinalRelease()
 // iCompositeDisplayObject implementation
 STDMETHODIMP_(void) CCompositeDisplayObjectImpl::AddDisplayObject(iDisplayObject* pDO)
 {
+   pDO->SetParent(this);
    m_CompositeItems->AddDisplayObject(pDO);
    m_BoundingBox.Release();
 }

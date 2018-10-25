@@ -59,6 +59,8 @@ CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
    m_ReusableRect.CoCreateInstance(CLSID_Rect2d);
 
    m_pItemData = nullptr;
+
+   m_pCompositeParent = nullptr;
 }
 
 CDisplayObjectDefaultImpl::~CDisplayObjectDefaultImpl()
@@ -579,4 +581,18 @@ void CDisplayObjectDefaultImpl::Do_GetDropSite(iDropSite** dropSite)
 
    if ( *dropSite )
       (*dropSite)->AddRef();
+}
+
+void CDisplayObjectDefaultImpl::Do_SetParent(iDisplayObject* pParent)
+{
+   m_pCompositeParent = pParent;
+}
+
+void CDisplayObjectDefaultImpl::Do_GetParent(iDisplayObject** ppParent)
+{
+   (*ppParent) = m_pCompositeParent;
+   if (*ppParent)
+   {
+      (*ppParent)->AddRef();
+   }
 }

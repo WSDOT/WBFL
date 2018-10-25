@@ -33,8 +33,6 @@
 #include "BackDoor.h"
 // CNewProjectDlg dialog
 
-static CString strNewDialogSection("NewProjectDialog");
-
 IMPLEMENT_DYNAMIC(CNewProjectDlg, CDialog)
 
 CNewProjectDlg::CNewProjectDlg(CEAFTemplateGroup* pRootTemplateGroup,CWnd* pParent) :
@@ -85,9 +83,9 @@ BEGIN_MESSAGE_MAP(CNewProjectDlg, CDialog)
    ON_NOTIFY(LVN_ITEMCHANGED, IDC_TEMPLATES, &CNewProjectDlg::OnTemplatesItemChanged)
 	ON_CONTROL_RANGE(BN_CLICKED,IDC_LARGE,IDC_SMALL, &CNewProjectDlg::OnViewModeClicked)
    ON_NOTIFY_EX(TTN_NEEDTEXT,0,&CNewProjectDlg::OnToolTipNotify)
-   ON_WM_SIZE()
    ON_WM_DESTROY()
    ON_NOTIFY(NM_DBLCLK, IDC_TEMPLATES, &CNewProjectDlg::OnTemplatesDblClick)
+   ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 
@@ -120,7 +118,7 @@ BOOL CNewProjectDlg::OnInitDialog()
    GetDlgItem(IDC_DESCRIPTION)->SetWindowText(_T(""));
 
    CEAFApp* pApp = EAFGetApp();
-   m_ViewMode = pApp->GetProfileInt(strNewDialogSection,_T("ViewMode"),IDC_LARGE);
+   m_ViewMode = pApp->GetProfileInt(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_ViewMode"),IDC_LARGE);
    CheckRadioButton(IDC_LARGE,IDC_SMALL,m_ViewMode);
    OnViewModeClicked(m_ViewMode);
 
@@ -128,11 +126,6 @@ BOOL CNewProjectDlg::OnInitDialog()
    GetWindowRect(&rect);
    m_cxMin = rect.Width();
    m_cyMin = rect.Height();
-
-   int cx = pApp->GetProfileInt(strNewDialogSection,_T("cx"),m_cxMin);
-   int cy = pApp->GetProfileInt(strNewDialogSection,_T("cy"),m_cyMin);
-   cx = max(m_cxMin,cx);
-   cy = max(m_cyMin,cy);
 
    CButton* pBtn = (CButton*)GetDlgItem(IDC_LARGE);
    pBtn->SetIcon( ::LoadIcon(GetInstanceHandle(),MAKEINTRESOURCE(IDI_LARGEICON)) );
@@ -167,8 +160,8 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_DefaultIconIdx         = m_ProjectTypeImageList.Add(m_hDefaultIcon);
    m_DefaultSelectedIconIdx = m_ProjectTypeImageList.Add(m_hDefaultSelectedIcon);
 
-   CString strLastSelection = pApp->GetProfileString(strNewDialogSection,_T("LastSelection"));
-   CString strLastSelectedApp = pApp->GetProfileString(strNewDialogSection,_T("LastSelectedApp"));
+   CString strLastSelection = pApp->GetProfileString(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_LastSelection"));
+   CString strLastSelectedApp = pApp->GetProfileString(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_LastSelectedApp"));
    HTREEITEM hSelectedItem = TVI_ROOT;
 
 	// add all the CDocTemplates in the project tree by name
@@ -204,16 +197,16 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_ctrlProjectTypes.SortChildren(TVI_ROOT);
 
    // Select one of the tree nodes... the list box will be updated when the selection event fires
-   if ( hSelectedItem == TVI_ROOT )
+   if (hSelectedItem == TVI_ROOT)
+   {
       hSelectedItem = m_ctrlProjectTypes.GetNextItem(TVI_ROOT, TVGN_ROOT);
+   }
    VERIFY(m_ctrlProjectTypes.SelectItem(hSelectedItem));
 
    // Expand the selected branch in the tree
    ExpandProjectType(hSelectedItem);
 
    SetOKButtonState();
-
-   SetWindowPos(nullptr,0,0,cx,cy,SWP_NOMOVE); // restore original dialog size
    
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE
@@ -371,11 +364,15 @@ LRESULT CNewProjectDlg::WindowProc(UINT message,WPARAM wParam,LPARAM lParam)
             rect->top  = r.top;
          }
          
-         if ( cx < m_cxMin )
+         if (cx < m_cxMin)
+         {
             rect->right = rect->left + m_cxMin;
+         }
 
-         if ( cy < m_cyMin )
+         if (cy < m_cyMin)
+         {
             rect->bottom = rect->top + m_cyMin;
+         }
 
          return TRUE;
       }
@@ -384,97 +381,15 @@ LRESULT CNewProjectDlg::WindowProc(UINT message,WPARAM wParam,LPARAM lParam)
    return CDialog::WindowProc(message,wParam,lParam);
 }
 
-void CNewProjectDlg::OnSize(UINT nType, int cx, int cy)
-{
-   CDialog::OnSize(nType, cx, cy);
-
-   CWnd* pOK     = GetDlgItem(IDOK);
-   CWnd* pCancel = GetDlgItem(IDCANCEL);
-   CWnd* pDesc   = GetDlgItem(IDC_DESCRIPTION);
-   CWnd* pLarge  = GetDlgItem(IDC_LARGE);
-   CWnd* pSmall  = GetDlgItem(IDC_SMALL);
-
-   if ( pOK == nullptr || pCancel == nullptr || pDesc == nullptr)
-      return;
-
-   CRect rCancel, rOK, rDesc, rLarge, rSmall, rProjects, rTemplates;
-   pCancel->GetWindowRect(&rCancel);
-   pOK->GetWindowRect(&rOK);
-   pDesc->GetWindowRect(&rDesc);
-   pLarge->GetWindowRect(&rLarge);
-   pSmall->GetWindowRect(&rSmall);
-   m_ctrlProjectTypes.GetWindowRect(&rProjects);
-   m_ctrlTemplates.GetWindowRect(&rTemplates);
-
-   ScreenToClient(&rCancel);
-   ScreenToClient(&rOK);
-   ScreenToClient(&rDesc);
-   ScreenToClient(&rLarge);
-   ScreenToClient(&rSmall);
-   ScreenToClient(&rProjects);
-   ScreenToClient(&rTemplates);
-
-   // Convert a 7du x 7du rect into pixels
-   CRect sizeRect(0,0,7,7);
-   MapDialogRect(&sizeRect);
-
-   POINT ptOffset;
-   ptOffset.x = cx - rCancel.right - sizeRect.Width();
-   ptOffset.y = cy - rCancel.bottom - sizeRect.Height();
-
-   // OK and Cancel, translate x and y
-   rCancel.OffsetRect(ptOffset);
-   rOK.OffsetRect(ptOffset);
-
-   // Description: translate y, stretch x
-   rDesc.top    += ptOffset.y;
-   rDesc.bottom += ptOffset.y;
-   rDesc.right  += ptOffset.x;
-
-   // Large and small: translate x
-   rLarge.left  += ptOffset.x;
-   rLarge.right += ptOffset.x;
-
-   rSmall.left  += ptOffset.x;
-   rSmall.right += ptOffset.x;
-
-   // Projects: stretch y
-   rProjects.bottom += ptOffset.y;
-
-   // Templates: stretch x, stetch y
-   rTemplates.right  += ptOffset.x;
-   rTemplates.bottom += ptOffset.y;
-
-   // move OK and Cancel
-   pOK->SetWindowPos(nullptr,rOK.left,rOK.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
-   pCancel->SetWindowPos(nullptr,rCancel.left,rCancel.top,0,0,SWP_NOSIZE | SWP_NOZORDER);
-
-   // move and stretch horizontally Description
-   pDesc->SetWindowPos(nullptr,rDesc.left,rDesc.top,rDesc.Width(),rDesc.Height(),SWP_NOZORDER);
-
-   pLarge->SetWindowPos(nullptr,rLarge.left,rLarge.top,rLarge.Width(),rLarge.Height(),SWP_NOZORDER);
-   pSmall->SetWindowPos(nullptr,rSmall.left,rSmall.top,rSmall.Width(),rSmall.Height(),SWP_NOZORDER);
-
-   m_ctrlProjectTypes.SetWindowPos(nullptr,rProjects.left,rProjects.top,rProjects.Width(),rProjects.Height(),SWP_NOZORDER);
-   m_ctrlTemplates.SetWindowPos(nullptr,rTemplates.left,rTemplates.top,rTemplates.Width(),rTemplates.Height(),SWP_NOZORDER);
-
-   Invalidate();
-}
-
 void CNewProjectDlg::OnDestroy()
 {
    CEAFApp* pApp = EAFGetApp();
    m_ViewMode = GetCheckedRadioButton(IDC_LARGE,IDC_SMALL);
-   pApp->WriteProfileInt(strNewDialogSection,_T("ViewMode"),m_ViewMode);
-
-   CRect rect;
-   GetClientRect(&rect);
-   pApp->WriteProfileInt(strNewDialogSection,_T("cx"),rect.Width());
-   pApp->WriteProfileInt(strNewDialogSection,_T("cy"),rect.Height());
+   pApp->WriteProfileInt(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_ViewMode"),m_ViewMode);
 
    HTREEITEM hItem = m_ctrlProjectTypes.GetSelectedItem();
    CString strSelection = m_ctrlProjectTypes.GetItemText(hItem);
-   pApp->WriteProfileString(strNewDialogSection,_T("LastSelection"),strSelection);
+   pApp->WriteProfileString(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_LastSelection"),strSelection);
 
    // Walk up tree to find app-level item
    while(true)
@@ -484,7 +399,7 @@ void CNewProjectDlg::OnDestroy()
       {
          // name of app is at top level
          strSelection = m_ctrlProjectTypes.GetItemText(hItem);
-         pApp->WriteProfileString(strNewDialogSection,_T("LastSelectedApp"),strSelection);
+         pApp->WriteProfileString(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject_LastSelectedApp"),strSelection);
 
          break;
       }
@@ -494,7 +409,31 @@ void CNewProjectDlg::OnDestroy()
       }
    }
 
+
+   // Save the layout of the application window
+   WINDOWPLACEMENT wp;
+   wp.length = sizeof wp;
+   if (GetWindowPlacement(&wp))
+   {
+      pApp->WriteWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS),_T("NewProject"), &wp);
+   }
+
    CDialog::OnDestroy();
+}
+
+void CNewProjectDlg::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+   CDialog::OnShowWindow(bShow, nStatus);
+
+   // Restore the layout of the application window
+   if (bShow)
+   {
+      WINDOWPLACEMENT wp;
+      if (EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_WINDOW_POSITIONS), _T("NewProject"), &wp))
+      {
+         SetWindowPos(NULL, wp.rcNormalPosition.left, wp.rcNormalPosition.top, wp.rcNormalPosition.right - wp.rcNormalPosition.left, wp.rcNormalPosition.bottom - wp.rcNormalPosition.top, 0);
+      }
+   }
 }
 
 void CNewProjectDlg::OnTemplatesDblClick(NMHDR *pNMHDR, LRESULT *pResult)

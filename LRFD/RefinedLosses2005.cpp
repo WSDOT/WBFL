@@ -141,7 +141,6 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim, // live load
 
                          Float64 rh,  // Relative humidity [0,100]
                          Float64 ti,   // Time until prestress transfer
@@ -154,7 +153,7 @@ lrfdRefinedLosses2005::lrfdRefinedLosses2005(
                          bool bValidateParameters,
                          RelaxationLossMethod relaxationMethod
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,bIgnoreInitialRelaxation,bValidateParameters)
 {
    m_V                     = V;
    m_S                     = S;
@@ -1051,10 +1050,6 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    // Elastic gain due to superimposed dead loads
    m_dfpSIDL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcd2;
 
-   // Elastic gain due to live load
-   m_DeltaFcdLL = (m_Mllim*( m_Ybc - m_Ybg + m_epermFinal )/m_Ic);
-   m_dfpLL = IsZero(m_ApsPerm) ? 0 : (m_Ep/m_Ec)*m_DeltaFcdLL;
-
    // Relaxation of Prestressing Strands [5.9.5.4.3c]
    m_dfpR2 = m_dfpR1;
 
@@ -1357,8 +1352,7 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
                          2701223.1744837998,  // Dead load moment of girder only
                          2144430.8154568151,  // Additional dead load on girder section
                          494526.00384487113, // Superimposed dead loads
-                         0.0, // live load moment
-                         
+
                          75,  // Relative humidity [0,100]
                          86400.000000000000,   // Time until prestress transfer
                          864000.00000000000,   // Time at hauling

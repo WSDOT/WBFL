@@ -89,7 +89,6 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim, // live load
 
                          Float64 Ag,    // Area of girder
                          Float64 Ig,    // Moment of inertia of girder
@@ -112,7 +111,7 @@ lrfdRefinedLossesTxDOT2013::lrfdRefinedLossesTxDOT2013(Float64 x, // location al
                          lrfdElasticShortening::FcgpComputationMethod method,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,/* ignore initial relaxation */ true,bValidateParameters)
 {
    Init();
 

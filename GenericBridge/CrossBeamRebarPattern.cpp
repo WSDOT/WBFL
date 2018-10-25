@@ -182,23 +182,22 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Profile(/*[in]*/IndexType barIdx,/*[out
    Float64 db;
    m_Rebar->get_NominalDiameter(&db);
 
-   CComPtr<IPoint2dCollection> profile;
    Float64 offset; // offset from surface profile
    if ( m_Datum == xbTop )
    {
-      m_pCrossBeam->get_TopSurface(1,&profile);
       offset = -(m_Cover + db/2);
    }
    else if ( m_Datum == xbTopLowerXBeam )
    {
-      m_pCrossBeam->get_TopSurface(0,&profile);
       offset = -(m_Cover + db/2);
    }
    else
    {
-      m_pCrossBeam->get_BottomSurface(0,&profile);
       offset = m_Cover + db/2;
    }
+
+   CComPtr<IPoint2dCollection> profile;
+   m_pCrossBeam->get_Surface(m_Datum, offset, &profile);
 
    // The surface profile is in Pier coordinates
    // Need to convert it to Cross Beam Coordinates
@@ -209,7 +208,8 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Profile(/*[in]*/IndexType barIdx,/*[out
    // 0 in Cross Beam coordinates is Xp in Pier coordinates
    // so 0 in Pier coordinates is -Xp in Cross Beam coordinates
    // Add -Xp to the X-value all the profile points
-   profile->Offset(-Xp,offset);
+   //profile->Offset(-Xp, offset);
+   profile->Offset(-Xp, 0.0);
 
    Float64 XxbStart, L;
    m_pRebarLayoutItem->get_Start(&XxbStart); // Cross Beam Coordinates
@@ -375,13 +375,18 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       ATLASSERT(pnt1->SameLocation(pnt2) == S_FALSE);
 
       Float64 angle = (m_HookType[qcbLeft] == ht90 ? PI_OVER_2 : (m_HookType[qcbLeft] == ht180 ? M_PI : ToRadians(135)));
-      if ( IsEqual(angle,M_PI) )
+      //if ( IsEqual(angle,M_PI) )
+      if ( m_HookType[qcbLeft] == ht180)
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
          angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
       }
-    
+      else if (m_HookType[qcbLeft] == ht90)
+      {
+         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
+      }
+
       if ( m_Datum == xbBottom )
       {
          angle *= -1;
@@ -406,11 +411,16 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       ATLASSERT(pnt1->SameLocation(pnt2) == S_FALSE);
 
       Float64 angle = (m_HookType[qcbRight] == ht90 ? PI_OVER_2 : (m_HookType[qcbRight] == ht180 ? M_PI : ToRadians(135)));
-      if ( IsEqual(angle,M_PI) )
+//      if ( IsEqual(angle,M_PI) )
+      if ( m_HookType[qcbLeft] == ht180)
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
          angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
+      }
+      else if (m_HookType[qcbRight] == ht90)
+      {
+         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
       }
 
       if ( m_Datum != xbBottom )

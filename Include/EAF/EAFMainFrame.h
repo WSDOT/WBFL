@@ -86,8 +86,11 @@ public:
    void HideMainFrameToolBar();
    void ShowMainFrameToolBar();
 
-   void HideStartPage();
+   // Start Page handling
+   BOOL KeepStartPageOpen(BOOL bKeepOpen);
+   BOOL KeepStartPageOpen() const;
    void ShowStartPage();
+   void HideStartPage();
 
    UINT CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr);
    CEAFToolBar* GetToolBar(UINT toolbarID);
@@ -165,7 +168,9 @@ protected:
    virtual CToolBar* CreateMainFrameToolBar();
 
    virtual CEAFStartPageWnd* CreateStartPage();
+   void ResizeStartPage();
    CEAFStartPageWnd* m_pStartPageWnd;
+   BOOL m_bKeepStartPageOpen;
 
 
 // Generated message map functions
@@ -174,7 +179,8 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 		// NOTE - the ClassWizard will add and remove member functions here.
 		//    DO NOT EDIT what you see in these blocks of generated code!
-	afx_msg void OnDropFiles(HDROP hDropInfo);
+   afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
+   afx_msg void OnDropFiles(HDROP hDropInfo);
    afx_msg void OnHelpFinder();
    afx_msg void OnHelp();
    afx_msg void OnViewToolBar();

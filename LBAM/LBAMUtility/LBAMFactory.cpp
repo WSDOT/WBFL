@@ -585,7 +585,7 @@ STDMETHODIMP CLBAMFactory::ConfigureLoadCombinations(ILBAMModel* model)
    return S_OK;
 }
 
-STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadModelType llmt,Float64 imTruck,Float64 imLane, VARIANT_BOOL includeDualTrucks, VARIANT_BOOL includeLowBoy, SpecUnitType units, IUnitServer* pUnitServer)
+STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadModelType llmt,Float64 imTruck,Float64 imLane, VARIANT_BOOL includeDualTrucks, VARIANT_BOOL includeDualTandem, SpecUnitType units, IUnitServer* pUnitServer)
 {
    CHECK_IN(pModel);
    CHECK_IN(pUnitServer);
@@ -766,8 +766,8 @@ STDMETHODIMP CLBAMFactory::ConfigureDesignLiveLoad(ILBAMModel* pModel, LiveLoadM
          hr = vehicles->Add(dual_truck_train);
       }
 
-      // only apply low boy only if asked
-      if (includeLowBoy == VARIANT_TRUE)
+      // only apply dual low boy only if asked
+      if (includeDualTandem == VARIANT_TRUE)
       {
          Float64 min_spac_axles = (units == suUS ? 26.0 : 8.0);
          hr = convert->ConvertToBaseUnits(min_spac_axles,units==suUS?CComBSTR("ft"):CComBSTR("m"),&min_spac_axles);

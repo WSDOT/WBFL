@@ -304,6 +304,8 @@ STDMETHODIMP CCubicSpline::Bearing(Float64 distance,IDirection* *pVal)
    CComPtr<IPoint2d> pointOnSpline;
    PointOnSpline(distance,&pointOnSpline);
 
+   m_CoordXform->Xform(&pointOnSpline.p, xfrmOldToNew);
+
    Float64 x;
    pointOnSpline->get_X(&x);
 
@@ -1074,7 +1076,7 @@ HRESULT CCubicSpline::UpdateSpline()
    for ( i = 0, iter = m_SplineSegments.begin(); iter != m_SplineSegments.end(); i++, iter++ )
    {
       CSplineSegment& splineSegment = *iter;
-      splineSegment.Init(an[i],bn[i],cn[i],dn[i]);
+      splineSegment.Init(IsZero(an[i]) ? 0 : an[i],IsZero(bn[i]) ? 0 : bn[i],IsZero(cn[i]) ? 0 : cn[i],IsZero(dn[i]) ? 0 : dn[i]);
    }
 
    // clean up

@@ -64,46 +64,38 @@ HRESULT CFixedLengthRebarLayoutItem::DoLoadItem(IStructuredLoad2* load,IRebarPat
    return E_FAIL;
 }
 
-STDMETHODIMP CFixedLengthRebarLayoutItem::ContainsLocation(Float64 distFromGdrStart,VARIANT_BOOL* bResult)
+STDMETHODIMP CFixedLengthRebarLayoutItem::ContainsLocation(Float64 X,VARIANT_BOOL* bResult)
 {
    CHECK_RETVAL(bResult);
 
-   *bResult = (::IsGT(m_Start,distFromGdrStart) && ::IsLT(distFromGdrStart,m_End) ? VARIANT_TRUE : VARIANT_FALSE);
+   *bResult = (::IsGE(m_Start,X) && ::IsLE(X,m_End) ? VARIANT_TRUE : VARIANT_FALSE);
 
    return S_OK;
 }
 
 STDMETHODIMP CFixedLengthRebarLayoutItem::put_Start(Float64 start)
 {
-   ATLASSERT(0 <= start);
-
    m_Start = start;
-
    return S_OK;
 }
 
 STDMETHODIMP CFixedLengthRebarLayoutItem::get_Start(Float64* start)
 {
    CHECK_RETVAL(start);
-
    *start = m_Start;
-
    return S_OK;
 }
 
 STDMETHODIMP CFixedLengthRebarLayoutItem::put_End(Float64 end)
 {
    m_End = end;
-
    return S_OK;
 }
 
 STDMETHODIMP CFixedLengthRebarLayoutItem::get_End(Float64* end)
 {
    CHECK_RETVAL(end);
-
    *end = m_End;
-
    return S_OK;
 }
 

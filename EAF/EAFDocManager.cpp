@@ -119,13 +119,20 @@ void CEAFDocManager::OnFileNew()
 	if (m_templateList.IsEmpty())
 	{
 		TRACE(traceAppMsg, 0, "Error: no document templates registered with CWinApp.\n");
-		AfxMessageBox(AFX_IDP_FAILED_TO_CREATE_DOC);
+      CString strError;
+      strError.LoadString(AFX_IDP_FAILED_TO_CREATE_DOC);
+      CString strMsg;
+      strMsg.Format(_T("%s\r\nThere are no Project Types available.\r\nSelect File > Manage > Project Types to enable project types."), strError);
+		AfxMessageBox(strMsg);
 		return;
 	}
 
    CEAFDocTemplate* pTemplate = nullptr;
-   if ( 1 < m_TemplateGroups.GetGroupCount() || 0 < m_TemplateGroups.GetGroup(0)->GetGroupCount() )
+   CollectionIndexType nTemplates = m_TemplateGroups.GetTemplateCount();
+   if ( 1 < nTemplates)
    {
+      // prompt to select a project template
+
       CNewProjectDlg dlg(&m_TemplateGroups);
 		if ( dlg.DoModal() != IDOK )
          return;
@@ -140,6 +147,8 @@ void CEAFDocManager::OnFileNew()
    }
    else
    {
+      // there is only one project template available so just create a new document using it
+      ATLASSERT(m_templateList.GetCount() == 1);
       pTemplate = m_TemplateGroups.GetGroup(0)->GetItem(0)->GetDocTemplate();
       pTemplate->SetTemplateItem(pTemplate->GetTemplateGroup()->GetItem(0));
    }

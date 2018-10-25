@@ -92,7 +92,6 @@ lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where l
                          Float64 Mdlg,  // Dead load moment of girder only
                          Float64 Madlg,  // Additional dead load on girder section
                          Float64 Msidl, // Superimposed dead loads
-                         Float64 Mllim, // live load
 
                          Float64 Ag,    // Area of girder
                          Float64 Ig,    // Moment of inertia of girder
@@ -114,7 +113,7 @@ lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where l
                          Float64 shipping,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl,Mllim,Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
+lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl, Ag,Ig,Ybg,Ac,Ic,Ybc,An,In,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
 {
    m_Shipping = shipping;
 }
