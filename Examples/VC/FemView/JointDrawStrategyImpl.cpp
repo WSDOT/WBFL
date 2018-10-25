@@ -85,7 +85,7 @@ STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iP
    CComPtr<IFem2dJoint> joint;
    joints->Find(jntID,&joint);
 
-   CComPtr<ILongArray> mbrIDs;
+   CComPtr<IIDArray> mbrIDs;
    joint->get_Members(&mbrIDs);
 
    CollectionIndexType count;

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -163,6 +163,10 @@ public:
 // IPrecastGirder
 public:
 	STDMETHOD(Initialize)(/*[in]*/IGenericBridge* bridge,/*[in]*/IStrandMover* strandMover,/*[in]*/SpanIndexType spanIdx,/*[in]*/GirderIndexType gdrIdx);
+
+	STDMETHOD(put_StrandMover)(/*[in]*/IStrandMover* pStrandMover);
+	STDMETHOD(get_StrandMover)(/*[out,retval]*/IStrandMover** ppStrandMover);
+
 	STDMETHOD(get_StraightStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 	STDMETHOD(get_TemporaryStrandGrid)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);
 	STDMETHOD(get_HarpedStrandGridEnd)(/*[in]*/EndType endType,/*[out,retval]*/IStrandGrid** grid);

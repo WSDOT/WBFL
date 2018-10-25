@@ -22,9 +22,9 @@ public:
 	BOOL	m_bSupportMz;
 	BOOL	m_bSupportFx;
 	BOOL	m_bSupportFy;
-	double	m_X;
-	double	m_Y;
-	long	m_JntID;
+	Float64	m_X;
+	Float64	m_Y;
+	JointIDType	m_JntID;
 	//}}AFX_DATA
 
 

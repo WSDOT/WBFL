@@ -21,11 +21,11 @@ public:
 	enum { IDD = IDD_EDITMEMBER };
 	Float64	m_EA;
 	Float64	m_EI;
-	int		m_EndJoint;
-	long	m_MbrID;
+	JointIDType		m_EndJoint;
+	MemberIDType	m_MbrID;
 	BOOL	m_bReleaseMzAtEnd;
 	BOOL	m_bReleaseMzAtStart;
-	int		m_StartJoint;
+	JointIDType		m_StartJoint;
 	//}}AFX_DATA
 
 

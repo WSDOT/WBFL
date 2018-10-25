@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CORE - Core elements of the Agent-Broker Architecture
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -240,7 +240,7 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
       // enable the main window
       {
          AFX_MANAGE_STATE(AfxGetAppModuleState());
-         AfxGetMainWnd()->EnableWindow(TRUE);
+         //AfxGetMainWnd()->EnableWindow(TRUE);
          m_pActiveWnd->EnableWindow(TRUE);
          m_pActiveWnd->SetActiveWindow();
       }
@@ -249,7 +249,10 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
    {
       m_Messages.erase(m_Messages.begin()+m_ProgressMsgMarker.back(),m_Messages.end());
       m_ProgressMsgMarker.pop_back();
-      m_pThread->UpdateMessage(m_Messages.back().c_str());
+      if (0 < m_Messages.size() )
+      {
+         m_pThread->UpdateMessage(m_Messages.back().c_str());
+      }
    }
 
    return S_OK;

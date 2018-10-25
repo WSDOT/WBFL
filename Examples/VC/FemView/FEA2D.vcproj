@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCom\$(ConfigurationName)"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="\ARP\WBFL\RegFreeCom\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -50,7 +50,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="\ARP\WBFL\Include\;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="\ARP\WBFL\Include\;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -79,7 +79,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -90,7 +90,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
-				AdditionalManifestFiles="$(OutDir)\WBFL.manifest"
+				AdditionalManifestFiles="\ARP\WBFL\RegFreeCOM\WBFL.$(PlatformName).$(ConfigurationName).manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -112,8 +112,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="\ARP\WBFL\RegFreeCom\$(ConfigurationName)"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="\ARP\WBFL\RegFreeCom\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory=".\$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="2"
@@ -144,7 +144,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="\ARP\WBFL\Include\;&quot;\ARP\WBFL\Include\$(ConfigurationName)&quot;"
+				AdditionalIncludeDirectories="\ARP\WBFL\Include\;&quot;\ARP\WBFL\Include\$(PlatformName)&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -175,7 +175,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(ConfigurationName)"
+				AdditionalLibraryDirectories="\ARP\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

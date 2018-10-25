@@ -283,7 +283,7 @@ void CJointEvents::DeleteJoint(long jntID)
    CComPtr<IFem2dJoint> joint;
    joints->Find(jntID,&joint);
 
-   CComPtr<ILongArray> mbrIDs;
+   CComPtr<IIDArray> mbrIDs;
    joint->get_Members(&mbrIDs);
 
    CollectionIndexType count;

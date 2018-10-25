@@ -641,11 +641,11 @@ void CFEA2DView::OnLoadsCreateLoading()
    model->get_Loadings(&loadings);
 
    CCreateLoadingDlg dlg;
-   loadings->get_Count(&dlg.m_ID);
+   loadings->get_Count((IndexType*)&dlg.m_ID);
 
    if ( dlg.DoModal() == IDOK )
    {
-      long id = dlg.m_ID;
+      IDType id = dlg.m_ID;
 
       try
       {
