@@ -687,19 +687,21 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
 
    // play some games here with case where rect is too small to draw the axis and the 
    // graph. If too small, then only draw curves.
-
    RECT device_client_rect;
 
-   if (bottom_border+top_border < out_height &&
-       left_border+right_border < out_width )
+   // There was a bug with setting null or reverse graph orientations. 
+   // Let's make sure we use what we test in the if block below
+   int rleft = m_OutputRect.left + left_border;
+   int rtop = 11*m_LegendRect.bottom/10;
+   int rright = m_OutputRect.right  - right_border;
+   int rbottom = m_OutputRect.bottom - bottom_border;
+
+   if (rleft < rright && rbottom > rtop )
    {
       // axis' fit - draw them
       m_DoDrawAxis = true;
 
-      ::SetRect(&device_client_rect,m_OutputRect.left   + left_border,
-                                    11*m_LegendRect.bottom/10,
-                                    m_OutputRect.right  - right_border,
-                                    m_OutputRect.bottom - bottom_border);
+      ::SetRect(&device_client_rect, rleft, rtop, rright, rbottom); 
 
       // place x and y axis' on screen
       m_XAxis.SetOrientation(grAxisXY::X_AXIS, device_client_rect.left, device_client_rect.right,

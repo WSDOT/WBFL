@@ -265,13 +265,13 @@ Token sysTokenizer::find_next_token(TString &TS, TIter &Ti)
 bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 {
 	CHECK(lpszText != 0);
-	while (*lpszText == ' ' || *lpszText == '\t')
+	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
 		lpszText++;
 
 	TCHAR chFirst = lpszText[0];
    LPTSTR stopstr;
 	*d = _tcstod(lpszText, &stopstr);
-	if (*d == 0.0 && chFirst != '0')
+	if (*d == 0.0 && chFirst != _T('0'))
 		return false;   // could not convert
 
    if (*d==HUGE_VAL || *d==-HUGE_VAL)
@@ -280,10 +280,10 @@ bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
       return false; // overflow or underflow
    }
 
-	while (*stopstr == ' ' || *stopstr == '\t')
+	while (*stopstr == _T(' ') || *stopstr == _T('\t'))
 		stopstr++;
 
-	if (*stopstr != '\0')
+	if (*stopstr != _T('\0'))
 		return false;   // not terminated properly
 
 	return true;
@@ -292,13 +292,13 @@ bool sysTokenizer::ParseDouble(LPCTSTR lpszText, Float64* d)
 bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
 {
 	CHECK(lpszText != 0);
-	while (*lpszText == ' ' || *lpszText == '\t')
+	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
 		lpszText++;
 
 	TCHAR chFirst = lpszText[0];
    LPTSTR stopstr;
 	*l = _tcstol(lpszText, &stopstr, 10);
-	if (*l == 0 && chFirst != '0')
+	if (*l == 0 && chFirst != _T('0'))
 		return false;   // could not convert
 
    if (*l==LONG_MAX || *l==LONG_MIN)
@@ -307,17 +307,17 @@ bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
       return false; // overflow or underflow
    }
 
-	while (*stopstr == ' ' || *stopstr == '\t')
+	while (*stopstr == _T(' ') || *stopstr == _T('\t'))
 		stopstr++;
 
-	if (*stopstr != '\0')
+	if (*stopstr != _T('\0'))
 		return false;   // not terminated properly
 
 	return true;
 }
 
 
-inline std::ostream &operator<<(std::ostream &os, const TString &TS) 
+inline std::_tostream &operator<<(std::_tostream &os, const TString &TS) 
 {
     for(TString::const_iterator cti = TS.begin();
         cti != TS.end();
@@ -326,13 +326,13 @@ inline std::ostream &operator<<(std::ostream &os, const TString &TS)
     return os;
 }
 
-inline std::ostream &operator<<(std::ostream &os, const std::vector<Token> &VT)
+inline std::_tostream &operator<<(std::_tostream &os, const std::vector<Token> &VT)
 {
-    os<<"[";
+    os<<_T("[");
     for(std::vector<Token>::const_iterator cvti = VT.begin();
         cvti != VT.end();
-        os<<" ("<<*cvti++<<") ");
-    os<<"]";
+        os<<_T(" (")<<*cvti++<<_T(") "));
+    os<<_T("]");
     return os;
 }
 

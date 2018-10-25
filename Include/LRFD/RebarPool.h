@@ -31,7 +31,7 @@
 
 #include <Lrfd\LrfdExp.h>
 #include <Material\Rebar.h>
-#include <vector>
+#include <map>
 #include <System\SingletonKiller.h>
 #include <boost\shared_ptr.hpp>
 
@@ -83,16 +83,27 @@ public:
    // Returns a pointer to an instance of the rebar pool.
    static lrfdRebarPool* GetInstance();
 
+
    //------------------------------------------------------------------------
-   // Returns a pointer to a rebar object.  Valid key values are
-   // 3,4,5,6,7,8,9,10,11,14,18
-   const matRebar* GetRebar(BarSizeType key);
+   const matRebar* GetRebar(Int32 key);
+
+   //------------------------------------------------------------------------
+   const matRebar* GetRebar(matRebar::Type type,
+                                matRebar::Grade grade,
+                                matRebar::Size size );
 
    //------------------------------------------------------------------------
    // Returns the lookup key for pRebar.  If pRebar is not a member of
-   // the rebar pool, returns Uint16_Max
-   BarSizeType GetRebarKey(const matRebar* pRebar);
+   // the rebar pool, returns -1
+   Int32 GetRebarKey(const matRebar* pRebar);
 
+   static bool MapOldRebarKey(Int32 oldKey,matRebar::Grade& grade,matRebar::Type& type,matRebar::Size& size);
+
+   static std::_tstring GetMaterialName(matRebar::Type type,matRebar::Grade grade);
+   static std::_tstring GetBarSize(matRebar::Size size);
+
+   static void GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
+   static void GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize);
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -124,7 +135,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
    static lrfdRebarPool* ms_pInstance;
-   typedef std::vector<boost::shared_ptr<matRebar> > RebarPool;
+   typedef std::map<Int32,boost::shared_ptr<matRebar> > RebarPool;
    static RebarPool ms_Rebar;
 
    typedef sysSingletonKillerT<lrfdRebarPool> Killer;
@@ -180,7 +191,7 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor
-   lrfdRebarIter();
+   lrfdRebarIter(matRebar::Grade grade = matRebar::Grade60,matRebar::Type type = matRebar::A615);
 
    //------------------------------------------------------------------------
    lrfdRebarIter(const lrfdRebarIter& rOther);
@@ -217,6 +228,29 @@ public:
    const matRebar* GetCurrentRebar() const;
 
    // GROUP: ACCESS
+
+   //------------------------------------------------------------------------
+   // Sets the grade of prestress steel for which the available sizes will
+   // be iterated over. Sets the iterator to the first element in the
+   // iteration sequence.
+   void SetGrade(matRebar::Grade grade);
+
+   //------------------------------------------------------------------------
+   // Returns the grade of prestress steel for which the available sizes
+   // are being iterated over.
+   matRebar::Grade GetGrade() const;
+
+   //------------------------------------------------------------------------
+   // Sets the type of prestress steel for which the available sizes will
+   // be iterated over. Sets the iterator to the first element in the
+   // iteration sequence.
+   void SetType(matRebar::Type type);
+
+   //------------------------------------------------------------------------
+   // Returns the type of prestress steel for which the available sizes
+   // are being iterated over.
+   matRebar::Type GetType() const;
+
    // GROUP: INQUIRY
    // GROUP: DEBUG
 #if defined _DEBUG
@@ -248,9 +282,12 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   Int32 m_Begin;
-   Int32 m_End;
-   Int32 m_CurrentIdx;
+   std::vector< const matRebar* > m_Bars;
+   std::vector< const matRebar* >::iterator m_Begin;
+   std::vector< const matRebar* >::iterator m_End;
+   std::vector< const matRebar* >::iterator m_Current;
+   matRebar::Grade m_Grade;
+   matRebar::Type m_Type;
 
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS

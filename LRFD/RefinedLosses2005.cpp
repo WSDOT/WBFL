@@ -453,6 +453,14 @@ Float64 lrfdRefinedLosses2005::Get_ebdf() const
     return m_ebdf;
 }
 
+Float64 lrfdRefinedLosses2005::Get_ebif() const
+{
+    if ( m_IsDirty )
+        UpdateLosses();
+
+    return m_ebif;
+}
+
 Float64 lrfdRefinedLosses2005::GetKdf() const
 {
     if ( m_IsDirty )
@@ -657,6 +665,7 @@ void lrfdRefinedLosses2005::MakeCopy( const lrfdRefinedLosses2005& rOther )
    m_Kih[1]                = rOther.m_Kih[1];
    m_KL                    = rOther.m_KL;
    m_ebdf                  = rOther.m_ebdf;
+   m_ebif                  = rOther.m_ebif;
    m_Kdf                   = rOther.m_Kdf;
    m_eddf                  = rOther.m_eddf;
    m_dfpSR                 = rOther.m_dfpSR;
@@ -780,7 +789,8 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // 2. Compute shrinkage strain
    ktd = m_CreepInitialToFinal.GetKtd();
-   m_ebdf = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   m_ebif = m_ShrinkageK1*m_ShrinkageK2*kvs*khs*kf*ktd*0.48e-03;
+   m_ebdf = m_ebif - m_ebid;
 
    // if there aren't any strands then there can't be loss due to shrinkage
    m_dfpSD = IsZero(m_ApsPerm) ? 0.0 : m_ebdf*m_Ep*m_Kdf;

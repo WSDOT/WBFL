@@ -38,8 +38,14 @@ CLASS
 ****************************************************************************/
 
 lrfdRebarPool* lrfdRebarPool::ms_pInstance = 0;
-std::vector<boost::shared_ptr<matRebar> > lrfdRebarPool::ms_Rebar;
+std::map<Int32,boost::shared_ptr<matRebar> > lrfdRebarPool::ms_Rebar;
 lrfdRebarPool::Killer lrfdRebarPool::ms_Killer;
+
+Int32 hash( matRebar::Grade grade, matRebar::Type type, matRebar::Size size )
+{
+   Int32 hv = ((Int32)grade) | ((Int32)type) | ((Int32)size);
+   return hv;
+}
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
@@ -86,49 +92,139 @@ const Int16 gs_KeyMap[19] = {
 10   // 18
 };
 
-const matRebar* lrfdRebarPool::GetRebar(BarSizeType key)
+bool lrfdRebarPool::MapOldRebarKey(Int32 oldKey,matRebar::Grade& grade,matRebar::Type& type,matRebar::Size& size)
 {
-   ATLASSERT( 0 <= key && key <= 18 );
-   ATLASSERT( gs_KeyMap[key] != -1 );
+   // old pool had A615 A615 Steel, grade 60
+   grade = matRebar::Grade60;
+   type = matRebar::A615;
 
-   if ( 0 <= key && key < 19 )
+   switch(oldKey)
    {
-       Int16 index = gs_KeyMap[key];
-       if ( index == -1 )
-          return NULL;
-
-       return ms_Rebar[index].get(); 
+   case -1: size = matRebar::bsNone; break;
+   case 0:  size = matRebar::bsNone; break;
+   case 3:  size = matRebar::bs3;  break;
+   case 4:  size = matRebar::bs4;  break;
+   case 5:  size = matRebar::bs5;  break;
+   case 6:  size = matRebar::bs6;  break;
+   case 7:  size = matRebar::bs7;  break;
+   case 8:  size = matRebar::bs8;  break;
+   case 9:  size = matRebar::bs9;  break;
+   case 10: size = matRebar::bs10; break;
+   case 11: size = matRebar::bs11; break;
+   case 14: size = matRebar::bs14; break;
+   case 18: size = matRebar::bs18; break;
+   default:
+      ATLASSERT(false);
+      return false;
    }
 
-   return NULL;
+   return true;
 }
 
-BarSizeType lrfdRebarPool::GetRebarKey(const matRebar* pRebar)
+std::_tstring lrfdRebarPool::GetMaterialName(matRebar::Type type,matRebar::Grade grade)
 {
-   CHECK( pRebar != NULL );
-
-   Int16 index = 0; // Index into ms_Rebar where pRebar is located
-   RebarPool::iterator i;
-   for ( i = ms_Rebar.begin(); i != ms_Rebar.end(); i++, index++ )
+   std::_tstring str;
+   if ( type == matRebar::A615 )
    {
-      boost::shared_ptr<matRebar>& ptr_rebar = *i;
-      if ( ptr_rebar.get() == pRebar ) // do they point to the same location?
-         break; // Yes, we found it.
+      switch(grade)
+      {
+      case matRebar::Grade40:
+         str = _T("AASHTO M31 (A615) - Grade 40");
+         break;
+      case matRebar::Grade60:
+         str = _T("AASHTO M31 (A615) - Grade 60");
+         break;
+      case matRebar::Grade75:
+         str = _T("AASHTO M31 (A615) - Grade 75");
+         break;
+      case matRebar::Grade80:
+         str = _T("AASHTO M31 (A615) - Grade 80");
+         break;
+      default:
+         ATLASSERT(false); // not value
+         str = _T("Unknown");
+         break;
+      }
+   }
+   else
+   {
+      switch(grade)
+      {
+      case matRebar::Grade60:
+         str = _T("ASTM A706 - Grade 60");
+         break;
+      case matRebar::Grade80:
+         str = _T("ASTM A706 - Grade 80");
+         break;
+      case matRebar::Grade40:
+      case matRebar::Grade75:
+      default:
+         ATLASSERT(false); // not value
+         str = _T("Unknown");
+         break;
+      }
    }
 
-   // We went through the entire loop and didn't find it
-   if ( (Int16)ms_Rebar.size() <= index)
-      return INVALID_BAR_SIZE;
+   return str;
+}
 
-   // We've got the index, now back out the key from gs_KeyMap
-   for ( BarSizeType key = 0; key < 19; key++ )
+std::_tstring lrfdRebarPool::GetBarSize(matRebar::Size size)
+{
+   std::_tstring str;
+   switch(size)
    {
-      if ( gs_KeyMap[key] == index )
-         return key;
+   case matRebar::bs3:     str = _T("#3"); break;
+   case matRebar::bs4:     str = _T("#4"); break;
+   case matRebar::bs5:     str = _T("#5"); break;
+   case matRebar::bs6:     str = _T("#6"); break;
+   case matRebar::bs7:     str = _T("#7"); break;
+   case matRebar::bs8:     str = _T("#8"); break;
+   case matRebar::bs9:     str = _T("#9"); break;
+   case matRebar::bs10:    str = _T("#10"); break;
+   case matRebar::bs11:    str = _T("#11"); break;
+   case matRebar::bs14:    str = _T("#14"); break;
+   case matRebar::bs18:    str = _T("#18"); break;
+   case matRebar::bsNone:  str = _T("None"); break;
+   default:
+      ATLASSERT(false);
    }
 
-   CHECKX( false, _T("Code should never get here!!!" ));
-   return INVALID_BAR_SIZE;
+   return str;
+}
+
+void lrfdRebarPool::GetBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize)
+{
+   minSize = matRebar::bs3;
+   maxSize = matRebar::bs18;
+}
+
+void lrfdRebarPool::GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grade grade,matRebar::Size& minSize,matRebar::Size& maxSize)
+{
+   minSize = matRebar::bs3;
+   maxSize = matRebar::bs6;
+}
+
+const matRebar* lrfdRebarPool::GetRebar(Int32 key)
+{
+   std::map<Int32,boost::shared_ptr<matRebar> >::iterator found;
+
+   found = ms_Rebar.find( key );
+   if ( found == ms_Rebar.end() )
+      return 0;
+
+   return (*found).second.get();
+} 
+
+const matRebar* lrfdRebarPool::GetRebar( matRebar::Type type,
+                                         matRebar::Grade grade,
+                                         matRebar::Size size )
+{
+   return GetRebar( hash(grade,type,size) );
+}
+
+Int32 lrfdRebarPool::GetRebarKey(const matRebar* pRebar)
+{
+   return hash( pRebar->GetGrade(), pRebar->GetType(), pRebar->GetSize() );
 }
 
 //======================== INQUIRY    =======================================
@@ -155,24 +251,85 @@ void lrfdRebarPool::Dump(dbgDumpContext& os) const
 
 ////////////////////////// PRIVATE    ///////////////////////////////////////
 
-#define NEW_BAR(name,nd,na,fu,fy,e) \
-   ms_Rebar.push_back( boost::shared_ptr<matRebar>(new matRebar(_T(name),::ConvertToSysUnits(fu, unitMeasure::KSI),::ConvertToSysUnits(fy, unitMeasure::KSI),::ConvertToSysUnits(e, unitMeasure::KSI),matRebar::Circle,::ConvertToSysUnits(nd,unitMeasure::Inch),::ConvertToSysUnits(na,unitMeasure::Inch2) ) ) );
+#define NEW_BAR(name,size,type,grade) \
+   ms_Rebar.insert( std::make_pair(hash(matRebar::##grade,matRebar::##type,matRebar::##size),boost::shared_ptr<matRebar>(new matRebar(_T(name),matRebar::##grade,matRebar::##type,matRebar::##size) ) ) );
 
 //======================== LIFECYCLE  =======================================
 lrfdRebarPool::lrfdRebarPool()
 {
-   // Based on Table 5.1-2, WSDOT BDM, April 1993
-   NEW_BAR(  "#3 (10M)",0.375, 0.11, 90, 60, 29000 );
-   NEW_BAR(  "#4 (13M)",0.50 , 0.20, 90, 60, 29000 ); 
-   NEW_BAR(  "#5 (16M)",0.625, 0.31, 90, 60, 29000 );
-   NEW_BAR(  "#6 (19M)",0.75 , 0.44, 90, 60, 29000 );
-   NEW_BAR(  "#7 (22M)",0.875, 0.60, 90, 60, 29000 ); 
-   NEW_BAR(  "#8 (25M)",1.0  , 0.79, 90, 60, 29000 );
-   NEW_BAR(  "#9 (29M)",1.13 , 1.00, 90, 60, 29000 ); 
-   NEW_BAR( "#10 (32M)",1.27 , 1.27, 90, 60, 29000 );
-   NEW_BAR( "#11 (36M)",1.41 , 1.56, 90, 60, 29000 );
-   NEW_BAR( "#14 (43M)",1.69 , 2.25, 90, 60, 29000 );
-   NEW_BAR( "#18 (57M)",2.26 , 4.00, 90, 60, 29000 );
+   // A615 (A615) Grade 60 must come first so we don't mess up
+   // legacy rebar pool keys
+   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade60 );
+   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade60 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade60 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade60 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade60 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade60 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade60 ); 
+   NEW_BAR( "#10 (32M)", bs10, A615, Grade60 ); 
+   NEW_BAR( "#11 (36M)", bs11, A615, Grade60 ); 
+   NEW_BAR( "#14 (43M)", bs14, A615, Grade60 ); 
+   NEW_BAR( "#18 (57M)", bs18, A615, Grade60 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade40 );
+   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade40 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade40 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade40 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade40 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade40 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade40 ); 
+   NEW_BAR( "#10 (32M)", bs10, A615, Grade40 ); 
+   NEW_BAR( "#11 (36M)", bs11, A615, Grade40 ); 
+   NEW_BAR( "#14 (43M)", bs14, A615, Grade40 ); 
+   NEW_BAR( "#18 (57M)", bs18, A615, Grade40 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade75 );
+   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade75 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade75 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade75 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade75 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade75 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade75 ); 
+   NEW_BAR( "#10 (32M)", bs10, A615, Grade75 ); 
+   NEW_BAR( "#11 (36M)", bs11, A615, Grade75 ); 
+   NEW_BAR( "#14 (43M)", bs14, A615, Grade75 ); 
+   NEW_BAR( "#18 (57M)", bs18, A615, Grade75 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A615, Grade80 );
+   NEW_BAR(  "#4 (13M)", bs4,  A615, Grade80 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A615, Grade80 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A615, Grade80 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A615, Grade80 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A615, Grade80 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A615, Grade80 ); 
+   NEW_BAR( "#10 (32M)", bs10, A615, Grade80 ); 
+   NEW_BAR( "#11 (36M)", bs11, A615, Grade80 ); 
+   NEW_BAR( "#14 (43M)", bs14, A615, Grade80 ); 
+   NEW_BAR( "#18 (57M)", bs18, A615, Grade80 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A706, Grade60 );
+   NEW_BAR(  "#4 (13M)", bs4,  A706, Grade60 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A706, Grade60 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A706, Grade60 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A706, Grade60 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A706, Grade60 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A706, Grade60 ); 
+   NEW_BAR( "#10 (32M)", bs10, A706, Grade60 ); 
+   NEW_BAR( "#11 (36M)", bs11, A706, Grade60 ); 
+   NEW_BAR( "#14 (43M)", bs14, A706, Grade60 ); 
+   NEW_BAR( "#18 (57M)", bs18, A706, Grade60 ); 
+
+   NEW_BAR(  "#3 (10M)", bs3,  A706, Grade80 );
+   NEW_BAR(  "#4 (13M)", bs4,  A706, Grade80 ); 
+   NEW_BAR(  "#5 (16M)", bs5,  A706, Grade80 ); 
+   NEW_BAR(  "#6 (19M)", bs6,  A706, Grade80 ); 
+   NEW_BAR(  "#7 (22M)", bs7,  A706, Grade80 ); 
+   NEW_BAR(  "#8 (25M)", bs8,  A706, Grade80 ); 
+   NEW_BAR(  "#9 (29M)", bs9,  A706, Grade80 ); 
+   NEW_BAR( "#10 (32M)", bs10, A706, Grade80 ); 
+   NEW_BAR( "#11 (36M)", bs11, A706, Grade80 ); 
+   NEW_BAR( "#14 (43M)", bs14, A706, Grade80 ); 
+   NEW_BAR( "#18 (57M)", bs18, A706, Grade80 ); 
 }
 
 //======================== OPERATORS  =======================================
@@ -189,9 +346,14 @@ CLASS
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-lrfdRebarIter::lrfdRebarIter()
+lrfdRebarIter::lrfdRebarIter(matRebar::Grade grade,matRebar::Type type)
 {
-   SetRange();
+   m_Grade = grade;
+   m_Type  = type;
+
+   // Make sure the rebarpool is up and running
+   lrfdRebarPool* pPool = lrfdRebarPool::GetInstance();
+
    Begin();
 }
 
@@ -214,49 +376,112 @@ lrfdRebarIter& lrfdRebarIter::operator=(const lrfdRebarIter& rOther)
 }
 
 //======================== OPERATIONS =======================================
+class BarDiaSorter
+{
+public:
+   int operator() (const matRebar* ps1,const matRebar* ps2)
+   {
+      if (ps1->GetNominalDimension() == ps2->GetNominalDimension() )
+      {
+         return ps1->GetUltimateStrength() < ps2->GetUltimateStrength();
+      }
+      else
+      {
+         return ps1->GetNominalDimension() < ps2->GetNominalDimension();
+      }
+   }
+};
+
 void lrfdRebarIter::Begin()
 {
-   m_CurrentIdx = m_Begin;
+   m_Bars.clear();
+   CHECK(m_Bars.size() == 0);
+   CHECK(m_Bars.empty() == true);
+   std::map< Int32, boost::shared_ptr<matRebar> >* pBars = &lrfdRebarPool::ms_Rebar;
+   std::map< Int32, boost::shared_ptr<matRebar> >::const_iterator iter;
+   for ( iter = pBars->begin(); iter != pBars->end(); iter++ )
+   {
+      // The following two lines are from the original implementation.  When we upgraded to
+      // VC++ 6.0, the lrfdRebarPool::ms_Rebar container started loosing ownership of the
+      // of the matRebar objects.  This implementation seems to fix the problem.
+      //const std::pair< Int32, std::auto_ptr<matRebar> >& pair = *iter;
+      //const std::auto_ptr<matRebar>& AutoPtr = pair.second;
+      const boost::shared_ptr<matRebar>& AutoPtr = iter->second;
+      const matRebar* pRebar = AutoPtr.get();
+      if ( pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type )
+         m_Bars.push_back( pRebar );
+   }
+
+   // sort by diameter to make list pretty
+   std::sort(m_Bars.begin(), m_Bars.end(), BarDiaSorter());
+
+   m_Begin   = m_Bars.begin();
+   m_Current = m_Begin;
+   m_End     = m_Bars.end();
 }
 
 void lrfdRebarIter::End()
 {
-   m_CurrentIdx = m_End;
+   m_Current = m_End;
 }
 
 void lrfdRebarIter::Next()
 {
-   m_CurrentIdx++;
+   if ( m_Current != m_End )
+      m_Current++;
 }
 
 void lrfdRebarIter::Move(Int32 pos)
 {
-   m_CurrentIdx = pos;
+   m_Current = m_Begin;
+   if ( m_Begin + pos > m_End )
+      m_Current = m_End;
+   else
+      m_Current = m_Begin + pos;
 }
 
 void lrfdRebarIter::MoveBy(Int32 dPos)
 {
-   m_CurrentIdx = dPos;
+   m_Current += dPos;
+   if ( m_Current > m_End )
+      m_Current = m_End;
 }
 
 lrfdRebarIter::operator void*() const
 {
-   if ( m_CurrentIdx >= m_End )
-      return 0;
-   else
+   if ( m_Current != m_End )
       return (void*)1;
+   else
+      return 0;
 }
 
 const matRebar* lrfdRebarIter::GetCurrentRebar() const
 {
    if ( *this )
-   {
-      return lrfdRebarPool::ms_Rebar[m_CurrentIdx].get();
-   }
+      return (*m_Current);
    else
-   {
       return 0;
-   }
+}
+void lrfdRebarIter::SetGrade(matRebar::Grade grade)
+{
+   m_Grade = grade;
+   Begin();
+}
+
+matRebar::Grade lrfdRebarIter::GetGrade() const
+{
+   return m_Grade;
+}
+
+void lrfdRebarIter::SetType(matRebar::Type type)
+{
+   m_Type = type;
+   Begin();
+}
+
+matRebar::Type lrfdRebarIter::GetType() const
+{
+   return m_Type;
 }
 
 //======================== ACCESS     =======================================
@@ -293,17 +518,14 @@ void lrfdRebarIter::MakeAssignment(const lrfdRebarIter& rOther)
 //======================== LIFECYCLE  =======================================
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
-void lrfdRebarIter::SetRange()
-{
-   m_Begin = 0;
-   m_End   = lrfdRebarPool::ms_Rebar.size();
-}
 
 void lrfdRebarIter::MakeCopy(const lrfdRebarIter& rOther)
 {
-   m_CurrentIdx = rOther.m_CurrentIdx;
-   m_Begin      = rOther.m_Begin;
-   m_End        = rOther.m_End;
+   m_Current = rOther.m_Current;
+   m_Begin   = rOther.m_Begin;
+   m_End     = rOther.m_End;
+   m_Grade   = rOther.m_Grade;
+   m_Type    = rOther.m_Type;
 }
 
 //======================== ACCESS     =======================================

@@ -584,11 +584,10 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
       return hr;
 
    // Get point on alignment at station
-
    CComPtr<IPoint2d> alignment_point;
    alignment->LocatePoint(CComVariant(station),omtAlongDirection, 0.00,CComVariant(0.00),&alignment_point);
 
-   // Create a line through the alignment point in the direction of "direction"
+   // Create a construction line through the alignment point in the direction of "direction"
    Float64 angle;
    direction->get_Value(&angle);
 
@@ -601,45 +600,7 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    line.CoCreateInstance(CLSID_Line2d);
    line->SetExplicit(alignment_point,v);
 
-   // create a line for the outside girder
-   CComPtr<ISpanCollection> spans;
-   bridge->get_Spans(&spans);
-
-   SpanIndexType nSpans;
-   spans->get_Count(&nSpans);
-
-   GirderIndexType nGirders = 0;
-   for ( SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++ )
-   {
-      CComPtr<ISpan> span;
-      spans->get_Item(spanIdx,&span);
-
-      CComPtr<IPier> prevPier,nextPier;
-      span->get_PrevPier(&prevPier);
-      span->get_NextPier(&nextPier);
-
-      Float64 prevStation;
-      CComPtr<IStation> objStation;
-      prevPier->get_Station(&objStation);
-      objStation->get_Value(&prevStation);
-
-      objStation.Release();
-      Float64 nextStation;
-      nextPier->get_Station(&objStation);
-      objStation->get_Value(&nextStation);
-
-      if ( (spanIdx == 0 && station < prevStation) ||
-           (prevStation <= station && station <= nextStation) ||
-           (spanIdx == nSpans-1 && nextStation < station) )
-      {
-         span->get_GirderCount(&nGirders);
-         break;
-      }
-   }
-
-   ATLASSERT(0 < nGirders);
-   GirderIndexType girderIdx = (side == qcbLeft ? 0 : nGirders-1);
-
+   // Utils needed
    CComPtr<ICogoInfo> cogoInfo;
    bridge->get_CogoInfo(&cogoInfo);
 
@@ -649,23 +610,88 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    CComPtr<IPointCollection> points;
    cogoModel->get_Points(&points);
 
-   PierIndexType prev_pier, next_pier;
-   GetPiers(bridge,station,&prev_pier,&next_pier);
+   CComPtr<IGeomUtil2d> geomUtil;
+   geomUtil.CoCreateInstance(CLSID_GeomUtil);
 
-   if ( prev_pier == INVALID_INDEX )
+   // Determine which span the station lies in by finding the first pier line
+   // that the deck point lies to the left of
+   CComPtr<IPierCollection> piers;
+   bridge->get_Piers(&piers);
+   PierIndexType nPiers;
+   piers->get_Count(&nPiers);
+
+   SpanIndexType spanIdx(0);
+   if (nPiers < 3)
    {
-      // station is before bridge
-      prev_pier = 0;
-      next_pier = 1;
+      // Take a short cut for one-span structures
+      spanIdx = 0; // there is no other answer
    }
-   else if ( next_pier == INVALID_INDEX )
+   else
    {
-      // station is after bridge
-      // prev_pier is the index of the last pier
-      next_pier = prev_pier;
-      prev_pier = next_pier - 1;
+      CComPtr<ILine2d> pierLine;
+      pierLine.CoCreateInstance(CLSID_Line2d);
+
+      for ( PierIndexType pierIdx = 0; pierIdx < nPiers; pierIdx++ )
+      {
+         CComPtr<IPier> pier;
+         piers->get_Item(pierIdx,&pier);
+
+         long lftId;
+         cogoInfo->get_PierPointID(pierIdx, pptLeft, &lftId);
+         CComPtr<IPoint2d> plft;
+         points->get_Item(lftId,&plft);
+
+         long rgtId;
+         cogoInfo->get_PierPointID(pierIdx, pptRight, &rgtId);
+         CComPtr<IPoint2d> prgt;
+         points->get_Item(rgtId,&prgt);
+
+         // Line along pier from left to right
+         pierLine->ThroughPoints(prgt, plft);
+
+         Float64 deckDist;
+         geomUtil->ShortestDistanceToPoint(pierLine, pntDeck, &deckDist);
+
+         if(deckDist<=0.0)
+         {
+            // Deck point is to left of pier
+            if (pierIdx<=1)
+            {
+               spanIdx = 0; // Could be before bridge or second pier
+            }
+            else
+            {
+               spanIdx = pierIdx-1;
+            }
+            break;
+         }
+         else
+         {
+            if (pierIdx==nPiers-1)
+            {
+               // End of pier list and still not to left - use last span
+               spanIdx = nPiers-2;
+            }
+         }
+      }
    }
-   ATLASSERT( 0 <= prev_pier && 0 <= next_pier );
+
+   CComPtr<ISpanCollection> spans;
+   bridge->get_Spans(&spans);
+
+   CComPtr<ISpan> span;
+   spans->get_Item(spanIdx,&span);
+
+   GirderIndexType nGirders = 0;
+   span->get_GirderCount(&nGirders);
+
+   // create a line for the outside girder
+   ATLASSERT(0 < nGirders);
+   GirderIndexType girderIdx = (side == qcbLeft ? 0 : nGirders-1);
+
+   // Piers bounding span
+   PierIndexType prev_pier = spanIdx;
+   PierIndexType next_pier = spanIdx+1;
 
    long id;
    cogoInfo->get_PierGirderIntersectionPointID(prev_pier,girderIdx,qcbAfter,&id);
@@ -681,9 +707,6 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    gdrLine->ThroughPoints(p1,p2);
 
    // intersect line from alignment with girder line
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
-
    CComPtr<IPoint2d> pntGirder;
    geomUtil->LineLineIntersect(line,gdrLine,&pntGirder);
 

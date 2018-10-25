@@ -85,7 +85,7 @@ public:
    //------------------------------------------------------------------------
    // Returns the minimum bar size in the confinment zone per 5.10.10.2
    // Bar size correlates to lrfdRebarPool
-   static BarSizeType GetMinConfinmentBarSize();
+   static matRebar::Size GetMinConfinmentBarSize();
 
    //------------------------------------------------------------------------
    // Returns the minimum bar area in the confinment zone per 5.10.10.2

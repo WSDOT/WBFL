@@ -40,6 +40,7 @@
    */
 #pragma once
 #include <System\SysExp.h>
+#include <Windows.h>
 
 #include <vector>
 #include <string>
@@ -54,7 +55,6 @@ typedef TString::iterator TIter;
 // Currently, tokenizing is implemented on strings only. 
 class SYSCLASS sysTokenizer 
 {
-
     // The three representations of our contents:
     TString Vector_Rep;                      // original string
     std::vector<Token> Token_Rep;            // string separated in tokens.
@@ -126,12 +126,12 @@ inline bool operator < (const sysTokenizer &T1, const sysTokenizer &T2)
 }
 
 
-inline std::istream & operator >> (std::istream &is, sysTokenizer &T)
+inline std::_tistream & operator >> (std::_tistream &is, sysTokenizer &T)
 {
     std::_tstring vec;
 
-    for(char c = 0; is && c != '\n'; is.get(c))
-        if(c != '\n' && c > 0) vec += c;
+    for(TCHAR c = 0; is && c != _T('\n'); is.get(c))
+        if(c != _T('\n') && c > 0) vec += c;
     
     T.push_back(0);
     if(is) T.push_back(vec);

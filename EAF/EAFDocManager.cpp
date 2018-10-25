@@ -187,6 +187,13 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 	dlgFile.m_ofn.lpstrTitle = title;
 	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(_MAX_PATH);
 
+   if ( bOpenFileDialog )
+   {
+      // Set the default file extension
+      CEAFApp* pApp = EAFGetApp();
+      dlgFile.m_ofn.nFilterIndex = pApp->GetProfileInt(_T("Settings"),_T("LastFileType"),1);
+   }
+
    TCHAR strCustomFilter[40] = { _T("\0\0") };
    dlgFile.m_ofn.lpstrCustomFilter = strCustomFilter;
    dlgFile.m_ofn.nMaxCustFilter = 40;
@@ -216,6 +223,13 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
    m_strCurrentFilter.Format(_T("%s"),pstrCustomFilter);
 
 	fileName.ReleaseBuffer();
+
+   // Save type type of the last file
+   if ( nResult == IDOK && bOpenFileDialog )
+   {
+      CEAFApp* pApp = EAFGetApp();
+      pApp->WriteProfileInt(_T("Settings"),_T("LastFileType"),dlgFile.m_ofn.nFilterIndex);
+   }
 
 	return nResult == IDOK;
 }
