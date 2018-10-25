@@ -136,10 +136,19 @@ rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
 rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
+   USES_CONVERSION;
 
    if ( m_NumColumns <= ColNo )
    {
-      ::MessageBox(NULL,m_Label.GetName(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      // Report class name if no label
+      std::_tstring tname = this->m_Label.GetName();
+      if (tname.size()==0)
+      {
+         const type_info& ti = typeid(*this);
+         tname = A2T(ti.name());
+      }
+
+      ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
       ColNo = m_NumColumns-1;
    }
 
@@ -169,10 +178,19 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
+   USES_CONVERSION;
 
    if ( m_NumColumns <= ColNo )
    {
-      ::MessageBox(NULL,m_Label.GetName(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      // Report class name if no label
+      std::_tstring tname = this->m_Label.GetName();
+      if (tname.size()==0)
+      {
+         const type_info& ti = typeid(*this);
+         tname = A2T(ti.name());
+      }
+
+      ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
       ColNo = m_NumColumns-1;
    }
 

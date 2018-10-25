@@ -264,8 +264,7 @@ STDMETHODIMP CPointLoad::put_Orientation(Fem2dLoadOrientation newVal)
    catch (...)
    {
       ATLASSERT(false);
-      //return E_FAIL;
-      throw;
+      return E_FAIL;
    }
 
 	return S_OK;

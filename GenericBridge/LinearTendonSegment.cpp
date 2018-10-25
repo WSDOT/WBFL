@@ -39,6 +39,9 @@ static char THIS_FILE[] = __FILE__;
 // CLinearTendonSegment
 HRESULT CLinearTendonSegment::FinalConstruct()
 {
+   m_pPrevSegment = NULL;
+   m_pNextSegment = NULL;
+
    HRESULT hr;
    hr = m_Start.CoCreateInstance(CLSID_Point3d);
    if ( FAILED(hr) )
@@ -120,27 +123,38 @@ STDMETHODIMP CLinearTendonSegment::get_End(IPoint3d** end)
 STDMETHODIMP CLinearTendonSegment::putref_PrevTendonSegment(ITendonSegment* pTendonSegment)
 {
    CHECK_IN(pTendonSegment);
-   m_PrevSegment = pTendonSegment;
+   m_pPrevSegment = pTendonSegment;
    return S_OK;
 }
 
 STDMETHODIMP CLinearTendonSegment::get_PrevTendonSegment(ITendonSegment** ppTendonSegment)
 {
    CHECK_RETOBJ(ppTendonSegment);
-   return m_PrevSegment.CopyTo(ppTendonSegment);
+   (*ppTendonSegment) = m_pPrevSegment;
+   if ( *ppTendonSegment )
+   {
+      (*ppTendonSegment)->AddRef();
+   }
+   return S_OK;
 }
 
 STDMETHODIMP CLinearTendonSegment::putref_NextTendonSegment(ITendonSegment* pTendonSegment)
 {
    CHECK_IN(pTendonSegment);
-   m_NextSegment = pTendonSegment;
+   m_pNextSegment = pTendonSegment;
    return S_OK;
 }
 
 STDMETHODIMP CLinearTendonSegment::get_NextTendonSegment(ITendonSegment** ppTendonSegment)
 {
    CHECK_RETVAL(ppTendonSegment);
-   return m_NextSegment.CopyTo(ppTendonSegment);
+   CHECK_RETOBJ(ppTendonSegment);
+   (*ppTendonSegment) = m_pNextSegment;
+   if ( *ppTendonSegment )
+   {
+      (*ppTendonSegment)->AddRef();
+   }
+   return S_OK;
 }
 
 /////////////////////////////////////////////////////
@@ -312,7 +326,8 @@ STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRad
    // dy/dx = (Delta Y)/(Delta X) = m
    // d(dy/dx)/dx = dm/dx
    // r = [(1+m^2)^3/2]/(dm/dx)
-   CComQIPtr<ILinearTendonSegment> prevSegment(m_PrevSegment);
+   CComPtr<ILinearTendonSegment> prevSegment;
+   m_pPrevSegment->QueryInterface(&prevSegment);
    if ( prevSegment )
    {
       CComPtr<IPoint3d> start, end;
@@ -345,7 +360,8 @@ STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRad
       minRadius = Min(minRadius,r);
    }
 
-   CComQIPtr<ILinearTendonSegment> nextSegment(m_NextSegment);
+   CComPtr<ILinearTendonSegment> nextSegment;
+   m_pNextSegment->QueryInterface(&nextSegment);
    if ( nextSegment )
    {
       Float64 x1,y1,z1;
