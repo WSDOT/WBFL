@@ -62,7 +62,7 @@ void CTestMember::Test()
 
    // some error checking
    Float64 dx, dy, rz;
-   TRY_TEST(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz),FEM2D_E_MODEL_HAS_NO_JOINTS);
+   TRY_TEST(presults->ComputeJointDeflections(0, 0, &dx, &dy, &rz),FEM2D_E_MODEL_HAS_NO_JOINTS);
 
    CComPtr<IFem2dJointCollection> pJoints;
    TRY_TEST_HR(pmodel->get_Joints(&pJoints));
@@ -74,7 +74,7 @@ void CTestMember::Test()
    TRY_TEST_MC(pJoints->Create(5, 55, 35, &pJoint5));
    TRY_TEST_MC(pJoints->Create(6, 55, 35, &pJoint6)); // same loc as joint 5
 
-   TRY_TEST(presults->ComputeJointDisplacements(0, 0, &dx, &dy, &rz),FEM2D_E_MODEL_HAS_NO_MEMBERS);
+   TRY_TEST(presults->ComputeJointDeflections(0, 0, &dx, &dy, &rz),FEM2D_E_MODEL_HAS_NO_MEMBERS);
 
    CComPtr<IFem2dMemberCollection> pMembers;
    TRY_TEST_HR(pmodel->get_Members(&pMembers));

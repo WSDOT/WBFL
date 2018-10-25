@@ -44,7 +44,7 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
    XSectionDim( unitMeasure::Millimeter ),
    SpanLength( unitMeasure::Meter ),
    AlignmentLength( unitMeasure::Meter ),
-   Displacement( unitMeasure::Millimeter ),
+   Deflection( unitMeasure::Millimeter ),
    Area( unitMeasure::Millimeter2 ),
    MomentOfInertia( unitMeasure::Millimeter4 ),
    SectModulus( unitMeasure::Millimeter3 ),
@@ -81,7 +81,7 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
    XSectionDim( unitMeasure::Millimeter ),
    SpanLength( unitMeasure::Meter ),
    AlignmentLength( unitMeasure::Meter ),
-   Displacement( unitMeasure::Millimeter ),
+   Deflection( unitMeasure::Millimeter ),
    Area( unitMeasure::Millimeter2 ),
    MomentOfInertia( unitMeasure::Millimeter4 ),
    SectModulus( unitMeasure::Millimeter3 ),
@@ -144,7 +144,7 @@ bool unitmgtIndirectMeasure::AssertValid() const
    TEST_MEASURE( XSectionDim );
    TEST_MEASURE( SpanLength );
    TEST_MEASURE( AlignmentLength );
-   TEST_MEASURE( Displacement );
+   TEST_MEASURE( Deflection );
    TEST_MEASURE( Area );
    TEST_MEASURE( MomentOfInertia );
    TEST_MEASURE( SectModulus );
@@ -188,7 +188,7 @@ void unitmgtIndirectMeasure::Dump(dbgDumpContext& os) const
    dump_it(os,_T("XSectionDim"),     XSectionDim  );
    dump_it(os,_T("SpanLength"),      SpanLength   );
    dump_it(os,_T("AlignmentLength"), AlignmentLength   );
-   dump_it(os,_T("Displacement"),    Displacement );
+   dump_it(os,_T("Deflection"),    Deflection );
    dump_it(os,_T("Area"),            Area         );
    dump_it(os,_T("MomentOfInertia"), MomentOfInertia);
    dump_it(os,_T("SectModulus"),     SectModulus  );
@@ -235,7 +235,7 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    XSectionDim     = rOther.XSectionDim;
    SpanLength      = rOther.SpanLength;
    AlignmentLength = rOther.AlignmentLength;
-   Displacement    = rOther.Displacement;
+   Deflection    = rOther.Deflection;
    Area            = rOther.Area;
    MomentOfInertia = rOther.MomentOfInertia;
    SectModulus     = rOther.SectModulus;

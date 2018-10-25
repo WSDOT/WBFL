@@ -214,6 +214,49 @@ STDMETHODIMP CSuperstructureMember::GetEndRelease(EndType end, StageIndexType* p
 	return S_OK;
 }
 
+STDMETHODIMP CSuperstructureMember::GetPlanAngle(Float64 distFromStartOfSSMbr,IAngle** ppAngle)
+{
+   Float64 distFromStartOfSegment;
+   SegmentIndexType segIdx;
+   CComPtr<ISegment> segment;
+   HRESULT hr = GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+
+   SegmentIndexType nSegments;
+   get_SegmentCount(&nSegments);
+
+   Float64 cummAngle = 0;
+   for ( SegmentIndexType sIdx = 1; sIdx <= segIdx; sIdx++ )
+   {
+      CComPtr<ISegment> backSegment;
+      get_Segment(sIdx-1,&backSegment);
+
+      CComPtr<ISegment> aheadSegment;
+      get_Segment(sIdx,&aheadSegment);
+
+      CComPtr<IGirderLine> backGdrLine, aheadGdrLine;
+      backSegment->get_GirderLine(&backGdrLine);
+      aheadSegment->get_GirderLine(&aheadGdrLine);
+
+      CComPtr<IDirection> backDirection, aheadDirection;
+      backGdrLine->get_Direction(&backDirection);
+      aheadGdrLine->get_Direction(&aheadDirection);
+
+      CComPtr<IAngle> objAngle;
+      backDirection->AngleBetween(aheadDirection,&objAngle);
+
+      Float64 value;
+      objAngle->get_Value(&value);
+
+      cummAngle += value;
+   }
+
+   CComPtr<IAngle> angle;
+   angle.CoCreateInstance(CLSID_Angle);
+   angle->put_Value(cummAngle);
+
+   return angle.CopyTo(ppAngle);
+}
+
 STDMETHODIMP CSuperstructureMember::get_LocationType(LocationType* pVal)
 {
    CHECK_RETVAL(pVal);

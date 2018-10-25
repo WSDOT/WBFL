@@ -95,6 +95,12 @@ public:
 
    virtual mathFunction2d* Clone() const;
 
+   Float64 GetSlope() const;
+   void SetSlope(Float64 slope);
+
+   Float64 GetYIntercept() const;
+   void SetYIntercept(Float64 yIntercept);
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
    // GROUP: DEBUG

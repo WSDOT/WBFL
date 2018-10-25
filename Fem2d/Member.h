@@ -160,9 +160,9 @@ protected:
 
    void ApplyLoad(MbrLoad *load);
 
-   void ComputeDisplacements();
+   void ComputeDeflections();
    void ComputeForces();
-   void ComputeJointDisplacementForce(Vector* pdf);
+   void ComputeJointDeflectionForce(Vector* pdf);
 
    void GetResults(MbrResult* pres);
    void SetResults(const MbrResult& res);
@@ -208,7 +208,7 @@ private:
 
    MbrLoadPointerContainer m_Loads;
 
-   Vector m_Dlocal; // local displacements
+   Vector m_Dlocal; // local Deflections
    Vector m_Rlocal; // local resultant forces
 
 friend CJoint;

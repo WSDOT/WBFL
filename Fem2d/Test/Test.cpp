@@ -79,7 +79,7 @@ int main(int argc, TCHAR* argv[])
 
       TEST_ME(CTestMember);
       TEST_ME(CTestJointLoad);
-      TEST_ME(CTestJointDisplacement);
+      TEST_ME(CTestJointDeflection);
       TEST_ME(CTestPointLoad);
       TEST_ME(CTestPOI);
       TEST_ME(CTestDistributedLoad);

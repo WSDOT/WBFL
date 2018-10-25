@@ -123,7 +123,7 @@ STDMETHODIMP CBridgeGeometryTool::PointBySSMbr(IGenericBridge* bridge,GirderIDTy
    return PointBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,point);
 }
 
-STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment, IPoint2d** point)
+STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IPoint2d** point)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
@@ -137,9 +137,15 @@ STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderID
    CComPtr<IPoint2d> p1, p2;
    girderLine->get_EndPoint(etStart,&p1);
    girderLine->get_EndPoint(etEnd,  &p2);
+   
+   Float64 brgOffset,endDist;
+   girderLine->get_BearingOffset(etStart,&brgOffset);
+   girderLine->get_EndDistance(etStart,&endDist);
 
    CComPtr<ILocate2> locate;
    m_CogoEngine->get_Locate(&locate);
+
+   Float64 distFromStartOfSegment = Xs - (brgOffset-endDist);
 
    locate->PointOnLine(p1,p2,distFromStartOfSegment,0.00,point);
 
@@ -161,10 +167,10 @@ STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge
    return StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,station,offset);
 }
 
-STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 distFromStartOfSegment, IStation** station, Float64* offset)
+STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IStation** station, Float64* offset)
 {
    CComPtr<IPoint2d> point;
-   PointBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,&point);
+   PointBySegment(bridge,ssMbrID,segIdx,Xs,&point);
 
    CComPtr<IAlignment> alignment;
    GetAlignment(bridge,&alignment);

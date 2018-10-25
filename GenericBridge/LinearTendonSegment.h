@@ -75,6 +75,8 @@ private:
    CComPtr<IPoint3d> m_End;
    CComPtr<IGeomUtil3d> m_GeomUtil;
 
+   ITendon* m_pTendon; // weak reference
+
    // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
@@ -92,6 +94,8 @@ public:
 	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[out,retval]*/ IVector3d** slope);
 	STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length);
    STDMETHOD(ProjectedLength)(/*[out]*/ Float64* dx,/*[out]*/ Float64* dy,/*[out]*/ Float64* dz);
+   STDMETHOD(putref_Tendon)(/*[in]*/ITendon* pTendon);
+   STDMETHOD(get_Tendon)(/*[out,retval]*/ITendon** ppTendon);
 
 // IStructuredStorage2
 public:

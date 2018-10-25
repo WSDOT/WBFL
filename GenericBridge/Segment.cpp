@@ -77,6 +77,11 @@ STDMETHODIMP CSegment::get_Length(Float64 *pVal)
    return m_pGirderLine->get_GirderLength(pVal);
 }
 
+STDMETHODIMP CSegment::get_LayoutLength(Float64 *pVal)
+{
+   return m_pGirderLine->get_LayoutLength(pVal);
+}
+
 STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
@@ -167,13 +172,18 @@ STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape
    rect->get_Height(&h);
 
    Float64 l;
+   Float64 brgOffset, endDist;
    if ( bIncludeClosure == VARIANT_TRUE )
    {
       m_pGirderLine->get_LayoutLength(&l);
+      brgOffset = 0;
+      endDist = 0;
    }
    else
    {
       m_pGirderLine->get_GirderLength(&l);
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
    }
 
    CComPtr<IRectangle> shape;
@@ -181,21 +191,23 @@ STDMETHODIMP CSegment::get_Profile(VARIANT_BOOL bIncludeClosure,IShape** ppShape
    shape->put_Height(h);
    shape->put_Width(l);
 
-   // Top left corner of shape is at (0,0)
+   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
    //
    // CL Pier   Start of segment
    // |         |       CL Bearing
-   // |   (0,0) |       |
-   // |         *-------+---------------\  
+   // |(0,0)    |       |
+   // *         +-------+---------------\  
    // |         |       .               /
    // |         +-------+---------------\  
    //
    //          Elevation View
 
+
+
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
    position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(0,0);
+   topLeft->Move(brgOffset-endDist,0);
    position->put_LocatorPoint(lpTopLeft,topLeft);
 
    shape->QueryInterface(ppShape);

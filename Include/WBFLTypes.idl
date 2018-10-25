@@ -21,6 +21,15 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+
+// causes strands to be lumped together at their geometry centroid
+// this setting has to be consistent with PGSplice otherwise there will be slight errors
+// in the time-step analysis.
+// I put this here so that it is in a global, generic location. This is a really bad spot
+// but it works.
+cpp_quote("#define LUMP_STRANDS")
+
+
 cpp_quote("#if _WIN32_WINNT < 0x0600")
 cpp_quote("#define MAXUINT64   ((UINT64)~((UINT64)0))")
 cpp_quote("#define MAXUINT32   ((UINT32)~((UINT32)0))")

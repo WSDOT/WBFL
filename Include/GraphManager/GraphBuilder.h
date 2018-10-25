@@ -48,7 +48,7 @@ public:
    // Creates the UI controls. The controls must be derived from the MFC CControlBar
    // class (typically a CDialogBar). pParent will be the parent window of the control bar
    // and nID will be the control bar ID passed into its Create method
-   virtual int CreateControls(CWnd* pParent,UINT nID) = 0;
+   virtual int InitializeGraphController(CWnd* pParent,UINT nID) = 0;
 
    // Called by the framework when the graph needs to be drawn. The graph
    // is drawn in the pGraphWnd using the pDC device context.

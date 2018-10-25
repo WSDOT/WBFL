@@ -1215,6 +1215,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\ColorConverter.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ComCatMgr.cpp"
 				>
 				<FileConfiguration
@@ -3893,6 +3897,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\System\Checks.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\System\ColorConverter.h"
 				>
 			</File>
 			<File

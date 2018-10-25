@@ -465,7 +465,7 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
       CWnd* pWnd = pDX->m_pDlgWnd->GetDlgItem(nIDC);
       if ( pWnd->IsKindOf( RUNTIME_CLASS(CCacheEdit) )  )
       {
-         ((CCacheEdit*)(pWnd))->SetDefaultValue(value);
+         ((CCacheEdit*)(pWnd))->SetDefaultValue(value,strValue);
       }
 	}
 }

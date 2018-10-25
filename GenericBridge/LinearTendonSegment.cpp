@@ -52,6 +52,8 @@ HRESULT CLinearTendonSegment::FinalConstruct()
    if ( FAILED(hr) )
       return hr;
 
+   m_pTendon = NULL;
+
    return S_OK;
 }
 
@@ -158,16 +160,31 @@ STDMETHODIMP CLinearTendonSegment::get_Slope(Float64 z,IVector3d** slope)
    m_End->get_Y(&y2);
    m_End->get_Z(&z2);
 
-   vector->put_X(x2-x1);
-   vector->put_Y(y2-y1);
-   vector->put_Z(z2-z1);
-   vector->Normalize();
+   Float64 dx = (x2-x1);
+   Float64 dy = (y2-y1);
+   Float64 dz = (z2-z1);
 
-#if defined _DEBUG
-   Float64 mag;
-   vector->get_Magnitude(&mag);
-   ATLASSERT(IsEqual(mag,1.0));
-#endif
+   ATLASSERT(!IsZero(dz));
+
+   Float64 sx = dx/dz;
+   Float64 sy = dy/dz;
+
+   if ( m_pTendon )
+   {
+      CComPtr<ISuperstructureMember> ssmbr;
+      m_pTendon->get_SuperstructureMember(&ssmbr);
+      CComPtr<IAngle> planAngle;
+      ssmbr->GetPlanAngle(z,&planAngle);
+      Float64 value;
+      planAngle->get_Value(&value);
+
+      Float64 a = atan(sx);
+      sx = -tan(a+value);
+   }
+
+   vector->put_X(sx);
+   vector->put_Y(sy);
+   vector->put_Z(1.0);
 
    (*slope) = vector;
    (*slope)->AddRef();
@@ -199,6 +216,23 @@ STDMETHODIMP CLinearTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Float
    *dx = x2 - x1;
    *dy = y2 - y1;
    *dz = z2 - z1;
+
+   return S_OK;
+}
+
+STDMETHODIMP CLinearTendonSegment::putref_Tendon(ITendon* pTendon)
+{
+   m_pTendon = pTendon;
+   return S_OK;
+}
+
+STDMETHODIMP CLinearTendonSegment::get_Tendon(ITendon** ppTendon)
+{
+   (*ppTendon) = m_pTendon;
+   if ( (*ppTendon) )
+   {
+      (*ppTendon)->AddRef();
+   }
 
    return S_OK;
 }

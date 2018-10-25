@@ -469,7 +469,7 @@ void CAnalysisModel::GetSupportDeflection(LoadGroupIDType loadGroupID, SupportID
 
       try
       {
-         results->ComputeJointDisplacements(loadGroupID, jointID, pDx, pDy, pRz);
+         results->ComputeJointDeflections(loadGroupID, jointID, pDx, pDy, pRz);
       }
       catch (...)
       {
@@ -1912,8 +1912,8 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
       {
          *wereLoadsApplied = true;
 
-         CComPtr<IFem2dJointDisplacementCollection> fem_settlement_loads;
-         pFemLoading->get_JointDisplacements(&fem_settlement_loads);
+         CComPtr<IFem2dJointDeflectionCollection> fem_settlement_loads;
+         pFemLoading->get_JointDeflections(&fem_settlement_loads);
 
          LoadIDType last_load_id = 1;
 
@@ -1956,7 +1956,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
 
             if (found)
             {
-               CComPtr<IFem2dJointDisplacement> jointLoad;
+               CComPtr<IFem2dJointDeflection> jointLoad;
                fem_settlement_loads->Create(last_load_id, jointID, dx, dy, rz, &jointLoad);
                last_load_id++;
             }
@@ -5708,7 +5708,7 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
 
             try
             {
-               results->ComputeJointDisplacements(influenceLoadLocation.m_FemLoadCaseID, jointID, &rx, &ry, &rz);
+               results->ComputeJointDeflections(influenceLoadLocation.m_FemLoadCaseID, jointID, &rx, &ry, &rz);
             }
             catch (...)
             {

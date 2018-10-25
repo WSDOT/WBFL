@@ -122,7 +122,7 @@ public:
 
    //------------------------------------------------------------------------
    // Returns the unit tag.
-   std::_tstring UnitTag() const { return m_UnitTag; }
+   const std::_tstring& UnitTag() const { return m_UnitTag; }
 
    //------------------------------------------------------------------------
    // Returns the mass dimensionality.

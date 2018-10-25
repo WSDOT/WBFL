@@ -52,7 +52,7 @@ void CFlangedSplicedGirderSegment::FinalRelease()
 // ISplicedGirderSegment implementation
 //
 
-HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape)
+HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -109,6 +109,23 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,I
    Float64 c1 = C1;
 
    // Get the end block dimensions
+
+   // we need to get the end block width based on a section's location
+   // from the actual end face of the girder (this is how end blocks are measured)
+   // compute the distance along the girder
+   Float64 distAlongSegment = Xs;
+   Float64 brgOffset, endDist;
+   m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+   m_pGirderLine->get_EndDistance(etStart,&endDist);
+   distAlongSegment -= (brgOffset - endDist);
+
+   if ( distAlongSegment < 0 )
+   {
+      // If distAlongSegment is < 0 then Xs is before the face of the segment.
+      // Set distAlongSegment to 0 so we get the end block data at the face of the segment
+      distAlongSegment = 0;
+   }
+
    Float64 Wt, Wb;
    GetEndBlockWidth(distAlongSegment,&Wt,&Wb);
 
@@ -185,7 +202,7 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,I
    // Adjust D4 based on the bottom flange height
    // If bottom flange height is zero then don't make any adjustments (take zero to be don't change bottom flange)
    //
-   Float64 bottom_flange_height = GetBottomFlangeHeight(distAlongSegment);
+   Float64 bottom_flange_height = GetBottomFlangeHeight(Xs);
    if ( !IsZero(bottom_flange_height) )
    {
       d4 = bottom_flange_height;
@@ -204,7 +221,7 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,I
    //
    // Adjust D7 based on the spliced girder profile
    //
-   Float64 section_height = GetSectionDepth(distAlongSegment);
+   Float64 section_height = GetSectionDepth(Xs);
    d7 = section_height - (d1 + d2 + d3 + d4 + d5 + d6);
    ATLASSERT( 0 <= d7 );
 
@@ -234,7 +251,7 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 distAlongSegment,I
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+   GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);

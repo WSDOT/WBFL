@@ -95,6 +95,7 @@ public:
 	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal);
 	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release);
 	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release);
+   STDMETHOD(GetPlanAngle)(/*[in]*/Float64 distFromStartOfSSMbr,/*[out,retval]*/IAngle** ppAngle);
    STDMETHOD(get_LocationType)(LocationType* pVal);
    STDMETHOD(get_Bridge)(IGenericBridge** ppBridge);
 

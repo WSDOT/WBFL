@@ -105,6 +105,7 @@ library WBFLGenericBridge
    interface IBoxBeamSection;
    interface IUGirderSection;
    interface IUGirderSection2;
+   interface ITendon;
    
 // Enumerators
 
@@ -323,15 +324,15 @@ library WBFLGenericBridge
 	]
 	interface IEffectiveFlangeWidthTool : IUnknown
 	{
-      [helpstring("method TributaryFlangeWidthBySSMbr")] HRESULT TributaryFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
-      [helpstring("method TributaryFlangeWidthBySSMbrEx")] HRESULT TributaryFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
-      [helpstring("method TributaryFlangeWidthBySegment")] HRESULT TributaryFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
-      [helpstring("method TributaryFlangeWidthBySegmentEx")] HRESULT TributaryFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySSMbr")] HRESULT TributaryFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySSMbrEx")] HRESULT TributaryFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySegment")] HRESULT TributaryFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *tribFlangeWidth);
+      [helpstring("method TributaryFlangeWidthBySegmentEx")] HRESULT TributaryFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out] Float64* twLeft,[out]Float64* twRight,[out]Float64 *tribFlangeWidth);
 
-	   [helpstring("method EffectiveFlangeWidthBySSMbr")] HRESULT EffectiveFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
-	   [helpstring("method EffectiveFlangeWidthBySSMbrEx")] HRESULT EffectiveFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 distFromStartOfSSMbr, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
-	   [helpstring("method EffectiveFlangeWidthBySegment")] HRESULT EffectiveFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
-	   [helpstring("method EffectiveFlangeWidthBySegmentEx")] HRESULT EffectiveFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
+	   [helpstring("method EffectiveFlangeWidthBySSMbr")] HRESULT EffectiveFlangeWidthBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
+	   [helpstring("method EffectiveFlangeWidthBySSMbrEx")] HRESULT EffectiveFlangeWidthBySSMbrEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
+	   [helpstring("method EffectiveFlangeWidthBySegment")] HRESULT EffectiveFlangeWidthBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]Float64 *effFlangeWidth);
+	   [helpstring("method EffectiveFlangeWidthBySegmentEx")] HRESULT EffectiveFlangeWidthBySegmentEx([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 Xs, [in]GirderIDType leftSSMbrID, [in] GirderIDType rightSSMbrID, [out,retval]IEffectiveFlangeWidthDetails** details);
    };
 
    // IRebar defines a basic piece of reinforcing steel
@@ -944,6 +945,7 @@ library WBFLGenericBridge
       [propget, helpstring("property PrevSegment")] HRESULT PrevSegment([out,retval]ISegment** segment);
       [propget, helpstring("property NextSegment")] HRESULT NextSegment([out,retval]ISegment** segment);
 
+      [propget, helpstring("property LayoutLength")] HRESULT LayoutLength([out, retval] Float64 *pVal);
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
 		[propget, helpstring("property Profile")] HRESULT Profile([in] VARIANT_BOOL bIncludeClosure,[out,retval]IShape** ppShape);
 
@@ -1026,6 +1028,8 @@ library WBFLGenericBridge
       [helpstring("method GetDistanceFromStart")] HRESULT GetDistanceFromStart([in]SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment,[out,retval]Float64* pDistFromStartOfSSMbr);
 		[helpstring("method SetEndRelease")] HRESULT SetEndRelease([in] EndType end,[in] StageIndexType stageIdx,[in] ReleaseType release);
 		[helpstring("method GetEndRelease")] HRESULT GetEndRelease([in] EndType end,[out] StageIndexType* pStageIdx,[out] ReleaseType* release);
+
+      [helpstring("method GetPlanAngle")] HRESULT GetPlanAngle([in]Float64 distFromStartOfSSMbr,[out,retval]IAngle** ppAngle);
 
       [propget,helpstring("property LocationType")] HRESULT LocationType([out,retval]LocationType* pVal);
       [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
@@ -1602,6 +1606,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[out,retval] IVector3d** slope);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval] Float64* length);
 	   [helpstring("method ProjectedLength")] HRESULT ProjectedLength([out] Float64* dx,[out] Float64* dy,[out] Float64* dz);
+
+      [propputref,helpstring("property Tendon")] HRESULT Tendon([in]ITendon* pTendon);
+      [propget,helpstring("property Tendon")] HRESULT Tendon([out,retval]ITendon** ppTendon);
 	};
 	[
 	   object,
@@ -1667,6 +1674,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval] IPoint3d** start);
 	   [propget,helpstring("property End")] HRESULT End([out,retval] IPoint3d** end);
+
+      [propputref,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([in]ISuperstructureMember* pMbr);
+      [propget,helpstring("property SuperstructureMember")] HRESULT SuperstructureMember([out,retval]ISuperstructureMember** ppMbr);
 	};
 
    [

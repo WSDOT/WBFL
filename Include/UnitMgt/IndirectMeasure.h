@@ -159,7 +159,7 @@ public:
    unitmgtLengthData         XSectionDim;
    unitmgtLengthData         SpanLength;
    unitmgtLengthData         AlignmentLength;
-   unitmgtLengthData         Displacement;
+   unitmgtLengthData         Deflection;
    unitmgtLength2Data        Area;
    unitmgtLength4Data        MomentOfInertia;
    unitmgtLength3Data        SectModulus;

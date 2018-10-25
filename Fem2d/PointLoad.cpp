@@ -447,7 +447,7 @@ void CPointLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
    ConcLdBeam Vbeam(Py,La,Beam::ForceY,Length,EA,EI,type);
    ConcLdBeam Mbeam(Mz,La,Beam::MomentZ,Length,EA,EI,type);
 
-   Pbeam.GetDisplacements(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
+   Pbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
    vector[0] += Dx1;
    vector[1] += Dy1;
    vector[2] += Rz1;
@@ -455,7 +455,7 @@ void CPointLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
    vector[4] += Dy2;
    vector[5] += Rz2;
 
-   Vbeam.GetDisplacements(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
+   Vbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
    vector[0] += Dx1;
    vector[1] += Dy1;
    vector[2] += Rz1;
@@ -463,7 +463,7 @@ void CPointLoad::GetDispVector(MbrType type,Float64 Length,Float64 Angle,
    vector[4] += Dy2;
    vector[5] += Rz2;
 
-   Mbeam.GetDisplacements(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
+   Mbeam.GetDeflections(Dx1,Dy1,Rz1,Dx2,Dy2,Rz2);
    vector[0] += Dx1;
    vector[1] += Dy1;
    vector[2] += Rz1;
@@ -501,7 +501,7 @@ void CPointLoad::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dM
    *pMz = Mo + Py*(La-x);
 }
 
-void CPointLoad::GetDisplacement(Float64 x,MbrType type,Float64 Length,Float64 Angle,
+void CPointLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
                                        Float64 EA,Float64 EI,
                                        Float64* pdx,Float64* pdy,Float64* prz)
 

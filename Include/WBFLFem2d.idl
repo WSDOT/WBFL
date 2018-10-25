@@ -494,41 +494,41 @@ library WBFLFem2d
 	   object,
 	   uuid(A5642476-CFBF-11d4-AF5D-00105A9AF985),
 	   oleautomation,
-	   helpstring("IFem2dJointDisplacement Interface"),
-       helpcontext(IDH_IFem2dJointDisplacement),
+	   helpstring("IFem2dJointDeflection Interface"),
+       helpcontext(IDH_IFem2dJointDeflection),
 	   pointer_default(unique)
    ]
-   interface IFem2dJointDisplacement : IUnknown
+   interface IFem2dJointDeflection : IUnknown
    {
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_ID), helpstring("property ID")] HRESULT ID([out, retval] LoadIDType *pVal);
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([out, retval] JointIDType *pVal);
-	   [propput, helpcontext(IDH_IFem2dJointDisplacement_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([in] JointIDType newVal);
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Dx), helpstring("property Dx - Applied displacement in X direction")] HRESULT Dx([out, retval] Float64 *pVal);
-	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Dx), helpstring("property Dx - Applied displacement in X direction")] HRESULT Dx([in] Float64 newVal);
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Dy), helpstring("property Dy - Applied displacement in Y direction")] HRESULT Dy([out, retval] Float64 *pVal);
-	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Dy), helpstring("property Dy - Applied displacement in Y direction")] HRESULT Dy([in] Float64 newVal);
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([out, retval] Float64  *pVal);
-	   [propput, helpcontext(IDH_IFem2dJointDisplacement_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([in] Float64  newVal);
-	   [helpcontext(IDH_IFem2dJointDisplacement_SetDisplacement), helpstring("method SetDisplacement - Set all applied displacements")] HRESULT SetDisplacement([in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz);
-	   [helpcontext(IDH_IFem2dJointDisplacement_GetDisplacement), helpstring("method GetDisplacement - Get all applied displacements")] HRESULT GetDisplacement([out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
-	   [propget, helpcontext(IDH_IFem2dJointDisplacement_Loading), helpstring("property Loading - ID of Loading this load belongs to")] HRESULT Loading([out, retval] LoadCaseIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_ID), helpstring("property ID")] HRESULT ID([out, retval] LoadIDType *pVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([out, retval] JointIDType *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDeflection_JointID), helpstring("property JointID - ID of displaced Joint")] HRESULT JointID([in] JointIDType newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_Dx), helpstring("property Dx - Applied Deflection in X direction")] HRESULT Dx([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDeflection_Dx), helpstring("property Dx - Applied Deflection in X direction")] HRESULT Dx([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_Dy), helpstring("property Dy - Applied Deflection in Y direction")] HRESULT Dy([out, retval] Float64 *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDeflection_Dy), helpstring("property Dy - Applied Deflection in Y direction")] HRESULT Dy([in] Float64 newVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([out, retval] Float64  *pVal);
+	   [propput, helpcontext(IDH_IFem2dJointDeflection_Rz), helpstring("property Rz - Applied rotation")] HRESULT Rz([in] Float64  newVal);
+	   [helpcontext(IDH_IFem2dJointDeflection_SetDeflection), helpstring("method SetDeflection - Set all applied Deflections")] HRESULT SetDeflection([in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz);
+	   [helpcontext(IDH_IFem2dJointDeflection_GetDeflection), helpstring("method GetDeflection - Get all applied Deflections")] HRESULT GetDeflection([out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [propget, helpcontext(IDH_IFem2dJointDeflection_Loading), helpstring("property Loading - ID of Loading this load belongs to")] HRESULT Loading([out, retval] LoadCaseIDType *pVal);
    };
 
    [
       object,
       uuid(A5642477-CFBF-11d4-AF5D-00105A9AF985),
-      helpstring("IFem2dEnumJointDisplacement Interface"),
+      helpstring("IFem2dEnumJointDeflection Interface"),
       oleautomation,
       hidden,restricted,
       pointer_default(unique)
    ]
-   interface IFem2dEnumJointDisplacement : IUnknown
+   interface IFem2dEnumJointDeflection : IUnknown
    {
       [helpstring("Clone")]
-      HRESULT Clone([out] IFem2dEnumJointDisplacement** ppenum);
+      HRESULT Clone([out] IFem2dEnumJointDeflection** ppenum);
 
       [helpstring("Next")]
-      HRESULT Next([in] ULONG celt, [out] IFem2dJointDisplacement** rgelt, [in,out] ULONG* pceltFetched);
+      HRESULT Next([in] ULONG celt, [out] IFem2dJointDeflection** rgelt, [in,out] ULONG* pceltFetched);
 
       [helpstring("Reset")]
       HRESULT Reset();
@@ -541,34 +541,34 @@ library WBFLFem2d
 	   object,
 	   uuid(A5642478-CFBF-11d4-AF5D-00105A9AF985),
 	   oleautomation,
-       helpcontext(IDH_IFem2dJointDisplacementCollection),
-	   helpstring("IFem2dJointDisplacementCollection Interface"),
+       helpcontext(IDH_IFem2dJointDeflectionCollection),
+	   helpstring("IFem2dJointDeflectionCollection Interface"),
 	   pointer_default(unique)
    ]
-   interface IFem2dJointDisplacementCollection : IUnknown
+   interface IFem2dJointDeflectionCollection : IUnknown
    {
-	   [propget, helpcontext(IDH_IFem2dJointDisplacementCollection_Item), helpstring("property Item")] 
-	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointDisplacement** pVal);
+	   [propget, helpcontext(IDH_IFem2dJointDeflectionCollection_Item), helpstring("property Item")] 
+	   HRESULT Item([in]CollectionIndexType idx, [out, retval] IFem2dJointDeflection** pVal);
 
 	   [propget, helpstring("returns an enumerator for the collection.")]
 	   HRESULT _NewEnum([out, retval] IUnknown** retval);  
 
-	   [propget, helpcontext(IDH_IFem2dJointDisplacementCollection_Count), helpstring("property Count")] 
+	   [propget, helpcontext(IDH_IFem2dJointDeflectionCollection_Count), helpstring("property Count")] 
 	   HRESULT Count([out, retval] CollectionIndexType *pVal);
 
 	   [propget, helpstring("property _EnumElements")] 
-	   HRESULT _EnumElements([out, retval] IFem2dEnumJointDisplacement* *pVal);
+	   HRESULT _EnumElements([out, retval] IFem2dEnumJointDeflection* *pVal);
 
-	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Find), helpstring("property Find - Find a particular JointDisplacement")] 
-	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dJointDisplacement* *pVal);
+	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Find), helpstring("property Find - Find a particular JointDeflection")] 
+	   HRESULT Find([in]LoadIDType ID, [out,retval] IFem2dJointDeflection* *pVal);
 
-	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Create), helpstring("Create a new JointDisplacement and add it to the model")] 
-	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz, [out, retval] IFem2dJointDisplacement** pVal);
+	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Create), helpstring("Create a new JointDeflection and add it to the model")] 
+	   HRESULT Create([in]LoadIDType ID, [in]JointIDType joint, [in]Float64 Dx, [in]Float64 Dy, [in]Float64 Rz, [out, retval] IFem2dJointDeflection** pVal);
 
-	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Remove), helpstring("method Remove - Remove a particular JointDisplacement by ID or index")] 
+	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Remove), helpstring("method Remove - Remove a particular JointDeflection by ID or index")] 
 	   HRESULT Remove([in]CollectionIndexType IDorIndex, [in]Fem2dAccessType AccessMethod, [out, retval]LoadIDType* pid);
 
-	   [helpcontext(IDH_IFem2dJointDisplacementCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
+	   [helpcontext(IDH_IFem2dJointDeflectionCollection_Clear), helpstring("method Clear - Remove all loads")] HRESULT Clear();
    };
 
    [
@@ -871,8 +871,8 @@ library WBFLFem2d
        HRESULT JointLoads([out, retval] IFem2dJointLoadCollection* *pVal);
 	   [propget, helpcontext(IDH_IFem2dLoading_DistributedLoads), helpstring("property DistributedLoads")] 
        HRESULT DistributedLoads([out, retval] IFem2dDistributedLoadCollection* *pVal);
-	   [propget, helpcontext(IDH_IFem2dLoading_JointDisplacements), helpstring("property JointDisplacements")] 
-       HRESULT JointDisplacements([out, retval] IFem2dJointDisplacementCollection* *pVal);
+	   [propget, helpcontext(IDH_IFem2dLoading_JointDeflections), helpstring("property JointDeflections")] 
+       HRESULT JointDeflections([out, retval] IFem2dJointDeflectionCollection* *pVal);
 	   [propget, helpcontext(IDH_IFem2dLoading_PointLoads), helpstring("property PointLoads")] 
        HRESULT PointLoads([out, retval] IFem2dPointLoadCollection* *pVal);
 	   [propget, helpcontext(IDH_IFem2dLoading_MemberStrains), helpstring("property MemberStrains")] 
@@ -1020,12 +1020,12 @@ library WBFLFem2d
    ]
    interface IFem2dModelResults : IUnknown
    {
-	   [helpcontext(IDH_IFem2dModelResults_ComputeJointDisplacements), helpstring("method ComputeJointDisplacements")] 
-       HRESULT ComputeJointDisplacements([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
-	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberDisplacements), helpstring("method ComputeMemberDisplacements")] 
-       HRESULT ComputeMemberDisplacements([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [out]Float64* startDx, [out]Float64* startDy, [out]Float64* startRz, [out]Float64* endDx, [out]Float64* endDy, [out]Float64* endRz);
-	   [helpcontext(IDH_IFem2dModelResults_ComputePOIDisplacements), helpstring("method ComputePOIDisplacements")] 
-       HRESULT ComputePOIDisplacements([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputeJointDeflections), helpstring("method ComputeJointDeflections")] 
+       HRESULT ComputeJointDeflections([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberDeflections), helpstring("method ComputeMemberDeflections")] 
+       HRESULT ComputeMemberDeflections([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [out]Float64* startDx, [out]Float64* startDy, [out]Float64* startRz, [out]Float64* endDx, [out]Float64* endDy, [out]Float64* endRz);
+	   [helpcontext(IDH_IFem2dModelResults_ComputePOIDeflections), helpstring("method ComputePOIDeflections")] 
+       HRESULT ComputePOIDeflections([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [out]Float64* Dx, [out]Float64* Dy, [out]Float64* Rz);
 	   [helpcontext(IDH_IFem2dModelResults_ComputeReactions), helpstring("method ComputeReactions")] 
        HRESULT ComputeReactions([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [out]Float64* Fx, [out]Float64* Fy, [out]Float64* Mz);
 	   [helpcontext(IDH_IFem2dModelResults_ComputeMemberForces), helpstring("method ComputeMemberForces")] 
@@ -1058,14 +1058,14 @@ library WBFLFem2d
    ]
    interface IFem2dModelResultsForScriptingClients : IUnknown
    {
-	   [helpcontext(IDH_IFem2dModel_ComputeJointDisplacements), helpstring("method ComputeJointDisplacements")] 
-       HRESULT ComputeJointDisplacements([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+	   [helpcontext(IDH_IFem2dModel_ComputeJointDeflections), helpstring("method ComputeJointDeflections")] 
+       HRESULT ComputeJointDeflections([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
 
-	   [helpcontext(IDH_IFem2dModel_ComputeMemberDisplacements), helpstring("method ComputeMemberDisplacements")] 
-       HRESULT ComputeMemberDisplacements([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [in] Fem2dMbrDOF dof,[out,retval]Float64* pVal);
+	   [helpcontext(IDH_IFem2dModel_ComputeMemberDeflections), helpstring("method ComputeMemberDeflections")] 
+       HRESULT ComputeMemberDeflections([in]LoadCaseIDType loadingID, [in]MemberIDType memberID, [in] Fem2dMbrDOF dof,[out,retval]Float64* pVal);
 
-	   [helpcontext(IDH_IFem2dModel_ComputePOIDisplacements), helpstring("method ComputePOIDisplacements")] 
-       HRESULT ComputePOIDisplacements([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
+	   [helpcontext(IDH_IFem2dModel_ComputePOIDeflections), helpstring("method ComputePOIDeflections")] 
+       HRESULT ComputePOIDeflections([in]LoadCaseIDType loadingID, [in]PoiIDType poiID, [in]Fem2dLoadOrientation orientation, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
 
 	   [helpcontext(IDH_IFem2dModel_ComputeReactions), helpstring("method ComputeReactions")] 
        HRESULT ComputeReactions([in]LoadCaseIDType loadingID, [in]JointIDType jointID, [in] Fem2dJointDOF dof,[out,retval]Float64* pVal);
@@ -1200,20 +1200,20 @@ library WBFLFem2d
 	[
 		uuid(A5642479-CFBF-11d4-AF5D-00105A9AF985),
 		noncreatable,
-		helpstring("Fem2dJointDisplacement Class")
+		helpstring("Fem2dJointDeflection Class")
 	]
-	coclass Fem2dJointDisplacement
+	coclass Fem2dJointDeflection
 	{
-		[default] interface IFem2dJointDisplacement;
+		[default] interface IFem2dJointDeflection;
 	};
 	[
 		uuid(A564247A-CFBF-11d4-AF5D-00105A9AF985),
 		noncreatable,
-		helpstring("Fem2dJointDisplacementCollection Class")
+		helpstring("Fem2dJointDeflectionCollection Class")
 	]
-	coclass Fem2dJointDisplacementCollection
+	coclass Fem2dJointDeflectionCollection
 	{
-		[default] interface IFem2dJointDisplacementCollection;
+		[default] interface IFem2dJointDeflectionCollection;
 	};
 
 	[

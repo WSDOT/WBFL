@@ -76,9 +76,7 @@ void CCacheEdit::EnableWindow(BOOL bEnable)
    {
       if ( m_bShowDefault )
       {
-         CString strTxt;
-         strTxt.Format(_T("%f"),m_DefaultValue);
-         SetWindowText(strTxt);
+         SetWindowText(m_strDefault);
       }
       else
       {
@@ -94,10 +92,11 @@ CString CCacheEdit::GetCache() const
    return m_strCache;
 }
 
-void CCacheEdit::SetDefaultValue(Float64 value)
+void CCacheEdit::SetDefaultValue(Float64 value,LPCTSTR strDefault)
 {
    m_DefaultValue = value;
-   m_strCache.Format(_T("%f"),m_DefaultValue);
+   m_strDefault = strDefault;
+   m_strCache = strDefault;
 }
 
 Float64 CCacheEdit::GetDefaultValue() const

@@ -55,6 +55,8 @@ HRESULT CParabolicTendonSegment::FinalConstruct()
    m_Slope = 0;
    m_SlopeEnd = qcbLeft;
 
+   m_pTendon = NULL;
+
    return S_OK;
 }
 
@@ -185,12 +187,25 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
    Float64 sx = slope_fn_x.Evaluate(z);
    Float64 sy = slope_fn_y.Evaluate(z);
 
+   if ( m_pTendon )
+   {
+      CComPtr<ISuperstructureMember> ssmbr;
+      m_pTendon->get_SuperstructureMember(&ssmbr);
+      CComPtr<IAngle> planAngle;
+      ssmbr->GetPlanAngle(z,&planAngle);
+      Float64 value;
+      planAngle->get_Value(&value);
+
+      Float64 a = atan(sx);
+      sx = -tan(a+value);
+   }
+
    CComPtr<IVector3d> vector;
    vector.CoCreateInstance(CLSID_Vector3d);
 
    vector->put_X(sx);
    vector->put_Y(sy);
-   vector->put_Z(1);
+   vector->put_Z(1.0);
 
    (*slope) = vector;
    (*slope)->AddRef();
@@ -223,6 +238,23 @@ STDMETHODIMP CParabolicTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Fl
    *dx = x2 - x1;
    *dy = y2 - y1;
    *dz = z2 - z1;
+
+   return S_OK;
+}
+
+STDMETHODIMP CParabolicTendonSegment::putref_Tendon(ITendon* pTendon)
+{
+   m_pTendon = pTendon;
+   return S_OK;
+}
+
+STDMETHODIMP CParabolicTendonSegment::get_Tendon(ITendon** ppTendon)
+{
+   (*ppTendon) = m_pTendon;
+   if ( (*ppTendon) )
+   {
+      (*ppTendon)->AddRef();
+   }
 
    return S_OK;
 }

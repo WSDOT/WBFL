@@ -427,7 +427,8 @@ void matACI209Concrete::Validate() const
       m_RHS = 3.00 - 0.030*m_RelativeHumidity;
 
    // V/S ratio correction factor (2.5.5b)
-   m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*m_VS)); // creep (2-21)
+   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   m_VSC = (2.0/3.0)*(1.0 + 1.13*exp(-0.54*vs)); // creep (2-21)
    m_VSS = 1.2*exp(-0.12*m_VS);                    // shrinkage (2-22)
 
 

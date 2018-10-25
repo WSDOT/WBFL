@@ -682,7 +682,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    std::_tstring m_IdName;
    std::_tstring m_DisplayName;
@@ -711,6 +711,7 @@ private:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
 
+protected:
    //------------------------------------------------------------------------
    // Return a non-const pointer to an entry based on its key. Returns zero if failed
    T*  LookupEntryPrv( LPCTSTR key)

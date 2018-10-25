@@ -151,6 +151,11 @@ STDMETHODIMP CTaperedGirderSegment::get_NextSegment(ISegment** segment)
 
 STDMETHODIMP CTaperedGirderSegment::get_Length(Float64 *pVal)
 {
+   return m_pGirderLine->get_GirderLength(pVal);
+}
+
+STDMETHODIMP CTaperedGirderSegment::get_LayoutLength(Float64 *pVal)
+{
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 

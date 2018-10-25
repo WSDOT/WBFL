@@ -46,7 +46,7 @@ CLASS
 
 DESCRIPTION
    Encapsulates structural actions at a section of a structural member. 
-   Structural actions include axial force, shear, moment, axial displacement,
+   Structural actions include axial force, shear, moment, axial deflection,
    deflection,  and rotation.
 
 

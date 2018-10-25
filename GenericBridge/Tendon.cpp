@@ -39,10 +39,12 @@ static char THIS_FILE[] = __FILE__;
 // CTendon
 HRESULT CTendon::FinalConstruct()
 {
-   m_DuctDiameter     = 0.0;
+   m_DuctDiameter   = 0.0;
    m_StrandCount    = 0;
 
    m_JackingEnd = jeLeft;
+
+   m_pSSMbr = NULL;
 
    return S_OK;
 }
@@ -70,6 +72,7 @@ STDMETHODIMP CTendon::InterfaceSupportsErrorInfo(REFIID riid)
 // ITendon
 STDMETHODIMP CTendon::AddSegment(ITendonSegment* segment)
 {
+   segment->putref_Tendon(this);
    return PersistentTendonSegmentCollection::Add(segment);
 }
 
@@ -243,6 +246,23 @@ STDMETHODIMP CTendon::get_JackingEnd(JackingEndType* type)
 STDMETHODIMP CTendon::put_JackingEnd(JackingEndType type)
 {
    m_JackingEnd = type;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::putref_SuperstructureMember(ISuperstructureMember* pMbr)
+{
+   m_pSSMbr = pMbr;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_SuperstructureMember(ISuperstructureMember** ppMbr)
+{
+   (*ppMbr) = m_pSSMbr;
+   if ( *ppMbr )
+   {
+      (*ppMbr)->AddRef();
+   }
+
    return S_OK;
 }
 

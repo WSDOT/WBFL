@@ -136,6 +136,16 @@ public:
       m_Shapes.clear();
    }
 
+   Float64 ConvertSegmentCoordinateToDistanceAlongSegment(Float64 Xs)
+   {
+      Float64 brgOffset, endDist;
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
+
+      Float64 distAlongSegment = Xs - (brgOffset-endDist);
+      return distAlongSegment;
+   }
+
 // ISupportsErrorInfo
 public:
    STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
@@ -237,7 +247,13 @@ public:
       return m_pGirderLine->get_GirderLength(pVal);
    }
 
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+   STDMETHOD(get_LayoutLength)(Float64 *pVal)
+   {
+      ATLASSERT(m_pGirderLine != NULL);
+      return m_pGirderLine->get_LayoutLength(pVal);
+   }
+
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -266,16 +282,19 @@ public:
       Float64 length;
       get_Length(&length);
 
+
+      Float64 distAlongSegment = ConvertSegmentCoordinateToDistanceAlongSegment(Xs);
+
       // Section is in the end block so use the outline of the shape only
-      if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
-           (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
 
       // position the shape
       CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+      GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
       CComQIPtr<IXYPosition> position(newSection);
       position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -337,7 +356,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape)
+   STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
    {
       CHECK_RETOBJ(ppShape);
 
@@ -366,16 +385,18 @@ public:
       Float64 length;
       get_Length(&length);
 
+      Float64 distAlongSegment = ConvertSegmentCoordinateToDistanceAlongSegment(Xs);
+
       // Section is in the end block so use the outline of the shape only
-      if ( (m_EndBlockLength[etStart]>0.0 && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
-           (m_EndBlockLength[etEnd]  >0.0 && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(distAlongSegment,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - distAlongSegment,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
 
       // position the shape
       CComPtr<IPoint2d> pntTopCenter;
-      GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
+      GB_GetSectionLocation(this,Xs,&pntTopCenter);
 
       CComQIPtr<IXYPosition> position(newSection);
       position->put_LocatorPoint(lpTopCenter,pntTopCenter);

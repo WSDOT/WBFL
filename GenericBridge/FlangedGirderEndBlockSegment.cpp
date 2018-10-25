@@ -161,6 +161,11 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_NextSegment(ISegment** segment)
 
 STDMETHODIMP CFlangedGirderEndBlockSegment::get_Length(Float64 *pVal)
 {
+   return m_pGirderLine->get_GirderLength(pVal);
+}
+
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_LayoutLength(Float64 *pVal)
+{
    return m_pGirderLine->get_LayoutLength(pVal);
 }
 

@@ -485,11 +485,11 @@ void CJoint::ApplyLoad(CJointLoad *ld)
    m_jntLoad[2] += mz;
 }
 
-void CJoint::ApplyLoad(CJointDisplacement *ld)
+void CJoint::ApplyLoad(CJointDeflection *ld)
 {
-   // displacements cannot be applied to released dofs
+   // Deflections cannot be applied to released dofs
    Float64 dx, dy, rz;
-   ld->GetDisplacement(&dx, &dy, &rz);
+   ld->GetDeflection(&dx, &dy, &rz);
    if ((dx!=0.0 && m_CondensedDOF[0]!=-1) ||
        (dy!=0.0 && m_CondensedDOF[1]!=-1) ||
        (rz!=0.0 && m_CondensedDOF[2]!=-1))
@@ -513,17 +513,17 @@ void CJoint::GetFglobal(Float64 *v)
    v[2] = m_jntLoad[2];
 }
 
-// SetDisplacement
+// SetDeflection
 //
-// Sets the joint displacement. To be called by TFemModel after a stiffness
+// Sets the joint Deflection. To be called by TFemModel after a stiffness
 // analysis.
-void CJoint::SetDisplacement(const Float64 *disp)
+void CJoint::SetDeflection(const Float64 *disp)
 {
    m_Disp[0] = disp[0];
    m_Disp[1] = disp[1];
    m_Disp[2] = disp[2];
 
-   // this is a bit tricky and underhanded here, but set displacement 
+   // this is a bit tricky and underhanded here, but set Deflection 
    // values to those prescribed by settlement loads if applied
    if (m_dispLoadApplied)
    {
@@ -531,7 +531,7 @@ void CJoint::SetDisplacement(const Float64 *disp)
       {
          if (m_dispLoad[i]!=0.0)
          {
-            ATLASSERT(m_Disp[i]==0.0); // if a displacement load was applied, this node 
+            ATLASSERT(m_Disp[i]==0.0); // if a Deflection load was applied, this node 
                                        // had better be fixed and the solution must be zero
             m_Disp[i] = m_dispLoad[i];
          }
@@ -539,10 +539,10 @@ void CJoint::SetDisplacement(const Float64 *disp)
    }
 }
 
-// GetDisplacement
+// GetDeflection
 //
-// Retreives the joint displacements.
-void CJoint::GetDisplacement(Float64 *disp) const
+// Retreives the joint Deflections.
+void CJoint::GetDeflection(Float64 *disp) const
 {
    for (long i = 0; i < NumDof; i++)
       disp[i] = m_Disp[i];

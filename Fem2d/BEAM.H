@@ -49,7 +49,7 @@ public:
    MbrType GetType();
 	virtual void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,
                              Float64 &fxr,Float64 &fyr,Float64 &mzr) = 0;
-	virtual void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+	virtual void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
 											Float64 &dxr,Float64 &dyr,Float64 &rzr) = 0;
 	virtual void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz) = 0;
 	virtual void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz) = 0;
@@ -71,7 +71,7 @@ public:
    void GetLocation(Float64 &loc);
    LoadDir GetDirection();
 	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                          Float64 &dxr,Float64 &dyr,Float64 &rzr);
 	void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
@@ -89,17 +89,17 @@ private:
    Float64 m_Rzl, m_Rzr;
 
    void ComputeReactions();
-   void ComputeDisplacements();
+   void ComputeDeflections();
 
    void ComputePPReactions();
    void ComputePFReactions();
    void ComputeFPReactions();
    void ComputeFFReactions();
 
-   void ComputePPDisplacements();
-   void ComputePFDisplacements();
-   void ComputeFPDisplacements();
-   void ComputeFFDisplacements();
+   void ComputePPDeflections();
+   void ComputePFDeflections();
+   void ComputeFPDeflections();
+   void ComputeFFDeflections();
 
    void ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
@@ -127,21 +127,21 @@ private:
    void ComputeFFReactionsFy();
    void ComputeFFReactionsMz();
 
-   void ComputePPDisplacementsFx();
-   void ComputePPDisplacementsFy();
-   void ComputePPDisplacementsMz();
+   void ComputePPDeflectionsFx();
+   void ComputePPDeflectionsFy();
+   void ComputePPDeflectionsMz();
 
-   void ComputePFDisplacementsFx();
-   void ComputePFDisplacementsFy();
-   void ComputePFDisplacementsMz();
+   void ComputePFDeflectionsFx();
+   void ComputePFDeflectionsFy();
+   void ComputePFDeflectionsMz();
 
-   void ComputeFPDisplacementsFx();
-   void ComputeFPDisplacementsFy();
-   void ComputeFPDisplacementsMz();
+   void ComputeFPDeflectionsFx();
+   void ComputeFPDeflectionsFy();
+   void ComputeFPDeflectionsMz();
 
-   void ComputeFFDisplacementsFx();
-   void ComputeFFDisplacementsFy();
-   void ComputeFFDisplacementsMz();
+   void ComputeFFDeflectionsFx();
+   void ComputeFFDeflectionsFy();
+   void ComputeFFDeflectionsMz();
 
    void ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
@@ -185,7 +185,7 @@ public:
 	MemberStrainBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 l,Float64 ea,Float64 ei,MbrType type);
    void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a);
 	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                          Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 
@@ -203,17 +203,17 @@ private:
    Float64 m_Rzl, m_Rzr;
 
    void ComputeReactions();
-   void ComputeDisplacements();
+   void ComputeDeflections();
 
    void ComputePPReactions();
    void ComputePFReactions();
    void ComputeFPReactions();
    void ComputeFFReactions();
 
-   void ComputePPDisplacements();
-   void ComputePFDisplacements();
-   void ComputeFPDisplacements();
-   void ComputeFFDisplacements();
+   void ComputePPDeflections();
+   void ComputePFDeflections();
+   void ComputeFPDeflections();
+   void ComputeFFDeflections();
 };
 
 // Beam modeling uniform member distortions starting at point a and ending at point b, measured from the left
@@ -225,7 +225,7 @@ public:
 	UniformMemberDistortionBeam(Float64 qAxial, Float64 qCurvature,Float64 a,Float64 b,Float64 l,Float64 ea,Float64 ei,MbrType type);
    void GetLoad(Float64& qAxial, Float64& qCurvature,Float64& a,Float64& b);
 	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                          Float64 &dxr,Float64 &dyr,Float64 &rzr);void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
 
@@ -262,7 +262,7 @@ public:
    void GetLocation(Float64 &la,Float64 &lb);
    LoadDir GetDirection();
 	void GetReactions(Float64 &fxl,Float64 &fyl,Float64 &mzl,Float64 &fxr,Float64 &fyr,Float64 &mzr);
-	void GetDisplacements(Float64 &dxl,Float64 &dyl,Float64 &rzl,
+	void GetDeflections(Float64 &dxl,Float64 &dyl,Float64 &rzl,
                          Float64 &dxr,Float64 &dyr,Float64 &rzr);
 	void GetForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
 	void GetDeflection(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz);
@@ -289,17 +289,17 @@ private:
    Float64 m_Mzr_u, m_Mzr_t;
 
    void ComputeReactions();
-   void ComputeDisplacements();
+   void ComputeDeflections();
 
    void ComputePPReactions();
    void ComputePFReactions();
    void ComputeFPReactions();
    void ComputeFFReactions();
 
-   void ComputePPDisplacements();
-   void ComputePFDisplacements();
-   void ComputeFPDisplacements();
-   void ComputeFFDisplacements();
+   void ComputePPDeflections();
+   void ComputePFDeflections();
+   void ComputeFPDeflections();
+   void ComputeFFDeflections();
 
    void ComputePPForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePFForces(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
@@ -327,21 +327,21 @@ private:
    void ComputeFFReactionsFy();
    void ComputeFFReactionsMz();
 
-   void ComputePPDisplacementsFx();
-   void ComputePPDisplacementsFy();
-   void ComputePPDisplacementsMz();
+   void ComputePPDeflectionsFx();
+   void ComputePPDeflectionsFy();
+   void ComputePPDeflectionsMz();
 
-   void ComputePFDisplacementsFx();
-   void ComputePFDisplacementsFy();
-   void ComputePFDisplacementsMz();
+   void ComputePFDeflectionsFx();
+   void ComputePFDeflectionsFy();
+   void ComputePFDeflectionsMz();
 
-   void ComputeFPDisplacementsFx();
-   void ComputeFPDisplacementsFy();
-   void ComputeFPDisplacementsMz();
+   void ComputeFPDeflectionsFx();
+   void ComputeFPDeflectionsFy();
+   void ComputeFPDeflectionsMz();
 
-   void ComputeFFDisplacementsFx();
-   void ComputeFFDisplacementsFy();
-   void ComputeFFDisplacementsMz();
+   void ComputeFFDeflectionsFx();
+   void ComputeFFDeflectionsFy();
+   void ComputeFFDeflectionsMz();
 
    void ComputePPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);
    void ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz);

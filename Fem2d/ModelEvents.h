@@ -44,10 +44,10 @@ public:
    virtual void OnJointLoadAdded(LoadIDType loadID, LoadCaseIDType loadingID)=0;
    virtual void OnJointLoadRemoved(LoadIDType loadID, LoadCaseIDType loadingID )=0;
    virtual void OnJointLoadsCleared(LoadCaseIDType loadingID )=0;
-   virtual void OnJointDisplacementChanged(IFem2dJointDisplacement*, LoadCaseIDType loadingID)=0;
-   virtual void OnJointDisplacementAdded(LoadIDType loadID, LoadCaseIDType loadingID)=0;
-   virtual void OnJointDisplacementRemoved(LoadIDType loadID, LoadCaseIDType loadingID )=0;
-   virtual void OnJointDisplacementsCleared(LoadCaseIDType loadingID )=0;
+   virtual void OnJointDeflectionChanged(IFem2dJointDeflection*, LoadCaseIDType loadingID)=0;
+   virtual void OnJointDeflectionAdded(LoadIDType loadID, LoadCaseIDType loadingID)=0;
+   virtual void OnJointDeflectionRemoved(LoadIDType loadID, LoadCaseIDType loadingID )=0;
+   virtual void OnJointDeflectionsCleared(LoadCaseIDType loadingID )=0;
    virtual void OnPointLoadChanged(IFem2dPointLoad*, LoadCaseIDType loadingID)=0;
    virtual void OnPointLoadAdded(LoadIDType loadID, LoadCaseIDType loadingID)=0;
    virtual void OnPointLoadRemoved(LoadIDType loadID, LoadCaseIDType loadingID )=0;

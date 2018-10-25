@@ -16,6 +16,12 @@
 #define IDD_UNITS                       133
 #define IDD_MANAGE_PLUGINS              135
 #define IDR_RECENT_FILE                 136
+#define IDD_EDIT_CUSTOM_REPORT          139
+#define IDD_CUSTOM_REPORTS_PAGE         140
+#define IDD_EXPORT_CUSTOM_REPORTS       141
+#define IDD_CUSTOM_REPORT_CONFLICT      142
+#define IDD_RENAME_REPORT_DLG           143
+#define IDB_CREPORT_BMP                 145
 #define IDI_LARGEICON                   150
 #define IDI_SMALLICON                   151
 #define IDB_LPFRAME                     154
@@ -35,14 +41,38 @@
 #define IDC_TEMPLATES                   1008
 #define IDC_TIPSTRING                   1008
 #define IDC_PLUGIN_LIST                 1008
+#define IDC_FAVORITE_LIST               1008
+#define IDC_AVAILABLE_LIST              1008
 #define IDC_US_UNITS                    1009
 #define IDC_DESCRIPTION                 1009
+#define IDC_SELECTED_LIST               1009
 #define IDC_SI_UNITS                    1010
 #define IDC_LARGE                       1010
 #define IDC_SMALL                       1011
 #define IDC_DETAILS                     1013
 #define IDC_MOREINFO                    1013
+#define IDR_HTML_EAFCUSTOMREPORTCONFLICTDIALOG 1014
+#define IDC_CHECK1                      1015
+#define IDC_CUSTOM_REPORT_LIST          1017
+#define IDC_ADDNEW                      1018
+#define IDC_DELETE                      1020
+#define IDC_REPORT_NAME                 1021
+#define IDC_PARENT_COMBO                1022
+#define IDC_ADD_BUTTON                  1023
+#define IDC_REMOVE_BUTTON               1024
 #define IDC_LIST                        1025
+#define IDC_MOVE_UP_BUTTON              1025
+#define IDC_MOVE_DOWN_BUTTON            1026
+#define IDC_EXPORT                      1026
+#define IDC_IMPORT                      1027
+#define IDC_ADD_ALL_BUTTON              1027
+#define ID_SKIP                         1028
+#define IDC_REMOVE_ALL_BUTTON           1028
+#define ID_RENAME                       1029
+#define IDC_REPORT_NAME_STATIC          1030
+#define IDC_NAME_STATIC                 1031
+#define IDC_EDIT1                       1032
+#define IDC_REPORT_NAME_EDIT            1032
 #define IDC_TOOLTIPS                    1156
 #define IDS_E_NOBROWSER                 1648
 #define IDS_E_UPDATE                    1649
@@ -56,6 +86,7 @@
 #define IDS_WORKING                     1746
 #define IDC_APPLIST                     3333
 #define IDD_SELECTREPORT                12925
+#define IDD_FAVORITE_REPORT_DLG         12926
 #define IDC_FRAME                       13012
 #define IDS_E_CREATEWND                 61446
 #define IDS_E_LOWRESOURCES              61447
@@ -68,9 +99,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        138
+#define _APS_NEXT_RESOURCE_VALUE        146
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1015
-#define _APS_NEXT_SYMED_VALUE           1014
+#define _APS_NEXT_CONTROL_VALUE         1033
+#define _APS_NEXT_SYMED_VALUE           1015
 #endif
 #endif

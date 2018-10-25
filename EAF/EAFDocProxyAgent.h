@@ -187,7 +187,7 @@ public:
    virtual const unitmgtLengthData&        GetComponentDimUnit();
    virtual const unitmgtLengthData&        GetXSectionDimUnit();
    virtual const unitmgtLengthData&        GetSpanLengthUnit();
-   virtual const unitmgtLengthData&        GetDisplacementUnit() ;
+   virtual const unitmgtLengthData&        GetDeflectionUnit() ;
    virtual const unitmgtLengthData&        GetAlignmentLengthUnit();
    virtual const unitmgtLength2Data&       GetAreaUnit();
    virtual const unitmgtLength4Data&       GetMomentOfInertiaUnit();

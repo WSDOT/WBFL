@@ -84,6 +84,26 @@ mathFunction2d* mathLinFunc2d::Clone() const
    return new mathLinFunc2d(*this);
 }
 
+Float64 mathLinFunc2d::GetSlope() const
+{
+   return m_Slope;
+}
+
+void mathLinFunc2d::SetSlope(Float64 slope)
+{
+   m_Slope = slope;
+}
+
+Float64 mathLinFunc2d::GetYIntercept() const
+{
+   return m_Yintercept;
+}
+
+void mathLinFunc2d::SetYIntercept(Float64 yIntercept)
+{
+   m_Yintercept = yIntercept;
+}
+
 //======================== ACCESS     =======================================
 //======================== INQUIRY    =======================================
 //======================== DEBUG      =======================================

@@ -241,40 +241,22 @@ public:
 
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal)
    {
-      // Returns the overall layout length of the segment...
-      // however, if this is the first or last segment then deduct
-      // the distance from the CLPier to the start/end of girder
-      Float64 length;
-      m_pGirderLine->get_LayoutLength(&length);
-
-      if ( !m_pPrevSegment )
-      {
-         Float64 end_distance, bearing_offset;
-         m_pGirderLine->get_EndDistance(etStart,&end_distance);
-         m_pGirderLine->get_BearingOffset(etStart,&bearing_offset);
-         length -= (bearing_offset - end_distance);
-      }
-
-      if ( !m_pNextSegment )
-      {
-         Float64 end_distance, bearing_offset;
-         m_pGirderLine->get_EndDistance(etEnd,&end_distance);
-         m_pGirderLine->get_BearingOffset(etEnd,&bearing_offset);
-         length -= (bearing_offset - end_distance);
-      }
-
-      *pVal = length;
-      return S_OK;
+      return m_pGirderLine->get_GirderLength(pVal);
    }
 
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal)
    {
-      return GetSection(stageIdx,distAlongSegment,ppSection);
+      return m_pGirderLine->get_LayoutLength(pVal);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape)
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
    {
-      return GetPrimaryShape(distAlongSegment,ppShape);
+      return GetSection(stageIdx,Xs,ppSection);
+   }
+
+	STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
+   {
+      return GetPrimaryShape(Xs,ppShape);
    }
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
@@ -282,12 +264,30 @@ public:
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
 
+      // Start and end of the segment in Girder Path Coordinates
       Float64 xStart, xEnd;
-      GetSegmentRange(bIncludeClosure,&xStart,&xEnd);
+      GetSegmentRange(&xStart,&xEnd);
+      Float64 xStartSegment = xStart;
+      Float64 xEndSegment   = xEnd;
 
-      Float64 xStartSegment,xEndSegment;
-      GetSegmentRange(VARIANT_TRUE,&xStartSegment,&xEndSegment);
+      // if the closure joints are not to be included in the profile
+      // move the start and end locations to the face of the segment
+      if ( bIncludeClosure == VARIANT_FALSE )
+      {
+         CComPtr<IGirderLine> girderLine;
+         get_GirderLine(&girderLine);
+         Float64 brgOffset, endDist;
+         girderLine->get_BearingOffset(etStart,&brgOffset);
+         girderLine->get_EndDistance(etStart,&endDist);
+         xStart += (brgOffset-endDist);
 
+         girderLine->get_BearingOffset(etEnd,&brgOffset);
+         girderLine->get_EndDistance(etEnd,&endDist);
+         xEnd -= (brgOffset-endDist);
+      }
+
+
+      // determine key X-values (locations where the depth of the section changes)
       std::vector<Float64> xValues;
       if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
       {
@@ -342,9 +342,10 @@ public:
       std::vector<Float64>::iterator end(xValues.end());
       for ( ; iter != end; iter++ )
       {
-         Float64 x = *iter;
-         Float64 y = GetSectionDepth(x - xStart);
-         polyShape->AddPoint(x,-y);
+         Float64 Xgp = *iter;
+         Float64 Xs = Xgp - xStartSegment;
+         Float64 H = GetSectionDepth(Xs);
+         polyShape->AddPoint(Xgp,-H);
       }
 
       // points across the top of the segment
@@ -385,11 +386,11 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(GetHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
+   STDMETHOD(GetHaunchDepth)(Float64 Xs,Float64* pVal)
    {
       CHECK_RETVAL(pVal);
 
-      *pVal = GB_GetHaunchDepth(this,distAlongSegment);
+      *pVal = GB_GetHaunchDepth(this,Xs);
 
       return S_OK;
    }
@@ -525,10 +526,10 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(GetSegmentHeight)(Float64 distFromStartOfSegment,Float64* pHeight)
+   STDMETHOD(GetSegmentHeight)(Float64 Xs,Float64* pHeight)
    {
       CHECK_RETVAL(pHeight);
-      *pHeight = GetSectionDepth(distFromStartOfSegment);
+      *pHeight = GetSectionDepth(Xs);
       return S_OK;
    }
 
@@ -539,7 +540,7 @@ public:
       points.CoCreateInstance(CLSID_Point2dCollection);
 
       Float64 xStart, xEnd;
-      GetSegmentRange(VARIANT_TRUE,&xStart,&xEnd);
+      GetSegmentRange(&xStart,&xEnd);
 
       std::vector<Float64> xValues;
       if ( m_VariationType == svtLinear || m_VariationType == svtParabolic )
@@ -585,6 +586,14 @@ public:
    STDMETHOD(get_ClosureJointLength)(/*[in]*/EndType endType,/*[out,retval]*/Float64* pLength)
    {
       CHECK_RETVAL(pLength);
+
+      if ( (m_pPrevSegment == NULL && endType == etStart) || (m_pNextSegment == NULL && endType == etEnd) )
+      {
+         // if this the start of the first segment or the end of the last segment there there isn't a closure
+         *pLength = 0;
+         return S_OK;
+      }
+
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
 
@@ -686,7 +695,7 @@ public:
 protected:
    virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape) = 0;
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -698,7 +707,7 @@ protected:
 
       HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(distAlongSegment,&primaryShape);
+      hr = GetPrimaryShape(Xs,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;
@@ -710,7 +719,7 @@ protected:
       section->QueryInterface(IID_ISection,(void**)ppSection);
       ATLASSERT(*ppSection != NULL);
 
-      int isClosureJoint = IsClosureJoint(distAlongSegment);
+      int isClosureJoint = IsClosureJoint(Xs);
 
       // add the primary shape
       Float64 Efg = 0;
@@ -797,55 +806,85 @@ protected:
       return S_OK;
    }
 
-   int IsClosureJoint(Float64 distAlongSegment)
+   int IsClosureJoint(Float64 Xs)
    {
-      Float64 length;
-      m_pGirderLine->get_LayoutLength(&length);
+      if ( m_pPrevSegment == NULL && m_pNextSegment == NULL )
+         return 0; // if there is only one segment Xs cannot be in a closure
 
-      Float64 Lcp[2];
-      get_ClosureJointLength(etStart,&Lcp[etStart]);
-      get_ClosureJointLength(etEnd,  &Lcp[etEnd]);
+      CComPtr<IGirderLine> girderLine;
+      get_GirderLine(&girderLine);
 
-      if ( distAlongSegment < Lcp[etStart] )
-         return -1; // in closure pour at start
-      else if ((length-Lcp[etEnd]) < distAlongSegment ) 
-         return 1; // in closure pour at end
-      else
-         return 0; // not in a closure pour
+      Float64 segment_layout_length;
+      girderLine->get_LayoutLength(&segment_layout_length);
+
+      Float64 end_distance, bearing_offset;
+      girderLine->get_EndDistance(etStart,&end_distance);
+      girderLine->get_BearingOffset(etStart,&bearing_offset);
+      Float64 XsStartFaceOfSegment = bearing_offset - end_distance;
+
+      girderLine->get_EndDistance(etEnd,&end_distance);
+      girderLine->get_BearingOffset(etEnd,&bearing_offset);
+      Float64 XsEndFaceOfSegment = segment_layout_length - (bearing_offset - end_distance);
+
+      if ( ::InRange(XsStartFaceOfSegment,Xs,XsEndFaceOfSegment) )
+         return 0; 
+
+      if ( Xs < XsStartFaceOfSegment )
+         return -1; // Xs is in the start closure
+
+      if ( XsEndFaceOfSegment < Xs )
+         return 1; // Xs is in the end closure
+ 
+      ATLASSERT(false); // should not get here
+      return 0; // Xs is not in a closure
    }
 
-   Float64 GetBottomFlangeHeight(Float64 distAlongSegment)
+   Float64 GetBottomFlangeHeight(Float64 Xs)
    {
       Float64 xStart, xEnd;
-      GetSegmentRange(VARIANT_TRUE,&xStart,&xEnd);
+      GetSegmentRange(&xStart,&xEnd);
 
       if ( m_bBottomFlangeHeightProfile )
-         return m_BottomFlangeHeightProfile.Evaluate(xStart+distAlongSegment);
+      {
+         return m_BottomFlangeHeightProfile.Evaluate(xStart+Xs);
+      }
 
       UpdateProfile(false,&m_BottomFlangeHeightProfile);
 
       m_bBottomFlangeHeightProfile = true;
-      Float64 H = m_BottomFlangeHeightProfile.Evaluate(xStart+distAlongSegment);
-      return H;
+      return m_BottomFlangeHeightProfile.Evaluate(xStart+Xs);
    }
 
-   Float64 GetSectionDepth(Float64 distAlongSegment)
+   Float64 GetSectionDepth(Float64 Xs)
    {
       Float64 xStart, xEnd;
-      GetSegmentRange(VARIANT_TRUE,&xStart,&xEnd);
+      GetSegmentRange(&xStart,&xEnd);
 
       if ( m_bSegmentHeightProfile )
-         return m_SegmentHeightProfile.Evaluate(xStart+distAlongSegment);
+      {
+         return m_SegmentHeightProfile.Evaluate(xStart+Xs);
+      }
 
       UpdateProfile(true,&m_SegmentHeightProfile);
 
       m_bSegmentHeightProfile = true;
-      Float64 H = m_SegmentHeightProfile.Evaluate(xStart+distAlongSegment);
-      return H;
+      return m_SegmentHeightProfile.Evaluate(xStart+Xs);
    }
 
    void UpdateProfile(bool bGirderProfile,mathCompositeFunction2d* pProfile)
    {
+      // The profile is modeled as a composite math function. The independent variable, X,
+      // is measured in the Girder Path Coordiante System. X = 0 is at the intersection of the
+      // centerline of the first segment and the CL Pier at the start of the girder. The dependent
+      // variable, Y, is the height of the section (bGirderProfile is true) or the 
+      // height of the bottom flange (bGirderProfile is false).
+      //
+      // Clients will get information about this segment using the Segment Coordinate System.
+      // Access to the composite math function must take this into account
+      //
+      // The range of the composite math function is between the faces of the girder at the start
+      // and end of the girder. That means, from X=0 to X=XstartFace and X=XendFace to X=LengthGirder
+      // the function is undefined.
       pProfile->Clear();
 
       Float64 xSegmentStart = 0; // start of segment
@@ -858,22 +897,12 @@ protected:
       Float64 slopeParabola;
 
       // Find the first segment in the girder
-      CComPtr<ISplicedGirderSegment> firstSegment;
-      CComPtr<ISplicedGirderSegment> currSegment(this);
-      do
-      {
-         CComPtr<ISegment> prevSegment;
-         currSegment->get_PrevSegment(&prevSegment);
-
-         if ( prevSegment == NULL )
-            firstSegment = currSegment;
-         else
-            currSegment = prevSegment;
-
-      } while(firstSegment == NULL);
+      CComPtr<ISegment> segment1;
+      m_pSSMbr->get_Segment(0,&segment1);
+      CComQIPtr<ISplicedGirderSegment> firstSegment(segment1);
 
       // go down each segment and create piece-wise functions for each part of the girder profile
-      currSegment = firstSegment;
+      CComPtr<ISplicedGirderSegment> currSegment( firstSegment );
       CComPtr<ISplicedGirderSegment> prevSegment;
       CComPtr<ISplicedGirderSegment> nextSegment;
       do
@@ -883,27 +912,54 @@ protected:
          currSegment->get_PrevSegment(&ps);
          currSegment->get_NextSegment(&ns);
 
-         xStart = xSegmentStart;
-
          SegmentVariationType prevVariationType,variationType,nextVariationType;
          Float64 prev_segment_length, segment_length, next_segment_length;
          if ( ps )
          {
             ps.QueryInterface(&prevSegment);
             prevSegment->get_VariationType(&prevVariationType);
-            prevSegment->get_Length(&prev_segment_length);
+            prevSegment->get_LayoutLength(&prev_segment_length);
          }
 
          currSegment->get_VariationType(&variationType);
-         currSegment->get_Length(&segment_length);
+         currSegment->get_LayoutLength(&segment_length);
 
          if ( ns )
          {
             ns.QueryInterface(&nextSegment);
             nextSegment->get_VariationType(&nextVariationType);
-            nextSegment->get_Length(&next_segment_length);
+            nextSegment->get_LayoutLength(&next_segment_length);
          }
 
+         if ( !ps )
+         {
+            // this is the first segment
+            CComPtr<IGirderLine> girderLine;
+            currSegment->get_GirderLine(&girderLine);
+            Float64 end_distance, bearing_offset;
+            girderLine->get_EndDistance(etStart,&end_distance);
+            girderLine->get_BearingOffset(etStart,&bearing_offset);
+
+            segment_length -= (bearing_offset - end_distance);
+
+            // start at the face of the segment
+            xSegmentStart = bearing_offset - end_distance;
+         }
+
+         if ( !ns )
+         {
+            // this is the last segment
+            CComPtr<IGirderLine> girderLine;
+            currSegment->get_GirderLine(&girderLine);
+            Float64 end_distance, bearing_offset;
+            girderLine->get_EndDistance(etEnd,&end_distance);
+            girderLine->get_BearingOffset(etEnd,&bearing_offset);
+
+            // adjust the length of the last segment so we end at the end face of the segment
+            segment_length -= (bearing_offset - end_distance);
+         }
+
+         xStart = xSegmentStart;
 
          Float64 left_prismatic_length,  left_prismatic_height,  left_prismatic_bottom_flange_depth;
          Float64 left_tapered_length,    left_tapered_height,    left_tapered_bottom_flange_depth;
@@ -1205,11 +1261,13 @@ protected:
       return mathPolynomial2d(coefficients);
    }
 
-   void GetSegmentRange(VARIANT_BOOL bIncludeClosure,Float64* pXStart,Float64* pXEnd)
+   void GetSegmentRange(Float64* pXgpStart,Float64* pXgpEnd)
    {
-      Float64 x = 0; // start at zero
+      // Returns the start and end of the segment in Girder Path Coordinates.
 
-      // sum the length of all the previous segments
+      *pXgpStart = 0; // start at zero
+
+      // sum the layout length of all the previous segments
       CComPtr<ISegment> prevSegment;
       get_PrevSegment(&prevSegment);
       while ( prevSegment )
@@ -1217,82 +1275,23 @@ protected:
          CComPtr<IGirderLine> girderLine;
          prevSegment->get_GirderLine(&girderLine);
 
-         Float64 length;
-         girderLine->get_LayoutLength(&length);
+         Float64 layout_length;
+         girderLine->get_LayoutLength(&layout_length);
+
+         *pXgpStart += layout_length;
 
          CComPtr<ISegment> s;
          prevSegment->get_PrevSegment(&s);
-
-         if ( s == NULL )
-         {
-            Float64 end_distance, bearing_offset;
-            girderLine->get_EndDistance(etStart,&end_distance);
-            girderLine->get_BearingOffset(etStart,&bearing_offset);
-            length -= (bearing_offset - end_distance);
-         }
-
-         x += length;
-
          prevSegment.Release();
          prevSegment = s;
-      }
-
-      // x is now the distance from the start of the girder
-      // to the CL of the closure joint at the start of this segment
-      *pXStart = x;
-
-      prevSegment.Release();
-      get_PrevSegment(&prevSegment);
-
-      CComPtr<ISegment> nextSegment;
-      get_NextSegment(&nextSegment);
-
-      // if closure joints are not included in the range,
-      // move up by the start closure joint length
-      // (don't make this adjustment for the first segment)
-      if ( bIncludeClosure == VARIANT_FALSE && prevSegment != NULL )
-      {
-         Float64 Lclosure;
-         get_ClosureJointLength(etStart,&Lclosure);
-         *pXStart += Lclosure;
       }
 
       // locate end of range
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
 
-      Float64 length;
-      if ( prevSegment == NULL )
-      {
-         // this is the first segment so use the girder length
-         girderLine->get_GirderLength(&length);
-         if ( nextSegment )
-         {
-            // if there is a next segment, add the closure length so that
-            // when added to x below x is at the CL of the closure joint at the end of this segment
-            Float64 Lclosure;
-            get_ClosureJointLength(etEnd,&Lclosure);
-            length += Lclosure;
-         }
-      }
-      else
-      {
-         // use the layout length because it includes the closure lengths
-         girderLine->get_LayoutLength(&length);
-      }
-      x += length; // x is now at the CL of the closure joint at the end of this segment
-      *pXEnd = x;
-
-      // if closure joints are not included in the range,
-      // back up end closure joint length.
-      // if there is not a next segment, this is the last segment so back
-      // up from the very end of the girder layout length to the actual
-      // end of the girder
-      if ( bIncludeClosure == VARIANT_FALSE || nextSegment == NULL)
-      {
-         Float64 Lclosure;
-         get_ClosureJointLength(etEnd,&Lclosure);
-         *pXEnd -= Lclosure;
-      }
+      Float64 layout_length;
+      girderLine->get_LayoutLength(&layout_length);
+      *pXgpEnd = *pXgpStart + layout_length;
    }
 };

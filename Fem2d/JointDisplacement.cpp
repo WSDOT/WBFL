@@ -22,7 +22,7 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-// JointDisplacement.cpp : Implementation of CJointDisplacement
+// JointDeflection.cpp : Implementation of CJointDeflection
 #include "stdafx.h"
 #include "JointDisplacement.h"
 #include "ModelEvents.h"
@@ -38,11 +38,11 @@ static char THIS_FILE[] = __FILE__;
                           ATLASSERT(m_pLoading!=0);\
                           LoadCaseIDType Loadingid; \
                           m_pLoading->get_ID(&Loadingid); \
-                          m_pModel->OnJointDisplacementChanged(this, Loadingid);
+                          m_pModel->OnJointDeflectionChanged(this, Loadingid);
 
 /////////////////////////////////////////////////////////////////////////////
-// CJointDisplacement
-void CJointDisplacement::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, JointIDType jointID, Float64 Dx, Float64 Dy, Float64 Rz)
+// CJointDeflection
+void CJointDeflection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, JointIDType jointID, Float64 Dx, Float64 Dy, Float64 Rz)
 {
    ATLASSERT(pLoading!=0);
 
@@ -57,11 +57,11 @@ void CJointDisplacement::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2d
    m_Rz = Rz;
 }
 
-STDMETHODIMP CJointDisplacement::InterfaceSupportsErrorInfo(REFIID riid)
+STDMETHODIMP CJointDeflection::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IFem2dJointDisplacement
+		&IID_IFem2dJointDeflection
 	};
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -73,10 +73,10 @@ STDMETHODIMP CJointDisplacement::InterfaceSupportsErrorInfo(REFIID riid)
 
 static const Float64 MY_VER=1.0;
 
-STDMETHODIMP CJointDisplacement::Load(/*[in]*/ IStructuredLoad2 *pload)
+STDMETHODIMP CJointDeflection::Load(/*[in]*/ IStructuredLoad2 *pload)
 {
    HRESULT hr;
-   hr = pload->BeginUnit(CComBSTR("JointDisplacement"));
+   hr = pload->BeginUnit(CComBSTR("JointDeflection"));
    if (FAILED(hr))
       return hr;
 
@@ -135,10 +135,10 @@ STDMETHODIMP CJointDisplacement::Load(/*[in]*/ IStructuredLoad2 *pload)
    return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::Save(/*[in]*/ IStructuredSave2 *psave)
+STDMETHODIMP CJointDeflection::Save(/*[in]*/ IStructuredSave2 *psave)
 {
    HRESULT hr;
-   hr = psave->BeginUnit(CComBSTR("JointDisplacement"), MY_VER);
+   hr = psave->BeginUnit(CComBSTR("JointDeflection"), MY_VER);
    if (FAILED(hr))
       return hr;
 
@@ -172,7 +172,7 @@ STDMETHODIMP CJointDisplacement::Save(/*[in]*/ IStructuredSave2 *psave)
 }
 
 
-STDMETHODIMP CJointDisplacement::get_ID(LoadIDType *pVal)
+STDMETHODIMP CJointDeflection::get_ID(LoadIDType *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_ID;
@@ -180,7 +180,7 @@ STDMETHODIMP CJointDisplacement::get_ID(LoadIDType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::get_JointID(JointIDType *pVal)
+STDMETHODIMP CJointDeflection::get_JointID(JointIDType *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_JointID;
@@ -188,7 +188,7 @@ STDMETHODIMP CJointDisplacement::get_JointID(JointIDType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::put_JointID(JointIDType newVal)
+STDMETHODIMP CJointDeflection::put_JointID(JointIDType newVal)
 {
    if (m_JointID != newVal)
    {
@@ -198,7 +198,7 @@ STDMETHODIMP CJointDisplacement::put_JointID(JointIDType newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::get_Dx(Float64 *pVal)
+STDMETHODIMP CJointDeflection::get_Dx(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_Dx;
@@ -206,7 +206,7 @@ STDMETHODIMP CJointDisplacement::get_Dx(Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::put_Dx(Float64 newVal)
+STDMETHODIMP CJointDeflection::put_Dx(Float64 newVal)
 {
    if (m_Dx != newVal)
    {
@@ -216,7 +216,7 @@ STDMETHODIMP CJointDisplacement::put_Dx(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::get_Dy(Float64 *pVal)
+STDMETHODIMP CJointDeflection::get_Dy(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_Dy;
@@ -224,7 +224,7 @@ STDMETHODIMP CJointDisplacement::get_Dy(Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::put_Dy(Float64 newVal)
+STDMETHODIMP CJointDeflection::put_Dy(Float64 newVal)
 {
    if (m_Dy != newVal)
    {
@@ -234,7 +234,7 @@ STDMETHODIMP CJointDisplacement::put_Dy(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::get_Rz(Float64 *pVal)
+STDMETHODIMP CJointDeflection::get_Rz(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_Rz;
@@ -242,7 +242,7 @@ STDMETHODIMP CJointDisplacement::get_Rz(Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::put_Rz(Float64 newVal)
+STDMETHODIMP CJointDeflection::put_Rz(Float64 newVal)
 {
    if (m_Rz != newVal)
    {
@@ -252,7 +252,7 @@ STDMETHODIMP CJointDisplacement::put_Rz(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::SetDisplacement(Float64 Dx, Float64 Dy, Float64 Rz)
+STDMETHODIMP CJointDeflection::SetDeflection(Float64 Dx, Float64 Dy, Float64 Rz)
 {
 	m_Dx = Dx;
    m_Dy = Dy;
@@ -262,7 +262,7 @@ STDMETHODIMP CJointDisplacement::SetDisplacement(Float64 Dx, Float64 Dy, Float64
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::GetDisplacement(Float64 *Dx, Float64 *Dy, Float64 *Rz)
+STDMETHODIMP CJointDeflection::GetDeflection(Float64 *Dx, Float64 *Dy, Float64 *Rz)
 {
    CHECK_RETVAL(Dx);
    CHECK_RETVAL(Dy);
@@ -274,7 +274,7 @@ STDMETHODIMP CJointDisplacement::GetDisplacement(Float64 *Dx, Float64 *Dy, Float
 	return S_OK;
 }
 
-STDMETHODIMP CJointDisplacement::get_Loading(LoadCaseIDType *pVal)
+STDMETHODIMP CJointDeflection::get_Loading(LoadCaseIDType *pVal)
 {
    CHECK_RETVAL(pVal);
 	ATLASSERT(m_pLoading!=0);

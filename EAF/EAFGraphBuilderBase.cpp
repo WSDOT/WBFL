@@ -65,7 +65,7 @@ BEGIN_MESSAGE_MAP(CEAFGraphBuilderBase, CCmdTarget)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-int CEAFGraphBuilderBase::CreateControls(CWnd* pParent,UINT nID)
+int CEAFGraphBuilderBase::InitializeGraphController(CWnd* pParent,UINT nID)
 {
    ASSERT(pParent->IsKindOf(RUNTIME_CLASS(CEAFGraphChildFrame)));
    m_pFrame = (CEAFGraphChildFrame*)pParent;
@@ -77,6 +77,9 @@ int CEAFGraphBuilderBase::CreateControls(CWnd* pParent,UINT nID)
       pWnd->SetCommandTarget(this);
       pWnd->SetGraphBuilder(this);
    }
+
+   if ( !CreateGraphController(pParent,nID) )
+      return -1;
 
    return 0;
 }
@@ -110,7 +113,11 @@ void CEAFGraphBuilderBase::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint
    // there was an update request, but not because of an error
    m_bUpdateError = false;
 
-   GetGraphControlWindow()->OnUpdate(pSender,lHint,pHint);
+   CEAFGraphControlWindow* pGraphControlWnd = GetGraphControlWindow();
+   if ( pGraphControlWnd )
+   {
+      pGraphControlWnd->OnUpdate(pSender,lHint,pHint);
+   }
 
    // Update the graph
    Update();

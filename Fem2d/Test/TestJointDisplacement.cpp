@@ -22,7 +22,7 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-// TestJointDisplacement.cpp: implementation of the CTestJointDisplacement class.
+// TestJointDeflection.cpp: implementation of the CTestJointDeflection class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -41,17 +41,17 @@ static char THIS_FILE[] = __FILE__;
 //////////////////////////////////////////////////////////////////////
 
 
-CTestJointDisplacement::CTestJointDisplacement()
+CTestJointDeflection::CTestJointDeflection()
 {
 
 }
 
-CTestJointDisplacement::~CTestJointDisplacement()
+CTestJointDeflection::~CTestJointDeflection()
 {
 
 }
 
-void CTestJointDisplacement::Test()
+void CTestJointDeflection::Test()
 {
    // create a model
    CComPtr<IFem2dModel> pmodel;
@@ -82,64 +82,64 @@ void CTestJointDisplacement::Test()
    TRY_TEST(pLoadings->Create(0, &pl),FEM2D_E_LOADING_WITH_ID_ALREADY_EXISTS);
    TRY_TEST_LC(pLoadings->Create(3, &pLoading3));
 
-   CComPtr<IFem2dJointDisplacementCollection> pJointDisplacements;
-   TRY_TEST_HR(pLoading0->get_JointDisplacements(&pJointDisplacements));
+   CComPtr<IFem2dJointDeflectionCollection> pJointDeflections;
+   TRY_TEST_HR(pLoading0->get_JointDeflections(&pJointDeflections));
 
-   CComPtr<IFem2dJointDisplacement> pJointDisplacement0,pJointDisplacement3,pjl;
-   TRY_TEST_LC(pJointDisplacements->Create(0, 0, 23.2, 42.3, 52.3, &pJointDisplacement0));
-   TRY_TEST(pJointDisplacements->Create(0, 0, 0, 0, 0, &pjl),FEM2D_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS);
-   TRY_TEST_LC(pJointDisplacements->Create(3, 5, 33, 44, 55, &pJointDisplacement3));
+   CComPtr<IFem2dJointDeflection> pJointDeflection0,pJointDeflection3,pjl;
+   TRY_TEST_LC(pJointDeflections->Create(0, 0, 23.2, 42.3, 52.3, &pJointDeflection0));
+   TRY_TEST(pJointDeflections->Create(0, 0, 0, 0, 0, &pjl),FEM2D_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS);
+   TRY_TEST_LC(pJointDeflections->Create(3, 5, 33, 44, 55, &pJointDeflection3));
 
    LoadIDType loadID;
-   TRY_TEST_HR(pJointDisplacement3->get_ID(&loadID));
+   TRY_TEST_HR(pJointDeflection3->get_ID(&loadID));
    TRY_TEST(loadID, 3);
 
    JointIDType jntID;
-   TRY_TEST_HR(pJointDisplacement3->get_JointID(&jntID));
+   TRY_TEST_HR(pJointDeflection3->get_JointID(&jntID));
    TRY_TEST(jntID, 5);
 
-   TRY_TEST_LC(pJointDisplacement3->put_JointID(42));
-   TRY_TEST_HR(pJointDisplacement3->get_JointID(&jntID));
+   TRY_TEST_LC(pJointDeflection3->put_JointID(42));
+   TRY_TEST_HR(pJointDeflection3->get_JointID(&jntID));
    TRY_TEST(jntID, 42);
 
    Float64 dx, dy, rz;
-   TRY_TEST_HR(pJointDisplacement3->get_Dx(&dx));
-   TRY_TEST_HR(pJointDisplacement3->get_Dy(&dy));
-   TRY_TEST_HR(pJointDisplacement3->get_Rz(&rz));
+   TRY_TEST_HR(pJointDeflection3->get_Dx(&dx));
+   TRY_TEST_HR(pJointDeflection3->get_Dy(&dy));
+   TRY_TEST_HR(pJointDeflection3->get_Rz(&rz));
    TRY_TEST(dx, 33);
    TRY_TEST(dy, 44);
    TRY_TEST(rz, 55);
 
-   TRY_TEST_LC(pJointDisplacement3->put_Dx(-11));
-   TRY_TEST_LC(pJointDisplacement3->put_Dy(-12));
-   TRY_TEST_LC(pJointDisplacement3->put_Rz(-13));
-   TRY_TEST_HR(pJointDisplacement3->get_Dx(&dx));
-   TRY_TEST_HR(pJointDisplacement3->get_Dy(&dy));
-   TRY_TEST_HR(pJointDisplacement3->get_Rz(&rz));
+   TRY_TEST_LC(pJointDeflection3->put_Dx(-11));
+   TRY_TEST_LC(pJointDeflection3->put_Dy(-12));
+   TRY_TEST_LC(pJointDeflection3->put_Rz(-13));
+   TRY_TEST_HR(pJointDeflection3->get_Dx(&dx));
+   TRY_TEST_HR(pJointDeflection3->get_Dy(&dy));
+   TRY_TEST_HR(pJointDeflection3->get_Rz(&rz));
    TRY_TEST(dx, -11);
    TRY_TEST(dy, -12);
    TRY_TEST(rz, -13);
 
-   TRY_TEST_HR(pJointDisplacement3->GetDisplacement(&dx, &dy, &rz));
+   TRY_TEST_HR(pJointDeflection3->GetDeflection(&dx, &dy, &rz));
    TRY_TEST(dx, -11);
    TRY_TEST(dy, -12);
    TRY_TEST(rz, -13);
 
-   TRY_TEST_LC(pJointDisplacement3->SetDisplacement(22, 23, 24));
-   TRY_TEST_HR(pJointDisplacement3->GetDisplacement(&dx, &dy, &rz));
+   TRY_TEST_LC(pJointDeflection3->SetDeflection(22, 23, 24));
+   TRY_TEST_HR(pJointDeflection3->GetDeflection(&dx, &dy, &rz));
    TRY_TEST(dx, 22 );
    TRY_TEST(dy, 23 );
    TRY_TEST(rz, 24 );
 
    // play some games with the reference counter
    pLoading0 = 0;
-   pJointDisplacements = 0;
+   pJointDeflections = 0;
    ReleaseModel(pmodel);
    pmodel = 0;
 
-   TRY_TEST_HR(pJointDisplacement3->get_Dx(&dx));
-   TRY_TEST_HR(pJointDisplacement3->get_Dy(&dy));
-   TRY_TEST_HR(pJointDisplacement3->get_Rz(&rz));
+   TRY_TEST_HR(pJointDeflection3->get_Dx(&dx));
+   TRY_TEST_HR(pJointDeflection3->get_Dy(&dy));
+   TRY_TEST_HR(pJointDeflection3->get_Rz(&rz));
    TRY_TEST(dx, 22 );
    TRY_TEST(dy, 23 );
    TRY_TEST(rz, 24 );

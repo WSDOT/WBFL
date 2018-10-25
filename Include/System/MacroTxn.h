@@ -131,7 +131,7 @@ protected:
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
-private:
+protected:
    // GROUP: DATA MEMBERS
    #pragma warning(disable:4251)
    std::_tstring m_Name;
@@ -143,6 +143,7 @@ private:
 
    TxnContainer m_Transactions;
 
+private:
    // GROUP: LIFECYCLE
    txnMacroTxn(const txnMacroTxn& /*rOther*/);               // Remove to enable copy
 

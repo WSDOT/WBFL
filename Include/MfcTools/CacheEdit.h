@@ -51,7 +51,7 @@ public:
    // the control becomes the default value. When the data is extracted from the control
    // and the control is disabled, this default value is returned.
    // the default value. 
-   void SetDefaultValue(Float64 value);
+   void SetDefaultValue(Float64 value,LPCTSTR strDefault);
    Float64 GetDefaultValue() const;
 
    CString GetCache() const;
@@ -64,6 +64,7 @@ public:
 	// Generated message map functions
 protected:
    CString m_strCache;
+   CString m_strDefault;
    Float64 m_DefaultValue;
    BOOL m_bShowDefault;
 

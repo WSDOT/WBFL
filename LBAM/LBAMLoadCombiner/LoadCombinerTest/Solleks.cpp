@@ -161,9 +161,9 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    os<<"Deflection Results for "<<(TCHAR*)_bstr_t(loadCombination)<< " for stage "<<(TCHAR*)_bstr_t(Stage)<<std::endl;
    os<< (optmization==optMaximize ? "Maximized Positive ":"Maximized Negative ");
    if (forceType==fetFx)
-      os<<"Horizontal Displacement"<<std::endl;
+      os<<"Horizontal Deflection"<<std::endl;
    else if (forceType==fetFy)
-      os<<"Vertical Displacement"<<std::endl;
+      os<<"Vertical Deflection"<<std::endl;
    else if (forceType==fetMz)
       os<<"Rotation"<<std::endl;
 

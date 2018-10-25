@@ -133,21 +133,21 @@ void CTestTrussSennett2_11::Test()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );    // u1
    TRY_TEST_B( IsEqual(dy, 0.0) );    // u2
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-0.611438) ); // u3
    TRY_TEST_B( IsEqual(dy,-0.0367688) ); // u4
    TRY_TEST_B( IsEqual(rz, 0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-.0662892) );  // u5
    TRY_TEST_B( IsEqual(dy, 0.0) );    // u6
    TRY_TEST_B( IsEqual(rz, 0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 4, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 4, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,-0.0331446) ); // u7
    TRY_TEST_B( IsEqual(dy,-0.0028779) ); // u8
    TRY_TEST_B( IsEqual(rz, 0.0));

@@ -74,6 +74,11 @@ void CReportBuilder::AddTitlePageBuilder(boost::shared_ptr<CTitlePageBuilder>& p
    m_pTitlePageBuilder = pTitlePageBuilder;
 }
 
+boost::shared_ptr<CTitlePageBuilder> CReportBuilder::GetTitlePageBuilder()
+{
+   return m_pTitlePageBuilder;
+}
+
 void CReportBuilder::AddChapterBuilder(boost::shared_ptr<CChapterBuilder>& pChapterBuilder)
 {
    m_ChapterBuilders.push_back( pChapterBuilder );

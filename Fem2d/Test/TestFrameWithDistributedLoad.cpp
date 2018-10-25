@@ -133,18 +133,18 @@ void CTestFrameWithDistributedLoad::Test()
    // get results interfaces
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.47518504376467) );
    TRY_TEST_B( IsEqual(dy, -0.033707048769389) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.50069452024221) );
    TRY_TEST_B( IsEqual(dy, -0.077478110675579) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 4, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 4, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.48025051552884) );
    TRY_TEST_B( IsEqual(dy, -0.042133810961736) );
 
@@ -182,11 +182,11 @@ void CTestFrameWithDistributedLoad::Test()
    TRY_TEST_B( IsEqual(fy,  84.852813742386));
    TRY_TEST_B( IsEqual(mz,   0.0));
 
-   // look at  poi displacements
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 22, lotMember, &dx, &dy, &rz));
+   // look at  poi Deflections
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 22, lotMember, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.29623553109350) ); // close, but  not exact to drframe
    TRY_TEST_B( IsEqual(dy, -1.0232793921774));
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 22, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 22, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.93303795012174) );
    TRY_TEST_B( IsEqual(dy, -0.51409764439251));
 

@@ -23,10 +23,10 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// JointDisplacement.h : Declaration of the CJointDisplacement
+// JointDeflection.h : Declaration of the CJointDeflection
 
-#ifndef __JOINTDISPLACEMENT_H_
-#define __JOINTDISPLACEMENT_H_
+#ifndef __JOINTDeflection_H_
+#define __JOINTDeflection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -34,15 +34,15 @@
 
 class ModelEvents;
 /////////////////////////////////////////////////////////////////////////////
-// CJointDisplacement
-class ATL_NO_VTABLE CJointDisplacement : 
+// CJointDeflection
+class ATL_NO_VTABLE CJointDeflection : 
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
 	public ISupportErrorInfo,
-   public IObjectSafetyImpl<CJointDisplacement,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IFem2dJointDisplacement
+   public IObjectSafetyImpl<CJointDeflection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
+	public IFem2dJointDeflection
 {
 public:
-   CJointDisplacement():
+   CJointDeflection():
    m_ID(0),
    m_Dx(0),
    m_Dy(0),
@@ -53,7 +53,7 @@ public:
 	{
 	}
 
-   virtual ~CJointDisplacement()
+   virtual ~CJointDeflection()
    {}
 
 
@@ -65,8 +65,8 @@ public:
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CJointDisplacement)
-	COM_INTERFACE_ENTRY(IFem2dJointDisplacement)
+BEGIN_COM_MAP(CJointDeflection)
+	COM_INTERFACE_ENTRY(IFem2dJointDeflection)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 	COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
@@ -74,11 +74,11 @@ END_COM_MAP()
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
-// IFem2dJointDisplacement
+// IFem2dJointDeflection
 public:
 	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal);
-	STDMETHOD(GetDisplacement)(/*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
-	STDMETHOD(SetDisplacement)(/*[in]*/Float64 Dx, /*[in]*/Float64 Dy, /*[in]*/Float64 Rz);
+	STDMETHOD(GetDeflection)(/*[out]*/Float64* Dx, /*[out]*/Float64* Dy, /*[out]*/Float64* Rz);
+	STDMETHOD(SetDeflection)(/*[in]*/Float64 Dx, /*[in]*/Float64 Dy, /*[in]*/Float64 Rz);
 	STDMETHOD(get_Rz)(/*[out, retval]*/ Float64  *pVal);
 	STDMETHOD(put_Rz)(/*[in]*/ Float64  newVal);
 	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal);
@@ -101,4 +101,4 @@ private:
 
 };
 
-#endif //__JointDisplacement_H_
+#endif //__JointDeflection_H_

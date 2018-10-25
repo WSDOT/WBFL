@@ -372,7 +372,7 @@ HRESULT CModel::DealWithExceptions()
 
 
 
-STDMETHODIMP CModel::ComputeJointDisplacements(LoadCaseIDType lc, JointIDType jnt, Float64 *Dx, Float64 *Dy, Float64 *Rz)
+STDMETHODIMP CModel::ComputeJointDeflections(LoadCaseIDType lc, JointIDType jnt, Float64 *Dx, Float64 *Dy, Float64 *Rz)
 {
    CHECK_RETVAL(Dx);
    CHECK_RETVAL(Dy);
@@ -399,9 +399,9 @@ STDMETHODIMP CModel::ComputeJointDisplacements(LoadCaseIDType lc, JointIDType jn
          return CComCoClass<CModel,&CLSID_Fem2dModel>::Error(msg, IDH_E_LOADING_NOT_FOUND, GetHelpFile(), IID_IFem2dModel, FEM2D_E_LOADING_NOT_FOUND);
       }
 
-      *Dx = jntResult->GetDisplacement(0);
-      *Dy = jntResult->GetDisplacement(1);
-      *Rz = jntResult->GetDisplacement(2);
+      *Dx = jntResult->GetDeflection(0);
+      *Dy = jntResult->GetDeflection(1);
+      *Rz = jntResult->GetDeflection(2);
    }
    catch (...)
    {
@@ -412,7 +412,7 @@ STDMETHODIMP CModel::ComputeJointDisplacements(LoadCaseIDType lc, JointIDType jn
 	return S_OK;
 }
 
-STDMETHODIMP CModel::ComputeMemberDisplacements(LoadCaseIDType lc, MemberIDType mbr, Float64 *startDx, Float64 *startDy, Float64 *startRz, Float64 *endDx, Float64 *endDy, Float64 *endRz)
+STDMETHODIMP CModel::ComputeMemberDeflections(LoadCaseIDType lc, MemberIDType mbr, Float64 *startDx, Float64 *startDy, Float64 *startRz, Float64 *endDx, Float64 *endDy, Float64 *endRz)
 {
    CHECK_RETVAL(startDx);
    CHECK_RETVAL(startDy);
@@ -442,12 +442,12 @@ STDMETHODIMP CModel::ComputeMemberDisplacements(LoadCaseIDType lc, MemberIDType 
          return CComCoClass<CModel,&CLSID_Fem2dModel>::Error(msg, IDH_E_LOADING_NOT_FOUND, GetHelpFile(), IID_IFem2dModel, FEM2D_E_LOADING_NOT_FOUND);
       }
 
-      *startDx = mbrResult->GetDisplacement(0);
-      *startDy = mbrResult->GetDisplacement(1);
-      *startRz = mbrResult->GetDisplacement(2);
-      *endDx   = mbrResult->GetDisplacement(3);
-      *endDy   = mbrResult->GetDisplacement(4);
-      *endRz   = mbrResult->GetDisplacement(5);
+      *startDx = mbrResult->GetDeflection(0);
+      *startDy = mbrResult->GetDeflection(1);
+      *startRz = mbrResult->GetDeflection(2);
+      *endDx   = mbrResult->GetDeflection(3);
+      *endDy   = mbrResult->GetDeflection(4);
+      *endRz   = mbrResult->GetDeflection(5);
 
    }
    catch (...)
@@ -591,7 +591,7 @@ STDMETHODIMP CModel::ComputeMemberForcesEx(LoadCaseIDType lc, MemberIDType mid, 
 	return S_OK;
 }
 
-STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID, Fem2dLoadOrientation orientation, Float64 *Dx, Float64 *Dy, Float64 *Rz)
+STDMETHODIMP CModel::ComputePOIDeflections(LoadCaseIDType lc, PoiIDType poiID, Fem2dLoadOrientation orientation, Float64 *Dx, Float64 *Dy, Float64 *Rz)
 {
    CHECK_RETVAL(Dx);
    CHECK_RETVAL(Dy);
@@ -625,19 +625,19 @@ STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID,
       if (poiResult==0)
       {
          ATLASSERT(0);
-         THROW_MSG("Logic error computing poi result CModel::ComputePOIDisplacements",E_FAIL, IDH_E_LOGIC_ERROR); 
+         THROW_MSG("Logic error computing poi result CModel::ComputePOIDeflections",E_FAIL, IDH_E_LOGIC_ERROR); 
       }
 
       // at this point, we have a result - map it to our return values
       if (orientation==lotMember)
       {
-         *Dx = poiResult->GetDisplacement(0);
-         *Dy = poiResult->GetDisplacement(1);
-         *Rz = poiResult->GetDisplacement(2);
+         *Dx = poiResult->GetDeflection(0);
+         *Dy = poiResult->GetDeflection(1);
+         *Rz = poiResult->GetDeflection(2);
       }
       else if (orientation==lotGlobal || orientation==lotGlobalProjected)
       {
-         // have to rotate displacements into global coord's
+         // have to rotate Deflections into global coord's
          // get poi and member
          CPOI *poi = m_pPOIs->Find(poiID);
          if (poi==0)
@@ -658,8 +658,8 @@ STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID,
          }
 
          Float64 ldx, ldy;
-         ldx = poiResult->GetDisplacement(0);
-         ldy = poiResult->GetDisplacement(1);
+         ldx = poiResult->GetDeflection(0);
+         ldy = poiResult->GetDeflection(1);
 
          // get orientation of member and rotate results into global coord's
          Float64 ang = mbr->m_JointKeeper.GetAngle();
@@ -668,7 +668,7 @@ STDMETHODIMP CModel::ComputePOIDisplacements(LoadCaseIDType lc, PoiIDType poiID,
 
          *Dx = ldx*c - ldy*s;
          *Dy = ldx*s + ldy*c;
-         *Rz = poiResult->GetDisplacement(2);
+         *Rz = poiResult->GetDeflection(2);
       }
       else
       {
@@ -892,11 +892,11 @@ STDMETHODIMP CModel::ComputeReactions(/*[in]*/LoadCaseIDType loadingID, /*[in]*/
    return hr;
 }
 
-STDMETHODIMP CModel::ComputePOIDisplacements(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal)
+STDMETHODIMP CModel::ComputePOIDeflections(/*[in]*/LoadCaseIDType loadingID, /*[in]*/PoiIDType poiID, /*[in]*/Fem2dLoadOrientation orientation, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal)
 {
    CHECK_RETVAL(pVal);
    Float64 ddx, ddy, drz;
-   HRESULT hr = ComputePOIDisplacements(loadingID, poiID, orientation, &ddx, &ddy, &drz);
+   HRESULT hr = ComputePOIDeflections(loadingID, poiID, orientation, &ddx, &ddy, &drz);
    if (SUCCEEDED(hr))
    {
       switch(dof)
@@ -921,12 +921,12 @@ STDMETHODIMP CModel::ComputePOIDisplacements(/*[in]*/LoadCaseIDType loadingID, /
    return hr;
 }
 
-STDMETHODIMP CModel::ComputeMemberDisplacements(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/ Fem2dMbrDOF dof,/*[out,retval]*/Float64* pVal)
+STDMETHODIMP CModel::ComputeMemberDeflections(/*[in]*/LoadCaseIDType loadingID, /*[in]*/MemberIDType memberID, /*[in]*/ Fem2dMbrDOF dof,/*[out,retval]*/Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
    Float64 dsdx, dsdy, dsrz, dedx, dedy, derz;
-   HRESULT hr = ComputeMemberDisplacements(loadingID, memberID, &dsdx, &dsdy, &dsrz, &dedx, &dedy, &derz);
+   HRESULT hr = ComputeMemberDeflections(loadingID, memberID, &dsdx, &dsdy, &dsrz, &dedx, &dedy, &derz);
    if (SUCCEEDED(hr))
    {
       switch(dof)
@@ -963,12 +963,12 @@ STDMETHODIMP CModel::ComputeMemberDisplacements(/*[in]*/LoadCaseIDType loadingID
    return hr;
 }
 
-STDMETHODIMP CModel::ComputeJointDisplacements(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal)
+STDMETHODIMP CModel::ComputeJointDeflections(/*[in]*/LoadCaseIDType loadingID, /*[in]*/JointIDType jointID, /*[in]*/ Fem2dJointDOF dof,/*[out,retval]*/Float64* pVal)
 {
    CHECK_RETVAL(pVal);
 
    Float64 ddx, ddy, drz;
-   HRESULT hr = ComputeJointDisplacements(loadingID, jointID, &ddx, &ddy, &drz);
+   HRESULT hr = ComputeJointDeflections(loadingID, jointID, &ddx, &ddy, &drz);
    if (SUCCEEDED(hr))
    {
       switch(dof)
@@ -1090,25 +1090,25 @@ void CModel::OnJointLoadsCleared(LoadCaseIDType loadingID )
    Fire_OnLoadingChanged(loadingID);
 }
 
-void CModel::OnJointDisplacementChanged(IFem2dJointDisplacement*, LoadCaseIDType loadingID)
+void CModel::OnJointDeflectionChanged(IFem2dJointDeflection*, LoadCaseIDType loadingID)
 {
    m_DirtyLoadings.insert(loadingID);
    Fire_OnLoadingChanged(loadingID);
 }
 
-void CModel::OnJointDisplacementAdded(LoadIDType loadID, LoadCaseIDType loadingID)
+void CModel::OnJointDeflectionAdded(LoadIDType loadID, LoadCaseIDType loadingID)
 {
    m_DirtyLoadings.insert(loadingID);
    Fire_OnLoadingChanged(loadingID);
 }
 
-void CModel::OnJointDisplacementRemoved(LoadIDType loadID, LoadCaseIDType loadingID )
+void CModel::OnJointDeflectionRemoved(LoadIDType loadID, LoadCaseIDType loadingID )
 {
    m_DirtyLoadings.insert(loadingID);
    Fire_OnLoadingChanged(loadingID);
 }
 
-void CModel::OnJointDisplacementsCleared(LoadCaseIDType loadingID )
+void CModel::OnJointDeflectionsCleared(LoadCaseIDType loadingID )
 {
    m_DirtyLoadings.insert(loadingID);
    Fire_OnLoadingChanged(loadingID);
@@ -1482,11 +1482,11 @@ void CModel::ComputeLoadings()
 #if defined _DEBUG
          CheckSolution();
 #endif
-         ApplyJntDisplacements();
+         ApplyJntDeflections();
       }
       else
       {
-         SolveDisplacementsClassical();
+         SolveDeflectionsClassical();
       }
 
       try
@@ -1686,10 +1686,10 @@ void CModel::ClearLoads()
    }
 }
 
-// ApplyJntDisplacements
+// ApplyJntDeflections
 //
-// Applies the global joint displacements to the structure
-void CModel::ApplyJntDisplacements()
+// Applies the global joint Deflections to the structure
+void CModel::ApplyJntDeflections()
 {
    Float64 disp[CJoint::NumDof];
    LONG ndof = CJoint::NumDof;
@@ -1707,11 +1707,11 @@ void CModel::ApplyJntDisplacements()
          disp[dof] = (cdof < 0) ? 0.0 : m_pF[cdof];
       }
 
-      // Apply the displacement to the joint for use in further
+      // Apply the Deflection to the joint for use in further
       // results processing.
       //
       // This implies a shorting coming in TJoint
-      jnt->SetDisplacement(disp);
+      jnt->SetDeflection(disp);
 
    }
 }
@@ -1739,14 +1739,14 @@ void CModel::ComputeReactions()
    }
 }
 
-// SolveDisplacementsClassical
+// SolveDeflectionsClassical
 //
-// Solves global displacements using classical Roark beam formulas.
-void CModel::SolveDisplacementsClassical()
+// Solves global Deflections using classical Roark beam formulas.
+void CModel::SolveDeflectionsClassical()
 {
-   // Since all global dof's are constrained, all global displacements
-   // are zero. This function simply assigns 0.0 to all joint displacements.
-   // Individual elements shall modify member end displacements based upon
+   // Since all global dof's are constrained, all global Deflections
+   // are zero. This function simply assigns 0.0 to all joint Deflections.
+   // Individual elements shall modify member end Deflections based upon
    // member end boundary conditions
 
    JointIterator j( m_pJoints->begin() );
@@ -1757,7 +1757,7 @@ void CModel::SolveDisplacementsClassical()
    while(j != jend)
    {
       CJoint *jnt = *(j++);
-      jnt->SetDisplacement(disp);
+      jnt->SetDeflection(disp);
    }
 }
 
@@ -1844,7 +1844,7 @@ void CModel::StoreJntResults(LoadCaseIDType lcase)
       CJoint *jnt = *(j++);
 
       jnt->GetReactions(force);
-      jnt->GetDisplacement(disp);
+      jnt->GetDeflection(disp);
 
       JointIDType id;
       jnt->get_ID(&id);
@@ -1909,11 +1909,11 @@ void CModel::StoreMbrResults(LoadCaseIDType lcase)
 #if defined _DEBUG
       logfile << "Member " << mid << " Start End" << std::endl;
       logfile << "Fx = " << result.GetForce(0) << " Fy = " << result.GetForce(1) << " Mz = " << result.GetForce(2) << std::endl;
-      logfile << "Dx = " <<  result.GetDisplacement(0) << " Dy = " <<  result.GetDisplacement(1) << " Dz = " <<  result.GetDisplacement(2) << std::endl;
+      logfile << "Dx = " <<  result.GetDeflection(0) << " Dy = " <<  result.GetDeflection(1) << " Dz = " <<  result.GetDeflection(2) << std::endl;
 
       logfile << "Member " << mid << " End End" << std::endl;
       logfile << "Fx = " << result.GetForce(3) << " Fy = " << result.GetForce(4) << " Mz = " << result.GetForce(5) << std::endl;
-      logfile << "Dx = " <<  result.GetDisplacement(3) << " Dy = " <<  result.GetDisplacement(4) << " Dz = " <<  result.GetDisplacement(5) << std::endl;
+      logfile << "Dx = " <<  result.GetDeflection(3) << " Dy = " <<  result.GetDeflection(4) << " Dz = " <<  result.GetDeflection(5) << std::endl;
 #endif
       CMember::MbrResult* pres = array->Find(lcase);
       if (pres!=0)

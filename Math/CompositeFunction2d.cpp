@@ -75,10 +75,19 @@ void mathCompositeFunction2d::GetFunction(IndexType idx,const mathFunction2d** p
    *pXMin = segment.xMin;
 }
 
+void mathCompositeFunction2d::AdjustLimits(IndexType idx,Float64 xMin,Float64 xMax)
+{
+   Segment& segment = m_Segments[idx];
+   segment.xMin = xMin;
+   segment.xMax = xMax;
+   std::sort(m_Segments.begin(), m_Segments.end());
+}
+
 Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
 {
-   std::vector<Segment>::const_iterator iter;
-   for ( iter = m_Segments.begin(); iter != m_Segments.end(); iter++ )
+   std::vector<Segment>::const_iterator iter(m_Segments.begin());
+   std::vector<Segment>::const_iterator iterEnd(m_Segments.end());
+   for ( ; iter != iterEnd; iter++ )
    {
       const Segment& segment = *iter;
       if ( segment.InRange(x) )
@@ -88,9 +97,7 @@ Float64 mathCompositeFunction2d::Evaluate(Float64 x) const
    }
 
    // function is undefined at x
-   //ASSERT(false); // hmmm?
-   return m_Segments.back().pFunc->Evaluate(m_Segments.back().xMax);
-
+   ASSERT(false); // hmmm?
    throw new mathXEvalError(mathXEvalError::Undefined,_T(__FILE__),__LINE__);
 }
 

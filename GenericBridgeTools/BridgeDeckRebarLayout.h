@@ -82,7 +82,7 @@ public:
 	STDMETHOD(get_Bridge)(IGenericBridge** ppBridge);
    STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool);
 	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool);
-   STDMETHOD(CreateRebarSection)(IDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section);
+   STDMETHOD(CreateRebarSection)(IDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDType leftSSMbrID,IDType rightSSMbrID,IRebarSection** section);
 //   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli);
 //	STDMETHOD(get_Count)(/*[out,retval]*/ long* count);
 //	STDMETHOD(Add)(/*[in]*/IBridgeDeckRebarLayoutItem* rli);

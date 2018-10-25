@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,8
- PRODUCTVERSION 4,0,0,8
+ FILEVERSION 4,0,0,9
+ PRODUCTVERSION 4,0,0,9
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "WBFL Fem2d Module\0"
-            VALUE "FileVersion", "4.0.0.8\0"
+            VALUE "FileVersion", "4.0.0.9\0"
             VALUE "InternalName", "Fem2d\0"
             VALUE "LegalCopyright", "Copyright © 1999-2014, Washington State Department of Transportation, All Rights ReservedPassed(pgsTypes::BottomGirder)"
             VALUE "LegalTrademarks", "\0"
@@ -80,7 +80,7 @@ BEGIN
             VALUE "OriginalFilename", "Fem2d.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.8\0"
+            VALUE "ProductVersion", "4.0.0.9\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -168,11 +168,11 @@ BEGIN
     IDS_E_POINT_LOAD_REF_MEMBER_NOT_EXISTS 
                             "Point load %d references member %d, which does not exist"
     IDS_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS 
-                            "Cannot create joint displacement load. A load with this ID already exists"
+                            "Cannot create joint Deflection load. A load with this ID already exists"
     IDS_E_JOINT_DISP_REF_JOINT_NOT_EXISTS 
-                            "Joint displacement %d references joint %d which does not exist"
+                            "Joint Deflection %d references joint %d which does not exist"
     IDS_E_JOINT_DISP_TO_FIXED_DOF_ONLY 
-                            "Joint displacements may be applied to supported DOF's only. Joint displacement %d at Joint %d attempts to load a free DOF."
+                            "Joint Deflections may be applied to supported DOF's only. Joint Deflection %d at Joint %d attempts to load a free DOF."
     IDS_E_MATRIX_BACK_SUBSTITUTION 
                             "Error occured during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
     IDS_E_MATRIX_FACTORING  "Error occured during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."

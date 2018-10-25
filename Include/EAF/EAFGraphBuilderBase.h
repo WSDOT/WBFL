@@ -50,10 +50,14 @@ public:
    CEAFGraphBuilderBase(const CEAFGraphBuilderBase& other);
    virtual ~CEAFGraphBuilderBase();
 
-   // partial implementation of CGraphBuilder::CreateControls()
-   // you must still implement this to create the actual control window
-   // call this method your class' implementation.
-   virtual int CreateControls(CWnd* pParent,UINT nID) = 0;
+   // Implements CGraphBuilder::InitializeGraphController. Calls
+   // CreateGraphController
+   virtual int InitializeGraphController(CWnd* pParent,UINT nID);
+
+   // Called by InitializeGraphController when it is time to
+   // create the actual graph controller UI element (this must be
+   // a CEAFGraphControlWindow derived object)
+   virtual BOOL CreateGraphController(CWnd* pParent,UINT nID) = 0;
 
    // Returns the frame window
    virtual CEAFGraphChildFrame* GetFrame();
@@ -63,7 +67,7 @@ public:
 
    // returns a pointer to the graph control window. The windows does not
    // have to be created to return a valid pointer from this method.
-   // A valid CEAFGraphControlWindow object must exist prior to CreateControls
+   // A valid CEAFGraphControlWindow (C++) object must exist prior to CreateGraphController
    // being called.
    virtual CEAFGraphControlWindow* GetGraphControlWindow() = 0;
 

@@ -54,7 +54,7 @@ CLoading::~CLoading()
 {
     m_pJointLoads->Release();
     m_pDistributedLoads->Release();
-    m_pJointDisplacements->Release();
+    m_pJointDeflections->Release();
     m_pPointLoads->Release();
     m_pMemberStrains->Release();
 }
@@ -85,15 +85,15 @@ HRESULT CLoading::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, LoadCaseI
    m_pDistributedLoads = pw;
    m_pDistributedLoads->AddRef();
 
-   // Joint displacements
-   CComObject<CJointDisplacementCollection>* pd;
-   hr = CComObject<CJointDisplacementCollection>::CreateInstance( &pd );
+   // Joint Deflections
+   CComObject<CJointDeflectionCollection>* pd;
+   hr = CComObject<CJointDeflectionCollection>::CreateInstance( &pd );
    if ( FAILED(hr) )
       return hr;
 
    pd->Init(pParent, m_pModel, this);
-   m_pJointDisplacements = pd;
-   m_pJointDisplacements->AddRef();
+   m_pJointDeflections = pd;
+   m_pJointDeflections->AddRef();
 
    // Point loads
    CComObject<CPointLoadCollection>* pp;
@@ -156,7 +156,7 @@ STDMETHODIMP CLoading::Load(/*[in]*/ IStructuredLoad2 *pload)
       if (FAILED(hr))
          return hr;
 
-      m_pJointDisplacements->Load(CComBSTR("JointDisplacements"), 1.0, pload);
+      m_pJointDeflections->Load(CComBSTR("JointDeflections"), 1.0, pload);
       if (FAILED(hr))
          return hr;
 
@@ -201,7 +201,7 @@ STDMETHODIMP CLoading::Save(/*[in]*/ IStructuredSave2 *psave)
       if (FAILED(hr))
          return hr;
 
-      m_pJointDisplacements->Save(CComBSTR("JointDisplacements"), 1.0, psave);
+      m_pJointDeflections->Save(CComBSTR("JointDeflections"), 1.0, psave);
       if (FAILED(hr))
          return hr;
 
@@ -243,10 +243,10 @@ STDMETHODIMP CLoading::get_DistributedLoads(IFem2dDistributedLoadCollection **pV
 	return S_OK;
 }
 
-STDMETHODIMP CLoading::get_JointDisplacements(IFem2dJointDisplacementCollection **pVal)
+STDMETHODIMP CLoading::get_JointDeflections(IFem2dJointDeflectionCollection **pVal)
 {
    CHECK_RETOBJ(pVal);
-	*pVal = m_pJointDisplacements;
+	*pVal = m_pJointDeflections;
    (*pVal)->AddRef();
 
 	return S_OK;
@@ -295,12 +295,12 @@ void CLoading::ApplyLoads(CModel *model)
       jnt->ApplyLoad(jntLd);
    }
 
-   // apply joint displacements
-   JointDisplacementIterator jntDispIter( m_pJointDisplacements->begin() );
-   JointDisplacementIterator jntDispIterEnd( m_pJointDisplacements->end() );
+   // apply joint Deflections
+   JointDeflectionIterator jntDispIter( m_pJointDeflections->begin() );
+   JointDeflectionIterator jntDispIterEnd( m_pJointDeflections->end() );
    while (jntDispIter!=jntDispIterEnd)
    {
-      CJointDisplacement *jntDisp = *(jntDispIter++);
+      CJointDeflection *jntDisp = *(jntDispIter++);
       JointIDType id;
       jntDisp->get_JointID(&id);
       CJoint *jnt = joints->Find(id);

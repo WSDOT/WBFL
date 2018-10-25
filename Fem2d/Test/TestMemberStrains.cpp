@@ -172,7 +172,7 @@ void CTestMemberStrains::Test1Bar()
 
    // let's start off by letting right end fly in the breeze and apply
    // strain load - member forces should be zero, but we should have 
-   // non-zero displacements
+   // non-zero Deflections
    // boundary conditions - leave right end free for now
    TRY_TEST_HR(pJoint1->Support());
 
@@ -209,13 +209,13 @@ void CTestMemberStrains::Test1Bar()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.02) );
    TRY_TEST_B( IsEqual(dy,  0.0) );
    TRY_TEST_B( IsEqual(rz,  0.0));
@@ -241,7 +241,7 @@ void CTestMemberStrains::Test1Bar()
    TRY_TEST_B( IsEqual(mz  ,  0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.01) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
@@ -254,12 +254,12 @@ void CTestMemberStrains::Test1Bar()
    // now let's fix the other end
    TRY_TEST_HR(pJoint2->Support());
 
-   // get joint displacements
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   // get joint Deflections
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
    TRY_TEST_B( IsEqual(dy,  0.0) );
    TRY_TEST_B( IsEqual(rz,  0.0));
@@ -283,7 +283,7 @@ void CTestMemberStrains::Test1Bar()
    TRY_TEST_B( IsEqual(mz  ,     0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
@@ -325,7 +325,7 @@ void CTestMemberStrains::TestBar()
 
    // let's start off by letting right end fly in the breeze and apply
    // strain load - member forces should be zero, but we should have 
-   // non-zero displacements
+   // non-zero Deflections
    // boundary conditions - leave right end free for now
    TRY_TEST_HR(pJoint1->Support());
 
@@ -357,17 +357,17 @@ void CTestMemberStrains::TestBar()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
    TRY_TEST_B( IsEqual(dy,  0.0) );
    TRY_TEST_B( IsEqual(rz,  0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.00585) );
    TRY_TEST_B( IsEqual(dy,  0.0));
    TRY_TEST_B( IsEqual(rz,  0.0));
@@ -412,16 +412,16 @@ void CTestMemberStrains::TestBar()
    CComPtr<IFem2dJointLoad> pJointLoad;
    TRY_TEST_HR(pJointLoads->Create(0, 2, 10000.0, 0.0, 0.0, &pJointLoad));
 
-   // get joint displacements
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   // get joint Deflections
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, -0.001305517241) );
    TRY_TEST_B( IsEqual(dy,  0.0) );
    TRY_TEST_B( IsEqual(rz,  0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
    TRY_TEST_B( IsEqual(dy,  0.0));
    TRY_TEST_B( IsEqual(rz,  0.0));
@@ -513,13 +513,13 @@ void CTestMemberStrains::TestBeam()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );       // u1
    TRY_TEST_B( IsEqual(dy, 0.0) );       // u2
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); // u3
    TRY_TEST_B( IsEqual(dy, 0.1) ); // u4
    TRY_TEST_B( IsEqual(rz, 0.02));
@@ -546,7 +546,7 @@ void CTestMemberStrains::TestBeam()
    TRY_TEST_B( IsEqual(mz,   0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.025) );
    TRY_TEST_B( IsEqual(rz, 0.01) );
@@ -563,11 +563,11 @@ void CTestMemberStrains::TestBeam()
    TRY_TEST_HR(pJoint2->Support());
    TRY_TEST_HR(pJoint2->ReleaseDof(jrtMz));
 
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz,-0.01) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.01));
@@ -591,7 +591,7 @@ void CTestMemberStrains::TestBeam()
    TRY_TEST_B( IsEqual(mz,   0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, -0.025) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
@@ -607,11 +607,11 @@ void CTestMemberStrains::TestBeam()
    TRY_TEST_HR(pJoint1->Support());
    TRY_TEST_HR(pJoint2->Support());
 
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0));
@@ -635,7 +635,7 @@ void CTestMemberStrains::TestBeam()
    TRY_TEST_B( IsEqual(mz,-5800.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
@@ -709,17 +709,17 @@ void CTestMemberStrains::TestBeam2()
    // get results interface
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
-   // get joint displacements
+   // get joint Deflections
    Float64 dx, dy, rz;
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );       // u1
    TRY_TEST_B( IsEqual(dy, 0.0) );       // u2
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.025) );
    TRY_TEST_B( IsEqual(rz, 0.01) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); // u3
    TRY_TEST_B( IsEqual(dy, 0.1) ); // u4
    TRY_TEST_B( IsEqual(rz, 0.02));
@@ -757,7 +757,7 @@ void CTestMemberStrains::TestBeam2()
    TRY_TEST_B( IsEqual(mz,   0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.025) );
    TRY_TEST_B( IsEqual(rz, 0.01) );
@@ -774,15 +774,15 @@ void CTestMemberStrains::TestBeam2()
    TRY_TEST_HR(pJoint3->Support());
    TRY_TEST_HR(pJoint3->ReleaseDof(jrtMz));
 
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz,-0.01) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) ); 
    TRY_TEST_B( IsEqual(dy, -0.025) ); 
    TRY_TEST_B( IsEqual(rz,  0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.01));
@@ -813,7 +813,7 @@ void CTestMemberStrains::TestBeam2()
    TRY_TEST_B( IsEqual(mz,   0.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy,-0.025) );
    TRY_TEST_B( IsEqual(rz, 0.0) );
@@ -828,15 +828,15 @@ void CTestMemberStrains::TestBeam2()
    TRY_TEST_HR(pJoint1->Support());
    TRY_TEST_HR(pJoint3->Support());
 
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 1, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) ); 
    TRY_TEST_B( IsEqual(dy, 0.0) ); 
    TRY_TEST_B( IsEqual(rz, 0.0) );
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 2, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0));
-   TRY_TEST_HR(presults->ComputeJointDisplacements(0, 3, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputeJointDeflections(0, 3, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0));
@@ -871,7 +871,7 @@ void CTestMemberStrains::TestBeam2()
    TRY_TEST_B( IsEqual(mz,-5800.0));
 
    // poi results
-   TRY_TEST_HR(presults->ComputePOIDisplacements(0, 1, lotGlobal, &dx, &dy, &rz));
+   TRY_TEST_HR(presults->ComputePOIDeflections(0, 1, lotGlobal, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx, 0.0) );
    TRY_TEST_B( IsEqual(dy, 0.0) );
    TRY_TEST_B( IsEqual(rz, 0.0) );

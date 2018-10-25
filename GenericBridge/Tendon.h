@@ -80,6 +80,8 @@ private:
 
    bool GetTendonSegment(Float64 z,ITendonSegment** segment);
 
+   ISuperstructureMember* m_pSSMbr; // weak references
+
 #if defined _DEBUG
    virtual HRESULT OnBeforeAdd( StoredType* pVal);
 #endif
@@ -109,6 +111,8 @@ public:
 	STDMETHOD(get_End)(IPoint3d** end);
    STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type);
    STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type);
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr);
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr);
 
 
 // IStructuredStorage2
