@@ -114,6 +114,9 @@ public:
    // set flag which enables all entries in the library to be edited
    virtual void EnableEditingForAll(bool enable)=0;
 
+   virtual void EnableCopy(LPCTSTR key,bool enable) = 0;
+   virtual bool IsCopyingEnabled(LPCTSTR key) const = 0;
+
    //------------------------------------------------------------------------
    // Add a new default entry with the given name. Returns false if unsuccessful.
    virtual bool NewEntry(LPCTSTR key)=0;

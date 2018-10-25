@@ -70,6 +70,22 @@ public:
       }
    }
 
+   void Set(LoadCaseIDType lcid, Float64 *force,Float64 *disp)
+   {
+      m_LoadingID = lcid;
+
+      long i;
+      for (i = 0; i < TNForceDof; i++)
+      {
+         m_Force[i] = force[i];
+      }
+
+      for (i = 0; i < TNDispDof; i++)
+      {
+         m_Disp[i] = disp[i];
+      }
+   }
+
    ~Result()
    {
    }

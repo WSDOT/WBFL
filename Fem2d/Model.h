@@ -208,6 +208,44 @@ private:
    MbrResultContainer     m_MbrResults;
    PoiResultContainer     m_PoiResults;
 
+   // A simple cache for negative load case POI results - typically these results are asked for
+   // sequentially
+#pragma Reminder("The following will cause problems if this class becomes multithreaded")
+   struct SimplePOIResultCache
+   {
+      SimplePOIResultCache():
+      poiID(-MAX_ID), loadCase(-MAX_ID), poiResult(-MAX_ID)
+      {;}
+
+      bool IsHit(PoiIDType poiid, LoadCaseIDType lcase)
+      {
+         if (lcase<0) // only cache negative load cases
+            return poiid==this->poiID && lcase==this->loadCase;
+         else
+            return false;
+      }
+
+      void ClearCache()
+      {
+          poiID = -MAX_ID;
+          loadCase = -MAX_ID;
+      }
+
+      void Update(PoiIDType poiid, LoadCaseIDType lcase, const PoiResult& poiresult)
+      {
+         poiID = poiid;
+         loadCase = lcase;
+         poiResult = poiresult;
+      }
+
+      PoiResult poiResult;
+
+   private:
+      PoiIDType poiID;
+      LoadCaseIDType loadCase;
+
+   } m_SimplePOIResultCache;
+
    LONG m_BandWidth;
    LONG m_NumGlobalDOF;
    LONG m_NumCondensedDOF;
@@ -261,7 +299,7 @@ private:
 
    void StoreJntResults(LoadCaseIDType lcase);
    void StoreMbrResults(LoadCaseIDType lcase);
-   void StorePoiResults(LoadCaseIDType lcase);
+//   void StorePoiResults(LoadCaseIDType lcase);
    const PoiResult* StorePoiResults(LoadCaseIDType lcase, PoiIDType poiid);
    void RemoveAllResults();
    void RemoveResults(LoadCaseIDType lcase);

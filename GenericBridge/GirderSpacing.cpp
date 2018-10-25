@@ -424,7 +424,13 @@ STDMETHODIMP CGirderSpacing::get_GirderSpacing(SpacingIndexType spaceIdx,Measure
 
             // do something here so we don't have a total mess up in release builds
             m_pPier->get_Station(&objStation);
-            objStation->Increment(m_SpanEnd == etStart ? brgOffset : -brgOffset);
+
+            CComPtr<IStation> clone;
+            objStation->Clone(&clone);
+
+            clone->Increment(m_SpanEnd == etStart ? brgOffset : -brgOffset);
+            objStation.Release();
+            objStation = clone;
          }
       }
 
