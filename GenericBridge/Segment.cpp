@@ -40,8 +40,8 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CSegment::FinalConstruct()
 {
    m_Orientation = 0;
-   m_pPrevSegment = NULL;
-   m_pNextSegment = NULL;
+   m_pPrevSegment = nullptr;
+   m_pNextSegment = nullptr;
    return S_OK;
 }
 
@@ -57,7 +57,7 @@ STDMETHODIMP CSegment::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -80,7 +80,7 @@ STDMETHODIMP CSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegm
 
    if ( m_Shapes.size() == 0 )
    {
-      *ppSection = NULL;
+      *ppSection = nullptr;
       return S_OK;
    }
 

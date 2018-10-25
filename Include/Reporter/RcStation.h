@@ -84,11 +84,11 @@ public:
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& rVisitor );
+   virtual void Accept( rptRcVisitor& rVisitor ) override;
 
    //------------------------------------------------------------------------
    // virtual way to make a copy.
-   virtual rptReportContent* CreateClone() const;
+   virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
    rptReportContent& SetStation(Float64 station);
@@ -121,7 +121,7 @@ protected:
    void MakeCopy(const rptRcStation& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rptRcStation& rOther);
+   void MakeAssignment(const rptRcStation& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

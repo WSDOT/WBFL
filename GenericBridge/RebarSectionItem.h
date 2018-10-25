@@ -59,22 +59,22 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarSectionItem
 public:
-   STDMETHOD(Init)(IPoint2d* location,Float64 distFromStart,Float64 distFromEnd,HookType hkLeft,HookType hkRight,IRebar* rebar);
-   STDMETHOD(get_Location)(/*[out,retval]*/IPoint2d** location);
-	STDMETHOD(get_LeftExtension)(/*[out,retval]*/ Float64* dist);
-	STDMETHOD(get_RightExtension)(/*[out,retval]*/ Float64* dist);
-   STDMETHOD(get_LeftHook)(/*[out,retval]*/HookType* hook);
-   STDMETHOD(get_RightHook)(/*[out,retval]*/HookType* hook);
-   STDMETHOD(get_Rebar)(/*[out,retval]*/ IRebar** rebar);
+   STDMETHOD(Init)(IPoint2d* location,Float64 distFromStart,Float64 distFromEnd,HookType hkLeft,HookType hkRight,IRebar* rebar) override;
+   STDMETHOD(get_Location)(/*[out,retval]*/IPoint2d** location) override;
+	STDMETHOD(get_LeftExtension)(/*[out,retval]*/ Float64* dist) override;
+	STDMETHOD(get_RightExtension)(/*[out,retval]*/ Float64* dist) override;
+   STDMETHOD(get_LeftHook)(/*[out,retval]*/HookType* hook) override;
+   STDMETHOD(get_RightHook)(/*[out,retval]*/HookType* hook) override;
+   STDMETHOD(get_Rebar)(/*[out,retval]*/ IRebar** rebar) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
    CComPtr<IPoint2d> m_Location;

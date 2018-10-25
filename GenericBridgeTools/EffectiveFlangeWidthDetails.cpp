@@ -48,7 +48,7 @@ STDMETHODIMP CEffectiveFlangeWidthDetails::InterfaceSupportsErrorInfo(REFIID rii
 	{
 		&IID_IEffectiveFlangeWidthDetails
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -134,7 +134,7 @@ STDMETHODIMP CEffectiveFlangeWidthDetails::EffectiveFlangeWidth(Float64* effFlan
    for ( iter = m_FlangeParameters.begin(); iter != m_FlangeParameters.end(); iter ++ )
    {
       PARAMS& params = *iter;
-      w2 += 12*m_SlabThickness + _cpp_max(params.WebThickness, params.TopFlangeThickness /2);
+      w2 += 12*m_SlabThickness + Max(params.WebThickness, params.TopFlangeThickness /2);
 
       Float64 left,right;
       left = params.LeftSpacing;

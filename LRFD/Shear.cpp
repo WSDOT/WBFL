@@ -414,7 +414,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
 
    VciCalc = IsZero(Mmax) ? 1e100 : K1*sqrt_fc*bv*dv + Vd + Vi*Mcre/Mmax; // 5.8.3.4.3-1
    VciMin = K2*sqrt_fc*bv*dv;// 5.8.3.4.3-1
-   Vci = _cpp_max(VciCalc,VciMin);
+   Vci = Max(VciCalc,VciMin);
    Vcw = (K2*sqrt_fc + 0.30*fpc)*bv*dv + Vp; // 5.8.3.4.3-2
 
    pData->VciMin  = ::ConvertToSysUnits(VciMin,  *p_force_unit);
@@ -1658,7 +1658,7 @@ void get_row_index(Float64 vfc,Int16* pr1,Int16* pr2)
    // have been trapped long before reacing this point
    CHECK( IsLE(vfc,get_vfc(get_vfc_count()-1)) );
 
-   // Don't pass NULL pointers
+   // Don't pass nullptr pointers
    CHECK( pr1 != 0 && pr2 != 0 );
 
    // Initialize indexes
@@ -1699,7 +1699,7 @@ void get_col_index(Int16 row,Float64 theta,Int16* pc1,Int16* pc2)
    // ex is limited to 0.002.
    CHECK( 0 <= row && row < get_vfc_count() );
 
-   // Don't pass NULL pointers
+   // Don't pass nullptr pointers
    CHECK( pc1 != 0 &&
           pc2 != 0 );
 
@@ -1738,7 +1738,7 @@ void get_col_index(Float64 ex,Int16* pc1,Int16* pc2)
    // ex is limited to 0.002.
    CHECK( IsLE(ex,get_ex(get_ex_count()-1)));
 
-   // Don't pass NULL pointers
+   // Don't pass nullptr pointers
    CHECK( pc1 != 0 &&
           pc2 != 0 );
 
@@ -1783,7 +1783,7 @@ void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2)
    //
    // Sanity check the input
    //
-   // Don't pass NULL pointers
+   // Don't pass nullptr pointers
    CHECK( pr1 != 0 && pr2 != 0 );
 
    // Initialize indexes

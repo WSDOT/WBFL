@@ -60,7 +60,7 @@ public:
 class CCenterOnPointFSMDoneState : public CCenterOnPointFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -69,11 +69,11 @@ public:
 class CCenterOnPointFSMWaitingForPointState : public CCenterOnPointFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForPoint"); }
-   virtual void MouseMove(CCenterOnPointFSM& fsm);
-   virtual void MouseDown(CCenterOnPointFSM& fsm);
-   virtual void DoubleClick(CCenterOnPointFSM& fsm);
-	virtual void EscKey(CCenterOnPointFSM& fsm);
+   virtual LPCTSTR StateName() const override { return _T("WaitingForPoint"); }
+   virtual void MouseMove(CCenterOnPointFSM& fsm) override;
+   virtual void MouseDown(CCenterOnPointFSM& fsm) override;
+   virtual void DoubleClick(CCenterOnPointFSM& fsm) override;
+	virtual void EscKey(CCenterOnPointFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -82,8 +82,8 @@ public:
 class CCenterOnPointFSMStartState : public CCenterOnPointFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CCenterOnPointFSM& fsm);
+   virtual LPCTSTR StateName() const override { return _T("Start"); }
+   virtual void Do(CCenterOnPointFSM& fsm) override;
 };
 
 class CCenterOnPointFSM : public iCenterOnPointTask

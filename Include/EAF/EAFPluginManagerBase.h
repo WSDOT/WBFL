@@ -80,7 +80,7 @@ public:
 
    virtual BOOL AddPlugin(const CLSID& clsid,T* pPlugin)
    {
-      if ( pPlugin == NULL )
+      if ( pPlugin == nullptr )
          return FALSE;
 
       std::pair<Plugins::iterator,bool> result = m_Plugins.insert(std::make_pair(clsid,pPlugin));
@@ -123,7 +123,7 @@ public:
       CATID ID[nID];
       ID[0] = m_CATID;
 
-      pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
+      pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
 
       CEAFApp* pApp = EAFGetApp();
 
@@ -143,7 +143,7 @@ public:
                CComPtr<T> plugin;
                HRESULT hr = plugin.CoCreateInstance(clsid[i]);
 
-               if ( plugin == NULL )
+               if ( plugin == nullptr )
                {
                   if ( bAlwaysAttemptToLoad )
                   {
@@ -273,7 +273,7 @@ public:
          }
       }
 
-      (*ppPlugin) = NULL;
+      (*ppPlugin) = nullptr;
       return false;
    }
 

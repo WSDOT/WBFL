@@ -61,7 +61,7 @@ STDMETHODIMP CLoadCaseResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILoadCaseResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -87,7 +87,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR loadCase, IIDArray* POIs, 
       std::vector< CAdapt< CComPtr<ISectionResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -143,7 +143,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR loadCase, IIDArray* P
       std::vector< CAdapt< CComPtr<ISectionResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -198,7 +198,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR loadCase, IIDArray* POI
       std::vector< CAdapt< CComPtr<IResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -254,7 +254,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR loadCase, IIDA
       std::vector< CAdapt< CComPtr<IResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -310,7 +310,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR loadCase, IIDArray* POIs
       std::vector< CAdapt< CComPtr<ISectionStressResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng=0;  ieng<eng_cnt; ieng++)
+      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -381,7 +381,7 @@ void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionResults(ISectionResult3Ds* res
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ISectionResult3D> sr1, sr2;
 
@@ -475,7 +475,7 @@ void CLoadCaseResponseAgg::EnvelopeLoadCaseResults(IResult3Ds* res1, IResult3Ds*
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<IResult3D> r1,r2;
 
@@ -537,7 +537,7 @@ void CLoadCaseResponseAgg::EnvelopeLoadCaseSectionStressResults(ISectionStressRe
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ISectionStressResult> sr1, sr2;
       res1->get_Item(ipoi,&sr1);

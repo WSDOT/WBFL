@@ -50,7 +50,7 @@ std::_tstring rptStyleManager::ms_TableCellStyle[6]          = {   _T("NB-LJ"), 
 std::_tstring rptStyleManager::ms_TableStripeRowCellStyle[6] = {_T("SR-NB-LJ"),_T("SR-TB-LJ"),_T("SR-NB-RJ"),_T("SR-TB-RJ"),_T("SR-NB-CJ"),_T("SR-TB-CJ")};
 std::_tstring rptStyleManager::ms_ReportCoverImage           = _T("");
 
-std::auto_ptr<std::_tstring> rptStyleManager::ms_pImagePath;
+std::unique_ptr<std::_tstring> rptStyleManager::ms_pImagePath;
 
 Float64 rptStyleManager::ms_MaxTableWidth = 7.5; // 7.5" wide tables
 
@@ -403,10 +403,10 @@ void rptStyleManager::ConfigureTable(rptRcTable* pTable)
 
 LPCTSTR rptStyleManager::GetImagePath()
 {
-   if ( ms_pImagePath.get() == 0 )
+   if ( ms_pImagePath.get() == nullptr )
    {
       TCHAR szBuff[_MAX_PATH];
-      ::GetModuleFileName(::GetModuleHandle(NULL), szBuff, _MAX_PATH);
+      ::GetModuleFileName(::GetModuleHandle(nullptr), szBuff, _MAX_PATH);
       std::_tstring filename(szBuff);
       make_upper( filename.begin(), filename.end() );
 
@@ -431,7 +431,7 @@ LPCTSTR rptStyleManager::GetImagePath()
       }
 
       filename.replace(filename.begin()+loc,filename.end(),_T("\\IMAGES\\"));
-      ms_pImagePath = std::auto_ptr<std::_tstring>(new std::_tstring(filename));
+      ms_pImagePath = std::make_unique<std::_tstring>(filename);
    }
 
    return ms_pImagePath->c_str();

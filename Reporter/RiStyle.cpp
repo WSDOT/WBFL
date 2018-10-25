@@ -295,7 +295,7 @@ void rptRiStyle::MakeCopy(const rptRiStyle& rIStyle)
    m_MediaType     = rIStyle.m_MediaType;
    m_IsHeading     = rIStyle.m_IsHeading;
 
-   for (int i=0; i<NUMBORDERS; i++)
+   for (int i = 0; i<NUMBORDERS; i++)
    {
       m_BorderStyles[i] = rIStyle.m_BorderStyles[i];
    }

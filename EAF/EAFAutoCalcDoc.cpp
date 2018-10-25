@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CEAFAutoCalcDocMixin
 CEAFAutoCalcDocMixin::CEAFAutoCalcDocMixin()
 {
-   m_pDocument = NULL;
+   m_pDocument = nullptr;
 }
 
 CEAFAutoCalcDocMixin::~CEAFAutoCalcDocMixin()
@@ -53,8 +53,8 @@ void CEAFAutoCalcDocMixin::SetDocument(CEAFDocument* pDoc)
 
 void CEAFAutoCalcDocMixin::CreateAcceleratorKeys()
 {
-   m_pDocument->GetAcceleratorTable()->AddAccelKey(FVIRTKEY,           VK_F5, EAFID_AUTOCALC_UPDATENOW,NULL);
-   m_pDocument->GetAcceleratorTable()->AddAccelKey(FCONTROL | FVIRTKEY,VK_U,  EAFID_AUTOCALC_UPDATENOW,NULL);
+   m_pDocument->GetAcceleratorTable()->AddAccelKey(FVIRTKEY,           VK_F5, EAFID_AUTOCALC_UPDATENOW,nullptr);
+   m_pDocument->GetAcceleratorTable()->AddAccelKey(FCONTROL | FVIRTKEY,VK_U,  EAFID_AUTOCALC_UPDATENOW,nullptr);
 }
 
 void CEAFAutoCalcDocMixin::RemoveAcceleratorKeys()
@@ -89,7 +89,7 @@ void CEAFAutoCalcDocMixin::OnUpdateAutoCalc(CCmdUI* pCmdUI)
 void CEAFAutoCalcDocMixin::OnUpdateNow()
 {
    POSITION pos = m_pDocument->GetFirstViewPosition();
-   while (pos != NULL)   
+   while (pos != nullptr)   
    {
       CView* pView = m_pDocument->GetNextView(pos);
       CEAFAutoCalcViewMixin* pAutoCalcView = dynamic_cast<CEAFAutoCalcViewMixin*>(pView);

@@ -54,16 +54,16 @@ END_COM_MAP()
 
 // iLineDrawStrategy
 public:
-   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC);
-   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box);
+   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC) override;
+   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
+   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite) override;
+   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box) override;
 
 // iCompoundLineDrawStrategy
 public:
-   STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy);
-   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index);
-   STDMETHOD_(CollectionIndexType,Count)();
+   STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) override;
+   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) override;
+   STDMETHOD_(CollectionIndexType,Count)() override;
 
 private:
    typedef std::vector<CComPtr<iDrawLineStrategy> > Strategies;

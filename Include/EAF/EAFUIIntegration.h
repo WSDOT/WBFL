@@ -41,7 +41,7 @@ DEFINE_GUID(IID_IEAFViewRegistrar,
 interface IEAFViewRegistrar : IUnknown
 {
    // Registers a view class and its associated frame class. Returns the view key
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount = -1) = 0;
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount = -1) = 0;
 
    // Removes a previously registered view
    virtual void RemoveView(long key) = 0;
@@ -171,7 +171,7 @@ interface IEAFDocument : IUnknown
    virtual CString GetFileRoot() = 0; // returns c:\my documents
 
    // Notifies all views of an update
-   virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = NULL) = 0;
+   virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = nullptr) = 0;
 };
 
 

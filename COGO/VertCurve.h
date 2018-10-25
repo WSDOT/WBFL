@@ -51,7 +51,7 @@ class ATL_NO_VTABLE CVertCurve :
 public:
 	CVertCurve()
 	{
-      m_pProfile = NULL;
+      m_pProfile = nullptr;
 	}
 
 	HRESULT FinalConstruct();
@@ -80,52 +80,52 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVertCurve
 public:
-   STDMETHOD(get_ComputeFromGradePoints)(/*[out,retval]*/VARIANT_BOOL* pvbCompute);
-   STDMETHOD(put_ComputeFromGradePoints)(/*[in]*/VARIANT_BOOL vbCompute);
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IVertCurve* *clone);
-	STDMETHOD(get_A)(/*[out,retval]*/Float64* a);
-	STDMETHOD(get_K)(/*[out,retval]*/Float64* k);
-	STDMETHOD(get_H)(/*[out,retval]*/Float64* h);
-   STDMETHOD(get_E)(/*[[in]*/Float64 t,/*[out,retval]*/Float64* e);
-	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* grade);
-	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* elev);
-	STDMETHOD(get_HighPoint)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(get_LowPoint)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(put_ExitGrade)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_ExitGrade)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EntryGrade)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EntryGrade)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_PFG)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_PFG)(/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(get_PVI)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_PVI)(/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(get_PBG)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(putref_PBG)(/*[in]*/ IProfilePoint* newVal);
-	STDMETHOD(get_L1)(/*[out,retval]*/ Float64* pVal);
-	STDMETHOD(put_L1)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_L2)(/*[out,retval]*/ Float64* pVal);
-	STDMETHOD(put_L2)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_BVC)(/*[out, retval]*/ IProfilePoint* *pVal);
-	STDMETHOD(get_EVC)(/*[out, retval]*/ IProfilePoint* *pVal);
-   STDMETHOD(get_ProfilePointFactory)(/*[out,retval]*/IProfilePointFactory* *factory);
-   STDMETHOD(putref_ProfilePointFactory)(/*[in]*/IProfilePointFactory* factory);
+   STDMETHOD(get_ComputeFromGradePoints)(/*[out,retval]*/VARIANT_BOOL* pvbCompute) override;
+   STDMETHOD(put_ComputeFromGradePoints)(/*[in]*/VARIANT_BOOL vbCompute) override;
+   STDMETHOD(get_Profile)(IProfile* *pVal) override;
+   STDMETHOD(putref_Profile)(IProfile* newVal) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IVertCurve* *clone) override;
+	STDMETHOD(get_A)(/*[out,retval]*/Float64* a) override;
+	STDMETHOD(get_K)(/*[out,retval]*/Float64* k) override;
+	STDMETHOD(get_H)(/*[out,retval]*/Float64* h) override;
+   STDMETHOD(get_E)(/*[[in]*/Float64 t,/*[out,retval]*/Float64* e) override;
+	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/Float64* grade) override;
+	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* elev) override;
+	STDMETHOD(get_HighPoint)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(get_LowPoint)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(put_ExitGrade)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_ExitGrade)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EntryGrade)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EntryGrade)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_PFG)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(putref_PFG)(/*[in]*/ IProfilePoint* newVal) override;
+	STDMETHOD(get_PVI)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(putref_PVI)(/*[in]*/ IProfilePoint* newVal) override;
+	STDMETHOD(get_PBG)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(putref_PBG)(/*[in]*/ IProfilePoint* newVal) override;
+	STDMETHOD(get_L1)(/*[out,retval]*/ Float64* pVal) override;
+	STDMETHOD(put_L1)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_L2)(/*[out,retval]*/ Float64* pVal) override;
+	STDMETHOD(put_L2)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_BVC)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+	STDMETHOD(get_EVC)(/*[out, retval]*/ IProfilePoint* *pVal) override;
+   STDMETHOD(get_ProfilePointFactory)(/*[out,retval]*/IProfilePointFactory* *factory) override;
+   STDMETHOD(putref_ProfilePointFactory)(/*[in]*/IProfilePointFactory* factory) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IProfilePointEvents
 public:
-	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp);
+	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp) override;
 
 private:
    // if true, L1, L2, BVC, PVI, and EVC are computed from PBG, PFG, g1, and g2

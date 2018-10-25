@@ -61,8 +61,8 @@ public:
    void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, JointIDType jointID=-1, Float64 Fx=0.0, Float64 Fy=0.0, Float64 Mz=0.0);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -73,22 +73,22 @@ BEGIN_COM_MAP(CJointLoad)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dJointLoad
 public:
-	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal);
-	STDMETHOD(GetForce)(/*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz);
-	STDMETHOD(SetForce)(/*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz);
-	STDMETHOD(get_Mz)(/*[out, retval]*/ Float64  *pVal);
-	STDMETHOD(put_Mz)(/*[in]*/ Float64  newVal);
-	STDMETHOD(get_Fy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Fy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Fx)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Fx)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_JointID)(/*[out, retval]*/ JointIDType *pVal);
-	STDMETHOD(put_JointID)(/*[in]*/ JointIDType newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal);
+	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
+	STDMETHOD(GetForce)(/*[out]*/Float64* Fx, /*[out]*/Float64* Fy, /*[out]*/Float64* Mz) override;
+	STDMETHOD(SetForce)(/*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz) override;
+	STDMETHOD(get_Mz)(/*[out, retval]*/ Float64  *pVal) override;
+	STDMETHOD(put_Mz)(/*[in]*/ Float64  newVal) override;
+	STDMETHOD(get_Fy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Fy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Fx)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Fx)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_JointID)(/*[out, retval]*/ JointIDType *pVal) override;
+	STDMETHOD(put_JointID)(/*[in]*/ JointIDType newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal) override;
 
 private:
    LoadIDType m_ID;

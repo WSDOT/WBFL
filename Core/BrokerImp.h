@@ -65,23 +65,23 @@ END_COM_MAP()
 
 // IBroker
 public:
-   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppv);
-   STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
+   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppv) override;
+   STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
 
 // IBrokerInit2
 public:
-   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IndexType* lErrIndex);
-   STDMETHOD(AddAgent)(/*[in]*/ IAgent* pAgent);
-	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
-	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgent* pAgent);
-   STDMETHOD(DelayInit)();
-	STDMETHOD(InitAgents)();
+   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IndexType* lErrIndex) override;
+   STDMETHOD(AddAgent)(/*[in]*/ IAgent* pAgent) override;
+	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP) override;
+	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgent* pAgent) override;
+   STDMETHOD(DelayInit)() override;
+	STDMETHOD(InitAgents)() override;
 
 // IBrokerPersist
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad* pStrLoad);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad* pStrLoad) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave) override;
 
 private:
    typedef std::map<IID, IAgent* >Interfaces; // does not effect ref-counts

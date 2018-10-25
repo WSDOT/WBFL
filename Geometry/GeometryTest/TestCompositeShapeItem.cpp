@@ -59,11 +59,11 @@ void CTestCompositeShapeItem::Test()
    VARIANT_BOOL bVoid;
    CComPtr<IShape> shape;
 
-   TRY_TEST(item->get_Shape(NULL),E_POINTER);
+   TRY_TEST(item->get_Shape(nullptr),E_POINTER);
    TRY_TEST(item->get_Shape(&shape),S_OK);
    TRY_TEST(shape == 0,true);
 
-   TRY_TEST(item->get_Void(NULL),E_POINTER);
+   TRY_TEST(item->get_Void(nullptr),E_POINTER);
    TRY_TEST(item->get_Void(&bVoid),S_OK);
    TRY_TEST(bVoid,VARIANT_FALSE);
 

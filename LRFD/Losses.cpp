@@ -465,6 +465,7 @@ Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
       UpdateLosses();
    }
 
+   // we want time-dependent losses only... don't include elastic shortening
    Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer();
    return loss;
 }
@@ -584,6 +585,7 @@ Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
       UpdateLosses();
    }
 
+   // we want time-dependent losses only... don't include elastic shortening
    return TemporaryStrand_RelaxationLossesBeforeTransfer();
 }
 

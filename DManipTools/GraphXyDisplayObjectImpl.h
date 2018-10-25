@@ -62,25 +62,25 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IGraphXyDisplayObject
 public:
-   STDMETHOD_(void,get_GraphBounds)( IRect2d* *pVal);
-   STDMETHOD_(void,put_GraphBounds)(IRect2d* newVal);
-   STDMETHOD_(void,get_Title)(BSTR *pVal);
-   STDMETHOD_(void,put_Title)(BSTR newVal);
-   STDMETHOD_(void,DataCount)(CollectionIndexType *pVal);
-   STDMETHOD_(void,AddData)(iGraphXyDataProvider* dataSet);
-   STDMETHOD_(HRESULT,GetData)(CollectionIndexType idx, iGraphXyDataProvider** dataSet);
-   STDMETHOD_(HRESULT,Commit)();
-   STDMETHOD_(HRESULT,ClearData)();
-   STDMETHOD_(void,get_NumberOfMajorIncrements)(CollectionIndexType *pVal);
-   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(CollectionIndexType newVal);
-   STDMETHOD_(void,get_DoDisplayAxisValues)(BOOL *pVal);
-   STDMETHOD_(void,put_DoDisplayAxisValues)(BOOL newVal);
-   STDMETHOD_(void,get_DoDisplayGrid)(BOOL *pVal);
-   STDMETHOD_(void,put_DoDisplayGrid)(BOOL newVal);
+   STDMETHOD_(void,get_GraphBounds)( IRect2d* *pVal) override;
+   STDMETHOD_(void,put_GraphBounds)(IRect2d* newVal) override;
+   STDMETHOD_(void,get_Title)(BSTR *pVal) override;
+   STDMETHOD_(void,put_Title)(BSTR newVal) override;
+   STDMETHOD_(void,DataCount)(CollectionIndexType *pVal) override;
+   STDMETHOD_(void,AddData)(iGraphXyDataProvider* dataSet) override;
+   STDMETHOD_(HRESULT,GetData)(CollectionIndexType idx, iGraphXyDataProvider** dataSet) override;
+   STDMETHOD_(HRESULT,Commit)() override;
+   STDMETHOD_(HRESULT,ClearData)() override;
+   STDMETHOD_(void,get_NumberOfMajorIncrements)(CollectionIndexType *pVal) override;
+   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(CollectionIndexType newVal) override;
+   STDMETHOD_(void,get_DoDisplayAxisValues)(BOOL *pVal) override;
+   STDMETHOD_(void,put_DoDisplayAxisValues)(BOOL newVal) override;
+   STDMETHOD_(void,get_DoDisplayGrid)(BOOL *pVal) override;
+   STDMETHOD_(void,put_DoDisplayGrid)(BOOL newVal) override;
 
 
    HRESULT FinalConstruct();

@@ -230,7 +230,7 @@ dbgDumpContext& dbgLogDumpContext::operator<<(const sysSectionValue& n)
    if ( m_pLog )
    {
       TCHAR buffer[BUFSIZE];
-      _stprintf_s( buffer, TEXT("%s"), n.AsString() );
+      _stprintf_s( buffer, TEXT("%s"), n.AsString().c_str() );
       m_pLog->LogMessage(m_dwCookie,buffer);
    }
 

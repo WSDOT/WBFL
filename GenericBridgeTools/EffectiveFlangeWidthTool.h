@@ -62,19 +62,19 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IEffectiveFlangeWidthTool
 public:
-   STDMETHOD(TributaryFlangeWidthBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth);
-   STDMETHOD(TributaryFlangeWidthBySSMbrEx)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth);
-   STDMETHOD(TributaryFlangeWidthBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth);
-   STDMETHOD(TributaryFlangeWidthBySegmentEx)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth);
+   STDMETHOD(TributaryFlangeWidthBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth) override;
+   STDMETHOD(TributaryFlangeWidthBySSMbrEx)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth) override;
+   STDMETHOD(TributaryFlangeWidthBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth) override;
+   STDMETHOD(TributaryFlangeWidthBySegmentEx)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth) override;
    
-   STDMETHOD(EffectiveFlangeWidthBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth);
-	STDMETHOD(EffectiveFlangeWidthBySSMbrEx)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details);
-	STDMETHOD(EffectiveFlangeWidthBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth);
-	STDMETHOD(EffectiveFlangeWidthBySegmentEx)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details);
+   STDMETHOD(EffectiveFlangeWidthBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth) override;
+	STDMETHOD(EffectiveFlangeWidthBySSMbrEx)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details) override;
+	STDMETHOD(EffectiveFlangeWidthBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth) override;
+	STDMETHOD(EffectiveFlangeWidthBySegmentEx)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details) override;
 };
 
 #endif //__EFFECTIVEFLANGEWIDTHTOOL_H_

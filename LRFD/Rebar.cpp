@@ -178,7 +178,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
       Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::MPa);
       ATLASSERT(0 < fc_u);
 
-      Float64 dl_u=0;
+      Float64 dl_u = 0;
 
       if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
           size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)
@@ -211,7 +211,7 @@ Float64 lrfdRebar::GetTensileDevelopmentLength(const matRebar& rebar, Float64 fc
       Float64 fc_u = ::ConvertFromSysUnits(fc,unitMeasure::KSI);
       ATLASSERT(0 < fc_u);
 
-      Float64 dl_u=0;
+      Float64 dl_u = 0;
 
       if (size==matRebar::bs3 || size==matRebar::bs4 || size==matRebar::bs5  || size==matRebar::bs6 || size==matRebar::bs7 ||
           size==matRebar::bs8 || size==matRebar::bs9 || size==matRebar::bs10 || size==matRebar::bs11)

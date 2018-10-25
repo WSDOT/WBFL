@@ -116,7 +116,7 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStress(Float64 strain,Flo
    // :NOTE: Stress-strain curve taken from PCI Bridge Design Manual, Section 2.11
    matStressStrainCurve::StrainState state;
 
-   // Don't pass in a NULL pointer
+   // Don't pass in a nullptr pointer
    PRECONDITION( pStress != 0 );
    ASSERTVALID;
 
@@ -161,7 +161,7 @@ matStressStrainCurve::StrainState matPsStrandCurve::GetStress(Float64 strain,Flo
 
 matStressStrainCurve::StrainState matPsStrandCurve::GetStrain(Float64 stress,Float64* pStrain) const
 {
-   // Don't pass in a NULL pointer
+   // Don't pass in a nullptr pointer
    PRECONDITION( pStrain != 0 );
    ASSERTVALID;
 

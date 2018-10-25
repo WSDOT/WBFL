@@ -63,7 +63,7 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
    }
 
    CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
@@ -178,7 +178,7 @@ void CNUSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64*
    get_Length(&segLength);
 
    CComQIPtr<INUGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    CComPtr<INUBeam> pcBeam;
    beam->get_Beam(&pcBeam);

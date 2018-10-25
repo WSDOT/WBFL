@@ -56,7 +56,7 @@ public:
             {
                CComPtr<IEAFAppPlugin> p;
                pDocTemplate->GetPlugin(&p);
-               if ( p == NULL )
+               if ( p == nullptr )
                   pDocTemplate->SetPlugin(plugin);
 
                pApp->AddDocTemplate( pDocTemplate );

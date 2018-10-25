@@ -29,7 +29,7 @@
 #include "VertCurve.h"
 #include "ProfilePointFactory.h"
 #include <WBFLCogo\CogoHelpers.h>
-#include <xutility> // for _cpp_min and _cpp_max
+#include <xutility> // for Min and Max
 #include <limits>
 
 #ifdef _DEBUG
@@ -103,7 +103,7 @@ STDMETHODIMP CVertCurve::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IVertCurve,
       &IID_IStructuredStorage2
    };
-   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -176,7 +176,7 @@ STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
    }
 
    MyUnadvise(m_PBG,m_dwPBG);
-   m_PBG->putref_Profile(NULL);
+   m_PBG->putref_Profile(nullptr);
    m_PBG = newVal;
    m_PBG->putref_Profile(m_pProfile);
    MyAdvise(m_PBG,&m_dwPBG);
@@ -209,7 +209,7 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
    }
 
    MyUnadvise(m_PVI,m_dwPVI);
-   m_PVI->putref_Profile(NULL);
+   m_PVI->putref_Profile(nullptr);
    m_PVI = newVal;
    m_PVI->putref_Profile(m_pProfile);
    MyAdvise(m_PVI,&m_dwPVI);
@@ -237,7 +237,7 @@ STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
    }
 
    MyUnadvise(m_PFG,m_dwPFG);
-   m_PFG->putref_Profile(NULL);
+   m_PFG->putref_Profile(nullptr);
    m_PFG = newVal;
    m_PFG->putref_Profile(m_pProfile);
    MyAdvise(m_PFG,&m_dwPFG);
@@ -1067,7 +1067,7 @@ STDMETHODIMP CVertCurve::Load(IStructuredLoad2* pLoad)
 // IProfilePointEvents
 STDMETHODIMP CVertCurve::OnProfilePointChanged(IProfilePoint* pp)
 {
-//   ::MessageBox(NULL,"CVertCurve::OnProfilePointChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"CVertCurve::OnProfilePointChanged","Event",MB_OK);
    MakeDirty();
    Fire_OnVertCurveChanged(this);
    return S_OK;
@@ -1358,7 +1358,7 @@ HRESULT CVertCurve::ValidateStation(VARIANT varStation,IStation** station)
       return hr;
    }
 
-   if ( m_pProfile == NULL )
+   if ( m_pProfile == nullptr )
    {
       ZoneIndexType staEqnZoneIdx;
       (*station)->get_StationZoneIndex(&staEqnZoneIdx);

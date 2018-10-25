@@ -54,16 +54,16 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    {
       // looks like we have to do it the hard way
       CWinApp* pApp = EAFGetApp();
-      CDocument* pDocument = NULL;
+      CDocument* pDocument = nullptr;
       bool bDone = false;
       POSITION doc_template_pos = pApp->GetFirstDocTemplatePosition();
       
-      while ( doc_template_pos != NULL && !bDone )
+      while ( doc_template_pos != nullptr && !bDone )
       {
          CDocTemplate* pTemplate = pApp->GetNextDocTemplate(doc_template_pos);
 
          POSITION doc_pos = pTemplate->GetFirstDocPosition();
-         while ( doc_pos != NULL )
+         while ( doc_pos != nullptr )
          {
             pDocument = pTemplate->GetNextDoc(doc_pos);
             if ( pDocument )
@@ -81,7 +81,7 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
       }
    }
 
-   (*ppBroker) = NULL;
+   (*ppBroker) = nullptr;
 
    return E_FAIL;
 }
@@ -122,7 +122,7 @@ CView* EAFGetActiveView()
       return pView;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID)
@@ -194,34 +194,34 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 	DWORD dwAccessType = PRE_CONFIG_INTERNET_ACCESS;
 	DWORD dwHttpRequestFlags = /*INTERNET_FLAG_EXISTING_CONNECT |*/ INTERNET_FLAG_DONT_CACHE;
 
-	LPCTSTR pstrAgent = NULL;
+	LPCTSTR pstrAgent = nullptr;
 
 	//the verb we will be using for this connection
-	//if NULL then GET is assumed
+	//if nullptr then GET is assumed
 	LPCTSTR pstrVerb = _T("GET");
 	
 	//the address of the url in the request was obtained from
-	LPCTSTR pstrReferer = NULL;
+	LPCTSTR pstrReferer = nullptr;
 
-	//Http version we are using; NULL = HTTP/1.0
-	LPCTSTR pstrVersion = NULL;
+	//Http version we are using; nullptr = HTTP/1.0
+	LPCTSTR pstrVersion = nullptr;
 
 	//For the Accept request headers if we need them later on
-	LPCTSTR pstrAcceptTypes = NULL;
+	LPCTSTR pstrAcceptTypes = nullptr;
 	CString szHeaders = _T("Accept: audio/x-aiff, audio/basic, audio/midi, audio/mpeg, audio/wav, image/jpeg, image/gif, image/jpg, image/png, image/mng, image/bmp, text/plain, text/html, text/htm\r\n");
 
 	//Username we will use if a secure site comes into play
-	LPCTSTR pstrUserName = NULL; 
+	LPCTSTR pstrUserName = nullptr; 
 	//The password we will use
-	LPCTSTR pstrPassword = NULL;
+	LPCTSTR pstrPassword = nullptr;
 
 	//CInternetSession flags if we need them
 	//DWORD dwFlags = INTERNET_FLAG_ASYNC;
 	DWORD dwFlags = INTERNET_FLAG_DONT_CACHE;
 
 	//Proxy setting if we need them
-	LPCTSTR pstrProxyName = NULL;
-	LPCTSTR pstrProxyBypass = NULL;
+	LPCTSTR pstrProxyName = nullptr;
+	LPCTSTR pstrProxyBypass = nullptr;
 
    // see if url parses before going further
    DWORD dwServiceType;
@@ -246,8 +246,8 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 	//session.EnableStatusCallback(FALSE);
    eafTypes::HttpGetResult retVal = eafTypes::hgrConnectionError;
 
-	CHttpConnection*	pServer = NULL;   
-	CHttpFile* pFile = NULL;
+	CHttpConnection*	pServer = nullptr;   
+	CHttpFile* pFile = nullptr;
 	DWORD dwRet;
 	try 
    {		

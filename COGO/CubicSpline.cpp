@@ -49,7 +49,7 @@ STDMETHODIMP CCubicSpline::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ICubicSpline,
 		&IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -433,7 +433,7 @@ STDMETHODIMP CCubicSpline::PointOnSpline(Float64 distance,IPoint2d* *pVal)
    Float64 splineDist;
    CSplineSegment* pSplineSegment = FindSplineSegment(distance,&splineDist);
 
-   if ( pSplineSegment == NULL ) // before or after spline
+   if ( pSplineSegment == nullptr ) // before or after spline
    {
       if ( splineDist < 0 )
       {
@@ -1148,7 +1148,7 @@ CSplineSegment* CCubicSpline::FindSplineSegment(Float64 distance,Float64* pDistF
    if ( distance < 0 )
    {
       *pDistFromStartOfSegment = distance;
-      return NULL;
+      return nullptr;
    }
 
    Float64 start_distance = 0;
@@ -1169,7 +1169,7 @@ CSplineSegment* CCubicSpline::FindSplineSegment(Float64 distance,Float64* pDistF
 
    // beyond end
    *pDistFromStartOfSegment = distance - start_distance; // distance past end
-   return NULL;
+   return nullptr;
 }
 
 void CCubicSpline::CreatePoint(IPoint2d** ppPoint)
@@ -1297,7 +1297,7 @@ HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoin
       {
          // Point projects onto the back tangent bearing (it is before the curve)
          p1.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != NULL );
+         ATLASSERT( *pNewPoint != nullptr );
 
          m_GeomUtil->Distance(p0,p1,pDistFromStart);
          (*pDistFromStart) *= -1;
@@ -1308,7 +1308,7 @@ HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoin
       {
          // Point projects onto the forward tangent bearing (it is after the curve)
          p2.QueryInterface(pNewPoint);
-         ATLASSERT( *pNewPoint != NULL );
+         ATLASSERT( *pNewPoint != nullptr );
 
          Float64 Lt; // Total length of curve
          get_Length(&Lt);
@@ -1336,7 +1336,7 @@ HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoin
       CComPtr<IPoint2d> p;
       m_GeomUtil->PointOnLineNearest(line,point,&p);
       p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != NULL );
+      ATLASSERT( *pNewPoint != nullptr );
 
       m_GeomUtil->Distance(p0,*pNewPoint,pDistFromStart);
       (*pDistFromStart) *= -1;
@@ -1439,7 +1439,7 @@ HRESULT CCubicSpline::ProjectPoint(IPoint2d* point,Float64* pDistFromStart,IPoin
       CComPtr<IPoint2d> p;
       m_GeomUtil->PointOnLineNearest(line,point,&p);
       p.QueryInterface(pNewPoint);
-      ATLASSERT( *pNewPoint != NULL );
+      ATLASSERT( *pNewPoint != nullptr );
 
       Float64 Lt;
       get_Length(&Lt);
@@ -1551,9 +1551,9 @@ Float64 CSplineSegment::Normal(Float64 distance) const
 
 void CSplineSegment::Intersect(ILine2d* line,IGeomUtil2d* pGU,IPoint2d** p1,IPoint2d** p2,IPoint2d** p3) const
 {
-   (*p1) = NULL;
-   (*p2) = NULL;
-   (*p3) = NULL;
+   (*p1) = nullptr;
+   (*p2) = nullptr;
+   (*p3) = nullptr;
 
    // get coefficients for function of line
    // y = mx + k

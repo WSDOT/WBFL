@@ -32,7 +32,7 @@
 #include <GeomModel\GeomModelExp.h>
 #include <GeomModel\SectionListener.h>
 #include <GeometricPrimitives\Line2d.h>
-#include <boost\shared_ptr.hpp>
+
 
 // FORWARD DECLARATIONS
 //
@@ -86,7 +86,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~gmSectionComponent();
+   virtual ~gmSectionComponent() override;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -153,11 +153,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -501,7 +501,7 @@ protected:
 private:
    // GROUP: DATA MEMBERS
 
-   typedef boost::shared_ptr<gmSectionComponent>  ComponentPtr;
+   typedef std::shared_ptr<gmSectionComponent>  ComponentPtr;
    typedef std::pair<Uint32, ComponentPtr>    ComponentEntry;
    typedef std::map<Uint32,ComponentPtr,std::less<Uint32>,std::allocator<ComponentPtr> >      ComponentContainer;
    typedef ComponentContainer::iterator       ComponentIterator;
@@ -674,7 +674,7 @@ protected:
    void MakeCopy(const gmSectionComponentIter& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmSectionComponentIter& rOther);
+   void MakeAssignment(const gmSectionComponentIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -824,7 +824,7 @@ protected:
    void MakeCopy(const gmConstSectionComponentIter& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmConstSectionComponentIter& rOther);
+   void MakeAssignment(const gmConstSectionComponentIter& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

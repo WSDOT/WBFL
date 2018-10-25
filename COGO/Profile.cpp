@@ -106,7 +106,7 @@ HRESULT CProfile::FinalConstruct()
    m_Surfaces->putref_Profile(this);
    AdviseSurfaces();
 
-   m_pAlignment = NULL;
+   m_pAlignment = nullptr;
 
    CComObject<CProfileElement>* pTestElement;
    CComObject<CProfileElement>::CreateInstance(&pTestElement);
@@ -135,7 +135,7 @@ STDMETHODIMP CProfile::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IProfile,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -205,7 +205,7 @@ STDMETHODIMP CProfile::GetSurface(CogoObjectID id,VARIANT varStation,ISurface** 
    else
    {
       CHECK_RETOBJ(ppSurface);
-      *ppSurface = NULL;
+      *ppSurface = nullptr;
       return S_FALSE;
    }
 }
@@ -255,7 +255,7 @@ STDMETHODIMP CProfile::AddEx(IUnknown* dispElement)
    CComQIPtr<IProfilePoint> point(dispElement);
    CComQIPtr<IVertCurve> curve(dispElement);
 
-   if ( point == NULL && curve == NULL )
+   if ( point == nullptr && curve == nullptr )
    {
       return Error(IDS_E_PROFILEELEMENTTYPE,IID_IProfile,COGO_E_PROFILEELEMENTTYPE);
    }
@@ -288,9 +288,9 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
       CComQIPtr<IVertCurve> vc(varID.punkVal);
 
       // The input object is not of the correct type
-      if ( element == NULL && 
-           point   == NULL &&
-           vc      == NULL )
+      if ( element == nullptr && 
+           point   == nullptr &&
+           vc      == nullptr )
       {
          return E_INVALIDARG;
       }
@@ -304,9 +304,9 @@ STDMETHODIMP CProfile::Remove(VARIANT varID)
          CComQIPtr<IProfileElement> pe(varElement.punkVal);
          CComPtr<IUnknown> dispVal;
          pe->get_Value(&dispVal);
-         if ( element != NULL && element.IsEqualObject(varElement.punkVal) ||
-              point   != NULL && point.IsEqualObject(dispVal)              ||
-              vc      != NULL && vc.IsEqualObject(dispVal) )
+         if ( element != nullptr && element.IsEqualObject(varElement.punkVal) ||
+              point   != nullptr && point.IsEqualObject(dispVal)              ||
+              vc      != nullptr && vc.IsEqualObject(dispVal) )
          {
             UnadviseElement(iter - m_coll.begin());
             AssociateWithProfile(pe,false);
@@ -385,7 +385,7 @@ STDMETHODIMP CProfile::TemplateSegmentSlope(CogoObjectID id,VARIANT varStation,C
       return hr;
    }
 
-   if ( surface == NULL )
+   if ( surface == nullptr )
    {
       *pSlope = 0;
       return S_OK;
@@ -439,7 +439,7 @@ STDMETHODIMP CProfile::RidgePointOffset(CogoObjectID id,VARIANT varStation,Index
       return hr;
    }
 
-   if ( surface == NULL )
+   if ( surface == nullptr )
    {
       *pOffset = 0.0;
       return S_OK;
@@ -497,7 +497,7 @@ STDMETHODIMP CProfile::get__EnumProfileElements(IEnumProfileElements** retval)
       return hr;
    }
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
    {
       return hr;
@@ -544,7 +544,7 @@ STDMETHODIMP CProfile::Clone(IProfile* *clone)
    get__EnumProfileElements(&enumPE);
 
    CComPtr<IProfileElement> pe;
-   while ( enumPE->Next(1,&pe,NULL) != S_FALSE )
+   while ( enumPE->Next(1,&pe,nullptr) != S_FALSE )
    {
       CComPtr<IProfileElement> clonePE;
       pe->Clone(&clonePE);
@@ -1125,7 +1125,7 @@ HRESULT CProfile::AdjustForOffset(IStation* pStation,Float64 offset,Float64 prof
 {
    CComPtr<ISurface> surface;
    m_Surfaces->GetSurface(COGO_FINISHED_SURFACE_ID,CComVariant(pStation),&surface);
-   if ( surface == NULL )
+   if ( surface == nullptr )
    {
       *pAdjElev = profileElev;
       return S_OK;
@@ -1241,12 +1241,12 @@ void CProfile::AssociateWithProfile(IProfileElement* element,bool bAssociate)
    if ( type == peVertCurve )
    {
       CComQIPtr<IVertCurve> vc(disp);
-      vc->putref_Profile(bAssociate ? this : NULL);
+      vc->putref_Profile(bAssociate ? this : nullptr);
    }
    else if ( type == pePoint )
    {
       CComQIPtr<IProfilePoint> pp(disp);
-      pp->putref_Profile(bAssociate ? this : NULL);
+      pp->putref_Profile(bAssociate ? this : nullptr);
    }
    else
    {

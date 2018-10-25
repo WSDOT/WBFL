@@ -41,9 +41,9 @@ STDMETHODIMP CMacroTransaction::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IMacroTransaction
+		&IID_IWBFLMacroTransaction
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -57,7 +57,7 @@ STDMETHODIMP CMacroTransaction::Execute()
    for ( iter = m_Transactions.begin(); iter != m_Transactions.end(); iter++ )
    {
       TxnType item = *iter;
-      CComPtr<ITransaction> txn(item.m_T);
+      CComPtr<IWBFLTransaction> txn(item.m_T);
 
       txn->Execute();
    }
@@ -71,7 +71,7 @@ STDMETHODIMP CMacroTransaction::Undo()
    for ( iter = m_Transactions.rbegin(); iter != m_Transactions.rend(); iter++ )
    {
       TxnType item = *iter;
-      CComPtr<ITransaction> txn(item.m_T);
+      CComPtr<IWBFLTransaction> txn(item.m_T);
 
       txn->Undo();
    }
@@ -91,7 +91,7 @@ STDMETHODIMP CMacroTransaction::put_Name(BSTR newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CMacroTransaction::AddTransaction(ITransaction *txn)
+STDMETHODIMP CMacroTransaction::AddTransaction(IWBFLTransaction *txn)
 {
    m_Transactions.push_back(TxnType(txn));
 

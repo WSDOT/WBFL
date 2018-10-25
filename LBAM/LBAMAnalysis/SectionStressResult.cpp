@@ -42,7 +42,7 @@ STDMETHODIMP CSectionStressResult::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISectionStressResult
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -214,7 +214,7 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
          THROW_LBAMA(INCOMP_STRESSRESULTS);
 
       // perform summations
-      for (CollectionIndexType i=0; i<left_cnt; i++)
+      for (CollectionIndexType i = 0; i<left_cnt; i++)
       {
          Float64& rd = m_LeftResults[i];
 
@@ -226,7 +226,7 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
          rd += (inc*leftFactor);
       }
 
-      for (CollectionIndexType i=0; i<right_cnt; i++)
+      for (CollectionIndexType i = 0; i<right_cnt; i++)
       {
          Float64& rd = m_RightResults[i];
 
@@ -317,7 +317,7 @@ STDMETHODIMP CSectionStressResult::Load(IStructuredLoad2 * pload)
       m_LeftResults.clear();
       m_LeftResults.reserve(cnt);
 
-      for (long i=0; i<cnt; i++)
+      for (long i = 0; i<cnt; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t("LeftVal"),&var);
@@ -337,7 +337,7 @@ STDMETHODIMP CSectionStressResult::Load(IStructuredLoad2 * pload)
       m_RightResults.clear();
       m_RightResults.reserve(cnt);
 
-      for (long i=0; i<cnt; i++)
+      for (long i = 0; i<cnt; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t("RightVal"),&var);
@@ -376,7 +376,7 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("LeftVal"),_variant_t(m_LeftResults[i]));
          if (FAILED(hr))
@@ -388,7 +388,7 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("RightVal"),_variant_t(m_RightResults[i]));
          if (FAILED(hr))

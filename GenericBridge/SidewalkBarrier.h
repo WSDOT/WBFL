@@ -74,40 +74,40 @@ private:
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISidewalkBarrier
 public:
-	STDMETHOD(put_Barrier1)(/*[in]*/IBarrier* extBarrier,/*[in]*/TrafficBarrierOrientation orientation);
+	STDMETHOD(put_Barrier1)(/*[in]*/IBarrier* extBarrier,/*[in]*/TrafficBarrierOrientation orientation) override;
 	STDMETHOD(put_Barrier2)(/*[in]*/IBarrier* extBarrier,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 swWidth,
                            /*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition);
 	STDMETHOD(put_Barrier3)(/*[in]*/IBarrier* extBarrier,/*[in]*/Float64 h1,/*[in]*/Float64 h2,/*[in]*/Float64 swWidth,
                            /*[in]*/TrafficBarrierOrientation orientation,/*[in]*/ SidewalkPositionType swPosition,
                            /*[in]*/IBarrier* intBarrier);
-   STDMETHOD(get_HasSidewalk)(/*[out,retval]*/VARIANT_BOOL *bHasSw);
-   STDMETHOD(get_HasInteriorBarrier)(/*[out,retval]*/VARIANT_BOOL *bHasIb);
-   STDMETHOD(get_SidewalkWidth)(/*[out,retval]*/Float64* width);
-   STDMETHOD(get_ExteriorBarrier)(/*[out,retval]*/ IBarrier** barr);
-   STDMETHOD(get_InteriorBarrier)(/*[out,retval]*/ IBarrier** barr);
-   STDMETHOD(get_SidewalkShape)(/*[out,retval]*/ IShape** shape);
-   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape);
-   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape);
-	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path);
-	STDMETHOD(put_Path)(/*[in]*/ IPath* path);
-   STDMETHOD(put_IsInteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-   STDMETHOD(put_IsSidewalkStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-	STDMETHOD(put_IsExteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-	STDMETHOD(get_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL* pbContinuous);
-	STDMETHOD(get_SidewalkPosition)(/*[out,retval]*/ SidewalkPositionType* posType);
-	STDMETHOD(get_ExteriorCurbWidth)(/*[out,retval]*/ Float64* curbWidth);
-	STDMETHOD(get_CurbWidth)(/*[out,retval]*/ Float64* curbWidth);
-	STDMETHOD(get_OverlayToeWidth)(/*[out]*/ Float64* toeWidth);
-   STDMETHOD(Clone)(/*[out,retval]*/ISidewalkBarrier** clone);
+   STDMETHOD(get_HasSidewalk)(/*[out,retval]*/VARIANT_BOOL *bHasSw) override;
+   STDMETHOD(get_HasInteriorBarrier)(/*[out,retval]*/VARIANT_BOOL *bHasIb) override;
+   STDMETHOD(get_SidewalkWidth)(/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_ExteriorBarrier)(/*[out,retval]*/ IBarrier** barr) override;
+   STDMETHOD(get_InteriorBarrier)(/*[out,retval]*/ IBarrier** barr) override;
+   STDMETHOD(get_SidewalkShape)(/*[out,retval]*/ IShape** shape) override;
+   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape) override;
+   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape) override;
+	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path) override;
+	STDMETHOD(put_Path)(/*[in]*/ IPath* path) override;
+   STDMETHOD(put_IsInteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous) override;
+   STDMETHOD(put_IsSidewalkStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous) override;
+	STDMETHOD(put_IsExteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous) override;
+	STDMETHOD(get_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL* pbContinuous) override;
+	STDMETHOD(get_SidewalkPosition)(/*[out,retval]*/ SidewalkPositionType* posType) override;
+	STDMETHOD(get_ExteriorCurbWidth)(/*[out,retval]*/ Float64* curbWidth) override;
+	STDMETHOD(get_CurbWidth)(/*[out,retval]*/ Float64* curbWidth) override;
+	STDMETHOD(get_OverlayToeWidth)(/*[out]*/ Float64* toeWidth) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ISidewalkBarrier** clone) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__SIDEWALKBARRIER_H_

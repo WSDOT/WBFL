@@ -77,27 +77,27 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStressPointsEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index);
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index) override;
 
 // IPOIStressPoints
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/IPOIStressPoints** Clone);
-	STDMETHOD(Remove)(/*[in]*/BSTR Stage);
-	STDMETHOD(Insert)(/*[in]*/BSTR Stage, /*[in]*/IStressPoints* leftSps, /*[in]*/IStressPoints* rightSps);
-	STDMETHOD(Clear)();
-	STDMETHOD(get_Item)(/*[in]*/VARIANT idx, /*[out, retval]*/ IPOIStressPointsItem* *pVal);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(get__EnumElements)(IEnumPOIStressPoints **ppenum);
-   STDMETHOD(get__NewEnum)(IUnknown** ppUnk);
+	STDMETHOD(Clone)(/*[out,retval]*/IPOIStressPoints** Clone) override;
+	STDMETHOD(Remove)(/*[in]*/BSTR Stage) override;
+	STDMETHOD(Insert)(/*[in]*/BSTR Stage, /*[in]*/IStressPoints* leftSps, /*[in]*/IStressPoints* rightSps) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(get_Item)(/*[in]*/VARIANT idx, /*[out, retval]*/ IPOIStressPointsItem* *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(get__EnumElements)(IEnumPOIStressPoints **ppenum) override;
+   STDMETHOD(get__NewEnum)(IUnknown** ppUnk) override;
 
 private:
 

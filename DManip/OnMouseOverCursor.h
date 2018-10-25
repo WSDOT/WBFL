@@ -31,7 +31,7 @@ public:
    COnMouseOverCursor(HWND hwnd,HINSTANCE hInstance,LPCTSTR lpCursorName,UINT uElapse,CRgn* rgn);
    
    // Sets the address of the point the owner has to this object...
-   // When the timer goes off, this passed pointer is set to NULL indicating that
+   // When the timer goes off, this passed pointer is set to nullptr indicating that
    // this object has been deleted
    void StartTracking(COnMouseOverCursor* *parent);
 

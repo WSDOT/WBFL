@@ -57,7 +57,7 @@ void CLineSegmentCollection::FinalRelease()
 //	{
 //		&IID_ILineSegmentCollection
 //	};
-//	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+//	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 //	{
 //		if (InlineIsEqualGUID(*arr[i],riid))
 //			return S_OK;
@@ -122,7 +122,7 @@ STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID id, IPoint2d* start, IPoin
    CHECK_IN(start);
    CHECK_IN(end);
 
-   if ( ls != NULL )
+   if ( ls != nullptr )
    {
       CHECK_RETOBJ(ls);
    }
@@ -133,7 +133,7 @@ STDMETHODIMP CLineSegmentCollection::Add(CogoObjectID id, IPoint2d* start, IPoin
    newLS->putref_StartPoint(start);
    newLS->putref_EndPoint(end);
 
-   if ( ls != NULL )
+   if ( ls != nullptr )
    {
       (*ls) = newLS;
       (*ls)->AddRef();
@@ -203,7 +203,7 @@ STDMETHODIMP CLineSegmentCollection::FindID(ILineSegment2d* ls, CogoObjectID* id
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<ILineSegment2d> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(ls) )
       {
          *id = item.first;
@@ -224,7 +224,7 @@ STDMETHODIMP CLineSegmentCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -243,7 +243,7 @@ STDMETHODIMP CLineSegmentCollection::get__EnumLineSegments(IEnumLineSegments** p
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -300,7 +300,7 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
    CComPtr<IEnumLineSegments> enumLS;
    get__EnumLineSegments(&enumLS);
    CComPtr<ILineSegment2d> ls;
-   while ( enumLS->Next(1,&ls,NULL) != S_FALSE )
+   while ( enumLS->Next(1,&ls,nullptr) != S_FALSE )
    {
       CComPtr<ILineSegment2d> cloneLS;
       m_Factory->CreateLineSegment(&cloneLS);
@@ -332,7 +332,7 @@ STDMETHODIMP CLineSegmentCollection::Clone(ILineSegmentCollection* *clone)
 STDMETHODIMP CLineSegmentCollection::OnLineSegmentChanged(ILineSegment2d* lineSeg)
 {
    CComQIPtr<ILineSegment2d> lineSegEx(lineSeg);
-   ATLASSERT( lineSegEx != NULL ); // better be listening only to LineSegment2dEx objects
+   ATLASSERT( lineSegEx != nullptr ); // better be listening only to LineSegment2dEx objects
 
    CogoObjectID id;
    HRESULT hr = FindID(lineSegEx,&id);

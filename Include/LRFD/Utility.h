@@ -133,7 +133,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdUtility(const lrfdUtility&);
-   lrfdUtility& operator=(const lrfdUtility&);
+   lrfdUtility& operator=(const lrfdUtility&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

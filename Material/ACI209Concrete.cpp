@@ -225,22 +225,22 @@ Float64 matACI209Concrete::GetShearFr(Float64 t) const
 
 Float64 matACI209Concrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   std::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
    return pDetails->esh;
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> matACI209Concrete::GetFreeShrinkageStrainDetails(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> matACI209Concrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
-   matACI209ConcreteShrinkageDetails* pDetails = new matACI209ConcreteShrinkageDetails;
+   std::shared_ptr<matACI209ConcreteShrinkageDetails> pDetails(std::make_shared<matACI209ConcreteShrinkageDetails>());
 
-   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+   matConcreteBase::InitializeShrinkageDetails(t, std::dynamic_pointer_cast<matConcreteBaseShrinkageDetails>(pDetails));
 
    ValidateCorrectionFactors();
 
    Float64 shrinkage_time = pDetails->shrinkage_duration;
    if ( shrinkage_time < 0 )
    {
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 f = (m_CureMethod == matConcreteBase::Moist ? 35 : 55); // Eqn 2-1, 2-9, 2-10
@@ -270,7 +270,7 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> matACI209Concrete::GetFreeShr
    pDetails->humidity_factor = m_RHS;
    pDetails->vs_factor = m_VSS;
    pDetails->esh = sh;
-   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+   return pDetails;
 }
 
 Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
@@ -278,10 +278,10 @@ Float64 matACI209Concrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    return GetCreepCoefficientDetails(t,tla)->Ct;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> matACI209Concrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> matACI209Concrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
-   matACI209ConcreteCreepDetails* pDetails = new matACI209ConcreteCreepDetails;
-   InitializeCreepDetails(t,tla,pDetails);
+   std::shared_ptr<matACI209ConcreteCreepDetails> pDetails(std::make_shared<matACI209ConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla, std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
 
    ValidateCorrectionFactors();
 
@@ -290,7 +290,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> matACI209Concrete::GetCreepCoeffi
    Float64 maturity = age - age_at_loading;
    if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 tx = pow(maturity,0.6);
@@ -332,7 +332,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> matACI209Concrete::GetCreepCoeffi
    pDetails->vs_factor = m_VSC;
    pDetails->Ct = c;
    
-   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+   return pDetails;
 }
 
 matConcreteBase* matACI209Concrete::CreateClone() const

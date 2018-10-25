@@ -105,9 +105,9 @@ m_LastInternalPoiID(0),
 m_MinSpanPoiIncrement(minSpanPoiIncr),
 m_MinCantileverPoiIncrement(minCantileverPoiIncr)
 {
-   ATLASSERT(pModel!=NULL);
-   ATLASSERT(pStageOrder!=NULL);
-   ATLASSERT(pLoadGroupOrder!=NULL);
+   ATLASSERT(pModel!=nullptr);
+   ATLASSERT(pStageOrder!=nullptr);
+   ATLASSERT(pLoadGroupOrder!=nullptr);
 
    CHRException hr;
    hr = m_ContraflexureLocations.CoCreateInstance(CLSID_DblArray);
@@ -123,7 +123,7 @@ void CAnalysisModel::BuildModel(BSTR bstrName)
    CHRException hr;
 
    // make sure we're starting with an empty fem model
-   ATLASSERT(m_pFem2d==NULL);
+   ATLASSERT(m_pFem2d==nullptr);
 
    // get length of superstructure
    CComPtr<ISuperstructureMembers> pmembers;
@@ -224,7 +224,7 @@ void CAnalysisModel::DumpFEMModel()
 
 void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
 {
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    try
    {
@@ -249,7 +249,7 @@ void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float6
 
 void CAnalysisModel::GetForce(LoadGroupIDType lgId, PoiIDType poiId, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
 {
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    try
    {
@@ -277,7 +277,7 @@ void CAnalysisModel::GetUnitLoadResponse(PoiIDType poiID,PoiIDType loadPoiID, Fo
    // these are the only unit load types supported
    ATLASSERT( forceEffect == fetFy || forceEffect == fetMz );
 
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
 
@@ -351,13 +351,13 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
       // get stress factors for poi from cached data
       CComPtr<IStressPoints> left_sps, right_sps;
       info.GetStressPoints(&left_sps, &right_sps);
-      if (left_sps != NULL)
+      if (left_sps != nullptr)
       {
          CollectionIndexType num_sps;
          hr = left_sps->get_Count(&num_sps);
          sLeft.reserve(num_sps);
 
-         for (CollectionIndexType isp=0; isp<num_sps; isp++)
+         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> left_stress_point;
             hr = left_sps->get_Item(isp, &left_stress_point);
@@ -373,14 +373,14 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
          }
 
          // get right stress point if it is available, otherwise use value from left
-         if (right_sps == NULL)
+         if (right_sps == nullptr)
             right_sps = left_sps;
 
          hr = right_sps->get_Count(&num_sps);
 
          sRight.reserve(num_sps);
 
-         for (CollectionIndexType isp=0; isp<num_sps; isp++)
+         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> right_stress_point;
             hr = right_sps->get_Item(isp, &right_stress_point);
@@ -584,8 +584,8 @@ void CAnalysisModel::ApplyTemporarySupportReaction(LoadCaseIDType tempSupportLoa
 void CAnalysisModel::GetFemLocForLBAMLoc(MemberType lbamMbrType, MemberIDType lbamMbrId, Float64 lbamLoc, MemberLocationType* locType, 
                                          MemberIDType* pfemId, Float64* pfemLoc)
 {
-   ATLASSERT(m_pLBAMModel!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pLBAMModel!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    try
    {
@@ -647,8 +647,8 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
 {
    // finds a list of fem members based on a member in the LBAM
    // RETURNS A POINTER TO THE INTERNAL LIST - don't free or change!
-   ATLASSERT(m_pLBAMModel!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pLBAMModel!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
    ATLASSERT(*pFemMbrList==0);
 
    // switch on member type
@@ -674,6 +674,16 @@ void CAnalysisModel::GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType
          {
             CComBSTR msg =CreateErrorMsg1L(IDS_E_SSM_NOT_EXIST, mbrId);
             THROW_LBAMA_MSG(SSM_NOT_EXIST,msg);
+         }
+
+         // if a member is condensed, use its neighbor
+         if (m_SuperstructureMemberElements[mbrId].GetCondenseType() == leftCondensed)
+         {
+            mbrId--;
+         }
+         else if (m_SuperstructureMemberElements[mbrId].GetCondenseType() == rightCondensed)
+         {
+            mbrId++;
          }
 
          ElementLayoutVec& rlist = m_SuperstructureMemberElements[mbrId];
@@ -729,26 +739,56 @@ void CAnalysisModel::GetFemMemberLocationAlongSSM( CollectionIndexType ssmIdx, F
             THROW_HR(E_FAIL); // should already have been blocked
          }
 
+         // See if our ssm has been condensed
+         if (m_SuperstructureMemberElements[ssmIdx].GetCondenseType() == leftCondensed)
+         {
+            // ssm was condensed to ssm on the left
+            if (ssmIdx < nSSMbrs - 2)
+            {
+               ssmIdx++;
+               lbamLoc = 0.0; // at left end of next ssm
+            }
+            else
+            {
+               ssmIdx--;
+               lbamLoc = -1.0; // last ssm on bridge. go to right end of previous
+            }
+         }
+         else if (m_SuperstructureMemberElements[ssmIdx].GetCondenseType() == rightCondensed)
+         {
+            // ssm was condensed to ssm on the right
+            if (ssmIdx != 0)
+            {
+               ssmIdx--;
+               lbamLoc = -1.0; // right end of previous
+            }
+            else
+            {
+               ssmIdx++;
+               lbamLoc = 0.0; // left end of bridge, go to left end of next ssm
+            }
+         }
+
          // get locations of ends of ssm
-         Float64 left_end   = ssmIdx==0? -m_LeftOverhang: m_SuperstructureMemberEnds[ssmIdx-1];
-         Float64 right_end  = m_SuperstructureMemberEnds[ssmIdx];
+         Float64 left_end = ssmIdx == 0 ? -m_LeftOverhang : m_SuperstructureMemberEnds[ssmIdx - 1];
+         Float64 right_end = m_SuperstructureMemberEnds[ssmIdx];
          Float64 ssm_length = right_end - left_end;
 
-         Float64 ssm_loc;
          // get location wrt start of lbam (location==0.0)
+         Float64 ssm_loc;
          try
          {
             ssm_loc = GetFracDistance(lbamLoc, ssm_length);
          }
-         catch(FracRes&)
+         catch (FracRes&)
          {
-            CComBSTR msg =CreateErrorMsg1D(IDS_E_LOCATION_OOR,lbamLoc);
-            THROW_LBAMA_MSG(LOCATION_OOR,msg);
+            CComBSTR msg = CreateErrorMsg1D(IDS_E_LOCATION_OOR, lbamLoc);
+            THROW_LBAMA_MSG(LOCATION_OOR, msg);
          }
 
          ssm_loc += left_end;
 
-         ATLASSERT( InRange(left_end,ssm_loc,right_end) );
+         ATLASSERT(InRange(left_end, ssm_loc, right_end));
 
          // next can find element that this location lies along
          ElementLayoutVec& member_list = m_SuperstructureMemberElements[ssmIdx];
@@ -1185,8 +1225,8 @@ void CAnalysisModel::GenerateLoads()
 
 void CAnalysisModel::GenerateLoadsForLoadGroup(BSTR loadGroup)
 {
-   ATLASSERT(m_pLBAMModel!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pLBAMModel!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    try
    {
@@ -1201,7 +1241,7 @@ void CAnalysisModel::GenerateLoadsForLoadGroup(BSTR loadGroup)
 
       CComPtr<IFem2dLoading> fem_loading;
       fem_loadings->Create(fem_lgid,&fem_loading);
-      ATLASSERT(fem_loading != NULL);
+      ATLASSERT(fem_loading != nullptr);
 
       bool were_loads_applied=false;
       bool wla;
@@ -1243,8 +1283,8 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
    CComPtr<IPointLoads> filtered_loads;
    hr = lbam_point_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-   CollectionIndexType cnt=0;
-   if (filtered_loads!=NULL)
+   CollectionIndexType cnt = 0;
+   if (filtered_loads!=nullptr)
    {
       hr = filtered_loads->get_Count(&cnt);
    }
@@ -1260,7 +1300,7 @@ void CAnalysisModel::GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadin
       CComPtr<IFem2dJointLoadCollection> fem_joint_loads;
       femLoading->get_JointLoads(&fem_joint_loads);
 
-      for (CollectionIndexType il=0; il<cnt; il++)
+      for (CollectionIndexType il = 0; il<cnt; il++)
       {
          CComPtr<IPointLoadItem> lbam_point_load_item;
          hr = filtered_loads->get_Item(il, &lbam_point_load_item);
@@ -1396,8 +1436,8 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
       CComPtr<IDistributedLoads> filtered_loads;
       hr = lbam_distr_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt=0;
-      if (filtered_loads!=NULL)
+      CollectionIndexType cnt = 0;
+      if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
       }
@@ -1411,7 +1451,7 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il=0; il<cnt; il++)
+         for (CollectionIndexType il = 0; il<cnt; il++)
          {
             CComPtr<IDistributedLoadItem> lbam_distr_load_item;
             hr = filtered_loads->get_Item(il, &lbam_distr_load_item);
@@ -1424,6 +1464,15 @@ void CAnalysisModel::GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
             MemberIDType member_id;
             hr = lbam_distr_load->get_MemberID(&member_id);
+
+            // Do not generate loads on SSM's that have been condensed from model
+            if (mtSuperstructureMember == mtype)
+            {
+               if (m_SuperstructureMemberElements[member_id].GetCondenseType()!=notCondensed)
+               {
+                  continue;
+               }
+            }
 
             Float64 start_location, end_location;
             hr = lbam_distr_load->get_StartLocation(&start_location);
@@ -1562,11 +1611,11 @@ void CAnalysisModel::GenDistributedLoadAlongElements(IFem2dDistributedLoadCollec
    }
 
    Float64 tmp_len = locations.back();
-   ATLASSERT( IsEqual(mbrLength,locations.back()) );
+   ATLASSERT( IsEqual(mbrLength,locations.back(),m_LayoutTolerance) ); // condensed ssm's can throw lengths off slightly
 
    // loop through elements and apply loads
    bool did_end=false;
-   for (CollectionIndexType ie=0; ie<num_elements; ie++)
+   for (CollectionIndexType ie = 0; ie<num_elements; ie++)
    {
       MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
       Float64 mbr_start = locations[ie];
@@ -1628,8 +1677,8 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
       CComPtr<IStrainLoads> filtered_loads;
       hr = lbam_strain_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt=0;
-      if (filtered_loads!=NULL)
+      CollectionIndexType cnt = 0;
+      if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
       }
@@ -1643,7 +1692,7 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il=0; il<cnt; il++)
+         for (CollectionIndexType il = 0; il<cnt; il++)
          {
             CComPtr<IStrainLoadItem> lbam_strain_load_item;
             hr = filtered_loads->get_Item(il, &lbam_strain_load_item);
@@ -1656,6 +1705,16 @@ void CAnalysisModel::GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoadi
 
             MemberIDType member_id;
             hr = lbam_strain_load->get_MemberID(&member_id);
+
+            // Do not generate loads on SSM's that have been condensed from model
+            if (mtSuperstructureMember == mtype)
+            {
+               if (m_SuperstructureMemberElements[member_id].GetCondenseType()!=notCondensed)
+               {
+                  continue;
+               }
+            }
+
 
             Float64 axial_strain, curvature_strain;
             hr = lbam_strain_load->get_AxialStrain(&axial_strain);
@@ -1755,7 +1814,7 @@ void CAnalysisModel::GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pF
 
    // loop through elements and apply loads
    bool did_end=false;
-   for (CollectionIndexType ie=0; ie<num_elements; ie++)
+   for (CollectionIndexType ie = 0; ie<num_elements; ie++)
    {
       MemberIDType mbr_id = pfemMbrList->at(ie).m_FemMemberID;
       Float64 mbr_start = locations[ie];
@@ -1811,8 +1870,8 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
       CComPtr<ITemperatureLoads> filtered_loads;
       hr = lbam_temperature_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt=0;
-      if (filtered_loads!=NULL)
+      CollectionIndexType cnt = 0;
+      if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
       }
@@ -1827,7 +1886,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il=0; il<cnt; il++)
+         for (CollectionIndexType il = 0; il<cnt; il++)
          {
             CComPtr<ITemperatureLoadItem> lbam_temperature_load_item;
             hr = filtered_loads->get_Item(il, &lbam_temperature_load_item);
@@ -1840,6 +1899,15 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
 
             MemberIDType member_id;
             hr = lbam_temperature_load->get_MemberID(&member_id);
+
+            // Do not generate loads on SSM's that have been condensed from model
+            if (mtSuperstructureMember == mtype)
+            {
+               if (m_SuperstructureMemberElements[member_id].GetCondenseType()!=notCondensed)
+               {
+                  continue;
+               }
+            }
 
             Float64 ttop, tbottom;
             hr = lbam_temperature_load->get_TTop(&ttop);
@@ -1863,7 +1931,7 @@ void CAnalysisModel::GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2d
             }
 
             // iterate over fem elements and apply temperature load for this load case
-            for ( CollectionIndexType ie=0; ie<num_elements; ie++)
+            for ( CollectionIndexType ie = 0; ie<num_elements; ie++)
             {
                MemberIDType mbr_id = pfem_mbr_list->at(ie).m_FemMemberID;
                CComPtr<ISegmentCrossSection> psect = pfem_mbr_list->at(ie).m_XSect;
@@ -1916,8 +1984,8 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
       CComPtr<ISettlementLoads> filtered_loads;
       hr = lbam_settlement_loads->FilterByStageGroup(m_Stage,loadGroup, &filtered_loads);
 
-      CollectionIndexType cnt=0;
-      if (filtered_loads!=NULL)
+      CollectionIndexType cnt = 0;
+      if (filtered_loads!=nullptr)
       {
          hr = filtered_loads->get_Count(&cnt);
       }
@@ -1931,7 +1999,7 @@ void CAnalysisModel::GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dL
 
          LoadIDType last_load_id = 1;
 
-         for (CollectionIndexType il=0; il<cnt; il++)
+         for (CollectionIndexType il = 0; il<cnt; il++)
          {
             CComPtr<ISettlementLoadItem> lbam_settlement_load_item;
             hr = filtered_loads->get_Item(il, &lbam_settlement_load_item);
@@ -2009,7 +2077,7 @@ void CAnalysisModel::ClearPOIs(IFem2dPOICollection* pFemPois)
    std::for_each(m_PoiMap.begin(),m_PoiMap.end(),delete_pointer);
    m_PoiMap.clear();
 
-   m_pPoiTracker = PoiTrackerHolder(NULL);
+   m_pPoiTracker = PoiTrackerHolder(nullptr);
 
    m_LastInternalPoiID = 0;
    m_IsPoiMapUpdated   = false;
@@ -2073,7 +2141,7 @@ void CAnalysisModel::GenerateInternalPOIsAtSpans()
    Float64 span_start = 0.0;
    Float64 span_end = 0.0;
    Float64 running_span_length = 0.0;
-   for (SpanIndexType ispan=0; ispan<spans_cnt; ispan++)
+   for (SpanIndexType ispan = 0; ispan<spans_cnt; ispan++)
    {
       CComPtr<ISpan> pspan;
       hr = pspans->get_Item(ispan, &pspan);
@@ -2222,7 +2290,7 @@ void CAnalysisModel::GenerateInternalPOIsAtSuperstructureMembers()
       Float64 ssm_end = ssm_start;
       Float64 prev_ssm_length=0.0;
       Float64 ssm_length=0.0;
-      for (CollectionIndexType issm=0; issm<ssms_cnt; issm++)
+      for (CollectionIndexType issm = 0; issm<ssms_cnt; issm++)
       {
          CComPtr<ISuperstructureMember> pssm;
          hr = pssms->get_Item(issm, &pssm);
@@ -2279,7 +2347,7 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
    
       Float64 span_start = 0.0;
       Float64 span_end = 0.0;
-      for (SpanIndexType ispan=0; ispan<spans_cnt; ispan++)
+      for (SpanIndexType ispan = 0; ispan<spans_cnt; ispan++)
       {
          CComPtr<ISpan> pspan;
          hr = pspans->get_Item(ispan, &pspan);
@@ -2299,7 +2367,7 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
             span_start = span_end;
             span_end +=  span_length;
 
-            for (SupportIndexType its=0; its<ts_cnt; its++)
+            for (SupportIndexType its = 0; its<ts_cnt; its++)
             {
                CComPtr<ITemporarySupport> pts;
                hr = ptss->get_Item(its, &pts);
@@ -2362,8 +2430,8 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
 void CAnalysisModel::GenerateUserDefinedPOIs()
 {
    CHRException hr;
-   ATLASSERT(m_pLBAMModel!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pLBAMModel!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    CComPtr<IFem2dPOICollection> fem_pois;
    m_pFem2d->get_POIs(&fem_pois);
@@ -2375,7 +2443,7 @@ void CAnalysisModel::GenerateUserDefinedPOIs()
    hr = lbam_pois->get__EnumElements(&enum_pois);
 
    CComPtr<IPOI> lbam_poi;
-   while ( enum_pois->Next(1,&lbam_poi,NULL) != S_FALSE )
+   while ( enum_pois->Next(1,&lbam_poi,nullptr) != S_FALSE )
    {
       MemberType mtype;
       hr = lbam_poi->get_MemberType(&mtype);
@@ -2599,8 +2667,8 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
 
 {
    CHRException hr;
-   *leftSegmentCrossSection  = NULL;
-   *rightSegmentCrossSection = NULL;
+   *leftSegmentCrossSection  = nullptr;
+   *rightSegmentCrossSection = nullptr;
 
    if (mbrType==mtSpan)
    {
@@ -2624,7 +2692,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       // loop over ssms until we find the one with our poi in it
       Float64 ssm_start=0.0;
       Float64 ssm_end=0.0;
-      for (CollectionIndexType i_ssm=0; i_ssm<ssm_cnt; i_ssm++)
+      for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
       {
          CComPtr<ISuperstructureMember> ssm;
          hr = ssms->get_Item(i_ssm, &ssm);
@@ -2645,7 +2713,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                hr = ssm-> GetSegmentForMemberLocation(m_Stage, -1.0, &left_segi, &right_segi);
 
                // if left segment is zero - there are no segments for this ssm - just return;
-               if (left_segi==NULL)
+               if (left_segi==nullptr)
                {
                   break;
                }
@@ -2672,7 +2740,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
 
                      hr = ssmr-> GetSegmentForMemberLocation(m_Stage, 0.0, &left_segi, &right_segi);
 
-                     if (left_segi==NULL)
+                     if (left_segi==nullptr)
                      {
                         break; // no segments in this ssm
                      }
@@ -2701,7 +2769,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                hr = ssm-> GetSegmentForMemberLocation(m_Stage, ssm_loc, &left_segi, &right_segi);
 
                // if left segment is zero - there are no segments for this ssm - just return;
-               if (left_segi==NULL)
+               if (left_segi==nullptr)
                {
                   break;
                }
@@ -2718,7 +2786,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
                   *leftSegmentCrossSection = left_cs.Detach();
 
                   // next, assign right cs if there is one
-                  if ( right_segi != NULL)
+                  if ( right_segi != nullptr)
                   {
                      CComPtr<ISegment> right_seg;
                      hr = right_segi->get_Segment(&right_seg);
@@ -2755,7 +2823,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       hr = ssm-> GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
 
       // if left segment is zero - there are no segments for this ssm - just return;
-      if (left_segi!=NULL)
+      if (left_segi!=nullptr)
       {
          CComPtr<ISegment> left_seg;
          hr = left_segi->get_Segment(&left_seg);
@@ -2767,7 +2835,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
          *leftSegmentCrossSection = left_cs.Detach();
 
          // next, assign right cs if there is one
-         if ( right_segi != NULL)
+         if ( right_segi != nullptr)
          {
             CComPtr<ISegment> right_seg;
             hr = right_segi->get_Segment(&right_seg);
@@ -2793,7 +2861,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       hr = support-> GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
 
       // if left segment is zero - there are no segments for this support - just return;
-      if (left_segi!=NULL)
+      if (left_segi!=nullptr)
       {
          CComPtr<ISegment> left_seg;
          hr = left_segi->get_Segment(&left_seg);
@@ -2805,7 +2873,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
          *leftSegmentCrossSection = left_cs.Detach();
 
          // next, assign right cs if there is one
-         if ( right_segi != NULL)
+         if ( right_segi != nullptr)
          {
             CComPtr<ISegment> right_seg;
             hr = right_segi->get_Segment(&right_seg);
@@ -2824,13 +2892,13 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
       SpanIndexType span_no;
       FindTemporarySupport(m_pLBAMModel, mbrID, &ts, &span_no);
 
-      if (ts != NULL)
+      if (ts != nullptr)
       {
          CComPtr<ISegmentItem> left_segi, right_segi;
          hr = ts->GetSegmentForMemberLocation(m_Stage, mbrLoc, &left_segi, &right_segi);
 
          // if left segment is zero - there are no segments for this support - just return;
-         if (left_segi!=NULL)
+         if (left_segi!=nullptr)
          {
             CComPtr<ISegment> left_seg;
             hr = left_segi->get_Segment(&left_seg);
@@ -2842,7 +2910,7 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
             *leftSegmentCrossSection = left_cs.Detach();
 
             // next, assign right cs if there is one
-            if ( right_segi != NULL)
+            if ( right_segi != nullptr)
             {
                CComPtr<ISegment> right_seg;
                hr = right_segi->get_Segment(&right_seg);
@@ -2869,8 +2937,8 @@ void CAnalysisModel::GetSegmentCrossSectionAtLocation(MemberType mbrType, Member
 
 void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossSection* *leftCs, ISegmentCrossSection* *rightCs)
 {
-   *leftCs = NULL;
-   *rightCs = NULL;
+   *leftCs = nullptr;
+   *rightCs = nullptr;
 
    // get from cached data
    PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
@@ -2880,12 +2948,12 @@ void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossS
 
       CComPtr<ISegmentCrossSection> left_sps, right_sps;
       info.GetSegmentCrossSection(&left_sps, &right_sps);
-      if (left_sps != NULL)
+      if (left_sps != nullptr)
       {
          left_sps.CopyTo(leftCs);
       }
 
-      if (right_sps != NULL)
+      if (right_sps != nullptr)
       {
          right_sps.CopyTo(rightCs);
       }
@@ -2899,8 +2967,8 @@ void CAnalysisModel::GetSegmentCrossSectionAtPOI(PoiIDType poiId, ISegmentCrossS
 
 void CAnalysisModel::GetStressPointsAtPOI(PoiIDType poiId, IStressPoints* *leftSps, IStressPoints* *rightSps)
 {
-   *leftSps = NULL;
-   *rightSps = NULL;
+   *leftSps = nullptr;
+   *rightSps = nullptr;
 
    // get from cached data
    PoiMapIterator it(m_PoiMap.find( &PoiMap(poiId) ));
@@ -2910,12 +2978,12 @@ void CAnalysisModel::GetStressPointsAtPOI(PoiIDType poiId, IStressPoints* *leftS
 
       CComPtr<IStressPoints> left_sps, right_sps;
       info.GetStressPoints(&left_sps, &right_sps);
-      if (left_sps != NULL)
+      if (left_sps != nullptr)
       {
          left_sps.CopyTo(leftSps);
       }
 
-      if (right_sps != NULL)
+      if (right_sps != nullptr)
       {
          right_sps.CopyTo(rightSps);
       }
@@ -2932,8 +3000,8 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
 {
    CHRException hr;
 
-   (*leftFactor)  = NULL;
-   (*rightFactor) = NULL;
+   (*leftFactor)  = nullptr;
+   (*rightFactor) = nullptr;
 
    CComPtr<IDistributionFactor> leftLLDF, rightLLDF;
 
@@ -2961,7 +3029,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       // We typically don't want lldf's to change right at the ends of a member.
       // But this is what can happen if things get slightly out of tolerance.
       // The code in the block below prevents changes at the very ends of a member.
-      if ( leftLLDF != NULL && rightLLDF != NULL && leftLLDF != rightLLDF )
+      if ( leftLLDF != nullptr && rightLLDF != nullptr && leftLLDF != rightLLDF )
       {
          if (member_location < m_LayoutTolerance)
          {
@@ -3014,7 +3082,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       SpanIndexType span_no;
       FindTemporarySupport(m_pLBAMModel, member_id, &temp_support, &span_no);
 
-      if (temp_support!=NULL)
+      if (temp_support!=nullptr)
       {
          hr = temp_support->get_DistributionFactor(&leftLLDF);
       }
@@ -3056,14 +3124,14 @@ void CAnalysisModel::GetSupportDistributionFactor(SupportIndexType supportIdx, I
       CComPtr<ITemporarySupport> temp_support;
       SpanIndexType spanIdx;
       FindTemporarySupport(m_pLBAMModel, supportIdx, &temp_support, &spanIdx);
-      if (temp_support!=NULL)
+      if (temp_support!=nullptr)
       {
          hr = temp_support->get_DistributionFactor(Factor);
       }
       else
       {
          // support not found
-         *Factor = NULL;
+         *Factor = nullptr;
          CComBSTR msg(::CreateErrorMsg1L(IDS_E_SUPPORT_NOT_EXIST, supportIdx));
          THROW_LBAMA_MSG(SUPPORT_NOT_EXIST,msg);
       }
@@ -3080,7 +3148,7 @@ void CAnalysisModel::CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDT
    m_pLBAMModel->ComputeLocation(lbamMbrID,mbrType,lbamMbrLoc,&xloc,&yloc);
 
    // Create a PoiMap to store creation data
-   std::auto_ptr<PoiMapToFemPoi> poi_map(new PoiMapToFemPoi(poiID, xloc, mbrType, lbamMbrID, lbamMbrLoc));
+   std::unique_ptr<PoiMapToFemPoi> poi_map(std::make_unique<PoiMapToFemPoi>(poiID, xloc, mbrType, lbamMbrID, lbamMbrLoc));
 
    ATLASSERT(locType!=mltNotFound && locType!=mltStraddle);
    poi_map->SetMemberLocationType(locType);
@@ -3098,7 +3166,7 @@ void CAnalysisModel::CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDT
    fem_pois->Create(fem_poi_id, femMbrID, femMbrLoc, &femPoi);
 
    poi_map->SetFemPoi(fem_poi_id);
-   poi_map->SetIsInternallyGenerated(poi==NULL);
+   poi_map->SetIsInternallyGenerated(poi==nullptr);
 
    // cache away poi information for later
    m_PoiMap.insert( poi_map.release() );
@@ -3117,7 +3185,7 @@ void CAnalysisModel::CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, Member
    m_pLBAMModel->ComputeLocation(lbamMbrID,mbrType,lbamMbrLoc,&xloc,&yloc);
 
    // Create a PoiMap to store creation data
-   std::auto_ptr<PoiMapToFemMbr> poi_map(new PoiMapToFemMbr(poiID, xloc, mbrType, lbamMbrID, lbamMbrLoc));
+   std::unique_ptr<PoiMapToFemMbr> poi_map(std::make_unique<PoiMapToFemMbr>(poiID, xloc, mbrType, lbamMbrID, lbamMbrLoc));
 
    // Tricky note here: this poi straddles two members. the id of the left member is passed into this function and
    // it is assumed that the id of the right member is 1+ that id. This is true on the superstructure, but probably not
@@ -3180,7 +3248,7 @@ void CAnalysisModel::CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, Member
    // set stress points and other data
    ConfigurePoiMap(mbrType, lbamMbrID, lbamMbrLoc, poi, poi_map.get());
 
-   poi_map->SetIsInternallyGenerated(poi==NULL);
+   poi_map->SetIsInternallyGenerated(poi==nullptr);
 
    // cache away poi information for later
    m_PoiMap.insert( poi_map.release() );
@@ -3199,7 +3267,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
    // Cache stress points as well
    CComPtr<IStressPoints> left_sps, right_sps;
    hr = left_cs->get_StressPoints(&left_sps);
-   if (right_sps!=NULL)
+   if (right_sps!=nullptr)
    {
       hr = right_cs->get_StressPoints(&right_sps);
    }
@@ -3208,7 +3276,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
       right_sps = left_sps;
    }
 
-   if (poi!=NULL)  // See if stress points are defined explicitely at poi
+   if (poi!=nullptr)  // See if stress points are defined explicitely at poi
    {
       CComPtr<IPOIStressPoints> poi_sps;
       hr = poi->get_POIStressPoints(&poi_sps);
@@ -3241,7 +3309,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
                // collection and fill it partially with each
                CComPtr<IStressPoints> new_sps;
                hr = new_sps.CoCreateInstance(CLSID_StressPoints);
-               for (CollectionIndexType i=0; i<num_poi_left_sps; i++) // fill first with poi sps
+               for (CollectionIndexType i = 0; i<num_poi_left_sps; i++) // fill first with poi sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = poi_left_sps->get_Item(i, &sp);
@@ -3276,7 +3344,7 @@ void CAnalysisModel::ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID,
                // collection and fill it partially with each
                CComPtr<IStressPoints> new_sps;
                hr = new_sps.CoCreateInstance(CLSID_StressPoints);
-               for (CollectionIndexType i=0; i<num_poi_right_sps; i++) // fill first with poi sps
+               for (CollectionIndexType i = 0; i<num_poi_right_sps; i++) // fill first with poi sps
                {
                   CComPtr<IStressPoint> sp;
                   hr = poi_right_sps->get_Item(i, &sp);
@@ -3357,7 +3425,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
       return false;
    }
 
-   for (CollectionIndexType i_ssm=0; i_ssm<ssm_cnt; i_ssm++)
+   for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       hr = pssms->get_Item(i_ssm, &ssm);
@@ -3400,7 +3468,7 @@ void GetMemberEnd(MemberIDType mbrID, IFem2dMemberCollection* pMembers, IFem2dJo
    CComPtr<IFem2dMember> member;
    pMembers->Find(mbrID,&member);
 
-   if(member==NULL)
+   if(member==nullptr)
       THROW_HR(E_FAIL); 
 
    JointIDType joint_id;
@@ -3416,7 +3484,7 @@ void GetMemberEnd(MemberIDType mbrID, IFem2dMemberCollection* pMembers, IFem2dJo
    CComPtr<IFem2dJoint> joint;
    pJoints->Find(joint_id,&joint);
 
-   if(joint==NULL)
+   if(joint==nullptr)
       THROW_HR(E_FAIL); 
 
    *jointID = joint_id;
@@ -3427,13 +3495,16 @@ void GetMemberEnd(MemberIDType mbrID, IFem2dMemberCollection* pMembers, IFem2dJo
 void SetNodeNumbering(SuperNodeLocs* pNodeLocs)
 {
    // cycle through model from left to right and number nodes
-   JointIDType curr_node=0;
+   JointIDType curr_node = 0;
 
    SuperNodeLocIterator isn(pNodeLocs->begin());
    SuperNodeLocIterator isnend(pNodeLocs->end());
    for (; isn!=isnend; isn++)
    {
-      SuperNodeLoc& rsnl = *isn;
+      SuperNodeLoc& rsnl = const_cast<SuperNodeLoc&>(*isn); // don't change location or it will mess up the sort order of the container
+
+      if (rsnl.GetCondenseType() != notCondensed)
+         continue; // Don't give condensed ssm's FE
 
       rsnl.m_FemJointID = curr_node;
 
@@ -3460,7 +3531,7 @@ void SetNodeNumberForSupport(SubNodeLocs* pSnls, JointIDType* pcurrNode)
    SnRi riend(pSnls->rend());
    for ( ; ri!=riend; ri++)
    {
-      SubNodeLoc& rsnl = *ri;
+      SubNodeLoc& rsnl = const_cast<SubNodeLoc&>(*ri);
       if (!first)
       {
          rsnl.m_FemJointID = ++(*pcurrNode);
@@ -3478,10 +3549,10 @@ void CAnalysisModel::GenerateFemModel(SuperNodeLocs* pNodeLocs)
 {
    // create our fem model
    m_pFem2d.CoCreateInstance(CLSID_Fem2dModel);
-   ATLASSERT(m_pFem2d != NULL);
+   ATLASSERT(m_pFem2d != nullptr);
    // If this assert fails, check to see that the CLSID has not changed
    // This CLSID is defined in the WBFLFem2d IDL file and is COPIED in LBAMAnalysis.cpp
-   if ( m_pFem2d == NULL )
+   if ( m_pFem2d == nullptr )
    {
       throw;
    }
@@ -3508,7 +3579,7 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    CHRException hr;
    // gather some statistics and pre allocate some space for element numbers
    SpanIndexType nSpans = m_SpanEnds.size();
-   CollectionIndexType nSuperstructureMembers  = m_SuperstructureMemberEnds.size();
+   CollectionIndexType nSuperstructureMembers = m_SuperstructureMemberEnds.size();
 
    m_SpanElements.reserve(nSpans);
    for (SpanIndexType spanIdx = 0; spanIdx < nSpans; spanIdx++)
@@ -3519,12 +3590,11 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    m_SuperstructureMemberElements.reserve(nSuperstructureMembers);
    for (CollectionIndexType ssmbrIdx = 0; ssmbrIdx < nSuperstructureMembers; ssmbrIdx++)
    {
-      m_SuperstructureMemberElements.push_back( ElementLayoutVec() );
+      m_SuperstructureMemberElements.push_back( SsmElementLayoutVec() );
    }
 
    long curr_span    = -1;  // current span
-   long curr_ssm     =  0;  // current superstructuremember
-
+   long curr_ssm = 0;
    // walk our superstructure layout and create only superstructure elements (members)
    SuperNodeLocIterator lefty(pNodeLocs->begin());
    SuperNodeLocIterator righty(lefty);
@@ -3538,6 +3608,19 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    if ( !lefty->IsReason(nrMemberEnd) )
       THROW_HR(E_FAIL); // leftmost node should always be a member end. model building logic should assure this
 
+   if (lefty->GetCondenseType() == rightCondensed)
+   {
+      // left node was on zero-length overhang. No elements created for this ssm
+      ATLASSERT(righty->GetCondenseType() == notCondensed);
+      m_SuperstructureMemberElements[curr_ssm].SetCondenseType(rightCondensed);
+      curr_ssm++;
+      lefty = righty;
+      righty++;
+
+      if (lefty->IsReason(nrSpanEnd))
+         curr_span = 0;
+   }
+
    // create left-most node
    CComPtr<IFem2dJoint> left_joint;
    pJoints->Create(lefty->m_FemJointID, lefty->GetLoc(), 0.0, &left_joint);
@@ -3545,8 +3628,32 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
    // loop through node layout and generate members
    while ( righty != pNodeLocs->end() )
    {
-      SuperNodeLoc& right_node = *righty;
-      SuperNodeLoc& left_node  = *lefty;
+      //TRICKY stuff here dealing with condensed ssms. Draw a picture before trying to understand this
+      bool ad2 = false;
+      if (righty->GetCondenseType() == rightCondensed)
+      {
+         // right end was condensed to right. // most likely this is a cantilever on left end of beam
+         m_SuperstructureMemberElements[curr_ssm+1].SetCondenseType(rightCondensed);
+         ad2 = true;
+         righty++;
+      }
+      else if (righty->GetCondenseType()==leftCondensed)
+      {
+         // right end was condensed to the left (probably a left overhang
+         m_SuperstructureMemberElements[curr_ssm].SetCondenseType(leftCondensed);
+         curr_ssm++;
+         righty++;
+
+         if (righty == pNodeLocs->end())
+         {
+            break; // we are done 
+         }
+      }
+
+      ATLASSERT(lefty->GetCondenseType() == notCondensed); // looping left to right should avoid this situation
+
+      SuperNodeLoc& right_node = const_cast<SuperNodeLoc&>(*righty);
+      SuperNodeLoc& left_node  = const_cast<SuperNodeLoc&>(*lefty);
 
       // create joint
       CComPtr<IFem2dJoint> joint;
@@ -3556,7 +3663,7 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
       Float64 ea, ei;
       CComPtr<ISegmentCrossSection> SegmentCrossSection;
       right_node.GetSegmentCrossSection(&SegmentCrossSection);
-      if (SegmentCrossSection == NULL)
+      if (SegmentCrossSection == nullptr)
          THROW_HR(E_FAIL);
 
       if (m_bForcesModel)
@@ -3609,8 +3716,11 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
       if (right_node.IsReason(nrSpanEnd))
          curr_span++;
 
+      // We generated the model and know where ssm's and and which are condensed
       if (right_node.IsReason(nrMemberEnd))
-         curr_ssm++;
+      {
+         ad2 ? curr_ssm += 2 : curr_ssm++;
+      }
 
       lefty=righty;
       righty++;
@@ -3629,16 +3739,17 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
    SuperNodeLocIterator superstructureNodeIterEnd(pNodeLocs->end());
    for (; superstructureNodeIter != superstructureNodeIterEnd; superstructureNodeIter++)
    {
-      SuperNodeLoc& superstructureNodeLocation = *superstructureNodeIter;
+      const SuperNodeLoc& superstructureNodeLocation = *superstructureNodeIter;
       if (superstructureNodeLocation.IsReason(nrSpanEnd) || 
-          superstructureNodeLocation.IsReason(nrMemberEnd))
+          superstructureNodeLocation.IsReason(nrMemberEnd) && 
+          superstructureNodeLocation.GetCondenseType() == notCondensed )
       {
          // check to see it node is connected
          JointIDType jointID = superstructureNodeLocation.m_FemJointID;
          CComPtr<IFem2dJoint> joint;
          pJoints->Find(jointID,&joint);
 
-         if (joint != NULL)
+         if (joint != nullptr)
          {
             CComPtr<IIDArray> femMemberIDs;
             joint->get_Members(&femMemberIDs);
@@ -3656,7 +3767,7 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
                   CComPtr<IFem2dMember> member;
                   pMembers->Find(mbrID,&member);
 
-                  if (member != NULL)
+                  if (member != nullptr)
                   {
                      JointIDType startJointID;
                      member->get_StartJoint(&startJointID);
@@ -3757,11 +3868,16 @@ void CAnalysisModel::GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFe
    {
       SuperNodeLoc superstructureNodeLocation = *superstructureNodeIter;
 
+      if (superstructureNodeLocation.GetCondenseType() != notCondensed)
+      {
+         continue; // don't generate anything for condensed nodes
+      }
+
       // is a support at this node?
       if (superstructureNodeLocation.IsReason(nrSpanEnd))
       {
          SubNodeLocs* substructureNodeLocations = superstructureNodeLocation.GetSubNodeLocs();
-         ATLASSERT(substructureNodeLocations != NULL);
+         ATLASSERT(substructureNodeLocations != nullptr);
 
          GenerateSupportFemModel(substructureNodeLocations, pJoints, pMembers, &m_SupportElements[nextSupportID], pNextFemMemberID);
 
@@ -3775,7 +3891,7 @@ void CAnalysisModel::GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFe
       {
          // we have a temporary support - build its model
          SubNodeLocs* substructureNodeLocations = superstructureNodeLocation.GetSubNodeLocs();
-         ATLASSERT(substructureNodeLocations != NULL);
+         ATLASSERT(substructureNodeLocations != nullptr);
 
          // store element ids generated for temp support
          SupportIDType lbamTempSupportID = substructureNodeLocations->m_LbamTemporarySupportID;
@@ -3850,7 +3966,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
       {
          // we have a zero-length support. We only need concern ourselves with boundary conditions
          SubNodeLocIterator substructureNodeLocationIter(pSnls->begin());
-         SubNodeLoc& substructureNodeLocation = *substructureNodeLocationIter;
+         const SubNodeLoc& substructureNodeLocation = *substructureNodeLocationIter;
          CComPtr<IFem2dJoint> pjnt;
          pJoints->Find(substructureNodeLocation.m_FemJointID,&pjnt);
 
@@ -3868,8 +3984,8 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
          SubNodeLocIterator send(pSnls->end());
          while( righty != send )
          {
-            SubNodeLoc& rlefty  = *lefty;
-            SubNodeLoc& rrighty = *righty;
+            SubNodeLoc& rlefty  = const_cast<SubNodeLoc&>(*lefty);
+            SubNodeLoc& rrighty = const_cast<SubNodeLoc&>(*righty);
 
             if (nSubstructureMembers == 2)
             {
@@ -3888,8 +4004,8 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
 
             Float64 ea, ei;
             CComPtr<ISegmentCrossSection> SegmentCrossSection;
-            righty->GetSegmentCrossSection(&SegmentCrossSection);
-            ATLASSERT(SegmentCrossSection != NULL);
+            const_cast<SubNodeLoc&>(*righty).GetSegmentCrossSection(&SegmentCrossSection);
+            ATLASSERT(SegmentCrossSection != nullptr);
             if (m_bForcesModel)
             {
                hr = SegmentCrossSection->get_EAForce(&ea);
@@ -3915,7 +4031,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
             {
                if (pSnls->m_TopRelease == VARIANT_TRUE)
                {
-                  ATLASSERT(pmember!=NULL);
+                  ATLASSERT(pmember!=nullptr);
                   pmember->ReleaseEnd(metEnd, mbrReleaseMz);
                }
             }
@@ -3958,7 +4074,7 @@ void CAnalysisModel::LayoutSpanNodes(ISuperstructureMembers* pMembers, ISpans* p
       THROW_HR(E_FAIL); // should never happen
 
    // lay out support 0
-   SubNodeLocs* plocs = result.first->GetSubNodeLocs();
+   SubNodeLocs* plocs = const_cast<SuperNodeLoc&>(*result.first).GetSubNodeLocs();
    LayoutSupport( 0, pSupports, plocs );
 
    SpanIndexType nSpans;
@@ -3990,7 +4106,7 @@ void CAnalysisModel::LayoutSpanNodes(ISuperstructureMembers* pMembers, ISpans* p
          THROW_HR(E_FAIL); // should never happen
 
       // lay out support 
-      SubNodeLocs* plocs = result.first->GetSubNodeLocs();
+      SubNodeLocs* plocs = const_cast<SuperNodeLoc&>(*result.first).GetSubNodeLocs();
       LayoutSupport( SupportIDType(spanIdx+1), pSupports, plocs );
 
       // now look for temporary supports in the span and place super s nodes for them
@@ -4049,7 +4165,7 @@ void CAnalysisModel::LayoutSpanNodes(ISuperstructureMembers* pMembers, ISpans* p
                   THROW_HR(E_FAIL); // should never happen
 
                // lay out temporary support 
-               SubNodeLocs* plocs = result.first->GetSubNodeLocs();
+               SubNodeLocs* plocs = const_cast<SuperNodeLoc&>(*result.first).GetSubNodeLocs();
                LayoutTemporarySupport( SupportIDType(spanIdx), tempSupportLocation, tempSupport, plocs );
 
                // add temp support location to list of all span ends
@@ -4084,7 +4200,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
    CHRException hr;
 
    // left end of first member   
-   InsertSuperSegmentNode(pSuperNodeLocs, -m_LeftOverhang, NULL, nrMemberEnd);
+   InsertSuperSegmentNode(pSuperNodeLocs, -m_LeftOverhang, nullptr, nrMemberEnd);
 
    CollectionIndexType nMembers;
    hr = pMembers->get_Count(&nMembers);
@@ -4109,7 +4225,7 @@ void CAnalysisModel::LayoutSuperstructureMemberNodes(ISuperstructureMembers* pMe
       hr = pmbr->GetMemberSegments(m_Stage, &pFilteredSegs);
 
       SegmentIndexType nSegments;
-      Float64 segment_lengths=0;
+      Float64 segment_lengths = 0;
       hr = pFilteredSegs->get_Count(&nSegments);
 
       if (nSegments <= 0)
@@ -4271,7 +4387,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
          SuperNodeLocIterator found (node_locs->find(nodeLocation));
          if (found != node_locs->end())
          {
-            found->SetRelease(mrRightPinned); // pin right side of node
+            const_cast<SuperNodeLoc&>(*found).SetRelease(mrRightPinned); // pin right side of node
          }
          else
          {
@@ -4285,7 +4401,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
          SuperNodeLocIterator found (node_locs->find(nodeLocation));
          if (found != node_locs->end())
          {
-            found->SetRelease(mrRightAxial); // axial release right side of node
+            const_cast<SuperNodeLoc&>(*found).SetRelease(mrRightAxial); // axial release right side of node
          }
          else
          {
@@ -4300,7 +4416,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
          SuperNodeLocIterator found( node_locs->find(nodeLocation) );
          if (found != node_locs->end())
          {
-            found->SetRelease(mrLeftPinned);
+            const_cast<SuperNodeLoc&>(*found).SetRelease(mrLeftPinned);
          }
          else
          {
@@ -4314,7 +4430,7 @@ void CAnalysisModel::PlaceHinges(ISuperstructureMembers* pMembers, Float64 LeftO
          SuperNodeLocIterator found( node_locs->find(nodeLocation) );
          if (found != node_locs->end())
          {
-            found->SetRelease(mrLeftAxial);
+            const_cast<SuperNodeLoc&>(*found).SetRelease(mrLeftAxial);
          }
          else
          {
@@ -4341,7 +4457,7 @@ void InsertSuperSegmentNode(SuperNodeLocs* node_locs, Float64 loc, ISegmentCross
       SuperNodeLocIterator found = node_locs->find(seg_end);
       if (found != node_locs->end())
       {
-         found->Assimilate(seg_end);
+         const_cast<SuperNodeLoc&>(*found).Assimilate(seg_end, notCondensed);
       }
       else
       {
@@ -4363,7 +4479,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
       Float64 leftyloc = lefty->GetLoc();
       Float64 rightyloc = righty->GetLoc();
       Float64 diff = rightyloc - leftyloc;
-      if ( ::IsLE(diff,0.0) )
+      if ( ::IsLE(diff,0.0,layoutTolerance) )
       {
          // We have two nodes that are too close together - one needs to go
          // Use node type to determine which one to blast
@@ -4380,11 +4496,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             else if (righty->IsReason(nrMemberEnd) || righty->IsReason(nrSegmentEnd))
             {
                // member end or segment end is just after span end - assimilate it and blast it, 
-               lefty->Assimilate(*righty);
-
-               lefty = node_locs->erase(righty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*lefty).Assimilate(const_cast<SuperNodeLoc&>(*righty), leftCondensed);
             }
             else
             {
@@ -4408,11 +4520,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             else if (righty->IsReason(nrMemberEnd) || righty->IsReason(nrSegmentEnd))
             {
                // member end or segment end is just after temporary support location assimilate it and blast it, 
-               lefty->Assimilate(*righty);
-
-               lefty = node_locs->erase(righty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*lefty).Assimilate(const_cast<SuperNodeLoc&>(*righty), leftCondensed);
             }
             else
             {
@@ -4426,28 +4534,25 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             if (righty->IsReason(nrSpanEnd))
             {
                // right node is a span end - blast member end, but extend its section first
-               righty->Assimilate(*lefty);
-
-               lefty = node_locs->erase(lefty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*righty).Assimilate(const_cast<SuperNodeLoc&>(*lefty),rightCondensed);
+            }
+            else if (righty->IsReason(nrTemporarySupport) || righty->IsReason(nrTemporarySupportLoc))
+            {
+               // member end or segment end is just before temporary support location assimilate it and blast it, 
+               const_cast<SuperNodeLoc&>(*righty).Assimilate(const_cast<SuperNodeLoc&>(*lefty),rightCondensed);
             }
             else if (righty->IsReason(nrMemberEnd))
             {
                // have two member ends within tolerance? this should be blocked by previous code
                ATLASSERT(false);
-               lefty = node_locs->erase(righty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*righty).Assimilate(const_cast<SuperNodeLoc&>(*lefty),rightCondensed);
             }
             else if (righty->IsReason(nrSegmentEnd))
             {
                // have two member end to left and segment end within tolerance - this should never 
                // happen as well.
                ATLASSERT(false);
-               lefty = node_locs->erase(righty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*righty).Assimilate(const_cast<SuperNodeLoc&>(*lefty),rightCondensed);
             }
             else
             {
@@ -4461,19 +4566,13 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             if (righty->IsReason(nrSpanEnd) || righty->IsReason(nrMemberEnd))
             {
                // second node is a span or member end - blast segment end, but extend its section first
-               righty->Assimilate(*lefty);
-
-               lefty = node_locs->erase(lefty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*lefty).Assimilate(const_cast<SuperNodeLoc&>(*righty), leftCondensed);
             }
             else if (righty->IsReason(nrSegmentEnd))
             {
                // somehow got two segment ends within tolerance - this should never happen
                ATLASSERT(false);
-               lefty = node_locs->erase(righty);
-               righty = lefty;
-               righty++;
+               const_cast<SuperNodeLoc&>(*lefty).Assimilate(const_cast<SuperNodeLoc&>(*righty), leftCondensed);
             }
             else
             {
@@ -4487,11 +4586,10 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             THROW_HR(E_FAIL); 
          }
       }
-      else
-      {
-         lefty = righty;
-         righty++;
-      }
+
+      // cycle on
+      lefty = righty;
+      righty++;
    }
 }
 
@@ -4507,8 +4605,8 @@ void AssignSectionsToNodes(SuperNodeLocs* node_locs)
    // have to be able to get the ball rolling here. If the right-most node in the list
    // doesn't have a valid pointer, code before this point has failed.
    CComPtr<ISegmentCrossSection> SegmentCrossSection;
-   righty->GetSegmentCrossSection(&SegmentCrossSection);
-   if (SegmentCrossSection == NULL)
+   const_cast<SuperNodeLoc&>(*righty).GetSegmentCrossSection(&SegmentCrossSection);
+   if (SegmentCrossSection == nullptr)
    {
       THROW_HR(E_FAIL);
    }
@@ -4516,12 +4614,12 @@ void AssignSectionsToNodes(SuperNodeLocs* node_locs)
    while( lefty != node_locs->rend() )
    {
       CComPtr<ISegmentCrossSection> leftSegmentCrossSection;
-      lefty->GetSegmentCrossSection(&leftSegmentCrossSection);
-      if (leftSegmentCrossSection == NULL)
+      const_cast<SuperNodeLoc&>(*lefty).GetSegmentCrossSection(&leftSegmentCrossSection);
+      if (leftSegmentCrossSection == nullptr)
       {
          CComPtr<ISegmentCrossSection> rightSegmentCrossSection;
-         righty->GetSegmentCrossSection(&rightSegmentCrossSection);
-         lefty->SetSegmentCrossSection(rightSegmentCrossSection);
+         const_cast<SuperNodeLoc&>(*righty).GetSegmentCrossSection(&rightSegmentCrossSection);
+         const_cast<SuperNodeLoc&>(*lefty).SetSegmentCrossSection(rightSegmentCrossSection);
       }
 
       righty = lefty;
@@ -4544,14 +4642,14 @@ void CondenseSupportNodeSections(SubNodeLocs* nodeLocs, Float64 layoutTolerance)
    Float64 dist = righty->Distance(*lefty);
    if (dist<layoutTolerance)
    {
-      righty->Assimilate(*lefty);
+      const_cast<SubNodeLoc&>(*righty).Assimilate(*lefty);
       nodeLocs->erase(*lefty);   // have to use key - can't erase using reverse_iterator
    }
   
 #if defined _DEBUG
    CComPtr<ISegmentCrossSection> rightSegmentCrossSection;
-   righty->GetSegmentCrossSection(&rightSegmentCrossSection);
-   ATLASSERT(rightSegmentCrossSection != NULL);
+   const_cast<SubNodeLoc&>(*righty).GetSegmentCrossSection(&rightSegmentCrossSection);
+   ATLASSERT(rightSegmentCrossSection != nullptr);
 #endif
 }
 
@@ -4819,7 +4917,7 @@ void LayoutSupportSegments(BSTR stage, IFilteredSegmentCollection* pFilteredSegs
 {
    CHRException hr;
    SegmentIndexType segment_cnt;
-   Float64 segment_lengths=0;
+   Float64 segment_lengths = 0;
    hr = pFilteredSegs->get_Count(&segment_cnt);
 
    if (segment_cnt <= 0)
@@ -4828,7 +4926,7 @@ void LayoutSupportSegments(BSTR stage, IFilteredSegmentCollection* pFilteredSegs
       THROW_LBAMA_MSG(NO_SEGMENT_FOR_SUPPORT, msg);
    }
 
-   for( SegmentIndexType iseg=0; iseg<segment_cnt; iseg++)
+   for( SegmentIndexType iseg = 0; iseg<segment_cnt; iseg++)
    {
       CComPtr<ISegment> psegment;
       hr = pFilteredSegs->get_Item(iseg, &psegment);
@@ -4898,7 +4996,7 @@ void InsertSubSegmentNode(SubNodeLocs* node_locs, Float64 xloc, Float64 yloc, IS
       if (fnd != node_locs->end())
       {
          ATLASSERT(fnd->IsReason(sbnrSupportEnd));
-         fnd->Assimilate(seg_end);
+         const_cast<SubNodeLoc&>(*fnd).Assimilate(seg_end);
       }
       else
       {
@@ -4911,8 +5009,8 @@ void InsertSubSegmentNode(SubNodeLocs* node_locs, Float64 xloc, Float64 yloc, IS
 
 void CAnalysisModel::SaveModel(IStructuredSave2* pSave)
 {
-   ATLASSERT(pSave!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(pSave!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    // get interface for structuredstorage
    CHRException hr;
@@ -4937,8 +5035,8 @@ void CAnalysisModel::ClearInfluenceLoads()
 
 void CAnalysisModel::GenerateInfluenceLoads()
 {
-   ATLASSERT(m_pLBAMModel!=NULL);
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pLBAMModel!=nullptr);
+   ATLASSERT(m_pFem2d!=nullptr);
 
    m_InfluenceLoadSet.clear();
 
@@ -5161,10 +5259,16 @@ void CAnalysisModel::GenerateContraflexureLoads()
    MemberIDType ssmbrID = 0;
    bool bLeftOverhang = false;
    bool bRightOverhang = false;
-   ElementLayoutGroupIterator its(m_SuperstructureMemberElements.begin());
-   ElementLayoutGroupIterator itsend(m_SuperstructureMemberElements.end());
+   SsmElementLayoutGroupIterator its(m_SuperstructureMemberElements.begin());
+   SsmElementLayoutGroupIterator itsend(m_SuperstructureMemberElements.end());
    for (; its!=itsend; its++, ssmbrID++)
    {
+      if (its->GetCondenseType() != notCondensed)
+      {
+         // don't apply loads to condensed ssm's
+         continue;
+      }
+
       CComPtr<ISuperstructureMember> ssmbr;
       ssmbrs->get_Item(ssmbrID,&ssmbr);
 
@@ -5205,7 +5309,7 @@ void CAnalysisModel::ClearContraflexureLoads()
    CComPtr<IFem2dLoading> fem_loading;
    fem_loadings->Find(CONTRAFLEXURE_LC,&fem_loading);
 
-   if (fem_loading != NULL)
+   if (fem_loading != nullptr)
    {
       LoadCaseIDType id;
       fem_loadings->Remove(CONTRAFLEXURE_LC, atID, &id);
@@ -5235,7 +5339,7 @@ void CAnalysisModel::GenerateContraflexurePOIs()
 
    if (0 < cf_size)
    {
-      for (CollectionIndexType icf=0; icf<cf_size; icf++)
+      for (CollectionIndexType icf = 0; icf<cf_size; icf++)
       {
          Float64 xloc;
          hr = m_ContraflexureLocations->get_Item(icf, &xloc);
@@ -5283,7 +5387,7 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
    // first check to see if this poi is on an edge of a cf zone
    CollectionIndexType cfp_size = m_ContraflexurePOIs.size();
    ATLASSERT(cfp_size%2==0);
-   for (CollectionIndexType icf=0; icf<cfp_size; icf++)
+   for (CollectionIndexType icf = 0; icf<cfp_size; icf++)
    {
       PoiIDType id = m_ContraflexurePOIs[icf];
       if (id==poiID)
@@ -5330,7 +5434,7 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
 
          // we have zones and we have a poi on the ss. find the zone
          CollectionIndexType cnt = cf_size/2;
-         for (CollectionIndexType izone=0; izone<cnt; izone++)
+         for (CollectionIndexType izone = 0; izone<cnt; izone++)
          {
             CollectionIndexType left_idx  = izone*2;
             CollectionIndexType right_idx = left_idx+1;
@@ -5592,7 +5696,7 @@ void CAnalysisModel::ComputeContraflexureLocations()
    {
       ATLASSERT(cf_size%2 == 0);
       ATLTRACE(_T("Contraflexure Locations - Stage %S \n"), m_Stage);
-      for (long idf=0; idf<cf_size; idf++)
+      for (long idf = 0; idf<cf_size; idf++)
       {
          Float64 loc;
          hr = m_ContraflexureLocations->get_Item(idf, &loc);
@@ -5612,7 +5716,7 @@ void CAnalysisModel::GetInfluenceLines(PoiIDType poiID,
                                        IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
                                        IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl)
 { 
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
 
@@ -5647,7 +5751,7 @@ void CAnalysisModel::GetInfluenceLines(PoiIDType poiID,
 
 void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffectType ReactionEffect, CInfluenceLine* pInfl)
 {
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
    CollectionIndexType num_pts = m_InfluenceLoadSet.size();
@@ -5755,7 +5859,7 @@ void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffe
 
 void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, ForceEffectType sdEffect, CInfluenceLine* pInfl)
 {
-   ATLASSERT(m_pFem2d!=NULL);
+   ATLASSERT(m_pFem2d!=nullptr);
    CHRException hr;
 
    CollectionIndexType num_pts = m_InfluenceLoadSet.size();
@@ -5917,7 +6021,7 @@ HRESULT CAnalysisModel::GetSuperstructurePois(IIDArray* *poiIDs, IDblArray* *poi
    if (FAILED(hr))
       return hr;
 
-   Uint32 i=0;
+   Uint32 i = 0;
    SortedPoiMapTracker::iterator itp(m_pPoiTracker->begin());
    SortedPoiMapTracker::iterator itpend(m_pPoiTracker->end());
    for (; itp!=itpend; itp++)

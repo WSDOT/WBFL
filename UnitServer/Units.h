@@ -111,13 +111,13 @@ END_CONNECTION_POINT_MAP()
 
 // IUnits
 public:
-	STDMETHOD(Remove)(/*[in]*/VARIANT Index);
-	STDMETHOD(get_Count)(CollectionIndexType* retval);
-	STDMETHOD(get_Item)(VARIANT Index, IUnit** retval);
-//	STDMETHOD(get__NewEnum)(IUnknown** retval);
-	STDMETHOD(Add)(/*[in]*/BSTR tag,/*[in]*/Float64 preTerm,/*[in]*/Float64 cf,/*[in]*/Float64 postTerm,/*[in]*/UnitSystemType unitSystem,/*[out,retval]*/IUnit** ppUnit);
-   STDMETHOD(Clear)();
-   STDMETHOD(get__EnumUnits)(/*[out,retval]*/ IEnumUnits** enumUnits);
+	STDMETHOD(Remove)(/*[in]*/VARIANT Index) override;
+	STDMETHOD(get_Count)(CollectionIndexType* retval) override;
+	STDMETHOD(get_Item)(VARIANT Index, IUnit** retval) override;
+//	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+	STDMETHOD(Add)(/*[in]*/BSTR tag,/*[in]*/Float64 preTerm,/*[in]*/Float64 cf,/*[in]*/Float64 postTerm,/*[in]*/UnitSystemType unitSystem,/*[out,retval]*/IUnit** ppUnit) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(get__EnumUnits)(/*[out,retval]*/ IEnumUnits** enumUnits) override;
 
 private:
    // Store variants because it makes creating the enumerators easier

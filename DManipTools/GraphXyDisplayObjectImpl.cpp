@@ -109,7 +109,7 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
 
 //     test each scale and keep the largest one that works
 
-   for (CollectionIndexType i=0; i<nscale; i++)
+   for (CollectionIndexType i = 0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
        nmin = (CollectionIndexType)floor(niceMin/test_scale);
@@ -230,7 +230,7 @@ private:
 // CGraphXyDisplayObject
 CGraphXyDisplayObject::CGraphXyDisplayObject():
 m_NumDos(0),
-m_pDisplayObject(NULL),
+m_pDisplayObject(nullptr),
 m_DoDisplayAxisValues(VARIANT_TRUE),
 m_DoDisplayGrid(VARIANT_TRUE),
 m_NumberOfMajorIncrements(10)
@@ -244,7 +244,7 @@ STDMETHODIMP CGraphXyDisplayObject::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_iGraphXyDisplayObject
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -287,7 +287,7 @@ STDMETHODIMP_(void) CGraphXyDisplayObject::put_GraphBounds(IRect2d *newVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   ATLASSERT(newVal!=NULL);
+   ATLASSERT(newVal!=nullptr);
 
 	m_GraphBounds = newVal;
 
@@ -427,7 +427,7 @@ HRESULT CGraphXyDisplayObject::DrawAxisLine(Float64 startX, Float64 startY, Floa
    start_pnt->put_Y(startY);
 
    CComPtr<iPointDisplayObject> start_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&start_rep);
+   ::CoCreateInstance(CLSID_PointDisplayObject,nullptr,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&start_rep);
    start_rep->SetPosition(start_pnt,FALSE,FALSE);
    CComQIPtr<iConnectable,&IID_iConnectable> start_connectable(start_rep);
    CComPtr<iSocket> start_socket;
@@ -446,7 +446,7 @@ HRESULT CGraphXyDisplayObject::DrawAxisLine(Float64 startX, Float64 startY, Floa
    end_pnt->put_Y(endY);
 
    CComPtr<iPointDisplayObject> end_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&end_rep);
+   ::CoCreateInstance(CLSID_PointDisplayObject,nullptr,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&end_rep);
    end_rep->SetPosition(end_pnt,FALSE,FALSE);
    CComQIPtr<iConnectable,&IID_iConnectable> end_connectable(end_rep);
    CComPtr<iSocket> end_socket;
@@ -457,7 +457,7 @@ HRESULT CGraphXyDisplayObject::DrawAxisLine(Float64 startX, Float64 startY, Floa
 
    // line
    CComPtr<iLineDisplayObject> ll_rep;
-   ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&ll_rep);
+   ::CoCreateInstance(CLSID_LineDisplayObject,nullptr,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&ll_rep);
    CComQIPtr<iConnector,&IID_iConnector> ll_connector(ll_rep);
    CComPtr<iPlug> ll_startPlug;
    ll_connector->GetStartPlug(&ll_startPlug);
@@ -533,7 +533,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
       }
 
       // verticals
-      for (CollectionIndexType ig=0; ig<=num_xsegs; ig++)
+      for (CollectionIndexType ig = 0; ig<=num_xsegs; ig++)
       {
          Float64 grx = nice_xmin + ig*nice_xincrement;
          if (grx >= gr_left && grx<=gr_right)
@@ -546,7 +546,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
       }
 
       // horizontals
-      for (CollectionIndexType ig=0; ig<=num_ysegs; ig++)
+      for (CollectionIndexType ig = 0; ig<=num_ysegs; ig++)
       {
          Float64 gry = nice_ymin + ig*nice_yincrement;
          if (gry >=gr_bottom && gry<=gr_top)
@@ -568,7 +568,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
          UINT locator = TA_CENTER | TA_TOP;
          Float64 tl_y = worldBottom-tic_size/2;
 
-         for (CollectionIndexType ig=0; ig<=num_xsegs; ig++)
+         for (CollectionIndexType ig = 0; ig<=num_xsegs; ig++)
          {
             Float64 grx = nice_xmin + ig*nice_xincrement;
             if (grx >= gr_left && grx<=gr_right)
@@ -583,7 +583,7 @@ HRESULT CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Fl
          // vertical axis labels
          locator = TA_LEFT | TA_BASELINE;
          Float64 tl_x = worldLeft+tic_size/2;
-         for (CollectionIndexType ig=0; ig<=num_ysegs; ig++)
+         for (CollectionIndexType ig = 0; ig<=num_ysegs; ig++)
          {
             Float64 gry = nice_ymin + ig*nice_yincrement;
             if (gry >=gr_bottom && gry<=gr_top)
@@ -610,7 +610,7 @@ HRESULT CGraphXyDisplayObject::DrawString(std::_tstring& string, Float64 wx, Flo
    HRESULT hr;
 
    CComPtr<iEditableTextBlock> text_block;
-   hr = ::CoCreateInstance(CLSID_TextBlock,NULL,CLSCTX_ALL,IID_iTextBlock,(void**)&text_block);
+   hr = ::CoCreateInstance(CLSID_TextBlock,nullptr,CLSCTX_ALL,IID_iTextBlock,(void**)&text_block);
    if (FAILED(hr))
    {
       ATLASSERT(false);
@@ -630,7 +630,7 @@ HRESULT CGraphXyDisplayObject::DrawString(std::_tstring& string, Float64 wx, Flo
    text_block->SetTextAlign(textAlign);
 
    CComPtr<iDisplayObject> disp(text_block);
-   ATLASSERT(disp!=NULL);
+   ATLASSERT(disp!=nullptr);
 
    AddMyDisplayObject(disp);
 
@@ -659,7 +659,7 @@ HRESULT CGraphXyDisplayObject::DrawCurves(GraphMapper& mapper)
 
       bool first = true;
       CComPtr<iSocket> start_socket, end_socket;
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          CComPtr<IPoint2d> pnt;
          hr = pds->get_Item(i, &pnt);
@@ -682,13 +682,13 @@ HRESULT CGraphXyDisplayObject::DrawCurves(GraphMapper& mapper)
          AddMyDisplayObject(dataPoint);
 
          CComQIPtr<iConnectable,&IID_iConnectable> dp_connectable(dataPoint);
-         end_socket=NULL;
+         end_socket=nullptr;
          dp_connectable->GetSocket(0,atByIndex,&end_socket);
 
          if (!first)
          {
             CComPtr<iLineDisplayObject> ll_rep;
-            ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&ll_rep);
+            ::CoCreateInstance(CLSID_LineDisplayObject,nullptr,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&ll_rep);
             CComQIPtr<iConnector,&IID_iConnector> ll_connector(ll_rep);
             CComPtr<iPlug> ll_startPlug;
             ll_connector->GetStartPlug(&ll_startPlug);
@@ -730,7 +730,7 @@ HRESULT CGraphXyDisplayObject::GetCurveBoundary(Float64* t, Float64* l, Float64*
    Float64 ll =  DBL_MAX;
    Float64 lr = -DBL_MAX;
    Float64 lb =  DBL_MAX;
-   long num_dp=0;
+   long num_dp = 0;
    for (DataSetIterator it=m_DataSets.begin(); it!=m_DataSets.end(); it++)
    {
       CComPtr<iGraphXyDataProvider> pdsp = *it;
@@ -741,7 +741,7 @@ HRESULT CGraphXyDisplayObject::GetCurveBoundary(Float64* t, Float64* l, Float64*
       CollectionIndexType cnt;
       pds->get_Count(&cnt);
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          num_dp++;
          CComPtr<IPoint2d> pnt;
@@ -822,7 +822,7 @@ void CGraphXyDisplayObject::ClearDisplayObjects()
 
       // first go through all connectable display objects and disconnect sockets
       CollectionIndexType cnt =  pcdo->GetDisplayObjectCount();
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          CComPtr<iDisplayObject> pdo;
          pcdo->GetDisplayObject(ic,atByIndex,&pdo);

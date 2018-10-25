@@ -28,6 +28,7 @@
 #include <Units\UnitsExp.h>
 #include <Units\Convert.h>
 #include <Units\SysUnitsMgr.h>
+#include <limits>
 
 // PROJECT INCLUDES
 //
@@ -50,6 +51,11 @@ void UNITSFUNC convert_to( Float64* pValue, Float64 preTerm, Float64 cf, Float64
 template <class T>
 Float64 ConvertFromSysUnits( Float64 value, const T& to )
 {
+   if (value == Float64_Max || value == Float64_Inf)
+   {
+      return value;
+   }
+
    const unitMass& um = unitSysUnitsMgr::GetMassUnit();
    convert_from( &value,
                  um.GetPreTerm(),
@@ -93,6 +99,11 @@ Float64 ConvertFromSysUnits( Float64 value, const T& to )
 template <class T>
 Float64 ConvertToSysUnits(Float64 value,const T& from)
 {
+   if (value == Float64_Max || value == Float64_Inf)
+   {
+      return value;
+   }
+
    const unitMass& um = unitSysUnitsMgr::GetMassUnit();
    convert_to( &value,
                um.GetPreTerm(),

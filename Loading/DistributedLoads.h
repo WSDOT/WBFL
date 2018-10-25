@@ -71,10 +71,10 @@ CONNECTION_POINT_ENTRY(IID_ldIDistributedLoadsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldIDistributedLoadEvents
-   STDMETHOD(OnDistributedLoadChanged)(/*[in]*/ldIDistributedLoad* DistributedLoad)
+   STDMETHOD(OnDistributedLoadChanged)(/*[in]*/ldIDistributedLoad* DistributedLoad) override
    {
       // Load can be in more than one item
       for (iterator i=begin(); i!=end(); i++)
@@ -115,23 +115,22 @@ public:
       Fire_OnDistributedLoadsChanged(pitem);
    }
 
-   virtual HRESULT MakeConnection(CDistributedLoadItem* pitem)
+   virtual HRESULT MakeConnection(CDistributedLoadItem* pitem) override
    {
       return CrAdvise(pitem->m_Load, this, IID_ldIDistributedLoadEvents, &(pitem->m_LoadCookie));
-   }
+   } 
 
-   virtual HRESULT BreakConnection(CDistributedLoadItem* pitem)
+   virtual HRESULT BreakConnection(CDistributedLoadItem* pitem) override
    {
       return CrUnadvise(pitem->m_Load, this, IID_ldIDistributedLoadEvents, pitem->m_LoadCookie);
-   }
+   } 
 
-   STDMETHOD(FinalRelease)()
+   void FinalRelease()
    {
       for (iterator i=begin(); i!=end(); i++)
       {
          OnBeforeRemove(*i);
       }
-      return S_OK;
    }
 
 };

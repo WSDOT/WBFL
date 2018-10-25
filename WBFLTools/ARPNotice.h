@@ -58,9 +58,9 @@ private:
 
 // IARPNotice
 public:
-	STDMETHOD(get_ShowAgain)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_ShowAgain)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(Show)(/*[in]*/ VARIANT_BOOL bGiveChoice,/*[in]*/ LicenseType lt,/*[out,retval]*/ AcceptanceType* accept);
+	STDMETHOD(get_ShowAgain)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_ShowAgain)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(Show)(/*[in]*/ VARIANT_BOOL bGiveChoice,/*[in]*/ LicenseType lt,/*[out,retval]*/ AcceptanceType* accept) override;
 };
 
 #endif //__ARPNOTICE_H_

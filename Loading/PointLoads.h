@@ -74,10 +74,10 @@ CONNECTION_POINT_ENTRY(IID_ldIPointLoadsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldIPointLoadEvents
-   STDMETHOD(OnPointLoadChanged)(/*[in]*/ldIPointLoad* PointLoad)
+   STDMETHOD(OnPointLoadChanged)(/*[in]*/ldIPointLoad* PointLoad) override
    {
       // Load can be in more than one item
       for (iterator i=begin(); i!=end(); i++)
@@ -120,23 +120,22 @@ public:
    }
 
 
-   virtual HRESULT MakeConnection(CPointLoadItem* pitem)
+   virtual HRESULT MakeConnection(CPointLoadItem* pitem) override
    {
       return CrAdvise(pitem->m_Load, this, IID_ldIPointLoadEvents, &(pitem->m_LoadCookie));
    }
 
-   virtual HRESULT BreakConnection(CPointLoadItem* pitem)
+   virtual HRESULT BreakConnection(CPointLoadItem* pitem) override
    {
       return CrUnadvise(pitem->m_Load, this, IID_ldIPointLoadEvents, pitem->m_LoadCookie);
    }
 
-   STDMETHOD(FinalRelease)()
+   void FinalRelease()
    {
       for (iterator i=begin(); i!=end(); i++)
       {
          OnBeforeRemove(*i);
       }
-      return S_OK;
    }
 
 };

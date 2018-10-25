@@ -164,5 +164,5 @@ void CEAFMDISnapper::OnExitSizeMove()
    }
 
    m_bSizeMoveIsSysCommand = false;
-	m_wndMoving = NULL;
+	m_wndMoving = nullptr;
 }

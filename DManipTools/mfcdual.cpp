@@ -67,8 +67,8 @@ HRESULT DualHandleException(REFIID riidSource, const CException* pAnyException)
 	    LPCTSTR pszDescription = szDescription;
         GUID    guid = GUID_NULL;
         DWORD   dwHelpContext = 0;
-        BSTR    bstrHelpFile = NULL;
-        BSTR    bstrSource = NULL;
+        BSTR    bstrHelpFile = nullptr;
+        BSTR    bstrSource = nullptr;
 	    if (pAnyException->IsKindOf(RUNTIME_CLASS(COleDispatchException)))
 	    {
 		    // specific IDispatch style exception
@@ -102,10 +102,10 @@ HRESULT DualHandleException(REFIID riidSource, const CException* pAnyException)
 		    hr = E_UNEXPECTED;
 	    }
 
-	    if (bstrHelpFile == NULL && dwHelpContext != 0)
+	    if (bstrHelpFile == nullptr && dwHelpContext != 0)
 		    bstrHelpFile = ::SysAllocString(T2COLE(AfxGetApp()->m_pszHelpFilePath));
 
-	    if (bstrSource == NULL)
+	    if (bstrSource == nullptr)
 		    bstrSource = ::SysAllocString(T2COLE(AfxGetAppName()));
 
         // Set up ErrInfo object

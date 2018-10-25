@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 CComModule _Module;
 
 
-static AFX_EXTENSION_MODULE MfcToolsDLL = { NULL, NULL };
+static AFX_EXTENSION_MODULE MfcToolsDLL = { FALSE, 0, 0, nullptr, nullptr };
 
 extern "C" int APIENTRY
 DllMain(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)

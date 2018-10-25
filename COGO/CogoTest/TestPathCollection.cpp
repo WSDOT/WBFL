@@ -51,7 +51,7 @@ void CTestPathCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_PathCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -59,10 +59,10 @@ void CTestPathCollection::Test()
    Path.CoCreateInstance(CLSID_Path);
 
    CComPtr<IPathFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST( factory != NULL, true );
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST( factory != nullptr, true );
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
@@ -78,7 +78,7 @@ void CTestPathCollection::Test()
    // Test Item property
    a.Release();
    TRY_TEST(pColl->get_Item(-1,&a),COGO_E_PATHNOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&a),S_OK);
 
    //
@@ -104,7 +104,7 @@ void CTestPathCollection::Test()
 
    a.Release();
    a.CoCreateInstance(CLSID_Path);
-   TRY_TEST(pColl->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,Path),COGO_E_PATHNOTFOUND);
    TRY_TEST(pColl->putref_Item(1,a),S_OK);
 
@@ -112,8 +112,8 @@ void CTestPathCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(a,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(a,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(a,&id),S_OK);
    TRY_TEST(id,1);
 
@@ -121,14 +121,14 @@ void CTestPathCollection::Test()
    // Test ID
    //
    pColl->Clear();
-   pColl->Add(1,NULL);
-   pColl->Add(2,NULL);
-   pColl->Add(3,NULL);
-   pColl->Add(4,NULL);
+   pColl->Add(1,nullptr);
+   pColl->Add(2,nullptr);
+   pColl->Add(3,nullptr);
+   pColl->Add(4,nullptr);
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -136,12 +136,12 @@ void CTestPathCollection::Test()
    // Test _Enum
    //
    pColl->Clear();
-   pColl->Add(1,NULL);
-   pColl->Add(2,NULL);
-   pColl->Add(3,NULL);
-   pColl->Add(4,NULL);
+   pColl->Add(1,nullptr);
+   pColl->Add(2,nullptr);
+   pColl->Add(3,nullptr);
+   pColl->Add(4,nullptr);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -161,7 +161,7 @@ void CTestPathCollection::Test()
    pColl->AddEx(3,a);
    pColl->AddEx(4,a);
    CComPtr<IEnumPaths> pEnumPaths;
-   TRY_TEST(pColl->get__EnumPaths(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumPaths(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumPaths(&pEnumPaths), S_OK );
 
    CComPtr<IPath> testAlign;
@@ -230,7 +230,7 @@ void CTestPathCollection::Test()
 
 STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObjectID id,IPath* vc)
 {
-//   MessageBox(NULL,"PathChanged","Event",MB_OK);
+//   MessageBox(nullptr,"PathChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -239,7 +239,7 @@ STDMETHODIMP CTestPathCollection::OnPathChanged(IPathCollection* coll,CogoObject
 
 STDMETHODIMP CTestPathCollection::OnProfileChanged(IPathCollection* coll,IProfile* profile)
 {
-//   MessageBox(NULL,"ProfileChanged","Event",MB_OK);
+//   MessageBox(nullptr,"ProfileChanged","Event",MB_OK);
    Pass();
 
    return S_OK;
@@ -247,7 +247,7 @@ STDMETHODIMP CTestPathCollection::OnProfileChanged(IPathCollection* coll,IProfil
 
 STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID id,IPath* Path)
 {
-//   MessageBox(NULL,"PathAdded","Event",MB_OK);
+//   MessageBox(nullptr,"PathAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -256,7 +256,7 @@ STDMETHODIMP CTestPathCollection::OnPathAdded(IPathCollection* coll,CogoObjectID
 
 STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObjectID id)
 {
-//   MessageBox(NULL,"PathRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"PathRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -265,7 +265,7 @@ STDMETHODIMP CTestPathCollection::OnPathRemoved(IPathCollection* coll,CogoObject
 
 STDMETHODIMP CTestPathCollection::OnPathsCleared(IPathCollection* coll)
 {
-//   MessageBox(NULL,"PathCleared","Event",MB_OK);
+//   MessageBox(nullptr,"PathCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

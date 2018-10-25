@@ -44,7 +44,7 @@ STDMETHODIMP CRoundColumn::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IRoundColumn,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -132,7 +132,7 @@ STDMETHODIMP CRoundColumn::get_Es(Float64* es)
 
 STDMETHODIMP CRoundColumn::ComputeInteraction(long nSteps,IPoint2dCollection* *points)
 {
-   return ComputeInteractionCurve(nSteps,false,0,0,points,NULL);
+   return ComputeInteractionCurve(nSteps,false,0,0,points,nullptr);
 }
 
 STDMETHODIMP CRoundColumn::ComputeInteractionEx(long nSteps,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored)

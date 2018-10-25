@@ -68,11 +68,11 @@ void CTestRectangle::TestIRectangle()
    Float64 x,y;
    CComPtr<IPoint2d> hookPnt;
 
-   TRY_TEST( rect->get_Height(NULL), E_POINTER );
+   TRY_TEST( rect->get_Height(nullptr), E_POINTER );
    TRY_TEST( rect->get_Height(&h), S_OK );
-   TRY_TEST( rect->get_Width(NULL), E_POINTER );
+   TRY_TEST( rect->get_Width(nullptr), E_POINTER );
    TRY_TEST( rect->get_Width(&w), S_OK );
-   TRY_TEST( rect->get_HookPoint(NULL), E_POINTER );
+   TRY_TEST( rect->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( rect->get_HookPoint(&hookPnt), S_OK );
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
@@ -105,7 +105,7 @@ void CTestRectangle::TestIRectangle()
    CComPtr<IPoint2d> new_hookPnt;
    new_hookPnt.CoCreateInstance( CLSID_Point2d );
    new_hookPnt->Move(-50,-60);
-   TRY_TEST( rect->putref_HookPoint(NULL), E_INVALIDARG );
+   TRY_TEST( rect->putref_HookPoint(nullptr), E_INVALIDARG );
    TRY_TEST( rect->putref_HookPoint(new_hookPnt), S_OK);
    test_hookPnt.Release();
    TRY_TEST( rect->get_HookPoint(&test_hookPnt), S_OK );
@@ -116,14 +116,14 @@ void CTestRectangle::TestIRectangle()
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
-   TRY_TEST(rect->get_Shape(NULL), E_POINTER );
+   TRY_TEST(rect->get_Shape(nullptr), E_POINTER );
    TRY_TEST(rect->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(rect->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(rect->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(rect->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -157,7 +157,7 @@ void CTestRectangle::TestIShape()
    // ShapeProperties
    //
    CComPtr<IShapeProperties> props;
-   TRY_TEST( shape->get_ShapeProperties(NULL), E_POINTER );
+   TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
 
    Float64 area, ixx, iyy, ixy, cgx, cgy;
@@ -195,7 +195,7 @@ void CTestRectangle::TestIShape()
    // BoundingBox
    //
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    Float64 val;
    box->get_Left(&val);
@@ -210,7 +210,7 @@ void CTestRectangle::TestIShape()
    //
    // Perimeter
    //
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
    TRY_TEST( IsEqual(val,80.0), true );
 
@@ -231,8 +231,8 @@ void CTestRectangle::TestIShape()
    p2->Move(100,50);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,45.000), true );
 
@@ -250,8 +250,8 @@ void CTestRectangle::TestIShape()
    CComPtr<IPoint2d> pnt;
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(-10,-10);
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape( pnt, NULL ), E_POINTER);
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape( pnt, nullptr ), E_POINTER);
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_FALSE );
 
@@ -267,7 +267,7 @@ void CTestRectangle::TestIShape()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST( shape->Clone(NULL), E_POINTER );
+   TRY_TEST( shape->Clone(nullptr), E_POINTER );
    TRY_TEST( shape->Clone(&clone), S_OK );
 
    CComQIPtr<IRectangle> rect_clone(clone);
@@ -287,7 +287,7 @@ void CTestRectangle::TestIShape()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
@@ -399,8 +399,8 @@ void CTestRectangle::TestIShape()
    // Clip against a 45 deg line, that intersects the bottom left corner of the
    // rectangle.
    CComPtr<IShape> clip;
-   TRY_TEST( shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST( shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST( shape->ClipWithLine(clipLine,&clip), S_OK );
 
    coll.Release();
@@ -464,8 +464,8 @@ void CTestRectangle::TestIShape()
    clipRect->put_Top(25);
    clipRect->put_Bottom(15);
 
-   TRY_TEST( shape->ClipIn(NULL,&clip),     E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL),  E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip),     E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr),  E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
 
    coll.Release();
@@ -531,7 +531,7 @@ void CTestRectangle::TestIXYPosition()
    size.CoCreateInstance( CLSID_Size2d );
    size->put_Dx(10);
    size->put_Dy(20);
-   TRY_TEST( position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
    hookPnt->get_X(&x);
@@ -559,8 +559,8 @@ void CTestRectangle::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(110,110);
 
-   TRY_TEST( position->MoveEx(NULL,to),    E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from, NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to),    E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from, nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to),    S_OK );
 
    hookPnt->get_X(&x);
@@ -574,8 +574,8 @@ void CTestRectangle::TestIXYPosition()
    //
    hookPnt->Move(0,0);
 
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    to->Move(95,85);
@@ -727,7 +727,7 @@ void CTestRectangle::TestIXYPosition()
    // Rotate about the origin of the coordinate system and check the coordintes of the rectangle
    rotPoint->Move(0,0);
 
-   TRY_TEST( position->RotateEx(NULL,PI_OVER_2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,PI_OVER_2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(rotPoint,PI_OVER_2), S_OK );
 
    CComPtr<IPoint2dCollection> coll;

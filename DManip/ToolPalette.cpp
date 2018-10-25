@@ -67,8 +67,8 @@ END_MESSAGE_MAP()
 // CToolPalette message handlers
 void CToolPalette::AddTool(iTool* tool)
 {
-   ASSERT( tool != NULL );
-   if ( tool == NULL )
+   ASSERT( tool != nullptr );
+   if ( tool == nullptr )
       return;
 
    m_Tools.push_back( CAdapt<CComPtr<iTool> >(tool) );

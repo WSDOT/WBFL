@@ -82,52 +82,52 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICrossBeam
 public:
-   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier);
-   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier);
-   STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length);
-   STDMETHOD(get_Depth)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth);
-   STDMETHOD(get_FullDepth)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth);
-   STDMETHOD(get_Profile)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IShape** ppShape);
-   STDMETHOD(get_TopSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints);
-   STDMETHOD(get_BottomSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints);
-   STDMETHOD(get_BasicShape)(/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape);
-   STDMETHOD(get_Shape)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape);
-   STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** ppRebarLayout);
-   STDMETHOD(putref_RebarLayout)(/*[in]*/IRebarLayout* pRebarLayout);
+   STDMETHOD(putref_Pier)(/*[in]*/IPier* pPier) override;
+   STDMETHOD(get_Pier)(/*[out,retval]*/IPier** ppPier) override;
+   STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length) override;
+   STDMETHOD(get_Depth)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth) override;
+   STDMETHOD(get_FullDepth)(/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth) override;
+   STDMETHOD(get_Profile)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IShape** ppShape) override;
+   STDMETHOD(get_TopSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints) override;
+   STDMETHOD(get_BottomSurface)(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IPoint2dCollection** ppPoints) override;
+   STDMETHOD(get_BasicShape)(/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape) override;
+   STDMETHOD(get_Shape)(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/IShape** ppShape) override;
+   STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** ppRebarLayout) override;
+   STDMETHOD(putref_RebarLayout)(/*[in]*/IRebarLayout* pRebarLayout) override;
 
 // ILinearCrossBeam
 public:
-   STDMETHOD(put_H1)(/*[in]*/Float64 H1);
-   STDMETHOD(get_H1)(/*[out,retval]*/Float64* pH1);
-   STDMETHOD(put_H2)(/*[in]*/Float64 H2);
-   STDMETHOD(get_H2)(/*[out,retval]*/Float64* pH2);
-   STDMETHOD(put_H3)(/*[in]*/Float64 H3);
-   STDMETHOD(get_H3)(/*[out,retval]*/Float64* pH3);
-   STDMETHOD(put_H4)(/*[in]*/Float64 H4);
-   STDMETHOD(get_H4)(/*[out,retval]*/Float64* pH4);
-   STDMETHOD(put_H5)(/*[in]*/Float64 H5);
-   STDMETHOD(get_H5)(/*[out,retval]*/Float64* pH5);
-   STDMETHOD(put_X1)(/*[in]*/Float64 X1);
-   STDMETHOD(get_X1)(/*[out,retval]*/Float64* pX1);
-   STDMETHOD(put_X2)(/*[in]*/Float64 X2);
-   STDMETHOD(get_X2)(/*[out,retval]*/Float64* pX2);
-   STDMETHOD(put_X3)(/*[in]*/Float64 X3);
-   STDMETHOD(get_X3)(/*[out,retval]*/Float64* pX3);
-   STDMETHOD(put_X4)(/*[in]*/Float64 X4);
-   STDMETHOD(get_X4)(/*[out,retval]*/Float64* pX4);
-   STDMETHOD(put_W1)(/*[in]*/Float64 W1);
-   STDMETHOD(get_W1)(/*[out,retval]*/Float64* pW1);
-   STDMETHOD(put_W2)(/*[in]*/Float64 W2);
-   STDMETHOD(get_W2)(/*[out,retval]*/Float64* pW2);
+   STDMETHOD(put_H1)(/*[in]*/Float64 H1) override;
+   STDMETHOD(get_H1)(/*[out,retval]*/Float64* pH1) override;
+   STDMETHOD(put_H2)(/*[in]*/Float64 H2) override;
+   STDMETHOD(get_H2)(/*[out,retval]*/Float64* pH2) override;
+   STDMETHOD(put_H3)(/*[in]*/Float64 H3) override;
+   STDMETHOD(get_H3)(/*[out,retval]*/Float64* pH3) override;
+   STDMETHOD(put_H4)(/*[in]*/Float64 H4) override;
+   STDMETHOD(get_H4)(/*[out,retval]*/Float64* pH4) override;
+   STDMETHOD(put_H5)(/*[in]*/Float64 H5) override;
+   STDMETHOD(get_H5)(/*[out,retval]*/Float64* pH5) override;
+   STDMETHOD(put_X1)(/*[in]*/Float64 X1) override;
+   STDMETHOD(get_X1)(/*[out,retval]*/Float64* pX1) override;
+   STDMETHOD(put_X2)(/*[in]*/Float64 X2) override;
+   STDMETHOD(get_X2)(/*[out,retval]*/Float64* pX2) override;
+   STDMETHOD(put_X3)(/*[in]*/Float64 X3) override;
+   STDMETHOD(get_X3)(/*[out,retval]*/Float64* pX3) override;
+   STDMETHOD(put_X4)(/*[in]*/Float64 X4) override;
+   STDMETHOD(get_X4)(/*[out,retval]*/Float64* pX4) override;
+   STDMETHOD(put_W1)(/*[in]*/Float64 W1) override;
+   STDMETHOD(get_W1)(/*[out,retval]*/Float64* pW1) override;
+   STDMETHOD(put_W2)(/*[in]*/Float64 W2) override;
+   STDMETHOD(get_W2)(/*[out,retval]*/Float64* pW2) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 
 private:
    HRESULT GetUpperXBeamProfile(IPoint2dCollection** ppPoints);

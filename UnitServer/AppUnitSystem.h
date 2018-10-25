@@ -85,14 +85,14 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAppUnitSystem
 public:
-	STDMETHOD(get_DisplayUnitMgr)(/*[out, retval]*/ IDisplayUnitMgr2* *pVal);
-	STDMETHOD(get_UnitServer)(/*[out, retval]*/ IUnitServer* *pVal);
-   STDMETHOD(ConvertToBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT fromUnit,/*[out,retval]*/Float64* retval);
-   STDMETHOD(ConvertFromBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT toUnit,/*[out,retval]*/Float64* retval);
+	STDMETHOD(get_DisplayUnitMgr)(/*[out, retval]*/ IDisplayUnitMgr2* *pVal) override;
+	STDMETHOD(get_UnitServer)(/*[out, retval]*/ IUnitServer* *pVal) override;
+   STDMETHOD(ConvertToBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT fromUnit,/*[out,retval]*/Float64* retval) override;
+   STDMETHOD(ConvertFromBaseUnits)(/*[in]*/Float64 value,/*[in]*/VARIANT toUnit,/*[out,retval]*/Float64* retval) override;
 
 // IUnitServerEventSink
 	STDMETHOD(OnUnitAdded)(IUnitType * UnitType, IUnit * unit)

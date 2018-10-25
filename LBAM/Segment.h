@@ -51,8 +51,8 @@ public:
 	{
 	}
 
+   HRESULT FinalConstruct();
    void FinalRelease();
-   STDMETHOD(FinalConstruct)();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SEGMENT)
 
@@ -75,22 +75,22 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegment
 public:
-	STDMETHOD(Clone)(/*[out]*/ISegment** clone);
-	STDMETHOD(get_SegmentCrossSection)(/*[out, retval]*/ ISegmentCrossSection* *pVal);
-	STDMETHOD(putref_SegmentCrossSection)(/*[in]*/ ISegmentCrossSection* newVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
+	STDMETHOD(Clone)(/*[out]*/ISegment** clone) override;
+	STDMETHOD(get_SegmentCrossSection)(/*[out, retval]*/ ISegmentCrossSection* *pVal) override;
+	STDMETHOD(putref_SegmentCrossSection)(/*[in]*/ ISegmentCrossSection* newVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
    // ISegmentCrossSectionEvents
-	STDMETHOD(OnSegmentCrossSectionChanged)(ISegmentCrossSection* crossSection, ChangeType change);
+	STDMETHOD(OnSegmentCrossSectionChanged)(ISegmentCrossSection* crossSection, ChangeType change) override;
 
 protected:
    Float64 m_Length;

@@ -62,7 +62,7 @@ void CTestDirection::Test()
    EWDirectionType ewDir;
 
    // Test initial value
-   TRY_TEST(dir->get_Value(NULL),E_POINTER);
+   TRY_TEST(dir->get_Value(nullptr),E_POINTER);
    TRY_TEST(dir->get_Value(&val),S_OK);
    TRY_TEST(IsZero(val),true);
 
@@ -81,8 +81,8 @@ void CTestDirection::Test()
    // S 45 15 22.5 E = 315.25625deg = 5.502259551rad
 
    // North/South and East/West Direction
-   TRY_TEST(dir->get_NSDirection(NULL),E_POINTER);   
-   TRY_TEST(dir->get_EWDirection(NULL),E_POINTER);   
+   TRY_TEST(dir->get_NSDirection(nullptr),E_POINTER);   
+   TRY_TEST(dir->get_EWDirection(nullptr),E_POINTER);   
    TRY_TEST(dir->put_NSDirection((NSDirectionType)4),COGO_E_BADDIRECTION);
    TRY_TEST(dir->put_EWDirection((EWDirectionType)4),COGO_E_BADDIRECTION);
 
@@ -129,9 +129,9 @@ void CTestDirection::Test()
    TRY_TEST(IsEqual(val,0.780925757),true); // N 45 15 22.5 E
 
    // Get Degree/Min/Sec
-   TRY_TEST(dir->get_Degree(NULL),E_POINTER);
-   TRY_TEST(dir->get_Minute(NULL),E_POINTER);
-   TRY_TEST(dir->get_Second(NULL),E_POINTER);
+   TRY_TEST(dir->get_Degree(nullptr),E_POINTER);
+   TRY_TEST(dir->get_Minute(nullptr),E_POINTER);
+   TRY_TEST(dir->get_Second(nullptr),E_POINTER);
 
    dir->put_Value(0.780925757); // N 45 15 22.5 E
    TRY_TEST(dir->get_Degree(&deg),S_OK);
@@ -243,7 +243,7 @@ void CTestDirection::Test()
    CComPtr<IDirection> incDir;
    dir->put_Value(1.0);
    TRY_TEST(dir->Increment(CComVariant(dir),&incDir),E_INVALIDARG);
-   TRY_TEST(dir->Increment(CComVariant(1.0),NULL),E_POINTER);
+   TRY_TEST(dir->Increment(CComVariant(1.0),nullptr),E_POINTER);
    TRY_TEST(dir->Increment(CComVariant(1.0),&incDir),S_OK);
    dir->get_Value(&val);
    TRY_TEST(IsEqual(val,1.0),true);
@@ -251,7 +251,7 @@ void CTestDirection::Test()
    TRY_TEST(IsEqual(val,2.0),true);
 
    // Test FromString
-   TRY_TEST(dir->FromString(NULL),                          E_INVALIDARG);
+   TRY_TEST(dir->FromString(nullptr),                          E_INVALIDARG);
    TRY_TEST(dir->FromString(CComBSTR()),                    E_INVALIDARG);
    TRY_TEST(dir->FromString(CComBSTR("")),                  COGO_E_BADDIRECTIONSTRING);
    TRY_TEST(dir->FromString(CComBSTR("         ")),         COGO_E_BADDIRECTIONSTRING);
@@ -468,8 +468,8 @@ void CTestDirection::Test()
 
    angle.Release();
    // angle = dir1 - dir2;
-   TRY_TEST( dir1->AngleBetween(dir2,NULL), E_POINTER );
-   TRY_TEST( dir1->AngleBetween(NULL,&angle), E_INVALIDARG );
+   TRY_TEST( dir1->AngleBetween(dir2,nullptr), E_POINTER );
+   TRY_TEST( dir1->AngleBetween(nullptr,&angle), E_INVALIDARG );
    TRY_TEST( dir1->AngleBetween(dir2,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST(IsEqual(val,PI_OVER_2),S_OK);

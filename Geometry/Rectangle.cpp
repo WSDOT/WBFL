@@ -48,7 +48,7 @@ STDMETHODIMP CRectangle::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -124,7 +124,7 @@ HRESULT CRectangle::FinalConstruct()
    m_Height = 0.00;
    m_Width  = 0.00;
    m_Rotation = 0.00;
-   HRESULT hr = CreatePoint(0.00,0.00,NULL,&m_pHookPoint);
+   HRESULT hr = CreatePoint(0.00,0.00,nullptr,&m_pHookPoint);
    if (FAILED(hr))
       return hr;
 
@@ -290,10 +290,10 @@ void CRectangle::UpdateBoundingRect()
       Float64 h2 = m_Height/2.;
 
       CComPtr<IPoint2d> tl;
-      CreatePoint( w2, h2, NULL, &tl );
+      CreatePoint( w2, h2, nullptr, &tl );
 
       CComPtr<IPoint2d> tr;
-      CreatePoint( -w2, h2, NULL, &tr );
+      CreatePoint( -w2, h2, nullptr, &tr );
 
       tl->Rotate(0.00,0.00, m_Rotation);
       tr->Rotate(0.00,0.00, m_Rotation);
@@ -346,16 +346,16 @@ void CRectangle::UpdatePolyShape()
       m_pHookPoint->get_Y(&cy);
 
       CComPtr<IPoint2d> bl;
-      CreatePoint(cx-w2,cy-h2,NULL,&bl);
+      CreatePoint(cx-w2,cy-h2,nullptr,&bl);
 
       CComPtr<IPoint2d> br;
-      CreatePoint(cx+w2,cy-h2,NULL,&br);
+      CreatePoint(cx+w2,cy-h2,nullptr,&br);
 
       CComPtr<IPoint2d> tr;
-      CreatePoint(cx+w2, cy+h2,NULL,&tr);
+      CreatePoint(cx+w2, cy+h2,nullptr,&tr);
 
       CComPtr<IPoint2d> tl;
-      CreatePoint(cx-w2, cy+h2,NULL,&tl);
+      CreatePoint(cx-w2, cy+h2,nullptr,&tl);
 
       // rotate points if needed
       if ( !IsZero(m_Rotation) )
@@ -425,7 +425,7 @@ STDMETHODIMP CRectangle::Clone(IShape** pClone)
    pTheClone->put_Height( m_Height );
    pTheClone->put_Width( m_Width );
    CComPtr<IPoint2d> hookPnt;
-   hr = CreatePoint(m_pHookPoint,NULL,&hookPnt);
+   hr = CreatePoint(m_pHookPoint,nullptr,&hookPnt);
    pTheClone->putref_HookPoint( hookPnt );
    pTheClone->RotateEx( m_pHookPoint, m_Rotation );
 
@@ -495,7 +495,7 @@ STDMETHODIMP CRectangle::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
    {
       Float64 lx,ly;
       GetLocatorPoint(lp,&lx,&ly);
-      return CreatePoint(lx,ly,NULL,point);
+      return CreatePoint(lx,ly,nullptr,point);
    }
 }
 

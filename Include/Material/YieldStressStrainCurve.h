@@ -134,11 +134,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -157,7 +157,7 @@ protected:
    void MakeCopy(const matYieldStressStrainCurve& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matYieldStressStrainCurve& rOther);
+   void MakeAssignment(const matYieldStressStrainCurve& rOther);
 
    // GROUP: ACCESS
 

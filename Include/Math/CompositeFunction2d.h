@@ -50,9 +50,9 @@ public:
    void GetFunction(IndexType idx,const mathFunction2d** ppFunc,Float64* pXMin,Float64* pXMax) const;
    void AdjustLimits(IndexType idx,Float64 xMin,Float64 xMax);
 
-   virtual Float64 Evaluate(Float64 x) const;
+   virtual Float64 Evaluate(Float64 x) const override;
 
-   virtual mathFunction2d* Clone() const;
+   virtual mathFunction2d* Clone() const override;
 
    virtual void Clear();
 
@@ -61,7 +61,7 @@ private:
    {
       Float64 xMin,xMax;
       mathFunction2d* pFunc;
-      Segment() { pFunc = NULL; }
+      Segment() { pFunc = nullptr; }
       Segment(const Segment& other) { xMin = other.xMin; xMax = other.xMax; pFunc = other.pFunc->Clone(); }
       ~Segment() { delete pFunc; }
       Segment& operator=(const Segment& other) { xMin = other.xMin; xMax = other.xMax; delete pFunc; pFunc = other.pFunc->Clone(); return *this; }

@@ -48,7 +48,7 @@ class ATL_NO_VTABLE CProfilePoint :
 public:
 	CProfilePoint()
 	{
-      m_pProfile = NULL;
+      m_pProfile = nullptr;
       m_Station = 0;
       m_Elevation = 0;
 	}
@@ -77,23 +77,23 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IProfilePoint
 public:
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Station)(/*[out, retval]*/ IStation* *station);
-	STDMETHOD(put_Station)(/*[in]*/ VARIANT varStation);
-	STDMETHOD(get_Elevation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Elevation)(/*[in]*/ Float64 newVal);
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfilePoint* *clone);
+   STDMETHOD(get_Profile)(IProfile* *pVal) override;
+   STDMETHOD(putref_Profile)(IProfile* newVal) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Station)(/*[out, retval]*/ IStation* *station) override;
+	STDMETHOD(put_Station)(/*[in]*/ VARIANT varStation) override;
+	STDMETHOD(get_Elevation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Elevation)(/*[in]*/ Float64 newVal) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IProfilePoint* *clone) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    IProfile* m_pProfile; // weak reference

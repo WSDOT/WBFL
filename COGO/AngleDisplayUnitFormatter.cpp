@@ -58,7 +58,7 @@ STDMETHODIMP CAngleDisplayUnitFormatter::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IAngleDisplayUnitFormatter,
       &IID_IDisplayUnitFormatter
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -128,7 +128,7 @@ STDMETHODIMP CAngleDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR* fmt
    if ( IsZero(val,m_ZeroTolerance) )
       val = 0.0;
 
-   bool bShowTag = (tag == NULL ? false : true);
+   bool bShowTag = (tag == nullptr ? false : true);
    std::_tstring strDegTag, strMinTag, strSecTag;
    if ( bShowTag )
    {

@@ -64,7 +64,8 @@ public:
 
    //------------------------------------------------------------------------
    // listen to the system unit manager and update all units when it is updated.
-   virtual void OnUpdate();
+   virtual void OnUpdate() override;
+
 private:
    // save all dimensions in input units
    Float64   m_uD1;
@@ -149,7 +150,7 @@ CLASS
    gmWsdotPrecastBeams
 ****************************************************************************/
 
-gmWsdotPrecastBeams* gmWsdotPrecastBeams::ms_pInstance = 0;
+gmWsdotPrecastBeams* gmWsdotPrecastBeams::ms_pInstance = nullptr;
 gmWsdotPrecastBeams::Killer gmWsdotPrecastBeams::ms_Killer;
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
@@ -173,53 +174,57 @@ gmWsdotPrecastBeams& gmWsdotPrecastBeams::GetInstance()
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W42MG()
 {
-   if (ms_pW42MG.get()==0)
-      ms_pW42MG = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                               0.114, 0.0,    0.178, 0.0,
-                                               0.089, 0.038,  0.0,   0.127,
-                                               0.051, 0.0,    0.762,
-                                               0.152, 0.152,
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Meter));
+   if (ms_pW42MG.get() == nullptr)
+   {
+      ms_pW42MG = std::make_unique<gmUnitWisePrecastBeam>(0.114, 0.0, 0.178, 0.0,
+         0.089, 0.038, 0.0, 0.127,
+         0.051, 0.0, 0.762,
+         0.152, 0.152,
+         gpPoint2d(0, 0),
+         unitMeasure::Meter);
+   }
    return *ms_pW42MG;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W50MG()
 {
-   if (ms_pW50MG.get()==0)
-      ms_pW50MG = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              0.178, 0.0,    0.241, 0.0,
-                                              0.127, 0.051,  0.0,   0.152,
-                                              0.076, 0.0,    0.864,
-                                              0.152, 0.152,
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Meter));
+   if (ms_pW50MG.get() == nullptr)
+   {
+      ms_pW50MG = std::make_unique<gmUnitWisePrecastBeam>(0.178, 0.0, 0.241, 0.0,
+         0.127, 0.051, 0.0, 0.152,
+         0.076, 0.0, 0.864,
+         0.152, 0.152,
+         gpPoint2d(0, 0),
+         unitMeasure::Meter);
+   }
    return *ms_pW50MG;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W58MG()
 {
-   if (ms_pW58MG.get()==0)
-      ms_pW58MG = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              0.241, 0.0,    0.241, 0.0,
-                                              0.127, 0.051,  0.0,    0.152,
-                                              0.076, 0.0,    1.067,
-                                              0.152, 0.152,
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Meter));
+   if (ms_pW58MG.get() == nullptr)
+   {
+      ms_pW58MG = std::make_unique<gmUnitWisePrecastBeam>(0.241, 0.0, 0.241, 0.0,
+         0.127, 0.051, 0.0, 0.152,
+         0.076, 0.0, 1.067,
+         0.152, 0.152,
+         gpPoint2d(0, 0),
+         unitMeasure::Meter);
+   }
    return *ms_pW58MG;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W74MG()
 {
-   if (ms_pW74MG.get()==0)
-      ms_pW74MG = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              0.419, 0.051, 0.241, 0.0,
-                                              0.073, 0.067, 0.051, 0.152,
-                                              0.076, 0.0,   1.448,
-                                              0.152, 0.152,
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Meter));
+   if (ms_pW74MG.get() == nullptr)
+   {
+      ms_pW74MG = std::make_unique<gmUnitWisePrecastBeam>(0.419, 0.051, 0.241, 0.0,
+         0.073, 0.067, 0.051, 0.152,
+         0.076, 0.0, 1.448,
+         0.152, 0.152,
+         gpPoint2d(0, 0),
+         unitMeasure::Meter);
+   }
    return *ms_pW74MG;
 }
 
@@ -227,53 +232,57 @@ const gmPrecastBeam& gmWsdotPrecastBeams::W74MG()
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W42G()
 {
-   if (ms_pW42G.get()==0)
-      ms_pW42G = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              4.5  , 0.0,    7.0  , 0.0,
-                                              3.5  , 1.5  ,  0.0,   5.0,
-                                              2.0  , 0.0,   30.0,
-                                              6.0,   6.0,  
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Inch));
+   if (ms_pW42G.get() == nullptr)
+   {
+      ms_pW42G = std::make_unique<gmUnitWisePrecastBeam>(4.5, 0.0, 7.0, 0.0,
+         3.5, 1.5, 0.0, 5.0,
+         2.0, 0.0, 30.0,
+         6.0, 6.0,
+         gpPoint2d(0, 0),
+         unitMeasure::Inch);
+   }
    return *ms_pW42G;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W50G()
 {
-   if (ms_pW50G.get()==0)
-      ms_pW50G = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              7.0  , 0.0,    9.5  , 0.0,
-                                              5.0  , 2.0  ,  0.0,   6.0,
-                                              3.0  , 0.0,   34.0,
-                                              6.0,   6.0,  
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Inch));
+   if (ms_pW50G.get() == nullptr)
+   {
+      ms_pW50G = std::make_unique<gmUnitWisePrecastBeam>(7.0, 0.0, 9.5, 0.0,
+         5.0, 2.0, 0.0, 6.0,
+         3.0, 0.0, 34.0,
+         6.0, 6.0,
+         gpPoint2d(0, 0),
+         unitMeasure::Inch);
+   }
    return *ms_pW50G;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W58G()
 {
-   if (ms_pW58G.get()==0)
-      ms_pW58G = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                              9.5  , 0.0,    9.5  , 0.0,
-                                              5.0  , 2.0  ,  0.0,   6.0,
-                                              3.0  , 0.0,   42.0,
-                                              6.0,   6.0,  
-                                               gpPoint2d(0,0),
-                                               unitMeasure::Inch));
+   if (ms_pW58G.get() == nullptr)
+   {
+      ms_pW58G = std::make_unique<gmUnitWisePrecastBeam>(9.5, 0.0, 9.5, 0.0,
+         5.0, 2.0, 0.0, 6.0,
+         3.0, 0.0, 42.0,
+         6.0, 6.0,
+         gpPoint2d(0, 0),
+         unitMeasure::Inch);
+   }
    return *ms_pW58G;
 }
 
 const gmPrecastBeam& gmWsdotPrecastBeams::W74G()
 {
-   if (ms_pW74G.get()==0)
-      ms_pW74G = std::auto_ptr<gmPrecastBeam> (new gmUnitWisePrecastBeam(
-                                             16.5  , 2.0,    9.5  , 0.0,
-                                              2.875, 2.625,  2.0,   6.0,
-                                              3.0  , 0.0,   57.0,
-                                              6.0,   6.0,
-                                              gpPoint2d(0,0),
-                                              unitMeasure::Inch));
+   if (ms_pW74G.get() == nullptr)
+   {
+      ms_pW74G = std::make_unique<gmUnitWisePrecastBeam>(16.5, 2.0, 9.5, 0.0,
+         2.875, 2.625, 2.0, 6.0,
+         3.0, 0.0, 57.0,
+         6.0, 6.0,
+         gpPoint2d(0, 0),
+         unitMeasure::Inch);
+   }
    return *ms_pW74G;
 }
 

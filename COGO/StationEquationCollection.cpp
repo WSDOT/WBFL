@@ -55,7 +55,7 @@ STDMETHODIMP CStationEquationCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IStationEquationCollection,
 		&IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -81,7 +81,7 @@ STDMETHODIMP CStationEquationCollection::putref_Alignment(IAlignment* pAlignment
 
 STDMETHODIMP CStationEquationCollection::Add(Float64 back,Float64 ahead,IStationEquation* *ppEquation)
 {
-   if ( ppEquation != NULL )
+   if ( ppEquation != nullptr )
    {
       CHECK_RETVAL(ppEquation);
    }
@@ -105,7 +105,7 @@ STDMETHODIMP CStationEquationCollection::Add(Float64 back,Float64 ahead,IStation
       }
    }
 
-   if ( ppEquation != NULL )
+   if ( ppEquation != nullptr )
    {
       (*ppEquation) = pEquation;
       (*ppEquation)->AddRef();
@@ -133,7 +133,7 @@ STDMETHODIMP CStationEquationCollection::get__EnumStationEquations(IEnumStationE
 
    CComPtr<IEnumStationEquations> pHolder(pEnum); // memory leak avoidance
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -278,10 +278,10 @@ STDMETHODIMP CStationEquationCollection::ConvertToNormalizedStation(VARIANT varS
 
 STDMETHODIMP CStationEquationCollection::ConvertToNormalizedStationEx(VARIANT varStation,IStation** station)
 {
-   if ( station == NULL )
+   if ( station == nullptr )
       return E_POINTER;
 
-   if ( *station == NULL )
+   if ( *station == nullptr )
    {
       CComObject<CStation>* pStation;
       CComObject<CStation>::CreateInstance(&pStation);
@@ -301,10 +301,10 @@ STDMETHODIMP CStationEquationCollection::ConvertToNormalizedStationEx(VARIANT va
 
 STDMETHODIMP CStationEquationCollection::ConvertFromNormalizedStation(Float64 normalizedStation,IStation** station)
 {
-   if ( station == NULL )
+   if ( station == nullptr )
       return E_POINTER;
 
-   if ( *station == NULL )
+   if ( *station == nullptr )
    {
       CComObject<CStation>* pStation;
       CComObject<CStation>::CreateInstance(&pStation);

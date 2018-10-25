@@ -31,11 +31,13 @@
 //
 
 #include "ProgressThread.h"
-#include <boost\shared_ptr.hpp>
+
 
 #include <vector>
 #include <iostream>
 #include <fstream>
+
+#include <memory>
 
 /////////////////////////////////////////////////////////////////////////////
 // CSysAgent command target
@@ -66,30 +68,30 @@ END_COM_MAP()
 
 // IAgentEx
 public:
-	STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
-   STDMETHOD(RegInterfaces)();
-	STDMETHOD(Init)();
-	STDMETHOD(Init2)();
-	STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
-   STDMETHOD(GetClassID)(CLSID* pCLSID);
+	STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
+   STDMETHOD(RegInterfaces)() override;
+	STDMETHOD(Init)() override;
+	STDMETHOD(Init2)() override;
+	STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
+   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
 
 // IProgress
 public:
-   STDMETHOD(CreateProgressWindow)(/*[in]*/ DWORD dwMask,/*[in]*/ UINT nDelay);
-	STDMETHOD(Init)(/*[in]*/ short begin, /*[in]*/ short end, /*[in]*/ short inc);
-	STDMETHOD(Increment)();
-	STDMETHOD(UpdateMessage)(/*[in]*/ LPCTSTR msg);
-	STDMETHOD(Continue)();
-	STDMETHOD(DestroyProgressWindow)();
+   STDMETHOD(CreateProgressWindow)(/*[in]*/ DWORD dwMask,/*[in]*/ UINT nDelay) override;
+	STDMETHOD(Init)(/*[in]*/ short begin, /*[in]*/ short end, /*[in]*/ short inc) override;
+	STDMETHOD(Increment)() override;
+	STDMETHOD(UpdateMessage)(/*[in]*/ LPCTSTR msg) override;
+	STDMETHOD(Continue)() override;
+	STDMETHOD(DestroyProgressWindow)() override;
 
 // ILogFile
 public:
-   STDMETHOD(Open)(/*[in]*/ LPCTSTR name,/*[out]*/ DWORD* pdwCookie);
-   STDMETHOD(put_EndLines)(/*[in]*/ BOOL bEndLines);
-   STDMETHOD(get_EndLines)(/*[out,retval]*/ BOOL* pbEndLines);
-   STDMETHOD(LogMessage)(/*[in]*/ DWORD dwCookie,/*[in]*/ LPCTSTR msg);
-   STDMETHOD(Close)(/*[in]*/ DWORD dwCookie);
+   STDMETHOD(Open)(/*[in]*/ LPCTSTR name,/*[out]*/ DWORD* pdwCookie) override;
+   STDMETHOD(put_EndLines)(/*[in]*/ BOOL bEndLines) override;
+   STDMETHOD(get_EndLines)(/*[out,retval]*/ BOOL* pbEndLines) override;
+   STDMETHOD(LogMessage)(/*[in]*/ DWORD dwCookie,/*[in]*/ LPCTSTR msg) override;
+   STDMETHOD(Close)(/*[in]*/ DWORD dwCookie) override;
 
 private:
    IBroker* m_pBroker; // weak reference
@@ -100,7 +102,7 @@ private:
    std::vector<std::_tstring> m_Messages;
 
    BOOL m_bEndLines;
-   std::vector<boost::shared_ptr<std::_tofstream> > m_LogFiles;
+   std::vector<std::shared_ptr<std::_tofstream> > m_LogFiles;
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)

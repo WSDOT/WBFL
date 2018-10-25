@@ -78,13 +78,13 @@ rcaCapacitySolver::rcaCapacitySolver(Uint32 solverType) :
 {
    if ( solverType == RCA_BRENTS )
    {
-      m_pAxialSolver = std::auto_ptr<mathRootFinder2d>( new mathBrentsRootFinder2d() );
-      m_pAngleSolver = std::auto_ptr<mathRootFinder2d>( new mathBrentsRootFinder2d() );
+      m_pAxialSolver = std::unique_ptr<mathRootFinder2d>(std::make_unique<mathBrentsRootFinder2d>() );
+      m_pAngleSolver = std::unique_ptr<mathRootFinder2d>(std::make_unique<mathBrentsRootFinder2d>() );
    }
    else
    {
-      m_pAxialSolver = std::auto_ptr<mathRootFinder2d>( new mathBisectionRootFinder2d() );
-      m_pAngleSolver = std::auto_ptr<mathRootFinder2d>( new mathBisectionRootFinder2d() );
+      m_pAxialSolver = std::unique_ptr<mathRootFinder2d>(std::make_unique<mathBisectionRootFinder2d>() );
+      m_pAngleSolver = std::unique_ptr<mathRootFinder2d>(std::make_unique<mathBisectionRootFinder2d>() );
    }
 
   m_pAngleSolver->SetMaxIter(MAX_ITER_DEFAULT);
@@ -131,7 +131,7 @@ bool is_zero_capacity_problem(rcaCapacityProblem& problem)
       return true;
 
    Float64 fc=0.0;
-   for (CollectionIndexType i=0; i<nc; i++)
+   for (CollectionIndexType i = 0; i<nc; i++)
        fc = max(fc, problem.GetConcrete(i).GetFc());
 
    if ( IsZero(fc) )
@@ -529,7 +529,7 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
       WATCHX(rca,0,_T("Delta Angle = ") << delta_angle);
 
 #ifdef DUMP_LOG
-      m_AxialIter=0;
+      m_AxialIter = 0;
       m_Log << "A "<<m_AngleIter<<", "<<m_Theta <<", "<< delta_angle << std::endl;
 #endif
 
@@ -560,7 +560,7 @@ Float64 rcaCapacitySolver::Evaluate(Float64 x) const
 mathFunction2d* rcaCapacitySolver::Clone() const
 {
    ASSERT(false); // should never be called
-   return NULL;
+   return nullptr;
 }
 
 void rcaCapacitySolver::SetAxialForce(Float64 f)

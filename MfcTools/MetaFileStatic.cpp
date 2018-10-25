@@ -80,7 +80,7 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
    // delete old meta file if one is already attached
    HENHMETAFILE holdmeta;
    holdmeta = GetEnhMetaFile( );
-   if (holdmeta!=NULL)
+   if (holdmeta!=nullptr)
    {
       ::DeleteEnhMetaFile(holdmeta);
    }
@@ -103,7 +103,7 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
 
    if ( flag != EMF_FIT )
    {
-      UINT size = ::GetEnhMetaFileHeader(hmeta,0,NULL);
+      UINT size = ::GetEnhMetaFileHeader(hmeta,0,nullptr);
       ENHMETAHEADER emfHeader;
       ::GetEnhMetaFileHeader(hmeta,size,&emfHeader);
 
@@ -148,10 +148,10 @@ void CMetaFileStatic::SetImage( HINSTANCE hInstance,LPCTSTR lpName, LPCTSTR lpTy
          cx = cxi;
          cy = cyi;
       }
-      SetWindowPos(NULL,0,0,cx,cy,SWP_NOMOVE | SWP_NOZORDER);
+      SetWindowPos(nullptr,0,0,cx,cy,SWP_NOMOVE | SWP_NOZORDER);
    }
 
-   ASSERT(hmeta!=NULL);
+   ASSERT(hmeta!=nullptr);
    SetEnhMetaFile(hmeta);
 }
 
@@ -161,7 +161,7 @@ void CMetaFileStatic::OnDestroy()
 	
    HENHMETAFILE hmeta;
    hmeta = GetEnhMetaFile( );
-   if (hmeta!=NULL)
+   if (hmeta!=nullptr)
    {
       ::DeleteEnhMetaFile(hmeta);
    }

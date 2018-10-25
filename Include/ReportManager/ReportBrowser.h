@@ -35,7 +35,7 @@
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
 #include <Reporter\Reporter.h>
-#include <boost\shared_ptr.hpp>
+
 
 class rptReport;
 class CWebBrowser;
@@ -48,10 +48,10 @@ public:
 	CReportBrowser();
 	virtual ~CReportBrowser();
 
-   void UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRefresh);
-   bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,boost::shared_ptr<rptReport>& pReport);
-   boost::shared_ptr<CReportSpecification> GetReportSpecification();
-   boost::shared_ptr<rptReport> GetReport();
+   void UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh);
+   bool Initialize(HWND hwnd,CReportBuilderManager* pRptMgr, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport);
+   std::shared_ptr<CReportSpecification> GetReportSpecification();
+   std::shared_ptr<rptReport> GetReport();
    std::_tstring GetReportTitle();
    void Move(POINT topLeft);
    void Size(SIZE size);
@@ -70,9 +70,9 @@ public:
 private:
    CWebBrowser* m_pWebBrowser;
    std::_tstring m_Filename;
-   boost::shared_ptr<CReportSpecification> m_pRptSpec;
-   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
-   boost::shared_ptr<rptReport> m_pReport;
+   std::shared_ptr<CReportSpecification> m_pRptSpec;
+   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
+   std::shared_ptr<rptReport> m_pReport;
    CReportBuilderManager* m_pRptMgr;
 
    void MakeFilename();

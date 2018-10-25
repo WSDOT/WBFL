@@ -53,7 +53,7 @@ STDMETHODIMP CLiveLoadModelResponse::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoadModelResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -341,7 +341,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeDeflections(IIDArray* poiIDs, BSTR s
          // no vehicles - need to create empty results and return
          for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
          {
-            hr = results->Add(0.0, NULL, 0.0, NULL);
+            hr = results->Add(0.0, nullptr, 0.0, nullptr);
          }
       }
       else
@@ -431,7 +431,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeReactions(IIDArray* supportIDs, BSTR
          // no vehicles - need to create empty results and return
          for (CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
          {
-            hr = results->Add(0.0, NULL);
+            hr = results->Add(0.0, nullptr);
          }
       }
       else
@@ -517,7 +517,7 @@ STDMETHODIMP CLiveLoadModelResponse::ComputeSupportDeflections(IIDArray* support
          // no vehicles - need to create empty results and return
          for (CollectionIndexType supportIdx = 0; supportIdx < nSupports; supportIdx++)
          {
-            hr = results->Add(0.0, NULL);
+            hr = results->Add(0.0, nullptr);
          }
       }
       else
@@ -607,7 +607,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
    try
    {
       // first set up our context - we need to know ILiveLoad to get our work done
-      if (m_Context != NULL)
+      if (m_Context != nullptr)
       {
          // can only initialize once
          THROW_LBAMLL(LL_INITIALIZATION);
@@ -617,7 +617,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
 
       // Latch onto the parts of the context we need 
       CComQIPtr<ILiveLoad> pll(context);
-      if (pll!=NULL)
+      if (pll!=nullptr)
       {
          m_LiveLoad = pll;
       }
@@ -628,7 +628,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IInfluenceLineResponse> presp(context);
-      if (presp!=NULL)
+      if (presp!=nullptr)
       {
          m_InfluenceLineResponse = presp;
       }
@@ -639,7 +639,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> pcf(context);
-      if (pcf!=NULL)
+      if (pcf!=nullptr)
       {
          m_LiveLoadNegativeMomentRegion = pcf;
       }
@@ -650,7 +650,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetDistributionFactors> pdf(context);
-      if (pdf!=NULL)
+      if (pdf!=nullptr)
       {
          m_GetDistributionFactors = pdf;
       }
@@ -661,7 +661,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ISupportLocations> sup_locs(m_Context);
-      if (sup_locs!=NULL)
+      if (sup_locs!=nullptr)
       {
          m_SupportLocations = sup_locs;
       }
@@ -672,7 +672,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetStressPoints> gsp(context);
-      if (gsp!=NULL)
+      if (gsp!=nullptr)
       {
          m_GetStressPoints = gsp;
       }
@@ -685,9 +685,9 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       CHRException hr;
 
       // Next create our live load enveloper. Use the brute force strategy by default
-      if ( m_EnvelopedResponse == NULL )
+      if ( m_EnvelopedResponse == nullptr )
       {
-         if ( m_Factory == NULL )
+         if ( m_Factory == nullptr )
          {
             CComObject<CBruteForceVehicularResponse>* p_vehicular_response;
             hr = CComObject<CBruteForceVehicularResponse>::CreateInstance(&p_vehicular_response);
@@ -699,7 +699,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
          }
 
          CComQIPtr<IDependOnVehicularAnalysisContext> dep_ctx(m_EnvelopedResponse);
-         if (dep_ctx!=NULL)
+         if (dep_ctx!=nullptr)
          {
             dep_ctx->Initialize(m_Context);
          }
@@ -722,7 +722,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
 STDMETHODIMP CLiveLoadModelResponse::get_Strategy(IEnvelopedVehicularResponse * * pVal)
 {
    CHECK_RETOBJ(pVal);
-   if (m_EnvelopedResponse!=NULL)
+   if (m_EnvelopedResponse!=nullptr)
    {
       return m_EnvelopedResponse.CopyTo(pVal);
    }

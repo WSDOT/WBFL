@@ -58,20 +58,20 @@ BEGIN_COM_MAP(CLoadCombinationSectionResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ILoadCombinationSectionResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/Float64* rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig);
-	STDMETHOD(Add)(/*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clear)();
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* leftResult, /*[out]*/ILoadCombinationResultConfiguration** leftConfig, /*[out]*/Float64* rightResult, /*[out]*/ILoadCombinationResultConfiguration** rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(Add)(/*[in]*/Float64 leftResult, /*[in]*/ILoadCombinationResultConfiguration* leftConfig, /*[in]*/Float64 rightResult, /*[in]*/ILoadCombinationResultConfiguration* rightConfig) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clear)() override;
 
 // functions available to non-com pals
 public:

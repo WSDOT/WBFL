@@ -71,7 +71,7 @@ STDMETHODIMP_(void) CDragDataSourceImpl::PrepareFormat(UINT cfFormat)
    fe.tymed = TYMED_HGLOBAL;
    fe.lindex = -1;
    fe.dwAspect = DVASPECT_CONTENT;
-   fe.ptd = NULL;
+   fe.ptd = nullptr;
 
    HGLOBAL hGlobal = m_pDataObj->GetGlobalData(cfFormat,&fe);
    DataSource* pSource = new DataSource(hGlobal);

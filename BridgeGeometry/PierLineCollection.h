@@ -75,20 +75,20 @@ END_COM_MAP()
 	}
 
    PierIndexType GetPierLineIndex(IPierLine* pier);
-   virtual HRESULT OnAfterAdd( StoredType* pVal, PierIndexType idx);
+   virtual HRESULT OnAfterAdd( StoredType* pVal, PierIndexType idx) override;
    void Sort();
 
    static bool PierSort(StoredType a,StoredType b);
 
 // IPierLineCollection
 public:
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   //STDMETHOD(get_Item)(/*[in]*/ PierIndexType index, /*[out, retval]*/ IPierLine* *pVal);
-   //STDMETHOD(get_Count)(/*[out,retval]*/ PierIndexType* count);
-   STDMETHOD(get_PierLine)(/*[in]*/ PierIndexType index, /*[out, retval]*/ IPierLine* *pVal);
-   STDMETHOD(get_PierLineIndex)(/*[in]*/ IPierLine* pier,/*[out,retval]*/PierIndexType* index);
-   STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPierLines* *enumPiers);
-   STDMETHOD(FindPierLine)(PierIDType pierID, IPierLine* *pVal);
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   //STDMETHOD(get_Item)(/*[in]*/ PierIndexType index, /*[out, retval]*/ IPierLine* *pVal) override;
+   //STDMETHOD(get_Count)(/*[out,retval]*/ PierIndexType* count) override;
+   STDMETHOD(get_PierLine)(/*[in]*/ PierIndexType index, /*[out, retval]*/ IPierLine* *pVal) override;
+   STDMETHOD(get_PierLineIndex)(/*[in]*/ IPierLine* pier,/*[out,retval]*/PierIndexType* index) override;
+   STDMETHOD(get__EnumPiers)(/*[out,retval]*/IEnumPierLines* *enumPiers) override;
+   STDMETHOD(FindPierLine)(PierIDType pierID, IPierLine* *pVal) override;
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(PierLineCollection), CPierLineCollection)

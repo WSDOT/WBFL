@@ -42,7 +42,7 @@ void CEAFCustomReports::LoadFromRegistry(CWinApp* theApp)
       {
          DWORD reportNameSize = sizeof(reportName);
          DWORD reportStringSize = sizeof(reportString);
-         LONG st = ::RegEnumValue(hSecKey,dwIndex++,&reportName[0],&reportNameSize,NULL,&type,(LPBYTE)&reportString[0],&reportStringSize);
+         LONG st = ::RegEnumValue(hSecKey,dwIndex++,&reportName[0],&reportNameSize,nullptr,&type,(LPBYTE)&reportString[0],&reportStringSize);
          if (st== ERROR_NO_MORE_ITEMS)
          {
             // normal end
@@ -99,12 +99,12 @@ void CEAFCustomReports::SaveToRegistry(CWinApp* theApp) const
    HKEY hSecKey = theApp->GetSectionKey(_T("CustomReports"));
    if ( hSecKey )
    {
-      LONG ret = RegDeleteTree(hSecKey,NULL);
+      LONG ret = RegDeleteTree(hSecKey,nullptr);
       bool suc = ret==ERROR_SUCCESS;
       ::RegCloseKey(hSecKey);
    }
 
-   BOOST_FOREACH(const CEAFCustomReport& rReport,m_Reports)
+   for(const auto& rReport : m_Reports)
    {
       // report names are stored as tab separated values. build string
       CString reportString(rReport.m_ParentReportName.c_str());

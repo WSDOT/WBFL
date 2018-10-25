@@ -265,7 +265,7 @@ bool sysTime::IsDST() const
    int hours;
    _get_daylight(&hours);
    if( !hours ) 
-      return 0;
+      return false;
 
   DayTy daycount = (Uint16)(Sec/SECONDS_IN_DAY);
   YearTy year = sysDate( (DayTy)daycount, (YearTy)0 ).Year();

@@ -3,17 +3,17 @@
 
 #include <WBFLTransactions.h>
 
-class ISupportTransactionsImpl : public ISupportTransactions
+class IWBFLSupportTransactionsImpl : public IWBFLSupportTransactions
 {
 public:
-   STDMETHOD(putref_TransactionMgr)(ITransactionMgr* txnMgr)
+   STDMETHOD(putref_TransactionMgr)(IWBFLTransactionMgr* txnMgr)
    {
 //      ATLTRACE("ISupportTransactionsImpl::putref_TransactionMgr (%p)\n",txnMgr);
       m_TxnMgr = txnMgr;
       return S_OK;
    }
    
-   ~ISupportTransactionsImpl()
+   ~IWBFLSupportTransactionsImpl()
    {
 //      ATLTRACE("ISupportTransactionsImpl::~ISupportTransactionsImpl\n");
       if ( m_TxnMgr )
@@ -21,7 +21,7 @@ public:
    }
 
 protected:
-   CComPtr<ITransactionMgr> m_TxnMgr;
+   CComPtr<IWBFLTransactionMgr> m_TxnMgr;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ protected:
 template <class T,const VARIANT_BOOL bUndoable,const VARIANT_BOOL bRepeatable,const GUID* plibid>
 class ATL_NO_VTABLE CTransactionImpl :
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public ITransaction
+	public IWBFLTransaction
 {
 public:
    CTransactionImpl()
@@ -52,7 +52,7 @@ public:
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CTransactionImpl)
-	COM_INTERFACE_ENTRY(ITransaction)
+	COM_INTERFACE_ENTRY(IWBFLTransaction)
 END_COM_MAP()
 
 private:

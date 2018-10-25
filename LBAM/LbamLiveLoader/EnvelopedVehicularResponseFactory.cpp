@@ -43,7 +43,7 @@ STDMETHODIMP CEnvelopedVehicularResponseFactory::InterfaceSupportsErrorInfo(REFI
 	{
 		&IID_IEnvelopedVehicularResponseFactory
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;

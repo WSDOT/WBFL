@@ -50,9 +50,9 @@ static char THIS_FILE[] = __FILE__;
 CComModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
-OBJECT_ENTRY(CLSID_TransactionMgr, CTransactionMgr)
-OBJECT_ENTRY(CLSID_MacroTransaction, CMacroTransaction)
-OBJECT_ENTRY(CLSID_MacroAdapter, CMacroAdapter)
+OBJECT_ENTRY(CLSID_WBFLTransactionMgr, CTransactionMgr)
+OBJECT_ENTRY(CLSID_WBFLMacroTransaction, CMacroTransaction)
+OBJECT_ENTRY(CLSID_WBFLMacroAdapter, CMacroAdapter)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ STDAPI DllCanUnloadNow(void)
 /////////////////////////////////////////////////////////////////////////////
 // Returns a class factory to create an object of the requested type
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID FAR* ppv)
 {
     return _Module.GetClassObject(rclsid, riid, ppv);
 }

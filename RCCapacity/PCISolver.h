@@ -71,28 +71,28 @@ END_COM_MAP()
 
 // IRCSolver
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution) override;
 
 // IRCSolver2
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolutionEx* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolutionEx* *solution) override;
 
 // IRCSolver2Ex
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ IRCSolutionEx* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam2Ex* beam,/*[out,retval]*/ IRCSolutionEx* *solution) override;
 
 // IPCISolver
 public:
-   STDMETHOD(put_Tolerance)(/*[in]*/ Float64 tolerance);
-   STDMETHOD(get_Tolerance)(/*[out,retval]*/ Float64* tolerance);
-	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal);
-   STDMETHOD(putref_StrandModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_StrandModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model);
-   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain* *model);
-   STDMETHOD(put_UnitMode)(/*[in]*/ SpecUnitType unitMode);
-   STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode);
+   STDMETHOD(put_Tolerance)(/*[in]*/ Float64 tolerance) override;
+   STDMETHOD(get_Tolerance)(/*[out,retval]*/ Float64* tolerance) override;
+	STDMETHOD(get_IsCflangeOverhangOnly)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal) override;
+   STDMETHOD(putref_StrandModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_StrandModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain* *model) override;
+   STDMETHOD(put_UnitMode)(/*[in]*/ SpecUnitType unitMode) override;
+   STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode) override;
 };
 
 #endif //__PCISOLVER_H_

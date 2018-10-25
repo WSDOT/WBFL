@@ -48,7 +48,9 @@
 
 #include <Roark\RoarkExp.h>
 #include <System\SectionValue.h>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 class ROARKCLASS rkRoarkBeam
 {
@@ -103,7 +105,7 @@ class ROARKCLASS rkComposite : public rkRoarkBeam
 {
 // Data Members
 protected:
-   typedef std::vector<boost::shared_ptr<rkRoarkBeam> > BeamContainer;
+   typedef std::vector<std::shared_ptr<rkRoarkBeam> > BeamContainer;
    BeamContainer m_Beams;
 
 // Constructors/Destructor

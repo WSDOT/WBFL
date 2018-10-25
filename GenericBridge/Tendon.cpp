@@ -46,7 +46,7 @@ HRESULT CTendon::FinalConstruct()
 
    m_JackingEnd = jeLeft;
 
-   m_pSSMbr = NULL;
+   m_pSSMbr = nullptr;
 
    return S_OK;
 }
@@ -62,7 +62,7 @@ STDMETHODIMP CTendon::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ITendon,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -170,7 +170,7 @@ STDMETHODIMP CTendon::putref_Material(IPrestressingStrand* psMaterial)
 {
    CHECK_IN(psMaterial);
    CComQIPtr<IMaterial> material(psMaterial);
-   if ( material == NULL )
+   if ( material == nullptr )
    {
       ATLASSERT(false); // psMaterial must implement IMaterial
       return E_INVALIDARG;

@@ -55,23 +55,23 @@ BEGIN_COM_MAP(CBstrArray)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBstrArray
 public:
-	STDMETHOD(Find)(/*[in]*/BSTR value, /*[out,retval]*/CollectionIndexType* fndIndex);
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clone)(/*[out,retval]*/IBstrArray* *clone);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/BSTR item);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/BSTR item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ BSTR newVal);
-	STDMETHOD(get__NewEnum)(struct IUnknown ** );
-	STDMETHOD(get__EnumElements)(struct IEnumBstrArray ** );
+	STDMETHOD(Find)(/*[in]*/BSTR value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clone)(/*[out,retval]*/IBstrArray* *clone) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/BSTR item) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Add)(/*[in]*/BSTR item) override;
+	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ BSTR newVal) override;
+	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
+	STDMETHOD(get__EnumElements)(struct IEnumBstrArray ** ) override;
 
 protected:
    typedef std::vector< CAdapt<CComBSTR> >       ContainerType;

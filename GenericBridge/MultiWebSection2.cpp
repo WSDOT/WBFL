@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "MultiWebSection2.h"
 #include <math.h>
-#include <xutility> // for _cpp_min
+#include <xutility> // for Min
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,7 +46,7 @@ HRESULT CMultiWebSection2::FinalConstruct()
 
    m_Beam.CoCreateInstance(CLSID_MultiWeb2);
    CComQIPtr<IShape> beamShape(m_Beam);
-   ATLASSERT(beamShape != NULL); // must implement IShape interface
+   ATLASSERT(beamShape != nullptr); // must implement IShape interface
    m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
 
    return S_OK;
@@ -66,7 +66,7 @@ STDMETHODIMP CMultiWebSection2::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -199,7 +199,7 @@ STDMETHODIMP CMultiWebSection2::get_MinWebThickness(Float64* tWeb)
    get_WebThickness(0,&w1);
    get_WebThickness(1,&w2);
 
-   *tWeb = _cpp_min(w1,w2);
+   *tWeb = Min(w1,w2);
 
    return S_OK;
 }
@@ -430,7 +430,7 @@ STDMETHODIMP CMultiWebSection2::get_CL2ExteriorWebDistance(DirectionType side, F
       // multiweb
       Float64 webwid = 0;
 
-      for (WebIndexType is=0; is<nwebs-1; is++)
+      for (WebIndexType is = 0; is<nwebs-1; is++)
       {
          Float64 spacing;
 

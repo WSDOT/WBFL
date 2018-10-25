@@ -53,7 +53,7 @@ STDMETHODIMP CRebarRowPattern::InterfaceSupportsErrorInfo(REFIID riid)
   	  &IID_IRebarRowPattern,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -67,7 +67,7 @@ STDMETHODIMP CRebarRowPattern::putref_Rebar(IRebar* rebar)
 {
    CHECK_IN(rebar);
    CComQIPtr<IMaterial> material(rebar);
-   if ( material == NULL )
+   if ( material == nullptr )
    {
       ATLASSERT(false); // must implement the IMaterial interface
       return E_INVALIDARG;

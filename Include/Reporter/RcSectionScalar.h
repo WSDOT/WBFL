@@ -85,11 +85,11 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual rptReportContent* CreateClone() const;
+   virtual rptReportContent* CreateClone() const override;
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& rVisitor );
+   virtual void Accept( rptRcVisitor& rVisitor ) override;
 
    bool IsDualValued() const;
 
@@ -160,7 +160,7 @@ protected:
    void MakeCopy(const rptRcSectionScalar& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rptRcSectionScalar& rOther);
+   void MakeAssignment(const rptRcSectionScalar& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

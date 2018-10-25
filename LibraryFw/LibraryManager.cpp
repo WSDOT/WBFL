@@ -130,7 +130,7 @@ libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index)
    }
    else
    {
-      return 0;
+      return nullptr;
    }
 }
 
@@ -142,7 +142,7 @@ const libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index) cons
    }
    else
    {
-      return 0;
+      return nullptr;
    }
 }
 
@@ -156,7 +156,7 @@ libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName)
          return (*it).get();
       }
    }
-   return 0;
+   return nullptr;
 }
 
 
@@ -170,12 +170,12 @@ const libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName) const
          return (*it).get();
       }
    }
-   return 0;
+   return nullptr;
 }
 
 CollectionIndexType libLibraryManager::GetIndex(LPCTSTR displayName) const
 {
-   CollectionIndexType idx=0;
+   CollectionIndexType idx = 0;
    std::_tstring name(displayName);
    for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
@@ -388,7 +388,7 @@ bool libLibraryManager::AssertValid() const
 {
    for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
    {
-      const boost::shared_ptr<libILibrary>& libType = *it;
+      const std::shared_ptr<libILibrary>& libType = *it;
       libILibrary* pLib = libType.get();
       const type_info& ti = typeid( pLib );
       std::string name( ti.name() );

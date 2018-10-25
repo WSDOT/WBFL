@@ -116,7 +116,7 @@ BOOL CEAFStatusBar::SetStatusIndicators(const UINT* lpIDArray, int nIDCount)
 
 	ASSERT_VALID(this);
 	ASSERT(nIDCount >= 1);  // must be at least one of them
-	ASSERT(lpIDArray == NULL ||
+	ASSERT(lpIDArray == nullptr ||
 		AfxIsValidAddress(lpIDArray, sizeof(UINT) * nIDCount, FALSE));
 	ASSERT(::IsWindow(m_hWnd));
 
@@ -127,12 +127,12 @@ BOOL CEAFStatusBar::SetStatusIndicators(const UINT* lpIDArray, int nIDCount)
 
 	// copy initial data from indicator array
 	BOOL bResult = TRUE;
-	if (lpIDArray != NULL)
+	if (lpIDArray != nullptr)
 	{
 		HFONT hFont = (HFONT)SendMessage(WM_GETFONT);
-		CClientDC dcScreen(NULL);
-		HGDIOBJ hOldFont = NULL;
-		if (hFont != NULL)
+		CClientDC dcScreen(nullptr);
+		HGDIOBJ hOldFont = nullptr;
+		if (hFont != nullptr)
 			hOldFont = dcScreen.SelectObject(hFont);
 
 		AFX_STATUSPANE* pSBP = _GetPanePtr(0);
@@ -185,7 +185,7 @@ BOOL CEAFStatusBar::SetStatusIndicators(const UINT* lpIDArray, int nIDCount)
 			}
 			++pSBP;
 		}
-		if (hOldFont != NULL)
+		if (hOldFont != nullptr)
 			dcScreen.SelectObject(hOldFont);
 	}
 	UpdateAllPanes(TRUE, TRUE);
@@ -299,7 +299,7 @@ CEAFDocument* CEAFStatusBar::GetDocument()
    {
       CMDIChildWnd* pChild = (CMDIChildWnd*)pFrame->GetActiveFrame();
       CView* pView = pChild->GetActiveView();
-      CDocument* pDoc = NULL;
+      CDocument* pDoc = nullptr;
       if ( pView )
       {
          pDoc = pView->GetDocument();
@@ -312,7 +312,7 @@ CEAFDocument* CEAFStatusBar::GetDocument()
       }
    }
 
-   return NULL;
+   return nullptr;
 }
 
 void CEAFStatusBar::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)

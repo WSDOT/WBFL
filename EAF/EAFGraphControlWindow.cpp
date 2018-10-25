@@ -40,8 +40,8 @@ IMPLEMENT_DYNCREATE(CEAFGraphControlWindow,CDialogBar)
 
 CEAFGraphControlWindow::CEAFGraphControlWindow()
 {
-   m_pCmdTarget = NULL;
-   m_pGraphBuilder = NULL;
+   m_pCmdTarget = nullptr;
+   m_pGraphBuilder = nullptr;
 }
 
 void CEAFGraphControlWindow::SetCommandTarget(CCmdTarget* pCmdTarget)

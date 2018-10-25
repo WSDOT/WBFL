@@ -84,7 +84,7 @@ void CAlignment::FinalRelease()
    InternalAddRef();
    AtlUnadvise(m_Equations,IID_IStationEquationCollectionEvents,m_dwEquationsCookie);
 
-   PutPath(NULL);
+   PutPath(nullptr);
 }
 
 void CAlignment::PutPath(IPath* pPath)
@@ -112,7 +112,7 @@ STDMETHODIMP CAlignment::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IAlignment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
       if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -585,7 +585,7 @@ STDMETHODIMP CAlignment::Save(IStructuredSave2* pSave)
 
    CComPtr<IStructuredStorage2> ss;
    m_Path->get_StructuredStorage(&ss);
-   ATLASSERT(ss != NULL);
+   ATLASSERT(ss != nullptr);
 
    ss->Save(pSave);
 
@@ -614,7 +614,7 @@ STDMETHODIMP CAlignment::Load(IStructuredLoad2* pLoad)
 
    CComPtr<IStructuredStorage2> ss;
    m_Path->get_StructuredStorage(&ss);
-   ATLASSERT(ss != NULL);
+   ATLASSERT(ss != nullptr);
    ss->Load(pLoad);
 
    VARIANT_BOOL bEnd;

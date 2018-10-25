@@ -45,6 +45,8 @@
 #include <map>
 #include <vector>
 
+#include <memory>
+
 #include "InfluenceLine.h"
 #include "AMUtils.h"
 
@@ -197,9 +199,36 @@ private:
    typedef ElementLayoutMap::iterator       ElementLayoutMapIterator;
 
    ElementLayoutGroup   m_SpanElements;
-   ElementLayoutGroup   m_SuperstructureMemberElements;
    ElementLayoutGroup   m_SupportElements;
    ElementLayoutMap     m_TemporarySupportElements;
+
+   // SSM elements can be condensed to skip over very short members, so we need an additional
+   // piece of data to tell us which side
+   class SsmElementLayoutVec: public ElementLayoutVec
+   {
+   public:
+      SsmElementLayoutVec():
+         m_CondenseType(notCondensed)
+      {;}
+
+      void SetCondenseType(CondenseType type)
+      {
+         m_CondenseType = type;
+      }
+
+      CondenseType GetCondenseType()
+      {
+         return m_CondenseType;
+      }
+
+   private:
+      CondenseType m_CondenseType;
+   };
+
+   typedef std::vector<SsmElementLayoutVec>    SsmElementLayoutGroup;
+   typedef SsmElementLayoutGroup::iterator     SsmElementLayoutGroupIterator;
+   SsmElementLayoutGroup   m_SuperstructureMemberElements;
+
 
    // nodes and supports
    typedef std::vector<IDType>         IdList;
@@ -219,7 +248,7 @@ private:
    bool               m_IsPoiMapUpdated;
    PoiMapCollection   m_PoiMap;
    // sorted version of the above collection, but only pois on the superstructure sorted by location
-   typedef std::auto_ptr<SortedPoiMapTracker> PoiTrackerHolder;
+   typedef std::unique_ptr<SortedPoiMapTracker> PoiTrackerHolder;
    PoiTrackerHolder m_pPoiTracker;
    // most recently generated fem poi id. this is used in mapping between lbam and fem pois
    PoiIDType m_LastFemPoiID;
@@ -267,10 +296,10 @@ private:
    void CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection*  pJoints, IFem2dMemberCollection* pMembers);
 
    void ClearPOIs(IFem2dPOICollection* femPois);
-   void CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float64 mbrLoc, IPOI* poi=NULL);
-   void CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmbrIdx, Float64 mbrLoc, IPOI* poi=NULL);
-   void CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, Float64 mbrLoc, IPOI* poi=NULL);
-   void CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType tempSupportID, Float64 mbrLoc, IPOI* poi=NULL);
+   void CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float64 mbrLoc, IPOI* poi=nullptr);
+   void CreateSsmPOI(PoiIDType poiID, CollectionIndexType ssmbrIdx, Float64 mbrLoc, IPOI* poi=nullptr);
+   void CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, Float64 mbrLoc, IPOI* poi=nullptr);
+   void CreateTemporarySupportPOI(PoiIDType poiID, SupportIDType tempSupportID, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, MemberIDType femMbrID, Float64 femMbrLoc, MemberLocationType locType, IPOI* poi);
    void CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, MemberIDType leftMbrID, IPOI* poi);
    void ConfigurePoiMap(MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, IPOI* poi, PoiMap* poi_map);

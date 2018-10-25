@@ -52,7 +52,7 @@ STDMETHODIMP CHorzCurveDisplayObjectImpl::InterfaceSupportsErrorInfo(REFIID riid
 		&IID_iHorzCurveDisplayObject
 	};
 
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -402,7 +402,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 //
 //   CRect draw_box;
 //   long ientry = 0;
-//   for (long icol=0; icol<num_cols; icol++)
+//   for (long icol = 0; icol<num_cols; icol++)
 //   {
 //      draw_box.left = location.x + lx_datum + lcwidth*icol;
 //      draw_box.right = draw_box.left + ldraw_box_width;
@@ -410,7 +410,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlit
 //      draw_box.top    = location.y - (lcheight-min_cheight)/2 - font_twips*ly_per_twip/2;
 //      draw_box.bottom = draw_box.top - ldraw_box_height;
 //
-//      for (long irow=0; irow<m_NumRows; irow++)
+//      for (long irow = 0; irow<m_NumRows; irow++)
 //      {
 //         if (ientry>num_entries-1)
 //         {

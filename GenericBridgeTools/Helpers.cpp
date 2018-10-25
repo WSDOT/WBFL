@@ -53,7 +53,7 @@ HRESULT GetGirderSectionBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,Se
       return hr;
 
    CComQIPtr<IGirderSection> gdrSection(shape);
-   if ( gdrSection == NULL )
+   if ( gdrSection == nullptr )
       return GBMT_E_GIRDERSECTION;
 
    (*ppSection) = gdrSection;

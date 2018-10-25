@@ -117,7 +117,7 @@ private:
 
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcStringLiteral& rRcString);
-   virtual void MakeAssignment(const rptRcStringLiteral& rOther);
+   void MakeAssignment(const rptRcStringLiteral& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

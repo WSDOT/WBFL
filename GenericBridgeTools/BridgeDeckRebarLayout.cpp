@@ -43,14 +43,14 @@ HRESULT CBridgeDeckRebarLayout::FinalConstruct()
 {
    CComObject<CEffectiveFlangeWidthTool>* pTool;
    HRESULT hr = CComObject<CEffectiveFlangeWidthTool>::CreateInstance(&pTool);
-   if ( FAILED(hr) || pTool == NULL )
+   if ( FAILED(hr) || pTool == nullptr )
       return E_FAIL;
 
    m_EffFlangeTool = pTool;
 
    CComObject<CBridgeGeometryTool>* pBGTool;
    hr = CComObject<CBridgeGeometryTool>::CreateInstance(&pBGTool);
-   if ( FAILED(hr) || pBGTool == NULL )
+   if ( FAILED(hr) || pBGTool == nullptr )
       return E_FAIL;
 
    m_BridgeGeometryTool = pBGTool;
@@ -72,7 +72,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IBridgeDeckRebarLayout,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -99,7 +99,7 @@ HRESULT CBridgeDeckRebarLayout::DoLoadItem(IStructuredLoad2* load,IRebarPattern*
 //   CComObject<CSpan>::CreateInstance(&pSpan);
 //   CComPtr<ISpan> newSpan = pSpan;
 //
-//   ATLASSERT(m_pBridge != NULL);
+//   ATLASSERT(m_pBridge != nullptr);
 //   pSpan->SetBridge(m_pBridge);
 //
 //   CComQIPtr<IStructuredStorage2> ssSpan(newSpan);
@@ -219,7 +219,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    get__EnumRebarLayoutItems(&enumItems);
    
    CComPtr<IBridgeDeckRebarLayoutItem> rebarLayoutItem;
-   while ( enumItems->Next(1,&rebarLayoutItem,NULL) != S_FALSE )
+   while ( enumItems->Next(1,&rebarLayoutItem,nullptr) != S_FALSE )
    {
       CComPtr<IEnumBridgeDeckRebarPatterns> enumPatterns;
       rebarLayoutItem->get__EnumRebarPatterns(&enumPatterns);
@@ -233,7 +233,7 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
          rebarLayoutItem->get_Length(&length);
 
          CComPtr<IBridgeDeckRebarPattern> rebarPattern;
-         while ( enumPatterns->Next(1,&rebarPattern,NULL) != S_FALSE )
+         while ( enumPatterns->Next(1,&rebarPattern,nullptr) != S_FALSE )
          {
             CComPtr<IRebar> rebar;
             rebarPattern->get_Rebar(&rebar);

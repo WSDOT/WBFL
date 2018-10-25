@@ -37,7 +37,7 @@
 
 #include <System\Checks.h>
 
-#include <boost\shared_ptr.hpp>
+
 
 // LOCAL INCLUDES
 //
@@ -61,7 +61,7 @@ DESCRIPTION
 class REPORTERCLASS rptReport : public rptReportLayoutItem
 {
 public:
-   typedef std::vector<boost::shared_ptr<rptChapter> > ChapterVec;
+   typedef std::vector<std::shared_ptr<rptChapter> > ChapterVec;
    typedef ChapterVec::iterator ChapterListIterator;
    typedef ChapterVec::const_iterator ConstChapterListIterator;
    typedef ChapterVec::size_type ChapterListSizeType;
@@ -167,7 +167,7 @@ private:
 
    //------------------------------------------------------------------------
    // Assignment operator is private
-   rptReport& operator = (const rptReport& rOther);
+   rptReport& operator = (const rptReport& rOther) = delete;
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS

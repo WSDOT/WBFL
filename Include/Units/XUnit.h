@@ -78,8 +78,8 @@ public:
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS
-   virtual void Throw() const;
-   virtual Int32 GetReason() const;
+   virtual void Throw() const override;
+   virtual Int32 GetReason() const override;
    Reason GetReasonCode() const;
 
    // GROUP: INQUIRY
@@ -101,7 +101,7 @@ protected:
    void MakeCopy(const unitXUnit& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const unitXUnit& rOther);
+   void MakeAssignment(const unitXUnit& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

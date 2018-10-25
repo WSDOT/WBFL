@@ -41,7 +41,7 @@ END_MESSAGE_MAP()
         
 CModifyButton::CModifyButton()
 {
-  m_pBuddy = NULL;
+  m_pBuddy = nullptr;
   m_bFirstCall = TRUE;
 }
 

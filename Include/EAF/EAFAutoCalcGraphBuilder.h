@@ -41,7 +41,7 @@ public:
    virtual ~CEAFAutoCalcGraphBuilder();
 
    // Updates the graph taking into account the stat of the AutoCalc settings
-   virtual void Update();
+   virtual void Update() override;
 
    // Forces the graph to always update
    virtual void ForceUpdate();

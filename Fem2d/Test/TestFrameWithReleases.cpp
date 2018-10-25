@@ -126,7 +126,7 @@ void CTestFrameWithReleases::Test2()
    CComQIPtr<IFem2dModelResults> presults(pmodel);
 
    //////////////////////////////////
-   LoadCaseIDType lc=0;
+   LoadCaseIDType lc = 0;
 
    Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 1, &dx, &dy, &rz));
@@ -269,7 +269,7 @@ void CTestFrameWithReleases::Test2()
    pJoint1->ReleaseDof(jrtMz);
 
    // point loads
-   lc=0;
+   lc = 0;
 
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
@@ -411,7 +411,7 @@ void CTestFrameWithReleases::Test2()
    pMember1->ReleaseEnd(metStart, mbrReleaseMz);
 
    // point loads
-   lc=0;
+   lc = 0;
 
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
@@ -554,7 +554,7 @@ void CTestFrameWithReleases::Test2()
    pMember1->ReleaseEnd(metEnd,   mbrReleaseMz);
 
    // point loads
-   lc=0;
+   lc = 0;
 
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 1, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.0) );
@@ -811,7 +811,7 @@ void CTestFrameWithReleases::Test()
    ////////////////////////////////
    // place a hinge at the start of member 2 (Pin-Fix)
    pMember2->ReleaseEnd(metStart, mbrReleaseMz);
-   LoadCaseIDType lc=0;
+   LoadCaseIDType lc = 0;
 
    Float64 dx, dy, rz;
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 2, &dx, &dy, &rz));
@@ -953,7 +953,7 @@ void CTestFrameWithReleases::Test()
    pMember2->ReleaseEnd(metEnd, mbrReleaseMz);
 
    // point loads
-   lc=0;
+   lc = 0;
 
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.30186931671375) );
@@ -1093,7 +1093,7 @@ void CTestFrameWithReleases::Test()
    pMember2->ReleaseEnd(metStart, mbrReleaseNone);
 
    // point loads
-   lc=0;
+   lc = 0;
 
    TRY_TEST_HR(presults->ComputeJointDeflections(lc, 2, &dx, &dy, &rz));
    TRY_TEST_B( IsEqual(dx,  0.24898601337127) );

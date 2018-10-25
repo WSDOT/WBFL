@@ -74,20 +74,20 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRCSolution
 public:
-	STDMETHOD(get_Yweb)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Yflange)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_T)(/*[out,retval]*/ Float64 *pVal);
-	STDMETHOD(get_Cweb)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Cflange)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_IsOverReinforced)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ Float64 fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb,/*[in]*/ VARIANT_BOOL bOverReinforced);
-	STDMETHOD(get_Mn)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_NeutralAxisDepth)(/*[out, retval]*/ Float64* pVal);
-   STDMETHOD(get_fps)(/*[out,retval]*/ Float64* fps);
+	STDMETHOD(get_Yweb)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Yflange)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_T)(/*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Cweb)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Cflange)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_IsOverReinforced)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(InitSolution)(/*[in]*/ Float64 Mn,/*[in]*/ Float64 c,/*[in]*/ Float64 fps,/*[in]*/ Float64 Cflange,/*[in]*/ Float64 Cweb,/*[in]*/ Float64 T,/*[in]*/ Float64 Yflange,/*[in]*/ Float64 Yweb,/*[in]*/ VARIANT_BOOL bOverReinforced) override;
+	STDMETHOD(get_Mn)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_NeutralAxisDepth)(/*[out, retval]*/ Float64* pVal) override;
+   STDMETHOD(get_fps)(/*[out,retval]*/ Float64* fps) override;
 };
 
 #endif //__RCSOLUTION_H_

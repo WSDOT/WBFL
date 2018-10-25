@@ -133,14 +133,14 @@ public:
    //------------------------------------------------------------------------ 
    // Returns a pointer to a dynamically allocated defaultly configured table 
    // with 0.75" wide columns
-   static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, LPCTSTR lpszLabel=NULL);
+   static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);
    static rptRcTable* CreateDefaultTable(ColumnIndexType numColumns, const std::_tstring& strLabel);
 
    //------------------------------------------------------------------------ 
    // Returns a pointer to a dynamically allocated defaultly configured table 
    // with 0.75" wide columns
    // This table does not have a heading row.
-   static rptRcTable* CreateTableNoHeading(ColumnIndexType numColumns, LPCTSTR lpszLabel=NULL);
+   static rptRcTable* CreateTableNoHeading(ColumnIndexType numColumns, LPCTSTR lpszLabel=nullptr);
    static rptRcTable* CreateTableNoHeading(ColumnIndexType numColumns, const std::_tstring& strLabel);
 
    //------------------------------------------------------------------------ 
@@ -148,7 +148,7 @@ public:
    // a layout table. This table does not have visable borders and is intended
    // to be used to layout multi-column output (such as side by side tables)
    static rptRcTable* CreateLayoutTable(ColumnIndexType nColumns,const std::_tstring& strLabel);
-   static rptRcTable* CreateLayoutTable(ColumnIndexType nColumns,LPCTSTR lpszLabel = NULL);
+   static rptRcTable* CreateLayoutTable(ColumnIndexType nColumns,LPCTSTR lpszLabel = nullptr);
 
    static void ConfigureTable(rptRcTable* pTable);
 
@@ -182,7 +182,7 @@ private:
    static std::_tstring ms_CopyrightStyle;
    static std::_tstring ms_TableCellStyle[6];
    static std::_tstring ms_TableStripeRowCellStyle[6];
-   static std::auto_ptr<std::_tstring> ms_pImagePath;
+   static std::unique_ptr<std::_tstring> ms_pImagePath;
    static Float64 ms_MaxTableWidth;
    static std::_tstring ms_ReportCoverImage;
 
@@ -193,7 +193,7 @@ private:
    rptStyleManager();
    // Prevent accidental copying and assignment
    rptStyleManager(const rptStyleManager&);
-   rptStyleManager& operator=(const rptStyleManager&);
+   rptStyleManager& operator=(const rptStyleManager&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

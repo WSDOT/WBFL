@@ -345,7 +345,7 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
 {
    Compute();
 
-   Float64 gmax=0;
+   Float64 gmax = 0;
    *pControl = LeftAxleLeftShy;
 
    // Check each of our four cases for our max
@@ -447,7 +447,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
    lrfdILiveLoadDistributionFactor::LeverRuleMethod lrd;
 
    // get controlling location strategy
-   LaneSet* pLaneSet=0;
+   LaneSet* pLaneSet = 0;
    switch (strategy)
    {
       case LeftAxleLeftShy:
@@ -1286,7 +1286,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
       // distances from our beam to curb
       Float64 left_curb = leftOverhang;
-      for (GirderIndexType is=0; is<beamNum; is++)
+      for (GirderIndexType is = 0; is<beamNum; is++)
       {
          left_curb += Spacings[is];
       }
@@ -1352,9 +1352,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
    // To maximize the reaction at the first interior girder, position the lanes
    // as far to the left as possible and axles within lanes to left as far as possible
-   Float64 cummd=0;  // cummulative distance from first interior
+   Float64 cummd = 0;  // cummulative distance from first interior
                      // girder to axle under consideration
-   IndexType nLanesUsed=0;
+   IndexType nLanesUsed = 0;
 
    for (IndexType ilane = 0; ilane < Nl; ilane++)
    {
@@ -1474,7 +1474,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
    rmData.Xext = Xext;
 
    // Determine which number of lanes will control
-   IndexType ln_ctrl =0;
+   IndexType ln_ctrl  = 0;
    Float64 sume_max = -Float64_Max;
    for (IndexType cur_nl=firstLoadedLane; cur_nl<=lastLoadedLane; cur_nl++)
    {

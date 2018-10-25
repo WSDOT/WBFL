@@ -133,7 +133,7 @@ STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnDragLeave()
 {
    DragLeave();
    
-   m_pDispMgr->SetTask(NULL);
+   m_pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
@@ -171,7 +171,7 @@ STDMETHODIMP_(BOOL) CForeignDragDropTaskImpl::OnDrop(COleDataObject* pDataObject
    BOOL bRetVal = Drop(pDataObject,dropEffect,point);
 
    if ( CompareStates(CForeignDragDropFSM::Done) )
-      m_pDispMgr->SetTask(NULL);
+      m_pDispMgr->SetTask(nullptr);
 
    return bRetVal;
 }
@@ -188,7 +188,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDropEx(COleDataObject* pDa
    BOOL bRetVal = DropEx(pDataObject,dropEffect,dropList,point);
 
    if ( CompareStates(CForeignDragDropFSM::Done) )
-      m_pDispMgr->SetTask(NULL);
+      m_pDispMgr->SetTask(nullptr);
 
    return bRetVal;
 }

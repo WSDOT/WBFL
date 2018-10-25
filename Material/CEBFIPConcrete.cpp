@@ -282,20 +282,20 @@ Float64 matCEBFIPConcrete::GetShearFr(Float64 t) const
 
 Float64 matCEBFIPConcrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   std::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
    return pDetails->esh;
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> matCEBFIPConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> matCEBFIPConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
-   matCEBFIPConcreteShrinkageDetails* pDetails = new matCEBFIPConcreteShrinkageDetails;
+   std::shared_ptr<matCEBFIPConcreteShrinkageDetails> pDetails(std::make_shared<matCEBFIPConcreteShrinkageDetails>());
 
-   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+   matConcreteBase::InitializeShrinkageDetails(t,std::dynamic_pointer_cast<matConcreteBaseShrinkageDetails>(pDetails));
 
    Float64 shrinkage_time = pDetails->shrinkage_duration;
    if ( shrinkage_time < 0 )
    {
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    // Notional shrinkage coefficient... CEB-FIP Eqn. 2.1-75
@@ -317,7 +317,7 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> matCEBFIPConcrete::GetFreeShr
    pDetails->es = GetEpsilonS();
    pDetails->ecso = ecso;
    pDetails->esh = esh;
-   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+   return pDetails;
 }
 
 Float64 matCEBFIPConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
@@ -325,17 +325,17 @@ Float64 matCEBFIPConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
    return GetCreepCoefficientDetails(t,tla)->Ct;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> matCEBFIPConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> matCEBFIPConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
-   matCEBFIPConcreteCreepDetails* pDetails = new matCEBFIPConcreteCreepDetails;
-   InitializeCreepDetails(t,tla,pDetails);
+   std::shared_ptr<matCEBFIPConcreteCreepDetails> pDetails(std::make_shared<matCEBFIPConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla, std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
    Float64 maturity = age - age_at_loading;
    if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 phiRH = GetPhiRH();
@@ -362,7 +362,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> matCEBFIPConcrete::GetCreepCoeffi
    pDetails->h = GetH();
    pDetails->Ct = c;
 
-   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+   return pDetails;
 }
 
 Float64 matCEBFIPConcrete::GetH() const

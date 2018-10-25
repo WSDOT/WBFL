@@ -95,7 +95,7 @@ HRESULT CopyPoints(IPoint2dCollection* pTo,IPoint2dCollection* pFrom)
       pFrom->get_Item(idx,&pPoint);
 
       CComPtr<IPoint2d> pNewPoint;
-      CreatePoint(pPoint,NULL,&pNewPoint);
+      CreatePoint(pPoint,nullptr,&pNewPoint);
 
       pTo->Add(pNewPoint);
    }
@@ -515,7 +515,7 @@ HRESULT CreateLine(ILine2dFactory* pFactory,ILine2d** ppLine)
 
    HRESULT hr = S_OK;
 
-   if ( pFactory == NULL )
+   if ( pFactory == nullptr )
    {
       CComObject<CLine2d>* pLine;
       hr = CComObject<CLine2d>::CreateInstance(&pLine);
@@ -691,7 +691,7 @@ HRESULT CreateLineSegment(ILineSegment2dFactory* pFactory,ILineSegment2d** ppSeg
 
    HRESULT hr = S_OK;
 
-   if ( pFactory == NULL )
+   if ( pFactory == nullptr )
    {
       CComObject<CLineSegment2d>* pSeg;
       hr = CComObject<CLineSegment2d>::CreateInstance(&pSeg);

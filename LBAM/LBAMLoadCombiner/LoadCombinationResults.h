@@ -60,20 +60,20 @@ BEGIN_COM_MAP(CLoadCombinationResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* Result, /*[out]*/ILoadCombinationResultConfiguration** Config);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config);
-	STDMETHOD(Add)(/*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clear)();
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/Float64* Result, /*[out]*/ILoadCombinationResultConfiguration** Config) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config) override;
+	STDMETHOD(Add)(/*[in]*/Float64 Result, /*[in]*/ILoadCombinationResultConfiguration* Config) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clear)() override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // functions available to non-com pals
 public:

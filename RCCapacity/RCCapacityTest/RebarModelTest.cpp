@@ -56,14 +56,14 @@ void CRebarModelTest::Test()
    TRY_TEST(rebar.CoCreateInstance(CLSID_RebarModel),S_OK);
 
    Float64 val;
-   TRY_TEST( rebar->get_fy(NULL), E_POINTER );
+   TRY_TEST( rebar->get_fy(nullptr), E_POINTER );
    TRY_TEST( rebar->get_fy(&val), S_OK );
    TRY_TEST( IsEqual(val,60.0), true );
    TRY_TEST( rebar->put_fy(-10), E_INVALIDARG );
    TRY_TEST( rebar->put_fy(  0), E_INVALIDARG );
    TRY_TEST( rebar->put_fy(val), S_OK );
 
-   TRY_TEST( rebar->get_Es(NULL), E_POINTER );
+   TRY_TEST( rebar->get_Es(nullptr), E_POINTER );
    TRY_TEST( rebar->get_Es(&val), S_OK );
    TRY_TEST( IsEqual(val,29000.0), true );
    TRY_TEST( rebar->put_Es(-10), E_INVALIDARG );
@@ -71,9 +71,9 @@ void CRebarModelTest::Test()
    TRY_TEST( rebar->put_Es(val), S_OK );
 
    CComQIPtr<IStressStrain> ss(rebar);
-   TRY_TEST( ss != NULL, true );
+   TRY_TEST( ss != nullptr, true );
 
-   TRY_TEST( ss->ComputeStress(0.001,NULL), E_POINTER);
+   TRY_TEST( ss->ComputeStress(0.001,nullptr), E_POINTER);
    TRY_TEST( ss->ComputeStress(0.001,&val), S_OK );
    TRY_TEST( IsEqual(val,29.0), true );
    TRY_TEST( ss->ComputeStress(-0.001,&val), S_OK );
@@ -84,7 +84,7 @@ void CRebarModelTest::Test()
    TRY_TEST( IsEqual(val,-60.0), true );
 
    CComQIPtr<ISupportErrorInfo> eInfo(rebar);
-   TRY_TEST( eInfo != NULL, true);
+   TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IRebarModel),         S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);

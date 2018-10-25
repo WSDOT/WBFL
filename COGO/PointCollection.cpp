@@ -120,7 +120,7 @@ STDMETHODIMP CPointCollection::Remove(CogoObjectID id)
 
 STDMETHODIMP CPointCollection::Add(CogoObjectID id, Float64 x, Float64 y,IPoint2d* *point)
 {
-   if ( point != NULL )
+   if ( point != nullptr )
    {
       CHECK_RETOBJ(point);
    }
@@ -130,7 +130,7 @@ STDMETHODIMP CPointCollection::Add(CogoObjectID id, Float64 x, Float64 y,IPoint2
 
    newPoint->Move(x,y);
 
-   if ( point != NULL )
+   if ( point != nullptr )
    {
       (*point) = newPoint;
       (*point)->AddRef();
@@ -185,7 +185,7 @@ STDMETHODIMP CPointCollection::FindID(IPoint2d* point,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IPoint2d> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(point) )
       {
          *id = item.first;
@@ -206,7 +206,7 @@ STDMETHODIMP CPointCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -257,7 +257,7 @@ STDMETHODIMP CPointCollection::get__EnumPoints(IEnumPoint2d** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -282,7 +282,7 @@ STDMETHODIMP CPointCollection::Clone(IPointCollection* *clone)
    CComPtr<IEnumPoint2d> enumPoints;
    get__EnumPoints(&enumPoints);
    CComPtr<IPoint2d> point;
-   while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
    {
       CComPtr<IPoint2d> clonePoint;
       m_Factory->CreatePoint(&clonePoint);
@@ -396,7 +396,7 @@ STDMETHODIMP CPointCollection::OnPointChanged(IPoint2d* point)
 {
    CComQIPtr<IPoint2d> pointEx(point);
    // Better be listening only to IPoint2d objects
-   ATLASSERT( pointEx != NULL );
+   ATLASSERT( pointEx != nullptr );
 
    CogoObjectID id;
    HRESULT hr = FindID(pointEx,&id);

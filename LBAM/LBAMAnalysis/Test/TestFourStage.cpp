@@ -125,19 +125,19 @@ HRESULT CTestFourStage::Test()
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 3"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 4"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -149,19 +149,19 @@ HRESULT CTestFourStage::Test()
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), rsCumulative, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 3"), rsCumulative, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 4"), rsCumulative, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -174,19 +174,19 @@ HRESULT CTestFourStage::Test()
 
    DumpStressResults( os, poilist, pstresses);
 
-   pstresses = NULL;
+   pstresses = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 2"), rsCumulative, &pstresses);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pstresses);
 
-   pstresses = NULL;
+   pstresses = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 3"), rsCumulative, &pstresses);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pstresses);
 
-   pstresses = NULL;
+   pstresses = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Self Weight"), poilist ,_bstr_t("Stage 4"), rsCumulative, &pstresses);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -271,7 +271,7 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    Float64 loc = 0.0;
    span_ends.push_back(loc);  // spans start at 0.0
 
-   for(SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for(SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       spans->get_Item(ispan, &span);
@@ -293,7 +293,7 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -310,7 +310,7 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    TIArrayHelper<PoiIDType, IIDArray, CollectionIndexType> ppoilist(pPoilist);
 
    CollectionIndexType cnt = ppoilist.Size();
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id = ppoilist[i];
 

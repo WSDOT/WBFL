@@ -306,7 +306,7 @@ STDMETHODIMP CDisplayUnitGroup::get__EnumDisplayUnits(IEnumDisplayUnits** enumDi
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 

@@ -53,11 +53,11 @@ void CTestPathElement::Test()
    CComPtr<IPoint2d> point;
    point.CoCreateInstance(CLSID_Point2d);
 
-   TRY_TEST(pPathElement->putref_Value(NULL),E_INVALIDARG);
+   TRY_TEST(pPathElement->putref_Value(nullptr),E_INVALIDARG);
    TRY_TEST(pPathElement->putref_Value(point), S_OK );
 
    PathElementType type;
-   TRY_TEST(pPathElement->get_Type(NULL),E_POINTER);
+   TRY_TEST(pPathElement->get_Type(nullptr),E_POINTER);
    TRY_TEST(pPathElement->get_Type(&type),S_OK);
    TRY_TEST(type,petPoint);
 
@@ -80,7 +80,7 @@ void CTestPathElement::Test()
    TRY_TEST(pPathElement->putref_Value(pPathElement),E_INVALIDARG);
 
    CComPtr<IUnknown> disp;
-   TRY_TEST(pPathElement->get_Value(NULL),E_POINTER);
+   TRY_TEST(pPathElement->get_Value(nullptr),E_POINTER);
    TRY_TEST(pPathElement->get_Value(&disp),S_OK);
 
    // Test Events
@@ -122,7 +122,7 @@ void CTestPathElement::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pPathElement);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPathElement ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -134,7 +134,7 @@ void CTestPathElement::Test()
 
 STDMETHODIMP CTestPathElement::OnPathElementChanged(IPathElement* pp)
 {
-//   ::MessageBox(NULL,"OnPathElementChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPathElementChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

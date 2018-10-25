@@ -89,7 +89,7 @@ void rptChapter::Insert(const rptParagraph& rPara)
 
 void rptChapter::Insert(rptParagraph* pPara)
 {
-   boost::shared_ptr<rptParagraph> pp(pPara);
+   std::shared_ptr<rptParagraph> pp(pPara);
    pp->SetParent( this );
    m_ParagraphVec.push_back( pp );
 }
@@ -139,7 +139,7 @@ LPCTSTR rptChapter::GetName() const
    if (!m_Name.empty())
       return m_Name.c_str();
    else
-      return 0;
+      return nullptr;
 }
 
 void rptChapter::SetName(LPCTSTR name)
@@ -162,7 +162,7 @@ rptReportLayoutItem(rOther)
          i != rOther.m_ParagraphVec.end();
          i++ )
    {
-      const boost::shared_ptr<rptParagraph>& p_para = *i;
+      const std::shared_ptr<rptParagraph>& p_para = *i;
       Insert( *p_para );
       // Using the reference version of Insert because we want a clone
       // to be made.  We can't own the same paragraph as rOther

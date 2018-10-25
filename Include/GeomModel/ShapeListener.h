@@ -103,7 +103,7 @@ public:
    // OnUpdate
    // Called by the subject gmShapeImp object whenever it changes.  lHint 
    // contains one or more of the hints given above.
-   virtual void OnUpdate(const gmIShape* pShape, Int32 lHint)=0;
+   virtual void OnUpdate(const gmIShape* pShape, Int32 lHint) = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

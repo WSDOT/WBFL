@@ -115,7 +115,7 @@ STDMETHODIMP CBrokerImp::LoadAgents( CLSID * clsid, IndexType nClsid,IndexType* 
    for ( IndexType i = 0; i < nClsid; i++ )
    {
       IAgent* pAgent;
-      hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgent, (void**)&pAgent );
+      hr = ::CoCreateInstance( clsid[i], nullptr, CLSCTX_INPROC_SERVER, IID_IAgent, (void**)&pAgent );
       if ( SUCCEEDED( hr ) )
       {
          m_Agents.push_back( pAgent );

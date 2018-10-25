@@ -36,7 +36,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStatusMessageDialog dialog
-CStatusMessageDialog::CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent /*=NULL*/)
+CStatusMessageDialog::CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent /*=nullptr*/)
 	: CDialog(CStatusMessageDialog::IDD, pParent),
    m_Message(pStatusItem->GetDescription()),m_strDocSetName(lpszDocSetName),m_HelpID(helpID), m_Severity(severity), m_bRemoveableOnError(bRemoveableOnError)
 {
@@ -120,17 +120,17 @@ BOOL CStatusMessageDialog::OnInitDialog()
    {
    case eafTypes::statusInformation:
       strGroupLabel = _T("Information");
-      hIcon = ::LoadIcon(NULL,IDI_INFORMATION);
+      hIcon = ::LoadIcon(nullptr,IDI_INFORMATION);
       break;
    
    case eafTypes::statusWarning:
       strGroupLabel = _T("Warning");
-      hIcon = ::LoadIcon(NULL,IDI_WARNING);
+      hIcon = ::LoadIcon(nullptr,IDI_WARNING);
       break;
 
    case eafTypes::statusError:
       strGroupLabel = _T("Error");
-      hIcon = ::LoadIcon(NULL,IDI_ERROR);
+      hIcon = ::LoadIcon(nullptr,IDI_ERROR);
       break;
 
    default:

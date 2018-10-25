@@ -357,7 +357,7 @@ inline void FindTemporarySupport(ILBAMModel* pModel, SupportIDType tsId, ITempor
    //if (tsId < 0 || num_spans < tsId)
    //{
 
-      for (SpanIndexType ispan=0; ispan<num_spans; ispan++)
+      for (SpanIndexType ispan = 0; ispan<num_spans; ispan++)
       {
          CComPtr<ISpan> span;
          hr = spans->get_Item(ispan, &span);
@@ -368,7 +368,7 @@ inline void FindTemporarySupport(ILBAMModel* pModel, SupportIDType tsId, ITempor
          SupportIndexType ts_cnt;
          hr = tss->get_Count(&ts_cnt);
 
-         for (SupportIndexType its=0; its<ts_cnt; its++)
+         for (SupportIndexType its = 0; its<ts_cnt; its++)
          {
             CComPtr<ITemporarySupport> ts;
             hr = tss->get_Item(its, &ts);
@@ -406,7 +406,7 @@ public:
 
    T operator[] (IndexType i) const
    {
-      ATLASSERT(m_Arr!=NULL);
+      ATLASSERT(m_Arr!=nullptr);
       T val;
       CHRException hr;
       hr = m_Arr->get_Item(i, &val);

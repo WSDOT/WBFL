@@ -159,7 +159,7 @@ private:
 
    // Prevent accidental copying and assignment
    sysStructuredSaveXmlPrs_Impl(const sysStructuredSaveXmlPrs_Impl&);
-   sysStructuredSaveXmlPrs_Impl& operator=(const sysStructuredSaveXmlPrs_Impl&);
+   sysStructuredSaveXmlPrs_Impl& operator=(const sysStructuredSaveXmlPrs_Impl&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -199,7 +199,7 @@ CLASS
 sysStructuredSaveXmlPrs::sysStructuredSaveXmlPrs():
 m_pImp(new sysStructuredSaveXmlPrs_Impl())
 {
-   PRECONDITION(m_pImp.get()!=0);
+   PRECONDITION(m_pImp.get() != nullptr);
 }
 
 sysStructuredSaveXmlPrs::~sysStructuredSaveXmlPrs()
@@ -370,7 +370,7 @@ m_spDoc(0),
 m_spCurrentUnit(0)
 {
    // make sure com is up and ready
-   ::CoInitialize(NULL);
+   HRESULT hr = ::CoInitialize(nullptr);
 }
 
 sysStructuredSaveXmlPrs_Impl::~sysStructuredSaveXmlPrs_Impl()
@@ -382,9 +382,9 @@ sysStructuredSaveXmlPrs_Impl::~sysStructuredSaveXmlPrs_Impl()
 //======================== OPERATIONS =======================================
 void sysStructuredSaveXmlPrs_Impl::BeginSave(IStream* pis)
 {
-   PRECONDITION( pis != NULL );
+   PRECONDITION( pis != nullptr );
    CHECK(!(bool)m_spDoc);
-   CHECK(m_pOStream==NULL); // previously used and not cleaned up?
+   CHECK(m_pOStream==nullptr); // previously used and not cleaned up?
 
    if ((bool)m_spCurrentUnit)
       m_spCurrentUnit.Release();
@@ -434,20 +434,20 @@ void sysStructuredSaveXmlPrs_Impl::EndSave()
    {
       // Save document and make sure it saves correctly
       m_spDoc->save(m_pOStream);
-      if (m_pOStream==NULL)
+      if (m_pOStream==nullptr)
       {
          THROW(sysXStructuredSave,BadWrite);
       }
 
       // free up com resources
       m_pOStream->Release();
-      m_pOStream=0;
+      m_pOStream = 0;
 
       m_spCurrentUnit.Release();
       m_spCurrentUnit = 0;
 
       m_spDoc.Release();
-      m_spDoc=0;
+      m_spDoc = 0;
    }
 #if defined __WARN
    catch(_com_error& e) 

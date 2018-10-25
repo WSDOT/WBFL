@@ -48,7 +48,7 @@ STDMETHODIMP CDManipToolsDisplayObjectFactory::InterfaceSupportsErrorInfo(REFIID
 	{
 		&IID_iDisplayObjectFactory
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -67,7 +67,7 @@ STDMETHODIMP_(void) CDManipToolsDisplayObjectFactory::Create(CLIPFORMAT cfFormat
       {
          // Initialize from data object
          CComPtr<iDragDataSource> source;
-         ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+         ::CoCreateInstance(CLSID_DragDataSource,nullptr,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
          source->SetDataObject(pDataObject);
 
          // rebuild the display object from the data source

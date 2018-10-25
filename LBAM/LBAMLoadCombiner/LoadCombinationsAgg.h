@@ -59,21 +59,21 @@ BEGIN_CONNECTION_POINT_MAP(CLoadCombinationsAgg)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationsAgg
 public:
 // ILoadCombinations
-   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCombination* *pVal);
-   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCombination* *pVal);
-   STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCombination**);
-   STDMETHOD(Add)(/*[in]*/ILoadCombination*);
-   STDMETHOD(RemoveByName)(/*[in]*/BSTR name);
-   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name);
-   STDMETHOD(Clone)(/*[out,retval]*/ILoadCombinations**);
-   STDMETHOD(Clear)();
+   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCombination* *pVal) override;
+   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCombination* *pVal) override;
+   STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCombination**) override;
+   STDMETHOD(Add)(/*[in]*/ILoadCombination*) override;
+   STDMETHOD(RemoveByName)(/*[in]*/BSTR name) override;
+   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ILoadCombinations**) override;
+   STDMETHOD(Clear)() override;
 
    // internal implementation
    CComPtr<ILoadCombinations> m_LoadCombinations;

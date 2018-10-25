@@ -51,10 +51,8 @@ public:
       m_PanelDepth = 0;
       m_CastDepth = 0;
       m_OverhangDepth = 0;
-      m_Fillet = 0;
       m_Taper = dotNone;
-      m_pDeckBoundary = NULL;
-      m_CastingStageIdx = INVALID_INDEX;
+      m_pDeckBoundary = nullptr;
 	}
 
    HRESULT FinalConstruct();
@@ -64,9 +62,7 @@ private:
    Float64 m_PanelDepth;
    Float64 m_CastDepth;
    Float64 m_OverhangDepth;
-   Float64 m_Fillet;
    DeckOverhangTaper m_Taper;
-   StageIndexType  m_CastingStageIdx;
 
    IDeckBoundary* m_pDeckBoundary; // weak reference
 
@@ -85,34 +81,30 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeck
 public:
-   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary);
-   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary);
+   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary) override;
+   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary) override;
 
 // IPrecastSlab
 public:
-   STDMETHOD(get_CastingStage)(/*[out,retval]*/StageIndexType* pStageIdx);
-	STDMETHOD(put_CastingStage)(/*[in]*/StageIndexType stageIdx);
-   STDMETHOD(get_PanelDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_PanelDepth)(/*[in]*/Float64 depth);
-   STDMETHOD(get_CastDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_CastDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_Fillet)(/*[in]*/Float64 depth);
-	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper);
-	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper);
+   STDMETHOD(get_PanelDepth)(/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_PanelDepth)(/*[in]*/Float64 depth) override;
+   STDMETHOD(get_CastDepth)(/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_CastDepth)(/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper) override;
+	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__PRECASTSLAB_H_

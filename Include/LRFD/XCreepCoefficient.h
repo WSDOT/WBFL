@@ -80,7 +80,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXCreepCoefficient();
+   virtual ~lrfdXCreepCoefficient() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -88,8 +88,8 @@ public:
    lrfdXCreepCoefficient& operator = (const lrfdXCreepCoefficient& rOther);
 
    // GROUP: OPERATIONS
-   virtual void Throw() const;
-   virtual Int32 GetReason() const;
+   virtual void Throw() const override;
+   virtual Int32 GetReason() const override;
    Reason GetReasonCode() const;
 
    // GROUP: ACCESS
@@ -116,7 +116,7 @@ protected:
    void MakeCopy(const lrfdXCreepCoefficient& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdXCreepCoefficient& rOther);
+   void MakeAssignment(const lrfdXCreepCoefficient& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

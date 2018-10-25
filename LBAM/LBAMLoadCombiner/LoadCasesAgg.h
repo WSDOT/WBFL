@@ -57,21 +57,21 @@ BEGIN_CONNECTION_POINT_MAP(CLoadCasesAgg)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCasesAgg
 public:
 // ILoadCases
-   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCase* *pVal);
-   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCase* *pVal);
-   STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCase**);
-   STDMETHOD(Add)(/*[in]*/ILoadCase*);
-   STDMETHOD(RemoveByName)(/*[in]*/BSTR name);
-   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name);
-   STDMETHOD(Clone)(/*[out,retval]*/ILoadCases**);
-   STDMETHOD(Clear)();
+   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCase* *pVal) override;
+   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCase* *pVal) override;
+   STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCase**) override;
+   STDMETHOD(Add)(/*[in]*/ILoadCase*) override;
+   STDMETHOD(RemoveByName)(/*[in]*/BSTR name) override;
+   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ILoadCases**) override;
+   STDMETHOD(Clear)() override;
 
    // internal implementation
    CComPtr<ILoadCases> m_LoadCases;

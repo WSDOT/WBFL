@@ -66,7 +66,7 @@ gmSection::~gmSection()
 
 gmSection* gmSection::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmSection> ps(new gmSection());
+   std::unique_ptr<gmSection> ps(std::make_unique<gmSection>());
 
    // copy member data
    ps->m_ComponentContainer = m_ComponentContainer;
@@ -113,7 +113,7 @@ Uint32 gmSection::AddComponent(const gmIShape& rShape,
                     bool bIsStructural,
                     bool bRegisterListeners)
 {
-   std::auto_ptr<gmIShape> psh(rShape.CreateClone(bRegisterListeners));
+   std::unique_ptr<gmIShape> psh(rShape.CreateClone(bRegisterListeners));
    ComponentPtr psc(new gmSectionComponent(psh.get(), modE, 
                                              density, bIsStructural));
    psh.release();
@@ -134,7 +134,7 @@ const gmSectionComponent* gmSection::GetComponent(Uint32 key) const
    if ( const_iter != m_ComponentContainer.end() )
       return (*const_iter).second.get();
    else
-      return -0;
+      return nullptr;
 }
 
 gmSectionComponent* gmSection::GetComponent(Uint32 key)
@@ -144,7 +144,7 @@ gmSectionComponent* gmSection::GetComponent(Uint32 key)
    if ( iter != m_ComponentContainer.end() )
       return (*iter).second.get();
    else
-      return -0;
+      return nullptr;
 }
 
 bool gmSection::RemoveComponent(Uint32 key)
@@ -189,7 +189,7 @@ void gmSection::GetElasticProperties(gmElasticProperties* pProperties) const
 
 void gmSection::GetMassProperties(gmMassProperties* pProperties) const
 {
-   Float64 sum=0;
+   Float64 sum = 0;
    // add up properties for all members of the composite
    for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
    {
@@ -218,7 +218,9 @@ gpRect2d gmSection::GetBoundingBox(bool bExcludeNonstructuralComponents) const
          first = false;
       }
       else
+      {
          sum.Union(rs.GetBoundingBox());
+      }
    }
    return sum;
 }
@@ -226,14 +228,14 @@ gpRect2d gmSection::GetBoundingBox(bool bExcludeNonstructuralComponents) const
 gmSection* gmSection::CreateClippedSection(const gpLine2d& line,
                                   gpLine2d::Side side) const
 {
-   std::auto_ptr<gmSection> pcs(new gmSection());
+   std::unique_ptr<gmSection> pcs(std::make_unique<gmSection>());
 
    for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
    {
       const gmSectionComponent& sc = (*(*it).second);
       const gmIShape& rs= sc.GetShape();
-      std::auto_ptr<gmIShape> pps (rs.CreateClippedShape(line, side));
-      if (pps.get()!=0)
+      std::unique_ptr<gmIShape> pps (rs.CreateClippedShape(line, side));
+      if (pps.get() != nullptr)
       {
          pcs->AddComponent(*pps, sc.GetModE(), sc.GetDensity(), sc.IsStructural());
       }
@@ -245,7 +247,7 @@ gmSection* gmSection::CreateClippedSection(const gpLine2d& line,
 gmSection* gmSection::CreateClippedSection(const gpRect2d& r,
                                 gmSection::ClipRegion& region) const
 {
-   std::auto_ptr<gmSection> pcs(new gmSection());
+   std::unique_ptr<gmSection> pcs(std::make_unique<gmSection>());
 
    for (ConstComponentIterator it=m_ComponentContainer.begin();it!=m_ComponentContainer.end(); it++)
    {
@@ -258,8 +260,8 @@ gmSection* gmSection::CreateClippedSection(const gpRect2d& r,
       else
          sreg = gmIShape::Out;
 
-      std::auto_ptr<gmIShape> pps (rs.CreateClippedShape(r, sreg));
-      if (pps.get()!=0)
+      std::unique_ptr<gmIShape> pps (rs.CreateClippedShape(r, sreg));
+      if (pps.get() != nullptr)
       {
          pcs->AddComponent(*pps, sc.GetModE(), sc.GetDensity(), sc.IsStructural());
       }
@@ -359,7 +361,9 @@ void gmSection::EndDamage()
       }
    }
    else
+   {
       WARN(0, "Call to EndDamage when damage count is zero");
+   }
 
    ASSERTVALID;
 }
@@ -449,7 +453,7 @@ bool gmSection::TestMe(dbgLog& rlog)
 // RAB: I added this code to debug a release build problem.
 //
 //   rlog << "# Shapes = " << section.m_ComponentContainer.size() << endl;
-//   Float64 sum=0;
+//   Float64 sum = 0;
 //   // add up properties for all members of the composite
 //   for (ConstComponentIterator it=section.m_ComponentContainer.begin();it!=section.m_ComponentContainer.end(); it++)
 //   {
@@ -516,15 +520,17 @@ void gmSection::DoRegisterListener(gmSectionListener* pListener)
    PRECONDITION(pListener);
    // add listener to list
    if (!m_ListenerList.insert(pListener).second)
-      WARN(0,"Listener insertion failed - probably duplicate");
+   {
+      WARN(0, "Listener insertion failed - probably duplicate");
+   }
 
    pListener->OnRegistered(this);
 }
 
 void gmSection::Init()
 {
-   m_DamageCount=0;
-   m_DamageTypeTally=0;
+   m_DamageCount = 0;
+   m_DamageTypeTally = 0;
    m_LastKey = 0;
 }
 
@@ -547,7 +553,7 @@ gmShapeListener(),
 m_bIsStructural(bIsStructural),
 m_Density(density),
 m_ModE(modE),
-m_pParent(0)  // no parent section yet.
+m_pParent(nullptr)  // no parent section yet.
 {
    PRECONDITION(pShape);
    m_pShape = pShape;
@@ -568,7 +574,7 @@ gmSectionComponent::~gmSectionComponent()
 gmSectionComponent* gmSectionComponent::CreateClone(bool bRegisterListeners) const
 {
    // clone the shape and unregister it from this
-   std::auto_ptr<gmIShape> ps(m_pShape->CreateClone(bRegisterListeners));
+   std::unique_ptr<gmIShape> ps(m_pShape->CreateClone(bRegisterListeners));
    if(bRegisterListeners)
       ps->UnregisterListener((gmShapeListener*)this);
    // create a new componenent
@@ -626,13 +632,15 @@ bool gmSectionComponent::IsStructural()const
 
 void gmSectionComponent::OnUpdate(const gmIShape* pShape, Int32 lHint)
 {
-   if (m_pParent!=0)
+   if (m_pParent != nullptr)
    {
       // tell the parent section we're dirty
       m_pParent->SetShapeDirty(this, lHint);
    }
    else
-      WARN(0,"SectionComponent has no parent section");
+   {
+      WARN(0, "SectionComponent has no parent section");
+   }
 }
 
 //======================== ACCESS     =======================================
@@ -734,43 +742,43 @@ gmSectionComponentIter& gmSectionComponentIter::operator= (const gmSectionCompon
 
 void gmSectionComponentIter::SetSection(gmSection* pSection)
 {
-   PRECONDITION(pSection!=0);
+   PRECONDITION(pSection != nullptr);
    m_pSection = pSection;
    m_Iterator = pSection->m_ComponentContainer.begin();
 }
 
 void gmSectionComponentIter::Begin()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    m_Iterator = m_pSection->m_ComponentContainer.begin();
 }
 
 void gmSectionComponentIter::End()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    m_Iterator = m_pSection->m_ComponentContainer.end();
 }
 
 void gmSectionComponentIter::Next()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    CHECK(m_Iterator!=m_pSection->m_ComponentContainer.end());
    m_Iterator++;
 }
 
 void gmSectionComponentIter::Prev()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    CHECK(m_Iterator!=m_pSection->m_ComponentContainer.begin());
    m_Iterator--;
 }
 
 gmSectionComponentIter::operator void *() const
 {
-   if (m_pSection==0)
-      return 0;
+   if (m_pSection == nullptr)
+      return nullptr;
    else if (m_Iterator==m_pSection->m_ComponentContainer.end())
-      return 0;
+      return nullptr;
    else
       return (*m_Iterator).second.get();
 }
@@ -843,7 +851,7 @@ void gmSectionComponentIter::MakeAssignment(const gmSectionComponentIter& rOther
 //======================== OPERATIONS =======================================
 void gmSectionComponentIter::Init()
 {
-   m_pSection = 0;
+   m_pSection = nullptr;
 }
 
 void gmSectionComponentIter::Clean()
@@ -899,43 +907,43 @@ gmConstSectionComponentIter& gmConstSectionComponentIter::operator= (const gmCon
 
 void gmConstSectionComponentIter::SetSection(const gmSection* pSection)
 {
-   PRECONDITION(pSection!=0);
+   PRECONDITION(pSection != nullptr);
    m_pSection = pSection;
    m_Iterator = pSection->m_ComponentContainer.begin();
 }
 
 void gmConstSectionComponentIter::Begin()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    m_Iterator = m_pSection->m_ComponentContainer.begin();
 }
 
 void gmConstSectionComponentIter::End()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    m_Iterator = m_pSection->m_ComponentContainer.end();
 }
 
 void gmConstSectionComponentIter::Next()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    CHECK(m_Iterator!=m_pSection->m_ComponentContainer.end());
    m_Iterator++;
 }
 
 void gmConstSectionComponentIter::Prev()
 {
-   PRECONDITION(m_pSection!=0);
+   PRECONDITION(m_pSection != nullptr);
    CHECK(m_Iterator!=m_pSection->m_ComponentContainer.begin());
    m_Iterator--;
 }
 
 gmConstSectionComponentIter::operator void *() const
 {
-   if (m_pSection==0)
-      return 0;
+   if (m_pSection == nullptr)
+      return nullptr;
    else if (m_Iterator==m_pSection->m_ComponentContainer.end())
-      return 0;
+      return nullptr;
    else
       return (*m_Iterator).second.get();
 }
@@ -997,7 +1005,7 @@ void gmConstSectionComponentIter::MakeAssignment(const gmConstSectionComponentIt
 //======================== OPERATIONS =======================================
 void gmConstSectionComponentIter::Init()
 {
-   m_pSection = 0;
+   m_pSection = nullptr;
 }
 
 void gmConstSectionComponentIter::Clean()
@@ -1052,7 +1060,7 @@ bool gmConstSectionComponentIter::TestMe(dbgLog& rlog)
 #endif
 
    // copy
-   std::auto_ptr<gmSection> sang2 (sang.CreateClone());
+   std::unique_ptr<gmSection> sang2 (sang.CreateClone());
    sang2->GetElasticProperties(&aprops);
    TRY_TESTME ( IsEqual(aprops.EA(), 800000.)) ;
    TRY_TESTME ( IsEqual(aprops.EIxx(),  181670000., 10.)) ;
@@ -1061,7 +1069,7 @@ bool gmConstSectionComponentIter::TestMe(dbgLog& rlog)
    TRY_TESTME ( sang2->GetBoundingBox(false) == gpRect2d(0,0,40,50)) ;
 
    // clip
-   std::auto_ptr<gmSection> pclip (sang2->CreateClippedSection(
+   std::unique_ptr<gmSection> pclip (sang2->CreateClippedSection(
                        gpLine2d(gpPoint2d(10,0),gpPoint2d(10,20)), gpLine2d::Left));
    pclip->GetElasticProperties(&aprops);
    TRY_TESTME ( IsEqual(aprops.EA(), 500000.)) ;

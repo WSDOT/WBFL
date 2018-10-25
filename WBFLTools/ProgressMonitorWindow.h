@@ -63,29 +63,29 @@ END_COM_MAP()
    void FinalRelease();
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IProgressMonitorWindow
 public:
-   STDMETHOD(Close)();
-	STDMETHOD(Hide)();
-	STDMETHOD(Show)(/*[in]*/BSTR msg,/*[in]*/HWND hParent);
-	STDMETHOD(get_HasCancel)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_HasCancel)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_HasGauge)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_HasGauge)(/*[in]*/ VARIANT_BOOL newVal);
+   STDMETHOD(Close)() override;
+	STDMETHOD(Hide)() override;
+	STDMETHOD(Show)(/*[in]*/BSTR msg,/*[in]*/HWND hParent) override;
+	STDMETHOD(get_HasCancel)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_HasCancel)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_HasGauge)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_HasGauge)(/*[in]*/ VARIANT_BOOL newVal) override;
 
 // IProgressMonitor
-	STDMETHOD(put_GaugeValue)(LONG cookie, LONG );
-	STDMETHOD(put_Message)(LONG cookie, BSTR );
-	STDMETHOD(get_WasCancelled)(VARIANT_BOOL * pVal);
+	STDMETHOD(put_GaugeValue)(LONG cookie, LONG ) override;
+	STDMETHOD(put_Message)(LONG cookie, BSTR ) override;
+	STDMETHOD(get_WasCancelled)(VARIANT_BOOL * pVal) override;
 
 // ILogProgressToFile
-	STDMETHOD(OpenLogFile)(BSTR fileName);
-	STDMETHOD(CloseLogFile)();
+	STDMETHOD(OpenLogFile)(BSTR fileName) override;
+	STDMETHOD(CloseLogFile)() override;
 
 private:
-   std::auto_ptr<CProgressMonitorDlg> m_pDlg;
+   std::unique_ptr<CProgressMonitorDlg> m_pDlg;
    CWnd m_wndParent;
 
    std::_tofstream m_FileStream;

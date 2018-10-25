@@ -94,21 +94,21 @@ private:
 
 // ISupportErrorInfo
 public:
-   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDisplayUnitMgr
 public:
-   STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval);
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval);
-   STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup);
-   STDMETHOD(Clear)();
-   STDMETHOD(Remove)(BSTR bstrGroup);
-	STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ BSTR group,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/BSTR* fmtString);
-   STDMETHOD(get__EnumDisplayUnitGroups)(/*[out,retval]*/ IEnumDisplayUnitGroups** enumDisplayUnitGroups);
-	STDMETHOD(get_Tag)(/*[in]*/ BSTR group,/*[out,retval]*/BSTR* tag);
-	STDMETHOD(ConvertToDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result);
-	STDMETHOD(ConvertFromDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result);
+   STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval) override;
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(Remove)(BSTR bstrGroup) override;
+	STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ BSTR group,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/BSTR* fmtString) override;
+   STDMETHOD(get__EnumDisplayUnitGroups)(/*[out,retval]*/ IEnumDisplayUnitGroups** enumDisplayUnitGroups) override;
+	STDMETHOD(get_Tag)(/*[in]*/ BSTR group,/*[out,retval]*/BSTR* tag) override;
+	STDMETHOD(ConvertToDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result) override;
+	STDMETHOD(ConvertFromDisplayUnits)(/*[in]*/ Float64 value,/*[in]*/ BSTR group,/*[out,retval]*/Float64* result) override;
 
 // IDisplayUnitGroupEvents
 public:

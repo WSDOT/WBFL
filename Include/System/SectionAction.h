@@ -143,7 +143,7 @@ protected:
    void MakeCopy(const sysSectionAction& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const sysSectionAction& rOther);
+   void MakeAssignment(const sysSectionAction& rOther);
 
    // GROUP: ACCESS
 

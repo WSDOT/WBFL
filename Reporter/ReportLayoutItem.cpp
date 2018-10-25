@@ -119,7 +119,7 @@ void rptReportLayoutItem::MakeCopy(const rptReportLayoutItem& rOther)
    if ( rOther.m_pPageLayout )
       m_pPageLayout = new rptPageLayout( *rOther.m_pPageLayout );
    else
-      m_pPageLayout=0;
+      m_pPageLayout = 0;
 }
 
 

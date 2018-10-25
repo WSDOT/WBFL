@@ -98,7 +98,7 @@ BOOL CUsefulSplitterWnd::ReplaceView(int row, int col,CRuntimeClass * pViewClass
    // process of the new view
    CDocument * pDoc= ((CView *)GetPane(row,col))->GetDocument();
    CView * pActiveView=GetParentFrame()->GetActiveView();
-   if (pActiveView==NULL || pActiveView==GetPane(row,col))
+   if (pActiveView==nullptr || pActiveView==GetPane(row,col))
       bSetActive=TRUE;
    else
       bSetActive=FALSE;
@@ -119,9 +119,9 @@ BOOL CUsefulSplitterWnd::ReplaceView(int row, int col,CRuntimeClass * pViewClass
    
    context.m_pNewViewClass=pViewClass;
    context.m_pCurrentDoc=pDoc;
-   context.m_pNewDocTemplate=NULL;
-   context.m_pLastView=NULL;
-   context.m_pCurrentFrame=NULL;
+   context.m_pNewDocTemplate=nullptr;
+   context.m_pLastView=nullptr;
+   context.m_pCurrentFrame=nullptr;
    
    CreateView(row,col,pViewClass,size, &context);
    

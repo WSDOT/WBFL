@@ -273,6 +273,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_1_Stre
          g.EqnData.mg = pow((S/3.0),0.35) * pow((S*d/(12.0*pow(L,2))),0.25);
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
    }
    else
    {
@@ -329,6 +331,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetMomentDF_Int_2_Stre
          g.EqnData.mg = pow((S/6.3),0.6) * pow((S*d/(12.0*pow(L,2))),0.125);
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
    }
    else
    {
@@ -453,6 +457,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeBC::GetShearDF_Int_1_Stren
          g.EqnData.mg = pow((S/10.0),0.6) * pow((d/(12.0*L)),0.1);
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
    }
    else
    {
@@ -506,6 +512,7 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeBC::GetShearDF_Int_2_Stre
          g.EqnData.mg = pow((S/7.4),0.8) * pow((d/(12.0*L)),0.1);
          g.mg = g.EqnData.mg;
       }
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
    }
    else
    {
@@ -698,10 +705,12 @@ void lrfdLldfTypeBC::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <Lrfd\AutoVersion.h>
 bool lrfdLldfTypeBC::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeBC");
 
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Float64 S = ::ConvertToSysUnits( 8.57, unitMeasure::Feet );
@@ -740,8 +749,6 @@ bool lrfdLldfTypeBC::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.9752, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.6255, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 1.1706, 0.001) );
-
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdLldfTypeBC");
 }
@@ -973,10 +980,12 @@ void lrfdWsdotLldfTypeBC::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdWsdotLldfTypeBC::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdWsdotLldfTypeBC");
 
+   lrfdAutoVersion av;
    lrfdVersionMgr::SetUnits(lrfdVersionMgr::US);
 
    Float64 S = ::ConvertToSysUnits( 8.57, unitMeasure::Feet );
@@ -1017,8 +1026,6 @@ bool lrfdWsdotLldfTypeBC::TestMe(dbgLog& rlog)
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.9752, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 0.6255, 0.001) );
    TRY_TESTME( IsEqual( df.ShearDF(lrfdILiveLoadDistributionFactor::ExtGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::FatigueII), 1.1706, 0.001) );
-
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    TESTME_EPILOG("lrfdWsdotLldfTypeBC");
 }

@@ -34,12 +34,12 @@
 
 IMPLEMENT_DYNAMIC(CChoiceListDlg, CDialog)
 
-CChoiceListDlg::CChoiceListDlg(CWnd* pParent /*=NULL*/)
+CChoiceListDlg::CChoiceListDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CChoiceListDlg::IDD, pParent)
 {
    m_bCheckList = FALSE;
-   m_pValidator = NULL;
-   m_pHelpHandler = NULL;
+   m_pValidator = nullptr;
+   m_pHelpHandler = nullptr;
 }
 
 CChoiceListDlg::~CChoiceListDlg()
@@ -130,7 +130,7 @@ BOOL CChoiceListDlg::OnInitDialog()
       resToken = m_Options.Tokenize(_T("\n"),curPos);
    }
 
-   BOOST_FOREACH(int idx,m_Choices)
+   for( const auto& idx : m_Choices)
    {
       if ( m_bCheckList )
       {
@@ -143,9 +143,9 @@ BOOL CChoiceListDlg::OnInitDialog()
    }
 
 
-   m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
+   m_Icon.SetIcon(::LoadIcon(nullptr,IDI_QUESTION));
 
-   if ( m_bCancel && m_pHelpHandler == NULL )
+   if ( m_bCancel && m_pHelpHandler == nullptr )
    {
       // [OK][Cancel]
       CWnd* pOK     = GetDlgItem(IDOK);
@@ -164,7 +164,7 @@ BOOL CChoiceListDlg::OnInitDialog()
       pCancel->MoveWindow(rHelp);
       pOK->MoveWindow(rCancel);
    }
-   else if ( !m_bCancel && m_pHelpHandler != NULL )
+   else if ( !m_bCancel && m_pHelpHandler != nullptr )
    {
       // [OK][Help]
       CWnd* pOK     = GetDlgItem(IDOK);
@@ -178,7 +178,7 @@ BOOL CChoiceListDlg::OnInitDialog()
       pOK->MoveWindow(rCancel);
       ModifyStyle(WS_SYSMENU,0);
    }
-   else if ( !m_bCancel && m_pHelpHandler == NULL )
+   else if ( !m_bCancel && m_pHelpHandler == nullptr )
    {
       // [OK]
       CWnd* pOK     = GetDlgItem(IDOK);

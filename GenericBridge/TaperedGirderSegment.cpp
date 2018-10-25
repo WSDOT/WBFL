@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CTaperedGirderSegment
 HRESULT CTaperedGirderSegment::FinalConstruct()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Orientation = 0;
    m_HaunchDepth[0] = 0;
    m_HaunchDepth[1] = 0;
@@ -50,7 +50,7 @@ HRESULT CTaperedGirderSegment::FinalConstruct()
 
 void CTaperedGirderSegment::FinalRelease()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Shapes[etStart].clear();
    m_Shapes[etEnd].clear();
 }
@@ -62,7 +62,7 @@ STDMETHODIMP CTaperedGirderSegment::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -89,7 +89,7 @@ STDMETHODIMP CTaperedGirderSegment::get_SuperstructureMember(ISuperstructureMemb
    }
    else
    {
-      (*ssMbr) = NULL;
+      (*ssMbr) = nullptr;
    }
 
    return S_OK;
@@ -111,7 +111,7 @@ STDMETHODIMP CTaperedGirderSegment::get_GirderLine(IGirderLine** girderLine)
    }
    else
    {
-      (*girderLine) = NULL;
+      (*girderLine) = nullptr;
    }
 
    return S_OK;
@@ -121,7 +121,7 @@ STDMETHODIMP CTaperedGirderSegment::putref_PrevSegment(ISegment* segment)
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = NULL;
+   m_pPrevSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -141,7 +141,7 @@ STDMETHODIMP CTaperedGirderSegment::get_PrevSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -150,7 +150,7 @@ STDMETHODIMP CTaperedGirderSegment::putref_NextSegment(ISegment* segment)
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = NULL;
+   m_pNextSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -170,7 +170,7 @@ STDMETHODIMP CTaperedGirderSegment::get_NextSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -209,7 +209,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    CComPtr<ICompositeSectionEx> section;
    section.CoCreateInstance(CLSID_CompositeSectionEx);
    section.QueryInterface(ppSection);
-   ATLASSERT(ppSection != NULL);
+   ATLASSERT(ppSection != nullptr);
 
    // add the primary shape
    Float64 Efg = 0;
@@ -320,8 +320,8 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IS
    m_Shapes[etStart].front().Shape.QueryInterface(&beam[etStart]);
    m_Shapes[etEnd].front().Shape.QueryInterface(&beam[etEnd]);
 
-   ATLASSERT(beam[etStart]); // if this is NULL... how did it get in the system????
-   ATLASSERT(beam[etEnd]);   // if this is NULL... how did it get in the system????
+   ATLASSERT(beam[etStart]); // if this is nullptr... how did it get in the system????
+   ATLASSERT(beam[etEnd]);   // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
@@ -540,7 +540,7 @@ STDMETHODIMP CTaperedGirderSegment::AddShape(IShape* pStartShape,IShape* pEndSha
    if ( m_Shapes[etStart].size() == 0 )
    {
       CComQIPtr<IFlangedGirderSection> beam(pStartShape);
-      if ( beam == NULL )
+      if ( beam == nullptr )
       {
          ATLASSERT(false); // first shape must be a flanged girder section
          return E_INVALIDARG;
@@ -550,7 +550,7 @@ STDMETHODIMP CTaperedGirderSegment::AddShape(IShape* pStartShape,IShape* pEndSha
    if ( m_Shapes[etEnd].size() == 0 )
    {
       CComQIPtr<IFlangedGirderSection> beam(pEndShape);
-      if ( beam == NULL )
+      if ( beam == nullptr )
       {
          ATLASSERT(false); // first shape must be a flanged girder section
          return E_INVALIDARG;

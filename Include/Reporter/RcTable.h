@@ -264,7 +264,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcTable& rOther);
-   virtual void MakeAssignment(const rptRcTable& rOther);
+   void MakeAssignment(const rptRcTable& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

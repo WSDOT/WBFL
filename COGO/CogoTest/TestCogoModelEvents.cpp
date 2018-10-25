@@ -67,7 +67,7 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    pTestCogoModel->InitEventTest();
-   points->Add(1,20,30,NULL);
+   points->Add(1,20,30,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IPoint2d> point;
@@ -90,7 +90,7 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    pTestCogoModel->InitEventTest();
-   lines->Add(1,point,point,NULL);
+   lines->Add(1,point,point,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<ILineSegment2d> ls;
@@ -113,7 +113,7 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    pTestCogoModel->InitEventTest();
-   profilePoints->Add(1,CComVariant(20),30,NULL);
+   profilePoints->Add(1,CComVariant(20),30,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IProfilePoint> pp;
@@ -145,7 +145,7 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    pTestCogoModel->InitEventTest();
-   vcurves->Add(1,bvc,pvi,evc,400,400,NULL);
+   vcurves->Add(1,bvc,pvi,evc,400,400,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IVertCurve> vc;
@@ -173,7 +173,7 @@ void CTestCogoModelEvents::Test()
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    pTestCogoModel->InitEventTest();
-   hcurves->Add(1,pbt,pi,pft,500,100,200,NULL);
+   hcurves->Add(1,pbt,pi,pft,500,100,200,nullptr);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IHorzCurve> hc;
@@ -191,7 +191,7 @@ void CTestCogoModelEvents::Test()
    CComPtr<IAlignmentCollection> alignments;
    model->get_Alignments(&alignments);
    pTestCogoModel->InitEventTest();
-   TRY_TEST(alignments->Add(1,NULL),S_OK);
+   TRY_TEST(alignments->Add(1,nullptr),S_OK);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IAlignment> alignment;
@@ -222,7 +222,7 @@ void CTestCogoModelEvents::Test()
    equations->Add(10,50,&equation);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
 
-   alignments->Add(2,NULL);
+   alignments->Add(2,nullptr);
    pTestCogoModel->InitEventTest();
    alignments->Remove(1);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
@@ -235,7 +235,7 @@ void CTestCogoModelEvents::Test()
    CComPtr<IPathCollection> paths;
    model->get_Paths(&paths);
    pTestCogoModel->InitEventTest();
-   TRY_TEST(paths->Add(1,NULL),S_OK);
+   TRY_TEST(paths->Add(1,nullptr),S_OK);
    TRY_TEST(pTestCogoModel->PassedEventTest(), true );
 
    CComPtr<IPath> path;
@@ -251,7 +251,7 @@ void CTestCogoModelEvents::Test()
    point->Move(10,10);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
 
-   paths->Add(2,NULL);
+   paths->Add(2,nullptr);
    pTestCogoModel->InitEventTest();
    paths->Remove(1);
    TRY_TEST(pTestCogoModel->PassedEventTest(),true);
@@ -267,210 +267,210 @@ void CTestCogoModelEvents::Test()
 
 STDMETHODIMP CTestCogoModelEvents::OnPointChanged(ICogoModel* cm,CogoObjectID key,IPoint2d* point)
 {
-//   ::MessageBox(NULL,"OnPointChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPointChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPointAdded(ICogoModel* cm,CogoObjectID key,IPoint2d* point)
 {
-//   ::MessageBox(NULL,"OnPointAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPointAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPointRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnPointRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPointRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPointsCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnPointsCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPointsCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnLineSegmentChanged(ICogoModel* cm,CogoObjectID key,ILineSegment2d* lineSeg)
 {
-//   ::MessageBox(NULL,"OnLineSegmentChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnLineSegmentChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnLineSegmentAdded(ICogoModel* cm,CogoObjectID key,ILineSegment2d* lineSeg)
 {
-//   ::MessageBox(NULL,"OnLineSegmentAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnLineSegmentAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnLineSegmentRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnLineSegmentRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnLineSegmentRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnLineSegmentsCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnLineSegmentsCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnLineSegmentsCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnProfilePointChanged(ICogoModel* cm,CogoObjectID key,IProfilePoint* pp)
 {
-//   ::MessageBox(NULL,"OnProfilePointChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfilePointChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnProfilePointAdded(ICogoModel* cm,CogoObjectID key,IProfilePoint* pp)
 {
-//   ::MessageBox(NULL,"OnProfilePointAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfilePointAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnProfilePointRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnProfilePointRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfilePointRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnProfilePointsCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnProfilePointsCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfilePointsCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnVertCurveChanged(ICogoModel* cm,CogoObjectID key,IVertCurve* vc)
 {
-//   ::MessageBox(NULL,"OnVertCurveChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnVertCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnVertCurveAdded(ICogoModel* cm,CogoObjectID key,IVertCurve* vc)
 {
-//   ::MessageBox(NULL,"OnVertCurveAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnVertCurveAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnVertCurveRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnVertCurveRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnVertCurveRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnVertCurvesCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnVertCurvesCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnVertCurvesCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnHorzCurveChanged(ICogoModel* cm,CogoObjectID key,IHorzCurve* vc)
 {
-//   ::MessageBox(NULL,"OnHorzCurveChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnHorzCurveChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnHorzCurveAdded(ICogoModel* cm,CogoObjectID key,IHorzCurve* vc)
 {
-//   ::MessageBox(NULL,"OnHorzCurveAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnHorzCurveAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnHorzCurveRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnHorzCurveRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnHorzCurveRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnHorzCurvesCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnHorzCurvesCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnHorzCurvesCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnAlignmentChanged(ICogoModel* cm,CogoObjectID key, IAlignment* alignment)
 {
-//   ::MessageBox(NULL,"OnAlignmentChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnAlignmentChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnProfileChanged(ICogoModel* cm,IProfile* profile)
 {
-//   ::MessageBox(NULL,"OnProfileChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfileChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnStationEquationsChanged(ICogoModel* cm,IStationEquationCollection* equations)
 {
-//   ::MessageBox(NULL,"OnStationEquationsChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnStationEquationsChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnAlignmentAdded(ICogoModel* cm,CogoObjectID key,IAlignment* alignment)
 {
-//   ::MessageBox(NULL,"OnAlignmentAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnAlignmentAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnAlignmentRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnAlignmentRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnAlignmentRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnAlignmentsCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnAlignmentsCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnAlignmentsCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPathChanged(ICogoModel* cm,CogoObjectID key, IPath* path)
 {
-//   ::MessageBox(NULL,"OnPathChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPathChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPathAdded(ICogoModel* cm,CogoObjectID key,IPath* path)
 {
-//   ::MessageBox(NULL,"OnPathAdded","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPathAdded","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPathRemoved(ICogoModel* cm,CogoObjectID key)
 {
-//   ::MessageBox(NULL,"OnPathRemoved","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPathRemoved","Event",MB_OK);
    Pass();
    return S_OK;
 }
 
 STDMETHODIMP CTestCogoModelEvents::OnPathsCleared(ICogoModel* cm)
 {
-//   ::MessageBox(NULL,"OnPathsCleared","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnPathsCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

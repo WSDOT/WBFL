@@ -25,7 +25,7 @@
 #include <Roark\RoarkLib.h>
 #include <Roark\Roark.h>
 
-#include <boost\shared_ptr.hpp>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,13 +44,13 @@ rkRoarkBeam(rOther)
    BeamContainer::const_iterator i;
    for ( i = rOther.m_Beams.begin(); i < rOther.m_Beams.end(); i++ )
    {
-      m_Beams.push_back( boost::shared_ptr<rkRoarkBeam>( (*i)->CreateClone() ) );
+      m_Beams.push_back(std::shared_ptr<rkRoarkBeam>( (*i)->CreateClone() ) );
    }
 }
 
 void rkComposite::AddBeam(const rkRoarkBeam& beam)
 {
-   m_Beams.push_back( boost::shared_ptr<rkRoarkBeam>( beam.CreateClone() ) );
+   m_Beams.push_back(std::shared_ptr<rkRoarkBeam>( beam.CreateClone() ) );
    L = beam.GetL();
    EI = beam.GetEI();
 }

@@ -42,7 +42,7 @@ static char THIS_FILE[]=__FILE__;
 
 CPlugImpl::CPlugImpl()
 {
-   m_pSocket = NULL;
+   m_pSocket = nullptr;
 }
 
 CPlugImpl::~CPlugImpl()
@@ -75,7 +75,7 @@ STDMETHODIMP_(void) CPlugImpl::GetSocket(iSocket** socket)
 {
    (*socket) = m_pSocket;
 
-   if ( m_pSocket != NULL )
+   if ( m_pSocket != nullptr )
    {
       (*socket)->AddRef();
    }

@@ -75,7 +75,7 @@ STDMETHODIMP CJoint::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IFem2dJoint
 	};
-	for (long i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (long i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -527,7 +527,7 @@ void CJoint::SetDeflection(const Float64 *disp)
    // values to those prescribed by settlement loads if applied
    if (m_dispLoadApplied)
    {
-      for (long i=0; i<NumDof; i++)
+      for (long i = 0; i<NumDof; i++)
       {
          if (m_dispLoad[i]!=0.0)
          {

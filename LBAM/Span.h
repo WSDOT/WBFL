@@ -52,7 +52,7 @@ public:
 	{
    }
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -77,27 +77,27 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISpan
 public:
-	STDMETHOD(RemoveStage)(BSTR stage);
-	STDMETHOD(Clone)(/*[out,retval]*/ISpan** clone);
-	STDMETHOD(GetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[out]*/ Float64 *minVal, /*[out]*/ Float64 *maxVal);
-	STDMETHOD(SetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[in]*/ Float64 minVal, /*[in]*/ Float64 maxVal);
-	STDMETHOD(get_TemporarySupports)(/*[out, retval]*/ ITemporarySupports* *pVal);
-	STDMETHOD(putref_TemporarySupports)(/*[in]*/ ITemporarySupports* newVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
+	STDMETHOD(RemoveStage)(BSTR stage) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ISpan** clone) override;
+	STDMETHOD(GetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[out]*/ Float64 *minVal, /*[out]*/ Float64 *maxVal) override;
+	STDMETHOD(SetLoadModifier)(/*[in]*/ LoadCombinationType type, /*[in]*/ Float64 minVal, /*[in]*/ Float64 maxVal) override;
+	STDMETHOD(get_TemporarySupports)(/*[out, retval]*/ ITemporarySupports* *pVal) override;
+	STDMETHOD(putref_TemporarySupports)(/*[in]*/ ITemporarySupports* newVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal) override;
 
 // _ITemporarySupportsEvents
-   STDMETHOD(OnTemporarySupportsChanged)(/*[in]*/ITemporarySupport* supports, BSTR stage, /*[in]*/ChangeType change);
-   STDMETHOD(OnTemporarySupportsAdded)(/*[in]*/ITemporarySupport* supports,/*[in]*/SupportIndexType index);
-   STDMETHOD(OnTemporarySupportsBeforeRemove)(/*[in]*/ITemporarySupport* supports,/*[in]*/SupportIndexType index);
+   STDMETHOD(OnTemporarySupportsChanged)(/*[in]*/ITemporarySupport* supports, BSTR stage, /*[in]*/ChangeType change) override;
+   STDMETHOD(OnTemporarySupportsAdded)(/*[in]*/ITemporarySupport* supports,/*[in]*/SupportIndexType index) override;
+   STDMETHOD(OnTemporarySupportsBeforeRemove)(/*[in]*/ITemporarySupport* supports,/*[in]*/SupportIndexType index) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    Float64 m_Length;

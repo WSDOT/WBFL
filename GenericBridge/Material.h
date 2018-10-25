@@ -68,19 +68,19 @@ private:
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IConcrete
 public:
-   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E);
-	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E);
-	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w);
-	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w);
+   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E) override;
+	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E) override;
+	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w) override;
+	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__MATERIAL_H_

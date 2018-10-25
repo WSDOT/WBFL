@@ -41,6 +41,6 @@ class STABILITYCLASS stbHaulingStabilityReporter
 public:
    stbHaulingStabilityReporter();
 
-   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = NULL,Float64 offset = 0);
-   void BuildDetailsChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = NULL,Float64 offset = 0);
+   void BuildSpecCheckChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingCheckArtifact* pArtifact,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
+   void BuildDetailsChapter(const stbIGirder* pGirder,const stbIHaulingStabilityProblem* pStabilityProblem,const stbHaulingResults* pResults,rptChapter* pChapter,LPCTSTR lpszLocColumnLabel = nullptr,Float64 offset = 0);
 };

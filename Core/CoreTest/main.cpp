@@ -35,7 +35,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    CCoreTest::Test();
 

@@ -59,7 +59,7 @@ bool IsEqualOffset(CComPtr<ISurfacePoint>& p1,CComPtr<ISurfacePoint>& p2)
 
 HRESULT CSurfaceProfile::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
 
    CComObject<CStation>* pStation;
    CComObject<CStation>::CreateInstance(&pStation);
@@ -83,7 +83,7 @@ STDMETHODIMP CSurfaceProfile::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ISurfaceProfile,
       &IID_IStructuredStorage2
    };
-   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -110,7 +110,7 @@ STDMETHODIMP CSurfaceProfile::get_Surface(ISurface* *pVal)
 STDMETHODIMP CSurfaceProfile::putref_Surface(ISurface* newVal)
 {
    m_pSurface = newVal;
-   BOOST_FOREACH(CComPtr<ISurfacePoint> surfacePoint,m_SurfacePoints)
+   for( auto& surfacePoint : m_SurfacePoints)
    {
       surfacePoint->putref_Surface(m_pSurface);
    }
@@ -511,7 +511,7 @@ HRESULT CSurfaceProfile::ValidateStation(IStation* station)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( profile == NULL )
+   if ( profile == nullptr )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;

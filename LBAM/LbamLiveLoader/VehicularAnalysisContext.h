@@ -86,7 +86,7 @@ END_CONNECTION_POINT_MAP()
 DECLARE_GET_CONTROLLING_UNKNOWN()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVehicularAnalysisContext
 public:
@@ -94,73 +94,75 @@ public:
                          /*[in]*/ILiveLoadNegativeMomentRegion* llnmr, /*[in]*/IAnalysisPOIs* pois,
                          /*[in]*/IGetDistributionFactors* dfs, /*[in]*/IGetStressPoints* gcs);
 
-   STDMETHOD(get_Model)(/*[out,retval]*/ILBAMModel** ppModel);
+   STDMETHOD(get_Model)(/*[out,retval]*/ILBAMModel** ppModel) override;
 
 // ISupportLocations
 public:
-	STDMETHOD(get_LeftOverhang)(/*[out,retval]*/Float64* overhang);
-	STDMETHOD(get_RightOverhang)(/*[out,retval]*/Float64* overhang);
-	STDMETHOD(get_SupportLocations)(/*[out,retval]*/IDblArray* *suppLocs);
-	STDMETHOD(get_TotalLength)(/*[out,retval]*/Float64* length);
+	STDMETHOD(get_LeftOverhang)(/*[out,retval]*/Float64* overhang) override;
+	STDMETHOD(get_RightOverhang)(/*[out,retval]*/Float64* overhang) override;
+	STDMETHOD(get_SupportLocations)(/*[out,retval]*/IDblArray* *suppLocs) override;
+	STDMETHOD(get_TotalLength)(/*[out,retval]*/Float64* length) override;
 
 // IInfluenceLineResponse
-   STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/ IInfluenceLine** lftVal, /*[out]*/ IInfluenceLine** rgtVal);
-   STDMETHOD(ComputeDeflectionInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out]*/ IInfluenceLine** lftVal, /*[out]*/ IInfluenceLine** rgtVal);
-   STDMETHOD(ComputeReactionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out,retval]*/ IInfluenceLine** newVal);
-   STDMETHOD(ComputeSupportDeflectionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out,retval]*/ IInfluenceLine** newVal);
-	STDMETHOD(GetZeroTolerance)(/*[out]*/Float64* forceTolerance, /*[out]*/Float64* deflectionTolerance);
-	STDMETHOD(SetZeroTolerance)(/*[in]*/Float64 forceTolerance, /*[in]*/Float64 deflectionTolerance);
+   STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/ IInfluenceLine** lftVal, /*[out]*/ IInfluenceLine** rgtVal) override;
+   STDMETHOD(ComputeDeflectionInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out]*/ IInfluenceLine** lftVal, /*[out]*/ IInfluenceLine** rgtVal) override;
+   STDMETHOD(ComputeReactionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out,retval]*/ IInfluenceLine** newVal) override;
+   STDMETHOD(ComputeSupportDeflectionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out,retval]*/ IInfluenceLine** newVal) override;
+	STDMETHOD(GetZeroTolerance)(/*[out]*/Float64* forceTolerance, /*[out]*/Float64* deflectionTolerance) override;
+	STDMETHOD(SetZeroTolerance)(/*[in]*/Float64 forceTolerance, /*[in]*/Float64 deflectionTolerance) override;
 
 // ILiveLoadNegativeMomentRegion
-   STDMETHOD(get_IsPOIInNegativeLiveLoadMomentZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone);
-   STDMETHOD(ComputeNegativeMomentRegions)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations);
+   STDMETHOD(get_IsPOIInNegativeLiveLoadMomentZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone) override;
+   STDMETHOD(ComputeNegativeMomentRegions)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations) override;
 
 // IAnalysisPOIs
-   STDMETHOD(get_SpanPoiIncrement)( PoiIDType *pVal);
-   STDMETHOD(put_SpanPoiIncrement)( PoiIDType newVal);
-   STDMETHOD(get_CantileverPoiIncrement)(PoiIDType *pVal);
-   STDMETHOD(put_CantileverPoiIncrement)( PoiIDType newVal);
-   STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations);
-   STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation);
+   STDMETHOD(get_SpanPoiIncrement)( PoiIDType *pVal) override;
+   STDMETHOD(put_SpanPoiIncrement)( PoiIDType newVal) override;
+   STDMETHOD(get_CantileverPoiIncrement)(PoiIDType *pVal) override;
+   STDMETHOD(put_CantileverPoiIncrement)( PoiIDType newVal) override;
+   STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray* *poiIDs, IDblArray* *poiLocations) override;
+   STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation) override;
 
 // IGetDistributionFactors
-   STDMETHOD(GetPOIDistributionFactor)(/*[in]*/PoiIDType POI, /*[in]*/BSTR stage, /*[out]*/IDistributionFactor* *leftFactor, /*[out]*/IDistributionFactor* *rightFactor);
-	STDMETHOD(GetSupportDistributionFactor)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[out,retval]*/IDistributionFactor* *Factor);
+   STDMETHOD(GetPOIDistributionFactor)(/*[in]*/PoiIDType POI, /*[in]*/BSTR stage, /*[out]*/IDistributionFactor* *leftFactor, /*[out]*/IDistributionFactor* *rightFactor) override;
+	STDMETHOD(GetSupportDistributionFactor)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[out,retval]*/IDistributionFactor* *Factor) override;
 
 // IGetStressPoints
-   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftSps,  /*[out]*/IStressPoints* *rightSPs);
+   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftSps,  /*[out]*/IStressPoints* *rightSPs) override;
 
 // ILiveLoad
 public:
-	STDMETHOD(IsInteriorSupport)(/*[in]*/SupportIDType supportID, /*[out,retval]*/VARIANT_BOOL* isInterior);
-	STDMETHOD(Clear)();
-	STDMETHOD(Clone)(/*[out,retval]*/ILiveLoad** clone);
-   STDMETHOD(get_LegalRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_LegalRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_LegalSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_LegalSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_PermitRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_PermitRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_PermitSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_PermitSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Pedestrian)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Pedestrian)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Special)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Special)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Permit)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Permit)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Fatigue)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Fatigue)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Deflection)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Deflection)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Design)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Design)(/*[in]*/ ILiveLoadModel* newVal);
+	STDMETHOD(IsInteriorSupport)(/*[in]*/SupportIDType supportID, /*[out,retval]*/VARIANT_BOOL* isInterior) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Clone)(/*[out,retval]*/ILiveLoad** clone) override;
+   STDMETHOD(get_LegalRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalRoutineRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_LegalSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalSpecialRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_LegalEmergencyRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalEmergencyRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_PermitRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_PermitRoutineRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_PermitSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_PermitSpecialRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Pedestrian)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Pedestrian)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Special)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Special)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Permit)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Permit)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Fatigue)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Fatigue)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Deflection)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Deflection)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Design)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Design)(/*[in]*/ ILiveLoadModel* newVal) override;
 
 // ILBAMModelEvents
-   STDMETHOD(OnModelChanged)(/*[in]*/ILBAMModel* Model, ChangeType change);
+   STDMETHOD(OnModelChanged)(/*[in]*/ILBAMModel* Model, ChangeType change) override;
 
 // ILiveLoadEvents
-   STDMETHOD(OnLiveLoadChanged)(ILiveLoad* load, LiveLoadModelType lltype);
+   STDMETHOD(OnLiveLoadChanged)(ILiveLoad* load, LiveLoadModelType lltype) override;
 
 private:
    void Compute();

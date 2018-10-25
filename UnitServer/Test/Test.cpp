@@ -59,7 +59,7 @@ CComModule _Module;
 
 int main(int argc, TCHAR* argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    {
       CTestUnitServer::Test();

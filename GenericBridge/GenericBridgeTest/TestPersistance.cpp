@@ -89,7 +89,7 @@ void CTestPersistance::Test()
 //   CComPtr<IEnumSuperstructureMember> enumMembers;
 //   members->get__EnumElements(&enumMembers);
 //   CComPtr<ISuperstructureMember> member;
-//   while ( enumMembers->Next(1,&member,NULL) != S_FALSE )
+//   while ( enumMembers->Next(1,&member,nullptr) != S_FALSE )
 //   {
 //      member->put_Length(-0.25);
 //

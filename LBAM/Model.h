@@ -70,7 +70,7 @@ public:
 	{
 	}
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -108,157 +108,157 @@ CONNECTION_POINT_ENTRY(IID_ILBAMModelEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILBAMModel
 public:
-   STDMETHOD(get_Name)(BSTR* name);
-   STDMETHOD(put_Name)(BSTR name);
+   STDMETHOD(get_Name)(BSTR* name) override;
+   STDMETHOD(put_Name)(BSTR name) override;
 
-	STDMETHOD(get_DistributionFactors)(/*[out, retval]*/ IDistributionFactors* *pVal);
-	STDMETHOD(get_LiveLoad)(/*[out, retval]*/ ILiveLoad* *pVal);
-   STDMETHOD(ConvertSpanToSuperstructureLocation)(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc);
-	STDMETHOD(ComputeLocation)(/*[in]*/MemberIDType mbrID, /*[in]*/MemberType mbrType, /*[in]*/Float64 mbrLocation, /*[out]*/Float64* Xloc, /*[out]*/Float64* Yloc);
-	STDMETHOD(get_LoadGroups)(/*[out, retval]*/ ILoadGroups* *pVal);
-	STDMETHOD(get_LoadCases)(/*[out, retval]*/ ILoadCases* *pVal);
-	STDMETHOD(get_LoadCombinations)(/*[out, retval]*/ ILoadCombinations* *pVal);
-	STDMETHOD(get_StrainLoads)(/*[out, retval]*/ IStrainLoads* *pVal);
-	STDMETHOD(get_SettlementLoads)(/*[out, retval]*/ ISettlementLoads* *pVal);
-	STDMETHOD(get_TemperatureLoads)(/*[out, retval]*/ ITemperatureLoads* *pVal);
-	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IDistributedLoads* *pVal);
-	STDMETHOD(get_PointLoads)(/*[out, retval]*/ IPointLoads* *pVal);
-	STDMETHOD(LeftSpan)(/*[in]*/SpanIndexType relPosition, /*[out,retval]*/ISpan**);
-	STDMETHOD(RightSpan)(/*[in]*/SpanIndexType relPosition, /*[out,retval]*/ISpan**);
-	STDMETHOD(LeftSupport)(/*[in]*/SupportIndexType relPosition, /*[out,retval]*/ISupport**);
-	STDMETHOD(RightSupport)(/*[in]*/SupportIndexType relPosition, /*[out,retval]*/ISupport**);
-	STDMETHOD(RemoveStage)(BSTR stage);
-	STDMETHOD(get_Stages)(/*[out, retval]*/ IStages* *pVal);
-	STDMETHOD(get_POIs)(/*[out, retval]*/ IPOIs* *pVal);
-	STDMETHOD(Clear)();
-   STDMETHOD(get_TemporarySupports)(ITemporarySupports** ppVal);
-	STDMETHOD(get_Spans)(/*[out, retval]*/ ISpans* *pVal);
-	STDMETHOD(get_Supports)(/*[out, retval]*/ ISupports* *pVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ ILBAMModel** clone);
-	STDMETHOD(get_SuperstructureMembers)(/*[out, retval]*/ ISuperstructureMembers* *pVal);
-	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal);
+	STDMETHOD(get_DistributionFactors)(/*[out, retval]*/ IDistributionFactors* *pVal) override;
+	STDMETHOD(get_LiveLoad)(/*[out, retval]*/ ILiveLoad* *pVal) override;
+   STDMETHOD(ConvertSpanToSuperstructureLocation)(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc) override;
+	STDMETHOD(ComputeLocation)(/*[in]*/MemberIDType mbrID, /*[in]*/MemberType mbrType, /*[in]*/Float64 mbrLocation, /*[out]*/Float64* Xloc, /*[out]*/Float64* Yloc) override;
+	STDMETHOD(get_LoadGroups)(/*[out, retval]*/ ILoadGroups* *pVal) override;
+	STDMETHOD(get_LoadCases)(/*[out, retval]*/ ILoadCases* *pVal) override;
+	STDMETHOD(get_LoadCombinations)(/*[out, retval]*/ ILoadCombinations* *pVal) override;
+	STDMETHOD(get_StrainLoads)(/*[out, retval]*/ IStrainLoads* *pVal) override;
+	STDMETHOD(get_SettlementLoads)(/*[out, retval]*/ ISettlementLoads* *pVal) override;
+	STDMETHOD(get_TemperatureLoads)(/*[out, retval]*/ ITemperatureLoads* *pVal) override;
+	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IDistributedLoads* *pVal) override;
+	STDMETHOD(get_PointLoads)(/*[out, retval]*/ IPointLoads* *pVal) override;
+	STDMETHOD(LeftSpan)(/*[in]*/SpanIndexType relPosition, /*[out,retval]*/ISpan**) override;
+	STDMETHOD(RightSpan)(/*[in]*/SpanIndexType relPosition, /*[out,retval]*/ISpan**) override;
+	STDMETHOD(LeftSupport)(/*[in]*/SupportIndexType relPosition, /*[out,retval]*/ISupport**) override;
+	STDMETHOD(RightSupport)(/*[in]*/SupportIndexType relPosition, /*[out,retval]*/ISupport**) override;
+	STDMETHOD(RemoveStage)(BSTR stage) override;
+	STDMETHOD(get_Stages)(/*[out, retval]*/ IStages* *pVal) override;
+	STDMETHOD(get_POIs)(/*[out, retval]*/ IPOIs* *pVal) override;
+	STDMETHOD(Clear)() override;
+   STDMETHOD(get_TemporarySupports)(ITemporarySupports** ppVal) override;
+	STDMETHOD(get_Spans)(/*[out, retval]*/ ISpans* *pVal) override;
+	STDMETHOD(get_Supports)(/*[out, retval]*/ ISupports* *pVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ ILBAMModel** clone) override;
+	STDMETHOD(get_SuperstructureMembers)(/*[out, retval]*/ ISuperstructureMembers* *pVal) override;
+	STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
 
    // The following methods were in the ILBAMModel interface at one time. They were
    // removed because they present a nightmare for event handling.
    // They are kept here though to facilitate initialization of this object
 protected:
-	STDMETHOD(putref_DistributionFactors)(/*[in]*/ IDistributionFactors* newVal);
-	STDMETHOD(putref_LiveLoad)(/*[in]*/ ILiveLoad* newVal);
-	STDMETHOD(putref_LoadGroups)(/*[in]*/ ILoadGroups* newVal);
-	STDMETHOD(putref_LoadCases)(/*[in]*/ ILoadCases* newVal);
-	STDMETHOD(putref_LoadCombinations)(/*[in]*/ ILoadCombinations* newVal);
-	STDMETHOD(putref_StrainLoads)(/*[in]*/ IStrainLoads* newVal);
-	STDMETHOD(putref_TemperatureLoads)(/*[in]*/ ITemperatureLoads* newVal);
-	STDMETHOD(putref_SettlementLoads)(/*[in]*/ ISettlementLoads* newVal);
-	STDMETHOD(putref_DistributedLoads)(/*[in]*/ IDistributedLoads* newVal);
-	STDMETHOD(putref_PointLoads)(/*[in]*/ IPointLoads* newVal);
-	STDMETHOD(putref_Stages)(/*[in]*/ IStages* newVal);
-	STDMETHOD(putref_POIs)(/*[in]*/ IPOIs* newVal);
-	STDMETHOD(putref_Spans)(/*[in]*/ ISpans* newVal);
-	STDMETHOD(putref_Supports)(/*[in]*/ ISupports* newVal);
-	STDMETHOD(putref_SuperstructureMembers)(/*[in]*/ ISuperstructureMembers* newVal);
+	HRESULT putref_DistributionFactors(/*[in]*/ IDistributionFactors* newVal);
+	HRESULT putref_LiveLoad(/*[in]*/ ILiveLoad* newVal);
+	HRESULT putref_LoadGroups(/*[in]*/ ILoadGroups* newVal);
+	HRESULT putref_LoadCases(/*[in]*/ ILoadCases* newVal);
+	HRESULT putref_LoadCombinations(/*[in]*/ ILoadCombinations* newVal);
+	HRESULT putref_StrainLoads(/*[in]*/ IStrainLoads* newVal);
+	HRESULT putref_TemperatureLoads(/*[in]*/ ITemperatureLoads* newVal);
+	HRESULT putref_SettlementLoads(/*[in]*/ ISettlementLoads* newVal);
+	HRESULT putref_DistributedLoads(/*[in]*/ IDistributedLoads* newVal);
+	HRESULT putref_PointLoads(/*[in]*/ IPointLoads* newVal);
+	HRESULT putref_Stages(/*[in]*/ IStages* newVal);
+	HRESULT putref_POIs(/*[in]*/ IPOIs* newVal);
+	HRESULT putref_Spans(/*[in]*/ ISpans* newVal);
+	HRESULT putref_Supports(/*[in]*/ ISupports* newVal);
+	HRESULT putref_SuperstructureMembers(/*[in]*/ ISuperstructureMembers* newVal);
 
 public:
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISuperstructureMembersEvents
-   STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index);
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index);
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnSuperstructureMembersReverse)();
-	STDMETHOD(OnSuperstructureMembersOffset)();
+   STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index) override;
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index) override;
+	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnSuperstructureMembersReverse)() override;
+	STDMETHOD(OnSuperstructureMembersOffset)() override;
 
 // ISupportsEvents
-   STDMETHOD(OnSupportsChanged)(ISupport* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSupportsAdded)(ISupport* item, SupportIndexType index);
-   STDMETHOD(OnSupportsBeforeRemove)(ISupport* item, SupportIndexType index);
-	STDMETHOD(OnSupportsMoveTo)(SupportIndexType from, SupportIndexType to);
-	STDMETHOD(OnSupportsCopyTo)(SupportIndexType from, SupportIndexType to);
-	STDMETHOD(OnSupportsReverse)();
+   STDMETHOD(OnSupportsChanged)(ISupport* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSupportsAdded)(ISupport* item, SupportIndexType index) override;
+   STDMETHOD(OnSupportsBeforeRemove)(ISupport* item, SupportIndexType index) override;
+	STDMETHOD(OnSupportsMoveTo)(SupportIndexType from, SupportIndexType to) override;
+	STDMETHOD(OnSupportsCopyTo)(SupportIndexType from, SupportIndexType to) override;
+	STDMETHOD(OnSupportsReverse)() override;
 
 // ISpansEvents
-   STDMETHOD(OnSpansChanged)(ISpan* item, BSTR stage, ChangeType change);
-   STDMETHOD(OnSpansAdded)(ISpan* item, SpanIndexType index);
-   STDMETHOD(OnSpansBeforeRemove)(ISpan* item, SpanIndexType index);
-	STDMETHOD(OnSpansMoveTo)(SpanIndexType from, SpanIndexType to);
-	STDMETHOD(OnSpansCopyTo)(SpanIndexType from, SpanIndexType to);
-	STDMETHOD(OnSpansReverse)();
+   STDMETHOD(OnSpansChanged)(ISpan* item, BSTR stage, ChangeType change) override;
+   STDMETHOD(OnSpansAdded)(ISpan* item, SpanIndexType index) override;
+   STDMETHOD(OnSpansBeforeRemove)(ISpan* item, SpanIndexType index) override;
+	STDMETHOD(OnSpansMoveTo)(SpanIndexType from, SpanIndexType to) override;
+	STDMETHOD(OnSpansCopyTo)(SpanIndexType from, SpanIndexType to) override;
+	STDMETHOD(OnSpansReverse)() override;
 
 // IPOIsEvents
-   STDMETHOD(OnPOIsChanged)(IPOI* poi, ChangeType change);
-   STDMETHOD(OnPOIsRenamed)(PoiIDType oldID, PoiIDType newID);
-   STDMETHOD(OnPOIsAdded)(IPOI* poi);
-   STDMETHOD(OnPOIsBeforeRemove)(IPOI* poi);
+   STDMETHOD(OnPOIsChanged)(IPOI* poi, ChangeType change) override;
+   STDMETHOD(OnPOIsRenamed)(PoiIDType oldID, PoiIDType newID) override;
+   STDMETHOD(OnPOIsAdded)(IPOI* poi) override;
+   STDMETHOD(OnPOIsBeforeRemove)(IPOI* poi) override;
 
 // IStagesEvents
-   STDMETHOD(OnStagesChanged)(IStage* item, ChangeType change);
-   STDMETHOD(OnStagesAdded)(IStage* item, StageIndexType relPos);
-   STDMETHOD(OnStagesBeforeRemove)(IStage* item, StageIndexType relPos);
-	STDMETHOD(OnStagesMoveTo)(StageIndexType from, StageIndexType to);
-	STDMETHOD(OnStagesCopyTo)(StageIndexType from, StageIndexType to);
-	STDMETHOD(OnStagesReverse)();
+   STDMETHOD(OnStagesChanged)(IStage* item, ChangeType change) override;
+   STDMETHOD(OnStagesAdded)(IStage* item, StageIndexType relPos) override;
+   STDMETHOD(OnStagesBeforeRemove)(IStage* item, StageIndexType relPos) override;
+	STDMETHOD(OnStagesMoveTo)(StageIndexType from, StageIndexType to) override;
+	STDMETHOD(OnStagesCopyTo)(StageIndexType from, StageIndexType to) override;
+	STDMETHOD(OnStagesReverse)() override;
 
 // ILoadGroupsEvents
-   STDMETHOD(OnLoadGroupsChanged)(ILoadGroup* item, ChangeType change);
-   STDMETHOD(OnLoadGroupsRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadGroupsAdded)(ILoadGroup* item);
-   STDMETHOD(OnLoadGroupsBeforeRemove)(ILoadGroup* item);
+   STDMETHOD(OnLoadGroupsChanged)(ILoadGroup* item, ChangeType change) override;
+   STDMETHOD(OnLoadGroupsRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadGroupsAdded)(ILoadGroup* item) override;
+   STDMETHOD(OnLoadGroupsBeforeRemove)(ILoadGroup* item) override;
 
 // ILoadCasesEvents
-   STDMETHOD(OnLoadCasesChanged)(ILoadCase* item, ChangeType change);
-   STDMETHOD(OnLoadCasesRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadCasesAdded)(ILoadCase* item);
-   STDMETHOD(OnLoadCasesBeforeRemove)(ILoadCase* item);
+   STDMETHOD(OnLoadCasesChanged)(ILoadCase* item, ChangeType change) override;
+   STDMETHOD(OnLoadCasesRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadCasesAdded)(ILoadCase* item) override;
+   STDMETHOD(OnLoadCasesBeforeRemove)(ILoadCase* item) override;
 
 // ILoadCombinationsEvents
-   STDMETHOD(OnLoadCombinationsChanged)(ILoadCombination* item, ChangeType change);
-   STDMETHOD(OnLoadCombinationsRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadCombinationsAdded)(ILoadCombination* item);
-   STDMETHOD(OnLoadCombinationsBeforeRemove)(ILoadCombination* item);
+   STDMETHOD(OnLoadCombinationsChanged)(ILoadCombination* item, ChangeType change) override;
+   STDMETHOD(OnLoadCombinationsRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadCombinationsAdded)(ILoadCombination* item) override;
+   STDMETHOD(OnLoadCombinationsBeforeRemove)(ILoadCombination* item) override;
 
 // IPointLoadsEvents
-   STDMETHOD(OnPointLoadsChanged)(IPointLoadItem* item);
-   STDMETHOD(OnPointLoadsAdded)(IPointLoadItem* item);
-   STDMETHOD(OnPointLoadsBeforeRemove)(IPointLoadItem* item);
+   STDMETHOD(OnPointLoadsChanged)(IPointLoadItem* item) override;
+   STDMETHOD(OnPointLoadsAdded)(IPointLoadItem* item) override;
+   STDMETHOD(OnPointLoadsBeforeRemove)(IPointLoadItem* item) override;
 
 // IDistributedLoadsEvents
-   STDMETHOD(OnDistributedLoadsChanged)(IDistributedLoadItem* item);
-   STDMETHOD(OnDistributedLoadsAdded)(IDistributedLoadItem* item);
-   STDMETHOD(OnDistributedLoadsBeforeRemove)(IDistributedLoadItem* item);
+   STDMETHOD(OnDistributedLoadsChanged)(IDistributedLoadItem* item) override;
+   STDMETHOD(OnDistributedLoadsAdded)(IDistributedLoadItem* item) override;
+   STDMETHOD(OnDistributedLoadsBeforeRemove)(IDistributedLoadItem* item) override;
 
 // ITemperatureLoadsEvents
-   STDMETHOD(OnTemperatureLoadsChanged)(ITemperatureLoadItem* item);
-   STDMETHOD(OnTemperatureLoadsAdded)(ITemperatureLoadItem* item);
-   STDMETHOD(OnTemperatureLoadsBeforeRemove)(ITemperatureLoadItem* item);
+   STDMETHOD(OnTemperatureLoadsChanged)(ITemperatureLoadItem* item) override;
+   STDMETHOD(OnTemperatureLoadsAdded)(ITemperatureLoadItem* item) override;
+   STDMETHOD(OnTemperatureLoadsBeforeRemove)(ITemperatureLoadItem* item) override;
 
 // ISettlementLoadsEvents
-   STDMETHOD(OnSettlementLoadsChanged)(ISettlementLoadItem* item);
-   STDMETHOD(OnSettlementLoadsAdded)(ISettlementLoadItem* item);
-   STDMETHOD(OnSettlementLoadsBeforeRemove)(ISettlementLoadItem* item);
+   STDMETHOD(OnSettlementLoadsChanged)(ISettlementLoadItem* item) override;
+   STDMETHOD(OnSettlementLoadsAdded)(ISettlementLoadItem* item) override;
+   STDMETHOD(OnSettlementLoadsBeforeRemove)(ISettlementLoadItem* item) override;
 
 // IStrainLoadsEvents
-   STDMETHOD(OnStrainLoadsChanged)(IStrainLoadItem* item);
-   STDMETHOD(OnStrainLoadsAdded)(IStrainLoadItem* item);
-   STDMETHOD(OnStrainLoadsBeforeRemove)(IStrainLoadItem* item);
+   STDMETHOD(OnStrainLoadsChanged)(IStrainLoadItem* item) override;
+   STDMETHOD(OnStrainLoadsAdded)(IStrainLoadItem* item) override;
+   STDMETHOD(OnStrainLoadsBeforeRemove)(IStrainLoadItem* item) override;
 
 // ILiveLoadEvents
-   STDMETHOD(OnLiveLoadChanged)(ILiveLoad* load, LiveLoadModelType lltype);
+   STDMETHOD(OnLiveLoadChanged)(ILiveLoad* load, LiveLoadModelType lltype) override;
 
 // IDistributionFactorsEvents
-   STDMETHOD(OnDistributionFactorsChanged)();
-   STDMETHOD(OnDistributionFactorsAdded)(IDistributionFactorSegment* item, CollectionIndexType idx);
-   STDMETHOD(OnDistributionFactorsBeforeRemove)(IDistributionFactorSegment* item, CollectionIndexType idx);
-	STDMETHOD(OnDistributionFactorsMoveTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnDistributionFactorsCopyTo)(CollectionIndexType from, CollectionIndexType to);
-	STDMETHOD(OnDistributionFactorsReverse)();
+   STDMETHOD(OnDistributionFactorsChanged)() override;
+   STDMETHOD(OnDistributionFactorsAdded)(IDistributionFactorSegment* item, CollectionIndexType idx) override;
+   STDMETHOD(OnDistributionFactorsBeforeRemove)(IDistributionFactorSegment* item, CollectionIndexType idx) override;
+	STDMETHOD(OnDistributionFactorsMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnDistributionFactorsCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+	STDMETHOD(OnDistributionFactorsReverse)() override;
 
 
 protected:

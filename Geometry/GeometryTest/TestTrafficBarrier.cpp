@@ -68,50 +68,50 @@ void CTestTrafficBarrier::TestITrafficBarrier()
    CComPtr<IPoint2d> pntVal;
    TrafficBarrierOrientation tboVal;
 
-   TRY_TEST( barrier->get_HookPoint(NULL), E_POINTER );
+   TRY_TEST( barrier->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( barrier->get_HookPoint(&pntVal), S_OK );
    pntVal->get_X(&val);
    TRY_TEST( IsZero(val), true );
    pntVal->get_Y(&val);
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_Orientation(NULL), E_POINTER );
+   TRY_TEST( barrier->get_Orientation(nullptr), E_POINTER );
    TRY_TEST( barrier->get_Orientation(&tboVal), S_OK );
    TRY_TEST( tboVal, tboLeft );
 
-   TRY_TEST( barrier->get_X1(NULL), E_POINTER );
+   TRY_TEST( barrier->get_X1(nullptr), E_POINTER );
    TRY_TEST( barrier->get_X1(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_X2(NULL), E_POINTER );
+   TRY_TEST( barrier->get_X2(nullptr), E_POINTER );
    TRY_TEST( barrier->get_X2(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_X3(NULL), E_POINTER );
+   TRY_TEST( barrier->get_X3(nullptr), E_POINTER );
    TRY_TEST( barrier->get_X3(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_X4(NULL), E_POINTER );
+   TRY_TEST( barrier->get_X4(nullptr), E_POINTER );
    TRY_TEST( barrier->get_X4(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_X5(NULL), E_POINTER );
+   TRY_TEST( barrier->get_X5(nullptr), E_POINTER );
    TRY_TEST( barrier->get_X5(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_Y1(NULL), E_POINTER );
+   TRY_TEST( barrier->get_Y1(nullptr), E_POINTER );
    TRY_TEST( barrier->get_Y1(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_Y2(NULL), E_POINTER );
+   TRY_TEST( barrier->get_Y2(nullptr), E_POINTER );
    TRY_TEST( barrier->get_Y2(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_Y3(NULL), E_POINTER );
+   TRY_TEST( barrier->get_Y3(nullptr), E_POINTER );
    TRY_TEST( barrier->get_Y3(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( barrier->get_Y4(NULL), E_POINTER );
+   TRY_TEST( barrier->get_Y4(nullptr), E_POINTER );
    TRY_TEST( barrier->get_Y4(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
@@ -165,19 +165,19 @@ void CTestTrafficBarrier::TestITrafficBarrier()
    barrier->get_Orientation(&tboVal);
    TRY_TEST( tboVal, tboRight );
 
-   TRY_TEST( barrier->putref_HookPoint(NULL), E_INVALIDARG );
+   TRY_TEST( barrier->putref_HookPoint(nullptr), E_INVALIDARG );
    TRY_TEST( barrier->putref_HookPoint(pntVal), S_OK );
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
-   TRY_TEST(barrier->get_Shape(NULL), E_POINTER );
+   TRY_TEST(barrier->get_Shape(nullptr), E_POINTER );
    TRY_TEST(barrier->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(barrier->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(barrier->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(barrier->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -211,7 +211,7 @@ void CTestTrafficBarrier::TestIShape()
    // ShapeProperties
    //
    CComPtr<IShapeProperties> props;
-   TRY_TEST( shape->get_ShapeProperties(NULL), E_POINTER );
+   TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
    Float64 area, ixx, iyy, ixy, cgx, cgy;
    CComPtr<IPoint2d> cg;
@@ -240,7 +240,7 @@ void CTestTrafficBarrier::TestIShape()
    Float64 xleft,xright,ytop,ybottom;
    Float64 val;
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    
    box->get_Left(&val);
@@ -266,7 +266,7 @@ void CTestTrafficBarrier::TestIShape()
    //
    // Perimeter
    //
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
    TRY_TEST( IsEqual(val,106.44267779471), true ); // Get value from PGSuper
 
@@ -287,8 +287,8 @@ void CTestTrafficBarrier::TestIShape()
    p2->Move(100,50);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,57.500), true );
 
@@ -303,7 +303,7 @@ void CTestTrafficBarrier::TestIShape()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
    CollectionIndexType cPoints;
@@ -363,7 +363,7 @@ void CTestTrafficBarrier::TestIShape()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST(shape->Clone(NULL), E_POINTER );
+   TRY_TEST(shape->Clone(nullptr), E_POINTER );
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<ITrafficBarrier> barrierClone(clone);
@@ -404,8 +404,8 @@ void CTestTrafficBarrier::TestIShape()
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(-1.0, 1.0);
 
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 
@@ -430,8 +430,8 @@ void CTestTrafficBarrier::TestIShape()
    clipLine->ThroughPoints(p1,p2);
 
    CComPtr<IShape> clip;
-   TRY_TEST(shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST(shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
    TRY_TEST( clip != 0, true );
    
@@ -496,8 +496,8 @@ void CTestTrafficBarrier::TestIShape()
    clipRect->put_Top(4);
    clipRect->put_Bottom(3);
 
-   TRY_TEST( shape->ClipIn(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL), E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
    
    // Verify clip by checking points
@@ -570,13 +570,13 @@ void CTestTrafficBarrier::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(100,100);
 
-   TRY_TEST( position->MoveEx(NULL,to), E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from,NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to), S_OK );
 
    // Check the points
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
@@ -643,7 +643,7 @@ void CTestTrafficBarrier::TestIXYPosition()
    size->put_Dx(100);
    size->put_Dy(100);
 
-   TRY_TEST(position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST(position->OffsetEx(size), S_OK);
 
    // Check the points
@@ -704,8 +704,8 @@ void CTestTrafficBarrier::TestIXYPosition()
    // MoveLocatorPointEx (Provides full coverage of MoveLocatorPoint)
    //
    hookPnt->Move(0,0);
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    hookPnt->Move(0,0);
@@ -866,7 +866,7 @@ void CTestTrafficBarrier::TestIXYPosition()
    c->put_X(0);
    c->put_Y(0);
 
-   TRY_TEST( position->RotateEx(NULL,M_PI), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,M_PI), E_INVALIDARG );
    TRY_TEST( position->RotateEx(c,M_PI), S_OK );
 
    // Check the points

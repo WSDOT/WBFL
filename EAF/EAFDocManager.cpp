@@ -44,7 +44,7 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 		pTemplate->GetDocString(strFilterName, CDocTemplate::filterName) &&
 		!strFilterName.IsEmpty())
 	{
-		if (pstrDefaultExt != NULL)
+		if (pstrDefaultExt != nullptr)
 			pstrDefaultExt->Empty();
 
 		// add to filter
@@ -71,7 +71,7 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 				// Example:
 				//    .jpg;.jpeg
 				ASSERT(strExtension[0] == '.');
-				if ((pstrDefaultExt != NULL) && pstrDefaultExt->IsEmpty())
+				if ((pstrDefaultExt != nullptr) && pstrDefaultExt->IsEmpty())
 				{
 					// set the default extension
 					*pstrDefaultExt = strExtension.Mid( 1 );  // skip the '.'
@@ -119,7 +119,7 @@ void CEAFDocManager::OnFileNew()
 		return;
 	}
 
-   CEAFDocTemplate* pTemplate = NULL;
+   CEAFDocTemplate* pTemplate = nullptr;
    if ( 1 < m_TemplateGroups.GetGroupCount() || 0 < m_TemplateGroups.GetGroup(0)->GetGroupCount() )
    {
       CNewProjectDlg dlg(&m_TemplateGroups);
@@ -128,7 +128,7 @@ void CEAFDocManager::OnFileNew()
       
       pTemplate = dlg.m_pSelectedTemplate;
 
-      ASSERT(pTemplate != NULL);
+      ASSERT(pTemplate != nullptr);
       ASSERT_KINDOF(CEAFDocTemplate,pTemplate);
 
       CEAFDocTemplate* pEAFTemplate = (CEAFDocTemplate*)pTemplate;
@@ -141,7 +141,7 @@ void CEAFDocManager::OnFileNew()
    }
 
 
-   pTemplate->OpenDocumentFile(NULL);
+   pTemplate->OpenDocumentFile(nullptr,FALSE,TRUE);
 }
 
 BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* pTemplate)
@@ -152,7 +152,7 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 
    // This code is copied from the base class version... the only difference is that default (*.*) file
    // type is removed
-	CFileDialog dlgFile(bOpenFileDialog, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, NULL, NULL, 0);
+	CFileDialog dlgFile(bOpenFileDialog, nullptr, nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, nullptr, nullptr, 0);
 
 	CString title;
 	ENSURE(title.LoadString(nIDSTitle));
@@ -161,7 +161,7 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 
 	CString strFilter;
 	CString strDefault;
-	if (pTemplate != NULL)
+	if (pTemplate != nullptr)
 	{
 		ASSERT_VALID(pTemplate);
 		_AfxAppendFilterSuffix(strFilter, dlgFile.m_ofn, pTemplate, &strDefault);
@@ -171,11 +171,11 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
 		// do for all doc template
 		POSITION pos = m_templateList.GetHeadPosition();
 		BOOL bFirst = TRUE;
-		while (pos != NULL)
+		while (pos != nullptr)
 		{
 			pTemplate = (CDocTemplate*)m_templateList.GetNext(pos);
 			_AfxAppendFilterSuffix(strFilter, dlgFile.m_ofn, pTemplate,
-				bFirst ? &strDefault : NULL);
+				bFirst ? &strDefault : nullptr);
 
          bFirst = FALSE;
 		}
@@ -244,7 +244,7 @@ void CEAFDocManager::AddDocTemplate(CDocTemplate* pTemplate)
    // Organize the document templates in a way that works with the new project dialog
    CComPtr<IEAFAppPlugin> plugin;
    pEAFDocTemplate->GetPlugin(&plugin);
-   ATLASSERT(plugin!=NULL);
+   ATLASSERT(plugin!=nullptr);
 
    // This is the root group (corrosponds to the root level nodes on the project type tree
    // in the new project dialog)
@@ -253,7 +253,7 @@ void CEAFDocManager::AddDocTemplate(CDocTemplate* pTemplate)
    // Search to see if there is already a group for the same plugin
    CEAFTemplateGroup* pExistingGroup = m_TemplateGroups.FindGroup(pTemplateGroup->GetGroupName());
 
-   if ( pExistingGroup == NULL )
+   if ( pExistingGroup == nullptr )
    {
       // this is a new group
       m_TemplateGroups.AddGroup(pTemplateGroup->Clone());

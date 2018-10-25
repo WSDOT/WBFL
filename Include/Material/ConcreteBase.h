@@ -24,7 +24,9 @@
 #pragma once
 
 #include <Material\MaterialExp.h>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 struct matConcreteBaseShrinkageDetails;
 struct matConcreteBaseCreepDetails;
@@ -125,11 +127,11 @@ public:
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
    virtual Float64 GetFreeShrinkageStrain(Float64 t) const = 0;
-   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const = 0;
+   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const = 0;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
    virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const = 0;
-   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const = 0;
+   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const = 0;
 
    // Creates a clone of this object
    virtual matConcreteBase* CreateClone() const = 0;
@@ -137,12 +139,12 @@ public:
 protected:
    // prevent copying and assignment (use CreateClone instead)
    matConcreteBase(const matConcreteBase& rOther);
-   matConcreteBase& operator = (const matConcreteBase& rOther);
+   matConcreteBase& operator = (const matConcreteBase& rOther) = delete;
 
    virtual void OnChanged();
 
-   void InitializeShrinkageDetails(Float64 t,matConcreteBaseShrinkageDetails* pDetails) const;
-   void InitializeCreepDetails(Float64 t,Float64 tla,matConcreteBaseCreepDetails* pDetails) const;
+   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<matConcreteBaseShrinkageDetails>& pDetails) const;
+   void InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<matConcreteBaseCreepDetails>& pDetails) const;
 
 protected:
    Type        m_Type;

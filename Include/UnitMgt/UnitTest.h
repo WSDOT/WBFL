@@ -74,8 +74,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   unitmgtUnitTest(const unitmgtUnitTest&);
-   unitmgtUnitTest& operator=(const unitmgtUnitTest&);
+   unitmgtUnitTest(const unitmgtUnitTest&) = delete;
+   unitmgtUnitTest& operator=(const unitmgtUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

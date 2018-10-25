@@ -100,41 +100,41 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IGenericBridge
 public:
-   STDMETHOD(get_BridgeGeometry)(IBridgeGeometry** bridgeGeometry);
-   STDMETHOD(get_Alignment)(IAlignment** ppAlignment);
-   STDMETHOD(get_Piers)(/*[out,retval]*/ IPierCollection* *piers);
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
-   STDMETHOD(get_SpanLength)(SpanIndexType spanIdx,Float64* length);
-	STDMETHOD(putref_Deck)(/*[in]*/ IBridgeDeck* deck);
-	STDMETHOD(get_Deck)(/*[out,retval]*/ IBridgeDeck** deck);
-	STDMETHOD(get_LeftBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
-	STDMETHOD(putref_LeftBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
-	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier);
-	STDMETHOD(putref_RightBarrier)(/*[in]*/ ISidewalkBarrier* barrier);
-   STDMETHOD(get_WearingSurfaceStage)(/*[out,retval]*/StageIndexType* stage);
-	STDMETHOD(put_WearingSurfaceStage)(/*[in]*/StageIndexType stage);
-	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d);
-	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 d);
-	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d);
-	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 d);
-	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth);
-   STDMETHOD(get_SacrificialDepthStage)(/*[out,retval]*/StageIndexType* stage);
-	STDMETHOD(put_SacrificialDepthStage)(/*[in]*/StageIndexType stage);
-   STDMETHOD(CreateSuperstructureMember)(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr);
-   STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr);
-   STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs);
+   STDMETHOD(get_BridgeGeometry)(IBridgeGeometry** bridgeGeometry) override;
+   STDMETHOD(get_Alignment)(IAlignment** ppAlignment) override;
+   STDMETHOD(get_Piers)(/*[out,retval]*/ IPierCollection* *piers) override;
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
+   STDMETHOD(get_SpanLength)(SpanIndexType spanIdx,Float64* length) override;
+	STDMETHOD(putref_Deck)(/*[in]*/ IBridgeDeck* deck) override;
+	STDMETHOD(get_Deck)(/*[out,retval]*/ IBridgeDeck** deck) override;
+	STDMETHOD(get_LeftBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier) override;
+	STDMETHOD(putref_LeftBarrier)(/*[in]*/ ISidewalkBarrier* barrier) override;
+	STDMETHOD(get_RightBarrier)(/*[out,retval]*/ ISidewalkBarrier** barrier) override;
+	STDMETHOD(putref_RightBarrier)(/*[in]*/ ISidewalkBarrier* barrier) override;
+   STDMETHOD(get_WearingSurfaceStage)(/*[out,retval]*/StageIndexType* stage) override;
+	STDMETHOD(put_WearingSurfaceStage)(/*[in]*/StageIndexType stage) override;
+	STDMETHOD(get_WearingSurfaceDepth)(/*[out,retval]*/Float64* d) override;
+	STDMETHOD(put_WearingSurfaceDepth)(/*[in]*/Float64 d) override;
+	STDMETHOD(get_WearingSurfaceDensity)(/*[out,retval]*/Float64* d) override;
+	STDMETHOD(put_WearingSurfaceDensity)(/*[in]*/Float64 d) override;
+	STDMETHOD(get_SacrificialDepth)(/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_SacrificialDepth)(/*[in]*/Float64 depth) override;
+   STDMETHOD(get_SacrificialDepthStage)(/*[out,retval]*/StageIndexType* stage) override;
+	STDMETHOD(put_SacrificialDepthStage)(/*[in]*/StageIndexType stage) override;
+   STDMETHOD(CreateSuperstructureMember)(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr) override;
+   STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr) override;
+   STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs) override;
 
-   STDMETHOD(UpdateBridgeModel)();
+   STDMETHOD(UpdateBridgeModel)() override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__GENERICBRIDGEIMPL_H_

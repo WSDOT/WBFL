@@ -119,7 +119,7 @@ private:
 
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcString& rRcString);
-   virtual void MakeAssignment(const rptRcString& rOther);
+   void MakeAssignment(const rptRcString& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

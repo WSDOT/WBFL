@@ -91,39 +91,39 @@ private:
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPrestressingStrand
 public:
-   STDMETHOD(get_Name)(/*[out,retval]*/ BSTR* name);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR name);
-	STDMETHOD(get_Grade)(/*[out,retval]*/ StrandGrade* grade);
-	STDMETHOD(put_Grade)(/*[in]*/ StrandGrade grade);
-	STDMETHOD(get_Type)(/*[out,retval]*/ StrandType* type);
-	STDMETHOD(put_Type)(/*[in]*/ StrandType type);
-	STDMETHOD(get_Coating)(/*[out,retval]*/ StrandCoating* coating);
-	STDMETHOD(put_Coating)(/*[in]*/ StrandCoating coating);
-	STDMETHOD(get_Size)(/*[out,retval]*/ StrandSize* size);
-	STDMETHOD(put_Size)(/*[in]*/ StrandSize size);
-   STDMETHOD(put_InstallationStage)(StageIndexType stageIdx);
-   STDMETHOD(get_InstallationStage)(StageIndexType* pStageIdx);
-	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/Float64* dps);
-	STDMETHOD(get_NominalArea)(/*[out,retval]*/Float64* aps);
-	STDMETHOD(get_UltimateStrength)(/*[out,retval]*/Float64* fpu);
-	STDMETHOD(get_YieldStrength)(/*[out,retval]*/Float64* fpy);
-	STDMETHOD(get_ModulusE)(/*[out,retval]*/Float64* e);
+   STDMETHOD(get_Name)(/*[out,retval]*/ BSTR* name) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR name) override;
+	STDMETHOD(get_Grade)(/*[out,retval]*/ StrandGrade* grade) override;
+	STDMETHOD(put_Grade)(/*[in]*/ StrandGrade grade) override;
+	STDMETHOD(get_Type)(/*[out,retval]*/ StrandType* type) override;
+	STDMETHOD(put_Type)(/*[in]*/ StrandType type) override;
+	STDMETHOD(get_Coating)(/*[out,retval]*/ StrandCoating* coating) override;
+	STDMETHOD(put_Coating)(/*[in]*/ StrandCoating coating) override;
+	STDMETHOD(get_Size)(/*[out,retval]*/ StrandSize* size) override;
+	STDMETHOD(put_Size)(/*[in]*/ StrandSize size) override;
+   STDMETHOD(put_InstallationStage)(StageIndexType stageIdx) override;
+   STDMETHOD(get_InstallationStage)(StageIndexType* pStageIdx) override;
+	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/Float64* dps) override;
+	STDMETHOD(get_NominalArea)(/*[out,retval]*/Float64* aps) override;
+	STDMETHOD(get_UltimateStrength)(/*[out,retval]*/Float64* fpu) override;
+	STDMETHOD(get_YieldStrength)(/*[out,retval]*/Float64* fpy) override;
+	STDMETHOD(get_ModulusE)(/*[out,retval]*/Float64* e) override;
 
 // IMaterial
 public:
-   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E);
-	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E);
-	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w);
-	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w);
+   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E) override;
+	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E) override;
+	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w) override;
+	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__PRESTRESSINGSTRAND_H_

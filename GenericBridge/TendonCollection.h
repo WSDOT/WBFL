@@ -75,23 +75,23 @@ END_CONNECTION_POINT_MAP()
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ITendonCollection
 public:
-//   STDMETHOD(Add)(/*[in]*/ITendon* tendon);
-//	STDMETHOD(get_Item)(/*[in]*/long index,/*[out,retval]*/ITendon** tendon);
-//	STDMETHOD(Remove)(/*[in]*/long index);
-//	STDMETHOD(Clear)();
-	STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
-	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
-	STDMETHOD(Cut)(/*[in]*/ Float64 z,/*[in]*/TendonMeasure measure,/*[out,retval]*/ IPoint3dCollection** points);
-   STDMETHOD(get__EnumTendons)(/*[out,retval]*/IEnumTendons* *enumTendons);
+//   STDMETHOD(Add)(/*[in]*/ITendon* tendon) override;
+//	STDMETHOD(get_Item)(/*[in]*/long index,/*[out,retval]*/ITendon** tendon) override;
+//	STDMETHOD(Remove)(/*[in]*/long index) override;
+//	STDMETHOD(Clear)() override;
+	STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg) override;
+	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope) override;
+	STDMETHOD(Cut)(/*[in]*/ Float64 z,/*[in]*/TendonMeasure measure,/*[out,retval]*/ IPoint3dCollection** points) override;
+   STDMETHOD(get__EnumTendons)(/*[out,retval]*/IEnumTendons* *enumTendons) override;
 
 //// IStructuredStorage2
 //public:
-//	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-//	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+//	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+//	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__TendonCollection_H_

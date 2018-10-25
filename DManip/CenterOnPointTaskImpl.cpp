@@ -59,7 +59,7 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::Start()
 
    m_pView->SetCapture();
    HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_TARGET);
-   ASSERT(hCursor != NULL);
+   ASSERT(hCursor != nullptr);
    m_OldCursor = ::SetCursor(hCursor);
    Do();
 }
@@ -92,7 +92,7 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnLButtonDown(UINT nFlags, const CPo
    CComPtr<iDisplayMgr> pDispMgr;
    m_pView->GetDisplayMgr(&pDispMgr);
 
-   pDispMgr->SetTask(NULL);
+   pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnRButtonDown(UINT nFlags, const CPoint& point)
@@ -118,7 +118,7 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, 
       CComPtr<iDisplayMgr> pDispMgr;
       m_pView->GetDisplayMgr(&pDispMgr);
 
-      pDispMgr->SetTask(NULL);
+      pDispMgr->SetTask(nullptr);
    }
 }
 

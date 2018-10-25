@@ -43,7 +43,7 @@ CEAFStatusCenter::CEAFStatusCenter()
    m_NextID = 1;
    m_NextStatusGroupID = 1;
    m_NextCallbackID = 1;
-   m_pCurrentItem = NULL;
+   m_pCurrentItem = nullptr;
    m_bIsEnabled = true;
 }
 
@@ -55,7 +55,7 @@ CEAFStatusCenter::~CEAFStatusCenter()
    {
       CEAFStatusItem* pItem = *itemIter;
       delete pItem;
-      pItem = NULL;
+      pItem = nullptr;
    }
 
    Callbacks::iterator callbackIter(m_Callbacks.begin());
@@ -64,7 +64,7 @@ CEAFStatusCenter::~CEAFStatusCenter()
    {
       iStatusCallback* pCallback = (*callbackIter).second;
       delete pCallback;
-      (*callbackIter).second = NULL;
+      (*callbackIter).second = nullptr;
    }
 }
 
@@ -107,7 +107,7 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
    else
    {
       delete pItem;
-      pItem = NULL;
+      pItem = nullptr;
    }
 
    return INVALID_ID; // failed
@@ -123,7 +123,7 @@ bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
       if ( pItem->GetID() == id && m_pCurrentItem != pItem )
       {
          delete pItem;
-         pItem = NULL;
+         pItem = nullptr;
          m_Items.erase(itemIter);
          NotifyRemoved(id);
          return true;
@@ -143,7 +143,7 @@ bool CEAFStatusCenter::RemoveByIndex(CollectionIndexType index)
       return false;
 
    Container::iterator iter = m_Items.begin();
-   for ( CollectionIndexType i = 0; i <= index; i++ )
+   for ( CollectionIndexType i = 1; i < index; i++ )
    {
       iter++;
    }
@@ -153,7 +153,7 @@ bool CEAFStatusCenter::RemoveByIndex(CollectionIndexType index)
    {
       StatusItemIDType id = pItem->GetID();
       delete pItem;
-      pItem = NULL;
+      pItem = nullptr;
       m_Items.erase(iter);
       NotifyRemoved(id);
       return true;
@@ -185,7 +185,7 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
          {
             StatusItemIDType itemID = pItem->GetID();
             delete pItem;
-            pItem = NULL;
+            pItem = nullptr;
             NotifyRemoved(itemID);
             bItemsRemoved = true;
          }
@@ -215,13 +215,13 @@ CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
          return pItem;
    }
 
-   return NULL;
+   return nullptr;
 }
 
 CEAFStatusItem* CEAFStatusCenter::GetByIndex(CollectionIndexType index)
 {
    if ( m_Items.size() <= index )
-      return NULL;
+      return nullptr;
 
    Container::iterator iter = m_Items.begin();
    for ( CollectionIndexType i = 0; i < index; i++ )
@@ -246,7 +246,7 @@ eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity()
    for ( ; itemIter != itemIterEnd; itemIter++ )
    {
       CEAFStatusItem* pItem = *itemIter;
-      severity = _cpp_max(severity, GetSeverity(pItem->GetCallbackID()));
+      severity = Max(severity, GetSeverity(pItem->GetCallbackID()));
    }
 
    return severity;
@@ -312,7 +312,7 @@ iStatusCallback* CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID)
 {
    Callbacks::iterator found = m_Callbacks.find(callbackID);
    if ( found == m_Callbacks.end() )
-      return NULL;
+      return nullptr;
 
    return (*found).second;
 }
@@ -323,11 +323,11 @@ void CEAFStatusCenter::EditItem(StatusItemIDType id)
       return;
 
    CEAFStatusItem* pItem = GetByID(id);
-   ASSERT(pItem != NULL);
+   ASSERT(pItem != nullptr);
 
    StatusCallbackIDType callbackID = pItem->GetCallbackID();
    iStatusCallback* pCallback = GetCallback(callbackID);
-   ASSERT(pCallback != NULL);
+   ASSERT(pCallback != nullptr);
 
    if ( pCallback )
    {
@@ -335,7 +335,7 @@ void CEAFStatusCenter::EditItem(StatusItemIDType id)
 
       pCallback->Execute(pItem);
 
-      m_pCurrentItem = NULL;
+      m_pCurrentItem = nullptr;
 
       // remove item if required
       if (pItem->RemoveAfterEdit())

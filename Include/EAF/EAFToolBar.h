@@ -47,7 +47,7 @@ public:
 	virtual ~CEAFToolBar();
 
    // These 4 methods add buttons to toolbars. The pCallback is a pointer to the object
-   // that gets called when the toolbar button is pressed. If pCallback is NULL, the
+   // that gets called when the toolbar button is pressed. If pCallback is nullptr, the
    // the command is processed by MFC command routing.
    BOOL LoadToolBar(LPCTSTR lpszResourceName,IEAFCommandCallback* pCallback);
    BOOL LoadToolBar(UINT nIDResource,IEAFCommandCallback* pCallback);

@@ -69,38 +69,38 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
    //TRY_TEST(pADUF->FormatSpecifiers(-1,1,tjRight,nftFixed,0.0001),E_INVALIDARG);
    //TRY_TEST(pADUF->FormatSpecifiers(1,-1,tjRight,nftFixed,0.0001),E_INVALIDARG);
    TRY_TEST(pADUF->FormatSpecifiers(6,3,tjRight,nftFixed,0.0001),S_OK);
-   TRY_TEST(pADUF->put_Annotation(NULL),E_INVALIDARG);
+   TRY_TEST(pADUF->put_Annotation(nullptr),E_INVALIDARG);
    TRY_TEST(pADUF->put_Annotation(CComBSTR("ft-,in")),S_OK);
 
-   TRY_TEST(pADUF->get_OffsetDigits(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_OffsetDigits(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_OffsetDigits(&lVal),S_OK);
    TRY_TEST(lVal,0);
 
-   TRY_TEST(pADUF->get_Width(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Width(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Width(&lVal),S_OK);
    TRY_TEST(lVal,6);
 
-   TRY_TEST(pADUF->get_Precision(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Precision(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Precision(&lVal),S_OK);
    TRY_TEST(lVal,3);
 
-   TRY_TEST(pADUF->get_Notation(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Notation(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Notation(&notation),S_OK);
    TRY_TEST(notation,nftFixed);
 
-   TRY_TEST(pADUF->get_Justification(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Justification(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Justification(&justify),S_OK);
    TRY_TEST(justify,tjRight);
 
-   TRY_TEST(pADUF->get_Multiplier(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Multiplier(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Multiplier(&dVal),S_OK);
    TRY_TEST( IsEqual(dVal,12.0), true );
 
-   TRY_TEST(pADUF->get_Annotation(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_Annotation(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_Annotation(&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("ft-,in")),0);
 
-   TRY_TEST(pADUF->Format(1.5,CComBSTR("ft"),NULL),E_POINTER);
+   TRY_TEST(pADUF->Format(1.5,CComBSTR("ft"),nullptr),E_POINTER);
    bstrTest.Empty();
    TRY_TEST(pADUF->Format(1.5,CComBSTR("ft"),&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1ft-6.000in")),0);
@@ -118,11 +118,11 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1ft-11.000in")),0);
    
    bstrTest.Empty();
-   TRY_TEST(pADUF->Format(1.5,NULL,&bstrTest),S_OK);
+   TRY_TEST(pADUF->Format(1.5,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1 6.000")),0);
 
    bstrTest.Empty();
-   TRY_TEST(pADUF->Format(1.9166666666666666667,NULL,&bstrTest),S_OK);
+   TRY_TEST(pADUF->Format(1.9166666666666666667,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1 11.000")),0);
 
    TRY_TEST(pADUF->put_Annotation(CComBSTR("' ,\"")),S_OK);
@@ -133,7 +133,7 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1' 3\"")),0);
 
    bstrTest.Empty();
-   TRY_TEST(pADUF->Format(1.25,NULL,&bstrTest),S_OK);
+   TRY_TEST(pADUF->Format(1.25,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1 3")),0);
 
    bstrTest.Empty();
@@ -141,11 +141,11 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1' 11\"")),0);
 
    bstrTest.Empty();
-   TRY_TEST(pADUF->Format(1.9166666666666666667,NULL,&bstrTest),S_OK);
+   TRY_TEST(pADUF->Format(1.9166666666666666667,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("1 11")),0);
 
    bstrTest.Empty();
-   TRY_TEST(pADUF->Format(1.9999999999999999999,NULL,&bstrTest),S_OK);
+   TRY_TEST(pADUF->Format(1.9999999999999999999,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("2 0")),0);
 
    // US Stationing
@@ -253,7 +253,7 @@ void CTestAnnotatedDisplayUnitFormatter::Test()
 
    // UsesTag
    VARIANT_BOOL bUsesTag;
-   TRY_TEST(pADUF->get_UsesTag(NULL),E_POINTER);
+   TRY_TEST(pADUF->get_UsesTag(nullptr),E_POINTER);
    TRY_TEST(pADUF->get_UsesTag(&bUsesTag),S_OK);
    TRY_TEST(bUsesTag,VARIANT_FALSE);
 

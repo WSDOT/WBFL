@@ -70,7 +70,7 @@ public:
 // IPShape
 	STDMETHOD(get_X)(Float64 * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = m_X;
@@ -83,7 +83,7 @@ public:
 	}
 	STDMETHOD(get_Y)(Float64 * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = m_Y;
@@ -96,7 +96,7 @@ public:
 	}
 	STDMETHOD(get_IsComposite)(BOOL * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = TRUE;
@@ -104,7 +104,7 @@ public:
 	}
 	STDMETHOD(get_Count)(CollectionIndexType * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 			
       *pVal = m_Shapes.size();
@@ -113,7 +113,7 @@ public:
 	}
 	STDMETHOD(get_Item)(CollectionIndexType index, IPShape * * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 
       if (index < 0 || m_Shapes.size() <= index)
@@ -126,7 +126,7 @@ public:
 	}
 	STDMETHOD(Add)(IPShape * pVal)
 	{
-		if (pVal == NULL)
+		if (pVal == nullptr)
 			return E_POINTER;
 
       m_Shapes.push_back(ShapePtr(pVal));
@@ -141,7 +141,7 @@ private:
 // IPersist
 	STDMETHOD(GetClassID)(GUID * pClassID)
 	{
-		if (pClassID == NULL)
+		if (pClassID == nullptr)
 			return E_POINTER;
 			
       *pClassID = this->GetObjectCLSID();
@@ -166,14 +166,14 @@ private:
       if (FAILED(hr)) return hr;
       int cnt = var.intVal;
 
-      for (int i=0; i<cnt; i++)
+      for (int i = 0; i<cnt; i++)
       {
          hr = pLoad->get_Property(OLESTR("Shape"), &var);
          if (FAILED(hr)) return hr;
 
-         ATLASSERT(var.punkVal!=NULL);
+         ATLASSERT(var.punkVal!=nullptr);
 
-         IPShape* pis=NULL;
+         IPShape* pis=nullptr;
          hr = var.punkVal->QueryInterface(IID_IPShape, (void**)&pis);
          if (FAILED(hr)) 
             return hr;
@@ -207,7 +207,7 @@ private:
       hr = pSave->put_Property(OLESTR("Count"), CComVariant(cnt));
       if (FAILED(hr)) return hr;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          hr = pSave->put_Property(OLESTR("Shape"), CComVariant(m_Shapes[i]));
          if (FAILED(hr)) return hr;

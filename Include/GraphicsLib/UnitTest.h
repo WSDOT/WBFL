@@ -79,8 +79,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   grlibUnitTest(const grlibUnitTest&);
-   grlibUnitTest& operator=(const grlibUnitTest&);
+   grlibUnitTest(const grlibUnitTest&) = delete;
+   grlibUnitTest& operator=(const grlibUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

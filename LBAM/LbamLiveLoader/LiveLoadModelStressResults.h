@@ -57,20 +57,20 @@ BEGIN_COM_MAP(CLiveLoadModelStressResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ILiveLoadModelStressResults
 public:
-	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult* *leftResult, /*[out]*/ILiveLoadConfiguration* *leftConfig, /*[out]*/IStressResult* *rightResult, /*[out]*/ILiveLoadConfiguration* *rightConfig);
-	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig);
-	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clear)();
+	STDMETHOD(GetResult)(/*[in]*/CollectionIndexType index, /*[out]*/IStressResult* *leftResult, /*[out]*/ILiveLoadConfiguration* *leftConfig, /*[out]*/IStressResult* *rightResult, /*[out]*/ILiveLoadConfiguration* *rightConfig) override;
+	STDMETHOD(SetResult)(/*[in]*/CollectionIndexType index, /*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig) override;
+	STDMETHOD(Add)(/*[in]*/IStressResult* leftResult, /*[in]*/ILiveLoadConfiguration* leftConfig, /*[in]*/IStressResult* rightResult, /*[in]*/ILiveLoadConfiguration* rightConfig) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clear)() override;
 
 private:
    struct LlmResults

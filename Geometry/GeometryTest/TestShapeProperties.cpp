@@ -80,28 +80,28 @@ void CTestShapeProperties::Test()
    // Test properties
    //
    TRY_TEST( props->put_Area(area), S_OK );
-   TRY_TEST( props->get_Area(NULL), E_POINTER );
+   TRY_TEST( props->get_Area(nullptr), E_POINTER );
    TRY_TEST( props->get_Area(&val), S_OK );
    TRY_TEST( IsEqual(val,area), true );
 
    TRY_TEST( props->put_Ixx(ixx), S_OK );
-   TRY_TEST( props->get_Ixx(NULL), E_POINTER );
+   TRY_TEST( props->get_Ixx(nullptr), E_POINTER );
    TRY_TEST( props->get_Ixx(&val), S_OK );
    TRY_TEST( IsEqual(val,ixx), true );
 
    TRY_TEST( props->put_Iyy(iyy), S_OK );
-   TRY_TEST( props->get_Iyy(NULL), E_POINTER );
+   TRY_TEST( props->get_Iyy(nullptr), E_POINTER );
    TRY_TEST( props->get_Iyy(&val), S_OK );
    TRY_TEST( IsEqual(val,iyy), true );
 
    TRY_TEST( props->put_Ixy(ixy), S_OK );
-   TRY_TEST( props->get_Ixy(NULL), E_POINTER );
+   TRY_TEST( props->get_Ixy(nullptr), E_POINTER );
    TRY_TEST( props->get_Ixy(&val), S_OK );
    TRY_TEST( IsEqual(val,ixy), true );
 
-   TRY_TEST( props->put_Centroid(NULL), E_INVALIDARG );
+   TRY_TEST( props->put_Centroid(nullptr), E_INVALIDARG );
    TRY_TEST( props->put_Centroid(cg), S_OK );
-   TRY_TEST( props->get_Centroid(NULL), E_POINTER );
+   TRY_TEST( props->get_Centroid(nullptr), E_POINTER );
    TRY_TEST( props->get_Centroid(&pntVal), S_OK );
    cg->Offset(10,10); // IShapeProperties does not have reference to the CG point
                       // Move the original cg point.
@@ -113,40 +113,40 @@ void CTestShapeProperties::Test()
 
    TRY_TEST( props->put_Xleft(-1),   E_INVALIDARG);
    TRY_TEST( props->put_Xleft(left), S_OK );
-   TRY_TEST( props->get_Xleft(NULL), E_POINTER );
+   TRY_TEST( props->get_Xleft(nullptr), E_POINTER );
    TRY_TEST( props->get_Xleft(&val), S_OK );
    TRY_TEST( IsEqual(val,left), true );
 
    TRY_TEST( props->put_Xright(-1),   E_INVALIDARG);
    TRY_TEST( props->put_Xright(right), S_OK );
-   TRY_TEST( props->get_Xright(NULL), E_POINTER );
+   TRY_TEST( props->get_Xright(nullptr), E_POINTER );
    TRY_TEST( props->get_Xright(&val), S_OK );
    TRY_TEST( IsEqual(val,right), true );
 
    TRY_TEST( props->put_Ytop(-1),   E_INVALIDARG);
    TRY_TEST( props->put_Ytop(top), S_OK );
-   TRY_TEST( props->get_Ytop(NULL), E_POINTER );
+   TRY_TEST( props->get_Ytop(nullptr), E_POINTER );
    TRY_TEST( props->get_Ytop(&val), S_OK );
    TRY_TEST( IsEqual(val,top), true );
 
    TRY_TEST( props->put_Ybottom(-1),   E_INVALIDARG);
    TRY_TEST( props->put_Ybottom(bottom), S_OK );
-   TRY_TEST( props->get_Ybottom(NULL), E_POINTER );
+   TRY_TEST( props->get_Ybottom(nullptr), E_POINTER );
    TRY_TEST( props->get_Ybottom(&val), S_OK );
    TRY_TEST( IsEqual(val,bottom), true );
 
    // Default coordinate system is centroidal
-   TRY_TEST( props->get_CoordinateSystem(NULL), E_POINTER );
+   TRY_TEST( props->get_CoordinateSystem(nullptr), E_POINTER );
    TRY_TEST( props->get_CoordinateSystem(&cstVal), S_OK );
    TRY_TEST( cstVal, csCentroidal );
 
    // Default orientation is 0.0
-   TRY_TEST( props->get_Orientation(NULL), E_POINTER );
+   TRY_TEST( props->get_Orientation(nullptr), E_POINTER );
    TRY_TEST( props->get_Orientation(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
    // Default origin is (0.0,0.0)
-   TRY_TEST( props->get_Origin(NULL), E_POINTER );
+   TRY_TEST( props->get_Origin(nullptr), E_POINTER );
    pntVal.Release();
    TRY_TEST( props->get_Origin(&pntVal), S_OK );
    pntVal->get_X(&val);
@@ -157,26 +157,26 @@ void CTestShapeProperties::Test()
    //
    // Principle Direction
    //
-   TRY_TEST( props->get_PrincipleDirection(NULL), E_POINTER );
+   TRY_TEST( props->get_PrincipleDirection(nullptr), E_POINTER );
    TRY_TEST( props->get_PrincipleDirection(&val), S_OK );
    TRY_TEST( IsEqual( val, 0.336452), true );
 
    //
    // Principle Values
    //
-   TRY_TEST( props->get_I11(NULL), E_POINTER );
+   TRY_TEST( props->get_I11(nullptr), E_POINTER );
    TRY_TEST( props->get_I11(&val), S_OK );
    TRY_TEST( IsEqual(val,30.20176), true );
 
-   TRY_TEST( props->get_I22(NULL), E_POINTER );
+   TRY_TEST( props->get_I22(nullptr), E_POINTER );
    TRY_TEST( props->get_I22(&val), S_OK );
    TRY_TEST( IsEqual(val,7.248239), true );
 
-   TRY_TEST( props->get_I12Min(NULL), E_POINTER );
+   TRY_TEST( props->get_I12Min(nullptr), E_POINTER );
    TRY_TEST( props->get_I12Min(&val), S_OK );
    TRY_TEST( IsEqual(val,-11.47676), true );
 
-   TRY_TEST( props->get_I12Max(NULL), E_POINTER );
+   TRY_TEST( props->get_I12Max(nullptr), E_POINTER );
    TRY_TEST( props->get_I12Max(&val), S_OK );
    TRY_TEST( IsEqual(val,11.47676), true );
 
@@ -187,13 +187,13 @@ void CTestShapeProperties::Test()
    pntVal.CoCreateInstance( CLSID_Point2d );
    pntVal->put_X(10);
    pntVal->put_Y(20);
-   TRY_TEST( props->put_Origin(NULL), E_INVALIDARG );
+   TRY_TEST( props->put_Origin(nullptr), E_INVALIDARG );
    TRY_TEST( props->put_Origin(pntVal), S_OK );
 
    props->get_CoordinateSystem(&cstVal);
    TRY_TEST( cstVal, csUser );
    
-   TRY_TEST( props->get_Origin(NULL), E_POINTER );
+   TRY_TEST( props->get_Origin(nullptr), E_POINTER );
    pntVal.Release();
    TRY_TEST( props->get_Origin(&pntVal), S_OK );
    pntVal->get_X(&val);
@@ -241,7 +241,7 @@ void CTestShapeProperties::Test()
    //
 
    TRY_TEST( props->put_Orientation( M_PI ), S_OK );
-   TRY_TEST( props->get_Orientation(NULL), E_POINTER );
+   TRY_TEST( props->get_Orientation(nullptr), E_POINTER );
    TRY_TEST( props->get_Orientation(&val), S_OK );
    TRY_TEST( IsEqual(val,M_PI), true );
 
@@ -430,7 +430,7 @@ void CTestShapeProperties::TestIShapePropertiesEx()
 
    // Test query interface
    CComQIPtr<IShapeProperties> qitest(prop1);
-   TRY_TEST( qitest != NULL, true );
+   TRY_TEST( qitest != nullptr, true );
 
    // Initialize shape 1
    // Rectangle 5 wide x 10 high
@@ -465,7 +465,7 @@ void CTestShapeProperties::TestIShapePropertiesEx()
    prop2->put_Ybottom(2.5);
 
    // Add the properties together
-   TRY_TEST(prop1->AddProperties(NULL),E_INVALIDARG);
+   TRY_TEST(prop1->AddProperties(nullptr),E_INVALIDARG);
    TRY_TEST(prop1->AddProperties(prop2),S_OK);
 
    // Transform to global coordinates for easier validation

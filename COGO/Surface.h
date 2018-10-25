@@ -83,28 +83,28 @@ HRESULT Init(IProfile* pProfile,ISurfaceTemplateCollection* pSurfaceTemplates,In
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISurface
 public:
-   STDMETHOD(get_Profile)(IProfile* *pVal);
-   STDMETHOD(putref_Profile)(IProfile* newVal);
-   STDMETHOD(get_ID)(/*[out,retval]*/CogoObjectID* id);
-   STDMETHOD(put_ID)(/*[in]*/CogoObjectID id);
-   STDMETHOD(get_SurfaceTemplates)(ISurfaceTemplateCollection** ppTemplates);
-   STDMETHOD(put_AlignmentPoint)(IndexType pntIdx);
-   STDMETHOD(get_AlignmentPoint)(IndexType* pntIdx);
-   STDMETHOD(put_ProfileGradePoint)(IndexType pntIdx);
-   STDMETHOD(get_ProfileGradePoint)(IndexType* pntIdx);
-   STDMETHOD(get_Superelevations)(ISuperelevationCollection** ppSuperelevations);
-   STDMETHOD(get_Widenings)(IWideningCollection** ppWidenings);
-   STDMETHOD(get_StartBoundaryLine)(ILineSegment2d** ppEndLine);
-   STDMETHOD(get_EndBoundaryLine)(ILineSegment2d** ppEndLine);
-   STDMETHOD(GetStationRange)(IStation** ppStart,IStation** ppEnd);
-   STDMETHOD(CreateSurfaceTemplate)(VARIANT varStation,VARIANT_BOOL bApplySuperelevations,ISurfaceTemplate** ppSurfaceTemplate);
-   STDMETHOD(CreateSurfaceProfile)(VARIANT varStation,VARIANT varDirection,VARIANT_BOOL bApplySuperelevations,ISurfaceProfile** ppSurfaceProfile);
-   STDMETHOD(Clone)(ISurface** ppClone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(get_Profile)(IProfile* *pVal) override;
+   STDMETHOD(putref_Profile)(IProfile* newVal) override;
+   STDMETHOD(get_ID)(/*[out,retval]*/CogoObjectID* id) override;
+   STDMETHOD(put_ID)(/*[in]*/CogoObjectID id) override;
+   STDMETHOD(get_SurfaceTemplates)(ISurfaceTemplateCollection** ppTemplates) override;
+   STDMETHOD(put_AlignmentPoint)(IndexType pntIdx) override;
+   STDMETHOD(get_AlignmentPoint)(IndexType* pntIdx) override;
+   STDMETHOD(put_ProfileGradePoint)(IndexType pntIdx) override;
+   STDMETHOD(get_ProfileGradePoint)(IndexType* pntIdx) override;
+   STDMETHOD(get_Superelevations)(ISuperelevationCollection** ppSuperelevations) override;
+   STDMETHOD(get_Widenings)(IWideningCollection** ppWidenings) override;
+   STDMETHOD(get_StartBoundaryLine)(ILineSegment2d** ppEndLine) override;
+   STDMETHOD(get_EndBoundaryLine)(ILineSegment2d** ppEndLine) override;
+   STDMETHOD(GetStationRange)(IStation** ppStart,IStation** ppEnd) override;
+   STDMETHOD(CreateSurfaceTemplate)(VARIANT varStation,VARIANT_BOOL bApplySuperelevations,ISurfaceTemplate** ppSurfaceTemplate) override;
+   STDMETHOD(CreateSurfaceProfile)(VARIANT varStation,VARIANT varDirection,VARIANT_BOOL bApplySuperelevations,ISurfaceProfile** ppSurfaceProfile) override;
+   STDMETHOD(Clone)(ISurface** ppClone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // ISurfaceTemplateCollectionEvents
 public:
@@ -181,8 +181,8 @@ public:
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    CogoObjectID m_ID;

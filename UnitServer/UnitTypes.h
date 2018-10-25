@@ -119,29 +119,29 @@ END_CONNECTION_POINT_MAP()
 
 // IUnitTypes
 public:
-	STDMETHOD(get_Count)(CollectionIndexType* retval);
-	STDMETHOD(get_Item)(VARIANT Index, IUnitType** retval);
-//	STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(Add)(/*[in]*/BSTR bstrLabel,/*[in]*/Float64 Mass,/*[in]*/Float64 Length,/*[in]*/Float64 Time,/*[in]*/Float64 Temperature,/*[in]*/Float64 Angle,/*[out,retval]*/IUnitType** ppUnitType);
-	STDMETHOD(Clear)();
-	STDMETHOD(Remove)(VARIANT Index);
-   STDMETHOD(get__EnumUnitTypes)(/*[out,retval]*/ IEnumUnitTypes** enumUnitTypes);
+	STDMETHOD(get_Count)(CollectionIndexType* retval) override;
+	STDMETHOD(get_Item)(VARIANT Index, IUnitType** retval) override;
+//	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(Add)(/*[in]*/BSTR bstrLabel,/*[in]*/Float64 Mass,/*[in]*/Float64 Length,/*[in]*/Float64 Time,/*[in]*/Float64 Temperature,/*[in]*/Float64 Angle,/*[out,retval]*/IUnitType** ppUnitType) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Remove)(VARIANT Index) override;
+   STDMETHOD(get__EnumUnitTypes)(/*[out,retval]*/ IEnumUnitTypes** enumUnitTypes) override;
 
 // IUnitTypeEventSink
 public:
-   STDMETHOD(OnUnitAdded)(IUnitType* unitType,IUnit* unit)
+   STDMETHOD(OnUnitAdded)(IUnitType* unitType,IUnit* unit) override
    {
       Fire_OnUnitAdded(unitType,unit);
       return S_OK;
    }
 
-   STDMETHOD(OnUnitRemoved)(IUnitType* unitType,BSTR unit)
+   STDMETHOD(OnUnitRemoved)(IUnitType* unitType,BSTR unit) override
    {
       Fire_OnUnitRemoved(unitType,unit);
       return S_OK;
    }
 
-   STDMETHOD(OnUnitsCleared)(IUnitType* unitType)
+   STDMETHOD(OnUnitsCleared)(IUnitType* unitType) override
    {
       Fire_OnUnitsCleared(unitType);
       return S_OK;

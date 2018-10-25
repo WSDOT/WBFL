@@ -68,20 +68,20 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStationEquation
 public:
-   STDMETHOD(GetEquation)(Float64* pBackStation,Float64* pAheadStation);
-   STDMETHOD(get_Back)(Float64* pBack);
-   STDMETHOD(get_Ahead)(Float64* pAhead);
-   STDMETHOD(get_NormalizedValue)(Float64* pNormalizedValue);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(GetEquation)(Float64* pBackStation,Float64* pAheadStation) override;
+   STDMETHOD(get_Back)(Float64* pBack) override;
+   STDMETHOD(get_Ahead)(Float64* pAhead) override;
+   STDMETHOD(get_NormalizedValue)(Float64* pNormalizedValue) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__StationEquation_H_

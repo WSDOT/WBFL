@@ -42,7 +42,7 @@ STDMETHODIMP CLoading::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IFem2dLoading
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -284,7 +284,7 @@ void CLoading::ApplyLoads(CModel *model)
       JointIDType id;
       jntLd->get_JointID(&id);
       CJoint *jnt = joints->Find(id);
-      if (jnt == NULL)
+      if (jnt == nullptr)
       {
          LoadIDType lid;
          jntLd->get_ID(&lid);
@@ -304,7 +304,7 @@ void CLoading::ApplyLoads(CModel *model)
       JointIDType id;
       jntDisp->get_JointID(&id);
       CJoint *jnt = joints->Find(id);
-      if (jnt == NULL)
+      if (jnt == nullptr)
       {
          LoadIDType lid;
          jntDisp->get_ID(&lid);
@@ -326,7 +326,7 @@ void CLoading::ApplyLoads(CModel *model)
       MemberIDType id;
       ptLd->get_MemberID(&id);
       CMember *mbr = members->Find(id);
-      if (mbr == NULL)
+      if (mbr == nullptr)
       {
          LoadIDType lid;
          ptLd->get_ID(&lid);
@@ -346,7 +346,7 @@ void CLoading::ApplyLoads(CModel *model)
       MemberIDType id;
       pdstLd->get_MemberID(&id);
       CMember *mbr = members->Find(id);
-      if (mbr == NULL)
+      if (mbr == nullptr)
       {
          LoadIDType lid;
          pdstLd->get_ID(&lid);
@@ -366,7 +366,7 @@ void CLoading::ApplyLoads(CModel *model)
       MemberIDType id;
       pms->get_MemberID(&id);
       CMember *mbr = members->Find(id);
-      if (mbr == NULL)
+      if (mbr == nullptr)
       {
          LoadIDType lid;
          pms->get_ID(&lid);

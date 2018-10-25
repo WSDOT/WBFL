@@ -197,11 +197,11 @@ private:
    HICON                    m_HIcon;
 
    // need to hide dependencies to this puppy
-   std::auto_ptr<CDocTemplateDialog>   m_pDocTemplateDialog;
+   std::unique_ptr<CDocTemplateDialog>   m_pDocTemplateDialog;
 
    // Prevent accidental copying and assignment
    mfcDocTemplateFinder(const mfcDocTemplateFinder&);
-   mfcDocTemplateFinder& operator=(const mfcDocTemplateFinder&);
+   mfcDocTemplateFinder& operator=(const mfcDocTemplateFinder&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

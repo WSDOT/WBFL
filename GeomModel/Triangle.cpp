@@ -30,6 +30,7 @@
 #include <math.h>
 #include <mathEx.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -147,7 +148,7 @@ void gmTriangle::GetProperties(gmProperties* pProperties) const
    // a simple triangle (consider m_Offset<0). 
    // Consult gpPolygon2d for the right answer.
 
-   std::auto_ptr<gpPolygon2d> pgp(CreategpPolygon());
+   std::unique_ptr<gpPolygon2d> pgp(CreategpPolygon());
 
    Float64 area, ixx, iyy, ixy;
    gpPoint2d  cg;
@@ -177,14 +178,14 @@ void gmTriangle::GetProperties(gmProperties* pProperties) const
 gpRect2d gmTriangle::GetBoundingBox() const
 {
    // again, simple triangles are easy, but...
-   std::auto_ptr<gpPolygon2d> pgp(CreategpPolygon());
+   std::unique_ptr<gpPolygon2d> pgp(CreategpPolygon());
 
    return pgp->GetBoundingBox();
 }
 
 gmIShape* gmTriangle::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmTriangle> ph(new gmTriangle( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmTriangle> ph(new gmTriangle( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -197,7 +198,7 @@ gmIShape* gmTriangle::CreateClippedShape(const gpLine2d& line,
                                     gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(line,side);
 }
 
@@ -206,20 +207,20 @@ gmIShape* gmTriangle::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
 Float64 gmTriangle::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->GetFurthestDistance(line,side);
 }
 
 void gmTriangle::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 
@@ -304,7 +305,8 @@ void gmTriangle::MakeAssignment(const gmTriangle& rOther)
 //======================== OPERATIONS =======================================
 gpPolygon2d* gmTriangle::CreategpPolygon() const
 {
-   if (m_Width<=0 || m_Height<=0) return 0;
+   if (m_Width<=0 || m_Height<=0) 
+      return nullptr;
 
    std::auto_ptr<gpPolygon2d> ph(new gpPolygon2d());
 

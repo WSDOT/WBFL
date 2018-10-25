@@ -73,33 +73,33 @@ CONNECTION_POINT_ENTRY(IID_ldILoadCombinationEvents)
 END_CONNECTION_POINT_MAP()
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldILoadCombination
 public:
-	STDMETHOD(get_LoadCombinationType)(/*[out, retval]*/ ldLoadCombinationType *pVal);
-	STDMETHOD(put_LoadCombinationType)(/*[in]*/ ldLoadCombinationType newVal);
-	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal);
-	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ldILoadCombination* *lone);
-	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/CollectionIndexType index);
-	STDMETHOD(Clear)();
-	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor);
-	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
-	STDMETHOD(SetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor);
-	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_LiveLoadModel)(/*[out, retval]*/ ldLiveLoadModelType *pVal);
-	STDMETHOD(put_LiveLoadModel)(/*[in]*/ ldLiveLoadModelType newVal);
-	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(get_LoadCombinationType)(/*[out, retval]*/ ldLoadCombinationType *pVal) override;
+	STDMETHOD(put_LoadCombinationType)(/*[in]*/ ldLoadCombinationType newVal) override;
+	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal) override;
+	STDMETHOD(put_ItemData)(/*[in]*/ VARIANT newVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ldILoadCombination* *lone) override;
+	STDMETHOD(RemoveLoadCaseFactor)(/*[in]*/CollectionIndexType index) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(GetLoadCaseFactor)(/*[in]*/CollectionIndexType index,  /*[out]*/BSTR* loadCaseName, /*[out]*/Float64* minFactor, /*[out]*/Float64* maxFactor) override;
+	STDMETHOD(AddLoadCaseFactor)( /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor) override;
+	STDMETHOD(SetLoadCaseFactor)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR loadCaseName, /*[in]*/Float64 minFactor, /*[in]*/Float64 maxFactor) override;
+	STDMETHOD(get_LoadCaseFactorCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_LiveLoadFactor)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_LiveLoadFactor)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_LiveLoadModel)(/*[out, retval]*/ ldLiveLoadModelType *pVal) override;
+	STDMETHOD(put_LiveLoadModel)(/*[in]*/ ldLiveLoadModelType newVal) override;
+	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 protected:
    CComBSTR            m_Name;

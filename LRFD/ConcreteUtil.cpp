@@ -830,6 +830,8 @@ bool lrfdConcreteUtil::TestMe(dbgLog& rlog)
    lrfdAutoVersion av;
    unitAutoSysUnits au;
 
+   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
+
    // We want to work in kg,m,s,C,rad
    unitSysUnitsMgr::SetMassUnit( unitMeasure::Kilogram );
    unitSysUnitsMgr::SetLengthUnit( unitMeasure::Meter );

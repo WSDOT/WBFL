@@ -77,8 +77,8 @@ void CTestNUBeam::TestIShape3()
    clipLine->ThroughPoints(p1,p2);
 
    CComPtr<IShape> clip;
-   TRY_TEST(shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST(shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
    TRY_TEST( clip != 0, true );
    
@@ -215,8 +215,8 @@ void CTestNUBeam::TestIShape3()
    clipRect->put_Top(10000);
    clipRect->put_Bottom(1500);
 
-   TRY_TEST( shape->ClipIn(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL), E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
    
    // Verify clip by checking points

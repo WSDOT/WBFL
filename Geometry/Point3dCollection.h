@@ -81,35 +81,35 @@ protected:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPoint3dCollection
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/IPoint3dCollection** clone);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint3d** ppenum);
-   STDMETHOD(Clear)();
-// STDMETHOD(Insert)([in]CollectionIndexType index,[in]IPoint3d* pPoint);
-// STDMETHOD(Reverse)();
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
-//	STDMETHOD(Add)(/*[in]*/ IPoint3d* pPoint);
-//	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType Index, /*[out, retval]*/ IPoint3d* *pVal);
-//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ LPUNKNOWN *pVal);
-//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(Offset)(Float64 dx,Float64 dy,Float64 dz);
-   STDMETHOD(OffsetEx)(ISize3d* size);
-   STDMETHOD(RemoveDuplicatePoints)();
+   STDMETHOD(Clone)(/*[out,retval]*/IPoint3dCollection** clone) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint3d** ppenum) override;
+   STDMETHOD(Clear)() override;
+// STDMETHOD(Insert)([in]CollectionIndexType index,[in]IPoint3d* pPoint) override;
+// STDMETHOD(Reverse)() override;
+//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+//	STDMETHOD(Add)(/*[in]*/ IPoint3d* pPoint) override;
+//	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType Index, /*[out, retval]*/ IPoint3d* *pVal) override;
+//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ LPUNKNOWN *pVal) override;
+//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(Offset)(Float64 dx,Float64 dy,Float64 dz) override;
+   STDMETHOD(OffsetEx)(ISize3d* size) override;
+   STDMETHOD(RemoveDuplicatePoints)() override;
 
 // IPoint3dEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint3d* point);
+	STDMETHOD(OnPointChanged)(IPoint3d* point) override;
 
 protected :
    // implementation of container's virtual function
-   virtual HRESULT OnBeforeAdd ( Point3dVectorImpl::StoredType* pVal);
-   virtual HRESULT OnAfterAdd ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnBeforeRemove ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnAfterRemove (CollectionIndexType idx);
+   virtual HRESULT OnBeforeAdd ( Point3dVectorImpl::StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnBeforeRemove ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnAfterRemove (CollectionIndexType idx) override;
 
    void UnadviseAll();
 };

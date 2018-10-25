@@ -50,7 +50,7 @@ public:
       m_OverhangDepth = 0;
       m_Taper = dotNone;
 
-      m_pDeckBoundary = NULL;
+      m_pDeckBoundary = nullptr;
 	}
 
    HRESULT FinalConstruct();
@@ -78,27 +78,27 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeck
 public:
-   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth);
-   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary);
-   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary);
+   STDMETHOD(get_StructuralDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(get_GrossDepth)(/*[out,retval]*/Float64* depth) override;
+   STDMETHOD(putref_DeckBoundary)(IDeckBoundary* deckBoundary) override;
+   STDMETHOD(get_DeckBoundary)(IDeckBoundary** deckBoundary) override;
 
 // ICastSlab
 public:
-	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth);
-	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth);
-	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper);
-	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper);
+	STDMETHOD(put_GrossDepth)(/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangDepth)(/*[out,retval]*/Float64* depth) override;
+	STDMETHOD(put_OverhangDepth)(/*[in]*/Float64 depth) override;
+	STDMETHOD(get_OverhangTaper)(/*[out,retval]*/DeckOverhangTaper* taper) override;
+	STDMETHOD(put_OverhangTaper)(/*[in]*/DeckOverhangTaper taper) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__CASTSLAB_H_

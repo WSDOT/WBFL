@@ -63,10 +63,10 @@ class ATL_NO_VTABLE CLoadCombinationAnalysisContext :
 public:
    CLoadCombinationAnalysisContext():
    m_ModelEventsCookie(0),
-   m_pLoadCasesAgg(NULL),
-   m_pStagesAgg(NULL),
+   m_pLoadCasesAgg(nullptr),
+   m_pStagesAgg(nullptr),
    m_LoadCasesEventsCookie(0),
-   m_pLoadCombinationsAgg(NULL),
+   m_pLoadCombinationsAgg(nullptr),
    m_LoadCombinationsEventsCookie(0),
    m_IsValidated(false)
    {
@@ -107,21 +107,21 @@ CONNECTION_POINT_ENTRY(IID_ILoadCombinationAnalysisContextEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationAnalysisContext
 public:
 	STDMETHOD(Initialize)(/*[in]*/ILBAMModel* model, /*[in]*/ILoadGroupResponse* loadGroupResponse, 
                          /*[in]*/ILiveLoadModelResponse* liveLoadModelResponse, /*[in]*/IBasicVehicularResponse* basicVres,
-                         /*[in]*/IAnalysisPOIs* analysisPOIs, /*[in]*/IGetStressPoints* crossSection);
+                         /*[in]*/IAnalysisPOIs* analysisPOIs, /*[in]*/IGetStressPoints* crossSection) override;
 
 // ILoadGroupResponse
 public:
-	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results);
-   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
-   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults **results);
+	STDMETHOD(ComputeForces)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+   STDMETHOD(ComputeDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionResult3Ds** results) override;
+   STDMETHOD(ComputeReactions)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage,/*[in]*/ResultsSummationType summ,/*[out,retval]*/IResult3Ds** results) override;
+   STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results) override;
+   STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/ISectionStressResults **results) override;
 
 // ILiveLoadModelResponse
 	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
@@ -129,85 +129,85 @@ public:
                             /*[in]*/OptimizationType optimization, 
                             /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                             /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
-                            /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelSectionResults** results);
+                            /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelSectionResults** results) override;
 
 	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                  /*[in]*/ForceEffectType effect, 
                                  /*[in]*/OptimizationType optimization, 
                                  /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                  /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
-                                 /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelSectionResults** results);
+                                 /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelSectionResults** results) override;
 
 	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                /*[in]*/ForceEffectType effect, 
                                /*[in]*/OptimizationType optimization, 
                                /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
-                               /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelResults** results);
+                               /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelResults** results) override;
 
 	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                                         /*[in]*/ForceEffectType effect, 
                                         /*[in]*/OptimizationType optimization, 
                                         /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                                         /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
-                                        /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelResults** results);
+                                        /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelResults** results) override;
 
 	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/LiveLoadModelType type,  
                               /*[in]*/ForceEffectType effect, 
                               /*[in]*/OptimizationType optimization, 
                               /*[in]*/VehicularLoadConfigurationType vehConfiguration, 
                               /*[in]*/VARIANT_BOOL applyImpact, /*[in]*/VARIANT_BOOL applyDistribution,
-                              /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelStressResults** results);
+                              /*[in]*/VARIANT_BOOL computePlacement, /*[out]*/ILiveLoadModelStressResults** results) override;
 
 // IBasicVehicularResponse
 	STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation,
-                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
 
 	STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage, 
-                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
+                            /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
 
 	STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage,
-                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+                               /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
 
 	STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* supportIDs, /*[in]*/BSTR stage,
-                                        /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
+                                        /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
 
 	STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* poiIDs, /*[in]*/BSTR stage,
-                              /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
+                              /*[in]*/ILiveLoadConfiguration* config, /*[out,retval]*/ISectionStressResults* *results) override;
 
 
 // IGetActiveLoadGroups
-   STDMETHOD(GetActiveLoadGroups)(/*[out,retval]*/IBstrArray* *loadGroups);
+   STDMETHOD(GetActiveLoadGroups)(/*[out,retval]*/IBstrArray* *loadGroups) override;
 
 // IGetCombinationFactors
-   STDMETHOD(GetPOICombinationFactors)(/*[in]*/PoiIDType POI, /*[in]*/BSTR Stage, /*[in]*/LoadCombinationType type, /*[out]*/Float64* minLoadModifier, /*[out]*/Float64* maxLoadModifier);
-   STDMETHOD(GetSupportCombinationFactors)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[in]*/LoadCombinationType type, /*[out]*/Float64* minLoadModifier, /*[out]*/Float64* maxLoadModifier);
+   STDMETHOD(GetPOICombinationFactors)(/*[in]*/PoiIDType POI, /*[in]*/BSTR Stage, /*[in]*/LoadCombinationType type, /*[out]*/Float64* minLoadModifier, /*[out]*/Float64* maxLoadModifier) override;
+   STDMETHOD(GetSupportCombinationFactors)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[in]*/LoadCombinationType type, /*[out]*/Float64* minLoadModifier, /*[out]*/Float64* maxLoadModifier) override;
 
 // ILBAMModelEvents
-   STDMETHOD(OnModelChanged)(/*[in]*/ILBAMModel* Model, ChangeType change);
+   STDMETHOD(OnModelChanged)(/*[in]*/ILBAMModel* Model, ChangeType change) override;
 
 // IAnalysisPOIs
-   STDMETHOD(get_SpanPoiIncrement)( PoiIDType *pVal);
-   STDMETHOD(put_SpanPoiIncrement)( PoiIDType newVal);
-   STDMETHOD(get_CantileverPoiIncrement)(PoiIDType *pVal);
-   STDMETHOD(put_CantileverPoiIncrement)( PoiIDType newVal);
-   STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray** poiIDs, IDblArray** poiLocations);
-   STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation);
+   STDMETHOD(get_SpanPoiIncrement)( PoiIDType *pVal) override;
+   STDMETHOD(put_SpanPoiIncrement)( PoiIDType newVal) override;
+   STDMETHOD(get_CantileverPoiIncrement)(PoiIDType *pVal) override;
+   STDMETHOD(put_CantileverPoiIncrement)( PoiIDType newVal) override;
+   STDMETHOD(GetSuperstructurePois)(BSTR stage, IIDArray** poiIDs, IDblArray** poiLocations) override;
+   STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLocation) override;
 
 // IGetStressPoints
-   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs);
+   STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs) override;
 
 // ILoadCasesEvents
-   STDMETHOD(OnLoadCasesChanged)(ILoadCase* item, ChangeType change);
-   STDMETHOD(OnLoadCasesRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadCasesAdded)(ILoadCase* item);
-   STDMETHOD(OnLoadCasesBeforeRemove)(ILoadCase* item);
+   STDMETHOD(OnLoadCasesChanged)(ILoadCase* item, ChangeType change) override;
+   STDMETHOD(OnLoadCasesRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadCasesAdded)(ILoadCase* item) override;
+   STDMETHOD(OnLoadCasesBeforeRemove)(ILoadCase* item) override;
 
 // ILoadCombinationsEvents
-   STDMETHOD(OnLoadCombinationsChanged)(ILoadCombination* item, ChangeType change);
-   STDMETHOD(OnLoadCombinationsRenamed)(BSTR oldName, BSTR newName);
-   STDMETHOD(OnLoadCombinationsAdded)(ILoadCombination* item);
-   STDMETHOD(OnLoadCombinationsBeforeRemove)(ILoadCombination* item);
+   STDMETHOD(OnLoadCombinationsChanged)(ILoadCombination* item, ChangeType change) override;
+   STDMETHOD(OnLoadCombinationsRenamed)(BSTR oldName, BSTR newName) override;
+   STDMETHOD(OnLoadCombinationsAdded)(ILoadCombination* item) override;
+   STDMETHOD(OnLoadCombinationsBeforeRemove)(ILoadCombination* item) override;
 
    // virtual overrides
    void FinalRelease();

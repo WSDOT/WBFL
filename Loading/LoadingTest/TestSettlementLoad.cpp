@@ -122,7 +122,7 @@ void CTestSettlementLoad::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestSettlementLoad"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pSettlementLoad2.QueryInterface(&piss2), S_OK);
 
          // Load 

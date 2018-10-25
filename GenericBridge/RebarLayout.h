@@ -65,21 +65,21 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarLayout"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarLayoutItems");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarLayout
 public:
-   STDMETHOD(CreateRebarSection)(/*[in]*/ Float64 cutLocation,/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IRebarSection** section);
-//   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli);
-//	STDMETHOD(get_Count)(/*[out,retval]*/ long* count);
-//	STDMETHOD(Add)(/*[in]*/IRebarLayoutItem* rli);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get__EnumRebarLayoutItems)(/*[out,retval]*/IEnumRebarLayoutItems** enumRebarLayoutItems);
+   STDMETHOD(CreateRebarSection)(/*[in]*/ Float64 cutLocation,/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IRebarSection** section) override;
+//   STDMETHOD(get_Item)(/*[in]*/long idx,/*[out,retval]*/IRebarLayoutItem** rli) override;
+//	STDMETHOD(get_Count)(/*[out,retval]*/ long* count) override;
+//	STDMETHOD(Add)(/*[in]*/IRebarLayoutItem* rli) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get__EnumRebarLayoutItems)(/*[out,retval]*/IEnumRebarLayoutItems** enumRebarLayoutItems) override;
 };
 
 #endif //__RebarLayout_H_

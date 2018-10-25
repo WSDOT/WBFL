@@ -225,7 +225,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    // get the document 
-	if (pdispObject != NULL )
+	if (pdispObject != nullptr )
 	{
       MSHTML::IHTMLElement *pElem;
       HRESULT hr;
@@ -282,7 +282,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
 
                      long len;
                      len = pcoll->Getlength();
-                     long i=0;
+                     long i = 0;
                      while (i<len)
                      {
                         long chid;
@@ -319,7 +319,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
                                        break;
                                  }
 
-                                 popup.AppendMenu( MF_POPUP | MF_ENABLED, (UINT)popup2.Detach(), chtitle );
+                                 popup.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup2.Detach(), chtitle );
                               }
                            }
 
@@ -335,7 +335,7 @@ HRESULT FAR EXPORT  CCustomControlSite::XDocHostUIHandler::ShowContextMenu(
                      if ( 0 < popup.GetMenuItemCount() )
                      {
                         menu.AppendMenu( MF_SEPARATOR, 0);
-                        menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT)popup.Detach(), _T("&Table of Contents") );
+                        menu.AppendMenu( MF_POPUP | MF_ENABLED, (UINT_PTR)popup.Detach(), _T("&Table of Contents") );
                      }
                   }
 

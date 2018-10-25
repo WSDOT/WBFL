@@ -64,7 +64,7 @@ void CPolyShape::FinalRelease()
 
 void CPolyShape::GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y)
 {
-   ATLASSERT( x != NULL && y != NULL );
+   ATLASSERT( x != nullptr && y != nullptr );
 
    CComPtr<IRect2d> pBox;
    CComPtr<IPoint2d> pnt;
@@ -114,7 +114,7 @@ void CPolyShape::GetLocatorPoint(LocatorPointType lp,Float64* x,Float64* y)
          CollectionIndexType cPoints;
          m_pPoints->get_Count(&cPoints);
          if ( cPoints == 0 )
-            CreatePoint(0.00,0.00,NULL,&pnt);
+            CreatePoint(0.00,0.00,nullptr,&pnt);
          else
          {
             m_pPoints->get_Item(0,&pnt);
@@ -139,7 +139,7 @@ STDMETHODIMP CPolyShape::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
       &IID_IStructuredStorage2
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -152,7 +152,7 @@ STDMETHODIMP CPolyShape::AddPoint(Float64 x,Float64 y)
    HRESULT hr = S_OK;
    CComPtr<IPoint2d> pPoint;
    
-   hr = CreatePoint(x,y,NULL,&pPoint);
+   hr = CreatePoint(x,y,nullptr,&pPoint);
    if ( FAILED(hr) )
       return hr;
 
@@ -274,9 +274,9 @@ void CPolyShape::UpdateShapeProperties()
       Float64 x1,y1;
       Float64 dy, dx;
       Float64 ar, at;
-      Float64 g_ixx=0, g_iyy=0, g_ixy=0; // moments of inertia about the global axes
-      Float64 c_ixx=0, c_iyy=0, c_ixy=0; // moments of inertia about the centroid
-      Float64 area_local =0;
+      Float64 g_ixx=0, g_iyy=0, g_ixy = 0; // moments of inertia about the global axes
+      Float64 c_ixx=0, c_iyy=0, c_ixy = 0; // moments of inertia about the centroid
+      Float64 area_local  = 0;
 
       // loop over all points - make sure of closure
       CollectionIndexType idx0, idx1;
@@ -440,10 +440,10 @@ void CPolyShape::UpdateBoundingBox()
             m_pPoints->get_Item(idx,&pPoint);
             GetCoordinates(pPoint,&x,&y);
 
-            left   = _cpp_min( x, left);
-            right  = _cpp_max( x, right);
-            bottom = _cpp_min( y, bottom);
-            top    = _cpp_max( y, top);
+            left   = Min( x, left);
+            right  = Max( x, right);
+            bottom = Min( y, bottom);
+            top    = Max( y, top);
          }
 
          m_BoundingRect.Left = left;
@@ -566,7 +566,7 @@ STDMETHODIMP CPolyShape::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
             // Make sure the point is actually on the boundary and not
             // on a projection of a line segment
             CComPtr<ILineSegment2d> seg;
-            CreateLineSegment(NULL,&seg);
+            CreateLineSegment(nullptr,&seg);
 
             CComPtr<IPoint2d> p0,p1;
             seg->get_StartPoint(&p0);
@@ -685,7 +685,7 @@ STDMETHODIMP CPolyShape::Clone(IShape** pClone)
       m_pPoints->get_Item(i,&pPoint);
 
       CComPtr<IPoint2d> pNewPoint;
-      CreatePoint( pPoint, NULL, &pNewPoint );
+      CreatePoint( pPoint, nullptr, &pNewPoint );
 
       pcClone->AddPointEx( pNewPoint );
    }
@@ -717,7 +717,7 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    if ( d1 < 0 && d2 < 0 && d3 < 0 && d4 < 0 )
    {
       // entire shape is left of the line so nothing will remain after clipping
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -759,7 +759,7 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    dir->get_X(&dir_x);
    dir->get_Y(&dir_y);
 
-   CreatePoint(pnt_a,NULL,&pnt_b);
+   CreatePoint(pnt_a,nullptr,&pnt_b);
    pnt_b->Offset(-dir_x,-dir_y);
 
    Float64 dx, dy; // components of the direction vector of the clipping line
@@ -796,7 +796,7 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
    if ( !IsEqualPoint(pStart,pEnd) )
    {
       CComPtr<IPoint2d> closure;
-      CreatePoint(pStart,NULL,&closure);
+      CreatePoint(pStart,nullptr,&closure);
       my_points->Add(closure); // close the polygon if not already
       my_points->get_Count(&cPoints);
    }
@@ -815,7 +815,7 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
 
    if ( !last_out )
    {
-      CreatePoint(lx,ly,NULL,&last_added);
+      CreatePoint(lx,ly,nullptr,&last_added);
       was_last_added = true;
       pClipShape->AddPointEx( last_added );
    }
@@ -842,13 +842,13 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
          util.CoCreateInstance( CLSID_GeomUtil );
          intersect.Release();
          util->LineLineIntersect(pLine,line2,&intersect);
-         ATLASSERT(intersect.p != NULL);
+         ATLASSERT(intersect.p != nullptr);
 
          // don't add duplicate points
          if (!(was_last_added && IsEqualPoint(intersect,last_added)))
          {
             last_added.Release();
-            CreatePoint(intersect,NULL,&last_added);
+            CreatePoint(intersect,nullptr,&last_added);
             was_last_added = true;
             pClipShape->AddPointEx( last_added );
          }
@@ -857,7 +857,7 @@ STDMETHODIMP CPolyShape::ClipWithLine(ILine2d* pLine,IShape** pShape)
       if ( !current_out && !(was_last_added && IsEqualPoint(current,last_added)))
       {
          last_added.Release();
-         CreatePoint(current,NULL,&last_added);
+         CreatePoint(current,nullptr,&last_added);
          was_last_added = true;
          pClipShape->AddPointEx(current);
       }
@@ -907,7 +907,7 @@ STDMETHODIMP CPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
    // Clip using top edge
    pRect->get_TopLeft( &pStart );
    pRect->get_TopRight( &pEnd );
-   CreateLine( pStart, pEnd, NULL, &pLine );
+   CreateLine( pStart, pEnd, nullptr, &pLine );
 
    CComPtr<IShape> pClipTop;
    ClipWithLine(pLine,&pClipTop);
@@ -978,7 +978,7 @@ STDMETHODIMP CPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 //   // Clip using Top edge
 //   pRect->get_TopRight( &pStart );
 //   pRect->get_TopLeft( &pEnd );
-//   CreateLine( pStart, pEnd, NULL, &pLine );
+//   CreateLine( pStart, pEnd, nullptr, &pLine );
 //
 //   CComPtr<IShape> pClipTop;
 //   ClipWithLine(pLine,&pClipTop);
@@ -1080,7 +1080,7 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
 
       Float64 dist;
       m_GeomUtil->ShortestDistanceToPoint(line,pPoint,&dist);
-      maxDist = _cpp_max( maxDist, dist );
+      maxDist = Max( maxDist, dist );
    }
 
    *pVal = maxDist;
@@ -1124,7 +1124,7 @@ STDMETHODIMP CPolyShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
 
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CPolyShape::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

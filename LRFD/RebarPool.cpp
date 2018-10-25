@@ -25,6 +25,7 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\RebarPool.h>
 #include <Units\SysUnits.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -38,7 +39,7 @@ CLASS
 ****************************************************************************/
 
 lrfdRebarPool* lrfdRebarPool::ms_pInstance = 0;
-std::map<Int32,boost::shared_ptr<matRebar> > lrfdRebarPool::ms_Rebar;
+std::map<Int32, std::shared_ptr<matRebar> > lrfdRebarPool::ms_Rebar;
 lrfdRebarPool::Killer lrfdRebarPool::ms_Killer;
 
 Int32 hash( matRebar::Grade grade, matRebar::Type type, matRebar::Size size )
@@ -252,12 +253,12 @@ void lrfdRebarPool::GetTransverseBarSizeRange(matRebar::Type type,matRebar::Grad
 
 const matRebar* lrfdRebarPool::GetRebar(Int32 key)
 {
-   std::map<Int32,boost::shared_ptr<matRebar> >::iterator found;
+   std::map<Int32, std::shared_ptr<matRebar> >::iterator found;
 
    found = ms_Rebar.find( key );
    if ( found == ms_Rebar.end() )
    {
-      return 0;
+      return nullptr;
    }
 
    return (*found).second.get();
@@ -300,7 +301,7 @@ void lrfdRebarPool::Dump(dbgDumpContext& os) const
 ////////////////////////// PRIVATE    ///////////////////////////////////////
 
 #define NEW_BAR(name,size,type,grade) \
-   ms_Rebar.insert( std::make_pair(hash(matRebar::##grade,matRebar::##type,matRebar::##size),boost::shared_ptr<matRebar>(new matRebar(_T(name),matRebar::##grade,matRebar::##type,matRebar::##size) ) ) );
+   ms_Rebar.insert( std::make_pair(hash(matRebar::##grade,matRebar::##type,matRebar::##size),std::make_shared<matRebar>(_T(name),matRebar::##grade,matRebar::##type,matRebar::##size) ) );
 
 //======================== LIFECYCLE  =======================================
 lrfdRebarPool::lrfdRebarPool()
@@ -469,11 +470,11 @@ void lrfdRebarIter::Begin()
    m_Bars.clear();
    CHECK(m_Bars.size() == 0);
    CHECK(m_Bars.empty() == true);
-   std::map< Int32, boost::shared_ptr<matRebar> >* pBars = &lrfdRebarPool::ms_Rebar;
-   std::map< Int32, boost::shared_ptr<matRebar> >::const_iterator iter;
+   std::map< Int32, std::shared_ptr<matRebar> >* pBars = &lrfdRebarPool::ms_Rebar;
+   std::map< Int32, std::shared_ptr<matRebar> >::const_iterator iter;
    for ( iter = pBars->begin(); iter != pBars->end(); iter++ )
    {
-      const boost::shared_ptr<matRebar>& AutoPtr = iter->second;
+      const std::shared_ptr<matRebar>& AutoPtr = iter->second;
       const matRebar* pRebar = AutoPtr.get();
       matRebar::Size size = pRebar->GetSize();
       if ( minBarSize <= size && size <= maxBarSize && pRebar->GetGrade() == m_Grade && pRebar->GetType() == m_Type )
@@ -533,7 +534,7 @@ lrfdRebarIter::operator void*() const
    }
    else
    {
-      return 0;
+      return nullptr;
    }
 }
 
@@ -545,7 +546,7 @@ const matRebar* lrfdRebarIter::GetCurrentRebar() const
    }
    else
    {
-      return 0;
+      return nullptr;
    }
 }
 void lrfdRebarIter::SetGrade(matRebar::Grade grade)
@@ -639,7 +640,7 @@ bool lrfdRebarPool::TestMe(dbgLog& rlog)
    }
 
    // Test to see pool correctly rejects a rebar not in the pool
-   //boost::shared_ptr<matRebar> pDummyRebar( new matRebar );
+   //std::shared_ptr<matRebar> pDummyRebar( new matRebar );
    //Int32 key = pPool->GetRebarKey( pDummyRebar.get() );
    //TRY_TESTME( key == INVALID_INDEX );
 

@@ -48,7 +48,7 @@ m_Suffix(_T("tmp")),
 m_DefaultName(_T("Blank Document")),
 m_DefaultFile(_T("Normal")),
 m_HIcon(0),
-m_pDocTemplateDialog(new CDocTemplateDialog(NULL)) 
+m_pDocTemplateDialog(new CDocTemplateDialog(nullptr)) 
 {
 
 }
@@ -62,7 +62,7 @@ m_Mode(mode),
 m_DefaultName(_T("Blank Document")),
 m_DefaultFile(_T("Normal")),
 m_HIcon(0),
-m_pDocTemplateDialog(new CDocTemplateDialog(NULL)) 
+m_pDocTemplateDialog(new CDocTemplateDialog(nullptr)) 
 {
 
    TerminateDirList(&m_DirectoryList);

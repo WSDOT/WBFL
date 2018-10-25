@@ -60,17 +60,17 @@ BEGIN_COM_MAP(CVertCurveFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVertCurveFactory
 public:
-	STDMETHOD(CreateVertCurve)(/*[out,retval]*/ IVertCurve* *pVal);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+	STDMETHOD(CreateVertCurve)(/*[out,retval]*/ IVertCurve* *pVal) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__VERTCURVEFACTORY_H_

@@ -40,7 +40,7 @@ HRESULT CLibraryViewer::FinalConstruct()
 {
    // Load up the tree view image list
    m_hTVImageList = ImageList_Create(16,16,ILC_COLOR4,2,0);
-   if ( m_hTVImageList == NULL )
+   if ( m_hTVImageList == nullptr )
       return E_FAIL;
 
    HBITMAP hBmp;
@@ -52,7 +52,7 @@ HRESULT CLibraryViewer::FinalConstruct()
 
    // Create the list view image list
    m_hLVImageList = ImageList_Create(16,16,ILC_COLOR4,2,0);
-   if ( m_hLVImageList == NULL )
+   if ( m_hLVImageList == nullptr )
    {
       // Tree view image list was successfully created.
       // If we have to abort construction, it has to be destroyed.
@@ -117,7 +117,7 @@ void CLibraryViewer::PopulateTreeControl()
    if ( m_LibMgr == 0 )
    {
       TVINSERTSTRUCT insert;
-      insert.hParent = NULL;
+      insert.hParent = nullptr;
       insert.hInsertAfter = TVI_LAST;
       insert.item.mask = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
       insert.item.lParam = -1;
@@ -138,7 +138,7 @@ void CLibraryViewer::PopulateTreeControl()
    m_LibMgr->get_Name(&bstrName);
 
    TVINSERTSTRUCT insert;
-   insert.hParent = NULL;
+   insert.hParent = nullptr;
    insert.hInsertAfter = TVI_LAST;
    insert.item.mask = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
    insert.item.lParam = -1;
@@ -153,7 +153,7 @@ void CLibraryViewer::PopulateTreeControl()
    m_LibMgr->get__NewEnum(&punk);
    CComQIPtr<IEnumVARIANT> pEnum(punk);
    CComVariant var;
-   while ( pEnum->Next(1,&var,NULL) != S_FALSE )
+   while ( pEnum->Next(1,&var,nullptr) != S_FALSE )
    {
       CComPtr<ILibrary> lib;
       var.pdispVal->QueryInterface(&lib);
@@ -176,7 +176,7 @@ void CLibraryViewer::PopulateTreeControl()
 
 void CLibraryViewer::PopulateListControl(BSTR bstrLibName)
 {
-   if ( m_LibMgr == NULL )
+   if ( m_LibMgr == nullptr )
       return;
 
    USES_CONVERSION;
@@ -186,7 +186,7 @@ void CLibraryViewer::PopulateListControl(BSTR bstrLibName)
    CComPtr<ILibrary> lib;
    m_LibMgr->get_Item(bstrLibName,&lib);
 
-   if ( lib == NULL )
+   if ( lib == nullptr )
       return;
 
    CComPtr<IUnknown> punk;
@@ -194,7 +194,7 @@ void CLibraryViewer::PopulateListControl(BSTR bstrLibName)
    CComQIPtr<IEnumVARIANT> pEnum(punk);
    CComVariant var;
    long i = 0;
-   while ( pEnum->Next(1,&var,NULL) != S_FALSE )
+   while ( pEnum->Next(1,&var,nullptr) != S_FALSE )
    {
       CComPtr<ILibraryEntry> entry;
       var.pdispVal->QueryInterface(&entry);
@@ -327,8 +327,8 @@ BSTR CLibraryViewer::CurLibName()
 
    // Get the selected tree node to identify the library
    HTREEITEM htiLib = TreeView_GetSelection(hWndTree);
-   if ( htiLib == NULL )
-      return 0; // Nothing selected
+   if ( htiLib == nullptr )
+      return nullptr; // Nothing selected
 
    // Get the item so that we can grab the library name
    TCHAR libName[20];
@@ -347,7 +347,7 @@ BSTR CLibraryViewer::CurEntryName()
    HWND hWndList = GetDlgItem(IDC_LIST);
    int idx = ListView_GetNextItem(hWndList,-1,LVNI_SELECTED);
    if ( idx == -1 )
-      return 0;
+      return nullptr;
 
    TCHAR entryName[20];
    LVITEM lvItem;

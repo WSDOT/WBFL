@@ -191,7 +191,7 @@ void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
 
 void CStatusCenterDlg::OnStatusItemRemoved(StatusItemIDType id)
 {
-   if ( GetSafeHwnd() == NULL )
+   if ( GetSafeHwnd() == nullptr )
       return;
 
    eafTypes::StatusSeverityType severity;
@@ -313,25 +313,25 @@ void CStatusCenterDlg::OnSize(UINT nType, int cx, int cy)
    CWnd* pBtn  = GetDlgItem(IDCLOSE);
    CWnd* pLabel = GetDlgItem(IDC_LABEL);
 
-   if ( pBtn == NULL )
+   if ( pBtn == nullptr )
       return;
 
    CRect rBtn;
    pBtn->GetClientRect(&rBtn);
    int x = rc.right - rBtn.Width() - border;
    int y = rc.bottom - rBtn.Height() - border;
-   pBtn->SetWindowPos(NULL,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+   pBtn->SetWindowPos(nullptr,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
    CRect rLabel;
    pLabel->GetClientRect(&rLabel);
    x = rc.left + border;
-   pLabel->SetWindowPos(NULL,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
+   pLabel->SetWindowPos(nullptr,x,y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 
    CRect rList;
    m_ctrlList.GetClientRect(&rList);
    int w = rc.Width() - 2*border;
    int h = rc.Height() - 3*border - rBtn.Height();
-   m_ctrlList.SetWindowPos(NULL,0,0,w,h,SWP_NOMOVE | SWP_NOZORDER);
+   m_ctrlList.SetWindowPos(nullptr,0,0,w,h,SWP_NOMOVE | SWP_NOZORDER);
 }
 
 void CStatusCenterDlg::UpdateStatusItemCounts()

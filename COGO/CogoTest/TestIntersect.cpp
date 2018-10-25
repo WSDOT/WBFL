@@ -56,7 +56,7 @@ void CTestIntersect::Test()
    TRY_TEST(intersect.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(intersect);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
@@ -67,10 +67,10 @@ void CTestIntersect::Test()
 
    // Test Bearings
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,0,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,0,nullptr);
 
-   TRY_TEST(intersect->Bearings(3,1,CComVariant(M_PI/4),0.0,2,CComVariant(3*M_PI/4),0.0,NULL), E_POINTER);
+   TRY_TEST(intersect->Bearings(3,1,CComVariant(M_PI/4),0.0,2,CComVariant(3*M_PI/4),0.0,nullptr), E_POINTER);
    TRY_TEST(intersect->Bearings(3,1,CComVariant(points),0.0,2,CComVariant(3*M_PI/4),0.0,&bFound), E_INVALIDARG);
    TRY_TEST(intersect->Bearings(3,1,CComVariant(M_PI/4),0.0,2,CComVariant(points),0.0,&bFound), E_INVALIDARG);
    TRY_TEST(intersect->Bearings(3,-1,CComVariant(M_PI/4),0.0,2,CComVariant(3*M_PI/4),0.0,&bFound), COGO_E_POINTNOTFOUND);
@@ -101,15 +101,15 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_FALSE);
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),COGO_E_POINTNOTFOUND);
-   TRY_TEST(pnt == NULL, true );
+   TRY_TEST(pnt == nullptr, true );
 
    // Test BearingCircle
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,10,NULL);
-   points->Add(3,15,15,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,10,nullptr);
+   points->Add(3,15,15,nullptr);
 
-   TRY_TEST(intersect->BearingCircle(4,1,CComVariant(M_PI/4),0.0,2,5.0,3,NULL),     E_POINTER);
+   TRY_TEST(intersect->BearingCircle(4,1,CComVariant(M_PI/4),0.0,2,5.0,3,nullptr),     E_POINTER);
    TRY_TEST(intersect->BearingCircle(4,-1,CComVariant(M_PI/4),0.0,2,5.0,3,&bFound), COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->BearingCircle(1,1,CComVariant(M_PI/4),0.0,2,5.0,3,&bFound),  COGO_E_POINTALREADYDEFINED);
    TRY_TEST(intersect->BearingCircle(4,1,CComVariant(M_PI/4),0.0,-2,5.0,3,&bFound), COGO_E_POINTNOTFOUND);
@@ -151,13 +151,13 @@ void CTestIntersect::Test()
 
    // Test Circles
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,10,NULL);
-   points->Add(3,20,20,NULL);
-   points->Add(4,20,0,NULL);
-   points->Add(5,0,20,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,10,nullptr);
+   points->Add(3,20,20,nullptr);
+   points->Add(4,20,0,nullptr);
+   points->Add(5,0,20,nullptr);
 
-   TRY_TEST(intersect->Circles(6,2,10.0,3,10.0,4,NULL),E_POINTER);
+   TRY_TEST(intersect->Circles(6,2,10.0,3,10.0,4,nullptr),E_POINTER);
    TRY_TEST(intersect->Circles(6,-2,10.0,3,10.0,4,&bFound),COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->Circles(6,2,-10.0,3,10.0,4,&bFound),COGO_E_RADIUS);
    TRY_TEST(intersect->Circles(6,2,10.0,-3,10.0,4,&bFound),COGO_E_POINTNOTFOUND);
@@ -200,12 +200,12 @@ void CTestIntersect::Test()
 
    // Test LineByPointsCircle
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,10,NULL);
-   points->Add(3,15,15,NULL);
-   points->Add(10,0,20,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,10,nullptr);
+   points->Add(3,15,15,nullptr);
+   points->Add(10,0,20,nullptr);
 
-   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,5.0,3,NULL),E_POINTER);
+   TRY_TEST(intersect->LineByPointsCircle(4,1,3,0.0,2,5.0,3,nullptr),E_POINTER);
    TRY_TEST(intersect->LineByPointsCircle(4,-1,3,0.0,2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LineByPointsCircle(4,1,-3,0.0,2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LineByPointsCircle(1,1,3,0.0,2,5.0,3,&bFound),COGO_E_POINTALREADYDEFINED);
@@ -248,12 +248,12 @@ void CTestIntersect::Test()
 
    // Test LinesByPoints
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,0,NULL);
-   points->Add(30,10,10,NULL);
-   points->Add(40,0,10,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,0,nullptr);
+   points->Add(30,10,10,nullptr);
+   points->Add(40,0,10,nullptr);
 
-   TRY_TEST(intersect->LinesByPoints(3,1,30,0.0,2,40,0.0,NULL), E_POINTER);
+   TRY_TEST(intersect->LinesByPoints(3,1,30,0.0,2,40,0.0,nullptr), E_POINTER);
    TRY_TEST(intersect->LinesByPoints(3,1,-30,0.0,2,40,0.0,&bFound), COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LinesByPoints(3,1,30,0.0,2,-40,0.0,&bFound), COGO_E_POINTNOTFOUND);
    TRY_TEST(intersect->LinesByPoints(3,-1,30,0.0,2,40,0.0,&bFound), COGO_E_POINTNOTFOUND);
@@ -284,14 +284,14 @@ void CTestIntersect::Test()
    TRY_TEST(bFound,VARIANT_FALSE);
    pnt.Release();
    TRY_TEST(points->get_Item(5,&pnt),COGO_E_POINTNOTFOUND);
-   TRY_TEST(pnt == NULL, true );
+   TRY_TEST(pnt == nullptr, true );
 
    // Test LineSegments
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,0,NULL);
-   points->Add(30,10,10,NULL);
-   points->Add(40,0,10,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,0,nullptr);
+   points->Add(30,10,10,nullptr);
+   points->Add(40,0,10,nullptr);
    CComPtr<IPoint2d> p1, p2, p30, p40;
    points->get_Item(1,&p1);
    points->get_Item(2,&p2);
@@ -300,10 +300,10 @@ void CTestIntersect::Test()
 
    CComPtr<ILineSegmentCollection> lines;
    model->get_LineSegments(&lines);
-   lines->Add(1,p1,p30,NULL);
-   lines->Add(2,p2,p40,NULL);
+   lines->Add(1,p1,p30,nullptr);
+   lines->Add(2,p2,p40,nullptr);
 
-   TRY_TEST(intersect->Lines(3,1,0.0,2,0.0,NULL), E_POINTER);
+   TRY_TEST(intersect->Lines(3,1,0.0,2,0.0,nullptr), E_POINTER);
    TRY_TEST(intersect->Lines(3,-1,0.0,2,0.0,&bFound), COGO_E_LINESEGMENTNOTFOUND);
    TRY_TEST(intersect->Lines(3,1,0.0,-2,0.0,&bFound), COGO_E_LINESEGMENTNOTFOUND);
    TRY_TEST(intersect->Lines(1,1,0.0,2,0.0,&bFound), COGO_E_POINTALREADYDEFINED);
@@ -340,10 +340,10 @@ void CTestIntersect::Test()
    // LineSegmentCircle
    //
    points->Clear();
-   points->Add(1,0,0,NULL);
-   points->Add(2,10,10,NULL);
-   points->Add(3,15,15,NULL);
-   points->Add(10,0,20,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,10,10,nullptr);
+   points->Add(3,15,15,nullptr);
+   points->Add(10,0,20,nullptr);
    p1.Release();
    p2.Release();
    CComPtr<IPoint2d> p3, p10;
@@ -353,10 +353,10 @@ void CTestIntersect::Test()
    points->get_Item(10,&p10);
 
    lines->Clear();
-   lines->Add(1,p1,p3,NULL);
-   lines->Add(2,p1,p10,NULL);
+   lines->Add(1,p1,p3,nullptr);
+   lines->Add(2,p1,p10,nullptr);
 
-   TRY_TEST(intersect->LineSegmentCircle(4,1,0.0,2,5.0,3,NULL),E_POINTER);
+   TRY_TEST(intersect->LineSegmentCircle(4,1,0.0,2,5.0,3,nullptr),E_POINTER);
    TRY_TEST(intersect->LineSegmentCircle(4,-1,0.0,2,5.0,3,&bFound),COGO_E_LINESEGMENTNOTFOUND);
    TRY_TEST(intersect->LineSegmentCircle(1,1,0.0,2,5.0,3,&bFound),COGO_E_POINTALREADYDEFINED);
    TRY_TEST(intersect->LineSegmentCircle(4,1,0.0,-2,5.0,3,&bFound),COGO_E_POINTNOTFOUND);

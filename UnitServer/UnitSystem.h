@@ -85,47 +85,47 @@ private:
 
 // ISupportErrorInfo
 public:
-   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IUnitSystem
 public:
-	STDMETHOD(get_UnitModeController)(/*[out, retval]*/ IUnitModeController* *pVal);
-	STDMETHOD(get_DisplayUnitMgr)(/*[out, retval]*/ IDisplayUnitMgr* *pVal);
-	STDMETHOD(get_UnitServer)(/*[out, retval]*/ IUnitServer* *pVal);
+	STDMETHOD(get_UnitModeController)(/*[out, retval]*/ IUnitModeController* *pVal) override;
+	STDMETHOD(get_DisplayUnitMgr)(/*[out, retval]*/ IDisplayUnitMgr* *pVal) override;
+	STDMETHOD(get_UnitServer)(/*[out, retval]*/ IUnitServer* *pVal) override;
 
 // IUnitServerEventSink,
 public:
-   STDMETHOD(OnUnitAdded)(/*[in]*/IUnitType* unitType,/*[in]*/IUnit* unit)
+   STDMETHOD(OnUnitAdded)(/*[in]*/IUnitType* unitType,/*[in]*/IUnit* unit) override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
    }
 
-   STDMETHOD(OnUnitRemoved)(/*[in]*/IUnitType* unitType,/*[in]*/BSTR unit)
+   STDMETHOD(OnUnitRemoved)(/*[in]*/IUnitType* unitType,/*[in]*/BSTR unit) override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
    }
 
-   STDMETHOD(OnUnitsCleared)(/*[in]*/IUnitType* unitType)
+   STDMETHOD(OnUnitsCleared)(/*[in]*/IUnitType* unitType) override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
    }
 
-   STDMETHOD(OnUnitTypeAdded)(/*[in]*/IUnitType* unitType)
+   STDMETHOD(OnUnitTypeAdded)(/*[in]*/IUnitType* unitType) override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
    }
 
-   STDMETHOD(OnUnitTypeRemoved)(/*[in]*/BSTR unitType)
+   STDMETHOD(OnUnitTypeRemoved)(/*[in]*/BSTR unitType) override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
    }
 
-   STDMETHOD(OnUnitTypesCleared)()
+   STDMETHOD(OnUnitTypesCleared)() override
    {
       Fire_OnUnitServerChanged();
       return S_OK;
@@ -133,7 +133,7 @@ public:
 
 // IUnitModeControllerEvents,
 public:
-	STDMETHOD(OnUnitModeChanged)(/*[in]*/UnitModeType newMode)
+	STDMETHOD(OnUnitModeChanged)(/*[in]*/UnitModeType newMode) override
    {
       Fire_OnUpdateDisplay();
       return S_OK;
@@ -141,43 +141,43 @@ public:
 
 // IDisplayUnitMgrEvents,
 public:
-   STDMETHOD(OnFormatChanged)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/IDisplayUnit* displayUnit)
+   STDMETHOD(OnFormatChanged)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/IDisplayUnit* displayUnit) override
    {
       Fire_OnUpdateDisplay();
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitCreated)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/IDisplayUnit* displayUnit)
+   STDMETHOD(OnDisplayUnitCreated)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/IDisplayUnit* displayUnit) override
    {
       // Gobble-up Event
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitRemoved)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/BSTR displayUnit)
+   STDMETHOD(OnDisplayUnitRemoved)(/*[in]*/ IDisplayUnitGroup* group,/*[in]*/BSTR displayUnit) override
    {
       // Gobble-up Event
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitGroupCleared)(/*[in]*/ IDisplayUnitGroup* group)
+   STDMETHOD(OnDisplayUnitGroupCleared)(/*[in]*/ IDisplayUnitGroup* group) override
    {
       // Gobble-up Event
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitGroupCreated)(/*[in]*/ IDisplayUnitGroup* group)
+   STDMETHOD(OnDisplayUnitGroupCreated)(/*[in]*/ IDisplayUnitGroup* group) override
    {
       // Gobble-up Event
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitGroupRemoved)(/*[in]*/ BSTR group)
+   STDMETHOD(OnDisplayUnitGroupRemoved)(/*[in]*/ BSTR group) override
    {
       // Gobble-up Event
       return S_OK;
    }
 
-   STDMETHOD(OnDisplayUnitGroupsCleared)()
+   STDMETHOD(OnDisplayUnitGroupsCleared)() override
    {
       // Gobble-up Event
       return S_OK;

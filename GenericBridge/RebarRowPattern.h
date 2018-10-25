@@ -75,33 +75,33 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarPattern
 public:
-	STDMETHOD(putref_Rebar)(/*[in]*/IRebar* rebar);
-	STDMETHOD(get_Rebar)(/*[out,retval]*/IRebar** rebar);
-   STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem);
-   STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook);
-   STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook);
-	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
-	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location);
-   STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile);
+	STDMETHOD(putref_Rebar)(/*[in]*/IRebar* rebar) override;
+	STDMETHOD(get_Rebar)(/*[out,retval]*/IRebar** rebar) override;
+   STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem) override;
+   STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook) override;
+   STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count) override;
+	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location) override;
+   STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile) override;
 
 // IRebarRowPattern
 public:
-	STDMETHOD(put_AnchorPoint)(/*[in]*/ EndType endType,/*[in]*/IPoint2d* anchorPt);
-	STDMETHOD(get_AnchorPoint)(/*[in]*/ EndType endType,/*[out,retval]*/IPoint2d** anchorPt);
-	STDMETHOD(put_Count)(/*[in]*/RowIndexType count);
-	STDMETHOD(put_Spacing)(/*[in]*/Float64 spacing);
-	STDMETHOD(get_Spacing)(/*[out,retval]*/Float64* spacing);
-	STDMETHOD(put_Orientation)(/*[in]*/RebarRowOrientation orientation);
-	STDMETHOD(get_Orientation)(/*[out,retval]*/RebarRowOrientation* orientation);
+	STDMETHOD(put_AnchorPoint)(/*[in]*/ EndType endType,/*[in]*/IPoint2d* anchorPt) override;
+	STDMETHOD(get_AnchorPoint)(/*[in]*/ EndType endType,/*[out,retval]*/IPoint2d** anchorPt) override;
+	STDMETHOD(put_Count)(/*[in]*/RowIndexType count) override;
+	STDMETHOD(put_Spacing)(/*[in]*/Float64 spacing) override;
+	STDMETHOD(get_Spacing)(/*[out,retval]*/Float64* spacing) override;
+	STDMETHOD(put_Orientation)(/*[in]*/RebarRowOrientation orientation) override;
+	STDMETHOD(get_Orientation)(/*[out,retval]*/RebarRowOrientation* orientation) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__RebarRowPattern_H_

@@ -81,7 +81,7 @@ void CTestDisplayUnitMgr2::Test()
    CComPtr<IDisplayUnitGroup> pGroup;
    CComBSTR bstrTest;
 
-   TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Length"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Length"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->Add(CComBSTR("LongLength"),CComBSTR("Baseball"),&pGroup),UNITS_E_BADUNITTYPE);
 
    pMe->InitEventTest();
@@ -182,21 +182,21 @@ void CTestDisplayUnitMgr2::Test()
 
    // Test Count
    CollectionIndexType count;
-   TRY_TEST(pDisplayUnitMgr->get_Count(NULL), E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get_Count(nullptr), E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get_Count(&count),S_OK);
    TRY_TEST(count,3);
 
    // Test Item
    pGroup.Release();
-   TRY_TEST(pDisplayUnitMgr->get_Item(NULL,&pGroup),E_INVALIDARG);
-   TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get_Item(nullptr,&pGroup),E_INVALIDARG);
+   TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("Junk"),&pGroup),UNITS_E_BADDISPLAYUNITGROUP);
    TRY_TEST(pDisplayUnitMgr->get_Item(CComBSTR("LittleForce"),&pGroup),S_OK);
    pGroup->get_Name(&bstrTest);
    TRY_TEST(wcscmp( bstrTest, CComBSTR("LittleForce") ), 0);
 
    // Test Remove
-   TRY_TEST( pDisplayUnitMgr->Remove(NULL), E_INVALIDARG );
+   TRY_TEST( pDisplayUnitMgr->Remove(nullptr), E_INVALIDARG );
    TRY_TEST( pDisplayUnitMgr->Remove(CComBSTR("Junk")), UNITS_E_BADDISPLAYUNITGROUP );
 
    pMe->InitEventTest();
@@ -218,7 +218,7 @@ void CTestDisplayUnitMgr2::Test()
    //* Test _EnumDisplayUnitGroups
    //******************************************
    CComPtr<IEnumDisplayUnitGroups> pEnum;
-   TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(NULL),E_POINTER);
+   TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(nullptr),E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get__EnumDisplayUnitGroups(&pEnum),S_OK);
 
    //////////////////////////////////////////////////////////////

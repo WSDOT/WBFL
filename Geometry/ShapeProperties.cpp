@@ -49,7 +49,7 @@ STDMETHODIMP CShapeProperties::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IShapeProperties,
       &IID_IStructuredStorage2
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -71,9 +71,9 @@ HRESULT CShapeProperties::FinalConstruct()
    m_CurrIyy = 0.00;
    m_CurrIxy = 0.00;
 
-   CreatePoint(0.00,0.00,NULL,&m_pCentroid);
-   CreatePoint(0.00,0.00,NULL,&m_pOrigin);
-   CreatePoint(0.00,0.00,NULL,&m_pCurrCentroid);
+   CreatePoint(0.00,0.00,nullptr,&m_pCentroid);
+   CreatePoint(0.00,0.00,nullptr,&m_pOrigin);
+   CreatePoint(0.00,0.00,nullptr,&m_pCurrCentroid);
 
    m_Xleft   = 0.00;
    m_Xright  = 0.00;
@@ -115,7 +115,7 @@ void CShapeProperties::UpdateOrientation()
          GetCoordinates(m_pOrigin,&ox,&oy);
 
          CComPtr<IPoint2d> pDelta;
-         CreatePoint( cx-ox, cy-oy, NULL, &pDelta );
+         CreatePoint( cx-ox, cy-oy, nullptr, &pDelta );
          pDelta->Rotate(0.00,0.00,-m_Orientation);
 
          Float64 dx, dy;
@@ -149,7 +149,7 @@ STDMETHODIMP CShapeProperties::get_Centroid(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint(m_pCurrCentroid,NULL,pVal);
+   return CreatePoint(m_pCurrCentroid,nullptr,pVal);
 }
 
 STDMETHODIMP CShapeProperties::put_Centroid(IPoint2d *newVal)
@@ -348,7 +348,7 @@ STDMETHODIMP CShapeProperties::get_Origin(IPoint2d **pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   return CreatePoint( m_pOrigin, NULL, pVal );
+   return CreatePoint( m_pOrigin, nullptr, pVal );
 }
 
 STDMETHODIMP CShapeProperties::put_Origin(IPoint2d *newVal)
@@ -512,10 +512,10 @@ STDMETHODIMP CShapeProperties::AddProperties(IShapeProperties* props)
    props->get_Ybottom(&b2);
 
    Float64 l,r,t,b; // distance from the global axes to the extreme edges
-   l = _cpp_min(cx1-m_Xleft,cx2-l2);
-   r = _cpp_max(cx1+m_Xright,cx2+r2);
-   t = _cpp_max(cy1+m_Ytop,cy2+t2);
-   b = _cpp_min(cy1-m_Ybottom,cy2-b2);
+   l = Min(cx1-m_Xleft,cx2-l2);
+   r = Max(cx1+m_Xright,cx2+r2);
+   t = Max(cy1+m_Ytop,cy2+t2);
+   b = Min(cy1-m_Ybottom,cy2-b2);
 
    Float64 xleft, xright, ytop, ybottom;
    xleft   = cgx - l;

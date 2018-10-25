@@ -48,18 +48,18 @@ This really should be part of a matrix math library
 class iActLikeVector
 {
 public:
-   virtual Float64 operator()(LONG i) const =0;
-   virtual Float64 &operator()(LONG i) =0;
-   virtual LONG    NumRows() const =0;
+   virtual Float64 operator()(LONG i) const  = 0;
+   virtual Float64 &operator()(LONG i)  = 0;
+   virtual LONG    NumRows() const  = 0;
 };
 
 class iActLikeMatrix
 {
 public:
-   virtual Float64 operator()(LONG i,LONG j) const =0;
-   virtual Float64 &operator()(LONG i,LONG j) =0;
-   virtual LONG    NumRows() const =0;
-   virtual LONG    NumColumns() const =0;
+   virtual Float64 operator()(LONG i,LONG j) const  = 0;
+   virtual Float64 &operator()(LONG i,LONG j)  = 0;
+   virtual LONG    NumRows() const  = 0;
+   virtual LONG    NumColumns() const  = 0;
 };
 
 

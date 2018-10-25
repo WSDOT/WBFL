@@ -58,7 +58,7 @@ STDMETHODIMP CLoadGroupResponse::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILoadGroupResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -191,57 +191,57 @@ void CLoadGroupResponse::FinalRelease()
       ATLASSERT(!!m_Spans);
       hr = CrUnadvise(m_Spans, this, IID_ISpansEvents, m_SpansCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_Spans = NULL;
+      m_Spans = nullptr;
 
       ATLASSERT(!!m_SuperstructureMembers);
       hr = CrUnadvise(m_SuperstructureMembers, this, IID_ISuperstructureMembersEvents, m_SuperstructureMembersCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_SuperstructureMembers = NULL;
+      m_SuperstructureMembers = nullptr;
 
       ATLASSERT(!!m_Supports);
       hr = CrUnadvise(m_Supports, this, IID_ISupportsEvents, m_SupportsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_Supports = NULL;
+      m_Supports = nullptr;
 
       ATLASSERT(!!m_POIs);
       hr = CrUnadvise(m_POIs, this, IID_IPOIsEvents, m_POIsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_POIs = NULL;
+      m_POIs = nullptr;
 
       ATLASSERT(!!m_Stages);
       hr = CrUnadvise(m_Stages, this, IID_IStagesEvents, m_StagesCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_Stages = NULL;
+      m_Stages = nullptr;
 
       ATLASSERT(!!m_LoadGroups);
       hr = CrUnadvise(m_LoadGroups, this, IID_ILoadGroupsEvents, m_LoadGroupsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_LoadGroups = NULL;
+      m_LoadGroups = nullptr;
 
       ATLASSERT(!!m_PointLoads);
       hr = CrUnadvise(m_PointLoads, this, IID_IPointLoadsEvents, m_PointLoadsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_PointLoads = NULL;
+      m_PointLoads = nullptr;
 
       ATLASSERT(!!m_DistributedLoads);
       hr = CrUnadvise(m_DistributedLoads, this, IID_IDistributedLoadsEvents, m_DistributedLoadsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_DistributedLoads = NULL;
+      m_DistributedLoads = nullptr;
 
       ATLASSERT(!!m_TemperatureLoads);
       hr = CrUnadvise(m_TemperatureLoads, this, IID_ITemperatureLoadsEvents, m_TemperatureLoadsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_TemperatureLoads = NULL;
+      m_TemperatureLoads = nullptr;
 
       ATLASSERT(!!m_SettlementLoads);
       hr = CrUnadvise(m_SettlementLoads, this, IID_ISettlementLoadsEvents, m_SettlementLoadsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_SettlementLoads = NULL;
+      m_SettlementLoads = nullptr;
 
       ATLASSERT(!!m_StrainLoads);
       hr = CrUnadvise(m_StrainLoads, this, IID_IStrainLoadsEvents, m_StrainLoadsCookie);
       ATLASSERT(SUCCEEDED(hr));
-      m_StrainLoads = NULL;
+      m_StrainLoads = nullptr;
    }
 }
 
@@ -924,7 +924,7 @@ void CLoadGroupResponse::CAnalysisController::UpdateLoadGroupOrder(ILBAMModel* p
    hr = pLBAM->get_LoadGroups(&loadgroups);
    CollectionIndexType cnt;
    hr = loadgroups->get_Count(&cnt);
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       CComPtr<ILoadGroup> loadgroup;
       hr = loadgroups->get_Item(i,&loadgroup);
@@ -1015,7 +1015,7 @@ CollectionIndexType CLoadGroupResponse::CAnalysisController::LoadGroupCount()
 
 CComBSTR CLoadGroupResponse::CAnalysisController::LoadGroup(CollectionIndexType index)
 {
-   CollectionIndexType cnt=0;
+   CollectionIndexType cnt = 0;
    LoadGroupsTypeIterator it( m_LoadGroups.begin() );
    LoadGroupsTypeIterator itend( m_LoadGroups.end() );
    for (; it!=itend; it++)
@@ -1188,7 +1188,7 @@ void CLoadGroupResponse::ValidateInfluenceCalc(BSTR stage)
          // clear out loadings in fem model
          StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
 
-         boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
+         std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
          pAnalysisModel->ClearInfluenceLoads();
 
          // determine all influence loading locations and,
@@ -1233,8 +1233,7 @@ void CLoadGroupResponse::ValidateModels()
             for (StageIndexType stageIdx = 0; stageIdx < nStages; stageIdx++)
             {
                CComBSTR bstrStage = m_AnalysisController.Stage(stageIdx);
-               boost::shared_ptr<CAnalysisModel> pAnalysisModel(
-                        new CAnalysisModel(m_pLBAM, bstrStage, &m_AnalysisController, &m_AnalysisController, 
+               std::shared_ptr<CAnalysisModel> pAnalysisModel(std::make_shared<CAnalysisModel>(m_pLBAM, bstrStage, &m_AnalysisController, &m_AnalysisController, 
                                            m_MinSpanPoiIncrement, m_MinCantileverPoiIncrement,
                                            m_ForForces) );
                
@@ -1270,7 +1269,7 @@ void CLoadGroupResponse::ValidateModels()
                   StageIndexType nStages = m_AnalysisController.StageCount();
                   for (StageIndexType stageIdx = 0; stageIdx < nStages; stageIdx++)
                   {
-                     boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+                     std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
                      pFemModel->ClearLoads();
                      pFemModel->GenerateLoads();
                   }
@@ -1286,7 +1285,7 @@ void CLoadGroupResponse::ValidateModels()
                   StageIndexType nStages = m_AnalysisController.StageCount();
                   for (StageIndexType stageIdx = 0; stageIdx < nStages; stageIdx++)
                   {
-                     boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+                     std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
                      pFemModel->ClearPOIs();
                      pFemModel->GeneratePOIs();
                   }
@@ -1496,7 +1495,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(BSTR LoadGroup, IIDArray* poiIDs,
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
-            boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute the load group results
             pFemModel->GetForce(tempSupportLoadInfo.m_FemLoadCaseID, poiID, orientation, &fx_left, &fy_left, &mz_left, &fx_right, &fy_right, &mz_right);
@@ -1572,7 +1571,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflections(BSTR LoadGroup, IIDArray* po
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
-            boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute the load group results
             pFemModel->GetDeflection(tempSupportLoadInfo.m_FemLoadCaseID, poiID, &ldx, &ldy, &lrz, &rdx, &rdy, &rrz);
@@ -1657,7 +1656,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactions(BSTR LoadGroup, IIDArray* supp
                }
             }
 
-            boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute the load group results
             pFemModel->GetReaction(tempSupportLoadInfo.m_FemLoadCaseID, supportID,  &fx, &fy, &mz);
@@ -1741,7 +1740,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeStresses(BSTR LoadGroup, IIDArray* poiID
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
-            boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute stress for this increment
             bool was_computed_for_this_load_case;
@@ -1848,7 +1847,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflections(BSTR LoadGroup, IIDAr
          for (; iter != iterend; iter++)
          {
             const CAnalysisController::TemporarySupportLoadInfo& tempSupportLoadInfo = *iter;
-            boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
+            std::shared_ptr<CAnalysisModel> pFemModel = m_Models[tempSupportLoadInfo.m_StageIdx];
 
             // compute the load group results
             pFemModel->GetSupportDeflection(tempSupportLoadInfo.m_FemLoadCaseID, supportID,  &dx, &dy, &rz);
@@ -1877,7 +1876,7 @@ STDMETHODIMP CLoadGroupResponse::DumpFEMModels()
    ModelsIterator modelIterEnd(m_Models.end());
    for ( ; modelIter != modelIterEnd; modelIter++)
    {
-      boost::shared_ptr<CAnalysisModel>& analysisModel(*modelIter);
+      std::shared_ptr<CAnalysisModel>& analysisModel(*modelIter);
       analysisModel->DumpFEMModel();
    }
    return S_OK;
@@ -1902,7 +1901,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeForces(IIDArray* poiIDs,PoiIDType ldPoiI
       ValidateInfluenceCalc(bstrStage);
 
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(bstrStage);
-      boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stageIdx];
+      std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stageIdx];
 
 
       // let's see how many pois we have to return results for
@@ -1993,15 +1992,17 @@ STDMETHODIMP CLoadGroupResponse::ComputeForceInfluenceLine(PoiIDType poiID, BSTR
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
 
       // check to see if we've already stored our influence line
-      DvInfluenceLineCacheIterator it( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) ) );
+      DvInfluenceLineCacheIterator it( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, nullptr, nullptr) ) );
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       if (it != m_CachedForceInfluenceLines.end())
       {
          // we've got it in our cache
-         hr = it->LeftInfluenceLine.CopyTo(leftInfl);
-         hr = it->RightInfluenceLine.CopyTo(rightInfl);
+         DvInfluenceLineKeeper& ilKeeper = const_cast<DvInfluenceLineKeeper&>(*it);
+
+         hr = ilKeeper.LeftInfluenceLine.CopyTo(leftInfl);
+         hr = ilKeeper.RightInfluenceLine.CopyTo(rightInfl);
       }
       else
       {
@@ -2010,11 +2011,13 @@ STDMETHODIMP CLoadGroupResponse::ComputeForceInfluenceLine(PoiIDType poiID, BSTR
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
-         DvInfluenceLineCacheIterator it ( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, NULL, NULL) ) );
+         DvInfluenceLineCacheIterator it ( m_CachedForceInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, forceEffect, orientation, nullptr, nullptr) ) );
 
          ATLASSERT(it != m_CachedForceInfluenceLines.end());
-         hr = it->LeftInfluenceLine.CopyTo(leftInfl);
-         hr = it->RightInfluenceLine.CopyTo(rightInfl);
+         DvInfluenceLineKeeper& ilKeeper = const_cast<DvInfluenceLineKeeper&>(*it);
+
+         hr = ilKeeper.LeftInfluenceLine.CopyTo(leftInfl);
+         hr = ilKeeper.RightInfluenceLine.CopyTo(rightInfl);
       }
    }
    catch(...)
@@ -2042,13 +2045,15 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflectionInfluenceLine(PoiIDType poiID,
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL,NULL) ) );
+      DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, nullptr,nullptr) ) );
 
       if (it != m_CachedDeflectionInfluenceLines.end())
       {
          // we've got it in our cache
-         hr = it->LeftInfluenceLine.CopyTo(leftInfl);
-         hr = it->RightInfluenceLine.CopyTo(rightInfl);
+         DvInfluenceLineKeeper& ilKeeper = const_cast<DvInfluenceLineKeeper&>(*it);
+
+         hr = ilKeeper.LeftInfluenceLine.CopyTo(leftInfl);
+         hr = ilKeeper.RightInfluenceLine.CopyTo(rightInfl);
       }
       else
       {
@@ -2057,11 +2062,13 @@ STDMETHODIMP CLoadGroupResponse::ComputeDeflectionInfluenceLine(PoiIDType poiID,
 
          LGR_HANDLE_CANCEL_PROGRESS(); 
 
-         DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, NULL, NULL) ) );
+         DvInfluenceLineCacheIterator it( m_CachedDeflectionInfluenceLines.find( DvInfluenceLineKeeper(poiID, stageIdx, deflectionEffect, roGlobal, nullptr, nullptr) ) );
 
          ATLASSERT(it != m_CachedDeflectionInfluenceLines.end());
-         hr = it->LeftInfluenceLine.CopyTo(leftInfl);
-         hr = it->RightInfluenceLine.CopyTo(rightInfl);
+         DvInfluenceLineKeeper& ilKeeper = const_cast<DvInfluenceLineKeeper&>(*it);
+
+         hr = ilKeeper.LeftInfluenceLine.CopyTo(leftInfl);
+         hr = ilKeeper.RightInfluenceLine.CopyTo(rightInfl);
       }
    }
    catch(...)
@@ -2088,17 +2095,18 @@ STDMETHODIMP CLoadGroupResponse::ComputeReactionInfluenceLine(SupportIDType supp
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      SvInfluenceLineCacheIterator it( m_CachedReactionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, ReactionEffect, roGlobal, NULL) ) );
+      SvInfluenceLineCacheIterator it( m_CachedReactionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, ReactionEffect, roGlobal, nullptr) ) );
 
       if (it != m_CachedReactionInfluenceLines.end())
       {
          // we've got it in our cache
-         return it->InfluenceLine.CopyTo(newVal);
+         SvInfluenceLineKeeper& ilKeeper = const_cast<SvInfluenceLineKeeper&>(*it);
+         return ilKeeper.InfluenceLine.CopyTo(newVal);
       }
       else
       {
 
-         boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+         std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
 
          CComObject<CInfluenceLine>* infl_line;
          hr = CComObject<CInfluenceLine>::CreateInstance(&infl_line);
@@ -2140,16 +2148,17 @@ STDMETHODIMP CLoadGroupResponse::ComputeSupportDeflectionInfluenceLine(SupportID
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       // check to see if we've already stored our influence line
-      SvInfluenceLineCacheIterator it( m_CachedSupportDeflectionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, SupportDeflectionEffect, roGlobal, NULL) ) );
+      SvInfluenceLineCacheIterator it( m_CachedSupportDeflectionInfluenceLines.find( SvInfluenceLineKeeper(supportID, stageIdx, SupportDeflectionEffect, roGlobal, nullptr) ) );
 
       if (it != m_CachedSupportDeflectionInfluenceLines.end())
       {
          // we've got it in our cache
-         return it->InfluenceLine.CopyTo(newVal);
+         SvInfluenceLineKeeper& ilKeeper = const_cast<SvInfluenceLineKeeper&>(*it);
+         return ilKeeper.InfluenceLine.CopyTo(newVal);
       }
       else
       {
-         boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+         std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
 
          CComObject<CInfluenceLine>* infl_line;
          hr = CComObject<CInfluenceLine>::CreateInstance(&infl_line);
@@ -2187,7 +2196,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeContraflexureLocations(BSTR stage, IDblA
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
-      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+      std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
 
       pFemModel->GetContraflexureLocations(locations);
    }
@@ -2211,7 +2220,7 @@ STDMETHODIMP CLoadGroupResponse::ComputeContraflexureResponse(BSTR stage, ForceE
       ValidateModels();
 
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
-      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+      std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
 
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
@@ -2247,7 +2256,7 @@ STDMETHODIMP CLoadGroupResponse::get_IsPOIInContraflexureZone(PoiIDType poiID, B
       LGR_HANDLE_CANCEL_PROGRESS(); 
 
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
-      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+      std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
 
       pFemModel->IsPOIInContraflexureZone(poiID, isInZone);
    }
@@ -2520,7 +2529,7 @@ HRESULT CLoadGroupResponse::GetPOIDistributionFactor(/*[in]*/PoiIDType poiID, /*
       StageIndexType stageIdx = m_AnalysisController.CheckedStageOrder(stage);
 
       // get fem model for this stage
-      boost::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
+      std::shared_ptr<CAnalysisModel> pFemModel = m_Models[stageIdx];
       pFemModel->GetPOIDistributionFactor(poiID, leftFactor, rightFactor);
    }
    catch(...)
@@ -2560,7 +2569,7 @@ HRESULT CLoadGroupResponse::CacheInfluenceLines(PoiIDType poiID, BSTR stage,Resu
    try
    {
       StageIndexType stg_idx = m_AnalysisController.CheckedStageOrder(stage);
-      boost::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
+      std::shared_ptr<CAnalysisModel> pAnalysisModel = m_Models[stg_idx];
 
       CComPtr<IInfluenceLine> ilFx[2], ilFy[2], ilMz[2], ilDx[2], ilDy[2], ilRz[2];
 

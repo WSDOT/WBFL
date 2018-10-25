@@ -47,7 +47,7 @@ STDMETHODIMP CShapeCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IShapeCollection,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -76,7 +76,7 @@ STDMETHODIMP CShapeCollection::get_ShapeProperties(IShapeProperties** props)
 
    bool bFirst = true;
    CComPtr<IShape> pShape;
-   while ( pEnum->Next(1,&pShape,NULL) == S_OK )
+   while ( pEnum->Next(1,&pShape,nullptr) == S_OK )
    {
       CComPtr<IShapeProperties> prp;
       pShape->get_ShapeProperties(&prp);

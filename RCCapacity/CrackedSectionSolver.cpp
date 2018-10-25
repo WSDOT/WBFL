@@ -73,7 +73,7 @@ STDMETHODIMP CCrackedSectionSolver::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ICrackedSectionSolver,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -167,7 +167,7 @@ STDMETHODIMP CCrackedSectionSolver::Solve(Float64 naAngle,ICrackedSectionSolutio
    // http://en.wikipedia.org/wiki/False_position_method
    // http://mathworld.wolfram.com/MethodofFalsePosition.html
 
-   if ( m_Section == NULL )
+   if ( m_Section == nullptr )
       return E_FAIL;
 
    m_Angle = naAngle;
@@ -542,6 +542,16 @@ HRESULT CCrackedSectionSolver::AnalyzeSlice(Float64 Yguess,SLICEINFO& slice,Floa
 
       if ( !slice.FgMaterial )
          return S_OK;
+
+      Float64 minStrain,maxStrain;
+      slice.FgMaterial->StrainLimits(&minStrain,&maxStrain);
+
+      Float64 stress;
+      slice.FgMaterial->ComputeStress(maxStrain,&stress);
+      if ( stress == 0 )
+      {
+         return S_OK;
+      }
    }
 
    if ( slice.FgMaterial )
@@ -573,8 +583,8 @@ HRESULT CCrackedSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 sli
    hr = shapeInfo.Shape->ClipIn(m_ClippingRect,&clipped_shape);
 
    // sometimes the shape isn't even in the clipping box so
-   // the result is NULL... go to next slice
-   if ( clipped_shape == NULL )
+   // the result is nullptr... go to next slice
+   if ( clipped_shape == nullptr )
       return S_FALSE;
 
    CComPtr<IShapeProperties> props;

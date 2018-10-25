@@ -67,19 +67,19 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAxle
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/IAxle** clone);
-	STDMETHOD(get_Spacing)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Spacing)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Weight)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Weight)(/*[in]*/ Float64 newVal);
+	STDMETHOD(Clone)(/*[out,retval]*/IAxle** clone) override;
+	STDMETHOD(get_Spacing)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Spacing)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Weight)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Weight)(/*[in]*/ Float64 newVal) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    Float64 m_Weight;

@@ -46,9 +46,9 @@ bool SubNodeLoc::operator< (const SubNodeLoc& other) const
    return m_yLoc<other.m_yLoc; 
 }
 
-bool SubNodeLoc::IsReason(SubNodeReason reason)
+bool SubNodeLoc::IsReason(SubNodeReason reason) const
 {
-   return (m_Reason & reason)!=0;
+   return (m_Reason & reason) != 0;
 }
 
 void SubNodeLoc::Assimilate(const SubNodeLoc& rother)
@@ -56,7 +56,7 @@ void SubNodeLoc::Assimilate(const SubNodeLoc& rother)
    // called when another node is too close to this one - take its traits
    m_Reason  |= rother.m_Reason;
 
-   if (m_pSegmentCrossSection==NULL)
+   if (m_pSegmentCrossSection==nullptr)
    {
       m_pSegmentCrossSection = rother.m_pSegmentCrossSection;
    }
@@ -71,22 +71,22 @@ void SubNodeLoc::GetSegmentCrossSection(ISegmentCrossSection** ppSegmentCrossSec
 
 void SubNodeLoc::SetSegmentCrossSection(ISegmentCrossSection* section)
 {
-   ATLASSERT(m_pSegmentCrossSection==NULL);
-   ATLASSERT(section!=NULL);
+   ATLASSERT(m_pSegmentCrossSection==nullptr);
+   ATLASSERT(section!=nullptr);
    m_pSegmentCrossSection = section;
 }
 
-Float64 SubNodeLoc::GetXLoc()
+Float64 SubNodeLoc::GetXLoc() const
 {
    return m_xLoc;
 }
 
-Float64 SubNodeLoc::GetYLoc()
+Float64 SubNodeLoc::GetYLoc() const
 {
    return m_yLoc;
 }
 
-Float64 SubNodeLoc::Distance(const SubNodeLoc& rother)
+Float64 SubNodeLoc::Distance(const SubNodeLoc& rother) const
 {
    Float64 dx = m_xLoc - rother.m_xLoc;
    Float64 dy = m_yLoc - rother.m_yLoc;
@@ -110,7 +110,8 @@ SuperNodeLoc::SuperNodeLoc(Float64 loc, SuperNodeReason reason, ISegmentCrossSec
    m_pSegmentCrossSection(pSegmentCrossSection),
    m_Release(mrFixed),
    m_LBamTempSupportID(-1),
-   m_FemJointID(-1)
+   m_FemJointID(-1),
+   m_CondenseType(notCondensed)
 {
 }
 
@@ -122,7 +123,8 @@ SuperNodeLoc::SuperNodeLoc(const SuperNodeLoc& other)
    m_Reason     = other.m_Reason;
    m_Release    = other.m_Release;
    m_pSegmentCrossSection = other.m_pSegmentCrossSection;
-   m_SubNodeLocs   = other.m_SubNodeLocs;
+   m_SubNodeLocs  = other.m_SubNodeLocs;
+   m_CondenseType = other.m_CondenseType;
 }
 
 bool SuperNodeLoc::operator< (const SuperNodeLoc& other) const
@@ -138,18 +140,21 @@ bool SuperNodeLoc::operator< (const SuperNodeLoc& other) const
    return m_Loc < other.m_Loc; 
 }
 
-bool SuperNodeLoc::IsReason(SuperNodeReason reason)
+bool SuperNodeLoc::IsReason(SuperNodeReason reason) const
 {
-   return (m_Reason & reason)!=0;
+   return (m_Reason & reason) != 0;
 }
 
-void SuperNodeLoc::Assimilate(const SuperNodeLoc& rother)
+void SuperNodeLoc::Assimilate(SuperNodeLoc& rother, CondenseType side)
 {
    // called when another node is too close to this one - take its traits
    m_Reason  |= rother.m_Reason;
    m_Release |= rother.m_Release;
 
-   if (m_pSegmentCrossSection==NULL)
+   ATLASSERT(m_CondenseType == notCondensed); // later logic will run into trouble if multiple short elements condensed together
+   rother.m_CondenseType = side;
+
+   if (m_pSegmentCrossSection==nullptr)
    {
       m_pSegmentCrossSection = rother.m_pSegmentCrossSection;
    }
@@ -164,12 +169,12 @@ void SuperNodeLoc::GetSegmentCrossSection(ISegmentCrossSection** ppSegmentCrossS
 
 void SuperNodeLoc::SetSegmentCrossSection(ISegmentCrossSection* section)
 {
-   ATLASSERT(m_pSegmentCrossSection==NULL);
-   ATLASSERT(section!=NULL);
+   ATLASSERT(m_pSegmentCrossSection==nullptr);
+   ATLASSERT(section!=nullptr);
    m_pSegmentCrossSection = section;
 }
 
-Float64 SuperNodeLoc::GetLoc()
+Float64 SuperNodeLoc::GetLoc() const
 {
    return m_Loc;
 }
@@ -186,7 +191,7 @@ void SuperNodeLoc::SetRelease(MemberRelease rel)
    }
 }
 
-bool SuperNodeLoc::IsPinned(Side side)
+bool SuperNodeLoc::IsPinned(Side side) const
 {
    if (side == ssLeft)
       return (m_Release & mrLeftPinned) != 0;
@@ -194,7 +199,7 @@ bool SuperNodeLoc::IsPinned(Side side)
       return (m_Release & mrRightPinned)!= 0;
 }
 
-bool SuperNodeLoc::HasAxialRelease(Side side)
+bool SuperNodeLoc::HasAxialRelease(Side side) const
 {
    if (side == ssLeft)
       return (m_Release & mrLeftAxial) != 0;
@@ -206,12 +211,16 @@ SubNodeLocs* SuperNodeLoc::GetSubNodeLocs()
 {
    ATLASSERT(m_Reason&nrSpanEnd || m_Reason&nrTemporarySupport);
 
-   if (m_SubNodeLocs.get() == 0)
-      m_SubNodeLocs = boost::shared_ptr<SubNodeLocs>(new SubNodeLocs);
+   if (m_SubNodeLocs.get() == nullptr)
+      m_SubNodeLocs = std::make_shared<SubNodeLocs>();
 
    return m_SubNodeLocs.get();
 }
 
+CondenseType SuperNodeLoc::GetCondenseType() const
+{
+   return m_CondenseType;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -989,7 +998,7 @@ bool SortedPoiMapTracker::IsPoiAtLocation(MemberType mbrType, MemberIDType mbrID
             {
                if (loc_inf.GetLBAMMemberType()==mbrType && loc_inf.GetLBAMMemberID()==mbrID )
                {
-                  if (poiIDAtLoc != NULL)
+                  if (poiIDAtLoc != nullptr)
                      *poiIDAtLoc = loc_inf.GetLBAMPoiID();
 
                   return true;

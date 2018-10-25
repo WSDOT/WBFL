@@ -203,7 +203,7 @@ static HRESULT TestContainer(TListen* pMe)
    TRY_TEST(cnt, 5);
 
    TRY_TEST(pcnt1->FilterByStageGroup(CComBSTR("bogus Stage1"),CComBSTR("LoadGroup 1"), &pcnt6), S_OK);
-   TRY_TEST( pcnt6, NULL);
+   TRY_TEST( pcnt6, nullptr);
 
    TRY_TEST( pcnt2->Clear() , S_OK );
    TRY_TEST( pcnt2->get_Count(&cnt) , S_OK );
@@ -242,7 +242,7 @@ static HRESULT TestContainer(TListen* pMe)
 
          hr = psl->BeginUnit(CComBSTR("TestLoadContainer"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pcnt2.QueryInterface(&piss2), S_OK);
 
          // Load 

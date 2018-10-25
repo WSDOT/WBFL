@@ -50,43 +50,43 @@ BEGIN_INTERFACE_PART(DocHostUIHandler, IDocHostUIHandler)
 	STDMETHOD(ShowContextMenu)(/* [in] */ DWORD dwID,
             /* [in] */ POINT __RPC_FAR *ppt,
             /* [in] */ IUnknown __RPC_FAR *pcmdtReserved,
-            /* [in] */ IDispatch __RPC_FAR *pdispReserved);
+            /* [in] */ IDispatch __RPC_FAR *pdispReserved) override;
 	STDMETHOD(GetHostInfo)( 
-            /* [out][in] */ DOCHOSTUIINFO __RPC_FAR *pInfo);
+            /* [out][in] */ DOCHOSTUIINFO __RPC_FAR *pInfo) override;
 	STDMETHOD(ShowUI)( 
             /* [in] */ DWORD dwID,
             /* [in] */ IOleInPlaceActiveObject __RPC_FAR *pActiveObject,
             /* [in] */ IOleCommandTarget __RPC_FAR *pCommandTarget,
             /* [in] */ IOleInPlaceFrame __RPC_FAR *pFrame,
-            /* [in] */ IOleInPlaceUIWindow __RPC_FAR *pDoc);
-	STDMETHOD(HideUI)(void);
-	STDMETHOD(UpdateUI)(void);
-	STDMETHOD(EnableModeless)(/* [in] */ BOOL fEnable);
-	STDMETHOD(OnDocWindowActivate)(/* [in] */ BOOL fEnable);
-	STDMETHOD(OnFrameWindowActivate)(/* [in] */ BOOL fEnable);
+            /* [in] */ IOleInPlaceUIWindow __RPC_FAR *pDoc) override;
+	STDMETHOD(HideUI)(void) override;
+	STDMETHOD(UpdateUI)(void) override;
+	STDMETHOD(EnableModeless)(/* [in] */ BOOL fEnable) override;
+	STDMETHOD(OnDocWindowActivate)(/* [in] */ BOOL fEnable) override;
+	STDMETHOD(OnFrameWindowActivate)(/* [in] */ BOOL fEnable) override;
 	STDMETHOD(ResizeBorder)( 
             /* [in] */ LPCRECT prcBorder,
             /* [in] */ IOleInPlaceUIWindow __RPC_FAR *pUIWindow,
-            /* [in] */ BOOL fRameWindow);
+            /* [in] */ BOOL fRameWindow) override;
 	STDMETHOD(TranslateAccelerator)( 
             /* [in] */ LPMSG lpMsg,
             /* [in] */ const GUID __RPC_FAR *pguidCmdGroup,
-            /* [in] */ DWORD nCmdID);
+            /* [in] */ DWORD nCmdID) override;
 	STDMETHOD(GetOptionKeyPath)( 
             /* [out] */ LPOLESTR __RPC_FAR *pchKey,
-            /* [in] */ DWORD dw);
+            /* [in] */ DWORD dw) override;
 	STDMETHOD(GetDropTarget)(
             /* [in] */ IDropTarget __RPC_FAR *pDropTarget,
-            /* [out] */ IDropTarget __RPC_FAR *__RPC_FAR *ppDropTarget);
+            /* [out] */ IDropTarget __RPC_FAR *__RPC_FAR *ppDropTarget) override;
     STDMETHOD(GetExternal)( 
-            /* [out] */ IDispatch __RPC_FAR *__RPC_FAR *ppDispatch);
+            /* [out] */ IDispatch __RPC_FAR *__RPC_FAR *ppDispatch) override;
     STDMETHOD(TranslateUrl)( 
             /* [in] */ DWORD dwTranslate,
             /* [in] */ OLECHAR __RPC_FAR *pchURLIn,
-            /* [out] */ OLECHAR __RPC_FAR *__RPC_FAR *ppchURLOut);
+            /* [out] */ OLECHAR __RPC_FAR *__RPC_FAR *ppchURLOut) override;
     STDMETHOD(FilterDataObject)( 
             /* [in] */ IDataObject __RPC_FAR *pDO,
-            /* [out] */ IDataObject __RPC_FAR *__RPC_FAR *ppDORet);
+            /* [out] */ IDataObject __RPC_FAR *__RPC_FAR *ppDORet) override;
 END_INTERFACE_PART(DocHostUIHandler)
 };
 

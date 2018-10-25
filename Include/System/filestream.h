@@ -36,7 +36,7 @@ public:
 	FileStream() 
 	{ 
         _ulRefs = 1;
-        _hFile = NULL;
+        _hFile = nullptr;
         _fRead = true;
 	}
 
@@ -83,11 +83,11 @@ public:
        _fRead = read;
         if (_fRead)
         {
-		    _hFile = ::CreateFile(name,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+		    _hFile = ::CreateFile(name,GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
         }
         else
         {
-		    _hFile = ::CreateFile(name,GENERIC_WRITE,FILE_SHARE_READ,NULL,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,NULL);
+		    _hFile = ::CreateFile(name,GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
         }
 
         return (_hFile == INVALID_HANDLE_VALUE) ? false : true;
@@ -96,7 +96,7 @@ public:
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE Read( 
         /* [out] */ void __RPC_FAR *pv,
         /* [in] */ ULONG cb,
-        /* [out] */ ULONG __RPC_FAR *pcbRead)
+        /* [out] */ ULONG __RPC_FAR *pcbRead) override
 	{	
         if (! _fRead) return E_FAIL;
 
@@ -106,7 +106,7 @@ public:
 			pv,	// address of buffer that receives data  
 			cb,	// number of bytes to read 
 			&len,	// address of number of bytes read 
-			NULL 	// address of structure for data 
+			nullptr 	// address of structure for data 
 		   );
         if (pcbRead)
             *pcbRead = len;
@@ -119,7 +119,7 @@ public:
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE Write( 
         /* [size_is][in] */ const void __RPC_FAR *pv,
         /* [in] */ ULONG cb,
-        /* [out] */ ULONG __RPC_FAR *pcbWritten)
+        /* [out] */ ULONG __RPC_FAR *pcbWritten) override
 	{
         if (_fRead) return E_FAIL;
 
@@ -128,7 +128,7 @@ public:
 			pv,	// address of buffer that contains data  
 			cb,	// number of bytes to write 
 			pcbWritten,	// address of number of bytes written 
-			NULL 	// address of structure for overlapped I/O  
+			nullptr 	// address of structure for overlapped I/O  
 		   );
 
 		return (rc) ? S_OK : E_FAIL;
@@ -137,38 +137,38 @@ public:
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE Seek( 
         /* [in] */ LARGE_INTEGER dlibMove,
         /* [in] */ DWORD dwOrigin,
-        /* [out] */ ULARGE_INTEGER __RPC_FAR *plibNewPosition) { return E_FAIL; }
+        /* [out] */ ULARGE_INTEGER __RPC_FAR *plibNewPosition)  override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE SetSize( 
-        /* [in] */ ULARGE_INTEGER libNewSize) { return E_FAIL; }
+        /* [in] */ ULARGE_INTEGER libNewSize) override { return E_FAIL; }
     
     virtual /* [local] */ HRESULT STDMETHODCALLTYPE CopyTo( 
         /* [unique][in] */ IStream __RPC_FAR *pstm,
         /* [in] */ ULARGE_INTEGER cb,
         /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbRead,
-        /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbWritten) { return E_FAIL; }
+        /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbWritten) override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE Commit( 
-        /* [in] */ DWORD grfCommitFlags) { return E_FAIL; }
+        /* [in] */ DWORD grfCommitFlags) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE Revert( void) { return E_FAIL; }
+    virtual HRESULT STDMETHODCALLTYPE Revert( void)  override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE LockRegion( 
         /* [in] */ ULARGE_INTEGER libOffset,
         /* [in] */ ULARGE_INTEGER cb,
-        /* [in] */ DWORD dwLockType) { return E_FAIL; }
+        /* [in] */ DWORD dwLockType) override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE UnlockRegion( 
         /* [in] */ ULARGE_INTEGER libOffset,
         /* [in] */ ULARGE_INTEGER cb,
-        /* [in] */ DWORD dwLockType) { return E_FAIL; }
+        /* [in] */ DWORD dwLockType) override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE Stat( 
         /* [out] */ STATSTG __RPC_FAR *pstatstg,
-        /* [in] */ DWORD grfStatFlag) { return E_FAIL; }
+        /* [in] */ DWORD grfStatFlag) override { return E_FAIL; }
     
     virtual HRESULT STDMETHODCALLTYPE Clone( 
-        /* [out] */ IStream __RPC_FAR *__RPC_FAR *ppstm) { return E_FAIL; }
+        /* [out] */ IStream __RPC_FAR *__RPC_FAR *ppstm) override { return E_FAIL; }
 private:
 	HANDLE _hFile;
     bool _fRead;

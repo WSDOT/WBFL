@@ -83,30 +83,30 @@ private:
    VARIANT_BOOL m_bIsXYPlane;  // true if plane is parallel to global XY plane
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPlane3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(PointOnPlaneNearestOrigin)(/*[out,retval]*/IPoint3d** ppPoint);
-   STDMETHOD(SortestDistance)(/*[in]*/IPoint3d* point,/*[out,retval]*/Float64* pDistance);
-   STDMETHOD(LineSegmentIntersect)(/*[in]*/ ILineSegment3d* pLineSegment,/*[out,retval]*/IPoint3d** ppPoint);
-	STDMETHOD(GetZ)(/*[in]*/ Float64 x,/*[in]*/ Float64 y, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(GetY)(/*[in]*/ Float64 x,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(GetX)(/*[in]*/ Float64 y,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(ThroughAltitude)(/*[in]*/ Float64 altitude);
-	STDMETHOD(ThroughLineEx)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint3d* pPnt);
-	STDMETHOD(ThroughPoints)(/*[in]*/ IPoint3d* p1,/*[in]*/ IPoint3d* p2,/*[in]*/ IPoint3d* p3);
-   STDMETHOD(Clone)(/*[out,retval]*/IPlane3d** clone);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(PointOnPlaneNearestOrigin)(/*[out,retval]*/IPoint3d** ppPoint) override;
+   STDMETHOD(SortestDistance)(/*[in]*/IPoint3d* point,/*[out,retval]*/Float64* pDistance) override;
+   STDMETHOD(LineSegmentIntersect)(/*[in]*/ ILineSegment3d* pLineSegment,/*[out,retval]*/IPoint3d** ppPoint) override;
+	STDMETHOD(GetZ)(/*[in]*/ Float64 x,/*[in]*/ Float64 y, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(GetY)(/*[in]*/ Float64 x,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(GetX)(/*[in]*/ Float64 y,/*[in]*/ Float64 z, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(ThroughAltitude)(/*[in]*/ Float64 altitude) override;
+	STDMETHOD(ThroughLineEx)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint3d* pPnt) override;
+	STDMETHOD(ThroughPoints)(/*[in]*/ IPoint3d* p1,/*[in]*/ IPoint3d* p2,/*[in]*/ IPoint3d* p3) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IPlane3d** clone) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__PLANE3D_H_

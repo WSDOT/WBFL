@@ -30,7 +30,7 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-COnMouseOverCursor* COnMouseOverCursor::ms_pThis = NULL;
+COnMouseOverCursor* COnMouseOverCursor::ms_pThis = nullptr;
 
 COnMouseOverCursor::COnMouseOverCursor(HWND hwnd,HINSTANCE hInstance,LPCTSTR lpCursorName,UINT uElapse,CRgn* rgn)
 {
@@ -71,7 +71,7 @@ void COnMouseOverCursor::StartTracking(COnMouseOverCursor** ppParent)
 void COnMouseOverCursor::Destroy()
 {
    ATLTRACE("OnMouseOverCursor - Destroying self\n");
-   (*m_ppParent) = NULL;
+   (*m_ppParent) = nullptr;
    delete this;
 }
 
@@ -161,5 +161,5 @@ void COnMouseOverCursor::Done()
    ms_pThis->StopTimer();
    ms_pThis->ResetCursor();
    ms_pThis->Destroy();
-   ms_pThis = NULL;
+   ms_pThis = nullptr;
 }

@@ -212,10 +212,10 @@ public:
    Float64 RelaxationLossAfterDeckPlacement() const;
 
    //------------------------------------------------------------------------
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 TimeDependentLossesBeforeDeck() const;
-   virtual Float64 TimeDependentLossesAfterDeck() const;
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 TimeDependentLossesBeforeDeck() const override;
+   virtual Float64 TimeDependentLossesAfterDeck() const override;
    Float64 TimeDependentLosses() const;
 
 
@@ -288,7 +288,7 @@ public:
    void SetFinalAge(Float64 t);
    Float64 GetFinalAge() const;
 
-   virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const;
+   virtual void GetDeckShrinkageEffects(Float64* pA,Float64* pM) const override;
 
    //------------------------------------------------------------------------
    // Deck Geometry
@@ -335,7 +335,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdRefinedLosses2005& rOther );
+   void MakeAssignment( const lrfdRefinedLosses2005& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -409,13 +409,13 @@ private:
    void MakeCopy( const lrfdRefinedLosses2005& rOther );
 
    //------------------------------------------------------------------------
-   virtual void ValidateParameters() const;
+   virtual void ValidateParameters() const override;
    
    //------------------------------------------------------------------------
-   virtual void UpdateLongTermLosses() const;
+   virtual void UpdateLongTermLosses() const override;
    
    //------------------------------------------------------------------------
-   virtual void UpdateHaulingLosses() const;
+   virtual void UpdateHaulingLosses() const override;
 
 
    // GROUP: ACCESS

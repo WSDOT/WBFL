@@ -62,7 +62,7 @@ HRESULT CItemDataManager::GetItemData(BSTR name,IUnknown** data)
    else
    {
 #pragma Reminder("UPDATE: Need a custom err return value")
-      (*data) = NULL;
+      (*data) = nullptr;
    }
 
    return S_OK;

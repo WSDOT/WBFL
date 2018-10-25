@@ -86,7 +86,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdXShear();
+   virtual ~lrfdXShear() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -94,8 +94,8 @@ public:
    lrfdXShear& operator = (const lrfdXShear& rOther);
 
    // GROUP: OPERATIONS
-   virtual void Throw() const;
-   virtual Int32 GetReason() const;
+   virtual void Throw() const override;
+   virtual Int32 GetReason() const override;
    Reason GetReasonCode() const;
 
    // GROUP: ACCESS
@@ -122,7 +122,7 @@ protected:
    void MakeCopy(const lrfdXShear& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdXShear& rOther);
+   void MakeAssignment(const lrfdXShear& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

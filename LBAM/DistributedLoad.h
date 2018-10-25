@@ -76,31 +76,31 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IDistributedLoad
 public:
-	STDMETHOD(get_WEnd)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_WEnd)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_WStart)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_WStart)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Direction)(/*[out, retval]*/ LoadDirection *pVal);
-	STDMETHOD(put_Direction)(/*[in]*/ LoadDirection newVal);
-	STDMETHOD(get_Orientation)(/*[out, retval]*/ LoadOrientation *pVal);
-	STDMETHOD(put_Orientation)(/*[in]*/ LoadOrientation newVal);
-	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_StartLocation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
-	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
-	STDMETHOD(Clone)(/*[out,retval]*/IDistributedLoad** clone);
+	STDMETHOD(get_WEnd)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_WEnd)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_WStart)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_WStart)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Direction)(/*[out, retval]*/ LoadDirection *pVal) override;
+	STDMETHOD(put_Direction)(/*[in]*/ LoadDirection newVal) override;
+	STDMETHOD(get_Orientation)(/*[out, retval]*/ LoadOrientation *pVal) override;
+	STDMETHOD(put_Orientation)(/*[in]*/ LoadOrientation newVal) override;
+	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_StartLocation)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal) override;
+	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/IDistributedLoad** clone) override;
 
 protected:
    Float64          m_WEnd;

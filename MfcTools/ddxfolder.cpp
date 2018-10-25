@@ -152,7 +152,7 @@ void CGetFolderControl::SetFolder(const CString& sFolder)
 void DDX_FolderControl(CDataExchange* pDX, int nIDC,int nIDCBtn, CGetFolderControl& rCGetFolderControl, DWORD dwFlags, const CString& sDialogTitle)
 {
   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
-  if (!pDX->m_bSaveAndValidate && rCGetFolderControl.m_hWnd == NULL)    // not subclassed yet
+  if (!pDX->m_bSaveAndValidate && rCGetFolderControl.m_hWnd == nullptr)    // not subclassed yet
   {
     if (!rCGetFolderControl.SubclassEdit(hWndCtrl,nIDCBtn))
     {

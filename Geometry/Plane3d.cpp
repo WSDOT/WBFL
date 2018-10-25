@@ -47,7 +47,7 @@ STDMETHODIMP CPlane3d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPlane3d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -113,7 +113,7 @@ STDMETHODIMP CPlane3d::ThroughLineEx(ILine2d *pLine, IPoint3d *pPnt)
       Float64 x,y;
       pPnt->get_X(&x);
       pPnt->get_Y(&y);
-      CreatePoint(x,y,NULL,&pnt2d);
+      CreatePoint(x,y,nullptr,&pnt2d);
       VARIANT_BOOL bIsPointOnLine;
       util->DoesLineContainPoint(pLine,pnt2d,1e-6,&bIsPointOnLine);
       if ( bIsPointOnLine == VARIANT_TRUE )
@@ -129,14 +129,14 @@ STDMETHODIMP CPlane3d::ThroughLineEx(ILine2d *pLine, IPoint3d *pPnt)
    p1->get_X(&x);
    p1->get_Y(&y);
    CComPtr<IPoint3d> p1_3d;
-   CreatePoint(x,y,0.00,NULL,&p1_3d);
+   CreatePoint(x,y,0.00,nullptr,&p1_3d);
 
    Float64 dx,dy;
    pv->get_X(&dx);
    pv->get_Y(&dy);
 
    CComPtr<IPoint3d> p2;
-   CreatePoint( x, y, 0.00, NULL, &p2);
+   CreatePoint( x, y, 0.00, nullptr, &p2);
    p2->Offset(dx,dy,0.00);
 
 

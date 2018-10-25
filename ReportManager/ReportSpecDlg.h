@@ -32,7 +32,7 @@
 
 #include <ReportManager\ReportDescription.h>
 #include <ReportManager\ReportSpecification.h>
-#include <boost\shared_ptr.hpp>
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CReportSpecDlg dialog
@@ -41,7 +41,7 @@ class CReportSpecDlg : public CDialog
 {
 // Construction
 public:
-	CReportSpecDlg(const CReportDescription* pRptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent = NULL);   // standard constructor
+	CReportSpecDlg(const CReportDescription* pRptDesc, std::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CReportSpecDlg)
@@ -59,7 +59,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CReportSpecDlg)
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -68,11 +68,11 @@ protected:
    void ClearChapterCheckMarks();
    void InitChapterListFromSpec();
 
-   boost::shared_ptr<CReportSpecification> m_pInitRptSpec;
+   std::shared_ptr<CReportSpecification> m_pInitRptSpec;
 
 	// Generated message map functions
 	//{{AFX_MSG(CReportSpecDlg)
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

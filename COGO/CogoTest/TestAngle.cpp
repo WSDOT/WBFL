@@ -57,7 +57,7 @@ void CTestAngle::Test()
 
    // Test default value
    Float64 val;
-   TRY_TEST( angle->get_Value(NULL), E_POINTER );
+   TRY_TEST( angle->get_Value(nullptr), E_POINTER );
    TRY_TEST( angle->get_Value(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
@@ -76,15 +76,15 @@ void CTestAngle::Test()
    TRY_TEST( angle->FromDMS(-14,25,13.5), S_OK);
    long deg,min;
    Float64 sec;
-   TRY_TEST( angle->get_Degree(NULL), E_POINTER );
+   TRY_TEST( angle->get_Degree(nullptr), E_POINTER );
    TRY_TEST( angle->get_Degree(&deg), S_OK);
    TRY_TEST( deg, -14);
 
-   TRY_TEST( angle->get_Minute(NULL), E_POINTER );
+   TRY_TEST( angle->get_Minute(nullptr), E_POINTER );
    TRY_TEST( angle->get_Minute(&min), S_OK);
    TRY_TEST( min, 25);
 
-   TRY_TEST( angle->get_Second(NULL), E_POINTER );
+   TRY_TEST( angle->get_Second(nullptr), E_POINTER );
    TRY_TEST( angle->get_Second(&sec), S_OK);
    TRY_TEST( IsEqual(sec,13.5), true);
 
@@ -120,7 +120,7 @@ void CTestAngle::Test()
    TRY_TEST( IsEqual(val,3*PI_OVER_2), true );
 
    // Test FromString
-   TRY_TEST( angle->FromString(NULL),                       E_INVALIDARG );
+   TRY_TEST( angle->FromString(nullptr),                       E_INVALIDARG );
    TRY_TEST( angle->FromString(CComBSTR("")),               COGO_E_BADANGLESTRING );
    TRY_TEST( angle->FromString(CComBSTR("        ")),       COGO_E_BADANGLESTRING );
    TRY_TEST( angle->FromString(CComBSTR("A")),              COGO_E_BADANGLESTRING );
@@ -291,7 +291,7 @@ void CTestAngle::Test()
    angle->get_Value(&val);
    TRY_TEST(IsEqual(val,M_PI),true);
    CComPtr<IAngle> incAngle;
-   TRY_TEST(angle->Increment(CComVariant(TWO_PI),NULL),E_POINTER);
+   TRY_TEST(angle->Increment(CComVariant(TWO_PI),nullptr),E_POINTER);
    TRY_TEST(angle->Increment(CComVariant(TWO_PI),&incAngle),S_OK);
    angle->get_Value(&val);
    TRY_TEST(IsEqual(val,M_PI),true);

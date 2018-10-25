@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // visit the report
-   virtual void VisitReport(rptReport*)=0;
+   virtual void VisitReport(rptReport*) = 0;
 
    //------------------------------------------------------------------------
    // Set new units for the visitor.

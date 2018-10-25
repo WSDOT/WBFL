@@ -1,0 +1,461 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Alignment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AlignmentCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AlignmentFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Angle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AngleDisplayUnitFormatter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COGO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CogoEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CogoHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CogoModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CubicSpline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Direction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionDisplayUnitFormatter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HorzCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HorzCurveCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HorzCurveFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegmentCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineSegmentFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenBridgeML.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Profile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfileElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilePoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilePointCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProfilePointFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Station.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StationEquation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StationEquationCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Superelevation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperelevationCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfacePoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceProfile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SurfaceTemplateCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemplateSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VertCurve.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VertCurveCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VertCurveFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Widening.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WideningCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Alignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlignmentCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlignmentFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Angle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AngleDisplayUnitFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLCogo\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Cogo.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COGOCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CogoEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLCogo\COGOExp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLCogo\CogoHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CogoModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Collections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CubicSpline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Direction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionDisplayUnitFormatter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HorzCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HorzCurveCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HorzCurveFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegmentCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineSegmentFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLCogo\OpenBridgeML.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Profile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfileElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilePoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilePointCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProfilePointFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Station.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StationEquation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StationEquationCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Superelevation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperelevationCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfacePoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceProfile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfaceTemplateCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemplateSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertCurve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertCurveCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertCurveFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Widening.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WideningCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLCogo.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="COGO.def" />
+    <None Include="Alignment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AlignmentCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AlignmentFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AngleDisplayUnitFormatter.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Angle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CogoEngine.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CogoModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CogoUtil.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CubicSpline.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Direction.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DirectionDisplayUnitFormatter.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="HorzCurve.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="HorzCurveCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="HorzCurveFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LineSegmentCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LineSegmentFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Path.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PathCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PathElement.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PathFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Profile.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ProfileElement.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ProfilePoint.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ProfilePointCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ProfilePointFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Station.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StationEquation.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StationEquationCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Superelevation.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SuperelevationCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Surface.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SurfaceCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SurfacePoint.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SurfaceProfile.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SurfaceTemplate.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SurfaceTemplateCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemplateSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VertCurve.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VertCurveCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VertCurveFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Widening.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="WideningCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{d5086faa-7f61-4fdc-b385-538a3be7394b}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0cd568bd-28d0-44cf-aea8-b7918490285e}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{2694bd36-2817-42f2-91cc-9b389581e001}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="COGO.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

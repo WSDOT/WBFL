@@ -30,6 +30,7 @@
 #include <DManip\DManip.h>
 #include "SimpleDrawDashedLineStrategyImpl.h"
 #include <Colors.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -128,10 +129,10 @@ STDMETHODIMP_(void) CSimpleDrawDashedLineStrategyImpl::GetBoundingBox(iLineDispl
    CComPtr<IRect2d> rect;
    rect.CoCreateInstance(CLSID_Rect2d);
 
-   rect->put_Left(_cpp_min(sx, ex));
-   rect->put_Bottom(_cpp_min(sy, ey));
-   rect->put_Right(_cpp_max(sx, ex));
-   rect->put_Top(_cpp_max(sy, ey));
+   rect->put_Left(Min(sx, ex));
+   rect->put_Bottom(Min(sy, ey));
+   rect->put_Right(Max(sx, ex));
+   rect->put_Top(Max(sy, ey));
 
    (*box) = rect;
    (*box)->AddRef();

@@ -72,51 +72,51 @@ void CTestLongitudinalPierDescription::Test()
    //CComPtr<ILongitudinalPierDescription> lpd;
    //pier->get_LongitudinalPierDescription(&lpd);
 
-   //TRY_TEST(lpd != NULL, true);
+   //TRY_TEST(lpd != nullptr, true);
 
    //// Verify default values
    //Float64 offset;
-   //TRY_TEST(lpd->get_BaseOffset(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_BaseOffset(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_BaseOffset(&offset),S_OK);
    //TRY_TEST(IsZero(offset),true);
 
    //ConnectivityType connectivity;
-   //TRY_TEST(lpd->get_Connectivity(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Connectivity(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Connectivity(&connectivity),S_OK);
    //TRY_TEST(connectivity,ctPinned);
 
    //CComBSTR bstrStage;
-   //TRY_TEST(lpd->get_ContinuityStage(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_ContinuityStage(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_ContinuityStage(&bstrStage),S_OK);
    //TRY_TEST(bstrStage == CComBSTR("Stage 1"),true);
 
    //VARIANT_BOOL bFractional;
-   //TRY_TEST(lpd->get_Fractional(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Fractional(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Fractional(&bFractional),S_OK);
    //TRY_TEST(bFractional,VARIANT_FALSE);
 
    //Float64 height;
-   //TRY_TEST(lpd->get_Height(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Height(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Height(&height),S_OK);
    //TRY_TEST(IsEqual(height,1.0),true);
 
    //Float64 length;
-   //TRY_TEST(lpd->get_Length(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Length(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Length(&length),S_OK);
    //TRY_TEST(IsZero(length),true);
 
    //CComPtr<IPier> parentPier;
-   //TRY_TEST(lpd->get_Pier(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Pier(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Pier(&parentPier),S_OK);
    //TRY_TEST(pier.IsEqualObject(parentPier),true);
 
    //VARIANT_BOOL bSymmetrical;
-   //TRY_TEST(lpd->get_Symmetrical(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_Symmetrical(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_Symmetrical(&bSymmetrical),S_OK);
    //TRY_TEST(bSymmetrical,VARIANT_FALSE);
 
    //CollectionIndexType count;
-   //TRY_TEST(lpd->get_SegmentCount(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);
 
@@ -148,13 +148,13 @@ void CTestLongitudinalPierDescription::Test()
    //TRY_TEST(IsEqual(length,5.0),true);
 
    //CComPtr<IFilteredSegmentCollection> segments;
-   //TRY_TEST(lpd->GetMemberSegments(NULL),E_POINTER);
+   //TRY_TEST(lpd->GetMemberSegments(nullptr),E_POINTER);
    //TRY_TEST(lpd->GetMemberSegments(&segments),S_OK);
 
    //CComPtr<IEnumSegment> enumSegments;
    //segments->get__EnumElements(&enumSegments);
    //CComPtr<ISegment> segment;
-   //while ( enumSegments->Next(1,&segment,NULL) != S_FALSE )
+   //while ( enumSegments->Next(1,&segment,nullptr) != S_FALSE )
    //{
    //   segment->put_Length(2.5);
    //   segment.Release();
@@ -256,8 +256,8 @@ void CTestLongitudinalPierDescription::Test()
    //CComPtr<ISegmentItem> segItem;
    //Float64 dist;
    //lpd->put_BaseOffset(0.0);
-   //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,&dist,NULL),E_POINTER);
-   //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,NULL,&segItem),E_POINTER);
+   //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,&dist,nullptr),E_POINTER);
+   //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,nullptr,&segItem),E_POINTER);
    //TRY_TEST(lpd->GetSegmentForMemberLocation(-2,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
    ////TRY_TEST(lpd->GetSegmentForMemberLocation(200,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
    //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,&dist,&segItem),S_OK);
@@ -309,7 +309,7 @@ void CTestLongitudinalPierDescription::Test()
    //TRY_TEST(position,1);
    //TRY_TEST(IsEqual(dist,0.96),true);
 
-   //TRY_TEST(lpd->get_SegmentLength(NULL),E_POINTER);
+   //TRY_TEST(lpd->get_SegmentLength(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_SegmentLength(&length),S_OK);
    //TRY_TEST(IsEqual(length,6.0),true);
 

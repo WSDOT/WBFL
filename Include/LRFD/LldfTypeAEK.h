@@ -81,7 +81,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdLldfTypeAEK();
+   virtual ~lrfdLldfTypeAEK() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -101,16 +101,16 @@ protected:
    void MakeCopy(const lrfdLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLldfTypeAEK& rOther);
+   void MakeAssignment(const lrfdLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -130,11 +130,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -203,7 +203,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdWsdotLldfTypeAEK();
+   virtual ~lrfdWsdotLldfTypeAEK() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -231,20 +231,20 @@ protected:
    bool SlabCantileverTest() const;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdWsdotLldfTypeAEK& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther);
+   void MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -266,11 +266,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

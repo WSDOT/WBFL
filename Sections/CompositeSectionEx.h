@@ -71,38 +71,38 @@ protected:
 
 public:
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICompositeSection
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
-	STDMETHOD(get_Section)(/*[out, retval]*/ ISection* *pVal);
-//	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeSectionItem* *pVal);
-//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(AddSectionEx)(/*[in]*/ ICompositeSectionItemEx* sectionItem);
-   STDMETHOD(AddSection)(/*[in]*/ IShape* shape,/*[in]*/ Float64 Efg,/*[in]*/ Float64 Ebg,/*[in]*/ Float64 Dfg,/*[in]*/ Float64 Dbg,/*[in]*/ VARIANT_BOOL bStructural);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+	STDMETHOD(get_Section)(/*[out, retval]*/ ISection* *pVal) override;
+//	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeSectionItem* *pVal) override;
+//	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(AddSectionEx)(/*[in]*/ ICompositeSectionItemEx* sectionItem) override;
+   STDMETHOD(AddSection)(/*[in]*/ IShape* shape,/*[in]*/ Float64 Efg,/*[in]*/ Float64 Ebg,/*[in]*/ Float64 Dfg,/*[in]*/ Float64 Dbg,/*[in]*/ VARIANT_BOOL bStructural) override;
 
 // ISection
 public:
-   STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal);
-	STDMETHOD(get_ElasticProperties)(/*[out, retval]*/ IElasticProperties* *pVal);
-	STDMETHOD(get_MassProperties)(/*[out, retval]*/ IMassProperties* *pVal);
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* rect,/*[out,retval]*/ ISection** section);
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* line,/*[out,retval]*/ ISection** section);
-	STDMETHOD(Clone)(ISection** clone);
+   STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
+	STDMETHOD(get_ElasticProperties)(/*[out, retval]*/ IElasticProperties* *pVal) override;
+	STDMETHOD(get_MassProperties)(/*[out, retval]*/ IMassProperties* *pVal) override;
+	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* rect,/*[out,retval]*/ ISection** section) override;
+	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* line,/*[out,retval]*/ ISection** section) override;
+	STDMETHOD(Clone)(ISection** clone) override;
 
 // IXYPosition
 public:
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point);
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point);
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo);
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle);
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle);
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
+	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
+	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
+	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
+	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 };
 
 #endif //__COMPOSITESECTIONEX_H_

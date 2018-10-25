@@ -161,15 +161,15 @@ public:
    lrfdApproximateLosses& operator=(const lrfdApproximateLosses& rOther);
 
    // GROUP: OPERATIONS
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 TimeDependentLossesBeforeDeck() const;
-   virtual Float64 TimeDependentLossesAfterDeck() const;
-   virtual Float64 TimeDependentLosses() const;
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 TimeDependentLossesBeforeDeck() const override;
+   virtual Float64 TimeDependentLossesAfterDeck() const override;
+   virtual Float64 TimeDependentLosses() const override;
 
-   virtual Float64 PermanentStrand_Final() const;
-   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const;
-   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const;
+   virtual Float64 PermanentStrand_Final() const override;
+   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const override;
+   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const override;
 
    // GROUP: INQUIRY
    void SetBeamType(BeamType beamType);
@@ -191,7 +191,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdApproximateLosses& rOther );
+   void MakeAssignment( const lrfdApproximateLosses& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -212,9 +212,9 @@ private:
    //------------------------------------------------------------------------
    void MakeCopy( const lrfdApproximateLosses& rOther );
 
-   virtual void ValidateParameters() const;
-   virtual void UpdateLongTermLosses() const;
-   virtual void UpdateHaulingLosses() const;
+   virtual void ValidateParameters() const override;
+   virtual void UpdateLongTermLosses() const override;
+   virtual void UpdateHaulingLosses() const override;
 
 
    // GROUP: ACCESS

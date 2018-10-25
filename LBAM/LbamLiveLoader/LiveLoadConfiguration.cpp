@@ -41,7 +41,7 @@ STDMETHODIMP CLiveLoadConfiguration::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILiveLoadConfiguration
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -402,7 +402,7 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
          m_AxleConfig->Clear();
          m_AxleConfig->Reserve(cnt);
 
-         for (CollectionIndexType i=0; i<cnt; i++)
+         for (CollectionIndexType i = 0; i<cnt; i++)
          {
             var.Clear();
             hr = pload->get_Property(_bstr_t("Axle"),&var);

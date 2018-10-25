@@ -56,14 +56,14 @@ void CTestShapeCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_ShapeCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(NULL),E_INVALIDARG);
+   TRY_TEST(pColl->Add(nullptr),E_INVALIDARG);
 
    // add some shapes and see if we get them back
    CComPtr<IRectangle> rect1;
@@ -97,7 +97,7 @@ void CTestShapeCollection::Test()
    CComPtr<IShape> shape;
    TRY_TEST(pColl->get_Item(-1,&shape),E_INVALIDARG); // invalid index
    TRY_TEST(pColl->get_Item(10,&shape),E_INVALIDARG); // index out of range - too high
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(0,&shape),S_OK);
 
    TRY_TEST(shape.IsEqualObject(shape1),true);
@@ -136,7 +136,7 @@ void CTestShapeCollection::Test()
    pColl->Add(shape1);
    pColl->Add(shape2);
    CComPtr<IEnumShape> pEnum;
-   TRY_TEST(pColl->get__Enum(NULL), E_POINTER );
+   TRY_TEST(pColl->get__Enum(nullptr), E_POINTER );
    TRY_TEST( pColl->get__Enum(&pEnum), S_OK );
 
    ULONG fetched;
@@ -145,13 +145,13 @@ void CTestShapeCollection::Test()
    {
       rect.Release();
       shape.QueryInterface(&rect);
-      TRY_TEST( rect != NULL, true );
+      TRY_TEST( rect != nullptr, true );
       shape.Release();
    }
 
    // Test shape properties
    CComPtr<IShapeProperties> props;
-   TRY_TEST(pColl->get_ShapeProperties(NULL),E_POINTER);
+   TRY_TEST(pColl->get_ShapeProperties(nullptr),E_POINTER);
    TRY_TEST(pColl->get_ShapeProperties(&props),S_OK);
 
    props->put_CoordinateSystem(csGlobal);

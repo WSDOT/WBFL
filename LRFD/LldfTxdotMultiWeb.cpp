@@ -175,6 +175,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfMultiWeb::GetMomentDF_Int
       g.EqnData.bWasUsed = true;
    }
 
+   g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+
    Float64 skew = MomentSkewCorrectionFactor();
    if ( m_bSkewMoment )
    {

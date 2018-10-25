@@ -49,7 +49,7 @@ STDMETHODIMP CDirection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IDirection,
 		&IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -242,14 +242,14 @@ STDMETHODIMP CDirection::Increment(VARIANT varAngle, IDirection* *pVal)
    CComObject<CDirection>::CreateInstance(&pDir);
    (*pVal) = pDir;
    (*pVal)->AddRef();
-   pDir = NULL;
+   pDir = nullptr;
 
    (*pVal)->put_Value(m_Direction);
    HRESULT hr = (*pVal)->IncrementBy(varAngle);
    if ( FAILED(hr) )
    {
       (*pVal)->Release();
-      (*pVal) = NULL;
+      (*pVal) = nullptr;
    }
 
    return hr;

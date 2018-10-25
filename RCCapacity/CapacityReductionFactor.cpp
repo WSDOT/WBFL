@@ -29,6 +29,7 @@
 #include "CapacityReductionFactor.h"
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,7 +46,7 @@ STDMETHODIMP CCapacityReductionFactor::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ICapacityReductionFactor,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -145,13 +146,13 @@ HRESULT CCapacityReductionFactor::ComputeC(IUnkArray* pConcShapes,ILine2d* neutr
       pConcShapes->get_Item(i,&punk);
 
       CComQIPtr<IShape> shape(punk);
-      if ( shape == NULL )
+      if ( shape == nullptr )
          return E_FAIL;
 
       Float64 d;
       shape->FurthestDistance(line,&d);
 
-      max_distance = _cpp_max(max_distance,d);
+      max_distance = Max(max_distance,d);
    }
 
    if ( max_distance < 0 )
@@ -177,7 +178,7 @@ HRESULT CCapacityReductionFactor::ComputeDt(IUnkArray* pReinfShapes,ILine2d* neu
       pReinfShapes->get_Item(i,&punk);
 
       CComQIPtr<IShape> shape(punk);
-      if ( shape == NULL )
+      if ( shape == nullptr )
          return E_FAIL;
 
       CComPtr<IShapeProperties> props;
@@ -193,7 +194,7 @@ HRESULT CCapacityReductionFactor::ComputeDt(IUnkArray* pReinfShapes,ILine2d* neu
       // d < 0 ==> reinforcement is on compression side of the neutral axis
 
       // get max distance because we want the tension side
-      max_distance = _cpp_max(max_distance,d);
+      max_distance = Max(max_distance,d);
    }
 
    *dt = max_distance; // this is the max distance from the neutral axis

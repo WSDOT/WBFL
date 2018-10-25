@@ -51,7 +51,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_LineSegmentCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -62,9 +62,9 @@ void CTestLineSegmentCollection::Test()
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(0,NULL,end,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(0,start,NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(0,start,end,NULL),S_OK);
+   TRY_TEST(pColl->Add(0,nullptr,end,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(0,start,nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(0,start,end,nullptr),S_OK);
    CComPtr<ILineSegment2d> ls;
    TRY_TEST(pColl->get_Item(0,&ls),S_OK);
 
@@ -80,7 +80,7 @@ void CTestLineSegmentCollection::Test()
    //
    // Test AddEx method
    //
-   TRY_TEST(pColl->AddEx(0,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->AddEx(0,nullptr),E_INVALIDARG);
 
    // add some LineSegments and see if we get them back
    CComPtr<ILineSegment2d> ls1;
@@ -114,7 +114,7 @@ void CTestLineSegmentCollection::Test()
    // Test Item property
    ls.Release();
    TRY_TEST(pColl->get_Item(-1,&ls),COGO_E_LINESEGMENTNOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&ls),S_OK);
    pnt.Release();
    ls->get_StartPoint(&pnt);
@@ -146,7 +146,7 @@ void CTestLineSegmentCollection::Test()
    // We should still be able to get access to LineSegment 4
    ls.Release();
    TRY_TEST(pColl->get_Item(4,&ls),S_OK);
-   TRY_TEST(ls != NULL, true );
+   TRY_TEST(ls != nullptr, true );
 
    //
    // Test Clear
@@ -163,7 +163,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl->AddEx(3,ls3),S_OK);
    TRY_TEST(pColl->AddEx(4,ls4),S_OK);
 
-   TRY_TEST(pColl->putref_Item(3,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(3,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,ls1),COGO_E_LINESEGMENTNOTFOUND);
    TRY_TEST(pColl->putref_Item(3,ls1),S_OK);
 
@@ -175,8 +175,8 @@ void CTestLineSegmentCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(ls4,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(ls4,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(ls4,&id),S_OK);
    TRY_TEST(id,4);
    TRY_TEST(pColl->FindID(ls3,&id),E_FAIL); // ls3 is not part of collection, see putref_Item above
@@ -186,7 +186,7 @@ void CTestLineSegmentCollection::Test()
    //
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
 
@@ -199,7 +199,7 @@ void CTestLineSegmentCollection::Test()
    TRY_TEST(pColl->AddEx(3,ls3),S_OK);
    TRY_TEST(pColl->AddEx(4,ls4),S_OK);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -219,7 +219,7 @@ void CTestLineSegmentCollection::Test()
    pColl->AddEx(3,ls3);
    pColl->AddEx(4,ls4);
    CComPtr<IEnumLineSegments> pEnumLineSegments;
-   TRY_TEST(pColl->get__EnumLineSegments(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumLineSegments(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumLineSegments(&pEnumLineSegments), S_OK );
 
    ls.Release();
@@ -242,10 +242,10 @@ void CTestLineSegmentCollection::Test()
    // Factory
    //
    CComPtr<ILineSegment2dFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST(factory != NULL,true);
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST(factory != nullptr,true);
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
@@ -309,7 +309,7 @@ void CTestLineSegmentCollection::Test()
 
 STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID id,ILineSegment2d* lineSeg)
 {
-//   MessageBox(NULL,"LineSegmentChanged","Event",MB_OK);
+//   MessageBox(nullptr,"LineSegmentChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -318,7 +318,7 @@ STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentChanged(CogoObjectID id,IL
 
 STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID id,ILineSegment2d* lineSeg)
 {
-//   MessageBox(NULL,"LineSegmentAdded","Event",MB_OK);
+//   MessageBox(nullptr,"LineSegmentAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -327,7 +327,7 @@ STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentAdded(CogoObjectID id,ILin
 
 STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID id)
 {
-//   MessageBox(NULL,"LineSegmentRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"LineSegmentRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -336,7 +336,7 @@ STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentRemoved(CogoObjectID id)
 
 STDMETHODIMP CTestLineSegmentCollection::OnLineSegmentsCleared()
 {
-//   MessageBox(NULL,"LineSegmentCleared","Event",MB_OK);
+//   MessageBox(nullptr,"LineSegmentCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

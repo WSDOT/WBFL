@@ -56,7 +56,7 @@ STDMETHODIMP CStructuredLoad2::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStructuredLoad2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -107,10 +107,10 @@ HRESULT CStructuredLoad2::Open( BSTR strFile)
 
 void CStructuredLoad2::BeginLoad(IStream* pis)
 {
-   ATLASSERT( pis != NULL );
+   ATLASSERT( pis != nullptr );
    ATLASSERT(!(bool)m_spDoc);   //  previously used and not cleaned up?
    ATLASSERT(!(bool)m_spObjectTable);
-   ATLASSERT(m_pIStream!=NULL); // "                                   "
+   ATLASSERT(m_pIStream!=nullptr); // "                                   "
 
    if (!m_NodeStack.empty())
       m_NodeStack.clear();
@@ -129,7 +129,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
 
       // Load document and make sure it loads correctly
       m_spDoc->load( (IStream*)m_pIStream );
-      if (m_pIStream==NULL)
+      if (m_pIStream==nullptr)
       {
          THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
       }
@@ -162,7 +162,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
          catch(...)
          {
             // it's ok, we just have no object table
-            m_spObjectTable = NULL;
+            m_spObjectTable = nullptr;
          }
       }
       else
@@ -187,7 +187,7 @@ HRESULT CStructuredLoad2::BeginUnit( BSTR name)
       {
          // get next element with name
          MSXML::IXMLDOMNodePtr ptest = GetCurrentNode(name);
-         if (ptest != NULL)
+         if (ptest != nullptr)
          {
             // get the version of the unit
             Float64 vers=0.0;
@@ -249,9 +249,9 @@ HRESULT CStructuredLoad2::EndUnit(VARIANT_BOOL* bEnd)
 
       // check to see we are really at the last property - child should be null or at the ObjectTable node
       MSXML::IXMLDOMNodePtr& rback = m_NodeStack.back().spCurrentChild;
-      if (bEnd != NULL)
+      if (bEnd != nullptr)
       {
-         if (rback != NULL && rback != m_spObjectTable)
+         if (rback != nullptr && rback != m_spObjectTable)
             *bEnd = VARIANT_FALSE;
          else
             *bEnd = VARIANT_TRUE;
@@ -408,7 +408,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
                _bstr_t bval(vval);
                TCHAR* sv = (TCHAR*)bval; 
                //TCHAR** ev = &sv + bval.length();
-               unsigned long uval = _tcstoul(sv,NULL,10);
+               unsigned long uval = _tcstoul(sv,nullptr,10);
                if (uval==0 && *sv != _T('0') )
                   THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
 
@@ -435,7 +435,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
                _bstr_t bval(vval);
                TCHAR* sv = (TCHAR*)bval; 
                //TCHAR** ev = &sv + bval.length();
-               unsigned long long uval = _tcstoui64(sv,NULL,10);
+               unsigned long long uval = _tcstoui64(sv,nullptr,10);
                if (uval==0 && *sv != _T('0') )
                   THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
 
@@ -470,7 +470,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             try
             {
                piu = this->GetObjectRef( bsobjref );
-               ATLASSERT(piu!=NULL);
+               ATLASSERT(piu!=nullptr);
             }
             catch (...)
             {
@@ -482,15 +482,15 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             // have object, now convert to desired form
             if (_bstr_t("VT_UNKNOWN") == bsvt)
             {
-               pVal->punkVal = piu;
+               piu.CopyTo(&pVal->punkVal);
                pVal->vt = VT_UNKNOWN;
             }
             else
             {
                // convert to idispatch
-               IDispatch* pid = NULL;
+               IDispatch* pid = nullptr;
                HRESULT hrl = piu->QueryInterface(IID_IDispatch,(void**)&pid);
-               if (FAILED(hrl) || pid==NULL)
+               if (FAILED(hrl) || pid==nullptr)
                {
                   CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Could not cast object to IDispatch"));
                   THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
@@ -540,7 +540,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
 HRESULT CStructuredLoad2::EndOfStorage(VARIANT_BOOL* bEnd)
 {
    // this function does not make any sense in the context of an xml implementation
-   if (bEnd!=NULL)
+   if (bEnd!=nullptr)
       *bEnd = VARIANT_FALSE;
 
    return S_OK;
@@ -563,17 +563,17 @@ HRESULT CStructuredLoad2::Close()
 
 void CStructuredLoad2::EndLoad()
 {
-   ATLASSERT( m_pIStream!=NULL );
+   ATLASSERT( m_pIStream!=nullptr );
    ATLASSERT(m_NodeStack.size()==1); // Warning: BeginUnit-EndUnit mismatch 
 
    // free up com resources
-   m_pIStream=NULL;
+   m_pIStream=nullptr;
 
    if (!m_NodeStack.empty())
       m_NodeStack.clear();
 
    m_spDoc.Release();
-   m_spDoc=0;
+   m_spDoc = 0;
 }
 
 CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
@@ -653,7 +653,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
          // tell it to load itself
          CComPtr<IStructuredStorage2> pss;
          hr = punk->QueryInterface(IID_IStructuredStorage2, (void**)&pss);
-         if (FAILED(hr) || pss==NULL)
+         if (FAILED(hr) || pss==nullptr)
          {
             ATLASSERT(false); // object doesn't support IStructuredStorage2 - makes you wonder how it saved 
                           // itself in the first place
@@ -711,7 +711,7 @@ HRESULT HandleException()
       // parser puked
       ATLASSERT(false);
       _bstr_t msg(e.Description());
-      return CComCoClass<CStructuredLoad2,&CLSID_StructuredLoad2>::Error(msg, NULL, GetHelpFile(), IID_IStructuredLoad2, E_FAIL);
+      return CComCoClass<CStructuredLoad2,&CLSID_StructuredLoad2>::Error(msg, 0, GetHelpFile(), IID_IStructuredLoad2, E_FAIL);
    }
    catch (...)
    {
@@ -810,16 +810,16 @@ MSXML::IXMLDOMNodePtr CStructuredLoad2::GetCurrentNode(BSTR name)
 
    _bstr_t bname(name);
    const MSXML::IXMLDOMNodePtr& rback = m_NodeStack.back().spCurrentChild;
-   if (rback != NULL)
+   if (rback != nullptr)
    {
       _bstr_t nodenm = rback->nodeName;
       if (nodenm == bname )
          return rback;
       else
-         return 0;
+         return nullptr;
    }
    else
-      return 0;
+      return nullptr;
 }
 
 bool CStructuredLoad2::ReadNext()
@@ -827,7 +827,7 @@ bool CStructuredLoad2::ReadNext()
    ATLASSERT(!m_NodeStack.empty());
    MSXML::IXMLDOMNodePtr& rback = m_NodeStack.back().spCurrentChild;
 
-   if (rback != NULL)
+   if (rback != nullptr)
    {
       rback = rback->nextSibling;
    }

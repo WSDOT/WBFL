@@ -104,7 +104,7 @@ public:
 
    // MFC's UpdateAllViews is not virtual so there is no way to modify it's behavior
    // This method is virtual and can be over-ridden. It calls UpdateAllViews
-   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = NULL);
+   virtual void OnUpdateAllViews(CView* pSender, LPARAM lHint = 0L,CObject* pHint = nullptr);
 
 protected:
 // Overrides
@@ -184,7 +184,7 @@ public:
    // Views
 
    // registers a view with the doc/view model. returns a key value that is used to identify the view
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=NULL,int maxViewCount=-1);
+   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount=-1);
 
    // removes a previously registered view
    virtual void RemoveView(long key);

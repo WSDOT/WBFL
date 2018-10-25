@@ -179,7 +179,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdRebar(const lrfdRebar&);
-   lrfdRebar& operator=(const lrfdRebar&);
+   lrfdRebar& operator=(const lrfdRebar&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

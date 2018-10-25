@@ -72,7 +72,7 @@ private:
 // CSurfaceCollection
 HRESULT CSurfaceCollection::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pProfile = nullptr;
    return S_OK;
 }
 
@@ -88,7 +88,7 @@ STDMETHODIMP CSurfaceCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISurfaceCollection,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -116,7 +116,7 @@ STDMETHODIMP CSurfaceCollection::putref_Profile(IProfile* pProfile)
    get__EnumSurfaces(&enumSurfaces);
 
    CComPtr<ISurface> surface;
-   while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
+   while ( enumSurfaces->Next(1,&surface,nullptr) != S_FALSE )
    {
       surface->putref_Profile(m_pProfile);
       surface.Release();
@@ -232,7 +232,7 @@ STDMETHODIMP CSurfaceCollection::Clone(ISurfaceCollection* *clone)
    get__EnumSurfaces(&enumSurfaces);
 
    CComPtr<ISurface> surface;
-   while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
+   while ( enumSurfaces->Next(1,&surface,nullptr) != S_FALSE )
    {
       CComPtr<ISurface> surfaceClone;
       surface->Clone(&surfaceClone);
@@ -253,7 +253,7 @@ STDMETHODIMP CSurfaceCollection::FindSurface(CogoObjectID id,ISurface** ppSurfac
    CComPtr<IEnumSurfaces> enumSurfaces;
    get__EnumSurfaces(&enumSurfaces);
    CComPtr<ISurface> surface;
-   while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
+   while ( enumSurfaces->Next(1,&surface,nullptr) != S_FALSE )
    {
       CogoObjectID surfaceID;
       surface->get_ID(&surfaceID);
@@ -274,7 +274,7 @@ STDMETHODIMP CSurfaceCollection::FindSurface(CogoObjectID id,ISurface** ppSurfac
 STDMETHODIMP CSurfaceCollection::GetSurface(CogoObjectID id,VARIANT varStation,ISurface** ppSurface)
 {
    CHECK_RETOBJ(ppSurface);
-   (*ppSurface) = NULL;
+   (*ppSurface) = nullptr;
 
    CComPtr<IStation> objStation;
    HRESULT hr = ValidateStation(varStation,false,&objStation);
@@ -284,7 +284,7 @@ STDMETHODIMP CSurfaceCollection::GetSurface(CogoObjectID id,VARIANT varStation,I
    CComPtr<IEnumSurfaces> enumSurfaces;
    get__EnumSurfaces(&enumSurfaces);
    CComPtr<ISurface> surface;
-   while ( enumSurfaces->Next(1,&surface,NULL) != S_FALSE )
+   while ( enumSurfaces->Next(1,&surface,nullptr) != S_FALSE )
    {
       CogoObjectID surfaceID;
       surface->get_ID(&surfaceID);
@@ -337,7 +337,7 @@ STDMETHODIMP CSurfaceCollection::get__EnumSurfaces(IEnumSurfaces** retval)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -451,7 +451,7 @@ HRESULT CSurfaceCollection::ValidateStation(VARIANT varStation,bool bClone,IStat
    if ( FAILED(hr) )
       return hr;
 
-   if ( m_pProfile == NULL )
+   if ( m_pProfile == nullptr )
    {
       ZoneIndexType staEqnZoneIdx;
       (*station)->get_StationZoneIndex(&staEqnZoneIdx);

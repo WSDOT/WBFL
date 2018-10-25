@@ -72,20 +72,20 @@ void CTestSegment::Test()
 //
 //   CComPtr<ISegment> segment;
 //   mbr->get_Segment(0,&segment);
-//   TRY_TEST(segment != NULL, true);
+//   TRY_TEST(segment != nullptr, true);
 //   CComQIPtr<IPrismaticSegment> pris(segment);
-//   TRY_TEST(pris != NULL,true);
+//   TRY_TEST(pris != nullptr,true);
 //
 //   // Test default value
 //   Float64 value;
-//   TRY_TEST(segment->get_Length(NULL),E_POINTER);
+//   TRY_TEST(segment->get_Length(nullptr),E_POINTER);
 //   TRY_TEST(segment->get_Length(&value),S_OK);
 //   TRY_TEST(IsEqual(value,1.0),true);
 //
 //   CComPtr<IShape> shape;
-//   TRY_TEST(pris->get_Shape(0.00,NULL),E_POINTER);
+//   TRY_TEST(pris->get_Shape(0.00,nullptr),E_POINTER);
 //   TRY_TEST(pris->get_Shape(0.00,&shape),S_OK);
-//   TRY_TEST(shape == NULL, true);
+//   TRY_TEST(shape == nullptr, true);
 //
 //   TRY_TEST(segment->put_Length(-1.0),GB_E_ABSOLUTE_EXPECTED);
 //   segment->get_Length(&value);
@@ -111,12 +111,12 @@ void CTestSegment::Test()
 //   circle->put_Radius(10);
 //
 //   CComQIPtr<IShape> circle_shape(circle);
-//   TRY_TEST(pris->putref_Shape(NULL),E_INVALIDARG);
+//   TRY_TEST(pris->putref_Shape(nullptr),E_INVALIDARG);
 //   TRY_TEST(pris->putref_Shape(circle_shape),S_OK);
 //
 //   shape.Release();
 //   TRY_TEST(pris->get_Shape(0.00,&shape),S_OK);
-//   TRY_TEST(shape != NULL,true);
+//   TRY_TEST(shape != nullptr,true);
 //   TRY_TEST(shape.IsEqualObject(circle),false); // circle should have been cloned
 //
 //#pragma Reminder("TestSegment - Is there a limit on x for get_Shape? If so, test it")

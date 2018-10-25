@@ -32,7 +32,7 @@ class CUIHintsDlg : public CDialog
 	DECLARE_DYNAMIC(CUIHintsDlg)
 
 public:
-	CUIHintsDlg(CWnd* pParent = NULL);   // standard constructor
+	CUIHintsDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CUIHintsDlg();
 
 // Dialog Data

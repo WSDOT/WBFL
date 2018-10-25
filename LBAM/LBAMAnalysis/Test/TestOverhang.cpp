@@ -80,11 +80,11 @@ HRESULT CTestOverhang::Test()
    // request results for tenth points in spans 0 and 1
    CComPtr<IIDArray> poilist;
    poilist.CoCreateInstance(CLSID_IDArray);
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (PoiIDType i=0; i<11; i++)
+   for (PoiIDType i = 0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -121,13 +121,13 @@ HRESULT CTestOverhang::Test()
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), roGlobal, rsIncremental, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSectionForceResults( os, poilist, pres, poi_locs);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), roGlobal, rsCumulative, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -139,7 +139,7 @@ HRESULT CTestOverhang::Test()
 
    DumpDeflectionResults( os, poilist, pdefls, poi_locs);
 
-   pdefls = NULL;
+   pdefls = nullptr;
    hr = plgr->ComputeDeflections(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 2"), rsIncremental, &pdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -153,19 +153,19 @@ HRESULT CTestOverhang::Test()
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 2"), rsIncremental, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 1"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpStressResults( os, poilist, pStresss);
 
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Point Loads"), poilist, _bstr_t("Stage 2"), rsCumulative, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -195,19 +195,19 @@ HRESULT CTestOverhang::Test()
 
    DumpSupportDeflectionResults( os, sptlist_stg1, prdefls);
 
-   prdefls = NULL;
+   prdefls = nullptr;
    hr = plgr->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsIncremental, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSupportDeflectionResults( os, sptlist_stg2, prdefls);
 
-   prdefls=NULL;
+   prdefls=nullptr;
    hr = plgr->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg1, _bstr_t("Stage 1"), rsCumulative, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpSupportDeflectionResults( os, sptlist_stg1, prdefls);
 
-   prdefls = NULL;
+   prdefls = nullptr;
    hr = plgr->ComputeSupportDeflections(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsCumulative, &prdefls);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -220,19 +220,19 @@ HRESULT CTestOverhang::Test()
 
    DumpReactionResults( os, sptlist_stg1, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = plgr->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsIncremental, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpReactionResults( os, sptlist_stg2, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = plgr->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg1, _bstr_t("Stage 1"), rsCumulative, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
    DumpReactionResults( os, sptlist_stg1, pforces);
 
-   pforces = NULL;
+   pforces = nullptr;
    hr = plgr->ComputeReactions(_bstr_t("Point Loads"), sptlist_stg2, _bstr_t("Stage 2"), rsCumulative, &pforces);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -242,7 +242,7 @@ HRESULT CTestOverhang::Test()
    CComPtr<IIDArray> suplist;
    suplist.CoCreateInstance(CLSID_IDArray);
    suplist->Add(20005);
-   pStresss = NULL;
+   pStresss = nullptr;
    hr = plgr->ComputeStresses(_bstr_t("Distributed Loads"), suplist, _bstr_t("Stage 1"), rsIncremental, &pStresss);
    ATLASSERT(SUCCEEDED(hr));
    os<< "Stress Dump"<<std::endl;
@@ -269,7 +269,7 @@ HRESULT CTestOverhang::Test()
    CComPtr<IPointLoadItem> pPLI1;
    TRY_TEST(pPointLoads->Add(_bstr_t("Stage 1"), _bstr_t("Point Loads"), pPointLoad1, &pPLI1), S_OK);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 1"), roGlobal, rsIncremental, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -288,7 +288,7 @@ HRESULT CTestOverhang::Test()
    TRY_TEST( pPOI->put_Location(-0.5), S_OK );
    TRY_TEST(pPOIs->Add(pPOI), S_OK);
 
-   pres = NULL;
+   pres = nullptr;
    hr = plgr->ComputeForces(_bstr_t("Point Loads"), poilist ,_bstr_t("Stage 1"), roGlobal, rsIncremental, &pres);
    ATLASSERT(SUCCEEDED(hr));
 
@@ -296,7 +296,7 @@ HRESULT CTestOverhang::Test()
 
    // test influence line computation
    CComQIPtr<IInfluenceLineResponse> pinfl(plgr);
-   ATLASSERT(pinfl!=NULL);
+   ATLASSERT(pinfl!=nullptr);
 
    CComPtr<IInfluenceLine> lft_ifl_f1, rgt_ifl_f1;
    TRY_TEST(pinfl->ComputeForceInfluenceLine(106,CComBSTR("Stage 2"),fetFy, roGlobal, &lft_ifl_f1, &rgt_ifl_f1), S_OK );
@@ -367,7 +367,7 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
    Float64 loc = 0.0;
    span_ends.push_back(loc);  // spans start at 0.0
 
-   for(SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for(SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       CComPtr<ISpan> span;
       spans->get_Item(ispan, &span);
@@ -389,7 +389,7 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -405,7 +405,7 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
 
    CollectionIndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i=0; i<cnt; i++)
+   for (CollectionIndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i, &poi_id);
@@ -693,7 +693,7 @@ ILBAMModel* CTestOverhang::CreateModel(bool doPois)
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
    TCHAR* lgns[]={_T("Point Loads"),_T("Distributed Loads")};
-   for (long i=0; i<2; i++)
+   for (long i = 0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );

@@ -78,7 +78,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~gmRectangle();
+   virtual ~gmRectangle() override;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -119,19 +119,19 @@ public:
    // Assigns a gmProperties object to the object pointed to by pProperties. 
    // The origin of the shape properties object is the centroid of this shape
    // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const;
+   virtual void GetProperties(gmProperties* pProperties) const override;
 
    //------------------------------------------------------------------------
    // GetBoundingBox
    // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const;
+   virtual gpRect2d GetBoundingBox() const override;
 
    //------------------------------------------------------------------------
    // CreateClone
    // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
    // listeners are registered with the clone.  This is a factory method,  
    // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const;
+   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
 
    //------------------------------------------------------------------------
    // CreateClippedShape
@@ -154,27 +154,27 @@ public:
    // to this new section.
    virtual gmIShape* CreateClippedShape(const gpRect2d& r,
                                         gmShapeImp::ClipRegion region
-                                        ) const;
+                                        ) const override;
 
    //------------------------------------------------------------------------
    // GetArea
    // Returns area and cg of shape. Typically faster that getting the properties 
    // and then the area.
-   virtual void GetArea(Float64* pArea, gpPoint2d* pCG) const;
+   virtual void GetArea(Float64* pArea, gpPoint2d* pCG) const override;
 
    //------------------------------------------------------------------------
    // ComputeClippedArea
    // Clips this shape against line and computes area and CG of remaining shape.
    // Clips away the portion of the shape on the side of the line defined by side. 
    virtual void ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
-                                   Float64* pArea, gpPoint2d* pCG) const;
+                                   Float64* pArea, gpPoint2d* pCG) const override;
 
    //------------------------------------------------------------------------
    // GetFurthestDistance
    // Returns the distance to a line that is parallel to line, on specified 
    // side of line,  that passes through the furthest point on the shape 
    // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const;
+   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
 
    //------------------------------------------------------------------------
    // Draw
@@ -187,7 +187,7 @@ public:
    // would most likely delegate its drawing responsibility to the gmShapeImp 
    // object it represents.
    // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const;
+   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
 
    //------------------------------------------------------------------------
    // NotifyAllListeners
@@ -204,11 +204,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -232,18 +232,18 @@ protected:
    //------------------------------------------------------------------------
    // DoTranslate
    // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta);
+   virtual void DoTranslate(const gpSize2d& delta) override;
 
    //------------------------------------------------------------------------
    // DoRotate
    // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle);
+   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const gmRectangle& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmRectangle& rOther);
+   void MakeAssignment(const gmRectangle& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

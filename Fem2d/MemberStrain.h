@@ -62,8 +62,8 @@ public:
    void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Float64 xStart=0.0,Float64 xEnd=0.0,Float64 axialStrain=0.0, Float64 CurvatureStrain=0.0);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -74,22 +74,22 @@ BEGIN_COM_MAP(CMemberStrain)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dMemberStrain
 public:
-	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal);
-   STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64  *pVal);
-	STDMETHOD(put_StartLocation)(/*[in]*/ Float64  newVal);
-	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_CurvatureStrain)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_CurvatureStrain)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_AxialStrain)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_AxialStrain)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal);
+	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
+   STDMETHOD(get_StartLocation)(/*[out, retval]*/ Float64  *pVal) override;
+	STDMETHOD(put_StartLocation)(/*[in]*/ Float64  newVal) override;
+	STDMETHOD(get_EndLocation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EndLocation)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_CurvatureStrain)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_CurvatureStrain)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_AxialStrain)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_AxialStrain)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal) override;
 
 // MbrLoad
 public:

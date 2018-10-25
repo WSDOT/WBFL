@@ -83,38 +83,38 @@ BEGIN_COM_MAP(CInfluenceLine)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IInfluenceLine
 public:
-   STDMETHOD(get_Location)(/*[out,retval]*/Float64* location);
-   STDMETHOD(get_POI)(/*[out,retval]*/PoiIDType* poi);
-   STDMETHOD(Item)(/*[in]*/CollectionIndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location);
-   STDMETHOD(get_Count)( /*[in]*/InfluenceSideType side, /*[out,retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(Add)(/*[in]*/InfluenceLocationType locationType, /*[in]*/Float64 location, /*[in]*/Float64 value);
-   STDMETHOD(Remove)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(Clear)();
-   STDMETHOD(Clone)(/*[out,retval]*/IInfluenceLine** clone);
-   STDMETHOD(Bounds)(/*[out]*/Float64* start, Float64* end);
-   STDMETHOD(Evaluate)(/*[in]*/Float64 location, /*[in]*/InfluenceSideType side, /*[out]*/VARIANT_BOOL* isDualValue, /*[out]*/Float64* leftValue, /*[out]*/Float64* rightValue);
-	STDMETHOD(ComputeNonZeroRegions)(/*[in]*/InfluenceSideType side, /*[out,retval]*/IDblArray* *locations);
-	STDMETHOD(ComputeArea)(/*[in]*/InfluenceSideType side,/*[out,retval]*/Float64* area);
-	STDMETHOD(ComputeAreaInRegions)(/*[in]*/IDblArray* locations,/*[out,retval]*/Float64* area);
-	STDMETHOD(IsZero)(/*[in]*/InfluenceSideType side,/*[out,retval]*/VARIANT_BOOL* isZero);
-   STDMETHOD(FindMaxValue)(/*[in]*/Float64 start,/*[in]*/ Float64 end,/*[out]*/Float64* pLocation,/*[out]*/Float64* pValue);
-   STDMETHOD(FindMinValue)(/*[in]*/Float64 start,/*[in]*/ Float64 end,/*[out]*/Float64* pLocation,/*[out]*/Float64* pValue);
+   STDMETHOD(get_Location)(/*[out,retval]*/Float64* location) override;
+   STDMETHOD(get_POI)(/*[out,retval]*/PoiIDType* poi) override;
+   STDMETHOD(Item)(/*[in]*/CollectionIndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location) override;
+   STDMETHOD(get_Count)( /*[in]*/InfluenceSideType side, /*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(Add)(/*[in]*/InfluenceLocationType locationType, /*[in]*/Float64 location, /*[in]*/Float64 value) override;
+   STDMETHOD(Remove)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(Clone)(/*[out,retval]*/IInfluenceLine** clone) override;
+   STDMETHOD(Bounds)(/*[out]*/Float64* start, Float64* end) override;
+   STDMETHOD(Evaluate)(/*[in]*/Float64 location, /*[in]*/InfluenceSideType side, /*[out]*/VARIANT_BOOL* isDualValue, /*[out]*/Float64* leftValue, /*[out]*/Float64* rightValue) override;
+	STDMETHOD(ComputeNonZeroRegions)(/*[in]*/InfluenceSideType side, /*[out,retval]*/IDblArray* *locations) override;
+	STDMETHOD(ComputeArea)(/*[in]*/InfluenceSideType side,/*[out,retval]*/Float64* area) override;
+	STDMETHOD(ComputeAreaInRegions)(/*[in]*/IDblArray* locations,/*[out,retval]*/Float64* area) override;
+	STDMETHOD(IsZero)(/*[in]*/InfluenceSideType side,/*[out,retval]*/VARIANT_BOOL* isZero) override;
+   STDMETHOD(FindMaxValue)(/*[in]*/Float64 start,/*[in]*/ Float64 end,/*[out]*/Float64* pLocation,/*[out]*/Float64* pValue) override;
+   STDMETHOD(FindMinValue)(/*[in]*/Float64 start,/*[in]*/ Float64 end,/*[out]*/Float64* pLocation,/*[out]*/Float64* pValue) override;
 
 public:
    // C++ public
    // pre-allocate some space
-   STDMETHOD(Reserve)(CollectionIndexType n); 
+   HRESULT Reserve(CollectionIndexType n);
    // set up tolerancing - this should only be done once at initialization
-   STDMETHOD(GetZeroTolerance)(/*[out,retval]*/ Float64 *pVal);
-   STDMETHOD(SetZeroTolerance)(/*[in]*/ Float64 Val);
+   HRESULT GetZeroTolerance(/*[out,retval]*/ Float64 *pVal);
+   HRESULT SetZeroTolerance(/*[in]*/ Float64 Val);
 
    // Set up whether influence values are to be optimized (zeroed, redundants removed), or left raw
    // iptProcessed is the default

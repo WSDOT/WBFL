@@ -91,8 +91,8 @@ public:
    //------------------------------------------------------------------------
    // Move
    // Move a shape by moving from one point in space to another. 
-   virtual void Move(LocatorPoint point,const gpPoint2d& to);
-   virtual void Move(const gpPoint2d& from,const gpPoint2d& to);
+   virtual void Move(LocatorPoint point,const gpPoint2d& to) override;
+   virtual void Move(const gpPoint2d& from,const gpPoint2d& to) override;
 
    //------------------------------------------------------------------------
    // Rotate
@@ -116,7 +116,7 @@ public:
    // MakeSolid
    // Makes this shape represent a solid area if isSolid is true. If not shape
    // is hollow
-   virtual void MakeSolid(bool isSolid);
+   virtual void MakeSolid(bool isSolid) override;
 
    //------------------------------------------------------------------------
    // IsSolid
@@ -129,7 +129,7 @@ public:
    // true,  a border will be drawn around the shape in the border color.  
    // Border mode is enabled by default.  Returns the previous border mode 
    // setting.
-   virtual bool EnableBorderMode(bool bEnable);
+   virtual bool EnableBorderMode(bool bEnable) override;
 
    //------------------------------------------------------------------------
    // IsBorderModeEnabled
@@ -140,7 +140,7 @@ public:
    // SetBorderColor
    // Sets the border color to color.  Returns the previous color setting.  
    // Notifies listeners through the OnDisplayAttributesChanged() method.
-   virtual COLORREF SetBorderColor(COLORREF color);
+   virtual COLORREF SetBorderColor(COLORREF color) override;
 
    //------------------------------------------------------------------------
    // GetBorderColor
@@ -152,7 +152,7 @@ public:
    // Enables/disables the fill mode of the shape.  If bEnable is true,  
    // the shape will be filled with the fill color.  Fill mode is enabled by 
    // default.  Returns the previous fill mode setting.
-   virtual bool EnableFillMode(bool bEnable);
+   virtual bool EnableFillMode(bool bEnable) override;
 
    //------------------------------------------------------------------------
    // IsFillModeEnabled
@@ -163,7 +163,7 @@ public:
    // SetFillColor
    // Sets the fill color to color. Returns the previous color setting. 
    // Notifies listeners through the OnDisplayAttributesChanged() method.
-   virtual COLORREF SetFillColor(COLORREF color);
+   virtual COLORREF SetFillColor(COLORREF color) override;
 
    //------------------------------------------------------------------------
    // GetFillColor
@@ -177,8 +177,8 @@ public:
    // return zero.  If your subclass supports the gmCompositeShape interface,
    // and you wish to expose it,  override this method and return a pointer 
    // to your implementation of the gmCompositeShape interface.
-   virtual gmCompositeShape* GetComposite();
-   virtual const gmCompositeShape* GetComposite() const;
+   virtual gmCompositeShape* GetComposite() override;
+   virtual const gmCompositeShape* GetComposite() const override;
 
    //------------------------------------------------------------------------
    // GetParent
@@ -251,11 +251,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -308,14 +308,14 @@ protected:
    void MakeCopy(const gmShapeImp& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmShapeImp& rOther);
+   void MakeAssignment(const gmShapeImp& rOther);
 
    //------------------------------------------------------------------------
    // NotifyAllListeners
    // This method provides subclassed broadcasters a method of notifying 
    // listeners through the base class interface. lHint is a hint as to
    // what type of change was made as described in gmShapeListener.h
-   virtual void NotifyAllListeners( Int32 lHint );
+   virtual void NotifyAllListeners( Int32 lHint ) override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

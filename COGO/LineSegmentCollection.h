@@ -80,33 +80,33 @@ CONNECTION_POINT_ENTRY(IID_ILineSegmentCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("LineSegments"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("LineSegment"); }
+   CComBSTR GetCollectionName() { return CComBSTR("LineSegments"); }
+   CComBSTR GetItemName() { return CComBSTR("LineSegment"); }
 
 //// ISupportsErrorInfo
-//	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+//	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILineSegmentCollection
 public:
-	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
-	STDMETHOD(get_Factory)(/*[out,retval]*/ ILineSegment2dFactory** factory);
-	STDMETHOD(putref_Factory)(/*[in]*/ ILineSegment2dFactory* factory);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ ILineSegment2d* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ ILineSegment2d* newVal);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls);
-   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* newVal);
-   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-   STDMETHOD(Clear)();
-   STDMETHOD(FindID)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoObjectID* ID);
-   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum);
-   STDMETHOD(get__EnumLineSegments)(/*[out,retval]*/ IEnumLineSegments** ppenum);
-   STDMETHOD(Clone)(/*[out,retval]*/ ILineSegmentCollection* *clone);
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/ ILineSegment2dFactory** factory) override;
+	STDMETHOD(putref_Factory)(/*[in]*/ ILineSegment2dFactory* factory) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ ILineSegment2d* *pVal) override;
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ ILineSegment2d* newVal) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* start,/*[in]*/ IPoint2d* end,/*[out,retval]*/ILineSegment2d* *ls) override;
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ ILineSegment2d* newVal) override;
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(FindID)(/*[in]*/ ILineSegment2d* ls,/*[out,retval]*/CogoObjectID* ID) override;
+   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum) override;
+   STDMETHOD(get__EnumLineSegments)(/*[out,retval]*/ IEnumLineSegments** ppenum) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ILineSegmentCollection* *clone) override;
 
 // ILineSegmentEvents
 public:
-	STDMETHOD(OnLineSegmentChanged)(ILineSegment2d* lineSeg);
+	STDMETHOD(OnLineSegmentChanged)(ILineSegment2d* lineSeg) override;
 
 private:
    CComPtr<ILineSegment2dFactory> m_Factory;

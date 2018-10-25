@@ -81,27 +81,27 @@ END_COM_MAP()
 
 public:
 
-   STDMETHOD(get_GirderLineID)(GirderIDType* pVal);
-   STDMETHOD(put_GirderLineID)(GirderIDType newVal);
-   STDMETHOD(get_LayoutLineID)(LineIDType* pVal);
-   STDMETHOD(put_LayoutLineID)(LineIDType newVal);
-   STDMETHOD(get_Type)(GirderLineType* pVal);
-   STDMETHOD(put_Type)(GirderLineType newVal);
-   STDMETHOD(get_StartPierID)(PierIDType* pVal);
-   STDMETHOD(put_StartPierID)(PierIDType newVal);
-   STDMETHOD(get_EndPierID)(PierIDType* pVal);
-   STDMETHOD(put_EndPierID)(PierIDType newVal);
-   STDMETHOD(get_StartMeasurementType)(MeasurementType* pVal);
-   STDMETHOD(put_StartMeasurementType)(MeasurementType newVal);
-   STDMETHOD(get_StartMeasurementLocation)(MeasurementLocation* pVal);
-   STDMETHOD(put_StartMeasurementLocation)(MeasurementLocation newVal);
-   STDMETHOD(get_EndMeasurementType)(MeasurementType* pVal);
-   STDMETHOD(put_EndMeasurementType)(MeasurementType newVal);
-   STDMETHOD(get_EndMeasurementLocation)(MeasurementLocation* pVal);
-   STDMETHOD(put_EndMeasurementLocation)(MeasurementLocation newVal);
+   STDMETHOD(get_GirderLineID)(GirderIDType* pVal) override;
+   STDMETHOD(put_GirderLineID)(GirderIDType newVal) override;
+   STDMETHOD(get_LayoutLineID)(LineIDType* pVal) override;
+   STDMETHOD(put_LayoutLineID)(LineIDType newVal) override;
+   STDMETHOD(get_Type)(GirderLineType* pVal) override;
+   STDMETHOD(put_Type)(GirderLineType newVal) override;
+   STDMETHOD(get_StartPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_StartPierID)(PierIDType newVal) override;
+   STDMETHOD(get_EndPierID)(PierIDType* pVal) override;
+   STDMETHOD(put_EndPierID)(PierIDType newVal) override;
+   STDMETHOD(get_StartMeasurementType)(MeasurementType* pVal) override;
+   STDMETHOD(put_StartMeasurementType)(MeasurementType newVal) override;
+   STDMETHOD(get_StartMeasurementLocation)(MeasurementLocation* pVal) override;
+   STDMETHOD(put_StartMeasurementLocation)(MeasurementLocation newVal) override;
+   STDMETHOD(get_EndMeasurementType)(MeasurementType* pVal) override;
+   STDMETHOD(put_EndMeasurementType)(MeasurementType newVal) override;
+   STDMETHOD(get_EndMeasurementLocation)(MeasurementLocation* pVal) override;
+   STDMETHOD(put_EndMeasurementLocation)(MeasurementLocation newVal) override;
 
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayGirderLines);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IUnkArray** ppArrayGirderLines) override;
+   STDMETHOD(Reset)() override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(SingleGirderLineFactory), CSingleGirderLineFactory)

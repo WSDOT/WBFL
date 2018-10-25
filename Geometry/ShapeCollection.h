@@ -67,19 +67,19 @@ protected:
 public:
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IShapeCollection
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumShape** ppenum);
-//   STDMETHOD(Clear)();
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
-//	STDMETHOD(Add)(/*[in]*/ IShape* pPoint);
-//	STDMETHOD(get_Item)(CollectionIndexType Index, IShape** pPoint);
-////	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-////	STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/IShapeProperties** props);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumShape** ppenum) override;
+//   STDMETHOD(Clear)() override;
+//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+//	STDMETHOD(Add)(/*[in]*/ IShape* pPoint) override;
+//	STDMETHOD(get_Item)(CollectionIndexType Index, IShape** pPoint) override;
+////	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+////	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/IShapeProperties** props) override;
 };
 
 #endif //__SHAPECOLLECTION_H_

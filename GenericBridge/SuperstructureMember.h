@@ -83,33 +83,33 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperstructureMember
 public:
-   STDMETHOD(get_ID)(GirderIDType* pID);
-	STDMETHOD(AddSegment)(/*[in]*/ ISuperstructureMemberSegment* segment);
-	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISuperstructureMemberSegment* *pVal);
-   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISuperstructureMemberSegment** ppSeg);
-   STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 Xs,Float64* pXg);
-	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal);
-	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release);
-	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release);
-   STDMETHOD(GetPlanAngle)(/*[in]*/Float64 distFromStartOfSSMbr,/*[out,retval]*/IAngle** ppAngle);
-   STDMETHOD(get_LocationType)(LocationType* pVal);
-   STDMETHOD(get_Bridge)(IGenericBridge** ppBridge);
+   STDMETHOD(get_ID)(GirderIDType* pID) override;
+	STDMETHOD(AddSegment)(/*[in]*/ ISuperstructureMemberSegment* segment) override;
+	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISuperstructureMemberSegment* *pVal) override;
+   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISuperstructureMemberSegment** ppSeg) override;
+   STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 Xs,Float64* pXg) override;
+	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal) override;
+	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release) override;
+	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release) override;
+   STDMETHOD(GetPlanAngle)(/*[in]*/Float64 distFromStartOfSSMbr,/*[out,retval]*/IAngle** ppAngle) override;
+   STDMETHOD(get_LocationType)(LocationType* pVal) override;
+   STDMETHOD(get_Bridge)(IGenericBridge** ppBridge) override;
 
 // IItemData
 public:
-   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data);
-   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data);
-   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name);
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count);
+   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
+   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
+   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__SUPERSTRUCTUREMEMBER_H_

@@ -56,14 +56,14 @@ void CTestPoint3dCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_Point3dCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(NULL),E_INVALIDARG);
+   TRY_TEST(pColl->Add(nullptr),E_INVALIDARG);
 
    // add some points and see if we get them back
    CComPtr<IPoint3d> p1;
@@ -101,7 +101,7 @@ void CTestPoint3dCollection::Test()
    CComPtr<IPoint3d> pnt;
    TRY_TEST(pColl->get_Item(-1,&pnt),E_INVALIDARG); // invalid index
    TRY_TEST(pColl->get_Item(10,&pnt),E_INVALIDARG); // index out of range - too high
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(0,&pnt),S_OK);
    Float64 x,y,z;
    pnt->get_X(&x);
@@ -211,7 +211,7 @@ void CTestPoint3dCollection::Test()
    pColl->Add(p3);
    pColl->Add(p4);
    CComPtr<IEnumPoint3d> pEnum;
-   TRY_TEST(pColl->get__Enum(NULL), E_POINTER );
+   TRY_TEST(pColl->get__Enum(nullptr), E_POINTER );
    TRY_TEST( pColl->get__Enum(&pEnum), S_OK );
 
    ULONG fetched;
@@ -239,7 +239,7 @@ void CTestPoint3dCollection::TestISupportErrorInfo()
 
 STDMETHODIMP CTestPoint3dCollection::OnPointChanged(IPoint3d* point)
 {
-//   MessageBox(NULL,"PointChanged","Event",MB_OK);
+//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
    Pass();
 
    return S_OK;
@@ -247,7 +247,7 @@ STDMETHODIMP CTestPoint3dCollection::OnPointChanged(IPoint3d* point)
 
 STDMETHODIMP CTestPoint3dCollection::OnPointAdded(CollectionIndexType index,IPoint3d* point)
 {
-//   MessageBox(NULL,"PointAdded","Event",MB_OK);
+//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
    if ( index == m_expectedIndex )
       Pass();
 
@@ -256,7 +256,7 @@ STDMETHODIMP CTestPoint3dCollection::OnPointAdded(CollectionIndexType index,IPoi
 
 STDMETHODIMP CTestPoint3dCollection::OnPointRemoved(CollectionIndexType index)
 {
-//   MessageBox(NULL,"PointRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
    if ( index == m_expectedIndex )
       Pass();
 
@@ -265,7 +265,7 @@ STDMETHODIMP CTestPoint3dCollection::OnPointRemoved(CollectionIndexType index)
 
 STDMETHODIMP CTestPoint3dCollection::OnPointsCleared()
 {
-//   MessageBox(NULL,"PointCleared","Event",MB_OK);
+//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

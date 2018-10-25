@@ -82,7 +82,7 @@ public:
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   virtual void VisitChapter(rptChapter*)=0;
+   virtual void VisitChapter(rptChapter*) = 0;
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
@@ -107,7 +107,7 @@ private:
    // Default constructor
    rptOutputChapterVisitor();
    rptOutputChapterVisitor(const rptOutputChapterVisitor&);
-   rptOutputChapterVisitor& operator=(const rptOutputChapterVisitor&);
+   rptOutputChapterVisitor& operator=(const rptOutputChapterVisitor&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

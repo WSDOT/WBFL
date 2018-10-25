@@ -202,7 +202,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdPTRefinedLosses& rOther );
+   void MakeAssignment( const lrfdPTRefinedLosses& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

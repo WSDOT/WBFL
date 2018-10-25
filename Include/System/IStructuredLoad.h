@@ -71,26 +71,26 @@ public:
    // advanced. If false is returned, the file pointer does not advance.
    // After a unit has been entered, GetVersion may be called to get its
    // version
-   virtual bool BeginUnit(LPCTSTR name)=0;
+   virtual bool BeginUnit(LPCTSTR name) = 0;
 
    //------------------------------------------------------------------------
    // Check for the end of a structured data chunk that was started by a call to 
    // BeginUnit.
-   virtual bool EndUnit()=0;
+   virtual bool EndUnit() = 0;
 
    //------------------------------------------------------------------------
    // Get the version number of the current unit
-   virtual Float64 GetVersion()=0;
+   virtual Float64 GetVersion() = 0;
    
    //------------------------------------------------------------------------
    // Get the version number of the unit that is the parent to this unit
-   virtual Float64 GetParentVersion()=0;
+   virtual Float64 GetParentVersion() = 0;
 
    virtual std::_tstring GetParentUnit() = 0;
 
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion()=0;
+   virtual Float64 GetTopVersion() = 0;
 
    //------------------------------------------------------------------------
    // Property read routines. All of these calls try to read a property at the
@@ -99,56 +99,56 @@ public:
    // the property was not at the current locaton and the file pointer does not
    // advance.
    // Read a string property
-   virtual bool Property(LPCTSTR name, std::_tstring* pvalue)=0;
+   virtual bool Property(LPCTSTR name, std::_tstring* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read a real number property
-   virtual bool Property(LPCTSTR name, Float64* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Float64* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int16* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Int16* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint16* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Uint16* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int32* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Int32* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint32* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Uint32* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, Int64* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Int64* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, Uint64* pvalue)=0;
+   virtual bool Property(LPCTSTR name, Uint64* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an integral property
-   virtual bool Property(LPCTSTR name, LONG* pvalue)=0;
+   virtual bool Property(LPCTSTR name, LONG* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read an unsigned integral property
-   virtual bool Property(LPCTSTR name, ULONG* pvalue)=0;
+   virtual bool Property(LPCTSTR name, ULONG* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Read a bool property
-   virtual bool Property(LPCTSTR name, bool* pvalue)=0;
+   virtual bool Property(LPCTSTR name, bool* pvalue) = 0;
 
    //------------------------------------------------------------------------
    // Am I at the end of the "File"?
-   virtual bool Eof()const =0;
+   virtual bool Eof()const  = 0;
 
    //------------------------------------------------------------------------
    // Dump state as a text string into os. This is primarily to be used for
    // error handling.
-   virtual std::_tstring GetStateDump() const =0;
+   virtual std::_tstring GetStateDump() const  = 0;
 
    //------------------------------------------------------------------------
    // Returns the current unit as a text string

@@ -559,7 +559,7 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
          bSelectionEnabled = FALSE;
       }
 
-      if ( m_bLBtnSelectEnabled && pDO == NULL )
+      if ( m_bLBtnSelectEnabled && pDO == nullptr )
       {
          FindDisplayObjects(point,&dispObjs);
          bSelectionEnabled = FALSE;
@@ -1043,7 +1043,7 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
       if (!m_strToolTipText.IsEmpty())
       {
          pTTT->lpszText = m_strToolTipText.GetBuffer(m_strToolTipText.GetLength()+1);
-         pTTT->hinst = NULL;
+         pTTT->hinst = nullptr;
          bRetVal = TRUE;
 
 //#if defined _DEBUG
@@ -1166,11 +1166,11 @@ STDMETHODIMP_(void) CDisplayMgrImpl::CreateDragObjects(COleDataObject* pDataObje
    {
       // a tool was dragged over us
       CComPtr<iTool> tool;
-      ::CoCreateInstance(CLSID_Tool,NULL,CLSCTX_ALL,IID_iTool,(void**)&tool);
+      ::CoCreateInstance(CLSID_Tool,nullptr,CLSCTX_ALL,IID_iTool,(void**)&tool);
       CComQIPtr<iDraggable,&IID_iDraggable> draggable(tool);
 
       CComPtr<iDragDataSource> source;
-      ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+      ::CoCreateInstance(CLSID_DragDataSource,nullptr,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
       source->SetDataObject(pDataObject);
       draggable->OnDrop(source); // Rebuild the tool object from the data object
 
@@ -1426,10 +1426,10 @@ void CDisplayMgrImpl::GetBoundingBox(iCoordinateMap* pMap, bool boundOrigin, IRe
                box->get_Top(&tBox);
                box->get_Bottom(&bBox);
 
-               rl = _cpp_min(rl,lBox);
-               rr = _cpp_max(rr,rBox);
-               rt = _cpp_max(rt,tBox);
-               rb = _cpp_min(rb,bBox);
+               rl = Min(rl,lBox);
+               rr = Max(rr,rBox);
+               rt = Max(rt,tBox);
+               rb = Min(rb,bBox);
             }
          }
       }
@@ -1567,7 +1567,7 @@ void CDisplayMgrImpl::UnregisterEventSink()
 
 void CDisplayMgrImpl::GetEventSink(iDisplayMgrEvents** pEventSink)
 {
-   if ( pEventSink == NULL )
+   if ( pEventSink == nullptr )
       return;
 
    (*pEventSink) = m_EventSink;

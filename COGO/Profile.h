@@ -85,37 +85,39 @@ BEGIN_CONNECTION_POINT_MAP(CProfile)
 CONNECTION_POINT_ENTRY(IID_IProfileEvents)
 END_CONNECTION_POINT_MAP()
 
+   HRESULT putref_Alignment(IAlignment* pAlignment);
+
+
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IProfile
 public:
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
-   STDMETHOD(putref_Alignment)(/*[in]*/IAlignment* pAlignment);
-   STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment);
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone);
-	STDMETHOD(Clear)();
-	STDMETHOD(Slope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope);
-   STDMETHOD(TemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope);
-	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade);
-	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev);
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varID);
-	STDMETHOD(Add)(/*[in]*/ IProfileElement* element);
-	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IProfileElement* pVal);
-   STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval);  
-   STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces);
-   STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces);
-   STDMETHOD(GetSurface)(CogoObjectID id,VARIANT varStation,ISurface** ppSurface);
-   STDMETHOD(RidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset);
-   STDMETHOD(RidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev);
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
+   STDMETHOD(get_Alignment)(/*[out,retval]*/IAlignment** ppAlignment) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IProfile* *clone) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Slope)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* slope) override;
+   STDMETHOD(TemplateSegmentSlope)(/*[in]*/CogoObjectID id,/*[in]*/VARIANT varStation,/*[in]*/CollectionIndexType templateSegmentIdx,/*[out,retval]*/Float64* pSlope) override;
+	STDMETHOD(Grade)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ Float64* grade) override;
+	STDMETHOD(Elevation)(/*[in]*/ VARIANT varStation,/*[in]*/ Float64 offset,/*[out,retval]*/ Float64* elev) override;
+	STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override;
+	STDMETHOD(Add)(/*[in]*/ IProfileElement* element) override;
+	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IProfileElement* *pVal) override;
+   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IProfileElement* pVal) override;
+   STDMETHOD(get__EnumProfileElements)(/*[out, retval]*/ IEnumProfileElements** retval) override;  
+   STDMETHOD(get_Surfaces)(/*[out,retval]*/ISurfaceCollection** ppSurfaces) override;
+   STDMETHOD(putref_Surfaces)(/*[in]*/ISurfaceCollection* pSurfaces) override;
+   STDMETHOD(GetSurface)(CogoObjectID id,VARIANT varStation,ISurface** ppSurface) override;
+   STDMETHOD(RidgePointOffset)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset) override;
+   STDMETHOD(RidgePointElevation)(CogoObjectID id,VARIANT varStation,IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // ISurfaceCollectionEvents
    STDMETHOD(OnSurfaceChanged)(ISurface* pSurface)

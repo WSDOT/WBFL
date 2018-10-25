@@ -82,7 +82,7 @@ IMPLEMENT_DYNAMIC(CEAFDocument, CDocument)
 
 CEAFDocument::CEAFDocument()
 {
-   m_pMainMenu = NULL;
+   m_pMainMenu = nullptr;
    m_pPluginCommandMgr = new CEAFPluginCommandManager();
 
    m_pStatusCenterEventSink = new CMyStatusCenterEventSink(this);
@@ -106,30 +106,30 @@ CEAFDocument::CEAFDocument()
 
 CEAFDocument::~CEAFDocument()
 {
-   ATLASSERT( m_pMainMenu == NULL ); // this should have been deleted by now!
+   ATLASSERT( m_pMainMenu == nullptr ); // this should have been deleted by now!
 
    if ( m_pPluginCommandMgr )
    {
       delete m_pPluginCommandMgr;
-      m_pPluginCommandMgr = NULL;
+      m_pPluginCommandMgr = nullptr;
    }
 
    if ( m_pStatusCenterDlg )
    {
       delete m_pStatusCenterDlg;
-      m_pStatusCenterDlg = NULL;
+      m_pStatusCenterDlg = nullptr;
    }
 
    if ( m_pStatusCenter )
    {
       delete m_pStatusCenter;
-      m_pStatusCenter = NULL;
+      m_pStatusCenter = nullptr;
    }
 
    if ( m_pStatusCenterEventSink )
    {
       delete m_pStatusCenterEventSink;
-      m_pStatusCenterEventSink = NULL;
+      m_pStatusCenterEventSink = nullptr;
    }
 
    CEAFApp* pApp = EAFGetApp();
@@ -379,7 +379,7 @@ void CEAFDocument::SaveToolbarState()
 
 long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
-   if ( hSharedMenu == NULL )
+   if ( hSharedMenu == nullptr )
    {
       CEAFMainFrame* pMainFrame = EAFGetMainFrame();
       hSharedMenu = pMainFrame->GetMenu()->GetSafeHmenu();
@@ -425,9 +425,9 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
    pTemplate->SetViewCreationData(pData);
    CView*                    pView      = pMainFrame->CreateOrActivateFrame(pTemplate);
    
-   // done with the create data, so NULL it out
-   pTemplate->SetViewCreationData(NULL);
-   pMyTemplate->SetViewCreationData(NULL);
+   // done with the create data, so nullptr it out
+   pTemplate->SetViewCreationData(nullptr);
+   pMyTemplate->SetViewCreationData(nullptr);
 
    return pView;
 }
@@ -443,7 +443,7 @@ void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,COb
 
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
-   if ( pTemplate == NULL )
+   if ( pTemplate == nullptr )
    {
       // the template was not found.... probably a bad key
       return;
@@ -454,7 +454,7 @@ void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,COb
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
    POSITION pos = GetFirstViewPosition();
-   while (pos != NULL)
+   while (pos != nullptr)
    {
       CView* pView = GetNextView(pos);
       if (pView->IsKindOf(pViewClass))
@@ -489,7 +489,7 @@ std::vector<CView*> CEAFDocument::GetRegisteredView(long key)
 
    CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
-   if ( pTemplate == NULL )
+   if ( pTemplate == nullptr )
    {
       // the template was not found.... probably a bad key
       return vViews;
@@ -500,7 +500,7 @@ std::vector<CView*> CEAFDocument::GetRegisteredView(long key)
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
    POSITION pos = GetFirstViewPosition();
-   while (pos != NULL)
+   while (pos != nullptr)
    {
       CView* pView = GetNextView(pos);
       if (pView->IsKindOf(pViewClass))
@@ -908,7 +908,7 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
       // NOTE: this scoping block is here for a reason. The IStructuredLoad must be
       //       destroyed before the file can be deleted.
       CComPtr<IStructuredLoad> pStrLoad;
-      hr = ::CoCreateInstance( CLSID_StructuredLoad, NULL, CLSCTX_INPROC_SERVER, IID_IStructuredLoad, (void**)&pStrLoad );
+      hr = ::CoCreateInstance( CLSID_StructuredLoad, nullptr, CLSCTX_INPROC_SERVER, IID_IStructuredLoad, (void**)&pStrLoad );
       if ( FAILED(hr) )
       {
          // We are not aggregating so we should CoCreateInstance should
@@ -1071,7 +1071,7 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
 {
    CComPtr<IStructuredSave> pStrSave;
 
-   HRESULT hr = ::CoCreateInstance( CLSID_StructuredSave, NULL, 
+   HRESULT hr = ::CoCreateInstance( CLSID_StructuredSave, nullptr, 
 	   CLSCTX_INPROC_SERVER, IID_IStructuredSave, (void**)&pStrSave );
    if ( FAILED(hr) )
    {
@@ -1143,7 +1143,7 @@ BOOL CEAFDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 	{
 		// first newline terminates actual string
 		lpsz = _tcschr(lpsz, '\n');
-		if (lpsz != NULL)
+		if (lpsz != nullptr)
       {
 			*lpsz = '\0';
       }
@@ -1249,7 +1249,8 @@ CString CEAFDocument::GetDocumentationMapFile()
 
 void CEAFDocument::LoadDocumentationMap()
 {
-   VERIFY(EAFLoadDocumentationMap(GetDocumentationMapFile(),m_HelpTopics));
+   CString mapFileName(GetDocumentationMapFile());
+   VERIFY(EAFLoadDocumentationMap(mapFileName,m_HelpTopics));
 }
 
 eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
@@ -1304,7 +1305,7 @@ void CEAFDocument::OnCloseDocument()
    // remove ui elements that plug-ins provided
    if ( m_bUIIntegrated )
    {
-      ATLASSERT(m_pMainMenu != NULL);
+      ATLASSERT(m_pMainMenu != nullptr);
       IntegrateWithUI(FALSE);
       GetPluginCommandManager()->Clear();
    }
@@ -1342,12 +1343,12 @@ CEAFStatusCenter& CEAFDocument::GetStatusCenter()
 
 void CEAFDocument::OnUnitsModeChanging()
 {
-   OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGING,0);
+   OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGING,0);
 }
 
 void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
 {
-   OnUpdateAllViews(NULL,EAF_HINT_UNITS_CHANGED,0);
+   OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGED,0);
 }
 
 void CEAFDocument::Execute(txnTransaction& rTxn)
@@ -1489,7 +1490,7 @@ void CEAFDocument::DeleteContents()
    if ( m_pMainMenu )
    {
       delete m_pMainMenu;
-      m_pMainMenu = NULL;
+      m_pMainMenu = nullptr;
    }
 }
 

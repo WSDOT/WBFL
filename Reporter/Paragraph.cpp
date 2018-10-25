@@ -31,7 +31,7 @@
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcScalar.h>
 
-#include <boost\shared_ptr.hpp>
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -87,7 +87,7 @@ rptParagraph& rptParagraph::operator << (const rptReportContent& rContent )
    //
    // create a clone and set its parent
    //
-   boost::shared_ptr<rptReportContent> rcp( rContent.CreateClone() );
+   std::shared_ptr<rptReportContent> rcp( rContent.CreateClone() );
    rcp->SetParent(this);
    m_ContentVec.push_back(rcp);
    return *this;
@@ -99,7 +99,7 @@ rptParagraph& rptParagraph::operator << (const rptReportContent& rContent )
 //
 rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
 {
-   boost::shared_ptr<rptReportContent> pc(pContent);
+   std::shared_ptr<rptReportContent> pc(pContent);
    pc->SetParent(this);
    m_ContentVec.push_back( pc );
    return *this;
@@ -108,7 +108,7 @@ rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
    
 rptParagraph& rptParagraph::operator << (const std::_tstring& str)
 {
-   boost::shared_ptr<rptReportContent> rcp( new rptRcString(str) );
+   std::shared_ptr<rptReportContent> rcp( std::make_shared<rptRcString>(str) );
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -116,7 +116,7 @@ rptParagraph& rptParagraph::operator << (const std::_tstring& str)
 
 rptParagraph& rptParagraph::operator << (LPCTSTR str)
 {
-   boost::shared_ptr<rptReportContent> rcp( new rptRcString(str) );
+   std::shared_ptr<rptReportContent> rcp(std::make_shared<rptRcString>(str) );
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -124,7 +124,7 @@ rptParagraph& rptParagraph::operator << (LPCTSTR str)
 
 rptParagraph& rptParagraph::operator<< (Int8 value)
 {
-   boost::shared_ptr<rptReportContent> rcp(new rptRcString(std::_tstring(1,value)));
+   std::shared_ptr<rptReportContent> rcp(std::make_shared<rptRcString>(std::_tstring(1,value)));
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -132,7 +132,7 @@ rptParagraph& rptParagraph::operator<< (Int8 value)
 
 rptParagraph& rptParagraph::operator<< (Int16 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcInt>( (Int64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -140,7 +140,7 @@ rptParagraph& rptParagraph::operator<< (Int16 value)
 
 rptParagraph& rptParagraph::operator<< (Int32 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcInt>( (Int64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -148,7 +148,7 @@ rptParagraph& rptParagraph::operator<< (Int32 value)
 
 rptParagraph& rptParagraph::operator<< (Int64 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcInt( (Int64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcInt>( (Int64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -156,7 +156,7 @@ rptParagraph& rptParagraph::operator<< (Int64 value)
 
 rptParagraph& rptParagraph::operator<< (Uint8 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc(new rptRcUnsigned( (Uint64)value ));
+   std::shared_ptr<rptReportContent> p_rc(std::make_shared<rptRcUnsigned>( (Uint64)value ));
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -164,7 +164,7 @@ rptParagraph& rptParagraph::operator<< (Uint8 value)
 
 rptParagraph& rptParagraph::operator<< (Uint16 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcUnsigned>( (Uint64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -172,7 +172,7 @@ rptParagraph& rptParagraph::operator<< (Uint16 value)
 
 rptParagraph& rptParagraph::operator<< (Uint32 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcUnsigned>( (Uint64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -180,7 +180,7 @@ rptParagraph& rptParagraph::operator<< (Uint32 value)
 
 rptParagraph& rptParagraph::operator<< (Uint64 value)
 {
-   boost::shared_ptr<rptReportContent> p_rc( new rptRcUnsigned( (Uint64)value ) );
+   std::shared_ptr<rptReportContent> p_rc( std::make_shared<rptRcUnsigned>( (Uint64)value ) );
    p_rc->SetParent( this );
    m_ContentVec.push_back( p_rc );
    return *this;
@@ -188,7 +188,7 @@ rptParagraph& rptParagraph::operator<< (Uint64 value)
 
 rptParagraph& rptParagraph::operator<< (Float32 value)
 {
-   boost::shared_ptr<rptReportContent> rcp( new rptRcScalar( (Float64)value ) );
+   std::shared_ptr<rptReportContent> rcp( std::make_shared<rptRcScalar>( (Float64)value ) );
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -196,7 +196,7 @@ rptParagraph& rptParagraph::operator<< (Float32 value)
 
 rptParagraph& rptParagraph::operator<< (Float64 value)
 {
-   boost::shared_ptr<rptReportContent> rcp(new rptRcScalar( (Float64)value ));
+   std::shared_ptr<rptReportContent> rcp( std::make_shared<rptRcScalar>( (Float64)value ));
    rcp->SetParent(this);
    m_ContentVec.push_back( rcp );
    return *this;
@@ -209,7 +209,7 @@ rptParagraph& rptParagraph::InsertContent(IndexType location,rptReportContent* p
       location = m_ContentVec.size()-1;
    }
 
-   boost::shared_ptr<rptReportContent> pc(pContent);
+   std::shared_ptr<rptReportContent> pc(pContent);
    pc->SetParent(this);
    m_ContentVec.insert(m_ContentVec.begin()+location,pc);
    return *this;
@@ -225,7 +225,7 @@ void rptParagraph::Accept( rptParagraphVisitor& MyVisitor )
 
 rptParagraph* rptParagraph::CreateClone() const
 {
-   std::auto_ptr<rptParagraph> tmp( new rptParagraph );
+   std::unique_ptr<rptParagraph> tmp( std::make_unique<rptParagraph>() );
    *tmp = *this;
    return tmp.release();
 }
@@ -243,7 +243,7 @@ void rptParagraph::MakeCopy( const rptParagraph& rParagraph)
          icv != rParagraph.m_ContentVec.end();
          icv++ )
    {
-          boost::shared_ptr<rptReportContent> rc( (*icv)->CreateClone() );
+          std::shared_ptr<rptReportContent> rc( (*icv)->CreateClone() );
           m_ContentVec.push_back(rc);
    }
 }
@@ -263,7 +263,7 @@ LPCTSTR rptParagraph::GetName() const
    if (!m_Name.empty())
       return m_Name.c_str();
    else
-      return 0;
+      return nullptr;
 }
 
 void rptParagraph::SetName(LPCTSTR name)

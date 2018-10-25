@@ -89,17 +89,17 @@ public:
    Float64 GetRightOverhang() const;
    Float64 GetW() const; // load/length
 
-   virtual rkRoarkBeam* CreateClone() const;
+   virtual rkRoarkBeam* CreateClone() const override;
 
-   virtual void GetReactions(Float64 *pRa,Float64* pRb) const;
-   virtual void GetMoments(Float64* pMa,Float64* pMb) const;
-   virtual void GetRotations(Float64* pra,Float64* prb) const;
-   virtual void GetDeflections(Float64* pYa,Float64* pYb) const;
+   virtual void GetReactions(Float64 *pRa,Float64* pRb) const override;
+   virtual void GetMoments(Float64* pMa,Float64* pMb) const override;
+   virtual void GetRotations(Float64* pra,Float64* prb) const override;
+   virtual void GetDeflections(Float64* pYa,Float64* pYb) const override;
 
-   virtual sysSectionValue ComputeShear(Float64 x) const;
-   virtual sysSectionValue ComputeMoment(Float64 x) const;
-   virtual Float64 ComputeRotation(Float64 x) const;
-   virtual Float64 ComputeDeflection(Float64 x) const;
+   virtual sysSectionValue ComputeShear(Float64 x) const override;
+   virtual sysSectionValue ComputeMoment(Float64 x) const override;
+   virtual Float64 ComputeRotation(Float64 x) const override;
+   virtual Float64 ComputeDeflection(Float64 x) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -113,7 +113,7 @@ protected:
    void MakeCopy(const rkBeamWithUnequalOverhangsUniformLoad& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rkBeamWithUnequalOverhangsUniformLoad& rOther);
+   void MakeAssignment(const rkBeamWithUnequalOverhangsUniformLoad& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

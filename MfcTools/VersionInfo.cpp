@@ -36,12 +36,12 @@ static char THIS_FILE[] = __FILE__;
 
 //////////////// Implementation ///////////////////////////////////////////////
 
-CVersionInfo::CVersionInfo() : m_pffi(NULL),
+CVersionInfo::CVersionInfo() : m_pffi(nullptr),
                                m_wLangID(0),
                                m_wCharset(1252), //Use the ANSI code page as a default
-                               m_pTranslations(NULL),
+                               m_pTranslations(nullptr),
                                m_nTranslations(0),
-                               m_VerData(NULL)
+                               m_VerData(nullptr)
 {
 }
 
@@ -52,13 +52,13 @@ CVersionInfo::~CVersionInfo()
 
 void CVersionInfo::Unload()
 {
-  m_pffi = NULL;
-  if ( m_VerData != NULL )
+  m_pffi = nullptr;
+  if ( m_VerData != nullptr )
      free( m_VerData );
 
   m_wLangID = 0;
   m_wCharset = 1252; //Use the ANSI code page as a default
-  m_pTranslations = NULL;
+  m_pTranslations = nullptr;
   m_nTranslations = 0;
 }
 
@@ -75,7 +75,7 @@ BOOL CVersionInfo::Load(LPCTSTR szFileName)
   if (dwSize)
   {
     //Allocate some memory to hold the version info data
-    ASSERT(m_VerData == NULL);
+    ASSERT(m_VerData == nullptr);
     m_VerData = (BYTE*)malloc(dwSize);
     if (!m_VerData)
     {
@@ -111,43 +111,43 @@ BOOL CVersionInfo::Load(LPCTSTR szFileName)
 
 VS_FIXEDFILEINFO* CVersionInfo::GetFixedFileInfo()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi;
 }
 
 DWORD CVersionInfo::GetFileFlagsMask()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi->dwFileFlagsMask;
 }
 
 DWORD CVersionInfo::GetFileFlags()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi->dwFileFlags;
 }
 
 DWORD CVersionInfo::GetOS()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi->dwFileOS;
 }
 
 DWORD CVersionInfo::GetFileType()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi->dwFileType;
 }
 
 DWORD CVersionInfo::GetFileSubType()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   return m_pffi->dwFileSubtype;
 }
 
 FILETIME CVersionInfo::GetCreationTime()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   FILETIME CreationTime;
   CreationTime.dwHighDateTime = m_pffi->dwFileDateMS; 
   CreationTime.dwLowDateTime = m_pffi->dwFileDateLS; 
@@ -156,7 +156,7 @@ FILETIME CVersionInfo::GetCreationTime()
 
 unsigned __int64 CVersionInfo::GetFileVersion()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   unsigned __int64 nFileVersion = 0;
   nFileVersion = m_pffi->dwFileVersionLS;
   nFileVersion += ((static_cast<unsigned __int64>(m_pffi->dwFileVersionMS)) << 32);
@@ -165,7 +165,7 @@ unsigned __int64 CVersionInfo::GetFileVersion()
 
 unsigned __int64 CVersionInfo::GetProductVersion()
 {
-  ASSERT(m_VerData != NULL); //Must have been loaded successfully
+  ASSERT(m_VerData != nullptr); //Must have been loaded successfully
   unsigned __int64 nProductVersion = 0;
   nProductVersion = m_pffi->dwProductVersionLS;
   nProductVersion += ((static_cast<unsigned __int64>(m_pffi->dwProductVersionMS)) << 32);
@@ -175,7 +175,7 @@ unsigned __int64 CVersionInfo::GetProductVersion()
 CString CVersionInfo::GetValue(const CString& sKey)
 {
   //Validate our parameters
-  ASSERT(m_VerData != NULL);
+  ASSERT(m_VerData != nullptr);
 
   //What will be the return value from this function
   CString sVal;
@@ -190,7 +190,7 @@ CString CVersionInfo::GetValue(const CString& sKey)
   LPTSTR pszQueryValue = sQueryValue.GetBuffer(sQueryValue.GetLength());
 
   //Do the query
-  LPTSTR pVal = NULL;
+  LPTSTR pVal = nullptr;
   UINT nLen = 0;
   if (VerQueryValue(m_VerData, pszQueryValue, reinterpret_cast<LPVOID*>(&pVal), &nLen)) 
     sVal = pVal;

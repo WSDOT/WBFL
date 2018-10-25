@@ -95,7 +95,7 @@ public:
    // from atl
 	STDMETHOD(get_Count)(CollectionIndexType* pcount)
 	{
-		if (pcount == NULL)
+		if (pcount == nullptr)
 			return E_POINTER;
 		*pcount = m_coll.size();
 		return S_OK;
@@ -103,9 +103,9 @@ public:
 
 	STDMETHOD(get__NewEnum)(IUnknown** ppUnk)
 	{
-		if (ppUnk == NULL)
+		if (ppUnk == nullptr)
 			return E_POINTER;
-		*ppUnk = NULL;
+		*ppUnk = nullptr;
 		HRESULT hRes = S_OK;
 		CComObject<MapEnumType>* p;
 		hRes = CComObject<MapEnumType>::CreateInstance(&p);
@@ -154,7 +154,7 @@ public:
          {
             // zero-based access
             ContainerType::iterator it(m_coll.begin());
-            for (CollectionIndexType i=0; i<IDorIndex; i++)
+            for (CollectionIndexType i = 0; i<IDorIndex; i++)
             {
                it++;
             }
@@ -179,7 +179,7 @@ public:
       }
       else
       {
-         *pVal = NULL;
+         *pVal = nullptr;
       }
 
       return S_OK;
@@ -195,7 +195,7 @@ public:
       if ( FAILED(hr) )
          return hr;
 
-      hr = pEnum->Init( NULL, m_coll );
+      hr = pEnum->Init( nullptr, m_coll );
       if ( FAILED(hr) )
          return hr;
 
@@ -258,7 +258,9 @@ public:
          return pItem;
       }
       else
-         return 0;
+      {
+         return nullptr;
+      }
    }
 
 

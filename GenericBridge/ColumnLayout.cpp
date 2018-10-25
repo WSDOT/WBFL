@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CColumnLayout
 HRESULT CColumnLayout::FinalConstruct()
 {
-   m_pPier = NULL;
+   m_pPier = nullptr;
 
    m_bUniform = VARIANT_TRUE;
    m_UniformSpacing = 1.0;
@@ -81,7 +81,7 @@ STDMETHODIMP CColumnLayout::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IColumnLayout,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -675,7 +675,7 @@ void CColumnLayout::PutColumn(ColumnIndexType columnIdx,IColumn* column)
 void CColumnLayout::RenumberColumns()
 {
    IndexType colIdx = 0;
-   BOOST_FOREACH(CComPtr<IColumn>& column,m_Columns)
+   for( auto& column : m_Columns)
    {
       column->put_Index(colIdx++);
    }

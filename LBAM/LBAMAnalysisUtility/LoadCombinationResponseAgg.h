@@ -60,7 +60,7 @@ BEGIN_CONNECTION_POINT_MAP(CLoadCombinationResponseAgg)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILoadCombinationResponse
 public:
@@ -91,11 +91,11 @@ public:
 
 // IConcurrentLoadCombinationResponse
 public:
-   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
-   STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results);
-   STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
-   STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results);
-   STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionStressResults* *results);
+   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ResultsOrientation orientation, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
+   STDMETHOD(ComputeDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionResult3Ds* *results) override;
+   STDMETHOD(ComputeReactions)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
+   STDMETHOD(ComputeSupportDeflections)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/IResult3Ds* *results) override;
+   STDMETHOD(ComputeStresses)(/*[in]*/IIDArray* pois, /*[in]*/BSTR stage, /*[in]*/ILoadCombinationResultConfiguration* config, /*[out,retval]*/ISectionStressResults* *results) override;
 
 private:
    // internal implementation

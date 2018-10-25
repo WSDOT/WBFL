@@ -101,15 +101,15 @@ void CEAFAutoCalcGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHin
 
 bool CEAFAutoCalcGraphView::DoResultsExist()
 {
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder();
-   boost::shared_ptr<CEAFAutoCalcGraphBuilder> pGraphBuilderBase = boost::dynamic_pointer_cast<CEAFAutoCalcGraphBuilder>(pGraphBuilder);
+   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder();
+   std::shared_ptr<CEAFAutoCalcGraphBuilder> pGraphBuilderBase = std::dynamic_pointer_cast<CEAFAutoCalcGraphBuilder>(pGraphBuilder);
 
    return pGraphBuilderBase->IsValidGraph();
 }
 
 void CEAFAutoCalcGraphView::UpdateNow()
 {
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder();
-   boost::shared_ptr<CEAFAutoCalcGraphBuilder> pGraphBuilderBase = boost::dynamic_pointer_cast<CEAFAutoCalcGraphBuilder>(pGraphBuilder);
+   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder();
+   std::shared_ptr<CEAFAutoCalcGraphBuilder> pGraphBuilderBase = std::dynamic_pointer_cast<CEAFAutoCalcGraphBuilder>(pGraphBuilder);
    pGraphBuilderBase->ForceUpdate();
 }

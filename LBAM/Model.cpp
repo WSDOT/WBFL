@@ -48,7 +48,7 @@ STDMETHODIMP CModel::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILBAMModel
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -57,7 +57,7 @@ STDMETHODIMP CModel::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CModel::FinalConstruct( )
+HRESULT CModel::FinalConstruct( )
 {
    HRESULT hr;
    // create a default, empty collection and set up a connection point to it
@@ -346,7 +346,7 @@ STDMETHODIMP CModel::get_TemporarySupports(ITemporarySupports** ppVal)
    CComPtr<IEnumSpan> enumSpans;
    m_Spans->get__EnumElements(&enumSpans);
    CComPtr<ISpan> span;
-   while ( enumSpans->Next(1,&span,NULL) != S_FALSE )
+   while ( enumSpans->Next(1,&span,nullptr) != S_FALSE )
    {
       CComPtr<ITemporarySupports> tss;
       span->get_TemporarySupports(&tss);
@@ -354,7 +354,7 @@ STDMETHODIMP CModel::get_TemporarySupports(ITemporarySupports** ppVal)
       CComPtr<IEnumTemporarySupport> enumTS;
       tss->get__EnumElements(&enumTS);
       CComPtr<ITemporarySupport> ts;
-      while ( enumTS->Next(1,&ts,NULL) != S_FALSE )
+      while ( enumTS->Next(1,&ts,nullptr) != S_FALSE )
       {
          (*ppVal)->Add(ts);
          ts.Release();
@@ -2047,7 +2047,7 @@ void CModel::LocationCache::Validate()
    m_SpanEnds.push_back(0.0); // start of first span is always 0.0
 
    Float64 spanlen=0.0;
-   for (SpanIndexType ispan=0; ispan<span_cnt; ispan++)
+   for (SpanIndexType ispan = 0; ispan<span_cnt; ispan++)
    {
       Float64 length;
       CComPtr<ISpan> span;
@@ -2077,7 +2077,7 @@ void CModel::LocationCache::Validate()
    m_SsmEnds.push_back(-overhang); // start of first ssm is at - overhang
 
    Float64 ssmlen=-overhang;
-   for (CollectionIndexType issm=0; issm<ssm_cnt; issm++)
+   for (CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
    {
       Float64 length;
       CComPtr<ISuperstructureMember> ssm;

@@ -203,7 +203,7 @@ protected:
    void MakeCopy(const gmTrafficBarrier& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const gmTrafficBarrier& rOther);
+   void MakeAssignment(const gmTrafficBarrier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -241,11 +241,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

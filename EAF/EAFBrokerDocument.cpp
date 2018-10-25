@@ -50,8 +50,8 @@ IMPLEMENT_DYNAMIC(CEAFBrokerDocument, CEAFDocument)
 
 CEAFBrokerDocument::CEAFBrokerDocument()
 {
-   m_pBroker = NULL;
-   m_pDocProxyAgent =  NULL;
+   m_pBroker = nullptr;
+   m_pDocProxyAgent =  nullptr;
    m_bIsGraphMenuPopulated = false;
 
    // The base class registers as a unit mode listener
@@ -222,7 +222,7 @@ BOOL CEAFBrokerDocument::CreateBroker()
 {
    // create the broker object
    HRESULT hr;
-   hr = ::CoCreateInstance( CLSID_Broker2, NULL, CLSCTX_INPROC_SERVER, IID_IBroker, (void**)&m_pBroker );
+   hr = ::CoCreateInstance( CLSID_Broker2, nullptr, CLSCTX_INPROC_SERVER, IID_IBroker, (void**)&m_pBroker );
    if ( FAILED(hr) )
    {
       std::_tostringstream msg;
@@ -235,7 +235,7 @@ BOOL CEAFBrokerDocument::CreateBroker()
    // the broker we want to be using implements this interface so
    // generate an error if it doesn't have it
    CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-   if ( pBrokerInit == NULL )
+   if ( pBrokerInit == nullptr )
    {
       FailSafeLogMessage(_T("Wrong version of Broker installed\nRe-install"));
       return FALSE;
@@ -261,9 +261,9 @@ void CEAFBrokerDocument::BrokerShutDown()
       ULONG cRef = m_pBroker->Release();
       ASSERT( cRef == 0 );
       
-      m_pBroker = NULL;
+      m_pBroker = nullptr;
 
-      m_pDocProxyAgent = NULL;
+      m_pDocProxyAgent = nullptr;
    }
 }
 
@@ -276,7 +276,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
    CComPtr<ICatRegister> pICatReg;
    HRESULT hr;
    hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                            NULL,
+                            nullptr,
                             CLSCTX_INPROC_SERVER,
                             IID_ICatRegister,
                             (void**)&pICatReg );
@@ -302,7 +302,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
    ID[0] = GetAgentCategoryID();
 
    // enum agents
-   pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
+   pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
 
    // load up to 10 agents at a time
    const int nMaxAgents = 10;
@@ -333,7 +333,7 @@ BOOL CEAFBrokerDocument::LoadAgents()
    {
       // enum agents
       pIEnumCLSID.Release();
-      pICatInfo->EnumClassesOfCategories(nID,ID,0,NULL,&pIEnumCLSID);
+      pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
 
       CWinApp* pApp = AfxGetApp();
 
@@ -478,7 +478,7 @@ void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
       m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&m_pReportManager);
       m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
 
-      pBrokerInit->Integrate(TRUE,m_pReportManager == NULL ? FALSE : TRUE,m_pGraphManager == NULL ? FALSE : TRUE,TRUE);
+      pBrokerInit->Integrate(TRUE,m_pReportManager == nullptr ? FALSE : TRUE,m_pGraphManager == nullptr ? FALSE : TRUE,TRUE);
    }
    else
    {
@@ -555,7 +555,7 @@ CString CEAFBrokerDocument::GetLogFileName()
    strFileName.Format(_T("%s.log"),EAFGetApp()->m_pszExeName);
 
    PWSTR strDesktop;
-   ::SHGetKnownFolderPath(FOLDERID_Desktop,0,NULL,&strDesktop);
+   ::SHGetKnownFolderPath(FOLDERID_Desktop,0,nullptr,&strDesktop);
 
    CString strFilePath;
    strFilePath.Format(_T("%s\\%s"),strDesktop,strFileName);
@@ -646,14 +646,14 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
    UINT nItems = pReportMenu->GetMenuItemCount();
    for ( UINT idx = 0; idx < nItems; idx++ )
    {
-      pReportMenu->RemoveMenu(0,MF_BYPOSITION,NULL);
+      pReportMenu->RemoveMenu(0,MF_BYPOSITION,nullptr);
    }
 
    if ( m_bFavoriteReports )
    {
       // Add favorites option at top
       CString msg = m_bDisplayFavoriteReports==FALSE ? _T("Show only favorites") : _T("Show all reports");
-      pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg,NULL);
+      pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg,nullptr);
       pReportMenu->AppendSeparator();
    }
 
@@ -687,10 +687,10 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
       if (dolist)
       {
          UINT nCmd = GetReportCommand(i,bQuickReport);
-         pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
+         pMenu->AppendMenu(nCmd,rptName.c_str(),nullptr);
 
          const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
-         pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL,NULL);
+         pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr,nullptr);
 
          didlist = true;
       }
@@ -702,7 +702,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
    // Deal with case where there are no favorites
    if ( m_bFavoriteReports && !didlist )
    {
-      pMenu->AppendMenu(EAFID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."),NULL);
+      pMenu->AppendMenu(EAFID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."),nullptr);
    }
 }
 
@@ -774,7 +774,7 @@ void CEAFBrokerDocument::PopulateGraphMenu(CEAFMenu* pGraphMenu)
    UINT nItems = pGraphMenu->GetMenuItemCount();
    for ( UINT idx = 0; idx < nItems; idx++ )
    {
-      pGraphMenu->RemoveMenu(0,MF_BYPOSITION,NULL);
+      pGraphMenu->RemoveMenu(0,MF_BYPOSITION,nullptr);
    }
 
    BuildGraphMenu(pGraphMenu);
@@ -798,10 +798,10 @@ void CEAFBrokerDocument::BuildGraphMenu(CEAFMenu* pMenu)
    {
       std::_tstring graphName = *iter;
       UINT nCmd = GetGraphCommand(i);
-      pMenu->AppendMenu(nCmd,graphName.c_str(),NULL);
+      pMenu->AppendMenu(nCmd,graphName.c_str(),nullptr);
 
       const CBitmap* pBmp = pGraphMgr->GetMenuBitmap(graphName);
-      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL,NULL);
+      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr,nullptr);
 
       i++;
 
@@ -860,7 +860,7 @@ void CEAFBrokerDocument::DisplayFavoriteReports(BOOL doDisplay)
    if ( m_bDisplayFavoriteReports != bDoDisplay )
    {
       m_bDisplayFavoriteReports = bDoDisplay;
-      UpdateAllViews(NULL,EAF_HINT_FAVORITE_REPORTS_CHANGED,NULL);
+      UpdateAllViews(nullptr,EAF_HINT_FAVORITE_REPORTS_CHANGED,nullptr);
    }
 }
 
@@ -1279,7 +1279,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          if (itfnd == m_BuiltInReportNames.end())
          {
             // Remove report if it's not built in. ptr release should delete it.
-            boost::shared_ptr<CReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
+            std::shared_ptr<CReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
          }
 
          itn++;
@@ -1290,25 +1290,25 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
    CEAFCustomReports::ReportIterator itcr = m_CustomReports.m_Reports.begin();
    while(itcr != m_CustomReports.m_Reports.end())
    {
-      CEAFCustomReport& rCustom = *itcr;
+      CEAFCustomReport& rCustom = const_cast<CEAFCustomReport&>(*itcr); // do not change the name of the report, it will mess up the sort order of the container
 
       // First check that custom report does not have same name as a built-in. This always be blocked by the UI
       std::vector<std::_tstring>::const_iterator itfnd = std::find(m_BuiltInReportNames.begin(), m_BuiltInReportNames.end(), rCustom.m_ReportName);
       if ( itfnd == m_BuiltInReportNames.end() )
       {
          // get parent report
-         boost::shared_ptr<CReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
+         std::shared_ptr<CReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
          if (pParentBuilder)
          {
             // found parent. Now we can create new builder for custom
-            boost::shared_ptr<CReportBuilder> newBuilder( new CReportBuilder(rCustom.m_ReportName.c_str()));
+            std::shared_ptr<CReportBuilder> newBuilder( std::make_shared<CReportBuilder>(rCustom.m_ReportName.c_str()));
             newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
 
             // Title page
-            boost::shared_ptr<CTitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
+            std::shared_ptr<CTitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
             if (ptp)
             {
-               boost::shared_ptr<CTitlePageBuilder> pntp( ptp->Clone() );
+               std::shared_ptr<CTitlePageBuilder> pntp( ptp->Clone() );
                pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
                newBuilder->AddTitlePageBuilder(pntp);
             }
@@ -1321,7 +1321,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             std::vector<std::_tstring>::iterator itChapName = rCustom.m_Chapters.begin();
             while(itChapName != rCustom.m_Chapters.end())
             {
-               boost::shared_ptr<CChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
+               std::shared_ptr<CChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
                if ( pChapterB )
                {
                   newBuilder->AddChapterBuilder( pChapterB );

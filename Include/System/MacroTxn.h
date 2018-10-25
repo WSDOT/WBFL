@@ -27,7 +27,9 @@
 
 #include <System\SysExp.h>
 #include <System\Transaction.h>
-#include <boost\shared_ptr.hpp>
+
+#include <memory>
+
 
 // LOCAL INCLUDES
 //
@@ -130,7 +132,7 @@ protected:
    // GROUP: DATA MEMBERS
    #pragma warning(disable:4251)
    std::_tstring m_Name;
-   typedef boost::shared_ptr<txnTransaction> TransactionPtr;
+   typedef std::shared_ptr<txnTransaction> TransactionPtr;
    typedef std::vector<TransactionPtr> TxnContainer;
    typedef TxnContainer::iterator TxnIterator;
    typedef TxnContainer::const_iterator TxnConstIterator;

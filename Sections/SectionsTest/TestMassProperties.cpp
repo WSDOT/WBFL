@@ -61,7 +61,7 @@ void CTestMassProperties::Test()
    TRY_TEST(IsZero(mass),true);
 
    // Test for errors
-   TRY_TEST(props->get_MassPerLength(NULL),E_POINTER);
+   TRY_TEST(props->get_MassPerLength(nullptr),E_POINTER);
 
    // This is a legal value.
    TRY_TEST(props->put_MassPerLength(-1),S_OK);
@@ -76,7 +76,7 @@ void CTestMassProperties::Test()
    props2.CoCreateInstance(CLSID_MassProperties);
    props->put_MassPerLength(100);
    props2->put_MassPerLength(5.5);
-   TRY_TEST(props->AddProperties(NULL),E_INVALIDARG);
+   TRY_TEST(props->AddProperties(nullptr),E_INVALIDARG);
    TRY_TEST(props->AddProperties(props2),S_OK);
    props->get_MassPerLength(&mass);
    TRY_TEST(IsEqual(mass,105.5),true);

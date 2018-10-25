@@ -35,7 +35,7 @@
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportDescription.h>
-#include <boost\shared_ptr.hpp>
+
 
 class REPORTMANAGERCLASS CReportSpecificationBuilder  
 {
@@ -45,13 +45,12 @@ public:
 
    // the second parameter is a previously created report specification that can be used
    // to initialize the user interface when editing 
-   virtual boost::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc,
-                                                                    boost::shared_ptr<CReportSpecification>& pRptSpec);
-   virtual boost::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
+   virtual std::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual std::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
 
 protected:
-   boost::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo);
-   boost::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList);
+   std::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo);
+   std::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList);
 };
 
 #endif // !defined(AFX_REPORTSPECIFICATIONBUILDER_H__61D4A42A_E3A2_417F_AFAA_A62C9E163716__INCLUDED_)

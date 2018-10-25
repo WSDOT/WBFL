@@ -27,6 +27,7 @@
 #include <Reporter\RcUnitValue.h>
 #include <Reporter\RcSectionValue.h>
 #include <xutility>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -65,7 +66,7 @@ rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
 
    m_pColumnStyles = new rptStyleHolder[m_NumColumns];
    CHECK(m_pColumnStyles);
-   for (ColumnIndexType i=0; i<NumColumns; i++)
+   for (ColumnIndexType i = 0; i<NumColumns; i++)
       (m_pColumnStyles+i)->SetParent(this);
 
    m_pStripeRowColumnStyles = new rptStyleHolder[m_NumColumns];
@@ -153,7 +154,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
          tname = m_Label.GetName();
       }
 
-      ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      ::MessageBox(nullptr,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
 #endif
       ColNo = m_NumColumns-1;
    }
@@ -197,7 +198,7 @@ const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType C
          tname = A2T(ti.name());
       }
 
-      ::MessageBox(NULL,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      ::MessageBox(nullptr,tname.c_str(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
 #endif
       ColNo = m_NumColumns-1;
    }
@@ -230,13 +231,13 @@ void rptRcTable::Accept( rptRcVisitor& MyVisitor )
 RowIndexType rptRcTable::GetNumberOfRows()
 {
    // return the length of the longest column
-   RowIndexType NumRows=0;
-   for (ColumnIndexType i=0; i<m_NumColumns; i++)
+   RowIndexType NumRows = 0;
+   for (ColumnIndexType i = 0; i<m_NumColumns; i++)
    {
       // The compiler can't tell if there parameters are unsigned ints or
       // unsigned shorts.  We have to tell it specifically so it can
       // use the template method.
-      NumRows = _cpp_max( NumRows, (RowIndexType)m_TableData[i].size() );
+      NumRows = Max( NumRows, (RowIndexType)m_TableData[i].size() );
    }
 
    return NumRows;
@@ -267,7 +268,7 @@ Float64 rptRcTable::GetTableWidth() const
    CHECK(m_NumColumns>0);
 
    Float64 tmp =0.;
-   for (ColumnIndexType i=0; i<m_NumColumns; i++)
+   for (ColumnIndexType i = 0; i<m_NumColumns; i++)
    {
       tmp += GetColumnWidth(i);
    }
@@ -476,7 +477,7 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
 
    // cycle through all of the Float64s and push them into the table as rptRcInt's
 
-   for (RowIndexType i=0; i<nRows; i++)
+   for (RowIndexType i = 0; i<nRows; i++)
    {
       m_TableData[ColNo].push_back( rptTableCellParagraph() );
       rptParagraph& rploc = m_TableData[ColNo].back();
@@ -515,7 +516,7 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
 
    // cycle through all of the strings and push them into the table as rptRcStrings
 
-   for (RowIndexType i=0; i<nRows; i++)
+   for (RowIndexType i = 0; i<nRows; i++)
    {
       m_TableData[ColNo].push_back( rptTableCellParagraph() );
       rptParagraph& rploc = m_TableData[ColNo].back();
@@ -604,7 +605,7 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
 {
    // loop over columns and set style of header paragraphs
 
-   for (ColumnIndexType i=0; i<m_NumColumns; i++)
+   for (ColumnIndexType i = 0; i<m_NumColumns; i++)
    {
       CHECK(m_TableData[i].size());
 
@@ -797,7 +798,7 @@ void rptRcTable::MakeCopy(const rptRcTable& rOther)
    CHECK(m_pColumnStyles);
    // next copy the style holders and reset their parents to point to
    // this table
-   for (ColumnIndexType i=0; i<m_NumColumns; i++)
+   for (ColumnIndexType i = 0; i<m_NumColumns; i++)
    {
       *(m_pColumnStyles+i) = *(rOther.m_pColumnStyles+i);
       (m_pColumnStyles+i)->ClearParent();

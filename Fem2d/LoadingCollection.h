@@ -66,14 +66,14 @@ BEGIN_COM_MAP(CLoadingCollection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dLoadingCollection
 public:
-	STDMETHOD(Create)(/*[in]*/LoadCaseIDType ID,/*[out,retval]*/IFem2dLoading* *ppLoading);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid);
-	STDMETHOD(RemoveIDLessThan)(/*[in]*/LoadCaseIDType id);
-	STDMETHOD(Clear)();
+	STDMETHOD(Create)(/*[in]*/LoadCaseIDType ID,/*[out,retval]*/IFem2dLoading* *ppLoading) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid) override;
+	STDMETHOD(RemoveIDLessThan)(/*[in]*/LoadCaseIDType id) override;
+	STDMETHOD(Clear)() override;
 };
 
 #endif //__LoadingCollection_H_

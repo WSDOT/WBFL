@@ -93,7 +93,7 @@ public:
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& MyVisitor )=0;
+   virtual void Accept( rptRcVisitor& MyVisitor ) = 0;
 
    //------------------------------------------------------------------------
    // virtual way to make a copy.

@@ -192,7 +192,7 @@ private:
    rptStyleLibrary();
    // Prevent accidental copying and assignment
    rptStyleLibrary(const rptStyleLibrary&);
-   rptStyleLibrary& operator=(const rptStyleLibrary&);
+   rptStyleLibrary& operator=(const rptStyleLibrary&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

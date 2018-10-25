@@ -215,24 +215,24 @@ STDMETHODIMP_(void) CExtRectangleDrawLineStrategyImpl::GetBoundingBox(iLineDispl
 
    pntBL->get_X(&x);
    pntBL->get_Y(&y);
-   xmax = _cpp_max(xmax,x);
-   ymax = _cpp_max(ymax,y);
-   xmin = _cpp_min(xmin,x);
-   ymin = _cpp_min(ymin,y);
+   xmax = Max(xmax,x);
+   ymax = Max(ymax,y);
+   xmin = Min(xmin,x);
+   ymin = Min(ymin,y);
 
    pntBR->get_X(&x);
    pntBR->get_Y(&y);
-   xmax = _cpp_max(xmax,x);
-   ymax = _cpp_max(ymax,y);
-   xmin = _cpp_min(xmin,x);
-   ymin = _cpp_min(ymin,y);
+   xmax = Max(xmax,x);
+   ymax = Max(ymax,y);
+   xmin = Min(xmin,x);
+   ymin = Min(ymin,y);
 
    pntTR->get_X(&x);
    pntTR->get_Y(&y);
-   xmax = _cpp_max(xmax,x);
-   ymax = _cpp_max(ymax,y);
-   xmin = _cpp_min(xmin,x);
-   ymin = _cpp_min(ymin,y);
+   xmax = Max(xmax,x);
+   ymax = Max(ymax,y);
+   xmin = Min(xmin,x);
+   ymin = Min(ymin,y);
 
    CComPtr<IRect2d> rect;
    rect.CoCreateInstance(CLSID_Rect2d);

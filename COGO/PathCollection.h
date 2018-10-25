@@ -74,34 +74,34 @@ BEGIN_CONNECTION_POINT_MAP(CPathCollection)
 CONNECTION_POINT_ENTRY(IID_IPathCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-virtual void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
-   virtual void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
-   virtual CComBSTR GetCollectionName() { return m_bstrCollectionName; }
-   virtual CComBSTR GetItemName() { return m_bstrItemName; }
+   void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
+   void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
+   CComBSTR GetCollectionName() { return m_bstrCollectionName; }
+   CComBSTR GetItemName() { return m_bstrItemName; }
 
 // IPathCollection
 public:
-//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IPathCollection* *clone);
-   STDMETHOD(get__EnumPaths)(/*[out,retval]*/ IEnumPaths** ppenum);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IPathFactory** factory);
-	STDMETHOD(putref_Factory)(/*[in]*/IPathFactory* factory);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPath* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPath* pVal);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPath* newVal);
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[out,retval]*/ IPath* *Path);
-   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-   STDMETHOD(Clear)();
-   STDMETHOD(FindID)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* ID);
-   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum);
-//	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
-//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-   STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
+//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IPathCollection* *clone) override;
+   STDMETHOD(get__EnumPaths)(/*[out,retval]*/ IEnumPaths** ppenum) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IPathFactory** factory) override;
+	STDMETHOD(putref_Factory)(/*[in]*/IPathFactory* factory) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IPath* *pVal) override;
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IPath* pVal) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IPath* newVal) override;
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[out,retval]*/ IPath* *Path) override;
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(FindID)(/*[in]*/ IPath* Path,/*[out,retval]*/CogoObjectID* ID) override;
+   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum) override;
+//	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
+//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
+   STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
 // IPathEvents
-	STDMETHOD(OnPathChanged)(IPath * Path)
+	STDMETHOD(OnPathChanged)(IPath * Path) override
 	{
       CogoObjectID id;
       FindID(Path,&id);

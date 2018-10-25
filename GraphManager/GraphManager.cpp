@@ -54,12 +54,12 @@ void CGraphManager::ClearAll()
 bool CGraphManager::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
-   boost::shared_ptr<CGraphBuilder> p(pGraphBuilder);
+   std::shared_ptr<CGraphBuilder> p(pGraphBuilder);
    std::pair<GraphBuilderContainer::iterator,bool> result = m_GraphBuilders.insert( std::make_pair( strName, p ) );
    return result.second;
 }
 
-bool CGraphManager::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool CGraphManager::AddGraphBuilder(std::shared_ptr<CGraphBuilder>& pGraphBuilder)
 {
    std::_tstring strName = pGraphBuilder->GetName();
    std::pair<GraphBuilderContainer::iterator,bool> result = m_GraphBuilders.insert( std::make_pair( strName, pGraphBuilder ) );
@@ -71,12 +71,12 @@ CollectionIndexType CGraphManager::GetGraphBuilderCount() const
    return m_GraphBuilders.size();
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(LPCTSTR strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(LPCTSTR strGraphName)
 {
    return GetGraphBuilder(std::_tstring(strGraphName));
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(CollectionIndexType index)
+std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(CollectionIndexType index)
 {
    GraphBuilderContainer::iterator iter = m_GraphBuilders.begin();
    for ( CollectionIndexType i = 0; i < index; i++, iter++ )
@@ -85,27 +85,27 @@ boost::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(CollectionIndexT
    return iter->second;
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(const std::_tstring& strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManager::GetGraphBuilder(const std::_tstring& strGraphName)
 {
    GraphBuilderContainer::iterator found = m_GraphBuilders.find(strGraphName);
-   if ( found == m_GraphBuilders.end() )
-      return boost::shared_ptr<CGraphBuilder>();
+   if (found == m_GraphBuilders.end())
+      return nullptr;
 
    return (*found).second;
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(LPCTSTR strGraphName)
 {
    return RemoveGraphBuilder(std::_tstring(strGraphName));
 }
 
-boost::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
+std::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(const std::_tstring& strGraphName)
 {
    GraphBuilderContainer::iterator found = m_GraphBuilders.find(strGraphName);
-   if ( found == m_GraphBuilders.end() )
-      return boost::shared_ptr<CGraphBuilder>();
+   if (found == m_GraphBuilders.end())
+      return nullptr;
 
-   boost::shared_ptr<CGraphBuilder> graphBuilder = (*found).second;
+   std::shared_ptr<CGraphBuilder> graphBuilder = (*found).second;
 
    m_GraphBuilders.erase(found);
 
@@ -115,7 +115,7 @@ boost::shared_ptr<CGraphBuilder> CGraphManager::RemoveGraphBuilder(const std::_t
 std::vector<std::_tstring> CGraphManager::GetGraphNames() const
 {
    std::vector<std::_tstring> names;
-   BOOST_FOREACH(const GraphBuilderEntry& entry,m_GraphBuilders)
+   for( const auto& entry : m_GraphBuilders)
    {
       names.push_back( entry.first );
    }
@@ -130,8 +130,8 @@ const CBitmap* CGraphManager::GetMenuBitmap(LPCTSTR strGraphName)
 
 const CBitmap* CGraphManager::GetMenuBitmap(const std::_tstring& strGraphName)
 {
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(strGraphName);
-   ATLASSERT( pGraphBuilder != NULL ); // graph builder not found
+   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(strGraphName);
+   ATLASSERT( pGraphBuilder != nullptr ); // graph builder not found
 
    return pGraphBuilder->GetMenuBitmap();
 }

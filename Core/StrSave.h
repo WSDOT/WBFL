@@ -57,16 +57,16 @@ END_COM_MAP()
 
 // IStructuredSave
 public:
-   STDMETHOD(Open)(/*[in]*/ LPCTSTR name);
-   STDMETHOD(BeginUnit)(/*[in]*/ LPCTSTR name, /*[in]*/ Float64 ver);
-	STDMETHOD(put_Property)(/*[in]*/ LPCTSTR name, /*[in]*/ VARIANT newVal);
-   STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_ParentVersion)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_ParentUnit)(BSTR* pParentUnit);
-   STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(EndUnit)();
-   STDMETHOD(Close)();
-   STDMETHOD(SaveRawUnit)(/*[in]*/LPCTSTR unitXML);
+   STDMETHOD(Open)(/*[in]*/ LPCTSTR name) override;
+   STDMETHOD(BeginUnit)(/*[in]*/ LPCTSTR name, /*[in]*/ Float64 ver) override;
+	STDMETHOD(put_Property)(/*[in]*/ LPCTSTR name, /*[in]*/ VARIANT newVal) override;
+   STDMETHOD(get_TopVersion)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_ParentVersion)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_ParentUnit)(BSTR* pParentUnit) override;
+   STDMETHOD(get_Version)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(EndUnit)() override;
+   STDMETHOD(Close)() override;
+   STDMETHOD(SaveRawUnit)(/*[in]*/LPCTSTR unitXML) override;
 
 private:
    sysStructuredSaveXmlPrs m_StrSave;

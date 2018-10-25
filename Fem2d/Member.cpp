@@ -236,7 +236,7 @@ STDMETHODIMP CMember::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IFem2dMember
 	};
-	for (long i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (long i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -872,7 +872,7 @@ JointIDType CMember::GetJointNum(CJoint* j)
    else
    {
       ATLASSERT(false); // "CMember::GetJointNum - Joint not found"
-      return -1;
+      return INVALID_ID;
    }
 }
 
@@ -1466,11 +1466,11 @@ bool CMember::IsReleased(Fem2dMbrEndType end,Fem2dMbrReleaseType releaseType)
    
 	if (end == metStart)
    {
-      bIsReleased = (sysFlags<long>::IsSet(m_StartReleases,flag) ? true : false);
+      bIsReleased = ((m_StartReleases == 0 && flag == 0) || sysFlags<long>::IsSet(m_StartReleases,flag) ? true : false);
    }
    else
    {
-      bIsReleased = (sysFlags<long>::IsSet(m_EndReleases,flag) ? true : false);
+      bIsReleased = ((m_EndReleases == 0 && flag == 0) || sysFlags<long>::IsSet(m_EndReleases,flag) ? true : false);
    }
 
    return bIsReleased;

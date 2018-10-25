@@ -80,20 +80,20 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IProfileElement
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IProfileElement* *clone);
-	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown** pdispVal);
-	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* pdispVal);
-	STDMETHOD(get_Type)(/*[out, retval]*/ ProfileElementType *pVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IProfileElement* *clone) override;
+	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown** pdispVal) override;
+	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* pdispVal) override;
+	STDMETHOD(get_Type)(/*[out, retval]*/ ProfileElementType *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
    // IProfilePointEvents
 public:

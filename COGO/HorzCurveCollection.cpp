@@ -134,7 +134,7 @@ STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID id, IPoint2d* pbt, IPoint2d*
    if ( Ls2 < 0 )
       return E_INVALIDARG;
 
-   if ( hc != NULL )
+   if ( hc != nullptr )
    {
       CHECK_RETOBJ(hc);
    }
@@ -149,7 +149,7 @@ STDMETHODIMP CHorzCurveCollection::Add(CogoObjectID id, IPoint2d* pbt, IPoint2d*
    newHC->put_SpiralLength(spEntry,Ls1);
    newHC->put_SpiralLength(spExit,Ls2);
 
-   if ( hc != NULL )
+   if ( hc != nullptr )
    {
       (*hc) = newHC;
       (*hc)->AddRef();
@@ -205,7 +205,7 @@ STDMETHODIMP CHorzCurveCollection::FindID(IHorzCurve* hc,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IHorzCurve> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(hc) )
       {
          *id = item.first;
@@ -226,7 +226,7 @@ STDMETHODIMP CHorzCurveCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -245,7 +245,7 @@ STDMETHODIMP CHorzCurveCollection::get__EnumHorzCurves(IEnumHorzCurves** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -269,7 +269,7 @@ STDMETHODIMP CHorzCurveCollection::Clone(IHorzCurveCollection* *clone)
 
    CollectionIndexType count = 0;
    CComPtr<IHorzCurve> hc;
-   while ( enumHC->Next(1,&hc,NULL) != S_FALSE )
+   while ( enumHC->Next(1,&hc,nullptr) != S_FALSE )
    {
       CComPtr<IHorzCurve> cloneHC;
       hc->Clone(&cloneHC);

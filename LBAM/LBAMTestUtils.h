@@ -480,7 +480,7 @@ void TestPersistance(T* pllc, const CLSID& ClsId)
 
          hr = psl->BeginUnit(CComBSTR("TestCS"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( pcs2.QueryInterface(&piss2), S_OK);
 
          // Load 

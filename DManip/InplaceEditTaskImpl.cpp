@@ -185,6 +185,6 @@ void CInplaceEditTaskImpl::CompleteTask()
 
       CComPtr<iDisplayMgr> pDispMgr;
       m_pView->GetDisplayMgr(&pDispMgr);
-      pDispMgr->SetTask(NULL);
+      pDispMgr->SetTask(nullptr);
    }
 }

@@ -51,7 +51,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_VertCurveCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -70,23 +70,23 @@ void CTestVertCurveCollection::Test()
    pfg->put_Elevation(441.14);
 
    CComPtr<IVertCurveFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST( factory != NULL, true );
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST( factory != nullptr, true );
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(1,NULL,pvi,pfg,400,400,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,NULL,pfg,400,400,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,NULL,400,400,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,-1,400,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,0,400,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,-1,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,0,NULL),S_OK);
-   TRY_TEST(pColl->Add(2,pbg,pvi,pfg,400,400,NULL),S_OK);
+   TRY_TEST(pColl->Add(1,nullptr,pvi,pfg,400,400,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,nullptr,pfg,400,400,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,pvi,nullptr,400,400,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,-1,400,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,0,400,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,-1,nullptr),E_INVALIDARG);
+   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,0,nullptr),S_OK);
+   TRY_TEST(pColl->Add(2,pbg,pvi,pfg,400,400,nullptr),S_OK);
    CComPtr<IVertCurve> vc;
    TRY_TEST(pColl->get_Item(1,&vc),S_OK);
    TRY_TEST(pColl->get_Count(&count),S_OK);
@@ -95,13 +95,13 @@ void CTestVertCurveCollection::Test()
    //
    // Test AddEx method
    //
-   TRY_TEST(pColl->AddEx(0,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->AddEx(0,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->AddEx(1,vc),COGO_E_VERTCURVEALREADYDEFINED);
 
    // Test Item property
    vc.Release();
    TRY_TEST(pColl->get_Item(-1,&vc),COGO_E_VERTCURVENOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&vc),S_OK);
 
    //
@@ -114,7 +114,7 @@ void CTestVertCurveCollection::Test()
    //
    // Test Clear
    //
-   pColl->Add(1,pbg,pvi,pfg,400,400,NULL);
+   pColl->Add(1,pbg,pvi,pfg,400,400,nullptr);
    pColl->get_Count(&count);
    TRY_TEST(count,1);
    TRY_TEST( pColl->Clear(), S_OK );
@@ -126,7 +126,7 @@ void CTestVertCurveCollection::Test()
    //
    TRY_TEST(pColl->AddEx(1,vc),S_OK);
 
-   TRY_TEST(pColl->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,vc),COGO_E_VERTCURVENOTFOUND);
    TRY_TEST(pColl->putref_Item(1,vc),S_OK);
 
@@ -134,8 +134,8 @@ void CTestVertCurveCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(vc,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(vc,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(vc,&id),S_OK);
    TRY_TEST(id,1);
 
@@ -151,7 +151,7 @@ void CTestVertCurveCollection::Test()
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -164,7 +164,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(pColl->AddEx(3,vc),S_OK);
    TRY_TEST(pColl->AddEx(4,vc),S_OK);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -182,7 +182,7 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(pColl->AddEx(3,vc),S_OK);
    TRY_TEST(pColl->AddEx(4,vc),S_OK);
    CComPtr<IEnumVertCurves> pEnumVC;
-   TRY_TEST(pColl->get__EnumVertCurves(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumVertCurves(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumVertCurves(&pEnumVC), S_OK );
 
    CComPtr<IVertCurve> vertCurve;
@@ -256,7 +256,7 @@ void CTestVertCurveCollection::Test()
 
 STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID id,IVertCurve* vc)
 {
-//   MessageBox(NULL,"VertCurveChanged","Event",MB_OK);
+//   MessageBox(nullptr,"VertCurveChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -265,7 +265,7 @@ STDMETHODIMP CTestVertCurveCollection::OnVertCurveChanged(CogoObjectID id,IVertC
 
 STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID id,IVertCurve* vc)
 {
-//   MessageBox(NULL,"VertCurveAdded","Event",MB_OK);
+//   MessageBox(nullptr,"VertCurveAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -274,7 +274,7 @@ STDMETHODIMP CTestVertCurveCollection::OnVertCurveAdded(CogoObjectID id,IVertCur
 
 STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID id)
 {
-//   MessageBox(NULL,"VertCurveRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"VertCurveRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -283,7 +283,7 @@ STDMETHODIMP CTestVertCurveCollection::OnVertCurveRemoved(CogoObjectID id)
 
 STDMETHODIMP CTestVertCurveCollection::OnVertCurvesCleared()
 {
-//   MessageBox(NULL,"VertCurveCleared","Event",MB_OK);
+//   MessageBox(nullptr,"VertCurveCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

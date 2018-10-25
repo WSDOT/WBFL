@@ -40,7 +40,6 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CFShapeBarrier::FinalConstruct()
 {
    m_Material.CoCreateInstance(CLSID_Material);
-   m_bStructurallyContinuous = VARIANT_FALSE;
    return S_OK;
 }
 
@@ -56,7 +55,7 @@ STDMETHODIMP CFShapeBarrier::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IBarrier,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -133,7 +132,7 @@ STDMETHODIMP CFShapeBarrier::get_BarrierToeLocations(Float64* interiorToe,Float6
    CHECK_RETVAL(interiorToe);
    CHECK_RETVAL(exteriorToe);
 
-   if ( m_BarrierShape == NULL )
+   if ( m_BarrierShape == nullptr )
    {
       *interiorToe = 0.0;
       *exteriorToe = 0.0;
@@ -142,19 +141,6 @@ STDMETHODIMP CFShapeBarrier::get_BarrierToeLocations(Float64* interiorToe,Float6
 
    m_BarrierShape->get_X1(exteriorToe);
    m_BarrierShape->get_X2(interiorToe);
-   return S_OK;
-}
-
-STDMETHODIMP CFShapeBarrier::get_IsStructurallyContinuous(VARIANT_BOOL* pbContinuous)
-{
-   CHECK_RETVAL(pbContinuous);
-   (*pbContinuous) = m_bStructurallyContinuous;
-   return S_OK;
-}
-
-STDMETHODIMP CFShapeBarrier::put_IsStructurallyContinuous(VARIANT_BOOL bContinuous)
-{
-   m_bStructurallyContinuous = bContinuous;
    return S_OK;
 }
 

@@ -35,9 +35,9 @@
 // CMacroTransaction
 class ATL_NO_VTABLE CMacroTransaction : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CMacroTransaction, &CLSID_MacroTransaction>,
+	public CComCoClass<CMacroTransaction, &CLSID_WBFLMacroTransaction>,
 	public ISupportErrorInfo,
-	public IMacroTransaction
+	public IWBFLMacroTransaction
 {
 public:
    CMacroTransaction() :
@@ -52,7 +52,7 @@ DECLARE_REGISTRY_RESOURCEID(IDR_MACROTRANSACTION)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CMacroTransaction)
-	COM_INTERFACE_ENTRY(IMacroTransaction)
+	COM_INTERFACE_ENTRY(IWBFLMacroTransaction)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
@@ -61,25 +61,25 @@ private:
    VARIANT_BOOL m_bIsUndoable;
    VARIANT_BOOL m_bIsRepeatable;
 
-   typedef CAdapt<CComPtr<ITransaction> > TxnType;
+   typedef CAdapt<CComPtr<IWBFLTransaction> > TxnType;
    typedef std::vector<TxnType> TxnContainer;
 
    TxnContainer m_Transactions;
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
-// IMacroTransaction
+// IWBFLMacroTransaction
 public:
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_IsRepeatable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_IsUndoable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(AddTransaction)(/*[in]*/ ITransaction* txn);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
-	STDMETHOD(Undo)();
-	STDMETHOD(Execute)();
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_IsRepeatable)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_IsUndoable)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(AddTransaction)(/*[in]*/ IWBFLTransaction* txn) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
+	STDMETHOD(Undo)() override;
+	STDMETHOD(Execute)() override;
 };
 
 #endif //__MACROTRANSACTION_H_

@@ -112,7 +112,7 @@ protected:
    void MakeCopy(const sysXProgrammingError& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const sysXProgrammingError& rOther);
+   void MakeAssignment(const sysXProgrammingError& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

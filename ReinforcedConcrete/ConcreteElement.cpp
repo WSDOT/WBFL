@@ -114,8 +114,8 @@ void rcaConcreteElement::GetForces(Float64* pFz,
    }
    else
    {
-   std::auto_ptr<gmIShape> clip(m_pShape->CreateClippedShape(comp_bound,gpLine2d::Right));
-   if (clip.get()!=0)
+   std::unique_ptr<gmIShape> clip(m_pShape->CreateClippedShape(comp_bound,gpLine2d::Right));
+   if (clip.get() != nullptr)
    {
       gmProperties prop;
       clip->GetProperties(&prop);
@@ -140,9 +140,9 @@ void rcaConcreteElement::GetForces(Float64* pFz,
 
 Float64 rcaConcreteElement::GetClippedArea(const gpLine2d& clipLine, gpLine2d::Side side) const
 {
-//   std::auto_ptr<gmIShape> clip(m_pShape->CreateClippedShape(clipLine, gpLine2d::Right));
-   std::auto_ptr<gmIShape> clip(m_pShape->CreateClippedShape(clipLine, side));
-   if (clip.get() != 0)
+//   std::unique_ptr<gmIShape> clip(m_pShape->CreateClippedShape(clipLine, gpLine2d::Right));
+   std::unique_ptr<gmIShape> clip(m_pShape->CreateClippedShape(clipLine, side));
+   if (clip.get() != nullptr)
    {
       gmProperties prop;
       clip->GetProperties(&prop);
@@ -254,7 +254,7 @@ void rcaConcreteElement::MakeCopy(const rcaConcreteElement& rOther)
    m_ConcreteKey  = rOther.m_ConcreteKey;
    m_IsNSpecified = rOther.m_IsNSpecified;
    m_N            = rOther.m_N;
-   m_pShape       = std::auto_ptr<gmIShape>(rOther.m_pShape->CreateClone());
+   m_pShape       = std::unique_ptr<gmIShape>(rOther.m_pShape->CreateClone());
    m_pProblem     = rOther.m_pProblem;
 
    ASSERTVALID;

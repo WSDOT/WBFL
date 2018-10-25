@@ -41,7 +41,7 @@ STDMETHODIMP CSuperstructureMembers::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISuperstructureMembers
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -53,7 +53,7 @@ STDMETHODIMP CSuperstructureMembers::get_Length(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   Float64 len=0;
+   Float64 len = 0;
    iterator it( begin() );
    iterator itend( end() );
 	for(; it!=itend; it++)

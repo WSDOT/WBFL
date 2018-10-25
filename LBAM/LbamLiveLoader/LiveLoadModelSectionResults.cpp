@@ -41,7 +41,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::InterfaceSupportsErrorInfo(REFIID rii
 	{
 		&IID_ILiveLoadModelSectionResults
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -102,7 +102,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::SetResult(CollectionIndexType index, 
 
 STDMETHODIMP CLiveLoadModelSectionResults::GetResult(CollectionIndexType index, Float64 *leftResult, ILiveLoadConfiguration **leftConfig, Float64 *rightResult, ILiveLoadConfiguration **rightConfig)
 {
-   // Left and Right config can be NULL
+   // Left and Right config can be nullptr
   
 	if (0 <= index && index < (CollectionIndexType)m_Results.size())
    {
@@ -110,12 +110,12 @@ STDMETHODIMP CLiveLoadModelSectionResults::GetResult(CollectionIndexType index, 
 
       *leftResult     = rresult.m_LeftResult;
 
-      if (leftConfig!=NULL)
+      if (leftConfig!=nullptr)
          rresult.m_LeftConfig.CopyTo(leftConfig);
 
       *rightResult    = rresult.m_RightResult;
 
-      if (rightConfig!=NULL)
+      if (rightConfig!=nullptr)
          rresult.m_RightConfig.CopyTo(rightConfig);
    }
    else
@@ -155,7 +155,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Load(IStructuredLoad2 * pload)
       long cnt = var;
       m_Results.reserve(cnt);
 
-      for (long ic=0; ic<cnt; ic++)
+      for (long ic = 0; ic<cnt; ic++)
       {
          LlmResults reshldr;
 
@@ -175,7 +175,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Load(IStructuredLoad2 * pload)
          // null configurations are written out as longs (see Save)
          if (var.vt==VT_I4)
          {
-            reshldr.m_LeftConfig = NULL;
+            reshldr.m_LeftConfig = nullptr;
          }
          else
          {
@@ -203,7 +203,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Load(IStructuredLoad2 * pload)
 
          if (var.vt==VT_I4)
          {
-            reshldr.m_RightConfig = NULL;
+            reshldr.m_RightConfig = nullptr;
          }
          else
          {
@@ -248,7 +248,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 
@@ -256,7 +256,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_LeftConfig!=NULL)
+         if (llres.m_LeftConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t(llres.m_LeftConfig));
          else
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t((long)0));
@@ -268,7 +268,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_RightConfig!=NULL)
+         if (llres.m_RightConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t(llres.m_RightConfig));
          else
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t((long)0));

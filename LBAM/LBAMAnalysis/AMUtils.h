@@ -38,9 +38,11 @@
 #include <algorithm>
 #include <sstream>
 
+#include <memory>
+
 #include <MathEx.h>
 
-#include <boost\shared_ptr.hpp>
+
 
 #define FX 0
 #define FY 1
@@ -64,15 +66,15 @@ enum SubNodeReason{ sbnrSupportEnd=1, sbnrSegmentEnd=2};
 class SubNodeLoc
 {
 public:
-   SubNodeLoc(Float64 locx, Float64 locy, SubNodeReason reason, ISegmentCrossSection* pSegmentCrossSection=NULL );
+   SubNodeLoc(Float64 locx, Float64 locy, SubNodeReason reason, ISegmentCrossSection* pSegmentCrossSection=nullptr );
    bool operator< (const SubNodeLoc& other) const;
-   bool IsReason(SubNodeReason reason);
+   bool IsReason(SubNodeReason reason) const;
    void Assimilate(const SubNodeLoc& rother);
    void GetSegmentCrossSection(ISegmentCrossSection** ppSegmentCrossSection);
    void SetSegmentCrossSection(ISegmentCrossSection* section);
-   Float64 GetXLoc();
-   Float64 GetYLoc();
-   Float64 Distance(const SubNodeLoc& rother);
+   Float64 GetXLoc() const;
+   Float64 GetYLoc() const;
+   Float64 Distance(const SubNodeLoc& rother) const;
 
 public:
    JointIDType m_FemJointID;
@@ -106,21 +108,30 @@ typedef SubNodeLocs::iterator SubNodeLocIterator;
 enum SuperNodeReason{ nrSpanEnd=1, nrTemporarySupport=2, nrTemporarySupportLoc=4, nrMemberEnd=8, nrSegmentEnd=16};
 enum MemberRelease {mrFixed=0, mrLeftPinned=1, mrRightPinned=4, mrLeftAxial=8, mrRightAxial=16};
 
+// If superstructure elements are very short, they can be "condensed" out of the model. This means that they
+// assimilate with the node to the left or right in order to avoid numerical badness
+enum CondenseType {notCondensed,
+                   leftCondensed,  // assimilated to ssm on left
+                   rightCondensed};// assimilated to ssm on right
+
 class SuperNodeLoc
 {
 public:
-   SuperNodeLoc(Float64 loc, SuperNodeReason reason, ISegmentCrossSection* pSegmentCrossSection=NULL );
+
+   SuperNodeLoc(Float64 loc, SuperNodeReason reason, ISegmentCrossSection* pSegmentCrossSection=nullptr );
    SuperNodeLoc(const SuperNodeLoc& other);
    bool operator< (const SuperNodeLoc& other) const;
-   bool IsReason(SuperNodeReason reason);
-   void Assimilate(const SuperNodeLoc& rother);
+   bool IsReason(SuperNodeReason reason) const;
+   void Assimilate(SuperNodeLoc& rother, CondenseType side);
    void GetSegmentCrossSection(ISegmentCrossSection** ppSegmentCrossSection);
    void SetSegmentCrossSection(ISegmentCrossSection* section);
-   Float64 GetLoc();
+   Float64 GetLoc() const;
    void SetRelease(MemberRelease rel);
-   bool IsPinned(Side side);
-   bool HasAxialRelease(Side side);
+   bool IsPinned(Side side) const;
+   bool HasAxialRelease(Side side) const;
    SubNodeLocs* GetSubNodeLocs();
+   CondenseType GetCondenseType() const;
+   
 
 public:
    JointIDType                m_FemJointID;        // joint ID in the fem model
@@ -131,7 +142,8 @@ private:
    long                       m_Reason;
    long                       m_Release;
    CComPtr<ISegmentCrossSection>     m_pSegmentCrossSection; // applies to member to left of node
-   boost::shared_ptr<SubNodeLocs> m_SubNodeLocs;   // only applicable if m_Reason is nrSpanEnd or nrTemporarySupport
+   std::shared_ptr<SubNodeLocs> m_SubNodeLocs;   // only applicable if m_Reason is nrSpanEnd or nrTemporarySupport
+   CondenseType m_CondenseType;
 private:
    SuperNodeLoc();
 };
@@ -255,8 +267,8 @@ public:
    void SetFemPoi(PoiIDType id);
    PoiIDType GetFemPoiID() const;
    void SetMemberLocationType(MemberLocationType type);
-   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
-   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
+   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
+   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
    virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                   ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                   Float64 deflZeroTolerance, 
@@ -265,9 +277,9 @@ public:
                                   IInfluenceLine** pLeftMomentInfl, IInfluenceLine** pRightMomentInfl, 
                                   IInfluenceLine** pLeftDxInfl,     IInfluenceLine** pRightDxInfl,
                                   IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
-                                  IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
+                                  IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl) override;
 
-   virtual std::_tstring GetDescription() const;
+   virtual std::_tstring GetDescription() const override;
 
 private:
    PoiIDType  m_FemPoiID;
@@ -283,8 +295,8 @@ public:
    void SetFemPoiID(PoiIDType leftPoiID, PoiIDType rightPoiID);
    MemberIDType GetLeftPoiID() const;
    MemberIDType GetRightPoiID() const;
-   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
-   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
+   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
+   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
    virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                   ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                   Float64 deflZeroTolerance, 
@@ -293,8 +305,8 @@ public:
                                   IInfluenceLine** pLeftMomentInfl, IInfluenceLine** pRightMomentInfl, 
                                   IInfluenceLine** pLeftDxInfl,     IInfluenceLine** pRightDxInfl,
                                   IInfluenceLine** pLeftDyInfl,     IInfluenceLine** pRightDyInfl, 
-                                  IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl);
-   virtual std::_tstring GetDescription() const;
+                                  IInfluenceLine** pLeftRzInfl,     IInfluenceLine** pRightRzInfl) override;
+   virtual std::_tstring GetDescription() const override;
 
 
 private:
@@ -357,7 +369,7 @@ public:
    void Reset();
 
    // test if a poi is at an exact location along a span or ssm
-   bool IsPoiAtLocation(MemberType mbrType, MemberIDType mbrID, Float64 globalX, PoiIDType* poiIDAtLoc=NULL);
+   bool IsPoiAtLocation(MemberType mbrType, MemberIDType mbrID, Float64 globalX, PoiIDType* poiIDAtLoc=nullptr);
 
    // test if a poi is at or between the next location and the most-recently found location
    bool IsPoiAtNextLocation(Float64 nextX, Float64* foundX);

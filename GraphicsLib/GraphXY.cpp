@@ -122,7 +122,7 @@ IndexType grGraphXY::CreateDataSeries(LPCTSTR lpszLabel,int nPenStyle, int nWidt
    IndexType cookie = m_GraphDataMap.size();
 
    GraphData gd;
-   gd.Label = (lpszLabel == NULL ? _T("") : lpszLabel);
+   gd.Label = (lpszLabel == nullptr ? _T("") : lpszLabel);
    gd.Pen.Color = crColor;
    gd.Pen.Width = nWidth;
    gd.Pen.Style = nPenStyle;
@@ -225,7 +225,7 @@ void grGraphXY::DrawBackground(HDC hDC)
 
    // logic taken here from CDC::FillSolidRect
    COLORREF bg = ::SetBkColor(hDC, m_ClientAreaColor);
-	::ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &c_rect, NULL, 0, NULL);
+	::ExtTextOut(hDC, 0, 0, ETO_OPAQUE, &c_rect, nullptr, 0, nullptr);
    ::SetBkColor(hDC, bg);
 
    // draw the axis'
@@ -896,7 +896,7 @@ void grGraphXY::DrawCurve(HDC hDC)
       logBrush.lbStyle = BS_SOLID;
       logBrush.lbHatch = 0; // not used because lbStyle is BS_SOLID
 
-      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, NULL);
+      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, nullptr);
       HGDIOBJ hOldPen = ::SelectObject(hDC,hPen);
 
       DataSeries& ds = gd.Series;
@@ -1086,7 +1086,7 @@ void grGraphXY::DrawLegend(HDC hDC)
       logBrush.lbStyle = BS_SOLID;
       logBrush.lbHatch = 0; // not used because lbStyle is BS_SOLID
 
-      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, NULL);
+      HPEN hPen = ::ExtCreatePen(PS_GEOMETRIC | gd.Pen.Style, gd.Pen.Width, &logBrush, 0, nullptr);
       HGDIOBJ old_pen = ::SelectObject(hDC,hPen);
 
       POINT last_point;

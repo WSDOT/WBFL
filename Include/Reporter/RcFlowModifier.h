@@ -126,7 +126,7 @@ protected:
    void MakeCopy(const rptRcFlowModifier& rOther);
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   virtual void MakeAssignment(const rptRcFlowModifier& rOther);
+   void MakeAssignment(const rptRcFlowModifier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

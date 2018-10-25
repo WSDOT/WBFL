@@ -67,23 +67,23 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeckRebarPattern
 public:
-   STDMETHOD(putref_Rebar)(IRebar* rebar);
-	STDMETHOD(get_Rebar)(IRebar** rebar);
-	STDMETHOD(putref_RebarLayoutItem)(IBridgeDeckRebarLayoutItem* rebarLayoutItem);
-	STDMETHOD(put_Spacing)(Float64 spacing);
-	STDMETHOD(get_Spacing)(Float64* spacing);
-	STDMETHOD(put_Location)(Float64 y);
-	STDMETHOD(get_Location)(Float64* pY);
-   STDMETHOD(put_IsLumped)(VARIANT_BOOL bIsLumped);
-   STDMETHOD(get_IsLumped)(VARIANT_BOOL* pbIsLumped);
+   STDMETHOD(putref_Rebar)(IRebar* rebar) override;
+	STDMETHOD(get_Rebar)(IRebar** rebar) override;
+	STDMETHOD(putref_RebarLayoutItem)(IBridgeDeckRebarLayoutItem* rebarLayoutItem) override;
+	STDMETHOD(put_Spacing)(Float64 spacing) override;
+	STDMETHOD(get_Spacing)(Float64* spacing) override;
+	STDMETHOD(put_Location)(Float64 y) override;
+	STDMETHOD(get_Location)(Float64* pY) override;
+   STDMETHOD(put_IsLumped)(VARIANT_BOOL bIsLumped) override;
+   STDMETHOD(get_IsLumped)(VARIANT_BOOL* pbIsLumped) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 

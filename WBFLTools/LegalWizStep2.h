@@ -57,10 +57,10 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CLegalWizStep2)
 	public:
-	virtual BOOL OnSetActive();
-	virtual BOOL OnWizardFinish();
+	virtual BOOL OnSetActive() override;
+	virtual BOOL OnWizardFinish() override;
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -68,7 +68,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CLegalWizStep2)
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -84,37 +84,37 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegment
 public:
-   STDMETHOD(putref_PrevSegment)(ISegment* segment);
-   STDMETHOD(get_PrevSegment)(ISegment** segment);
-   STDMETHOD(putref_NextSegment)(ISegment* segment);
-   STDMETHOD(get_NextSegment)(ISegment** segment);
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection);
-   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override;
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override;
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override;
+   STDMETHOD(get_NextSegment)(ISegment** segment) override;
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection) override;
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment,IShape** ppShape) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
 
 // IPrismaticSegment
 public:
-	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial);
-   STDMETHOD(get_ShapeCount)(IndexType* nShapes);
-   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material);
-   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material);
+	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial) override;
+   STDMETHOD(get_ShapeCount)(IndexType* nShapes) override;
+   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material) override;
+   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material) override;
 
 
 // IItemData
 public:
-   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data);
-   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data);
-   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name);
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count);
+   STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
+   STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
+   STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__SEGMENT_H_

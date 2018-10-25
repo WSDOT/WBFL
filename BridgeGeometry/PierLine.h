@@ -126,33 +126,33 @@ END_COM_MAP()
    HRESULT UpdateGeometry();
 
 public:
-   STDMETHOD(get_AlignmentID)(CogoObjectID* ID);
-   STDMETHOD(get_Station)(IStation** pVal);
-   STDMETHOD(get_Direction)(IDirection** pVal);
-   STDMETHOD(get_Normal)(IDirection** pVal);
-   STDMETHOD(get_Skew)(IAngle** pVal);
-   STDMETHOD(get_Index)(PierIndexType* pVal);
-   STDMETHOD(get_ID)(PierIDType* pVal);
-   STDMETHOD(get_NextPierLine)(IPierLine** pVal);
-   STDMETHOD(get_PrevPierLine)(IPierLine** pVal);
+   STDMETHOD(get_AlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(get_Station)(IStation** pVal) override;
+   STDMETHOD(get_Direction)(IDirection** pVal) override;
+   STDMETHOD(get_Normal)(IDirection** pVal) override;
+   STDMETHOD(get_Skew)(IAngle** pVal) override;
+   STDMETHOD(get_Index)(PierIndexType* pVal) override;
+   STDMETHOD(get_ID)(PierIDType* pVal) override;
+   STDMETHOD(get_NextPierLine)(IPierLine** pVal) override;
+   STDMETHOD(get_PrevPierLine)(IPierLine** pVal) override;
 
-   STDMETHOD(get_BearingOffset)(PierFaceType pierFace, Float64* brgOffset);
-   STDMETHOD(put_BearingOffset)(PierFaceType pierFace, Float64 brgOffset);
-   STDMETHOD(get_BearingOffsetMeasurementType)(PierFaceType pierFace, MeasurementType* measure);
-   STDMETHOD(put_BearingOffsetMeasurementType)(PierFaceType pierFace, MeasurementType measure);
-   STDMETHOD(get_EndDistance)(PierFaceType pierFace, Float64* endDist);
-   STDMETHOD(put_EndDistance)(PierFaceType pierFace, Float64 endDist);
-   STDMETHOD(get_EndDistanceMeasurementType)(PierFaceType pierFace, MeasurementType* measure);
-   STDMETHOD(put_EndDistanceMeasurementType)(PierFaceType pierFace, MeasurementType measure);
-   STDMETHOD(get_EndDistanceMeasurementLocation)(PierFaceType pierFace, MeasurementLocation* measure);
-   STDMETHOD(put_EndDistanceMeasurementLocation)(PierFaceType pierFace, MeasurementLocation measure);
+   STDMETHOD(get_BearingOffset)(PierFaceType pierFace, Float64* brgOffset) override;
+   STDMETHOD(put_BearingOffset)(PierFaceType pierFace, Float64 brgOffset) override;
+   STDMETHOD(get_BearingOffsetMeasurementType)(PierFaceType pierFace, MeasurementType* measure) override;
+   STDMETHOD(put_BearingOffsetMeasurementType)(PierFaceType pierFace, MeasurementType measure) override;
+   STDMETHOD(get_EndDistance)(PierFaceType pierFace, Float64* endDist) override;
+   STDMETHOD(put_EndDistance)(PierFaceType pierFace, Float64 endDist) override;
+   STDMETHOD(get_EndDistanceMeasurementType)(PierFaceType pierFace, MeasurementType* measure) override;
+   STDMETHOD(put_EndDistanceMeasurementType)(PierFaceType pierFace, MeasurementType measure) override;
+   STDMETHOD(get_EndDistanceMeasurementLocation)(PierFaceType pierFace, MeasurementLocation* measure) override;
+   STDMETHOD(put_EndDistanceMeasurementLocation)(PierFaceType pierFace, MeasurementLocation measure) override;
 
-   STDMETHOD(get_AlignmentPoint)(IPoint2d** pPoint);
-   STDMETHOD(get_BridgePoint)(IPoint2d** ppPoint);
-   STDMETHOD(get_LeftPoint)(IPoint2d** ppPoint);
-   STDMETHOD(get_RightPoint)(IPoint2d** ppPoint);
-   STDMETHOD(get_Centerline)(ILine2d** ppLine);
-   STDMETHOD(GetBearingOffset)(PierFaceType pierFace,IDirection* direction,Float64* brgOffset);
+   STDMETHOD(get_AlignmentPoint)(IPoint2d** pPoint) override;
+   STDMETHOD(get_BridgePoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(get_LeftPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(get_RightPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(get_Centerline)(ILine2d** ppLine) override;
+   STDMETHOD(GetBearingOffset)(PierFaceType pierFace,IDirection* direction,Float64* brgOffset) override;
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(PierLine), CPierLine)

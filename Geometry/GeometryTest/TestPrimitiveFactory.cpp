@@ -91,7 +91,7 @@ void CTestPrimitiveFactory::TestIPoint2dFactory()
    TRY_TEST( factory.CoCreateInstance( CLSID_PrimitiveFactory ), S_OK );
 
    CComPtr<IPoint2d> pnt;
-   TRY_TEST( factory->CreatePoint(NULL), E_POINTER );
+   TRY_TEST( factory->CreatePoint(nullptr), E_POINTER );
    TRY_TEST( factory->CreatePoint(&pnt), S_OK );
    TRY_TEST( pnt != 0, true );
 }
@@ -102,7 +102,7 @@ void CTestPrimitiveFactory::TestIPoint3dFactory()
    TRY_TEST( factory.CoCreateInstance( CLSID_PrimitiveFactory ), S_OK );
 
    CComPtr<IPoint3d> pnt;
-   TRY_TEST( factory->CreatePoint(NULL), E_POINTER );
+   TRY_TEST( factory->CreatePoint(nullptr), E_POINTER );
    TRY_TEST( factory->CreatePoint(&pnt), S_OK );
    TRY_TEST( pnt != 0, true );
 }
@@ -113,7 +113,7 @@ void CTestPrimitiveFactory::TestILine2dFactory()
    TRY_TEST( factory.CoCreateInstance( CLSID_PrimitiveFactory ), S_OK );
 
    CComPtr<ILine2d> line;
-   TRY_TEST( factory->CreateLine(NULL), E_POINTER );
+   TRY_TEST( factory->CreateLine(nullptr), E_POINTER );
    TRY_TEST( factory->CreateLine(&line), S_OK );
    TRY_TEST( line != 0, true );
 }
@@ -124,7 +124,7 @@ void CTestPrimitiveFactory::TestILineSegment2dFactory()
    TRY_TEST( factory.CoCreateInstance( CLSID_PrimitiveFactory ), S_OK );
 
    CComPtr<ILineSegment2d> lineSeg;
-   TRY_TEST( factory->CreateLineSegment(NULL), E_POINTER );
+   TRY_TEST( factory->CreateLineSegment(nullptr), E_POINTER );
    TRY_TEST( factory->CreateLineSegment(&lineSeg), S_OK );
    TRY_TEST( lineSeg != 0, true );
 }

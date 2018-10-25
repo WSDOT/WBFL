@@ -61,7 +61,7 @@ public:
 class CZoomRectFSMDoneState : public CZoomRectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const  override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -70,11 +70,11 @@ public:
 class CZoomRectFSMWaitingForFirstPointState : public CZoomRectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForFirstPoint"); }
-   virtual void MouseMove(CZoomRectFSM& fsm);
-   virtual void MouseDown(CZoomRectFSM& fsm);
-   virtual void DoubleClick(CZoomRectFSM& fsm);
-   virtual void EscKey(CZoomRectFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("WaitingForFirstPoint"); }
+   virtual void MouseMove(CZoomRectFSM& fsm) override;
+   virtual void MouseDown(CZoomRectFSM& fsm) override;
+   virtual void DoubleClick(CZoomRectFSM& fsm) override;
+   virtual void EscKey(CZoomRectFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -83,11 +83,11 @@ public:
 class CZoomRectFSMWaitingForSecondPointState : public CZoomRectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForSecondPoint"); }
-   virtual void MouseMove(CZoomRectFSM& fsm);
-   virtual void MouseUp(CZoomRectFSM& fsm);
-   virtual void DoubleClick(CZoomRectFSM& fsm);
-   virtual void EscKey(CZoomRectFSM& fsm);
+   virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
+   virtual void MouseMove(CZoomRectFSM& fsm) override;
+   virtual void MouseUp(CZoomRectFSM& fsm) override;
+   virtual void DoubleClick(CZoomRectFSM& fsm) override;
+   virtual void EscKey(CZoomRectFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -96,8 +96,8 @@ public:
 class CZoomRectFSMStartState : public CZoomRectFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CZoomRectFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("Start"); }
+   virtual void Do(CZoomRectFSM& fsm) override;
 };
 
 class CZoomRectFSM : public iZoomRectTask

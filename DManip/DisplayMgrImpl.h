@@ -63,107 +63,107 @@ END_COM_MAP()
 
    // iDisplayMgr Implementation
 public:
-   STDMETHOD_(void,SetView)(CDisplayView* pView);
-   STDMETHOD_(CDisplayView*,GetView)();
+   STDMETHOD_(void,SetView)(CDisplayView* pView) override;
+   STDMETHOD_(CDisplayView*,GetView)() override;
 
-   STDMETHOD_(void,GetCoordinateMap)(iCoordinateMap** map);
+   STDMETHOD_(void,GetCoordinateMap)(iCoordinateMap** map) override;
 
    // Display List Management
-   STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL);
-   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list);
-   STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list);
-   STDMETHOD_(CollectionIndexType,GetDisplayListCount)();
-   STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access);
-   STDMETHOD_(void,ClearDisplayLists)();
+   STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) override;
+   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list) override;
+   STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) override;
+   STDMETHOD_(CollectionIndexType,GetDisplayListCount)() override;
+   STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) override;
+   STDMETHOD_(void,ClearDisplayLists)() override;
 
    // Display Object Management
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,IDType key,AccessType access);
-   STDMETHOD_(void,FindDisplayObject)(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj);
-   STDMETHOD_(void,FindDisplayObjects)(CPoint point,DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,FindDisplayObjects)(CRect rect,DisplayObjectContainer* dispObjs);
-   STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess);
-   STDMETHOD_(void,ClearDisplayObjects)();
-   STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access);
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)();
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)();
-   STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory);
-   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory);
+   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,IDType key,AccessType access) override;
+   STDMETHOD_(void,FindDisplayObject)(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj) override;
+   STDMETHOD_(void,FindDisplayObjects)(CPoint point,DisplayObjectContainer* dispObjs) override;
+   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs) override;
+   STDMETHOD_(void,FindDisplayObjects)(CRect rect,DisplayObjectContainer* dispObjs) override;
+   STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) override;
+   STDMETHOD_(void,ClearDisplayObjects)() override;
+   STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) override;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() override;
+   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)() override;
+   STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) override;
+   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory) override;
 
-   STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection);
-   STDMETHOD_(void,SelectObjects)(CRect r);
-   STDMETHOD_(void,ClearSelectedObjects)();
-   STDMETHOD_(void,ClearSelectedObjectsByList)(IDType key,AccessType access,BOOL bInclusive);
-   STDMETHOD_(void,GetSelectedObjects)(DisplayObjectContainer* selObjs);
-   STDMETHOD_(void,SelectAll)(BOOL bSelect);
+   STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) override;
+   STDMETHOD_(void,SelectObjects)(CRect r) override;
+   STDMETHOD_(void,ClearSelectedObjects)() override;
+   STDMETHOD_(void,ClearSelectedObjectsByList)(IDType key,AccessType access,BOOL bInclusive) override;
+   STDMETHOD_(void,GetSelectedObjects)(DisplayObjectContainer* selObjs) override;
+   STDMETHOD_(void,SelectAll)(BOOL bSelect) override;
 
-   STDMETHOD_(void,EnableLBtnMultiSelect)(BOOL bEnable,DWORD dwKey);
-   STDMETHOD_(BOOL,IsLBtnMultiSelectEnabled)();
-   STDMETHOD_(DWORD,GetLBtnMultiSelectKey)();
-   STDMETHOD_(void,EnableLBtnSelectRect)(BOOL bEnable);
-   STDMETHOD_(BOOL,IsLBtnSelectRectEnabled)();
-   STDMETHOD_(void,EnableLBtnSelect)(BOOL bEnable);
-   STDMETHOD_(BOOL,IsLBtnSelectEnabled)();
-   STDMETHOD_(void,EnableRBtnSelect)(BOOL bEnable);
-   STDMETHOD_(BOOL,IsRBtnSelectEnabled)();
+   STDMETHOD_(void,EnableLBtnMultiSelect)(BOOL bEnable,DWORD dwKey) override;
+   STDMETHOD_(BOOL,IsLBtnMultiSelectEnabled)() override;
+   STDMETHOD_(DWORD,GetLBtnMultiSelectKey)() override;
+   STDMETHOD_(void,EnableLBtnSelectRect)(BOOL bEnable) override;
+   STDMETHOD_(BOOL,IsLBtnSelectRectEnabled)() override;
+   STDMETHOD_(void,EnableLBtnSelect)(BOOL bEnable) override;
+   STDMETHOD_(BOOL,IsLBtnSelectEnabled)() override;
+   STDMETHOD_(void,EnableRBtnSelect)(BOOL bEnable) override;
+   STDMETHOD_(BOOL,IsRBtnSelectEnabled)() override;
 
-   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC);
-   STDMETHOD_(void,SetSelectionFillColor)(COLORREF color);
-   STDMETHOD_(void,SetSelectionLineColor)(COLORREF color);
-   STDMETHOD_(COLORREF,GetSelectionFillColor)();
-   STDMETHOD_(COLORREF,GetSelectionLineColor)();
-   STDMETHOD_(void,GetBoundingBox)(iCoordinateMap* pMap, bool boundOrigin, IRect2d** ppRect);
-   STDMETHOD_(void,InvalidateRect)(LPCRECT lpRect);
-   STDMETHOD_(void,InvalidateRgn)(CRgn* pRgn);
+   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC) override;
+   STDMETHOD_(void,SetSelectionFillColor)(COLORREF color) override;
+   STDMETHOD_(void,SetSelectionLineColor)(COLORREF color) override;
+   STDMETHOD_(COLORREF,GetSelectionFillColor)() override;
+   STDMETHOD_(COLORREF,GetSelectionLineColor)() override;
+   STDMETHOD_(void,GetBoundingBox)(iCoordinateMap* pMap, bool boundOrigin, IRect2d** ppRect) override;
+   STDMETHOD_(void,InvalidateRect)(LPCRECT lpRect) override;
+   STDMETHOD_(void,InvalidateRgn)(CRgn* pRgn) override;
 
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWells)(CDC* pDC);
+   STDMETHOD_(void,DrawGravityWells)(CDC* pDC) override;
 #endif
 
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags, CPoint point);
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags, short zDelta, CPoint point);
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point);
-   STDMETHOD_(BOOL,OnNeedToolTipText)(UINT id,NMHDR* pNMHDR,LRESULT* pResult);
-   STDMETHOD_(INT_PTR,OnToolHitTest)(CPoint point,TOOLINFO* pTI);
+   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseMove)(UINT nFlags, CPoint point) override;
+   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags, short zDelta, CPoint point) override;
+   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) override;
+   STDMETHOD_(BOOL,OnNeedToolTipText)(UINT id,NMHDR* pNMHDR,LRESULT* pResult) override;
+   STDMETHOD_(INT_PTR,OnToolHitTest)(CPoint point,TOOLINFO* pTI) override;
 
-  	STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
-	STDMETHOD_(void,OnDragLeave)();
-	STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
-	STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDragScroll)( DWORD dwKeyState, CPoint point );
+  	STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+	STDMETHOD_(void,OnDragLeave)() override;
+	STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+	STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+   STDMETHOD_(DROPEFFECT,OnDragScroll)( DWORD dwKeyState, CPoint point ) override;
 
    // Drag and Drop
-   STDMETHOD_(void,PrepareDragData)(iDragDataSink* pSink);
-   STDMETHOD_(void,CreateDragObjects)(COleDataObject* pDataObject);
-   STDMETHOD_(void,DrawDragObjects)(const CPoint& dragStart, const CPoint& dragPoint);
-   STDMETHOD_(void,DestroyDragObjects)();
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite);
-   STDMETHOD_(void,UnregisterDropSite)();
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite);
-   STDMETHOD_(void,HighliteDropSite)(BOOL bHighlite);
-   STDMETHOD_(void,OnDragFinished)(DROPEFFECT de);
+   STDMETHOD_(void,PrepareDragData)(iDragDataSink* pSink) override;
+   STDMETHOD_(void,CreateDragObjects)(COleDataObject* pDataObject) override;
+   STDMETHOD_(void,DrawDragObjects)(const CPoint& dragStart, const CPoint& dragPoint) override;
+   STDMETHOD_(void,DestroyDragObjects)() override;
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override;
+   STDMETHOD_(void,UnregisterDropSite)() override;
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override;
+   STDMETHOD_(void,HighliteDropSite)(BOOL bHighlite) override;
+   STDMETHOD_(void,OnDragFinished)(DROPEFFECT de) override;
 
-   STDMETHOD_(void,SetTaskFactory)(iTaskFactory* pFactory);
-   STDMETHOD_(void,GetTaskFactory)(iTaskFactory** factory);
-   STDMETHOD_(void,SetTask)(iTask* pTask);
+   STDMETHOD_(void,SetTaskFactory)(iTaskFactory* pFactory) override;
+   STDMETHOD_(void,GetTaskFactory)(iTaskFactory** factory) override;
+   STDMETHOD_(void,SetTask)(iTask* pTask) override;
 
    // iDisplayListEvents
-   STDMETHOD_(void,OnDisplayObjectAdded)(IDType listID,iDisplayObject* pDO);
-   STDMETHOD_(void,OnDisplayObjectRemoved)(IDType listID,SIZE_T doID);
-   STDMETHOD_(void,OnDisplayObjectsCleared)(IDType listID);
+   STDMETHOD_(void,OnDisplayObjectAdded)(IDType listID,iDisplayObject* pDO) override;
+   STDMETHOD_(void,OnDisplayObjectRemoved)(IDType listID,SIZE_T doID) override;
+   STDMETHOD_(void,OnDisplayObjectsCleared)(IDType listID) override;
 
    // Event Sink - This gives the canvas a pluggable event handling strategy for events 
    //              that are not handled by display objects
-   STDMETHOD_(void,RegisterEventSink)(iDisplayMgrEvents* pEventSink);
-   STDMETHOD_(void,UnregisterEventSink)();
-   STDMETHOD_(void,GetEventSink)(iDisplayMgrEvents** pEventSink);
+   STDMETHOD_(void,RegisterEventSink)(iDisplayMgrEvents* pEventSink) override;
+   STDMETHOD_(void,UnregisterEventSink)() override;
+   STDMETHOD_(void,GetEventSink)(iDisplayMgrEvents** pEventSink) override;
 
 private:
    CDisplayView* m_pView;

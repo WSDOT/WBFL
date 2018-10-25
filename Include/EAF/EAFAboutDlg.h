@@ -32,11 +32,11 @@ class EAFCLASS CEAFAboutDlg : public CDialog
 	DECLARE_DYNAMIC(CEAFAboutDlg)
 
 public:
-   CEAFAboutDlg(HICON hIcon = NULL,UINT nIDTemplate=0,CWnd* pParent = NULL);   // standard constructor
+   CEAFAboutDlg(HICON hIcon = nullptr,UINT nIDTemplate=0,CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CEAFAboutDlg();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 
    afx_msg void OnAppListSelChanged();
    afx_msg void OnMoreInfo();
@@ -49,5 +49,5 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
 };

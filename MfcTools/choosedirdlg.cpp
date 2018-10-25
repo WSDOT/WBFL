@@ -27,6 +27,7 @@
 #include "MfcTools\choosedirdlg.h"
 #include "shlobj.h"
 #include <dlgs.h>
+#include <VersionHelpers.h>
 
 
 //////////////////////////////// Defines //////////////////////////////////////
@@ -49,11 +50,11 @@ public:
     
 // Constructors
   COldFileDirDialog(BOOL bOpenFileDialog, // TRUE for FileOpen, FALSE for FileSaveAs
-                 LPCTSTR lpszDefExt = NULL,
-                 LPCTSTR lpszFileName = NULL,
+                 LPCTSTR lpszDefExt = nullptr,
+                 LPCTSTR lpszFileName = nullptr,
                  DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-                 LPCTSTR lpszFilter = NULL,
-                 CWnd* pParentWnd = NULL);
+                 LPCTSTR lpszFilter = nullptr,
+                 CWnd* pParentWnd = nullptr);
                                           
 // Implementation
 protected:
@@ -149,13 +150,14 @@ BOOL CChooseDirDlg::GetDirectory(CString& sDir, CWnd* pWndParent, BOOL bOldStyle
 {
   BOOL bSuccess = FALSE;
 
-  BYTE WinMajorVersion = LOBYTE(LOWORD(GetVersion()));
-  if ((WinMajorVersion >= 4) && !bOldStyleDialog) //Running on Windows 95 shell and new style requested
+  //BYTE WinMajorVersion = LOBYTE(LOWORD(GetVersion()));
+  //if ((WinMajorVersion >= 4) && !bOldStyleDialog) //Running on Windows 95 shell and new style requested
+  if ( IsWindowsVersionOrGreater(4,0,0) && !bOldStyleDialog )
   {
     TCHAR sDisplayName[_MAX_PATH];
     BROWSEINFO bi;
     bi.hwndOwner = pWndParent->GetSafeHwnd();
-    bi.pidlRoot = NULL;
+    bi.pidlRoot = nullptr;
     bi.lpszTitle =  sTitle;
     bi.pszDisplayName = sDisplayName;
     bi.ulFlags = BIF_RETURNONLYFSDIRS;
@@ -187,7 +189,7 @@ BOOL CChooseDirDlg::GetDirectory(CString& sDir, CWnd* pWndParent, BOOL bOldStyle
   }
   else  //Use old style if requested or when running on NT 3.51 where we have no choice
   {
-    COldFileDirDialog dlg(FALSE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ENABLETEMPLATE, NULL, pWndParent);
+    COldFileDirDialog dlg(FALSE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_ENABLETEMPLATE, nullptr, pWndParent);
     dlg.m_ofn.Flags &= ~OFN_EXPLORER; //Turn of the explorer style customisation
     dlg.m_ofn.hInstance = AfxGetInstanceHandle();
     dlg.m_ofn.lpTemplateName = MAKEINTRESOURCE(FILEOPENORD);
@@ -195,7 +197,7 @@ BOOL CChooseDirDlg::GetDirectory(CString& sDir, CWnd* pWndParent, BOOL bOldStyle
     dlg.m_ofn.lpstrTitle = sTitle;
     if (dlg.DoModal() == IDOK)
     {
-      dlg.m_ofn.lpstrFile[dlg.m_ofn.nFileOffset-1]=0; //Nuke the "Junk" text filename
+      dlg.m_ofn.lpstrFile[dlg.m_ofn.nFileOffset-1] = 0; //Nuke the "Junk" text filename
       bSuccess = TRUE;
       sDir = dlg.m_ofn.lpstrFile;
 

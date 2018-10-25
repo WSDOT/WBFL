@@ -60,19 +60,19 @@ void CTestDisplayUnitFormatter::Test()
    Uint32 width,precision;
    NumericFormatType notation;
    TextJustificationType justify;
-   TRY_TEST(pFormatter->get_Width(NULL), E_POINTER);
+   TRY_TEST(pFormatter->get_Width(nullptr), E_POINTER);
    TRY_TEST(pFormatter->get_Width(&width), S_OK );
    TRY_TEST( width, 0 );
 
-   TRY_TEST(pFormatter->get_Precision(NULL), E_POINTER);
+   TRY_TEST(pFormatter->get_Precision(nullptr), E_POINTER);
    TRY_TEST(pFormatter->get_Precision(&precision), S_OK );
    TRY_TEST(precision, 6 );
 
-   TRY_TEST(pFormatter->get_Justification(NULL), E_POINTER );
+   TRY_TEST(pFormatter->get_Justification(nullptr), E_POINTER );
    TRY_TEST(pFormatter->get_Justification(&justify),S_OK);
    TRY_TEST(justify,tjRight);
 
-   TRY_TEST(pFormatter->get_Notation(NULL), E_POINTER);
+   TRY_TEST(pFormatter->get_Notation(nullptr), E_POINTER);
    TRY_TEST(pFormatter->get_Notation(&notation), S_OK );
    TRY_TEST(notation,nftAutomatic );
 
@@ -95,8 +95,8 @@ void CTestDisplayUnitFormatter::Test()
 
    // Fixed format
    pFormatter->FormatSpecifiers(8,5,tjRight,nftFixed,0.0001);
-   TRY_TEST(pFormatter->Format(12.345,NULL,NULL),E_POINTER);
-   TRY_TEST(pFormatter->Format(12.345,NULL,&bstrTest),S_OK);
+   TRY_TEST(pFormatter->Format(12.345,nullptr,nullptr),E_POINTER);
+   TRY_TEST(pFormatter->Format(12.345,nullptr,&bstrTest),S_OK);
    TRY_TEST( wcscmp( bstrTest, CComBSTR("12.34500")), 0);
    TRY_TEST(pFormatter->Format(12.345,CComBSTR(),&bstrTest),S_OK);
    TRY_TEST( wcscmp( bstrTest, CComBSTR("12.34500")), 0);
@@ -118,12 +118,12 @@ void CTestDisplayUnitFormatter::Test()
    // Right justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjRight,nftFixed,0.0001);
    pFormatter->Format(10.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+001 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+01 Tag")),0);
 
    // Left justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjLeft,nftFixed,0.0001);
    pFormatter->Format(10.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+001 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+01 Tag")),0);
 
    //Automatic
 
@@ -140,44 +140,44 @@ void CTestDisplayUnitFormatter::Test()
    // Right justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjRight,nftAutomatic,0.0001);
    pFormatter->Format(10.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+001 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+01 Tag")),0);
 
    // Left justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjLeft,nftAutomatic,0.0001);
    pFormatter->Format(10.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+001 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.01000e+01 Tag")),0);
 
    //Scientific notation
 
    // Right justified & width > required
    pFormatter->FormatSpecifiers(14,5,tjRight,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("  1.00001e+004 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("   1.00001e+04 Tag")),0);
 
    // Left justified & width > required
    pFormatter->FormatSpecifiers(14,5,tjLeft,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+004   Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+04    Tag")),0);
 
    // Right justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjRight,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+004 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+04 Tag")),0);
 
    // Left justified & width < required
    pFormatter->FormatSpecifiers(1,5,tjLeft,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+004 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.00001e+04 Tag")),0);
 
    // Right justified & width < required & precision < required
    pFormatter->FormatSpecifiers(1,4,tjRight,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.0000e+004 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.0000e+04 Tag")),0);
 
    // Left justified & width < required & precision < required
    pFormatter->FormatSpecifiers(1,4,tjLeft,nftScientific,0.0001);
    pFormatter->Format(10000.1,CComBSTR("Tag"),&bstrTest);
-   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.0000e+004 Tag")),0);
+   TRY_TEST( wcscmp(bstrTest,CComBSTR("1.0000e+04 Tag")),0);
 
    //Engineering notation
    // Right justified & width > required
@@ -219,14 +219,14 @@ void CTestDisplayUnitFormatter::Test()
    TRY_TEST( wcscmp(bstrTest,CComBSTR("-INF Tag")),0);
 
    pFormatter->FormatSpecifiers(1,4,tjRight,nftFixed,0.0001);
-   pFormatter->Format(std::numeric_limits<Float64>::max(),NULL,&bstrTest);
+   pFormatter->Format(std::numeric_limits<Float64>::max(),nullptr,&bstrTest);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("INF")),0);
-   pFormatter->Format(-1*std::numeric_limits<Float64>::max(),NULL,&bstrTest);
+   pFormatter->Format(-1*std::numeric_limits<Float64>::max(),nullptr,&bstrTest);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("-INF")),0);
 
    // UsesTag
    VARIANT_BOOL bUsesTag;
-   TRY_TEST(pFormatter->get_UsesTag(NULL),E_POINTER);
+   TRY_TEST(pFormatter->get_UsesTag(nullptr),E_POINTER);
    TRY_TEST(pFormatter->get_UsesTag(&bUsesTag),S_OK);
    TRY_TEST(bUsesTag,VARIANT_TRUE);
 

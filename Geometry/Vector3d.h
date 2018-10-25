@@ -67,44 +67,44 @@ private:
    Float64 m_Z;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVector3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IVector3d** ppClone);
-	STDMETHOD(IncrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val);
-	STDMETHOD(Increment)(/*[in]*/ IVector3d* v);
-	STDMETHOD(DecrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val);
-	STDMETHOD(Decrement)(/*[in]*/ IVector3d* v);
-	STDMETHOD(AngleBetween)(/*[in]*/ IVector3d* v,/*[out,retval]*/ Float64* angle);
-	STDMETHOD(Dot)(/*[in]*/ IVector3d* v,/*[out,retval]*/Float64* val);
-	STDMETHOD(Cross)(/*[in]*/ IVector3d* v,/*[out,retval]*/ IVector3d** result);
-	STDMETHOD(get_Size)(/*[out, retval]*/ ISize3d* *pVal);
-	STDMETHOD(Scale)(/*[in]*/ Float64 factor);
-	STDMETHOD(Reflect)();
-	STDMETHOD(Projection)(/*[in]*/ IVector3d* pVector,/*[out,retval]*/ Float64* pDist);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize);
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz);
-	STDMETHOD(Normalize)();
-	STDMETHOD(get_Magnitude)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Magnitude)(/*[in]*/ Float64 newVal);
-	STDMETHOD(IsZero)(/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_X)(/*[in]*/ Float64 newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IVector3d** ppClone) override;
+	STDMETHOD(IncrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val) override;
+	STDMETHOD(Increment)(/*[in]*/ IVector3d* v) override;
+	STDMETHOD(DecrementBy)(/*[in]*/ IVector3d* v,/*[out,retval]*/IVector3d** val) override;
+	STDMETHOD(Decrement)(/*[in]*/ IVector3d* v) override;
+	STDMETHOD(AngleBetween)(/*[in]*/ IVector3d* v,/*[out,retval]*/ Float64* angle) override;
+	STDMETHOD(Dot)(/*[in]*/ IVector3d* v,/*[out,retval]*/Float64* val) override;
+	STDMETHOD(Cross)(/*[in]*/ IVector3d* v,/*[out,retval]*/ IVector3d** result) override;
+	STDMETHOD(get_Size)(/*[out, retval]*/ ISize3d* *pVal) override;
+	STDMETHOD(Scale)(/*[in]*/ Float64 factor) override;
+	STDMETHOD(Reflect)() override;
+	STDMETHOD(Projection)(/*[in]*/ IVector3d* pVector,/*[out,retval]*/ Float64* pDist) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize) override;
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz) override;
+	STDMETHOD(Normalize)() override;
+	STDMETHOD(get_Magnitude)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Magnitude)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(IsZero)(/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__VECTOR3D_H_

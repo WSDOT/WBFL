@@ -37,7 +37,7 @@ class CPrintStatus : public CDialog
 {
 // Construction
 public:
-	CPrintStatus(CWnd* pParent = NULL);   // standard constructor
+	CPrintStatus(CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CPrintStatus)
@@ -51,7 +51,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPrintStatus)
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+      virtual void DoDataExchange(CDataExchange* pDX) override;    // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -59,8 +59,8 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CPrintStatus)
-	virtual BOOL OnInitDialog();
-	virtual void OnCancel();
+	virtual BOOL OnInitDialog() override;
+	virtual void OnCancel() override;
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

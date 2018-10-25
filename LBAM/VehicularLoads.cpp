@@ -42,7 +42,7 @@ STDMETHODIMP CVehicularLoads::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IVehicularLoads
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -53,12 +53,6 @@ STDMETHODIMP CVehicularLoads::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CVehicularLoads::OnVehicularLoadChanged(/*[in]*/IVehicularLoad* pVehicularLoad, ChangeType change)
 {
    Fire_OnVehicularLoadsChanged(pVehicularLoad, change);
-   return S_OK;
-}
-
-STDMETHODIMP CVehicularLoads::OnVehicularLoadRenamed(BSTR oldNam, BSTR newNam)
-{
-   Fire_OnVehicularLoadsRenamed(oldNam, newNam);
    return S_OK;
 }
 
@@ -116,7 +110,7 @@ HRESULT CVehicularLoads::OnAfterRemove( VehicleIndexType idx)
 void CVehicularLoads::FinalRelease()
 {
    // free up all of our connectionVehicularLoadnts on destruct
-   VehicleIndexType i=0;
+   VehicleIndexType i = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)

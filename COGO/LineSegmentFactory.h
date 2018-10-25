@@ -61,17 +61,17 @@ BEGIN_COM_MAP(CLineSegmentFactory)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILineSegment2dFactory
 public:
-   STDMETHOD(CreateLineSegment)(/*[out,retval]*/ILineSegment2d** ppLineSegment);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
+   STDMETHOD(CreateLineSegment)(/*[out,retval]*/ILineSegment2d** ppLineSegment) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__LINESEGMENTFACTORY_H_

@@ -53,11 +53,11 @@ void CTestProfileElement::Test()
    CComPtr<IProfilePoint> point;
    point.CoCreateInstance(CLSID_ProfilePoint);
 
-   TRY_TEST(pProfileElement->putref_Value(NULL),E_INVALIDARG);
+   TRY_TEST(pProfileElement->putref_Value(nullptr),E_INVALIDARG);
    TRY_TEST(pProfileElement->putref_Value(point), S_OK );
 
    ProfileElementType type;
-   TRY_TEST(pProfileElement->get_Type(NULL),E_POINTER);
+   TRY_TEST(pProfileElement->get_Type(nullptr),E_POINTER);
    TRY_TEST(pProfileElement->get_Type(&type),S_OK);
    TRY_TEST(type,pePoint);
 
@@ -74,7 +74,7 @@ void CTestProfileElement::Test()
    TRY_TEST(pProfileElement->putref_Value(pProfileElement),E_INVALIDARG);
 
    CComPtr<IUnknown> disp;
-   TRY_TEST(pProfileElement->get_Value(NULL),E_POINTER);
+   TRY_TEST(pProfileElement->get_Value(nullptr),E_POINTER);
    TRY_TEST(pProfileElement->get_Value(&disp),S_OK);
 
    // Test Events
@@ -108,7 +108,7 @@ void CTestProfileElement::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pProfileElement);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IProfileElement ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -120,7 +120,7 @@ void CTestProfileElement::Test()
 
 STDMETHODIMP CTestProfileElement::OnProfileElementChanged(IProfileElement* pp)
 {
-//   ::MessageBox(NULL,"OnProfileElementChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfileElementChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

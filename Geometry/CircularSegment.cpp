@@ -29,7 +29,7 @@
 #include "CircularSegment.h"
 #include "Helper.h"
 #include <MathEx.h> // for InRange
-#include <xutility> // for _cpp_min and _cpp_max
+#include <xutility> // for Min and Max
 #include <WBFLTools.h> // for Mohr's Circle
 
 #ifdef _DEBUG
@@ -42,12 +42,12 @@ static char THIS_FILE[] = __FILE__;
 // CCircularSegment
 HRESULT CCircularSegment::FinalConstruct()
 {
-   CreatePoint( 0.00, 0.00, NULL, &m_Center );
+   CreatePoint( 0.00, 0.00, nullptr, &m_Center );
    HRESULT hr = CrAdvise(m_Center, this, IID_IPoint2dEvents, &m_CenterPointCookie);
    if (FAILED(hr))
       return hr;
 
-   CreatePoint( 0.00, 0.00, NULL, &m_HookPoint );
+   CreatePoint( 0.00, 0.00, nullptr, &m_HookPoint );
    hr = CrAdvise(m_HookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
    if (FAILED(hr))
       return hr;
@@ -103,7 +103,7 @@ void CCircularSegment::AdjustCenterPoint()
 HRESULT CCircularSegment::BoundaryLine(ILine2d** line)
 {
    // Create the boundary line that forms the straight edge of the shape
-   CreateLine(NULL,line);
+   CreateLine(nullptr,line);
 
    CComPtr<IPoint2d> p1;
    CComPtr<IPoint2d> p2;
@@ -135,8 +135,8 @@ HRESULT CCircularSegment::EdgePoints(IPoint2d** p1,IPoint2d** p2)
    x2 = cx + m_Radius * cos(m_Rotation + angle/2);
    y2 = cy + m_Radius * sin(m_Rotation + angle/2);
 
-   CreatePoint(x1,y1,NULL,p1);
-   CreatePoint(x2,y2,NULL,p2);
+   CreatePoint(x1,y1,nullptr,p1);
+   CreatePoint(x2,y2,nullptr,p2);
 
    // Both points can't be the same.
    ATLASSERT( IsZero(angle) ? (IsEqual(x1,x2) && IsEqual(y1,y2)) : !(IsEqual(x1,x2) && IsEqual(y1,y2)));
@@ -153,7 +153,7 @@ STDMETHODIMP CCircularSegment::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -344,7 +344,7 @@ STDMETHODIMP CCircularSegment::get_ShapeProperties(IShapeProperties * * pVal)
    }
 
    CComPtr<IPoint2d> cg;
-   CreatePoint(cgx,cgy,NULL,&cg);
+   CreatePoint(cgx,cgy,nullptr,&cg);
 
    // Transform properties to centroidal coordinates
    iyy = iyy - area*cgx*cgx;
@@ -424,23 +424,23 @@ STDMETHODIMP CCircularSegment::get_BoundingBox(IRect2d * * pVal)
    if ( (IsZero(nx) && m_Radius < m_MO) || 0.0 < nx )
       left = cx - m_Radius;
    else
-      left = _cpp_min(p1x,p2x);
+      left = Min(p1x,p2x);
 
    // right
    if ( (IsZero(nx) && m_Radius < m_MO) || nx < 0.0 )
       right = cx + m_Radius;
    else
-      right = _cpp_max(p1x,p2x);
+      right = Max(p1x,p2x);
 
    // top
    if ( (IsZero(ny) && m_MO < m_Radius) || 0.0 < ny )
-      top = _cpp_max(p1y,p2y);
+      top = Max(p1y,p2y);
    else
       top = cy + m_Radius;
 
    // bottom
    if ( (IsZero(ny) && m_MO < m_Radius) || ny < 0.0 )
-      bottom = _cpp_min(p1y,p2y);
+      bottom = Min(p1y,p2y);
    else
       bottom = cy - m_Radius;
 
@@ -486,7 +486,7 @@ STDMETHODIMP CCircularSegment::get_PolyPoints(IPoint2dCollection * * ppPolyPoint
       Float64 y = cy + rad * sin(a);
 
       CComPtr<IPoint2d> pPoint;
-      hr = CreatePoint( x, y, NULL, &pPoint );
+      hr = CreatePoint( x, y, nullptr, &pPoint );
       if ( FAILED(hr) )
          return hr;
 
@@ -571,7 +571,7 @@ STDMETHODIMP CCircularSegment::Clone(IShape * * pClone)
 
    // Align the center points
    CComPtr<IPoint2d> ctrPnt;
-   CreatePoint(m_Center,NULL,&ctrPnt);
+   CreatePoint(m_Center,nullptr,&ctrPnt);
    pTheClone->putref_Center(ctrPnt);
 
 #if defined _DEBUG
@@ -774,14 +774,14 @@ STDMETHODIMP CCircularSegment::ClipIn(IRect2d * pRect, IShape * * pShape)
    // Clip using top edge
    pRect->get_TopLeft( &pStart );
    pRect->get_TopRight( &pEnd );
-   CreateLine( pStart, pEnd, NULL, &pLine );
+   CreateLine( pStart, pEnd, nullptr, &pLine );
 
    CComPtr<IShape> pClipTop;
    ClipWithLine(pLine,&pClipTop);
-   if ( pClipTop == NULL )
+   if ( pClipTop == nullptr )
    {
       // the entire shape was clipped away
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -795,10 +795,10 @@ STDMETHODIMP CCircularSegment::ClipIn(IRect2d * pRect, IShape * * pShape)
    CComPtr<IShape> pClipRight;
    pClipTop->ClipWithLine(pLine,&pClipRight);
    pClipTop.Release();
-   if ( pClipRight == NULL )
+   if ( pClipRight == nullptr )
    {
       // the entire shape was clipped away
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -812,10 +812,10 @@ STDMETHODIMP CCircularSegment::ClipIn(IRect2d * pRect, IShape * * pShape)
    CComPtr<IShape> pClipBottom;
    pClipRight->ClipWithLine(pLine,&pClipBottom);
    pClipRight.Release();
-   if ( pClipBottom == NULL )
+   if ( pClipBottom == nullptr )
    {
       // the entire shape was clipped away
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -829,10 +829,10 @@ STDMETHODIMP CCircularSegment::ClipIn(IRect2d * pRect, IShape * * pShape)
    CComPtr<IShape> pClipLeft;
    pClipBottom->ClipWithLine(pLine,&pClipLeft);
    pClipBottom.Release();
-   if ( pClipLeft == NULL )
+   if ( pClipLeft == nullptr )
    {
       // the entire shape was clipped away
-      *pShape = NULL;
+      *pShape = nullptr;
       return S_OK;
    }
 
@@ -894,7 +894,7 @@ STDMETHODIMP CCircularSegment::FurthestDistance(ILine2d * line, Float64 * pVal)
       EdgePoints(&p1,&p2);
       util->ShortestDistanceToPoint(line,p1,&d1);
       util->ShortestDistanceToPoint(line,p2,&d2);
-      *pVal = _cpp_max(d1,d2);
+      *pVal = Max(d1,d2);
    }
    else
    {

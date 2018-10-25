@@ -75,24 +75,24 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ITemplateSegment
 public:
-   STDMETHOD(Init)(Float64 width,Float64 slope,TemplateSlopeType slopeType);
-   STDMETHOD(put_Width)(Float64 width);
-   STDMETHOD(get_Width)(Float64* width);
-   STDMETHOD(put_Slope)(Float64 slope);
-   STDMETHOD(get_Slope)(Float64* slope);
-   STDMETHOD(put_SlopeType)(TemplateSlopeType type);
-   STDMETHOD(get_SlopeType)(TemplateSlopeType* type);
-   STDMETHOD(Clone)(ITemplateSegment** ppClone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(Init)(Float64 width,Float64 slope,TemplateSlopeType slopeType) override;
+   STDMETHOD(put_Width)(Float64 width) override;
+   STDMETHOD(get_Width)(Float64* width) override;
+   STDMETHOD(put_Slope)(Float64 slope) override;
+   STDMETHOD(get_Slope)(Float64* slope) override;
+   STDMETHOD(put_SlopeType)(TemplateSlopeType type) override;
+   STDMETHOD(get_SlopeType)(TemplateSlopeType* type) override;
+   STDMETHOD(Clone)(ITemplateSegment** ppClone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    Float64 m_Width;

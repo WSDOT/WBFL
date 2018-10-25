@@ -76,6 +76,7 @@ dbgDumpContext& dbgDumpContext::operator<<(LPCTSTR s)
 dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
 {
    TCHAR buffer[BUFSIZE];
+   buffer[0] = '\0';
    _stprintf_s( buffer, TEXT("%c"), ch );
    OutputDebugString( buffer );
    return *this;
@@ -84,6 +85,7 @@ dbgDumpContext& dbgDumpContext::operator<<(TCHAR ch)
 dbgDumpContext& dbgDumpContext::operator<<(DWORD n)
 {
    TCHAR buffer[BUFSIZE];
+   buffer[0] = '\0';
    _stprintf_s( buffer, TEXT("%d"), n );
    OutputDebugString( buffer );
    return *this;
@@ -178,7 +180,7 @@ dbgDumpContext& dbgDumpContext::operator<<(void * n)
 dbgDumpContext& dbgDumpContext::operator<<(const sysSectionValue& n)
 {
    TCHAR buffer[BUFSIZE];
-   _stprintf_s( buffer, BUFSIZE, TEXT("%s"), n.AsString() );
+   _stprintf_s( buffer, BUFSIZE, TEXT("%s"), n.AsString().c_str() );
    OutputDebugString( buffer );
    return *this;
 }

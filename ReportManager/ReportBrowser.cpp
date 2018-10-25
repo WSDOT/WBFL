@@ -85,7 +85,7 @@ CReportBrowser::~CReportBrowser()
    }
 }
 
-void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRefresh)
+void CReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh)
 {
    std::_tofstream ofile( m_Filename.c_str() );
    ATLASSERT( ofile.is_open() == true );
@@ -93,7 +93,7 @@ void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRe
    Uint32 logPixX;
    Uint32 logPixY;
    CDC dc;
-   dc.CreateDC(CString("DISPLAY"),NULL,NULL,NULL);
+   dc.CreateDC(CString("DISPLAY"),nullptr,nullptr,nullptr);
    logPixX = dc.GetDeviceCaps(LOGPIXELSX);
    logPixY = dc.GetDeviceCaps(LOGPIXELSY);
 
@@ -106,7 +106,7 @@ void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRe
    }
 }
 
-bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,boost::shared_ptr<rptReport>& pReport)
+bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -151,12 +151,12 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
    return true;
 }
 
-boost::shared_ptr<CReportSpecification> CReportBrowser::GetReportSpecification()
+std::shared_ptr<CReportSpecification> CReportBrowser::GetReportSpecification()
 {
    return m_pRptSpec;
 }
 
-boost::shared_ptr<rptReport> CReportBrowser::GetReport()
+std::shared_ptr<rptReport> CReportBrowser::GetReport()
 {
    return m_pReport;
 }
@@ -168,12 +168,12 @@ std::_tstring CReportBrowser::GetReportTitle()
 
 void CReportBrowser::Move(POINT topLeft)
 {
-   m_pWebBrowser->SetWindowPos(NULL,topLeft.x,topLeft.y,0,0,SWP_NOZORDER | SWP_NOSIZE);
+   m_pWebBrowser->SetWindowPos(nullptr,topLeft.x,topLeft.y,0,0,SWP_NOZORDER | SWP_NOSIZE);
 }
 
 void CReportBrowser::Size(SIZE size)
 {
-   m_pWebBrowser->SetWindowPos(NULL,0,0,size.cx,size.cy,SWP_NOZORDER | SWP_NOMOVE);
+   m_pWebBrowser->SetWindowPos(nullptr,0,0,size.cx,size.cy,SWP_NOZORDER | SWP_NOMOVE);
 }
 
 CWnd* CReportBrowser::GetBrowserWnd()
@@ -201,19 +201,19 @@ void CReportBrowser::Print(bool bPrompt)
 
 bool CReportBrowser::Edit(bool bUpdate)
 {
-   boost::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
+   std::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
    CReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
-   boost::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
-   if ( m_pRptSpecBuilder == NULL )
+   std::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
+   if ( m_pRptSpecBuilder == nullptr )
    {
       pReportSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    }
 
-   boost::shared_ptr<CReportSpecification> pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
+   std::shared_ptr<CReportSpecification> pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
    
    // user cancelled.
-   if( pReportSpec == NULL )
+   if( pReportSpec == nullptr )
    {
       return false;
    }
@@ -222,7 +222,7 @@ bool CReportBrowser::Edit(bool bUpdate)
 
    if ( bUpdate )
    {
-      boost::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pRptSpec );
+      std::shared_ptr<rptReport> pReport = pRptBuilder->CreateReport( m_pRptSpec );
       UpdateReport(pReport,true);
    }
 
@@ -235,7 +235,7 @@ void CReportBrowser::Find()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, NULL,NULL);
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }
@@ -246,7 +246,7 @@ void CReportBrowser::SelectAll()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(NULL,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, NULL,NULL);
+      pIOleCmdTarget->Exec(nullptr,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }
@@ -257,7 +257,7 @@ void CReportBrowser::ViewSource()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, NULL,NULL);
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }

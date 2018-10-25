@@ -47,7 +47,7 @@ STDMETHODIMP CDistributionFactors::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IDistributionFactors
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -72,7 +72,7 @@ HRESULT CDistributionFactors::FinalConstruct()
 void CDistributionFactors::FinalRelease()
 {
    // free up all of our connectionpoints on destruct
-   CollectionIndexType cnt=0;
+   CollectionIndexType cnt = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)
@@ -186,7 +186,7 @@ STDMETHODIMP CDistributionFactors::GetFactorForLocation(Float64 location, Float6
       Float64 seg_tol = SEG_TOL * superstructureLength;
 
       // search the vector for our segment
-      Float64 seg_end=0;
+      Float64 seg_end = 0;
       iterator it( begin() );
       iterator itend( end() );
       for (; it!=itend; it++)
@@ -220,7 +220,7 @@ STDMETHODIMP CDistributionFactors::GetFactorForLocation(Float64 location, Float6
             if (seg_end-seg_tol <= location)
             {
                // We are within tolerance - only need to check if this is the last segment
-               // If this is not the last segment, assign it to right side. If it is, Right is NULL.
+               // If this is not the last segment, assign it to right side. If it is, Right is nullptr.
                iterator it2(it);
                if ( ++it2 != this->end() )
                {
@@ -272,8 +272,8 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
    CHECK_RETOBJ(ppLeftSegi);
    CHECK_RETOBJ(ppRightSegi);
 
-   *ppLeftSegi  = NULL;
-   *ppRightSegi = NULL;
+   *ppLeftSegi  = nullptr;
+   *ppRightSegi = nullptr;
 
    try
    {
@@ -314,7 +314,7 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
       Float64 seg_tol = SEG_TOL * superstructureLength;
 
       // search the vector for our segment
-      Float64 seg_end=0;
+      Float64 seg_end = 0;
       iterator it( begin() );
       iterator itend( end() );
       for (; it!=itend; it++)
@@ -341,7 +341,7 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
             if (location >= seg_end-seg_tol)
             {
                // We are within tolerance - only need to check if this is the last segment
-               // If this is not the last segment, assign it to right side. If it is, Right is NULL.
+               // If this is not the last segment, assign it to right side. If it is, Right is nullptr.
                iterator it2(it);
                if ( ++it2 != this->end() )
                {

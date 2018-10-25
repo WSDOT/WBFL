@@ -45,7 +45,7 @@ CEAFGraphBuilderBase::CEAFGraphBuilderBase()
 {
    m_bValidGraph = false;
    m_bUpdateError = false;
-   m_pFrame = NULL;
+   m_pFrame = nullptr;
 }
 
 CEAFGraphBuilderBase::CEAFGraphBuilderBase(const CEAFGraphBuilderBase& other) :
@@ -53,7 +53,7 @@ CGraphBuilder(other), CCmdTarget()
 {
    m_bValidGraph = false;
    m_bUpdateError = false;
-   m_pFrame = NULL;
+   m_pFrame = nullptr;
 }
 
 CEAFGraphBuilderBase::~CEAFGraphBuilderBase()
@@ -99,7 +99,7 @@ CEAFGraphView* CEAFGraphBuilderBase::GetView()
    }
    else
    {
-      return NULL;
+      return nullptr;
    }
 }
 
@@ -156,7 +156,7 @@ void CEAFGraphBuilderBase::DrawGraph(CWnd* pGraphWnd,CDC* pDC)
       }
 
       CFont font;
-      CFont* pOldFont = NULL;
+      CFont* pOldFont = nullptr;
       if ( font.CreatePointFont(100,_T("Arial"),pDC) )
       {
          pOldFont = pDC->SelectObject(&font);

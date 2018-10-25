@@ -36,11 +36,11 @@ class CProgressThread : public CWinThread
 
 protected:
 	CProgressThread();           // protected constructor used by dynamic creation
-	virtual ~CProgressThread();
+	virtual ~CProgressThread() override;
 
 public:
-	virtual BOOL InitInstance();
-	virtual int ExitInstance();
+	virtual BOOL InitInstance() override;
+	virtual int ExitInstance() override;
 
    HRESULT CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT nDelay);
 

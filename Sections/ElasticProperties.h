@@ -59,47 +59,47 @@ BEGIN_COM_MAP(CElasticProperties)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IElasticProperties
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_CoordinateSystem)(/*[out, retval]*/ CoordinateSystemType *pVal);
-	STDMETHOD(put_CoordinateSystem)(/*[in]*/ CoordinateSystemType newVal);
-	STDMETHOD(get_Orientation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Orientation)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Origin)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(put_Origin)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_Ybottom)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Ybottom)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Ytop)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Ytop)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Xright)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Xright)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Xleft)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Xleft)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EIxy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EIxy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EIyy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EIyy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EIxx)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EIxx)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EI12Min)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_EI12Max)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_EI22)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_EI11)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Centroid)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(put_Centroid)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_EA)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EA)(/*[in]*/ Float64 newVal);
-   STDMETHOD(AddProperties)(/*[in]*/ IElasticProperties* props);
-	STDMETHOD(TransformProperties)(/*[in]*/ Float64 E,/*[out,retval]*/ IShapeProperties** props);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_CoordinateSystem)(/*[out, retval]*/ CoordinateSystemType *pVal) override;
+	STDMETHOD(put_CoordinateSystem)(/*[in]*/ CoordinateSystemType newVal) override;
+	STDMETHOD(get_Orientation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Orientation)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Origin)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(put_Origin)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_Ybottom)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Ybottom)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Ytop)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Ytop)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Xright)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Xright)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Xleft)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Xleft)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EIxy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EIxy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EIyy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EIyy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EIxx)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EIxx)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EI12Min)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_EI12Max)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_EI22)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_EI11)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Centroid)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(put_Centroid)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_EA)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EA)(/*[in]*/ Float64 newVal) override;
+   STDMETHOD(AddProperties)(/*[in]*/ IElasticProperties* props) override;
+	STDMETHOD(TransformProperties)(/*[in]*/ Float64 E,/*[out,retval]*/ IShapeProperties** props) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    CComPtr<IShapeProperties> m_Props; // Actually has elastic properties

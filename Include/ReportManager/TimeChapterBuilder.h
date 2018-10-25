@@ -37,10 +37,10 @@ public:
 	CTimeChapterBuilder();
 	virtual ~CTimeChapterBuilder();
 
-   virtual LPCTSTR GetName() const;
-   virtual Uint16 GetMaxLevel() const;
-   virtual bool Select() const; // return true if this chapter is to be selected by default
-   virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const;
+   virtual LPCTSTR GetName() const override;
+   virtual Uint16 GetMaxLevel() const override;
+   virtual bool Select() const override; // return true if this chapter is to be selected by default
+   virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const override;
    virtual rptChapter* Build(sysTime& start,sysTime& end) const;
-   virtual CChapterBuilder* Clone() const;
+   virtual CChapterBuilder* Clone() const override;
 };

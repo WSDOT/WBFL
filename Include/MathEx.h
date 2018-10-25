@@ -32,6 +32,7 @@
 #include <math.h>
 #include <assert.h>
 #include <xutility>
+#include <limits>
 
 #if !defined TOLERANCE
 #define TOLERANCE 0.00001
@@ -98,16 +99,21 @@ inline T Round(const T& a)
 // Round a to the specified accurarcy.
 inline Float64 RoundOff(const Float64& a,Float64 accuracy)
 {
-   assert(0.0 < accuracy);
+   ATLASSERT(0.0 < accuracy);
+   if (a == Float64_Max || a == Float64_Inf)
+   {
+      return a;
+   }
+
    Float64 i;
    if ( 0 <= a )
    {
-      modf(a/accuracy+0.5,&i);
+      Float64 n = modf(a/accuracy+0.5,&i);
       return i*accuracy;
    }
    else
    {
-      modf(0.5-a/accuracy,&i);
+      Float64 n = modf(0.5-a/accuracy,&i);
       i *= -accuracy;
       return IsZero(i) ? 0 : i;
    }
@@ -115,27 +121,49 @@ inline Float64 RoundOff(const Float64& a,Float64 accuracy)
 // Floor a to the specified accurarcy.
 inline Float64 FloorOff(const Float64& a,Float64 accuracy)
 {
-   assert(0.0 < accuracy);
-   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
-   if (tst==a)
+   ATLASSERT(0.0 < accuracy);
+   if (a == Float64_Max || a == Float64_Inf)
+   {
       return a;
-   else if (a>=0)
+   }
+
+   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
+   if (tst == a)
+   {
+      return a;
+   }
+   else if (0 <= a)
+   {
       return tst;
+   }
    else
-      return (Float64)((long)(a/accuracy-1)*accuracy);
+   {
+      return (Float64)((long)(a / accuracy - 1)*accuracy);
+   }
 }
 
 // Ceil a to the specified accurarcy.
 inline Float64 CeilOff(const Float64& a,Float64 accuracy)
 {
-   assert(0.0 < accuracy);
-   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
-   if (tst==a)
+   ATLASSERT(0.0 < accuracy);
+   if (a == Float64_Max || a == Float64_Inf)
+   {
       return a;
-   else if (a>0)
-      return (Float64)((long)(a/accuracy+1)*accuracy);
+   }
+
+   Float64 tst = (Float64)((long)(a/accuracy)*accuracy);
+   if (tst == a)
+   {
+      return a;
+   }
+   else if (0 < a)
+   {
+      return (Float64)((long)(a / accuracy + 1)*accuracy);
+   }
    else
+   {
       return tst;
+   }
 }
 
 // Returns the sign of a,  either -1, 0, or 1
@@ -157,10 +185,14 @@ inline int BinarySign(const T& a)
 template <class H,class V>
 inline V LinInterp( const H& a, const V& l,const V& h, const H& delta)
 {
-   if ( delta == 0 )
+   if (delta == 0)
+   {
       return l;
+   }
    else
-      return l + (h-l)*(V)a/(V)delta;
+   {
+      return l + (h - l)*(V)a / (V)delta;
+   }
 }
 
 // Forces v into the range [l,h]
@@ -174,12 +206,12 @@ inline T ForceIntoRange(const T& l,const T& v,const T& h)
 template <class T>
 inline T Max(const T& a,const T& b)
 {
-   return _cpp_max(a,b);
+   return max(a,b);
 }
 
 // Returns the index of the maximum values
 template <class T>
-inline long MaxIndex(const T& a,const T& b)
+inline IndexType MaxIndex(const T& a,const T& b)
 {
    T value = Max(a,b);
    if ( IsEqual(a,value) )
@@ -192,12 +224,12 @@ inline long MaxIndex(const T& a,const T& b)
 template <class T>
 inline T Min(const T& a,const T& b)
 {
-   return _cpp_min(a,b);
+   return min(a,b);
 }
 
 // Returns the index of the minimum values
 template <class T>
-inline long MinIndex(const T& a,const T& b)
+inline IndexType MinIndex(const T& a,const T& b)
 {
    T value = Min(a,b);
    if ( IsEqual(a,value) )
@@ -215,7 +247,7 @@ inline T Max(const T& a,const T& b, const T& c)
 
 // Returns the index of the maximum value
 template <class T>
-inline long MaxIndex(const T& a,const T& b, const T& c)
+inline IndexType MaxIndex(const T& a,const T& b, const T& c)
 {
    T value = Max(a,b,c);
    if ( IsEqual(a,value) )
@@ -236,7 +268,7 @@ inline T Min(const T& a,const T& b, const T& c)
 
 // Returns the index of the minimum value
 template <class T>
-inline long MinIndex(const T& a,const T& b, const T& c)
+inline IndexType MinIndex(const T& a,const T& b, const T& c)
 {
    T value = Min(a,b,c);
    if ( IsEqual(a,value) )
@@ -257,7 +289,7 @@ inline T Max(const T& a,const T& b, const T& c, const T& d)
 
 // Returns the index of the maximum value
 template <class T>
-inline long MaxIndex(const T& a,const T& b, const T& c, const T& d)
+inline IndexType MaxIndex(const T& a,const T& b, const T& c, const T& d)
 {
    T value = Max(a,b,c,d);
    if ( IsEqual(a,value) )
@@ -281,7 +313,7 @@ inline T Min(const T& a,const T& b, const T& c, const T& d)
 
 // Returns the index of the minimum value
 template <class T>
-inline long MinIndex(const T& a,const T& b, const T& c, const T& d)
+inline IndexType MinIndex(const T& a,const T& b, const T& c, const T& d)
 {
    T value = Min(a,b,c,d);
    if ( IsEqual(a,value) )

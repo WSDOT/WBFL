@@ -64,7 +64,7 @@ BEGIN_COM_MAP(CFixedLengthRebarLayoutItem)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -80,24 +80,24 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarPatterns"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarPattern");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
 // IRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromGdrStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
-	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
-	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
-//	STDMETHOD(get_Count)(/*[out,retval]*/long* count);
-//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern);
-	STDMETHOD(AddRebarPattern)(/*[in]*/IRebarPattern* pattern);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumRebarPatterns** enumRebarPatterns);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromGdrStart,/*[out,retval]*/ VARIANT_BOOL* bResult) override;
+	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start) override;
+	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
+//	STDMETHOD(get_Count)(/*[out,retval]*/long* count) override;
+//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern) override;
+	STDMETHOD(AddRebarPattern)(/*[in]*/IRebarPattern* pattern) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumRebarPatterns** enumRebarPatterns) override;
 
 // IFixedLengthRebarLayoutItem
-	STDMETHOD(put_Start)(/*[in]*/ Float64 start);
-	STDMETHOD(put_End)(/*[in]*/ Float64 end);
-	STDMETHOD(get_End)(/*[out,retval]*/ Float64* end);
+	STDMETHOD(put_Start)(/*[in]*/ Float64 start) override;
+	STDMETHOD(put_End)(/*[in]*/ Float64 end) override;
+	STDMETHOD(get_End)(/*[out,retval]*/ Float64* end) override;
 
 private:
    Float64 m_Start, m_End;

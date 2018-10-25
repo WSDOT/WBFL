@@ -179,7 +179,7 @@ protected:
    void MakeCopy(const grLabel& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const grLabel& rOther);
+   void MakeAssignment(const grLabel& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

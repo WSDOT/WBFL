@@ -59,33 +59,33 @@ private:
 
 // IAgentEx
 public:
-   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker);
-   STDMETHOD(RegInterfaces)();
-	STDMETHOD(Init)();
-	STDMETHOD(Init2)();
-	STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
-   STDMETHOD(GetClassID)(CLSID* pCLSID);
+   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
+   STDMETHOD(RegInterfaces)() override;
+	STDMETHOD(Init)() override;
+	STDMETHOD(Init2)() override;
+	STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
+   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
 
 
 // IReportManager
 public:
-   virtual void AddReportBuilder(CReportBuilder* pReportBuilder);
-   virtual void AddReportBuilder(boost::shared_ptr<CReportBuilder>& pReportBuilder);
-   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden) const;
-   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName);
-   virtual boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
-   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
-   virtual boost::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName);
-   virtual std::vector<std::_tstring> GetReportNames(bool bIncludeHidden) const;
-   virtual CReportDescription GetReportDescription(LPCTSTR strReportName);
-   virtual CReportDescription GetReportDescription(const std::_tstring& strReportName);
-   virtual const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
-   virtual const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName);
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
-   virtual boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
-   virtual boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
-   virtual INT_PTR DisplayReportDialog(DWORD flags,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
+   virtual void AddReportBuilder(CReportBuilder* pReportBuilder) override;
+   virtual void AddReportBuilder(std::shared_ptr<CReportBuilder>& pReportBuilder) override;
+   virtual CollectionIndexType GetReportBuilderCount(bool bIncludeHidden) const override;
+   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) override;
+   virtual std::vector<std::_tstring> GetReportNames(bool bIncludeHidden) const override;
+   virtual CReportDescription GetReportDescription(LPCTSTR strReportName) override;
+   virtual CReportDescription GetReportDescription(const std::_tstring& strReportName) override;
+   virtual const CBitmap* GetMenuBitmap(LPCTSTR strReportName) override;
+   virtual const CBitmap* GetMenuBitmap(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) override;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) override;
+   virtual std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc) override;
+   virtual std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) override;
+   virtual INT_PTR DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder) override;
 };
 

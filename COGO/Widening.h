@@ -75,33 +75,33 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IWidening
 public:
-   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2);
-   STDMETHOD(get_Surface)(ISurface* *pVal);
-   STDMETHOD(putref_Surface)(ISurface* newVal);
-   STDMETHOD(put_BeginTransition)(VARIANT varStation);
-   STDMETHOD(get_BeginTransition)(IStation** station);
-   STDMETHOD(put_BeginFullWidening)(VARIANT varStation);
-   STDMETHOD(get_BeginFullWidening)(IStation** station);
-   STDMETHOD(put_EndFullWidening)(VARIANT varStation);
-   STDMETHOD(get_EndFullWidening)(IStation** station);
-   STDMETHOD(put_EndTransition)(VARIANT varStation);
-   STDMETHOD(get_EndTransition)(IStation** station);
-   STDMETHOD(put_Widening)(Float64 value);
-   STDMETHOD(get_Widening)(Float64* value);
-   STDMETHOD(put_Segment)(IndexType pntIdx,IndexType segmentIdx);
-   STDMETHOD(get_Segment)(IndexType pntIdx,IndexType* segmentIdx);
-   STDMETHOD(GetWidening)(VARIANT varStation,IndexType templateSegmentIdx,Float64* pWidening);
-   STDMETHOD(Clone)(IWidening** ppClone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType seg1,IndexType seg2) override;
+   STDMETHOD(get_Surface)(ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(ISurface* newVal) override;
+   STDMETHOD(put_BeginTransition)(VARIANT varStation) override;
+   STDMETHOD(get_BeginTransition)(IStation** station) override;
+   STDMETHOD(put_BeginFullWidening)(VARIANT varStation) override;
+   STDMETHOD(get_BeginFullWidening)(IStation** station) override;
+   STDMETHOD(put_EndFullWidening)(VARIANT varStation) override;
+   STDMETHOD(get_EndFullWidening)(IStation** station) override;
+   STDMETHOD(put_EndTransition)(VARIANT varStation) override;
+   STDMETHOD(get_EndTransition)(IStation** station) override;
+   STDMETHOD(put_Widening)(Float64 value) override;
+   STDMETHOD(get_Widening)(Float64* value) override;
+   STDMETHOD(put_Segment)(IndexType pntIdx,IndexType segmentIdx) override;
+   STDMETHOD(get_Segment)(IndexType pntIdx,IndexType* segmentIdx) override;
+   STDMETHOD(GetWidening)(VARIANT varStation,IndexType templateSegmentIdx,Float64* pWidening) override;
+   STDMETHOD(Clone)(IWidening** ppClone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    ISurface* m_pSurface; // weak reference

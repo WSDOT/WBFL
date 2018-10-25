@@ -32,6 +32,8 @@
 
 #include "LegendMessageCatcher.h"
 
+#include <memory>
+
 /////////////////////////////////////////////////////////////////////////////
 // CLegendDisplayObject
 class ATL_NO_VTABLE CLegendDisplayObject : 
@@ -69,115 +71,115 @@ END_CONNECTION_POINT_MAP()
    static UINT ms_cfFormat;
 
    // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
-   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) override { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() override { return Do_GetID(); }
 
-   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
-   STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
+   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) override { Do_SetItemData(pItemData,bDelete); }
+   STDMETHOD_(void,GetItemData)(void** ppItemData) override { Do_GetItemData(ppItemData); }
 
-   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) { Do_SetDisplayList(pDL); }
-   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) { Do_GetDisplayList(list); }
+   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) override { Do_SetDisplayList(pDL); }
+   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) override { Do_GetDisplayList(list); }
 
-   STDMETHOD_(void,Visible)(BOOL bVisible) { Do_Visible(bVisible); }
-   STDMETHOD_(BOOL,IsVisible)() { return Do_IsVisible(); }
+   STDMETHOD_(void,Visible)(BOOL bVisible) override { Do_Visible(bVisible); }
+   STDMETHOD_(BOOL,IsVisible)() override { return Do_IsVisible(); }
 
    // Drawing
-   STDMETHOD_(void,Draw)(CDC* pDC);
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite);
+   STDMETHOD_(void,Draw)(CDC* pDC) override;
+   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) override;
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) { Do_DrawGravityWell(pDC); }
+   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) override { Do_DrawGravityWell(pDC); }
 #endif 
 
    // Size and Hit Testing
-   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) { Do_SetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy){ Do_GetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(BOOL,HitTest)(CPoint point) { return Do_HitTest(point); }
-   STDMETHOD_(CRect,GetBoundingBox)(){ return Do_GetBoundingBox(); }
-   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect); 
-   STDMETHOD_(BOOL,TouchesRect)(CRect r) { return Do_TouchesRect(r); }
+   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) override { Do_SetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy) override { Do_GetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(BOOL,HitTest)(CPoint point) override { return Do_HitTest(point); }
+   STDMETHOD_(CRect,GetBoundingBox)() override  { return Do_GetBoundingBox(); }
+   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) override;
+   STDMETHOD_(BOOL,TouchesRect)(CRect r) override { return Do_TouchesRect(r); }
 
    // Selection
-   STDMETHOD_(void,Select)(BOOL bSelect) {Do_Select(bSelect);}
-   STDMETHOD_(BOOL,IsSelected)() {return Do_IsSelected();}
-   STDMETHOD_(void,SetSelectionType)(SelectionType st) { Do_SetSelectionType(st); }
-   STDMETHOD_(SelectionType,GetSelectionType)() { return Do_GetSelectionType(); }
+   STDMETHOD_(void,Select)(BOOL bSelect) override {Do_Select(bSelect);}
+   STDMETHOD_(BOOL,IsSelected)() override {return Do_IsSelected();}
+   STDMETHOD_(void,SetSelectionType)(SelectionType st) override { Do_SetSelectionType(st); }
+   STDMETHOD_(SelectionType,GetSelectionType)() override { return Do_GetSelectionType(); }
 
    // Interface Events
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point);
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point);
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point);
+   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) override;
+   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) override;
+   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) override;
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
-   STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { Do_SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(INT,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { Do_SetTipDisplayTime(iTime); }
-   STDMETHOD_(INT,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) override {Do_SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(CString,GetToolTipText)() override;
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) override { Do_SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() override { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) override { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() override { return Do_GetTipDisplayTime(); }
 
    // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
+   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink) override
    { Do_RegisterEventSink(pEventSink); }
-   STDMETHOD_(void,UnregisterEventSink)()
+   STDMETHOD_(void,UnregisterEventSink)() override
    { Do_UnregisterEventSink(); }
-   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink)
+   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) override
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
-   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() override { Do_UnregisterDropSite(); }
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { Do_GetDropSite(dropSite); }
 
    // iDraggable Implementation
-   STDMETHOD_(void,SetDragData)(iDragData* dd);
-   STDMETHOD_(void,GetDragData)(iDragData** dd);
-   STDMETHOD_(UINT,Format)();
-   STDMETHOD_(void,PrepareDrag)(iDragDataSink* pSink);
-   STDMETHOD_(void,OnDrop)(iDragDataSource* pSource);
-   STDMETHOD_(void,DrawDragImage)(CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-   STDMETHOD_(void,OnDragMoved)(ISize2d* offset);
-   STDMETHOD_(void,OnMoved)();
-   STDMETHOD_(void,OnCopied)();
+   STDMETHOD_(void,SetDragData)(iDragData* dd) override;
+   STDMETHOD_(void,GetDragData)(iDragData** dd) override;
+   STDMETHOD_(UINT,Format)() override;
+   STDMETHOD_(void,PrepareDrag)(iDragDataSink* pSink) override;
+   STDMETHOD_(void,OnDrop)(iDragDataSource* pSource) override;
+   STDMETHOD_(void,DrawDragImage)(CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
+   STDMETHOD_(void,OnDragMoved)(ISize2d* offset) override;
+   STDMETHOD_(void,OnMoved)() override;
+   STDMETHOD_(void,OnCopied)() override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILegendDisplayObject
-   STDMETHOD_(void,put_Position)(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent);
-   STDMETHOD_(void,get_Position)(IPoint2d* *pos);
-   STDMETHOD_(void,get_Title)(BSTR *pVal);
-   STDMETHOD_(void,put_Title)(BSTR newVal);
-   STDMETHOD_(void,put_Font)(const LOGFONT& Font);
-   STDMETHOD_(void,get_Font)(LOGFONT* pFont);
-   STDMETHOD_(void,get_NumEntries)(CollectionIndexType* count);
-   STDMETHOD_(void,AddEntry)(iLegendEntry* entry);
-   STDMETHOD_(HRESULT,InsertEntry)(CollectionIndexType index, iLegendEntry* entry);
-   STDMETHOD_(HRESULT,get_Entry)(CollectionIndexType index, iLegendEntry* *entry);
-   STDMETHOD_(HRESULT,RemoveEntry)(CollectionIndexType index);
-   STDMETHOD_(void,ClearEntries)();
-   STDMETHOD_(void,get_NumRows)(CollectionIndexType* count);
-   STDMETHOD_(void,put_NumRows)(CollectionIndexType count);
-   STDMETHOD_(void,get_CellSize)(CSize* size);
-   STDMETHOD_(void,put_CellSize)(CSize size);
-   STDMETHOD_(void,GetMinCellSize)(CSize* size);
-   STDMETHOD_(void,get_DoDrawBorder)(BOOL* doDraw);
-   STDMETHOD_(void,put_DoDrawBorder)(BOOL doDraw);
-   STDMETHOD_(void,get_DoFill)(BOOL* doDraw);
-   STDMETHOD_(void,put_DoFill)(BOOL doDraw);
-   STDMETHOD_(COLORREF,get_FillColor)();
-   STDMETHOD_(void,put_FillColor)(COLORREF color);
-   STDMETHOD_(void,get_IsDraggable)(BOOL* doDraw);
-   STDMETHOD_(void,put_IsDraggable)(BOOL doDraw);
+   STDMETHOD_(void,put_Position)(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent) override;
+   STDMETHOD_(void,get_Position)(IPoint2d* *pos) override;
+   STDMETHOD_(void,get_Title)(BSTR *pVal) override;
+   STDMETHOD_(void,put_Title)(BSTR newVal) override;
+   STDMETHOD_(void,put_Font)(const LOGFONT& Font) override;
+   STDMETHOD_(void,get_Font)(LOGFONT* pFont) override;
+   STDMETHOD_(void,get_NumEntries)(CollectionIndexType* count) override;
+   STDMETHOD_(void,AddEntry)(iLegendEntry* entry) override;
+   STDMETHOD_(HRESULT,InsertEntry)(CollectionIndexType index, iLegendEntry* entry) override;
+   STDMETHOD_(HRESULT,get_Entry)(CollectionIndexType index, iLegendEntry* *entry) override;
+   STDMETHOD_(HRESULT,RemoveEntry)(CollectionIndexType index) override;
+   STDMETHOD_(void,ClearEntries)() override;
+   STDMETHOD_(void,get_NumRows)(CollectionIndexType* count) override;
+   STDMETHOD_(void,put_NumRows)(CollectionIndexType count) override;
+   STDMETHOD_(void,get_CellSize)(CSize* size) override;
+   STDMETHOD_(void,put_CellSize)(CSize size) override;
+   STDMETHOD_(void,GetMinCellSize)(CSize* size) override;
+   STDMETHOD_(void,get_DoDrawBorder)(BOOL* doDraw) override;
+   STDMETHOD_(void,put_DoDrawBorder)(BOOL doDraw) override;
+   STDMETHOD_(void,get_DoFill)(BOOL* doDraw) override;
+   STDMETHOD_(void,put_DoFill)(BOOL doDraw) override;
+   STDMETHOD_(COLORREF,get_FillColor)() override;
+   STDMETHOD_(void,put_FillColor)(COLORREF color) override;
+   STDMETHOD_(void,get_IsDraggable)(BOOL* doDraw) override;
+   STDMETHOD_(void,put_IsDraggable)(BOOL doDraw) override;
 
    // iMessageListener
-   virtual void OnCaughtMessage(int msg);
+   virtual void OnCaughtMessage(int msg) override;
 
 private:
    void Draw(CDC* pDC, iCoordinateMap* map, const CPoint& location, BOOL hiLite, BOOL beingDragged=FALSE);
@@ -202,7 +204,7 @@ private:
 
    CSize m_DragOffset; // only for dragging - used to make dragging smooth
 
-   std::auto_ptr<CLegendMessageCatcher> m_pMessageCatcher;
+   std::unique_ptr<CLegendMessageCatcher> m_pMessageCatcher;
 };
 
 #endif //__LEGENDDISPLAYOBJECT_H_

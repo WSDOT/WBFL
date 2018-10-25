@@ -70,33 +70,33 @@ void CTestSuperstructureMember::Test()
 //   CComPtr<ISuperstructureMember> mbr;
 //   ssms->get_Item(0,&mbr);
 //
-//   TRY_TEST(mbr != NULL, true);
+//   TRY_TEST(mbr != nullptr, true);
 //
 //
 //   // Test default values
 //   long nSegCount;
-//   TRY_TEST(mbr->get_SegmentCount(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_SegmentCount(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_SegmentCount(&nSegCount),S_OK);
 //   TRY_TEST(nSegCount,0);
 //
 //   VARIANT_BOOL bFractional;
-//   TRY_TEST(mbr->get_Fractional(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_Fractional(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_Fractional(&bFractional),S_OK);
 //   TRY_TEST(bFractional,VARIANT_FALSE);
 //
 //   Float64 length;
-//   TRY_TEST(mbr->get_Length(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_Length(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_Length(&length),S_OK);
 //   TRY_TEST(IsEqual(length,1.0),true);
 //
 //   CComPtr<ISegment> segment;
-//   TRY_TEST(mbr->get_Segment(0,NULL),E_POINTER);
+//   TRY_TEST(mbr->get_Segment(0,nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_Segment(-1,&segment),E_INVALIDARG);
 //   TRY_TEST(mbr->get_Segment(100,&segment),E_INVALIDARG);
 //   TRY_TEST(mbr->get_Segment(0,&segment),E_INVALIDARG);
 //
 //   VARIANT_BOOL bSymmetrical;
-//   TRY_TEST(mbr->get_Symmetrical(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_Symmetrical(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_Symmetrical(&bSymmetrical),S_OK);
 //   TRY_TEST(bSymmetrical,VARIANT_FALSE);
 //
@@ -156,7 +156,7 @@ void CTestSuperstructureMember::Test()
 //   segment1->put_Length(5);
 //   segment2->put_Length(10);
 // 
-//   TRY_TEST(mbr->get_SegmentLength(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_SegmentLength(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_SegmentLength(&length),S_OK);
 //   TRY_TEST(IsEqual(length,15.0),true);
 //
@@ -189,7 +189,7 @@ void CTestSuperstructureMember::Test()
 //   segment1->put_Length(15);
 //   segment2->put_Length(10);
 // 
-//   TRY_TEST(mbr->get_SegmentLength(NULL),E_POINTER);
+//   TRY_TEST(mbr->get_SegmentLength(nullptr),E_POINTER);
 //   TRY_TEST(mbr->get_SegmentLength(&length),S_OK);
 //   TRY_TEST(IsEqual(length,25.0),true);
 //
@@ -223,8 +223,8 @@ void CTestSuperstructureMember::Test()
 //   segment2->put_Length(10);
 //   Float64 dist;
 //   CComPtr<ISegmentItem> segItem;
-//   TRY_TEST(mbr->GetSegmentForMemberLocation(2.5,&dist,NULL),E_POINTER);
-//   TRY_TEST(mbr->GetSegmentForMemberLocation(2.5,NULL,&segItem),E_POINTER);
+//   TRY_TEST(mbr->GetSegmentForMemberLocation(2.5,&dist,nullptr),E_POINTER);
+//   TRY_TEST(mbr->GetSegmentForMemberLocation(2.5,nullptr,&segItem),E_POINTER);
 //   TRY_TEST(mbr->GetSegmentForMemberLocation(-2,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
 //   TRY_TEST(mbr->GetSegmentForMemberLocation(200,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
 //   TRY_TEST(mbr->GetSegmentForMemberLocation(2.5,&dist,&segItem),S_OK);
@@ -289,7 +289,7 @@ void CTestSuperstructureMember::Test()
 //   segment2->put_Length(10);
 //
 //   CComPtr<IFilteredSegmentCollection> segments;
-//   TRY_TEST(mbr->GetMemberSegments(NULL),E_POINTER);
+//   TRY_TEST(mbr->GetMemberSegments(nullptr),E_POINTER);
 //   TRY_TEST(mbr->GetMemberSegments(&segments),S_OK);
 //   segments->get_Count(&nSegCount);
 //   TRY_TEST(nSegCount,2);
@@ -309,7 +309,7 @@ void CTestSuperstructureMember::Test()
 //   segment2->put_Length(10);
 //
 //   segments.Release();
-//   TRY_TEST(mbr->GetMemberSegments(NULL),E_POINTER);
+//   TRY_TEST(mbr->GetMemberSegments(nullptr),E_POINTER);
 //   TRY_TEST(mbr->GetMemberSegments(&segments),S_OK);
 //   segments->get_Count(&nSegCount);
 //   TRY_TEST(nSegCount,2);
@@ -392,7 +392,7 @@ void CTestSuperstructureMember::Test()
 //
 //   TRY_TEST(mbr->InsertSegment(-1,newSegment),E_INVALIDARG);
 //   TRY_TEST(mbr->InsertSegment(100,newSegment),E_INVALIDARG);
-//   TRY_TEST(mbr->InsertSegment(1,NULL),E_INVALIDARG);
+//   TRY_TEST(mbr->InsertSegment(1,nullptr),E_INVALIDARG);
 //   TRY_TEST(mbr->InsertSegment(1,newSegment),S_OK);
 //   mbr->get_SegmentCount(&nSegCount);
 //   TRY_TEST(nSegCount,3);
@@ -537,11 +537,11 @@ void CTestSuperstructureMember::Test()
 //   // Test with events
 //   mbr->RemoveSegments();
 ////
-////   CComPtr<ITransactionMgr> txnMgr;
+////   CComPtr<IWBFLTransactionMgr> txnMgr;
 ////   txnMgr.CoCreateInstance(CLSID_TransactionMgr);
 ////
-////   CComQIPtr<ISupportTransactions> supTxns(mbr);
-////   TRY_TEST(supTxns != NULL,true);
+////   CComQIPtr<IWBFLSupportTransactions> supTxns(mbr);
+////   TRY_TEST(supTxns != nullptr,true);
 ////   TRY_TEST(supTxns->putref_TransactionMgr(txnMgr),S_OK);
 ////
 ////   // Undo AddSegment
@@ -892,7 +892,7 @@ void CTestSuperstructureMember::Test()
 ////   TRY_TEST(pTest->PassedEventTest(), true ); // verify the event fired
 ////
 ////   // Remove transaction manager
-////   TRY_TEST(supTxns->putref_TransactionMgr(NULL),S_OK);
+////   TRY_TEST(supTxns->putref_TransactionMgr(nullptr),S_OK);
 //
 //   // Done with events
 //   TRY_TEST(AtlUnadvise(mbr,IID_ISuperstructureMemberEvents,dwCookie),S_OK);

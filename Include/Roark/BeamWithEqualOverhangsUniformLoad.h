@@ -111,7 +111,7 @@ protected:
    void MakeCopy(const rkBeamWithEqualOverhangsUniformLoad& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rkBeamWithEqualOverhangsUniformLoad& rOther);
+   void MakeAssignment(const rkBeamWithEqualOverhangsUniformLoad& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

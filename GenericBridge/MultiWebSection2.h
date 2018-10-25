@@ -78,80 +78,80 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMultiWebSection2
 public:
-   STDMETHOD(put_Beam)(/*[in]*/IMultiWeb2* beam);
-   STDMETHOD(get_Beam)(/*[out,retval]*/IMultiWeb2** beam);
+   STDMETHOD(put_Beam)(/*[in]*/IMultiWeb2* beam) override;
+   STDMETHOD(get_Beam)(/*[out,retval]*/IMultiWeb2** beam) override;
 
 // IGirderSection
 public:
-	STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs);
-	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location);
-	STDMETHOD(get_WebSpacing)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* spacing);
-	STDMETHOD(get_WebThickness)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* tWeb);
-   STDMETHOD(get_MinWebThickness)(/*[out,retval]*/Float64* tWeb);
-   STDMETHOD(get_WebPlane)(/*[in]*/WebIndexType idx,/*[out,retval]*/IPlane3d** ppPlane);
-   STDMETHOD(get_EffectiveWebThickness)(/*[out,retval]*/Float64* tWeb);
-   STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces);
-	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* location);
-	STDMETHOD(get_MatingSurfaceWidth)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* wMatingSurface);
-   STDMETHOD(get_TopFlangeCount)(/*[out,retval]*/FlangeIndexType* nTopFlanges);
-	STDMETHOD(get_TopFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location);
-	STDMETHOD(get_TopFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width);
-   STDMETHOD(get_TopFlangeThickness)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* tFlange);
-   STDMETHOD(get_TopFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing);
-   STDMETHOD(get_BottomFlangeCount)(/*[out,retval]*/FlangeIndexType* nBottomFlanges);
-	STDMETHOD(get_BottomFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location);
-	STDMETHOD(get_BottomFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width);
-   STDMETHOD(get_BottomFlangeThickness)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* tFlange);
-   STDMETHOD(get_BottomFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing);
-   STDMETHOD(get_GirderHeight)(/*[out,retval]*/Float64* height);
-	STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width);
-	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width);
-	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth);
-	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf);
-	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf);
-	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww);
-   STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD);
-   STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD);
+	STDMETHOD(get_WebCount)(/*[out,retval]*/WebIndexType* nWebs) override;
+	STDMETHOD(get_WebLocation)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* location) override;
+	STDMETHOD(get_WebSpacing)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* spacing) override;
+	STDMETHOD(get_WebThickness)(/*[in]*/WebIndexType idx,/*[out,retval]*/Float64* tWeb) override;
+   STDMETHOD(get_MinWebThickness)(/*[out,retval]*/Float64* tWeb) override;
+   STDMETHOD(get_WebPlane)(/*[in]*/WebIndexType idx,/*[out,retval]*/IPlane3d** ppPlane) override;
+   STDMETHOD(get_EffectiveWebThickness)(/*[out,retval]*/Float64* tWeb) override;
+   STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces) override;
+	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* location) override;
+	STDMETHOD(get_MatingSurfaceWidth)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* wMatingSurface) override;
+   STDMETHOD(get_TopFlangeCount)(/*[out,retval]*/FlangeIndexType* nTopFlanges) override;
+	STDMETHOD(get_TopFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location) override;
+	STDMETHOD(get_TopFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_TopFlangeThickness)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* tFlange) override;
+   STDMETHOD(get_TopFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing) override;
+   STDMETHOD(get_BottomFlangeCount)(/*[out,retval]*/FlangeIndexType* nBottomFlanges) override;
+	STDMETHOD(get_BottomFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location) override;
+	STDMETHOD(get_BottomFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width) override;
+   STDMETHOD(get_BottomFlangeThickness)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* tFlange) override;
+   STDMETHOD(get_BottomFlangeSpacing)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* spacing) override;
+   STDMETHOD(get_GirderHeight)(/*[out,retval]*/Float64* height) override;
+	STDMETHOD(get_TopWidth)(/*[out,retval]*/Float64* width) override;
+	STDMETHOD(get_BottomWidth)(/*[out,retval]*/Float64* width) override;
+	STDMETHOD(get_ShearWidth)(/*[out,retval]*/Float64* shearwidth) override;
+	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
+	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
+	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
+   STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD) override;
+   STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD) override;
 
 // IShape
 public:
-	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal);
-	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal);
-	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints);
-	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone);
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape);
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape);
+	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
+	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
+	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints) override;
+	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone) override;
+	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape) override;
+	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape) override;
 
 // IXYPosition
 public:
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point);
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point);
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo);
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle);
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle);
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
+	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
+	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
+	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
+	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 
 // ICompositeShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg);
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal);
-	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(Clear)();
-   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem);
-   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape);
-	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem);
-   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid);
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
+	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(Clear)() override;
+   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override;
+   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape) override;
+	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem) override;
+   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 };
 
 #endif //__MultiWebSection2_H_

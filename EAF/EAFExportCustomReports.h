@@ -31,7 +31,7 @@ class CEAFExportCustomReports : public CDialog
 	DECLARE_DYNAMIC(CEAFExportCustomReports)
 
 public:
-	CEAFExportCustomReports(CWnd* pParent = NULL);   // standard constructor
+	CEAFExportCustomReports(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CEAFExportCustomReports();
 
 // Dialog Data

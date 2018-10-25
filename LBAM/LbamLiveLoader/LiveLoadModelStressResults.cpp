@@ -41,7 +41,7 @@ STDMETHODIMP CLiveLoadModelStressResults::InterfaceSupportsErrorInfo(REFIID riid
 	{
 		&IID_ILiveLoadModelStressResults
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -97,7 +97,7 @@ STDMETHODIMP CLiveLoadModelStressResults::GetResult(CollectionIndexType index, I
       if (FAILED(hr))
          return hr;
 
-      if (leftConfig!=NULL)
+      if (leftConfig!=nullptr)
       {
          hr = rresult.m_LeftConfig.CopyTo(leftConfig);
          if (FAILED(hr))
@@ -108,7 +108,7 @@ STDMETHODIMP CLiveLoadModelStressResults::GetResult(CollectionIndexType index, I
       if (FAILED(hr))
          return hr;
 
-      if (leftConfig!=NULL)
+      if (leftConfig!=nullptr)
       {
          hr = rresult.m_RightConfig.CopyTo(rightConfig);
          if (FAILED(hr))
@@ -171,7 +171,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Load(IStructuredLoad2 * pload)
       long cnt = var;
       m_Results.reserve(cnt);
 
-      for (long ic=0; ic<cnt; ic++)
+      for (long ic = 0; ic<cnt; ic++)
       {
          LlmResults reshldr;
 
@@ -197,7 +197,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Load(IStructuredLoad2 * pload)
          // null configurations are written out as longs (see Save)
          if (var.vt==VT_I4)
          {
-            reshldr.m_LeftConfig = NULL;
+            reshldr.m_LeftConfig = nullptr;
          }
          else
          {
@@ -231,7 +231,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Load(IStructuredLoad2 * pload)
 
          if (var.vt==VT_I4)
          {
-            reshldr.m_RightConfig = NULL;
+            reshldr.m_RightConfig = nullptr;
          }
          else
          {
@@ -276,7 +276,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          const LlmResults& llres = m_Results[ic];
 
@@ -285,7 +285,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Save(IStructuredSave2 * psave)
             return hr;
 
          // remember config can be null
-         if (llres.m_LeftConfig!=NULL)
+         if (llres.m_LeftConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t(llres.m_LeftConfig));
          else
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t((long)0));
@@ -297,7 +297,7 @@ STDMETHODIMP CLiveLoadModelStressResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_RightConfig!=NULL)
+         if (llres.m_RightConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t(llres.m_RightConfig));
          else
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t((long)0));

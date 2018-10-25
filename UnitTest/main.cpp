@@ -51,14 +51,14 @@ static LPCTSTR lib_list[] = {
                                  _T("WBFLMath.dll"),
                                  _T("WBFLReinforcedConcrete.dll"),
                                  _T("WBFLUnitMgt.dll"),
-                                 _T("WBFLUnits.dll"),
-                                 _T("WBFLBridgeAnalysis.dll"),
-                                 _T("WBFLBridgeModeling.dll")
+                                 _T("WBFLUnits.dll")//,
+                                 //_T("WBFLBridgeAnalysis.dll"),
+                                 //_T("WBFLBridgeModeling.dll")
                                 };
 
 int main()
 {
-   bool st=0;
+   bool st = 0;
 
    dbgDiagBase::EnableWarnPopup(false);
 
@@ -79,7 +79,7 @@ int main()
 
    // run testme's for all libraries
    int n = sizeof(lib_list)/sizeof(TCHAR*);
-   for (int i=0; i<n; i++)
+   for (int i = 0; i<n; i++)
       st |= TestDll(lib_list[i], tl);
 
    // Test reporting
@@ -112,10 +112,10 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
    rlog << endl<<_T("**** Begin Testing DLL: ")<< dllname <<_T(" ****")<<endl;
 
    hLibrary = LoadLibrary(dllname.c_str());
-   if (hLibrary!=NULL)
+   if (hLibrary!=nullptr)
    {
       ptst = (pUnitTest)GetProcAddress(hLibrary, "UnitTest");
-      if (ptst!=NULL)
+      if (ptst!=nullptr)
       {
          // run UnitTest routine for dll.
          try
@@ -126,13 +126,13 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
          {
             ost<<_T("Handled uncaught sysXBase exception from :")<< dllname<<std::endl
                <<_T("Reason was ")<<xb->GetReason()<<std::endl;
-            rlog << ost;
+            rlog << ost.str();
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
          catch(...)
          {
             ost<<_T("Handled uncaught exception from :")<< dllname<<std::endl;
-            rlog << ost;
+            rlog << ost.str();
             rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
          }
 
@@ -143,7 +143,7 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
       {
          //failed to get UnitTest from dll
          ost<<_T("Failed to load UnitTest function from: ")<< dllname<<std::endl;
-         rlog << ost;
+         rlog << ost.str();
          rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
       }
    }
@@ -151,7 +151,7 @@ bool TestDll(LPCTSTR plibname, dbgLog& rlog)
    {
       // dll failed to load
       ost<<_T("Error Loading DLL: ")<< dllname<<std::endl;
-      rlog << ost;
+      rlog << ost.str();
       rlog.AddEntryToLog(ost.str(), dbgLog::Failed);
    }
 

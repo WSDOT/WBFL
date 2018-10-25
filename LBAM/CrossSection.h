@@ -53,10 +53,10 @@ public:
    m_Thermal(0.0),
    m_Depth(1.0)
 	{
-      m_StressPointsCookie=0;
+      m_StressPointsCookie = 0;
 	}
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -80,36 +80,36 @@ CONNECTION_POINT_ENTRY(IID_ISegmentCrossSectionEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISegmentCrossSection
 public:
-	STDMETHOD(Clone)(/*[out]*/ISegmentCrossSection** crosssection);
-	STDMETHOD(GetStiffness)(/*[out]*/Float64* EAForce, /*[out]*/Float64* EIForce, /*[out]*/Float64* EADefl, /*[out]*/Float64* EIDefl);
-	STDMETHOD(SetStiffness)(/*[in]*/Float64 EAForce, /*[in]*/Float64 EIForce, /*[in]*/Float64 EADefl, /*[in]*/Float64 EIDefl);
-	STDMETHOD(get_StressPoints)(/*[out, retval]*/ IStressPoints* *pVal);
-	STDMETHOD(putref_StressPoints)(/*[in]*/ IStressPoints* newVal);
-	STDMETHOD(get_ThermalCoeff)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_ThermalCoeff)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EIDefl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EIDefl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EADefl)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EADefl)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EIForce)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EIForce)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_EAForce)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_EAForce)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Depth)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Depth)(/*[in]*/ Float64 newVal);
+	STDMETHOD(Clone)(/*[out]*/ISegmentCrossSection** crosssection) override;
+	STDMETHOD(GetStiffness)(/*[out]*/Float64* EAForce, /*[out]*/Float64* EIForce, /*[out]*/Float64* EADefl, /*[out]*/Float64* EIDefl) override;
+	STDMETHOD(SetStiffness)(/*[in]*/Float64 EAForce, /*[in]*/Float64 EIForce, /*[in]*/Float64 EADefl, /*[in]*/Float64 EIDefl) override;
+	STDMETHOD(get_StressPoints)(/*[out, retval]*/ IStressPoints* *pVal) override;
+	STDMETHOD(putref_StressPoints)(/*[in]*/ IStressPoints* newVal) override;
+	STDMETHOD(get_ThermalCoeff)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_ThermalCoeff)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EIDefl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EIDefl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EADefl)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EADefl)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EIForce)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EIForce)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_EAForce)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_EAForce)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Depth)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Depth)(/*[in]*/ Float64 newVal) override;
 
 // IStressPointsEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index);
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index);
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    Float64 m_EAForce;

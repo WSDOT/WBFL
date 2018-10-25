@@ -100,39 +100,39 @@ public:
    // GROUP: OPERATIONS
 
    // override these virtual functions
-   virtual Float64 PermanentStrand_BeforeTransfer() const;
-   virtual Float64 PermanentStrand_AfterTransfer() const;
-   virtual Float64 PermanentStrand_AtLifting() const;
-   virtual Float64 PermanentStrand_AtShipping() const;
-   virtual Float64 PermanentStrand_AfterTemporaryStrandInstallation() const;
-   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const;
-   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const;
-   virtual Float64 PermanentStrand_AfterDeckPlacement() const;
-   virtual Float64 PermanentStrand_AfterSIDL() const;
-   virtual Float64 PermanentStrand_Final() const;
+   virtual Float64 PermanentStrand_BeforeTransfer() const override;
+   virtual Float64 PermanentStrand_AfterTransfer() const override;
+   virtual Float64 PermanentStrand_AtLifting() const override;
+   virtual Float64 PermanentStrand_AtShipping() const override;
+   virtual Float64 PermanentStrand_AfterTemporaryStrandInstallation() const override;
+   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const override;
+   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const override;
+   virtual Float64 PermanentStrand_AfterDeckPlacement() const override;
+   virtual Float64 PermanentStrand_AfterSIDL() const override;
+   virtual Float64 PermanentStrand_Final() const override;
 
-   virtual Float64 TemporaryStrand_BeforeTransfer() const;
-   virtual Float64 TemporaryStrand_AfterTransfer() const;
-   virtual Float64 TemporaryStrand_AtLifting() const;
-   virtual Float64 TemporaryStrand_AtShipping() const;
-   virtual Float64 TemporaryStrand_AfterTemporaryStrandInstallation() const;
-   virtual Float64 TemporaryStrand_BeforeTemporaryStrandRemoval() const;
-   virtual Float64 TemporaryStrand_AfterTemporaryStrandRemoval() const;
-   virtual Float64 TemporaryStrand_AfterDeckPlacement() const;
-   virtual Float64 TemporaryStrand_AfterSIDL() const;
-   virtual Float64 TemporaryStrand_Final() const;
+   virtual Float64 TemporaryStrand_BeforeTransfer() const override;
+   virtual Float64 TemporaryStrand_AfterTransfer() const override;
+   virtual Float64 TemporaryStrand_AtLifting() const override;
+   virtual Float64 TemporaryStrand_AtShipping() const override;
+   virtual Float64 TemporaryStrand_AfterTemporaryStrandInstallation() const override;
+   virtual Float64 TemporaryStrand_BeforeTemporaryStrandRemoval() const override;
+   virtual Float64 TemporaryStrand_AfterTemporaryStrandRemoval() const override;
+   virtual Float64 TemporaryStrand_AfterDeckPlacement() const override;
+   virtual Float64 TemporaryStrand_AfterSIDL() const override;
+   virtual Float64 TemporaryStrand_Final() const override;
 
-   virtual Float64 PermanentStrand_RelaxationLossesBeforeTransfer() const;
-   virtual Float64 PermanentStrand_ElasticShorteningLosses() const;
+   virtual Float64 PermanentStrand_RelaxationLossesBeforeTransfer() const override;
+   virtual Float64 PermanentStrand_ElasticShorteningLosses() const override;
 
-   virtual Float64 TemporaryStrand_RelaxationLossesBeforeTransfer() const;
-   virtual Float64 TemporaryStrand_ElasticShorteningLosses() const;
+   virtual Float64 TemporaryStrand_RelaxationLossesBeforeTransfer() const override;
+   virtual Float64 TemporaryStrand_ElasticShorteningLosses() const override;
 
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const;
-   virtual Float64 TimeDependentLossesBeforeDeck() const;
-   virtual Float64 TimeDependentLossesAfterDeck() const;
-   virtual Float64 TimeDependentLosses() const;
+   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+   virtual Float64 TimeDependentLossesBeforeDeck() const override;
+   virtual Float64 TimeDependentLossesAfterDeck() const override;
+   virtual Float64 TimeDependentLosses() const override;
 
 
    Float64 GetBeforeXferLosses() const;
@@ -177,7 +177,7 @@ protected:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment( const lrfdLumpSumLosses& rOther );
+   void MakeAssignment( const lrfdLumpSumLosses& rOther );
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -192,9 +192,9 @@ private:
    //------------------------------------------------------------------------
    void MakeCopy( const lrfdLumpSumLosses& rOther );
 
-   virtual void ValidateParameters() const;
-   virtual void UpdateLongTermLosses() const;
-   virtual void UpdateHaulingLosses() const;
+   virtual void ValidateParameters() const override;
+   virtual void UpdateLongTermLosses() const override;
+   virtual void UpdateHaulingLosses() const override;
 
 
    // GROUP: ACCESS

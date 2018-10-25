@@ -147,7 +147,7 @@ protected:
    void MakeCopy(const lrfdLoadModifier& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLoadModifier& rOther);
+   void MakeAssignment(const lrfdLoadModifier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

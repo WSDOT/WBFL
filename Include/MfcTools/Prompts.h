@@ -33,13 +33,13 @@ BOOL MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lps
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
-int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=NULL);
+int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=nullptr);
 
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
 // The choices are listed in a sequence of radio buttons. The maximum number of responses is 4.
-int MFCTOOLSFUNC AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=NULL);
+int MFCTOOLSFUNC AfxRBChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,int defChoice=0,BOOL bCancelButton=FALSE,CHelpHandler* pHelpHandler=nullptr);
 
 // A validator object for the AfxMultiChoice method
 // The select list of options is passed to the IsValid method to validate the
@@ -57,8 +57,8 @@ public:
 std::vector<int> MFCTOOLSFUNC AfxMultiChoice(LPCTSTR lpszTitle,
                                              LPCTSTR lpszQuestion,
                                              LPCTSTR lpszOptions,
-                                             CMultiChoiceValidator* pValidator=NULL,
+                                             CMultiChoiceValidator* pValidator=nullptr,
                                              const std::vector<int>& defOptions=std::vector<int>(),
                                              BOOL bCancelButton=FALSE,
                                              BOOL bCheckList=FALSE,
-                                             CHelpHandler* pHelpHandler=NULL);
+                                             CHelpHandler* pHelpHandler=nullptr);

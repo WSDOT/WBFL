@@ -78,14 +78,14 @@ void CTestDisplayUnitGroup::Test()
    // * Test Name
    // ****************************************************
    CComBSTR bstrTest;
-   TRY_TEST( pGroup->get_Name(NULL), E_POINTER );
+   TRY_TEST( pGroup->get_Name(nullptr), E_POINTER );
    TRY_TEST( pGroup->get_Name(&bstrTest), S_OK );
    TRY_TEST( wcscmp( bstrTest, CComBSTR("Distance")), 0);
 
    // ****************************************************
    // * Test UnitType
    // ****************************************************
-   TRY_TEST( pGroup->get_UnitType(NULL), E_POINTER );
+   TRY_TEST( pGroup->get_UnitType(nullptr), E_POINTER );
    TRY_TEST( pGroup->get_UnitType(&bstrTest), S_OK );
    TRY_TEST( wcscmp( bstrTest,CComBSTR("Length")), 0 );
 
@@ -107,10 +107,10 @@ void CTestDisplayUnitGroup::Test()
    CComPtr<IDisplayUnit> pDispUnit;
 
    // bad input
-   TRY_TEST( pGroup->Add(NULL,unitsSI,pFormatter,VARIANT_TRUE,&pDispUnit), E_INVALIDARG );
+   TRY_TEST( pGroup->Add(nullptr,unitsSI,pFormatter,VARIANT_TRUE,&pDispUnit), E_INVALIDARG );
    TRY_TEST( pGroup->Add(CComBSTR("Junk"),unitsSI,pFormatter,VARIANT_TRUE,&pDispUnit), UNITS_E_BADUNITTAG );
-   TRY_TEST( pGroup->Add(CComBSTR("m"),unitsSI,NULL,VARIANT_TRUE,&pDispUnit), E_INVALIDARG );
-   TRY_TEST( pGroup->Add(CComBSTR("m"),unitsSI,pFormatter,VARIANT_TRUE,NULL), E_POINTER );
+   TRY_TEST( pGroup->Add(CComBSTR("m"),unitsSI,nullptr,VARIANT_TRUE,&pDispUnit), E_INVALIDARG );
+   TRY_TEST( pGroup->Add(CComBSTR("m"),unitsSI,pFormatter,VARIANT_TRUE,nullptr), E_POINTER );
 
    // success
    TRY_TEST( pGroup->Add(CComBSTR("m"),unitsSI,pFormatter,VARIANT_TRUE,&pDispUnit), S_OK );
@@ -127,7 +127,7 @@ void CTestDisplayUnitGroup::Test()
    // * Test Count and Clear
    // ****************************************************
    CollectionIndexType count;
-   TRY_TEST( pGroup->get_Count(NULL), E_POINTER );
+   TRY_TEST( pGroup->get_Count(nullptr), E_POINTER );
    TRY_TEST( pGroup->get_Count(&count), S_OK );
    TRY_TEST( count, 3 );
    TRY_TEST( pGroup->Clear(), S_OK );
@@ -139,7 +139,7 @@ void CTestDisplayUnitGroup::Test()
    // ****************************************************
 
    // Test with bad pointer
-   TRY_TEST( pGroup->Remove(NULL), E_INVALIDARG );
+   TRY_TEST( pGroup->Remove(nullptr), E_INVALIDARG );
 
    // Test on an empty group
    TRY_TEST( pGroup->Remove(CComBSTR("mm")),UNITS_E_BADUNITTAG);
@@ -174,8 +174,8 @@ void CTestDisplayUnitGroup::Test()
 
    // Bad input
    pDispUnit.Release();
-   TRY_TEST( pGroup->get_Item(NULL,&pDispUnit), E_INVALIDARG );
-   TRY_TEST( pGroup->get_Item(CComBSTR("mm"),NULL), E_POINTER );
+   TRY_TEST( pGroup->get_Item(nullptr,&pDispUnit), E_INVALIDARG );
+   TRY_TEST( pGroup->get_Item(CComBSTR("mm"),nullptr), E_POINTER );
    TRY_TEST( pGroup->get_Item(CComBSTR("Junk"),&pDispUnit), UNITS_E_BADUNITTAG );
 
    // Success
@@ -197,7 +197,7 @@ void CTestDisplayUnitGroup::Test()
    // You can designate as many display units "default" as you like. However, only
    // the first one will be the actually default, until it is removed from the collection
    pDispUnit.Release();
-   TRY_TEST( pGroup->get_Default(umSI,NULL), E_POINTER);
+   TRY_TEST( pGroup->get_Default(umSI,nullptr), E_POINTER);
    TRY_TEST( pGroup->get_Default(umSI,&pDispUnit), S_OK);
    pDispUnit->get_UnitTag(&bstrTest);
    TRY_TEST( wcscmp( bstrTest,CComBSTR("m")), 0 );
@@ -249,7 +249,7 @@ void CTestDisplayUnitGroup::Test()
    //* Test _EnumDisplayUnits
    //******************************************
    CComPtr<IEnumDisplayUnits> pEnum;
-   TRY_TEST(pGroup->get__EnumDisplayUnits(NULL),E_POINTER);
+   TRY_TEST(pGroup->get__EnumDisplayUnits(nullptr),E_POINTER);
    TRY_TEST(pGroup->get__EnumDisplayUnits(&pEnum),S_OK);
 
    // ****************************************************

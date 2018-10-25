@@ -100,7 +100,7 @@ STDMETHODIMP CPrecastGirder::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IPrecastGirder
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -134,11 +134,11 @@ STDMETHODIMP CPrecastGirder::putref_StrandMover(/*[in]*/StrandGridType sgType,/*
 
    if ( sgType == sgtEnd )
    {
-      m_HarpGridEnd[endType]->putref_StrandMover(sgtEnd,etStart,strandMover);
+      m_HarpGridEnd[endType]->putref_StrandMover(sgtEnd,endType,strandMover);
    }
    else
    {
-      m_HarpGridHp[endType]->putref_StrandMover(sgtHarpPoint,etStart,strandMover);
+      m_HarpGridHp[endType]->putref_StrandMover(sgtHarpPoint, endType,strandMover);
    }
 
    return S_OK;
@@ -1401,7 +1401,7 @@ STDMETHODIMP CPrecastGirder::ComputeMaxHarpedStrandSlopeEx(Float64 distFromStart
 
       Float64 rise = (ye - curr_end_offset + end_offset) - (ys - curr_start_offset + start_offset);
 
-      if (rise != 0.0)
+      if (!IsZero(rise))
       {
          // Slope is in the format 1:n (rise:run)
          // Positive slopes are upwards and towards the right
@@ -1816,7 +1816,7 @@ STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
    CHECK_RETOBJ(rebarLayout);
 
-   if ( m_RebarLayout == NULL )
+   if ( m_RebarLayout == nullptr )
    {
       HRESULT hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
       if ( FAILED(hr) )
@@ -1834,7 +1834,7 @@ STDMETHODIMP CPrecastGirder::get_ClosureJointRebarLayout(IRebarLayout** rebarLay
 {
    CHECK_RETOBJ(rebarLayout);
 
-   if ( m_ClosureJointRebarLayout == NULL )
+   if ( m_ClosureJointRebarLayout == nullptr )
    {
       HRESULT hr = m_ClosureJointRebarLayout.CoCreateInstance(CLSID_RebarLayout);
       if ( FAILED(hr) )

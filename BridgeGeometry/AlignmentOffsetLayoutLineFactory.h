@@ -81,21 +81,21 @@ END_COM_MAP()
    CogoObjectID m_AlignmentID; // ID of the alignment that the layout lines are offset from
 
 public:
-   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths);
-   STDMETHOD(Reset)();
+   STDMETHOD(Create)(IBridgeGeometry* pBridge,IPathCollection* pPaths) override;
+   STDMETHOD(Reset)() override;
 
-   STDMETHOD(put_LayoutLineID)(LineIDType ID);
-   STDMETHOD(get_LayoutLineID)(LineIDType* ID);
-   STDMETHOD(put_LayoutLineIDInc)(LineIDType inc);
-   STDMETHOD(get_LayoutLineIDInc)(LineIDType* inc);
-   STDMETHOD(put_LayoutLineCount)(LineIDType nLayoutLines);
-   STDMETHOD(get_LayoutLineCount)(LineIDType* nLayoutLines);
-   STDMETHOD(get_Offset)(Float64* offset);
-   STDMETHOD(put_Offset)(Float64 offset);
-   STDMETHOD(get_OffsetIncrement)(Float64* inc);
-   STDMETHOD(put_OffsetIncrement)(Float64 inc);
-   STDMETHOD(get_AlignmentID)(CogoObjectID* ID);
-   STDMETHOD(put_AlignmentID)(CogoObjectID ID);
+   STDMETHOD(put_LayoutLineID)(LineIDType ID) override;
+   STDMETHOD(get_LayoutLineID)(LineIDType* ID) override;
+   STDMETHOD(put_LayoutLineIDInc)(LineIDType inc) override;
+   STDMETHOD(get_LayoutLineIDInc)(LineIDType* inc) override;
+   STDMETHOD(put_LayoutLineCount)(LineIDType nLayoutLines) override;
+   STDMETHOD(get_LayoutLineCount)(LineIDType* nLayoutLines) override;
+   STDMETHOD(get_Offset)(Float64* offset) override;
+   STDMETHOD(put_Offset)(Float64 offset) override;
+   STDMETHOD(get_OffsetIncrement)(Float64* inc) override;
+   STDMETHOD(put_OffsetIncrement)(Float64 inc) override;
+   STDMETHOD(get_AlignmentID)(CogoObjectID* ID) override;
+   STDMETHOD(put_AlignmentID)(CogoObjectID ID) override;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(AlignmentOffsetLayoutLineFactory), CAlignmentOffsetLayoutLineFactory)

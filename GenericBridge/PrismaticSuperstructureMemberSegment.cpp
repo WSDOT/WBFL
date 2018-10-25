@@ -39,20 +39,20 @@ static char THIS_FILE[] = __FILE__;
 // CPrismaticSuperstructureMemberSegment
 HRESULT CPrismaticSuperstructureMemberSegment::FinalConstruct()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Orientation = 0;
    m_HaunchDepth[0] = 0;
    m_HaunchDepth[1] = 0;
    m_HaunchDepth[2] = 0;
    m_Fillet = 0;
-   m_pPrevSegment = NULL;
-   m_pNextSegment = NULL;
+   m_pPrevSegment = nullptr;
+   m_pNextSegment = nullptr;
    return S_OK;
 }
 
 void CPrismaticSuperstructureMemberSegment::FinalRelease()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -63,7 +63,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::InterfaceSupportsErrorInfo(R
 		&IID_ISegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -90,7 +90,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
 
    if ( m_Shapes.size() == 0 )
    {
-      *ppSection = NULL;
+      *ppSection = nullptr;
       return S_OK;
    }
 
@@ -234,7 +234,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_SuperstructureMember(ISu
    }
    else
    {
-      (*ssMbr) = NULL;
+      (*ssMbr) = nullptr;
    }
 
    return S_OK;
@@ -257,7 +257,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_GirderLine(IGirderLine**
    }
    else
    {
-      (*girderLine) = NULL;
+      (*girderLine) = nullptr;
    }
 
    return S_OK;
@@ -268,7 +268,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_PrevSegment(ISegment*
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = NULL;
+   m_pPrevSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -288,7 +288,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrevSegment(ISegment** s
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -297,7 +297,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::putref_NextSegment(ISegment*
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = NULL;
+   m_pNextSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -317,7 +317,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_NextSegment(ISegment** s
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }

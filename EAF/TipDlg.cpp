@@ -48,14 +48,14 @@ static const TCHAR szIntFilePos[] = _T("FilePos");
 static const TCHAR szTimeStamp[] = _T("TimeStamp");
 static const TCHAR szIntStartup[] = _T("StartUp");
 
-CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
+CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_TIP, pParent)
 {
 	//{{AFX_DATA_INIT(CTipDlg)
 	m_bStartup = TRUE;
 	//}}AFX_DATA_INIT
 
-   srand((unsigned)time(NULL));
+   srand((unsigned)time(nullptr));
    int idx = rand()%vTipFiles.size();
 
    CFileFind finder;
@@ -70,7 +70,7 @@ CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
 	UINT iFilePos = pApp->GetProfileInt(m_strSection, szIntFilePos, 0);
 
 	// Now try to open the tips file
-	if (_tfopen_s(&m_pStream,vTipFiles[idx], _T("r")) != 0 || m_pStream == NULL) 
+	if (_tfopen_s(&m_pStream,vTipFiles[idx], _T("r")) != 0 || m_pStream == nullptr) 
 	{
 		m_strTip.LoadString(CG_IDS_FILE_ABSENT);
 		return;
@@ -87,7 +87,7 @@ CTipDlg::CTipDlg(const std::vector<CString>& vTipFiles,CWnd* pParent /*=NULL*/)
 	CString strCurrentTime(buffer);
 	strCurrentTime.TrimRight();
 	CString strStoredTime = 
-		pApp->GetProfileString(m_strSection, szTimeStamp, NULL);
+		pApp->GetProfileString(m_strSection, szTimeStamp, nullptr);
 	if (strCurrentTime != strStoredTime) 
 	{
 		iFilePos = 0;
@@ -112,7 +112,7 @@ CTipDlg::~CTipDlg()
 	// latest position so that we don't repeat the tips! 
     
 	// But make sure the tips file existed in the first place....
-	if (m_pStream != NULL) 
+	if (m_pStream != nullptr) 
 	{
 		CEAFApp* pApp = EAFGetApp();
 		pApp->WriteProfileInt(m_strSection, szIntFilePos, ftell(m_pStream));
@@ -155,7 +155,7 @@ void CTipDlg::GetNextTipString(CString& strNext)
 	BOOL bStop = FALSE;
 	while (!bStop) 
 	{
-		if (_fgetts(lpsz, MAX_BUFLEN, m_pStream) == NULL) 
+		if (_fgetts(lpsz, MAX_BUFLEN, m_pStream) == nullptr) 
 		{
 			// We have either reached EOF or enocuntered some problem
 			// In both cases reset the pointer to the beginning of the file
@@ -200,7 +200,7 @@ BOOL CTipDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 
 	// If Tips file does not exist then disable NextTip
-	if (m_pStream == NULL)
+	if (m_pStream == nullptr)
 		GetDlgItem(IDC_NEXTTIP)->EnableWindow(FALSE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control

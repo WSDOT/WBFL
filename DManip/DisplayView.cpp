@@ -500,7 +500,7 @@ void CDisplayView::DoZoom()
    m_pDispMgr->GetTaskFactory(&pFactory);
 
    CComPtr<iTask> task;
-   pFactory->CreateZoomTask(this,NULL,RGB(0,255,0),&task);
+   pFactory->CreateZoomTask(this,nullptr,RGB(0,255,0),&task);
    m_pDispMgr->SetTask(task);
 }
 
@@ -606,7 +606,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    Float64 orig_width = 0.0;
    Float64 orig_height = 0.0;
 
-   for (CollectionIndexType it=0; it<max_iter; it++)
+   for (CollectionIndexType it = 0; it<max_iter; it++)
    {
       CComPtr<IRect2d> rect;
       m_pDispMgr->GetBoundingBox(m_pCoordinateMap, false, &rect);

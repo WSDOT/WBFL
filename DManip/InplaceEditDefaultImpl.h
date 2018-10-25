@@ -44,7 +44,7 @@ public:
    // iInplaceEditable Implementation
    // Simply implements the DoInplaceEdit template method
    // All other methods must be implemented by subclasses
-   STDMETHOD_(void,DoInplaceEdit)();
+   STDMETHOD_(void,DoInplaceEdit)() override;
 //   virtual void CreateEditControl() = 0;
 //   virtual void DestroyEditControl() = 0;
 //   virtual void OnTextChanged(LPCTSTR lpszText) = 0;

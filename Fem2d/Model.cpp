@@ -130,7 +130,7 @@ STDMETHODIMP CModel::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IFem2dModel
 	};
-	for (long i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (long i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -1252,14 +1252,14 @@ void CModel::OnPOIsCleared()
 // Frees the memory allocation for the global force vector
 void CModel::FreeFGlobal()
 {
-   if (m_pF != NULL)
+   if (m_pF != nullptr)
       delete[] m_pF;
-   m_pF = NULL;
+   m_pF = nullptr;
 
 #if defined _DEBUG
-   if (m_pForig != NULL)
+   if (m_pForig != nullptr)
       delete[] m_pForig;
-   m_pForig = NULL;
+   m_pForig = nullptr;
 #endif
 }
 
@@ -1336,7 +1336,7 @@ LONG CModel::ComputeBandWidth()
             dof1 = mbr->GetCondensedDOF(j);
             dof2 = mbr->GetCondensedDOF(k);
             if (dof1 >= 0 && dof2 >= 0)
-               bw = _cpp_max(bw,(LONG)(_abs64(dof1-dof2) + 1));
+               bw = Max(bw,(LONG)(_abs64(dof1-dof2) + 1));
          }
       }
    }
@@ -1466,7 +1466,7 @@ void CModel::ComputeLoadings()
 
 #if defined ENABLE_LOGGING
          logfile << "Global Force Vector: Loading =" << lid << std::endl;
-         for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
+         for (LONG fi = 0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
 #endif
          try
@@ -1489,7 +1489,7 @@ void CModel::ComputeLoadings()
          }
 #if defined ENABLE_LOGGING
          logfile << "Solution: Loading =" << lid << std::endl;
-         for (LONG fi=0; fi<m_NumCondensedDOF; fi++)
+         for (LONG fi = 0; fi<m_NumCondensedDOF; fi++)
             logfile << m_pF[fi] << std::endl;
 #endif
 
@@ -2013,7 +2013,7 @@ void CModel::StorePoiResults(LoadCaseIDType lcase)
       mbr->GetInternalForces(poiloc, mftLeft, force);
       mbr->GetInternalForces(poiloc, mftRight, &force[3]);
       // reverse sign of forces to comply to sign conventions
-      for (long i=0; i<6; i++)
+      for (long i = 0; i<6; i++)
          force[i] = -1.0 * force[i];
 
       mbr->GetDeflection(poiloc,disp);
@@ -2134,7 +2134,7 @@ const CModel::PoiResult* CModel::StorePoiResults(LoadCaseIDType lcase, PoiIDType
    mbr->GetInternalForces(poiloc, mftRight, &force[3]);
 
    // reverse sign of forces to comply to sign conventions
-   for (long i=0; i<6; i++)
+   for (long i = 0; i<6; i++)
       force[i] = -1.0 * force[i];
 
 

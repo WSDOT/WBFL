@@ -868,7 +868,7 @@ void CTestModel::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestModel"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( psm2.QueryInterface(&piss2), S_OK);
 
          // Load 
@@ -980,7 +980,7 @@ HRESULT CTestModel::OnModelChanged(ILBAMModel* Model, ChangeType change)
 
 void ComputeModelStatistics(ILBAMModel* pmodel, ModelStats* pstats)
 {
-   CollectionIndexType cnt=0;
+   CollectionIndexType cnt = 0;
    Float64 len;
 
    CComPtr<ISuperstructureMembers> pssms;

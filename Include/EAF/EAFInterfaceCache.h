@@ -53,12 +53,12 @@ public:
 
    void SetBroker(IBroker* pBroker);
 
-   STDMETHOD_(ULONG,AddRef)();
-   STDMETHOD_(ULONG,Release)();
-   STDMETHOD(QueryInterface)(REFIID riid,void** ppv);
-   STDMETHOD(GetInterface)(REFIID riid,IUnknown** ppUnk);
-   STDMETHOD(Reset)();
-   STDMETHOD(ShutDown)();
+   STDMETHOD_(ULONG,AddRef)() override;
+   STDMETHOD_(ULONG,Release)() override;
+   STDMETHOD(QueryInterface)(REFIID riid,void** ppv) override;
+   STDMETHOD(GetInterface)(REFIID riid,IUnknown** ppUnk) override;
+   STDMETHOD(Reset)() override;
+   STDMETHOD(ShutDown)() override;
 
    void ClearCache();
 
@@ -84,7 +84,7 @@ private:
    StatusGroupIDType m_StatusGroupID
 
 #define EAF_AGENT_SET_BROKER(broker) m_pBroker = broker
-#define EAF_AGENT_CLEAR_INTERFACE_CACHE m_pBroker = NULL
+#define EAF_AGENT_CLEAR_INTERFACE_CACHE m_pBroker = nullptr
 
 #else
 
@@ -97,7 +97,7 @@ private:
    StatusGroupIDType m_StatusGroupID
 
 #define EAF_AGENT_SET_BROKER(broker) m_InterfaceCache.SetBroker(broker); m_pBroker = &m_InterfaceCache
-#define EAF_AGENT_CLEAR_INTERFACE_CACHE  m_InterfaceCache.ClearCache(); m_InterfaceCache.SetBroker(NULL); m_pBroker = NULL
+#define EAF_AGENT_CLEAR_INTERFACE_CACHE  m_InterfaceCache.ClearCache(); m_InterfaceCache.SetBroker(nullptr); m_pBroker = nullptr
 
 
 #endif // NO_INTERFACE_CACHE

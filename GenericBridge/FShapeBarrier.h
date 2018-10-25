@@ -65,30 +65,27 @@ END_COM_MAP()
 private:
    CComPtr<ITrafficBarrier> m_BarrierShape;
    CComPtr<IMaterial> m_Material;
-   VARIANT_BOOL m_bStructurallyContinuous;
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFShapeBarrier
-   STDMETHOD(put_Shape)(/*[in]*/ ITrafficBarrier* shape);
+   STDMETHOD(put_Shape)(/*[in]*/ ITrafficBarrier* shape) override;
 
 // IBarrier
 public:
-   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape);
-	STDMETHOD(get_Material)(/*[out,retval]*/ IMaterial** material);
-	STDMETHOD(putref_Material)(/*[in]*/ IMaterial* material);
-   STDMETHOD(get_CurbLocation)(/*[out,retval]*/Float64* loc);
-   STDMETHOD(get_BarrierToeLocations)(/*[out]*/ Float64* interiorToe,/*[out]*/Float64* exteriorToe);
-   STDMETHOD(get_IsStructurallyContinuous)(/*[out,retval]*/VARIANT_BOOL* pbContinuous);
-	STDMETHOD(put_IsStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous);
-   STDMETHOD(Clone)(/*[out,retval]*/IBarrier** barrier);
+   STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape) override;
+	STDMETHOD(get_Material)(/*[out,retval]*/ IMaterial** material) override;
+	STDMETHOD(putref_Material)(/*[in]*/ IMaterial* material) override;
+   STDMETHOD(get_CurbLocation)(/*[out,retval]*/Float64* loc) override;
+   STDMETHOD(get_BarrierToeLocations)(/*[out]*/ Float64* interiorToe,/*[out]*/Float64* exteriorToe) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IBarrier** barrier) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__FSHAPEBARRIER_H_

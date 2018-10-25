@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 inline void SumSectionResult3Ds(ISectionResult3Ds* Summ, ISectionResult3Ds* Tmp, CollectionIndexType Cnt)
 {
    CHRException hr;
-   for (CollectionIndexType i=0; i<Cnt; i++)
+   for (CollectionIndexType i = 0; i<Cnt; i++)
    {
       CComPtr<ISectionResult3D> sm, tp;
       hr = Summ->get_Item(i, &sm);
@@ -54,7 +54,7 @@ inline void SumSectionResult3Ds(ISectionResult3Ds* Summ, ISectionResult3Ds* Tmp,
 inline void SumResult3Ds(IResult3Ds* Summ, IResult3Ds* Tmp, CollectionIndexType Cnt)
 {
    CHRException hr;
-   for (CollectionIndexType i=0; i<Cnt; i++)
+   for (CollectionIndexType i = 0; i<Cnt; i++)
    {
       CComPtr<IResult3D> sm, tp;
       hr = Summ->get_Item(i, &sm);
@@ -66,7 +66,7 @@ inline void SumResult3Ds(IResult3Ds* Summ, IResult3Ds* Tmp, CollectionIndexType 
 inline void SumSectionStressResults(ISectionStressResults* results, ISectionStressResults* incRes, CollectionIndexType numPois)
 {
    CHRException hr;
-   for (CollectionIndexType i=0; i<numPois; i++)
+   for (CollectionIndexType i = 0; i<numPois; i++)
    {
       CComPtr<ISectionStressResult> res, inc_res;
       hr = results->get_Item(i, &res);
@@ -82,7 +82,7 @@ STDMETHODIMP CLoadCaseResponseAgg::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISegmentItem
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -103,7 +103,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, IIDArray* POIs, 
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       m_pCombiner->Validate();
 
@@ -129,19 +129,19 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeForces(BSTR LoadCase, IIDArray* POIs, 
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // create zeroed results
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<ISectionResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_ISectionResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_ISectionResult3D, (void**)&pres);
          hr = results->Add(pres);
       }
 
       // cycle through load groups and sum
       CollectionIndexType lg_cnt = rloadgroups.size();
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -186,7 +186,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, IIDArray* P
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       m_pCombiner->Validate();
 
@@ -212,19 +212,19 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeDeflections(BSTR LoadCase, IIDArray* P
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // no load groups - just return results as zero
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<ISectionResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_ISectionResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_ISectionResult3D, (void**)&pres);
          hr = results->Add(pres);
       }
 
       // cycle through load groups and sum
       CollectionIndexType lg_cnt = rloadgroups.size();
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -271,7 +271,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, IIDArray* POI
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       m_pCombiner->Validate();
 
@@ -297,19 +297,19 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeReactions(BSTR LoadCase, IIDArray* POI
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // no load groups - just return results as zero
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<IResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_IResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
          hr = results->Add(pres);
       }
 
       // cycle through load groups
       CollectionIndexType lg_cnt = rloadgroups.size();
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -354,7 +354,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, IIDA
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       m_pCombiner->Validate();
 
@@ -380,19 +380,19 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeSupportDeflections(BSTR LoadCase, IIDA
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // no load groups - just return results as zero
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<IResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_IResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
          hr = results->Add(pres);
       }
 
       // cycle through load groups - we'll let server create our first results object and return it
       CollectionIndexType lg_cnt = rloadgroups.size();
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 
@@ -437,7 +437,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, IIDArray* POIs
    CHRException hr;
    try
    {
-      *pResults = NULL;
+      *pResults = nullptr;
 
       m_pCombiner->Validate();
 
@@ -461,16 +461,16 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, IIDArray* POIs
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create results of zeros
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          PoiIDType poi_id;
          hr = POIs->get_Item(ipoi, &poi_id);
 
          CComPtr<ISectionStressResult> pres;
-         hr = factory->CreateInstance(NULL, IID_ISectionStressResult, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_ISectionStressResult, (void**)&pres);
 
          // must determine the number of stress points and add a zero result for each
          CComPtr<IStressPoints> left_sps, right_sps;
@@ -479,14 +479,14 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, IIDArray* POIs
          // left
          CollectionIndexType cnt;
          hr = left_sps->get_Count(&cnt);
-         for (CollectionIndexType i=0; i<cnt; i++)
+         for (CollectionIndexType i = 0; i<cnt; i++)
          {
             hr = pres->AddLeftResult(0.0);
          }
 
          // right
          hr = right_sps->get_Count(&cnt);
-         for (CollectionIndexType i=0; i<cnt; i++)
+         for (CollectionIndexType i = 0; i<cnt; i++)
          {
             hr = pres->AddRightResult(0.0);
          }
@@ -496,7 +496,7 @@ STDMETHODIMP CLoadCaseResponseAgg::ComputeStresses(BSTR LoadCase, IIDArray* POIs
 
       // cycle through load groups - we'll let server create our first results object and return it
       CollectionIndexType lg_cnt = rloadgroups.size();
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CMB_HANDLE_CANCEL_PROGRESS();
 

@@ -58,7 +58,7 @@ static char THIS_FILE[] = __FILE__;
 
 int main(int argc, TCHAR* argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    CRCBeamTest::Test();
    CRCBeam2Test::Test();

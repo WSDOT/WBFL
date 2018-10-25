@@ -71,19 +71,19 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ldIAxleEvents
-   STDMETHOD(OnAxleChanged)(/*[in]*/ldIAxle* Axle);
+   STDMETHOD(OnAxleChanged)(/*[in]*/ldIAxle* Axle) override;
 
 // ldIAxles
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ldIAxles** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ldIAxles** clone) override;
 
 
 private:
    // implementations of virtual functions for collection
-   virtual HRESULT OnBeforeAdd( StoredType* pVal)
+   HRESULT OnBeforeAdd( StoredType* pVal)
    {
       CHECK_IN(pVal);
       try
@@ -100,15 +100,15 @@ private:
          return E_FAIL;
       }
       return S_OK;
-   }
+   };
 
-   virtual HRESULT OnAfterAdd( StoredType* pVal, AxleIndexType position)
+   HRESULT OnAfterAdd( StoredType* pVal, AxleIndexType position)
    {
       Fire_OnAxlesAdded(pVal->second.m_T, position);
       return S_OK;
-   }
+   };
 
-   virtual HRESULT OnBeforeRemove( StoredType* pVal, AxleIndexType position)
+   HRESULT OnBeforeRemove( StoredType* pVal, AxleIndexType position)
    {
       try
       {
@@ -129,32 +129,32 @@ private:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterRemove( AxleIndexType position)
+   HRESULT OnAfterRemove( AxleIndexType position)
    {
       return S_OK; 
    }
 
-   virtual HRESULT OnAfterMoveTo( AxleIndexType from, AxleIndexType to)
+   HRESULT OnAfterMoveTo( AxleIndexType from, AxleIndexType to)
    {
       Fire_OnAxlesMoveTo (from, to);
       return S_OK;
    }
-   virtual HRESULT OnAfterCopyTo( AxleIndexType from, AxleIndexType to)
+   HRESULT OnAfterCopyTo( AxleIndexType from, AxleIndexType to)
    {
       Fire_OnAxlesCopyTo(from, to);
       return S_OK;
    }
-   virtual HRESULT OnAfterReverse()
+   HRESULT OnAfterReverse()
    {
       Fire_OnAxlesReverse();
       return S_OK;
    }
 
 public:
-   virtual void FinalRelease()
+   void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt=0;
+      CollectionIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

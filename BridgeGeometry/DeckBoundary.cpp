@@ -29,6 +29,7 @@
 #include "DeckBoundary.h"
 #include <map>
 #include <vector>
+#include <functional>
 
 typedef std::map<Float64,CComPtr<IPoint2d>> PathPointCollection;
 typedef std::pair<Float64,CComPtr<IPoint2d>> PathPointEntry;
@@ -350,7 +351,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    CComPtr<IEnumPathElements> enumPathElements;
    m_EdgePath[stRight]->get__EnumPathElements(&enumPathElements);
    CComPtr<IPathElement> pathElement;
-   while ( enumPathElements->Next(1,&pathElement,NULL) != S_FALSE )
+   while ( enumPathElements->Next(1,&pathElement,nullptr) != S_FALSE )
    {
       PathElementType type;
       pathElement->get_Type(&type);
@@ -402,7 +403,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
             CComPtr<IPoint2d> point;
             CComPtr<IEnumPoint2d> enumPoints;
             splinePoints->get__Enum(&enumPoints);
-            while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+            while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
             {
                points.push_back(point);
                point.Release();
@@ -415,7 +416,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       }
       pathElement.Release();
 
-      BOOST_FOREACH(CComPtr<IPoint2d> point,points)
+      for( const auto& point : points)
       {
          m_EdgePath[stRight]->Offset(point,&distance,&offset); 
          if (::InRange(right_edge_start,distance,right_edge_end) )
@@ -434,7 +435,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       rightPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 
-   BOOST_FOREACH(PathPointEntry rightPathPointEntry,rightPathPoints)
+   for( const auto& rightPathPointEntry : rightPathPoints)
    {
       CComPtr<IPoint2d> point = rightPathPointEntry.second;
       CComPtr<IPoint2d> clone;
@@ -478,7 +479,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    enumPathElements.Release();
    m_EdgePath[stLeft]->get__EnumPathElements(&enumPathElements);
    pathElement.Release();
-   while ( enumPathElements->Next(1,&pathElement,NULL) != S_FALSE )
+   while ( enumPathElements->Next(1,&pathElement,nullptr) != S_FALSE )
    {
       PathElementType type;
       pathElement->get_Type(&type);
@@ -530,7 +531,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
             CComPtr<IPoint2d> point;
             CComPtr<IEnumPoint2d> enumPoints;
             splinePoints->get__Enum(&enumPoints);
-            while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+            while ( enumPoints->Next(1,&point,nullptr) != S_FALSE )
             {
                points.push_back(point);
                point.Release();
@@ -543,7 +544,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       }
       pathElement.Release();
 
-      BOOST_FOREACH(CComPtr<IPoint2d> point,points)
+      for( const auto& point : points)
       {
          m_EdgePath[stLeft]->Offset(point,&distance,&offset); 
          if (::InRange(left_edge_start,distance,left_edge_end) )
@@ -562,7 +563,7 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
       leftPathPoints.insert(std::make_pair(distanceAlongPath,point));
    }
 
-   BOOST_FOREACH(PathPointEntry leftPathPointEntry,leftPathPoints)
+   for( const auto& leftPathPointEntry : leftPathPoints)
    {
       CComPtr<IPoint2d> point = leftPathPointEntry.second;
       CComPtr<IPoint2d> clone;

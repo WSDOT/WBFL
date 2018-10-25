@@ -73,30 +73,30 @@ BEGIN_CONNECTION_POINT_MAP(CVertCurveCollection)
 	CONNECTION_POINT_ENTRY(IID_IVertCurveCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("VertCurves"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("VertCurve"); }
+   CComBSTR GetCollectionName() { return CComBSTR("VertCurves"); }
+   CComBSTR GetItemName() { return CComBSTR("VertCurve"); }
 
 // IVertCurveCollection
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/ IVertCurveCollection* *clone);
-	STDMETHOD(putref_Factory)(/*[in]*/IVertCurveFactory* factory);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IVertCurveFactory* *factory);
-	STDMETHOD(Clear)();
-	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IVertCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IVertCurve* newVal);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
- 	STDMETHOD(get__EnumVertCurves)(/*[out,retval]*/ IEnumVertCurves** ppenum);
-	STDMETHOD(FindID)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* ID);
-	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
+   STDMETHOD(Clone)(/*[out,retval]*/ IVertCurveCollection* *clone) override;
+	STDMETHOD(putref_Factory)(/*[in]*/IVertCurveFactory* factory) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IVertCurveFactory* *factory) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IProfilePoint* pbg,/*[in]*/ IProfilePoint* pvi,/*[in]*/ IProfilePoint* pfg,/*[in]*/Float64 l1,/*[in]*/ Float64 l2,/*[out,retval]*/IVertCurve* *vc) override;
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IVertCurve* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IVertCurve* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IVertCurve* newVal) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum) override;
+ 	STDMETHOD(get__EnumVertCurves)(/*[out,retval]*/ IEnumVertCurves** ppenum) override;
+	STDMETHOD(FindID)(/*[in]*/ IVertCurve* vc,/*[out,retval]*/CogoObjectID* ID) override;
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
 // IVertCurveEvents
 public:
-	STDMETHOD(OnVertCurveChanged)(IVertCurve* vc);
+	STDMETHOD(OnVertCurveChanged)(IVertCurve* vc) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

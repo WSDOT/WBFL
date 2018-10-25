@@ -100,16 +100,16 @@ private:
 
 // IDisplayUnitGroup
 public:
-	STDMETHOD(get_Default)(UnitModeType unitMode, /*[out, retval]*/ IDisplayUnit* *pVal);
-   STDMETHOD(get_Name)(/*[out,retval]*/BSTR* name);
-   STDMETHOD(get_UnitType)(/*[out,retval]*/BSTR* unitType);
-   STDMETHOD(get_Item)(/*[in]*/ BSTR unitTag, /*[out, retval]*/ IDisplayUnit** retval);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval);
-   STDMETHOD(Add)(/*[in]*/BSTR unitTag,/*[in]*/UnitSystemType unitSystem,/*[in]*/ IDisplayUnitFormatter* formatter,/*[in,defaultvalue(VARIANT_FALSE)]*/ VARIANT_BOOL bDefault,/*[out,retval]*/ IDisplayUnit** dispUnit);
-   STDMETHOD(Clear)();
-   STDMETHOD(Remove)(/*[in]*/BSTR unitTag);
-   STDMETHOD(get__EnumDisplayUnits)(/*[out,retval]*/ IEnumDisplayUnits** enumDisplayUnits);
+	STDMETHOD(get_Default)(UnitModeType unitMode, /*[out, retval]*/ IDisplayUnit* *pVal) override;
+   STDMETHOD(get_Name)(/*[out,retval]*/BSTR* name) override;
+   STDMETHOD(get_UnitType)(/*[out,retval]*/BSTR* unitType) override;
+   STDMETHOD(get_Item)(/*[in]*/ BSTR unitTag, /*[out, retval]*/ IDisplayUnit** retval) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(Add)(/*[in]*/BSTR unitTag,/*[in]*/UnitSystemType unitSystem,/*[in]*/ IDisplayUnitFormatter* formatter,/*[in,defaultvalue(VARIANT_FALSE)]*/ VARIANT_BOOL bDefault,/*[out,retval]*/ IDisplayUnit** dispUnit) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(Remove)(/*[in]*/BSTR unitTag) override;
+   STDMETHOD(get__EnumDisplayUnits)(/*[out,retval]*/ IEnumDisplayUnits** enumDisplayUnits) override;
 
 // IDisplayUnit2Events
 public:

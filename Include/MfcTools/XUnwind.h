@@ -90,7 +90,7 @@ public:
 
    //------------------------------------------------------------------------
    // overload mfc error message
-   virtual BOOL GetErrorMessage( LPTSTR lpszError, INT nChar, UINT nMaxError, PUINT pnHelpContext = NULL);
+   virtual BOOL GetErrorMessage( LPTSTR lpszError, INT nChar, UINT nMaxError, PUINT pnHelpContext = nullptr);
 
    //------------------------------------------------------------------------
    // Returns the filename where the exceptions thrown from.

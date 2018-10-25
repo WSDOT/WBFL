@@ -121,7 +121,7 @@ STDMETHODIMP CProfilePointCollection::Remove(CogoObjectID id)
 
 STDMETHODIMP CProfilePointCollection::Add(CogoObjectID id, VARIANT varStation, Float64 elevation,IProfilePoint* *pp)
 {
-   if ( pp != NULL )
+   if ( pp != nullptr )
    {
       CHECK_RETOBJ(pp);
    }
@@ -135,7 +135,7 @@ STDMETHODIMP CProfilePointCollection::Add(CogoObjectID id, VARIANT varStation, F
 
    point->put_Elevation(elevation);
 
-   if ( pp != NULL )
+   if ( pp != nullptr )
    {
       (*pp) = point;
       (*pp)->AddRef();
@@ -185,7 +185,7 @@ STDMETHODIMP CProfilePointCollection::FindID(IProfilePoint* pp,CogoObjectID* id)
    {
       std::pair<CogoObjectID,CComVariant> item = *iter;
       CComQIPtr<IProfilePoint> value( item.second.pdispVal );
-      ATLASSERT( value != NULL );
+      ATLASSERT( value != nullptr );
       if ( value.IsEqualObject(pp) )
       {
          *id = item.first;
@@ -206,7 +206,7 @@ STDMETHODIMP CProfilePointCollection::get__EnumIDs(IEnumIDs** ppenum)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -257,7 +257,7 @@ STDMETHODIMP CProfilePointCollection::get__EnumProfilePoints(IEnumProfilePoints*
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -281,7 +281,7 @@ STDMETHODIMP CProfilePointCollection::Clone(IProfilePointCollection* *clone)
 
    CollectionIndexType count = 0;
    CComPtr<IProfilePoint> pp;
-   while ( enumPP->Next(1,&pp,NULL) != S_FALSE )
+   while ( enumPP->Next(1,&pp,nullptr) != S_FALSE )
    {
       CComPtr<IProfilePoint> clonePP;
       pp->Clone(&clonePP);

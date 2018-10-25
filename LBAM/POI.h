@@ -51,7 +51,7 @@ public:
    m_MemberID(-1),
    m_MemberType(mtUndefined)
 	{
-      m_POIStressPointsCookie=0;
+      m_POIStressPointsCookie = 0;
 	}
 
 void FinalRelease();
@@ -76,30 +76,30 @@ CONNECTION_POINT_ENTRY(IID_IPOIEvents)
 END_CONNECTION_POINT_MAP()
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // _IPOIStressPointsEvents
-   STDMETHOD(OnPOIStressPointsChanged)(IPOIStressPoints*);
-   STDMETHOD(OnPOIStressPointsAdded)(IPOIStressPointsItem*);
-   STDMETHOD(OnPOIStressPointsBeforeRemove)(IPOIStressPointsItem*);
+   STDMETHOD(OnPOIStressPointsChanged)(IPOIStressPoints*) override;
+   STDMETHOD(OnPOIStressPointsAdded)(IPOIStressPointsItem*) override;
+   STDMETHOD(OnPOIStressPointsBeforeRemove)(IPOIStressPointsItem*) override;
 
 // IPOI
 public:
-	STDMETHOD(get_POIStressPoints)(/*[out, retval]*/ IPOIStressPoints* *pVal);
-	STDMETHOD(putref_POIStressPoints)(/*[in]*/ IPOIStressPoints* newVal);
-	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
-	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal);
-	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ PoiIDType *pVal);
-	STDMETHOD(put_ID)(/*[in]*/ PoiIDType newVal);
-	STDMETHOD(Clone)(/*[out]*/IPOI** poi);
+	STDMETHOD(get_POIStressPoints)(/*[out, retval]*/ IPOIStressPoints* *pVal) override;
+	STDMETHOD(putref_POIStressPoints)(/*[in]*/ IPOIStressPoints* newVal) override;
+	STDMETHOD(get_Location)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Location)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
+	STDMETHOD(get_MemberType)(/*[out, retval]*/ MemberType *pVal) override;
+	STDMETHOD(put_MemberType)(/*[in]*/ MemberType newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ PoiIDType *pVal) override;
+	STDMETHOD(put_ID)(/*[in]*/ PoiIDType newVal) override;
+	STDMETHOD(Clone)(/*[out]*/IPOI** poi) override;
 
 protected:
 

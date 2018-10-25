@@ -65,14 +65,14 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISectionCutTool
 public:
    // Set/Get the effective flange width tool. This tool is needed for computing the effective
    // flange width when creating girder sections.
-   STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool);
-	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool);
+   STDMETHOD(putref_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* pTool) override;
+	STDMETHOD(get_EffectiveFlangeWidthTool)(IEffectiveFlangeWidthTool* *pTool) override;
 
    //
    // The CreateXXXSection methods creates a ISection object. Use the resulting objects to get
@@ -80,18 +80,18 @@ public:
    //
 
    // creates girder sections, including the deck, ducts, tendons, strands, and rebar
-   STDMETHOD(CreateGirderSectionBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, SectionPropertyMethod sectionPropMethod,ISection** section);
-   STDMETHOD(CreateGirderSectionBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);
+   STDMETHOD(CreateGirderSectionBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr, GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, SectionPropertyMethod sectionPropMethod,ISection** section) override;
+   STDMETHOD(CreateGirderSectionBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section) override;
 
    // creates a net section of the deck
-   STDMETHOD(CreateNetDeckSection)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section);
+   STDMETHOD(CreateNetDeckSection)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,ISection** section) override;
 
    // creates a section for the entire bridge
-   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 distFromStartOfBridge,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section);
+   STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 distFromStartOfBridge,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section) override;
 
    // creates section objects for the traffic barriers
-   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
-	STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
+   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section) override;
+	STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section) override;
 
    //
    // The CreateXXXShape methods create a shape object that is intended to be used as for a 
@@ -99,17 +99,17 @@ public:
    //
    
    // creates a composite shape object containing the girder, holes for ducts, and the deck, if present
-   STDMETHOD(CreateGirderShapeBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape);
-   STDMETHOD(CreateGirderShapeBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape);
+   STDMETHOD(CreateGirderShapeBySSMbr)(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,IShape** ppShape) override;
+   STDMETHOD(CreateGirderShapeBySegment)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx, IShape** ppShape) override;
 
    // creates shapes for the left and right railing systems
-	STDMETHOD(CreateLeftBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape);
-	STDMETHOD(CreateRightBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape);
+	STDMETHOD(CreateLeftBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape) override;
+	STDMETHOD(CreateRightBarrierShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape) override;
 
    // creates a shape for the bridge deck
-   STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[in]*/IDirection* pDirection,/*[in]*/ VARIANT_BOOL bIncludeHaunch,/*[out,retval]*/IShape** shape);
+   STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[in]*/IDirection* pDirection,/*[in]*/ VARIANT_BOOL bIncludeHaunch,/*[out,retval]*/IShape** shape) override;
 
-   STDMETHOD(GetDeckProperties)(/*[in]*/IGenericBridge* bridge,/*[in]*/IndexType nSectionsPerSpan,/*[out]*/Float64* pSurfaceArea,/*[out]*/Float64* pVolume);
+   STDMETHOD(GetDeckProperties)(/*[in]*/IGenericBridge* bridge,/*[in]*/IndexType nSectionsPerSpan,/*[out]*/Float64* pSurfaceArea,/*[out]*/Float64* pVolume) override;
 
 private:
    HRESULT CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod,ISection** section);

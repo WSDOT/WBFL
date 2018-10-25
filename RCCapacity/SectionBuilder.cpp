@@ -52,7 +52,7 @@ STDMETHODIMP CSectionBuilder::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IGeneralSectionSlice,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -79,7 +79,7 @@ STDMETHODIMP CSectionBuilder::RectangularColumn(Float64 H,Float64 W,Float64 cove
    column->put_Width(W);
    CComQIPtr<IShape> column_shape(column);
 
-   pSection->AddShape(column_shape,concrete,NULL,0.00);
+   pSection->AddShape(column_shape,concrete,nullptr,0.00);
 
 
    // rebar
@@ -164,7 +164,7 @@ STDMETHODIMP CSectionBuilder::CircularColumn(Float64 D,Float64 cover,long Nb,Flo
    column->put_Radius(D/2);
    CComQIPtr<IShape> column_shape(column);
 
-   pSection->AddShape(column_shape,concrete,NULL,0.00);
+   pSection->AddShape(column_shape,concrete,nullptr,0.00);
 
    CComPtr<IPoint2d> center;
    column->get_Center(&center);
@@ -190,7 +190,7 @@ STDMETHODIMP CSectionBuilder::CircularColumn(Float64 D,Float64 cover,long Nb,Flo
    CComPtr<IEnumPoint2d> enum_points;
    points->get__Enum(&enum_points);
    CComPtr<IPoint2d> point;
-   while ( enum_points->Next(1,&point,NULL) != S_FALSE )
+   while ( enum_points->Next(1,&point,nullptr) != S_FALSE )
    {
       CComPtr<ICircle> bar;
       bar.CoCreateInstance(CLSID_Circle);

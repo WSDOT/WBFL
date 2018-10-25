@@ -59,6 +59,8 @@
 #include "TestCircularSegment.h"
 #include "TestRectangle.h"
 #include "TestTriangle.h"
+#include "TestBulbTee.h"
+#include "TestBulbTee2.h"
 #include "TestPrecastBeam.h"
 #include "TestNUBeam.h"
 #include "TestUBeam.h"
@@ -87,7 +89,7 @@ static char THIS_FILE[] = __FILE__;
 
 int main(int argc, LPTSTR  argv[])
 {
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
 
    CTestSize2d::Test();
@@ -114,6 +116,8 @@ int main(int argc, LPTSTR  argv[])
    CTestCircularSegment::Test();
    CTestRectangle::Test();
    CTestTriangle::Test();
+   CTestBulbTee::Test();
+   CTestBulbTee2::Test();
    CTestPrecastBeam::Test();
    CTestNUBeam::Test();
    CTestUBeam::Test();

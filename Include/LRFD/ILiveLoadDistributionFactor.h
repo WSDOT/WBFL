@@ -34,6 +34,8 @@
 #include <Lrfd\LrfdExp.h>
 #endif
 
+#include <System\Flags.h>
+
 // LOCAL INCLUDES
 //
 
@@ -99,8 +101,9 @@ public:
       Float64 C;  // C value used in S/D comp. Ignore for other equation methods
       Float64 K;  // K ""             ""                 ""                 ""
       Float64 D;  // D ""             ""                 ""                 "" 
+      Float64 m; // multiple presense factor
 
-      EqnMethod(): e(1.0),mg(0.0),C(0.0),K(0.0),D(0.0)
+      EqnMethod() : e(1.0), mg(0.0), C(0.0), K(0.0), D(0.0), m(-1)
       {;}
    };
 
@@ -116,7 +119,7 @@ public:
       GirderIndexType Nb; // number of beams (girders)
       bool  bWasExterior; // true if an exterior beam was analyzed
 
-      LeverRuleMethod(): mg(-1.0), Sleft(0.0), Sright(0.0), m(0.0), de(0.0), nLanesUsed(-1), Nb(0)
+      LeverRuleMethod(): mg(-1.0), Sleft(0.0), Sright(0.0), m(-1), de(0.0), nLanesUsed(-1), Nb(0)
       {;}
    };
 
@@ -130,7 +133,7 @@ public:
       std::vector<Float64> x;
       Float64 m; // multiple presense factor
 
-      RigidMethod(): mg(-1.0), Nl(0), Nb(0), Xext(0.0), m(0.0)
+      RigidMethod(): mg(-1.0), Nl(0), Nb(0), Xext(0.0), m(-1)
       {;}
    };
 
@@ -141,7 +144,7 @@ public:
       GirderIndexType Nb;
       Float64 m; // multiple presense factor
 
-      LanesBeamsMethod(): mg(-1.0), Nl(0), Nb(0), m(0.0)
+      LanesBeamsMethod(): mg(-1.0), Nl(0), Nb(0), m(-1)
       {;}
    };
 
@@ -158,6 +161,34 @@ public:
 
       DFResult(): mg(-1.0), SkewCorrectionFactor(1.0), ControllingMethod(0)
       {;}
+
+      Float64 GetMultiplePresenceFactor() const
+      {
+         Float64 m;
+         if (sysFlags<Int16>::IsSet(ControllingMethod, SPEC_EQN))
+         {
+            m = EqnData.m;
+         }
+         else if (sysFlags<Int16>::IsSet(ControllingMethod, LEVER_RULE))
+         {
+            m = LeverRuleData.m;
+         }
+         else if (sysFlags<Int16>::IsSet(ControllingMethod, RIGID_METHOD))
+         {
+            m = RigidData.m;
+         }
+         else if (sysFlags<Int16>::IsSet(ControllingMethod, LANES_DIV_BEAMS))
+         {
+            m = LanesBeamsData.m;
+         }
+         else
+         {
+            ATLASSERT(false);
+            m = -1;
+         }
+         ATLASSERT(0 < m);
+         return m;
+      }
    };
 
    // GROUP: ENUMERATIONS

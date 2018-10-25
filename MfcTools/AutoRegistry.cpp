@@ -26,7 +26,7 @@
 
 CAutoRegistry::CAutoRegistry(LPCTSTR lpszProfile,CWinApp* pApp)
 {
-   if ( pApp == NULL )
+   if ( pApp == nullptr )
    {
       m_pApp = AfxGetApp();
    }

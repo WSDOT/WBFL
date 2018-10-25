@@ -99,7 +99,7 @@ STDMETHODIMP_(void) CLocalDragDropTaskImpl::Start()
    if ( de != DROPEFFECT_NONE && CompareStates(WaitingForDragEnter) )
       m_pDispMgr->OnDragFinished(de);
 
-   m_pDispMgr->SetTask(NULL);
+   m_pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(void) CLocalDragDropTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& point)

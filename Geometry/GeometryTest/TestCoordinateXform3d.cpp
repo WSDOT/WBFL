@@ -63,11 +63,11 @@ void CTestCoordinateXform3d::Test()
    origin->put_Y(5);
    origin->put_Z(5);
 
-   TRY_TEST( pXform->putref_NewOrigin(NULL), E_INVALIDARG );
+   TRY_TEST( pXform->putref_NewOrigin(nullptr), E_INVALIDARG );
    TRY_TEST( pXform->putref_NewOrigin(origin), S_OK );
 
    CComPtr<IPoint3d> o;
-   TRY_TEST( pXform->get_NewOrigin(NULL), E_POINTER );
+   TRY_TEST( pXform->get_NewOrigin(nullptr), E_POINTER );
    TRY_TEST( pXform->get_NewOrigin(&o), S_OK );
    Float64 x,y,z;
    o->get_X(&x);
@@ -83,11 +83,11 @@ void CTestCoordinateXform3d::Test()
    rv->put_Y(5);
    rv->put_Z(5);
 
-   TRY_TEST( pXform->putref_RotationVector(NULL), E_INVALIDARG );
+   TRY_TEST( pXform->putref_RotationVector(nullptr), E_INVALIDARG );
    TRY_TEST( pXform->putref_RotationVector(rv), S_OK );
 
    CComPtr<IVector3d> vec;
-   TRY_TEST( pXform->get_RotationVector(NULL), E_POINTER );
+   TRY_TEST( pXform->get_RotationVector(nullptr), E_POINTER );
    TRY_TEST( pXform->get_RotationVector(&vec), S_OK );
    vec->get_X(&x);
    vec->get_Y(&y);
@@ -98,7 +98,7 @@ void CTestCoordinateXform3d::Test()
 
    TRY_TEST( pXform->put_RotationAngle(M_PI/4), S_OK );
    Float64 angle;
-   TRY_TEST( pXform->get_RotationAngle(NULL), E_POINTER );
+   TRY_TEST( pXform->get_RotationAngle(nullptr), E_POINTER );
    TRY_TEST( pXform->get_RotationAngle(&angle), S_OK );
    TRY_TEST( IsEqual(angle,M_PI/4, tolerance), true );
 
@@ -114,7 +114,7 @@ void CTestCoordinateXform3d::Test()
    pXform->put_RotationAngle(27*M_PI/180);
 
    CComPtr<IPoint3d> pnt;
-   TRY_TEST( pXform->Xform(NULL, xfrmOldToNew), E_INVALIDARG );
+   TRY_TEST( pXform->Xform(nullptr, xfrmOldToNew), E_INVALIDARG );
    TRY_TEST( pXform->Xform(&pnt.p, xfrmOldToNew), E_INVALIDARG );
 
    pnt.CoCreateInstance( CLSID_Point3d );
@@ -125,8 +125,8 @@ void CTestCoordinateXform3d::Test()
    rv->put_Z(1);
 
    CComPtr<IPoint3d> result;
-   TRY_TEST( pXform->XformEx( NULL, xfrmOldToNew, &result ), E_INVALIDARG );
-   TRY_TEST( pXform->XformEx( pnt, xfrmOldToNew, NULL ), E_POINTER );
+   TRY_TEST( pXform->XformEx( nullptr, xfrmOldToNew, &result ), E_INVALIDARG );
+   TRY_TEST( pXform->XformEx( pnt, xfrmOldToNew, nullptr ), E_POINTER );
    TRY_TEST( pXform->XformEx( pnt, xfrmOldToNew, &result ), S_OK );
    result->get_X(&x);
    result->get_Y(&y);

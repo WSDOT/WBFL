@@ -87,7 +87,7 @@ HRESULT CSegments::get_Length(BSTR bstage, Float64 Length, Float64 *pVal)
    VectorType* pvec = this->GetVector(bstage);
    if (pvec!=0)
    {
-      Float64 length=0;
+      Float64 length = 0;
 
       HRESULT hr;
       for (VectorIteratorType it=pvec->begin(); it!=pvec->end(); it++)
@@ -132,7 +132,7 @@ HRESULT CSegments::get_Count(BSTR stage, SegmentIndexType *pVal)
    }
    else
    {
-      *pVal=0;
+      *pVal = 0;
    }
 
 	return S_OK;
@@ -154,7 +154,7 @@ HRESULT CSegments::get_Segment(BSTR bstage, SegmentIndexType relPosition, ISegme
    }
    else
    {
-      *pSeg=0;
+      *pSeg = 0;
       return S_OK;
    }
 }
@@ -174,7 +174,7 @@ HRESULT CSegments::put_Segment(BSTR bstage, SegmentIndexType relPosition, ISegme
       // we control what we own
       CComPtr<ISegmentItem> pisegi = pvec->at(relPosition).second.m_T;
       CSegmentItem* psegi = dynamic_cast<CSegmentItem*>(pisegi.p);
-      if (psegi==NULL)
+      if (psegi==nullptr)
       {
          ATLASSERT(false);
          return E_FAIL;
@@ -442,8 +442,8 @@ HRESULT CSegments::GetSegmentForMemberLocation(BSTR bstage, Float64 Length, VARI
    CHECK_RETOBJ(ppLeftSegi);
    CHECK_RETOBJ(ppRightSegi);
 
-   *ppLeftSegi  = NULL;
-   *ppRightSegi = NULL;
+   *ppLeftSegi  = nullptr;
+   *ppRightSegi = nullptr;
 
    // can't find anything that's off of member
    Float64 local_dist;
@@ -480,7 +480,7 @@ HRESULT CSegments::GetSegmentForMemberLocation(BSTR bstage, Float64 Length, VARI
 
    // search the vector for our segment
    HRESULT hr;
-   Float64 seg_end=0;
+   Float64 seg_end = 0;
    for (VectorIteratorType it=pvec->begin(); it!=pvec->end(); it++)
    {
 
@@ -510,7 +510,7 @@ HRESULT CSegments::GetSegmentForMemberLocation(BSTR bstage, Float64 Length, VARI
          if (location >= seg_end-seg_tol)
          {
             // We are within tolerance - only need to check if this is the last segment
-            // If this is not the last segment, assign it to right side. If it is, Right is NULL.
+            // If this is not the last segment, assign it to right side. If it is, Right is nullptr.
             VectorIteratorType it2 = it;
             if ( ++it2 != pvec->end() )
             {
@@ -715,7 +715,7 @@ void CSegments::Load(IStructuredLoad2 * pload)
 
       long stage_count = var;
       var.Clear();
-      for (long istg=0; istg<stage_count; istg++)
+      for (long istg = 0; istg<stage_count; istg++)
       {
          hr = pload->BeginUnit(CComBSTR("StageData"));
 
@@ -728,7 +728,7 @@ void CSegments::Load(IStructuredLoad2 * pload)
 
          long segment_count = var;
          var.Clear();
-         for (long iseg=0; iseg<segment_count; iseg++)
+         for (long iseg = 0; iseg<segment_count; iseg++)
          {
             hr = pload->get_Property(_bstr_t("Segment"),&var);
 
@@ -857,18 +857,18 @@ CSegments::VectorType* CSegments::GetVector(BSTR bstage)
    else
    {
       // not found
-      return 0;
+      return nullptr;
    }
 }
 
 void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
 {
-   SegmentIndexType i=0;
+   SegmentIndexType i = 0;
    for(VectorIteratorType itv=pvec->begin(); itv!=pvec->end(); itv++)
    {
       // have to cast stored item to get access to put method
       CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->second.m_T.p);
-      if (psegi==NULL)
+      if (psegi==nullptr)
       {
          ATLASSERT(false); // should never happen since we are eating our own dog food here
       }

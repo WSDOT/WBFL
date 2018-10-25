@@ -76,17 +76,17 @@ END_MESSAGE_MAP()
 
 CEAFMainFrame::CEAFMainFrame()
 {
-   m_pWndCurrentChild = NULL;
+   m_pWndCurrentChild = nullptr;
 
    m_bDisableFailCreateMsg = FALSE;
    m_bCreateCanceled = FALSE;
 
    m_bDisableHideMainToolBar = FALSE;
 
-   m_pStatusBar = NULL;
-   m_pMainFrameToolBar = NULL;
-   m_pMainMenu = NULL;
-   m_pStartPageWnd = NULL;
+   m_pStatusBar = nullptr;
+   m_pMainFrameToolBar = nullptr;
+   m_pMainMenu = nullptr;
+   m_pStartPageWnd = nullptr;
 
    m_bShowToolTips = TRUE;
 
@@ -119,7 +119,7 @@ CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
 	if (!pStatusBar->Create(this) )
 	{
       delete pStatusBar;
-      return NULL;
+      return nullptr;
 	}
 
    return pStatusBar;
@@ -139,7 +139,7 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
         !pToolBar->LoadToolBar(IDR_MAINFRAME) )
    {
       delete pToolBar;
-      return NULL;
+      return nullptr;
    }
 
    pToolBar->GetToolBarCtrl().SetExtendedStyle(TBSTYLE_EX_DRAWDDARROWS);
@@ -156,7 +156,7 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
 
 CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
 {
-   return NULL;
+   return nullptr;
 }
 
 void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
@@ -169,7 +169,7 @@ void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
       UINT maxID = 0;
 
 	   POSITION pos = m_listControlBars.GetHeadPosition();
-	   while (pos != NULL)
+	   while (pos != nullptr)
 	   {
 		   CControlBar* pBar = (CControlBar*)m_listControlBars.GetNext(pos);
          UINT id = pBar->GetDlgCtrlID();
@@ -180,7 +180,7 @@ void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
       CRect rect;
       UINT bkID = m_pStartPageWnd->GetDlgCtrlID();
       RepositionBars(minID,maxID,bkID,CWnd::reposQuery,&rect);
-      m_pStartPageWnd->SetWindowPos(NULL,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
+      m_pStartPageWnd->SetWindowPos(nullptr,0/*rect.left*/,0/*rect.top*/,rect.Size().cx,rect.Size().cy,SWP_NOZORDER);
    }
 }
 
@@ -248,7 +248,7 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    m_pStartPageWnd = CreateStartPage();
    if ( m_pStartPageWnd )
    {
-      m_pStartPageWnd->Create(NULL,_T("Start Page"),WS_CHILD | WS_VISIBLE,rectDefault,this);
+      m_pStartPageWnd->Create(nullptr,_T("Start Page"),WS_CHILD | WS_VISIBLE,rectDefault,this);
    }
 
 	return 0;
@@ -306,7 +306,7 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
       CWnd* pWnd = CWnd::FromHandlePermanent(pMsg->hwnd);
       CControlBar* pBar = DYNAMIC_DOWNCAST(CControlBar, pWnd);
 
-      if (pBar != NULL)
+      if (pBar != nullptr)
       {
          CMenu menu;
          menu.CreatePopupMenu();
@@ -379,7 +379,7 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
 {
    BOOL bHandledByPlugin = FALSE;
 
-   CDocument* pActiveDoc = NULL;
+   CDocument* pActiveDoc = nullptr;
    CMDIChildWnd* pChildWnd = MDIGetActive();
    if ( pChildWnd )
    {
@@ -597,7 +597,7 @@ void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
    }
    else
    {
-      UpdateFrameTitleForDocument(NULL);
+      UpdateFrameTitleForDocument(nullptr);
    }
 }
 
@@ -614,7 +614,7 @@ void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
       szText[0] = '\0';   // start with nothing
 
       // get name of currently active view
-      if (lpszDocName != NULL)
+      if (lpszDocName != nullptr)
       {
          lstrcpy(szText, lpszDocName);
          lstrcat(szText, _T(" - "));
@@ -625,7 +625,7 @@ void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
    {
       // get name of currently active view
       lstrcpy(szText, m_strTitle);
-      if (lpszDocName != NULL)
+      if (lpszDocName != nullptr)
       {
          lstrcat(szText, _T(" - "));
          lstrcat(szText, lpszDocName);
@@ -678,17 +678,17 @@ CEAFDocument* CEAFMainFrame::GetDocument()
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    CDocument* pDoc = GetActiveDocument();
-   if ( pDoc == NULL )
+   if ( pDoc == nullptr )
    {
       CWinApp* pApp = AfxGetApp();
       if ( pApp->GetOpenDocumentCount() == 1 )
       {
          POSITION templatePosition = pApp->m_pDocManager->GetFirstDocTemplatePosition();
-         while (templatePosition != NULL)
+         while (templatePosition != nullptr)
          {
             CDocTemplate* pTemplate = pApp->m_pDocManager->GetNextDocTemplate(templatePosition);
             POSITION docPosition = pTemplate->GetFirstDocPosition();
-            if ( docPosition != NULL )
+            if ( docPosition != nullptr )
             {
                pDoc = pTemplate->GetNextDoc(docPosition);
                break;
@@ -703,7 +703,7 @@ CEAFDocument* CEAFMainFrame::GetDocument()
    }
    else
    {
-      return NULL;
+      return nullptr;
    }
 }
 
@@ -717,10 +717,10 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
    m_bDisableFailCreateMsg = false;
 
    CMDIChildWnd* pMDIActive = MDIGetActive();
-   ASSERT(pMDIActive != NULL);
+   ASSERT(pMDIActive != nullptr);
 
    CDocument* pDoc = pMDIActive->GetActiveDocument();
-   ASSERT(pDoc != NULL);
+   ASSERT(pDoc != nullptr);
 
    // How many of this type of view can we create?
    int max_view_count = pTemplate->GetMaxViewCount();
@@ -732,9 +732,9 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
       // to the last view of this type for activation if necessary
       int view_count = 0;
       CView* pView;
-      CView* pLastView = NULL;
+      CView* pLastView = nullptr;
       POSITION pos = pDoc->GetFirstViewPosition();
-      while (pos != NULL && view_count <= max_view_count)
+      while (pos != nullptr && view_count <= max_view_count)
       {
          pView = pDoc->GetNextView(pos);
          if (pView->IsKindOf(pTemplate->GetViewClass()))
@@ -764,7 +764,7 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
    // maximum is unlimited (-1). Create a new view
    CView* pNewView = 0;
    CMDIChildWnd* pNewFrame = (CMDIChildWnd*)(pTemplate->CreateNewFrame(pDoc, pMDIActive));
-   BOOL bCreated = (pNewFrame == NULL ? FALSE : TRUE);
+   BOOL bCreated = (pNewFrame == nullptr ? FALSE : TRUE);
    if ( !bCreated )
    {
       // Child frame was not created
@@ -931,8 +931,8 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
       return -1;
    }
 
-   ATLASSERT(pCmdMgr != NULL);
-   if ( pCmdMgr == NULL )
+   ATLASSERT(pCmdMgr != nullptr);
+   if ( pCmdMgr == nullptr )
    {
       return -1; // must have a command manager
    }
@@ -983,7 +983,7 @@ CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
 {
    if ( m_ToolBarInfo.size() == 0 )
    {
-      return NULL;
+      return nullptr;
    }
 
    CEAFToolBarInfo key;
@@ -992,7 +992,7 @@ CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
    if ( found == m_ToolBarInfo.end() )
    {
       ATLASSERT(false); // not found? why?
-      return NULL;
+      return nullptr;
    }
 
    CEAFToolBarInfo tbInfo = *found;
@@ -1025,7 +1025,7 @@ void CEAFMainFrame::DestroyToolBar(UINT tbID)
 void CEAFMainFrame::DestroyToolBar(CEAFToolBar* pToolBar)
 {
    DestroyToolBar(pToolBar->GetToolBarID());
-   pToolBar = NULL;
+   pToolBar = nullptr;
 }
 
 void CEAFMainFrame::EnableModifiedFlag(BOOL bEnable)
@@ -1057,7 +1057,7 @@ void CEAFMainFrame::OnStatusChanged()
 void CEAFMainFrame::OnDropFiles(HDROP hDropInfo) 
 {
    // Don't allow multiple files to be dropped
-	UINT nFiles = ::DragQueryFile(hDropInfo, (UINT)-1, NULL, 0);
+	UINT nFiles = ::DragQueryFile(hDropInfo, (UINT)-1, nullptr, 0);
    if (1 < nFiles)
    {
       ::AfxMessageBox(_T("Error - Multiple file drop not allowed. Please drop one file at a time."),MB_ICONEXCLAMATION|MB_OK);
@@ -1136,8 +1136,8 @@ std::vector<CString> CEAFMainFrame::GetToolBarNames()
 
    if ( vNames.size() == 0 )
    {
-      ASSERT(GetActiveDocument() == NULL); // there shouldn't be a document open (unless the current document does not have toolbars)
-      if ( GetActiveDocument() == NULL )
+      ASSERT(GetActiveDocument() == nullptr); // there shouldn't be a document open (unless the current document does not have toolbars)
+      if ( GetActiveDocument() == nullptr )
       {
          CString strName;
          m_pMainFrameToolBar->GetWindowText(strName);
@@ -1162,8 +1162,8 @@ std::vector<BOOL> CEAFMainFrame::GetToolBarStates()
 
    if ( vStates.size() == 0 )
    {
-      ASSERT(GetActiveDocument() == NULL); // there shouldn't be a document open (unless the current document does not have toolbars)
-      if ( GetActiveDocument() == NULL )
+      ASSERT(GetActiveDocument() == nullptr); // there shouldn't be a document open (unless the current document does not have toolbars)
+      if ( GetActiveDocument() == nullptr )
       {
          CString strName;
          vStates.push_back(m_pMainFrameToolBar->IsWindowVisible() ? TRUE : FALSE);
@@ -1267,11 +1267,11 @@ CEAFMenu* CEAFMainFrame::CreateMainMenu()
 // This function finds the CMDIChildWnd in the list of windows
 // maintained by the application's MDIClient window following the
 // one pointed to by the member variable m_pWndCurrentChild. If no
-// further CMDIChildWnds are in the list, NULL is returned.
+// further CMDIChildWnds are in the list, nullptr is returned.
 //----------------------------------------------------------------
 void CEAFMainFrame::InitMDIChildWndEnum()
 {
-   m_pWndCurrentChild = NULL;
+   m_pWndCurrentChild = nullptr;
 }
 
 CMDIChildWnd* CEAFMainFrame::GetNextMDIChildWnd()
@@ -1295,7 +1295,7 @@ CMDIChildWnd* CEAFMainFrame::GetNextMDIChildWnd()
       // No child windows exist in the MDIClient,
       // or you are at the end of the list. This check
       // will terminate any recursion.
-      return NULL;
+      return nullptr;
      }
 
   // Check the kind of window

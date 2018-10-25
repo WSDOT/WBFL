@@ -60,7 +60,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::InterfaceSupportsErrorInfo(REFIID r
 		&IID_IDirectionDisplayUnitFormatter,
       &IID_IDisplayUnitFormatter
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -132,7 +132,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
 
    val = cogoUtil::NormalizeAngle(val);
 
-   bool bShowTag = (tag == NULL ? false : true);
+   bool bShowTag = (tag == nullptr ? false : true);
    std::_tstring strDegTag, strMinTag, strSecTag;
    if ( bShowTag )
    {

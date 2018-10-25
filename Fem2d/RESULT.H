@@ -125,12 +125,12 @@ public:
       if (this!=&rOther)
       {
          m_LoadingID = rOther.m_LoadingID;
-         for (LONG i=0; i<TNForceDof; i++)
+         for (LONG i = 0; i<TNForceDof; i++)
          {
             m_Force[i] = rOther.m_Force[i];
          }
 
-         for (LONG j=0; j<TNDispDof; j++)
+         for (LONG j = 0; j<TNDispDof; j++)
          {
             m_Disp[j] = rOther.m_Disp[j];
          }
@@ -155,11 +155,13 @@ public:
    TResult* Find( IDType resultId)
    {
       ResultVecIterator it( m_ResultVec.find(resultId) );
-      if (it!=m_ResultVec.end())
+      if (it != m_ResultVec.end())
+      {
          return &(it->second);
+      }
       else
       {
-         return 0;
+         return nullptr;
       }
    }
 

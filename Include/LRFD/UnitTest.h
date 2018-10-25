@@ -81,7 +81,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdUnitTest(const lrfdUnitTest&);
-   lrfdUnitTest& operator=(const lrfdUnitTest&);
+   lrfdUnitTest& operator=(const lrfdUnitTest&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -42,7 +42,7 @@ STDMETHODIMP CStressResult::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStressResult
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -109,7 +109,7 @@ STDMETHODIMP CStressResult::FactorAndSum(IStressResult *incRes, Float64 Factor)
          THROW_LBAMA(INCOMP_STRESSRESULTS);
 
       // perform summations
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          Float64& rd = m_Results[i];
 
@@ -178,7 +178,7 @@ STDMETHODIMP CStressResult::Load(IStructuredLoad2 * pload)
       m_Results.clear();
       m_Results.reserve(cnt);
 
-      for (long i=0; i<cnt; i++)
+      for (long i = 0; i<cnt; i++)
       {
          var.Clear();
          hr = pload->get_Property(_bstr_t("Val"),&var);
@@ -215,7 +215,7 @@ STDMETHODIMP CStressResult::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (CollectionIndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("Val"),_variant_t(m_Results[i]));
          if (FAILED(hr))

@@ -69,7 +69,7 @@ void DDX_Direction(CDataExchange* pDX,int nIDC,IDirection* pDirection,IDisplayUn
       pDirection->get_Value(&value);
 
       BSTR bstr;
-      formatter->Format(value,NULL,&bstr);
+      formatter->Format(value,nullptr,&bstr);
 
       CString str(bstr);
 
@@ -117,7 +117,7 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
       pAngle->get_Value(&value);
 
       BSTR bstr;
-      formatter->Format(value,NULL,&bstr);
+      formatter->Format(value,nullptr,&bstr);
 
       CString str(bstr);
 

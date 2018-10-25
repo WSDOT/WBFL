@@ -84,47 +84,47 @@ private:
    ISuperstructureMember* m_pSSMbr; // weak references
 
 #if defined _DEBUG
-   virtual HRESULT OnBeforeAdd( StoredType* pVal);
+   virtual HRESULT OnBeforeAdd( StoredType* pVal) override;
 #endif
 
    // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ITendon
 public:
-   STDMETHOD(AddSegment)(/*[in]*/ ITendonSegment* segment);
-	STDMETHOD(get_Segment)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ITendonSegment** segment);
-	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
-	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType index);
-	STDMETHOD(ClearSegments)();
-	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size);
-	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size);
-	STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size);
-	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size);
-	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Apt);
-	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt);
-	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count);
-	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count);
-	STDMETHOD(get_Material)(/*[out,retval]*/IPrestressingStrand** material);
-	STDMETHOD(putref_Material)(/*[in]*/IPrestressingStrand* material);
-   STDMETHOD(get_MinimumRadiusOfCurvature)(/*[out,retval]*/Float64* pMinRadiusOfCurvature);
-   STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
-	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
-	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
-   STDMETHOD(get_Start)(IPoint3d** start);
-	STDMETHOD(get_End)(IPoint3d** end);
-   STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints);
-   STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type);
-   STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type);
-   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr);
-   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr);
+   STDMETHOD(AddSegment)(/*[in]*/ ITendonSegment* segment) override;
+	STDMETHOD(get_Segment)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ITendonSegment** segment) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count) override;
+	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType index) override;
+	STDMETHOD(ClearSegments)() override;
+	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size) override;
+	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size) override;
+	STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size) override;
+	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size) override;
+	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Apt) override;
+	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt) override;
+	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count) override;
+	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count) override;
+	STDMETHOD(get_Material)(/*[out,retval]*/IPrestressingStrand** material) override;
+	STDMETHOD(putref_Material)(/*[in]*/IPrestressingStrand* material) override;
+   STDMETHOD(get_MinimumRadiusOfCurvature)(/*[out,retval]*/Float64* pMinRadiusOfCurvature) override;
+   STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg) override;
+	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope) override;
+	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
+   STDMETHOD(get_Start)(IPoint3d** start) override;
+	STDMETHOD(get_End)(IPoint3d** end) override;
+   STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints) override;
+   STDMETHOD(get_JackingEnd)(/*[out,retval]*/JackingEndType* type) override;
+   STDMETHOD(put_JackingEnd)(/*[in]*/JackingEndType type) override;
+   STDMETHOD(putref_SuperstructureMember)(/*[in]*/ISuperstructureMember* pMbr) override;
+   STDMETHOD(get_SuperstructureMember)(/*[out,retval]*/ISuperstructureMember** ppMbr) override;
 
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__TENDON_H_

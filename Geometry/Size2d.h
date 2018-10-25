@@ -65,28 +65,28 @@ private:
    Float64 m_Dy;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISize2d
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/ISize2d** clone);
-   STDMETHOD(Dimensions)(/*[out]*/Float64* pDx,/*[out]*/Float64* pDy);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(Scale)(/*[in]*/ Float64 factor);
-	STDMETHOD(get_Magnitude)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal);
+   STDMETHOD(Clone)(/*[out,retval]*/ISize2d** clone) override;
+   STDMETHOD(Dimensions)(/*[out]*/Float64* pDx,/*[out]*/Float64* pDy) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(Scale)(/*[in]*/ Float64 factor) override;
+	STDMETHOD(get_Magnitude)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__SIZE2D_H_

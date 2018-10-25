@@ -38,7 +38,7 @@ public:
    CEAFTemplateItem();
    CEAFTemplateItem(CEAFDocTemplate* pDocTemplate, // document template for creating the new document
                     LPCTSTR name,                  // name to be displayed in the new dialog
-                    LPCTSTR path,                  // path to a template file (NULL if not using a template file)
+                    LPCTSTR path,                  // path to a template file (nullptr if not using a template file)
                     HICON hIcon);                  // handle to the icon to display in the new dialog
 
    virtual ~CEAFTemplateItem();

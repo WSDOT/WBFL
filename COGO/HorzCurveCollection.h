@@ -73,30 +73,30 @@ CONNECTION_POINT_ENTRY(IID_IHorzCurveCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("HorzCurves"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("HorzCurve"); }
+   CComBSTR GetCollectionName() { return CComBSTR("HorzCurves"); }
+   CComBSTR GetItemName() { return CComBSTR("HorzCurve"); }
 
 // IHorzCurveCollection
 public:
-	STDMETHOD(Clear)();
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc);
-	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IHorzCurve* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IHorzCurve* newVal);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum);
-	STDMETHOD(FindID)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoObjectID* ID);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IHorzCurveFactory** factory);
-	STDMETHOD(putref_Factory)(/*[in]*/IHorzCurveFactory* factory);
-	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
-   STDMETHOD(get__EnumHorzCurves)(/*[out,retval]*/ IEnumHorzCurves** ppenum);
-   STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurveCollection* *clone);
+	STDMETHOD(Clear)() override;
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[in]*/ IPoint2d* pbt,/*[in]*/ IPoint2d* pi,/*[in]*/ IPoint2d* pft,/*[in]*/ Float64 radius,/*[in]*/ Float64 Ls1,/*[in]*/ Float64 Ls2,/*[out,retval]*/IHorzCurve** hc) override;
+	STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IHorzCurve* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IHorzCurve* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IHorzCurve* newVal) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumIDs)(IEnumIDs** ppenum) override;
+	STDMETHOD(FindID)(/*[in]*/ IHorzCurve* hc,/*[out,retval]*/CogoObjectID* ID) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IHorzCurveFactory** factory) override;
+	STDMETHOD(putref_Factory)(/*[in]*/IHorzCurveFactory* factory) override;
+	STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
+   STDMETHOD(get__EnumHorzCurves)(/*[out,retval]*/ IEnumHorzCurves** ppenum) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurveCollection* *clone) override;
 
 // IHorzCurveEvents
 public:
-   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ IHorzCurve* hc);
+   STDMETHOD(OnHorzCurveChanged)(/*[in]*/ IHorzCurve* hc) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

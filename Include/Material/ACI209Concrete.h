@@ -106,31 +106,31 @@ public:
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFc(Float64 t) const;
+   virtual Float64 GetFc(Float64 t) const override;
 
    // Returns the secant modulus of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetEc(Float64 t) const;
+   virtual Float64 GetEc(Float64 t) const override;
 
    // Returns the modulus of rupture for shear calculations at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetShearFr(Float64 t) const;
+   virtual Float64 GetShearFr(Float64 t) const override;
 
    // Returns the modulus of rupture for flexure calculations at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFlexureFr(Float64 t) const;
+   virtual Float64 GetFlexureFr(Float64 t) const override;
 
    // Returns the total free shrinkage that has occured from time at casting
    // to the time specified
-   virtual Float64 GetFreeShrinkageStrain(Float64 t) const;
-   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const;
+   virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
+   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
    // Returns the creep coefficient at time t for a loading applied at time tla
-   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
-   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const;
+   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
+   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
    // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const;
+   virtual matConcreteBase* CreateClone() const override;
 
    // Set/Get ultimate shrinkage strain
    void SetUltimateShrinkageStrain(Float64 eu);
@@ -152,7 +152,7 @@ protected:
    matACI209Concrete(const matACI209Concrete& rOther);
    matACI209Concrete& operator = (const matACI209Concrete& rOther);
 
-   virtual void OnChanged();
+   virtual void OnChanged() override;
 
 private:
    Float64 m_Eshu; // ultimate shrinkage strain

@@ -74,34 +74,34 @@ BEGIN_CONNECTION_POINT_MAP(CAlignmentCollection)
 CONNECTION_POINT_ENTRY(IID_IAlignmentCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
-virtual void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
-   virtual void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
-   virtual CComBSTR GetCollectionName() { return m_bstrCollectionName; }
-   virtual CComBSTR GetItemName() { return m_bstrItemName; }
+   void SetCollectionName(BSTR bstrCollectionName) { m_bstrCollectionName = bstrCollectionName; }
+   void SetItemName(BSTR bstrItemName) { m_bstrItemName = bstrItemName; }
+   CComBSTR GetCollectionName()  { return m_bstrCollectionName; }
+   CComBSTR GetItemName() { return m_bstrItemName; }
 
 // IAlignmentCollection
 public:
-//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IAlignmentCollection* *clone);
-   STDMETHOD(get__EnumAlignments)(/*[out,retval]*/ IEnumAlignments** ppenum);
-	STDMETHOD(get_Factory)(/*[out,retval]*/IAlignmentFactory** factory);
-	STDMETHOD(putref_Factory)(/*[in]*/IAlignmentFactory* factory);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IAlignment* *pVal);
-   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IAlignment* pVal);
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IAlignment* newVal);
-   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[out,retval]*/ IAlignment* *Path);
-   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id);
-   STDMETHOD(Clear)();
-   STDMETHOD(FindID)(/*[in]*/ IAlignment* pAlignment,/*[out,retval]*/CogoObjectID* ID);
-   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum);
-//	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory);
-//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory);
-   STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID);
+//   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IAlignmentCollection* *clone) override;
+   STDMETHOD(get__EnumAlignments)(/*[out,retval]*/ IEnumAlignments** ppenum) override;
+	STDMETHOD(get_Factory)(/*[out,retval]*/IAlignmentFactory** factory) override;
+	STDMETHOD(putref_Factory)(/*[in]*/IAlignmentFactory* factory) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Item)(/*[in]*/ CogoObjectID id, /*[out, retval]*/ IAlignment* *pVal) override;
+   STDMETHOD(putref_Item)(/*[in]*/ CogoObjectID id, /*[in]*/ IAlignment* pVal) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(AddEx)(/*[in]*/ CogoObjectID id,/*[in]*/ IAlignment* newVal) override;
+   STDMETHOD(Add)(/*[in]*/ CogoObjectID id,/*[out,retval]*/ IAlignment* *Path) override;
+   STDMETHOD(Remove)(/*[in]*/ CogoObjectID id) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(FindID)(/*[in]*/ IAlignment* pAlignment,/*[out,retval]*/CogoObjectID* ID) override;
+   STDMETHOD(get__EnumIDs)(/*[out,retval]*/ IEnumIDs** ppenum) override;
+//	STDMETHOD(get_Factory)(/*[out,retval]*/IPoint2dFactory** factory) override;
+//	STDMETHOD(putref_Factory)(/*[in]*/IPoint2dFactory* factory) override;
+   STDMETHOD(ID)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ CogoObjectID* ID) override;
 
 // IAlignmentEvents
-	STDMETHOD(OnAlignmentChanged)(IAlignment* pAlignment)
+	STDMETHOD(OnAlignmentChanged)(IAlignment* pAlignment) override
 	{
       CogoObjectID id;
       FindID(pAlignment,&id);
@@ -109,13 +109,13 @@ public:
 		return S_OK;
 	}
 
-	STDMETHOD(OnProfileChanged)(IProfile* pProfile)
+	STDMETHOD(OnProfileChanged)(IProfile* pProfile) override
 	{
       Fire_OnProfileChanged(this,pProfile);
 		return S_OK;
 	}
 
-   STDMETHOD(OnStationEquationsChanged)(IStationEquationCollection* equations)
+   STDMETHOD(OnStationEquationsChanged)(IStationEquationCollection* equations) override
    {
       Fire_OnStationEquationsChanged(this,equations);
       return S_OK;

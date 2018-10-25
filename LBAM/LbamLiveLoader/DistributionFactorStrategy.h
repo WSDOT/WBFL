@@ -35,13 +35,13 @@ public:
    virtual void GetOptimalDfs(PoiIDType poiID, BSTR Stage, ForceEffectType effect,
                               DistributionFactorType distributionType,
                               Float64* leftFactor, DistributionFactorType* usedLeftDistributionType,
-                              Float64* rightFactor, DistributionFactorType* usedRightDistributionType)=0;
+                              Float64* rightFactor, DistributionFactorType* usedRightDistributionType) = 0;
 
    // All three distribution factors for concurrent response
    virtual void GetConcurrentDfs(PoiIDType poiID, BSTR Stage, 
                                  DistributionFactorType distributionType,
                                  Float64* leftFxFactor, Float64* leftFyFactor, Float64* leftMzFactor, 
-                                 Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor)=0;
+                                 Float64* rightFxFactor, Float64* rightFyFactor, Float64* rightMzFactor) = 0;
 };
 
 // strategy for force results

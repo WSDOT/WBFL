@@ -39,8 +39,8 @@ struct EAFCLASS CEAFReportViewCreationData
    CollectionIndexType m_RptIdx; // Index of the report to be created (index into the report manager)
 
    // Option 1 - Provide Report Specification
-   boost::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
-   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
+   std::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
+   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
    BOOL m_bInitializeOnly; // if true, creates the report view, sets the spec and spec builder, but does not generate the report
 
    // Option 2 - Report view creates specification
@@ -54,8 +54,8 @@ struct EAFCLASS CEAFReportViewCreationData
    {
       m_RptIdx = 0;
       m_bPromptForSpec = TRUE;
-      m_pReportBuilderMgr = NULL;
-      m_pRptMgr = NULL;
+      m_pReportBuilderMgr = nullptr;
+      m_pRptMgr = nullptr;
       m_bInitializeOnly = FALSE;
    }
 };
@@ -71,7 +71,7 @@ protected:
 // Attributes
 public:
 
-   // one of these is NULL, the other is not
+   // one of these is nullptr, the other is not
    CReportBuilderManager* m_pReportBuilderMgr;
    IReportManager* m_pRptMgr; // for use with Agent/Broker
 
@@ -103,18 +103,18 @@ protected:
 public:
    // Initializes the report view, but doesn't create the report. This methods is called by CreateReport
    // so you generally will not need to call it directly
-   virtual bool InitReport(boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+   virtual bool InitReport(std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
 
    // Creates a report. The report specification is created by the user through the UI
    virtual bool CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec=true);
 
    // Creates a report. The report specification was created elsewhere and is supplied here
-   virtual bool CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<CReportSpecification>& pSpec,boost::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+   virtual bool CreateReport(CollectionIndexType rptIdx, std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
 
    // listen if our button was clicked
    void NotifyReportButtonWasClicked();
 
-   boost::shared_ptr<CReportSpecification> GetReportSpecification();
+   std::shared_ptr<CReportSpecification> GetReportSpecification();
 
    virtual BOOL CanEditReport();
 
@@ -143,9 +143,9 @@ protected:
 
 
 protected:
-   boost::shared_ptr<CReportBrowser> m_pReportBrowser;
-   boost::shared_ptr<CReportSpecification> m_pReportSpec;
-   boost::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
+   std::shared_ptr<CReportBrowser> m_pReportBrowser;
+   std::shared_ptr<CReportSpecification> m_pReportSpec;
+   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
 
    BOOL m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
    BOOL m_bNoBrowser;     // true if the browser window couldn't be created
@@ -166,6 +166,6 @@ protected:
 
 private:
    std::vector<std::_tstring> GetReportNames();
-   boost::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
-   boost::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
+   std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
+   std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
 };

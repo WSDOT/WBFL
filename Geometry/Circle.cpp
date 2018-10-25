@@ -62,7 +62,7 @@ STDMETHODIMP CCircle::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IXYPosition,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -330,7 +330,7 @@ STDMETHODIMP CCircle::get_ShapeProperties(IShapeProperties* *pVal)
    Float64 ixy  = 0;
 
    CComPtr<IPoint2d> pCenter;
-   hr = CreatePoint(m_pCenter,NULL,&pCenter);
+   hr = CreatePoint(m_pCenter,nullptr,&pCenter);
    if ( FAILED(hr) )
       return hr;
 
@@ -401,7 +401,7 @@ STDMETHODIMP CCircle::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
       Float64 y = cy + rad * sin(a);
 
       CComPtr<IPoint2d> pPoint;
-      hr = CreatePoint( x, y, NULL, &pPoint );
+      hr = CreatePoint( x, y, nullptr, &pPoint );
       if ( FAILED(hr) )
          return hr;
 
@@ -499,7 +499,7 @@ STDMETHODIMP CCircle::Clone(IShape** pClone)
 
    // Copy the center point.
    CComPtr<IPoint2d> center;
-   CreatePoint( m_pCenter, NULL, &center );
+   CreatePoint( m_pCenter, nullptr, &center );
 
    pTheClone->putref_Center( center );
    pTheClone->put_Radius( m_Radius );
@@ -534,7 +534,7 @@ STDMETHODIMP CCircle::ClipWithLine(ILine2d* pLine,IShape** pShape)
 //      CComPtr<ICircularSegment> pclip(clip); // need to hold onto a reference
 //
 //      CComPtr<IPoint2d> ctrPnt;
-//      CreatePoint(m_pCenter,NULL,&ctrPnt);
+//      CreatePoint(m_pCenter,nullptr,&ctrPnt);
 //      clip->putref_Center(ctrPnt);
 //      clip->put_Radius(m_Radius);
 //
@@ -616,12 +616,12 @@ STDMETHODIMP CCircle::ClipIn(IRect2d* pRect,IShape** pShape)
    // Clip using top edge
    pRect->get_TopLeft( &pStart );
    pRect->get_TopRight( &pEnd );
-   CreateLine( pStart, pEnd, NULL, &pLine );
+   CreateLine( pStart, pEnd, nullptr, &pLine );
 
    CComPtr<IShape> pClipTop;
    ClipWithLine(pLine,&pClipTop);
 
-   if ( pClipTop == NULL )
+   if ( pClipTop == nullptr )
       return S_OK; // Entire shape clipped away
 
    pStart.Release();
@@ -635,7 +635,7 @@ STDMETHODIMP CCircle::ClipIn(IRect2d* pRect,IShape** pShape)
    pClipTop->ClipWithLine(pLine,&pClipRight);
    pClipTop.Release();
 
-   if ( pClipRight == NULL )
+   if ( pClipRight == nullptr )
       return S_OK; // Entire shape clipped away
 
    pStart.Release();
@@ -649,7 +649,7 @@ STDMETHODIMP CCircle::ClipIn(IRect2d* pRect,IShape** pShape)
    pClipRight->ClipWithLine(pLine,&pClipBottom);
    pClipRight.Release();
 
-   if ( pClipBottom == NULL )
+   if ( pClipBottom == nullptr )
       return S_OK; // Entire shape clipped away
 
    pStart.Release();
@@ -663,7 +663,7 @@ STDMETHODIMP CCircle::ClipIn(IRect2d* pRect,IShape** pShape)
    pClipBottom->ClipWithLine(pLine,&pClipLeft);
    pClipBottom.Release();
 
-   if ( pClipLeft == NULL )
+   if ( pClipLeft == nullptr )
       return S_OK; // Entire shape clipped away
 
    pClipLeft->QueryInterface(pShape);
@@ -726,7 +726,7 @@ STDMETHODIMP CCircle::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
 
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CCircle::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

@@ -31,9 +31,9 @@
 
 IMPLEMENT_DYNAMIC(CEAFExportCustomReports, CDialog)
 
-CEAFExportCustomReports::CEAFExportCustomReports(CWnd* pParent /*=NULL*/)
+CEAFExportCustomReports::CEAFExportCustomReports(CWnd* pParent /*=nullptr*/)
 	: CDialog(CEAFExportCustomReports::IDD, pParent),
-   m_pCustomReports(NULL)
+   m_pCustomReports(nullptr)
 {
 }
 
@@ -49,7 +49,7 @@ void CEAFExportCustomReports::DoDataExchange(CDataExchange* pDX)
    if (pDX->m_bSaveAndValidate)
    {
       m_SelectedReports.clear();
-      for (int cnt=0; cnt <m_CheckListBox.GetCount(); cnt++)
+      for (int cnt = 0; cnt <m_CheckListBox.GetCount(); cnt++)
       {
          int chk = m_CheckListBox.GetCheck(cnt);
          if (chk !=0)
@@ -70,7 +70,7 @@ void CEAFExportCustomReports::DoDataExchange(CDataExchange* pDX)
    {
       m_CheckListBox.ResetContent();
 
-      int cnt=0;
+      int cnt = 0;
       CEAFCustomReports::ReportConstIterator it = m_pCustomReports->m_Reports.begin();
       while(it != m_pCustomReports->m_Reports.end())
       {

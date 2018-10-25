@@ -75,41 +75,41 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperelevation
 public:
-   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2);
-   STDMETHOD(get_Surface)(ISurface* *pVal);
-   STDMETHOD(putref_Surface)(ISurface* newVal);
-   STDMETHOD(put_BeginTransition)(VARIANT varBeginTransition);
-   STDMETHOD(get_BeginTransition)(IStation** ppBeginTransition);
-   STDMETHOD(put_BeginFullSuper)(VARIANT varBeginFullSuper);
-   STDMETHOD(get_BeginFullSuper)(IStation** ppBeginFullSuper);
-   STDMETHOD(put_EndFullSuper)(VARIANT varEndFullSuper);
-   STDMETHOD(get_EndFullSuper)(IStation** ppEndFullSuper);
-   STDMETHOD(put_EndTransition)(VARIANT varEndTransition);
-   STDMETHOD(get_EndTransition)(IStation** ppEndTransition);
-   STDMETHOD(put_Rate)(Float64 rate);
-   STDMETHOD(get_Rate)(Float64* rate);
-   STDMETHOD(put_PivotPoint)(IndexType pivotPointIdx);
-   STDMETHOD(get_PivotPoint)(IndexType* pivotPointIdx);
-   STDMETHOD(put_BeginTransitionType)(SuperTransitionType type);
-   STDMETHOD(get_BeginTransitionType)(SuperTransitionType* type);
-   STDMETHOD(SetBeginTransitionParameters)(Float64 L1,Float64 L2);
-   STDMETHOD(GetBeginTransitionParameters)(Float64* L1,Float64* L2);
-   STDMETHOD(put_EndTransitionType)(SuperTransitionType type);
-   STDMETHOD(get_EndTransitionType)(SuperTransitionType* type);
-   STDMETHOD(SetEndTransitionParameters)(Float64 L1,Float64 L2);
-   STDMETHOD(GetEndTransitionParameters)(Float64* L1,Float64* L2);
-   STDMETHOD(GetSlope)(VARIANT varStation,Float64 templateSlope,Float64* pSlope);
-   STDMETHOD(Clone)(ISuperelevation* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal);
+   STDMETHOD(Init)(ISurface* pSurface,VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 rate,IndexType pivotPoint,SuperTransitionType beginType,Float64 beginL1,Float64 beginL2,SuperTransitionType endType,Float64 endL1,Float64 endL2) override;
+   STDMETHOD(get_Surface)(ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(ISurface* newVal) override;
+   STDMETHOD(put_BeginTransition)(VARIANT varBeginTransition) override;
+   STDMETHOD(get_BeginTransition)(IStation** ppBeginTransition) override;
+   STDMETHOD(put_BeginFullSuper)(VARIANT varBeginFullSuper) override;
+   STDMETHOD(get_BeginFullSuper)(IStation** ppBeginFullSuper) override;
+   STDMETHOD(put_EndFullSuper)(VARIANT varEndFullSuper) override;
+   STDMETHOD(get_EndFullSuper)(IStation** ppEndFullSuper) override;
+   STDMETHOD(put_EndTransition)(VARIANT varEndTransition) override;
+   STDMETHOD(get_EndTransition)(IStation** ppEndTransition) override;
+   STDMETHOD(put_Rate)(Float64 rate) override;
+   STDMETHOD(get_Rate)(Float64* rate) override;
+   STDMETHOD(put_PivotPoint)(IndexType pivotPointIdx) override;
+   STDMETHOD(get_PivotPoint)(IndexType* pivotPointIdx) override;
+   STDMETHOD(put_BeginTransitionType)(SuperTransitionType type) override;
+   STDMETHOD(get_BeginTransitionType)(SuperTransitionType* type) override;
+   STDMETHOD(SetBeginTransitionParameters)(Float64 L1,Float64 L2) override;
+   STDMETHOD(GetBeginTransitionParameters)(Float64* L1,Float64* L2) override;
+   STDMETHOD(put_EndTransitionType)(SuperTransitionType type) override;
+   STDMETHOD(get_EndTransitionType)(SuperTransitionType* type) override;
+   STDMETHOD(SetEndTransitionParameters)(Float64 L1,Float64 L2) override;
+   STDMETHOD(GetEndTransitionParameters)(Float64* L1,Float64* L2) override;
+   STDMETHOD(GetSlope)(VARIANT varStation,Float64 templateSlope,Float64* pSlope) override;
+   STDMETHOD(Clone)(ISuperelevation* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    ISurface* m_pSurface; // weak reference

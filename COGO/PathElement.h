@@ -82,22 +82,22 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPathElement
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy);
-   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction);
-   STDMETHOD(Clone)(/*[out,retval]*/ IPathElement* *clone);
-	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown* *pVal);
-	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* newVal);
-	STDMETHOD(get_Type)(/*[out, retval]*/ PathElementType *pVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy) override;
+   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IPathElement* *clone) override;
+	STDMETHOD(get_Value)(/*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(putref_Value)(/*[in]*/ IUnknown* newVal) override;
+	STDMETHOD(get_Type)(/*[out, retval]*/ PathElementType *pVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IHorzCurveEvents
 	STDMETHOD(OnHorzCurveChanged)(IHorzCurve * hc)

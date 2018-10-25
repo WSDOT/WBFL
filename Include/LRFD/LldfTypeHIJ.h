@@ -79,7 +79,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdLldfTypeHIJ();
+   virtual ~lrfdLldfTypeHIJ() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -117,29 +117,29 @@ protected:
    void MakeCopy(const lrfdLldfTypeHIJ& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLldfTypeHIJ& rOther);
+   void MakeAssignment(const lrfdLldfTypeHIJ& rOther);
 
    //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
 
    bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   virtual DFResult GetMomentDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
+   virtual DFResult GetShearDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
+   virtual DFResult GetShearDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -157,11 +157,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

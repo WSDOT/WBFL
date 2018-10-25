@@ -48,7 +48,7 @@ STDMETHODIMP CPoint3d::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPoint3d,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -157,7 +157,7 @@ STDMETHODIMP CPoint3d::Rotate(Float64 cx,Float64 cy,Float64 cz,IVector3d* vector
    CComPtr<ICoordinateXform3d> pXform(xform); // Use smart pointer to prevent leaks
 
    CComPtr<IPoint3d> origin;
-   hr = CreatePoint(cx,cy,cz,NULL,&origin);
+   hr = CreatePoint(cx,cy,cz,nullptr,&origin);
    if ( FAILED(hr) )
       return hr;
 

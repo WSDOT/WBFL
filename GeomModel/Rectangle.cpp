@@ -29,6 +29,7 @@
 #include <math.h>
 #include <mathEx.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -144,7 +145,7 @@ gpRect2d gmRectangle::GetBoundingBox() const
 
 gmIShape* gmRectangle::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmRectangle> ph(new gmRectangle( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmRectangle> ph(new gmRectangle( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -157,7 +158,7 @@ gmIShape* gmRectangle::CreateClippedShape(const gpLine2d& line,
                                     gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(line,side);
 }
 
@@ -166,7 +167,7 @@ gmIShape* gmRectangle::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
@@ -179,8 +180,8 @@ void gmRectangle::ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
    // than it is for gmIShape. For this reason, side must be reversed.
    gpLine2d::Side local_side = (side == gpLine2d::Left ? gpLine2d::Right : gpLine2d::Left); 
 
-   std::auto_ptr<gpPolygon2d> pclipped( m_Poly.CreateClippedPolygon(line,local_side) );
-   if (pclipped.get()!=0)
+   std::unique_ptr<gpPolygon2d> pclipped( m_Poly.CreateClippedPolygon(line,local_side) );
+   if (pclipped.get() != nullptr)
    {
       pclipped->GetArea(pArea, pCG);
 
@@ -204,8 +205,8 @@ Float64 gmRectangle::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side si
 
 void gmRectangle::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
-   if (poly.get()!=0)
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
+   if (poly.get() != nullptr)
       poly->Draw(hDC,mapper);
 }
 
@@ -299,7 +300,8 @@ void gmRectangle::MakeAssignment(const gmRectangle& rOther)
 //======================== OPERATIONS =======================================
 gmPolygon* gmRectangle::CreatePolygon() const
 {
-   if (m_Width<=0 || m_Height<=0) return 0;
+   if (m_Width<=0 || m_Height<=0) 
+      return nullptr;
 
    Compute();
 

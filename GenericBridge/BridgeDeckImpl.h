@@ -37,7 +37,7 @@ class IBridgeDeckImpl : public IBridgeDeck,
 public:
    IBridgeDeckImpl()
    {
-      m_pBridge = NULL;
+      m_pBridge = nullptr;
 
       m_bComposite = VARIANT_TRUE;
 

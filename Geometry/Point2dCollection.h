@@ -81,33 +81,33 @@ protected:
 
 public:
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPoint2dCollection
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/IPoint2dCollection** clone);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint2d** ppenum);
-   STDMETHOD(Clear)();
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
-//	STDMETHOD(Add)(/*[in]*/ IPoint2d* pPoint);
-//	STDMETHOD(get_Item)(CollectionIndexType Index, IPoint2d** pPoint);
-//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-//	STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(Offset)(Float64 dx,Float64 dy);
-   STDMETHOD(OffsetEx)(ISize2d* size);
-   STDMETHOD(RemoveDuplicatePoints)();
+   STDMETHOD(Clone)(/*[out,retval]*/IPoint2dCollection** clone) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(get__Enum)(/*[out,retval]*/ IEnumPoint2d** ppenum) override;
+   STDMETHOD(Clear)() override;
+//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+//	STDMETHOD(Add)(/*[in]*/ IPoint2d* pPoint) override;
+//	STDMETHOD(get_Item)(CollectionIndexType Index, IPoint2d** pPoint) override;
+//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+//	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(Offset)(Float64 dx,Float64 dy) override;
+   STDMETHOD(OffsetEx)(ISize2d* size) override;
+   STDMETHOD(RemoveDuplicatePoints)() override;
 
 // IPoint2dEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 
 protected :
    // implementation of container's virtual function
-   virtual HRESULT OnBeforeAdd ( Point2dVectorImpl::StoredType* pVal);
-   virtual HRESULT OnAfterAdd ( Point2dVectorImpl::StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnBeforeRemove ( Point2dVectorImpl::StoredType* pVal, CollectionIndexType idx);
-   virtual HRESULT OnAfterRemove (CollectionIndexType idx);
+   virtual HRESULT OnBeforeAdd ( Point2dVectorImpl::StoredType* pVal) override;
+   virtual HRESULT OnAfterAdd ( Point2dVectorImpl::StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnBeforeRemove ( Point2dVectorImpl::StoredType* pVal, CollectionIndexType idx) override;
+   virtual HRESULT OnAfterRemove (CollectionIndexType idx) override;
 
    void UnadviseAll();
 

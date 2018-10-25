@@ -56,7 +56,7 @@ void CTestStrandPattern::Test()
    TRY_TEST(strand_grid.CoCreateInstance(CLSID_StrandGrid),S_OK);
 
 
-   TRY_TEST(strand_grid->AddGridPoint(NULL),E_INVALIDARG);
+   TRY_TEST(strand_grid->AddGridPoint(nullptr),E_INVALIDARG);
    /////////////////////////////////////////////////////////
    // Create a simple strand pattern... 2" x 2" grid
    // three rows of 5 strands
@@ -74,19 +74,19 @@ void CTestStrandPattern::Test()
    }
 
    GridIndexType gridCount;
-   TRY_TEST(strand_grid->get_GridPointCount(NULL),E_POINTER);
+   TRY_TEST(strand_grid->get_GridPointCount(nullptr),E_POINTER);
    TRY_TEST(strand_grid->get_GridPointCount(&gridCount),S_OK);
    TRY_TEST(gridCount == 9, true);
 
    CComPtr<IPoint2dCollection> points;
-   TRY_TEST(strand_grid->get_GridPoints(NULL),E_POINTER);
+   TRY_TEST(strand_grid->get_GridPoints(nullptr),E_POINTER);
    TRY_TEST(strand_grid->get_GridPoints(&points),S_OK);
 
    TRY_TEST(strand_grid->ClearGridPoints(),S_OK);
    TRY_TEST(strand_grid->get_GridPointCount(&gridCount),S_OK);
    TRY_TEST(gridCount == 0, true);
 
-   TRY_TEST(strand_grid->AddGridPoints(NULL),E_INVALIDARG);
+   TRY_TEST(strand_grid->AddGridPoints(nullptr),E_INVALIDARG);
    TRY_TEST(strand_grid->AddGridPoints(points),S_OK);
    TRY_TEST(strand_grid->get_GridPointCount(&gridCount),S_OK);
    TRY_TEST(gridCount == 9, true);
@@ -94,7 +94,7 @@ void CTestStrandPattern::Test()
    CComPtr<IPoint2d> p;
    TRY_TEST(strand_grid->get_GridPoint(-1,&p),E_INVALIDARG);
    TRY_TEST(strand_grid->get_GridPoint(10000,&p),E_INVALIDARG);
-   TRY_TEST(strand_grid->get_GridPoint(0,NULL),E_POINTER);
+   TRY_TEST(strand_grid->get_GridPoint(0,nullptr),E_POINTER);
    int i = 0;
    for ( int row = 0; row < 3; row++ )
    {
@@ -124,7 +124,7 @@ void CTestStrandPattern::Test()
    strand_grid->ClearGridPoints();
    strand_grid->AddGridPoints(points);
 
-   TRY_TEST(strand_grid->get_GridPointCount(NULL),E_POINTER);
+   TRY_TEST(strand_grid->get_GridPointCount(nullptr),E_POINTER);
    TRY_TEST(strand_grid->get_GridPointCount(&gridCount),S_OK);
    TRY_TEST(gridCount == 9,true);
 
@@ -165,17 +165,17 @@ void CTestStrandPattern::Test()
    CComQIPtr<IStrandGridFiller> strand_filler(strand_grid);
 
    StrandIndexType nStrands;
-   TRY_TEST(strand_filler->get_MaxStrandCount(NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_MaxStrandCount(nullptr),E_POINTER);
    TRY_TEST(strand_filler->get_MaxStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 15, true);
 
-   TRY_TEST(strand_filler->GetMaxStrandFill(NULL),E_POINTER);
+   TRY_TEST(strand_filler->GetMaxStrandFill(nullptr),E_POINTER);
    CComPtr<IIndexArray> fill_array;
    TRY_TEST(strand_filler->GetMaxStrandFill(&fill_array),S_OK);
 
    TRY_TEST(strand_filler->putref_StrandFill(fill_array),S_OK);
 
-   TRY_TEST(strand_filler->GetStrandCount(NULL),E_POINTER);
+   TRY_TEST(strand_filler->GetStrandCount(nullptr),E_POINTER);
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 15, true);
 
@@ -209,12 +209,12 @@ void CTestStrandPattern::Test()
 
    points.Release();
    CollectionIndexType count;
-   TRY_TEST(strand_filler->GetStrandPositions(NULL),E_POINTER);
+   TRY_TEST(strand_filler->GetStrandPositions(nullptr),E_POINTER);
    TRY_TEST(strand_filler->GetStrandPositions(&points),S_OK);
    points->get_Count(&count);
    TRY_TEST(count == 16, true);
 
-   TRY_TEST(strand_filler->get_StrandBoundingBox(NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_StrandBoundingBox(nullptr),E_POINTER);
    box.Release();
    TRY_TEST(strand_filler->get_StrandBoundingBox(&box),S_OK);
    box->get_Top(&dval);
@@ -235,20 +235,20 @@ void CTestStrandPattern::Test()
    TRY_TEST(x == 2.0, true);
    TRY_TEST(y == 6.0, true);
 
-   TRY_TEST(strand_filler->StrandIndexToGridIndex(3, NULL),E_POINTER);
+   TRY_TEST(strand_filler->StrandIndexToGridIndex(3, nullptr),E_POINTER);
    TRY_TEST(strand_filler->StrandIndexToGridIndex(3, &gridCount),S_OK);
    TRY_TEST(gridCount == 1, true);
    TRY_TEST(strand_filler->StrandIndexToGridIndex(11, &gridCount),S_OK);
    TRY_TEST(gridCount == 6, true);
 
    RowIndexType nRows;
-   TRY_TEST(strand_filler->get_RowsWithStrand(NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_RowsWithStrand(nullptr),E_POINTER);
    TRY_TEST(strand_filler->get_RowsWithStrand(&nRows),S_OK);
    TRY_TEST(nRows,3);
 
    TRY_TEST(strand_filler->get_NumStrandsInRow(-1,&nStrands),E_INVALIDARG);
    TRY_TEST(strand_filler->get_NumStrandsInRow(10,&nStrands),E_INVALIDARG);
-   TRY_TEST(strand_filler->get_NumStrandsInRow( 0,NULL),     E_POINTER);
+   TRY_TEST(strand_filler->get_NumStrandsInRow( 0,nullptr),     E_POINTER);
    TRY_TEST(strand_filler->get_NumStrandsInRow( 0,&nStrands),S_OK);
    TRY_TEST(nStrands,6);
    TRY_TEST(strand_filler->get_NumStrandsInRow( 1,&nStrands),S_OK);
@@ -264,26 +264,26 @@ void CTestStrandPattern::Test()
    new_array->Add(2);
 
    TRY_TEST(strand_filler->put_VerticalStrandAdjustment( 2.5),S_OK);
-   TRY_TEST(strand_filler->get_VerticalStrandAdjustment( NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_VerticalStrandAdjustment( nullptr),E_POINTER);
    TRY_TEST(strand_filler->get_VerticalStrandAdjustment( &dval),S_OK);
    TRY_TEST(dval == 2.5, true);
 
 
-   TRY_TEST(strand_filler->GetStrandCountEx( new_array,NULL),  E_POINTER);
-   TRY_TEST(strand_filler->GetStrandCountEx( NULL,&nStrands),  E_INVALIDARG);
+   TRY_TEST(strand_filler->GetStrandCountEx( new_array,nullptr),  E_POINTER);
+   TRY_TEST(strand_filler->GetStrandCountEx( nullptr,&nStrands),  E_INVALIDARG);
    TRY_TEST(strand_filler->GetStrandCountEx( new_array,&nStrands),S_OK);
    TRY_TEST(nStrands,6);
 
    points.Release();
-   TRY_TEST(strand_filler->GetStrandPositionsEx(NULL,&points),E_INVALIDARG);
-   TRY_TEST(strand_filler->GetStrandPositionsEx(new_array,NULL),E_POINTER);
+   TRY_TEST(strand_filler->GetStrandPositionsEx(nullptr,&points),E_INVALIDARG);
+   TRY_TEST(strand_filler->GetStrandPositionsEx(new_array,nullptr),E_POINTER);
    TRY_TEST(strand_filler->GetStrandPositionsEx(new_array,&points),S_OK);
    points->get_Count(&count);
    TRY_TEST(count == 6, true);
 
    box.Release();
-   TRY_TEST(strand_filler->get_StrandBoundingBoxEx(NULL,&box),E_INVALIDARG);
-   TRY_TEST(strand_filler->get_StrandBoundingBoxEx(new_array,NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_StrandBoundingBoxEx(nullptr,&box),E_INVALIDARG);
+   TRY_TEST(strand_filler->get_StrandBoundingBoxEx(new_array,nullptr),E_POINTER);
    TRY_TEST(strand_filler->get_StrandBoundingBoxEx(new_array,&box),S_OK);
    box->get_Top(&dval);
    TRY_TEST(dval == 6.5, true);
@@ -294,12 +294,12 @@ void CTestStrandPattern::Test()
    box->get_Right(&dval);
    TRY_TEST(dval == 2.0, true);
 
-   TRY_TEST(strand_filler->get_CGEx(NULL,&x,&y),E_INVALIDARG);
+   TRY_TEST(strand_filler->get_CGEx(nullptr,&x,&y),E_INVALIDARG);
    TRY_TEST(strand_filler->get_CGEx(new_array,&x,&y),S_OK);
    TRY_TEST(x == 0.0, true);
    TRY_TEST(y == 5.5, true);
 
-   TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,3, NULL),E_POINTER);
+   TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,3, nullptr),E_POINTER);
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,4, &gridCount),S_OK);
    TRY_TEST(gridCount == 4, true);
    TRY_TEST(strand_filler->StrandIndexToGridIndexEx(new_array,11, &gridCount),E_INVALIDARG);
@@ -332,7 +332,7 @@ void CTestStrandPattern::Test()
 
    TRY_TEST(strand_filler->GetStrandCount(&nStrands),S_OK);
    TRY_TEST(nStrands == 16, true);
-   for (StrandIndexType is=0; is<nStrands; is++)
+   for (StrandIndexType is = 0; is<nStrands; is++)
    {
       TRY_TEST(strand_filler->GetDebondLengthByPositionIndex(is,&y,&dl, &dr),S_FALSE);
       TRY_TEST(dl == 0.0,true);
@@ -379,8 +379,8 @@ void CTestStrandPattern::Test()
 
    Float64 l1, l2;
    TRY_TEST(strand_filler->GetDebondLengthByGridIndex(50,&y,&l1,&l2),E_INVALIDARG);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,NULL,&l2),E_POINTER);
-   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,&l1,NULL),E_POINTER);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,nullptr,&l2),E_POINTER);
+   TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,&l1,nullptr),E_POINTER);
    TRY_TEST(strand_filler->GetDebondLengthByGridIndex(0,&y,&l1,&l2),S_FALSE); // not debonded
    TRY_TEST(IsEqual(l1,0.0),true);
    TRY_TEST(IsEqual(l2,0.0),true);
@@ -452,7 +452,7 @@ void CTestStrandPattern::Test()
 
    TRY_TEST(strand_filler->get_StrandDebondInRow(-1,&nStrands),E_INVALIDARG);
    TRY_TEST(strand_filler->get_StrandDebondInRow(4,&nStrands),E_INVALIDARG);
-   TRY_TEST(strand_filler->get_StrandDebondInRow(0,NULL),E_POINTER);
+   TRY_TEST(strand_filler->get_StrandDebondInRow(0,nullptr),E_POINTER);
    TRY_TEST(strand_filler->get_StrandDebondInRow(0,&nStrands),S_OK);
    TRY_TEST(nStrands,0);
    TRY_TEST(strand_filler->get_StrandDebondInRow(1,&nStrands),S_OK);
@@ -462,7 +462,7 @@ void CTestStrandPattern::Test()
 
    TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(-1,&bDebonded),E_INVALIDARG);
    TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(10,&bDebonded),E_INVALIDARG);
-   TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(0,NULL),E_POINTER);
+   TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(0,nullptr),E_POINTER);
    TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(0,&bDebonded),S_OK);
    TRY_TEST(bDebonded,VARIANT_FALSE);
    TRY_TEST(strand_filler->IsExteriorStrandDebondedInRow(1,&bDebonded),S_OK);

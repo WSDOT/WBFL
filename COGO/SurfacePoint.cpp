@@ -56,7 +56,7 @@ STDMETHODIMP CSurfacePoint::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ISurfacePoint,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -180,7 +180,7 @@ STDMETHODIMP CSurfacePoint::put_Location(IPoint2d* pLocation)
 STDMETHODIMP CSurfacePoint::GetPoint(IPoint3d** ppPoint)
 {
    CHECK_RETOBJ(ppPoint);
-   if ( m_pSurface == NULL )
+   if ( m_pSurface == nullptr )
    {
       return E_FAIL;
    }
@@ -188,7 +188,7 @@ STDMETHODIMP CSurfacePoint::GetPoint(IPoint3d** ppPoint)
    CComPtr<IProfile> profile;
    m_pSurface->get_Profile(&profile);
 
-   if ( profile == NULL )
+   if ( profile == nullptr )
    {
       return E_FAIL;
    }
@@ -196,7 +196,7 @@ STDMETHODIMP CSurfacePoint::GetPoint(IPoint3d** ppPoint)
    CComPtr<IAlignment> alignment;
    profile->get_Alignment(&alignment);
 
-   if ( alignment == NULL )
+   if ( alignment == nullptr )
    {
       return E_FAIL;
    }
@@ -283,7 +283,7 @@ STDMETHODIMP CSurfacePoint::Load(IStructuredLoad2* pLoad)
 
 HRESULT CSurfacePoint::ValidateStation(IStation* station)
 {
-   if ( m_pSurface == NULL )
+   if ( m_pSurface == nullptr )
    {
       // if not associated with a Surface, station must be normalized
       ZoneIndexType staEqnZoneIdx;

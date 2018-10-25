@@ -97,7 +97,7 @@ BOOL CWatermark::OnEraseBkgnd(CDC* pDC)
 {
    // If we don't have a valid bitmap, then there is nothing to draw
    // Just use the default behavior
-   if ( m_Bitmap.GetSafeHandle() == NULL )
+   if ( m_Bitmap.GetSafeHandle() == nullptr )
    {
       return CWnd::OnEraseBkgnd( pDC );
    }

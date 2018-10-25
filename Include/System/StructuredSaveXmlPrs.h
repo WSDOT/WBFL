@@ -28,6 +28,7 @@
 #include <System\SysExp.h>
 #include <System\IStructuredSave.h>
 #include <System\XStructuredSave.h>
+#include <memory>
 
 // FORWARD DECLARATIONS
 //
@@ -81,16 +82,16 @@ public:
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
    // Version 0.0 means no version was attached.
-   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0);
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0.0) override;
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
    // BeginUnit.
-   virtual void EndUnit();
+   virtual void EndUnit() override;
 
    //------------------------------------------------------------------------
    // Get the version number of the current unit
-   virtual Float64 GetVersion();
+   virtual Float64 GetVersion() override;
 
    //------------------------------------------------------------------------
    // Get the version number of the unit that is the parent to this unit
@@ -100,51 +101,51 @@ public:
 
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion();
+   virtual Float64 GetTopVersion() override;
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(LPCTSTR name, LPCTSTR value);
+   virtual void Property(LPCTSTR name, LPCTSTR value) override;
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(LPCTSTR name, Float64 value);
+   virtual void Property(LPCTSTR name, Float64 value) override;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int16 value);
+   virtual void Property(LPCTSTR name, Int16 value) override;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint16 value);
+   virtual void Property(LPCTSTR name, Uint16 value) override;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int32 value);
+   virtual void Property(LPCTSTR name, Int32 value) override;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint32 value);
+   virtual void Property(LPCTSTR name, Uint32 value) override;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int64 value);
+   virtual void Property(LPCTSTR name, Int64 value) override;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint64 value);
+   virtual void Property(LPCTSTR name, Uint64 value) override;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, LONG value);
+   virtual void Property(LPCTSTR name, LONG value) override;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, ULONG value);
+   virtual void Property(LPCTSTR name, ULONG value) override;
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(LPCTSTR name, bool value);
+   virtual void Property(LPCTSTR name, bool value) override;
 
    virtual void PutUnit(LPCTSTR xml);
 
@@ -161,13 +162,13 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   std::auto_ptr<sysStructuredSaveXmlPrs_Impl> m_pImp;
+   std::unique_ptr<sysStructuredSaveXmlPrs_Impl> m_pImp;
 
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
    sysStructuredSaveXmlPrs(const sysStructuredSaveXmlPrs&);
-   sysStructuredSaveXmlPrs& operator=(const sysStructuredSaveXmlPrs&);
+   sysStructuredSaveXmlPrs& operator=(const sysStructuredSaveXmlPrs&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

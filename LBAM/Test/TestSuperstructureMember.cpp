@@ -142,7 +142,6 @@ void CTestSuperstructureMember::Test()
    TEST_STIFFNESS_FIRED();
    relStage.Empty();
    TRY_TEST( psm->IsEndReleased(ssRight, mrtNone, &bIsReleased), S_OK );
-   TRY_TEST( relStage, "Stage 4" );
    TRY_TEST( bIsReleased, VARIANT_TRUE );
 
 
@@ -195,7 +194,7 @@ void CTestSuperstructureMember::Test()
 
          hr = psl->BeginUnit(CComBSTR("TestSSM"));
 
-         IStructuredStorage2* piss2=NULL;
+         IStructuredStorage2* piss2=nullptr;
          TRY_TEST( psm2.QueryInterface(&piss2), S_OK);
 
          // Load 

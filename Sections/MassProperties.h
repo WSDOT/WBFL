@@ -58,19 +58,19 @@ BEGIN_COM_MAP(CMassProperties)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMassProperties
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(AddProperties)(/*[in]*/ IMassProperties* props);
-	STDMETHOD(get_MassPerLength)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_MassPerLength)(/*[in]*/ Float64 newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(AddProperties)(/*[in]*/ IMassProperties* props) override;
+	STDMETHOD(get_MassPerLength)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_MassPerLength)(/*[in]*/ Float64 newVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    Float64 m_MPL;

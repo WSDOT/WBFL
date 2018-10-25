@@ -48,8 +48,8 @@ class MFCTOOLSCLASS CGetFileNameDialog : public CFileDialog
 	DECLARE_DYNAMIC(CGetFileNameDialog)
 
 public:
-	CGetFileNameDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt = NULL, LPCTSTR lpszFileName = NULL,
-		DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	LPCTSTR lpszFilter = NULL, CWnd* pParentWnd = NULL);
+	CGetFileNameDialog(BOOL bOpenFileDialog, LPCTSTR lpszDefExt = nullptr, LPCTSTR lpszFileName = nullptr,
+		DWORD dwFlags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,	LPCTSTR lpszFilter = nullptr, CWnd* pParentWnd = nullptr);
 
 protected:
   virtual void OnInitDone();
@@ -57,8 +57,8 @@ protected:
 
 	//{{AFX_MSG(CGetFileNameDialog)
 	//}}AFX_MSG
-  virtual BOOL OnInitDialog();
-  virtual void OnOK();
+  virtual BOOL OnInitDialog() override;
+  virtual void OnOK() override;
 
 	DECLARE_MESSAGE_MAP()
 };

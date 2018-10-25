@@ -48,8 +48,8 @@ IMPLEMENT_DYNCREATE(CEAFGraphChildFrame, CEAFOutputChildFrame)
 
 CEAFGraphChildFrame::CEAFGraphChildFrame()
 {
-   m_pGraphMgr = NULL;
-   m_pIGraphMgr = NULL;
+   m_pGraphMgr = nullptr;
+   m_pIGraphMgr = nullptr;
 }
 
 CEAFGraphChildFrame::~CEAFGraphChildFrame()
@@ -80,20 +80,20 @@ CEAFGraphView* CEAFGraphChildFrame::GetGraphView()
    return pGraphView;
 }
 
-boost::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder()
+std::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder()
 {
    return m_pMyGraphBuilder;
 }
 
 bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
 {
-   boost::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(graphIdx);
-   if ( pGraphBuilder == boost::shared_ptr<CGraphBuilder>() )
+   std::shared_ptr<CGraphBuilder> pGraphBuilder = GetGraphBuilder(graphIdx);
+   if ( pGraphBuilder == nullptr )
       return false;
 
    // Because multiple graph views can be created, we have to create a clone
    // of the graph builder. Each view needs its own unique graph builder.
-   m_pMyGraphBuilder = boost::shared_ptr<CGraphBuilder>(pGraphBuilder->Clone());
+   m_pMyGraphBuilder = std::shared_ptr<CGraphBuilder>(pGraphBuilder->Clone());
 
    if ( m_pMyGraphBuilder->InitializeGraphController(this,AFX_IDW_CONTROLBAR_LAST) < 0 )
       return false;
@@ -108,7 +108,7 @@ bool CEAFGraphChildFrame::CreateGraph(IndexType graphIdx)
    return true;
 }
 
-boost::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
+std::shared_ptr<CGraphBuilder> CEAFGraphChildFrame::GetGraphBuilder(IndexType index)
 {
    if ( m_pGraphMgr )
    {
@@ -156,7 +156,7 @@ void CEAFGraphChildFrame::RecalcLayout(BOOL bNotify)
 
 #ifndef _AFX_NO_OLE_SUPPORT
 	// call the layout hook -- OLE support uses this hook
-	if (bNotify && m_pNotifyHook != NULL)
+	if (bNotify && m_pNotifyHook != nullptr)
 		m_pNotifyHook->OnRecalcLayout();
 #endif
 
@@ -172,7 +172,7 @@ void CEAFGraphChildFrame::RecalcLayout(BOOL bNotify)
 		RepositionBars(0, 0xffff, AFX_IDW_PANE_FIRST, reposExtra,
 			&m_rectBorder, &rect, TRUE);
 		CalcWindowRect(&rect);
-		SetWindowPos(NULL, 0, 0, rect.Width(), rect.Height(),
+		SetWindowPos(nullptr, 0, 0, rect.Width(), rect.Height(),
 			SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOZORDER);
 	}
 	else
@@ -210,11 +210,11 @@ void CEAFGraphChildFrame::MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nID
 	// NOTE: nIDFirst->nIDLast are usually 0->0xffff
 
 	AFX_SIZEPARENTPARAMS layout;
-	HWND hWndLeftOver = NULL;
+	HWND hWndLeftOver = nullptr;
 
 	layout.bStretch = bStretch;
 	layout.sizeTotal.cx = layout.sizeTotal.cy = 0;
-	if (lpRectClient != NULL)
+	if (lpRectClient != nullptr)
 		layout.rect = *lpRectClient;    // starting rect comes from parameter
 	else
 		GetClientRect(&layout.rect);    // starting rect comes from client rect
@@ -222,9 +222,9 @@ void CEAFGraphChildFrame::MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nID
 	if ((nFlags & ~reposNoPosLeftOver) != reposQuery)
 		layout.hDWP = ::BeginDeferWindowPos(8); // reasonable guess
 	else
-		layout.hDWP = NULL; // not actually doing layout
+		layout.hDWP = nullptr; // not actually doing layout
 
-	for (HWND hWndChild = ::GetTopWindow(m_hWnd); hWndChild != NULL;
+	for (HWND hWndChild = ::GetTopWindow(m_hWnd); hWndChild != nullptr;
 		hWndChild = ::GetNextWindow(hWndChild, GW_HWNDNEXT))
 	{
 		UINT_PTR nIDC = _AfxGetDlgCtrlID(hWndChild);
@@ -241,14 +241,14 @@ void CEAFGraphChildFrame::MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nID
 
 		if (nIDC == nIDLeftOver)
 			hWndLeftOver = hWndChild;
-      else if (nIDC >= nIDFirst && nIDC <= nIDLast && pWnd != NULL )
+      else if (nIDC >= nIDFirst && nIDC <= nIDLast && pWnd != nullptr )
 			::SendMessage(hWndChild, WM_SIZEPARENT, 0, (LPARAM)&layout);
 	}
 
 	// if just getting the available rectangle, return it now...
 	if ((nFlags & ~reposNoPosLeftOver) == reposQuery)
 	{
-		ASSERT(lpRectParam != NULL);
+		ASSERT(lpRectParam != nullptr);
 		if (bStretch)
 			::CopyRect(lpRectParam, &layout.rect);
 		else
@@ -261,13 +261,13 @@ void CEAFGraphChildFrame::MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nID
 	}
 
 	// the rest is the client size of the left-over pane
-	if (nIDLeftOver != 0 && hWndLeftOver != NULL)
+	if (nIDLeftOver != 0 && hWndLeftOver != nullptr)
 	{
 		CWnd* pLeftOver = CWnd::FromHandle(hWndLeftOver);
 		// allow extra space as specified by lpRectBorder
 		if ((nFlags & ~reposNoPosLeftOver) == reposExtra)
 		{
-			ASSERT(lpRectParam != NULL);
+			ASSERT(lpRectParam != nullptr);
 			layout.rect.left += lpRectParam->left;
 			layout.rect.top += lpRectParam->top;
 			layout.rect.right -= lpRectParam->right;
@@ -282,6 +282,6 @@ void CEAFGraphChildFrame::MyRepositionBars(UINT nIDFirst, UINT nIDLast, UINT nID
 	}
 
 	// move and resize all the windows at once!
-	if (layout.hDWP == NULL || !::EndDeferWindowPos(layout.hDWP))
+	if (layout.hDWP == nullptr || !::EndDeferWindowPos(layout.hDWP))
 		TRACE(traceAppMsg, 0, "Warning: DeferWindowPos failed - low system resources.\n");
 }

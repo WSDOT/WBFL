@@ -119,15 +119,15 @@ void CTestAlignment1::Test1()
    Float64 offset;
    Float64 stationVal;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,NULL,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(NULL,&station,&offset),E_INVALIDARG);
-   TRY_TEST(alignment->ProjectPoint(end,NULL),E_POINTER);
+   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
+   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
+   TRY_TEST(alignment->ProjectPoint(end,nullptr),E_POINTER);
    start.Release();
-   TRY_TEST(alignment->ProjectPoint(NULL,&start),E_INVALIDARG);
+   TRY_TEST(alignment->ProjectPoint(nullptr,&start),E_INVALIDARG);
 
    // Sta 0+00
    TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
@@ -606,12 +606,12 @@ void CTestAlignment1::Test2()
    CComPtr<IStation> station;
    Float64 stationVal, offset;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,NULL,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(NULL,&station,&offset),E_INVALIDARG);
+   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
+   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
 
    // Sta 0+00
    TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
@@ -940,12 +940,12 @@ void CTestAlignment1::Test3()
    CComPtr<IStation> station;
    Float64 stationVal, offset;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,NULL,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(NULL,&station,&offset),E_INVALIDARG);
+   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
+   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
 
    // Sta 0+00
    TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
@@ -1274,12 +1274,12 @@ void CTestAlignment1::Test4()
    CComPtr<IStation> station;
    Float64 stationVal, offset;
 
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->Normal(CComVariant(0.00),NULL),E_POINTER);
-   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,&station,NULL),E_POINTER);
-   TRY_TEST(alignment->Offset(end,NULL,&offset),E_POINTER);
-   TRY_TEST(alignment->Offset(NULL,&station,&offset),E_INVALIDARG);
+   TRY_TEST(alignment->Bearing(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->Normal(CComVariant(0.00),nullptr),E_POINTER);
+   TRY_TEST(alignment->LocatePoint(CComVariant(125),omtAlongDirection, 10,CComVariant(PI_OVER_2),nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,&station,nullptr),E_POINTER);
+   TRY_TEST(alignment->Offset(end,nullptr,&offset),E_POINTER);
+   TRY_TEST(alignment->Offset(nullptr,&station,&offset),E_INVALIDARG);
 
    // Sta 0+00
    TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);

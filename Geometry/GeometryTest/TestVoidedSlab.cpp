@@ -69,27 +69,27 @@ void CTestVoidedSlab::TestIVoidedSlab()
    CollectionIndexType lval;
    CComPtr<IPoint2d> pntVal;
 
-   TRY_TEST( beam->get_Height(NULL), E_POINTER );
+   TRY_TEST( beam->get_Height(nullptr), E_POINTER );
    TRY_TEST( beam->get_Height(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_Width(NULL), E_POINTER );
+   TRY_TEST( beam->get_Width(nullptr), E_POINTER );
    TRY_TEST( beam->get_Width(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_VoidSpacing(NULL), E_POINTER );
+   TRY_TEST( beam->get_VoidSpacing(nullptr), E_POINTER );
    TRY_TEST( beam->get_VoidSpacing(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_VoidDiameter(NULL), E_POINTER );
+   TRY_TEST( beam->get_VoidDiameter(nullptr), E_POINTER );
    TRY_TEST( beam->get_VoidDiameter(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_VoidCount(NULL), E_POINTER );
+   TRY_TEST( beam->get_VoidCount(nullptr), E_POINTER );
    TRY_TEST( beam->get_VoidCount(&lval), S_OK );
    TRY_TEST( lval == 0, true );
 
-   TRY_TEST( beam->get_HookPoint(NULL), E_POINTER );
+   TRY_TEST( beam->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( beam->get_HookPoint(&pntVal), S_OK );
    pntVal->get_X(&val);
    TRY_TEST( IsZero(val), true );
@@ -124,14 +124,14 @@ void CTestVoidedSlab::TestIVoidedSlab()
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
-   TRY_TEST(beam->get_Shape(NULL), E_POINTER );
+   TRY_TEST(beam->get_Shape(nullptr), E_POINTER );
    TRY_TEST(beam->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(beam->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(beam->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(beam->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -162,7 +162,7 @@ void CTestVoidedSlab::TestIShape()
    //
    Float64 val;
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    
    box->get_Left(&val);
@@ -181,7 +181,7 @@ void CTestVoidedSlab::TestIShape()
    // ShapeProperties
    //
    CComPtr<IShapeProperties> props;
-   TRY_TEST( shape->get_ShapeProperties(NULL), E_POINTER );
+   TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
    Float64 area, ixx, iyy, ixy, cgx, cgy;
    CComPtr<IPoint2d> cg;
@@ -217,7 +217,7 @@ void CTestVoidedSlab::TestIShape()
    //
    // Perimeter
    //
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
    TRY_TEST( IsEqual(val,132.), true );
 
@@ -238,8 +238,8 @@ void CTestVoidedSlab::TestIShape()
    p2->Move(100,20);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,20.000), true );
 
@@ -254,7 +254,7 @@ void CTestVoidedSlab::TestIShape()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
    CollectionIndexType cPoints;
@@ -299,7 +299,7 @@ void CTestVoidedSlab::TestIShape()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST(shape->Clone(NULL), E_POINTER );
+   TRY_TEST(shape->Clone(nullptr), E_POINTER );
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IVoidedSlab> beamClone(clone);
@@ -329,8 +329,8 @@ void CTestVoidedSlab::TestIShape()
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(0.0, 1.0);
 
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 
@@ -355,8 +355,8 @@ void CTestVoidedSlab::TestIShape()
    clipLine->ThroughPoints(p1,p2);
 
    CComPtr<IShape> clip;
-   TRY_TEST(shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST(shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
    TRY_TEST( clip != 0, true );
    
@@ -406,8 +406,8 @@ void CTestVoidedSlab::TestIShape()
    clipLine->ThroughPoints(p1,p2);
 
    clip.Release();
-   TRY_TEST(shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST(shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
    TRY_TEST( clip != 0, true );
    
@@ -456,8 +456,8 @@ void CTestVoidedSlab::TestIShape()
    clipRect->put_Top(16.5);
    clipRect->put_Bottom(1.5);
 
-   TRY_TEST( shape->ClipIn(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL), E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
    
    // Verify clip by checking points
@@ -473,7 +473,7 @@ void CTestVoidedSlab::TestIShape()
    ATLTRACE("Trace of Points for VoidedSlab - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip=0; ip<cPoints; ip++)
+   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -550,13 +550,13 @@ void CTestVoidedSlab::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(100,100);
 
-   TRY_TEST( position->MoveEx(NULL,to), E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from,NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to), S_OK );
 
    // Check the points
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    CollectionIndexType cPoints;
    coll->get_Count(&cPoints);
@@ -613,7 +613,7 @@ void CTestVoidedSlab::TestIXYPosition()
    size->put_Dx(-100);
    size->put_Dy(-100);
 
-   TRY_TEST(position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST(position->OffsetEx(size), S_OK);
 
    // Check the points
@@ -666,8 +666,8 @@ void CTestVoidedSlab::TestIXYPosition()
    // LocatorPoint property
    //
    hookPnt->Move(0,0);
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    hookPnt->Move(0,0);
@@ -828,7 +828,7 @@ void CTestVoidedSlab::TestIXYPosition()
    c->put_X(-24);
    c->put_Y(0);
 
-   TRY_TEST( position->RotateEx(NULL,M_PI/2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,M_PI/2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(c,M_PI/2), S_OK );
 
    // Check the points

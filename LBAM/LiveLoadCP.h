@@ -68,22 +68,6 @@ public:
             events->OnVehicularLoadsChanged(Load,change);
 		}
 	}
-	VOID Fire_OnVehicularLoadsRenamed(BSTR oldName, BSTR newName)
-	{
-		T* pT = static_cast<T*>(this);
-		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
-		
-		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
-		{
-			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
-			pT->Unlock();
-         CComQIPtr<IVehicularLoadsEvents> events(sp);
-         if ( events )
-            events->OnVehicularLoadsRenamed(oldName,newName);
-		}
-	}
 	VOID Fire_OnVehicularLoadsAdded(IVehicularLoad * Load)
 	{
 		T* pT = static_cast<T*>(this);

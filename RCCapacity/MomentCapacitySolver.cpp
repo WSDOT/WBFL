@@ -73,7 +73,7 @@ STDMETHODIMP CMomentCapacitySolver::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IMomentCapacitySolver,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -236,14 +236,14 @@ STDMETHODIMP CMomentCapacitySolver::CompressionLimit(Float64* Fz,Float64* Mx,Flo
       CComPtr<IStressStrain> material;
       section->get_ForegroundMaterial(shapeIdx,&material);
 
-      if ( material == NULL )
+      if ( material == nullptr )
          continue; // shape is a void
 
       Float64 strain_at_peak_stress;
       material->get_StrainAtPeakStress(&strain_at_peak_stress);
 
       if ( strain_at_peak_stress <= 0 )
-         minStrain = _cpp_max(strain_at_peak_stress,minStrain);
+         minStrain = Max(strain_at_peak_stress,minStrain);
    }
 
    m_StrainPlane->ThroughAltitude(minStrain);
@@ -298,13 +298,13 @@ STDMETHODIMP CMomentCapacitySolver::TensionLimit(Float64* Fz,Float64* Mx,Float64
       CComPtr<IStressStrain> material;
       section->get_ForegroundMaterial(shapeIdx,&material);
 
-      if ( material == NULL )
+      if ( material == nullptr )
          continue; // shape is a void
 
       Float64 e_yield;
       material->get_YieldStrain(&e_yield);
 
-      maxYieldStrain = _cpp_max(e_yield,maxYieldStrain);
+      maxYieldStrain = Max(e_yield,maxYieldStrain);
    }
 
    m_StrainPlane->ThroughAltitude(maxYieldStrain);
@@ -431,7 +431,7 @@ void CMomentCapacitySolver::UpdateFurthestPoint(Float64 angle)
       Float64 dist;
       shape->FurthestDistance(line,&dist);
 
-      furthest_distance = _cpp_max(furthest_distance,dist);
+      furthest_distance = Max(furthest_distance,dist);
    }
 
    // these coordinates are in the system that is parallel to the neutral axis
@@ -510,7 +510,7 @@ HRESULT CMomentCapacitySolver::GetNeutralAxisParameterRange(Float64 k_or_ec,Solu
 
 HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod,IMomentCapacitySolution** solution)
 {
-   if ( solution == NULL )
+   if ( solution == nullptr )
       return E_INVALIDARG;
 
    HRESULT hr;
@@ -575,7 +575,7 @@ HRESULT CMomentCapacitySolver::AnalyzeSection(Float64 Fz,Float64 angle,Float64 k
    if ( m_MaxIter <= iter )
       return Error(IDS_E_SOLUTIONNOTFOUND,IID_IMomentCapacitySolver,RC_E_SOLUTIONNOTFOUND);
 
-   if ( *solution == NULL )
+   if ( *solution == nullptr )
    {
       CComObject<CMomentCapacitySolution>* pSolution;
       CComObject<CMomentCapacitySolution>::CreateInstance(&pSolution);

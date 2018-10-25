@@ -78,16 +78,16 @@ void CTestUnits::Test()
    ///////////////////////////////////////////////////////
    // Test Count
    CollectionIndexType count;
-   TRY_TEST( units->get_Count(NULL), E_POINTER );
+   TRY_TEST( units->get_Count(nullptr), E_POINTER );
    TRY_TEST( units->get_Count(&count), S_OK );
    TRY_TEST( count, 0 );
 
    ///////////////////////////////////////////////////////
    // Test Add
    CComPtr<IUnit> pUnit;
-   TRY_TEST(units->Add(NULL,0,1,0,unitsSI,&pUnit),E_INVALIDARG);
-   TRY_TEST(units->Add(CComBSTR("a"),0,1,0,unitsSI,NULL),S_OK);
-   TRY_TEST(units->Add(CComBSTR("a"),1,1,1,unitsSI,NULL),UNITS_E_UNITALREADYDEFINED); 
+   TRY_TEST(units->Add(nullptr,0,1,0,unitsSI,&pUnit),E_INVALIDARG);
+   TRY_TEST(units->Add(CComBSTR("a"),0,1,0,unitsSI,nullptr),S_OK);
+   TRY_TEST(units->Add(CComBSTR("a"),1,1,1,unitsSI,nullptr),UNITS_E_UNITALREADYDEFINED); 
 
    pUnit.Release();
    TRY_TEST(units->Add(CComBSTR("b"),0,1,0,unitsSI,&pUnit),S_OK);
@@ -123,7 +123,7 @@ void CTestUnits::Test()
    ///////////////////////////////////////////////////////
    // Test _EnumUnits
    CComPtr<IEnumUnits> Enum;
-   TRY_TEST( units->get__EnumUnits(NULL), E_POINTER );
+   TRY_TEST( units->get__EnumUnits(nullptr), E_POINTER );
    TRY_TEST( units->get__EnumUnits(&Enum), S_OK );
 
    CComPtr<IUnit> pUnits[4];

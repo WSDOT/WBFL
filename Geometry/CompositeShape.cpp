@@ -30,6 +30,7 @@
 #include "CompositeShapeItem.h"
 #include "ShapeProperties.h"
 #include <float.h>
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -49,7 +50,7 @@ STDMETHODIMP CCompositeShape::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
 		&IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -61,12 +62,6 @@ STDMETHODIMP CCompositeShape::get_Shape(IShape **pVal)
 {
    CHECK_RETOBJ(pVal);
    return QueryInterface( IID_IShape, (void**)pVal );
-}
-
-STDMETHODIMP CCompositeShape::get_XYPosition(IXYPosition **pVal)
-{
-   CHECK_RETOBJ(pVal);
-   return QueryInterface( IID_IXYPosition, (void**)pVal );
 }
 
 STDMETHODIMP CCompositeShape::get_StructuredStorage(IStructuredStorage2* *pStg)
@@ -141,7 +136,7 @@ STDMETHODIMP CCompositeShape::FurthestDistance(ILine2d* line,Float64 *pVal)
       item->get_Shape(&shape);
 
       shape->FurthestDistance(line,&this_distance);
-      distance = _cpp_max(distance,this_distance);
+      distance = Max(distance,this_distance);
    }
 
    *pVal = distance;
@@ -317,15 +312,15 @@ STDMETHODIMP CCompositeShape::get_ShapeProperties(IShapeProperties* *pVal)
       sp->put_Ytop(yt);
       sp->put_Ybottom(yb);
 
-      if ( shapeProps == NULL )
+      if ( shapeProps == nullptr )
          shapeProps = sp; // first time through the loop
       else
          shapeProps->AddProperties(sp);
    }
 
-   // if shapeProps is still NULL, then there was nothing in the collection
+   // if shapeProps is still nullptr, then there was nothing in the collection
    // create a default set of properties
-   if ( shapeProps == NULL )
+   if ( shapeProps == nullptr )
    {
       CComObject<CShapeProperties>* objShapeProps;
       CComObject<CShapeProperties>::CreateInstance(&objShapeProps);
@@ -487,7 +482,7 @@ STDMETHODIMP CCompositeShape::get_LocatorPoint(LocatorPointType lp, IPoint2d** p
    if ( m_coll.size() == 0 )
    {
       // If the collection is empty, just return a point at (0,0)
-      ::CoCreateInstance(CLSID_Point2d,NULL,CLSCTX_ALL,IID_IPoint2d,(void**)point);
+      ::CoCreateInstance(CLSID_Point2d,nullptr,CLSCTX_ALL,IID_IPoint2d,(void**)point);
       (*point)->Move(0,0);
       return S_OK;
    }

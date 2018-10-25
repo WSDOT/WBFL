@@ -67,7 +67,7 @@ public:
    // Being a singleton will force an object of this type to have a
    // lifetime that is entirely contained within the lifetime of
    // unitSysUnitsMgr
-   static gmWsdotPrecastBeams& GetInstance(); // Return a reference because it can never be NULL
+   static gmWsdotPrecastBeams& GetInstance(); // Return a reference because it can never be nullptr
 
    //------------------------------------------------------------------------
    // Metric Beams
@@ -130,15 +130,15 @@ private:
    friend Killer;
    static Killer ms_Killer;
 
-   std::auto_ptr<gmPrecastBeam> ms_pW42MG;
-   std::auto_ptr<gmPrecastBeam> ms_pW50MG;
-   std::auto_ptr<gmPrecastBeam> ms_pW58MG;
-   std::auto_ptr<gmPrecastBeam> ms_pW74MG;
+   std::unique_ptr<gmPrecastBeam> ms_pW42MG;
+   std::unique_ptr<gmPrecastBeam> ms_pW50MG;
+   std::unique_ptr<gmPrecastBeam> ms_pW58MG;
+   std::unique_ptr<gmPrecastBeam> ms_pW74MG;
 
-   std::auto_ptr<gmPrecastBeam> ms_pW42G;
-   std::auto_ptr<gmPrecastBeam> ms_pW50G;
-   std::auto_ptr<gmPrecastBeam> ms_pW58G;
-   std::auto_ptr<gmPrecastBeam> ms_pW74G;
+   std::unique_ptr<gmPrecastBeam> ms_pW42G;
+   std::unique_ptr<gmPrecastBeam> ms_pW50G;
+   std::unique_ptr<gmPrecastBeam> ms_pW58G;
+   std::unique_ptr<gmPrecastBeam> ms_pW74G;
 
    // GROUP: LIFECYCLE
 
@@ -151,8 +151,8 @@ private:
    virtual ~gmWsdotPrecastBeams();
 
    // Prevent accidental copying and assignment
-   gmWsdotPrecastBeams(const gmWsdotPrecastBeams&);
-   gmWsdotPrecastBeams& operator=(const gmWsdotPrecastBeams&);
+   gmWsdotPrecastBeams(const gmWsdotPrecastBeams&) = delete;
+   gmWsdotPrecastBeams& operator=(const gmWsdotPrecastBeams&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

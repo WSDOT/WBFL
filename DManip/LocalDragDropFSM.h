@@ -61,8 +61,8 @@ public:
 class CLocalDragDropFSMStartState : public CLocalDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Start"); }
-   virtual void Do(CLocalDragDropFSM& fsm);
+   virtual LPCTSTR StateName() const  override { return _T("Start"); }
+   virtual void Do(CLocalDragDropFSM& fsm) override;
 };
 
 //----------------------------------------------
@@ -71,7 +71,7 @@ public:
 class CLocalDragDropFSMDoneState : public CLocalDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("Done"); }
+   virtual LPCTSTR StateName() const override { return _T("Done"); }
 };
 
 //----------------------------------------------
@@ -80,9 +80,9 @@ public:
 class CLocalDragDropFSMWaitingForDragEnterState : public CLocalDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForDragEnter"); }
-   virtual DROPEFFECT DragScroll(CLocalDragDropFSM& fsm,DWORD dwKeyState,CPoint point);
-	virtual DROPEFFECT DragEnter(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
+   virtual LPCTSTR StateName() const  override { return _T("WaitingForDragEnter"); }
+   virtual DROPEFFECT DragScroll(CLocalDragDropFSM& fsm,DWORD dwKeyState,CPoint point) override;
+	virtual DROPEFFECT DragEnter(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
 };
 
 //----------------------------------------------
@@ -91,12 +91,12 @@ public:
 class CLocalDragDropFSMWaitingForDropState : public CLocalDragDropFSMState
 {
 public:
-   virtual LPCTSTR StateName() const { return _T("WaitingForDrop"); }
-	virtual void DragLeave(CLocalDragDropFSM& fsm);
-	virtual DROPEFFECT DragOver(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   virtual DROPEFFECT DragScroll(CLocalDragDropFSM& fsm,DWORD dwKeyState,CPoint point);
-	virtual BOOL Drop(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point);
-   virtual DROPEFFECT DropEx(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point);
+   virtual LPCTSTR StateName() const  override { return _T("WaitingForDrop"); }
+	virtual void DragLeave(CLocalDragDropFSM& fsm) override;
+	virtual DROPEFFECT DragOver(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+   virtual DROPEFFECT DragScroll(CLocalDragDropFSM& fsm,DWORD dwKeyState,CPoint point) override;
+	virtual BOOL Drop(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+   virtual DROPEFFECT DropEx(CLocalDragDropFSM& fsm,COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 };
 
 class CLocalDragDropFSM : public iLocalDragDropTask

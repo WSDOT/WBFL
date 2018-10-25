@@ -36,7 +36,7 @@ class CEditCustomReportDlg : public CDialog
 	DECLARE_DYNAMIC(CEditCustomReportDlg)
 
 public:
-	CEditCustomReportDlg(CWnd* pParent = NULL);   // standard constructor
+	CEditCustomReportDlg(CWnd* pParent = nullptr);   // standard constructor
 	virtual ~CEditCustomReportDlg();
 
 // Dialog Data

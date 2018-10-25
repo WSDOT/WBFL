@@ -61,7 +61,7 @@ HRESULT CParabolicTendonSegment::FinalConstruct()
    m_Slope = 0;
    m_SlopeEnd = qcbLeft;
 
-   m_pTendon = NULL;
+   m_pTendon = nullptr;
 
    return S_OK;
 }
@@ -78,7 +78,7 @@ STDMETHODIMP CParabolicTendonSegment::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ITendonSegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {

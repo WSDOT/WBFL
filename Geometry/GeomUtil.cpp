@@ -90,7 +90,7 @@ STDMETHODIMP CGeomUtil::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IGeomUtil2d,
 		&IID_IGeomUtil3d,
 	};
-	for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -206,7 +206,7 @@ STDMETHODIMP CGeomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Fl
       Float64 x,y;
       x = cx + radius*cos( initAngle + cum_angle );
       y = cy + radius*sin( initAngle + cum_angle );
-      CreatePoint( x,y, NULL, &pPoint );
+      CreatePoint( x,y, nullptr, &pPoint );
       (*points)->Add( pPoint );
       cum_angle += delta_angle;
    }
@@ -316,10 +316,10 @@ STDMETHODIMP CGeomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2
    GetCoordinates( pPoint, &x, &y );
 
    
-	if ((x >= _cpp_min(x1, x2)-tolerance) && 
-       (x <= _cpp_max(x1, x2)+tolerance) &&
-	    (y >= _cpp_min(y1, y2)-tolerance) && 
-       (y <= _cpp_max(y1, y2)+tolerance))
+	if ((x >= Min(x1, x2)-tolerance) && 
+       (x <= Max(x1, x2)+tolerance) &&
+	    (y >= Min(y1, y2)-tolerance) && 
+       (y <= Max(y1, y2)+tolerance))
    {
       Float64 prod = (y - y1)*(x2 - x1) - (y2 - y1)*(x - x1);
 
@@ -703,7 +703,7 @@ STDMETHODIMP CGeomUtil::IsLineParallelToLineSegment(ILine2d* pLine,ILineSegment2
    CHECK_RETVAL(pbResult);
 
    CComPtr<ILine2d> pLine2;
-   CreateLine(pSeg,NULL,&pLine2);
+   CreateLine(pSeg,nullptr,&pLine2);
    return AreLinesParallel(pLine,pLine2,pbResult);
 }
 
@@ -746,8 +746,8 @@ STDMETHODIMP CGeomUtil::AreLineSegmentsParallel(ILineSegment2d* pSeg1,ILineSegme
    CComPtr<ILine2d> pLine1;
    CComPtr<ILine2d> pLine2;
 
-   CreateLine(pSeg1,NULL,&pLine1);
-   CreateLine(pSeg2,NULL,&pLine2);
+   CreateLine(pSeg1,nullptr,&pLine1);
+   CreateLine(pSeg2,nullptr,&pLine2);
 
    AreLinesParallel(pLine1,pLine2,pbResult);
 
@@ -1033,7 +1033,7 @@ STDMETHODIMP CGeomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoi
       // point on line nearest origin is just as good as the next point,
       // and it is easy to get.
       CComPtr<IPoint2d> origin;
-      CreatePoint(0,0,NULL,&origin);
+      CreatePoint(0,0,nullptr,&origin);
       poln.Release();
       PointOnLineNearest( line, origin, &poln );
       Float64 x,y;

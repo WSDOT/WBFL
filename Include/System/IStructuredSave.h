@@ -66,64 +66,64 @@ public:
    // Mark the Beginning of a structured data chunk. This call must be always
    // balanced by a corresponding call to EndUnit. An optional version number
    // may be used to tag major units.
-   virtual void BeginUnit(LPCTSTR name, Float64 version=0)=0;
+   virtual void BeginUnit(LPCTSTR name, Float64 version=0) = 0;
 
    //------------------------------------------------------------------------
    // Mark the end of a structured data chunk that was started by a call to 
    // BeginUnit.
-   virtual void EndUnit()=0;
+   virtual void EndUnit() = 0;
 
    //------------------------------------------------------------------------
    // Get the version number of the current unit
-   virtual Float64 GetVersion()=0;
+   virtual Float64 GetVersion() = 0;
 
    //------------------------------------------------------------------------
    // Get the version number of the top-most unit
-   virtual Float64 GetTopVersion()=0;
+   virtual Float64 GetTopVersion() = 0;
 
    //------------------------------------------------------------------------
    // Write a string property
-   virtual void Property(LPCTSTR name, LPCTSTR value)=0;
+   virtual void Property(LPCTSTR name, LPCTSTR value) = 0;
 
    //------------------------------------------------------------------------
    // Write a real number property
-   virtual void Property(LPCTSTR name, Float64 value)=0;
+   virtual void Property(LPCTSTR name, Float64 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int16 value)=0;
+   virtual void Property(LPCTSTR name, Int16 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint16 value)=0;
+   virtual void Property(LPCTSTR name, Uint16 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int32 value)=0;
+   virtual void Property(LPCTSTR name, Int32 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint32 value)=0;
+   virtual void Property(LPCTSTR name, Uint32 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, Int64 value)=0;
+   virtual void Property(LPCTSTR name, Int64 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, Uint64 value)=0;
+   virtual void Property(LPCTSTR name, Uint64 value) = 0;
 
    //------------------------------------------------------------------------
    // Write an integral property
-   virtual void Property(LPCTSTR name, LONG value)=0;
+   virtual void Property(LPCTSTR name, LONG value) = 0;
 
    //------------------------------------------------------------------------
    // Write an unsigned integral property
-   virtual void Property(LPCTSTR name, ULONG value)=0;
+   virtual void Property(LPCTSTR name, ULONG value) = 0;
 
    //------------------------------------------------------------------------
    // Write a bool property
-   virtual void Property(LPCTSTR name, bool value)=0;
+   virtual void Property(LPCTSTR name, bool value) = 0;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

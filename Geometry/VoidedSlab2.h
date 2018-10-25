@@ -102,90 +102,90 @@ private:
 
 // ISupportErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVoidedSlab2
 public:
-   STDMETHOD(put_Height)(/*[in]*/Float64 h);
-   STDMETHOD(get_Height)(/*[out,retval]*/Float64* h);
-   STDMETHOD(put_Width)(/*[in]*/Float64 w);
-   STDMETHOD(get_Width)(/*[out,retval]*/Float64* w);
-   STDMETHOD(put_C1)(/*[in]*/Float64 c1);
-   STDMETHOD(get_C1)(/*[out,retval]*/Float64* c1);
-   STDMETHOD(put_C2)(/*[in]*/Float64 c2);
-   STDMETHOD(get_C2)(/*[out,retval]*/Float64* c2);
-   STDMETHOD(put_C3)(/*[in]*/Float64 c3);
-   STDMETHOD(get_C3)(/*[out,retval]*/Float64* c3);
-   STDMETHOD(put_LeftBlockOut)(/*[in]*/VARIANT_BOOL bLeftBlockOut);
-   STDMETHOD(get_LeftBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbLeftBlockOut);
-   STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut);
-   STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut);
-   STDMETHOD(put_ExteriorVoidDiameter)(/*[in]*/Float64 d);
-   STDMETHOD(get_ExteriorVoidDiameter)(/*[out,retval]*/Float64* d);
-   STDMETHOD(put_InteriorVoidDiameter)(/*[in]*/Float64 d);
-   STDMETHOD(get_InteriorVoidDiameter)(/*[out,retval]*/Float64* d);
-   STDMETHOD(put_ExteriorVoidSpacing)(/*[in]*/Float64 s);
-   STDMETHOD(get_ExteriorVoidSpacing)(/*[out,retval]*/Float64* s);
-   STDMETHOD(put_InteriorVoidSpacing)(/*[in]*/Float64 s);
-   STDMETHOD(get_InteriorVoidSpacing)(/*[out,retval]*/Float64* s);
-   STDMETHOD(put_ExteriorVoidElevation)(/*[in]*/Float64 h1);
-   STDMETHOD(get_ExteriorVoidElevation)(/*[out,retval]*/Float64* h1);
-   STDMETHOD(put_InteriorVoidElevation)(/*[in]*/Float64 h2);
-   STDMETHOD(get_InteriorVoidElevation)(/*[out,retval]*/Float64* h2);
-   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv);
-   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv);
-   STDMETHOD(get_HookPoint)(/*[out,retval]*/IPoint2d** hookPnt);
-   STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt);
-   STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
-   STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg);
+   STDMETHOD(put_Height)(/*[in]*/Float64 h) override;
+   STDMETHOD(get_Height)(/*[out,retval]*/Float64* h) override;
+   STDMETHOD(put_Width)(/*[in]*/Float64 w) override;
+   STDMETHOD(get_Width)(/*[out,retval]*/Float64* w) override;
+   STDMETHOD(put_C1)(/*[in]*/Float64 c1) override;
+   STDMETHOD(get_C1)(/*[out,retval]*/Float64* c1) override;
+   STDMETHOD(put_C2)(/*[in]*/Float64 c2) override;
+   STDMETHOD(get_C2)(/*[out,retval]*/Float64* c2) override;
+   STDMETHOD(put_C3)(/*[in]*/Float64 c3) override;
+   STDMETHOD(get_C3)(/*[out,retval]*/Float64* c3) override;
+   STDMETHOD(put_LeftBlockOut)(/*[in]*/VARIANT_BOOL bLeftBlockOut) override;
+   STDMETHOD(get_LeftBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbLeftBlockOut) override;
+   STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut) override;
+   STDMETHOD(get_RightBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbRightBlockOut) override;
+   STDMETHOD(put_ExteriorVoidDiameter)(/*[in]*/Float64 d) override;
+   STDMETHOD(get_ExteriorVoidDiameter)(/*[out,retval]*/Float64* d) override;
+   STDMETHOD(put_InteriorVoidDiameter)(/*[in]*/Float64 d) override;
+   STDMETHOD(get_InteriorVoidDiameter)(/*[out,retval]*/Float64* d) override;
+   STDMETHOD(put_ExteriorVoidSpacing)(/*[in]*/Float64 s) override;
+   STDMETHOD(get_ExteriorVoidSpacing)(/*[out,retval]*/Float64* s) override;
+   STDMETHOD(put_InteriorVoidSpacing)(/*[in]*/Float64 s) override;
+   STDMETHOD(get_InteriorVoidSpacing)(/*[out,retval]*/Float64* s) override;
+   STDMETHOD(put_ExteriorVoidElevation)(/*[in]*/Float64 h1) override;
+   STDMETHOD(get_ExteriorVoidElevation)(/*[out,retval]*/Float64* h1) override;
+   STDMETHOD(put_InteriorVoidElevation)(/*[in]*/Float64 h2) override;
+   STDMETHOD(get_InteriorVoidElevation)(/*[out,retval]*/Float64* h2) override;
+   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(get_HookPoint)(/*[out,retval]*/IPoint2d** hookPnt) override;
+   STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
+   STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+   STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
 
 // IShape
-	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal);
-	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal);
-	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints);
-	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone);
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape);
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape);
+	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
+	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
+	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints) override;
+	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone) override;
+	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape) override;
+	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape) override;
 
 // ICompositeShape
 public:
-// STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-//	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal);
-//	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal);
-	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-   STDMETHOD(Clear)();
-   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem);
-   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape);
-	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem);
-   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid);
+// STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+//	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
+//	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
+	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+   STDMETHOD(Clear)() override;
+   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override;
+   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape) override;
+	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem) override;
+   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 
 // IXYPosition
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point);
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point);
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo);
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle);
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle);
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
+	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
+	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
+	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
+	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPoint2dEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 
 };

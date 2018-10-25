@@ -147,7 +147,7 @@ END_SINK_MAP()
 		{
 			&IID_ILibraryViewer,
 		};
-		for (int i=0; i<sizeof(arr)/sizeof(arr[0]); i++)
+		for (int i = 0; i<sizeof(arr)/sizeof(arr[0]); i++)
 		{
 			if (InlineIsEqualGUID(*arr[i], riid))
 				return S_OK;
@@ -160,9 +160,9 @@ END_SINK_MAP()
 
 // ILibraryViewer
 public:
-	STDMETHOD(EditCurSel)();
-	STDMETHOD(get_LibraryMgr)(/*[out, retval]*/ ILibraryMgr* *pVal);
-	STDMETHOD(putref_LibraryMgr)(/*[in]*/ ILibraryMgr* newVal);
+	STDMETHOD(EditCurSel)() override;
+	STDMETHOD(get_LibraryMgr)(/*[out, retval]*/ ILibraryMgr* *pVal) override;
+	STDMETHOD(putref_LibraryMgr)(/*[in]*/ ILibraryMgr* newVal) override;
 
 	enum { IDD = IDD_LIBRARYVIEWER };
    LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);

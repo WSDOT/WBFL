@@ -204,7 +204,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdVersionMgr(const lrfdVersionMgr&);
-   lrfdVersionMgr& operator=(const lrfdVersionMgr&);
+   lrfdVersionMgr& operator=(const lrfdVersionMgr&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

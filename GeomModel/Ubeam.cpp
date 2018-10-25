@@ -27,6 +27,7 @@
 #include <GeomModel\ShapeUtils.h>
 #include <GeomModel\Polygon.h>
 #include <MathEx.h>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -353,7 +354,7 @@ void gmUBeam::GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const
    Float64 sign = (webIdx == 0 ? -1.0 : 1.0);
 
    IPlane3d* pPlane;
-   ::CoCreateInstance(CLSID_Plane3d,NULL,CLSCTX_INPROC_SERVER,IID_IPlane3d,(void**)&pPlane);
+   ::CoCreateInstance(CLSID_Plane3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPlane3d,(void**)&pPlane);
 
    Float64 x, y, z;
    Float64 t = fabs((m_T/2)*(sqrt(slope*slope+1)/slope));
@@ -361,18 +362,18 @@ void gmUBeam::GetWebPlane(WebIndexType webIdx,IPlane3d** ppPlane) const
    y = 0;
    z = sign*(m_W1/2 - t);
    IPoint3d* pP1;
-   ::CoCreateInstance(CLSID_Point3d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP1);
+   ::CoCreateInstance(CLSID_Point3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP1);
    pP1->Move(x,y,z);
 
    IPoint3d* pP2;
-   ::CoCreateInstance(CLSID_Point3d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP2);
+   ::CoCreateInstance(CLSID_Point3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP2);
    x = 100;
    y = 0;
    z = sign*(m_W1/2 - t);
    pP2->Move(x,y,z);
 
    IPoint3d* pP3;
-   ::CoCreateInstance(CLSID_Point3d,NULL,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP3);
+   ::CoCreateInstance(CLSID_Point3d,nullptr,CLSCTX_INPROC_SERVER,IID_IPoint3d,(void**)&pP3);
    x = 0;
    y = 100;
    z = sign*(m_W1/2 - t - y/slope);
@@ -406,7 +407,7 @@ Float64 gmUBeam::GetMinBottomFlangeThickness() const
 
 Float64 gmUBeam::GetMinTopFlangeThickness() const
 {
-   return _cpp_min(m_D4,m_D6);
+   return Min(m_D4,m_D6);
 }
 
 void gmUBeam::GetProperties(gmProperties* pProperties) const
@@ -442,7 +443,7 @@ gpRect2d gmUBeam::GetBoundingBox() const
 
 gmIShape* gmUBeam::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmUBeam> ph(new gmUBeam( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmUBeam> ph(new gmUBeam( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -455,7 +456,7 @@ gmIShape* gmUBeam::CreateClippedShape(const gpLine2d& line,
                                     gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(line,side);
 }
 
@@ -464,20 +465,20 @@ gmIShape* gmUBeam::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
 Float64 gmUBeam::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->GetFurthestDistance(line,side);
 }
 
 void gmUBeam::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 

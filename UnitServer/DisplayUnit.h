@@ -89,13 +89,13 @@ private:
 
 // IDisplayUnit
 public:
-	STDMETHOD(get_Formatter)(/*[out,retval]*/IDisplayUnitFormatter** formatter);
-	STDMETHOD(putref_Formatter)(/*[in]*/IDisplayUnitFormatter* formatter);
-   STDMETHOD(get_Unit)(/*[out,retval]*/ IUnit** unit);
-	STDMETHOD(get_UnitTag)(/*[out,retval]*/ BSTR* unitTag);
-   STDMETHOD(get_UnitSystem)(/*[out,retval]*/ UnitSystemType* unitSystem);
-   STDMETHOD(IsDefault)(/*[out,retval]*/ VARIANT_BOOL* bIsDefault);
-   STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/ BSTR* fmtString);
+	STDMETHOD(get_Formatter)(/*[out,retval]*/IDisplayUnitFormatter** formatter) override;
+	STDMETHOD(putref_Formatter)(/*[in]*/IDisplayUnitFormatter* formatter) override;
+   STDMETHOD(get_Unit)(/*[out,retval]*/ IUnit** unit) override;
+	STDMETHOD(get_UnitTag)(/*[out,retval]*/ BSTR* unitTag) override;
+   STDMETHOD(get_UnitSystem)(/*[out,retval]*/ UnitSystemType* unitSystem) override;
+   STDMETHOD(IsDefault)(/*[out,retval]*/ VARIANT_BOOL* bIsDefault) override;
+   STDMETHOD(Format)(/*[in]*/ Float64 val,/*[in]*/ VARIANT_BOOL bShowUnitTag,/*[out,retval]*/ BSTR* fmtString) override;
 
 // IDisplayUnitFormatterEvents
 public:

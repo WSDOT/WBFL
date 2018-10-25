@@ -60,7 +60,7 @@ void CTestEffectiveFlangeWidthTool::TestPrecastGirderBridge()
 {
    CComPtr<IEffectiveFlangeWidthTool> tool;
    tool.CoCreateInstance(CLSID_EffectiveFlangeWidthTool);
-   TRY_TEST(tool != NULL,true);
+   TRY_TEST(tool != nullptr,true);
 
    std::vector<Float64> spanLengths;
    spanLengths.push_back(100);
@@ -262,7 +262,7 @@ void CTestEffectiveFlangeWidthTool::TestSpliceGirderBridge()
 
    CComPtr<IEffectiveFlangeWidthTool> tool;
    tool.CoCreateInstance(CLSID_EffectiveFlangeWidthTool);
-   TRY_TEST(tool != NULL,true);
+   TRY_TEST(tool != nullptr,true);
 
    Float64 value;
 

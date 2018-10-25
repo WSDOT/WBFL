@@ -63,29 +63,29 @@ BEGIN_COM_MAP(CSectionStressResult)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISectionStressResult
-	STDMETHOD(get_LeftCount)(/*[out,retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(AddLeftResult)(/*[in]*/ Float64 newVal);
-	STDMETHOD(SetLeftResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal);
-	STDMETHOD(GetLeftResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal);
-	STDMETHOD(get_RightCount)(/*[out,retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(AddRightResult)(/*[in]*/ Float64 newVal);
-	STDMETHOD(SetRightResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal);
-	STDMETHOD(GetRightResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ ISectionStressResult* *pClone);
-	STDMETHOD(CreateLeftStressResult)(/*[out,retval]*/IStressResult* *result);
-	STDMETHOD(CreateRightStressResult)(/*[out,retval]*/IStressResult* *result);
-	STDMETHOD(FactorAndSum)(/*[in]*/ISectionStressResult* incRes, /*[in]*/Float64 leftFactor,/*[in]*/Float64 rightFactor);
+	STDMETHOD(get_LeftCount)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(AddLeftResult)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(SetLeftResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetLeftResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_RightCount)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(AddRightResult)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(SetRightResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetRightResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ ISectionStressResult* *pClone) override;
+	STDMETHOD(CreateLeftStressResult)(/*[out,retval]*/IStressResult* *result) override;
+	STDMETHOD(CreateRightStressResult)(/*[out,retval]*/IStressResult* *result) override;
+	STDMETHOD(FactorAndSum)(/*[in]*/ISectionStressResult* incRes, /*[in]*/Float64 leftFactor,/*[in]*/Float64 rightFactor) override;
 
 // IHpStressResult
-	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals);
-	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals);
+	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals) override;
+	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals) override;
 
 public:
    typedef std::vector<Float64> Float64Vec;

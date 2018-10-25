@@ -51,21 +51,21 @@ void CTestProfilePointCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_ProfilePointCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
    CComPtr<IProfilePointFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST( factory != NULL, true );
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST( factory != nullptr, true );
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(0,CComVariant(15.),20.,NULL),S_OK);
+   TRY_TEST(pColl->Add(0,CComVariant(15.),20.,nullptr),S_OK);
    CComPtr<IProfilePoint> pnt;
    TRY_TEST(pColl->get_Item(0,&pnt),S_OK);
    CComPtr<IStation> station;
@@ -80,7 +80,7 @@ void CTestProfilePointCollection::Test()
    //
    // Test AddEx method
    //
-   TRY_TEST(pColl->AddEx(0,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->AddEx(0,nullptr),E_INVALIDARG);
 
    // add some ProfilePoints and see if we get them back
    CComPtr<IProfilePoint> p1;
@@ -114,7 +114,7 @@ void CTestProfilePointCollection::Test()
    // Test Item property
    pnt.Release();
    TRY_TEST(pColl->get_Item(-1,&pnt),COGO_E_PROFILEPOINTNOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&pnt),S_OK);
    station.Release();
    pnt->get_Station(&station);
@@ -173,7 +173,7 @@ void CTestProfilePointCollection::Test()
    TRY_TEST(pColl->AddEx(3,p3),S_OK);
    TRY_TEST(pColl->AddEx(4,p4),S_OK);
 
-   TRY_TEST(pColl->putref_Item(3,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(3,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,p1),COGO_E_PROFILEPOINTNOTFOUND);
    TRY_TEST(pColl->putref_Item(3,p1),S_OK);
 
@@ -185,8 +185,8 @@ void CTestProfilePointCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(p4,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(p4,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(p4,&id),S_OK);
    TRY_TEST(id,4);
    TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see putref_Item above
@@ -206,7 +206,7 @@ void CTestProfilePointCollection::Test()
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -223,7 +223,7 @@ void CTestProfilePointCollection::Test()
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -245,7 +245,7 @@ void CTestProfilePointCollection::Test()
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
    CComPtr<IEnumProfilePoints> pEnumPP;
-   TRY_TEST(pColl->get__EnumProfilePoints(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumProfilePoints(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumProfilePoints(&pEnumPP), S_OK );
 
    CComPtr<IProfilePoint> pp;
@@ -337,7 +337,7 @@ void CTestProfilePointCollection::Test()
 
 STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoObjectID id,IProfilePoint* pp)
 {
-//   MessageBox(NULL,"ProfilePointChanged","Event",MB_OK);
+//   MessageBox(nullptr,"ProfilePointChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -346,7 +346,7 @@ STDMETHODIMP CTestProfilePointCollection::OnProfilePointChanged(CogoObjectID id,
 
 STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoObjectID id,IProfilePoint* pp)
 {
-//   MessageBox(NULL,"ProfilePointAdded","Event",MB_OK);
+//   MessageBox(nullptr,"ProfilePointAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -355,7 +355,7 @@ STDMETHODIMP CTestProfilePointCollection::OnProfilePointAdded(CogoObjectID id,IP
 
 STDMETHODIMP CTestProfilePointCollection::OnProfilePointRemoved(CogoObjectID id)
 {
-//   MessageBox(NULL,"ProfilePointRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"ProfilePointRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -364,7 +364,7 @@ STDMETHODIMP CTestProfilePointCollection::OnProfilePointRemoved(CogoObjectID id)
 
 STDMETHODIMP CTestProfilePointCollection::OnProfilePointsCleared()
 {
-//   MessageBox(NULL,"ProfilePointCleared","Event",MB_OK);
+//   MessageBox(nullptr,"ProfilePointCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

@@ -71,22 +71,22 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMomentCapacitySolution
 public:
-   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/IPlane3d* strainPlane,/*[in]*/ILine2d* neutralAxis,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/IGeneralSectionSolution* solution);
-	STDMETHOD(get_Fz)(/*[out,retval]*/Float64* fz);
-	STDMETHOD(get_Mx)(/*[out,retval]*/Float64* mx);
-	STDMETHOD(get_My)(/*[out,retval]*/Float64* my);
-   STDMETHOD(get_StrainPlane)(/*[out,retval]*/IPlane3d** strainPlane);
-   STDMETHOD(get_NeutralAxis)(/*[out,retval]*/ILine2d** neutralAxis);
-   STDMETHOD(get_NeutralAxisDirection)(/*[out,retval]*/Float64* angle);
-   STDMETHOD(get_CompressionResultant)(/*[out,retval]*/Float64* c);
-	STDMETHOD(get_TensionResultant)(/*[out,retval]*/Float64* t);
-   STDMETHOD(get_CompressionResultantLocation)(/*[out,retval]*/IPoint2d** cgC);
-   STDMETHOD(get_TensionResultantLocation)(/*[out,retval]*/IPoint2d** cgT);
-   STDMETHOD(get_GeneralSectionSolution)(/*[out,retval]*/IGeneralSectionSolution** solution);
+   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/IPlane3d* strainPlane,/*[in]*/ILine2d* neutralAxis,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/IGeneralSectionSolution* solution) override;
+	STDMETHOD(get_Fz)(/*[out,retval]*/Float64* fz) override;
+	STDMETHOD(get_Mx)(/*[out,retval]*/Float64* mx) override;
+	STDMETHOD(get_My)(/*[out,retval]*/Float64* my) override;
+   STDMETHOD(get_StrainPlane)(/*[out,retval]*/IPlane3d** strainPlane) override;
+   STDMETHOD(get_NeutralAxis)(/*[out,retval]*/ILine2d** neutralAxis) override;
+   STDMETHOD(get_NeutralAxisDirection)(/*[out,retval]*/Float64* angle) override;
+   STDMETHOD(get_CompressionResultant)(/*[out,retval]*/Float64* c) override;
+	STDMETHOD(get_TensionResultant)(/*[out,retval]*/Float64* t) override;
+   STDMETHOD(get_CompressionResultantLocation)(/*[out,retval]*/IPoint2d** cgC) override;
+   STDMETHOD(get_TensionResultantLocation)(/*[out,retval]*/IPoint2d** cgT) override;
+   STDMETHOD(get_GeneralSectionSolution)(/*[out,retval]*/IGeneralSectionSolution** solution) override;
 };
 
 #endif //__MomentCapacitySolution_H_

@@ -167,7 +167,7 @@ void CBrokerImp2::ListInterfaceUsage()
    Interfaces::iterator ifaceIterEnd(m_Interfaces.end());
    for ( ; ifaceIter != ifaceIterEnd; ifaceIter++ )
    {
-      InterfaceItem& item = *ifaceIter;
+      const InterfaceItem& item = *ifaceIter;
       interfaces.push_back(item);
    }
 
@@ -178,7 +178,7 @@ void CBrokerImp2::ListInterfaceUsage()
    std::vector<InterfaceItem>::iterator ifaceItemIterEnd(interfaces.end());
    for ( ; ifaceItemIter != ifaceItemIterEnd; ifaceItemIter++ )
    {
-      InterfaceItem& item = *ifaceItemIter;
+      const InterfaceItem& item = *ifaceItemIter;
 
       UINT cRef = item.pAgent->AddRef();
       item.pAgent->Release();
@@ -211,13 +211,13 @@ void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
       pCPC->EnumConnectionPoints(&pEnumCP);
 
       CComPtr<IConnectionPoint> pCP;
-      while ( pEnumCP->Next(1,&pCP,NULL) != S_FALSE )
+      while ( pEnumCP->Next(1,&pCP,nullptr) != S_FALSE )
       {
          CComPtr<IEnumConnections> pEnumConnections;
          pCP->EnumConnections(&pEnumConnections);
 
          CONNECTDATA cdata;
-         while ( pEnumConnections->Next(1,&cdata,NULL) != S_FALSE )
+         while ( pEnumConnections->Next(1,&cdata,nullptr) != S_FALSE )
          {
             WATCHX(IFC,0,_T("Leaked connection point cookie ") << cdata.dwCookie);
             cdata.pUnk->Release(); // documtation says caller must call Release
@@ -311,7 +311,7 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, IUnknown** ppUnk)
       InterfaceItem& item = *found;
       ATLASSERT( riid == item.iid );
 
-      ATLASSERT( item.m_pUnk != NULL);
+      ATLASSERT( item.m_pUnk != nullptr);
       HRESULT hr = item.m_pUnk.CopyTo(ppUnk);
       if ( FAILED(hr) )
       {
@@ -337,9 +337,9 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, IUnknown** ppUnk)
       return E_NOINTERFACE;
    }
 
-   InterfaceItem& item = *interface_found;
+   const InterfaceItem& item = *(interface_found);
    HRESULT hr = S_OK;
-   if ( item.m_pUnk == NULL )
+   if ( item.m_pUnk == nullptr )
    {
       // this is the first time the interface has been requested
       ATLASSERT(*(item.pUsageCount) == 0);
@@ -349,7 +349,7 @@ STDMETHODIMP CBrokerImp2::GetInterface( REFIID riid, IUnknown** ppUnk)
       ATLASSERT(SUCCEEDED(hr));
    }
 
-   hr = item.m_pUnk.CopyTo(ppUnk);
+   hr = const_cast<InterfaceItem&>(item).m_pUnk.CopyTo(ppUnk); // since we aren't sorting on m_pUnk, it is safe to cast away const
 
    if ( SUCCEEDED(hr) )
    {
@@ -479,7 +479,7 @@ HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** p
    for ( IndexType i = 0; i < nClsid; i++ )
    {
       CComPtr<IAgentEx> pAgent;
-      hr = ::CoCreateInstance( clsid[i], NULL, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
+      hr = ::CoCreateInstance( clsid[i], nullptr, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
       if ( SUCCEEDED( hr ) )
       {
          agents.insert( std::make_pair(clsid[i],pAgent) );

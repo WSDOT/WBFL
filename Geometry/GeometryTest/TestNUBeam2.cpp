@@ -63,7 +63,7 @@ void CTestNUBeam::TestIShape()
    //
    Float64 val;
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    
    box->get_Left(&val);
@@ -82,7 +82,7 @@ void CTestNUBeam::TestIShape()
    // ShapeProperties
    //
    CComPtr<IShapeProperties> props;
-   TRY_TEST( shape->get_ShapeProperties(NULL), E_POINTER );
+   TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
    Float64 area, ixx, iyy, ixy, cgx, cgy;
    CComPtr<IPoint2d> cg;
@@ -94,8 +94,8 @@ void CTestNUBeam::TestIShape()
    cg.Release();
    props->get_Centroid(&cg);
    TRY_TEST( IsEqual(area,643591.88418), true );
-   TRY_TEST( IsEqual(ixx,514253978920.25317), true );
-   TRY_TEST( IsEqual(iyy,25969895815.002972), true );
+   TRY_TEST( IsEqual(ixx,514253978920.25439), true );
+   TRY_TEST( IsEqual(iyy,25969895815.002979), true );
    TRY_TEST( IsEqual(ixy,0.0,0.0005), true );
    cg->get_X(&cgx);
    cg->get_Y(&cgy);
@@ -118,7 +118,7 @@ void CTestNUBeam::TestIShape()
    //
    // Perimeter
    //
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
    TRY_TEST( IsEqual(val,8308.7371100129), true );
 
@@ -139,8 +139,8 @@ void CTestNUBeam::TestIShape()
    p2->Move(100,20);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,20.000), true );
 
@@ -176,7 +176,7 @@ void CTestNUBeam::TestIShape2()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
    const CollectionIndexType nPoints = 172; // number of expected points
@@ -373,7 +373,7 @@ void CTestNUBeam::TestIShape2()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST(shape->Clone(NULL), E_POINTER );
+   TRY_TEST(shape->Clone(nullptr), E_POINTER );
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<INUBeam> beamClone(clone);
@@ -425,8 +425,8 @@ void CTestNUBeam::TestIShape2()
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(0.0, 0.5);
 
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 

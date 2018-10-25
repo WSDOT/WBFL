@@ -68,21 +68,21 @@ CONNECTION_POINT_ENTRY(IID_ILoadGroupEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ILoadGroup
 public:
-	STDMETHOD(get_Transient)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_Transient)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(Clone)(/*[out,retval]*/ILoadGroup** clone);
-	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+	STDMETHOD(get_Transient)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_Transient)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(Clone)(/*[out,retval]*/ILoadGroup** clone) override;
+	STDMETHOD(get_Description)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Description)(/*[in]*/ BSTR newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
 protected:
    CComBSTR     m_Name;

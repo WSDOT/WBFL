@@ -46,10 +46,10 @@ static char THIS_FILE[]=__FILE__;
 CEditableTextBlockImpl::CEditableTextBlockImpl()
 {
    m_pEdit = 0;
-   m_pFont = NULL;
+   m_pFont = nullptr;
    m_Format = etbfText;
-   m_pOnMouseOverCursor = NULL;
-   m_pEventSink = NULL;
+   m_pOnMouseOverCursor = nullptr;
+   m_pEventSink = nullptr;
 }
 
 CEditableTextBlockImpl::~CEditableTextBlockImpl()
@@ -167,7 +167,7 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::DestroyEditControl()
 
    // Done with the font object
    delete m_pFont;
-   m_pFont = NULL;
+   m_pFont = nullptr;
 }
 
 STDMETHODIMP_(BOOL) CEditableTextBlockImpl::ValidateData()
@@ -434,7 +434,7 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseMove(UINT nFlags,CPoint point
 {
    ATLTRACE("EditableTextBlock - OnMouseOver\n");
 
-   if ( m_pOnMouseOverCursor == NULL )
+   if ( m_pOnMouseOverCursor == nullptr )
    {
       ATLTRACE("EditableTextBlock - Creating mouse over cursor tracking\n");
 
@@ -455,7 +455,7 @@ STDMETHODIMP_(bool) CEditableTextBlockImpl::OnMouseMove(UINT nFlags,CPoint point
          rgn.CreateRectRgnIndirect(box);
       }
 
-      m_pOnMouseOverCursor = new COnMouseOverCursor(hwnd,NULL,IDC_IBEAM,500,&rgn);
+      m_pOnMouseOverCursor = new COnMouseOverCursor(hwnd,nullptr,IDC_IBEAM,500,&rgn);
       m_pOnMouseOverCursor->StartTracking(&m_pOnMouseOverCursor);
    }
 //   else
@@ -496,7 +496,7 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::RegisterEventSink(iDisplayObjectEven
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::UnregisterEventSink()
 {
-   m_pEventSink = NULL;
+   m_pEventSink = nullptr;
    m_TextBlock->UnregisterEventSink();
 }
 
@@ -837,7 +837,7 @@ CDisplayView* CEditableTextBlockImpl::GetDisplayView()
 
 CInplaceEdit* CEditableTextBlockImpl::GetEditObject()
 {
-   if ( m_pEdit == NULL )
+   if ( m_pEdit == nullptr )
    {
       m_pEdit = (m_Format == etbfText ? new CInplaceEdit : new CInplaceNumericEdit);
    }

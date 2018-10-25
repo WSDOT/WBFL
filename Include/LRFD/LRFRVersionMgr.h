@@ -135,5 +135,5 @@ private:
 
    // Prevent accidental copying and assignment
    lrfrVersionMgr(const lrfrVersionMgr&);
-   lrfrVersionMgr& operator=(const lrfrVersionMgr&);
+   lrfrVersionMgr& operator=(const lrfrVersionMgr&) = delete;
 };

@@ -66,8 +66,8 @@ void CTestProfilePoint::Test()
    TRY_TEST( pProfilePoint->get_Elevation(&elev1), S_OK);
    TRY_TEST( IsEqual(elev,elev1),true );
 
-   TRY_TEST( pProfilePoint->get_Station(NULL), E_POINTER );
-   TRY_TEST( pProfilePoint->get_Elevation(NULL), E_POINTER );
+   TRY_TEST( pProfilePoint->get_Station(nullptr), E_POINTER );
+   TRY_TEST( pProfilePoint->get_Elevation(nullptr), E_POINTER );
 
    // Test Events
    CComObject<CTestProfilePoint>* pTestProfilePoint;
@@ -91,7 +91,7 @@ void CTestProfilePoint::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pProfilePoint);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IProfilePoint ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -103,7 +103,7 @@ void CTestProfilePoint::Test()
 
 STDMETHODIMP CTestProfilePoint::OnProfilePointChanged(IProfilePoint* pp)
 {
-//   ::MessageBox(NULL,"OnProfilePointChanged","Event",MB_OK);
+//   ::MessageBox(nullptr,"OnProfilePointChanged","Event",MB_OK);
    Pass();
    return S_OK;
 }

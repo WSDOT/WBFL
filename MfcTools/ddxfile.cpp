@@ -26,6 +26,7 @@
 #include <dlgs.h>
 #include "resource.h"
 #include <MfcTools\ddxfile.h>
+#include <VersionHelpers.h>
 
 
 #ifdef _DEBUG
@@ -57,7 +58,7 @@ BOOL CGetFileNameDialog::OnInitDialog()
 
   //modify the text on the IDOK button to ok
   //if we are using the old style common dialog
-  if ( ((m_ofn.Flags & OFN_EXPLORER) == 0) || ((GetVersion() & 0xff) < 4) )
+  if ( ((m_ofn.Flags & OFN_EXPLORER) == 0) || !IsWindowsVersionOrGreater(4,0,0)/*((GetVersion() & 0xff) < 4)*/ )
   {
 	  CString sText;
     if (!sText.LoadString(IDS_DDXFILE_OK))
@@ -75,7 +76,7 @@ void CGetFileNameDialog::OnOK()
 {
   BOOL bCallParent = TRUE;
 
-  if ( ((m_ofn.Flags & OFN_EXPLORER) == 0) || ((GetVersion() & 0xff) < 4) )
+  if ( ((m_ofn.Flags & OFN_EXPLORER) == 0) || !IsWindowsVersionOrGreater(4, 0, 0)/*((GetVersion() & 0xff) < 4)*/ )
   {
     //check for overwrite if that flag is used
     if (m_ofn.Flags & OFN_OVERWRITEPROMPT)
@@ -226,7 +227,7 @@ void CGetFilenameControl::Edit()
   if (m_dwFlags & GF_FILEMUSTEXIST)
     dwFlags |= OFN_FILEMUSTEXIST;
                  
-  CGetFileNameDialog dlg(TRUE, NULL, NULL, dwFlags, m_sExtFilter, GetParent());
+  CGetFileNameDialog dlg(TRUE, nullptr, nullptr, dwFlags, m_sExtFilter, GetParent());
 
   //Modify the title to the desired value
   dlg.m_ofn.lpstrTitle = m_sDialogTitle;
@@ -247,7 +248,7 @@ void DDX_FilenameControl(CDataExchange* pDX, int nIDC, int nIDCBtn, CGetFilename
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
-  if (!pDX->m_bSaveAndValidate && rCGetFilenameControl.m_hWnd == NULL)    // not subclassed yet
+  if (!pDX->m_bSaveAndValidate && rCGetFilenameControl.m_hWnd == nullptr)    // not subclassed yet
   {
     if (!rCGetFilenameControl.SubclassEdit(hWndCtrl,nIDCBtn))
     {

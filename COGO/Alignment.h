@@ -67,8 +67,8 @@ public:
 
    void PutPath(IPath* pPath); // used by Clone
 
-   STDMETHOD(putref_Profile)(/*[in]*/ IProfile* pVal);
-	STDMETHOD(putref_StationEquations)(IStationEquationCollection* pVal);
+   HRESULT putref_Profile(IProfile* pVal);
+	HRESULT putref_StationEquations(IStationEquationCollection* pVal);
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ALIGNMENT)
 
@@ -94,62 +94,62 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IAlignment
 public:
-   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) { return m_Path->get__NewEnum(retval); }
-   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal) { return m_Path->get_Item(idx,pVal); }
-   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal) { return m_Path->putref_Item(idx,pVal); }
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) { return m_Path->get_Count(pVal); }
-	STDMETHOD(get_RefStation)(/*[out, retval]*/ IStation* *station);
-	STDMETHOD(put_RefStation)(/*[in]*/ VARIANT varStation);
-   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal);
-   STDMETHOD(get_StationEquations)(IStationEquationCollection* *pVal);
-   STDMETHOD(Add)(/*[in]*/ IPathElement* element) { return m_Path->Add(element); }
-   STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) { return m_Path->AddEx(dispElement); }
-   STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) { return m_Path->Insert(idx,element); }
-   STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) { return m_Path->InsertEx(idx,dispElement); }
-   STDMETHOD(Remove)(/*[in]*/ VARIANT varID) { return m_Path->Remove(varID); }
-   STDMETHOD(Clear)() { return m_Path->Clear(); }
-   STDMETHOD(LocatePoint)(/*[in]*/ VARIANT varStation, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
-   STDMETHOD(Bearing)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir); 
-	STDMETHOD(Normal)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir); 
-	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ IStation* *station,/*[out]*/ Float64* offset); 
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint)
+   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval)  override { return m_Path->get__NewEnum(retval); }
+   STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal)  override { return m_Path->get_Item(idx, pVal); }
+   STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal)  override { return m_Path->putref_Item(idx,pVal); }
+   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal)  override { return m_Path->get_Count(pVal); }
+	STDMETHOD(get_RefStation)(/*[out, retval]*/ IStation* *station) override;
+	STDMETHOD(put_RefStation)(/*[in]*/ VARIANT varStation) override;
+   STDMETHOD(get_Profile)(/*[out, retval]*/ IProfile* *pVal) override;
+   STDMETHOD(get_StationEquations)(IStationEquationCollection* *pVal) override;
+   STDMETHOD(Add)(/*[in]*/ IPathElement* element) override { return m_Path->Add(element); }
+   STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) override { return m_Path->AddEx(dispElement); }
+   STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) override { return m_Path->Insert(idx,element); }
+   STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) override { return m_Path->InsertEx(idx,dispElement); }
+   STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override { return m_Path->Remove(varID); }
+   STDMETHOD(Clear)() override { return m_Path->Clear(); }
+   STDMETHOD(LocatePoint)(/*[in]*/ VARIANT varStation, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint) override;
+   STDMETHOD(Bearing)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir) override;
+	STDMETHOD(Normal)(/*[in]*/ VARIANT varStation,/*[out,retval]*/ IDirection* *dir) override;
+	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ IStation* *station,/*[out]*/ Float64* offset) override;
+	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint) override
    { return m_Path->ProjectPoint(point,newPoint); }
-   STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point)
+   STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override
    { return m_Path->Intersect(line,pNearest,point); }
-   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point)
+   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override
    { return m_Path->IntersectEx(line,pNearest,vbProjectBack,vbProjectAhead,point); }
-	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset)
-   { return m_Path->Offset(point,distance,offset); }
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength)
+	//STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override
+ //  { return m_Path->Offset(point,distance,offset); } // this method is not in the interface and is never used
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override
    { return m_Path->get_Length(pLength); }
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory)
+   STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override
    { return m_Path->get_PointFactory(factory); }
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory)
+	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override
    { return m_Path->putref_PointFactory(factory); }
-   STDMETHOD(get__EnumAlignmentElements)(/*[out, retval]*/ IEnumPathElements** pVal) { return m_Path->get__EnumPathElements(pVal); }
-   STDMETHOD(Clone)(/*[out,retval]*/ IAlignment* *clone);
-   STDMETHOD(CreateParallelAlignment)(/*[in]*/ Float64 offset,/*[out,retval]*/IAlignment** alignment);
-   STDMETHOD(CreateSubAlignment)(/*[in]*/VARIANT varStartStation,/*[in]*/VARIANT varEndStation,/*[out,retval]*/IAlignment** alignment);
-   STDMETHOD(CreateConnectedAlignment)(/*[out,retval]*/IAlignment** alignment);
-   STDMETHOD(CreateParallelPath)(Float64 offset,IPath** path);
-   STDMETHOD(CreateSubPath)(VARIANT varStartStation,VARIANT varEndStation,IPath** path);
-   STDMETHOD(CreateConnectedPath)(IPath** path);
-   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction)
+   STDMETHOD(get__EnumAlignmentElements)(/*[out, retval]*/ IEnumPathElements** pVal)  override { return m_Path->get__EnumPathElements(pVal); }
+   STDMETHOD(Clone)(/*[out,retval]*/ IAlignment* *clone) override;
+   STDMETHOD(CreateParallelAlignment)(/*[in]*/ Float64 offset,/*[out,retval]*/IAlignment** alignment) override;
+   STDMETHOD(CreateSubAlignment)(/*[in]*/VARIANT varStartStation,/*[in]*/VARIANT varEndStation,/*[out,retval]*/IAlignment** alignment) override;
+   STDMETHOD(CreateConnectedAlignment)(/*[out,retval]*/IAlignment** alignment) override;
+   STDMETHOD(CreateParallelPath)(Float64 offset,IPath** path) override;
+   STDMETHOD(CreateSubPath)(VARIANT varStartStation,VARIANT varEndStation,IPath** path) override;
+   STDMETHOD(CreateConnectedPath)(IPath** path) override;
+   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override
    { return m_Path->Move(dist,direction); }
-   STDMETHOD(GetDirection)(VARIANT varStation, BSTR bstrOrientation,IDirection** direction);
-   STDMETHOD(DistanceBetweenStations)(VARIANT station1,VARIANT station2,Float64* pDist);
+   STDMETHOD(GetDirection)(VARIANT varStation, BSTR bstrOrientation,IDirection** direction) override;
+   STDMETHOD(DistanceBetweenStations)(VARIANT station1,VARIANT station2,Float64* pDist) override;
 
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal);
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pVal) override;
 
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IProfileEvents
 public:

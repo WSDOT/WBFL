@@ -101,7 +101,7 @@ private:
    rptHtmlReportVisitor();
    // Prevent accidental copying and assignment
    rptHtmlReportVisitor(const rptHtmlReportVisitor&);
-   rptHtmlReportVisitor& operator=(const rptHtmlReportVisitor&);
+   rptHtmlReportVisitor& operator=(const rptHtmlReportVisitor&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

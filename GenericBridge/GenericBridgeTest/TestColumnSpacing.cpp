@@ -71,16 +71,16 @@ void CTestColumnSpacing::Test()
    //CComPtr<IColumnSpacing> spacing;
    //tpd->get_ColumnSpacing(&spacing);
 
-   //TRY_TEST(spacing != NULL,true);
+   //TRY_TEST(spacing != nullptr,true);
 
    //// Test default values
    //ColumnIndexType nColumns;
-   //TRY_TEST(spacing->get_ColumnCount(NULL),E_POINTER);
+   //TRY_TEST(spacing->get_ColumnCount(nullptr),E_POINTER);
    //TRY_TEST(spacing->get_ColumnCount(&nColumns),S_OK);
    //TRY_TEST(nColumns,1);
 
    //Float64 space;
-   //TRY_TEST(spacing->get_Spacing(0,NULL),E_POINTER);
+   //TRY_TEST(spacing->get_Spacing(0,nullptr),E_POINTER);
    //TRY_TEST(spacing->get_Spacing(100,&space),S_OK); // S_OK because spacing is uniform
    //TRY_TEST(spacing->get_Spacing(0,&space),S_OK);
    //TRY_TEST(IsEqual(space,1.0),true);
@@ -88,21 +88,21 @@ void CTestColumnSpacing::Test()
    //TRY_TEST(IsEqual(space,1.0),true);
 
    //Float64 overhang;
-   //TRY_TEST(spacing->get_Overhang(qcbLeft,NULL),E_POINTER);
+   //TRY_TEST(spacing->get_Overhang(qcbLeft,nullptr),E_POINTER);
    //TRY_TEST(spacing->get_Overhang(qcbLeft,&overhang),S_OK);
    //TRY_TEST(IsEqual(overhang,0.0),true);
    //TRY_TEST(spacing->get_Overhang(qcbRight,&overhang),S_OK);
    //TRY_TEST(IsEqual(overhang,0.0),true);
 
    //CComPtr<IColumn> column;
-   //TRY_TEST(spacing->get_Column(0,NULL),E_POINTER);
+   //TRY_TEST(spacing->get_Column(0,nullptr),E_POINTER);
    //TRY_TEST(spacing->get_Column(-1,&column),E_INVALIDARG);
    //TRY_TEST(spacing->get_Column(100,&column),E_INVALIDARG);
    //TRY_TEST(spacing->get_Column(0,&column),S_OK);
-   //TRY_TEST(column != NULL, true);
+   //TRY_TEST(column != nullptr, true);
 
    //VARIANT_BOOL bUniform;
-   //TRY_TEST(spacing->get_Uniform(NULL),E_POINTER);
+   //TRY_TEST(spacing->get_Uniform(nullptr),E_POINTER);
    //TRY_TEST(spacing->get_Uniform(&bUniform),S_OK);
    //TRY_TEST(bUniform,VARIANT_TRUE);
 

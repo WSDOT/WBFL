@@ -92,7 +92,7 @@ STDMETHODIMP_(void) CShapeGravityWellStrategyImpl::GetGravityWell(iDisplayObject
       points->get__Enum(&enum_points);
       CComPtr<IPoint2d> point;
       CollectionIndexType i = 0;
-      while( enum_points->Next(1,&point,NULL) != S_FALSE )
+      while( enum_points->Next(1,&point,nullptr) != S_FALSE )
       {
          POINT p;
          Float64 x,y;

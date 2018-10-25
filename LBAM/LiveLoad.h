@@ -46,7 +46,7 @@ class ATL_NO_VTABLE CLiveLoad :
 public:
    CLiveLoad();
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -71,43 +71,45 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILiveLoad
 public:
-	STDMETHOD(Clear)();
-	STDMETHOD(Clone)(/*[out,retval]*/ILiveLoad** clone);
-   STDMETHOD(get_LegalRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_LegalRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_LegalSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_LegalSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_PermitRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_PermitRoutineRating)(/*[in]*/ ILiveLoadModel* newVal);
-   STDMETHOD(get_PermitSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-   STDMETHOD(putref_PermitSpecialRating)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Pedestrian)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Pedestrian)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Special)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Special)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Permit)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Permit)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Fatigue)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Fatigue)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Deflection)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Deflection)(/*[in]*/ ILiveLoadModel* newVal);
-	STDMETHOD(get_Design)(/*[out, retval]*/ ILiveLoadModel* *pVal);
-	STDMETHOD(putref_Design)(/*[in]*/ ILiveLoadModel* newVal);
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Clone)(/*[out,retval]*/ILiveLoad** clone) override;
+   STDMETHOD(get_LegalRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalRoutineRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_LegalSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalSpecialRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_LegalEmergencyRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_LegalEmergencyRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_PermitRoutineRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_PermitRoutineRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+   STDMETHOD(get_PermitSpecialRating)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+   STDMETHOD(putref_PermitSpecialRating)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Pedestrian)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Pedestrian)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Special)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Special)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Permit)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Permit)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Fatigue)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Fatigue)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Deflection)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Deflection)(/*[in]*/ ILiveLoadModel* newVal) override;
+	STDMETHOD(get_Design)(/*[out, retval]*/ ILiveLoadModel* *pVal) override;
+	STDMETHOD(putref_Design)(/*[in]*/ ILiveLoadModel* newVal) override;
 
    // ILiveLoadModelEvents
-   STDMETHOD(OnLiveLoadModelChanged)(/*[in]*/ILiveLoadModel* model, ChangeType change);
+   STDMETHOD(OnLiveLoadModelChanged)(/*[in]*/ILiveLoadModel* model, ChangeType change) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
-   CComPtr<ILiveLoadModel> m_Models[10];
-   DWORD                   m_Cookies[10];
+   CComPtr<ILiveLoadModel> m_Models[12];
+   DWORD                   m_Cookies[12];
 
 private:
    HRESULT PutLiveLoadModel(LiveLoadModelType modelType, ILiveLoadModel *newVal, bool doFire=true);

@@ -45,36 +45,36 @@ public:
    
 // Operations
 public:
-   virtual bool DoResultsExist();
+   virtual bool DoResultsExist() override;
 
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFAutoCalcReportView)
 	public:
-	virtual void OnInitialUpdate();
+	virtual void OnInitialUpdate() override;
 	protected:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+	virtual void OnDraw(CDC* pDC) override;      // overridden to draw this view
+	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) override;
 	//}}AFX_VIRTUAL
 
 // Implementation
 public:
-   virtual void UpdateNow();
-   virtual void UpdateNow(CReportHint* pHint);
-   virtual void EditReport();
+   virtual void UpdateNow() override;
+   virtual void UpdateNow(CReportHint* pHint) override;
+   virtual void EditReport() override;
 
 protected:
 	virtual ~CEAFAutoCalcReportView();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+	virtual void AssertValid() const override;
+	virtual void Dump(CDumpContext& dc) const override;
 #endif
 
    // Generated message map functions
 protected:
 	//{{AFX_MSG(CEAFAutoCalcReportView)
 	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser(CReportHint* pHint);
+   virtual HRESULT UpdateReportBrowser(CReportHint* pHint) override;
 
 	DECLARE_MESSAGE_MAP()
 };

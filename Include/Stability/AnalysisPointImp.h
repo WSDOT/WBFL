@@ -47,7 +47,7 @@ public:
    virtual Float64 GetLocation() const;
 
    // Returns a reporting string for the analysis point.
-   // if pLengthUnit is not NULL, the string should contain the unit of measure
+   // if pLengthUnit is not nullptr, the string should contain the unit of measure
    virtual std::_tstring AsString(const unitmgtLengthData& lengthUnit,Float64 offset,bool bShowUnit) const;
 
    virtual stbIAnalysisPoint* Clone() const;

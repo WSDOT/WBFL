@@ -63,11 +63,11 @@ BEGIN_COM_MAP(CSectionResult3Ds)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISectionResult3Ds
 public:
-	STDMETHOD(Clone)(/*[out, retval]*/ ISectionResult3Ds** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ISectionResult3Ds** clone) override;
 
    virtual HRESULT OnBeforeAdd ( SFRVectorImpl::StoredType* pVal)
    {

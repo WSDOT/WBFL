@@ -34,14 +34,14 @@
 
 #include <set>
 #include <map>
-#include <boost\shared_ptr.hpp>
+
 #include <boost\circular_buffer.hpp>
 
 struct InterfaceItem
 {
    IID iid; // IID of the interface
    CComPtr<IUnknown> m_pUnk; // the interface pointer
-   boost::shared_ptr<Uint64> pUsageCount; // count of the number of times the interface has been requested
+   std::shared_ptr<Uint64> pUsageCount; // count of the number of times the interface has been requested
    IAgentEx* pAgent; // weak reference.. agent that implements the interface
 
    InterfaceItem();
@@ -85,40 +85,40 @@ END_COM_MAP()
 
 // IBroker
 public:
-   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppUnk);
-   STDMETHOD(Reset)();
-	STDMETHOD(ShutDown)();
+   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppUnk) override;
+   STDMETHOD(Reset)() override;
+	STDMETHOD(ShutDown)() override;
 
 // IBrokerInitEx3
 public:
-   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IIndexArray** lErrIndex);
-   STDMETHOD(LoadExtensionAgents)(/*[in]*/ CLSID * clsid,/*[in]*/  IndexType nClsid,/*[out]*/ IIndexArray** plErrIndex );
-   STDMETHOD(AddAgent)(/*[in]*/ IAgentEx* pAgent);
-   STDMETHOD(AddExtensionAgent)(/*[in]*/ IAgentEx* pAgent);
-	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP);
-	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent);
-   STDMETHOD(DelayInit)();
-	STDMETHOD(InitAgents)();
-   STDMETHOD(Integrate)(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation);
-   STDMETHOD(RemoveIntegration)();
+   STDMETHOD(LoadAgents)(/*[in]*/ CLSID* pClsid, /*[in]*/ IndexType nClsid,/*[out]*/ IIndexArray** lErrIndex) override;
+   STDMETHOD(LoadExtensionAgents)(/*[in]*/ CLSID * clsid,/*[in]*/  IndexType nClsid,/*[out]*/ IIndexArray** plErrIndex ) override;
+   STDMETHOD(AddAgent)(/*[in]*/ IAgentEx* pAgent) override;
+   STDMETHOD(AddExtensionAgent)(/*[in]*/ IAgentEx* pAgent) override;
+	STDMETHOD(FindConnectionPoint)(/*[in]*/ REFIID riid,/*[out]*/ IConnectionPoint** ppCP) override;
+	STDMETHOD(RegInterface)(/*[in]*/ REFIID riid,/*[in]*/ IAgentEx* pAgent) override;
+   STDMETHOD(DelayInit)() override;
+	STDMETHOD(InitAgents)() override;
+   STDMETHOD(Integrate)(BOOL bIntegrateWithUI,BOOL bIntegrateWithReporting,BOOL bIntegrateWithGraphing,BOOL bIntegrateWithDocumentation) override;
+   STDMETHOD(RemoveIntegration)() override;
 
 // IBrokerPersist2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad* pStrLoad);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave);
-   STDMETHOD(SetSaveMissingAgentDataFlag)(/*[in]*/VARIANT_BOOL bSetFlag);
-   STDMETHOD(GetSaveMissingAgentDataFlag)(/*[out]*/VARIANT_BOOL* bFlag);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad* pStrLoad) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave) override;
+   STDMETHOD(SetSaveMissingAgentDataFlag)(/*[in]*/VARIANT_BOOL bSetFlag) override;
+   STDMETHOD(GetSaveMissingAgentDataFlag)(/*[out]*/VARIANT_BOOL* bFlag) override;
 
 // ICLSIDMap
 public:
-   STDMETHOD(AddCLSID)(BSTR bstrOldCLSID,BSTR bstrNewCLSID);
+   STDMETHOD(AddCLSID)(BSTR bstrOldCLSID,BSTR bstrNewCLSID) override;
 
 // IManageAgents
 public:
-   STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents);
-   STDMETHOD(get_Agent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent);
-   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/CollectionIndexType* nAgents);
-   STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent);
+   STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
+   STDMETHOD(get_Agent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
+   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
+   STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
 
 private:
    typedef std::set<InterfaceItem> Interfaces;

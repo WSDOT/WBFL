@@ -74,14 +74,14 @@ CONNECTION_POINT_ENTRY(IID_ITemporarySupportsEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ITemporarySupports
-   STDMETHOD(Clone)(/*[out]*/ITemporarySupports** clone);
-   STDMETHOD(Find)(SupportIDType tsID,ITemporarySupport** ppTS);
+   STDMETHOD(Clone)(/*[out]*/ITemporarySupports** clone) override;
+   STDMETHOD(Find)(SupportIDType tsID,ITemporarySupport** ppTS) override;
 
 // ITemporarySupportEvents
-   STDMETHOD(OnTemporarySupportChanged)(/*[in]*/ITemporarySupport* TemporarySupport, BSTR stage, /*[in]*/ChangeType change);
+   STDMETHOD(OnTemporarySupportChanged)(/*[in]*/ITemporarySupport* TemporarySupport, BSTR stage, /*[in]*/ChangeType change) override;
 
 public:
 // implementation of needed virtual functions
@@ -141,7 +141,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      SupportIndexType cnt=0;
+      SupportIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt);

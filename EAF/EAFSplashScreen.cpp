@@ -49,13 +49,13 @@ CBitmap CEAFSplashScreen::m_Bitmap;
 
 CEAFSplashScreen::CEAFSplashScreen()
 {
-	m_pWndParent=NULL;
+	m_pWndParent=nullptr;
 	m_strText="";
-	m_hRegion=0;
-	m_nBitmapWidth=0;
-	m_nBitmapHeight=0;
-	m_nxPos=0;
-	m_nyPos=0;
+	m_hRegion = 0;
+	m_nBitmapWidth = 0;
+	m_nBitmapHeight = 0;
+	m_nxPos = 0;
+	m_nyPos = 0;
 
 	SetTextDefaultFont();
 }
@@ -64,7 +64,7 @@ CEAFSplashScreen::~CEAFSplashScreen()
 {
 	// Clear the static window pointer.
 	ASSERT(c_pSplashWnd == this);
-	c_pSplashWnd = NULL;
+	c_pSplashWnd = nullptr;
 }
 
 
@@ -89,7 +89,7 @@ void CEAFSplashScreen::SetSplashScreenInfo(const CEAFSplashScreenInfo& info)
 
 void CEAFSplashScreen::Show(CWnd* pParentWnd)
 {
-	if (c_pSplashWnd != NULL)
+	if (c_pSplashWnd != nullptr)
 		return;
 
 	// Allocate a new splash screen, and create the window.
@@ -109,12 +109,12 @@ void CEAFSplashScreen::Hide()
    if ( c_pSplashWnd )
       c_pSplashWnd->HideSplashScreen();
 
-   c_pSplashWnd = NULL;
+   c_pSplashWnd = nullptr;
 }
 
 BOOL CEAFSplashScreen::PreTranslateAppMessage(MSG* pMsg)
 {
-	if (c_pSplashWnd == NULL)
+	if (c_pSplashWnd == nullptr)
 		return FALSE;
 
 	// If we get a keyboard or mouse message, hide the splash screen.
@@ -139,7 +139,7 @@ BOOL CEAFSplashScreen::PreTranslateAppMessage(MSG* pMsg)
 
 BOOL CEAFSplashScreen::Create(CWnd *pWndParent)
 {
-	ASSERT(pWndParent!=NULL);
+	ASSERT(pWndParent!=nullptr);
 	m_pWndParent = pWndParent;
 	
    m_strText = _T("");
@@ -152,12 +152,12 @@ BOOL CEAFSplashScreen::Create(CWnd *pWndParent)
 	wcx.cbClsExtra = 0;
 	wcx.cbWndExtra = 0;
 	wcx.hInstance = AfxGetInstanceHandle();
-	wcx.hIcon = NULL;
-	wcx.hCursor = LoadCursor(NULL,IDC_ARROW);
+	wcx.hIcon = nullptr;
+	wcx.hCursor = LoadCursor(nullptr,IDC_ARROW);
 	wcx.hbrBackground=::GetSysColorBrush(COLOR_WINDOW);
-	wcx.lpszMenuName = NULL;
+	wcx.lpszMenuName = nullptr;
 	wcx.lpszClassName = _T("EAFSplashScreen");
-	wcx.hIconSm = NULL;
+	wcx.hIconSm = nullptr;
 
 	if (m_Info.m_Style & CSS_SHADOW)
 		wcx.style|=CS_DROPSHADOW;
@@ -166,23 +166,25 @@ BOOL CEAFSplashScreen::Create(CWnd *pWndParent)
       
 	// didn't work? try not using dropshadow (may not be supported)
 
-	if (classAtom==NULL)
+	if (classAtom == 0)
 	{
 		if (m_Info.m_Style & CSS_SHADOW)
 		{
 			wcx.style &= ~CS_DROPSHADOW;
 			classAtom = RegisterClassEx(&wcx);
 		}
-		else
-			return FALSE;
+      else
+      {
+         return FALSE;
+      }
 	}
 
-	if (!CreateEx(WS_EX_TOOLWINDOW/* | WS_EX_TOPMOST*/,_T("EAFSplashScreen"),NULL,WS_POPUP,0,0,0,0,pWndParent->m_hWnd,NULL))
+	if (!CreateEx(WS_EX_TOOLWINDOW/* | WS_EX_TOPMOST*/,_T("EAFSplashScreen"),nullptr,WS_POPUP,0,0,0,0,pWndParent->m_hWnd,nullptr))
 		return FALSE;
 
    SetBitmap();
 
-   if ( m_Info.m_FontName != NULL )
+   if ( m_Info.m_FontName != nullptr )
    {
       SetTextFont(m_Info.m_FontName,m_Info.m_FontSize,m_Info.m_FontStyle);
    }
@@ -192,7 +194,7 @@ BOOL CEAFSplashScreen::Create(CWnd *pWndParent)
 
 void CEAFSplashScreen::SetText(LPCTSTR strText)
 {
-	if (c_pSplashWnd == NULL)
+	if (c_pSplashWnd == nullptr)
 		return;
 
    c_pSplashWnd->SetText_(strText);
@@ -216,7 +218,7 @@ BOOL CEAFSplashScreen::SetBitmap()
 	else if (m_Info.m_Style & CSS_CENTERAPP)
 	{
 		CRect rcParentWindow;
-		ASSERT(m_pWndParent!=NULL);
+		ASSERT(m_pWndParent!=nullptr);
 		m_pWndParent->GetWindowRect(&rcParentWindow);
 		m_nxPos=rcParentWindow.left+(rcParentWindow.right-rcParentWindow.left-bm.bmWidth)/2;
 		m_nyPos=rcParentWindow.top+(rcParentWindow.bottom-rcParentWindow.top-bm.bmHeight)/2;
@@ -271,12 +273,12 @@ void CEAFSplashScreen::SetText_(LPCTSTR szText)
 
 void CEAFSplashScreen::ShowSplashScreen()
 {
-	SetWindowPos(NULL,m_nxPos,m_nyPos,m_nBitmapWidth,m_nBitmapHeight,SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE);
+	SetWindowPos(nullptr,m_nxPos,m_nyPos,m_nBitmapWidth,m_nBitmapHeight,SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_NOACTIVATE);
 	ShowWindow(SW_SHOW);
    RedrawWindow();
 	
 	if (m_Info.m_Duration != 0)
-		SetTimer(TIMER_ID,m_Info.m_Duration,NULL);
+		SetTimer(TIMER_ID,m_Info.m_Duration,nullptr);
 }
 
 void CEAFSplashScreen::HideSplashScreen()
@@ -295,7 +297,7 @@ HRGN CEAFSplashScreen::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 {
 	// this code is written by Davide Pizzolato
 
-	if (!hBmp) return NULL;
+	if (!hBmp) return nullptr;
 
 	BITMAP bm;
 	GetObject( hBmp, sizeof(BITMAP), &bm );	// get bitmap attributes
@@ -349,19 +351,19 @@ HRGN CEAFSplashScreen::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 		}
 		dcBmp.DeleteDC();	//release the bitmap
 		// create region
-		/*  Under WinNT the ExtCreateRegion returns NULL (by Fable@aramszu.net) */
-		//	HRGN hRgn = ExtCreateRegion( NULL, RDHDR + pRgnData->nCount * sizeof(RECT), (LPRGNDATA)pRgnData );
+		/*  Under WinNT the ExtCreateRegion returns nullptr (by Fable@aramszu.net) */
+		//	HRGN hRgn = ExtCreateRegion( nullptr, RDHDR + pRgnData->nCount * sizeof(RECT), (LPRGNDATA)pRgnData );
 		/* ExtCreateRegion replacement { */
 		HRGN hRgn=CreateRectRgn(0, 0, 0, 0);
-		ASSERT( hRgn!=NULL );
+		ASSERT( hRgn!=nullptr );
 		pRects = (LPRECT)((LPBYTE)pRgnData + RDHDR);
-		for(i=0;i<(int)pRgnData->nCount;i++)
+		for(i = 0;i<(int)pRgnData->nCount;i++)
 		{
 			HRGN hr=CreateRectRgn(pRects[i].left, pRects[i].top, pRects[i].right, pRects[i].bottom);
 			VERIFY(CombineRgn(hRgn, hRgn, hr, RGN_OR)!=ERROR);
 			if (hr) DeleteObject(hr);
 		}
-		ASSERT( hRgn!=NULL );
+		ASSERT( hRgn!=nullptr );
 		/* } ExtCreateRegion replacement */
 
 		delete[] pRgnData;

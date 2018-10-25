@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CSurfaceTemplate::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
 
    CComObject<CStation>* pStation;
    CComObject<CStation>::CreateInstance(&pStation);
@@ -62,7 +62,7 @@ STDMETHODIMP CSurfaceTemplate::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ISurfaceTemplate,
       &IID_IStructuredStorage2
    };
-   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -400,10 +400,10 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointOffset(IndexType ridgePointIdx,Index
       return S_OK;
    }
 
-   IndexType startSegmentIdx = min(refPointIdx,ridgePointIdx);
-   IndexType endSegmentIdx   = max(refPointIdx,ridgePointIdx)-1;
+   IndexType startSegmentIdx = Min(refPointIdx,ridgePointIdx);
+   IndexType endSegmentIdx   = Max(refPointIdx,ridgePointIdx);
    *pOffset = 0;
-   for ( IndexType idx = startSegmentIdx; idx <= endSegmentIdx; idx++ )
+   for ( IndexType idx = startSegmentIdx; idx < endSegmentIdx; idx++ )
    {
       CComPtr<ITemplateSegment> segment;
       HRESULT hr = get_Item(idx,&segment);
@@ -429,7 +429,7 @@ STDMETHODIMP CSurfaceTemplate::GetRidgePointOffset(IndexType ridgePointIdx,Index
 
 STDMETHODIMP CSurfaceTemplate::GetRidgePointElevation(IndexType ridgePointIdx,IndexType refPointIdx,Float64* pOffset,Float64* pElev)
 {
-   if ( m_pSurface == NULL )
+   if ( m_pSurface == nullptr )
    {
       ATLASSERT(false); // must be associated with a surface
       return E_FAIL;
@@ -517,7 +517,7 @@ HRESULT CSurfaceTemplate::ValidateStation(IStation* station)
    {
       m_pSurface->get_Profile(&profile); 
    }
-   if ( profile == NULL )
+   if ( profile == nullptr )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;

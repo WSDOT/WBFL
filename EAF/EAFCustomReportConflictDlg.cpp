@@ -32,7 +32,7 @@
 
 IMPLEMENT_DYNAMIC(CEAFCustomReportConflictDlg, CDialog)
 
-CEAFCustomReportConflictDlg::CEAFCustomReportConflictDlg(CWnd* pParent /*=NULL*/)
+CEAFCustomReportConflictDlg::CEAFCustomReportConflictDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CEAFCustomReportConflictDlg::IDD, pParent)
    , m_OrigReportName(_T(""))
 {

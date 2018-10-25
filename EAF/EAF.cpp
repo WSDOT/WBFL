@@ -52,7 +52,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-static AFX_EXTENSION_MODULE EAFDLL = { NULL, NULL };
+static AFX_EXTENSION_MODULE EAFDLL = { FALSE, 0, 0, nullptr, nullptr };
 
 HINSTANCE GetInstanceHandle()
 {

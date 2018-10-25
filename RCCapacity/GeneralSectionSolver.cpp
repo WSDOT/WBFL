@@ -75,7 +75,7 @@ STDMETHODIMP CGeneralSectionSolver::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IGeneralSectionSolver,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -148,14 +148,14 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
 
    CHECK_IN(strainPlane);
 
-   // don't use the regular CHECK_RETOBJ because it is ok if *solution is not NULL
+   // don't use the regular CHECK_RETOBJ because it is ok if *solution is not nullptr
    // recycling solution objects will be faster than creating new ones each time
-   if ( solution == NULL )
+   if ( solution == nullptr )
       return E_INVALIDARG;
 
    HRESULT hr;
 
-   if ( m_Section == NULL )
+   if ( m_Section == nullptr )
       return Error(IDS_E_SECTION,IID_IGeneralSectionSolver,RC_E_SECTION);
 
    CComPtr<IUnkArray> slices;
@@ -331,7 +331,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* strainPlane,IGeneralSectionS
       }
    }
 
-   if ( *solution == NULL )
+   if ( *solution == nullptr )
    {
       // a solution object was not provided so create a new one
       CComObject<CGeneralSectionSolution>* pSolution;
@@ -647,8 +647,8 @@ HRESULT CGeneralSectionSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 ang
    hr = shapeInfo.Shape->ClipIn(m_ClippingRect,&clipped_shape);
 
    // sometimes the shape isn't even in the clipping box so
-   // the result is NULL... go to next slice
-   if ( clipped_shape == NULL )
+   // the result is nullptr... go to next slice
+   if ( clipped_shape == nullptr )
       return S_FALSE;
 
    CComPtr<IShapeProperties> props;

@@ -105,7 +105,7 @@ STDMETHODIMP CNLSolver::putref_SlabConcreteModel(IStressStrain* model)
    m_bUserSlabConcrete = false;
    m_SlabConcreteModel.Release();
 
-   if ( model != NULL )
+   if ( model != nullptr )
    {
       m_bUserSlabConcrete = true;
       m_SlabConcreteModel = model;
@@ -133,7 +133,7 @@ STDMETHODIMP CNLSolver::putref_BeamConcreteModel(IStressStrain* model)
    m_BeamConcreteModel.Release();
    m_bUserBeamConcrete = false;
 
-   if ( model != NULL )
+   if ( model != nullptr )
    {
       m_bUserBeamConcrete = true;
       m_BeamConcreteModel = model;
@@ -161,7 +161,7 @@ STDMETHODIMP CNLSolver::putref_StrandModel(IStressStrain* model)
    m_bUserStrandModel = false;
    m_StrandModel.Release();
 
-   if ( model != NULL )
+   if ( model != nullptr )
    {
       m_bUserStrandModel = true;
       m_StrandModel = model;
@@ -189,7 +189,7 @@ STDMETHODIMP CNLSolver::putref_RebarModel(IStressStrain* model)
    m_bUserRebarModel = false;
    m_RebarModel.Release();
 
-   if ( model != NULL )
+   if ( model != nullptr )
    {
       m_bUserRebarModel = true;
       m_RebarModel = model;
@@ -209,42 +209,6 @@ STDMETHODIMP CNLSolver::get_RebarModel(IStressStrain* *model)
       (*model)->AddRef();
    }
 
-   return S_OK;
-}
-
-STDMETHODIMP CNLSolver::put_RebarDevLengthFactor(Float64 devLengthFactor)
-{
-   if ( !InRange(0.0,devLengthFactor,1.0) )
-   {
-      return E_INVALIDARG;
-   }
-
-   m_RebarDevLengthFactor = devLengthFactor;
-   return S_OK;
-}
-
-STDMETHODIMP CNLSolver::get_RebarDevLengthFactor(Float64* devLengthFactor)
-{
-   CHECK_RETVAL(devLengthFactor);
-   *devLengthFactor = m_RebarDevLengthFactor;
-   return S_OK;
-}
-
-STDMETHODIMP CNLSolver::put_StrandDevLengthFactor(Float64 devLengthFactor)
-{
-   if ( !InRange(0.0,devLengthFactor,1.0) )
-   {
-      return E_INVALIDARG;
-   }
-
-   m_StrandDevLengthFactor = devLengthFactor;
-   return S_OK;
-}
-
-STDMETHODIMP CNLSolver::get_StrandDevLengthFactor(Float64* devLengthFactor)
-{
-   CHECK_RETVAL(devLengthFactor);
-   *devLengthFactor = m_StrandDevLengthFactor;
    return S_OK;
 }
 
@@ -510,7 +474,7 @@ HRESULT CNLSolver::SliceSection(IRCBeam2Ex* rcbeam)
       slice_info.bSlabSlice = false;
       slice_info.FgMaterial = m_BeamConcreteModel;
 
-      if ( clipShape == NULL )
+      if ( clipShape == nullptr )
       {
          // this hapens when the slice is so small that it get's squashed down to nothing
          slice_info.Area = 0;
@@ -630,7 +594,7 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
 
             beamShape->ClipIn(clipRect,&clipShape);
 
-            if ( clipShape == NULL )
+            if ( clipShape == nullptr )
             {
                // this can happen if the slice is really thin
                area = 0;
@@ -1409,8 +1373,8 @@ HRESULT CNLSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 sliceTop,Float6
    hr = shapeInfo.Shape->ClipIn(m_ClippingRect,&clipped_shape);
 
    // sometimes the shape isn't even in the clipping box so
-   // the result is NULL... go to next slice
-   if ( clipped_shape == NULL )
+   // the result is nullptr... go to next slice
+   if ( clipped_shape == nullptr )
    {
       return S_FALSE;
    }
@@ -1453,7 +1417,7 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,ICrackedSectionSo
    // http://en.wikipedia.org/wiki/False_position_method
    // http://mathworld.wolfram.com/MethodofFalsePosition.html
 
-   if ( rcbeam == NULL )
+   if ( rcbeam == nullptr )
    {
       return E_FAIL;
    }

@@ -69,7 +69,7 @@ STDAPI DllUnregisterServer(void)
 //    HRESULT hr = E_FAIL;
 //    static const TCHAR szUserSwitch[] = _T("user");
 //
-//    if (pszCmdLine != NULL)
+//    if (pszCmdLine != nullptr)
 //    {
 //    	if (_tcsnicmp(pszCmdLine, szUserSwitch, _countof(szUserSwitch)) == 0)
 //    	{

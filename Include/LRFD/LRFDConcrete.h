@@ -61,7 +61,7 @@ class LRFDCLASS lrfdLRFDConcrete : public matConcreteBase
 {
 public:
    lrfdLRFDConcrete(LPCTSTR name = _T("Unknown"));
-   virtual ~lrfdLRFDConcrete();
+   virtual ~lrfdLRFDConcrete() override;
 
    void SetConcreteModels(const matConcreteEx& initial,const matConcreteEx& final);
    const matConcreteEx& GetInitialConcreteModel() const;
@@ -89,42 +89,42 @@ public:
 
    // Returns the compressive strength of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFc(Float64 t) const;
+   virtual Float64 GetFc(Float64 t) const override;
 
    // Returns the secant modulus of the concrete at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetEc(Float64 t) const;
+   virtual Float64 GetEc(Float64 t) const override;
 
    // Returns the modulus of rupture for shear calculations at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetShearFr(Float64 t) const;
+   virtual Float64 GetShearFr(Float64 t) const override;
 
    // Returns the modulus of rupture for flexure calculations at time t. If
    // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFlexureFr(Float64 t) const;
+   virtual Float64 GetFlexureFr(Float64 t) const override;
 
-   virtual Float64 GetFreeShrinkageStrain(Float64 t) const;
-   virtual boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const;
+   virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
+   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
-   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const;
-   virtual boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const;
+   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
+   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
    // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const;
+   virtual matConcreteBase* CreateClone() const override;
 
 protected:
    // prevent copying and assignment (use CreateClone instead)
    lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther);
    lrfdLRFDConcrete& operator = (const lrfdLRFDConcrete& rOther);
 
-   void InitializeShrinkageDetails(Float64 t,lrfdLRFDConcreteShrinkageDetails* pDetails) const;
-   void InitializeCreepDetails(Float64 t,Float64 tla,lrfdLRFDConcreteCreepDetails* pDetails) const;
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
-   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   boost::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const;
+   void InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const;
+   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 
 private:
    matConcreteEx m_InitialConcrete, m_FinalConcrete;

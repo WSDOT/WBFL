@@ -62,7 +62,7 @@ public:
    {
 	}
 
-   STDMETHOD(FinalConstruct)();
+   HRESULT FinalConstruct();
    void FinalRelease();
 
 
@@ -87,50 +87,50 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IVehicularLoad
 public:
-   STDMETHOD(SumAxleWeights)(/*[out,retval]*/Float64* pWeight);
-	STDMETHOD(Clone)(/*[out,retval]*/IVehicularLoad** clone);
-	STDMETHOD(get_IMLane)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_IMLane)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_IMTruck)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_IMTruck)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_LaneFactor)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_LaneFactor)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_TruckFactor)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_TruckFactor)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_SidewalkLoad)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_SidewalkLoad)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_LaneLoad)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_LaneLoad)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_VariableMaxSpacing)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_VariableMaxSpacing)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_VariableAxle)(/*[out, retval]*/ AxleIndexType *pVal);
-	STDMETHOD(put_VariableAxle)(/*[in]*/ AxleIndexType newVal);
-	STDMETHOD(get_Axles)(/*[out, retval]*/ IAxles* *pVal);
-	STDMETHOD(putref_Axles)(/*[in]*/ IAxles* newVal);
-	STDMETHOD(get_Applicability)(/*[out, retval]*/ LiveLoadApplicabilityType *pVal);
-	STDMETHOD(put_Applicability)(/*[in]*/ LiveLoadApplicabilityType newVal);
-	STDMETHOD(get_UseNotional)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_UseNotional)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_Configuration)(/*[out, retval]*/ VehicularLoadConfigurationType *pVal);
-	STDMETHOD(put_Configuration)(/*[in]*/ VehicularLoadConfigurationType newVal);
-	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal);
+   STDMETHOD(SumAxleWeights)(/*[out,retval]*/Float64* pWeight) override;
+	STDMETHOD(Clone)(/*[out,retval]*/IVehicularLoad** clone) override;
+	STDMETHOD(get_IMLane)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_IMLane)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_IMTruck)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_IMTruck)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_LaneFactor)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_LaneFactor)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_TruckFactor)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_TruckFactor)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_SidewalkLoad)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_SidewalkLoad)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_LaneLoad)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_LaneLoad)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_VariableMaxSpacing)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_VariableMaxSpacing)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_VariableAxle)(/*[out, retval]*/ AxleIndexType *pVal) override;
+	STDMETHOD(put_VariableAxle)(/*[in]*/ AxleIndexType newVal) override;
+	STDMETHOD(get_Axles)(/*[out, retval]*/ IAxles* *pVal) override;
+	STDMETHOD(putref_Axles)(/*[in]*/ IAxles* newVal) override;
+	STDMETHOD(get_Applicability)(/*[out, retval]*/ LiveLoadApplicabilityType *pVal) override;
+	STDMETHOD(put_Applicability)(/*[in]*/ LiveLoadApplicabilityType newVal) override;
+	STDMETHOD(get_UseNotional)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_UseNotional)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_Configuration)(/*[out, retval]*/ VehicularLoadConfigurationType *pVal) override;
+	STDMETHOD(put_Configuration)(/*[in]*/ VehicularLoadConfigurationType newVal) override;
+	STDMETHOD(get_Name)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Name)(/*[in]*/ BSTR newVal) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IAxlesEvents
-   STDMETHOD(OnAxlesChanged)(IAxle* item);
-   STDMETHOD(OnAxlesAdded)(IAxle* item, AxleIndexType idx);
-   STDMETHOD(OnAxlesBeforeRemove)(IAxle* item, AxleIndexType idx);
-	STDMETHOD(OnAxlesMoveTo)(AxleIndexType from, AxleIndexType to);
-	STDMETHOD(OnAxlesCopyTo)(AxleIndexType from, AxleIndexType to);
-	STDMETHOD(OnAxlesReverse)();
+   STDMETHOD(OnAxlesChanged)(IAxle* item) override;
+   STDMETHOD(OnAxlesAdded)(IAxle* item, AxleIndexType idx) override;
+   STDMETHOD(OnAxlesBeforeRemove)(IAxle* item, AxleIndexType idx) override;
+	STDMETHOD(OnAxlesMoveTo)(AxleIndexType from, AxleIndexType to) override;
+	STDMETHOD(OnAxlesCopyTo)(AxleIndexType from, AxleIndexType to) override;
+	STDMETHOD(OnAxlesReverse)() override;
 
 protected:   
    CComPtr<IAxles>                m_Axles;

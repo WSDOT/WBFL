@@ -76,9 +76,9 @@ void CTestPoint3d::Test()
    TRY_TEST( pPoint->get_Z(&z), S_OK);
    TRY_TEST( IsEqual(z,z1),true );
 
-   TRY_TEST( pPoint->get_X(NULL), E_POINTER );
-   TRY_TEST( pPoint->get_Y(NULL), E_POINTER );
-   TRY_TEST( pPoint->get_Z(NULL), E_POINTER );
+   TRY_TEST( pPoint->get_X(nullptr), E_POINTER );
+   TRY_TEST( pPoint->get_Y(nullptr), E_POINTER );
+   TRY_TEST( pPoint->get_Z(nullptr), E_POINTER );
 
    // Test Move method
    TRY_TEST( pPoint->Move(x2,y2,z2),S_OK );
@@ -109,7 +109,7 @@ void CTestPoint3d::Test()
    TRY_TEST( IsEqual(y,y1),true );
    TRY_TEST( pPoint->get_Z(&z), S_OK);
    TRY_TEST( IsEqual(z,z1),true );
-   TRY_TEST( pPoint->MoveEx( NULL ), E_INVALIDARG );
+   TRY_TEST( pPoint->MoveEx( nullptr ), E_INVALIDARG );
 
    // Test OffsetEx Method
    Float64 dx,dy,dz;
@@ -121,7 +121,7 @@ void CTestPoint3d::Test()
    pSize->put_Dx(dx);
    pSize->put_Dy(dy);
    pSize->put_Dz(dz);
-   TRY_TEST( pPoint->OffsetEx(NULL),  E_INVALIDARG );
+   TRY_TEST( pPoint->OffsetEx(nullptr),  E_INVALIDARG );
    pPoint->put_X(0.0);
    pPoint->put_Y(0.0);
    pPoint->put_Z(0.0);
@@ -137,7 +137,7 @@ void CTestPoint3d::Test()
    CComPtr<IVector3d> rv; // Rotation Vector
    TRY_TEST(rv.CoCreateInstance(CLSID_Vector3d),S_OK);
 
-   TRY_TEST( pPoint->Rotate(0,0,0,NULL,10.0), E_INVALIDARG );
+   TRY_TEST( pPoint->Rotate(0,0,0,nullptr,10.0), E_INVALIDARG );
 
    rv->put_X(0);
    rv->put_Y(0);
@@ -256,8 +256,8 @@ void CTestPoint3d::Test()
 
 
    // Test RotateEx Method
-   TRY_TEST( pPoint->RotateEx( NULL, NULL, 10.0 ), E_INVALIDARG );
-   TRY_TEST( pPoint->RotateEx( pPoint2, NULL, 10.0), E_INVALIDARG );
+   TRY_TEST( pPoint->RotateEx( nullptr, nullptr, 10.0 ), E_INVALIDARG );
+   TRY_TEST( pPoint->RotateEx( pPoint2, nullptr, 10.0), E_INVALIDARG );
 
    pPoint2->Move(5,5,5);
    pPoint->Move(10,10,10);

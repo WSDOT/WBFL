@@ -29,7 +29,7 @@
 #include <Reporter\Paragraph.h>
 #include <Reporter\ReportLayoutItem.h>
 #include <Reporter\ChapterVisitor.h>
-#include <boost\shared_ptr.hpp>
+
 
 // LOCAL INCLUDES
 //
@@ -62,7 +62,7 @@ class REPORTERCLASS rptChapter : public rptReportLayoutItem
 {
 public:
 
-   typedef std::vector<boost::shared_ptr<rptParagraph> > ParagraphVec;
+   typedef std::vector<std::shared_ptr<rptParagraph> > ParagraphVec;
    typedef ParagraphVec::iterator ChapterParagraphIterator;
    typedef ParagraphVec::const_iterator ConstChapterParagraphIterator;
 

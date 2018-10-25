@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 // CEAFSelectReportDlg dialog
 
 
-CEAFSelectReportDlg::CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent /*=NULL*/)
+CEAFSelectReportDlg::CEAFSelectReportDlg(std::vector<std::_tstring>& rptNames,CWnd* pParent /*=nullptr*/)
 	: CDialog(CEAFSelectReportDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CEAFSelectReportDlg)

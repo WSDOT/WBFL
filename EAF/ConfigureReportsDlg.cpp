@@ -30,6 +30,8 @@
 #include <IReportManager.h>
 #include <EAF\EAFBrokerDocument.h>
 
+#include <iterator>
+
 // CConfigureReportsDlg
 
 IMPLEMENT_DYNAMIC(CConfigureReportsDlg, CPropertySheet)

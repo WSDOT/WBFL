@@ -100,9 +100,9 @@ STDAPI DllRegisterServer(void)
     // Create a component category for WBFL Library Managers
 
    // Create the standard COM Category Manager
-   ICatRegister* pICatReg = NULL;
+   ICatRegister* pICatReg = nullptr;
    hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                                    NULL,
+                                    nullptr,
                                     CLSCTX_ALL,
                                     IID_ICatRegister,
                                     (void**)&pICatReg );
@@ -138,9 +138,9 @@ STDAPI DllUnregisterServer(void)
 
 
    // Create the standard COM Category Manager
-   ICatRegister* pICatReg = NULL;
+   ICatRegister* pICatReg = nullptr;
    HRESULT hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                                    NULL,
+                                    nullptr,
                                     CLSCTX_ALL,
                                     IID_ICatRegister,
                                     (void**)&pICatReg );
@@ -151,14 +151,14 @@ STDAPI DllUnregisterServer(void)
    CATID ID[nID];
    ID[0] = CATID_WBFLLibraryMgr;
 
-   ICatInformation* pICatInfo = NULL;
+   ICatInformation* pICatInfo = nullptr;
    hr = pICatReg->QueryInterface( IID_ICatInformation, (void**)&pICatInfo );
 
-   IEnumCLSID* pIEnumCLSID = NULL;
-   hr = pICatInfo->EnumClassesOfCategories( nID, ID, 0, NULL, &pIEnumCLSID );
+   IEnumCLSID* pIEnumCLSID = nullptr;
+   hr = pICatInfo->EnumClassesOfCategories( nID, ID, 0, nullptr, &pIEnumCLSID );
 
    CLSID clsid;
-   hr = pIEnumCLSID->Next(1,&clsid,NULL);
+   hr = pIEnumCLSID->Next(1,&clsid,nullptr);
    pICatReg->UnRegisterCategories(nID,ID);
 
    pIEnumCLSID->Release();

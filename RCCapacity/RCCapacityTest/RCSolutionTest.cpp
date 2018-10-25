@@ -58,45 +58,45 @@ void CRCSolutionTest::Test()
    TRY_TEST(soln->InitSolution(1,2,3,4,5,6,7,8,VARIANT_FALSE),S_OK);
 
    Float64 val;
-   TRY_TEST( soln->get_Mn(NULL),E_POINTER);
+   TRY_TEST( soln->get_Mn(nullptr),E_POINTER);
    TRY_TEST( soln->get_Mn(&val), S_OK);
    TRY_TEST( IsEqual(val,1.0), true);
 
-   TRY_TEST( soln->get_NeutralAxisDepth(NULL),E_POINTER);
+   TRY_TEST( soln->get_NeutralAxisDepth(nullptr),E_POINTER);
    TRY_TEST( soln->get_NeutralAxisDepth(&val), S_OK);
    TRY_TEST( IsEqual(val,2.0), true);
 
-   TRY_TEST( soln->get_fps(NULL),E_POINTER);
+   TRY_TEST( soln->get_fps(nullptr),E_POINTER);
    TRY_TEST( soln->get_fps(&val), S_OK);
    TRY_TEST( IsEqual(val,3.0), true);
 
-   TRY_TEST( soln->get_Cflange(NULL),E_POINTER);
+   TRY_TEST( soln->get_Cflange(nullptr),E_POINTER);
    TRY_TEST( soln->get_Cflange(&val), S_OK);
    TRY_TEST( IsEqual(val,4.0), true);
 
-   TRY_TEST( soln->get_Cweb(NULL),E_POINTER);
+   TRY_TEST( soln->get_Cweb(nullptr),E_POINTER);
    TRY_TEST( soln->get_Cweb(&val), S_OK);
    TRY_TEST( IsEqual(val,5.0), true);
 
-   TRY_TEST( soln->get_T(NULL),E_POINTER);
+   TRY_TEST( soln->get_T(nullptr),E_POINTER);
    TRY_TEST( soln->get_T(&val), S_OK);
    TRY_TEST( IsEqual(val,6.0), true);
 
-   TRY_TEST( soln->get_Yflange(NULL),E_POINTER);
+   TRY_TEST( soln->get_Yflange(nullptr),E_POINTER);
    TRY_TEST( soln->get_Yflange(&val), S_OK);
    TRY_TEST( IsEqual(val,7.0), true);
 
-   TRY_TEST( soln->get_Yweb(NULL),E_POINTER);
+   TRY_TEST( soln->get_Yweb(nullptr),E_POINTER);
    TRY_TEST( soln->get_Yweb(&val), S_OK);
    TRY_TEST( IsEqual(val,8.0), true);
 
    VARIANT_BOOL bVal;
-   TRY_TEST( soln->get_IsOverReinforced(NULL),E_POINTER);
+   TRY_TEST( soln->get_IsOverReinforced(nullptr),E_POINTER);
    TRY_TEST( soln->get_IsOverReinforced(&bVal), S_OK);
    TRY_TEST( bVal,VARIANT_FALSE);
 
    CComQIPtr<ISupportErrorInfo> eInfo(soln);
-   TRY_TEST( eInfo != NULL, true);
+   TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IRCSolution),         S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

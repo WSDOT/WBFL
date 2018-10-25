@@ -108,28 +108,28 @@ END_MESSAGE_MAP()
 
 void CLoadModifiersDlg::Init()
 {
-   m_pHelpHandler[0] = NULL;
-   m_pHelpHandler[1] = NULL;
-   m_pHelpHandler[2] = NULL;
+   m_pHelpHandler[0] = nullptr;
+   m_pHelpHandler[1] = nullptr;
+   m_pHelpHandler[2] = nullptr;
 
    m_psh.dwFlags |= PSH_HASHELP | PSH_NOAPPLYNOW;
 
-   m_pDuctilityPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Non-ductile"),
-                                                                              _T("Conventional design"),
-                                                                              _T("Enhanced ductility"),
-                                                                              _T('D')) );
+   m_pDuctilityPage = std::make_unique<CLoadModifierPage>(_T("Non-ductile"),
+                                                          _T("Conventional design"),
+                                                          _T("Enhanced ductility"),
+                                                          _T('D'));
    AddPage( m_pDuctilityPage.get() );
 
-   m_pRedundancyPage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Non-redundant"),
-                                                                               _T("Conventional levels of redundancy"),
-                                                                               _T("Exceptional levels of redundancy"),
-                                                                               _T('R')) );
+   m_pRedundancyPage = std::make_unique<CLoadModifierPage>( _T("Non-redundant"),
+                                                            _T("Conventional levels of redundancy"),
+                                                            _T("Exceptional levels of redundancy"),
+                                                            _T('R'));
    AddPage( m_pRedundancyPage.get() );
 
-   m_pImportancePage = std::auto_ptr<CLoadModifierPage>( new CLoadModifierPage(_T("Important"),
-                                                                               _T("Typical"),
-                                                                               _T("Not important"),
-                                                                               _T('I')) );
+   m_pImportancePage = std::make_unique<CLoadModifierPage>(_T("Important"),
+                                                           _T("Typical"),
+                                                           _T("Not important"),
+                                                           _T('I'));
    AddPage( m_pImportancePage.get() );
 }
 

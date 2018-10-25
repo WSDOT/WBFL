@@ -86,7 +86,7 @@ STDMETHODIMP CLinearCrossBeam::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ILinearCrossBeam,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -150,7 +150,7 @@ STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*
    CComPtr<IEnumPoint2d> enumPoints;
    bxbProfile->get__Enum(&enumPoints);
    mathPwLinearFunction2dUsingPoints fnBottom;
-   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       pnt->Location(&x,&y);
       fnBottom.AddPoint(x-Xoffset,y);
@@ -162,7 +162,7 @@ STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*
    enumPoints.Release();
    lxbProfile->get__Enum(&enumPoints);
    mathPwLinearFunction2dUsingPoints fnTop;
-   while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+   while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {
       pnt->Location(&x,&y);
       fnTop.AddPoint(x-Xoffset,y);
@@ -578,7 +578,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints)
       CComPtr<IEnumPoint2d> enumPoints;
       deckProfile->get__Enum(&enumPoints);
       CComPtr<IPoint2d> pnt;
-      while ( enumPoints->Next(1,&pnt,NULL) != S_FALSE )
+      while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
       {
          Float64 x,y;
          pnt->Location(&x,&y);
@@ -668,7 +668,7 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
       CComPtr<IEnumPoint2d> enumPoints;
       m_BXBProfile->get__Enum(&enumPoints);
       CComPtr<IPoint2d> bxbPoint;
-      while ( enumPoints->Next(1,&bxbPoint,NULL) != S_FALSE )
+      while ( enumPoints->Next(1,&bxbPoint,nullptr) != S_FALSE )
       {
          Float64 x;
          bxbPoint->get_X(&x);
@@ -907,7 +907,7 @@ HRESULT CLinearCrossBeam::TrimLeftToLine(IPoint2dCollection* pPoints,ILine2d* pL
 
       CComPtr<IPoint2d> pntIntersect;
       geomUtil->IntersectLineWithLineSegment(pLine,segment,&pntIntersect);
-      if ( pntIntersect != NULL )
+      if ( pntIntersect != nullptr )
       {
          for ( IndexType i = pntIdx; 0 <= i && i != INVALID_INDEX; i-- )
          {
@@ -941,7 +941,7 @@ HRESULT CLinearCrossBeam::TrimRightToLine(IPoint2dCollection* pPoints,ILine2d* p
 
       CComPtr<IPoint2d> pntIntersect;
       geomUtil->IntersectLineWithLineSegment(pLine,segment,&pntIntersect);
-      if ( pntIntersect != NULL )
+      if ( pntIntersect != nullptr )
       {
          for ( IndexType i = pntIdx; i < nPoints; i++ )
          {

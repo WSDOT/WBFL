@@ -80,11 +80,11 @@ void CEAFAutoCalcReportView::OnInitialUpdate()
 
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDocTemplate;
       CEAFReportViewCreationData* pCreateData = (CEAFReportViewCreationData*)pTemplate->GetViewCreationData();
-      ASSERT(pCreateData != NULL);
+      ASSERT(pCreateData != nullptr);
 
       m_pReportBuilderMgr = pCreateData->m_pReportBuilderMgr;
       m_pRptMgr = pCreateData->m_pRptMgr;
-      ATLASSERT(m_pReportBuilderMgr != NULL || m_pRptMgr != NULL); // one of these should not be NULL
+      ATLASSERT(m_pReportBuilderMgr != nullptr || m_pRptMgr != nullptr); // one of these should not be nullptr
 
       CollectionIndexType rptIdx = pCreateData->m_RptIdx;
       BOOL bPromptForSpec = pCreateData->m_bPromptForSpec;
@@ -149,7 +149,7 @@ void CEAFAutoCalcReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHi
 void CEAFAutoCalcReportView::UpdateNow()
 {
    // Update is forced by the user
-   CEAFReportView::UpdateNow(NULL);
+   CEAFReportView::UpdateNow(nullptr);
 }
 
 void CEAFAutoCalcReportView::UpdateNow(CReportHint* pHint)

@@ -56,15 +56,15 @@ void CTestProject::Test()
    TRY_TEST(project.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(project);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
-   points->Add(1,0,0,NULL);
-   points->Add(2,5,5,NULL);
-   points->Add(3,6,12,NULL);
-   points->Add(4,12,6,NULL);
+   points->Add(1,0,0,nullptr);
+   points->Add(2,5,5,nullptr);
+   points->Add(3,6,12,nullptr);
+   points->Add(4,12,6,nullptr);
    CComPtr<IPoint2d> p1, p2;
    points->get_Item(1,&p1);
    points->get_Item(2,&p2);
@@ -119,7 +119,7 @@ void CTestProject::Test()
    // PointOnLineSegment
    CComPtr<ILineSegmentCollection> lines;
    model->get_LineSegments(&lines);
-   lines->Add(1,p1,p2,NULL);
+   lines->Add(1,p1,p2,nullptr);
 
    TRY_TEST(project->PointOnLineSegment(9,-3,1,0.0), COGO_E_POINTNOTFOUND);
    TRY_TEST(project->PointOnLineSegment(9,3,-1,0.0), COGO_E_LINESEGMENTNOTFOUND);

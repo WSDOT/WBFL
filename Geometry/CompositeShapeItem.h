@@ -61,20 +61,20 @@ BEGIN_COM_MAP(CCompositeShapeItem)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICompositeShapeItem
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Void)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_Void)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal);
-	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Void)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_Void)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
+	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    VARIANT_BOOL m_bVoid;

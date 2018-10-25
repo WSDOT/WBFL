@@ -84,75 +84,75 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IHorzCurve
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurve* *clone);
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory);
-	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory);
-	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2);
-   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist);
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint);
-	STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal);
-	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal);
-	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal);
-   STDMETHOD(get_DegreeCurvature)(/*[in]*/ Float64 D,/*[in]*/ DegreeCurvatureType dcMethod,/*[out,retval]*/ IAngle** pDC);
-	STDMETHOD(get_TotalLength)(/*[out,retval]*/ Float64* pVal);
-	STDMETHOD(get_CurveLength)(/*[out,retval]*/ Float64* pVal);
-   STDMETHOD(get_Direction)(/*[out,retval]*/ CurveDirectionType* dir);
-	STDMETHOD(get_DF)(/*[in]*/SpiralType spType,/*[out,retval]*/ IAngle** pDF);
-	STDMETHOD(get_DH)(/*[in]*/SpiralType spType,/*[out,retval]*/ IAngle** pDH);
-   STDMETHOD(get_SpiralChord)(/*[in]*/SpiralType spType,/*[out,retval]*/ Float64* cs);
-   STDMETHOD(get_CCC)(/*[out, retval]*/ IPoint2d* *pVal);
-   STDMETHOD(get_PCI)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_CurveBkTangentBrg)(/*[out,retval]*/IDirection* *brg);
-	STDMETHOD(get_CurveFwdTangentBrg)(/*[out,retval]*/IDirection* *brg);
-	STDMETHOD(get_SPI)(/*[in]*/SpiralType spType,/*[out,retval]*/IPoint2d** pSPI);
-	STDMETHOD(get_CC)(/*[out, retval]*/ IPoint2d* *pVal);
-   STDMETHOD(get_LongTangent)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* u);
-	STDMETHOD(get_ShortTangent)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* v);
-   STDMETHOD(get_DE)(/*[in]*/SpiralType spType,/*[out,retval]*/IAngle* *pDE);
-	STDMETHOD(get_External)(/*[out,retval]*/Float64* external);
-   STDMETHOD(get_MidOrdinate)(/*[out,retval]*/Float64* mo);
-	STDMETHOD(get_Tangent)(/*[out,retval]*/Float64* tangent);
-   STDMETHOD(get_CircularCurveAngle)(/*[out,retval]*/ IAngle* *pVal);
-	STDMETHOD(get_Chord)(/*[out,retval]*/Float64* chord);
-   STDMETHOD(get_SC)(/*[out, retval]*/ IPoint2d* *pVal);
-   STDMETHOD(get_CS)(/*[out, retval]*/ IPoint2d* *pVal);
-   STDMETHOD(get_TS)(/*[out, retval]*/ IPoint2d* *pVal);
-   STDMETHOD(get_ST)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_BkTangentLength)(/*[out,retval]*/Float64* t);
-	STDMETHOD(get_FwdTangentLength)(/*[out,retval]*/Float64* t);
-   STDMETHOD(get_CurveAngle)(/*[out,retval]*/ IAngle* *pVal);
-	STDMETHOD(get_BkTangentBrg)(/*[out, retval]*/ IDirection* *pVal);
-	STDMETHOD(get_FwdTangentBrg)(/*[out, retval]*/ IDirection* *pVal);
-	STDMETHOD(get_Q)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* q);
-   STDMETHOD(get_T)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* t);
-	STDMETHOD(get_X)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* x);
-	STDMETHOD(get_Y)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* y);
-	STDMETHOD(get_SpiralAngle)(/*[in]*/ SpiralType spType,/*[out, retval]*/ IAngle* *pVal);
-   STDMETHOD(get_SpiralLength)(/*[in]*/ SpiralType spType,/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_SpiralLength)(/*[in]*/ SpiralType spType,/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Radius)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_PFT)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_PFT)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_PI)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_PI)(/*[in]*/ IPoint2d* newVal);
-	STDMETHOD(get_PBT)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(putref_PBT)(/*[in]*/ IPoint2d* newVal);
-   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IHorzCurve* *clone) override;
+	STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory* *factory) override;
+	STDMETHOD(putref_PointFactory)(/*[in]*/ IPoint2dFactory *factory) override;
+	STDMETHOD(Intersect)(/*[in]*/ILine2d* line,/*[in]*/VARIANT_BOOL bProjectBack,/*[in]*/VARIANT_BOOL bProjectAhead,/*[out]*/ IPoint2d** p1,/*[out]*/ IPoint2d** p2) override;
+   STDMETHOD(DistanceFromStart)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ Float64* dist) override;
+	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *pNewPoint) override;
+	STDMETHOD(PointOnCurve)(/*[in]*/ Float64 distance,/*[out,retval]*/IPoint2d* *pVal) override;
+	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
+	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/IDirection* *pVal) override;
+   STDMETHOD(get_DegreeCurvature)(/*[in]*/ Float64 D,/*[in]*/ DegreeCurvatureType dcMethod,/*[out,retval]*/ IAngle** pDC) override;
+	STDMETHOD(get_TotalLength)(/*[out,retval]*/ Float64* pVal) override;
+	STDMETHOD(get_CurveLength)(/*[out,retval]*/ Float64* pVal) override;
+   STDMETHOD(get_Direction)(/*[out,retval]*/ CurveDirectionType* dir) override;
+	STDMETHOD(get_DF)(/*[in]*/SpiralType spType,/*[out,retval]*/ IAngle** pDF) override;
+	STDMETHOD(get_DH)(/*[in]*/SpiralType spType,/*[out,retval]*/ IAngle** pDH) override;
+   STDMETHOD(get_SpiralChord)(/*[in]*/SpiralType spType,/*[out,retval]*/ Float64* cs) override;
+   STDMETHOD(get_CCC)(/*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(get_PCI)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_CurveBkTangentBrg)(/*[out,retval]*/IDirection* *brg) override;
+	STDMETHOD(get_CurveFwdTangentBrg)(/*[out,retval]*/IDirection* *brg) override;
+	STDMETHOD(get_SPI)(/*[in]*/SpiralType spType,/*[out,retval]*/IPoint2d** pSPI) override;
+	STDMETHOD(get_CC)(/*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(get_LongTangent)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* u) override;
+	STDMETHOD(get_ShortTangent)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* v) override;
+   STDMETHOD(get_DE)(/*[in]*/SpiralType spType,/*[out,retval]*/IAngle* *pDE) override;
+	STDMETHOD(get_External)(/*[out,retval]*/Float64* external) override;
+   STDMETHOD(get_MidOrdinate)(/*[out,retval]*/Float64* mo) override;
+	STDMETHOD(get_Tangent)(/*[out,retval]*/Float64* tangent) override;
+   STDMETHOD(get_CircularCurveAngle)(/*[out,retval]*/ IAngle* *pVal) override;
+	STDMETHOD(get_Chord)(/*[out,retval]*/Float64* chord) override;
+   STDMETHOD(get_SC)(/*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(get_CS)(/*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(get_TS)(/*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(get_ST)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_BkTangentLength)(/*[out,retval]*/Float64* t) override;
+	STDMETHOD(get_FwdTangentLength)(/*[out,retval]*/Float64* t) override;
+   STDMETHOD(get_CurveAngle)(/*[out,retval]*/ IAngle* *pVal) override;
+	STDMETHOD(get_BkTangentBrg)(/*[out, retval]*/ IDirection* *pVal) override;
+	STDMETHOD(get_FwdTangentBrg)(/*[out, retval]*/ IDirection* *pVal) override;
+	STDMETHOD(get_Q)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* q) override;
+   STDMETHOD(get_T)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* t) override;
+	STDMETHOD(get_X)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* x) override;
+	STDMETHOD(get_Y)(/*[in]*/SpiralType spType,/*[out,retval]*/Float64* y) override;
+	STDMETHOD(get_SpiralAngle)(/*[in]*/ SpiralType spType,/*[out, retval]*/ IAngle* *pVal) override;
+   STDMETHOD(get_SpiralLength)(/*[in]*/ SpiralType spType,/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_SpiralLength)(/*[in]*/ SpiralType spType,/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Radius)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Radius)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_PFT)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_PFT)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_PI)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_PI)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(get_PBT)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(putref_PBT)(/*[in]*/ IPoint2d* newVal) override;
+   STDMETHOD(Offset)(/*[in]*/Float64 dx,/*[in]*/Float64 dy) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPointEvents
 public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point);
+	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
 
 private:
    bool m_bHoldEvents;
@@ -230,7 +230,7 @@ public:
       return dist;
    }
 
-   virtual mathFunction2d* Clone() const
+   virtual mathFunction2d* Clone() const override
    {
       return new CEntrySpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
    }
@@ -275,7 +275,7 @@ public:
       return dist;
    }
 
-   virtual mathFunction2d* Clone() const
+   virtual mathFunction2d* Clone() const override
    {
       return new CExitSpiralFunction(m_pCurve,m_TargetPoint,m_GeomUtil);
    }
@@ -310,7 +310,7 @@ public:
          return dist;
       }
 
-      virtual mathFunction2d* Clone() const
+      virtual mathFunction2d* Clone() const override
       {
          return new CLineIntersectFunction(m_pCurve,m_Line,m_GeomUtil);
       }
@@ -351,7 +351,7 @@ public:
          return m_Angle - angle;
       }
 
-      virtual mathFunction2d* Clone() const
+      virtual mathFunction2d* Clone() const override
       {
          return new CParallelLineFunction(m_pCurve,m_Line,m_GeomUtil);
       }

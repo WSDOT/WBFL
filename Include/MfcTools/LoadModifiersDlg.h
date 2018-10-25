@@ -31,6 +31,7 @@
 //
 #include <MfcTools\MfcToolsExp.h>
 #include <MFCTools\HelpHandler.h>
+#include <memory>
 
 class CLoadModifierPage;
 
@@ -43,8 +44,8 @@ class MFCTOOLSCLASS CLoadModifiersDlg : public CPropertySheet
 
 // Construction
 public:
-	CLoadModifiersDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-	CLoadModifiersDlg(LPCTSTR pszCaption = _T("Load Modifiers"), CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	CLoadModifiersDlg(UINT nIDCaption, CWnd* pParentWnd = nullptr, UINT iSelectPage = 0);
+	CLoadModifiersDlg(LPCTSTR pszCaption = _T("Load Modifiers"), CWnd* pParentWnd = nullptr, UINT iSelectPage = 0);
 
    void SetHelpData(CHelpHandler* pHelpHandlerND,CHelpHandler* pHelpHandlerNR,CHelpHandler* pHelpHandlerNI);
 
@@ -65,7 +66,7 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CLoadModifiersDlg)
 	public:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	//}}AFX_VIRTUAL
 
 // Implementation
@@ -78,9 +79,9 @@ protected:
 
    void Init();
 
-   std::auto_ptr<CLoadModifierPage> m_pDuctilityPage;
-   std::auto_ptr<CLoadModifierPage> m_pRedundancyPage;
-   std::auto_ptr<CLoadModifierPage> m_pImportancePage;
+   std::unique_ptr<CLoadModifierPage> m_pDuctilityPage;
+   std::unique_ptr<CLoadModifierPage> m_pRedundancyPage;
+   std::unique_ptr<CLoadModifierPage> m_pImportancePage;
 
 	//{{AFX_MSG(CLoadModifiersDlg)
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

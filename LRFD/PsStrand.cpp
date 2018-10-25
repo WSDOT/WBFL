@@ -337,6 +337,7 @@ bool lrfdPsStrand::TestMe(dbgLog& rlog)
    // LRFD 1st Edition
 
    lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition1994 );
+   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
    // Grade 1725 SR
    pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );

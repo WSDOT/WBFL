@@ -51,14 +51,14 @@ void CTestPointCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_PointCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
    //
    // Test Add method
    //
-   TRY_TEST(pColl->Add(0,15.,20.,NULL),S_OK);
+   TRY_TEST(pColl->Add(0,15.,20.,nullptr),S_OK);
    CComPtr<IPoint2d> pnt;
    TRY_TEST(pColl->get_Item(0,&pnt),S_OK);
    Float64 x,y;
@@ -71,7 +71,7 @@ void CTestPointCollection::Test()
    //
    // Test AddEx method
    //
-   TRY_TEST(pColl->AddEx(0,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->AddEx(0,nullptr),E_INVALIDARG);
 
    // add some points and see if we get them back
    CComPtr<IPoint2d> p1;
@@ -105,7 +105,7 @@ void CTestPointCollection::Test()
    // Test Item property
    pnt.Release();
    TRY_TEST(pColl->get_Item(-1,&pnt),COGO_E_POINTNOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
@@ -157,7 +157,7 @@ void CTestPointCollection::Test()
    TRY_TEST(pColl->AddEx(3,p3),S_OK);
    TRY_TEST(pColl->AddEx(4,p4),S_OK);
 
-   TRY_TEST(pColl->putref_Item(3,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(3,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,p1),COGO_E_POINTNOTFOUND);
    TRY_TEST(pColl->putref_Item(3,p1),S_OK);
 
@@ -169,8 +169,8 @@ void CTestPointCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(p2,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(p2,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(p2,&id),S_OK);
    TRY_TEST(id,2);
    TRY_TEST(pColl->FindID(p3,&id),E_FAIL); // p3 is not part of collection, see putref_Item above
@@ -190,7 +190,7 @@ void CTestPointCollection::Test()
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -207,7 +207,7 @@ void CTestPointCollection::Test()
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -230,7 +230,7 @@ void CTestPointCollection::Test()
    pColl->AddEx(3,p3);
    pColl->AddEx(4,p4);
    CComPtr<IEnumPoint2d> pEnumPoints;
-   TRY_TEST(pColl->get__EnumPoints(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumPoints(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumPoints(&pEnumPoints), S_OK );
 
    CComPtr<IPoint2d> point;
@@ -253,10 +253,10 @@ void CTestPointCollection::Test()
    // PointFactory
    //
    CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST(factory != NULL,true);
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST(factory != nullptr,true);
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
 
@@ -328,7 +328,7 @@ void CTestPointCollection::Test()
 
 STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID id,IPoint2d* point)
 {
-//   MessageBox(NULL,"PointChanged","Event",MB_OK);
+//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -337,7 +337,7 @@ STDMETHODIMP CTestPointCollection::OnPointChanged(CogoObjectID id,IPoint2d* poin
 
 STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID id,IPoint2d* point)
 {
-//   MessageBox(NULL,"PointAdded","Event",MB_OK);
+//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -346,7 +346,7 @@ STDMETHODIMP CTestPointCollection::OnPointAdded(CogoObjectID id,IPoint2d* point)
 
 STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID id)
 {
-//   MessageBox(NULL,"PointRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -355,7 +355,7 @@ STDMETHODIMP CTestPointCollection::OnPointRemoved(CogoObjectID id)
 
 STDMETHODIMP CTestPointCollection::OnPointsCleared()
 {
-//   MessageBox(NULL,"PointCleared","Event",MB_OK);
+//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

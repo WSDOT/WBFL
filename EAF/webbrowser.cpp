@@ -57,8 +57,8 @@ static char THIS_FILE[] = __FILE__;
 /////////////////////////////////////////////////////////////////////////////
 
 CWebBrowser::CWebBrowser()
-	:	_Browser(NULL),
-		_BrowserDispatch(NULL),
+	:	_Browser(nullptr),
+		_BrowserDispatch(nullptr),
 		_Ready(false),
 		_Content(_T(""))
 {
@@ -68,14 +68,14 @@ CWebBrowser::~CWebBrowser()
 {
     // release browser interfaces
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->Release();
-		_Browser = NULL;
+		_Browser = nullptr;
 	}
 
-	if (_BrowserDispatch != NULL) {
+	if (_BrowserDispatch != nullptr) {
 		_BrowserDispatch->Release();
-		_BrowserDispatch = NULL;
+		_BrowserDispatch = nullptr;
 	}
 }
 
@@ -90,7 +90,7 @@ BOOL CWebBrowser::Create(LPCTSTR pszWindowName, DWORD dwStyle,
 
 	_Ready      = false;
 	
-    _Browser	= NULL;
+    _Browser	= nullptr;
 
     // create this window
 
@@ -109,7 +109,7 @@ BOOL CWebBrowser::Create(LPCTSTR pszWindowName, DWORD dwStyle,
 	CRect browser_window_rect(0,0,(rect.right - rect.left),(rect.bottom - rect.top));
 
     results = _BrowserWindow.CreateControl(CLSID_WebBrowser,
-                                           NULL,
+                                           nullptr,
                                            (WS_VISIBLE | WS_TABSTOP),
                                            browser_window_rect,
                                            this,
@@ -140,7 +140,7 @@ BOOL CWebBrowser::Create(LPCTSTR pszWindowName, DWORD dwStyle,
 
 	// navigate to initial blank page
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		Navigate(_T("about:blank"));
 	}
 
@@ -153,11 +153,11 @@ BOOL CWebBrowser::CreateFromControl(CWnd *pParentWnd,UINT nID,DWORD dwStyle)
 {
 	BOOL result = FALSE;
 
-	ASSERT(pParentWnd != NULL);
+	ASSERT(pParentWnd != nullptr);
 
 	CWnd *control = pParentWnd->GetDlgItem(nID);
 
-	if (control != NULL) {
+	if (control != nullptr) {
 
 		// get control location
 
@@ -172,7 +172,7 @@ BOOL CWebBrowser::CreateFromControl(CWnd *pParentWnd,UINT nID,DWORD dwStyle)
 
 		// create browser
 
-		result = Create(NULL, dwStyle,
+		result = Create(nullptr, dwStyle,
 		                rect,
 						pParentWnd,
 						nID);
@@ -188,14 +188,14 @@ void CWebBrowser::PostNcDestroy()
 {
     // release browser interfaces
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->Release();
-		_Browser = NULL;
+		_Browser = nullptr;
 	}
 
-	if (_BrowserDispatch != NULL) {
+	if (_BrowserDispatch != nullptr) {
 		_BrowserDispatch->Release();
-		_BrowserDispatch = NULL;
+		_BrowserDispatch = nullptr;
 	}
 	
 	_Ready		= false;
@@ -215,7 +215,7 @@ void CWebBrowser::Navigate(LPCTSTR URL)
 	_Ready   = false;
 	_Content = _T("");
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		CString		url(URL);
 
@@ -237,7 +237,7 @@ void CWebBrowser::Navigate(LPCTSTR URL)
 
 void CWebBrowser::NavigateResource(int resource_ID)
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		CString resource_string;
 
@@ -247,16 +247,16 @@ void CWebBrowser::NavigateResource(int resource_ID)
 											 MAKEINTRESOURCE(resource_ID),
 											 RT_HTML);
 
-		if (resource_handle != NULL) {
+		if (resource_handle != nullptr) {
 
 			HGLOBAL resource = LoadResource(AfxGetResourceHandle(),
 											resource_handle);
 
-			if (resource != NULL) {
+			if (resource != nullptr) {
 
 				LPVOID resource_memory = LockResource(resource);
 
-				if (resource_memory != NULL) {
+				if (resource_memory != nullptr) {
 
 					DWORD resource_size = SizeofResource(AfxGetResourceHandle(),
 														 resource_handle);
@@ -313,8 +313,8 @@ void CWebBrowser::NavigateResource(int resource_ID)
 											                    UNICODE_size,
 											                    MBCS_buffer,
 											                    resource_size + 1,
-											                    NULL,
-											                    NULL);
+											                    nullptr,
+											                    nullptr);
 
 						resource_string.ReleaseBuffer(MBCS_length);
 
@@ -368,7 +368,7 @@ void CWebBrowser::NavigateResource(int resource_ID)
 
 void CWebBrowser::Write(LPCTSTR string)
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		_Content.Append(string);
 		
@@ -379,7 +379,7 @@ void CWebBrowser::Write(LPCTSTR string)
 
 void CWebBrowser::Clear()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		_Content = _T("");
 
@@ -388,7 +388,7 @@ void CWebBrowser::Clear()
 		IHTMLDocument2	*document	= GetDocument();
 		HRESULT			hr			= S_OK;
 		
-		if (document != NULL) {
+		if (document != nullptr) {
 
 			// close and re-open document to empty contents
 
@@ -397,7 +397,7 @@ void CWebBrowser::Clear()
 			VARIANT		open_name;
 			VARIANT		open_features;
 			VARIANT		open_replace;
-			IDispatch	*open_window	= NULL;
+			IDispatch	*open_window	= nullptr;
 
 			::VariantInit(&open_name);
 
@@ -417,14 +417,14 @@ void CWebBrowser::Clear()
 				Refresh();
 			}
 
-			if (open_window != NULL) {
+			if (open_window != nullptr) {
 				open_window->Release();
 			}
 
 			::VariantClear(&open_name);
 			
 			document->Release();
-			document = NULL;
+			document = nullptr;
 		
 		}
 		
@@ -441,35 +441,35 @@ void CWebBrowser::Clear()
 
 void CWebBrowser::GoBack()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->GoBack();
 	}
 }
 
 void CWebBrowser::GoForward()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->GoForward();
 	}
 }
 
 void CWebBrowser::GoHome()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->GoHome();
 	}
 }
 
 void CWebBrowser::Refresh()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->Refresh();
 	}
 }
 
 void CWebBrowser::Stop()
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 		_Browser->Stop();
 	}
 }
@@ -478,7 +478,7 @@ void CWebBrowser::Stop()
 
 void CWebBrowser::Print(LPCTSTR header,LPCTSTR footer)
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		// construct two element SAFEARRAY;
 		// first element is header string, second element is footer string
@@ -498,7 +498,7 @@ void CWebBrowser::Print(LPCTSTR header,LPCTSTR footer)
 		long index;
 
 		SAFEARRAYBOUND	parameter_array_bound[1];
-		SAFEARRAY		*parameter_array = NULL;
+		SAFEARRAY		*parameter_array = nullptr;
 
 		parameter_array_bound[0].cElements = 2;
 		parameter_array_bound[0].lLbound   = 0;
@@ -518,14 +518,14 @@ void CWebBrowser::Print(LPCTSTR header,LPCTSTR footer)
 
 		// start printing browser contents
 
-		hr = _Browser->ExecWB(OLECMDID_PRINT,OLECMDEXECOPT_DODEFAULT,&parameter,NULL);
+		hr = _Browser->ExecWB(OLECMDID_PRINT,OLECMDEXECOPT_DODEFAULT,&parameter,nullptr);
 
 		// release SAFEARRAY
 
 		if (!SUCCEEDED(hr)) {
 			VariantClear(&header_variant);
 			VariantClear(&footer_variant);
-			if (parameter_array != NULL) {
+			if (parameter_array != nullptr) {
 				SafeArrayDestroy(parameter_array);
 			}
 		}
@@ -535,8 +535,8 @@ void CWebBrowser::Print(LPCTSTR header,LPCTSTR footer)
 
 void CWebBrowser::PrintPreview()
 {
-	if (_Browser != NULL) {
-		_Browser->ExecWB(OLECMDID_PRINTPREVIEW,OLECMDEXECOPT_DODEFAULT,NULL,NULL);
+	if (_Browser != nullptr) {
+		_Browser->ExecWB(OLECMDID_PRINTPREVIEW,OLECMDEXECOPT_DODEFAULT,nullptr,nullptr);
 	}
 }
 
@@ -546,7 +546,7 @@ bool CWebBrowser::GetBusy()
 {
     bool busy = false;
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		VARIANT_BOOL    variant_bool;
 
@@ -564,9 +564,9 @@ CString CWebBrowser::GetLocationName()
 {
     CString location_name = _T("");
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
-		BSTR location_name_BSTR = NULL;
+		BSTR location_name_BSTR = nullptr;
 
 		HRESULT hr = _Browser->get_LocationName(&location_name_BSTR);
 		if (SUCCEEDED(hr)) {
@@ -584,9 +584,9 @@ CString CWebBrowser::GetLocationURL()
 {
     CString location_URL = _T("");
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
-		BSTR location_URL_BSTR = NULL;
+		BSTR location_URL_BSTR = nullptr;
 
 		HRESULT hr = _Browser->get_LocationURL(&location_URL_BSTR);
 		if (SUCCEEDED(hr)) {
@@ -604,7 +604,7 @@ READYSTATE CWebBrowser::GetReadyState()
 {
     READYSTATE readystate = READYSTATE_UNINITIALIZED;
 
-    if (_Browser != NULL) {
+    if (_Browser != nullptr) {
 		_Browser->get_ReadyState(&readystate);
 	}
 
@@ -615,7 +615,7 @@ bool CWebBrowser::GetSilent()
 {
     bool silent = false;
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		VARIANT_BOOL silent_variant;
 
@@ -631,7 +631,7 @@ bool CWebBrowser::GetSilent()
 
 void CWebBrowser::PutSilent(bool silent)
 {
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 
 		VARIANT_BOOL silent_variant;
 
@@ -644,17 +644,17 @@ void CWebBrowser::PutSilent(bool silent)
 
 IHTMLDocument2 *CWebBrowser::GetDocument()
 {
-	IHTMLDocument2 *document = NULL;
+	IHTMLDocument2 *document = nullptr;
 	
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 	
 		// get browser document's dispatch interface
 
-		IDispatch *document_dispatch = NULL;
+		IDispatch *document_dispatch = nullptr;
 
 		HRESULT hr = _Browser->get_Document(&document_dispatch);
 
-		if (SUCCEEDED(hr) && (document_dispatch != NULL)) {
+		if (SUCCEEDED(hr) && (document_dispatch != nullptr)) {
 
 			// get the actual document interface
 
@@ -701,13 +701,13 @@ BOOL CWebBrowser::PreTranslateMessage(MSG *pMsg)
 
 	// translate keys correctly, especially Tab, Del, (Enter?)
 	
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
 	
-		IOleInPlaceActiveObject* OleInPlaceActiveObject = NULL;
+		IOleInPlaceActiveObject* OleInPlaceActiveObject = nullptr;
 
 		HRESULT hr = _Browser->QueryInterface(IID_IOleInPlaceActiveObject, (void**)&OleInPlaceActiveObject);
 
-		if (SUCCEEDED(hr) && (OleInPlaceActiveObject != NULL)) {
+		if (SUCCEEDED(hr) && (OleInPlaceActiveObject != nullptr)) {
 
 			hr = OleInPlaceActiveObject->TranslateAccelerator(pMsg);
 			result = (hr == S_OK ? TRUE : FALSE);
@@ -731,7 +731,7 @@ void CWebBrowser::OnSize(UINT nType, int cx, int cy)
 {
 	CWnd::OnSize(nType, cx, cy);
 
-	if (_Browser != NULL) {
+	if (_Browser != nullptr) {
         CRect rect(0,0,cx,cy);	
 		_BrowserWindow.MoveWindow(&rect);
 	}
@@ -798,7 +798,7 @@ CWebBrowser::Notification::Notification(HWND hwnd,UINT ID,NotificationType type)
 	hdr.code		= type;
 	URL				= _T("");
 	frame			= _T("");
-	post_data		= NULL;
+	post_data		= nullptr;
 	post_data_size	= 0;
 	headers			= _T("");
 	progress		= 0;
@@ -826,33 +826,33 @@ void CWebBrowser::_OnBeforeNavigate2(LPDISPATCH lpDisp,
 
 		CString				URL_string;
 		CString				frame;
-		unsigned char		*post_data		= NULL;
+		unsigned char		*post_data		= nullptr;
 		int					post_data_size	= 0;
 		CString				headers;
 
-        if ((URL       != NULL) && 
+        if ((URL       != nullptr) && 
 		    (V_VT(URL) == VT_BSTR)) {
             URL_string = V_BSTR(URL);
         }
 
-		if ((TargetFrameName       != NULL) &&
+		if ((TargetFrameName       != nullptr) &&
             (V_VT(TargetFrameName) == VT_BSTR)) {
 			frame = V_BSTR(TargetFrameName);
         }
 
-		if ((PostData       != NULL)                    &&
+		if ((PostData       != nullptr)                    &&
 		    (V_VT(PostData) == (VT_VARIANT | VT_BYREF))) {
 
 			VARIANT *PostData_variant = V_VARIANTREF(PostData);
 
-			if ((PostData_variant       != NULL) &&
+			if ((PostData_variant       != nullptr) &&
 			    (V_VT(PostData_variant) != VT_EMPTY)) {
 
 				SAFEARRAY *PostData_safearray = V_ARRAY(PostData_variant);
 
-				if (PostData_safearray != NULL) {
+				if (PostData_safearray != nullptr) {
 
-					char *post_data_array = NULL;
+					char *post_data_array = nullptr;
 
 					SafeArrayAccessData(PostData_safearray,(void HUGEP **)&post_data_array);
 
@@ -876,7 +876,7 @@ void CWebBrowser::_OnBeforeNavigate2(LPDISPATCH lpDisp,
 
 		}
 
-		if ((Headers       != NULL) &&
+		if ((Headers       != nullptr) &&
             (V_VT(Headers) == VT_BSTR)) {
 			headers = V_BSTR(Headers);
         }
@@ -886,7 +886,7 @@ void CWebBrowser::_OnBeforeNavigate2(LPDISPATCH lpDisp,
 										post_data,post_data_size,
 										headers);
 
-		if (Cancel != NULL) {
+		if (Cancel != nullptr) {
 			if (cancel) *Cancel = VARIANT_TRUE;
 			else        *Cancel = VARIANT_FALSE;
 		}
@@ -905,7 +905,7 @@ bool CWebBrowser::OnBeforeNavigate2(CString URL,
 	
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),BeforeNavigate2);
 		
@@ -1036,7 +1036,7 @@ void CWebBrowser::_OnDocumentComplete(LPDISPATCH lpDisp,VARIANT *URL)
 
 		CString URL_string;
 		
-		if ((URL       != NULL) &&
+		if ((URL       != nullptr) &&
             (V_VT(URL) == VT_BSTR)) {
 			URL_string = CString(V_BSTR(URL));
         }
@@ -1050,7 +1050,7 @@ void CWebBrowser::OnDocumentComplete(CString URL)
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),DocumentComplete);
 		
@@ -1074,7 +1074,7 @@ void CWebBrowser::OnDownloadBegin()
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),DownloadBegin);
 		
@@ -1094,7 +1094,7 @@ void CWebBrowser::OnProgressChange(int progress,int progress_max)
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),ProgressChange);
 		
@@ -1117,7 +1117,7 @@ void CWebBrowser::OnDownloadComplete()
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),DownloadComplete);
 		
@@ -1146,7 +1146,7 @@ void CWebBrowser::_OnNavigateComplete2(LPDISPATCH lpDisp,VARIANT *URL)
 		
 		CString URL_string;
 		
-		if ((URL       != NULL) &&
+		if ((URL       != nullptr) &&
             (V_VT(URL) == VT_BSTR)) {
 			URL_string = V_BSTR(URL);
         }
@@ -1160,7 +1160,7 @@ void CWebBrowser::OnNavigateComplete2(CString URL)
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),NavigateComplete2);
 		
@@ -1179,7 +1179,7 @@ void CWebBrowser::_OnStatusTextChange(BSTR bstrText)
 {
     CString text;
 	
-	if (bstrText != NULL) {
+	if (bstrText != nullptr) {
 		text = (LPCTSTR)bstrText;
 	}
 
@@ -1190,7 +1190,7 @@ void CWebBrowser::OnStatusTextChange(CString text)
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),StatusTextChange);
 		
@@ -1209,7 +1209,7 @@ void CWebBrowser::_OnTitleChange(BSTR bstrText)
 {
     CString text;
 	
-	if (bstrText != NULL) {
+	if (bstrText != nullptr) {
 		text = (LPCTSTR)bstrText;
 	}
 
@@ -1220,7 +1220,7 @@ void CWebBrowser::OnTitleChange(CString text)
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),TitleChange);
 		
@@ -1244,7 +1244,7 @@ void CWebBrowser::OnPrintTemplateInstantiation()
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),PrintTemplateInstantiation);
 		
@@ -1264,7 +1264,7 @@ void CWebBrowser::OnPrintTemplateTeardown()
 {
 	CWnd *parent = GetParent();
 	
-	if (parent != NULL) {
+	if (parent != nullptr) {
 
 		Notification	notification(m_hWnd,GetDlgCtrlID(),PrintTemplateTeardown);
 		
@@ -1285,7 +1285,7 @@ void CWebBrowser::_ContentWrite()
 
 		IHTMLDocument2 *document = GetDocument();
 		
-		if (document != NULL) {
+		if (document != nullptr) {
 
 			// construct text to be written to browser as SAFEARRAY
 
@@ -1307,10 +1307,10 @@ void CWebBrowser::_ContentWrite()
 			// cleanup
 			
 			document->Release();
-			document = NULL;
+			document = nullptr;
 
 			::SysFreeString(variant->bstrVal);
-			variant->bstrVal = NULL;
+			variant->bstrVal = nullptr;
 			
 			SafeArrayDestroy(safe_array);
 		
@@ -1325,7 +1325,7 @@ void CWebBrowser::Find()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, NULL,NULL);
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }
@@ -1336,7 +1336,7 @@ void CWebBrowser::SelectAll()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(NULL,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, NULL,NULL);
+      pIOleCmdTarget->Exec(nullptr,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }
@@ -1347,7 +1347,7 @@ void CWebBrowser::ViewSource()
    IOleCommandTarget* pIOleCmdTarget;
    if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
    {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, NULL,NULL);
+      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, nullptr,nullptr);
       pIOleCmdTarget->Release();
    }
 }

@@ -48,7 +48,7 @@ class ATL_NO_VTABLE CSurfacePoint :
 public:
 	CSurfacePoint()
 	{
-      m_pSurface = NULL;
+      m_pSurface = nullptr;
       m_Station = 0;
       m_NormalOffset = 0;
       m_CutLineOffset = 0;
@@ -79,30 +79,30 @@ END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISurfacePoint
 public:
-   STDMETHOD(get_Surface)(ISurface* *pVal);
-   STDMETHOD(putref_Surface)(ISurface* newVal);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-	STDMETHOD(get_Station)(/*[out, retval]*/ IStation* *station);
-	STDMETHOD(put_Station)(/*[in]*/ VARIANT varStation);
-	STDMETHOD(get_NormalOffset)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_NormalOffset)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_CutLineOffset)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_CutLineOffset)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Elevation)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Elevation)(/*[in]*/ Float64 newVal);
-   STDMETHOD(get_Location)(/*[out,retval]*/IPoint2d** ppLocation);
-   STDMETHOD(put_Location)(/*[in]*/IPoint2d* ppLocation);
-   STDMETHOD(GetPoint)(/*[out,retval]*/IPoint3d** ppPoint);
-   STDMETHOD(Clone)(/*[out,retval]*/ ISurfacePoint* *clone);
+   STDMETHOD(get_Surface)(ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(ISurface* newVal) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+	STDMETHOD(get_Station)(/*[out, retval]*/ IStation* *station) override;
+	STDMETHOD(put_Station)(/*[in]*/ VARIANT varStation) override;
+	STDMETHOD(get_NormalOffset)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_NormalOffset)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_CutLineOffset)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_CutLineOffset)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Elevation)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Elevation)(/*[in]*/ Float64 newVal) override;
+   STDMETHOD(get_Location)(/*[out,retval]*/IPoint2d** ppLocation) override;
+   STDMETHOD(put_Location)(/*[in]*/IPoint2d* ppLocation) override;
+   STDMETHOD(GetPoint)(/*[out,retval]*/IPoint3d** ppPoint) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ ISurfacePoint* *clone) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    ISurface* m_pSurface; // weak reference

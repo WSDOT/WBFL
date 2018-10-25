@@ -57,7 +57,7 @@ HRESULT CDeckedSlabBeam::FinalConstruct()
    m_bLeftBlockOut = VARIANT_TRUE;
    m_bRightBlockOut = VARIANT_TRUE;
 
-   CreatePoint( 0.00, 0.00, NULL, &m_pHookPoint );
+   CreatePoint( 0.00, 0.00, nullptr, &m_pHookPoint );
    HRESULT hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
    if (FAILED(hr))
       return hr;
@@ -84,7 +84,7 @@ STDMETHODIMP CDeckedSlabBeam::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
       &IID_IStructuredStorage2
    };
-   for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+   for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
          return S_OK;
@@ -94,7 +94,7 @@ STDMETHODIMP CDeckedSlabBeam::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CDeckedSlabBeam::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 {
-   ATLASSERT(px != NULL && py != NULL);
+   ATLASSERT(px != nullptr && py != nullptr);
 
    UpdateShape();
 
@@ -219,7 +219,7 @@ HRESULT CDeckedSlabBeam::UpdateShape()
 
       // move the shape to the real hook point
       CComPtr<IPoint2d> origin;
-      CreatePoint(0.00,0.00,NULL,&origin);  // Hook Point at Bottom Center
+      CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
 
       m_Dirty = false;
@@ -504,7 +504,7 @@ STDMETHODIMP CDeckedSlabBeam::Clone(IShape** pClone)
    pTheClone->put_VoidCount(m_VoidCount);
 
    CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,NULL,&hookPnt);
+   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
    pTheClone->putref_HookPoint(hookPnt);
    pTheClone->Rotate( 0.00, 0.00, m_Rotation );
 
@@ -635,7 +635,7 @@ STDMETHODIMP CDeckedSlabBeam::get_LocatorPoint(LocatorPointType lp, IPoint2d** p
 
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CDeckedSlabBeam::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

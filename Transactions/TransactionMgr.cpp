@@ -48,9 +48,9 @@ STDMETHODIMP CTransactionMgr::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ITransactionMgr
+		&IID_IWBFLTransactionMgr
 	};
-	for (CollectionIndexType i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (CollectionIndexType i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -58,13 +58,13 @@ STDMETHODIMP CTransactionMgr::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CTransactionMgr::Execute(ITransaction *pTxn)
+STDMETHODIMP CTransactionMgr::Execute(IWBFLTransaction *pTxn)
 {
-   CComPtr<ITransaction> txn(pTxn);
+   CComPtr<IWBFLTransaction> txn(pTxn);
 
    if ( m_Macros.size() > 0 )
    {
-      CAdapt<CComPtr<IMacroTransaction> > macro = m_Macros.back();
+      CAdapt<CComPtr<IWBFLMacroTransaction> > macro = m_Macros.back();
       macro.m_T->AddTransaction(txn);
       return S_OK;
    }
@@ -81,11 +81,11 @@ STDMETHODIMP CTransactionMgr::Execute(ITransaction *pTxn)
 
 STDMETHODIMP CTransactionMgr::Undo()
 {
-   CComPtr<ITransaction> txn;
+   CComPtr<IWBFLTransaction> txn;
    if ( FAILED(GetFirstUndoableTxn(&txn)) )
       return S_OK; // No undoable transactions... do nothing
 
-   if ( txn == NULL )
+   if ( txn == nullptr )
       return S_OK;
 
    HRESULT hr = txn->Undo();
@@ -105,7 +105,7 @@ STDMETHODIMP CTransactionMgr::Redo()
    TxnType item = m_UndoHistory.back();
    m_UndoHistory.pop_back();
 
-   CComPtr<ITransaction> txn(item.m_T);
+   CComPtr<IWBFLTransaction> txn(item.m_T);
    
    return Execute(txn);
 }
@@ -115,7 +115,7 @@ STDMETHODIMP CTransactionMgr::Repeat()
    ATLASSERT( m_Mode == txnRepeat );
 
    TxnType item = m_TxnHistory.back();
-   CComPtr<ITransaction> txn(item.m_T);
+   CComPtr<IWBFLTransaction> txn(item.m_T);
 
    VARIANT_BOOL bRepeatable;
    txn->get_IsRepeatable(&bRepeatable);
@@ -133,10 +133,10 @@ STDMETHODIMP CTransactionMgr::get_CanUndo(VARIANT_BOOL *pVal)
       return S_OK;
    }
 
-   CComPtr<ITransaction> txn;
+   CComPtr<IWBFLTransaction> txn;
    FindFirstUndoableTxn(&txn);
 
-   *pVal = (txn == NULL ? VARIANT_FALSE : VARIANT_TRUE );
+   *pVal = (txn == nullptr ? VARIANT_FALSE : VARIANT_TRUE );
    return S_OK;
 }
 
@@ -170,7 +170,7 @@ STDMETHODIMP CTransactionMgr::get_CanRepeat(VARIANT_BOOL *pVal)
          else
          {
             TxnType item = m_TxnHistory.back();
-            CComPtr<ITransaction> txn(item.m_T);
+            CComPtr<IWBFLTransaction> txn(item.m_T);
             txn->get_IsRepeatable(pVal);
          }
       }
@@ -186,7 +186,7 @@ STDMETHODIMP CTransactionMgr::get_CanRepeat(VARIANT_BOOL *pVal)
 
 STDMETHODIMP CTransactionMgr::get_UndoName(BSTR *pVal)
 {
-   CComPtr<ITransaction> txn;
+   CComPtr<IWBFLTransaction> txn;
    FindFirstUndoableTxn(&txn);
 
    if ( txn )
@@ -212,7 +212,7 @@ STDMETHODIMP CTransactionMgr::get_RedoName(BSTR *pVal)
    else
    {
       TxnType item = m_UndoHistory.back();
-      CComPtr<ITransaction> txn(item.m_T);
+      CComPtr<IWBFLTransaction> txn(item.m_T);
       txn->get_Name(pVal);
    }
 
@@ -229,7 +229,7 @@ STDMETHODIMP CTransactionMgr::get_RepeatName(BSTR *pVal)
    else
    {
       TxnType item = m_TxnHistory.back();
-      CComPtr<ITransaction> txn(item.m_T);
+      CComPtr<IWBFLTransaction> txn(item.m_T);
       txn->get_Name(pVal);
    }
 
@@ -248,7 +248,7 @@ STDMETHODIMP CTransactionMgr::get_UndoCount(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::PeekTransaction(CollectionIndexType idx, ITransaction* *txn)
+STDMETHODIMP CTransactionMgr::PeekTransaction(CollectionIndexType idx, IWBFLTransaction* *txn)
 {
    if ( idx < 0 || m_TxnHistory.size() <= idx )
       return E_INVALIDARG;
@@ -264,7 +264,7 @@ STDMETHODIMP CTransactionMgr::PeekTransaction(CollectionIndexType idx, ITransact
    return S_OK;
 }
 
-STDMETHODIMP CTransactionMgr::PeekUndo(CollectionIndexType idx, ITransaction* *txn)
+STDMETHODIMP CTransactionMgr::PeekUndo(CollectionIndexType idx, IWBFLTransaction* *txn)
 {
    if ( idx < 0 || m_UndoHistory.size() <= idx )
       return E_INVALIDARG;
@@ -314,18 +314,18 @@ STDMETHODIMP CTransactionMgr::BeginMacro(VARIANT nameOrMacro)
       CComObject<CMacroTransaction>* pMacro;
       CComObject<CMacroTransaction>::CreateInstance(&pMacro);
 
-      CComPtr<IMacroTransaction> macro = pMacro;
+      CComPtr<IWBFLMacroTransaction> macro = pMacro;
       macro->put_Name(nameOrMacro.bstrVal);
 
       m_Macros.push_back(macro);
    }
    else if ( nameOrMacro.vt == VT_UNKNOWN || nameOrMacro.vt == VT_DISPATCH)
    {
-      CComQIPtr<IMacroTransaction> macro(nameOrMacro.punkVal);
-      if ( macro == NULL )
+      CComQIPtr<IWBFLMacroTransaction> macro(nameOrMacro.punkVal);
+      if ( macro == nullptr )
          return E_INVALIDARG;
 
-      m_Macros.push_back(CComPtr<IMacroTransaction>(macro));
+      m_Macros.push_back(CComPtr<IWBFLMacroTransaction>(macro));
    }
    else
    {
@@ -339,7 +339,7 @@ STDMETHODIMP CTransactionMgr::ExecuteMacro()
 {
    // If there are no transactions in the macro, then there
    // is nothing to execute... just get the heck outta here.
-   CComPtr<IMacroTransaction> macro = m_Macros.back();
+   CComPtr<IWBFLMacroTransaction> macro = m_Macros.back();
    m_Macros.pop_back();
    
    CollectionIndexType count;
@@ -364,9 +364,9 @@ STDMETHODIMP CTransactionMgr::AbortMacro()
    return S_OK;
 }
 
-HRESULT CTransactionMgr::FindFirstUndoableTxn(ITransaction* *txn) const
+HRESULT CTransactionMgr::FindFirstUndoableTxn(IWBFLTransaction* *txn) const
 {
-   *txn = NULL;
+   *txn = nullptr;
 
    TxnContainer::const_reverse_iterator begin = m_TxnHistory.rbegin();
    TxnContainer::const_reverse_iterator end   = m_TxnHistory.rend();
@@ -374,7 +374,7 @@ HRESULT CTransactionMgr::FindFirstUndoableTxn(ITransaction* *txn) const
    while ( begin != end )
    {
       TxnType item = *begin++;
-      CComPtr<ITransaction> pTxn = item.m_T;
+      CComPtr<IWBFLTransaction> pTxn = item.m_T;
       VARIANT_BOOL bIsUndoable;
       pTxn->get_IsUndoable(&bIsUndoable);
       if ( bIsUndoable == VARIANT_TRUE )
@@ -388,9 +388,9 @@ HRESULT CTransactionMgr::FindFirstUndoableTxn(ITransaction* *txn) const
    return S_FALSE;
 } 
 
-HRESULT CTransactionMgr::GetFirstUndoableTxn(ITransaction* *txn)
+HRESULT CTransactionMgr::GetFirstUndoableTxn(IWBFLTransaction* *txn)
 {
-   *txn = NULL;
+   *txn = nullptr;
 
    TxnContainer::iterator i;
 
@@ -399,7 +399,7 @@ HRESULT CTransactionMgr::GetFirstUndoableTxn(ITransaction* *txn)
    for ( i = m_TxnHistory.begin(); i != m_TxnHistory.end(); i++ )
    {
       TxnType item = *i;
-      CComPtr<ITransaction> pTxn = item.m_T;
+      CComPtr<IWBFLTransaction> pTxn = item.m_T;
       VARIANT_BOOL bIsUndoable;
       pTxn->get_IsUndoable(&bIsUndoable);
       if ( bIsUndoable == VARIANT_TRUE )

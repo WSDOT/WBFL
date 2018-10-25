@@ -125,7 +125,7 @@ private:
    void MakeCopy(const rptRcHyperTarget& rRcHyperTarget);
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   virtual void MakeAssignment(const rptRcHyperTarget& rOther);
+   void MakeAssignment(const rptRcHyperTarget& rOther);
    // GROUP: ACCESS
    // GROUP: INQUIRY
 };

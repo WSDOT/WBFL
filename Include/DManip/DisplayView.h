@@ -61,18 +61,18 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CDisplayView)
 public:
-	virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
-	virtual void OnDragLeave();
-	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
-	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
-   virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, CPoint point );
-	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = NULL);
-	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const;
+	virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+	virtual void OnDragLeave() override;
+	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+   virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, CPoint point ) override;
+	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = nullptr) override;
+	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const override;
 protected:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnInitialUpdate();     // first time after construct
-	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo);
-	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo);
+	virtual void OnDraw(CDC* pDC) override;      // overridden to draw this view
+	virtual void OnInitialUpdate() override;     // first time after construct
+	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo) override;
+	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo) override;
 	//}}AFX_VIRTUAL
 
    void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo,CRect rcDraw);
@@ -82,7 +82,7 @@ public:
    // If you need to override OnPaint, you MUST call this function after OnDraw.
    // If you need a client DC, use the CDManipClientDC class defined below - it will take 
    // care of the initialization and clean up for you.
-	virtual void OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo = NULL);
+	virtual void OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo = nullptr);
 
 public:
    void GetCoordinateMap(iCoordinateMap** map);
@@ -110,8 +110,8 @@ public:
 protected:
 	virtual ~CDisplayView();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+	virtual void AssertValid() const override;
+	virtual void Dump(CDumpContext& dc) const override;
 #endif
 
 	// Generated message map functions

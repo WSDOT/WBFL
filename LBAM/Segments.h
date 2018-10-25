@@ -37,10 +37,10 @@ class  CSegments;
 class CSegmentsOwner
 {
 public:
-   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie)=0;
-   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie)=0;
+   virtual HRESULT SetUpConnection(ISegmentItem* pCp, DWORD* pcookie) = 0;
+   virtual void BreakConnection(ISegmentItem* pCp, DWORD cookie) = 0;
    // don't need a real connection point here. let parent fire
-   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change)=0;
+   virtual void OnSegmentsChanged(CSegments* psegments, BSTR stage, ChangeType change) = 0;
 };
 
 // A copy class for IEnumSegments
@@ -101,7 +101,7 @@ public:
 	void Load(IStructuredLoad2 * Load);
 	void Save(IStructuredSave2 * Save);
 
-   STDMETHOD(Copy)(CSegments* copy);
+   HRESULT Copy(CSegments* copy);
 
    typedef  ISegmentItem* ItemType;
 

@@ -80,41 +80,41 @@ END_CONNECTION_POINT_MAP()
    HRESULT FinalConstruct();
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILiveLoadConfiguration
 public:
-   STDMETHOD(get_PivotAxleIndex)(/*[out, retval]*/ AxleIndexType *pVal);
-   STDMETHOD(put_PivotAxleIndex)(/*[in]*/ AxleIndexType newVal);
-	STDMETHOD(get_VehicleIndex)(/*[out, retval]*/ AxleIndexType *pVal);
-	STDMETHOD(put_VehicleIndex)(/*[in]*/ AxleIndexType newVal);
-	STDMETHOD(get_LiveLoadModel)(/*[out, retval]*/ LiveLoadModelType *pVal);
-	STDMETHOD(put_LiveLoadModel)(/*[in]*/ LiveLoadModelType newVal);
-	STDMETHOD(get_DistributionFactorType)(/*[out, retval]*/ DistributionFactorType *pVal);
-	STDMETHOD(put_DistributionFactorType)(/*[in]*/ DistributionFactorType newVal);
-	STDMETHOD(get_IsApplicable)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_IsApplicable)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_DoApplyImpact)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(put_DoApplyImpact)(/*[in]*/ VARIANT_BOOL newVal);
-	STDMETHOD(get_AxleConfig)(/*[out, retval]*/ IIndexArray* *pVal);
-	STDMETHOD(put_AxleConfig)(/*[in]*/ IIndexArray* newVal);
-	STDMETHOD(get_VariableSpacing)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_VariableSpacing)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_TruckDirection)(/*[out, retval]*/ TruckDirectionType *pVal);
-	STDMETHOD(put_TruckDirection)(/*[in]*/ TruckDirectionType newVal);
-	STDMETHOD(get_TruckPosition)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_TruckPosition)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_VehicularLoadConfiguration)(/*[out, retval]*/ VehicularLoadConfigurationType *pVal);
-	STDMETHOD(put_VehicularLoadConfiguration)(/*[in]*/ VehicularLoadConfigurationType newVal);
-	STDMETHOD(get_ForceEffect)(/*[out, retval]*/ ForceEffectType *pVal);
-	STDMETHOD(put_ForceEffect)(/*[in]*/ ForceEffectType newVal);
-	STDMETHOD(get_Optimization)(/*[out, retval]*/ OptimizationType *pVal);
-	STDMETHOD(put_Optimization)(/*[in]*/ OptimizationType newVal);
-	STDMETHOD(Clone)(/*[out, retval]*/ ILiveLoadConfiguration**pClone);
+   STDMETHOD(get_PivotAxleIndex)(/*[out, retval]*/ AxleIndexType *pVal) override;
+   STDMETHOD(put_PivotAxleIndex)(/*[in]*/ AxleIndexType newVal) override;
+	STDMETHOD(get_VehicleIndex)(/*[out, retval]*/ AxleIndexType *pVal) override;
+	STDMETHOD(put_VehicleIndex)(/*[in]*/ AxleIndexType newVal) override;
+	STDMETHOD(get_LiveLoadModel)(/*[out, retval]*/ LiveLoadModelType *pVal) override;
+	STDMETHOD(put_LiveLoadModel)(/*[in]*/ LiveLoadModelType newVal) override;
+	STDMETHOD(get_DistributionFactorType)(/*[out, retval]*/ DistributionFactorType *pVal) override;
+	STDMETHOD(put_DistributionFactorType)(/*[in]*/ DistributionFactorType newVal) override;
+	STDMETHOD(get_IsApplicable)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_IsApplicable)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_DoApplyImpact)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(put_DoApplyImpact)(/*[in]*/ VARIANT_BOOL newVal) override;
+	STDMETHOD(get_AxleConfig)(/*[out, retval]*/ IIndexArray* *pVal) override;
+	STDMETHOD(put_AxleConfig)(/*[in]*/ IIndexArray* newVal) override;
+	STDMETHOD(get_VariableSpacing)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_VariableSpacing)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_TruckDirection)(/*[out, retval]*/ TruckDirectionType *pVal) override;
+	STDMETHOD(put_TruckDirection)(/*[in]*/ TruckDirectionType newVal) override;
+	STDMETHOD(get_TruckPosition)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_TruckPosition)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_VehicularLoadConfiguration)(/*[out, retval]*/ VehicularLoadConfigurationType *pVal) override;
+	STDMETHOD(put_VehicularLoadConfiguration)(/*[in]*/ VehicularLoadConfigurationType newVal) override;
+	STDMETHOD(get_ForceEffect)(/*[out, retval]*/ ForceEffectType *pVal) override;
+	STDMETHOD(put_ForceEffect)(/*[in]*/ ForceEffectType newVal) override;
+	STDMETHOD(get_Optimization)(/*[out, retval]*/ OptimizationType *pVal) override;
+	STDMETHOD(put_Optimization)(/*[in]*/ OptimizationType newVal) override;
+	STDMETHOD(Clone)(/*[out, retval]*/ ILiveLoadConfiguration**pClone) override;
 
 // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 protected:
    VehicleIndexType               m_VehicleIndex;

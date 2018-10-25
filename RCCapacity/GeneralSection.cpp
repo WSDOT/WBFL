@@ -55,7 +55,7 @@ STDMETHODIMP CGeneralSection::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IGeneralSection,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -66,7 +66,7 @@ STDMETHODIMP CGeneralSection::InterfaceSupportsErrorInfo(REFIID riid)
 // IGeneralSection
 STDMETHODIMP CGeneralSection::AddShape(IShape* pShape,IStressStrain* pfgMaterial,IStressStrain* pbgMaterial,Float64 ei)
 {
-   if ( pShape == NULL )
+   if ( pShape == nullptr )
       return E_INVALIDARG;
 
    SectionItem si;

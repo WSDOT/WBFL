@@ -66,13 +66,13 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IInteractionCapacityCurveSolution
 public:
-	STDMETHOD(get_MomentCapacitySolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCapacitySolution** solution);
-	STDMETHOD(AddSolutionPoint)(/*[in]*/IMomentCapacitySolution* solution);
-	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints);
+	STDMETHOD(get_MomentCapacitySolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCapacitySolution** solution) override;
+	STDMETHOD(AddSolutionPoint)(/*[in]*/IMomentCapacitySolution* solution) override;
+	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
 };
 
 #endif //__InteractionCapacityCurveSolution_H_

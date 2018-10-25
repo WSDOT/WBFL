@@ -34,8 +34,8 @@ public:
    CEAFBrokerReportSpecificationBuilder(IBroker* pBroker);
    ~CEAFBrokerReportSpecificationBuilder(void);
 
-   virtual boost::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec);
-   virtual boost::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
+   virtual std::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec);
+   virtual std::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
 
 protected:
    CComPtr<IBroker> m_pBroker;

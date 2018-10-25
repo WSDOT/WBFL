@@ -93,19 +93,19 @@ void TestVehicularLoadContext::Test()
 
       // get influence and contraflexure interfaces
       CComQIPtr<IInfluenceLineResponse> influence(response);
-      TRY_TEST(influence!=NULL, true);
+      TRY_TEST(influence!=nullptr, true);
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> contraflexure(response);
-      TRY_TEST(contraflexure!=NULL, true);
+      TRY_TEST(contraflexure!=nullptr, true);
 
       CComQIPtr<IAnalysisPOIs> an_pois(response);
-      TRY_TEST(an_pois!=NULL, true);
+      TRY_TEST(an_pois!=nullptr, true);
 
       CComQIPtr<IGetDistributionFactors> igdf(response);
-      TRY_TEST(igdf!=NULL, true);
+      TRY_TEST(igdf!=nullptr, true);
 
       CComQIPtr<IGetStressPoints> igcs(response);
-      TRY_TEST(igcs!=NULL, true);
+      TRY_TEST(igcs!=nullptr, true);
 
       TRY_TEST(pllc->Initialize(model, influence, contraflexure, an_pois, igdf, igcs), S_OK);
    }
@@ -136,34 +136,34 @@ void TestVehicularLoadContext::Test()
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(0, bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 2);
-   TRY_TEST(df2, NULL);
+   TRY_TEST(df2, nullptr);
    df1.Release(); df2.Release();
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(1, bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 2);
-   TRY_TEST(df2, NULL);
+   TRY_TEST(df2, nullptr);
    df1.Release(); df2.Release();
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(6, bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
-   TRY_TEST(df, 2);
+   TRY_TEST(df, 3);
    TRY_TEST(df2->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 3);
    df1.Release(); df2.Release();
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(7, bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
-   TRY_TEST(df, 2);
+   TRY_TEST(df, 3);
    TRY_TEST(df2->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 3);
    df1.Release(); df2.Release();
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(10,bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 3);
-   TRY_TEST(df2, NULL);
+   TRY_TEST(df2, nullptr);
    df1.Release(); df2.Release();
    TRY_TEST(poi_dfs->GetPOIDistributionFactor(13,bs_stage1, &df1, &df2), S_OK);
    TRY_TEST(df1->get_GPMMul(&df), S_OK);
    TRY_TEST(df, 3);
-   TRY_TEST(df2, NULL);
+   TRY_TEST(df2, nullptr);
    df1.Release(); df2.Release();
 
    // test some event firing

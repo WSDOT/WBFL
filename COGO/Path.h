@@ -91,42 +91,42 @@ CONNECTION_POINT_ENTRY(IID_IPathEvents)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPath
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/ IPath* *clone);
-   STDMETHOD(get__EnumPathElements)(/*[out, retval]*/ IEnumPathElements** pVal);  
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength);
-   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point);
-   STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point);
-	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset); 
-	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint);
-	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
-	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir); 
-	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint); 
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Add)(/*[in]*/ IPathElement* element);
-	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement);
-	STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element);
-	STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement);
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varID);
-	STDMETHOD(Clear)();
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory); 
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory); 
-   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction);
-   STDMETHOD(CreateParallelPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path);
-	STDMETHOD(CreateConnectedPath)(/*[out,retval]*/IPath** path);
-   STDMETHOD(CreateSubPath)(/*[in]*/Float64 start,/*[in]*/Float64 end,/*[out,retval]*/IPath** path);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IPath* *clone) override;
+   STDMETHOD(get__EnumPathElements)(/*[out, retval]*/ IEnumPathElements** pVal) override;  
+   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
+   STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override;
+   STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override;
+	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override; 
+	STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point,/*[out,retval]*/ IPoint2d* *newPoint) override;
+	STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override; 
+	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override; 
+	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint) override; 
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Add)(/*[in]*/ IPathElement* element) override;
+	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) override;
+	STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) override;
+	STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) override;
+	STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override; 
+	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override; 
+   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override;
+   STDMETHOD(CreateParallelPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path) override;
+	STDMETHOD(CreateConnectedPath)(/*[out,retval]*/IPath** path) override;
+   STDMETHOD(CreateSubPath)(/*[in]*/Float64 start,/*[in]*/Float64 end,/*[out,retval]*/IPath** path) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IPathElementEvents
 public:

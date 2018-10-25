@@ -90,10 +90,10 @@ public:
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS
-   virtual void Throw() const
+   virtual void Throw() const override
    { throw *static_cast<const unitmgtXEntryNotFoundT*>(this); }
 
-   virtual Int32 GetReason() const
+   virtual Int32 GetReason() const override
    {
       return 0;
    };

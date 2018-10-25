@@ -63,13 +63,13 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(tangent);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
-   points->Add(1,10,10,NULL);
-   points->Add(2,40,10,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,40,10,nullptr);
 
    // Test some error cases
    TRY_TEST(tangent->External(3,1,-20.0,4,2,5.0,tsCW), COGO_E_RADIUS);
@@ -492,13 +492,13 @@ void CTestTangent::TestCross()
    TRY_TEST(tangent.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(tangent);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
-   points->Add(1,10,10,NULL);
-   points->Add(2,40,10,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,40,10,nullptr);
 
    // Test some error cases
    TRY_TEST(tangent->Cross(3,1,-20.0,4,2,5.0,tsCW), COGO_E_RADIUS);
@@ -552,17 +552,17 @@ void CTestTangent::TestPoint()
    TRY_TEST(tangent.CoCreateInstance(CLSID_CogoModel),S_OK);
 
    CComQIPtr<ICogoModel> model(tangent);
-   TRY_TEST( model != NULL, true );
+   TRY_TEST( model != nullptr, true );
 
    CComPtr<IPointCollection> points;
    model->get_Points(&points);
 
    Float64 radius = 20;
 
-   points->Add(1,10,10,NULL);
-   points->Add(2,10 + radius*sqrt(2.),10,NULL);
-   points->Add(3,10 + radius,10 + radius,NULL);
-   points->Add(999,5,5,NULL);
+   points->Add(1,10,10,nullptr);
+   points->Add(2,10 + radius*sqrt(2.),10,nullptr);
+   points->Add(3,10 + radius,10 + radius,nullptr);
+   points->Add(999,5,5,nullptr);
 
    // Test some error cases
    TRY_TEST(tangent->Point(4,1,-20.0,2,tsCW), COGO_E_RADIUS);

@@ -85,7 +85,7 @@ public:
 	void SetVisited(BOOL bVisited = TRUE);
 	
 	// Use this if you want to subclass and also set different URL
-	BOOL SubclassDlgItem(UINT nID, CWnd* pParent, LPCTSTR lpszURL=NULL) {
+	BOOL SubclassDlgItem(UINT nID, CWnd* pParent, LPCTSTR lpszURL=nullptr) {
 		m_strURL = lpszURL;
 		return CStatic::SubclassDlgItem(nID, pParent);
 	}
@@ -94,17 +94,17 @@ public:
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CHyperLink)
 	public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);	
+	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 	protected:
-	virtual void PreSubclassWindow();	
+	virtual void PreSubclassWindow() override;
 	//}}AFX_VIRTUAL
 
 // Implementation
 protected:
 	static void SetDefaultCursor();
 	static LONG GetRegKey(HKEY key, LPCTSTR subkey, LPTSTR retdata);
-	static void ReportError(int nError);	
-	static HINSTANCE GotoURL(LPCTSTR url, int showcmd);
+	static void ReportError(UINT nError);
+	static UINT GotoURL(LPCTSTR url, int showcmd);
 
 	void AdjustWindow();	
 	virtual void FollowLink();

@@ -146,7 +146,7 @@ protected:
 
    //------------------------------------------------------------------------
    // Function to aid in assignment
-   virtual void MakeAssignment(const rptRcFontModifier& rOther);
+   void MakeAssignment(const rptRcFontModifier& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

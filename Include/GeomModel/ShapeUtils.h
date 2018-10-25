@@ -114,7 +114,7 @@ private:
 
    // Prevent accidental copying and assignment
    gmShapeUtils(const gmShapeUtils&);
-   gmShapeUtils& operator=(const gmShapeUtils&);
+   gmShapeUtils& operator=(const gmShapeUtils&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

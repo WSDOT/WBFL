@@ -73,8 +73,8 @@ private:
    // GROUP: LIFECYCLE
 
    // Prevent accidental copying and assignment
-   stbUnitTest(const stbUnitTest&);
-   stbUnitTest& operator=(const stbUnitTest&);
+   stbUnitTest(const stbUnitTest&) = delete;
+   stbUnitTest& operator=(const stbUnitTest&) = delete;
 
    static bool PCILiftingExamples(dbgLog& rlog);
    static bool PCIHaulingExamples(dbgLog& rlog);

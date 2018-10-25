@@ -40,17 +40,17 @@ CEAFBrokerReportSpecificationBuilder::~CEAFBrokerReportSpecificationBuilder(void
 {
 }
 
-boost::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc,boost::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec)
 {
    // create a regular report spec using the base class implementation... that way we get to use the UI
-   boost::shared_ptr<CReportSpecification> pReportSpec = CReportSpecificationBuilder::CreateReportSpec(rptDesc,pRptSpec);
-   if ( pReportSpec == NULL )
+   std::shared_ptr<CReportSpecification> pReportSpec = CReportSpecificationBuilder::CreateReportSpec(rptDesc,pRptSpec);
+   if ( pReportSpec == nullptr )
    {
       return pReportSpec;
    }
 
    // create a new report spec of our type
-   boost::shared_ptr<CReportSpecification> pEAFRptSpec( new CEAFBrokerReportSpecification(rptDesc.GetReportName(),m_pBroker) );
+   std::shared_ptr<CReportSpecification> pEAFRptSpec(std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(), m_pBroker));
 
    // copy the data from the regular report spec to our report spec
    pEAFRptSpec->SetReportName(pReportSpec->GetReportName().c_str());
@@ -63,10 +63,10 @@ boost::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::Cr
    return pEAFRptSpec;
 }
 
-boost::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
+std::shared_ptr<CReportSpecification> CEAFBrokerReportSpecificationBuilder::CreateDefaultReportSpec(const CReportDescription& rptDesc)
 {
    // Use all chapters at the maximum level
-   boost::shared_ptr<CReportSpecification> pRptSpec( new CEAFBrokerReportSpecification(rptDesc.GetReportName(),m_pBroker) );
+   std::shared_ptr<CReportSpecification> pRptSpec( std::make_shared<CEAFBrokerReportSpecification>(rptDesc.GetReportName(),m_pBroker) );
 
    rptDesc.ConfigureReportSpecification(pRptSpec);
 

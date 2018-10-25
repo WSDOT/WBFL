@@ -71,60 +71,60 @@ private:
    Float64 m_Right;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRect2d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Clone)(/*[out,retval]*/IRect2d** clone);
-	STDMETHOD(IsNormalized)(/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(IsNull)(/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(Touches)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(ContainsRect)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(ContainsPoint)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult);
-	STDMETHOD(SetNull)();
-	STDMETHOD(SetEmpty)();
-	STDMETHOD(Size)(/*[out,retval]*/ ISize2d** ppSize);
-	STDMETHOD(UnionBy)(/*[in]*/ IRect2d* pRect, /*[out,retval]*/ IRect2d** ppUnion);
-	STDMETHOD(Union)(/*[in]*/ IRect2d* pRect);
-	STDMETHOD(Intersect)(/*[in]*/ IRect2d* pRect, /*[out,retval]*/ IRect2d** ppIntersection);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(Normalize)();
-	STDMETHOD(InflateEx)(/*[in]*/ ISize2d* pSize);
-	STDMETHOD(Inflate)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy);
-	STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Width)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(BoundPointEx)(/*[in]*/IPoint2d* pPoint);
-	STDMETHOD(BoundPoint)(/*[in]*/Float64 x,/*[in]*/ Float64 y);
-	STDMETHOD(get_TopRight)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_TopCenter)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_TopLeft)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_CenterRight)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_CenterLeft)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_CenterCenter)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_BottomRight)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_BottomCenter)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_BottomLeft)(/*[out, retval]*/ IPoint2d* *pVal);
-	STDMETHOD(get_Area)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_Bottom)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Bottom)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Top)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Top)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Right)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Right)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Left)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Left)(/*[in]*/ Float64 newVal);
-	STDMETHOD(SetBounds)(/*[in]*/ Float64 Left, /*[in]*/ Float64 Right, /*[in]*/ Float64 Bottom, /*[in]*/ Float64 Top);
-	STDMETHOD(GetBounds)(/*[out, retval]*/ Float64* pLeft, /*[out, retval]*/ Float64* pRight, /*[out, retval]*/ Float64* pBottom, /*[out, retval]*/ Float64* pTop);
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IRect2d** clone) override;
+	STDMETHOD(IsNormalized)(/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(IsNull)(/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(Touches)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(ContainsRect)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(ContainsPoint)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
+	STDMETHOD(SetNull)() override;
+	STDMETHOD(SetEmpty)() override;
+	STDMETHOD(Size)(/*[out,retval]*/ ISize2d** ppSize) override;
+	STDMETHOD(UnionBy)(/*[in]*/ IRect2d* pRect, /*[out,retval]*/ IRect2d** ppUnion) override;
+	STDMETHOD(Union)(/*[in]*/ IRect2d* pRect) override;
+	STDMETHOD(Intersect)(/*[in]*/ IRect2d* pRect, /*[out,retval]*/ IRect2d** ppIntersection) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(Normalize)() override;
+	STDMETHOD(InflateEx)(/*[in]*/ ISize2d* pSize) override;
+	STDMETHOD(Inflate)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
+	STDMETHOD(get_Height)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Width)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(BoundPointEx)(/*[in]*/IPoint2d* pPoint) override;
+	STDMETHOD(BoundPoint)(/*[in]*/Float64 x,/*[in]*/ Float64 y) override;
+	STDMETHOD(get_TopRight)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_TopCenter)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_TopLeft)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_CenterRight)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_CenterLeft)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_CenterCenter)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_BottomRight)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_BottomCenter)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_BottomLeft)(/*[out, retval]*/ IPoint2d* *pVal) override;
+	STDMETHOD(get_Area)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_Bottom)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Bottom)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Top)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Top)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Right)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Right)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Left)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Left)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(SetBounds)(/*[in]*/ Float64 Left, /*[in]*/ Float64 Right, /*[in]*/ Float64 Bottom, /*[in]*/ Float64 Top) override;
+	STDMETHOD(GetBounds)(/*[out, retval]*/ Float64* pLeft, /*[out, retval]*/ Float64* pRight, /*[out, retval]*/ Float64* pBottom, /*[out, retval]*/ Float64* pTop) override;
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__RECT2D_H_

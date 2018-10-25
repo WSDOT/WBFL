@@ -72,22 +72,22 @@ void CTestPierCollection::Test()
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);
 
-   TRY_TEST(piers != NULL,true);
+   TRY_TEST(piers != nullptr,true);
 
    PierIndexType count;
-   TRY_TEST(piers->get_Count(NULL),E_POINTER);
+   TRY_TEST(piers->get_Count(nullptr),E_POINTER);
    TRY_TEST(piers->get_Count(&count),S_OK);
    TRY_TEST(count,2);
 
    CComPtr<IBridgePier> pier1, pier2;
-   TRY_TEST(piers->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(piers->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(piers->get_Item(-1,&pier1),E_INVALIDARG);
    TRY_TEST(piers->get_Item(100,&pier1),E_INVALIDARG);
    TRY_TEST(piers->get_Item(0,&pier1),S_OK);
    TRY_TEST(piers->get_Item(1,&pier2),S_OK);
 
-   TRY_TEST(pier1 != NULL,true);
-   TRY_TEST(pier2 != NULL,true);
+   TRY_TEST(pier1 != nullptr,true);
+   TRY_TEST(pier2 != nullptr,true);
 
    CComPtr<IStation> station;
    Float64 value;

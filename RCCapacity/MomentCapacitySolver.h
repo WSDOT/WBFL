@@ -91,24 +91,24 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMomentCapacitySolver
 public:
-   STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance);
-   STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance);
-   STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter);
-   STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter);
-   STDMETHOD(put_Slices)(/*[in]*/long nSlices);
-	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices);
-   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor);
-	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor);
-   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection);
-	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection);
-   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution);
-   STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo);
-   STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo);
-   STDMETHOD(get_PlasticCentroid)(/*[out,retval]*/ IPoint2d** pcg);
+   STDMETHOD(put_AxialTolerance)(/*[in]*/Float64 tolerance) override;
+   STDMETHOD(get_AxialTolerance)(/*[out,retval]*/Float64* tolerance) override;
+   STDMETHOD(put_MaxIterations)(/*[in]*/long maxIter) override;
+   STDMETHOD(get_MaxIterations)(/*[out,retval]*/long* maxIter) override;
+   STDMETHOD(put_Slices)(/*[in]*/long nSlices) override;
+	STDMETHOD(get_Slices)(/*[out,retval]*/long* nSlices) override;
+   STDMETHOD(put_SliceGrowthFactor)(/*[in]*/Float64 sliceGrowthFactor) override;
+	STDMETHOD(get_SliceGrowthFactor)(/*[out,retval]*/Float64* sliceGrowthFactor) override;
+   STDMETHOD(putref_Section)(/*[in]*/IGeneralSection* pSection) override;
+	STDMETHOD(get_Section)(/*[out,retval]*/IGeneralSection** pSection) override;
+   STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ Float64 angle,/*[in]*/ Float64 k_or_ec,/*[in]*/SolutionMethod solutionMethod,/*[out,retval]*/IMomentCapacitySolution** solution) override;
+   STDMETHOD(CompressionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
+   STDMETHOD(TensionLimit)(/*[out]*/Float64* Fz,/*[out]*/Float64* Mx,/*[out]*/Float64* My,/*[out]*/Float64* eo) override;
+   STDMETHOD(get_PlasticCentroid)(/*[out,retval]*/ IPoint2d** pcg) override;
 };
 
 #endif //__MomentCapacitySolver_H_

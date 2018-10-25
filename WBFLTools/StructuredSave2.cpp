@@ -49,7 +49,7 @@ STDMETHODIMP CStructuredSave2::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IStructuredSave2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (::InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -96,7 +96,7 @@ HRESULT CStructuredSave2::Open(/*[in]*/ BSTR strFileName)
 
 void CStructuredSave2::BeginSave(IStream* pis)
 {
-   ATLASSERT( pis != NULL );
+   ATLASSERT( pis != nullptr );
    ATLASSERT(!(bool)m_spDoc);
    ATLASSERT(m_bOpen);
    ATLASSERT(!m_WroteTopUnit);
@@ -177,7 +177,7 @@ void CStructuredSave2::EndSave()
 
    // Save document to stream
    m_spDoc->save((IStream*)m_pIStream);
-   if (m_pIStream==NULL)
+   if (m_pIStream==nullptr)
    {
       ATLASSERT(false);
       THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
@@ -187,7 +187,7 @@ void CStructuredSave2::EndSave()
    m_NodeStack.clear();
 
    m_spDoc.Release();
-   m_spDoc=0;
+   m_spDoc = 0;
 
    m_ObjectSet.clear();
 }
@@ -353,6 +353,16 @@ HRESULT CStructuredSave2::put_Property(/*[in]*/ BSTR strPropName, /*[in]*/ VARIA
 
       // unsigned objects require our attention to convert
       case VT_UI2:
+      {
+         unsigned short ul = newVal.uiVal;
+         std::_tostringstream os;
+         os << ul;
+         std::_tstring msg(os.str());
+         _bstr_t bval(msg.c_str());
+         pchild->text = bval;
+      }
+      break;
+
       case VT_UINT:
          {
             unsigned int ul = newVal.uintVal;
@@ -410,10 +420,10 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
    AssertValid();
    HRESULT hr;
 
-   if (pUnk==NULL)
+   if (pUnk==nullptr)
    {
       ATLASSERT(false);
-      THROW_MSG("NULL Pointer: CStructuredSave2::Property",E_POINTER, NULL);
+      THROW_MSG("nullptr Pointer: CStructuredSave2::Property",E_POINTER, 0);
    }
 
    // check to see if we have written any objects yet. If not, create an object table
@@ -447,7 +457,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       // Let's see if it supports the right interfaces
       CComPtr<IPersist> pip;
       hr = pUnk->QueryInterface(IID_IPersist, (void**)&pip);
-      if (FAILED(hr) || pip==NULL)
+      if (FAILED(hr) || pip==nullptr)
       {
          ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_IPERSIST,STRSAVE_E_IPERSIST,IDH_STRSAVE_E_IPERSIST);
@@ -455,7 +465,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
 
       CComPtr<IStructuredStorage2> pss;
       hr = pUnk->QueryInterface(IID_IStructuredStorage2, (void**)&pss);
-      if (FAILED(hr) || pss==NULL)
+      if (FAILED(hr) || pss==nullptr)
       {
          ATLASSERT(false);
          THROW_IDS(IDS_STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2,STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2,IDH_STRSAVE_E_CLASS_ISTRUCTUREDSTORAGE2);

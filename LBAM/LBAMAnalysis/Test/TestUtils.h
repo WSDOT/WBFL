@@ -31,7 +31,7 @@ static void DumpSectionForceResults(std::_tofstream& os, IIDArray* pois , CComPt
 
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
-   for (CollectionIndexType i=0; i<poi_cnt; i++)
+   for (CollectionIndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionResult3D> res;
       pres->get_Item(i,&res);
@@ -91,7 +91,7 @@ static void DumpDeflectionResults(std::_tofstream& os, IIDArray* pois , CComPtr<
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i=0; i<poi_cnt; i++)
+   for (CollectionIndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionResult3D> res;
       pres->get_Item(i,&res);
@@ -114,7 +114,7 @@ static void DumpSupportDeflectionResults(std::_tofstream& os, IIDArray* pois , C
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i=0; i<poi_cnt; i++)
+   for (CollectionIndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<IResult3D> res;
       pres->get_Item(i,&res);
@@ -138,7 +138,7 @@ static void DumpReactionResults(std::_tofstream& os, IIDArray* pois , CComPtr<IR
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
 
-   for (CollectionIndexType i=0; i<poi_cnt; i++)
+   for (CollectionIndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<IResult3D> res;
       pres->get_Item(i,&res);
@@ -159,7 +159,7 @@ static void DumpStressResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISec
 {
    CollectionIndexType poi_cnt;
    pois->get_Count(&poi_cnt);
-   for (CollectionIndexType i=0; i<poi_cnt; i++)
+   for (CollectionIndexType i = 0; i<poi_cnt; i++)
    {
       CComPtr<ISectionStressResult> res;
       pres->get_Item(i,&res);
@@ -171,7 +171,7 @@ static void DumpStressResults(std::_tofstream& os, IIDArray* pois , CComPtr<ISec
       res->get_LeftCount(&num_left);
       res->get_RightCount(&num_right);
 
-      for (CollectionIndexType j=0; j<max(num_left,num_right); j++)
+      for (CollectionIndexType j = 0; j<max(num_left,num_right); j++)
       {
          os<<std::setw(6)<< pid;
 

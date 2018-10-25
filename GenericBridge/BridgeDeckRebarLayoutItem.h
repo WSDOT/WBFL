@@ -65,23 +65,23 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarPatterns"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarPattern");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
    IGenericBridge* m_pBridge;
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IBridgeDeckRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[in]*/ Float64 offset,/*[out,retval]*/ VARIANT_BOOL* bResult);
-	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
-	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
-//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern);
-	STDMETHOD(AddRebarPattern)(/*[in]*/IBridgeDeckRebarPattern* pattern);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumBridgeDeckRebarPatterns** enumRebarPatterns);
-	STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[in]*/ Float64 offset,/*[out,retval]*/ VARIANT_BOOL* bResult) override;
+	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start) override;
+	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
+//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern) override;
+	STDMETHOD(AddRebarPattern)(/*[in]*/IBridgeDeckRebarPattern* pattern) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumBridgeDeckRebarPatterns** enumRebarPatterns) override;
+	STDMETHOD(putref_Bridge)(/*[in]*/IGenericBridge* pBridge) override;
 };

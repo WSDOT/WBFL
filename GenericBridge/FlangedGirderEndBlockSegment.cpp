@@ -39,7 +39,7 @@ static char THIS_FILE[] = __FILE__;
 // CFlangedGirderEndBlockSegment
 HRESULT CFlangedGirderEndBlockSegment::FinalConstruct()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
 
    m_Orientation = 0;
 
@@ -61,7 +61,7 @@ HRESULT CFlangedGirderEndBlockSegment::FinalConstruct()
 
 void CFlangedGirderEndBlockSegment::FinalRelease()
 {
-   m_pGirderLine = NULL;
+   m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -72,7 +72,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::InterfaceSupportsErrorInfo(REFIID ri
 		&IID_ISegment,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -99,7 +99,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_SuperstructureMember(ISuperstruc
    }
    else
    {
-      (*ssMbr) = NULL;
+      (*ssMbr) = nullptr;
    }
 
    return S_OK;
@@ -122,7 +122,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_GirderLine(IGirderLine** girderL
    }
    else
    {
-      (*girderLine) = NULL;
+      (*girderLine) = nullptr;
    }
 
    return S_OK;
@@ -132,7 +132,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::putref_PrevSegment(ISegment* segment
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = NULL;
+   m_pPrevSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -152,7 +152,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrevSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -161,7 +161,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::putref_NextSegment(ISegment* segment
 {
    CHECK_IN(segment);
    ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = NULL;
+   m_pNextSegment = nullptr;
    HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
    if ( FAILED(hr) )
    {
@@ -181,7 +181,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_NextSegment(ISegment** segment)
    }
    else
    {
-      *segment = NULL;
+      *segment = nullptr;
       return E_FAIL;
    }
 }
@@ -218,7 +218,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    section.CoCreateInstance(CLSID_CompositeSectionEx);
 
    section->QueryInterface(IID_ISection,(void**)ppSection);
-   ATLASSERT(*ppSection != NULL);
+   ATLASSERT(*ppSection != nullptr);
 
    // add the primary shape
    Float64 Efg = 0;
@@ -283,7 +283,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSe
    }
 
    CComQIPtr<IFlangedGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
@@ -558,7 +558,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::AddShape(IShape* pShape,IMaterial* p
    if ( m_Shapes.size() == 0 )
    {
       CComQIPtr<IFlangedGirderSection> beam(pShape);
-      if ( beam == NULL )
+      if ( beam == nullptr )
       {
          ATLASSERT(false); // first shape must be a flanged girder section
          return E_INVALIDARG;
@@ -710,7 +710,7 @@ void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 distAlongSegment,Fl
    get_Length(&segLength);
 
    CComQIPtr<IFlangedGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    CComPtr<IPrecastBeam> pcBeam;
    beam->get_Beam(&pcBeam);

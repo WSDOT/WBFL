@@ -45,7 +45,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CSurface::FinalConstruct()
 {
-   m_pProfile = NULL;
+   m_pProfile = nullptr;
 
    m_ID = INVALID_ID;
 
@@ -138,7 +138,7 @@ STDMETHODIMP CSurface::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ISurface,
       &IID_IStructuredStorage2
    };
-   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
          return S_OK;
@@ -462,7 +462,7 @@ STDMETHODIMP CSurface::CreateSurfaceProfile(VARIANT varStation,VARIANT varDirect
          CComPtr<IPoint2d> pnt;
          ridgeLine->Intersect(cutLine,pntAlignment,&pnt);
 
-         if ( pnt == NULL && (subSurfaceIdx == 0 || subSurfaceIdx == nSubSurfaces-1) )
+         if ( pnt == nullptr && (subSurfaceIdx == 0 || subSurfaceIdx == nSubSurfaces-1) )
          {
             // we are in the first or last sub-surface and the cut line didn't intersect a ridge line
             // see if it intersects the surface boundary line
@@ -478,7 +478,7 @@ STDMETHODIMP CSurface::CreateSurfaceProfile(VARIANT varStation,VARIANT varDirect
             geomUtil->IntersectLineWithLineSegment(cutLine,endLine,&pnt);
          }
 
-         if ( pnt != NULL )
+         if ( pnt != nullptr )
          {
             CComPtr<IStation> station;
             Float64 normal_offset;
@@ -556,7 +556,7 @@ HRESULT CSurface::GetWidening(IStation* station,IndexType templateSegmentIdx,Flo
 {
    CComPtr<IWidening> widening;
    m_Widenings->GetWidening(CComVariant(station),&widening);
-   if ( widening == NULL )
+   if ( widening == nullptr )
    {
       *pWidening = 0.0; // no widening at this station
       return S_OK;
@@ -569,7 +569,7 @@ HRESULT CSurface::GetSuperelevation(IStation* station,IndexType templateSegmentI
 {
    CComPtr<ISuperelevation> superelevation;
    m_Superelevations->GetSuperelevation(CComVariant(station),&superelevation);
-   if ( superelevation == NULL )
+   if ( superelevation == nullptr )
    {
       // no superelevation at this station... just return the original values
       *pSlope = slope;

@@ -43,7 +43,7 @@ STDMETHODIMP CPOIStressPoints::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IPOIStressPoints
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -91,7 +91,7 @@ STDMETHODIMP CPOIStressPoints::get_Item(VARIANT invar, IPOIStressPointsItem **pV
       {
          long idx = invar.lVal;
          IteratorType it( m_Container.begin() );
-         for (long i=0; i<idx; i++)
+         for (long i = 0; i<idx; i++)
          {
             it++;
             if (it==itend)
@@ -291,7 +291,7 @@ STDMETHODIMP CPOIStressPoints::get__EnumElements(/*[out, retval]*/ IEnumPOIStres
 
    CComPtr<IEnumPOIStressPoints> pHolder(pEnum); // memory leak avoidance
 
-   hr = pEnum->Init( NULL, m_Container );
+   hr = pEnum->Init( nullptr, m_Container );
    if ( FAILED(hr) )
       return hr;
 
@@ -306,7 +306,7 @@ STDMETHODIMP CPOIStressPoints::get__NewEnum(IUnknown** ppUnk)
 {
    CHECK_RETOBJ(ppUnk);
 
-	*ppUnk = NULL;
+	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
    typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
@@ -373,7 +373,7 @@ STDMETHODIMP CPOIStressPoints::Load(IStructuredLoad2 * pload)
       long cnt = var;
       var.Clear();
 
-      for (long i=0; i<cnt; i++)
+      for (long i = 0; i<cnt; i++)
       {
          CComPtr<IPOIStressPointsItem> item;
 

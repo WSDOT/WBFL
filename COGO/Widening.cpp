@@ -41,7 +41,7 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CWidening::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
 
    CComObject<CStation>* pBeginTransition;
    CComObject<CStation>::CreateInstance(&pBeginTransition);
@@ -77,7 +77,7 @@ STDMETHODIMP CWidening::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IWidening,
       &IID_IStructuredStorage2
    };
-   for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+   for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
          return S_OK;
@@ -432,7 +432,7 @@ HRESULT CWidening::ValidateStation(IStation* station)
       m_pSurface->get_Profile(&profile); 
    }
 
-   if ( profile == NULL )
+   if ( profile == nullptr )
    {
       // if not associated with a profile, station must be normalized
       ZoneIndexType staEqnZoneIdx;

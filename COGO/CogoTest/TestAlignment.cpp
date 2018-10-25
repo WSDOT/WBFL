@@ -68,7 +68,7 @@ void CTestAlignment::Test()
    element->putref_Value(point);
 
    // add it to the Alignment
-   TRY_TEST(alignment->Add(NULL),E_INVALIDARG);
+   TRY_TEST(alignment->Add(nullptr),E_INVALIDARG);
    TRY_TEST(alignment->Add(element),S_OK);
 
    //
@@ -81,7 +81,7 @@ void CTestAlignment::Test()
    point->Move(20,30);
 
    // add it to the Alignment
-   TRY_TEST(alignment->AddEx(NULL),E_INVALIDARG);
+   TRY_TEST(alignment->AddEx(nullptr),E_INVALIDARG);
    //TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE); // alignment/paths are now valid path element types
    TRY_TEST(alignment->AddEx(point), S_OK);
 
@@ -99,7 +99,7 @@ void CTestAlignment::Test()
    // Test Count
    //
    CollectionIndexType count;
-   TRY_TEST(alignment->get_Count(NULL),E_POINTER);
+   TRY_TEST(alignment->get_Count(nullptr),E_POINTER);
    TRY_TEST(alignment->get_Count(&count),S_OK);
    TRY_TEST(count,3);
 
@@ -111,7 +111,7 @@ void CTestAlignment::Test()
    element.Release();
    TRY_TEST(alignment->get_Item(-1,&element),E_INVALIDARG);
    TRY_TEST(alignment->get_Item(100,&element),E_INVALIDARG);
-   TRY_TEST(alignment->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(alignment->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(alignment->get_Item(0,&element),S_OK);
    PathElementType type;
    element->get_Type(&type);
@@ -154,7 +154,7 @@ void CTestAlignment::Test()
    TRY_TEST(IsEqual(x,100.0),true);
    TRY_TEST(IsEqual(y,100.0),true);
 
-   TRY_TEST(alignment->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(alignment->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(alignment->putref_Item(-1,element),E_INVALIDARG);
    TRY_TEST(alignment->putref_Item(100,element),E_INVALIDARG);
    TRY_TEST(alignment->putref_Item(1,element),S_OK);
@@ -166,12 +166,12 @@ void CTestAlignment::Test()
    //
    // Test Insert and InsertEx
    //
-   TRY_TEST(alignment->Insert(1,NULL),E_INVALIDARG);
+   TRY_TEST(alignment->Insert(1,nullptr),E_INVALIDARG);
    TRY_TEST(alignment->Insert(-1,element),E_INVALIDARG);
    TRY_TEST(alignment->Insert(100,element),E_INVALIDARG);
    TRY_TEST(alignment->Insert(1,element),S_OK);
 
-   TRY_TEST(alignment->InsertEx(1,NULL),E_INVALIDARG);
+   TRY_TEST(alignment->InsertEx(1,nullptr),E_INVALIDARG);
    //TRY_TEST(alignment->InsertEx(1,alignment),COGO_E_PATHELEMENTTYPE); // alignment/path are now valid path elements
    TRY_TEST(alignment->InsertEx(-1,point),E_INVALIDARG);
    TRY_TEST(alignment->InsertEx(100,point),E_INVALIDARG);
@@ -197,14 +197,14 @@ void CTestAlignment::Test()
    // Test Profile
    //
    CComPtr<IProfile> profile;
-   TRY_TEST(alignment->get_Profile(NULL),E_POINTER);
+   TRY_TEST(alignment->get_Profile(nullptr),E_POINTER);
    TRY_TEST(alignment->get_Profile(&profile),S_OK);
 
    //
    // Test Station Equations
    //
    CComPtr<IStationEquationCollection> equations;
-   TRY_TEST(alignment->get_StationEquations(NULL),E_POINTER);
+   TRY_TEST(alignment->get_StationEquations(nullptr),E_POINTER);
    TRY_TEST(alignment->get_StationEquations(&equations),S_OK);
 
    //
@@ -218,7 +218,7 @@ void CTestAlignment::Test()
    // RefStation
    CComPtr<IStation> station;
    Float64 stationVal;
-   TRY_TEST(alignment->get_RefStation(NULL),E_POINTER);
+   TRY_TEST(alignment->get_RefStation(nullptr),E_POINTER);
    TRY_TEST(alignment->get_RefStation(&station),S_OK);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,0.0),true);
@@ -240,14 +240,14 @@ void CTestAlignment::Test()
    alignment->AddEx(point);
    alignment->AddEx(hc);
    CComPtr<IEnumPathElements> pEnum;
-   TRY_TEST(alignment->get__EnumAlignmentElements(NULL),E_POINTER);
+   TRY_TEST(alignment->get__EnumAlignmentElements(nullptr),E_POINTER);
    TRY_TEST(alignment->get__EnumAlignmentElements(&pEnum),S_OK);
 
    // Test PointFactory
    CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(alignment->get_PointFactory(NULL),E_POINTER);
+   TRY_TEST(alignment->get_PointFactory(nullptr),E_POINTER);
    TRY_TEST(alignment->get_PointFactory(&factory),S_OK);
-   TRY_TEST(alignment->putref_PointFactory(NULL),E_INVALIDARG);
+   TRY_TEST(alignment->putref_PointFactory(nullptr),E_INVALIDARG);
    TRY_TEST(alignment->putref_PointFactory(factory),S_OK);
 
    // Test Events
@@ -300,7 +300,7 @@ void CTestAlignment::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(alignment);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IAlignment ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -318,7 +318,7 @@ void CTestAlignment::Test()
 
 STDMETHODIMP CTestAlignment::OnAlignmentChanged(IAlignment* alignment)
 {
-   if ( alignment != NULL )
+   if ( alignment != nullptr )
       Pass();
 
    return S_OK;

@@ -63,8 +63,8 @@ public:
    HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, LoadCaseIDType id);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -75,16 +75,16 @@ BEGIN_COM_MAP(CLoading)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dLoading
 public:
-	STDMETHOD(get_PointLoads)(/*[out, retval]*/ IFem2dPointLoadCollection* *pVal);
-	STDMETHOD(get_JointLoads)(/*[out, retval]*/ IFem2dJointLoadCollection* *pVal);
-	STDMETHOD(get_JointDeflections)(/*[out, retval]*/ IFem2dJointDeflectionCollection* *pVal);
-	STDMETHOD(get_MemberStrains)(/*[out, retval]*/ IFem2dMemberStrainCollection* *pVal);
-	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IFem2dDistributedLoadCollection* *pVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ LoadCaseIDType *pVal);
+	STDMETHOD(get_PointLoads)(/*[out, retval]*/ IFem2dPointLoadCollection* *pVal) override;
+	STDMETHOD(get_JointLoads)(/*[out, retval]*/ IFem2dJointLoadCollection* *pVal) override;
+	STDMETHOD(get_JointDeflections)(/*[out, retval]*/ IFem2dJointDeflectionCollection* *pVal) override;
+	STDMETHOD(get_MemberStrains)(/*[out, retval]*/ IFem2dMemberStrainCollection* *pVal) override;
+	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IFem2dDistributedLoadCollection* *pVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
 
 private:
    LoadCaseIDType m_ID;
@@ -110,8 +110,8 @@ private:
 
 private:
    // Fem-related functions
-   virtual void ApplyLoads(CModel *model);
-   virtual void ApplyLoads(CMember *member);
+   void ApplyLoads(CModel *model);
+   void ApplyLoads(CMember *member);
 
    friend CModel;
 

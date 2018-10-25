@@ -30,7 +30,7 @@
 #include <System\SysExp.h>
 #include <System\Transaction.h>
 #include <System\SingletonKiller.h>
-#include <boost\shared_ptr.hpp>
+
 #include <list>
 
 // LOCAL INCLUDES
@@ -187,7 +187,7 @@ protected:
 
 private:
    // GROUP: DATA MEMBERS
-   typedef boost::shared_ptr<txnTransaction> TxnItem;
+   typedef std::shared_ptr<txnTransaction> TxnItem;
    typedef std::list<TxnItem> TxnContainer;
    typedef TxnContainer::iterator TxnIterator;
    typedef TxnContainer::reverse_iterator TxnReverseIterator;

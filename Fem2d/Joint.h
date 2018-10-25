@@ -60,8 +60,8 @@ public:
    void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, JointIDType ID, Float64 x=0.0, Float64 y=0.0);
 
    // IStructuredStorage - sort of
-   STDMETHOD(Load)(/*[in]*/ IStructuredLoad2 *load);
-   STDMETHOD(Save)(/*[in]*/ IStructuredSave2 *save);
+   HRESULT Load(IStructuredLoad2 *load);
+   HRESULT Save(IStructuredSave2 *save);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -72,22 +72,22 @@ BEGIN_COM_MAP(CJoint)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dJoint
 public:
-	STDMETHOD(ReleaseDof)(/*[in]*/ Fem2dJointReleaseType rel);
-	STDMETHOD(Free)();
-	STDMETHOD(Support)();
-	STDMETHOD(IsSupport)(/*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(IsDofReleased)(/*[in]*/Fem2dJointReleaseType rel, /*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(IsDofSupported)(/*[in]*/Fem2dJointReleaseType rel, /*[out, retval]*/ VARIANT_BOOL *pVal);
-	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_X)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_ID)(/*[out, retval]*/ JointIDType *pVal);
-	STDMETHOD(get_Members)(/*[out, retval]*/ IIDArray* *ppVal);
+	STDMETHOD(ReleaseDof)(/*[in]*/ Fem2dJointReleaseType rel) override;
+	STDMETHOD(Free)() override;
+	STDMETHOD(Support)() override;
+	STDMETHOD(IsSupport)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(IsDofReleased)(/*[in]*/Fem2dJointReleaseType rel, /*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(IsDofSupported)(/*[in]*/Fem2dJointReleaseType rel, /*[out, retval]*/ VARIANT_BOOL *pVal) override;
+	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_ID)(/*[out, retval]*/ JointIDType *pVal) override;
+	STDMETHOD(get_Members)(/*[out, retval]*/ IIDArray* *ppVal) override;
 
 
 private:

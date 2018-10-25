@@ -28,7 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "UGirderSection.h"
 #include <MathEx.h>
-#include <xutility> // for _cpp_min
+#include <xutility> // for Min
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,7 +44,7 @@ HRESULT CUGirderSection::FinalConstruct()
    m_Beam.CoCreateInstance(CLSID_UBeam);
 
    CComQIPtr<IShape> beamShape(m_Beam);
-   ATLASSERT(beamShape != NULL); // must implement IShape interface
+   ATLASSERT(beamShape != nullptr); // must implement IShape interface
 
    m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
 
@@ -68,7 +68,7 @@ STDMETHODIMP CUGirderSection::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_ICompositeShape,
       &IID_IXYPosition,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -85,7 +85,7 @@ void CUGirderSection::GetSplittingZone(Float64* pH,SplittingDirection* pSD)
    m_Beam->get_W1(&w1);
    m_Beam->get_W2(&w2);
 
-   long idx = MinIndex(h,w1,w2);
+   IndexType idx = MinIndex(h,w1,w2);
    if ( idx == 0 )
    {
       *pH = h;
@@ -310,7 +310,7 @@ STDMETHODIMP CUGirderSection::get_TopFlangeThickness(FlangeIndexType idx,Float64
    m_Beam->get_D4(&D4);
    m_Beam->get_D6(&D6);
 
-   *tFlange = _cpp_min(D4,D6);
+   *tFlange = Min(D4,D6);
    return S_OK;
 }
 
@@ -415,7 +415,7 @@ STDMETHODIMP CUGirderSection::get_MinTopFlangeThickness(Float64* tf)
    m_Beam->get_D4(&d4);
    m_Beam->get_D6(&d6);
 
-   *tf = _cpp_min(d4,d6);
+   *tf = Min(d4,d6);
    return S_OK;
 }
 

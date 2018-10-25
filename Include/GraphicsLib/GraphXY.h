@@ -385,7 +385,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const grGraphXY& rOther);
-   virtual void MakeAssignment(const grGraphXY& rOther);
+   void MakeAssignment(const grGraphXY& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

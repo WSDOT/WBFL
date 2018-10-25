@@ -68,13 +68,13 @@ BEGIN_COM_MAP(CMemberCollection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dMemberCollection
 public:
-	STDMETHOD(Create)(/*[in]*/MemberIDType ID, /*[in]*/JointIDType startJoint,/*[in]*/JointIDType endJoint,/*[in]*/Float64 EA, /*[in]*/Float64 EI, /*[out, retval]*/ IFem2dMember* *pVal);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/MemberIDType* pid);
-	STDMETHOD(Clear)();
+	STDMETHOD(Create)(/*[in]*/MemberIDType ID, /*[in]*/JointIDType startJoint,/*[in]*/JointIDType endJoint,/*[in]*/Float64 EA, /*[in]*/Float64 EI, /*[out, retval]*/ IFem2dMember* *pVal) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/MemberIDType* pid) override;
+	STDMETHOD(Clear)() override;
 
 private:
    HRESULT CMemberCollection::DuplicateJointError(JointIDType id);

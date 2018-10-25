@@ -47,7 +47,7 @@ END_COM_MAP()
 
 // iDisplayObjectFactory
 public:
-   STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj);
+   STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj) override;
 };
 
 #endif // INCLUDED_DISPLAYOBJECTFACTORYIMPL_H_

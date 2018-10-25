@@ -118,7 +118,7 @@ Float64 mathBrentsRootFinder2d::FindRootInRange(const mathFunction2d& eval,
             p = fabs(p);
             min1 = 3.0*xm*q - fabs(tol1*q);
             min2 = fabs(e*q);
-            if (2.0*p < _cpp_min(min1, min2)) {
+            if (2.0*p < Min(min1, min2)) {
                e = d;
                d = p/q;
             }

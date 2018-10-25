@@ -97,9 +97,9 @@ END_COM_MAP()
    HRESULT LocatePoints();
 
 public:
-   STDMETHOD(get_Point)(GirderIDType gdrLineID,EndType endType,IPoint2d** ppPoint);
-   STDMETHOD(get_Length)(GirderIDType gdrLineID,Float64* pLength);
-   STDMETHOD(get_ID)(LineIDType* pVal);
+   STDMETHOD(get_Point)(GirderIDType gdrLineID,EndType endType,IPoint2d** ppPoint) override;
+   STDMETHOD(get_Length)(GirderIDType gdrLineID,Float64* pLength) override;
+   STDMETHOD(get_ID)(LineIDType* pVal) override;
 };
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(DiaphragmLine), CDiaphragmLine)

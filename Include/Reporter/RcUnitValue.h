@@ -80,7 +80,7 @@ public:
 
    //------------------------------------------------------------------------
    // Accept a visitor
-   virtual void Accept( rptRcVisitor& rVisitor );
+   virtual void Accept( rptRcVisitor& rVisitor ) override;
 
    //------------------------------------------------------------------------
    // Sets the value for this piece of report content. <i>value</i> is in
@@ -156,7 +156,7 @@ protected:
    void MakeCopy(const rptRcUnitValue& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rptRcUnitValue& rOther);
+   void MakeAssignment(const rptRcUnitValue& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

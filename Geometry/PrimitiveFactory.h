@@ -66,29 +66,29 @@ END_COM_MAP()
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPoint2dFactory
 public:
-	STDMETHOD(CreatePoint)(/*[out,retval]*/IPoint2d** ppPoint);
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStrStg);
+	STDMETHOD(CreatePoint)(/*[out,retval]*/IPoint2d** ppPoint) override;
+   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStrStg) override;
 
 // IPoint3dFactory
 public:
-	STDMETHOD(CreatePoint)(/*[out,retval]*/IPoint3d** ppPoint);
+	STDMETHOD(CreatePoint)(/*[out,retval]*/IPoint3d** ppPoint) override;
 
 // ILine2dFactory
 public:
-	STDMETHOD(CreateLine)(/*[out,retval]*/ILine2d** ppLine);
+	STDMETHOD(CreateLine)(/*[out,retval]*/ILine2d** ppLine) override;
 
 // ILineSegment2dFactory
 public:
-	STDMETHOD(CreateLineSegment)(/*[out,retval]*/ILineSegment2d** ppLineSeg);
+	STDMETHOD(CreateLineSegment)(/*[out,retval]*/ILineSegment2d** ppLineSeg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__PRIMITIVEFACTORY_H_

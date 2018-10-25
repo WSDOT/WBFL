@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="BridgeDeckRebarLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeGeometryTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectiveFlangeWidthDetails.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectiveFlangeWidthTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FlexRebarLayoutItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericBridgeTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrecastGirder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SectionCutTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrandFillTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrandGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BridgeDeckRebarLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgeGeometryTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectiveFlangeWidthDetails.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectiveFlangeWidthTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlexRebarLayoutItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBridgeToolsCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrecastGirder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SectionCutTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrandFillTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrandGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLGenericBridgeTools.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GenericBridgeTools.def" />
+    <None Include="BridgeDeckRebarLayout.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BridgeGeometryTool.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="EffectiveFlangeWidthDetails.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="EffectiveFlangeWidthTool.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlexRebarLayoutItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrecastGirder.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SectionCutTool.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrandFillTool.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrandGrid.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrandPattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{710f7286-7fcc-4100-b284-d7ff7603198e}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1417b06b-d7b8-435c-8719-e565189ec2b4}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{859ead02-0e42-4d2b-890b-d02d2c368938}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GenericBridgeTools.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

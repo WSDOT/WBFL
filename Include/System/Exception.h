@@ -143,7 +143,7 @@ protected:
    void MakeCopy(const sysXBase& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const sysXBase& rOther);
+   void MakeAssignment(const sysXBase& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

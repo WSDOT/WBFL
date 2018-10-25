@@ -63,7 +63,7 @@ STDMETHODIMP CBridgePier::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IBridgePier,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -172,7 +172,7 @@ STDMETHODIMP CBridgePier::get_ID(PierIDType* pID)
 
 STDMETHODIMP CBridgePier::get_Station(IStation* *station)
 {
-   if ( m_pPierLine == NULL )
+   if ( m_pPierLine == nullptr )
    {
       return m_TestStation.CopyTo(station);
    }

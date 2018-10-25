@@ -71,88 +71,88 @@ END_CONNECTION_POINT_MAP()
    CComPtr<IHorzCurve> m_HorzCurve;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // iHorzCurveDisplayObject
 public:
-   STDMETHOD_(void,putref_HorzCurve)(IHorzCurve* hc,BOOL bRedraw,BOOL bFireEvent);
-   STDMETHOD_(void,get_HorzCurve)(IHorzCurve* *hc);
+   STDMETHOD_(void,putref_HorzCurve)(IHorzCurve* hc,BOOL bRedraw,BOOL bFireEvent) override;
+   STDMETHOD_(void,get_HorzCurve)(IHorzCurve* *hc) override;
 
-   STDMETHOD_(void,put_DrawMode)(HorzCurveDrawMode mode);
-   STDMETHOD_(void,get_DrawMode)(HorzCurveDrawMode* mode);
+   STDMETHOD_(void,put_DrawMode)(HorzCurveDrawMode mode) override;
+   STDMETHOD_(void,get_DrawMode)(HorzCurveDrawMode* mode) override;
 
    // Font for labels. Note that font height is in 10th of points.
    // Note that Title is drawn in bold version of same font
-   STDMETHOD_(void,put_Font)(const LOGFONT& Font);
-   STDMETHOD_(void,get_Font)(LOGFONT* pFont);
+   STDMETHOD_(void,put_Font)(const LOGFONT& Font) override;
+   STDMETHOD_(void,get_Font)(LOGFONT* pFont) override;
 
 // iDisplayObject Implementation
 public:
-   STDMETHOD_(void,SetID)(IDType id) { Do_SetID(id); }
-   STDMETHOD_(IDType,GetID)() { return Do_GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) override { Do_SetID(id); }
+   STDMETHOD_(IDType,GetID)() override { return Do_GetID(); }
 
-   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { Do_SetItemData(pItemData,bDelete); }
-   STDMETHOD_(void,GetItemData)(void** ppItemData) { Do_GetItemData(ppItemData); }
+   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) override { Do_SetItemData(pItemData,bDelete); }
+   STDMETHOD_(void,GetItemData)(void** ppItemData) override { Do_GetItemData(ppItemData); }
 
-   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) { Do_SetDisplayList(pDL); }
-   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) { Do_GetDisplayList(list); }
+   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) override { Do_SetDisplayList(pDL); }
+   STDMETHOD_(void,GetDisplayList)(iDisplayList** list)  override { Do_GetDisplayList(list); }
 
-   STDMETHOD_(void,Visible)(BOOL bVisible) { Do_Visible(bVisible); }
-   STDMETHOD_(BOOL,IsVisible)() { return Do_IsVisible(); }
+   STDMETHOD_(void,Visible)(BOOL bVisible) override { Do_Visible(bVisible); }
+   STDMETHOD_(BOOL,IsVisible)() override { return Do_IsVisible(); }
 
    // Drawing
-   STDMETHOD_(void,Draw)(CDC* pDC);
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite);
+   STDMETHOD_(void,Draw)(CDC* pDC) override;
+   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) override;
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) { Do_DrawGravityWell(pDC); }
+   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) override { Do_DrawGravityWell(pDC); }
 #endif 
 
    // Size and Hit Testing
-   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) { Do_SetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy){ Do_GetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(BOOL,HitTest)(CPoint point) { return Do_HitTest(point); }
-   STDMETHOD_(CRect,GetBoundingBox)(){ return Do_GetBoundingBox(); }
-   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect); 
-   STDMETHOD_(BOOL,TouchesRect)(CRect r) { return Do_TouchesRect(r); }
+   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) override { Do_SetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy) override { Do_GetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(BOOL,HitTest)(CPoint point) override { return Do_HitTest(point); }
+   STDMETHOD_(CRect,GetBoundingBox)() override { return Do_GetBoundingBox(); }
+   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) override;
+   STDMETHOD_(BOOL,TouchesRect)(CRect r) override { return Do_TouchesRect(r); }
 
    // Selection
-   STDMETHOD_(void,Select)(BOOL bSelect) {Do_Select(bSelect);}
-   STDMETHOD_(BOOL,IsSelected)() {return Do_IsSelected();}
-   STDMETHOD_(void,SetSelectionType)(SelectionType st) { Do_SetSelectionType(st); }
-   STDMETHOD_(SelectionType,GetSelectionType)() { return Do_GetSelectionType(); }
+   STDMETHOD_(void,Select)(BOOL bSelect) override {Do_Select(bSelect);}
+   STDMETHOD_(BOOL,IsSelected)() override {return Do_IsSelected();}
+   STDMETHOD_(void,SetSelectionType)(SelectionType st) override { Do_SetSelectionType(st); }
+   STDMETHOD_(SelectionType,GetSelectionType)()  override { return Do_GetSelectionType(); }
 
    // Interface Events
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) { return Do_OnLButtonDown(nFlags,point); }
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) { return Do_OnLButtonUp(nFlags,point); }
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) { return Do_OnLButtonDblClk(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) { return Do_OnRButtonDown(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) { return Do_OnRButtonUp(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) { return Do_OnRButtonDblClk(nFlags,point); }
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) { return Do_OnMouseMove(nFlags,point); }
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) { return Do_OnMouseWheel(nFlags,zDelta,point); }
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) { return Do_OnKeyDown(nChar,nRepCnt,nFlags); }
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) { return Do_OnContextMenu(pWnd,point); }
+   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override { return Do_OnLButtonDown(nFlags,point); }
+   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) override { return Do_OnLButtonUp(nFlags,point); }
+   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) override { return Do_OnLButtonDblClk(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) override { return Do_OnRButtonDown(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) override { return Do_OnRButtonUp(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) override { return Do_OnRButtonDblClk(nFlags,point); }
+   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) override { return Do_OnMouseMove(nFlags,point); }
+   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) override { return Do_OnMouseWheel(nFlags,zDelta,point); }
+   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override { return Do_OnKeyDown(nChar,nRepCnt,nFlags); }
+   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) override { return Do_OnContextMenu(pWnd,point); }
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {Do_SetToolTipText(lpszToolTipText);}
-   STDMETHOD_(CString,GetToolTipText)();
-   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { Do_SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(INT,GetMaxTipWidth)() { return Do_GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { Do_SetTipDisplayTime(iTime); }
-   STDMETHOD_(INT,GetTipDisplayTime)() { return Do_GetTipDisplayTime(); }
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText)  override {Do_SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(CString,GetToolTipText)() override;
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) override { Do_SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)() override { return Do_GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) override { Do_SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)() override { return Do_GetTipDisplayTime(); }
 
    // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
+   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink) override
    { Do_RegisterEventSink(pEventSink); }
-   STDMETHOD_(void,UnregisterEventSink)()
+   STDMETHOD_(void,UnregisterEventSink)() override
    { Do_UnregisterEventSink(); }
-   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink)
+   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) override
    { Do_GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { Do_RegisterDropSite(pDropSite); }
-   STDMETHOD_(void,UnregisterDropSite)() { Do_UnregisterDropSite(); }
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { Do_GetDropSite(dropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override { Do_RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)()  override { Do_UnregisterDropSite(); }
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { Do_GetDropSite(dropSite); }
 };
 
 #endif //__HORZCURVEDISPLAYOBJECT_H_

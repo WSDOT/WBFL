@@ -144,7 +144,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdPsStrand(const lrfdPsStrand&);
-   lrfdPsStrand& operator=(const lrfdPsStrand&);
+   lrfdPsStrand& operator=(const lrfdPsStrand&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

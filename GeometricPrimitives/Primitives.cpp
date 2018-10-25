@@ -684,8 +684,8 @@ gpRect2d& gpRect2d::Normalize()
 
 gpRect2d gpRect2d::Normalized() const
 {
-   return gpRect2d( gpPoint2d( _cpp_min(m_Left,m_Right), _cpp_min(m_Top,m_Bottom) ),
-                    gpPoint2d( _cpp_max(m_Left,m_Right), _cpp_max(m_Top,m_Bottom) ) );
+   return gpRect2d( gpPoint2d( Min(m_Left,m_Right), Min(m_Top,m_Bottom) ),
+                    gpPoint2d( Max(m_Left,m_Right), Max(m_Top,m_Bottom) ) );
 }
 
 gpRect2d& gpRect2d::Offset(Float64 dx,Float64 dy)
@@ -707,10 +707,10 @@ gpRect2d& gpRect2d::Union(const gpRect2d& rOther)
 {
    PRECONDITION( IsNormalized() && rOther.IsNormalized() );
 
-   m_Left   = _cpp_min(rOther.m_Left,   m_Left);
-   m_Bottom = _cpp_min(rOther.m_Bottom, m_Bottom);
-   m_Right  = _cpp_max(rOther.m_Right,  m_Right);
-   m_Top    = _cpp_max(rOther.m_Top,    m_Top);
+   m_Left   = Min(rOther.m_Left,   m_Left);
+   m_Bottom = Min(rOther.m_Bottom, m_Bottom);
+   m_Right  = Max(rOther.m_Right,  m_Right);
+   m_Top    = Max(rOther.m_Top,    m_Top);
    return *this;
 }
 
@@ -718,10 +718,10 @@ gpRect2d gpRect2d::UnionBy(const gpRect2d& rOther) const
 {
    PRECONDITION( IsNormalized() && rOther.IsNormalized() );
 
-   return gpRect2d( _cpp_min(rOther.m_Left,   m_Left),
-                    _cpp_min(rOther.m_Bottom, m_Bottom),
-                    _cpp_max(rOther.m_Right,  m_Right),
-                    _cpp_max(rOther.m_Top,    m_Top) );
+   return gpRect2d( Min(rOther.m_Left,   m_Left),
+                    Min(rOther.m_Bottom, m_Bottom),
+                    Max(rOther.m_Right,  m_Right),
+                    Max(rOther.m_Top,    m_Top) );
 }
 
 gpRect2d& gpRect2d::Intersection(const gpRect2d& rOther)
@@ -730,10 +730,10 @@ gpRect2d& gpRect2d::Intersection(const gpRect2d& rOther)
 
    if (Touches(rOther))
    {
-      m_Left   = _cpp_max(rOther.m_Left,   m_Left);
-      m_Bottom = _cpp_max(rOther.m_Bottom, m_Bottom);
-      m_Right  = _cpp_min(rOther.m_Right,  m_Right);
-      m_Top    = _cpp_min(rOther.m_Top,    m_Top);
+      m_Left   = Max(rOther.m_Left,   m_Left);
+      m_Bottom = Max(rOther.m_Bottom, m_Bottom);
+      m_Right  = Min(rOther.m_Right,  m_Right);
+      m_Top    = Min(rOther.m_Top,    m_Top);
    }
    else
    {
@@ -752,10 +752,10 @@ gpRect2d gpRect2d::IntersectionBy(const gpRect2d& rOther) const
 
    if (Touches(rOther))
    {
-      return gpRect2d(_cpp_max(rOther.m_Left,   m_Left),
-                      _cpp_max(rOther.m_Bottom, m_Bottom),
-                      _cpp_min(rOther.m_Right,  m_Right),
-                      _cpp_min(rOther.m_Top,    m_Top));
+      return gpRect2d(Max(rOther.m_Left,   m_Left),
+                      Max(rOther.m_Bottom, m_Bottom),
+                      Min(rOther.m_Right,  m_Right),
+                      Min(rOther.m_Top,    m_Top));
    }
 
    return gpRect2d(0,0,0,0);
@@ -765,10 +765,10 @@ gpRect2d& gpRect2d::BoundPoint(const gpPoint2d& rPoint)
 {
    PRECONDITION( IsNormalized() );
 
-   m_Left   = _cpp_min(rPoint.X(),  m_Left);
-   m_Bottom = _cpp_min(rPoint.Y(),  m_Bottom);
-   m_Right  = _cpp_max(rPoint.X(),  m_Right);
-   m_Top    = _cpp_max(rPoint.Y(),  m_Top);
+   m_Left   = Min(rPoint.X(),  m_Left);
+   m_Bottom = Min(rPoint.Y(),  m_Bottom);
+   m_Right  = Max(rPoint.X(),  m_Right);
+   m_Top    = Max(rPoint.Y(),  m_Top);
 
    return *this;
 }

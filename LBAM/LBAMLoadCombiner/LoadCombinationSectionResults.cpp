@@ -43,7 +43,7 @@ STDMETHODIMP CLoadCombinationSectionResults::InterfaceSupportsErrorInfo(REFIID r
 	{
 		&IID_ILoadCombinationSectionResults
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -116,14 +116,14 @@ STDMETHODIMP CLoadCombinationSectionResults::GetResult(CollectionIndexType index
    *leftResult  = rres.m_LeftResult;
    *rightResult = rres.m_RightResult;
 
-   if (leftConfig!=NULL)
+   if (leftConfig!=nullptr)
    {
       hr = rres.m_LeftConfig.CopyTo(leftConfig);
       if (FAILED(hr))
          return hr;
    }
 
-   if (rightConfig!=NULL)
+   if (rightConfig!=nullptr)
    {
       hr = rres.m_RightConfig.CopyTo(rightConfig);
       if (FAILED(hr))
@@ -148,7 +148,7 @@ HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size
 
    m_ComboResults.reserve(size);
 
-   for (CollectionIndexType i=0; i<size; i++)
+   for (CollectionIndexType i = 0; i<size; i++)
    {
       CComPtr<ILoadCombinationResultConfiguration> left_config;
       CComPtr<ILoadCombinationResultConfiguration> right_config;
@@ -211,8 +211,8 @@ HRESULT CLoadCombinationSectionResults::SumResult(CollectionIndexType index, BST
    rres.m_LeftResult +=  leftResult;
    rres.m_RightResult += rightResult;
 
-   ATLASSERT(rres.m_LeftConfig!=NULL);
-   ATLASSERT(rres.m_RightConfig!=NULL);
+   ATLASSERT(rres.m_LeftConfig!=nullptr);
+   ATLASSERT(rres.m_RightConfig!=nullptr);
 
    hr = rres.m_LeftConfig->AddLoadCaseFactor(loadCase, leftFactor);
    if (FAILED(hr))
@@ -243,8 +243,8 @@ HRESULT CLoadCombinationSectionResults::SumLLResult(CollectionIndexType index, F
    rres.m_LeftResult +=  leftResult;
    rres.m_RightResult += rightResult;
 
-   ATLASSERT(rres.m_LeftConfig!=NULL);
-   ATLASSERT(rres.m_RightConfig!=NULL);
+   ATLASSERT(rres.m_LeftConfig!=nullptr);
+   ATLASSERT(rres.m_RightConfig!=nullptr);
 
    hr = rres.m_LeftConfig->put_LiveLoadFactor(Factor);
    if (FAILED(hr))
@@ -309,7 +309,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Load(IStructuredLoad2 * pload)
       long cnt = var;
       m_ComboResults.reserve(cnt);
 
-      for (long ic=0; ic<cnt; ic++)
+      for (long ic = 0; ic<cnt; ic++)
       {
          ComboRes reshldr;
 
@@ -329,7 +329,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Load(IStructuredLoad2 * pload)
          // null configurations are written out as longs (see Save)
          if (var.vt==VT_I4)
          {
-            reshldr.m_LeftConfig = NULL;
+            reshldr.m_LeftConfig = nullptr;
          }
          else
          {
@@ -357,7 +357,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Load(IStructuredLoad2 * pload)
 
          if (var.vt==VT_I4)
          {
-            reshldr.m_RightConfig = NULL;
+            reshldr.m_RightConfig = nullptr;
          }
          else
          {
@@ -402,7 +402,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          const ComboRes& llres = m_ComboResults[ic];
 
@@ -410,7 +410,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_LeftConfig!=NULL)
+         if (llres.m_LeftConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t(llres.m_LeftConfig));
          else
             hr = psave->put_Property(CComBSTR("LeftConfig"),_variant_t((long)0));
@@ -422,7 +422,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Save(IStructuredSave2 * psave)
          if (FAILED(hr))
             return hr;
 
-         if (llres.m_RightConfig!=NULL)
+         if (llres.m_RightConfig!=nullptr)
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t(llres.m_RightConfig));
          else
             hr = psave->put_Property(CComBSTR("RightConfig"),_variant_t((long)0));

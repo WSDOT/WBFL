@@ -29,7 +29,7 @@
 #include <WBFLDManip.h>
 #include <DManip\DManip.h>
 #include "ShapeDrawStrategyImpl.h"
-#include <math.h>
+#include <MathEx.h>
 #include <limits>
 
 #ifdef _DEBUG
@@ -214,7 +214,7 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetBoundingBox(iPointDisplayObject* 
       return;
    }
    
-   if ( m_Shape == NULL )
+   if ( m_Shape == nullptr )
    {
       CComPtr<IPoint2d> point;
       pDO->GetPosition(&point);
@@ -266,11 +266,11 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetBoundingBox(iPointDisplayObject* 
          point->get_X(&x);
          point->get_Y(&y);
 
-         left  = _cpp_min(left, x);
-         right = _cpp_max(right,x);
+         left  = Min(left, x);
+         right = Max(right,x);
 
-         top    = _cpp_max(top,   y);
-         bottom = _cpp_min(bottom,y);
+         top    = Max(top,   y);
+         bottom = Min(bottom,y);
       }
 
       m_BoundingBox.CoCreateInstance(CLSID_Rect2d);
@@ -336,7 +336,7 @@ void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHigh
    
    if ( bHighlite )
    {
-      // highlited always uses NULL brush (not filled)
+      // highlited always uses nullptr brush (not filled)
       pOldBrush = (CBrush*)pDC->SelectStockObject(NULL_BRUSH);
    }
    else

@@ -44,7 +44,7 @@ STDMETHODIMP CPoint2dCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPoint2dCollection,
       &IID_IStructuredStorage2
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
       {
@@ -124,7 +124,7 @@ HRESULT CPoint2dCollection::OnAfterRemove ( CollectionIndexType idx)
 void CPoint2dCollection::UnadviseAll()
 {
    // free up all of our connectionpoints on destruct
-   CollectionIndexType cnt=0;
+   CollectionIndexType cnt = 0;
    for (iterator it= begin(); it != end(); it++)
    {
       OnBeforeRemove(*it, cnt++);

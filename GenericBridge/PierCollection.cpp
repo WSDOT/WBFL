@@ -52,7 +52,7 @@ STDMETHODIMP CPierCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IPierCollection,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -104,7 +104,7 @@ bool PierSearch(const PierColl::StoredType& item,const PierColl::StoredType& tes
    CComPtr<IGenericBridge> pBridge;
    pier->get_Bridge(&pBridge);
 
-   if ( pBridge == NULL )
+   if ( pBridge == nullptr )
    {
       testPier->get_Bridge(&pBridge);
    }

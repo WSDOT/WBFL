@@ -64,7 +64,7 @@ void CTestCompositeSectionEx::TestICompositeSection()
 
    // Test container property initialization
    CollectionIndexType count;
-   TRY_TEST(compSect->get_Count(NULL),E_POINTER);
+   TRY_TEST(compSect->get_Count(nullptr),E_POINTER);
    TRY_TEST(compSect->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -83,7 +83,7 @@ void CTestCompositeSectionEx::TestICompositeSection()
    CComPtr<ICompositeSectionItemEx> item;
    TRY_TEST(compSect->get_Item(-1,&item),E_INVALIDARG);
    TRY_TEST(compSect->get_Item(199,&item),E_INVALIDARG);
-   TRY_TEST(compSect->get_Item(0,NULL),E_POINTER);
+   TRY_TEST(compSect->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(compSect->get_Item(0,&item),S_OK);
 
    shape.Release();
@@ -103,7 +103,7 @@ void CTestCompositeSectionEx::TestICompositeSection()
    TRY_TEST(count,0);
 
    // Test AddSectionEx
-   TRY_TEST(compSect->AddSectionEx(NULL),E_INVALIDARG);
+   TRY_TEST(compSect->AddSectionEx(nullptr),E_INVALIDARG);
    TRY_TEST(compSect->AddSectionEx(item),S_OK);
    TRY_TEST(compSect->get_Count(&count),S_OK);
    TRY_TEST(count,1);
@@ -189,7 +189,7 @@ void CTestCompositeSectionEx::TestISection()
 
    CComQIPtr<ISection> section(compSect);
    CComPtr<IElasticProperties> props;
-   TRY_TEST(section->get_ElasticProperties(NULL),E_POINTER);
+   TRY_TEST(section->get_ElasticProperties(nullptr),E_POINTER);
    TRY_TEST(section->get_ElasticProperties(&props),S_OK);
 
    Float64 val;
@@ -214,13 +214,13 @@ void CTestCompositeSectionEx::TestISection()
    TRY_TEST(IsEqual(val,4.0),true);
 
    CComPtr<IMassProperties> massProps;
-   TRY_TEST(section->get_MassProperties(NULL),E_POINTER);
+   TRY_TEST(section->get_MassProperties(nullptr),E_POINTER);
    TRY_TEST(section->get_MassProperties(&massProps),S_OK);
    massProps->get_MassPerLength(&val);
    TRY_TEST(IsEqual(val,40.0),true);
 
    CComPtr<IRect2d> box;
-   TRY_TEST(section->get_BoundingBox(NULL),E_POINTER);
+   TRY_TEST(section->get_BoundingBox(nullptr),E_POINTER);
    TRY_TEST(section->get_BoundingBox(&box),S_OK);
    box->get_Left(&val);
    TRY_TEST(IsEqual(val,0.0),true);
@@ -239,8 +239,8 @@ void CTestCompositeSectionEx::TestISection()
    box->put_Bottom(6.5);
    box->put_Top(100);
    CComPtr<ISection> clippedSection;
-   TRY_TEST(section->ClipIn(NULL,&clippedSection),E_INVALIDARG);
-   TRY_TEST(section->ClipIn(box,NULL),E_POINTER);
+   TRY_TEST(section->ClipIn(nullptr,&clippedSection),E_INVALIDARG);
+   TRY_TEST(section->ClipIn(box,nullptr),E_POINTER);
    TRY_TEST(section->ClipIn(box,&clippedSection),S_OK);
 
    props.Release();
@@ -258,8 +258,8 @@ void CTestCompositeSectionEx::TestISection()
    line->ThroughPoints(start,end);
 
    clippedSection.Release();
-   TRY_TEST(section->ClipWithLine(NULL,&clippedSection),E_INVALIDARG);
-   TRY_TEST(section->ClipWithLine(line,NULL),E_POINTER);
+   TRY_TEST(section->ClipWithLine(nullptr,&clippedSection),E_INVALIDARG);
+   TRY_TEST(section->ClipWithLine(line,nullptr),E_POINTER);
    TRY_TEST(section->ClipWithLine(line,&clippedSection),S_OK);
 
    props.Release();
@@ -269,7 +269,7 @@ void CTestCompositeSectionEx::TestISection()
 
    // Test clone
    CComPtr<ISection> clone;
-   TRY_TEST(section->Clone(NULL),E_POINTER);
+   TRY_TEST(section->Clone(nullptr),E_POINTER);
    TRY_TEST(section->Clone(&clone),S_OK);
 
    CComQIPtr<ICompositeSectionEx> compSectClone(clone);
@@ -339,7 +339,7 @@ void CTestCompositeSectionEx::TestIXYPosition()
    size.CoCreateInstance( CLSID_Size2d );
    size->put_Dx(10);
    size->put_Dy(20);
-   TRY_TEST( position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
    hookPnt->get_X(&x);
@@ -367,8 +367,8 @@ void CTestCompositeSectionEx::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(110,110);
 
-   TRY_TEST( position->MoveEx(NULL,to),    E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from, NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to),    E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from, nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to),    S_OK );
 
    hookPnt->get_X(&x);
@@ -382,8 +382,8 @@ void CTestCompositeSectionEx::TestIXYPosition()
    //
    hookPnt->Move(0,0);
 
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    to->Move(95,85);
@@ -535,7 +535,7 @@ void CTestCompositeSectionEx::TestIXYPosition()
    // Rotate about the origin of the coordinate system and check the coordintes of the rectangle
    rotPoint->Move(0,0);
 
-   TRY_TEST( position->RotateEx(NULL,PI_OVER_2), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,PI_OVER_2), E_INVALIDARG );
    TRY_TEST( position->RotateEx(rotPoint,PI_OVER_2), S_OK );
 
    CComPtr<IPoint2dCollection> coll;

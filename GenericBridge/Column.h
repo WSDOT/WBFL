@@ -76,28 +76,28 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IColumn
 public:
-   STDMETHOD(putref_ColumnLayout)(/*[in]*/IColumnLayout* pColumnLayout);
-   STDMETHOD(get_ColumnLayout)(/*[out,retval]*/IColumnLayout** ppColumnLayout);
-   STDMETHOD(put_Index)(/*[in]*/IndexType index);
-   STDMETHOD(get_Index)(/*[out,retval]*/IndexType* pIndex);
-   STDMETHOD(get_Height)(/*[out,retval]*/ Float64* height);
-   STDMETHOD(put_Height)(/*[in]*/ Float64 height);
-   STDMETHOD(get_BaseElevation)(/*[out,retval]*/ Float64* baseElevation);
-   STDMETHOD(put_BaseElevation)(/*[in]*/ Float64 baseElevation);
-   STDMETHOD(get_BaseOffset)(/*[out,retval]*/ Float64* offset);
-   STDMETHOD(put_BaseOffset)(/*[in]*/ Float64 offset);
-   STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length);
-   STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* topElev);
-   STDMETHOD(Clone)(/*[out,retval]*/IColumn** ppClone);
+   STDMETHOD(putref_ColumnLayout)(/*[in]*/IColumnLayout* pColumnLayout) override;
+   STDMETHOD(get_ColumnLayout)(/*[out,retval]*/IColumnLayout** ppColumnLayout) override;
+   STDMETHOD(put_Index)(/*[in]*/IndexType index) override;
+   STDMETHOD(get_Index)(/*[out,retval]*/IndexType* pIndex) override;
+   STDMETHOD(get_Height)(/*[out,retval]*/ Float64* height) override;
+   STDMETHOD(put_Height)(/*[in]*/ Float64 height) override;
+   STDMETHOD(get_BaseElevation)(/*[out,retval]*/ Float64* baseElevation) override;
+   STDMETHOD(put_BaseElevation)(/*[in]*/ Float64 baseElevation) override;
+   STDMETHOD(get_BaseOffset)(/*[out,retval]*/ Float64* offset) override;
+   STDMETHOD(put_BaseOffset)(/*[in]*/ Float64 offset) override;
+   STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length) override;
+   STDMETHOD(get_TopElevation)(/*[out,retval]*/Float64* topElev) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IColumn** ppClone) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__COLUMN_H_

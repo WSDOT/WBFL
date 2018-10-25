@@ -53,18 +53,18 @@ CTestBridgeDeck::~CTestBridgeDeck()
 void CTestBridgeDeck::Test(IUnknown* pUnk)
 {
    CComQIPtr<IBridgeDeck> deck(pUnk);
-   TRY_TEST(deck != NULL,true);
+   TRY_TEST(deck != nullptr,true);
 
    // Test default values
    VARIANT_BOOL bComposite;
-   TRY_TEST(deck->get_Composite(NULL),E_POINTER);
+   TRY_TEST(deck->get_Composite(nullptr),E_POINTER);
    TRY_TEST(deck->get_Composite(&bComposite),S_OK);
    TRY_TEST(bComposite,VARIANT_TRUE);
 
    CComPtr<IMaterial> material;
-   TRY_TEST(deck->get_Material(NULL),E_POINTER);
+   TRY_TEST(deck->get_Material(nullptr),E_POINTER);
    TRY_TEST(deck->get_Material(&material),S_OK);
-   TRY_TEST(material != NULL,true);
+   TRY_TEST(material != nullptr,true);
 
    ///////////////////////////////////////
    // Test Error Info

@@ -63,23 +63,23 @@ void CTestCastSlab::Test()
    //////////////////////
    // Test default values
    Float64 value;
-   TRY_TEST(slab->get_GrossDepth(NULL),E_POINTER);
+   TRY_TEST(slab->get_GrossDepth(nullptr),E_POINTER);
    TRY_TEST(slab->get_GrossDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
-   TRY_TEST(slab->get_OverhangDepth(NULL),E_POINTER);
+   TRY_TEST(slab->get_OverhangDepth(nullptr),E_POINTER);
    TRY_TEST(slab->get_OverhangDepth(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
    DeckOverhangTaper taper;
-   TRY_TEST(slab->get_OverhangTaper(NULL),E_POINTER);
+   TRY_TEST(slab->get_OverhangTaper(nullptr),E_POINTER);
    TRY_TEST(slab->get_OverhangTaper(&taper),S_OK);
    TRY_TEST(taper,dotNone);
 
    CComQIPtr<IBridgeDeck> deck(slab);
-   TRY_TEST(deck != NULL,true);
+   TRY_TEST(deck != nullptr,true);
    CComPtr<IDeckBoundary> deckBoundary;
-   TRY_TEST(deck->get_DeckBoundary(NULL),E_POINTER);
+   TRY_TEST(deck->get_DeckBoundary(nullptr),E_POINTER);
    TRY_TEST(deck->get_DeckBoundary(&deckBoundary),S_OK);
    
    ///////////////////////////////////////

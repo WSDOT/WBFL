@@ -97,13 +97,13 @@ END_COM_MAP()
 
 // IUnit
 public:
-   STDMETHOD(get_UnitServer)(/*[out,retval]*/IUnitServer** unitServer);
-	STDMETHOD(get_Tag)(/*[out, retval]*/ BSTR *pVal);
-	STDMETHOD(get_PreTerm)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_ConvFactor)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(get_PostTerm)(/*[out, retval]*/ Float64 *pVal);
-   STDMETHOD(get_UnitSystem)(/*[out, retval]*/ UnitSystemType *pVal);
-	STDMETHOD(get_UnitType)(/*[out,retval]*/ IUnitType** ppUnitType);
+   STDMETHOD(get_UnitServer)(/*[out,retval]*/IUnitServer** unitServer) override;
+	STDMETHOD(get_Tag)(/*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(get_PreTerm)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_ConvFactor)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_PostTerm)(/*[out, retval]*/ Float64 *pVal) override;
+   STDMETHOD(get_UnitSystem)(/*[out, retval]*/ UnitSystemType *pVal) override;
+	STDMETHOD(get_UnitType)(/*[out,retval]*/ IUnitType** ppUnitType) override;
 
 private:
    Float64 m_PreTerm;

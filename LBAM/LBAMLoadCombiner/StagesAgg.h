@@ -57,25 +57,25 @@ BEGIN_CONNECTION_POINT_MAP(CStagesAgg)
 END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IStagesAgg
 public:
 // IStages
-   STDMETHOD(get_Item)(/*[in]*/StageIndexType index, /*[out,retval]*/ IStage* *pVal);
-   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval);  
-   STDMETHOD(get_Count)(/*[out,retval]*/ StageIndexType *pVal);
-   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumStage* *pVal);
-   STDMETHOD(Add)(/*[in]*/IStage*);
-   STDMETHOD(RemoveByName)(/*[in]*/BSTR name);
-   STDMETHOD(RemoveByIndex)(/*[in]*/StageIndexType index);
-   STDMETHOD(Clone)(/*[out,retval]*/IStages**);
-   STDMETHOD(Clear)();
+   STDMETHOD(get_Item)(/*[in]*/StageIndexType index, /*[out,retval]*/ IStage* *pVal) override;
+   STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get_Count)(/*[out,retval]*/ StageIndexType *pVal) override;
+   STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumStage* *pVal) override;
+   STDMETHOD(Add)(/*[in]*/IStage*) override;
+   STDMETHOD(RemoveByName)(/*[in]*/BSTR name) override;
+   STDMETHOD(RemoveByIndex)(/*[in]*/StageIndexType index) override;
+   STDMETHOD(Clone)(/*[out,retval]*/IStages**) override;
+   STDMETHOD(Clear)() override;
 
-   STDMETHOD(Insert)(/*[in]*/StageIndexType relPosition, /*[in]*/IStage* member);
-   STDMETHOD(MoveTo)(/*[in]*/ StageIndexType fromPosition, /*[in]*/ StageIndexType toPosition);
-   STDMETHOD(Reverse)();
-   STDMETHOD(FindIndex)(/*[in]*/BSTR name, /*[out,retval]*/StageIndexType* index);
+   STDMETHOD(Insert)(/*[in]*/StageIndexType relPosition, /*[in]*/IStage* member) override;
+   STDMETHOD(MoveTo)(/*[in]*/ StageIndexType fromPosition, /*[in]*/ StageIndexType toPosition) override;
+   STDMETHOD(Reverse)() override;
+   STDMETHOD(FindIndex)(/*[in]*/BSTR name, /*[out,retval]*/StageIndexType* index) override;
 
    // internal implementation
    CComPtr<IStages> m_Stages;

@@ -29,6 +29,7 @@
 #include <GeomModel\ShapeUtils.h>
 #include <mathEx.h>
 #include <iostream>
+#include <memory>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -150,7 +151,7 @@ gpRect2d gmCircle::GetBoundingBox() const
 
 gmIShape* gmCircle::CreateClone(bool bRegisterListeners) const
 {
-   std::auto_ptr<gmCircle> ph(new gmCircle( *this ));// no memory leaks if DoRegister() throws
+   std::unique_ptr<gmCircle> ph(new gmCircle( *this ));// no memory leaks if DoRegister() throws
 
    // copy listeners if requested.
    if (bRegisterListeners)
@@ -170,7 +171,7 @@ gmIShape* gmCircle::CreateClippedShape(const gpLine2d& line,
    {
       // circle touces line, must clip
       // Resulting shape is a circular segment
-      std::auto_ptr<gmCircularSegment> clip(new gmCircularSegment());
+      std::unique_ptr<gmCircularSegment> clip(std::make_unique<gmCircularSegment>());
       clip->SetCenter(m_HookPoint);
       clip->SetRadius(m_Radius);
 
@@ -206,8 +207,10 @@ gmIShape* gmCircle::CreateClippedShape(const gpLine2d& line,
          return new gmCircle(*this);
       }
       else
+      {
          // circle is entirely outside of clipping region
-         return 0;
+         return nullptr;
+      }
    }
 }
 
@@ -216,7 +219,7 @@ gmIShape* gmCircle::CreateClippedShape(const gpRect2d& r,
                                      ) const
 {
    // make shape into a gmpolygon and use its clip
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    return poly->CreateClippedShape(r, region);
 }
 
@@ -291,7 +294,7 @@ Float64 gmCircle::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side)
 
 void gmCircle::Draw(HDC hDC, const grlibPointMapper& mapper) const
 {
-   std::auto_ptr<gmPolygon> poly(CreatePolygon());
+   std::unique_ptr<gmPolygon> poly(CreatePolygon());
    poly->Draw(hDC,mapper);
 }
 
@@ -369,10 +372,11 @@ void gmCircle::MakeAssignment(const gmCircle& rOther)
 //======================== OPERATIONS =======================================
 gmPolygon* gmCircle::CreatePolygon() const
 {
-   if (m_Radius<=0) return 0;
+   if (m_Radius <= 0) 
+      return nullptr;
 
    // make an empty polygon with same traits as this.
-   std::auto_ptr<gmPolygon> ph(new gmPolygon());
+   std::unique_ptr<gmPolygon> ph(std::make_unique<gmPolygon>());
    gmShapeUtils::CopyTraits(*this, ph.get());
 
    Float64 angle_inc = 2*M_PI/NUM_POINTS;
@@ -381,7 +385,7 @@ gmPolygon* gmCircle::CreatePolygon() const
    Float64 rad = sqrt(M_PI * m_Radius * m_Radius / 
                       (NUM_POINTS * sin(M_PI/NUM_POINTS) * cos(M_PI/NUM_POINTS)));
 
-   for (Int32 i=0; i<=NUM_POINTS; i++)
+   for (Int32 i = 0; i<=NUM_POINTS; i++)
    {
       Float64 a = i * angle_inc;
       Float64 x = m_HookPoint.X() + rad * cos(a);
@@ -432,13 +436,13 @@ bool gmCircle::TestMe(dbgLog& rlog)
    rt.SetRadius(40);
    rt.SetHookPoint(gpPoint2d(0,40));
    gpLine2d at45(gpPoint2d(0,40), gpVector2d(gpSize2d(1,1)));
-   std::auto_ptr<gmIShape> phemi(rt.CreateClippedShape(at45, gpLine2d::Right));
+   std::unique_ptr<gmIShape> phemi(rt.CreateClippedShape(at45, gpLine2d::Right));
    phemi->GetProperties(&aprops);
    TRY_TESTME (IsEqual(aprops.Area(), 2513.2,.1)) 
 
    // clip should return entire circle
    rt.SetHookPoint(gpPoint2d(60,0));
-   std::auto_ptr<gmIShape> prt(rt.CreateClippedShape(at45, gpLine2d::Left));
+   std::unique_ptr<gmIShape> prt(rt.CreateClippedShape(at45, gpLine2d::Left));
    prt->GetProperties(&aprops);
    TRY_TESTME (IsEqual(aprops.Area(), 5026.55,.1)) 
 

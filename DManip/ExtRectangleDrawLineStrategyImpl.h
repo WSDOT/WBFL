@@ -56,40 +56,40 @@ END_COM_MAP()
 
 // iLineDrawStrategy
 public:
-   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC);
-   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box);
+   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC) override;
+   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) override;
+   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite) override;
+   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box) override;
 
 // iExtRectangleLineDrawStrategy
 public:
-   STDMETHOD_(void,SetLeftOffset)(Float64 offset);
-   STDMETHOD_(Float64,GetLeftOffset)();
-   STDMETHOD_(void,SetRightOffset)(Float64 offset);
-   STDMETHOD_(Float64,GetRightOffset)();
-   STDMETHOD_(void,SetStartExtension)(Float64 ext);
-   STDMETHOD_(Float64,GetStartExtension)();
-   STDMETHOD_(void,SetEndExtension)(Float64 ext);
-   STDMETHOD_(Float64,GetEndExtension)();
-   STDMETHOD_(void,SetStartSkew)(Float64 skew);
-   STDMETHOD_(Float64,GetStartSkew)();
-   STDMETHOD_(void,SetEndSkew)(Float64 skew);
-   STDMETHOD_(Float64,GetEndSkew)();
-   STDMETHOD_(void,SetLineWidth)(UINT nWidth);
-   STDMETHOD_(UINT,GetLineWidth)();
-   STDMETHOD_(void,SetColor)(COLORREF crColor);
-   STDMETHOD_(COLORREF,GetColor)();
-   STDMETHOD_(void,SetLineStyle)(LineStyleType style);
-   STDMETHOD_(LineStyleType,GetLineStyle)();
-   STDMETHOD_(void,PerimeterGravityWell)(BOOL bPerimeterGravityWell);
-   STDMETHOD_(void,SetFillColor)(COLORREF crColor);
-   STDMETHOD_(COLORREF,GetFillColor)();
-   STDMETHOD_(void,DoFill)(BOOL doFill);
-   STDMETHOD_(BOOL,DoFill)();
+   STDMETHOD_(void,SetLeftOffset)(Float64 offset) override;
+   STDMETHOD_(Float64,GetLeftOffset)() override;
+   STDMETHOD_(void,SetRightOffset)(Float64 offset) override;
+   STDMETHOD_(Float64,GetRightOffset)() override;
+   STDMETHOD_(void,SetStartExtension)(Float64 ext) override;
+   STDMETHOD_(Float64,GetStartExtension)() override;
+   STDMETHOD_(void,SetEndExtension)(Float64 ext) override;
+   STDMETHOD_(Float64,GetEndExtension)() override;
+   STDMETHOD_(void,SetStartSkew)(Float64 skew) override;
+   STDMETHOD_(Float64,GetStartSkew)() override;
+   STDMETHOD_(void,SetEndSkew)(Float64 skew) override;
+   STDMETHOD_(Float64,GetEndSkew)() override;
+   STDMETHOD_(void,SetLineWidth)(UINT nWidth) override;
+   STDMETHOD_(UINT,GetLineWidth)() override;
+   STDMETHOD_(void,SetColor)(COLORREF crColor) override;
+   STDMETHOD_(COLORREF,GetColor)() override;
+   STDMETHOD_(void,SetLineStyle)(LineStyleType style) override;
+   STDMETHOD_(LineStyleType,GetLineStyle)() override;
+   STDMETHOD_(void,PerimeterGravityWell)(BOOL bPerimeterGravityWell) override;
+   STDMETHOD_(void,SetFillColor)(COLORREF crColor) override;
+   STDMETHOD_(COLORREF,GetFillColor)() override;
+   STDMETHOD_(void,DoFill)(BOOL doFill) override;
+   STDMETHOD_(BOOL,DoFill)() override;
 
 // iGravityWellStrategy
 public:
-   STDMETHOD_(void,GetGravityWell)(iDisplayObject* pDO,CRgn* pRgn);
+   STDMETHOD_(void,GetGravityWell)(iDisplayObject* pDO,CRgn* pRgn) override;
 
 private:
    BOOL m_bPerimeterGravityWell;

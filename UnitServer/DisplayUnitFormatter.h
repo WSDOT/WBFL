@@ -75,14 +75,14 @@ protected:
 
 // IDisplayUnitFormatter
 public:
-   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL *bUsesTag);
-   STDMETHOD(Format)(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString);
-	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify);
-   STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation);
-	STDMETHOD(get_Width)(/*[out, retval]*/ Uint32 *width);
-	STDMETHOD(get_Precision)(/*[out, retval]*/ Uint32 *precision);
-	STDMETHOD(get_ZeroTolerance)(/*[out, retval]*/ Float64 *zeroTol);
-	STDMETHOD(FormatSpecifiers)(/*[in]*/Uint32 width,/*[in]*/ Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType notation,/*[in]*/ Float64 zeroTol);
+   STDMETHOD(get_UsesTag)(/*[out,retval]*/ VARIANT_BOOL *bUsesTag) override;
+   STDMETHOD(Format)(/*[in]*/ Float64 cv,/*[in]*/ BSTR tag,/*[out,retval]*/ BSTR* fmtString) override;
+	STDMETHOD(get_Justification)(/*[out,retval]*/ TextJustificationType* justify) override;
+   STDMETHOD(get_Notation)(/*[out,retval]*/ NumericFormatType* notation) override;
+	STDMETHOD(get_Width)(/*[out, retval]*/ Uint32 *width) override;
+	STDMETHOD(get_Precision)(/*[out, retval]*/ Uint32 *precision) override;
+	STDMETHOD(get_ZeroTolerance)(/*[out, retval]*/ Float64 *zeroTol) override;
+	STDMETHOD(FormatSpecifiers)(/*[in]*/Uint32 width,/*[in]*/ Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType notation,/*[in]*/ Float64 zeroTol) override;
 };
 
 #endif //__DISPLAYUNITFORMATTER_H_

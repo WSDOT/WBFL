@@ -116,7 +116,7 @@ private:
 
    // Prevent accidental copying and assignment
    dbgFileDumpContext(const dbgDumpContext&);
-   dbgDumpContext& operator=(const dbgDumpContext&);
+   dbgDumpContext& operator=(const dbgDumpContext&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

@@ -72,23 +72,23 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ldISettlementLoad
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/ldISettlementLoad** clone);
-	STDMETHOD(get_Rz)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Rz)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal);
-	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal);
+	STDMETHOD(Clone)(/*[out,retval]*/ldISettlementLoad** clone) override;
+	STDMETHOD(get_Rz)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Rz)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_MemberID)(/*[out, retval]*/ MemberIDType *pVal) override;
+	STDMETHOD(put_MemberID)(/*[in]*/ MemberIDType newVal) override;
 
 protected:
    MemberIDType  m_MemberID;

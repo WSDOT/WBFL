@@ -43,11 +43,11 @@ public:
    HRESULT FinalConstruct();
 
    // iConnector
-   STDMETHOD_(void,GetStartPlug)(iPlug** plug);
-   STDMETHOD_(void,GetEndPlug)(iPlug** plug);
+   STDMETHOD_(void,GetStartPlug)(iPlug** plug) override;
+   STDMETHOD_(void,GetEndPlug)(iPlug** plug) override;
 
    // iPlugListener
-   STDMETHOD_(void,Notify)(iPlug* plug);
+   STDMETHOD_(void,Notify)(iPlug* plug) override;
 
 private:
    CComPtr<iPlug> m_pStart;

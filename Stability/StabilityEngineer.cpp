@@ -149,7 +149,8 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    pStabilityProblem->GetCamber(&bDirectCamber,&Camber);
    if ( bDirectCamber )
    {
-      Ywind += ::BinarySign(y)*results.OffsetFactor*Camber;
+      Float64 m = pStabilityProblem->GetCamberMultiplier();
+      Ywind += ::BinarySign(y)*results.OffsetFactor*m*Camber;
    }
    else
    {
@@ -170,7 +171,8 @@ void stbStabilityEngineer::Analyze(const stbIGirder* pGirder,const stbIStability
    Float64 Dra = fabs(results.Yr);  // adjusted distance between CG and roll axis (using fabs because distance is an absolute value)
    if ( bDirectCamber )
    {
-      Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*Camber;
+      Float64 m = pStabilityProblem->GetCamberMultiplier();
+      Dra -= ::BinarySign(results.Yr)*results.OffsetFactor*m*Camber;
       results.CamberOffsetFactor = 1.0; // not applicable, but set it to a nice number
    }
    else
@@ -344,7 +346,7 @@ void stbStabilityEngineer::AnalyzeLifting(const stbIGirder* pGirder,const stbILi
    PoiIDType poiID = 0;
    IndexType analysisPointIdx = 0;
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
-   BOOST_FOREACH(stbIAnalysisPoint* pAnalysisPoint,vAnalysisPoints)
+   for( const auto& pAnalysisPoint : vAnalysisPoints)
    {
       Float64 X = pAnalysisPoint->GetLocation();
 
@@ -805,7 +807,7 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
    CComQIPtr<IFem2dModelResults> femResults(model);
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
    IndexType analysisPointIdx = 0;
-   BOOST_FOREACH(stbIAnalysisPoint* pAnalysisPoint,vAnalysisPoints)
+   for( const auto& pAnalysisPoint : vAnalysisPoints)
    {
       Float64 X = pAnalysisPoint->GetLocation();
 
@@ -1186,11 +1188,6 @@ void stbStabilityEngineer::AnalyzeHauling(const stbIGirder* pGirder,const stbIHa
    } // next impact
 }
 
-bool CompareJoints(Float64 x1,Float64 x2)
-{
-   return ::IsEqual(x1,x2);
-}
-
 void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabilityProblem* pStabilityProblem,stbResults& results,IFem2dModel** ppModel) const
 {
    if (*ppModel)
@@ -1206,8 +1203,14 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 
    Float64 Lg = pGirder->GetGirderLength();
 
+   Float64 tolerance = Lg / 10000.0; // This is the same tolerance as used by the LBAM
+
    Float64 Ll, Lr;
    pStabilityProblem->GetSupportLocations(&Ll,&Lr);
+
+   // Very small elements will crash the LBAM. Get rid of them
+   Ll = IsZero(Ll, tolerance) ? 0.0 : Ll;
+   Lr = IsZero(Lr, tolerance) ? 0.0 : Lr;
 
    Float64 leftSupportLoc  = Ll;
    Float64 rightSupportLoc = Lg - Lr;
@@ -1230,9 +1233,52 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    vX.push_back(leftSupportLoc);
    vX.push_back(rightSupportLoc);
 
-   // eliminate duplicates
+   // eliminate duplicates - carefully
    std::sort(vX.begin(),vX.end());
-   vX.erase(std::unique(vX.begin(),vX.end(),CompareJoints),vX.end());
+
+   std::vector<Float64>::iterator righty(vX.begin());
+   std::vector<Float64>::iterator lefty(righty++);
+   while(righty != vX.end())
+   {
+      bool didErase = false;
+      // POI's are very close, blast one
+      if (IsEqual(*lefty,*righty))
+      {
+         vX.erase(lefty);
+         didErase = true;
+      }
+      else if (IsEqual(*lefty,*righty,tolerance))
+      {
+         // within tolerance - delete non-supports and non-ends if an option
+         if (*lefty==leftSupportLoc || *lefty==0.0)
+         {
+            vX.erase(righty);
+            didErase = true;
+         }
+         else if (*righty==rightSupportLoc || *righty==Lg)
+         {
+            vX.erase(lefty);
+            didErase = true;
+         }
+         else
+         {
+            vX.erase(righty);
+            didErase = true;
+         }
+      }
+
+      if (didErase)
+      {
+         lefty = vX.begin(); // inefficient, but have to restart to recoup left iterator in proper order
+         righty = lefty;
+         righty++;
+      }
+      else
+      {
+         lefty++;
+         righty++;
+      }
+   }
 
    // Layout joints
    JointIDType jntID = 0;
@@ -1240,19 +1286,19 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    JointIDType rightSupportJntID = INVALID_ID;
    CComPtr<IFem2dJointCollection> joints;
    (*ppModel)->get_Joints(&joints);
-   BOOST_FOREACH(Float64 X,vX)
+   for(const auto& X : vX)
    {
       CComPtr<IFem2dJoint> jnt;
       joints->Create(jntID,X,0,&jnt);
 
-      if ( IsEqual(X,leftSupportLoc) )
+      if ( leftSupportJntID==INVALID_ID && IsEqual(X,leftSupportLoc) )
       {
          jnt->Support();
          jnt->ReleaseDof(jrtFx);
          jnt->ReleaseDof(jrtMz);
          leftSupportJntID = jntID;
       }
-      else if ( IsEqual(X,rightSupportLoc) )
+      else if (rightSupportJntID==INVALID_ID &&  IsEqual(X,rightSupportLoc) )
       {
          jnt->Support();
          jnt->ReleaseDof(jrtMz);
@@ -1261,6 +1307,8 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
 
       jntID++;
    }
+
+   ATLASSERT(leftSupportJntID != INVALID_ID && rightSupportJntID != INVALID_ID); // missing support. we will crash
 
    CComPtr<IFem2dLoadingCollection> loadings;
    (*ppModel)->get_Loadings(&loadings);
@@ -1425,7 +1473,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    if ( pHaulingProblem )
    {
       stbHaulingResults* pHaulingResults = static_cast<stbHaulingResults*>(&results);
-      ATLASSERT(pHaulingResults != NULL);
+      ATLASSERT(pHaulingResults != nullptr);
       pHaulingResults->Wcf = Wcf/2;
    }
 
@@ -1509,7 +1557,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
    Float64 Xms = 0.5*(Lg + Ll - Lr); // mid-span location
    m_MidSpanPoi = INVALID_ID;
    std::vector<stbIAnalysisPoint*>& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
-   BOOST_FOREACH(stbIAnalysisPoint* pAnalysisPoint,vAnalysisPoints)
+   for( const auto& pAnalysisPoint : vAnalysisPoints)
    {
       Float64 Xpoi = pAnalysisPoint->GetLocation();
       MemberIDType mbrID = 0;
@@ -1617,7 +1665,7 @@ void stbStabilityEngineer::BuildModel(const stbIGirder* pGirder,const stbIStabil
       // create the POI in the FEM model
       m_FirstPoi = -2;
       poiID = m_FirstPoi;
-      BOOST_FOREACH(Float64 Xpoi,m_vPoi)
+      for( const auto& Xpoi : m_vPoi)
       {
          MemberIDType mbrID = 0;
          Float64 Xmbr;

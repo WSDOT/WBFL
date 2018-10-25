@@ -81,38 +81,38 @@ CONNECTION_POINT_ENTRY(IID_IWideningCollectionEvents)
 END_CONNECTION_POINT_MAP()
 
 
-   virtual CComBSTR GetCollectionName() { return CComBSTR("Widenings"); }
-   virtual CComBSTR GetItemName() { return CComBSTR("Widening"); }
+   CComBSTR GetCollectionName() { return CComBSTR("Widenings"); }
+   CComBSTR GetItemName() { return CComBSTR("Widening"); }
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IWideningCollection
 public:
-   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal);
-   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal);
-	STDMETHOD(Clear)();
-   STDMETHOD(Add)(/*[in]*/ VARIANT varBeginStation,/*[in]*/ VARIANT varBeginFullStation, /*[in]*/ VARIANT varEndFullStation,/*[in]*/ VARIANT varEndStation,/*[in]*/ Float64 widening,/*[in]*/IndexType pnt1,/*[in]*/IndexType pnt2,/*[out,retval]*/IWidening* *pWidening);
-	STDMETHOD(AddEx)(IWidening* newVal);
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ IWidening* *pVal);
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ IWidening* newVal);
-   STDMETHOD(GetWidening)(/*[in]*/VARIANT varStation,/*[out,retval]*/IWidening** widening);
-// STDMETHOD(get__NewEnum)(IUnknown** retval);
-   STDMETHOD(get__EnumWidenings)(/*[out,retval]*/ IEnumWidenings** ppenum);
-   STDMETHOD(Clone)(/*[out,retval]*/ IWideningCollection* *clone);
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg);
+   STDMETHOD(get_Surface)(/*[out, retval]*/ ISurface* *pVal) override;
+   STDMETHOD(putref_Surface)(/*[in]*/ ISurface* newVal) override;
+	STDMETHOD(Clear)() override;
+   STDMETHOD(Add)(/*[in]*/ VARIANT varBeginStation,/*[in]*/ VARIANT varBeginFullStation, /*[in]*/ VARIANT varEndFullStation,/*[in]*/ VARIANT varEndStation,/*[in]*/ Float64 widening,/*[in]*/IndexType pnt1,/*[in]*/IndexType pnt2,/*[out,retval]*/IWidening* *pWidening) override;
+	STDMETHOD(AddEx)(IWidening* newVal) override;
+	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ IWidening* *pVal) override;
+	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx, /*[in]*/ IWidening* newVal) override;
+   STDMETHOD(GetWidening)(/*[in]*/VARIANT varStation,/*[out,retval]*/IWidening** widening) override;
+// STDMETHOD(get__NewEnum)(IUnknown** retval) override;
+   STDMETHOD(get__EnumWidenings)(/*[out,retval]*/ IEnumWidenings** ppenum) override;
+   STDMETHOD(Clone)(/*[out,retval]*/ IWideningCollection* *clone) override;
+   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pStg) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 // IWideningEvents
 public:
-   STDMETHOD(OnWideningChanged)(/*[in]*/ IWidening* widening);
+   STDMETHOD(OnWideningChanged)(/*[in]*/ IWidening* widening) override;
 
 private:
    HRESULT OnBeforeSave(IStructuredSave2* pSave);

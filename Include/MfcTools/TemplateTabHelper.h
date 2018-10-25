@@ -155,7 +155,7 @@ private:
    // no default constructor
    mfcTemplateTabHelper();
    // Prevent accidental copying and assignment
-   mfcTemplateTabHelper& operator=(const mfcTemplateTabHelper&);
+   mfcTemplateTabHelper& operator=(const mfcTemplateTabHelper&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

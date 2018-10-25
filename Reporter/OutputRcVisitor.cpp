@@ -187,7 +187,7 @@ Uint8 rptOutputRcVisitor::GetRomanForGreek(rptRcSymbol::SymbolType sym)
    case rptRcSymbol::QED:
       symlet=92;
       break;   
-   case rptRcSymbol::INFINITY:
+   case rptRcSymbol::infinity:
       symlet=165;
       break;  
    case rptRcSymbol::DEGREES:

@@ -259,13 +259,13 @@ gmCompositeShape* gmShapeImp::GetComposite()
 {
    ASSERTVALID;
    // no composite here!
-   return 0;
+   return nullptr;
 }
 
 const gmCompositeShape* gmShapeImp::GetComposite() const
 {
    ASSERTVALID;
-   return 0;
+   return nullptr;
 }
 
 
@@ -468,15 +468,15 @@ void gmShapeImp::DoRegisterListeners(const gmShapeImp& rOwner)
 void gmShapeImp::Init()
 {
    m_IsSolid = true;  // solid by default
-   m_pParent  = 0;
+   m_pParent  = nullptr;
    m_BorderMode = true;
    m_FillMode   = true;
    m_BorderColor = RGB(0,0,0); // black border
    m_FillColor   = RGB(255,255,255); // white fill
 
    // listeners
-   m_DamageCount     =0;
-   m_DamageTypeTally =0;
+   m_DamageCount      = 0;
+   m_DamageTypeTally  = 0;
    ASSERTVALID;
 }
 

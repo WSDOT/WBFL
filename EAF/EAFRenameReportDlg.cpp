@@ -30,7 +30,7 @@
 
 IMPLEMENT_DYNAMIC(CEAFRenameReportDlg, CDialog)
 
-CEAFRenameReportDlg::CEAFRenameReportDlg(CWnd* pParent /*=NULL*/)
+CEAFRenameReportDlg::CEAFRenameReportDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CEAFRenameReportDlg::IDD, pParent)
    , m_ReportName(_T(""))
    , m_OriginalReportName(_T(""))

@@ -287,7 +287,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const grAxisXY& rOther);
-   virtual void MakeAssignment(const grAxisXY& rOther);
+   void MakeAssignment(const grAxisXY& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

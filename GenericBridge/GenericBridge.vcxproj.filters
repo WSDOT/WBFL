@@ -1,0 +1,659 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AlignmentOffsetStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BearingLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxBeamEndBlockSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxBeamSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeDeckRebarLayoutItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeDeckRebarPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgePier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CastSlab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Column.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColumnLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossBeamRebarPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeckedSlabBeamEndBlockSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeckedSlabBeamSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EdgePathStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilteredSegmentCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FixedLengthRebarLayoutItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FlangedGirderEndBlockSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FlangedSplicedGirderSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FShapeBarrier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericBarrier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericBridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericBridgeHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GenericBridgeImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDataManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearCrossBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearTendonSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiWebSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiWebSection2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NegativeMomentBridgeDeckRebarLayoutItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NUSplicedGirderSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OffsetTendon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OverlaySlab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ParabolicTendonSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PierCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PierImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrecastSlab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrestressingStrand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrismaticSuperstructureMemberSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rebar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarRowFacePattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarRowPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RebarSectionItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Segment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SegmentItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Segments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SidewalkBarrier.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperstructureMember.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperstructureMemberCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TaperedGirderSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tendon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TendonCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThickenedFlangeBulbTeeSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UGirderSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UGirderSection2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UGirderSection2EndBlockSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="USplicedGirderSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoidedSlabEndBlockSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoidedSlabSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VoidedSlabSection2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlignmentOffsetStrategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BearingLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxBeamEndBlockSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxBeamSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgeDeckImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgeDeckRebarLayoutItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgeDeckRebarPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgePier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CastSlab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Column.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColumnLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossBeamRebarPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeckedSlabBeamEndBlockSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeckedSlabBeamSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EdgePathStrategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EndBlockSegmentImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilteredSegmentCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FixedLengthRebarLayoutItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlangedGirderEndBlockSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FlangedSplicedGirderSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FShapeBarrier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBarrier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBridge.hh">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBridgeCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBridgeHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GenericBridgeImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GirderSectionImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GirderSections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemDataManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearCrossBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearTendonSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiWebSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiWebSection2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NegativeMomentBridgeDeckRebarLayoutItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NUSplicedGirderSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OffsetTendon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OverlaySlab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParabolicTendonSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PierCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PierImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrecastSlab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrestressingStrand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PrismaticSuperstructureMemberSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rebar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarRowFacePattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarRowPattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RebarSectionItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Segment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SegmentItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Segments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SidewalkBarrier.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SplicedGirderSegmentImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMember.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMemberCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TaperedGirderSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tendon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TendonCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThickenedFlangeBulbTeeSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UGirderSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UGirderSection2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UGirderSection2EndBlockSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="USplicedGirderSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoidedSlabEndBlockSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoidedSlabSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VoidedSlabSection2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLGenericBridge.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GenericBridge.def" />
+    <None Include="AdaptStation.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AlignmentOffsetStrategy.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BearingLayout.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BoxBeamEndBlockSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BoxBeamSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BridgeDeckRebarLayoutItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BridgeDeckRebarPattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BridgePier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BulbTeeSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CastSlab.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CogoInfo.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Column.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ColumnLayout.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Connection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrossBeamRebarPattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DeckedSlabBeamEndBlockSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DeckedSlabBeamSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="EdgePathStrategy.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FilteredSegmentCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FixedLengthRebarLayoutItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedGirderEndBlockSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlangedSplicedGirderSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FlexRebarLayoutItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FShapeBarrier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GenericBarrier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GenericBridge.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GirderSpacing.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LinearCrossBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LinearTendonSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Material.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MultiWebSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MultiWebSection2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NegativeMomentBridgeDeckRebarLayoutItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NUGirderSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="NUSplicedGirderSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="OverlaySlab.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Pier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PierCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrecastSlab.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrestressingStrand.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PrismaticSuperstructureMemberSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Rebar.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarLayout.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarRowFacePattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarRowPattern.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="RebarSectionItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Segment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SegmentCrossSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SegmentItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SidewalkBarrier.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Span.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SpanCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StressPoint.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StressPointCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SuperstructureMember.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SuperstructureMemberCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TaperedGirderSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemporaryPierItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemporaryPierItemCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Tendon.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TendonCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ThickenedFlangeBulbTeeSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UGirderSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UGirderSection2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UGirderSection2EndBlockSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="USplicedGirderSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VoidedSlabEndBlockSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VoidedSlabSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VoidedSlabSection2.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{c3109823-5868-401d-8b77-c6fb4b52d9ec}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{960d266c-c8a7-4088-89ce-1a29c0a5f42b}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4a8446e3-8234-4b71-b5b8-210c82c54202}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GenericBridge.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

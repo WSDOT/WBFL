@@ -59,12 +59,12 @@ void CEAFAcceleratorTable::Init(CEAFPluginCommandManager* pCmdMgr)
 
 BOOL CEAFAcceleratorTable::AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback* pCallback)
 {
-   int nAccelerators    = CopyAcceleratorTable(m_hAccelTable,NULL,0); // number in the current table
-   int nNewAccelerators = CopyAcceleratorTable(hAccelTable,NULL,0);   // number in the table that is being added
+   int nAccelerators    = CopyAcceleratorTable(m_hAccelTable,nullptr,0); // number in the current table
+   int nNewAccelerators = CopyAcceleratorTable(hAccelTable,nullptr,0);   // number in the table that is being added
 
    // allocate enough space for both
    LPACCEL lpAccel = (LPACCEL)LocalAlloc(LPTR,(nAccelerators+nNewAccelerators)*sizeof(ACCEL));
-   if ( lpAccel != NULL )
+   if ( lpAccel != nullptr )
    {
       // copy the current table into the new array
       CopyAcceleratorTable(m_hAccelTable,lpAccel,nAccelerators);
@@ -97,9 +97,9 @@ BOOL CEAFAcceleratorTable::AddAccelTable(HACCEL hAccelTable,IEAFCommandCallback*
 
 BOOL CEAFAcceleratorTable::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback)
 {
-   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,NULL,0);
+   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,nullptr,0);
    LPACCEL lpAccelNew = (LPACCEL)LocalAlloc(LPTR,(nAccelerators+1)*sizeof(ACCEL));
-   if ( lpAccelNew != NULL )
+   if ( lpAccelNew != nullptr )
    {
       CopyAcceleratorTable(m_hAccelTable,lpAccelNew,nAccelerators);
    }
@@ -122,9 +122,9 @@ BOOL CEAFAcceleratorTable::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandC
 
 BOOL CEAFAcceleratorTable::RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback)
 {
-   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,NULL,0);
+   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,nullptr,0);
    LPACCEL lpAccelNew = (LPACCEL)LocalAlloc(LPTR,nAccelerators*sizeof(ACCEL));
-   if ( lpAccelNew != NULL )
+   if ( lpAccelNew != nullptr )
    {
       CopyAcceleratorTable(m_hAccelTable,lpAccelNew,nAccelerators);
    }
@@ -160,9 +160,9 @@ BOOL CEAFAcceleratorTable::RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallbac
 
 BOOL CEAFAcceleratorTable::RemoveAccelKey(BYTE fVirt,WORD key)
 {
-   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,NULL,0);
+   int nAccelerators = CopyAcceleratorTable(m_hAccelTable,nullptr,0);
    LPACCEL lpAccelNew = (LPACCEL)LocalAlloc(LPTR,nAccelerators*sizeof(ACCEL));
-   if ( lpAccelNew != NULL )
+   if ( lpAccelNew != nullptr )
    {
       CopyAcceleratorTable(m_hAccelTable,lpAccelNew,nAccelerators);
    }
@@ -202,5 +202,5 @@ BOOL CEAFAcceleratorTable::RemoveAccelKey(BYTE fVirt,WORD key)
 
 BOOL CEAFAcceleratorTable::TranslateMessage(CWnd* pWnd,MSG* pMsg)
 {
-   return (m_hAccelTable != NULL && ::TranslateAccelerator(pWnd->GetSafeHwnd(),m_hAccelTable,pMsg));
+   return (m_hAccelTable != nullptr && ::TranslateAccelerator(pWnd->GetSafeHwnd(),m_hAccelTable,pMsg));
 }

@@ -94,7 +94,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptStyleHolder& rOther);
-   virtual void MakeAssignment(const rptStyleHolder& rOther);
+   void MakeAssignment(const rptStyleHolder& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

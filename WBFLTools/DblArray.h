@@ -56,22 +56,22 @@ BEGIN_COM_MAP(CDblArray)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IDblArray
 public:
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size);
-	STDMETHOD(Clone)(/*[out,retval]*/IDblArray* *clone);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/Float64 item);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/Float64 item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ Float64 newVal);
-	STDMETHOD(get__NewEnum)(struct IUnknown ** );
-	STDMETHOD(get__EnumElements)(struct IEnumDblArray ** );
+	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Clone)(/*[out,retval]*/IDblArray* *clone) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/Float64 item) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Add)(/*[in]*/Float64 item) override;
+	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
+	STDMETHOD(get__EnumElements)(struct IEnumDblArray ** ) override;
 
 protected:
    typedef std::vector<Float64>       ContainerType;

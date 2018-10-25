@@ -28,9 +28,6 @@
 #include "WBFLUnitServer.h"
 #include "DisplayUnitFormatter.h"
 #include "engnotation.h"
-#include <iomanip> 
-#include <sstream>
-#include <limits>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

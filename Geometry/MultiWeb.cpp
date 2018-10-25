@@ -52,7 +52,7 @@ HRESULT CMultiWeb::FinalConstruct()
    m_W2 = 0.00;
    m_WebCount = 0;
 
-   CreatePoint( 0.00, 0.00, NULL, &m_pHookPoint );
+   CreatePoint( 0.00, 0.00, nullptr, &m_pHookPoint );
    HRESULT hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
    if (FAILED(hr))
       return hr;
@@ -79,7 +79,7 @@ STDMETHODIMP CMultiWeb::InterfaceSupportsErrorInfo(REFIID riid)
       &IID_IXYPosition,
       &IID_IStructuredStorage2
    };
-   for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+   for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
          return S_OK;
@@ -89,7 +89,7 @@ STDMETHODIMP CMultiWeb::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CMultiWeb::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
 {
-   ATLASSERT(px != NULL && py != NULL);
+   ATLASSERT(px != nullptr && py != nullptr);
 
    UpdateShape();
 
@@ -212,7 +212,7 @@ HRESULT CMultiWeb::UpdateShape()
       }
 
       CComPtr<IPoint2d> origin;
-      CreatePoint(0.00,0.00,NULL,&origin);  // Hook Point at Bottom Center
+      CreatePoint(0.00,0.00,nullptr,&origin);  // Hook Point at Bottom Center
       pPosition->MoveEx(origin,m_pHookPoint);
 
       m_Dirty = false;
@@ -487,7 +487,7 @@ STDMETHODIMP CMultiWeb::Clone(IShape** pClone)
    pTheClone->put_WebCount( m_WebCount );
 
    CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,NULL,&hookPnt);
+   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
    pTheClone->putref_HookPoint(hookPnt);
    pTheClone->Rotate( 0.00, 0.00, m_Rotation );
 
@@ -566,7 +566,7 @@ STDMETHODIMP CMultiWeb::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
 
    Float64 lx,ly;
    GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,NULL,point);
+   return CreatePoint(lx,ly,nullptr,point);
 }
 
 STDMETHODIMP CMultiWeb::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)

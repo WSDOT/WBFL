@@ -57,7 +57,7 @@ inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR lo
    TRY_TEST( dl->put_EndLocation(-1.0), S_OK);
    TRY_TEST( dl->put_WStart(ldVal), S_OK);
    TRY_TEST( dl->put_WEnd(ldVal), S_OK);
-   TRY_TEST( dls->Add(stage, loadGroup,dl,NULL), S_OK);
+   TRY_TEST( dls->Add(stage, loadGroup,dl,nullptr), S_OK);
    return S_OK;
 }
 
@@ -95,7 +95,7 @@ void TestSimpleTwoSpan::Test()
    // dump results to a file
    std::_tofstream os("TestSimpleTwoSpan.txt");
 
-   for (long is=0; is<1; is++)
+   for (long is = 0; is<1; is++)
    {
       CComBSTR stage;
       if (is==0)

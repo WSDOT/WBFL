@@ -233,6 +233,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_S
          g.mg = g.EqnData.mg;
       }
 
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
+
       GirderIndexType nb = GetNb();
       if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
       {
@@ -311,6 +313,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetMomentDF_Int_2_S
          g.EqnData.e = 1.0;
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
 
       GirderIndexType nb = GetNb();
       if ( lrfdVersionMgr::FirstEditionWith1997Interims <= lrfdVersionMgr::GetVersion() && nb == 3 )
@@ -480,6 +484,8 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Int_1_St
          g.EqnData.mg = 0.36 + S/25.;
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(1);
    }
    else
    {
@@ -487,6 +493,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeAEKIJ::GetShearDF_Int_1_St
       g.LeverRuleData = DistributeByLeverRuleEx(IntGirder, OneLoadedLane);
       g.mg = g.LeverRuleData.mg;
    }
+
 
    Float64 skew = ShearSkewCorrectionFactor();
    if ( m_bSkewShear )
@@ -525,6 +532,8 @@ lrfdILiveLoadDistributionFactor::DFResult  lrfdLldfTypeAEKIJ::GetShearDF_Int_2_S
          g.EqnData.mg = 0.2 + S/12. - pow(S/35.,2.0);
          g.mg = g.EqnData.mg;
       }
+
+      g.EqnData.m = lrfdUtility::GetMultiplePresenceFactor(2);
    }
    else
    {
@@ -837,9 +846,14 @@ void lrfdLldfTypeAEKIJ::Dump(dbgDumpContext& os) const
 #endif // _DEBUG
 
 #if defined _UNITTEST
+#include <LRFD\AutoVersion.h>
 bool lrfdLldfTypeAEKIJ::TestMe(dbgLog& rlog)
 {
    TESTME_PROLOGUE("lrfdLldfTypeAEKIJ");
+
+   lrfdAutoVersion av;
+   lrfdVersionMgr::SetVersion(lrfdVersionMgr::FirstEdition1994);
+   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
 
 //   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdLldfTypeAEKIJ");
 

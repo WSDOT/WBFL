@@ -63,20 +63,20 @@ END_COM_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperstructureMemberCollection
 public:
    // commented methods are implemented by the base class
-   //STDMETHOD(Add)(/*[in]*/ISuperstructureMember* pSSMbr);
-   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-   //STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out, retval]*/ ISuperstructureMember* *pVal);
-   //STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSuperstructureMembers* *pVal);
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   //STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index);
-   //STDMETHOD(Clear)();
-   //STDMETHOD(Reverse)();
-   //STDMETHOD(Insert)(/*[in]*/CollectionIndexType index,/*[in]*/ISuperstructureMember* pVal);
+   //STDMETHOD(Add)(/*[in]*/ISuperstructureMember* pSSMbr) override;
+   //STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   //STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out, retval]*/ ISuperstructureMember* *pVal) override;
+   //STDMETHOD(get__EnumElements)(/*[out, retval]*/ IEnumSuperstructureMembers* *pVal) override;
+   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   //STDMETHOD(Remove)(/*[in]*/ CollectionIndexType Index) override;
+   //STDMETHOD(Clear)() override;
+   //STDMETHOD(Reverse)() override;
+   //STDMETHOD(Insert)(/*[in]*/CollectionIndexType index,/*[in]*/ISuperstructureMember* pVal) override;
 };
 
 #endif //__SUPERSTRUCTUREMEMBERCOLLECTION_H_

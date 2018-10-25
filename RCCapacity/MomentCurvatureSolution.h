@@ -72,17 +72,17 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IMomentCurvatureSolution
 public:
-   STDMETHOD(get_MaxMoment)(/*[out,retval]*/Float64* Mmax);
-   STDMETHOD(get_MaxMomentCurvature)(/*[out,retval]*/Float64* k);
-   STDMETHOD(PeakCapacity)(/*[out]*/Float64* Mmax,/*[out]*/Float64* k);
-   STDMETHOD(get_Moment)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* Mmax);
-	STDMETHOD(get_Curvature)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* k);
-	STDMETHOD(get_StrainPlane)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPlane3d** strainPlane);
-   STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints);
+   STDMETHOD(get_MaxMoment)(/*[out,retval]*/Float64* Mmax) override;
+   STDMETHOD(get_MaxMomentCurvature)(/*[out,retval]*/Float64* k) override;
+   STDMETHOD(PeakCapacity)(/*[out]*/Float64* Mmax,/*[out]*/Float64* k) override;
+   STDMETHOD(get_Moment)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* Mmax) override;
+	STDMETHOD(get_Curvature)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/Float64* k) override;
+	STDMETHOD(get_StrainPlane)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IPlane3d** strainPlane) override;
+   STDMETHOD(get_PointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
 };
 
 #endif //__MomentCurvatureSolution_H_

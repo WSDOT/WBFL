@@ -68,31 +68,31 @@ void CTestPlateGirder::TestIPlateGirder()
    Float64 val;
    CComPtr<IPoint2d> pntVal;
 
-   TRY_TEST( beam->get_BottomFlangeThick(NULL), E_POINTER );
+   TRY_TEST( beam->get_BottomFlangeThick(nullptr), E_POINTER );
    TRY_TEST( beam->get_BottomFlangeThick(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_BottomFlangeWidth(NULL), E_POINTER );
+   TRY_TEST( beam->get_BottomFlangeWidth(nullptr), E_POINTER );
    TRY_TEST( beam->get_BottomFlangeWidth(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_TopFlangeThick(NULL), E_POINTER );
+   TRY_TEST( beam->get_TopFlangeThick(nullptr), E_POINTER );
    TRY_TEST( beam->get_TopFlangeThick(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_TopFlangeWidth(NULL), E_POINTER );
+   TRY_TEST( beam->get_TopFlangeWidth(nullptr), E_POINTER );
    TRY_TEST( beam->get_TopFlangeWidth(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_WebHeight(NULL), E_POINTER );
+   TRY_TEST( beam->get_WebHeight(nullptr), E_POINTER );
    TRY_TEST( beam->get_WebHeight(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_WebThick(NULL), E_POINTER );
+   TRY_TEST( beam->get_WebThick(nullptr), E_POINTER );
    TRY_TEST( beam->get_WebThick(&val), S_OK );
    TRY_TEST( IsZero(val), true );
 
-   TRY_TEST( beam->get_HookPoint(NULL), E_POINTER );
+   TRY_TEST( beam->get_HookPoint(nullptr), E_POINTER );
    TRY_TEST( beam->get_HookPoint(&pntVal), S_OK );
    pntVal->get_X(&val);
    TRY_TEST( IsZero(val), true );
@@ -131,7 +131,7 @@ void CTestPlateGirder::TestIPlateGirder()
    TRY_TEST( IsEqual(val,14.0), true );
 
    pntVal->Move(14,14);
-   TRY_TEST( beam->putref_HookPoint(NULL), E_INVALIDARG );
+   TRY_TEST( beam->putref_HookPoint(nullptr), E_INVALIDARG );
    TRY_TEST( beam->putref_HookPoint(pntVal), S_OK );
    pntVal.Release();
    beam->get_HookPoint(&pntVal);
@@ -148,28 +148,28 @@ void CTestPlateGirder::TestIPlateGirder()
    beam->put_WebThick(0.438);
    beam->put_WebHeight(122);
 
-   TRY_TEST(beam->get_Height(NULL), E_POINTER );
+   TRY_TEST(beam->get_Height(nullptr), E_POINTER );
    TRY_TEST(beam->get_Height(&val), S_OK );
    TRY_TEST(IsEqual(val,125.5), true );
 
-   TRY_TEST(beam->get_QTopFlange(NULL), E_POINTER );
+   TRY_TEST(beam->get_QTopFlange(nullptr), E_POINTER );
    TRY_TEST(beam->get_QTopFlange(&val), S_OK );
    TRY_TEST(IsEqual(val,1985.7,0.1),true);
 
-   TRY_TEST(beam->get_QBottomFlange(NULL), E_POINTER );
+   TRY_TEST(beam->get_QBottomFlange(nullptr), E_POINTER );
    TRY_TEST(beam->get_QBottomFlange(&val), S_OK );
    TRY_TEST(IsEqual(val,2551.3,0.1),true);
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
-   TRY_TEST(beam->get_Shape(NULL), E_POINTER );
+   TRY_TEST(beam->get_Shape(nullptr), E_POINTER );
    TRY_TEST(beam->get_Shape(&shape), S_OK );
-   TRY_TEST(shape != NULL,true );
+   TRY_TEST(shape != nullptr,true );
 
    CComPtr<IXYPosition> position;
-   TRY_TEST(beam->get_XYPosition(NULL), E_POINTER );
+   TRY_TEST(beam->get_XYPosition(nullptr), E_POINTER );
    TRY_TEST(beam->get_XYPosition(&position), S_OK );
-   TRY_TEST(position != NULL,true );
+   TRY_TEST(position != nullptr,true );
 
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
@@ -201,7 +201,7 @@ void CTestPlateGirder::TestIShape()
    //
    Float64 val;
    CComPtr<IRect2d> box;
-   TRY_TEST( shape->get_BoundingBox(NULL), E_POINTER );
+   TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
    
    box->get_Left(&val);
@@ -220,7 +220,7 @@ void CTestPlateGirder::TestIShape()
    // ShapeProperties
    //
    CComPtr<IShapeProperties> props;
-   TRY_TEST( shape->get_ShapeProperties(NULL), E_POINTER );
+   TRY_TEST( shape->get_ShapeProperties(nullptr), E_POINTER );
    TRY_TEST( shape->get_ShapeProperties(&props), S_OK );
    Float64 area, ixx, iyy, ixy, cgx, cgy;
    CComPtr<IPoint2d> cg;
@@ -256,7 +256,7 @@ void CTestPlateGirder::TestIShape()
    //
    // Perimeter
    //
-   TRY_TEST( shape->get_Perimeter(NULL), E_POINTER );
+   TRY_TEST( shape->get_Perimeter(nullptr), E_POINTER );
    TRY_TEST( shape->get_Perimeter(&val), S_OK );
    TRY_TEST( IsEqual(val,338.124), true );
 
@@ -277,8 +277,8 @@ void CTestPlateGirder::TestIShape()
    p2->Move(100,200);
    line->ThroughPoints(p1,p2);
    Float64 dist;
-   TRY_TEST( shape->FurthestDistance(NULL,&dist), E_INVALIDARG );
-   TRY_TEST( shape->FurthestDistance(line,NULL), E_POINTER );
+   TRY_TEST( shape->FurthestDistance(nullptr,&dist), E_INVALIDARG );
+   TRY_TEST( shape->FurthestDistance(line,nullptr), E_POINTER );
    TRY_TEST( shape->FurthestDistance(line,&dist), S_OK );
    TRY_TEST( IsEqual(dist,200.000), true );
 
@@ -293,7 +293,7 @@ void CTestPlateGirder::TestIShape()
    // PolyPoints
    //
    CComPtr<IPoint2dCollection> coll;
-   TRY_TEST( shape->get_PolyPoints(NULL), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
    CollectionIndexType cPoints;
@@ -373,7 +373,7 @@ void CTestPlateGirder::TestIShape()
    // Clone
    //
    CComPtr<IShape> clone;
-   TRY_TEST(shape->Clone(NULL), E_POINTER );
+   TRY_TEST(shape->Clone(nullptr), E_POINTER );
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IPlateGirder> beamClone(clone);
@@ -405,8 +405,8 @@ void CTestPlateGirder::TestIShape()
    pnt.CoCreateInstance( CLSID_Point2d );
    pnt->Move(0.0, 50.);
 
-   TRY_TEST( shape->PointInShape(NULL,&bPointInShape), E_INVALIDARG );
-   TRY_TEST( shape->PointInShape(pnt,NULL), E_POINTER );
+   TRY_TEST( shape->PointInShape(nullptr,&bPointInShape), E_INVALIDARG );
+   TRY_TEST( shape->PointInShape(pnt,nullptr), E_POINTER );
    TRY_TEST( shape->PointInShape(pnt,&bPointInShape), S_OK );
    TRY_TEST( bPointInShape, VARIANT_TRUE );
 
@@ -431,8 +431,8 @@ void CTestPlateGirder::TestIShape()
    clipLine->ThroughPoints(p1,p2);
 
    CComPtr<IShape> clip;
-   TRY_TEST(shape->ClipWithLine(NULL,&clip), E_INVALIDARG );
-   TRY_TEST(shape->ClipWithLine(clipLine,NULL), E_POINTER );
+   TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
    TRY_TEST( clip != 0, true );
    
@@ -502,8 +502,8 @@ void CTestPlateGirder::TestIShape()
    clipRect->put_Top(55);
    clipRect->put_Bottom(50);
 
-   TRY_TEST( shape->ClipIn(NULL,&clip), E_INVALIDARG );
-   TRY_TEST( shape->ClipIn(clipRect,NULL), E_POINTER );
+   TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
+   TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
    
    // Verify clip by checking points
@@ -573,8 +573,8 @@ void CTestPlateGirder::TestIXYPosition()
    to.CoCreateInstance( CLSID_Point2d );
    to->Move(100,100);
 
-   TRY_TEST( position->MoveEx(NULL,to), E_INVALIDARG );
-   TRY_TEST( position->MoveEx(from,NULL), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to), S_OK );
 
    CComPtr<IShapeProperties> props;
@@ -600,7 +600,7 @@ void CTestPlateGirder::TestIXYPosition()
    size->put_Dx(100);
    size->put_Dy(100);
 
-   TRY_TEST(position->OffsetEx(NULL), E_INVALIDARG );
+   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST(position->OffsetEx(size), S_OK);
 
    props.Release();
@@ -618,8 +618,8 @@ void CTestPlateGirder::TestIXYPosition()
    // LocatorPoint property
    //
    hookPnt->Move(0,0);
-   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,NULL), E_INVALIDARG );
-   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,NULL), E_POINTER );
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
    // BottomLeft
    hookPnt->Move(0,0);
@@ -780,7 +780,7 @@ void CTestPlateGirder::TestIXYPosition()
    c->put_X(0);
    c->put_Y(0);
 
-   TRY_TEST( position->RotateEx(NULL,M_PI), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(nullptr,M_PI), E_INVALIDARG );
    TRY_TEST( position->RotateEx(c,M_PI), S_OK );
 
    props.Release();

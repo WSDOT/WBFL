@@ -56,21 +56,21 @@ BEGIN_COM_MAP(CUnkArray)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IUnkArray
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/IUnkArray* *clone);
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal);
-	STDMETHOD(Clear)();
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count);
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IUnknown* item);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition);
-	STDMETHOD(Add)(/*[in]*/IUnknown* item);
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IUnknown* *pVal);
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IUnknown* newVal);
-	STDMETHOD(get__NewEnum)(struct IUnknown ** );
-	STDMETHOD(get__EnumElements)(struct IEnumUnkArray ** );
+	STDMETHOD(Clone)(/*[out,retval]*/IUnkArray* *clone) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(Clear)() override;
+	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IUnknown* item) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Add)(/*[in]*/IUnknown* item) override;
+	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IUnknown* *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IUnknown* newVal) override;
+	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
+	STDMETHOD(get__EnumElements)(struct IEnumUnkArray ** ) override;
 
    typedef CAdapt<CComPtr<IUnknown> > MemberType;
    typedef std::vector<MemberType>    ContainerType;

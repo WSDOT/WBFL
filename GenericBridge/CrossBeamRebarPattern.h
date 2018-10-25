@@ -74,34 +74,34 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebarPattern
 public:
-	STDMETHOD(putref_Rebar)(/*[in]*/IRebar* rebar);
-	STDMETHOD(get_Rebar)(/*[out,retval]*/IRebar** rebar);
-   STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem);
-   STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook);
-   STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook);
-	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
-	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location);
-   STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile);
+	STDMETHOD(putref_Rebar)(/*[in]*/IRebar* rebar) override;
+	STDMETHOD(get_Rebar)(/*[out,retval]*/IRebar** rebar) override;
+   STDMETHOD(putref_RebarLayoutItem)(/*[in]*/IRebarLayoutItem* rebarLayoutItem) override;
+   STDMETHOD(put_Hook)(/*[in]*/DirectionType side,/*[in]*/HookType hook) override;
+   STDMETHOD(get_Hook)(/*[in]*/DirectionType side,/*[out,retval]*/HookType* hook) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count) override;
+	STDMETHOD(get_Location)(/*[in]*/Float64 distFromStartOfPattern,/*[in]*/CollectionIndexType barIdx,/*[out,retval]*/IPoint2d** location) override;
+   STDMETHOD(get_Profile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile) override;
 
 // ICrossBeamRebarPattern
 public:
-   STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pXBeam);
-   STDMETHOD(get_CrossBeam)(/*[out,retval]*/ICrossBeam** ppXBeam);
-   STDMETHOD(put_Datum)(/*[in]*/CrossBeamRebarDatum datum);
-   STDMETHOD(get_Datum)(/*[out,retval]*/CrossBeamRebarDatum* pDatum);
-   STDMETHOD(put_Cover)(/*[in]*/Float64 cover);
-   STDMETHOD(get_Cover)(/*[out,retval]*/Float64* pCover);
-	STDMETHOD(put_Count)(/*[in]*/RowIndexType count);
-	STDMETHOD(put_Spacing)(/*[in]*/Float64 spacing);
-	STDMETHOD(get_Spacing)(/*[out,retval]*/Float64* spacing);
-   STDMETHOD(get_DisplayProfile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile);
+   STDMETHOD(putref_CrossBeam)(/*[in]*/ICrossBeam* pXBeam) override;
+   STDMETHOD(get_CrossBeam)(/*[out,retval]*/ICrossBeam** ppXBeam) override;
+   STDMETHOD(put_Datum)(/*[in]*/CrossBeamRebarDatum datum) override;
+   STDMETHOD(get_Datum)(/*[out,retval]*/CrossBeamRebarDatum* pDatum) override;
+   STDMETHOD(put_Cover)(/*[in]*/Float64 cover) override;
+   STDMETHOD(get_Cover)(/*[out,retval]*/Float64* pCover) override;
+	STDMETHOD(put_Count)(/*[in]*/RowIndexType count) override;
+	STDMETHOD(put_Spacing)(/*[in]*/Float64 spacing) override;
+	STDMETHOD(get_Spacing)(/*[out,retval]*/Float64* spacing) override;
+   STDMETHOD(get_DisplayProfile)(/*[in]*/IndexType barIdx,/*[out,retval]*/IPoint2dCollection** ppProfile) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };

@@ -60,12 +60,12 @@ BEGIN_COM_MAP(CSectionStressResults)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISectionStressResults
 public:
 protected:
-	STDMETHOD(Clone)(/*[out, retval]*/ ISectionStressResults** clone);
+	STDMETHOD(Clone)(/*[out, retval]*/ ISectionStressResults** clone) override;
 
    virtual HRESULT OnBeforeAdd ( SSRVectorImpl::StoredType* pVal)
    {

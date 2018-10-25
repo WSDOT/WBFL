@@ -148,7 +148,7 @@ private:
 
    // Prevent accidental copying and assignment
    rptFontStyleLibrary(const rptFontStyleLibrary&);
-   rptFontStyleLibrary& operator=(const rptFontStyleLibrary&);
+   rptFontStyleLibrary& operator=(const rptFontStyleLibrary&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

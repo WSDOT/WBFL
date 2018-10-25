@@ -63,15 +63,15 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICrackedSectionSolution
 public:
-   STDMETHOD(InitSolution)(/*[in]*/IPoint2d* pntCG,/*[in]*/IUnkArray* slices);
-   STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pntCG);
-   STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices);
-	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/ICrackedSectionSlice** pSlice);
-   STDMETHOD(get_ElasticProperties)(/*[out,retval]*/IElasticProperties** ppProps);
+   STDMETHOD(InitSolution)(/*[in]*/IPoint2d* pntCG,/*[in]*/IUnkArray* slices) override;
+   STDMETHOD(get_CG)(/*[out,retval]*/IPoint2d** pntCG) override;
+   STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices) override;
+	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/ICrackedSectionSlice** pSlice) override;
+   STDMETHOD(get_ElasticProperties)(/*[out,retval]*/IElasticProperties** ppProps) override;
 };
 
 #endif //__CrackedSectionSolution_H_

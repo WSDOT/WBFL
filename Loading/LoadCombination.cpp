@@ -43,7 +43,7 @@ STDMETHODIMP CLoadCombination::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ldILoadCombination
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -448,7 +448,7 @@ STDMETHODIMP CLoadCombination::Load(IStructuredLoad2 * pload)
       CollectionIndexType count = var.iVal;
       m_LoadCaseFactors.clear();
       m_LoadCaseFactors.reserve(count);
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          hr = pload->BeginUnit(CComBSTR("LoadCaseFactor"));
          if (FAILED(hr))
@@ -514,7 +514,7 @@ STDMETHODIMP CLoadCombination::Save(IStructuredSave2 * psave)
       CollectionIndexType count = m_LoadCaseFactors.size();
       hr = psave->put_Property(CComBSTR("Count"),CComVariant(count));
 
-      for (CollectionIndexType i=0; i<count; i++)
+      for (CollectionIndexType i = 0; i<count; i++)
       {
          LoadCaseFactor& rcf = m_LoadCaseFactors[i];
 

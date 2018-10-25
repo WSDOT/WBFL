@@ -39,7 +39,7 @@ const int INDENT=2;
 // free function to indent a stream
 void indent_stream(std::_tostream& rOs, long spaces)
 {
-   for (long i=0; i<spaces; i++)
+   for (long i = 0; i<spaces; i++)
       rOs << " ";
 }
 

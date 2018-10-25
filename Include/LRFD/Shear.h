@@ -213,7 +213,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdShear(const lrfdShear&);
-   lrfdShear& operator=(const lrfdShear&);
+   lrfdShear& operator=(const lrfdShear&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -242,7 +242,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdWsdotShear();
+   virtual ~lrfdWsdotShear() override;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
@@ -265,11 +265,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 
 #endif // _DEBUG
 
@@ -295,7 +295,7 @@ private:
 
    // Prevent accidental copying and assignment
    lrfdWsdotShear(const lrfdWsdotShear&);
-   lrfdWsdotShear& operator=(const lrfdWsdotShear&);
+   lrfdWsdotShear& operator=(const lrfdWsdotShear&) = delete;
 
    // GROUP: OPERATORS
    // GROUP: OPERATIONS

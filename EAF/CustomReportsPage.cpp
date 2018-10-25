@@ -150,7 +150,7 @@ void CCustomReportsPage::OnBnClickedEdit()
 void CCustomReportsPage::OnBnClickedDelete()
 {
    POSITION pos = m_CustomReportsList.GetFirstSelectedItemPosition( );
-   if (pos!=NULL)
+   if (pos!=nullptr)
    {
       int nItem = m_CustomReportsList.GetNextSelectedItem(pos);
 
@@ -179,7 +179,7 @@ void CCustomReportsPage::InsertData()
 {
    m_CustomReportsList.DeleteAllItems();
 
-   int irow=0;
+   int irow = 0;
 
    // Add reports
    CEAFCustomReports::ReportConstIterator it = m_pParentDlg->m_CustomReports.m_Reports.begin();
@@ -205,7 +205,7 @@ void CCustomReportsPage::OnLvnItemchangedCustomReportList(NMHDR *pNMHDR, LRESULT
 {
    POSITION pos = m_CustomReportsList.GetFirstSelectedItemPosition( );
 
-   BOOL sel = (pos!=NULL) ? TRUE:FALSE;
+   BOOL sel = (pos!=nullptr) ? TRUE:FALSE;
    m_EditButton.EnableWindow(sel);
    m_DeleteButton.EnableWindow(sel);
 	
@@ -222,7 +222,7 @@ void CCustomReportsPage::OnNMDblclkCustomReportList(NMHDR *pNMHDR, LRESULT *pRes
 void CCustomReportsPage::EditSelectedReport()
 {
    POSITION pos = m_CustomReportsList.GetFirstSelectedItemPosition( );
-   if (pos!=NULL)
+   if (pos!=nullptr)
    {
       int nItem = m_CustomReportsList.GetNextSelectedItem(pos);
 
@@ -401,7 +401,7 @@ void CCustomReportsPage::OnBnClickedImport()
    CString strFilter;
    strFilter.Format(_T("%s Custom Report Files (*.%s)|*.%s||"),strAppName,strExtension,strExtension);
 
-   CFileDialog  fildlg(TRUE,strExtension,NULL,OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,strFilter);
+   CFileDialog  fildlg(TRUE,strExtension,nullptr,OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,strFilter);
    INT_PTR stf = fildlg.DoModal();
    if (stf==IDOK)
    {
@@ -453,7 +453,7 @@ void CCustomReportsPage::OnBnClickedImport()
          varNumReports.vt = VT_I4;
          hr = Load->get_Property(CComBSTR("NumReports"), &varNumReports);
 
-         for(long ir=0; ir<varNumReports.lVal; ir++)
+         for(long ir = 0; ir<varNumReports.lVal; ir++)
          {
             CEAFCustomReport Report;
 
@@ -489,7 +489,7 @@ void CCustomReportsPage::OnBnClickedImport()
             varNumChapters.vt = VT_I4;
             hr = Load->get_Property(CComBSTR("NumChapters"), &varNumChapters);
 
-            for(long ic=0; ic<varNumChapters.lVal; ic++)
+            for(long ic = 0; ic<varNumChapters.lVal; ic++)
             {
                CComVariant varChapter;
                varChapter.vt = VT_BSTR;

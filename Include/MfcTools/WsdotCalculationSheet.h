@@ -135,7 +135,7 @@ protected:
    void MakeCopy(const WsdotCalculationSheet& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const WsdotCalculationSheet& rOther);
+   void MakeAssignment(const WsdotCalculationSheet& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

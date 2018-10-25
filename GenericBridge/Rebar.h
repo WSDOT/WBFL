@@ -92,36 +92,36 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IRebar
 public:
-	STDMETHOD(Clone)(/*[out,retval]*/IRebar** clone);
-   STDMETHOD(Init)(/*[in]*/ BSTR name,/*[in]*/ Float64 Es,/*[in]*/ Float64 density,/*[in]*/ Float64 fpu,/*[in]*/ Float64 fpy,/*[in]*/ Float64 db,/*[in]*/ Float64 Ab,/*[in]*/ StageIndexType stageIdx);
-   STDMETHOD(get_Name)(/*[out,retval]*/ BSTR* name);
-   STDMETHOD(put_Name)(/*[in]*/ BSTR name);
-   STDMETHOD(get_UltimateStrength)(/*[out,retval]*/ Float64* fpu);
-	STDMETHOD(put_UltimateStrength)(/*[in]*/ Float64 fpu);
-	STDMETHOD(get_YieldStrength)(/*[out,retval]*/ Float64* fpy);
-   STDMETHOD(put_YieldStrength)(/*[in]*/ Float64 fpy);
-	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/ Float64* db);
-	STDMETHOD(put_NominalDiameter)(/*[in]*/ Float64 db);
-   STDMETHOD(get_NominalArea)(/*[out,retval]*/ Float64* Ab);
-	STDMETHOD(put_NominalArea)(/*[in]*/ Float64 Ab);
-   STDMETHOD(get_InstallationStage)(/*[out,retval]*/ StageIndexType* pStageIdx);
-	STDMETHOD(put_InstallationStage)(/*[in]*/ StageIndexType stageIdx);
+	STDMETHOD(Clone)(/*[out,retval]*/IRebar** clone) override;
+   STDMETHOD(Init)(/*[in]*/ BSTR name,/*[in]*/ Float64 Es,/*[in]*/ Float64 density,/*[in]*/ Float64 fpu,/*[in]*/ Float64 fpy,/*[in]*/ Float64 db,/*[in]*/ Float64 Ab,/*[in]*/ StageIndexType stageIdx) override;
+   STDMETHOD(get_Name)(/*[out,retval]*/ BSTR* name) override;
+   STDMETHOD(put_Name)(/*[in]*/ BSTR name) override;
+   STDMETHOD(get_UltimateStrength)(/*[out,retval]*/ Float64* fpu) override;
+	STDMETHOD(put_UltimateStrength)(/*[in]*/ Float64 fpu) override;
+	STDMETHOD(get_YieldStrength)(/*[out,retval]*/ Float64* fpy) override;
+   STDMETHOD(put_YieldStrength)(/*[in]*/ Float64 fpy) override;
+	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/ Float64* db) override;
+	STDMETHOD(put_NominalDiameter)(/*[in]*/ Float64 db) override;
+   STDMETHOD(get_NominalArea)(/*[out,retval]*/ Float64* Ab) override;
+	STDMETHOD(put_NominalArea)(/*[in]*/ Float64 Ab) override;
+   STDMETHOD(get_InstallationStage)(/*[out,retval]*/ StageIndexType* pStageIdx) override;
+	STDMETHOD(put_InstallationStage)(/*[in]*/ StageIndexType stageIdx) override;
 
 // IMaterial
 public:
-   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E);
-	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E);
-	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w);
-	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w);
+   STDMETHOD(get_E)(StageIndexType stageIdx,Float64* E) override;
+	STDMETHOD(put_E)(StageIndexType stageIdx,Float64 E) override;
+	STDMETHOD(get_Density)(StageIndexType stageIdx,Float64* w) override;
+	STDMETHOD(put_Density)(StageIndexType stageIdx,Float64 w) override;
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load);
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save);
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override;
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
 #endif //__Rebar_H_

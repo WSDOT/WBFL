@@ -71,7 +71,7 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
 {
    std::vector<CChapterInfo> v;
 
-   BOOST_FOREACH(const CChapterBuilder* pChBuilder,m_ChapterBuilders)
+   for( const auto& pChBuilder : m_ChapterBuilders)
    {
       CChapterInfo chInfo;
       chInfo.Name     = pChBuilder->GetName();
@@ -85,13 +85,13 @@ std::vector<CChapterInfo> CReportDescription::GetChapterInfo() const
    return v;
 }
 
-void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportSpecification>& pRptSpec) const
+void CReportDescription::ConfigureReportSpecification(std::shared_ptr<CReportSpecification>& pRptSpec) const
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
 
    pRptSpec->ClearChapters();
 
-   BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
+   for( const auto& chInfo : vChInfo)
    {
       if (chInfo.Select)
       {
@@ -100,13 +100,13 @@ void CReportDescription::ConfigureReportSpecification(boost::shared_ptr<CReportS
    }
 }
 
-void CReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList,boost::shared_ptr<CReportSpecification>& pRptSpec) const
+void CReportDescription::ConfigureReportSpecification(const std::vector<std::_tstring>& chList, std::shared_ptr<CReportSpecification>& pRptSpec) const
 {
    std::vector<CChapterInfo> vChInfo = GetChapterInfo();
 
    pRptSpec->ClearChapters();
 
-   BOOST_FOREACH(const std::_tstring& strChName,chList)
+   for( const auto& strChName : chList)
    {
       CChapterInfo search;
       search.Name = strChName;
@@ -119,11 +119,11 @@ void CReportDescription::ConfigureReportSpecification(const std::vector<std::_ts
    }
 }
 
-void CReportDescription::ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo,boost::shared_ptr<CReportSpecification>& pRptSpec) const
+void CReportDescription::ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo, std::shared_ptr<CReportSpecification>& pRptSpec) const
 {
    pRptSpec->ClearChapters();
 
-   BOOST_FOREACH(const CChapterInfo& chInfo,vChInfo)
+   for( const auto& chInfo : vChInfo)
    {
       pRptSpec->AddChapter(chInfo.Name.c_str(),chInfo.Key.c_str(),chInfo.MaxLevel);
    }

@@ -68,8 +68,8 @@ void CTestLine2d::Test()
    p->put_X(5);
    p->put_Y(5);
 
-   TRY_TEST( pLine->SetExplicit(NULL,NULL), E_INVALIDARG );
-   TRY_TEST( pLine->SetExplicit(p,NULL), E_INVALIDARG );
+   TRY_TEST( pLine->SetExplicit(nullptr,nullptr), E_INVALIDARG );
+   TRY_TEST( pLine->SetExplicit(p,nullptr), E_INVALIDARG );
    TRY_TEST( pLine->SetExplicit(p,v), GEOMETRY_E_ZEROMAGNITUDE );
 
    v->put_X(10);
@@ -78,9 +78,9 @@ void CTestLine2d::Test()
 
    CComPtr<IVector2d> vec;
    CComPtr<IPoint2d>  pnt;
-   TRY_TEST( pLine->GetExplicit(NULL,NULL), E_POINTER );
-   TRY_TEST( pLine->GetExplicit(&pnt,NULL), E_POINTER );
-   TRY_TEST( pLine->GetExplicit(NULL,&vec), E_POINTER );
+   TRY_TEST( pLine->GetExplicit(nullptr,nullptr), E_POINTER );
+   TRY_TEST( pLine->GetExplicit(&pnt,nullptr), E_POINTER );
+   TRY_TEST( pLine->GetExplicit(nullptr,&vec), E_POINTER );
    TRY_TEST( pLine->GetExplicit(&pnt,&vec), S_OK );
    
    Float64 x,y;
@@ -104,14 +104,14 @@ void CTestLine2d::Test()
 
    v->put_X(0);
    v->put_Y(1);
-   TRY_TEST(pLine->SetImplicit(5.0,NULL),E_INVALIDARG);
+   TRY_TEST(pLine->SetImplicit(5.0,nullptr),E_INVALIDARG);
    TRY_TEST(pLine->SetImplicit(5.0,v),S_OK);
 
    Float64 c;
    vec.Release();
-   TRY_TEST(pLine->GetImplicit(NULL,NULL),E_POINTER);
-   TRY_TEST(pLine->GetImplicit(&c,NULL),E_POINTER);
-   TRY_TEST(pLine->GetImplicit(NULL,&vec),E_POINTER);
+   TRY_TEST(pLine->GetImplicit(nullptr,nullptr),E_POINTER);
+   TRY_TEST(pLine->GetImplicit(&c,nullptr),E_POINTER);
+   TRY_TEST(pLine->GetImplicit(nullptr,&vec),E_POINTER);
    TRY_TEST(pLine->GetImplicit(&c,&vec),S_OK);
 
    TRY_TEST(IsEqual(c,5.0),true);
@@ -131,8 +131,8 @@ void CTestLine2d::Test()
    p1->put_Y(10.0);
    p2->put_X(20.0);
    p2->put_Y(30.0);
-   TRY_TEST(pLine->ThroughPoints(NULL,NULL),E_INVALIDARG);
-   TRY_TEST(pLine->ThroughPoints(p1,NULL),E_INVALIDARG);
+   TRY_TEST(pLine->ThroughPoints(nullptr,nullptr),E_INVALIDARG);
+   TRY_TEST(pLine->ThroughPoints(p1,nullptr),E_INVALIDARG);
    TRY_TEST(pLine->ThroughPoints(p1,p2),S_OK);
 
    vec.Release();
@@ -233,7 +233,7 @@ void CTestLine2d::Test()
    pLine->SetImplicit(10,v);
    p1->put_X(1);
    p1->put_Y(0);
-   TRY_TEST( pLine->RotateEx(NULL,M_PI/2), E_INVALIDARG );
+   TRY_TEST( pLine->RotateEx(nullptr,M_PI/2), E_INVALIDARG );
    TRY_TEST( pLine->RotateEx(p1,M_PI/2), S_OK);
 
    vec.Release();

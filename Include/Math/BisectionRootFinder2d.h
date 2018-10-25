@@ -77,7 +77,7 @@ public:
    //------------------------------------------------------------------------
    // Finds the root of f that is in the range [xMin,xMax], such that -tol < f(x) < tol.
    // Throws a mathXRootFinderFailed exception if a root could not be found.
-   virtual Float64 FindRootInRange(const mathFunction2d& f,Float64 xMin,Float64 xMax,Float64 tol);
+   virtual Float64 FindRootInRange(const mathFunction2d& f,Float64 xMin,Float64 xMax,Float64 tol) override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -86,11 +86,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST

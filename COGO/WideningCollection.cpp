@@ -63,7 +63,7 @@ private:
 // CWideningCollection
 HRESULT CWideningCollection::FinalConstruct()
 {
-   m_pSurface = NULL;
+   m_pSurface = nullptr;
    return S_OK;
 }
 
@@ -79,7 +79,7 @@ STDMETHODIMP CWideningCollection::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_IWideningCollection,
       &IID_IStructuredStorage2,
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -107,7 +107,7 @@ STDMETHODIMP CWideningCollection::putref_Surface(ISurface* pSurface)
    get__EnumWidenings(&enumWidenings);
 
    CComPtr<IWidening> widening;
-   while ( enumWidenings->Next(1,&widening,NULL) != S_FALSE )
+   while ( enumWidenings->Next(1,&widening,nullptr) != S_FALSE )
    {
       widening->putref_Surface(m_pSurface);
       widening.Release();
@@ -171,7 +171,7 @@ STDMETHODIMP CWideningCollection::GetWidening(VARIANT varStation,IWidening** wid
 {
    // searches for the Widening that contains the specified station
    CHECK_RETOBJ(widening);
-   *widening = NULL;
+   *widening = nullptr;
 
    CComPtr<IStation> station;
    HRESULT hr = cogoUtil::StationFromVariant(varStation,false,&station);
@@ -237,7 +237,7 @@ STDMETHODIMP CWideningCollection::AddEx(IWidening* widening)
 
 STDMETHODIMP CWideningCollection::Add(VARIANT varBeginStation,VARIANT varBeginFullStation,VARIANT varEndFullStation,VARIANT varEndStation,Float64 widening,IndexType pnt1,IndexType pnt2,IWidening* *pWidening)
 {
-   if ( pWidening != NULL )
+   if ( pWidening != nullptr )
    {
       CHECK_RETOBJ(pWidening);
    }
@@ -251,7 +251,7 @@ STDMETHODIMP CWideningCollection::Add(VARIANT varBeginStation,VARIANT varBeginFu
    if ( FAILED(hr) )
       return hr;
 
-   if ( pWidening != NULL )
+   if ( pWidening != nullptr )
    {
       (*pWidening) = newWidening;
       (*pWidening)->AddRef();
@@ -295,7 +295,7 @@ STDMETHODIMP CWideningCollection::Clone(IWideningCollection* *clone)
    get__EnumWidenings(&enumWidenings);
 
    CComPtr<IWidening> widening;
-   while ( enumWidenings->Next(1,&widening,NULL) != S_FALSE )
+   while ( enumWidenings->Next(1,&widening,nullptr) != S_FALSE )
    {
       CComPtr<IWidening> wideningClone;
       widening->Clone(&wideningClone);
@@ -337,7 +337,7 @@ STDMETHODIMP CWideningCollection::get__EnumWidenings(IEnumWidenings** retval)
    if ( FAILED(hr) )
       return hr;
 
-   hr = pEnum->Init( NULL, m_coll );
+   hr = pEnum->Init( nullptr, m_coll );
    if ( FAILED(hr) )
       return hr;
 
@@ -459,7 +459,7 @@ HRESULT CWideningCollection::OnBeforeLoad(IStructuredLoad2* pLoad)
 //   if ( FAILED(hr) )
 //      return hr;
 //
-//   if ( m_pProfile == NULL )
+//   if ( m_pProfile == nullptr )
 //   {
 //      ZoneIndexType staEqnZoneIdx;
 //      (*station)->get_StationZoneIndex(&staEqnZoneIdx);

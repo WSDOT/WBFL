@@ -36,7 +36,7 @@
 
 IMPLEMENT_DYNAMIC(CEditCustomReportDlg, CDialog)
 
-CEditCustomReportDlg::CEditCustomReportDlg(CWnd* pParent /*=NULL*/)
+CEditCustomReportDlg::CEditCustomReportDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CEditCustomReportDlg::IDD, pParent)
    , m_bIsFavorite(FALSE)
 {
@@ -116,7 +116,7 @@ void CEditCustomReportDlg::DoDataExchange(CDataExchange* pDX)
       m_CustomReport.m_ParentReportName = strParentReport;
 
       m_CustomReport.m_Chapters.clear();
-      for (int i=0; i<cnt; i++)
+      for (int i = 0; i<cnt; i++)
       {
          TCHAR strChapter[128];
          m_SelectedChaptersList.GetText(i, strChapter);
@@ -181,11 +181,11 @@ void CEditCustomReportDlg::FillChapterData(bool initial)
       m_ParentReportCombo.GetLBText(sel, rptname);
 
       GET_IFACE2(m_pConfigureReportsDlg->m_pBroker,IReportManager,pReportMgr);
-      boost::shared_ptr<CReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
+      std::shared_ptr<CReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
       CollectionIndexType nc = pBuilder->GetChapterBuilderCount();
-      for (CollectionIndexType ic=0; ic<nc; ic++)
+      for (CollectionIndexType ic = 0; ic<nc; ic++)
       {
-         boost::shared_ptr<CChapterBuilder> pCb = pBuilder->GetChapterBuilder(ic);
+         std::shared_ptr<CChapterBuilder> pCb = pBuilder->GetChapterBuilder(ic);
          std::_tstring cbname = pCb->GetName();
 
          // At initial time we are loading data as in report. if not initial, we have no chapters selected
@@ -263,7 +263,7 @@ void CEditCustomReportDlg::OnBnClickedAddAllButton()
 {
    int cnt = m_AvailableChaptersList.GetCount();
    // Move strings,
-   for (int il=0; il<cnt; il++)
+   for (int il = 0; il<cnt; il++)
    {
       CString strSel;
       m_AvailableChaptersList.GetText(il, strSel);
@@ -271,7 +271,7 @@ void CEditCustomReportDlg::OnBnClickedAddAllButton()
    }
 
    // then delete them
-   for (int il=0; il<cnt; il++)
+   for (int il = 0; il<cnt; il++)
    {
       m_AvailableChaptersList.DeleteString(0);
    }
@@ -285,7 +285,7 @@ void CEditCustomReportDlg::OnBnClickedRemoveAllButton()
 {
    int cnt = m_SelectedChaptersList.GetCount();
    // Move strings,
-   for (int il=0; il<cnt; il++)
+   for (int il = 0; il<cnt; il++)
    {
       CString strSel;
       m_SelectedChaptersList.GetText(il, strSel);
@@ -293,7 +293,7 @@ void CEditCustomReportDlg::OnBnClickedRemoveAllButton()
    }
 
    // then delete them
-   for (int il=0; il<cnt; il++)
+   for (int il = 0; il<cnt; il++)
    {
       m_SelectedChaptersList.DeleteString(0);
    }

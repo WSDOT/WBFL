@@ -207,7 +207,7 @@ protected:
    void MakeCopy(const matMetal& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matMetal& rOther);
+   void MakeAssignment(const matMetal& rOther);
 
    //------------------------------------------------------------------------
    void NotifyAllListeners();

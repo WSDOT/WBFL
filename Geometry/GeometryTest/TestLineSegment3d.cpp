@@ -59,11 +59,11 @@ void CTestLineSegment3d::Test()
    p1->put_Y(10);
    p1->put_Z(10);
 
-   TRY_TEST(pSeg->putref_StartPoint(NULL),E_INVALIDARG);
+   TRY_TEST(pSeg->putref_StartPoint(nullptr),E_INVALIDARG);
    TRY_TEST(pSeg->putref_StartPoint(p1),S_OK);
 
    CComPtr<IPoint3d> pStart;
-   TRY_TEST(pSeg->get_StartPoint(NULL),E_POINTER);
+   TRY_TEST(pSeg->get_StartPoint(nullptr),E_POINTER);
    TRY_TEST(pSeg->get_StartPoint(&pStart),S_OK);
    Float64 x,y,z;
    pStart->get_X(&x);
@@ -100,11 +100,11 @@ void CTestLineSegment3d::Test()
    p2->put_X(20);
    p2->put_Y(20);
    p2->put_Z(20);
-   TRY_TEST(pSeg->putref_EndPoint(NULL),E_INVALIDARG);
+   TRY_TEST(pSeg->putref_EndPoint(nullptr),E_INVALIDARG);
    TRY_TEST(pSeg->putref_EndPoint(p2),S_OK);
 
    CComPtr<IPoint3d> pEnd;
-   TRY_TEST(pSeg->get_EndPoint(NULL),E_POINTER);
+   TRY_TEST(pSeg->get_EndPoint(nullptr),E_POINTER);
    TRY_TEST(pSeg->get_EndPoint(&pEnd),S_OK);
    pEnd->get_X(&x);
    pEnd->get_Y(&y);
@@ -145,7 +145,7 @@ void CTestLineSegment3d::Test()
    pSeg->putref_StartPoint(p1);
    pSeg->putref_EndPoint(p2);
    Float64 length;
-   TRY_TEST(pSeg->get_Length(NULL),E_POINTER);
+   TRY_TEST(pSeg->get_Length(nullptr),E_POINTER);
    TRY_TEST(pSeg->get_Length(&length),S_OK);
    TRY_TEST(IsEqual(length,17.320508),true);
 
@@ -186,7 +186,7 @@ void CTestLineSegment3d::Test()
    size->put_Dx(10);
    size->put_Dy(10);
    size->put_Dz( 0);
-   TRY_TEST(pSeg->OffsetEx(NULL),E_INVALIDARG);
+   TRY_TEST(pSeg->OffsetEx(nullptr),E_INVALIDARG);
    TRY_TEST(pSeg->OffsetEx(size),S_OK);
    pStart.Release();
    pSeg->get_StartPoint(&pStart);
@@ -239,7 +239,7 @@ void CTestLineSegment3d::Test()
    //center.CoCreateInstance( CLSID_Point3d );
    //center->put_X(0.00);
    //center->put_Y(0.00);
-   //TRY_TEST(pSeg->RotateEx(NULL,M_PI/2),E_INVALIDARG);
+   //TRY_TEST(pSeg->RotateEx(nullptr,M_PI/2),E_INVALIDARG);
    //TRY_TEST(pSeg->RotateEx(center,M_PI/2),S_OK);
    //pStart.Release();
    //pEnd.Release();

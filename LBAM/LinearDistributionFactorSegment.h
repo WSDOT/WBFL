@@ -49,8 +49,8 @@ public:
 	{
 	}
 
+   HRESULT FinalConstruct();
    void FinalRelease();
-   STDMETHOD(FinalConstruct)();
 
 
 DECLARE_REGISTRY_RESOURCEID(IDR_LINEARDISTRIBUTIONFACTORSEGMENT)
@@ -75,25 +75,25 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILinearDistributionFactorSegment
 public:
-	STDMETHOD(Clone)(/*[out]*/IDistributionFactorSegment** clone);
-   STDMETHOD(CreateDistributionFactor)(/*[in]*/ Float64 dist,/*[out,retval]*/IDistributionFactor** pFactor);
-	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal);
-	STDMETHOD(putref_DistributionFactor)(/*[in]*/ IDistributionFactor* newVal);
-	STDMETHOD(get_EndDistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal);
-	STDMETHOD(putref_EndDistributionFactor)(/*[in]*/ IDistributionFactor* newVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal);
+	STDMETHOD(Clone)(/*[out]*/IDistributionFactorSegment** clone) override;
+   STDMETHOD(CreateDistributionFactor)(/*[in]*/ Float64 dist,/*[out,retval]*/IDistributionFactor** pFactor) override;
+	STDMETHOD(get_DistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal) override;
+	STDMETHOD(putref_DistributionFactor)(/*[in]*/ IDistributionFactor* newVal) override;
+	STDMETHOD(get_EndDistributionFactor)(/*[out, retval]*/ IDistributionFactor* *pVal) override;
+	STDMETHOD(putref_EndDistributionFactor)(/*[in]*/ IDistributionFactor* newVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Length)(/*[in]*/ Float64 newVal) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
    // IDistributionFactorEvents
-	STDMETHOD(OnDistributionFactorChanged)(IDistributionFactor* pdf);
+	STDMETHOD(OnDistributionFactorChanged)(IDistributionFactor* pdf) override;
 
 protected:
    Float64 m_Length;

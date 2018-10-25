@@ -59,7 +59,7 @@ void CTestWidening::Test()
    CComPtr<IStation> objStation;
    Float64 station;
    ZoneIndexType zoneIdx;
-   TRY_TEST(pWidening->get_BeginTransition(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_BeginTransition(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_BeginTransition(&objStation),S_OK);
    objStation->get_Value(&station);
    TRY_TEST(IsEqual(station,0.0),true);
@@ -79,7 +79,7 @@ void CTestWidening::Test()
 
    objStation.Release();
 
-   TRY_TEST(pWidening->get_BeginFullWidening(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_BeginFullWidening(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_BeginFullWidening(&objStation),S_OK);
    objStation->get_Value(&station);
    TRY_TEST(IsEqual(station,0.0),true);
@@ -99,7 +99,7 @@ void CTestWidening::Test()
 
    objStation.Release();
 
-   TRY_TEST(pWidening->get_EndFullWidening(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_EndFullWidening(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_EndFullWidening(&objStation),S_OK);
    objStation->get_Value(&station);
    TRY_TEST(IsEqual(station,0.0),true);
@@ -119,7 +119,7 @@ void CTestWidening::Test()
 
    objStation.Release();
 
-   TRY_TEST(pWidening->get_EndTransition(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_EndTransition(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_EndTransition(&objStation),S_OK);
    objStation->get_Value(&station);
    TRY_TEST(IsEqual(station,0.0),true);
@@ -139,7 +139,7 @@ void CTestWidening::Test()
 
 
    Float64 widening;
-   TRY_TEST(pWidening->get_Widening(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_Widening(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_Widening(&widening),S_OK);
    TRY_TEST(IsEqual(widening,0.0),true);
    TRY_TEST(pWidening->put_Widening(5.0),S_OK);
@@ -147,8 +147,8 @@ void CTestWidening::Test()
    TRY_TEST(IsEqual(widening,5.0),true);
 
    IndexType segmentIdx;
-   TRY_TEST(pWidening->get_Segment(0,NULL),E_POINTER);
-   TRY_TEST(pWidening->get_Segment(1,NULL),E_POINTER);
+   TRY_TEST(pWidening->get_Segment(0,nullptr),E_POINTER);
+   TRY_TEST(pWidening->get_Segment(1,nullptr),E_POINTER);
    TRY_TEST(pWidening->get_Segment(0,&segmentIdx),S_OK);
    TRY_TEST(segmentIdx,0);
    TRY_TEST(pWidening->get_Segment(1,&segmentIdx),S_OK);
@@ -160,9 +160,9 @@ void CTestWidening::Test()
    TRY_TEST(segmentIdx,5);
 
    CComPtr<IStructuredStorage2> ss;
-   TRY_TEST(pWidening->get_StructuredStorage(NULL),E_POINTER);
+   TRY_TEST(pWidening->get_StructuredStorage(nullptr),E_POINTER);
    TRY_TEST(pWidening->get_StructuredStorage(&ss),S_OK);
-   TRY_TEST(ss != NULL,true);
+   TRY_TEST(ss != nullptr,true);
 
 
    // Test Events
@@ -205,7 +205,7 @@ void CTestWidening::Test()
 
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pWidening);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IWidening ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

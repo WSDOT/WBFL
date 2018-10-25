@@ -63,7 +63,7 @@ interface IEAFAppPlugin : IUnknown
    // Creates a document template for use in MFC's Doc/View model
    virtual std::vector<CEAFDocTemplate*> CreateDocTemplates() = 0;
 
-   // Returns the menu handle of a shared menu. Return NULL if this application does
+   // Returns the menu handle of a shared menu. Return nullptr if this application does
    // not use a shared menu
    virtual HMENU GetSharedMenuHandle() = 0;
 

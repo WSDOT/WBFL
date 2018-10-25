@@ -212,7 +212,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
    CComPtr<ILiveLoadModelResults> results(cresults);
    hr = results->Reserve(ressize);
 
-   for (CollectionIndexType is=0; is<ressize; is++)
+   for (CollectionIndexType is = 0; is<ressize; is++)
    {
       Float64 left_val, right_val;
       CComPtr<ILiveLoadConfiguration> left_config, right_config;
@@ -306,9 +306,9 @@ m_ModelDirty(true),
 m_LiveLoadDirty(true),
 m_VariableAxleSpacings(3),
 m_ContextCookie(0),
-m_pInflStrategy(NULL),
-m_pDfStrategy(NULL),
-m_pApplicabilityStrategy(NULL)
+m_pInflStrategy(nullptr),
+m_pDfStrategy(nullptr),
+m_pApplicabilityStrategy(nullptr)
 {
 }
 
@@ -318,7 +318,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::InterfaceSupportsErrorInfo(REFIID ri
 	{
 		&IID_IEnvelopedVehicularResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -339,7 +339,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
    CHRException hr;
    try
    {
-      if (m_LiveLoad != NULL)
+      if (m_LiveLoad != nullptr)
       {
          // can only initialize once
          THROW_LBAMLL(LL_INITIALIZATION);
@@ -352,7 +352,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
 
       // Latch onto the parts of the context we need 
       CComQIPtr<ILiveLoad> pll(context);
-      if (pll!=NULL)
+      if (pll!=nullptr)
       {
          m_LiveLoad = pll;
       }
@@ -363,7 +363,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
 
       CComQIPtr<IInfluenceLineResponse> presp(context);
-      if (presp!=NULL)
+      if (presp!=nullptr)
       {
          m_InfluenceLineResponse = presp;
       }
@@ -374,7 +374,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> pcf(context);
-      if (pcf!=NULL)
+      if (pcf!=nullptr)
       {
          m_LiveLoadNegativeMomentRegion = pcf;
       }
@@ -385,7 +385,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
 
       CComQIPtr<IGetDistributionFactors> pdf(context);
-      if (pdf!=NULL)
+      if (pdf!=nullptr)
       {
          m_GetDistributionFactors = pdf;
       }
@@ -396,7 +396,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
 
       CComQIPtr<ISupportLocations> sup_locs(m_Context);
-      if (sup_locs!=NULL)
+      if (sup_locs!=nullptr)
       {
          m_SupportLocations = sup_locs;
       }
@@ -407,7 +407,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
 
       CComQIPtr<IGetStressPoints> gsp(context);
-      if (gsp!=NULL)
+      if (gsp!=nullptr)
       {
          m_GetStressPoints = gsp;
       }
@@ -481,16 +481,16 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeForces(IIDArray* poiIDs, BSTR
                                  computePlacements,
                                  pResults);
 
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
    }
    catch(...)
    {
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -539,15 +539,15 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeDeflections(IIDArray* poiIDs,
                                  computePlacements,
                                  pResults);
 
-      m_pInflStrategy = NULL;
-      m_pDfStrategy = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy = nullptr;
+      m_pDfStrategy = nullptr;
+      m_pApplicabilityStrategy = nullptr;
    }
    catch(...)
    {
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -600,9 +600,9 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeReactions(IIDArray* supportID
                                    computePlacements,
                                    &sec_res);
 
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
       // copy section results to non-section based - taking local maxes along the way
       CComPtr<ILiveLoadModelResults> results;
@@ -612,9 +612,9 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeReactions(IIDArray* supportID
    }
    catch(...)
    {
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -666,8 +666,8 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeSupportDeflections(IIDArray* 
                                    computePlacements,
                                    &sec_res);
 
-      m_pInflStrategy = NULL;
-      m_pDfStrategy = NULL;
+      m_pInflStrategy = nullptr;
+      m_pDfStrategy = nullptr;
 
       // copy section results to non-section based - taking local maxes along the way
       CComPtr<ILiveLoadModelResults> results;
@@ -677,9 +677,9 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeSupportDeflections(IIDArray* 
    }
    catch(...)
    {
-      m_pInflStrategy          = NULL;
-      m_pDfStrategy            = NULL;
-      m_pApplicabilityStrategy = NULL;
+      m_pInflStrategy          = nullptr;
+      m_pDfStrategy            = nullptr;
+      m_pApplicabilityStrategy = nullptr;
 
       return DealWithExceptions(this, IID_IEnvelopedVehicularResponse);
    }
@@ -817,7 +817,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
                      
                      CComPtr<ITemporarySupport> tempSupport;
                      tempSupports->Find(tsID,&tempSupport);
-                     ATLASSERT(tempSupport != NULL);
+                     ATLASSERT(tempSupport != nullptr);
 
                      CComBSTR bstrRemovalStage;
                      tempSupport->get_StageRemoved(&bstrRemovalStage);
@@ -860,7 +860,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::ComputeResponse(IIDArray* poiIDs, BS
             left_config = pconfig;
             left_config->put_IsApplicable(VARIANT_FALSE);
 
-            pconfig=NULL;
+            pconfig=nullptr;
             hr = CComObject<CLiveLoadConfiguration>::CreateInstance(&pconfig);
             right_config = pconfig;
             right_config->put_IsApplicable(VARIANT_FALSE);
@@ -1065,8 +1065,8 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
    Float64 right_truck_result = 0;
 
    // set up our class for doing value comparisons - remember this function works on left-face coordinates
-   iLLCompare* left_compare = NULL;
-   iLLCompare* right_compare = NULL;
+   iLLCompare* left_compare = nullptr;
+   iLLCompare* right_compare = nullptr;
    if ( !GetInflResponse(poiID,type, vehicleIndex, effect, vehConfiguration, doApplyImpact, &left_compare, &right_compare ) )
    {
       IntializeCompare(optimization, &left_compare, &right_compare);
@@ -1414,9 +1414,9 @@ void CBruteForceVehicularResponse2::IntializeCompare(OptimizationType optimizati
 
 void CBruteForceVehicularResponse2::AssertValid()
 {
-   ATLASSERT(m_pInflStrategy != NULL);
+   ATLASSERT(m_pInflStrategy != nullptr);
 
-   if (m_LiveLoad == NULL)
+   if (m_LiveLoad == nullptr)
    {
       // must be initialized before use
       THROW_LBAMLL(LL_INITIALIZATION);

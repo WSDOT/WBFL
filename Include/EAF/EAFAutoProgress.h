@@ -43,5 +43,5 @@ private:
 
    // Prevent accidental copying and assignment
    CEAFAutoProgress(const CEAFAutoProgress&);
-   CEAFAutoProgress& operator=(const CEAFAutoProgress&);
+   CEAFAutoProgress& operator=(const CEAFAutoProgress&) = delete;
 };

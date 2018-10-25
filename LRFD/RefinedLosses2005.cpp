@@ -1377,53 +1377,53 @@ bool lrfdRefinedLosses2005::TestMe(dbgLog& rlog)
 
    // permanent strands
    value = loss.PermanentStrand_BeforeTransfer();
-   TRY_TESTME( IsEqual(value,13683947.729187824) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value,120602629.93431854) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value,120602629.93431854) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtLifting();
-   TRY_TESTME( IsEqual(value,120602629.93431854) );
+   TRY_TESTME( IsEqual(value, 13649748.378800517) );
 
    value = loss.PermanentStrand_AtShipping();
-   TRY_TESTME( IsEqual(value,158978553.78300115) );
+   TRY_TESTME( IsEqual(value, 55943871.442225523) );
 
    value = loss.PermanentStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,158978553.78300115) );
+   TRY_TESTME( IsEqual(value, 55943871.442225523) );
 
    value = loss.PermanentStrand_AfterTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,162273328.34395421) );
+   TRY_TESTME( IsEqual(value, 55943871.442225523) );
 
    value = loss.PermanentStrand_AfterDeckPlacement();
-   TRY_TESTME( IsEqual(value,219867904.03153318) );
+   TRY_TESTME( IsEqual(value, 163455953.25443751) );
 
    value = loss.PermanentStrand_AfterSIDL();
-   TRY_TESTME( IsEqual(value,212741914.84862563) );
+   TRY_TESTME( IsEqual(value, 163455953.25443751) );
 
    value = loss.PermanentStrand_Final();
-   TRY_TESTME( IsEqual(value,227988414.33598420) );
+   TRY_TESTME( IsEqual(value, 178346414.38325983) );
 
    // temporary strands
    value = loss.TemporaryStrand_BeforeTransfer();
-   TRY_TESTME( IsEqual(value,13684031.013553569) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AfterTransfer();
-   TRY_TESTME( IsEqual(value,57859070.448777609) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandInstallation();
-   TRY_TESTME( IsEqual(value,57859070.448777609) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtLifting();
-   TRY_TESTME( IsEqual(value,57859070.448777609) );
+   TRY_TESTME( IsEqual(value, 13649831.557409566) );
 
    value = loss.TemporaryStrand_AtShipping();
-   TRY_TESTME( IsEqual(value,94110660.599749312) );
+   TRY_TESTME( IsEqual(value, 52381165.854266986) );
 
    value = loss.TemporaryStrand_BeforeTemporaryStrandRemoval();
-   TRY_TESTME( IsEqual(value,94110660.599749312) );
+   TRY_TESTME( IsEqual(value, 52381165.854266986) );
 
    value = loss.TemporaryStrand_AfterTemporaryStrandRemoval();
    TRY_TESTME( IsEqual(value,0.) );

@@ -65,7 +65,7 @@ int main(int argc, TCHAR* argv[])
 {
    //_crtBreakAlloc = 526; // causes program to break at a specific memory allocation
 
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    CTestGenericBridge::Test();
    CTestAlignmentOffsetStrategy::Test();
@@ -94,7 +94,7 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions)
 {
    CComQIPtr<IObjectSafety> safety(punk);
 
-   if ( safety == NULL )
+   if ( safety == nullptr )
       return false;
 
 

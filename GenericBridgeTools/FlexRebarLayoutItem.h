@@ -67,8 +67,8 @@ END_COM_MAP()
 protected:
    CComBSTR GetCollectionName() { return CComBSTR("RebarPatterns"); }
    CComBSTR GetStoredName()     { return CComBSTR("RebarPattern");  }
-   virtual HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
-   virtual HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
+   HRESULT DoSaveItem(IStructuredSave2* save,IRebarPattern* item);
+   HRESULT DoLoadItem(IStructuredLoad2* load,IRebarPattern* *ppItem);
 
    LayoutPosition m_Position;
    Float64 m_Factor;
@@ -80,23 +80,23 @@ protected:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFlexRebarLayoutItem
 public:
-   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[out,retval]*/ VARIANT_BOOL* bResult);
-	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start);
-	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);
-//	STDMETHOD(get_Count)(/*[out,retval]*/long* count);
-//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern);
-	STDMETHOD(AddRebarPattern)(/*[in]*/IRebarPattern* pattern);
-//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval);  
-   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumRebarPatterns** enumRebarPatterns);
-	STDMETHOD(get_Position)(/*[out,retval]*/ LayoutPosition* lp);
-	STDMETHOD(put_Position)(/*[in]*/ LayoutPosition lp);
-	STDMETHOD(get_LengthFactor)(/*[out,retval]*/ Float64* lf);
-	STDMETHOD(put_LengthFactor)(/*[in]*/ Float64 lf);
-	STDMETHOD(putref_Girder)(/*[in]*/IPrecastGirder* girder);
+   STDMETHOD(ContainsLocation)(/*[in]*/ Float64 distFromStart,/*[out,retval]*/ VARIANT_BOOL* bResult) override;
+	STDMETHOD(get_Start)(/*[out,retval]*/Float64* start) override;
+	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
+//	STDMETHOD(get_Count)(/*[out,retval]*/long* count) override;
+//	STDMETHOD(get_Item)(/*[in]*/ long idx,/*[out,retval]*/IRebarPattern** pattern) override;
+	STDMETHOD(AddRebarPattern)(/*[in]*/IRebarPattern* pattern) override;
+//   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
+   STDMETHOD(get__EnumRebarPatterns)(/*[out,retval]*/IEnumRebarPatterns** enumRebarPatterns) override;
+	STDMETHOD(get_Position)(/*[out,retval]*/ LayoutPosition* lp) override;
+	STDMETHOD(put_Position)(/*[in]*/ LayoutPosition lp) override;
+	STDMETHOD(get_LengthFactor)(/*[out,retval]*/ Float64* lf) override;
+	STDMETHOD(put_LengthFactor)(/*[in]*/ Float64 lf) override;
+	STDMETHOD(putref_Girder)(/*[in]*/IPrecastGirder* girder) override;
 };
 
 #endif //__FlexRebarLayoutItem_H_

@@ -47,31 +47,31 @@ public:
    END_INTERFACE_PART(Events)
 
    BEGIN_INTERFACE_PART(DisplayObjectEvents,iDisplayObjectEvents)
-      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
+      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO) override;
+      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset) override;
+      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO) override;
+      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO) override;
+      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point) override;
+      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point) override;
+      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags) override;
+      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point) override;
+      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO) override;
+      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO) override;
    END_INTERFACE_PART(DisplayObjectEvents)
 
 // let's avoid draggability until we figure out how best to use it.
 /*
    // iDragData Implementation
    BEGIN_INTERFACE_PART(DragData,iDragData)
-      STDMETHOD_(UINT,Format)();
-      STDMETHOD_(BOOL,PrepareForDrag)(iDisplayObject* pDO,iDragDataSink* pSink);
-      STDMETHOD_(void,OnDrop)(iDisplayObject* pDO,iDragDataSource* pSource);
+      STDMETHOD_(UINT,Format)() override;
+      STDMETHOD_(BOOL,PrepareForDrag)(iDisplayObject* pDO,iDragDataSink* pSink) override;
+      STDMETHOD_(void,OnDrop)(iDisplayObject* pDO,iDragDataSource* pSource) override;
    END_INTERFACE_PART(DragData)
 */
 

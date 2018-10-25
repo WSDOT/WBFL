@@ -80,7 +80,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdLldfTypeG();
+   virtual ~lrfdLldfTypeG() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -90,10 +90,10 @@ public:
    // GROUP: OPERATIONS
 
    //------------------------------------------------------------------------
-   virtual Float64 MomentSkewCorrectionFactor() const;
+   virtual Float64 MomentSkewCorrectionFactor() const override;
 
    //------------------------------------------------------------------------
-   virtual Float64 ShearSkewCorrectionFactor() const;
+   virtual Float64 ShearSkewCorrectionFactor() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -119,10 +119,10 @@ protected:
    void MakeCopy(const lrfdLldfTypeG& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLldfTypeG& rOther);
+   void MakeAssignment(const lrfdLldfTypeG& rOther);
 
    //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
 
    virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
    virtual bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
@@ -131,21 +131,21 @@ protected:
    bool IandJOutOfRangeRule(bool bSISpec) const;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   virtual DFResult GetMomentDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
+   virtual DFResult GetShearDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
+   virtual DFResult GetShearDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -163,11 +163,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -216,7 +216,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdLldfTypeF();
+   virtual ~lrfdLldfTypeF() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -236,16 +236,16 @@ protected:
    void MakeCopy(const lrfdLldfTypeF& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdLldfTypeF& rOther);
+   void MakeAssignment(const lrfdLldfTypeF& rOther);
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const;
+   virtual DFResult GetMomentDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
 
-   virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+   virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const override;
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -263,11 +263,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -325,7 +325,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdTxdotVoidedSlab();
+   virtual ~lrfdTxdotVoidedSlab() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -344,37 +344,37 @@ protected:
    
    //------------------------------------------------------------------------
    // Override these methods so the correct multiple presense factor is applied.
-   virtual Float64 MomentSkewCorrectionFactor() const;
+   virtual Float64 MomentSkewCorrectionFactor() const override;
    //------------------------------------------------------------------------
-   virtual Float64 ShearSkewCorrectionFactor() const;
+   virtual Float64 ShearSkewCorrectionFactor() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const;
+   virtual DFResult GetMomentDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const;
+   virtual DFResult GetShearDF_Int_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const;
+   virtual DFResult GetShearDF_Int_2_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
-   virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
-   virtual bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+   virtual bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const override;
+   virtual bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const override;
 
-   virtual bool TestRangeOfApplicability(Location loc) const;
+   virtual bool TestRangeOfApplicability(Location loc) const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxdotVoidedSlab& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdTxdotVoidedSlab& rOther);
+   void MakeAssignment(const lrfdTxdotVoidedSlab& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -392,11 +392,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST
@@ -458,7 +458,7 @@ public:
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~lrfdTxdotLldfAdjacentBox();
+   virtual ~lrfdTxdotLldfAdjacentBox() override;
 
    // GROUP: OPERATORS
    //------------------------------------------------------------------------
@@ -477,25 +477,25 @@ protected:
    
    //------------------------------------------------------------------------
    // No skew correction for txdot
-   virtual Float64 MomentSkewCorrectionFactor() const;
+   virtual Float64 MomentSkewCorrectionFactor() const override;
 
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const;
+   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const;
+   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
    //------------------------------------------------------------------------
       
    DFResult GetBaseShearDF_Ext_1_Strength() const;
-   virtual DFResult GetShearDF_Ext_1_Strength() const;
+   virtual DFResult GetShearDF_Ext_1_Strength() const override;
    //------------------------------------------------------------------------
    DFResult GetBaseShearDF_Ext_2_Strength() const;
-   virtual DFResult GetShearDF_Ext_2_Strength() const;
+   virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
    //------------------------------------------------------------------------
    void MakeCopy(const lrfdTxdotLldfAdjacentBox& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const lrfdTxdotLldfAdjacentBox& rOther);
+   void MakeAssignment(const lrfdTxdotLldfAdjacentBox& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
@@ -513,11 +513,11 @@ public:
    #if defined _DEBUG
    //------------------------------------------------------------------------
    // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
    #endif // _DEBUG
 
    #if defined _UNITTEST

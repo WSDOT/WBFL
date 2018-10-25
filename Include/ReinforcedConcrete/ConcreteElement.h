@@ -33,6 +33,7 @@
 #include <ReinforcedConcrete\ReinfConcExp.h>
 #include <GeometricPrimitives\GeometricPrimitives.h>
 #include <GeomModel\IShape.h>
+#include <memory>
 
 // LOCAL INCLUDES
 //
@@ -185,14 +186,14 @@ protected:
    void MakeCopy(const rcaConcreteElement& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const rcaConcreteElement& rOther);
+   void MakeAssignment(const rcaConcreteElement& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS
-   std::auto_ptr<gmIShape> m_pShape;
+   std::unique_ptr<gmIShape> m_pShape;
    CollectionIndexType     m_ConcreteKey;
    mutable bool      m_IsNSpecified;
    mutable Float64   m_N;

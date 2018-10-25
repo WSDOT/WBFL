@@ -63,91 +63,91 @@ END_CONNECTION_POINT_MAP()
 
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // iDisplayObject Implementation
-   STDMETHOD_(void,SetID)(IDType id) { m_pDisplayObject->SetID(id); }
-   STDMETHOD_(IDType,GetID)() { return m_pDisplayObject->GetID(); }
+   STDMETHOD_(void,SetID)(IDType id) override { m_pDisplayObject->SetID(id); }
+   STDMETHOD_(IDType,GetID)() override { return m_pDisplayObject->GetID(); }
 
-   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) { m_pDisplayObject->SetItemData(pItemData,bDelete); }
-   STDMETHOD_(void,GetItemData)(void** ppItemData) { m_pDisplayObject->GetItemData(ppItemData); }
+   STDMETHOD_(void,SetItemData)(void* pItemData,bool bDelete) override { m_pDisplayObject->SetItemData(pItemData,bDelete); }
+   STDMETHOD_(void,GetItemData)(void** ppItemData) override { m_pDisplayObject->GetItemData(ppItemData); }
 
-   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) { m_pDisplayObject->SetDisplayList(pDL); }
-   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) { m_pDisplayObject->GetDisplayList(list); }
+   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) override { m_pDisplayObject->SetDisplayList(pDL); }
+   STDMETHOD_(void,GetDisplayList)(iDisplayList** list)  override { m_pDisplayObject->GetDisplayList(list); }
 
-   STDMETHOD_(void,Visible)(BOOL bVisible) { m_pDisplayObject->Visible(bVisible); }
-   STDMETHOD_(BOOL,IsVisible)() { return m_pDisplayObject->IsVisible(); }
+   STDMETHOD_(void,Visible)(BOOL bVisible) override { m_pDisplayObject->Visible(bVisible); }
+   STDMETHOD_(BOOL,IsVisible)()  override { return m_pDisplayObject->IsVisible(); }
 
    // Drawing
-   STDMETHOD_(void,Draw)(CDC* pDC) { m_pDisplayObject->Draw(pDC); }
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) { m_pDisplayObject->Highlite(pDC,bHighlite); }
+   STDMETHOD_(void,Draw)(CDC* pDC) override { m_pDisplayObject->Draw(pDC); }
+   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) override { m_pDisplayObject->Highlite(pDC,bHighlite); }
 #if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) { m_pDisplayObject->DrawGravityWell(pDC); }
+   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) override { m_pDisplayObject->DrawGravityWell(pDC); }
 #endif 
 
    // Size and Hit Testing
-   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) { m_pDisplayObject->SetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy){ m_pDisplayObject->GetGravityWellStrategy(pStrategy); }
-   STDMETHOD_(BOOL,HitTest)(CPoint point) { return m_pDisplayObject->HitTest(point); }
-   STDMETHOD_(CRect,GetBoundingBox)(){ return m_pDisplayObject->GetBoundingBox(); }
-   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) { m_pDisplayObject->GetBoundingBox(rect); }
-   STDMETHOD_(BOOL,TouchesRect)(CRect r) { return m_pDisplayObject->TouchesRect(r); }
+   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) override { m_pDisplayObject->SetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy) override { m_pDisplayObject->GetGravityWellStrategy(pStrategy); }
+   STDMETHOD_(BOOL,HitTest)(CPoint point) override { return m_pDisplayObject->HitTest(point); }
+   STDMETHOD_(CRect,GetBoundingBox)() override { return m_pDisplayObject->GetBoundingBox(); }
+   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) override { m_pDisplayObject->GetBoundingBox(rect); }
+   STDMETHOD_(BOOL,TouchesRect)(CRect r) override { return m_pDisplayObject->TouchesRect(r); }
 
    // Selection
-   STDMETHOD_(void,Select)(BOOL bSelect) {m_pDisplayObject->Select(bSelect);}
-   STDMETHOD_(BOOL,IsSelected)() {return m_pDisplayObject->IsSelected();}
-   STDMETHOD_(void,SetSelectionType)(SelectionType st) { m_pDisplayObject->SetSelectionType(st); }
-   STDMETHOD_(SelectionType,GetSelectionType)() { return m_pDisplayObject->GetSelectionType(); }
+   STDMETHOD_(void,Select)(BOOL bSelect) override {m_pDisplayObject->Select(bSelect);}
+   STDMETHOD_(BOOL,IsSelected)() override {return m_pDisplayObject->IsSelected();}
+   STDMETHOD_(void,SetSelectionType)(SelectionType st)  override { m_pDisplayObject->SetSelectionType(st); }
+   STDMETHOD_(SelectionType,GetSelectionType)() override { return m_pDisplayObject->GetSelectionType(); }
 
    // Interface Events
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnLButtonDown(nFlags,point); }
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point)   { return m_pDisplayObject->OnLButtonUp(nFlags,point); }
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnLButtonDblClk(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnRButtonDown(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnRButtonUp(nFlags,point); }
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnRButtonDblClk(nFlags,point); }
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) { return m_pDisplayObject->OnMouseMove(nFlags,point); }
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) { return m_pDisplayObject->OnMouseWheel(nFlags,zDelta,point); }
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) { return m_pDisplayObject->OnKeyDown(nChar, nRepCnt, nFlags); }
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) { return m_pDisplayObject->OnContextMenu(pWnd,point); }
+   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) override { return m_pDisplayObject->OnLButtonDown(nFlags,point); }
+   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point)  override { return m_pDisplayObject->OnLButtonUp(nFlags,point); }
+   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) override { return m_pDisplayObject->OnLButtonDblClk(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) override { return m_pDisplayObject->OnRButtonDown(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point)  override { return m_pDisplayObject->OnRButtonUp(nFlags,point); }
+   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point)  override { return m_pDisplayObject->OnRButtonDblClk(nFlags,point); }
+   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) override { return m_pDisplayObject->OnMouseMove(nFlags,point); }
+   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) override { return m_pDisplayObject->OnMouseWheel(nFlags,zDelta,point); }
+   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override { return m_pDisplayObject->OnKeyDown(nChar, nRepCnt, nFlags); }
+   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) override { return m_pDisplayObject->OnContextMenu(pWnd,point); }
 
    // Tool Tips
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) {m_pDisplayObject->SetToolTipText(lpszToolTipText);}
-   STDMETHOD_(CString,GetToolTipText)() { return m_pDisplayObject->GetToolTipText(); }
-   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
-   STDMETHOD_(INT,GetMaxTipWidth)() { return m_pDisplayObject->GetMaxTipWidth(); }
-   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) { m_pDisplayObject->SetTipDisplayTime(iTime); }
-   STDMETHOD_(INT,GetTipDisplayTime)() { return m_pDisplayObject->GetTipDisplayTime(); }
+   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) override {m_pDisplayObject->SetToolTipText(lpszToolTipText);}
+   STDMETHOD_(CString,GetToolTipText)()  override { return m_pDisplayObject->GetToolTipText(); }
+   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) override { m_pDisplayObject->SetMaxTipWidth(maxWidth); }
+   STDMETHOD_(INT,GetMaxTipWidth)()  override { return m_pDisplayObject->GetMaxTipWidth(); }
+   STDMETHOD_(void,SetTipDisplayTime)(INT iTime)  override { m_pDisplayObject->SetTipDisplayTime(iTime); }
+   STDMETHOD_(INT,GetTipDisplayTime)()  override { return m_pDisplayObject->GetTipDisplayTime(); }
 
    // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink)
+   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink) override
    { m_pDisplayObject->RegisterEventSink(pEventSink); }
-   STDMETHOD_(void,UnregisterEventSink)()
+   STDMETHOD_(void,UnregisterEventSink)() override
    { m_pDisplayObject->UnregisterEventSink(); }
-   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink)
+   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) override
    { m_pDisplayObject->GetEventSink(pEventSink); }
 
    // Drag Drop
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) { m_pDisplayObject->RegisterDropSite(pDropSite); }
-   STDMETHOD_(void,UnregisterDropSite)() { m_pDisplayObject->UnregisterDropSite(); }
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) { m_pDisplayObject->GetDropSite(dropSite); }
+   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) override { m_pDisplayObject->RegisterDropSite(pDropSite); }
+   STDMETHOD_(void,UnregisterDropSite)() override { m_pDisplayObject->UnregisterDropSite(); }
+   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) override { m_pDisplayObject->GetDropSite(dropSite); }
 
 // IPolyLineDisplayObject
 public:
-   STDMETHOD_(void,Commit)();
-   STDMETHOD_(CollectionIndexType,get_NumberOfPoints)();
-   STDMETHOD_(void,AddPoints)(IPoint2dCollection* points);
-   STDMETHOD_(void,AddPoint)(IPoint2d* point);
-   STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point);
-   STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point);
-   STDMETHOD_(HRESULT,RemovePoint)(CollectionIndexType idx);
-   STDMETHOD_(void,ClearPoints)();
-   STDMETHOD_(void,put_Color)(COLORREF color);
-   STDMETHOD_(void,get_Color)(COLORREF* color);
-   STDMETHOD_(void,put_Width)(long width);
-   STDMETHOD_(void,get_Width)(long* width);
-   STDMETHOD_(void,put_PointType)(PolyLinePointType ptType);
-   STDMETHOD_(void,get_PointType)(PolyLinePointType* ptType);
+   STDMETHOD_(void,Commit)() override;
+   STDMETHOD_(CollectionIndexType,get_NumberOfPoints)() override;
+   STDMETHOD_(void,AddPoints)(IPoint2dCollection* points) override;
+   STDMETHOD_(void,AddPoint)(IPoint2d* point) override;
+   STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point) override;
+   STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point) override;
+   STDMETHOD_(HRESULT,RemovePoint)(CollectionIndexType idx) override;
+   STDMETHOD_(void,ClearPoints)() override;
+   STDMETHOD_(void,put_Color)(COLORREF color) override;
+   STDMETHOD_(void,get_Color)(COLORREF* color) override;
+   STDMETHOD_(void,put_Width)(long width) override;
+   STDMETHOD_(void,get_Width)(long* width) override;
+   STDMETHOD_(void,put_PointType)(PolyLinePointType ptType) override;
+   STDMETHOD_(void,get_PointType)(PolyLinePointType* ptType) override;
 
    CComPtr<iCompositeDisplayObject> m_pDisplayObject;
 

@@ -48,7 +48,7 @@ STDMETHODIMP CSuperstructureMember::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ISuperstructureMember
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -436,25 +436,6 @@ STDMETHODIMP CSuperstructureMember::get__EnumElements(IEnumSegmentItem* *retval)
       return hr;
 
    penum->Init(GetUnknown(), *m_pSegments);
-
-   *retval = penum;
-   (*retval)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CSuperstructureMember::get__NewEnum(IUnknown** retval)
-{
-   CHECK_RETOBJ(retval);
-
-   typedef _CopyInterfaceToVariant<CSegments::ItemType> mycopy;
-   typedef CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, mycopy, CSegments> EnumType;
-
-   CComObject<EnumType>* penum;
-   HRESULT hr;
-   hr = CComObject<EnumType>::CreateInstance(&penum);
-   if (FAILED(hr))
-      return hr;
 
    *retval = penum;
    (*retval)->AddRef();

@@ -1907,6 +1907,8 @@ library WBFLCogo
 		[helpstring("method Move"),helpcontext(IDH_Alignment_Move)] HRESULT Move([in] Float64 dist,[in] IDirection* direction);
       [helpstring("method GetDirection")] HRESULT GetDirection([in] VARIANT varStation, [in] BSTR bstrOrientation,[out,retval] IDirection** direction);
       [helpstring("method DistanceBetweenStations")] HRESULT DistanceBetweenStations([in] VARIANT station1,[in] VARIANT station2,[out,retval]Float64* pDist);
+
+      [propget, helpstring("property StructuredStorage")/*,helpcontext(IDH_StructuredStorage)*/] HRESULT StructuredStorage([out, retval] IStructuredStorage2* *pVal);
    };
 	[
 		object,

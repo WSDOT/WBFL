@@ -1,0 +1,538 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Axle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Axles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributedLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributedLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributionFactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributionFactors.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DistributionFactorSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilteredDfSegmentCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilteredSegmentCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LBAM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearDistributionFactorSegment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LiveLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LiveLoadModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCases.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCombination.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadCombinations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGroups.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="POI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="POIs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="POIStressPoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="POIStressPointsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Segment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SegmentItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Segments.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettlementLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettlementLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Span.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Spans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stages.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrainLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StrainLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StressPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StressPoints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperstructureMember.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SuperstructureMembers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Support.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Supports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemperatureLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemperatureLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemporarySupport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TemporarySupports.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicularLoad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VehicularLoads.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Axle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AxleCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Axles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CombinationCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossSectionCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributedLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributedLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributionFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributionFactors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DistributionFactorSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilteredDfSegmentCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilteredSegmentCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LBAMCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LBAMErrors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LBAMUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearDistributionFactorSegment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LiveLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LiveLoadCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LiveLoadModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCases.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCombination.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCombinations.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGroupCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGroups.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadModifierHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="POI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="POICP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="POIs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="POIStressPoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="POIStressPointsItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Segment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SegmentItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Segments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettlementLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SettlementLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Span.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpanCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spans.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StageCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrainLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StrainLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StressPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StressPoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMember.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMemberCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMembers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Support.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SupportCP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Supports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemperatureLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemperatureLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemporarySupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TemporarySupports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicularLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VehicularLoads.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLLBAM.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="LBAM.def" />
+    <None Include="Axle.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Axles.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CrossSection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributedLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributedLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributionFactor.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributionFactors.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DistributionFactorSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FilteredDfSegmentCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FilteredSegmentCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LinearDistributionFactorSegment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LiveLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LiveLoadModel.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCase.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCases.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCombination.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadCombinations.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadGroup.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="LoadGroups.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Model.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="POI.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoadItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="POIs.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="POIStressPoints.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="POIStressPointsItem.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Segment.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Segments.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SettlementLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SettlementLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Spans.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Stage.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Stages.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StrainLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StressPoint.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="StressPoints.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SuperstructureMember.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SuperstructureMembers.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Support.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Supports.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemperatureLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemperatureLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemporarySupport.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="TemporarySupports.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VehicularLoad.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="VehicularLoads.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Span.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{791f7edb-82c7-41ff-a8b4-81eeece53c72}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{ab23ddbb-0afd-474f-886b-395095e23140}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{686f7fd2-f27c-4356-b3fb-303ac22d6db1}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LBAM.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\Include\Lbam.hh">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

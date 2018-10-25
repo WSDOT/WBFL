@@ -60,7 +60,7 @@ void CTestAlignmentOffsetStrategy::Test()
    //////////////////////
    // Test default values
    Float64 value;
-   TRY_TEST(strategy->get_Overhang(NULL),E_POINTER);
+   TRY_TEST(strategy->get_Overhang(nullptr),E_POINTER);
    TRY_TEST(strategy->get_Overhang(&value),S_OK);
    TRY_TEST(IsZero(value),true);
 
@@ -73,11 +73,11 @@ void CTestAlignmentOffsetStrategy::Test()
    CComPtr<IUnknown> punk(pTestConstantOverhangStrategy);
    TRY_TEST(AtlAdvise(strategy,punk,IID_IDeckOverhangStrategyEvents,&dwCookie),S_OK);
 
-   CComPtr<ITransactionMgr> txnMgr;
+   CComPtr<IWBFLTransactionMgr> txnMgr;
    txnMgr.CoCreateInstance(CLSID_TransactionMgr);
 
-   CComQIPtr<ISupportTransactions> supTxns(strategy);
-   TRY_TEST(supTxns != NULL,true);
+   CComQIPtr<IWBFLSupportTransactions> supTxns(strategy);
+   TRY_TEST(supTxns != nullptr,true);
    TRY_TEST(supTxns->putref_TransactionMgr(txnMgr),S_OK);
 
    pTestConstantOverhangStrategy->InitEventTest();

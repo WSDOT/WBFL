@@ -56,7 +56,7 @@ inline HRESULT CreateDistributedLoad(IDistributedLoads* dls, BSTR stage, BSTR lo
    TRY_TEST( dl->put_EndLocation(-1.0), S_OK);
    TRY_TEST( dl->put_WStart(ldVal), S_OK);
    TRY_TEST( dl->put_WEnd(ldVal), S_OK);
-   TRY_TEST( dls->Add(stage, loadGroup,dl,NULL), S_OK);
+   TRY_TEST( dls->Add(stage, loadGroup,dl,nullptr), S_OK);
    return S_OK;
 }
 
@@ -85,7 +85,7 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    const CollectionIndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -100,7 +100,7 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -128,7 +128,7 @@ inline void CompareCmbForceResults(BSTR loadCombination, BSTR Stage, Optimizatio
          <<std::setw(16)<< right_val<<std::endl;
 
       // then right config if there was one
-      if (right_config!=NULL)
+      if (right_config!=nullptr)
       {
          res3Ds.Release();
          TRY_TEST(concResponse->ComputeForces(apoi, Stage, roGlobal, right_config, &res3Ds), S_OK);
@@ -173,7 +173,7 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    const CollectionIndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i=0; i<NUMPOIS; i++)
+   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -188,7 +188,7 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j=0; j<NUMPOIS; j++)
+   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -216,7 +216,7 @@ inline void CompareCmbDeflectionResults(BSTR loadCombination, BSTR Stage, Optimi
          <<std::setw(16)<< right_val<<std::endl;
 
       // then right config if there was one
-      if (right_config!=NULL)
+      if (right_config!=nullptr)
       {
          res3Ds.Release();
          TRY_TEST(concResponse->ComputeDeflections(apoi, Stage, right_config, &res3Ds), S_OK);
@@ -283,7 +283,7 @@ inline void CompareCmbReactionResults(ILBAMModel* Model, BSTR loadCombination, B
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType j=0; j<num_supports; j++)
+   for (CollectionIndexType j = 0; j<num_supports; j++)
    {
       asup->put_Item(0,(SupportIDType)j);
 
@@ -356,7 +356,7 @@ inline void CompareCmbSupportDeflectionResults(ILBAMModel* Model, BSTR loadCombi
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType j=0; j<num_supports; j++)
+   for (CollectionIndexType j = 0; j<num_supports; j++)
    {
       asup->put_Item(0,(SupportIDType)j);
 
@@ -412,7 +412,7 @@ void Solleks::Test()
    // dump results to a file
    std::_tofstream os("Solleks.txt");
 
-   for (long is=0; is<1; is++)
+   for (long is = 0; is<1; is++)
    {
       CComBSTR stage;
       if (is==0)
@@ -420,7 +420,7 @@ void Solleks::Test()
       else
          stage = "Stage 2";
 
-      for (long ic=0; ic<1; ic++)
+      for (long ic = 0; ic<1; ic++)
       {
          CComBSTR cmb;
          if (ic==0)

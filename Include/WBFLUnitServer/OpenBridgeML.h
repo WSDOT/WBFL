@@ -23,7 +23,6 @@
 #pragma once
 
 #include <WBFLUnitServer\UnitServerExp.h>
-#include <OpenBridgeML_Units.hxx>
 #include <WBFLUnitServer.h>
 
 // Initializes a WBFLUnitServer with OpenBridgeML Units declaration

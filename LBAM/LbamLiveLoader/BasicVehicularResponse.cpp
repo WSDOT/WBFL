@@ -98,7 +98,7 @@ static void  ComputeLaneAreas(ForceEffectType optimizedEffect, OptimizationType 
       *lftMzArea = 0;
 
    // if right influence lines are null, we use left value with sign flip if necesary
-   if (rgtFxInf==NULL || rgtFyInf==NULL || rgtMzInf==NULL)
+   if (rgtFxInf==nullptr || rgtFyInf==nullptr || rgtMzInf==nullptr)
    {
       *rgtFxArea = (*lftFxArea)*flipFactor;
       *rgtFyArea = (*lftFyArea)*flipFactor;
@@ -143,7 +143,7 @@ STDMETHODIMP CBasicVehicularResponse::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IBasicVehicularResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -156,7 +156,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
 {
    try
    {
-      if (m_LiveLoad != NULL)
+      if (m_LiveLoad != nullptr)
       {
          // can only initialize once
          THROW_LBAMLL(LL_INITIALIZATION);
@@ -165,7 +165,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       // Latch onto the parts of the context we need 
       // We don't need events either
       CComQIPtr<ILiveLoad> pll(context);
-      if (pll!=NULL)
+      if (pll!=nullptr)
       {
          m_LiveLoad = pll;
       }
@@ -176,7 +176,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IInfluenceLineResponse> presp(context);
-      if (presp!=NULL)
+      if (presp!=nullptr)
       {
          m_InfluenceLineResponse = presp;
       }
@@ -187,7 +187,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ILiveLoadNegativeMomentRegion> cfresp(context);
-      if (presp!=NULL)
+      if (presp!=nullptr)
       {
          m_LiveLoadNegativeMomentRegion = cfresp;
       }
@@ -198,7 +198,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetDistributionFactors> pdf(context);
-      if (pdf!=NULL)
+      if (pdf!=nullptr)
       {
          m_GetDistributionFactors = pdf;
       }
@@ -209,7 +209,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetStressPoints> gsp(context);
-      if (gsp!=NULL)
+      if (gsp!=nullptr)
       {
          m_GetStressPoints = gsp;
       }
@@ -221,7 +221,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
 
 
       CComQIPtr<ISupportLocations> sup_locs(context);
-      if (sup_locs!=NULL)
+      if (sup_locs!=nullptr)
       {
          m_SupportLocations = sup_locs;
       }
@@ -245,7 +245,7 @@ void CBasicVehicularResponse::QuickInitialize(ILiveLoad* liveLoad, IInfluenceLin
                                               ISupportLocations* supportLocations, 
                                               IGetStressPoints* getStressPoints)
 {
-   if (m_LiveLoad != NULL)
+   if (m_LiveLoad != nullptr)
    {
       // can only initialize once
       THROW_LBAMLL(LL_INITIALIZATION);
@@ -299,9 +299,9 @@ STDMETHODIMP CBasicVehicularResponse::ComputeForces(IIDArray* POIs, BSTR stage, 
 
          hr =  ComputeResponse(POIs, stage, config, results);
 
-         m_InflStrategy = NULL;
-         m_DfStrategy = NULL;
-         m_ApplicabilityStrategy = NULL;
+         m_InflStrategy = nullptr;
+         m_DfStrategy = nullptr;
+         m_ApplicabilityStrategy = nullptr;
       }
       else
       {
@@ -358,8 +358,8 @@ STDMETHODIMP CBasicVehicularResponse::ComputeDeflections(IIDArray* POIs, BSTR st
 
       hr =  ComputeResponse(POIs, stage, config, results);
 
-      m_InflStrategy = NULL;
-      m_DfStrategy = NULL;
+      m_InflStrategy = nullptr;
+      m_DfStrategy = nullptr;
    }
    catch(...)
    {
@@ -397,8 +397,8 @@ STDMETHODIMP CBasicVehicularResponse::ComputeReactions(IIDArray* POIs, BSTR stag
       CComPtr<ISectionResult3Ds> sec_res;
       hr =  ComputeResponse(POIs, stage, config, &sec_res);
 
-      m_InflStrategy = NULL;
-      m_DfStrategy = NULL;
+      m_InflStrategy = nullptr;
+      m_DfStrategy = nullptr;
 
       OptimizationType optimization;
       hr = config->get_Optimization(&optimization);
@@ -412,12 +412,12 @@ STDMETHODIMP CBasicVehicularResponse::ComputeReactions(IIDArray* POIs, BSTR stag
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType is=0; is<ressize; is++)
+      for (CollectionIndexType is = 0; is<ressize; is++)
       {
          CComPtr<IResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_IResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
 
          CComPtr<ISectionResult3D> sec_3d;
          hr = sec_res->get_Item(is, &sec_3d);
@@ -476,8 +476,8 @@ STDMETHODIMP CBasicVehicularResponse::ComputeSupportDeflections(IIDArray* suppor
       CComPtr<ISectionResult3Ds> sec_res;
       hr =  ComputeResponse(supports, stage, config, &sec_res);
 
-      m_InflStrategy = NULL;
-      m_DfStrategy = NULL;
+      m_InflStrategy = nullptr;
+      m_DfStrategy = nullptr;
 
       OptimizationType optimization;
       hr = config->get_Optimization(&optimization);
@@ -491,12 +491,12 @@ STDMETHODIMP CBasicVehicularResponse::ComputeSupportDeflections(IIDArray* suppor
 
       // factory for results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType is=0; is<ressize; is++)
+      for (CollectionIndexType is = 0; is<ressize; is++)
       {
          CComPtr<IResult3D> pres;
-         hr = factory->CreateInstance(NULL, IID_IResult3D, (void**)&pres);
+         hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
 
          CComPtr<ISectionResult3D> sec_3d;
          hr = sec_res->get_Item(is, &sec_3d);
@@ -553,15 +553,15 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
 
       // factory for individual results
       CComPtr<IClassFactory> factory;
-      hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,NULL,IID_IClassFactory,(void**)&factory);
+      hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType i=0; i<num_res; i++)
+      for (CollectionIndexType i = 0; i<num_res; i++)
       {
          PoiIDType poi_id;
          hr = POIs->get_Item(i,&poi_id);
 
          CComPtr<ISectionStressResult> stress_res;
-         hr = factory->CreateInstance(NULL, IID_ISectionStressResult, (void**)&stress_res);
+         hr = factory->CreateInstance(nullptr, IID_ISectionStressResult, (void**)&stress_res);
 
          // forces
          CComPtr<ISectionResult3D> force_result;
@@ -580,7 +580,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
          CollectionIndexType num_sps;
          hr = lft_sps->get_Count(&num_sps);
 
-         for (CollectionIndexType isp=0; isp<num_sps; isp++)
+         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> sp;
             hr = lft_sps->get_Item(isp,&sp);
@@ -595,12 +595,12 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
          }
 
          // right side - uses left values if right is not distict
-         if (rgt_sps==NULL)
+         if (rgt_sps==nullptr)
             rgt_sps = lft_sps;
 
          hr = rgt_sps->get_Count(&num_sps);
 
-         for (CollectionIndexType isp=0; isp<num_sps; isp++)
+         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> sp;
             hr = rgt_sps->get_Item(isp,&sp);
@@ -747,7 +747,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
          }
 
          // loop over pois, get influence lines and evaluate answers
-         for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+         for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
          {
             HANDLE_CANCEL_PROGRESS();
 
@@ -780,9 +780,9 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
                   // response in its current location and configuration (disappearing axle trick has
                   // already happened when determining the configuration, see truck.Initialize() above)
                   VARIANT_BOOL is_dual;
-                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fx_lft_inf, fx_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fx, &rgt_truck_resp_fx);
-                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fy_lft_inf, fy_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_fy, &rgt_truck_resp_fy);
-                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, mz_lft_inf, mz_rgt_inf, NULL, NULL, &is_dual, &lft_truck_resp_mz, &rgt_truck_resp_mz);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fx_lft_inf, fx_rgt_inf, nullptr, nullptr, &is_dual, &lft_truck_resp_fx, &rgt_truck_resp_fx);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, fy_lft_inf, fy_rgt_inf, nullptr, nullptr, &is_dual, &lft_truck_resp_fy, &rgt_truck_resp_fy);
+                  truck.EvaluatePrimary(truck_position, ilsBoth, flip_factor, mz_lft_inf, mz_rgt_inf, nullptr, nullptr, &is_dual, &lft_truck_resp_mz, &rgt_truck_resp_mz);
                }
 
                // Compute lane and sidewalk responses if requested
@@ -978,7 +978,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
       else
       {
          // results are not applicable - just add empty results and return
-         for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+         for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
          {
             PoiIDType poi_id;
             hr = POIs->get_Item(ipoi, &poi_id);
@@ -1005,9 +1005,9 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
 
 void CBasicVehicularResponse::AssertValid()
 {
-   ATLASSERT(m_InflStrategy!=NULL);
+   ATLASSERT(m_InflStrategy!=nullptr);
 
-   if (m_LiveLoad == NULL)
+   if (m_LiveLoad == nullptr)
    {
       // must be initialized before use
       THROW_LBAMLL(LL_INITIALIZATION);
@@ -1026,7 +1026,7 @@ void CBasicVehicularResponse::GetStressPoints(PoiIDType poiID, BSTR stage, IStre
    ATLASSERT(lft_sps!=0); 
    lft_sps.CopyTo(leftSps);
 
-   if (rgt_sps!=NULL)
+   if (rgt_sps!=nullptr)
       rgt_sps.CopyTo(rightSps);
    else
       lft_sps.CopyTo(rightSps);

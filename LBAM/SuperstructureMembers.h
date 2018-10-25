@@ -72,21 +72,21 @@ CONNECTION_POINT_ENTRY(IID_ISuperstructureMembersEvents)
 END_CONNECTION_POINT_MAP()
 
 // _ISuperstructureMemberEvents
-   STDMETHOD(OnSuperstructureMemberChanged)(/*[in]*/ISuperstructureMember* SuperstructureMember, BSTR stage, ChangeType change);
+   STDMETHOD(OnSuperstructureMemberChanged)(/*[in]*/ISuperstructureMember* SuperstructureMember, BSTR stage, ChangeType change) override;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ISuperstructureMembers
 public:
-	STDMETHOD(get_Offset)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Offset)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(Clone)(/*[out, retval]*/ ISuperstructureMembers** clone);
+	STDMETHOD(get_Offset)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Offset)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(Clone)(/*[out, retval]*/ ISuperstructureMembers** clone) override;
 
    // IStructuredStorage2
-	STDMETHOD(Load)(IStructuredLoad2 * Load);
-	STDMETHOD(Save)(IStructuredSave2 * Save);
+	STDMETHOD(Load)(IStructuredLoad2 * Load) override;
+	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 private:
    // implementations of virtual functions for collection
@@ -159,7 +159,7 @@ public:
    virtual void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt=0;
+      CollectionIndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

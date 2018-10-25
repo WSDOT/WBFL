@@ -240,11 +240,11 @@ Float64 lrfdLRFDConcrete::GetFlexureFr(Float64 t) const
 
 Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   boost::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
+   std::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
    return pDetails->esh;
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -262,11 +262,11 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
 
 Float64 lrfdLRFDConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
-   boost::shared_ptr<matConcreteBaseCreepDetails> pDetails = GetCreepCoefficientDetails(t,tla);
+   std::shared_ptr<matConcreteBaseCreepDetails> pDetails = GetCreepCoefficientDetails(t,tla);
    return pDetails->Ct;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
    {
@@ -288,26 +288,26 @@ matConcreteBase* lrfdLRFDConcrete::CreateClone() const
 }
 
 
-void lrfdLRFDConcrete::InitializeShrinkageDetails(Float64 t,lrfdLRFDConcreteShrinkageDetails* pDetails) const
+void lrfdLRFDConcrete::InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const
 {
-   matConcreteBase::InitializeShrinkageDetails(t,pDetails);
+   matConcreteBase::InitializeShrinkageDetails(t,std::dynamic_pointer_cast<matConcreteBaseShrinkageDetails>(pDetails));
 }
 
-void lrfdLRFDConcrete::InitializeCreepDetails(Float64 t,Float64 tla,lrfdLRFDConcreteCreepDetails* pDetails) const
+void lrfdLRFDConcrete::InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const
 {
-   matConcreteBase::InitializeCreepDetails(t,tla,pDetails);
+   matConcreteBase::InitializeCreepDetails(t,tla,std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
 {
-   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
    InitializeShrinkageDetails(t,pDetails);
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -315,7 +315,7 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 ks = 1.0;
@@ -357,19 +357,19 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    pDetails->kvs = ks;
    pDetails->khs = kh;
    pDetails->esh = esh;
-   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+   return pDetails;
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
 {
-   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
    InitializeShrinkageDetails(t,pDetails);
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -377,7 +377,7 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -397,19 +397,19 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    pDetails->kf = kf;
    pDetails->ktd = ktd;
    pDetails->esh = esh;
-   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+   return pDetails;
 }
 
-boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
+std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
 {
-   lrfdLRFDConcreteShrinkageDetails* pDetails = new lrfdLRFDConcreteShrinkageDetails;
+   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
    InitializeShrinkageDetails(t,pDetails);
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
    if ( concrete_age < 0 )
    {
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
@@ -417,7 +417,7 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    if ( shrinkage_time < 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
-      return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -437,12 +437,12 @@ boost::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShri
    pDetails->kf = kf;
    pDetails->ktd = ktd;
    pDetails->esh = esh;
-   return boost::shared_ptr<matConcreteBaseShrinkageDetails>(pDetails);
+   return pDetails;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
 {
-   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
    InitializeCreepDetails(t,tla,pDetails);
 
    Float64 age = pDetails->age;
@@ -450,7 +450,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    Float64 maturity = age - age_at_loading;
    if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLE(maturity,0.0) )
    {
-      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+      return pDetails;
    }
 
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
@@ -508,12 +508,12 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    pDetails->kf = kf;
    pDetails->Ct = Y;
 
-   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+   return pDetails;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
 {
-   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
    InitializeCreepDetails(t,tla,pDetails);
 
    Float64 age = pDetails->age;
@@ -521,7 +521,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    Float64 maturity = age - age_at_loading;
    if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLT(maturity,0.0) )
    {
-      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -544,12 +544,12 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 
-   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+   return pDetails;
 }
 
-boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
+std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
 {
-   lrfdLRFDConcreteCreepDetails* pDetails = new lrfdLRFDConcreteCreepDetails;
+   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
    InitializeCreepDetails(t,tla,pDetails);
 
    Float64 age = pDetails->age;
@@ -557,7 +557,7 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    Float64 maturity = age - age_at_loading;
    if ( ::IsLE(age,0.0) || ::IsLE(age_at_loading,0.0) || ::IsLT(maturity,0.0) )
    {
-      return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+      return pDetails;
    }
 
    Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
@@ -580,5 +580,5 @@ boost::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoeffic
    pDetails->ktd = ktd;
    pDetails->Ct = Y;
 
-   return boost::shared_ptr<matConcreteBaseCreepDetails>(pDetails);
+   return pDetails;
 }

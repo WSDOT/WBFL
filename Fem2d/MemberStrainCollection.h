@@ -70,13 +70,13 @@ BEGIN_COM_MAP(CMemberStrainCollection)
 END_COM_MAP()
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IFem2dMemberStrainCollection
 public:
-	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/MemberIDType member, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain,  /*[out, retval]*/ IFem2dMemberStrain** pVal);
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid);
-	STDMETHOD(Clear)();
+	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/MemberIDType member, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain,  /*[out, retval]*/ IFem2dMemberStrain** pVal) override;
+	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
+	STDMETHOD(Clear)() override;
 };
 
 #endif //__MemberStrainCollection_H_

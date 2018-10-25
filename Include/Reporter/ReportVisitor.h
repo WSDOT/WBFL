@@ -81,7 +81,7 @@ public:
 
    //------------------------------------------------------------------------
    // Do my job - visit a report
-   virtual void VisitReport(rptReport*)=0;
+   virtual void VisitReport(rptReport*) = 0;
 
    // GROUP: OPERATIONS
    // GROUP: ACCESS

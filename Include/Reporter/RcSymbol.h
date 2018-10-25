@@ -121,7 +121,7 @@ public:
                      theta,
                      THETA,
                      QED,                     // Little triangle made of dots
-                     INFINITY,                // lazy 8
+                     infinity,                // lazy 8
                      DEGREES,                 // degree symbol
                      OMICRON,                 // looks like a bug
                      PARTIAL,                 // partial differential
@@ -212,7 +212,7 @@ protected:
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    void MakeCopy(const rptRcSymbol& rOther);
-   virtual void MakeAssignment(const rptRcSymbol& rOther);
+   void MakeAssignment(const rptRcSymbol& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

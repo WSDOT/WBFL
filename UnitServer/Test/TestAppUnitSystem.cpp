@@ -65,12 +65,12 @@ void CTestAppUnitSystem::Test()
    TRY_TEST(AtlAdvise(unitSystem,punk,IID_IUnitSystemEvents,&dwCookie),S_OK);
 
    CComPtr<IDisplayUnitMgr2> dum;
-   TRY_TEST( unitSystem->get_DisplayUnitMgr(NULL), E_POINTER );
+   TRY_TEST( unitSystem->get_DisplayUnitMgr(nullptr), E_POINTER );
    TRY_TEST( unitSystem->get_DisplayUnitMgr(&dum), S_OK );
    TRY_TEST( dum != 0, true );
 
    CComPtr<IUnitServer> us;
-   TRY_TEST( unitSystem->get_UnitServer(NULL), E_POINTER );
+   TRY_TEST( unitSystem->get_UnitServer(nullptr), E_POINTER );
    TRY_TEST( unitSystem->get_UnitServer(&us), S_OK );
    TRY_TEST( us != 0, true );
 

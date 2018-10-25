@@ -67,7 +67,7 @@ rptReport::~rptReport()
 
 rptReport& rptReport::operator << (rptChapter* pChapter )
 {
-   boost::shared_ptr<rptChapter> pc ( pChapter );
+   std::shared_ptr<rptChapter> pc ( pChapter );
    pc->SetParent( this );
    m_ChapterVec.push_back( pc );
    return *this;
@@ -78,7 +78,7 @@ bool rptReport::InsertChapterAt(ChapterListSizeType location, rptChapter* pChapt
    if ( m_ChapterVec.size() == 0 )
    {
       ATLASSERT(location == 0);
-      boost::shared_ptr<rptChapter> pc ( pChapter );
+      std::shared_ptr<rptChapter> pc ( pChapter );
       pc->SetParent( this );
       m_ChapterVec.push_back(pc );
       return true;
@@ -87,7 +87,7 @@ bool rptReport::InsertChapterAt(ChapterListSizeType location, rptChapter* pChapt
    {
       if (0 <= location && location < m_ChapterVec.size())
       {
-         boost::shared_ptr<rptChapter> pc ( pChapter );
+         std::shared_ptr<rptChapter> pc ( pChapter );
          pc->SetParent( this );
 
          ChapterListIterator it( m_ChapterVec.begin() );

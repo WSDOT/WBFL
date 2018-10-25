@@ -63,7 +63,7 @@ void CTestUnitModeController::Test()
    TRY_TEST( umc->put_UnitMode( umSI ), S_OK );
    TRY_TEST( umc->put_UnitMode( umUS ), S_OK );
    UnitModeType um;
-   TRY_TEST( umc->get_UnitMode(NULL), E_POINTER);
+   TRY_TEST( umc->get_UnitMode(nullptr), E_POINTER);
    TRY_TEST( umc->get_UnitMode(&um), S_OK);
    TRY_TEST( um, umUS );
 

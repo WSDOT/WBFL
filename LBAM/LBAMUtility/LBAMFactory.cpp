@@ -101,7 +101,7 @@ STDMETHODIMP CLBAMFactory::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ILBAMFactory
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -346,7 +346,7 @@ STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage,
       hr = vsuppids.CoCreateInstance(CLSID_IDArray);
       CollectionIndexType size = suppids.size();
       vsuppids->Reserve(size);
-      for (CollectionIndexType i=0; i<size; i++)
+      for (CollectionIndexType i = 0; i<size; i++)
       {
          vsuppids->Add(suppids[i]);
       }
@@ -1087,6 +1087,10 @@ STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadMo
          hr = liveload->get_LegalSpecialRating(&liveloadmodel);
          break;
 
+      case lltLegalEmergencyRating:
+         hr = liveload->get_LegalEmergencyRating(&liveloadmodel);
+         break;
+
       case lltPermitRoutineRating:
          hr = liveload->get_PermitRoutineRating(&liveloadmodel);
          break;
@@ -1191,8 +1195,10 @@ STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadMo
             CComPtr<IAxle> axle;
             hr = axle.CoCreateInstance(CLSID_Axle);
             hr = axle->put_Weight(type_3S2_weight[i]);
-            if ( i != nAxles-1 )
+            if (i != nAxles - 1)
+            {
                hr = axle->put_Spacing(type_3S2_axles[i]);
+            }
             
             hr = axles->Add(axle);
          }
@@ -1240,8 +1246,10 @@ STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadMo
             CComPtr<IAxle> axle;
             hr = axle.CoCreateInstance(CLSID_Axle);
             hr = axle->put_Weight(type_3_3_weight[i]);
-            if ( i != nAxles-1 )
+            if (i != nAxles - 1)
+            {
                hr = axle->put_Spacing(type_3_3_axles[i]);
+            }
             
             hr = axles->Add(axle);
          }
@@ -1274,8 +1282,10 @@ STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadMo
             CComPtr<IAxle> axle;
             hr = axle.CoCreateInstance(CLSID_Axle);
             hr = axle->put_Weight(type_3_3_weight[i]);
-            if ( i != nAxles-1 )
+            if (i != nAxles - 1)
+            {
                hr = axle->put_Spacing(type_3_3_axles[i]);
+            }
             
             hr = axles->Add(axle);
          }
@@ -1328,8 +1338,10 @@ STDMETHODIMP CLBAMFactory::ConfigureLegalLiveLoad(ILBAMModel* pModel, LiveLoadMo
                }
                else
                {
-                  if (i != nAxles-1)
+                  if (i != nAxles - 1)
+                  {
                      hr = axle->put_Spacing(type_3_3_axles[i]);
+                  }
                }
                
                hr = axles->Add(axle);
@@ -1405,6 +1417,10 @@ STDMETHODIMP CLBAMFactory::ConfigureNotionalRatingLoad(ILBAMModel* pModel, LiveL
          hr = liveload->get_LegalSpecialRating(&liveloadmodel);
          break;
 
+      case lltLegalEmergencyRating:
+         hr = liveload->get_LegalEmergencyRating(&liveloadmodel);
+         break;
+
       case lltPermitRoutineRating:
          hr = liveload->get_PermitRoutineRating(&liveloadmodel);
          break;
@@ -1469,8 +1485,10 @@ STDMETHODIMP CLBAMFactory::ConfigureNotionalRatingLoad(ILBAMModel* pModel, LiveL
             CComPtr<IAxle> axle;
             hr = axle.CoCreateInstance(CLSID_Axle);
             hr = axle->put_Weight(nrl_truck_weight[i]);
-            if ( i != nAxles-1 )
+            if (i != nAxles - 1)
+            {
                hr = axle->put_Spacing(nrl_truck_axles[i]);
+            }
             
             hr = axles->Add(axle);
          }
@@ -1488,6 +1506,187 @@ STDMETHODIMP CLBAMFactory::ConfigureNotionalRatingLoad(ILBAMModel* pModel, LiveL
    return S_OK;
 }
 
+
+STDMETHODIMP CLBAMFactory::ConfigureEmergencyRatingLoad(ILBAMModel* pModel, LiveLoadModelType llmt,
+   Float64 imTruck,
+   Float64 imLane,
+   VARIANT_BOOL bIncludeLaneLoad,
+   IUnitServer* pUnitServer)
+{
+   CHECK_IN(pModel);
+   CHECK_IN(pUnitServer);
+
+   CHRException hr;
+
+   try
+   {
+      CComPtr<ILiveLoad> liveload;
+      hr = pModel->get_LiveLoad(&liveload);
+
+      CComPtr<IUnitConvert> convert;
+      hr = pUnitServer->get_UnitConvert(&convert);
+
+      // set up ll model
+      CComPtr<ILiveLoadModel> liveloadmodel;
+      switch (llmt)
+      {
+      case lltNone:
+         return E_INVALIDARG;
+
+      case lltDeflection:
+         hr = liveload->get_Deflection(&liveloadmodel);
+         break;
+
+      case lltDesign:
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+
+      case lltPedestrian:
+         hr = liveload->get_Pedestrian(&liveloadmodel);
+         break;
+
+      case lltFatigue:
+         hr = liveload->get_Fatigue(&liveloadmodel);
+         break;
+
+      case lltPermit:
+         hr = liveload->get_Permit(&liveloadmodel);
+         break;
+
+      case lltSpecial:
+         hr = liveload->get_Special(&liveloadmodel);
+         break;
+
+      case lltLegalRoutineRating:
+         hr = liveload->get_LegalRoutineRating(&liveloadmodel);
+         break;
+
+      case lltLegalSpecialRating:
+         hr = liveload->get_LegalSpecialRating(&liveloadmodel);
+         break;
+
+      case lltLegalEmergencyRating:
+         hr = liveload->get_LegalEmergencyRating(&liveloadmodel);
+         break;
+
+      case lltPermitRoutineRating:
+         hr = liveload->get_PermitRoutineRating(&liveloadmodel);
+         break;
+
+      case lltPermitSpecialRating:
+         hr = liveload->get_PermitSpecialRating(&liveloadmodel);
+         break;
+
+      default:
+         ATLASSERT(false); // SHOULD NEVER GET HERE
+         hr = liveload->get_Design(&liveloadmodel);
+         break;
+      }
+
+      hr = liveloadmodel->put_Name(CComBSTR("Emergency Vehicles"));
+      hr = liveloadmodel->put_DistributionFactorType(dftEnvelope);
+
+      CComPtr<IVehicularLoads> vehicles;
+      hr = liveloadmodel->get_VehicularLoads(&vehicles);
+
+      Float64 lane_load = 0.00;
+      if (bIncludeLaneLoad == VARIANT_TRUE)
+      {
+         // 0.2 k/ft lane lane
+         hr = convert->ConvertToBaseUnits(0.20, CComBSTR("kip/ft"), &lane_load);
+      }
+
+      {
+         Float64 ev2_truck_weight[2];
+         hr = convert->ConvertToBaseUnits(33.5, CComBSTR("kip"), &ev2_truck_weight[0]);
+         hr = convert->ConvertToBaseUnits(24.0, CComBSTR("kip"), &ev2_truck_weight[1]);
+
+         Float64 ev2_truck_axles;
+         hr = convert->ConvertToBaseUnits(15.0, CComBSTR("ft"), &ev2_truck_axles);
+
+         CComPtr<IVehicularLoad> ev2_truck;
+         hr = ev2_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = ev2_truck->put_Name(CComBSTR("Type EV2"));
+         hr = ev2_truck->put_Applicability(llaEntireStructure);
+         hr = ev2_truck->put_Configuration(vlcTruckOnly);
+         hr = ev2_truck->put_UseNotional(VARIANT_FALSE);
+         hr = ev2_truck->put_IMLane(imLane);
+         hr = ev2_truck->put_IMTruck(imTruck);
+         hr = ev2_truck->put_LaneFactor(1.0);
+         hr = ev2_truck->put_TruckFactor(1.0);
+         hr = ev2_truck->put_LaneLoad(lane_load);
+
+         CComPtr<IAxles> axles;
+         hr = ev2_truck->get_Axles(&axles);
+
+         int nAxles = 2;
+         for (int i = 0; i < nAxles; i++)
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(ev2_truck_weight[i]);
+            if (i != nAxles - 1)
+            {
+               hr = axle->put_Spacing(ev2_truck_axles);
+            }
+
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(ev2_truck);
+      }
+
+
+      {
+         Float64 ev3_truck_weight[3];
+         hr = convert->ConvertToBaseUnits(31.0, CComBSTR("kip"), &ev3_truck_weight[0]);
+         hr = convert->ConvertToBaseUnits(31.0, CComBSTR("kip"), &ev3_truck_weight[1]);
+         hr = convert->ConvertToBaseUnits(24.0, CComBSTR("kip"), &ev3_truck_weight[2]);
+
+         Float64 ev3_truck_axles[2];
+         hr = convert->ConvertToBaseUnits(4.0, CComBSTR("ft"), &ev3_truck_axles[0]);
+         hr = convert->ConvertToBaseUnits(15.0, CComBSTR("ft"), &ev3_truck_axles[1]);
+
+         CComPtr<IVehicularLoad> ev3_truck;
+         hr = ev3_truck.CoCreateInstance(CLSID_VehicularLoad);
+
+         hr = ev3_truck->put_Name(CComBSTR("Type EV3"));
+         hr = ev3_truck->put_Applicability(llaEntireStructure);
+         hr = ev3_truck->put_Configuration(vlcTruckOnly);
+         hr = ev3_truck->put_UseNotional(VARIANT_FALSE);
+         hr = ev3_truck->put_IMLane(imLane);
+         hr = ev3_truck->put_IMTruck(imTruck);
+         hr = ev3_truck->put_LaneFactor(1.0);
+         hr = ev3_truck->put_TruckFactor(1.0);
+         hr = ev3_truck->put_LaneLoad(lane_load);
+
+         CComPtr<IAxles> axles;
+         hr = ev3_truck->get_Axles(&axles);
+
+         int nAxles = 3;
+         for (int i = 0; i < nAxles; i++)
+         {
+            CComPtr<IAxle> axle;
+            hr = axle.CoCreateInstance(CLSID_Axle);
+            hr = axle->put_Weight(ev3_truck_weight[i]);
+            if (i != nAxles - 1)
+            {
+               hr = axle->put_Spacing(ev3_truck_axles[i]);
+            }
+
+            hr = axles->Add(axle);
+         }
+
+         hr = vehicles->Add(ev3_truck);
+      }
+   }
+   catch (...)
+   {
+      return DealWithExceptions(this, IID_ILBAMLRFDFactory);
+   }
+   return S_OK;
+}
 
 STDMETHODIMP CLBAMFactory::ConfigureSpecializedHaulingUnits(ILBAMModel* pModel, LiveLoadModelType llmt,
                                                             Float64 imTruck,
@@ -1833,7 +2032,7 @@ STDMETHODIMP CLBAMFactory::CreateSelfWeightDeadLoad(ILBAMModel* pModel,BSTR stag
       
          int ssmbr_idx = 0;
          CComPtr<ISuperstructureMember> ssmbr;
-         while ( enum_ssmbrs->Next(1,&ssmbr,NULL) != S_FALSE)
+         while ( enum_ssmbrs->Next(1,&ssmbr,nullptr) != S_FALSE)
          {
             CComPtr<IEnumSegmentItem> enum_segments;
             hr = ssmbr->get__EnumElements(&enum_segments);
@@ -1859,7 +2058,7 @@ STDMETHODIMP CLBAMFactory::CreateSelfWeightDeadLoad(ILBAMModel* pModel,BSTR stag
          hr = supports->get__EnumElements(&enum_supports);
          SupportIndexType supportIdx = 0;
          CComPtr<ISupport> support;
-         while ( enum_supports->Next(1,&support,NULL) != S_FALSE )
+         while ( enum_supports->Next(1,&support,nullptr) != S_FALSE )
          {
             SegmentIndexType seg_count;
             support->get_SegmentCount(stage,&seg_count);
@@ -1889,7 +2088,7 @@ STDMETHODIMP CLBAMFactory::CreateSelfWeightDeadLoad(ILBAMModel* pModel,BSTR stag
          hr = spans->get__EnumElements(&enum_spans);
 
          CComPtr<ISpan> span;
-         while ( enum_spans->Next(1,&span,NULL) != S_FALSE )
+         while ( enum_spans->Next(1,&span,nullptr) != S_FALSE )
          {
             CComPtr<ITemporarySupports> temp_supports;
             hr = span->get_TemporarySupports(&temp_supports);
@@ -1903,7 +2102,7 @@ STDMETHODIMP CLBAMFactory::CreateSelfWeightDeadLoad(ILBAMModel* pModel,BSTR stag
                hr = temp_supports->get__EnumElements(&enum_temp_supports);
 
                CComPtr<ITemporarySupport> temp_support;
-               while ( enum_temp_supports->Next(1,&temp_support,NULL) != S_FALSE )
+               while ( enum_temp_supports->Next(1,&temp_support,nullptr) != S_FALSE )
                {
                   SupportIndexType temp_support_segment_count;
                   hr = temp_support->get_SegmentCount(stage,&temp_support_segment_count);
@@ -2026,7 +2225,7 @@ void CLBAMFactory::CreateSegmentLoad(MemberIDType mbrID,MemberType mbrType,IEnum
    Float64 start_location = 0.0;
 
    CComPtr<ISegmentItem> segment_item;
-   while ( enum_segments->Next(1,&segment_item,NULL) != S_FALSE )
+   while ( enum_segments->Next(1,&segment_item,nullptr) != S_FALSE )
    {
       CComPtr<ISegment> segment;
       hr = segment_item->get_Segment(&segment);
@@ -2055,7 +2254,7 @@ void CLBAMFactory::CreateSegmentLoad(MemberIDType mbrID,MemberType mbrType,IEnum
       hr = load->put_MemberID(mbrID);
       hr = load->put_MemberType(mbrType);
 
-      hr = loads->Add(stage,lgName,load,NULL);
+      hr = loads->Add(stage,lgName,load,nullptr);
 
       start_location = end_location;
       segment_item.Release();
@@ -2123,12 +2322,12 @@ STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, PoiID
       Float64 incval = 1.0/Increment;
 
       // put pois on spans at given increment
-      for (SpanIndexType ispan=0; ispan<num_spans; ispan++)
+      for (SpanIndexType ispan = 0; ispan<num_spans; ispan++)
       {
 
          Float64 curinc = 0.0;
 
-         for (PoiIDType iinc=0; iinc<Increment+1; iinc++)
+         for (PoiIDType iinc = 0; iinc<Increment+1; iinc++)
          {
             curr_id++;
 
@@ -2237,7 +2436,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
       // reserve the list size to save allocations
       poi_list.reserve(num_pois);
 
-      for (CollectionIndexType ipoi=0; ipoi<num_pois; ipoi++)
+      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<IPOI> lbam_poi;
          hr = lbam_pois->get_Item(ipoi, &lbam_poi);
@@ -2291,7 +2490,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
       hr = poi_locs->Reserve(array_size);
 
       // copy ids and locations into safearrays
-      CollectionIndexType i=0;
+      CollectionIndexType i = 0;
       for (PoiListIterator it= poi_list.begin(); it!=poi_list.end(); it++)
       {
          PoiLoc& rpl = *it;
@@ -2317,7 +2516,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
 {
    CHRException hr;
 
-   *pPoi = NULL;
+   *pPoi = nullptr;
 
    CollectionIndexType ssm_cnt;
    hr = pSsms->get_Count(&ssm_cnt);
@@ -2342,7 +2541,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
       return;
    }
 
-   for (CollectionIndexType i_ssm=0; i_ssm<ssm_cnt; i_ssm++)
+   for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       hr = pSsms->get_Item(i_ssm, &ssm);

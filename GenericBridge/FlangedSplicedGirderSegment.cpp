@@ -63,7 +63,7 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShap
    }
 
    CComQIPtr<IFlangedGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    // This object reprsents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
@@ -250,7 +250,7 @@ void CFlangedSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Flo
    get_Length(&segLength);
 
    CComQIPtr<IFlangedGirderSection> beam(m_Shapes.front().Shape);
-   ATLASSERT(beam); // if this is NULL... how did it get in the system????
+   ATLASSERT(beam); // if this is nullptr... how did it get in the system????
 
    CComPtr<IPrecastBeam> pcBeam;
    beam->get_Beam(&pcBeam);

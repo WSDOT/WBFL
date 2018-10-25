@@ -75,37 +75,37 @@ private:
    Float64 m_Z;
 
 // ISupportsErrorInfo
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPoint3d
 public:
-   STDMETHOD(Clone)(/*[out,retval]*/IPoint3d** ppPoint);
-   STDMETHOD(Distance)(/*[in]*/Float64 x,/*[in]*/Float64 y,/*[in]*/Float64 z,/*[out,retval]*/Float64* pDistance);
-   STDMETHOD(DistanceEx)(/*[in]*/IPoint3d* pOther,/*[out,retval]*/Float64* pDistance);
-   STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY,/*[out]*/Float64* pZ);
-   STDMETHOD(SameLocation)(/*[in]*/IPoint3d* pOther);
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg);
-   STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 cz, /*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle);
-   STDMETHOD(RotateEx)(/*[in]*/ IPoint3d* center,/*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle);
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize);
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz);
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint3d* pPoint);
-	STDMETHOD(Move)(/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[in]*/ Float64 z);
-	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal);
-	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal);
-	STDMETHOD(put_X)(/*[in]*/ Float64 newVal);
+   STDMETHOD(Clone)(/*[out,retval]*/IPoint3d** ppPoint) override;
+   STDMETHOD(Distance)(/*[in]*/Float64 x,/*[in]*/Float64 y,/*[in]*/Float64 z,/*[out,retval]*/Float64* pDistance) override;
+   STDMETHOD(DistanceEx)(/*[in]*/IPoint3d* pOther,/*[out,retval]*/Float64* pDistance) override;
+   STDMETHOD(Location)(/*[out]*/Float64* pX,/*[out]*/Float64* pY,/*[out]*/Float64* pZ) override;
+   STDMETHOD(SameLocation)(/*[in]*/IPoint3d* pOther) override;
+   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 cz, /*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle) override;
+   STDMETHOD(RotateEx)(/*[in]*/ IPoint3d* center,/*[in]*/ IVector3d* vector,/*[in]*/ Float64 angle) override;
+	STDMETHOD(OffsetEx)(/*[in]*/ ISize3d* pSize) override;
+	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy,/*[in]*/ Float64 dz) override;
+	STDMETHOD(MoveEx)(/*[in]*/ IPoint3d* pPoint) override;
+	STDMETHOD(Move)(/*[in]*/ Float64 x,/*[in]*/ Float64 y,/*[in]*/ Float64 z) override;
+	STDMETHOD(get_Z)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Z)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Y)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Y)(/*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_X)(/*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
 
 // IPersist
 public:
-   STDMETHOD(GetClassID)(CLSID* pClassID);
+   STDMETHOD(GetClassID)(CLSID* pClassID) override;
 
 // IStructuredStorage2
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave);
-   STDMETHOD(Load)(IStructuredLoad2* pLoad);
+   STDMETHOD(Save)(IStructuredSave2* pSave) override;
+   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 };
 

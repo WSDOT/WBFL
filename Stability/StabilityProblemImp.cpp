@@ -24,6 +24,7 @@
 #include <Stability\StabilityLib.h>
 #include <Stability\StabilityProblemImp.h>
 #include <UnitMgt\UnitMgt.h>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,7 +36,7 @@ bool operator<(const stbFpe& a,const stbFpe& b) { return a.X < b.X; }
 
 stbGirder::stbGirder()
 {
-   m_pSegment = NULL;
+   m_pSegment = nullptr;
 
    m_DragCoefficient = 2.2; // default for I-Beams
 
@@ -51,7 +52,7 @@ bool stbGirder::operator==(const stbGirder& other) const
    if ( m_pSegment && other.m_pSegment && m_pSegment != other.m_pSegment )
       return false;
 
-   if ( m_pSegment == NULL && m_vSectionProperties != other.m_vSectionProperties )
+   if ( m_pSegment == nullptr && m_vSectionProperties != other.m_vSectionProperties )
       return false;
 
    if ( m_vPointLoads != other.m_vPointLoads )
@@ -276,6 +277,7 @@ stbStabilityProblemImp::stbStabilityProblemImp()
 
    m_bDirectCamber = true;
    m_Camber = 0;
+   m_CamberMultiplier = 1.0;
 
    m_Ll = 0;
    m_Lr = 0;
@@ -336,6 +338,9 @@ bool stbStabilityProblemImp::operator==(const stbStabilityProblemImp& other) con
       return false;
 
    if ( !IsEqual(m_Camber,other.m_Camber) )
+      return false;
+
+   if (m_bDirectCamber && !IsEqual(m_CamberMultiplier, other.m_CamberMultiplier))
       return false;
 
    if ( !IsEqual(m_Ll,other.m_Ll) )
@@ -409,7 +414,7 @@ void stbStabilityProblemImp::SetFpe(IndexType fpeIdx,Float64 X,Float64 FpeStraig
    {
       iter++;
    }
-   stbFpe& fpe(*iter);
+   stbFpe& fpe(const_cast<stbFpe&>(*iter));
 
    fpe.fpeStraight  = FpeStraight;
    fpe.YpsStraight  = YpsStraight;
@@ -478,6 +483,16 @@ void stbStabilityProblemImp::SetCamber(bool bDirectCamber,Float64 camber)
 {
    m_bDirectCamber = bDirectCamber;
    m_Camber = camber;
+}
+
+void stbStabilityProblemImp::SetCamberMultiplier(Float64 m)
+{
+   m_CamberMultiplier = m;
+}
+
+Float64 stbStabilityProblemImp::GetCamberMultiplier() const
+{
+   return m_CamberMultiplier;
 }
 
 const matConcreteEx& stbStabilityProblemImp::GetConcrete() const
@@ -700,7 +715,7 @@ void stbStabilityProblemImp::SetWindLoading(stbTypes::WindType type,Float64 load
 
 void stbStabilityProblemImp::ClearAnalysisPoints()
 {
-   BOOST_FOREACH(stbIAnalysisPoint* pAnalysisPoint,m_vAnalysisPoints)
+   for( const auto& pAnalysisPoint : m_vAnalysisPoints)
    {
       delete pAnalysisPoint;
    }
@@ -753,7 +768,7 @@ bool stbStabilityProblemImp::CompareAnalysisPoints(const stbStabilityProblemImp&
 void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
 {
    ClearAnalysisPoints();
-   BOOST_FOREACH(const stbIAnalysisPoint* pAnalysisPoint,other.m_vAnalysisPoints)
+   for( const auto& pAnalysisPoint : other.m_vAnalysisPoints)
    {
       AddAnalysisPoint(pAnalysisPoint->Clone());
    }
@@ -766,6 +781,7 @@ void stbStabilityProblemImp::MakeCopy(const stbStabilityProblemImp& other)
    
    m_bDirectCamber = other.m_bDirectCamber;
    m_Camber = other.m_Camber;
+   m_CamberMultiplier = other.m_CamberMultiplier;
 
    m_Concrete = other.m_Concrete;
 

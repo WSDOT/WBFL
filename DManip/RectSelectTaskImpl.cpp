@@ -67,7 +67,7 @@ STDMETHODIMP_(void) CRectSelectTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& p
 {
    m_TempPoint = point;
    MouseUp();
-   m_pDispMgr->SetTask(NULL);
+   m_pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(void) CRectSelectTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
@@ -112,7 +112,7 @@ STDMETHODIMP_(void) CRectSelectTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UIN
    KeyPress(nChar,nRepCnt,nFlags);
 
    if ( CompareStates(CRectSelectFSM::Done) )
-      m_pDispMgr->SetTask(NULL);
+      m_pDispMgr->SetTask(nullptr);
 }
 
 STDMETHODIMP_(void) CRectSelectTaskImpl::OnContextMenu(CWnd* pWnd,const CPoint& point)

@@ -66,14 +66,14 @@ private:
 
 // ISupportsErrorInfo
 public:
-	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
+	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IInteractionCurveSolution
 public:
-   STDMETHOD(get_NeutralAxisDirection)(/*[in]*/CollectionIndexType index,/*[out,retval]*/Float64* angle);
-	STDMETHOD(get_MomentCurvatureSolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCurvatureSolution** solution);
-	STDMETHOD(AddSolutionPoint)(/*[in]*/Float64 angle,/*[in]*/IMomentCurvatureSolution* solution);
-	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints);
+   STDMETHOD(get_NeutralAxisDirection)(/*[in]*/CollectionIndexType index,/*[out,retval]*/Float64* angle) override;
+	STDMETHOD(get_MomentCurvatureSolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCurvatureSolution** solution) override;
+	STDMETHOD(AddSolutionPoint)(/*[in]*/Float64 angle,/*[in]*/IMomentCurvatureSolution* solution) override;
+	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
 };
 
 #endif //__InteractionCurveSolution_H_

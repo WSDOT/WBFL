@@ -55,7 +55,7 @@ STDMETHODIMP CPolyLineDisplayObjectImpl::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_iPolyLineDisplayObject
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -258,7 +258,7 @@ void CPolyLineDisplayObjectImpl::ClearDisplayObjects()
    {
       // first go through all connectable display objects and disconnect sockets
       CollectionIndexType cnt =  m_pDisplayObject->GetDisplayObjectCount();
-      for (CollectionIndexType ic=0; ic<cnt; ic++)
+      for (CollectionIndexType ic = 0; ic<cnt; ic++)
       {
          CComPtr<iDisplayObject> pdo;
          m_pDisplayObject->GetDisplayObject(ic,atByIndex,&pdo);
@@ -280,7 +280,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint
 {
    // put points at locations and make them sockets
    CComPtr<iPointDisplayObject> from_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&from_rep);
+   ::CoCreateInstance(CLSID_PointDisplayObject,nullptr,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&from_rep);
    from_rep->SetPosition(fromPoint,FALSE,FALSE);
    from_rep->SetID(m_CurrId++);
    CComQIPtr<iConnectable,&IID_iConnectable> from_connectable(from_rep);
@@ -290,7 +290,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint
    AddMyDisplayObject(from_rep);
 
    CComPtr<iPointDisplayObject> to_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&to_rep);
+   ::CoCreateInstance(CLSID_PointDisplayObject,nullptr,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&to_rep);
    to_rep->SetPosition(toPoint,FALSE,FALSE);
    to_rep->SetID(m_CurrId++);
    CComQIPtr<iConnectable,&IID_iConnectable> to_connectable(to_rep);
@@ -301,7 +301,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint
 
    // Create the line object
    CComPtr<iLineDisplayObject> line;
-   ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&line);
+   ::CoCreateInstance(CLSID_LineDisplayObject,nullptr,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&line);
 
    // color and width
    CComPtr<iDrawLineStrategy> pStrategy;

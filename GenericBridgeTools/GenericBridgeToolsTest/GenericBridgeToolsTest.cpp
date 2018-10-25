@@ -59,7 +59,7 @@ int main(int argc, TCHAR* argv[])
 {
    //_crtBreakAlloc = 355517; // causes program to break at a specific memory allocation
 
-   ::CoInitialize(NULL);
+   ::CoInitialize(nullptr);
 
    CTestBridgeGeometryTool::Test();
    CTestEffectiveFlangeWidthTool::Test(); // also tests tributary width
@@ -76,7 +76,7 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions)
 {
    CComQIPtr<IObjectSafety> safety(punk);
 
-   if ( safety == NULL )
+   if ( safety == nullptr )
    {
       return false;
    }
@@ -321,12 +321,12 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
             material->put_Density(i,160.0); //  160 kcf
          }
          
-         segment->AddShape(shape,material,NULL);
+         segment->AddShape(shape,material,nullptr);
          
          // segment geometry
          CComPtr<IGirderLine> girderline;
          geometry->FindGirderLine(gdrLineID,&girderline);
-         TRY_TEST(girderline != NULL,true);
+         TRY_TEST(girderline != nullptr,true);
          segment->putref_GirderLine(girderline);
 
          // item data specific for precast girder bridges
@@ -584,12 +584,12 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
             material->put_Density(i,160.0); //  160 kcf
          }
 
-         segment->AddShape(shape,material,NULL);
+         segment->AddShape(shape,material,nullptr);
 
          // segment geometry
          CComPtr<IGirderLine> girderline;
          geometry->FindGirderLine(gdrLineID,&girderline);
-         TRY_TEST(girderline != NULL,true);
+         TRY_TEST(girderline != nullptr,true);
          segment->putref_GirderLine(girderline);
 
          // item data specific for precast girder bridges
@@ -708,7 +708,7 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    else
    {
       // no deck
-      (*deck) = NULL;
+      (*deck) = nullptr;
    }
 
    if ( *deck )

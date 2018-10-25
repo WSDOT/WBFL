@@ -51,7 +51,7 @@ void CTestAlignmentCollection::Test()
    TRY_TEST(pColl.CoCreateInstance( CLSID_AlignmentCollection ), S_OK);
 
    CollectionIndexType count;
-   TRY_TEST(pColl->get_Count(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
 
@@ -59,10 +59,10 @@ void CTestAlignmentCollection::Test()
    Alignment.CoCreateInstance(CLSID_Alignment);
 
    CComPtr<IAlignmentFactory> factory;
-   TRY_TEST(pColl->get_Factory(NULL),E_POINTER);
+   TRY_TEST(pColl->get_Factory(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Factory(&factory),S_OK);
-   TRY_TEST( factory != NULL, true );
-   TRY_TEST(pColl->putref_Factory(NULL),E_INVALIDARG);
+   TRY_TEST( factory != nullptr, true );
+   TRY_TEST(pColl->putref_Factory(nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Factory(factory),S_OK);
 
    //
@@ -78,7 +78,7 @@ void CTestAlignmentCollection::Test()
    // Test Item property
    a.Release();
    TRY_TEST(pColl->get_Item(-1,&a),COGO_E_ALIGNMENTNOTFOUND);
-   TRY_TEST(pColl->get_Item(1,NULL),E_POINTER);
+   TRY_TEST(pColl->get_Item(1,nullptr),E_POINTER);
    TRY_TEST(pColl->get_Item(1,&a),S_OK);
 
    //
@@ -104,7 +104,7 @@ void CTestAlignmentCollection::Test()
 
    a.Release();
    a.CoCreateInstance(CLSID_Alignment);
-   TRY_TEST(pColl->putref_Item(1,NULL),E_INVALIDARG);
+   TRY_TEST(pColl->putref_Item(1,nullptr),E_INVALIDARG);
    TRY_TEST(pColl->putref_Item(-1,Alignment),COGO_E_ALIGNMENTNOTFOUND);
    TRY_TEST(pColl->putref_Item(1,a),S_OK);
 
@@ -112,8 +112,8 @@ void CTestAlignmentCollection::Test()
    // Test FindID
    //
    CogoObjectID id;
-   TRY_TEST(pColl->FindID(NULL,&id),E_INVALIDARG);
-   TRY_TEST(pColl->FindID(a,NULL),E_POINTER);
+   TRY_TEST(pColl->FindID(nullptr,&id),E_INVALIDARG);
+   TRY_TEST(pColl->FindID(a,nullptr),E_POINTER);
    TRY_TEST(pColl->FindID(a,&id),S_OK);
    TRY_TEST(id,1);
 
@@ -121,14 +121,14 @@ void CTestAlignmentCollection::Test()
    // Test ID
    //
    pColl->Clear();
-   pColl->Add(1,NULL);
-   pColl->Add(2,NULL);
-   pColl->Add(3,NULL);
-   pColl->Add(4,NULL);
+   pColl->Add(1,nullptr);
+   pColl->Add(2,nullptr);
+   pColl->Add(3,nullptr);
+   pColl->Add(4,nullptr);
 
    TRY_TEST(pColl->ID(-1,&id),E_INVALIDARG);
    TRY_TEST(pColl->ID(500,&id),E_INVALIDARG);
-   TRY_TEST(pColl->ID(3,NULL),E_POINTER);
+   TRY_TEST(pColl->ID(3,nullptr),E_POINTER);
    TRY_TEST(pColl->ID(3,&id),S_OK);
    TRY_TEST(id,4);
    
@@ -136,12 +136,12 @@ void CTestAlignmentCollection::Test()
    // Test _Enum
    //
    pColl->Clear();
-   pColl->Add(1,NULL);
-   pColl->Add(2,NULL);
-   pColl->Add(3,NULL);
-   pColl->Add(4,NULL);
+   pColl->Add(1,nullptr);
+   pColl->Add(2,nullptr);
+   pColl->Add(3,nullptr);
+   pColl->Add(4,nullptr);
    CComPtr<IEnumIDs> pEnum;
-   TRY_TEST(pColl->get__EnumIDs(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumIDs(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumIDs(&pEnum), S_OK );
 
    ULONG fetched;
@@ -161,7 +161,7 @@ void CTestAlignmentCollection::Test()
    pColl->AddEx(3,a);
    pColl->AddEx(4,a);
    CComPtr<IEnumAlignments> pEnumAlignments;
-   TRY_TEST(pColl->get__EnumAlignments(NULL), E_POINTER );
+   TRY_TEST(pColl->get__EnumAlignments(nullptr), E_POINTER );
    TRY_TEST( pColl->get__EnumAlignments(&pEnumAlignments), S_OK );
 
    CComPtr<IAlignment> testAlign;
@@ -244,7 +244,7 @@ void CTestAlignmentCollection::Test()
 
 STDMETHODIMP CTestAlignmentCollection::OnAlignmentChanged(IAlignmentCollection* coll,CogoObjectID id,IAlignment* vc)
 {
-//   MessageBox(NULL,"AlignmentChanged","Event",MB_OK);
+//   MessageBox(nullptr,"AlignmentChanged","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -253,7 +253,7 @@ STDMETHODIMP CTestAlignmentCollection::OnAlignmentChanged(IAlignmentCollection* 
 
 STDMETHODIMP CTestAlignmentCollection::OnProfileChanged(IAlignmentCollection* coll,IProfile* profile)
 {
-//   MessageBox(NULL,"ProfileChanged","Event",MB_OK);
+//   MessageBox(nullptr,"ProfileChanged","Event",MB_OK);
    Pass();
 
    return S_OK;
@@ -261,7 +261,7 @@ STDMETHODIMP CTestAlignmentCollection::OnProfileChanged(IAlignmentCollection* co
 
 STDMETHODIMP CTestAlignmentCollection::OnStationEquationsChanged(IAlignmentCollection* coll,IStationEquationCollection* equations)
 {
-//   MessageBox(NULL,"StationEquationsChanged","Event",MB_OK);
+//   MessageBox(nullptr,"StationEquationsChanged","Event",MB_OK);
    Pass();
 
    return S_OK;
@@ -269,7 +269,7 @@ STDMETHODIMP CTestAlignmentCollection::OnStationEquationsChanged(IAlignmentColle
 
 STDMETHODIMP CTestAlignmentCollection::OnAlignmentAdded(IAlignmentCollection* coll,CogoObjectID id,IAlignment* Alignment)
 {
-//   MessageBox(NULL,"AlignmentAdded","Event",MB_OK);
+//   MessageBox(nullptr,"AlignmentAdded","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -278,7 +278,7 @@ STDMETHODIMP CTestAlignmentCollection::OnAlignmentAdded(IAlignmentCollection* co
 
 STDMETHODIMP CTestAlignmentCollection::OnAlignmentRemoved(IAlignmentCollection* coll,CogoObjectID id)
 {
-//   MessageBox(NULL,"AlignmentRemoved","Event",MB_OK);
+//   MessageBox(nullptr,"AlignmentRemoved","Event",MB_OK);
    if ( id == m_expectedID )
       Pass();
 
@@ -287,7 +287,7 @@ STDMETHODIMP CTestAlignmentCollection::OnAlignmentRemoved(IAlignmentCollection* 
 
 STDMETHODIMP CTestAlignmentCollection::OnAlignmentsCleared(IAlignmentCollection* coll)
 {
-//   MessageBox(NULL,"AlignmentCleared","Event",MB_OK);
+//   MessageBox(nullptr,"AlignmentCleared","Event",MB_OK);
    Pass();
    return S_OK;
 }

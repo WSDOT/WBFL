@@ -50,7 +50,7 @@ STDMETHODIMP CLoadCombiner::InterfaceSupportsErrorInfo(REFIID riid)
 		&IID_ILoadCombinationResponse,
 		&IID_IConcurrentLoadCombinationResponse
 	};
-	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
+	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
 			return S_OK;
@@ -60,7 +60,7 @@ STDMETHODIMP CLoadCombiner::InterfaceSupportsErrorInfo(REFIID riid)
 
 void CLoadCombiner::FinalRelease()
 {
-   if (m_Context!=NULL)
+   if (m_Context!=nullptr)
    {
       HRESULT hr = CrUnadvise(m_Context, this, IID_ILoadCombinationAnalysisContextEvents, m_ContextCookie);
       ATLASSERT(SUCCEEDED(hr));
@@ -158,7 +158,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
 {
    try
    {
-      if (m_Context!= NULL)
+      if (m_Context!= nullptr)
       {
          // can only initialize once
          THROW_LBAMC(LC_INITIALIZATION);
@@ -176,7 +176,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
 
       // pull some interfaces from context since we know we'll need them.
       CComQIPtr<ILiveLoadModelResponse> pllmr(context);
-      if (pllmr!=NULL)
+      if (pllmr!=nullptr)
       {
          m_pLiveLoadModelResponse = pllmr;
       }
@@ -187,7 +187,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IBasicVehicularResponse> pbvr(context);
-      if (pbvr!=NULL)
+      if (pbvr!=nullptr)
       {
          m_pBasicVehicularResponse = pbvr;
       }
@@ -198,7 +198,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<ILoadGroupResponse> plgr(context);
-      if (plgr!=NULL)
+      if (plgr!=nullptr)
       {
          m_pLoadGroupResponse = plgr;
       }
@@ -209,7 +209,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetCombinationFactors> pcf(context);
-      if (plgr!=NULL)
+      if (plgr!=nullptr)
       {
          m_pGetCombinationFactors = pcf;
       }
@@ -220,7 +220,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
 
       CComQIPtr<IGetStressPoints> pgcs(context);
-      if (plgr!=NULL)
+      if (plgr!=nullptr)
       {
          m_pGetStressPoints = pgcs;
       }
@@ -266,7 +266,7 @@ HRESULT CLoadCombiner::GetStressPoints(PoiIDType poiID, BSTR stage, IStressPoint
    ATLASSERT(left_sps!=0); 
    left_sps.CopyTo(leftSps);
 
-   if (right_sps!=NULL)
+   if (right_sps!=nullptr)
       return right_sps.CopyTo(rightSps);
    else
       return left_sps.CopyTo(rightSps);
@@ -351,7 +351,7 @@ void CLoadCombiner::ValidateLoadCases()
    // first latch onto load cases and see which load groups are active
    // get active load groups
    CComQIPtr<IGetActiveLoadGroups> palg(m_Context);
-   if (palg==NULL)
+   if (palg==nullptr)
    {
       ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
@@ -364,7 +364,7 @@ void CLoadCombiner::ValidateLoadCases()
    CollectionIndexType lc_cnt;
 
    CComQIPtr<ILoadCases> load_cases(m_Context);
-   if (load_cases==NULL)
+   if (load_cases==nullptr)
    {
       ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
@@ -372,7 +372,7 @@ void CLoadCombiner::ValidateLoadCases()
 
    hr = load_cases->get_Count(&lc_cnt);
 
-   for (CollectionIndexType ilc=0; ilc<lc_cnt; ilc++)
+   for (CollectionIndexType ilc = 0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCase> load_case;
       hr = load_cases->get_Item(ilc, &load_case);
@@ -395,7 +395,7 @@ void CLoadCombiner::ValidateLoadCases()
       CollectionIndexType lg_cnt;
       hr = load_case->get_LoadGroupCount(&lg_cnt);
 
-      for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+      for (CollectionIndexType ilg = 0; ilg<lg_cnt; ilg++)
       {
          CComBSTR lg_name;
          hr = load_case->GetLoadGroup(ilg, &lg_name);
@@ -417,7 +417,7 @@ void CLoadCombiner::ValidateLoadCombinations()
    // cache needed load combination information.
 
    CComQIPtr<ILoadCombinations> load_combos(m_Context);
-   if (load_combos==NULL)
+   if (load_combos==nullptr)
    {
       ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
@@ -426,7 +426,7 @@ void CLoadCombiner::ValidateLoadCombinations()
    CollectionIndexType lc_cnt;
    hr = load_combos->get_Count(&lc_cnt);
 
-   for (CollectionIndexType ilc=0; ilc<lc_cnt; ilc++)
+   for (CollectionIndexType ilc = 0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCombination> load_combo;
       hr = load_combos->get_Item(ilc, &load_combo);
@@ -470,7 +470,7 @@ void CLoadCombiner::ValidateLoadCombinations()
 
       LoadCaseIterator lc_it_end( m_LoadCases.end());
 
-      for (CollectionIndexType ilcf=0; ilcf<lcf_cnt; ilcf++)
+      for (CollectionIndexType ilcf = 0; ilcf<lcf_cnt; ilcf++)
       {
          CComBSTR lcs_name;
          Float64 min_factor, max_factor;

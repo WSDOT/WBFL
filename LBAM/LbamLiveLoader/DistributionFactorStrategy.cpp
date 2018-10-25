@@ -45,7 +45,7 @@ inline void GetDF(IDistributionFactor* leftDf, IDistributionFactor* rightDf, Pdf
 {
    CHRException hr;
    hr = (leftDf->*Function)(leftFactor);
-   if (rightDf!=NULL)
+   if (rightDf!=nullptr)
    {
       hr = (rightDf->*Function)(rightFactor);
    }
@@ -86,7 +86,7 @@ inline void GetDF3(IDistributionFactor* leftDf, IDistributionFactor* rightDf, Pd
    Float64 gM, gV;
    hr = (leftDf->*Function)(&gM, &gV);
    *leftFactor = GetGfactor(effect, gM, gV);
-   if (rightDf!=NULL)
+   if (rightDf!=nullptr)
    {
       hr = (rightDf->*Function)(&gM, &gV);
       *rightFactor = GetGfactor(effect, gM, gV);
@@ -160,7 +160,7 @@ void ForceDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR Stage,
    CComPtr<IDistributionFactor> left_df, right_df;
    hr = m_GetDistributionFactors->GetPOIDistributionFactor(poiID, Stage, &left_df, &right_df);
 
-   if (left_df==NULL)
+   if (left_df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -300,7 +300,7 @@ void ForceDistributionFactorStrategy::GetConcurrentDfs(PoiIDType poiID, BSTR Sta
    CComPtr<IDistributionFactor> left_df, right_df;
    hr = m_GetDistributionFactors->GetPOIDistributionFactor(poiID, Stage, &left_df, &right_df);
 
-   if (left_df==NULL)
+   if (left_df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -415,7 +415,7 @@ void DeflectionDistributionFactorStrategy::GetOptimalDfs(PoiIDType poiID, BSTR S
    CComPtr<IDistributionFactor> left_df, right_df;
    hr = m_GetDistributionFactors->GetPOIDistributionFactor(poiID, Stage, &left_df, &right_df);
 
-   if (left_df==NULL)
+   if (left_df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -535,7 +535,7 @@ void DeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType poiID,
    CComPtr<IDistributionFactor> left_df, right_df;
    hr = m_GetDistributionFactors->GetPOIDistributionFactor(poiID, Stage, &left_df, &right_df);
 
-   if (left_df==NULL)
+   if (left_df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -633,7 +633,7 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
    CComPtr<IDistributionFactor> df;
    hr = m_GetDistributionFactors->GetSupportDistributionFactor(sptID, Stage, &df);
 
-   if (df==NULL)
+   if (df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -677,7 +677,7 @@ void ReactionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sptID, BSTR
    case dftFatigue:
       {
          Float64 dummy;
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, effect, leftFactor, &dummy);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, effect, leftFactor, &dummy);
          *usedLeftDistributionType = dftFatigue;
       }
       break;
@@ -737,7 +737,7 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
    CComPtr<IDistributionFactor> df;
    hr = m_GetDistributionFactors->GetSupportDistributionFactor(sptID, Stage, &df);
 
-   if (df==NULL)
+   if (df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -783,9 +783,9 @@ void ReactionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType sptID, B
       break;
    case dftFatigue:
       {
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
       }
       break;
    case dftPedestrian:
@@ -825,7 +825,7 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
    CComPtr<IDistributionFactor> df;
    hr = m_GetDistributionFactors->GetSupportDistributionFactor(sptID, Stage, &df);
 
-   if (df==NULL)
+   if (df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -836,14 +836,14 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
    {
    case dftSingleLane:
       {
-         GetDeflectionSglDf(effect, df, NULL, leftFactor, rightFactor);
+         GetDeflectionSglDf(effect, df, nullptr, leftFactor, rightFactor);
          *usedLeftDistributionType = dftSingleLane;
          *usedRightDistributionType = dftSingleLane;
          break;
       }
    case dftMultipleLane:
       {
-         GetDeflectionMulDf(effect, df, NULL, leftFactor, rightFactor);
+         GetDeflectionMulDf(effect, df, nullptr, leftFactor, rightFactor);
          *usedLeftDistributionType = dftMultipleLane;
          *usedRightDistributionType = dftMultipleLane;
          break;
@@ -851,9 +851,9 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
    case dftEnvelope:
       {
          Float64 left_sgl_factor, right_sgl_factor;
-         GetDeflectionSglDf(effect, df, NULL, &left_sgl_factor, &right_sgl_factor);
+         GetDeflectionSglDf(effect, df, nullptr, &left_sgl_factor, &right_sgl_factor);
          Float64 left_mul_factor, right_mul_factor;
-         GetDeflectionMulDf(effect, df, NULL, &left_mul_factor, &right_mul_factor);
+         GetDeflectionMulDf(effect, df, nullptr, &left_mul_factor, &right_mul_factor);
 
          // take max of single and multiple lane values
          if (right_sgl_factor> right_mul_factor)
@@ -881,14 +881,14 @@ void SupportDeflectionDistributionFactorStrategy::GetOptimalDfs(SupportIDType sp
       break;
    case dftFatigue:
       {
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, effect, leftFactor, rightFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, effect, leftFactor, rightFactor);
          *usedLeftDistributionType = dftFatigue;
          *usedRightDistributionType = dftFatigue;
       }
       break;
    case dftPedestrian:
       {
-         GetDF(df, NULL, &IDistributionFactor::get_GPedestrian, leftFactor, rightFactor);
+         GetDF(df, nullptr, &IDistributionFactor::get_GPedestrian, leftFactor, rightFactor);
          *usedLeftDistributionType = dftPedestrian;
          *usedRightDistributionType = dftPedestrian;
       }
@@ -912,7 +912,7 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
    CComPtr<IDistributionFactor> df;
    hr = m_GetDistributionFactors->GetSupportDistributionFactor(sptID, Stage, &df);
 
-   if (df==NULL)
+   if (df==nullptr)
    {
       ATLASSERT(false);
       hr = E_FAIL; // this should never happen
@@ -923,14 +923,14 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
    {
    case dftSingleLane:
       {
-         GetConcDeflectionSglDf(df, NULL,
+         GetConcDeflectionSglDf(df, nullptr,
                            leftFxFactor, leftFyFactor, leftMzFactor, 
                            rightFxFactor, rightFyFactor, rightMzFactor);
       }
       break;
    case dftMultipleLane:
       {
-         GetConcDeflectionMulDf(df, NULL,
+         GetConcDeflectionMulDf(df, nullptr,
                            leftFxFactor, leftFyFactor, leftMzFactor, 
                            rightFxFactor, rightFyFactor, rightMzFactor);
       }
@@ -939,13 +939,13 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
       {
          Float64 left_sgl_fx, left_sgl_fy, left_sgl_mz;
          Float64 right_sgl_fx, right_sgl_fy, right_sgl_mz;
-         GetConcDeflectionSglDf(df, NULL,
+         GetConcDeflectionSglDf(df, nullptr,
                            &left_sgl_fx,  &left_sgl_fy,  &left_sgl_mz,
                            &right_sgl_fx, &right_sgl_fy, &right_sgl_mz);
 
          Float64 left_mul_fx, left_mul_fy, left_mul_mz;
          Float64 right_mul_fx, right_mul_fy, right_mul_mz;
-         GetConcDeflectionMulDf(df, NULL,
+         GetConcDeflectionMulDf(df, nullptr,
                            &left_mul_fx,  &left_mul_fy,  &left_mul_mz,
                            &right_mul_fx, &right_mul_fy, &right_mul_mz);
 
@@ -960,15 +960,15 @@ void SupportDeflectionDistributionFactorStrategy::GetConcurrentDfs(SupportIDType
       break;
    case dftFatigue:
       {
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
-         GetDF3(df, NULL, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetMz, leftMzFactor, rightMzFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetFx, leftFxFactor, rightFxFactor);
+         GetDF3(df, nullptr, &IDistributionFactor::GetGFat, fetFy, leftFyFactor, rightFyFactor);
       }
       break;
    case dftPedestrian:
       {
          Float64 left_factor, right_factor;
-         GetDF(df, NULL, &IDistributionFactor::get_GPedestrian, &left_factor, &right_factor);
+         GetDF(df, nullptr, &IDistributionFactor::get_GPedestrian, &left_factor, &right_factor);
          *leftFxFactor  = left_factor;
          *leftFyFactor  = left_factor;
          *leftMzFactor  = left_factor;

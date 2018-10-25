@@ -47,7 +47,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::InterfaceSupportsErrorInfo(REFIID r
 	   &IID_IAnnotatedDisplayUnitFormatter,
 	   &IID_IDisplayUnitFormatter,
    };
-   for (int i=0;i<sizeof(arr)/sizeof(arr[0]);i++)
+   for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
    {
 	   if (::InlineIsEqualGUID(*arr[i],riid))
 		   return S_OK;
@@ -165,7 +165,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
 
    // Parse the annotation string into the seperator and suffix tokens
 
-   TCHAR* next_token = NULL;
+   TCHAR* next_token = nullptr;
    TCHAR* token = _tcstok_s(OLE2T(bstrAnnotation),_T(","),&next_token);
    if ( token )
    {
@@ -182,7 +182,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::put_Annotation(BSTR bstrAnnotation)
          m_bstrSeperator = token;
       }
 
-      token = _tcstok_s(NULL,_T(","),&next_token);
+      token = _tcstok_s(nullptr,_T(","),&next_token);
 
       if ( token )
          m_bstrSuffix = token;
@@ -245,7 +245,7 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
    Uint32 vfloor = (Uint32)v2;
    if (vfloor<seperatorLocation)
    {
-      width += _cpp_max(m_nDigits, 1);
+      width += Max(m_nDigits, (Uint32)1);
    }
    else
    {
@@ -263,18 +263,18 @@ STDMETHODIMP CAnnotatedDisplayUnitFormatter::Format(Float64 cv, BSTR tag,BSTR* f
    nChar += (sign < 0) ? 1 : 0; // for the "-" if the value is negative
 
    // Build the string
-   const int BUFF_SIZE=32;
+   const size_t BUFF_SIZE=32;
    _ASSERT(nChar<BUFF_SIZE);
-   nChar = _cpp_min(nChar,BUFF_SIZE); // assert if we blow out buffer, but do this also so we don't crash
+   nChar = Min(nChar,BUFF_SIZE); // assert if we blow out buffer, but do this also so we don't crash
 
    TCHAR pBuffer[BUFF_SIZE];
-   if ( tag == NULL )
+   if ( tag == nullptr )
       _stprintf_s(pBuffer,nChar,_T("%s%d %0*.*f"),sign < 0 ? _T("-") : _T(""),v1,width,m_Precision,v2);
    else
       _stprintf_s(pBuffer,nChar,_T("%s%d%s%0*.*f%s"),sign < 0 ? _T("-") : _T(""),v1,OLE2T(m_bstrSeperator),width,m_Precision,v2,OLE2T(m_bstrSuffix));
 
    // Write the string into a different buffer so it is the right width and justification
-   size_t sizeBuffer2 = _cpp_max((Uint32)_tcslen(pBuffer),m_Width)+1;
+   size_t sizeBuffer2 = Max((Uint32)_tcslen(pBuffer),m_Width)+1;
    _ASSERT(sizeBuffer2<BUFF_SIZE);
    TCHAR pBuffer2[BUFF_SIZE];
 

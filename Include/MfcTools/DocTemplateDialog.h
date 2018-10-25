@@ -41,7 +41,7 @@ class CDocTemplateDialog : public CDialog
 {
 // Construction
 public:
-	CDocTemplateDialog(CWnd* pParent = NULL);   // standard constructor
+	CDocTemplateDialog(CWnd* pParent = nullptr);   // standard constructor
 	~CDocTemplateDialog();
 
 // Dialog Data
@@ -78,7 +78,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CDocTemplateDialog)
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnSelchangeFileViewTab(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnRadioClicked(UINT i);
 	afx_msg void OnClickFileListctrl(NMHDR* pNMHDR, LRESULT* pResult);

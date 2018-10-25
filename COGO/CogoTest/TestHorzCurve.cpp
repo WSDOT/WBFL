@@ -136,10 +136,10 @@ void CTestHorzCurve::Test()
 
    // PointFactory
    CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(hc->get_PointFactory(NULL),E_POINTER);
+   TRY_TEST(hc->get_PointFactory(nullptr),E_POINTER);
    TRY_TEST(hc->get_PointFactory(&factory),S_OK);
-   TRY_TEST(factory != NULL,true);
-   TRY_TEST(hc->putref_PointFactory(NULL),E_INVALIDARG);
+   TRY_TEST(factory != nullptr,true);
+   TRY_TEST(hc->putref_PointFactory(nullptr),E_INVALIDARG);
    TRY_TEST(hc->putref_PointFactory(factory),S_OK);
 
    // Test IObjectSafety
@@ -168,26 +168,26 @@ void CTestHorzCurve::Test1()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(NULL), E_INVALIDARG );
+   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
 
    TRY_TEST( hc->putref_PBT(pbt), S_OK );
    TRY_TEST( hc->putref_PI(pi), S_OK );
    TRY_TEST( hc->putref_PFT(pft), S_OK );
 
    CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PBT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pbt), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PI(NULL), E_POINTER );
+   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
    TRY_TEST( hc->get_PI(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pi), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PFT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PFT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pft), true );
 
@@ -202,7 +202,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( hc->put_SpiralLength(spExit,200), S_OK);
 
    CurveDirectionType dir;
-   TRY_TEST( hc->get_Direction(NULL), E_POINTER );
+   TRY_TEST( hc->get_Direction(nullptr), E_POINTER );
    TRY_TEST( hc->get_Direction(&dir), S_OK );
    TRY_TEST( dir, cdLeft );
 
@@ -211,38 +211,38 @@ void CTestHorzCurve::Test1()
    TRY_TEST( dir, cdRight );
 
    Float64 radius;
-   TRY_TEST( hc->get_Radius(NULL), E_POINTER );
+   TRY_TEST( hc->get_Radius(nullptr), E_POINTER );
    TRY_TEST( hc->get_Radius(&radius), S_OK );
    TRY_TEST(IsEqual(radius,500.),true);
 
    CComPtr<IAngle> angle;
    Float64 val;
-   TRY_TEST( hc->get_SpiralAngle(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralAngle(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralAngle(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1), true );
 
    angle.Release();
-   TRY_TEST( hc->get_SpiralAngle(spExit,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralAngle(spExit,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralAngle(spExit,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.2), true );
 
    Float64 x,y;
-   TRY_TEST( hc->get_X(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_X(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_X(spEntry,&x), S_OK );
    TRY_TEST( IsEqual(x,99.900046285613), true );
    TRY_TEST( hc->get_X(spExit,&x), S_OK );
    TRY_TEST( IsEqual(x,199.20148011396), true );
 
-   TRY_TEST( hc->get_Y(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_Y(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_Y(spEntry,&y), S_OK );
    TRY_TEST( IsEqual(y,3.3309531383959), true );
    TRY_TEST( hc->get_Y(spExit,&y), S_OK );
    TRY_TEST( IsEqual(y,13.295286546224), true );
 
    Float64 Q;
-   TRY_TEST( hc->get_Q(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_Q(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_Q(spEntry,&Q), S_OK );
    TRY_TEST( IsEqual(Q,0.83303), true );
 
@@ -250,7 +250,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(Q,3.32857), true );
 
    Float64 K;
-   TRY_TEST( hc->get_T(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_T(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_T(spEntry,&K), S_OK );
    TRY_TEST( IsEqual(K,49.98333), true );
 
@@ -259,34 +259,34 @@ void CTestHorzCurve::Test1()
 
    CComPtr<IDirection> brg;
    Float64 brgVal;
-   TRY_TEST( hc->get_BkTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_BkTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_BkTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,0.0), true );
 
    brg.Release();
-   TRY_TEST( hc->get_FwdTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_FwdTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_FwdTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,7*M_PI/4), true );
 
    angle.Release();
-   TRY_TEST( hc->get_CurveAngle(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveAngle(&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,M_PI/4), true);
 
    Float64 tangent;
-   TRY_TEST( hc->get_BkTangentLength(NULL), E_POINTER );
+   TRY_TEST( hc->get_BkTangentLength(nullptr), E_POINTER );
    TRY_TEST( hc->get_BkTangentLength(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,260.96439), true );
 
-   TRY_TEST( hc->get_FwdTangentLength(NULL), E_POINTER );
+   TRY_TEST( hc->get_FwdTangentLength(nullptr), E_POINTER );
    TRY_TEST( hc->get_FwdTangentLength(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,304.82311), true );
 
    CComPtr<IPoint2d> ts;
-   TRY_TEST( hc->get_TS(NULL), E_POINTER );
+   TRY_TEST( hc->get_TS(nullptr), E_POINTER );
    TRY_TEST( hc->get_TS(&ts), S_OK );
    ts->get_X(&x);
    ts->get_Y(&y);
@@ -294,7 +294,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,1000.), true );
 
    CComPtr<IPoint2d> st;
-   TRY_TEST( hc->get_ST(NULL), E_POINTER );
+   TRY_TEST( hc->get_ST(nullptr), E_POINTER );
    TRY_TEST( hc->get_ST(&st), S_OK );
    st->get_X(&x);
    st->get_Y(&y);
@@ -302,7 +302,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,784.45751), true );
 
    CComPtr<IPoint2d> sc;
-   TRY_TEST( hc->get_SC(NULL), E_POINTER );
+   TRY_TEST( hc->get_SC(nullptr), E_POINTER );
    TRY_TEST( hc->get_SC(&sc), S_OK );
    sc->get_X(&x);
    sc->get_Y(&y);
@@ -310,7 +310,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,996.66904), true );
 
    CComPtr<IPoint2d> cs;
-   TRY_TEST( hc->get_CS(NULL), E_POINTER );
+   TRY_TEST( hc->get_CS(nullptr), E_POINTER );
    TRY_TEST( hc->get_CS(&cs), S_OK );
    cs->get_X(&x);
    cs->get_Y(&y);
@@ -318,32 +318,32 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,915.91304), true );
 
    Float64 chord;
-   TRY_TEST( hc->get_Chord(NULL), E_POINTER );
+   TRY_TEST( hc->get_Chord(nullptr), E_POINTER );
    TRY_TEST( hc->get_Chord(&chord), S_OK );
    TRY_TEST( IsEqual(chord,240.32347), true);
 
    angle.Release();
-   TRY_TEST( hc->get_CircularCurveAngle(NULL), E_POINTER );
+   TRY_TEST( hc->get_CircularCurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CircularCurveAngle(&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.4854), true);
 
-   TRY_TEST( hc->get_Tangent(NULL), E_POINTER );
+   TRY_TEST( hc->get_Tangent(nullptr), E_POINTER );
    TRY_TEST( hc->get_Tangent(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,123.78966), true );
 
    Float64 mo;
-   TRY_TEST( hc->get_MidOrdinate(NULL), E_POINTER );
+   TRY_TEST( hc->get_MidOrdinate(nullptr), E_POINTER );
    TRY_TEST( hc->get_MidOrdinate(&mo), S_OK );
    TRY_TEST( IsEqual(mo,14.65357), true );
 
    Float64 external;
-   TRY_TEST( hc->get_External(NULL), E_POINTER);
+   TRY_TEST( hc->get_External(nullptr), E_POINTER);
    TRY_TEST( hc->get_External(&external), S_OK);
    TRY_TEST( IsEqual(external,15.095991), true);
 
    angle.Release();
-   TRY_TEST( hc->get_DE(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DE(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DE(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1), true );
@@ -354,21 +354,21 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(val,0.2), true );
 
    Float64 U;
-   TRY_TEST( hc->get_LongTangent(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_LongTangent(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_LongTangent(spEntry,&U), S_OK );
    TRY_TEST( IsEqual(U,66.701620764682), true );
    TRY_TEST( hc->get_LongTangent(spExit,&U), S_OK );
    TRY_TEST( IsEqual(U,133.61377), true );
 
    Float64 V;
-   TRY_TEST( hc->get_ShortTangent(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_ShortTangent(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_ShortTangent(spEntry,&V), S_OK );
    TRY_TEST( IsEqual(V,33.365112106495), true );
    TRY_TEST( hc->get_ShortTangent(spExit,&V), S_OK );
    TRY_TEST( IsEqual(V,66.92168), true );
 
    CComPtr<IPoint2d> cc;
-   TRY_TEST( hc->get_CC(NULL), E_POINTER );
+   TRY_TEST( hc->get_CC(nullptr), E_POINTER );
    TRY_TEST( hc->get_CC(&cc), S_OK );
    cc->get_X(&x);
    cc->get_Y(&y);
@@ -376,7 +376,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,307.95062), true );
 
    CComPtr<IPoint2d> spi;
-   TRY_TEST( hc->get_SPI(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SPI(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SPI(spEntry,&spi), S_OK );
    spi->get_X(&x);
    spi->get_Y(&y);
@@ -391,19 +391,19 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,878.93671), true );
 
    brg.Release();
-   TRY_TEST( hc->get_CurveBkTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveBkTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveBkTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,6.18318530718), true );
 
    brg.Release();
-   TRY_TEST( hc->get_CurveFwdTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveFwdTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveFwdTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,5.69778), true );
 
    CComPtr<IPoint2d> pci;
-   TRY_TEST( hc->get_PCI(NULL), E_POINTER );
+   TRY_TEST( hc->get_PCI(nullptr), E_POINTER );
    TRY_TEST( hc->get_PCI(&pci), S_OK );
    pci->get_X(&x);
    pci->get_Y(&y);
@@ -411,21 +411,21 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(y,984.31070), true );
 
    CComPtr<IPoint2d> ccc;
-   TRY_TEST( hc->get_CCC(NULL), E_POINTER );
+   TRY_TEST( hc->get_CCC(nullptr), E_POINTER );
    TRY_TEST( hc->get_CCC(&ccc), S_OK );
    ccc->get_X(&x);
    ccc->get_Y(&y);
    TRY_TEST( IsEqual(x,489.01894), true );
    TRY_TEST( IsEqual(y,499.16696), true );
 
-   TRY_TEST( hc->get_SpiralChord(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralChord(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralChord(spEntry,&chord), S_OK );
    TRY_TEST( IsEqual(chord,99.95556), true );
    TRY_TEST( hc->get_SpiralChord(spExit,&chord), S_OK );
    TRY_TEST( IsEqual(chord,199.64467), true );
 
    angle.Release();
-   TRY_TEST( hc->get_DF(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DF(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DF(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0333305,1e-6), true );
@@ -435,7 +435,7 @@ void CTestHorzCurve::Test1()
    TRY_TEST( IsEqual(val,0.0666441,1e-6), true );
 
    angle.Release();
-   TRY_TEST( hc->get_DH(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DH(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DH(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0666695,1e-6), true );
@@ -444,11 +444,11 @@ void CTestHorzCurve::Test1()
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1333559,1e-6), true );
 
-   TRY_TEST(hc->get_CurveLength(NULL),E_POINTER);
+   TRY_TEST(hc->get_CurveLength(nullptr),E_POINTER);
    TRY_TEST(hc->get_CurveLength(&val),S_OK);
    TRY_TEST(IsEqual(val,242.69908),true );
 
-   TRY_TEST(hc->get_TotalLength(NULL),E_POINTER);
+   TRY_TEST(hc->get_TotalLength(nullptr),E_POINTER);
    TRY_TEST(hc->get_TotalLength(&val),S_OK);
    TRY_TEST(IsEqual(val,542.69908),true );
 
@@ -457,12 +457,12 @@ void CTestHorzCurve::Test1()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Bearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Normal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
@@ -516,7 +516,7 @@ void CTestHorzCurve::Test1()
    //
    Float64 px,py;
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,NULL),E_POINTER);
+   TRY_TEST(hc->PointOnCurve(0.0,nullptr),E_POINTER);
    
    pnt.Release();
    TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
@@ -606,8 +606,8 @@ void CTestHorzCurve::Test1()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(NULL,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,NULL),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
@@ -729,7 +729,7 @@ void CTestHorzCurve::Test1()
    ////////////////////////////////////
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(hc);
-   TRY_TEST( eInfo != NULL, true );
+   TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IHorzCurve ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -982,12 +982,12 @@ void CTestHorzCurve::Test2()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Bearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Normal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
@@ -1110,8 +1110,8 @@ void CTestHorzCurve::Test2()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(NULL,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,NULL),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
@@ -1433,12 +1433,12 @@ void CTestHorzCurve::Test3()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Bearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Normal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
@@ -1552,8 +1552,8 @@ void CTestHorzCurve::Test3()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(NULL,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,NULL),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
@@ -1874,12 +1874,12 @@ void CTestHorzCurve::Test4()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Bearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Normal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
@@ -1983,8 +1983,8 @@ void CTestHorzCurve::Test4()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(300,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(NULL,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,NULL),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);
@@ -2086,26 +2086,26 @@ void CTestHorzCurve::Test5()
    pi->Move(700,1000);
    pft->Move(1000,1300);
 
-   TRY_TEST( hc->putref_PBT(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PI(NULL), E_INVALIDARG );
-   TRY_TEST( hc->putref_PFT(NULL), E_INVALIDARG );
+   TRY_TEST( hc->putref_PBT(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PI(nullptr), E_INVALIDARG );
+   TRY_TEST( hc->putref_PFT(nullptr), E_INVALIDARG );
 
    TRY_TEST( hc->putref_PBT(pbt), S_OK );
    TRY_TEST( hc->putref_PI(pi), S_OK );
    TRY_TEST( hc->putref_PFT(pft), S_OK );
 
    CComPtr<IPoint2d> pnt;
-   TRY_TEST( hc->get_PBT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PBT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PBT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pbt), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PI(NULL), E_POINTER );
+   TRY_TEST( hc->get_PI(nullptr), E_POINTER );
    TRY_TEST( hc->get_PI(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pi), true );
 
    pnt.Release();
-   TRY_TEST( hc->get_PFT(NULL), E_POINTER );
+   TRY_TEST( hc->get_PFT(nullptr), E_POINTER );
    TRY_TEST( hc->get_PFT(&pnt), S_OK );
    TRY_TEST( pnt.IsEqualObject(pft), true );
 
@@ -2120,43 +2120,43 @@ void CTestHorzCurve::Test5()
    TRY_TEST( hc->put_SpiralLength(spExit,200), S_OK);
 
    CurveDirectionType dir;
-   TRY_TEST( hc->get_Direction(NULL), E_POINTER );
+   TRY_TEST( hc->get_Direction(nullptr), E_POINTER );
    TRY_TEST( hc->get_Direction(&dir), S_OK );
    TRY_TEST( dir, cdLeft );
 
    Float64 radius;
-   TRY_TEST( hc->get_Radius(NULL), E_POINTER );
+   TRY_TEST( hc->get_Radius(nullptr), E_POINTER );
    TRY_TEST( hc->get_Radius(&radius), S_OK );
    TRY_TEST(IsEqual(radius,500.),true);
 
    CComPtr<IAngle> angle;
    Float64 val;
-   TRY_TEST( hc->get_SpiralAngle(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralAngle(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralAngle(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1), true );
 
    angle.Release();
-   TRY_TEST( hc->get_SpiralAngle(spExit,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralAngle(spExit,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralAngle(spExit,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.2), true );
 
    Float64 x,y;
-   TRY_TEST( hc->get_X(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_X(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_X(spEntry,&x), S_OK );
    TRY_TEST( IsEqual(x,99.900046285613), true );
    TRY_TEST( hc->get_X(spExit,&x), S_OK );
    TRY_TEST( IsEqual(x,199.20148011396), true );
 
-   TRY_TEST( hc->get_Y(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_Y(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_Y(spEntry,&y), S_OK );
    TRY_TEST( IsEqual(y,3.3309531383959), true );
    TRY_TEST( hc->get_Y(spExit,&y), S_OK );
    TRY_TEST( IsEqual(y,13.295286546224), true );
 
    Float64 Q;
-   TRY_TEST( hc->get_Q(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_Q(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_Q(spEntry,&Q), S_OK );
    TRY_TEST( IsEqual(Q,0.83303,0.001), true );
 
@@ -2164,7 +2164,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(Q,3.3286,0.001), true );
 
    Float64 K;
-   TRY_TEST( hc->get_T(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_T(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_T(spEntry,&K), S_OK );
    TRY_TEST( IsEqual(K,49.98329,0.001), true );
 
@@ -2173,34 +2173,34 @@ void CTestHorzCurve::Test5()
 
    CComPtr<IDirection> brg;
    Float64 brgVal;
-   TRY_TEST( hc->get_BkTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_BkTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_BkTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,0.0), true );
 
    brg.Release();
-   TRY_TEST( hc->get_FwdTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_FwdTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_FwdTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,M_PI/4), true );
 
    angle.Release();
-   TRY_TEST( hc->get_CurveAngle(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveAngle(&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,M_PI/4), true);
 
    Float64 tangent;
-   TRY_TEST( hc->get_BkTangentLength(NULL), E_POINTER );
+   TRY_TEST( hc->get_BkTangentLength(nullptr), E_POINTER );
    TRY_TEST( hc->get_BkTangentLength(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,260.96439), true );
 
-   TRY_TEST( hc->get_FwdTangentLength(NULL), E_POINTER );
+   TRY_TEST( hc->get_FwdTangentLength(nullptr), E_POINTER );
    TRY_TEST( hc->get_FwdTangentLength(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,304.82311), true );
 
    CComPtr<IPoint2d> ts;
-   TRY_TEST( hc->get_TS(NULL), E_POINTER );
+   TRY_TEST( hc->get_TS(nullptr), E_POINTER );
    TRY_TEST( hc->get_TS(&ts), S_OK );
    ts->get_X(&x);
    ts->get_Y(&y);
@@ -2208,7 +2208,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1000.), true );
 
    CComPtr<IPoint2d> st;
-   TRY_TEST( hc->get_ST(NULL), E_POINTER );
+   TRY_TEST( hc->get_ST(nullptr), E_POINTER );
    TRY_TEST( hc->get_ST(&st), S_OK );
    st->get_X(&x);
    st->get_Y(&y);
@@ -2216,7 +2216,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1215.5425,0.001), true );
 
    CComPtr<IPoint2d> sc;
-   TRY_TEST( hc->get_SC(NULL), E_POINTER );
+   TRY_TEST( hc->get_SC(nullptr), E_POINTER );
    TRY_TEST( hc->get_SC(&sc), S_OK );
    sc->get_X(&x);
    sc->get_Y(&y);
@@ -2224,7 +2224,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1003.3310,0.001), true );
 
    CComPtr<IPoint2d> cs;
-   TRY_TEST( hc->get_CS(NULL), E_POINTER );
+   TRY_TEST( hc->get_CS(nullptr), E_POINTER );
    TRY_TEST( hc->get_CS(&cs), S_OK );
    cs->get_X(&x);
    cs->get_Y(&y);
@@ -2232,27 +2232,27 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1084.0870,0.001), true );
 
    Float64 chord;
-   TRY_TEST( hc->get_Chord(NULL), E_POINTER );
+   TRY_TEST( hc->get_Chord(nullptr), E_POINTER );
    TRY_TEST( hc->get_Chord(&chord), S_OK );
    TRY_TEST( IsEqual(chord,240.323,0.001), true);
 
    angle.Release();
-   TRY_TEST( hc->get_CircularCurveAngle(NULL), E_POINTER );
+   TRY_TEST( hc->get_CircularCurveAngle(nullptr), E_POINTER );
    TRY_TEST( hc->get_CircularCurveAngle(&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.4854,0.001), true);
 
-   TRY_TEST( hc->get_Tangent(NULL), E_POINTER );
+   TRY_TEST( hc->get_Tangent(nullptr), E_POINTER );
    TRY_TEST( hc->get_Tangent(&tangent), S_OK );
    TRY_TEST( IsEqual(tangent,123.78966), true );
 
    Float64 mo;
-   TRY_TEST( hc->get_MidOrdinate(NULL), E_POINTER );
+   TRY_TEST( hc->get_MidOrdinate(nullptr), E_POINTER );
    TRY_TEST( hc->get_MidOrdinate(&mo), S_OK );
    TRY_TEST( IsEqual(mo,14.6537,0.001), true );
 
    angle.Release();
-   TRY_TEST( hc->get_DE(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DE(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DE(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1), true );
@@ -2263,21 +2263,21 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(val,0.2), true );
 
    Float64 U;
-   TRY_TEST( hc->get_LongTangent(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_LongTangent(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_LongTangent(spEntry,&U), S_OK );
    TRY_TEST( IsEqual(U,66.701620764682), true );
    TRY_TEST( hc->get_LongTangent(spExit,&U), S_OK );
    TRY_TEST( IsEqual(U,133.6138,0.001), true );
 
    Float64 V;
-   TRY_TEST( hc->get_ShortTangent(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_ShortTangent(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_ShortTangent(spEntry,&V), S_OK );
    TRY_TEST( IsEqual(V,33.365112106495), true );
    TRY_TEST( hc->get_ShortTangent(spExit,&V), S_OK );
    TRY_TEST( IsEqual(V,66.92168), true );
 
    CComPtr<IPoint2d> cc;
-   TRY_TEST( hc->get_CC(NULL), E_POINTER );
+   TRY_TEST( hc->get_CC(nullptr), E_POINTER );
    TRY_TEST( hc->get_CC(&cc), S_OK );
    cc->get_X(&x);
    cc->get_Y(&y);
@@ -2285,7 +2285,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1692.04939,0.001), true );
 
    CComPtr<IPoint2d> spi;
-   TRY_TEST( hc->get_SPI(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SPI(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SPI(spEntry,&spi), S_OK );
    spi->get_X(&x);
    spi->get_Y(&y);
@@ -2300,19 +2300,19 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1121.06328,0.001), true );
 
    brg.Release();
-   TRY_TEST( hc->get_CurveBkTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveBkTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveBkTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,0.1), true );
 
    brg.Release();
-   TRY_TEST( hc->get_CurveFwdTangentBrg(NULL), E_POINTER );
+   TRY_TEST( hc->get_CurveFwdTangentBrg(nullptr), E_POINTER );
    TRY_TEST( hc->get_CurveFwdTangentBrg(&brg), S_OK );
    brg->get_Value(&brgVal);
    TRY_TEST( IsEqual(brgVal,M_PI/4 - 0.2), true );
 
    CComPtr<IPoint2d> pci;
-   TRY_TEST( hc->get_PCI(NULL), E_POINTER );
+   TRY_TEST( hc->get_PCI(nullptr), E_POINTER );
    TRY_TEST( hc->get_PCI(&pci), S_OK );
    pci->get_X(&x);
    pci->get_Y(&y);
@@ -2320,21 +2320,21 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(y,1015.6893,0.001), true );
 
    CComPtr<IPoint2d> ccc;
-   TRY_TEST( hc->get_CCC(NULL), E_POINTER );
+   TRY_TEST( hc->get_CCC(nullptr), E_POINTER );
    TRY_TEST( hc->get_CCC(&ccc), S_OK );
    ccc->get_X(&x);
    ccc->get_Y(&y);
    TRY_TEST( IsEqual(x, 489.0189,0.001), true );
    TRY_TEST( IsEqual(y,1500.8330,0.001), true );
 
-   TRY_TEST( hc->get_SpiralChord(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_SpiralChord(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_SpiralChord(spEntry,&chord), S_OK );
    TRY_TEST( IsEqual(chord,99.955,0.001), true );
    TRY_TEST( hc->get_SpiralChord(spExit,&chord), S_OK );
    TRY_TEST( IsEqual(chord,199.6446,0.001), true );
 
    angle.Release();
-   TRY_TEST( hc->get_DF(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DF(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DF(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0333305,1e-6), true );
@@ -2344,7 +2344,7 @@ void CTestHorzCurve::Test5()
    TRY_TEST( IsEqual(val,0.0666441,1e-6), true );
 
    angle.Release();
-   TRY_TEST( hc->get_DH(spEntry,NULL), E_POINTER );
+   TRY_TEST( hc->get_DH(spEntry,nullptr), E_POINTER );
    TRY_TEST( hc->get_DH(spEntry,&angle), S_OK );
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0666695,1e-6), true );
@@ -2353,11 +2353,11 @@ void CTestHorzCurve::Test5()
    angle->get_Value(&val);
    TRY_TEST( IsEqual(val,0.1333559,1e-6), true );
 
-   TRY_TEST(hc->get_CurveLength(NULL),E_POINTER);
+   TRY_TEST(hc->get_CurveLength(nullptr),E_POINTER);
    TRY_TEST(hc->get_CurveLength(&val),S_OK);
    TRY_TEST(IsEqual(val,242.6991,0.001),true );
 
-   TRY_TEST(hc->get_TotalLength(NULL),E_POINTER);
+   TRY_TEST(hc->get_TotalLength(nullptr),E_POINTER);
    TRY_TEST(hc->get_TotalLength(&val),S_OK);
    TRY_TEST(IsEqual(val,542.6991,0.001),true );
 
@@ -2366,12 +2366,12 @@ void CTestHorzCurve::Test5()
    //
    // Point before curve
    brg.Release();
-   TRY_TEST(hc->Bearing(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Bearing(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Bearing(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,0.0),true);
    brg.Release();
-   TRY_TEST(hc->Normal(-1,NULL),E_POINTER);
+   TRY_TEST(hc->Normal(-1,nullptr),E_POINTER);
    TRY_TEST(hc->Normal(-1,&brg),S_OK);
    brg->get_Value(&val);
    TRY_TEST( IsEqual(val,3*PI_OVER_2),true);
@@ -2425,7 +2425,7 @@ void CTestHorzCurve::Test5()
    //
    Float64 px,py;
    pnt.Release();
-   TRY_TEST(hc->PointOnCurve(0.0,NULL),E_POINTER);
+   TRY_TEST(hc->PointOnCurve(0.0,nullptr),E_POINTER);
    
    pnt.Release();
    TRY_TEST(hc->PointOnCurve(-100.0,&pnt),S_OK); // Before TS
@@ -2514,8 +2514,8 @@ void CTestHorzCurve::Test5()
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(400,1100);
    CComPtr<IPoint2d> prjPoint;
-   TRY_TEST(hc->ProjectPoint(NULL,&prjPoint),E_INVALIDARG);
-   TRY_TEST(hc->ProjectPoint(pnt,NULL),E_POINTER);
+   TRY_TEST(hc->ProjectPoint(nullptr,&prjPoint),E_INVALIDARG);
+   TRY_TEST(hc->ProjectPoint(pnt,nullptr),E_POINTER);
    TRY_TEST(hc->ProjectPoint(pnt,&prjPoint),S_OK);
    prjPoint->get_X(&px);
    prjPoint->get_Y(&py);

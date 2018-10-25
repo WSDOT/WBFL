@@ -35,13 +35,13 @@ class CConfigureReportsDlg : public CPropertySheet
    friend CCustomReportsPage;
 
 public:
-	CConfigureReportsDlg(BOOL bFavoriteReports, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	CConfigureReportsDlg(BOOL bFavoriteReports, CWnd* pParentWnd = nullptr, UINT iSelectPage = 0);
 	virtual ~CConfigureReportsDlg();
 
 protected:
 	DECLARE_MESSAGE_MAP()
 
-   virtual BOOL OnInitDialog();
+   virtual BOOL OnInitDialog() override;
 
    void Init(BOOL bFavoriteReports);
 

@@ -115,7 +115,7 @@ public:
    //------------------------------------------------------------------------
    // CreateClone
    // Creates a polymorphic type-safe clone of this curve.
-   virtual matStressStrainCurve * CreateClone() const;
+   virtual matStressStrainCurve * CreateClone() const override;
 
    //------------------------------------------------------------------------
    // Computes the stress for the given strain.  Returns the strain state
@@ -123,7 +123,7 @@ public:
    // is Fractured or Crushed, the value pointed to
    // by pStress is undefined.  Throws a matXStressStrainEvalError
    // exception if an error occurs when evaluating the stress strain curve.
-   virtual StrainState GetStress(Float64 strain,Float64* pStress) const;
+   virtual StrainState GetStress(Float64 strain,Float64* pStress) const override;
 
    // GROUP: ACCESS
   
@@ -146,11 +146,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const;
+   virtual bool AssertValid() const override;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(dbgDumpContext& os) const override;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -166,7 +166,7 @@ protected:
    void MakeCopy(const matLinearStressStrainCurve& rOther);
 
    //------------------------------------------------------------------------
-   virtual void MakeAssignment(const matLinearStressStrainCurve& rOther);
+   void MakeAssignment(const matLinearStressStrainCurve& rOther);
 
    // GROUP: ACCESS
    // GROUP: INQUIRY

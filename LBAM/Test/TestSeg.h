@@ -226,8 +226,8 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( pSegs->GetSegmentsForStage(CComBSTR("Too Long"), &pfs2), S_OK);
    TRY_TEST( pfs2->get_Count(&cnt), S_OK);
    TRY_TEST( cnt, 4);
-   Float64 l=0;
-   for (SegmentIndexType i=0; i<cnt; i++)
+   Float64 l = 0;
+   for (SegmentIndexType i = 0; i<cnt; i++)
    {
       CComPtr<ISegment> ptseg;
       TRY_TEST( pfs2->get_Item(i, &ptseg), S_OK);
@@ -381,7 +381,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -392,7 +392,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -403,7 +403,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -414,7 +414,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
 
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_TRUE), S_OK);
@@ -427,7 +427,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -438,7 +438,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -449,7 +449,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
    spsiL1.Release();spsiR1.Release();
    sps1.Release();
@@ -460,7 +460,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL1->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Only One"));
-   TRY_TEST(spsiR1, NULL);
+   TRY_TEST(spsiR1, nullptr);
    bstr.Empty();
 
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_FALSE), S_OK);
@@ -472,7 +472,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -502,7 +502,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -514,7 +514,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -526,7 +526,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -537,7 +537,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_TRUE), S_OK);
    spsiL2.Release();spsiR2.Release();
@@ -550,7 +550,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -613,7 +613,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -624,7 +624,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -635,7 +635,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
    spsiL2.Release();spsiR2.Release();
    sps2.Release();
@@ -646,7 +646,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL2->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Short"));
-   TRY_TEST(spsiR2, NULL);
+   TRY_TEST(spsiR2, nullptr);
    bstr.Empty();
 
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_FALSE), S_OK);
@@ -658,7 +658,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -669,7 +669,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -698,7 +698,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 1);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
 
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_TRUE), S_OK);
@@ -712,7 +712,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -723,7 +723,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -734,7 +734,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -745,7 +745,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -756,7 +756,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -767,7 +767,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Too Long"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -781,7 +781,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -810,7 +810,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -831,7 +831,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 2);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -842,7 +842,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 2);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
 
    TRY_TEST( pSegs->put_IsSymmetrical(VARIANT_TRUE), S_OK);
@@ -856,7 +856,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -867,7 +867,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -878,7 +878,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -889,7 +889,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
    spsiL3.Release();spsiR3.Release();
    sps3.Release();
@@ -900,7 +900,7 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
    TRY_TEST( cnt, 0);
    TRY_TEST(spsiL3->get_Stage(&bstr), S_OK);
    TRY_TEST( bstr, CComBSTR("Fractional"));
-   TRY_TEST(spsiR3, NULL);
+   TRY_TEST(spsiR3, nullptr);
    bstr.Empty();
 
    // see if events bubble all the way from stress points

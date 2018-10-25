@@ -68,38 +68,38 @@ void CTestUnit::Test()
    CComPtr<IUnit> unit;
    units->Add(CComBSTR("MyUnit"),1.0,2.0,3.0,unitsSI,&unit);
 
-   TRY_TEST( unit != NULL, true );
+   TRY_TEST( unit != nullptr, true );
    
    Float64 val;
-   TRY_TEST( unit->get_PreTerm(NULL), E_POINTER );
+   TRY_TEST( unit->get_PreTerm(nullptr), E_POINTER );
    TRY_TEST( unit->get_PreTerm(&val), S_OK );
    TRY_TEST( IsEqual(val,1.0), true );
 
-   TRY_TEST( unit->get_ConvFactor(NULL), E_POINTER );
+   TRY_TEST( unit->get_ConvFactor(nullptr), E_POINTER );
    TRY_TEST( unit->get_ConvFactor(&val), S_OK );
    TRY_TEST( IsEqual(val,2.0), true );
 
-   TRY_TEST( unit->get_PostTerm(NULL), E_POINTER );
+   TRY_TEST( unit->get_PostTerm(nullptr), E_POINTER );
    TRY_TEST( unit->get_PostTerm(&val), S_OK );
    TRY_TEST( IsEqual(val,3.0), true );
 
    CComBSTR bstrTag;
-   TRY_TEST( unit->get_Tag(NULL), E_POINTER );
+   TRY_TEST( unit->get_Tag(nullptr), E_POINTER );
    TRY_TEST( unit->get_Tag(&bstrTag), S_OK );
    TRY_TEST( wcscmp(bstrTag,CComBSTR("MyUnit")), 0 );
 
    UnitSystemType ust;
-   TRY_TEST( unit->get_UnitSystem(NULL), E_POINTER );
+   TRY_TEST( unit->get_UnitSystem(nullptr), E_POINTER );
    TRY_TEST( unit->get_UnitSystem(&ust), S_OK );
    TRY_TEST( ust, unitsSI );
 
    CComPtr<IUnitType> pParent;
-   TRY_TEST( unit->get_UnitType(NULL), E_POINTER );
+   TRY_TEST( unit->get_UnitType(nullptr), E_POINTER );
    TRY_TEST( unit->get_UnitType(&pParent), S_OK );
    TRY_TEST( pParent.IsEqualObject( unitType ), true );
 
    CComPtr<IUnitServer> pParentSvr;
-   TRY_TEST( unit->get_UnitServer(NULL), E_POINTER );
+   TRY_TEST( unit->get_UnitServer(nullptr), E_POINTER );
    TRY_TEST( unit->get_UnitServer(&pParentSvr), S_OK );
    TRY_TEST( pParentSvr.IsEqualObject( unitServer ), true );
 
