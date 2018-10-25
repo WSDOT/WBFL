@@ -1,5 +1,5 @@
-Build started at  May 01, 2012  10:21:24
-Output Package: F:\ARP_INSTALLER\Install_WBFL_Source_3.5.0.3.exe
+Build started at  June 04, 2012  08:43:06
+Output Package: F:\ARP_INSTALLER\Install_WBFL_Source_3.5.1.0.exe
 Creating Package
      File 'ArpMacros.vsmacros' in package.
      File 'AnalysisResultsManager.cpp' in package.
@@ -9572,4 +9572,4 @@ Creating EXE
      Creating data section...
      Appending Data Section
      Appending File Groups
-Build completed at  May 01, 2012  10:34:57
+Build completed at  June 04, 2012  08:47:42
