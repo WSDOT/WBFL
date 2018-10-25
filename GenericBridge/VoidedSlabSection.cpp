@@ -422,22 +422,28 @@ STDMETHODIMP CVoidedSlabSection::get_ShearWidth(Float64* shearwidth)
 
 STDMETHODIMP CVoidedSlabSection::get_MinTopFlangeThickness(Float64* tf)
 {
-   return get_TopFlangeThickness(0,tf);
+   CHECK_RETVAL(tf);
+   // There aren't any top flanges for a voided slab. However this parameter
+   // is used to determine the deck overhang dimensions when the overhang
+   // "tapers to the bottom of the top flange".... Just use the clear distance
+   // from the top of the slab to the voids
+   Float64 H, D;
+   m_Beam->get_Height(&H);
+   m_Beam->get_VoidDiameter(&D);
+   *tf = (H-D)/2;
+   return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection::get_MinBottomFlangeThickness(Float64* tf)
 {
-   CHECK_RETVAL(*tf);
-   *tf = 0;
+   CHECK_RETVAL(tf);
+   // There aren't any bottom flanges for a voided slab. 
+   // Just use the clear distance from the bottom of the slab to the voids
+   Float64 H, D;
+   m_Beam->get_Height(&H);
+   m_Beam->get_VoidDiameter(&D);
+   *tf = (H-D)/2;
    return S_OK;
-
-   //Float64 H,D;
-   //m_Beam->get_Height(&H);
-   //m_Beam->get_VoidDiameter(&D);
-
-   //*tf = (H-D)/2;
-
-   //return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection::get_CL2ExteriorWebDistance( DirectionType side, Float64* wd)

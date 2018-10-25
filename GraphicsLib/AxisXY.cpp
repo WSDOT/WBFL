@@ -428,7 +428,7 @@ Int32 grAxisXY::GetThickness(HDC hDC)
 }
 
 
-void grAxisXY::GetAxisRange(Float64& leftVal, Float64& rightVal, Float64& increment)
+void grAxisXY::GetAxisRange(Float64& leftVal, Float64& rightVal, Float64& increment) const
 {
    leftVal   = m_LeftAxisValue;
    rightVal  = m_RightAxisValue;
@@ -447,7 +447,7 @@ void grAxisXY::SetTitleFontSize(Int32 fontSize)
    m_AxisTitleSize = fontSize;
 }
 
-Int32 grAxisXY::GetTitleFontSize()
+Int32 grAxisXY::GetTitleFontSize() const
 {
    return m_AxisTitleSize;
 }
@@ -462,7 +462,7 @@ void grAxisXY::SetSubtitleFontSize(Int32 fontSize)
    m_AxisSubtitleSize = fontSize;
 }
 
-Int32 grAxisXY::GetSubtitleFontSize()
+Int32 grAxisXY::GetSubtitleFontSize() const
 {
    return m_AxisSubtitleSize;
 }
@@ -477,11 +477,8 @@ void grAxisXY::SetValueFontSize(Int32 fontSize)
    m_AxisValueSize = fontSize;
 }
 
-Int32 grAxisXY::GetValueFontSize()
+Int32 grAxisXY::GetValueFontSize() const
 {
-   // set metrics dirty
-   m_MetricsDirtyFlag = true;
-
    return m_AxisValueSize;
 }
 
@@ -511,7 +508,7 @@ void grAxisXY::SetTicLocation(grAxisXY::TicLocation location)
    m_TicLocation = location;
 }
 
-grAxisXY::TicLocation grAxisXY::GetTicLocation()
+grAxisXY::TicLocation grAxisXY::GetTicLocation() const
 {
    return m_TicLocation;
 }
@@ -524,7 +521,7 @@ void grAxisXY::SetTextLocation(grAxisXY::TextLocation location)
    m_TextLocation = location;
 }
 
-grAxisXY::TextLocation grAxisXY::GetTextLocation()
+grAxisXY::TextLocation grAxisXY::GetTextLocation() const
 {
    return m_TextLocation;
 }
@@ -545,7 +542,7 @@ void grAxisXY::SetNumberOfMajorTics(Int32 numTics)
 }
 
 
-Int32 grAxisXY::GetNumberOfMajorTics()
+Int32 grAxisXY::GetNumberOfMajorTics() const
 {
    return m_NumberOfMajorTics;
 }
@@ -565,7 +562,7 @@ void grAxisXY::SetNumberOfMinorTics(Int32 numTics)
    }
 }
 
-Int32 grAxisXY::GetNumberOfMinorTics()
+Int32 grAxisXY::GetNumberOfMinorTics() const
 {
    return m_NumberOfMinorTics;
 }
@@ -578,38 +575,35 @@ void grAxisXY::SetShowTics(bool doShow)
    m_DoShowTics = doShow;
 }
 
-bool grAxisXY::GetShowTics()
+bool grAxisXY::GetShowTics() const
 {
    return m_DoShowTics;
 }
 
-void grAxisXY::SetTitleText(const std::_tstring& text)
+void grAxisXY::SetTitleText(LPCTSTR text)
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
 
-   m_AxisTitle = text.c_str();
+   m_AxisTitle = text;
 }
 
-std::_tstring grAxisXY::GetTitleText()
+LPCTSTR grAxisXY::GetTitleText() const
+{
+   return m_AxisTitle.c_str();
+}
+
+void grAxisXY::SetSubtitleText(LPCTSTR text)
 {
    // set metrics dirty
    m_MetricsDirtyFlag = true;
 
-   return m_AxisTitle;
+   m_AxisSubtitle = text;
 }
 
-void grAxisXY::SetSubtitleText(const std::_tstring& text)
+LPCTSTR grAxisXY::GetSubtitleText() const
 {
-   // set metrics dirty
-   m_MetricsDirtyFlag = true;
-
-   m_AxisSubtitle = text.c_str();
-}
-
-std::_tstring grAxisXY::GetSubtitleText()
-{
-   return m_AxisSubtitle;
+   return m_AxisSubtitle.c_str();
 }
 
 void grAxisXY::SetShowText(bool doShow)
@@ -620,7 +614,7 @@ void grAxisXY::SetShowText(bool doShow)
    m_DoShowText = doShow;
 }
 
-bool grAxisXY::GetShowText()
+bool grAxisXY::GetShowText() const
 {
    return m_DoShowText;
 }

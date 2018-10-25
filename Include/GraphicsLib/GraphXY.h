@@ -146,15 +146,15 @@ public:
 
    //------------------------------------------------------------------------
    // Return the graph title
-   std::_tstring GetTitle();
+   LPCTSTR GetTitle() const;
 
    //------------------------------------------------------------------------
    // Set the graph title
-   void SetTitle(const std::_tstring& title);
+   void SetTitle(LPCTSTR strTitle);
 
    //------------------------------------------------------------------------
    // Return the title size in points
-   LONG GetTitleSize();
+   LONG GetTitleSize() const;
 
    //------------------------------------------------------------------------
    // Set the title size in points
@@ -162,15 +162,15 @@ public:
 
    //------------------------------------------------------------------------
    // Return the graph subtitle
-   std::_tstring GetSubtitle();
+   LPCTSTR GetSubtitle() const;
 
    //------------------------------------------------------------------------
    // Set the graph subtitle
-   void SetSubtitle(const std::_tstring& subtitle);
+   void SetSubtitle(LPCTSTR strSubtitle);
 
    //------------------------------------------------------------------------
    // Return the Subtitle size in points
-   LONG GetSubtitleSize();
+   LONG GetSubtitleSize() const;
 
    //------------------------------------------------------------------------
    // Set the Subtitle size in points
@@ -182,7 +182,7 @@ public:
 
    //------------------------------------------------------------------------
    // set size in points of titles for x and y axis'
-   LONG GetAxisTitleSize();
+   LONG GetAxisTitleSize() const;
 
    //------------------------------------------------------------------------
    // set size in points of subtitles for x and y axis'
@@ -190,23 +190,23 @@ public:
 
    //------------------------------------------------------------------------
    // set size in points of subtitles for x and y axis'
-   LONG GetAxisSubtitleSize();
+   LONG GetAxisSubtitleSize() const;
 
    //------------------------------------------------------------------------
    // Set the title for the X axis
-   void SetXAxisTitle(const std::_tstring& title);
+   void SetXAxisTitle(LPCTSTR strTitle);
 
    //------------------------------------------------------------------------
    // Return the title for the X axis
-   std::_tstring GetXAxisTitle();
+   LPCTSTR GetXAxisTitle() const;
 
    //------------------------------------------------------------------------
    // Set the subtitle for the X axis
-   void SetXAxisSubtitle(const std::_tstring& subtitle);
+   void SetXAxisSubtitle(LPCTSTR strSubtitle);
 
    //------------------------------------------------------------------------
    // Return the subtitle for the x axis
-   std::_tstring GetXAxisSubtitle();
+   LPCTSTR GetXAxisSubtitle() const;
 
    //------------------------------------------------------------------------
    // Set numeric formatting for x axis
@@ -231,23 +231,23 @@ public:
 
    //------------------------------------------------------------------------
    // set the title for the Y axis
-   void SetYAxisTitle(const std::_tstring& title);
+   void SetYAxisTitle(LPCTSTR strTitle);
 
    //------------------------------------------------------------------------
    // Get the title for the Y axis
-   std::_tstring GetYAxisTitle();
+   LPCTSTR GetYAxisTitle() const;
 
    //------------------------------------------------------------------------
    // Set the subtitle for the Y axis
-   void SetYAxisSubtitle(const std::_tstring& subtitle);
+   void SetYAxisSubtitle(LPCTSTR strSubtitle);
 
    //------------------------------------------------------------------------
    // Get the title for the Y axis
-   std::_tstring GetYAxisSubtitle();
+   LPCTSTR GetYAxisSubtitle() const;
 
    //------------------------------------------------------------------------
    // Get the number of minor tics on the x axis
-   LONG GetXAxisNumberOfMinorTics();
+   LONG GetXAxisNumberOfMinorTics() const;
 
    //------------------------------------------------------------------------
    // Set the number of minor tics on the x axis
@@ -255,7 +255,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the number of minor tics on the y axis
-   LONG GetYAxisNumberOfMinorTics();
+   LONG GetYAxisNumberOfMinorTics() const;
 
    //------------------------------------------------------------------------
    // Set the number of minor tics on the y axis.
@@ -263,7 +263,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the number of Major tics on the x axis
-   LONG GetXAxisNumberOfMajorTics();
+   LONG GetXAxisNumberOfMajorTics() const;
 
    //------------------------------------------------------------------------
    // Set the number of Major tics on the x axis
@@ -271,7 +271,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the number of Major tics on the y axis
-   LONG GetYAxisNumberOfMajorTics();
+   LONG GetYAxisNumberOfMajorTics() const;
 
    //------------------------------------------------------------------------
    // Set the number of Major tics on the y axis.
@@ -291,7 +291,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get if nice numbers are to be used for X axis
-   bool GetXAxisNiceRange();
+   bool GetXAxisNiceRange() const;
 
    //------------------------------------------------------------------------
    // Set if nice numbers are to be used for X axis
@@ -299,7 +299,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get if nice numbers are to be used for Y axis
-   bool GetYAxisNiceRange();
+   bool GetYAxisNiceRange() const;
 
    //------------------------------------------------------------------------
    // Set if nice numbers are to be used for Y axis
@@ -308,7 +308,7 @@ public:
    //------------------------------------------------------------------------
    // Get insurance that zero is contained along Y axis no matter what the min/max
    // Y values are. This is true, by default.
-   bool GetPinYAxisAtZero();
+   bool GetPinYAxisAtZero() const;
 
    //------------------------------------------------------------------------
    // Set insurance that zero is contained along Y axis no matter what the min/max
@@ -365,7 +365,7 @@ public:
 
    //------------------------------------------------------------------------
    // Get the background color of the client area
-   COLORREF GetClientAreaColor() {return m_ClientAreaColor;}
+   COLORREF GetClientAreaColor() const {return m_ClientAreaColor;}
 
    //------------------------------------------------------------------------
    // Get/Set the minimum zoom bounds for the graph in world coordinates. This is
@@ -373,13 +373,13 @@ public:
    // will allow you to display data from very small domains, but will also cause
    // numerical problems if the actual width or height of the data set is zero.
    // The default values for height and width are 1.0e-6.
-   void GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth);
+   void GetMinimumZoomBounds(Float64* pHeight, Float64* pWidth) const;
    void SetMinimumZoomBounds(Float64 Height, Float64 Width);
 
    // Set/Get the minimum size of the graph. The graph plotting space will be no smaller
    // than these values regardless of the size of the data sets
    void SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ymax);
-   void GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax);
+   void GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax) const;
 
 protected:
    // GROUP: DATA MEMBERS

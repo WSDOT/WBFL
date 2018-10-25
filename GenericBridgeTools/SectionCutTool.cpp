@@ -507,16 +507,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
          objGirderLineDirection->get_Value(&dirGirderLine);
          Float64 skew = fabs(dirCutLineValue - (dirGirderLine + PI_OVER_2));
 
-         Float64 min_top_flange_thickness = 0;
-         FlangeIndexType nTopFlanges;
-         girder_section->get_TopFlangeCount(&nTopFlanges);
-         if ( nTopFlanges != 0 )
-         {
-            girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
-         }
-
-         // adjust for skew
-         min_top_flange_thickness /= cos(skew);
+         Float64 min_top_flange_thickness;
+         girder_section->get_MinTopFlangeThickness(&min_top_flange_thickness);
 
          Float64 haunch = 0;
          segment->GetHaunchDepth(girderPoint.Xs,&haunch);
@@ -587,7 +579,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
                         Float64 slope;
                         profile->Slope(CComVariant(girderPoint.objGirderStation),x23,&slope);
-                        dx = slope*min_top_flange_thickness;
+                        dx = slope*min_top_flange_thickness/cos(skew);
                      }
                   }
 
@@ -630,7 +622,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
                         Float64 slope;
                         profile->Slope(CComVariant(girderPoint.objGirderStation),x45,&slope);
-                        dx = slope*min_top_flange_thickness;
+                        dx = slope*min_top_flange_thickness/cos(skew);
                      }
                   }
 
