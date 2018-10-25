@@ -75,7 +75,7 @@ HRESULT CPOIs::OnBeforeAdd( StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
    return S_OK;
@@ -99,7 +99,7 @@ HRESULT CPOIs::OnBeforeRemove ( StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

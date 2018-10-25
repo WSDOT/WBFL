@@ -130,7 +130,9 @@ lrfdApproximateLosses2005::~lrfdApproximateLosses2005()
 lrfdApproximateLosses2005& lrfdApproximateLosses2005::operator=(const lrfdApproximateLosses2005& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -139,17 +141,25 @@ lrfdApproximateLosses2005& lrfdApproximateLosses2005::operator=(const lrfdApprox
 Float64 lrfdApproximateLosses2005::TemporaryStrand_RelaxationLossesAtXfer() const
 {
    if ( IsZero(m_ApsTemp) || IsZero(m_FpjTemp) )
+   {
       return 0;
+   }
    else
+   {
       return RelaxationLossesAtXfer();
+   }
 }
 
 Float64 lrfdApproximateLosses2005::PermanentStrand_RelaxationLossesAtXfer() const
 {
    if ( IsZero(m_ApsPerm) || IsZero(m_FpjPerm) )
+   {
       return 0;
+   }
    else
+   {
       return RelaxationLossesAtXfer();
+   }
 }
 
 Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
@@ -165,9 +175,13 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
       else
       {
          if ( lrfdVersionMgr::FourthEdition2007 <= lrfdVersionMgr::GetVersion() )
+         {
             loss = g_2p4_KSI;
+         }
          else
+         {
             loss = g_2p5_KSI;
+         }
       }
    }
    else
@@ -188,7 +202,9 @@ Float64 lrfdApproximateLosses2005::RelaxationLossesAtXfer() const
 Float64 lrfdApproximateLosses2005::TemporaryStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[0];
 }
@@ -196,7 +212,9 @@ Float64 lrfdApproximateLosses2005::TemporaryStrand_ImmediatelyBeforeXferLosses()
 Float64 lrfdApproximateLosses2005::PermanentStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[1];
 }
@@ -204,7 +222,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_ImmediatelyBeforeXferLosses()
 Float64 lrfdApproximateLosses2005::TemporaryStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[0] + TemporaryStrand_ImmediatelyBeforeXferLosses();
 }
@@ -212,7 +232,9 @@ Float64 lrfdApproximateLosses2005::TemporaryStrand_ImmediatelyAfterXferLosses() 
 Float64 lrfdApproximateLosses2005::PermanentStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[1] + PermanentStrand_ImmediatelyBeforeXferLosses();
 }
@@ -220,7 +242,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_ImmediatelyAfterXferLosses() 
 Float64 lrfdApproximateLosses2005::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    UpdateLongTermLosses();
    return m_dfpTH;
@@ -229,7 +253,9 @@ Float64 lrfdApproximateLosses2005::TemporaryStrand_TimeDependentLossesAtShipping
 Float64 lrfdApproximateLosses2005::PermanentStrand_TimeDependentLossesAtShipping() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    UpdateLongTermLosses();
    return m_dfpTH;
@@ -238,7 +264,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_TimeDependentLossesAtShipping
 Float64 lrfdApproximateLosses2005::TimeDependentLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpLT;
 }
@@ -246,7 +274,9 @@ Float64 lrfdApproximateLosses2005::TimeDependentLosses() const
 Float64 lrfdApproximateLosses2005::TimeDependentLossesBeforeDeck() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return TimeDependentLosses();
 }
@@ -254,7 +284,9 @@ Float64 lrfdApproximateLosses2005::TimeDependentLossesBeforeDeck() const
 Float64 lrfdApproximateLosses2005::TimeDependentLossesAfterDeck() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return 0;
 }
@@ -265,7 +297,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_Final() const
    // doesn't have to be consistent with the other losses
 
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AfterTransfer() // initial relaxation + elastic shortening
                 + GetDeltaFptr() // change in loss due to temporary strand removal
@@ -275,7 +309,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_Final() const
                 + TimeDependentLosses(); // total lump sum time dependent losses
 
    if ( m_TempStrandUsage != tsPretensioned )
+   {
       loss += GetDeltaFpp();//m_dfpp = effect of post-tensioning
+   }
 
 
    return loss;
@@ -284,7 +320,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_Final() const
 Float64 lrfdApproximateLosses2005::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AtShipping();
    return loss;
@@ -293,7 +331,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_BeforeTemporaryStrandRemoval(
 Float64 lrfdApproximateLosses2005::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_BeforeTemporaryStrandRemoval() + GetDeltaFptr();//m_dfptr;;
    return loss;
@@ -302,7 +342,9 @@ Float64 lrfdApproximateLosses2005::PermanentStrand_AfterTemporaryStrandRemoval()
 Float64 lrfdApproximateLosses2005::GetFpi() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_FpjPerm - m_dfpR0[1];
 }
@@ -359,7 +401,9 @@ void lrfdApproximateLosses2005::ValidateParameters() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
+   {
       throw lrfdXPsLosses(lrfdXPsLosses::Specification,_T(__FILE__),__LINE__);
+   }
 
    bool is_si = (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
    // Use a values that are just out of spec to avoid throwing for boundry values
@@ -371,10 +415,14 @@ void lrfdApproximateLosses2005::ValidateParameters() const
 
    // LRFD 2009 limits approximate stresses per 5.9.5.3 to 10 KSI
    if ( lrfdVersionMgr::FourthEditionWith2009Interims <= lrfdVersionMgr::GetVersion() )
+   {
       fcMax = (is_si ? g_69p05_MPA : g_10p05_KSI );
+   }
 
    if ( m_Fc < fcMin || fcMax < m_Fc )
+   {
       THROW(lrfdXPsLosses,fcOutOfRange);
+   }
 }
 
 void lrfdApproximateLosses2005::UpdateLongTermLosses() const

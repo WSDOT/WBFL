@@ -27,15 +27,75 @@
 
 #include <ATLBase.h>
 
-#define GET_IFACE(i,p) \
-   CComPtr<i> p; \
-   m_pBroker->GetInterface( IID_##i, (void**)&p ); \
-   ASSERT( p != NULL )
+#if defined _DEBUG
+template <class T>
+class CIFacePtr : public ATL::CComPtr<T>
+{
+public:
+	CIFacePtr() throw()
+	{
+      m_bUsed = false;
+	}
+	CIFacePtr(int nNull) throw() :
+		ATL::CComPtr<T>(nNull)
+	{
+      m_bUsed = false;
+	}
+	CIFacePtr(T* lp) throw() :
+		ATL::CComPtr<T>(lp)
+	{
+      m_bUsed = false;
+	}
+	CIFacePtr(_In_ const CIFacePtr<T>& lp) throw() :
+		ATL::CComPtr<T>(lp.p)
+	{
+      m_bUsed = false;
+	}
+	~CIFacePtr() throw()
+	{
+      // this assert fires when the interface is never used
+      ATLASSERT(m_bUsed == true);
+	}
 
-#define GET_IFACE2(b,i,p) \
-   CComPtr<i> p; \
-   b->GetInterface( IID_##i, (void**)&p ); \
-   ASSERT( p != NULL )
+   operator T*() const throw()
+	{
+      m_bUsed = true;
+		return p;
+	}
+
+	ATL::_NoAddRefReleaseOnCComPtr<T>* operator->() const throw()
+	{
+      m_bUsed = true;
+		ATLASSERT(p!=NULL);
+		return (ATL::_NoAddRefReleaseOnCComPtr<T>*)p;
+	}
+
+protected:
+   mutable bool m_bUsed; // gets set to true if the interface is used
+};
+#else
+#define CIFacePtr CComPtr
+#endif
+
+#define GET_IFACE(_i_,_ptr_) \
+   CIFacePtr<_i_> _ptr_; \
+   m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE_NOCHECK(_i_,_ptr_) \
+   CComPtr<_i_> _ptr_; \
+   m_pBroker->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE2(b,_i_,_ptr_) \
+   CIFacePtr<_i_> _ptr_; \
+   b->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
+
+#define GET_IFACE2_NOCHECK(b,_i_,_ptr_) \
+   CComPtr<_i_> _ptr_; \
+   b->GetInterface( IID_##_i_, (IUnknown**)&_ptr_ ); \
+   ASSERT( _ptr_.p != NULL )
 
 
 #endif // INCLUDED_AGENTTOOLS_H_

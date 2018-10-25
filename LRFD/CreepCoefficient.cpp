@@ -73,7 +73,9 @@ lrfdCreepCoefficient& lrfdCreepCoefficient::operator= (const lrfdCreepCoefficien
 Float64 lrfdCreepCoefficient::GetCreepCoefficient() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_Ct;
 }
@@ -148,7 +150,9 @@ Float64 lrfdCreepCoefficient::GetInitialAge() const
 Float64 lrfdCreepCoefficient::GetAdjustedInitialAge() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_tiAdjusted;
 }
@@ -167,7 +171,9 @@ lrfdCreepCoefficient::CuringMethod lrfdCreepCoefficient::GetCuringMethod() const
 Float64 lrfdCreepCoefficient::GetKc() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_kc;
 }
@@ -175,7 +181,9 @@ Float64 lrfdCreepCoefficient::GetKc() const
 Float64 lrfdCreepCoefficient::GetKf() const
 {
    if ( m_bUpdate )
+   {
       Update();
+   }
 
    return m_kf;
 }
@@ -220,7 +228,9 @@ void lrfdCreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
    if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+   {
       throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
+   }
 
    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
    
@@ -243,9 +253,13 @@ void lrfdCreepCoefficient::Update() const
 
    // Compute Kf
    if ( bSI )
+   {
       m_kf = 62.0 / ( 42.0 + ::ConvertFromSysUnits(m_Fc,unitMeasure::MPa) );
+   }
    else
+   {
       m_kf = 1.0 / ( 0.67 + (::ConvertFromSysUnits(m_Fc,unitMeasure::KSI)/9.0) );
+   }
 
    // Compute Kc
    Float64 a,b,c;

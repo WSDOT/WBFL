@@ -200,23 +200,26 @@ void CAnalysisModel::BuildModel(BSTR bstrName)
    // generate loads for all load groups
    GenerateLoads();
 
-#if defined _DEBUG
+   // generate POI's
+   GeneratePOIs();
+}
+
+void CAnalysisModel::DumpFEMModel()
+{
    // Dump the fem model for testing
    CComPtr<IStructuredSave2> pSave;
    pSave.CoCreateInstance(CLSID_StructuredSave2);
    CComBSTR bstrLBAMName;
    m_pLBAMModel->get_Name(&bstrLBAMName);
+   CComBSTR bstrFEMName;
+   m_pFem2d->get_Name(&bstrFEMName);
    CString str;
-   str.Format(_T("%s_%s_Fem2d.xml"),OLE2T(bstrLBAMName),OLE2T(bstrName));
+   str.Format(_T("%s_%s_Fem2d.xml"),OLE2T(bstrLBAMName),OLE2T(bstrFEMName));
    pSave->Open(CComBSTR(str));
    CComPtr<IStructuredStorage2> storage;
    m_pFem2d->QueryInterface(&storage);
    storage->Save(pSave);
    pSave->Close();
-#endif
-
-   // generate POI's
-   GeneratePOIs();
 }
 
 void CAnalysisModel::GetDeflection(LoadGroupIDType lgId, PoiIDType poiId, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
@@ -269,8 +272,11 @@ void CAnalysisModel::GetForce(LoadGroupIDType lgId, PoiIDType poiId, ResultsOrie
    }
 }
 
-void CAnalysisModel::GetUnitForceResponse(PoiIDType poiID,PoiIDType loadPoiID, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight)
+void CAnalysisModel::GetUnitLoadResponse(PoiIDType poiID,PoiIDType loadPoiID, ForceEffectType forceEffect, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight)
 {
+   // these are the only unit load types supported
+   ATLASSERT( forceEffect == fetFy || forceEffect == fetMz );
+
    ATLASSERT(m_pFem2d!=NULL);
    CHRException hr;
 
@@ -282,12 +288,12 @@ void CAnalysisModel::GetUnitForceResponse(PoiIDType poiID,PoiIDType loadPoiID, R
       PoiMap& poi_map = *(*itpoi);
 
       // optimization here - don't need to do coordinate transform for pois in superstructure since we know it is flat
-      if (poi_map.GetLBAMMemberType()==mtSpan || poi_map.GetLBAMMemberType()==mtSuperstructureMember)
+      if (poi_map.GetLBAMMemberType() == mtSpan || poi_map.GetLBAMMemberType() == mtSuperstructureMember)
       {
          orientation = roMember;
       }
 
-      LoadIDType loadID = INVALID_ID;
+      LoadCaseIDType fem2dLoadCaseID = INVALID_ID;
       InfluenceLoadSet::iterator iter(m_InfluenceLoadSet.begin());
       InfluenceLoadSet::iterator end(m_InfluenceLoadSet.end());
       for ( ; iter != end; iter++ )
@@ -295,16 +301,27 @@ void CAnalysisModel::GetUnitForceResponse(PoiIDType poiID,PoiIDType loadPoiID, R
          InfluenceLoadLocation& ilLocation(*iter);
          if ( ilLocation.m_LBAMPoiID == loadPoiID )
          {
-            loadID = ilLocation.m_FemLoadCaseID;
+            fem2dLoadCaseID = ilLocation.m_FemLoadCaseID-1;
+            if ( forceEffect == fetMz )
+            {
+               fem2dLoadCaseID--;
+            }
             break;
          }
       }
 
-      ATLASSERT(loadID != INVALID_ID);
+      ATLASSERT(fem2dLoadCaseID != INVALID_ID);
 
 
       // use the poi map to compute the influence line.
-      poi_map.GetForce(loadID,m_pFem2d,orientation,fxLeft,fyLeft,mzLeft,fxRight,fyRight,mzRight);
+      poi_map.GetForce(fem2dLoadCaseID,m_pFem2d,orientation,fxLeft,fyLeft,mzLeft,fxRight,fyRight,mzRight);
+
+      *fxLeft  = IsZero(*fxLeft)  ? 0 : *fxLeft;
+      *fyLeft  = IsZero(*fyLeft)  ? 0 : *fyLeft;
+      *mzLeft  = IsZero(*mzLeft)  ? 0 : *mzLeft;
+      *fxRight = IsZero(*fxRight) ? 0 : *fxRight;
+      *fyRight = IsZero(*fyRight) ? 0 : *fyRight;
+      *mzRight = IsZero(*mzRight) ? 0 : *mzRight;
    }
    else
    {
@@ -384,7 +401,7 @@ void CAnalysisModel::GetStress(LoadGroupIDType lg_id, PoiIDType poiId, std::vect
    else
    {
       // this should never happen since GetForce should already have told us if the poi exists
-      ATLASSERT(0);
+      ATLASSERT(false);
       CComBSTR msg = ::CreateErrorMsg1L(IDS_E_POI_NOT_FOUND, poiId);
       THROW_LBAMA_MSG(POI_NOT_FOUND,msg);
    }
@@ -743,12 +760,12 @@ void CAnalysisModel::GetFemMemberLocationAlongSSM( CollectionIndexType ssmIdx, F
       else
       {
          // no fem members for ssm
-         ATLASSERT(0);
+         ATLASSERT(false);
       }
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       throw;
    }
 }
@@ -959,7 +976,7 @@ void CAnalysisModel::GetFemMemberLocationAlongSpan( SpanIndexType spanIdx, Float
          catch(FracRes&)
          {
             CComBSTR msg =CreateErrorMsg1D(IDS_E_LOCATION_OOR,lbamLoc);
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_LBAMA_MSG(LOCATION_OOR,msg);
          }
 
@@ -978,12 +995,12 @@ void CAnalysisModel::GetFemMemberLocationAlongSpan( SpanIndexType spanIdx, Float
       else
       {
          // no fem members for span
-         ATLASSERT(0);
+         ATLASSERT(false);
       }
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       throw;
    }
 }
@@ -1117,7 +1134,7 @@ void CAnalysisModel::GetFemMemberLocationAlongSupport(const ElementLayoutVec* pM
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       throw;
    }
 }
@@ -1213,7 +1230,7 @@ void CAnalysisModel::GenerateLoadsForLoadGroup(BSTR loadGroup)
    }
    catch(_com_error re)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 }
 
@@ -1989,7 +2006,7 @@ void CAnalysisModel::ClearPOIs(IFem2dPOICollection* pFemPois)
 {
    // Clear out pois in fem engine
    pFemPois->Clear();
-   m_LastFemPoiID=0;
+   m_LastFemPoiID = 0;
 
    // clear out our local poi tracking data structure
    std::for_each(m_PoiMap.begin(),m_PoiMap.end(),delete_pointer);
@@ -2140,7 +2157,7 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
          else
          {
             // location not found - this is a big error since we control all input
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_HR(E_FAIL);
          }
       }
@@ -2169,7 +2186,7 @@ void CAnalysisModel::GenerateInternalPOIsAtCantilevers()
          else
          {
             // location not found - this is a big error since we control all input
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_HR(E_FAIL);
          }
       }
@@ -2934,12 +2951,51 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       CComPtr<IDistributionFactorSegment> left_seg, right_seg;
       hr = factors->GetSegmentForLocation(x, m_TotalLength, &left_seg, &right_seg);
 
+      // We typically don't want lldf's to change right at the ends of a member.
+      // But this is what can happen if things get slightly out of tolerance.
+      // The code in the block below prevents changes at the very ends of a member.
+      if (left_seg!=NULL && right_seg!=NULL && left_seg!=right_seg)
+      {
+         if (member_location<m_LayoutTolerance)
+         {
+            // We are at left end of member. Use right factor at both locations
+            left_seg = right_seg;
+         }
+         else
+         {
+            // Need member length to see if we are at right end
+            Float64 member_length(0.0);
+            if (member_type==mtSpan)
+            {
+               CComPtr<ISpans> pspans;
+               hr = m_pLBAMModel->get_Spans(&pspans);
+               CComPtr<ISpan> pspan;
+               hr = pspans->get_Item(member_id, &pspan);
+               pspan->get_Length(&member_length);
+            }
+            else if (member_type==mtSuperstructureMember)
+            {
+               CComPtr<ISuperstructureMembers> psups;
+               hr = m_pLBAMModel->get_SuperstructureMembers(&psups);
+               CComPtr<ISuperstructureMember> psup;
+               hr = psups->get_Item(member_id, &psup);
+               psup->get_Length(&member_length);
+            }
+
+            if (member_location+m_LayoutTolerance > member_length)
+            {
+               // We are at right end of member. Use left factor for both
+               right_seg = left_seg;
+            }
+         }
+      }
+
       if (left_seg!=NULL)
       {
          hr = left_seg->get_DistributionFactor(leftFactor);
       }
       else
-         ATLASSERT(0);
+         ATLASSERT(false);
 
       if (right_seg!=NULL)
       {
@@ -2974,7 +3030,7 @@ void CAnalysisModel::GetPOIDistributionFactor(PoiIDType POI, IDistributionFactor
       }
    }
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 void CAnalysisModel::GetSupportDistributionFactor(SupportIndexType supportIdx, IDistributionFactor **Factor)
@@ -3033,15 +3089,15 @@ void CAnalysisModel::CreateFemPOI(PoiIDType poiID, MemberType mbrType, MemberIDT
    ConfigurePoiMap(mbrType, lbamMbrID, lbamMbrLoc, poi, poi_map.get());
 
    // create a fem poi - map using fem id
-   m_LastFemPoiID++;
+   PoiIDType fem_poi_id = m_LastFemPoiID++;
 
    CComPtr<IFem2dPOICollection> fem_pois;
    m_pFem2d->get_POIs(&fem_pois);
 
    CComPtr<IFem2dPOI> femPoi;
-   fem_pois->Create(m_LastFemPoiID, femMbrID, femMbrLoc, &femPoi);
+   fem_pois->Create(fem_poi_id, femMbrID, femMbrLoc, &femPoi);
 
-   poi_map->SetFemPoi(m_LastFemPoiID, femMbrLoc);
+   poi_map->SetFemPoi(fem_poi_id);
    poi_map->SetIsInternallyGenerated(poi==NULL);
 
    // cache away poi information for later
@@ -3077,7 +3133,65 @@ void CAnalysisModel::CreateFemMbrPOI(PoiIDType poiID, MemberType mbrType, Member
       rightMbrID = femMbrID+1;
    }
 
-   poi_map->SetFemMbrs(leftMbrID,rightMbrID);
+   if ( mbrType == mtSuperstructureMember )
+   {
+      CComPtr<ISuperstructureMembers> ssmbrs;
+      m_pLBAMModel->get_SuperstructureMembers(&ssmbrs);
+      IndexType nSSMbrs;
+      ssmbrs->get_Count(&nSSMbrs);
+      if ( nSSMbrs <= (IndexType)rightMbrID )
+      {
+         // the "next" member is beyond the end of the model
+         rightMbrID = INVALID_ID;
+      }
+   }
+   else if ( mbrType == mtSpan )
+   {
+      CComPtr<ISpans> spans;
+      m_pLBAMModel->get_Spans(&spans);
+      IndexType nSpans;
+      spans->get_Count(&nSpans);
+      if ( nSpans <= (IndexType)rightMbrID )
+      {
+         rightMbrID = INVALID_ID;
+      }
+   }
+   else
+   {
+      ATLASSERT(false);
+   }
+
+
+   PoiIDType leftPoiID = INVALID_ID;
+   if ( leftMbrID != INVALID_ID )
+   {
+      // create a fem poi at the right end of the left member
+      // create a fem poi - map using fem id
+      leftPoiID = m_LastFemPoiID++;
+
+      CComPtr<IFem2dPOICollection> fem_pois;
+      m_pFem2d->get_POIs(&fem_pois);
+
+      CComPtr<IFem2dPOI> femPoi;
+      fem_pois->Create(leftPoiID, leftMbrID, -1.0, &femPoi);
+   }
+
+   PoiIDType rightPoiID = INVALID_ID;
+   if ( rightMbrID != INVALID_ID )
+   {
+      // create a fem poi at the left end of the right member
+      // create a fem poi - map using fem id
+      rightPoiID = m_LastFemPoiID++;
+
+      CComPtr<IFem2dPOICollection> fem_pois;
+      m_pFem2d->get_POIs(&fem_pois);
+
+      CComPtr<IFem2dPOI> femPoi;
+      fem_pois->Create(rightPoiID, rightMbrID, 0.0, &femPoi);
+   }
+
+
+   poi_map->SetFemPoiID(leftPoiID,rightPoiID);
 
    // set stress points and other data
    ConfigurePoiMap(mbrType, lbamMbrID, lbamMbrLoc, poi, poi_map.get());
@@ -3256,7 +3370,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
 
    if (xLoc<start_loc)
    {
-      ATLASSERT(0); // location off of left end
+      ATLASSERT(false); // location off of left end
       return false;
    }
 
@@ -3288,7 +3402,7 @@ bool CAnalysisModel::GetSuperstructureMemberForGlobalX(Float64 xLoc, MemberIDTyp
             return true;
          }
          else
-            ATLASSERT(0); // off of right end
+            ATLASSERT(false); // off of right end
       }
 
       start_loc = end_loc;
@@ -3579,13 +3693,13 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
                      }
                      else
                      {
-                        ATLASSERT(0);
+                        ATLASSERT(false);
                         THROW_HR(E_FAIL);
                      }
                   }
                   else
                   {
-                     ATLASSERT(0);
+                     ATLASSERT(false);
                      THROW_HR(E_FAIL); // should never happen
                   }
                }
@@ -3620,7 +3734,7 @@ void CAnalysisModel::CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJoi
          }
          else
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_HR(E_FAIL); // this should never happen
          }
 
@@ -3821,7 +3935,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
    }
    catch (_com_error cre)
    {
-      ATLASSERT(0);// try to catch bugs where they happen.
+      ATLASSERT(false);// try to catch bugs where they happen.
       throw;
    }
 }
@@ -4285,7 +4399,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             else if (righty->IsReason(nrMemberEnd))
             {
                // have two member ends within tolerance? this should be blocked by previous code
-               ATLASSERT(0);
+               ATLASSERT(false);
                lefty = node_locs->erase(righty);
                righty = lefty;
                righty++;
@@ -4294,7 +4408,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             {
                // have two member end to left and segment end within tolerance - this should never 
                // happen as well.
-               ATLASSERT(0);
+               ATLASSERT(false);
                lefty = node_locs->erase(righty);
                righty = lefty;
                righty++;
@@ -4320,7 +4434,7 @@ void CondenseSuperNodeSections(SuperNodeLocs* node_locs, Float64 layoutTolerance
             else if (righty->IsReason(nrSegmentEnd))
             {
                // somehow got two segment ends within tolerance - this should never happen
-               ATLASSERT(0);
+               ATLASSERT(false);
                lefty = node_locs->erase(righty);
                righty = lefty;
                righty++;
@@ -4836,24 +4950,41 @@ void CAnalysisModel::GenerateInfluenceLoads()
    LoadCaseIDType fem_lc = INFLUENCE_LC;
    InfluenceLoadSetIterator it( m_InfluenceLoadSet.begin() );
    InfluenceLoadSetIterator itend( m_InfluenceLoadSet.end() );
-   for (; it!=itend; it++)
+   for (; it!=itend; it++, fem_lc -= 3)
    {
       InfluenceLoadLocation& infl_locn = *it;
       infl_locn.m_FemLoadCaseID = fem_lc;
+
       Float64 P = infl_locn.m_P;
 
       // create a new loading in the fem model
-      CComPtr<IFem2dLoading> fem_loading;
-      fem_loadings->Create(fem_lc,&fem_loading);
+      CComPtr<IFem2dLoading> fem_influence_loading;
+      CComPtr<IFem2dLoading> fem_point_loading;
+      CComPtr<IFem2dLoading> fem_moment_loading;
+      fem_loadings->Create(infl_locn.m_FemLoadCaseID,  &fem_influence_loading);
+      fem_loadings->Create(infl_locn.m_FemLoadCaseID-1,&fem_point_loading);
+      fem_loadings->Create(infl_locn.m_FemLoadCaseID-2,&fem_moment_loading);
 
       // apply joint load
       try
       {
+         CComPtr<IFem2dPointLoadCollection> fem_influence_loads;
+         fem_influence_loading->get_PointLoads(&fem_influence_loads);
+
+         CComPtr<IFem2dPointLoad> influenceLoad;
+         fem_influence_loads->Create(infl_locn.m_FemLoadCaseID, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, P, 0.0, lotGlobal, &influenceLoad);
+
          CComPtr<IFem2dPointLoadCollection> fem_point_loads;
-         fem_loading->get_PointLoads(&fem_point_loads);
+         fem_point_loading->get_PointLoads(&fem_point_loads);
 
          CComPtr<IFem2dPointLoad> pointLoad;
-         fem_point_loads->Create(fem_lc, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, P, 0.0, lotGlobal, &pointLoad);
+         fem_point_loads->Create(infl_locn.m_FemLoadCaseID-1, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, 1.0, 0.0, lotGlobal, &pointLoad);
+
+         CComPtr<IFem2dPointLoadCollection> fem_moment_loads;
+         fem_moment_loading->get_PointLoads(&fem_moment_loads);
+
+         CComPtr<IFem2dPointLoad> momentLoad;
+         fem_moment_loads->Create(infl_locn.m_FemLoadCaseID-2, infl_locn.m_FemMemberID, infl_locn.m_FemMemberLoc, 0.0, 0.0, 1.0, lotGlobal, &momentLoad);
       }
       catch(_com_error ce)
       {
@@ -4861,8 +4992,6 @@ void CAnalysisModel::GenerateInfluenceLoads()
       }
 
 //      ATLTRACE(_T("member %d, mbrLoc = %f, globalLoc=%f, femLc=%d\n"), infl_locn.m_FemMemberId, infl_locn.m_FemMemberLoc, infl_locn.m_GlobalX, infl_locn.m_FemLcId );
-
-      fem_lc--;
    }
 
 //   ATLTRACE(_T("Influence Load Generation - done"));
@@ -4889,7 +5018,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
 
          if (lbamMemberType == mtSpan || lbamMemberType == mtSuperstructureMember)
          {
-            ComputeInfluenceLoadLocation(poiID,lbamMemberType, lbamMemberID, lbamPoiLocation, m_InfluenceLoadSet);
+            ComputeInfluenceLoadLocation(poiID,lbamMemberType, lbamMemberID, lbamPoiLocation);
          }
       }
    }
@@ -4928,7 +5057,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
          //{
          //   if (last_matched)
          //   {
-         //      ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
+         //      ATLASSERT(false); // have three points at the same location - this is bad form and indicates an inefficient influence line
          //   }
          //   last_matched = true;
          //   last_loc = it2->m_GlobalX;
@@ -4956,7 +5085,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
 //   ATLTRACE(_T("Influence Load Locations - done"));
 }
 
-void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbmbrType, MemberIDType lbamMemberID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet )
+void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbmbrType, MemberIDType lbamMemberID, Float64 lbmbrLoc)
 {
    CHRException hr;
 
@@ -4989,7 +5118,7 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbm
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_HR(E_FAIL);
    }
 
@@ -5003,49 +5132,12 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbm
    VARIANT_BOOL vbIsLinkMember;
    ssmbr->get_LinkMember(&vbIsLinkMember);
    if ( vbIsLinkMember == VARIANT_TRUE )
-      P = 0;
-
-   influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id, fem_loc, P) );
-   std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
-
-   if ( mbl_type == mltStraddle )
    {
-      if ( IsZero(fem_loc) )
-      {
-         // if at start of fem member, straddle with previous member
-         // don't straddle if this is the start of member 0
-         if ( fem_id != 0 )
-         {
-            ssmbr.Release();
-            ssmbrs->get_Item(ssmbrID-1,&ssmbr);
-            VARIANT_BOOL vbIsLinkMember;
-            ssmbr->get_LinkMember(&vbIsLinkMember);
-            P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
-
-            influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id-1, -1.0, P) );
-            std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
-         }
-      }
-      else
-      {
-         // straddle with the next member unless this is the last member
-         CComPtr<IFem2dMemberCollection> femMbrs;
-         m_pFem2d->get_Members(&femMbrs);
-         IndexType nFemMbrs;
-         femMbrs->get_Count(&nFemMbrs);
-         if ( fem_id != nFemMbrs-1 )
-         {
-            ssmbr.Release();
-            ssmbrs->get_Item(ssmbrID+1,&ssmbr);
-            VARIANT_BOOL vbIsLinkMember;
-            ssmbr->get_LinkMember(&vbIsLinkMember);
-            P = (vbIsLinkMember == VARIANT_TRUE ? 0.0 : -1.0);
-
-            influenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id+1, 0.0, P) );
-            std::sort(influenceLoadSet.begin(),influenceLoadSet.end());
-         }
-      }
+      P = 0;
    }
+
+   m_InfluenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id, fem_loc, P) );
+   std::sort(m_InfluenceLoadSet.begin(),m_InfluenceLoadSet.end());
 }
 
 void CAnalysisModel::GenerateContraflexureLoads()
@@ -5132,7 +5224,9 @@ void CAnalysisModel::GenerateContraflexurePOIs()
    CollectionIndexType cf_size;
    hr = m_ContraflexureLocations->get_Count(&cf_size);
    if ( cf_size < 1 )
+   {
       ComputeContraflexureLocations();
+   }
 
    SortedPoiMapTracker poi_tracker(m_PoiMap, true);
 
@@ -5167,7 +5261,7 @@ void CAnalysisModel::GenerateContraflexurePOIs()
          else
          {
             // location not found on superstructure
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_HR(E_FAIL);
          }
       }
@@ -5215,7 +5309,7 @@ void CAnalysisModel::IsPOIInContraflexureZone(PoiIDType poiID, InZoneType* isInZ
    HRESULT hrr = this->GetPoiInfoPrv(poiID, &mtype, &member_id, &mbr_x, &glob_x);
    if (FAILED(hrr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       CComBSTR msg = ::CreateErrorMsg1L(IDS_E_POI_NOT_FOUND, poiID);
       THROW_LBAMA_MSG(POI_NOT_FOUND,msg);
    }
@@ -5311,7 +5405,7 @@ void CAnalysisModel::GetContraflexureForce( ForceEffectType effect, CInfluenceLi
          val_right = -mz_right;
          break;
       default:
-         ATLASSERT(0);
+         ATLASSERT(false);
       };
 
       val_left  = IsZero(val_left)  ? 0 : val_left;
@@ -5349,7 +5443,7 @@ void CAnalysisModel::IsPOIInNegativeLiveLoadMomentZone(PoiIDType poiID, InZoneTy
       HRESULT hrr = this->GetSsPoiInfo(poiID, &mtype, &member_id, &glob_x);
       if (FAILED(hrr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          CComBSTR msg = ::CreateErrorMsg1L(IDS_E_POI_NOT_FOUND, poiID);
          THROW_LBAMA_MSG(POI_NOT_FOUND,msg);
       }
@@ -5476,7 +5570,7 @@ void CAnalysisModel::ComputeContraflexureLocations()
    hr = response->get_Count(ilsBoth, &size);
    if (size < 2)
    {
-      ATLASSERT(0); // should be a lot more pois than this
+      ATLASSERT(false); // should be a lot more pois than this
       return;
    }
 
@@ -5559,7 +5653,7 @@ void CAnalysisModel::GetReactionInfluenceLine(SupportIDType supportID, ForceEffe
    CollectionIndexType num_pts = m_InfluenceLoadSet.size();
    if (num_pts == 0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_LBAMA(NO_INFLUENCE_LOCATIONS);
    }
 
@@ -5656,7 +5750,7 @@ void CAnalysisModel::GetSupportDeflectionInfluenceLine(SupportIDType supportID, 
    CollectionIndexType num_pts = m_InfluenceLoadSet.size();
    if (num_pts==0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_LBAMA(NO_INFLUENCE_LOCATIONS);
    }
 
@@ -5889,7 +5983,7 @@ void CAnalysisModel::DealWithFem2dExceptions()
    }
 
    // fem crapped and we don't know why
-   ATLASSERT(0);
+   ATLASSERT(false);
    CComBSTR msg = ::CreateErrorMsg1S(IDS_E_FEM2D, m_Stage);
    THROW_LBAMA_MSG(FEM2D,msg);
 }

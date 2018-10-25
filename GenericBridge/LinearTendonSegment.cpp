@@ -42,15 +42,21 @@ HRESULT CLinearTendonSegment::FinalConstruct()
    HRESULT hr;
    hr = m_Start.CoCreateInstance(CLSID_Point3d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_End.CoCreateInstance(CLSID_Point3d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    m_pTendon = NULL;
 
@@ -72,7 +78,9 @@ STDMETHODIMP CLinearTendonSegment::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -111,8 +119,9 @@ STDMETHODIMP CLinearTendonSegment::get_End(IPoint3d** end)
 
 /////////////////////////////////////////////////////
 // ITendonSegment
-STDMETHODIMP CLinearTendonSegment::get_Position(Float64 z,IPoint3d** cg)
+STDMETHODIMP CLinearTendonSegment::get_Position(TendonMeasure measure,Float64 z,IPoint3d** cg)
 {
+#pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
    CHECK_RETOBJ(cg);
 
    Float64 x1,y1,z1;
@@ -125,7 +134,10 @@ STDMETHODIMP CLinearTendonSegment::get_Position(Float64 z,IPoint3d** cg)
    m_End->get_Y(&y2);
    m_End->get_Z(&z2);
 
-   ATLASSERT(z1 <= z && z <= z2);
+   ATLASSERT(::IsLE(z1,z) && ::IsLE(z,z2));
+
+   z = IsEqual(z,z1) ? z1 : z;
+   z = IsEqual(z,z2) ? z2 : z;
 
    Float64 dx = x2-x1;
    Float64 dy = y2-y1;
@@ -218,6 +230,27 @@ STDMETHODIMP CLinearTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Float
    *dz = z2 - z1;
 
    return S_OK;
+}
+
+STDMETHODIMP CLinearTendonSegment::get_Centerline(TendonMeasure measure,IPoint3dCollection** ppPoints)
+{
+   CHECK_RETOBJ(ppPoints);
+   CComPtr<IPoint3dCollection> points;
+   points.CoCreateInstance(CLSID_Point3dCollection);
+
+#pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
+
+   // the collection as add by reference symantics. we don't want anyone messing
+   // with our end points so clone them.
+   CComPtr<IPoint3d> start;
+   m_Start->Clone(&start);
+
+   CComPtr<IPoint3d> end;
+   m_End->Clone(&end);
+
+   points->Add(start);
+   points->Add(end);
+   return points.CopyTo(ppPoints);
 }
 
 STDMETHODIMP CLinearTendonSegment::putref_Tendon(ITendon* pTendon)

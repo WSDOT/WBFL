@@ -76,7 +76,7 @@ static void  ComputeLaneAreas(ForceEffectType optimizedEffect, OptimizationType 
        hr = lftMzInf->ComputeNonZeroRegions(lane_side, &regions);
       break;
    default:
-      ATLASSERT(0);
+      ATLASSERT(false);
    };
 
    hr = lftFxInf->ComputeAreaInRegions(regions, lftFxArea);
@@ -111,7 +111,7 @@ static void  ComputeLaneAreas(ForceEffectType optimizedEffect, OptimizationType 
           hr = rgtMzInf->ComputeNonZeroRegions(lane_side, &rgt_regions);
          break;
       default:
-         ATLASSERT(0);
+         ATLASSERT(false);
       };
 
       hr = rgtFxInf->ComputeAreaInRegions(rgt_regions, rgtFxArea);
@@ -157,7 +157,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -168,7 +168,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -179,7 +179,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -190,7 +190,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -201,7 +201,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -213,7 +213,7 @@ STDMETHODIMP CBasicVehicularResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
    }
@@ -872,7 +872,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
                      is_rgt_truck = DetermineControl(rgt_truck_resp_mz, rgt_lane_resp_mz, rgt_optimization);
                      break;
                   default:
-                     ATLASSERT(0);
+                     ATLASSERT(false);
                   };
 
                   // set result based on controlling effect
@@ -914,7 +914,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage
                }
                else
                {
-                  ATLASSERT(0);
+                  ATLASSERT(false);
                }
 
                // see if results are only applicable to left or right result

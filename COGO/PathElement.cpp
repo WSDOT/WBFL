@@ -64,7 +64,9 @@ STDMETHODIMP CPathElement::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -94,20 +96,32 @@ STDMETHODIMP CPathElement::putref_Value(IUnknown* newVal)
    CComQIPtr<ICubicSpline> spline(newVal);
 
    if( point == NULL && hc == NULL && ls == NULL && spline == NULL)
+   {
       return E_INVALIDARG;
+   }
 
    Unadvise();
 
    if ( point )
+   {
       m_Type = petPoint;
+   }
    else if ( hc )
+   {
       m_Type = petHorzCurve;
+   }
    else if ( ls )
+   {
       m_Type = petLineSegment;
+   }
    else if ( spline )
+   {
       m_Type = petCubicSpline;
+   }
    else
+   {
       ATLASSERT(false); // should never get here
+   }
 
    m_Value = newVal;
    
@@ -257,15 +271,25 @@ void CPathElement::Advise()
 {
    HRESULT hr;
    if ( m_Type == petPoint )
+   {
       hr = m_Value.Advise(GetUnknown(), IID_IPoint2dEvents, &m_dwCookie );
+   }
    else if ( m_Type == petLineSegment )
+   {
       hr = m_Value.Advise(GetUnknown(), IID_ILineSegment2dEvents, &m_dwCookie );
+   }
    else if ( m_Type == petHorzCurve )
+   {
       hr = m_Value.Advise(GetUnknown(), IID_IHorzCurveEvents, &m_dwCookie );
+   }
    else if ( m_Type == petCubicSpline )
+   {
       hr = m_Value.Advise(GetUnknown(), IID_ICubicSplineEvents, &m_dwCookie );
+   }
    else
+   {
       ATLASSERT(false); // should never get here
+   }
 
 
    if ( FAILED(hr) )
@@ -280,7 +304,9 @@ void CPathElement::Advise()
 void CPathElement::Unadvise()
 {
    if ( m_Value == NULL )
+   {
       return;
+   }
 
    //
    // Disconnection from connection point
@@ -293,15 +319,25 @@ void CPathElement::Unadvise()
    CComPtr<IConnectionPoint> pCP;
 
    if ( m_Type == pePoint )
+   {
       pCPC->FindConnectionPoint( IID_IPoint2dEvents, &pCP );
+   }
    else if ( m_Type == petLineSegment )
+   {
       pCPC->FindConnectionPoint( IID_ILineSegment2dEvents, &pCP );
+   }
    else if ( m_Type == petHorzCurve )
+   {
       pCPC->FindConnectionPoint( IID_IHorzCurveEvents, &pCP );
+   }
    else if ( m_Type == petCubicSpline )
+   {
       pCPC->FindConnectionPoint( IID_ICubicSplineEvents, &pCP );
+   }
    else
+   {
       ATLASSERT(false);
+   }
 
 
    HRESULT hr = pCP->Unadvise( m_dwCookie );

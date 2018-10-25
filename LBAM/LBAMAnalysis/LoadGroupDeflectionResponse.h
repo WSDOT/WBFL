@@ -75,7 +75,7 @@ protected:
       }
       catch(...)
       {
-         ATLASSERT(0); // ClearModels should not throw
+         ATLASSERT(false); // ClearModels should not throw
       } // just make sure no exceptions escape 
 
       return DealWithExceptions(this, IID_ILoadGroupResponse);

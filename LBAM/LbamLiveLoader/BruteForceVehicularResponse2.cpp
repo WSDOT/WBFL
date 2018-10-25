@@ -358,7 +358,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -369,7 +369,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -380,7 +380,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -391,7 +391,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -402,7 +402,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -413,7 +413,7 @@ STDMETHODIMP CBruteForceVehicularResponse2::Initialize(/*[in]*/IUnknown* context
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
    }
@@ -1176,7 +1176,7 @@ void CBruteForceVehicularResponse2::ComputeInflResponse(PoiIDType poiID,LiveLoad
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       throw E_INVALIDARG;
    }
 }
@@ -1718,7 +1718,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
                   m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine, 
                                               &applied_axles, &is_dual, &left_truck_result, &right_truck_result);
 
-                  //WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << m_Truck.GetVariableAxleSpacing() << " Dir " << (direction == ltdForward ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
+                  //WATCH(_T("Vehicle Index ") << vehicleIndex << _T(" Axle Spacing ") << m_Truck.GetVariableAxleSpacing() << _T(" Dir ") << (direction == ltdForward ? _T("F") : _T("R")) << _T(" Position ") << truck_location << _T(" Pivot Axle ") << pivotAxleIndex);
 
                   // perform comparison and store data for new max if there is one.
                   if (pLeftCompare->CompareResults(left_truck_result))
@@ -1787,7 +1787,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
 
                   if ( variableAxleSpacing < minVariableAxleSpacing )
                   {
-                     //WATCH("Variable axle spacing less than min - use min axle spacing");
+                     //WATCH(_T("Variable axle spacing less than min - use min axle spacing"));
                      // the spacing is less then the min, make the spacing equal to the min value
                      variableAxleSpacing = minVariableAxleSpacing;
 
@@ -1805,7 +1805,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
 
                   if ( maxVariableAxleSpacing < variableAxleSpacing )
                   {
-                     //WATCH("Variable axle spacing greater than max - use max axle spacing");
+                     //WATCH(_T("Variable axle spacing greater than max - use max axle spacing"));
                      // the spacing is bigger than the max, make it equal the max value
                      variableAxleSpacing = maxVariableAxleSpacing;
 
@@ -1837,7 +1837,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
                      (3 < nAxles)
                      )
                   {
-                     //WATCH("Skipping truck because axles are in same span");
+                     //WATCH(_T("Skipping truck because axles are in same span"));
                      continue;
                   }
 
@@ -1851,7 +1851,7 @@ void CBruteForceVehicularResponse2::EvaluateForMinMoment(LiveLoadModelType type,
                   m_Truck.EvaluatePrimaryInfl(truck_location, truck_side, inflLine, 
                                               &applied_axles, &is_dual, &left_truck_result, &right_truck_result);
 
-                  //WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << m_Truck.GetVariableAxleSpacing() << " Dir " << (direction == ltdForward ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
+                  //WATCH(_T("Vehicle Index ") << vehicleIndex << _T(" Axle Spacing ") << m_Truck.GetVariableAxleSpacing() << _T(" Dir ") << (direction == ltdForward ? _T("F") : _T("R")) << _T(" Position ") << truck_location << _T(" Pivot Axle ") << pivotAxleIndex);
 
                   // perform comparison and store data for new max if there is one.
                   if (pLeftCompare->CompareResults(left_truck_result))
@@ -1990,7 +1990,7 @@ void CBruteForceVehicularResponse2::EvaluateForInteriorSupportReaction(LiveLoadM
                left_truck_result  += left_result;
                right_truck_result += right_result;
 
-               //WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << m_Truck.GetVariableAxleSpacing() << " Dir " << (direction == ltdForward ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
+               //WATCH(_T("Vehicle Index ") << vehicleIndex << _T(" Axle Spacing ") << m_Truck.GetVariableAxleSpacing() << _T(" Dir ") << (direction == ltdForward ? _T("F") : _T("R")) << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
             } // next influence line
 
             // perform comparison and store data for new max if there is one.
@@ -2084,7 +2084,7 @@ void CBruteForceVehicularResponse2::Evaluate(LiveLoadModelType type, VehicleInde
                   right_truck_result += right_result;
                }
 
-               //WATCH("Vehicle Index " << vehicleIndex << " Axle Spacing " << axle_spacing << " Dir " << (truckDir == 0 ? "F" : "R") << " Position " << truck_location << " Pivot Axle " << pivotAxleIndex);
+               //WATCH(_T("Vehicle Index ") << vehicleIndex << _T(" Axle Spacing ") << axle_spacing << _T(" Dir ") << (truckDir == 0 ? _T("F") : _T("R")) << _T(" Position ") << truck_location << _T(" Pivot Axle ") << pivotAxleIndex);
 
                // perform comparison and store data for new max if there is one.
                if (pLeftCompare->CompareResults(left_truck_result))

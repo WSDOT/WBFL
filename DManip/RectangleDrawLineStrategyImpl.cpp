@@ -128,13 +128,13 @@ STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* pDO
    CSize  vpExt = pDC->GetViewportExt();
    CSize  wnExt = pDC->GetWindowExt();
 
-   WATCHX(DManip,1,"Viewport Origin:  x = " << vpOrg.x  << " y = " << vpOrg.y);
-   WATCHX(DManip,1,"Viewport Extent:  x = " << vpExt.cx << " y = " << vpExt.cy);
-   WATCHX(DManip,1,"Window   Origin:  x = " << wnOrg.x  << " y = " << wnOrg.y);
-   WATCHX(DManip,1,"Window   Extent:  x = " << wnExt.cx << " y = " << wnExt.cy);
+   WATCHX(DManip,1,_T("Viewport Origin:  x = ") << vpOrg.x  << _T(" y = ") << vpOrg.y);
+   WATCHX(DManip,1,_T("Viewport Extent:  x = ") << vpExt.cx << _T(" y = ") << vpExt.cy);
+   WATCHX(DManip,1,_T("Window   Origin:  x = ") << wnOrg.x  << _T(" y = ") << wnOrg.y);
+   WATCHX(DManip,1,_T("Window   Extent:  x = ") << wnExt.cx << _T(" y = ") << wnExt.cy);
    CPoint p1d = p1;
    pDC->LPtoDP(&p1d);
-   WATCHX(DManip,1,"LP x = " << p1.x << " y = " << p1.y << " -> DP x = " << p1d.x << " y = " << p1d.y);
+   WATCHX(DManip,1,_T("LP x = ") << p1.x << _T(" y = ") << p1.y << _T(" -> DP x = ") << p1d.x << _T(" y = ") << p1d.y);
 }
 
 STDMETHODIMP_(void) CRectangleDrawLineStrategyImpl::DrawDragImage(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)

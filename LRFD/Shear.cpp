@@ -495,16 +495,16 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    deja_vu_angle = theta_guess/2.;
 
    // Iterate until theta is found
-   //WATCH( "*** Begin Iteration to find Theta ***");
-   //WATCH( "   vfc      = " << vfc );
+   //WATCH( _T("*** Begin Iteration to find Theta ***") );
+   //WATCH( _T("   vfc      = ") << vfc );
    while ( !done && (cIter < max_iter) )
    {
       cIter++;
       ex = compute_strain(pData,theta_guess);
       theta = get_theta(vfc,ex);
-      //WATCH( "theta_guess = " << theta_guess );
-      //WATCH( "   ex       = " << ex );
-      //WATCH( "theta       = " << theta );
+      //WATCH( _T("theta_guess = ") << theta_guess );
+      //WATCH( _T("   ex       = ") << ex );
+      //WATCH( _T("theta       = ") << theta );
 
       if ( IsEqual( theta, theta_guess, theta_tol) )
          done = true;
@@ -518,7 +518,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
             {
                // We're cycling (deja vu - we've used this theta guess before)
                theta = (deja_vu_angle + theta_guess)/2.;
-               //WATCH( "*** deja vu ***" << " " << deja_vu_angle );
+               //WATCH( _T("*** deja vu *** ") << deja_vu_angle );
             }
 
             deja_vu_angle = temp_theta;
@@ -593,15 +593,15 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    Float64 theta;
    Float64 ex;
 
-   //WATCH( "*** Begin Iteration to find Theta ***");
-   //WATCH( "vfc      = " << vfc );
-   //WATCH( "Spanning rows " << row1 << " and " << row2 );
+   //WATCH( _T("*** Begin Iteration to find Theta ***") );
+   //WATCH( _T("vfc      = ") << vfc );
+   //WATCH( _T("Spanning rows ") << row1 << _T(" and ") << row2 );
 
    
    Int16 col;
    for ( col = 0; col < get_ex_count()-1; col++ )
    {
-      WATCH( "Checking for intersection between col " << col << " and " << (col+1) );
+      WATCH( _T("Checking for intersection between col ") << col << _T(" and ") << (col+1) );
 
       // Interpolation variables
       Float64 a;
@@ -629,8 +629,8 @@ void compute_theta_and_beta2(lrfdShearData* pData)
       gpLineSegment2d l1(gpPoint2d(theta_guess[0],ex_calc[0]),  gpPoint2d(theta_guess[1],ex_calc[1]));
       gpLineSegment2d l2(gpPoint2d(theta_guess[0],ex_table[0]), gpPoint2d(theta_guess[1],ex_table[1]));
 
-      //WATCH( "L1 = " << l1.GetStartPoint() << " " << l1.GetEndPoint() );
-      //WATCH( "L2 = " << l2.GetStartPoint() << " " << l2.GetEndPoint() );
+      //WATCH( _T("L1 = ") << l1.GetStartPoint() << _T(" ") << l1.GetEndPoint() );
+      //WATCH( _T("L2 = ") << l2.GetStartPoint() << _T(" ") << l2.GetEndPoint() );
 
       gpPoint2d p;
       if ( gpGeomOp2d::Intersect( &p, l1, l2 ) == 1 )
@@ -639,7 +639,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
          theta = p.X();
          ex    = p.Y();
 
-         //WATCH("Intersection found " << p );
+         //WATCH(_T("Intersection found ") << p );
 
          break;
       }

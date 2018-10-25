@@ -220,7 +220,7 @@ bool CTestPersistance::TestBridge(IGenericBridge* bridge)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return false;
    }
 }

@@ -343,7 +343,7 @@ public:
       for ( ; iter != end; iter++ )
       {
          Float64 Xgp = *iter;
-         Float64 Xs = Xgp - xStartSegment;
+         Float64 Xs = ConvertToSegmentCoordinate(Xgp);
          Float64 H = GetSectionDepth(Xs);
          polyShape->AddPoint(Xgp,-H);
       }
@@ -814,25 +814,16 @@ protected:
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
 
-      Float64 segment_layout_length;
-      girderLine->get_LayoutLength(&segment_layout_length);
+      Float64 segment_length;
+      girderLine->get_GirderLength(&segment_length);
 
-      Float64 end_distance, bearing_offset;
-      girderLine->get_EndDistance(etStart,&end_distance);
-      girderLine->get_BearingOffset(etStart,&bearing_offset);
-      Float64 XsStartFaceOfSegment = bearing_offset - end_distance;
-
-      girderLine->get_EndDistance(etEnd,&end_distance);
-      girderLine->get_BearingOffset(etEnd,&bearing_offset);
-      Float64 XsEndFaceOfSegment = segment_layout_length - (bearing_offset - end_distance);
-
-      if ( ::InRange(XsStartFaceOfSegment,Xs,XsEndFaceOfSegment) )
+      if ( ::InRange(0.0,Xs,segment_length) )
          return 0; 
 
-      if ( Xs < XsStartFaceOfSegment )
+      if ( Xs < 0.0 )
          return -1; // Xs is in the start closure
 
-      if ( XsEndFaceOfSegment < Xs )
+      if ( segment_length < Xs )
          return 1; // Xs is in the end closure
  
       ATLASSERT(false); // should not get here
@@ -841,34 +832,42 @@ protected:
 
    Float64 GetBottomFlangeHeight(Float64 Xs)
    {
-      Float64 xStart, xEnd;
-      GetSegmentRange(&xStart,&xEnd);
+      Float64 XgpStart, XgpEnd;
+      GetSegmentRange(&XgpStart,&XgpEnd);
+
+      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+
+      Float64 Xgp = XgpStart + Xsp;
 
       if ( m_bBottomFlangeHeightProfile )
       {
-         return m_BottomFlangeHeightProfile.Evaluate(xStart+Xs);
+         return m_BottomFlangeHeightProfile.Evaluate(Xgp);
       }
 
       UpdateProfile(false,&m_BottomFlangeHeightProfile);
 
       m_bBottomFlangeHeightProfile = true;
-      return m_BottomFlangeHeightProfile.Evaluate(xStart+Xs);
+      return m_BottomFlangeHeightProfile.Evaluate(Xgp);
    }
 
    Float64 GetSectionDepth(Float64 Xs)
    {
-      Float64 xStart, xEnd;
-      GetSegmentRange(&xStart,&xEnd);
+      Float64 XgpStart, XgpEnd;
+      GetSegmentRange(&XgpStart,&XgpEnd);
+
+      Float64 Xsp = ConvertToSegmentPathCoordinate(Xs);
+
+      Float64 Xgp = XgpStart + Xsp;
 
       if ( m_bSegmentHeightProfile )
       {
-         return m_SegmentHeightProfile.Evaluate(xStart+Xs);
+         return m_SegmentHeightProfile.Evaluate(Xgp);
       }
 
       UpdateProfile(true,&m_SegmentHeightProfile);
 
       m_bSegmentHeightProfile = true;
-      return m_SegmentHeightProfile.Evaluate(xStart+Xs);
+      return m_SegmentHeightProfile.Evaluate(Xgp);
    }
 
    void UpdateProfile(bool bGirderProfile,mathCompositeFunction2d* pProfile)
@@ -1261,9 +1260,38 @@ protected:
       return mathPolynomial2d(coefficients);
    }
 
+   Float64 ConvertToSegmentPathCoordinate(Float64 Xs)
+   {
+      CComPtr<IGirderLine> girderLine;
+      get_GirderLine(&girderLine);
+      Float64 brgOffset, endDist;
+      girderLine->get_BearingOffset(etStart,&brgOffset);
+      girderLine->get_EndDistance(etStart,&endDist);
+      Float64 offset = brgOffset - endDist;
+      Float64 Xsp = Xs + offset;
+      return Xsp;
+   }
+
+   Float64 ConvertToSegmentCoordinate(Float64 Xgp)
+   {
+      Float64 XgpStart, XgpEnd;
+      GetSegmentRange(&XgpStart,&XgpEnd);
+      Float64 Xsp = Xgp - XgpStart;
+      CComPtr<IGirderLine> girderLine;
+      get_GirderLine(&girderLine);
+      Float64 brgOffset, endDist;
+      girderLine->get_BearingOffset(etStart,&brgOffset);
+      girderLine->get_EndDistance(etStart,&endDist);
+      Float64 offset = brgOffset - endDist;
+      Float64 Xs = Xsp - offset;
+      return Xs;
+   }
+
    void GetSegmentRange(Float64* pXgpStart,Float64* pXgpEnd)
    {
       // Returns the start and end of the segment in Girder Path Coordinates.
+      // This is the start/end of the segment path coordinate system in
+      // girder path coordinates
 
       *pXgpStart = 0; // start at zero
 

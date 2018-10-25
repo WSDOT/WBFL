@@ -93,13 +93,19 @@ CEAFMainFrame::CEAFMainFrame()
 CEAFMainFrame::~CEAFMainFrame()
 {
    if ( m_pStatusBar )
+   {
       delete m_pStatusBar;
+   }
 
    if (m_pMainFrameToolBar)
+   {
       delete m_pMainFrameToolBar;
+   }
 
    if (m_pMainMenu)
+   {
       delete m_pMainMenu;
+   }
 }
 
 CEAFStatusBar* CEAFMainFrame::CreateStatusBar()
@@ -120,7 +126,9 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
    
    DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
+   {
       dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
+   }
 
    if ( !pToolBar->CreateEx(this,TBSTYLE_FLAT | TBSTYLE_TRANSPARENT,dwToolBarStyle,CRect(0,0,0,0), ID_MAINFRAME_TOOLBAR) ||
         !pToolBar->LoadToolBar(IDR_MAINFRAME) )
@@ -144,7 +152,9 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
 int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CMDIFrameWnd::OnCreate(lpCreateStruct) == -1)
+   {
 		return -1;
+   }
 	
    // Restore tool tips mode
    m_bShowToolTips = (EAFGetApp()->GetProfileInt(CString((LPCTSTR)IDS_REG_SETTINGS),
@@ -156,9 +166,13 @@ int CEAFMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    if ( EAFGetApp()->ReadWindowPlacement(CString((LPCTSTR)IDS_REG_SETTINGS),CString((LPCTSTR)IDS_REG_WNDPOS),&wp) )
    {
       if ( sysFlags<LONG>::IsSet(lpCreateStruct->style,WS_VISIBLE) )
+      {
          wp.showCmd = SW_SHOW;
+      }
       else
+      {
          wp.showCmd = SW_HIDE;
+      }
 
       SetWindowPlacement(&wp);
    }
@@ -233,7 +247,9 @@ BOOL CEAFMainFrame::PreCreateWindow(CREATESTRUCT& cs)
 BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
 {
    if ( CMDIFrameWnd::PreTranslateMessage(pMsg) )
+   {
       return TRUE;
+   }
 
    // Add a toolbar popup menu if a right click happens in the docking space
    if (pMsg->message == WM_RBUTTONDOWN)
@@ -260,7 +276,9 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
             BOOL bVisible = *stateIter;
             UINT iFlags = MF_STRING | MF_ENABLED;
             if ( bVisible )
+            {
                iFlags |= MF_CHECKED;
+            }
 
             CString strToolBarName;
             menu.AppendMenu( iFlags, EAF_TOOLBAR_MENU_BASE + offset, strName );
@@ -286,16 +304,22 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
       }
 
       if ( GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+      {
          return TRUE;
+      }
 
       CEAFDocument* pDoc = GetDocument();
       if ( pDoc )
       {
          if ( ((CEAFDocTemplate*)pDoc->GetDocTemplate())->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+         {
             return TRUE;
+         }
 
          if ( pDoc->GetDocPluginManager()->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+         {
             return TRUE;
+         }
       }
    }
 
@@ -309,7 +333,9 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    CDocument* pActiveDoc = NULL;
    CMDIChildWnd* pChildWnd = MDIGetActive();
    if ( pChildWnd )
+   {
       pActiveDoc = pChildWnd->GetActiveDocument();
+   }
 
    if ( pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
@@ -321,9 +347,13 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
          // this command belogs to one of the plug-ins
          bHandledByPlugin = TRUE;
          if ( pCallback )
+         {
             pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
+         }
          else
+         {
             pDoc->GetStatusBarMessageString(nID,rMessage);
+         }
       }
    }
 
@@ -355,7 +385,9 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    }
 
    if ( !bHandledByPlugin )
+   {
       CMDIFrameWnd::GetMessageString(nID,rMessage);
+   }
 }
 
 BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
@@ -384,9 +416,13 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
       {
          // this command belogs to one of the plug-ins
          if ( pCallback )
+         {
             bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
+         }
          else
+         {
             bHandledByPlugin = pDoc->GetToolTipMessageString((UINT)nID,strTipText);
+         }
       }
    }
 
@@ -419,14 +455,22 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    {
 #ifndef _UNICODE
 	   if (pTTTStruct->code == TTN_NEEDTEXTA)
+      {
 		   lstrcpyn(pTTTA->szText, strTipText, strTipText.GetLength()+1);
+      }
 	   else
+      {
 		   _mbstowcsz(pTTTW->szText, strTipText, strTipText.GetLength()+1);
+      }
 #else
 	   if (pTTTStruct->code == TTN_NEEDTEXTA)
+      {
 		   _wcstombsz(pTTTA->szText, strTipText, strTipText.GetLength()+1);
+      }
 	   else
+      {
 		   lstrcpyn(pTTTW->szText, strTipText, strTipText.GetLength()+1);
+      }
 #endif
 
       *pResult = 0;
@@ -480,7 +524,9 @@ void CEAFMainFrame::OnUpdateFrameTitle(BOOL bAddToTitle)
    // The filename is always displayed.
 
    if ((GetStyle() & FWS_ADDTOTITLE) == 0)
+   {
       return;     // leave it alone!
+   }
 
    CEAFDocument* pDoc = GetDocument();
 
@@ -586,14 +632,22 @@ CEAFDocument* CEAFMainFrame::GetDocument()
    CDocument* pDoc = GetActiveDocument();
    CView* pView = GetActiveView();
    if ( pDoc == NULL && pActiveChild != NULL )
+   {
       pDoc = pActiveChild->GetActiveDocument();
+   }
    else if ( pDoc == NULL && pView != NULL )
+   {
       pDoc = pView->GetDocument();
+   }
 
    if ( pDoc != NULL && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
+   {
       return (CEAFDocument*)pDoc;
+   }
    else
+   {
       return NULL;
+   }
 }
 
 CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
@@ -732,7 +786,9 @@ void CEAFMainFrame::SetStatusBar(CEAFStatusBar* pStatusBar)
 void CEAFMainFrame::HideMainFrameToolBar()
 {
    if ( m_bDisableHideMainToolBar )
+   {
       return;
+   }
 
    ShowControlBar(m_pMainFrameToolBar,FALSE,FALSE);
 }
@@ -740,7 +796,9 @@ void CEAFMainFrame::HideMainFrameToolBar()
 void CEAFMainFrame::ShowMainFrameToolBar()
 {
    if ( m_bDisableHideMainToolBar )
+   {
       return;
+   }
 
    ShowControlBar(m_pMainFrameToolBar,TRUE,FALSE);
 }
@@ -815,7 +873,9 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
 
    DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
+   {
       dwToolBarStyle |= CBRS_TOOLTIPS | CBRS_FLYBY;
+   }
 
    pToolBar->CreateEx(this,TBSTYLE_FLAT | TBSTYLE_TRANSPARENT,dwToolBarStyle,CRect(0,0,0,0),tbID);
    pToolBar->EnableDocking(CBRS_ALIGN_ANY);
@@ -846,7 +906,9 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
 CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
 {
    if ( m_ToolBarInfo.size() == 0 )
+   {
       return NULL;
+   }
 
    CEAFToolBarInfo key;
    key.m_ToolBarID = toolbarID;
@@ -920,10 +982,14 @@ void CEAFMainFrame::OnDropFiles(HDROP hDropInfo)
 {
    // Don't allow multiple files to be dropped
 	UINT nFiles = ::DragQueryFile(hDropInfo, (UINT)-1, NULL, 0);
-   if (nFiles>1)
+   if (1 < nFiles)
+   {
       ::AfxMessageBox(_T("Error - Multiple file drop not allowed. Please drop one file at a time."),MB_ICONEXCLAMATION|MB_OK);
+   }
    else
+   {
       CMDIFrameWnd::OnDropFiles(hDropInfo);
+   }
 }
 
 void CEAFMainFrame::OnViewToolBar() 
@@ -1059,16 +1125,22 @@ void CEAFMainFrame::SetToolBarState(CToolBar* pToolBar,BOOL bShow)
    BOOL bIsVisible = pToolBar->IsWindowVisible();
 
    if ( bIsVisible && !bShow || !bIsVisible && bShow )
+   {
      ShowControlBar( pToolBar, bShow, FALSE );
+   }
 
    DWORD dwStyle = pToolBar->GetBarStyle();
    BOOL bToolTipsEnabled = sysFlags<DWORD>::IsSet( dwStyle, CBRS_TOOLTIPS );
    if ( bToolTipsEnabled && !m_bShowToolTips || !bToolTipsEnabled && m_bShowToolTips )
    {
       if ( m_bShowToolTips )
+      {
          sysFlags<DWORD>::Set( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+      }
       else
+      {
          sysFlags<DWORD>::Clear( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+      }
 
       pToolBar->SetBarStyle( dwStyle );
    }

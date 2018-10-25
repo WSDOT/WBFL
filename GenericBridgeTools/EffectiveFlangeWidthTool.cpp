@@ -67,13 +67,13 @@ STDMETHODIMP CEffectiveFlangeWidthTool::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64 *tribFlangeWidth)
 {
    Float64 twLeft, twRight;
-   return TributaryFlangeWidthBySSMbrEx(bridge,ssMbrID,Xgp,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
+   return TributaryFlangeWidthBySSMbrEx(bridge,ssMbrID,Xg,leftSSMbrID,rightSSMbrID,&twLeft,&twRight,tribFlangeWidth);
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp,GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, Float64* twLeft,Float64* twRight,Float64 *tribFlangeWidth)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -81,7 +81,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySSMbrEx(IGenericBr
    Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(Xgp,&Xs,&segIdx,&segment);
+   ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
    return TributaryFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,twLeft,twRight,tribFlangeWidth);
 }
 
@@ -174,10 +174,10 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
    return S_OK;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,Float64 *effFlangeWidth)
 {
    CComPtr<IEffectiveFlangeWidthDetails> details;
-   HRESULT hr = EffectiveFlangeWidthBySSMbrEx(bridge,ssMbrID,Xgp,leftSSMbrID,rightSSMbrID,&details);
+   HRESULT hr = EffectiveFlangeWidthBySSMbrEx(bridge,ssMbrID,Xg,leftSSMbrID,rightSSMbrID,&details);
    if ( FAILED(hr) )
       return hr;
 
@@ -186,7 +186,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbr(IGenericBrid
    return S_OK;
 }
 
-STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xgp, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
+STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbrEx(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,IEffectiveFlangeWidthDetails** details)
 {
    CComPtr<ISuperstructureMember> ssMbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssMbr);
@@ -194,7 +194,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySSMbrEx(IGenericBr
    Float64 Xs;
    SegmentIndexType segIdx;
    CComPtr<ISegment> segment;
-   ssMbr->GetDistanceFromStartOfSegment(Xgp,&Xs,&segIdx,&segment);
+   ssMbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
 
    return EffectiveFlangeWidthBySegmentEx(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,details);
 }

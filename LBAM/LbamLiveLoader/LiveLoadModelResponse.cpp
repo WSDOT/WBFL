@@ -623,7 +623,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -634,7 +634,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -645,7 +645,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -656,7 +656,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -667,7 +667,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -678,7 +678,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMLL(INVALID_VEHICULAR_CONTEXT);
       }
 
@@ -705,7 +705,7 @@ STDMETHODIMP CLiveLoadModelResponse::Initialize(/*[in]*/IUnknown* context)
          }
          else
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             hr = E_FAIL;
          }
       }
@@ -728,7 +728,7 @@ STDMETHODIMP CLiveLoadModelResponse::get_Strategy(IEnvelopedVehicularResponse * 
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 }

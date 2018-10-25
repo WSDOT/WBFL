@@ -344,7 +344,7 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
          poiLocs->push_back(mbr_loc);
       }
       else
-         ATLASSERT(0); // we can only handle superstructure
+         ATLASSERT(false); // we can only handle superstructure
    }
 }
 

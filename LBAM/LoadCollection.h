@@ -452,7 +452,7 @@ public:
       std::pair<ContainerIteratorType,bool> st( m_Container.insert(ContainerValueType(pitem->m_ID, pitem)) );
       if (!st.second)
       {
-         ATLASSERT(0); // insert failed - better check why
+         ATLASSERT(false); // insert failed - better check why
          return E_POINTER;
       }
 
@@ -547,7 +547,7 @@ public:
          CItemType* pitm = dynamic_cast<CItemType*>(i->second.p);
          if (pitm == 0)
          {
-            ATLASSERT(0); // this should never happen since we are eating our own dog food here
+            ATLASSERT(false); // this should never happen since we are eating our own dog food here
             return E_FAIL;
          }
 
@@ -609,7 +609,7 @@ public:
          CItemType* pitem = dynamic_cast<CItemType*>(it->second.p);
          if (pitem == 0)
          {
-            ATLASSERT(0); // this should never happen since we are eating our own dog food here
+            ATLASSERT(false); // this should never happen since we are eating our own dog food here
             return E_FAIL;
          }
 
@@ -652,7 +652,7 @@ public:
       CItemType* pitm = dynamic_cast<CItemType*>(item);
       if (pitm == 0)
       {
-         ATLASSERT(0); // this should never happen since we are eating our own dog food here
+         ATLASSERT(false); // this should never happen since we are eating our own dog food here
          return E_FAIL;
       }
 
@@ -667,7 +667,7 @@ public:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -694,7 +694,7 @@ public:
          CItemType* pitm = dynamic_cast<CItemType*>(cur->second.p);
          if (pitm == 0)
          {
-            ATLASSERT(0); // this should never happen since we are eating our own dog food here
+            ATLASSERT(false); // this should never happen since we are eating our own dog food here
             return E_FAIL;
          }
 
@@ -725,7 +725,7 @@ public:
       CItemType* pitm = dynamic_cast<CItemType*>(item);
       if (pitm == 0)
       {
-         ATLASSERT(0); // this should never happen since we are eating our own dog food here
+         ATLASSERT(false); // this should never happen since we are eating our own dog food here
          return E_FAIL;
       }
 
@@ -847,7 +847,7 @@ public:
          std::pair<ContainerIteratorType,bool> st( m_Container.insert(ContainerValueType(pitem->m_ID, pitem)) );
          if (!st.second)
          {
-            ATLASSERT(0); // insert failed - better check why
+            ATLASSERT(false); // insert failed - better check why
             return E_POINTER;
          }
 
@@ -887,7 +887,7 @@ public:
          CItemType* pitm = dynamic_cast<CItemType*>(it->second.p);
          if (pitm == 0)
          {
-            ATLASSERT(0); // this should never happen since we are eating our own dog food here
+            ATLASSERT(false); // this should never happen since we are eating our own dog food here
             return E_FAIL;
          }
 

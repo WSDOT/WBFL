@@ -102,7 +102,7 @@ public:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
       return S_OK;
@@ -126,7 +126,7 @@ public:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 

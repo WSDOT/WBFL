@@ -270,7 +270,7 @@ STDMETHODIMP CProgressMonitorWindow::OpenLogFile(BSTR fileName)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 
@@ -290,12 +290,12 @@ STDMETHODIMP CProgressMonitorWindow::CloseLogFile()
       }
       else
       {
-         ATLASSERT(0); // trying to close a file that was never opened?
+         ATLASSERT(false); // trying to close a file that was never opened?
       }
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

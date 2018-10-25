@@ -150,9 +150,13 @@ SYSFUNC sysSectionValue operator-(const sysSectionValue& a,const sysSectionValue
 
 //------------------------------------------------------------------------
 SYSFUNC sysSectionValue operator*(const sysSectionValue& a,const sysSectionValue& b);
+SYSFUNC sysSectionValue operator*(const sysSectionValue& a,Float64 k);
+SYSFUNC sysSectionValue operator*(Float64 k,const sysSectionValue& a);
 
 //------------------------------------------------------------------------
 SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue& b);
+SYSFUNC sysSectionValue operator/(const sysSectionValue& a,Float64 k);
+SYSFUNC sysSectionValue operator/(Float64 k,const sysSectionValue& a);
 
 //------------------------------------------------------------------------
 SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a);

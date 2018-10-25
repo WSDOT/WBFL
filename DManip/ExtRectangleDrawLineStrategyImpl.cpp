@@ -140,7 +140,7 @@ STDMETHODIMP_(void) CExtRectangleDrawLineStrategyImpl::Draw(iLineDisplayObject* 
       break;
 
    default:
-      ATLASSERT(0);  // new type of pen style?
+      ATLASSERT(false);  // new type of pen style?
       nPenStyle = PS_SOLID;
       break;
 

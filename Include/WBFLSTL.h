@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// LBAM Utility - Longitindal Bridge Analysis Model
+// WBFL - Washington Bridge Foundation Libraries
 // Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,20 +21,30 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+#pragma once
 
-#if !defined INCLUDED_UTILITYUTILS_H_
-#define INCLUDED_UTILITYUTILS_H_
-
-#include "ComException.h"
-
-// macros to help error processing
-// short-hand version if consistent naming conventions are used
-#define THROW_LBAMU(errNam) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMU_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMU_MSG(errNam, msg) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, msg, LBAMU_E_##errNam, IDH_E_##errNam);}
-
-inline CComBSTR GetHelpFile()
+template <class ElementType>
+class FactorElements
 {
-   return CComBSTR("WBFLLBAM.chm");
-}
+public:
+   FactorElements(Float64 factor) : Factor(factor) {}
+   ElementType operator() (ElementType& element) const
+   {
+      return element*Factor;
+   }
 
-#endif 
+   Float64 Factor;
+};
+
+template <class ElementType>
+class IncrementElements
+{
+public:
+   IncrementElements(Float64 increment) : Increment(increment) {}
+   ElementType operator() (ElementType& element) const
+   {
+      return element+Increment;
+   }
+
+   Float64 Increment;
+};

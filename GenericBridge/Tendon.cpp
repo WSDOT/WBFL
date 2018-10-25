@@ -63,7 +63,9 @@ STDMETHODIMP CTendon::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -106,7 +108,9 @@ STDMETHODIMP CTendon::get_DuctDiameter(Float64* size)
 STDMETHODIMP CTendon::put_DuctDiameter(Float64 size)
 {
    if ( size < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_DuctDiameter = size;
    return S_OK;
@@ -122,7 +126,9 @@ STDMETHODIMP CTendon::get_StrandCount(StrandIndexType* count)
 STDMETHODIMP CTendon::put_StrandCount(StrandIndexType count)
 {
    if ( count < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_StrandCount = count;
    return S_OK;
@@ -133,7 +139,9 @@ STDMETHODIMP CTendon::get_Material(IPrestressingStrand** material)
    CHECK_RETOBJ(material);
    (*material) = m_Material;
    if ( m_Material )
+   {
       (*material)->AddRef();
+   }
 
    return S_OK;
 }
@@ -172,15 +180,11 @@ STDMETHODIMP CTendon::get_CG(Float64 z,TendonMeasure measure,IPoint3d** cg)
    CComPtr<ITendonSegment> segment;
    bool bSuccess = GetTendonSegment(z,&segment);
    if ( !bSuccess )
-      return E_FAIL;
-
-   segment->get_Position(z,cg);
-
-   if ( measure == tmTendon )
    {
-#pragma Reminder("UPDATE: Need to account for strand being off center from the cg")
-      //ATLASSERT(false); /// need to implement this
+      return E_FAIL;
    }
+
+   segment->get_Position(measure,z,cg);
 
    return S_OK;
 }
@@ -192,7 +196,9 @@ STDMETHODIMP CTendon::get_Slope(Float64 z,TendonMeasure measure,IVector3d** slop
    CComPtr<ITendonSegment> segment;
    bool bSuccess = GetTendonSegment(z,&segment);
    if ( !bSuccess )
+   {
       return E_FAIL;
+   }
 
    segment->get_Slope(z,slope);
 
@@ -234,6 +240,37 @@ STDMETHODIMP CTendon::get_End(IPoint3d** end)
    ATLASSERT(m_coll.size() != 0);
    CComPtr<ITendonSegment> segment = m_coll.back().second.m_T;
    return segment->get_End(end);
+}
+
+STDMETHODIMP CTendon::get_Centerline(TendonMeasure measure,IPoint3dCollection** ppPoints)
+{
+   CComPtr<IPoint3dCollection> centerline;
+   centerline.CoCreateInstance(CLSID_Point3dCollection);
+
+   IndexType startIdx = 0; // the first time through, we want the start point of the first segment
+   // all other times we want to start at point 1 because the end of one segment is the start of the next
+   ContainerIteratorType iter(m_coll.begin());
+   ContainerIteratorType end(m_coll.end());
+   for ( ; iter != end; iter++ )
+   {
+      CComPtr<ITendonSegment> segment = (*iter).second.m_T;
+      CComPtr<IPoint3dCollection> segmentCenterline;
+      segment->get_Centerline(measure,&segmentCenterline);
+
+      IndexType nPoints;
+      segmentCenterline->get_Count(&nPoints);
+      for ( IndexType idx = startIdx; idx < nPoints; idx++ )
+      {
+         CComPtr<IPoint3d> point;
+         segmentCenterline->get_Item(idx,&point);
+         centerline->Add(point);
+      }
+
+      startIdx = 1;
+   }
+
+   centerline.CopyTo(ppPoints);
+   return S_OK;
 }
 
 STDMETHODIMP CTendon::get_JackingEnd(JackingEndType* type)
@@ -332,7 +369,9 @@ bool CTendon::GetTendonSegment(Float64 z,ITendonSegment** segment)
 HRESULT CTendon::OnBeforeAdd( StoredType* pVal)
 {
    if ( m_coll.size() == 0 )
+   {
       return S_OK;
+   }
 
    CComPtr<ITendonSegment> newSegment = pVal->second.m_T;
    CComPtr<ITendonSegment> lastSegment = m_coll.back().second.m_T;

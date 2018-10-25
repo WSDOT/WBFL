@@ -1921,7 +1921,7 @@ void TrapezoidalLdBeam::ComputePPReactionsFy()
 void TrapezoidalLdBeam::ComputePPReactionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Fxl = 0;
    m_Fyl = 0;
    m_Mzl = 0;
@@ -1990,7 +1990,7 @@ void TrapezoidalLdBeam::ComputePFReactionsFy()
 void TrapezoidalLdBeam::ComputePFReactionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Fxl = 0;
    m_Fyl = 0;
    m_Mzl = 0;
@@ -2057,7 +2057,7 @@ void TrapezoidalLdBeam::ComputeFPReactionsFy()
 void TrapezoidalLdBeam::ComputeFPReactionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Fxl = 0;
    m_Fyl = 0;
    m_Mzl = 0;
@@ -2122,7 +2122,7 @@ void TrapezoidalLdBeam::ComputeFFReactionsFy()
 void TrapezoidalLdBeam::ComputeFFReactionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Fxl = 0;
    m_Fyl = 0;
    m_Mzl = 0;
@@ -2190,7 +2190,7 @@ void TrapezoidalLdBeam::ComputePPDeflectionsFy()
 void TrapezoidalLdBeam::ComputePPDeflectionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
@@ -2244,7 +2244,7 @@ void TrapezoidalLdBeam::ComputePFDeflectionsFy()
 void TrapezoidalLdBeam::ComputePFDeflectionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
@@ -2300,7 +2300,7 @@ void TrapezoidalLdBeam::ComputeFPDeflectionsFy()
 void TrapezoidalLdBeam::ComputeFPDeflectionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
@@ -2329,7 +2329,7 @@ void TrapezoidalLdBeam::ComputeFFDeflectionsFy()
 void TrapezoidalLdBeam::ComputeFFDeflectionsMz()
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    m_Dxl = 0;
    m_Dyl = 0;
    m_Rzl = 0;
@@ -2434,7 +2434,7 @@ void TrapezoidalLdBeam::ComputePPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Floa
 void TrapezoidalLdBeam::ComputePPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    fx = 0;
    fy = 0;
    mz = 0;
@@ -2510,7 +2510,7 @@ void TrapezoidalLdBeam::ComputePFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Floa
 void TrapezoidalLdBeam::ComputePFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    fx = 0;
    fy = 0;
    mz = 0;
@@ -2523,13 +2523,13 @@ void TrapezoidalLdBeam::ComputeFPForcesFx(Float64 x,Float64 &fx,Float64 &fy,Floa
 
 void TrapezoidalLdBeam::ComputeFPForcesFy(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
-   ATLASSERT(0);
+   ATLASSERT(false);
 }
 
 void TrapezoidalLdBeam::ComputeFPForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    fx = 0;
    fy = 0;
    mz = 0;
@@ -2606,7 +2606,7 @@ void TrapezoidalLdBeam::ComputeFFForcesFy(Float64 x,Float64 &fx,Float64 &fy,Floa
 void TrapezoidalLdBeam::ComputeFFForcesMz(Float64 x,Float64 &fx,Float64 &fy,Float64 &mz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    fx = 0;
    fy = 0;
    mz = 0;
@@ -2853,13 +2853,13 @@ void TrapezoidalLdBeam::ComputeFPDeflectionFx(Float64 x,Float64 &dx,Float64 &dy,
 
 void TrapezoidalLdBeam::ComputeFPDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
-   ATLASSERT(0);
+   ATLASSERT(false);
 }
 
 void TrapezoidalLdBeam::ComputeFPDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    dx = 0;
    dy = 0;
    rz = 0;
@@ -2960,7 +2960,7 @@ void TrapezoidalLdBeam::ComputeFFDeflectionFy(Float64 x,Float64 &dx,Float64 &dy,
 void TrapezoidalLdBeam::ComputeFFDeflectionMz(Float64 x,Float64 &dx,Float64 &dy,Float64 &rz)
 {
    // Not implemented yet
-   ATLASSERT(0);
+   ATLASSERT(false);
    dx = 0;
    dy = 0;
    rz = 0;

@@ -268,7 +268,9 @@ void lrfdLosses::Init()
 lrfdLosses& lrfdLosses::operator=(const lrfdLosses& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -283,7 +285,9 @@ void lrfdLosses::OnUpdate()
 Float64 lrfdLosses::GetFpy() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_Fpy;
 }
@@ -291,7 +295,9 @@ Float64 lrfdLosses::GetFpy() const
 Float64 lrfdLosses::GetEp() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_Ep;
 }
@@ -405,7 +411,9 @@ Float64 lrfdLosses::GetEccpgFinal() const
 const lrfdElasticShortening& lrfdLosses::ElasticShortening() const 
 { 
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_ElasticShortening; 
 }
@@ -414,7 +422,9 @@ const lrfdElasticShortening& lrfdLosses::ElasticShortening() const
 Float64 lrfdLosses::PermanentStrand_BeforeTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return PermanentStrand_RelaxationLossesBeforeTransfer();
 }
@@ -422,11 +432,11 @@ Float64 lrfdLosses::PermanentStrand_BeforeTransfer() const
 Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
-   Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer();
-   if ( m_SectionProperties == sptGross )
-      loss += PermanentStrand_ElasticShorteningLosses();
+   Float64 loss = PermanentStrand_RelaxationLossesBeforeTransfer() + PermanentStrand_ElasticShorteningLosses();
 
    return loss;
 }
@@ -434,12 +444,16 @@ Float64 lrfdLosses::PermanentStrand_AfterTransfer() const
 Float64 lrfdLosses::PermanentStrand_AtLifting() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AfterTransfer();
 
    if ( m_TempStrandUsage == tsPTBeforeLifting )
+   {
       loss += GetDeltaFpp();//m_dfpp;
+   }
 
    return loss;
 }
@@ -447,12 +461,16 @@ Float64 lrfdLosses::PermanentStrand_AtLifting() const
 Float64 lrfdLosses::PermanentStrand_AtShipping() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AtLifting() + PermanentStrand_TimeDependentLossesAtShipping();
 
    if ( m_TempStrandUsage == tsPTBeforeShipping )
+   {
       loss += GetDeltaFpp();//m_dfpp;
+   }
 
    return loss;
 }
@@ -460,15 +478,21 @@ Float64 lrfdLosses::PermanentStrand_AtShipping() const
 Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AfterTransfer();
 
    if ( m_TempStrandUsage != tsPretensioned )
+   {
       loss += GetDeltaFpp();//m_dfpp;
+   }
 
    if ( m_TempStrandUsage == tsPTBeforeShipping )
+   {
       loss += PermanentStrand_TimeDependentLossesAtShipping();
+   }
 
    return loss;
 }
@@ -476,7 +500,9 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
 Float64 lrfdLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AtShipping();
    return loss;
@@ -485,7 +511,9 @@ Float64 lrfdLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AtShipping() + GetDeltaFptr();//m_dfptr;
    return loss;
@@ -494,15 +522,16 @@ Float64 lrfdLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
 Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
-   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() + GetDeltaFptr();
-      
-   if ( m_SectionProperties == sptGross )
-      loss -= ElasticGainDueToDeckPlacement();
+   Float64 loss = PermanentStrand_AfterTransfer() + TimeDependentLossesBeforeDeck() + GetDeltaFptr() - ElasticGainDueToDeckPlacement();
 
    if ( m_TempStrandUsage != tsPretensioned )
+   {
       loss += GetDeltaFpp();//m_dfpp;
+   }
 
    return loss;
 }
@@ -510,11 +539,11 @@ Float64 lrfdLosses::PermanentStrand_AfterDeckPlacement() const
 Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
-   Float64 loss = PermanentStrand_AfterDeckPlacement();
-   if ( m_SectionProperties == sptGross )
-      loss -= ElasticGainDueToSIDL();
+   Float64 loss = PermanentStrand_AfterDeckPlacement() - ElasticGainDueToSIDL();
 
    return loss;
 }
@@ -522,7 +551,9 @@ Float64 lrfdLosses::PermanentStrand_AfterSIDL() const
 Float64 lrfdLosses::PermanentStrand_Final() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = PermanentStrand_AfterSIDL() + TimeDependentLossesAfterDeck();
    return loss;
@@ -531,7 +562,9 @@ Float64 lrfdLosses::PermanentStrand_Final() const
 Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return PermanentStrand_Final() - gLL*ElasticGainDueToLiveLoad();
 }
@@ -539,7 +572,9 @@ Float64 lrfdLosses::PermanentStrand_FinalWithLiveLoad(Float64 gLL) const
 Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return TemporaryStrand_RelaxationLossesBeforeTransfer();
 }
@@ -547,7 +582,9 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTransfer() const
 Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return TemporaryStrand_RelaxationLossesBeforeTransfer() + TemporaryStrand_ElasticShorteningLosses();
 }
@@ -555,14 +592,20 @@ Float64 lrfdLosses::TemporaryStrand_AfterTransfer() const
 Float64 lrfdLosses::TemporaryStrand_AtLifting() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = 0;
    
    if ( m_TempStrandUsage == tsPretensioned )
+   {
       loss = TemporaryStrand_AfterTransfer();
+   }
    else if ( m_TempStrandUsage == tsPTBeforeLifting )
+   {
       loss = TemporaryStrand_AfterTemporaryStrandInstallation();
+   }
 
    return loss;
 }
@@ -571,16 +614,24 @@ Float64 lrfdLosses::TemporaryStrand_AtLifting() const
 Float64 lrfdLosses::TemporaryStrand_AtShipping() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = 0;
 
    if (m_TempStrandUsage == tsPretensioned )
+   {
       loss = TemporaryStrand_AtLifting() + TemporaryStrand_TimeDependentLossesAtShipping();
+   }
    else if ( m_TempStrandUsage == tsPTBeforeShipping )
+   {
       loss = TemporaryStrand_AfterTemporaryStrandInstallation();
+   }
    else // tsPTBeforeLifting || tsPTAfterLifting
+   {
       loss = TemporaryStrand_AfterTemporaryStrandInstallation() + TemporaryStrand_TimeDependentLossesAtShipping();
+   }
 
    return loss;
 }
@@ -588,13 +639,19 @@ Float64 lrfdLosses::TemporaryStrand_AtShipping() const
 Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = 0;
    if (m_TempStrandUsage == tsPretensioned )
+   {
       loss = TemporaryStrand_AfterTransfer();
+   }
    else
+   {
       loss = FrictionLoss() + AnchorSetLoss() + GetDeltaFptAvg(); //m_dfpF + m_dfpA + m_dfptAvg;
+   }
 
    return loss;
 }
@@ -602,7 +659,9 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
 Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    Float64 loss = 0;
    switch ( m_TempStrandUsage )
@@ -631,7 +690,9 @@ Float64 lrfdLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
 Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return 0;
 }
@@ -639,7 +700,9 @@ Float64 lrfdLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
 Float64 lrfdLosses::TemporaryStrand_AfterDeckPlacement() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return 0;
 }
@@ -647,7 +710,9 @@ Float64 lrfdLosses::TemporaryStrand_AfterDeckPlacement() const
 Float64 lrfdLosses::TemporaryStrand_AfterSIDL() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return 0;
 }
@@ -655,7 +720,9 @@ Float64 lrfdLosses::TemporaryStrand_AfterSIDL() const
 Float64 lrfdLosses::TemporaryStrand_Final() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return 0;
 }
@@ -663,7 +730,9 @@ Float64 lrfdLosses::TemporaryStrand_Final() const
 Float64 lrfdLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[PERMANENT_STRAND];
 }
@@ -671,7 +740,9 @@ Float64 lrfdLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
 Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[PERMANENT_STRAND];
 }
@@ -679,7 +750,9 @@ Float64 lrfdLosses::PermanentStrand_ElasticShorteningLosses() const
 Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpR0[TEMPORARY_STRAND];
 }
@@ -687,7 +760,9 @@ Float64 lrfdLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
 Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpES[TEMPORARY_STRAND];
 }
@@ -695,7 +770,9 @@ Float64 lrfdLosses::TemporaryStrand_ElasticShorteningLosses() const
 Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
 {
    if ( m_IsDirty ) 
+   {
       UpdateLosses();
+   }
 
    return m_dfpED;
 }
@@ -703,7 +780,9 @@ Float64 lrfdLosses::ElasticGainDueToDeckPlacement() const
 Float64 lrfdLosses::ElasticGainDueToSIDL() const
 {
    if ( m_IsDirty ) 
+   {
       UpdateLosses();
+   }
 
    return m_dfpSIDL;
 }
@@ -711,7 +790,9 @@ Float64 lrfdLosses::ElasticGainDueToSIDL() const
 Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpSS;
 }
@@ -719,7 +800,9 @@ Float64 lrfdLosses::ElasticGainDueToDeckShrinkage() const
 Float64 lrfdLosses::ElasticGainDueToLiveLoad() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpLL;
 }
@@ -733,7 +816,9 @@ void lrfdLosses::GetDeckShrinkageEffects(Float64* pA,Float64* pM) const
 Float64 lrfdLosses::FrictionLoss() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpF;
 }
@@ -741,7 +826,9 @@ Float64 lrfdLosses::FrictionLoss() const
 Float64 lrfdLosses::TotalFrictionLoss() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpFT;
 }
@@ -749,7 +836,9 @@ Float64 lrfdLosses::TotalFrictionLoss() const
 Float64 lrfdLosses::AnchorSetLoss() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpA;
 }
@@ -757,7 +846,9 @@ Float64 lrfdLosses::AnchorSetLoss() const
 Float64 lrfdLosses::TotalAnchorSetLoss() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpAT;
 }
@@ -765,7 +856,9 @@ Float64 lrfdLosses::TotalAnchorSetLoss() const
 Float64 lrfdLosses::AnchorSetZone() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_La;
 }
@@ -773,7 +866,9 @@ Float64 lrfdLosses::AnchorSetZone() const
 Float64 lrfdLosses::GetFptMax() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_fptMax;
 }
@@ -781,7 +876,9 @@ Float64 lrfdLosses::GetFptMax() const
 Float64 lrfdLosses::GetFptMin() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_fptMin;
 }
@@ -789,7 +886,9 @@ Float64 lrfdLosses::GetFptMin() const
 Float64 lrfdLosses::GetFptAvg() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_fptAvg;
 }
@@ -797,7 +896,9 @@ Float64 lrfdLosses::GetFptAvg() const
 Float64 lrfdLosses::GetPptMax() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_PptMax;
 }
@@ -805,7 +906,9 @@ Float64 lrfdLosses::GetPptMax() const
 Float64 lrfdLosses::GetPptMin() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_PptMin;
 }
@@ -813,7 +916,9 @@ Float64 lrfdLosses::GetPptMin() const
 Float64 lrfdLosses::GetPptAvg() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_PptAvg;
 }
@@ -821,7 +926,9 @@ Float64 lrfdLosses::GetPptAvg() const
 Float64 lrfdLosses::GetDeltaFptAvg() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfptAvg;
 }
@@ -829,7 +936,9 @@ Float64 lrfdLosses::GetDeltaFptAvg() const
 Float64 lrfdLosses::GetFcgpt() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_Fcgpt;
 }
@@ -837,7 +946,9 @@ Float64 lrfdLosses::GetFcgpt() const
 Float64 lrfdLosses::GetDeltaFpt() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpt;
 }
@@ -845,7 +956,9 @@ Float64 lrfdLosses::GetDeltaFpt() const
 Float64 lrfdLosses::GetFptr() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_fptr;
 }
@@ -853,7 +966,9 @@ Float64 lrfdLosses::GetFptr() const
 Float64 lrfdLosses::GetDeltaFptr() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfptr;
 }
@@ -861,7 +976,9 @@ Float64 lrfdLosses::GetDeltaFptr() const
 Float64 lrfdLosses::GetPtr() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_Ptr;
 }
@@ -869,7 +986,9 @@ Float64 lrfdLosses::GetPtr() const
 Float64 lrfdLosses::GetFcgpp() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_Fcgpp;
 }
@@ -877,7 +996,9 @@ Float64 lrfdLosses::GetFcgpp() const
 Float64 lrfdLosses::GetDeltaFpp() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_dfpp;
 }
@@ -885,7 +1006,9 @@ Float64 lrfdLosses::GetDeltaFpp() const
 Float64 lrfdLosses::GetDeltaFcd1() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_DeltaFcd1;
 }
@@ -893,7 +1016,9 @@ Float64 lrfdLosses::GetDeltaFcd1() const
 Float64 lrfdLosses::GetDeltaFcd2() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_DeltaFcd2;
 }
@@ -901,7 +1026,9 @@ Float64 lrfdLosses::GetDeltaFcd2() const
 Float64 lrfdLosses::GetDeltaFcdLL() const
 {
    if ( m_IsDirty )
+   {
       UpdateLosses();
+   }
 
    return m_DeltaFcdLL;
 }
@@ -916,7 +1043,9 @@ void lrfdLosses::UpdateLosses() const
       try
       {
          if ( m_bValidateParameters )
+         {
             ValidateParameters();
+         }
 
          UpdateInitialLosses();
          UpdateHaulingLosses();
@@ -946,10 +1075,14 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 {
    // requirement per 2004 LRFD 5.9.5.4.4b
    if ( !IsZero( m_FpjPerm ) && !(0.5*m_Fpu < m_FpjPerm) )
+   {
       THROW(lrfdXPsLosses,fpjOutOfRange);
+   }
 
    if ( !IsZero( m_FpjTemp ) && !(0.5*m_Fpu < m_FpjTemp) )
+   {
       THROW(lrfdXPsLosses,fpjOutOfRange);
+   }
 
    // Losses from jacking to release
    // Using methodology from LRFD 2004... these losses were taken out of the 2005 spec
@@ -963,9 +1096,13 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
       if ( m_TempStrandUsage == tsPretensioned )
       {
          if ( t_days*24. < 1 )
+         {
             m_dfpR0[TEMPORARY_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+         }
          else
+         {
             m_dfpR0[TEMPORARY_STRAND] = (log10(24.*t_days)/A) * (m_FpjTemp/m_Fpy - 0.55) * m_FpjTemp;
+         }
       }
       else
       {
@@ -974,9 +1111,13 @@ void lrfdLosses::UpdateRelaxationBeforeTransfer() const
 
 
       if ( t_days*24. < 1 )
+      {
          m_dfpR0[PERMANENT_STRAND] = 0; // log10(<1) = < 0... t_days < 1/24 is less than one hour
+      }
       else
+      {
          m_dfpR0[PERMANENT_STRAND] = (log10(24.*t_days)/A) * (m_FpjPerm/m_Fpy - 0.55) * m_FpjPerm;
+      }
    }
    else
    {
@@ -1126,9 +1267,13 @@ void lrfdLosses::UpdatePostTensionLosses() const
 
       // effect on the stress in the previously jacked strands is
       if ( m_TempStrandUsage == tsPTBeforeShipping )
+      {
          m_dfpt = m_Fcgpt*m_Ep/m_Ec;
+      }
       else
+      {
          m_dfpt = m_Fcgpt*m_Ep/m_Eci;
+      }
 
       Float64 N = m_ApsTemp/m_aps;
       m_dfptAvg = (m_dfpt + (N-1)*m_dfpt)/2;
@@ -1147,9 +1292,13 @@ void lrfdLosses::UpdatePostTensionLosses() const
       m_Fcgpp = m_PptAvg/m_Ag + m_PptAvg*m_etemp*m_epermFinal/m_Ig; 
 
       if ( m_TempStrandUsage == tsPTBeforeShipping )
+      {
          m_dfpp  = m_Fcgpp*(m_Ep/m_Ec);
+      }
       else
+      {
          m_dfpp  = m_Fcgpp*(m_Ep/m_Eci);
+      }
    }
 }
 
@@ -1167,10 +1316,7 @@ void lrfdLosses::UpdateTemporaryStrandRemovalEffect() const
    {
       f = fpj - m_dfpR0[TEMPORARY_STRAND]
               - TemporaryStrand_TimeDependentLossesAtShipping()
-              - m_dfpp;
-
-      if ( m_SectionProperties == sptGross )
-         f -= m_dfpES[TEMPORARY_STRAND];
+              - m_dfpp - m_dfpES[TEMPORARY_STRAND];
    }
    else if ( m_TempStrandUsage == tsPTBeforeShipping )
    {

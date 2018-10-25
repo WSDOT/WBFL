@@ -316,6 +316,33 @@ bool sysTokenizer::ParseLong(LPCTSTR lpszText, long* l)
 	return true;
 }
 
+bool sysTokenizer::ParseULong(LPCTSTR lpszText, unsigned long* l)
+{
+	CHECK(lpszText != 0);
+	while (*lpszText == _T(' ') || *lpszText == _T('\t'))
+		lpszText++;
+
+	TCHAR chFirst = lpszText[0];
+   LPTSTR stopstr;
+	*l = _tcstoul(lpszText, &stopstr, 10);
+	if (*l == 0 && chFirst != _T('0'))
+		return false;   // could not convert
+
+   if (*l==ULONG_MAX )
+   {
+      CHECK(0);
+      return false; // overflow or underflow
+   }
+
+	while (*stopstr == _T(' ') || *stopstr == _T('\t'))
+		stopstr++;
+
+	if (*stopstr != _T('\0'))
+		return false;   // not terminated properly
+
+	return true;
+}
+
 
 inline std::_tostream &operator<<(std::_tostream &os, const TString &TS) 
 {

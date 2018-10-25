@@ -117,6 +117,7 @@ public:
 
 	STDMETHOD(get_DistributionFactors)(/*[out, retval]*/ IDistributionFactors* *pVal);
 	STDMETHOD(get_LiveLoad)(/*[out, retval]*/ ILiveLoad* *pVal);
+   STDMETHOD(ConvertSpanToSuperstructureLocation)(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc);
 	STDMETHOD(ComputeLocation)(/*[in]*/MemberIDType mbrID, /*[in]*/MemberType mbrType, /*[in]*/Float64 mbrLocation, /*[out]*/Float64* Xloc, /*[out]*/Float64* Yloc);
 	STDMETHOD(get_LoadGroups)(/*[out, retval]*/ ILoadGroups* *pVal);
 	STDMETHOD(get_LoadCases)(/*[out, retval]*/ ILoadCases* *pVal);
@@ -304,6 +305,7 @@ private:
       LocationCache(CModel* pModel);
       void Invalidate();
       void ComputeLocation(MemberIDType mbrID, MemberType mbrType, Float64 mbrLocation, Float64 *Xloc, Float64 *Yloc);
+      void ConvertSpanToSuperstructureLocation(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc);
    private:
       void Validate();
       LocationCache();

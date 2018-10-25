@@ -358,12 +358,14 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
       gsum += lloc.LeftAxleLeverForce + lloc.RightAxleLeverForce;
 
       nl_used++;
-      if (nl_used>=nL)
+      if (nL <= nl_used)
+      {
          break;
+      }
    }
 
    gsum *= lrfdUtility::GetMultiplePresenceFactor(nl_used);
-   if (gsum>gmax)
+   if (gmax < gsum)
    {
       gmax = gsum;
       *pControl = LeftAxleLeftShy;
@@ -378,12 +380,14 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
       gsum += lloc.LeftAxleLeverForce + lloc.RightAxleLeverForce;
 
       nl_used++;
-      if (nl_used>=nL)
+      if (nL <= nl_used)
+      {
          break;
+      }
    }
 
    gsum *= lrfdUtility::GetMultiplePresenceFactor(nl_used);
-   if (gsum>gmax)
+   if (gmax < gsum)
    {
       gmax = gsum;
       *pControl = LeftAxleRightShy;
@@ -398,12 +402,14 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
       gsum += lloc.LeftAxleLeverForce + lloc.RightAxleLeverForce;
 
       nl_used++;
-      if (nl_used>=nL)
+      if (nL <= nl_used)
+      {
          break;
+      }
    }
 
    gsum *= lrfdUtility::GetMultiplePresenceFactor(nl_used);
-   if (gsum>gmax)
+   if (gmax < gsum)
    {
       gmax = gsum;
       *pControl = RightAxleLeftShy;
@@ -418,12 +424,14 @@ Float64 InteriorLeverRuleAxlePlacer::ComputeMaxFactor(IndexType nL, ControllingS
       gsum += lloc.LeftAxleLeverForce + lloc.RightAxleLeverForce;
 
       nl_used++;
-      if (nl_used>=nL)
+      if (nL <= nl_used)
+      {
          break;
+      }
    }
 
    gsum *= lrfdUtility::GetMultiplePresenceFactor(nl_used);
-   if (gsum>gmax)
+   if (gmax < gsum)
    {
       gmax = gsum;
       *pControl = RightAxleRightShy;
@@ -479,7 +487,9 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod InteriorLeverRuleAxlePlacer::Co
 
       nl_used++;
       if (nL <= nl_used)
+      {
          break;
+      }
    }
 
    // can only partially fill lrd
@@ -1058,7 +1068,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorB
       }
       else
       {
-         if (m_GdrNum>0 || m_GdrNum!=nb1)
+         if (0 < m_GdrNum || m_GdrNum!=nb1)
          {
             // Looking for extterior factor, and current girder is interior; get adjacent on correct side
             gdr = m_Side==LeftSide ? 0 : nb1;
@@ -1191,7 +1201,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
    // control loop
    IndexType firstL = 1; // assume single lane
    IndexType topL = 2;
-   if (Nl>1)
+   if (1 < Nl)
    {
       firstL = 2;
       topL = Nl+1;
@@ -1212,7 +1222,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       for ( IndexType i = firstL; i < topL; i++ )
       {
          Float64 nfmpf = Nl * lrfdUtility::GetMultiplePresenceFactor(i);
-         if (nfmpf > mfmpf_max)
+         if (mfmpf_max < nfmpf)
          {
             mfmpf_max = nfmpf;
             nl_at_max = i;
@@ -1248,8 +1258,10 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       for ( IndexType i = firstL; i < topL; i++ )
       {
          lrfdILiveLoadDistributionFactor::LeverRuleMethod currLRD = DistributeByLeverRulePerLaneExterior(nb, S, curbOverhang, wLane, i);
-         if ( currLRD.mg > lrd.mg )
+         if ( lrd.mg < currLRD.mg )
+         {
             lrd = currLRD;
+         }
       }
    }
    else
@@ -1285,7 +1297,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
       {
          InteriorLeverRuleAxlePlacer::ControllingStrategy strat;
          Float64 df = strategy.ComputeMaxFactor(i,&strat);
-         if ( df > df_max )
+         if ( df_max < df )
          {
             df_max = df;
             idx_max = i;
@@ -1339,7 +1351,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
 
       // See if axles fit to left of interior beam
       // first left;
-      if ( lft_axl_lvr > 0 )
+      if ( 0 < lft_axl_lvr )
       {
          cummd += lft_axl_lvr;
          lrData.AxleLocations.push_back(lft_axl_lvr);
@@ -1348,7 +1360,7 @@ lrfdILiveLoadDistributionFactor::LeverRuleMethod lrfdLiveLoadDistributionFactorM
          // now right axle
          Float64 rgt_axl_lvr = lft_axl_lvr - wheelLineSpacing;
 
-         if ( rgt_axl_lvr > 0 )
+         if ( 0 < rgt_axl_lvr )
          {
             cummd += rgt_axl_lvr;
             lrData.AxleLocations.push_back(rgt_axl_lvr);
@@ -1461,7 +1473,7 @@ lrfdILiveLoadDistributionFactor::RigidMethod lrfdLiveLoadDistributionFactorMixin
 
       sume *= lrfdUtility::GetMultiplePresenceFactor(cur_nl);
 
-      if (sume > sume_max)
+      if (sume_max < sume )
       {
          sume_max = sume;
          ln_ctrl = cur_nl;
@@ -1493,9 +1505,13 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetShyDistance() const
    Float64 shy;
 
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
       shy = g_600_MM;
+   }
    else
+   {
       shy = g_2_FT;
+   }
 
    return shy;
 }
@@ -1505,9 +1521,13 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetWheelLineSpacing() const
    // LRFD Figure 3.6.1.2.2-1
    Float64 space;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
       space = g_1800_MM;
+   }
    else
+   {
       space = g_6_FT;
+   }
 
    return space;
 }
@@ -1517,9 +1537,13 @@ Float64 lrfdLiveLoadDistributionFactorMixin::GetTruckWidth() const
    // LRFD 3.6.1.2.1
    Float64 width;
    if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   {
       width = g_3000_MM;
+   }
    else
+   {
       width = g_10_FT;
+   }
 
    return width;
 }

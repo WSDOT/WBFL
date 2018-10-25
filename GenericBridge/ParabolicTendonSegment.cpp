@@ -42,15 +42,21 @@ HRESULT CParabolicTendonSegment::FinalConstruct()
    HRESULT hr;
    hr = m_Start.CoCreateInstance(CLSID_Point3d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_End.CoCreateInstance(CLSID_Point3d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    m_Slope = 0;
    m_SlopeEnd = qcbLeft;
@@ -75,7 +81,9 @@ STDMETHODIMP CParabolicTendonSegment::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -114,6 +122,10 @@ STDMETHODIMP CParabolicTendonSegment::get_End(IPoint3d** end)
 
 STDMETHODIMP CParabolicTendonSegment::put_Slope(Float64 slope)
 {
+   ATLASSERT(IsZero(slope)); // current implementation assumes
+   // that the slope is zero at one end of the parabola.
+   // Generalize this later
+
    m_Slope = slope;
    return S_OK;
 }
@@ -140,8 +152,9 @@ STDMETHODIMP CParabolicTendonSegment::get_SlopeEnd(DirectionType* end)
 
 /////////////////////////////////////////////////////
 // ITendonSegment
-STDMETHODIMP CParabolicTendonSegment::get_Position(Float64 z,IPoint3d** cg)
+STDMETHODIMP CParabolicTendonSegment::get_Position(TendonMeasure measure,Float64 z,IPoint3d** cg)
 {
+#pragma Reminder("UPDATE: need to make adjustment for strand being offset in duct if measure is tmTendon")
    CHECK_RETOBJ(cg);
 
    Float64 x1,y1,z1;
@@ -215,8 +228,57 @@ STDMETHODIMP CParabolicTendonSegment::get_Slope(Float64 z,IVector3d** slope)
 
 STDMETHODIMP CParabolicTendonSegment::get_Length(Float64* length)
 {
-   ATLASSERT(false); // need to compute the distance along the arc?
-   return m_GeomUtil->Distance(m_Start,m_End,length);
+   ATLASSERT(IsZero(m_Slope)); // this is a major assumption in the calculation!!!
+   // Reference: http://en.wikipedia.org/wiki/Parabola
+
+   // NOTE: since the general case is a parabola in an arbitrary plane that is
+   // parallel to the Z axis we need to work in the plane of the parabola.
+   // (Think working in the plane of a U-beam web)
+
+   Float64 dx,dy,dz;
+   ProjectedLength(&dx,&dy,&dz);
+
+   // need change in elevation from start to end of parabola in plane
+   // of parabola
+   Float64 dh = sqrt(dx*dx + dy*dy);
+
+   if ( IsZero(dh) )
+   {
+      // parabola is flat... it is actually a straight line
+      return m_GeomUtil->Distance(m_Start,m_End,length);
+   }
+
+   // get constants of the parabolic arc for the equation in the form of
+   // h = Az^2 + Bz + C. All we really need is A
+   Float64 A;
+   if ( m_SlopeEnd == qcbLeft )
+   {
+      // Slope is known at the left end
+      A = (dh - dz*m_Slope)/(dz*dz);
+   }
+   else
+   {
+      A = -(dh - dz*m_Slope)/(dz*dz);
+   }
+
+   // compute the focal length
+   ATLASSERT( !IsZero(A) );
+   Float64 f = fabs(1.0/(4*A)); // absolute value because the focal length is a distance
+
+   Float64 h = dz/2;
+   Float64 q = sqrt(f*f + h*h);
+
+   *length = h*q/f + f*log( (h+q)/f );
+
+#if defined _DEBUG
+   // the curve length should be longer then the straigh line between
+   // segment end points.
+   Float64 straightLineLength;
+   m_GeomUtil->Distance(m_Start,m_End,&straightLineLength);
+   ATLASSERT( straightLineLength < *length);
+#endif
+
+   return S_OK;
 }
 
 STDMETHODIMP CParabolicTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Float64* dz)
@@ -226,20 +288,41 @@ STDMETHODIMP CParabolicTendonSegment::ProjectedLength(Float64* dx,Float64* dy,Fl
    CHECK_RETVAL(dz);
 
    Float64 x1,y1,z1;
-   m_Start->get_X(&x1);
-   m_Start->get_Y(&y1);
-   m_Start->get_Z(&z1);
+   m_Start->Location(&x1,&y1,&z1);
 
    Float64 x2,y2,z2;
-   m_End->get_X(&x2);
-   m_End->get_Y(&y2);
-   m_End->get_Z(&z2);
+   m_End->Location(&x2,&y2,&z2);
 
    *dx = x2 - x1;
    *dy = y2 - y1;
    *dz = z2 - z1;
 
    return S_OK;
+}
+
+STDMETHODIMP CParabolicTendonSegment::get_Centerline(TendonMeasure measure,IPoint3dCollection** ppPoints)
+{
+   CHECK_RETOBJ(ppPoints);
+   CComPtr<IPoint3dCollection> points;
+   points.CoCreateInstance(CLSID_Point3dCollection);
+
+   Float64 zStart, zEnd;
+   m_Start->get_Z(&zStart);
+   m_End->get_Z(&zEnd);
+
+   Float64 dz = zEnd - zStart;
+
+   IndexType nPoints = 11;
+   for ( IndexType i = 0; i < nPoints; i++ )
+   {
+      Float64 z = zStart + i*dz/(nPoints-1);      
+
+      CComPtr<IPoint3d> point;
+      get_Position(measure,z,&point);
+      points->Add(point);
+   }
+
+   return points.CopyTo(ppPoints);
 }
 
 STDMETHODIMP CParabolicTendonSegment::putref_Tendon(ITendon* pTendon)
@@ -292,14 +375,10 @@ STDMETHODIMP CParabolicTendonSegment::Save(IStructuredSave2* save)
 mathPolynomial2d CParabolicTendonSegment::GetParabolaX()
 {
    Float64 x1,y1,z1;
-   m_Start->get_X(&x1);
-   m_Start->get_Y(&y1);
-   m_Start->get_Z(&z1);
+   m_Start->Location(&x1,&y1,&z1);
 
    Float64 x2,y2,z2;
-   m_End->get_X(&x2);
-   m_End->get_Y(&y2);
-   m_End->get_Z(&z2);
+   m_End->Location(&x2,&y2,&z2);
 
    Float64 dx = x2-x1;
    Float64 dy = y2-y1;
@@ -331,14 +410,10 @@ mathPolynomial2d CParabolicTendonSegment::GetParabolaX()
 mathPolynomial2d CParabolicTendonSegment::GetParabolaY()
 {
    Float64 x1,y1,z1;
-   m_Start->get_X(&x1);
-   m_Start->get_Y(&y1);
-   m_Start->get_Z(&z1);
+   m_Start->Location(&x1,&y1,&z1);
 
    Float64 x2,y2,z2;
-   m_End->get_X(&x2);
-   m_End->get_Y(&y2);
-   m_End->get_Z(&z2);
+   m_End->Location(&x2,&y2,&z2);
 
    Float64 dx = x2-x1;
    Float64 dy = y2-y1;

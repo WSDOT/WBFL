@@ -581,7 +581,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
 {
    if (!(bool)m_spObjectTable)
    {
-      ATLASSERT(0); // object table node doesn't exist in xml file
+      ATLASSERT(false); // object table node doesn't exist in xml file
                     // cannot create objects without an object table
       CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Need to create an object and no object table exists in input file."));
       THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
@@ -610,7 +610,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
       }
       catch(...)
       {
-         ATLASSERT(0); // object with id doesn't exist in table
+         ATLASSERT(false); // object with id doesn't exist in table
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("object with id doesn't exist in object table"));
          THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
       }
@@ -634,7 +634,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
          HRESULT hr = ::CLSIDFromString(_bstr_t(varclsid), &clsid);
          if (FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CLASS_NOT_REGISTERED, (_bstr_t)varclsid);
             THROW_MSG(msg,STRLOAD_E_CLASS_NOT_REGISTERED,IDS_STRLOAD_E_CLASS_NOT_REGISTERED);
          }
@@ -644,7 +644,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
          hr = punk.CoCreateInstance( clsid );
          if (FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CLASS_NOT_REGISTERED, (_bstr_t)varclsid);
             THROW_MSG(msg,STRLOAD_E_CLASS_NOT_REGISTERED,IDH_STRLOAD_E_CLASS_NOT_REGISTERED);
          }
@@ -656,7 +656,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
          hr = punk->QueryInterface(IID_IStructuredStorage2, (void**)&pss);
          if (FAILED(hr) || pss==NULL)
          {
-            ATLASSERT(0); // object doesn't support IStructuredStorage2 - makes you wonder how it saved 
+            ATLASSERT(false); // object doesn't support IStructuredStorage2 - makes you wonder how it saved 
                           // itself in the first place
             THROW_IDS(IDS_STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2,STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2,IDH_STRLOAD_E_CLASS_ISTRUCTUREDSTORAGE2);
          }
@@ -665,7 +665,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
          hr = pss->Load(this);
          if (FAILED(hr))
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             THROW_IDS(IDS_STRLOAD_E_INVALIDFORMAT,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
          }
 
@@ -679,7 +679,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
       }
       else
       {
-         ATLASSERT(0); // CLSID must be next property in an object reference
+         ATLASSERT(false); // CLSID must be next property in an object reference
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("CLSID must be next property in an object reference"));
          THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
       }
@@ -700,7 +700,7 @@ HRESULT HandleException()
    }
    catch (CComException& re)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       // somebody puked from way down deep. Build error message and return hresult
       _bstr_t msg(re.GetErrorMessage());
       HRESULT hr = re.GetHresult();
@@ -710,7 +710,7 @@ HRESULT HandleException()
    catch(_com_error &e) 
    {
       // parser puked
-      ATLASSERT(0);
+      ATLASSERT(false);
       _bstr_t msg(e.Description());
       return CComCoClass<CStructuredLoad2,&CLSID_StructuredLoad2>::Error(msg, NULL, GetHelpFile(), IID_IStructuredLoad2, E_FAIL);
    }
@@ -718,7 +718,7 @@ HRESULT HandleException()
    {
       // could make up a custom message here, but we don't know what happened so why try?
       // the main point is not to let the exception out into the com world
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 }
@@ -770,7 +770,7 @@ bool CStructuredLoad2::GetProperty(BSTR name, _variant_t* pval, _bstr_t& bsvt)
                   }
                   else
                   {
-                     ATLASSERT(0); // something's fishy with the file format here.
+                     ATLASSERT(false); // something's fishy with the file format here.
                      bsvt = _bstr_t("VT_EMPTY");
                   }
                }
@@ -793,7 +793,7 @@ bool CStructuredLoad2::GetProperty(BSTR name, _variant_t* pval, _bstr_t& bsvt)
    }
    catch(_com_error &e) 
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, e.Description());
       THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
    }
@@ -834,7 +834,7 @@ bool CStructuredLoad2::ReadNext()
    }
    else
    {
-      ATLASSERT(0); // should not be trying to read next if previous was null
+      ATLASSERT(false); // should not be trying to read next if previous was null
    }
 
    return (bool)rback;
@@ -891,7 +891,7 @@ _bstr_t GetParseError(MSXML::IXMLDOMParseErrorPtr pXMLError)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return _bstr_t ( os.str().c_str());

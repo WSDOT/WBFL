@@ -148,13 +148,13 @@ private:
             }
             else
             {
-               ATLASSERT(0);
+               ATLASSERT(false);
                return E_FAIL;
             }
          }
          else
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
             return E_FAIL;
          }
 

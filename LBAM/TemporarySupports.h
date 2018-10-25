@@ -98,7 +98,7 @@ public:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -117,7 +117,7 @@ public:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 

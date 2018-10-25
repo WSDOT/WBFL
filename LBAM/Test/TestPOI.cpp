@@ -259,7 +259,7 @@ void CTestPOI::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -314,7 +314,7 @@ void CTestPOI::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 */
@@ -335,7 +335,7 @@ STDMETHODIMP CTestPOI::OnPOIChanged(IPOI* POI, ChangeType change)
    else if (change==cgtStress)
       m_csSPFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -354,7 +354,7 @@ STDMETHODIMP CTestPOI::OnPOIsChanged(IPOI* POI, ChangeType change)
    else if (change==cgtDistributionFactor)
       m_csDFFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

@@ -148,7 +148,7 @@ STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::put_Font(const LOGFONT& Font)
    }
    else
       // we expect point fonts here
-      ATLASSERT(0);
+      ATLASSERT(false);
 }
 
 STDMETHODIMP_(void) CHorzCurveDisplayObjectImpl::get_Font(LOGFONT* pFont)

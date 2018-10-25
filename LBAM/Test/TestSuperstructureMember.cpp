@@ -232,7 +232,7 @@ void CTestSuperstructureMember::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -251,7 +251,7 @@ HRESULT CTestSuperstructureMember::OnSuperstructureMemberChanged(ISuperstructure
    else if (change==cgtStress)
       m_csStressPointsFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -263,7 +263,7 @@ STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersChanged(ISuperstr
    else if (change==cgtStress)
       m_csStressPointsFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

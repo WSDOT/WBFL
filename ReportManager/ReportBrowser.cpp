@@ -73,11 +73,15 @@ CReportBrowser::~CReportBrowser()
 {
    // We are done with our HTML file... Delete it
    if (!m_Filename.empty())
+   {
       ::DeleteFile( m_Filename.c_str() );
+   }
 
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    if ( m_pWebBrowser )
+   {
       delete m_pWebBrowser;
+   }
 }
 
 void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRefresh)
@@ -96,7 +100,9 @@ void CReportBrowser::UpdateReport(boost::shared_ptr<rptReport>& pReport,bool bRe
    visitor.VisitReport( pReport.get() );
 
    if (bRefresh)
+   {
       m_pWebBrowser->Refresh();
+   }
 }
 
 bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::shared_ptr<CReportSpecification>& pRptSpec,boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder,boost::shared_ptr<rptReport>& pReport)
@@ -114,8 +120,8 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
    ATLASSERT( ::IsWindow(hwnd) );
 
    // use empty file name as flag that browser has not yet been initialized.
-   bool new_file = m_Filename.empty();
-   if (new_file)
+   bool bIsNewFile = m_Filename.empty();
+   if (bIsNewFile)
    {
       MakeFilename();
 
@@ -132,10 +138,14 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr,boost::
 
    UpdateReport(pReport,false);
 
-   if (new_file)
+   if (bIsNewFile)
+   {
       m_pWebBrowser->Navigate( m_Filename.c_str());
+   }
    else
+   {
       m_pWebBrowser->Refresh();
+   }
 
    return true;
 }
@@ -195,13 +205,17 @@ bool CReportBrowser::Edit(bool bUpdate)
 
    boost::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
    if ( m_pRptSpecBuilder == NULL )
+   {
       pReportSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
+   }
 
    boost::shared_ptr<CReportSpecification> pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
    
    // user cancelled.
    if( pReportSpec == NULL )
+   {
       return false;
+   }
 
    m_pRptSpec = pReportSpec;
 

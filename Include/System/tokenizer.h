@@ -109,7 +109,8 @@ public:
     // Utilities for dealing with tokens once they are identified
     // parse a null-terminated string to a float. return false if not a number.
     static bool ParseDouble(LPCTSTR lpszText, Float64* d);
-    static bool ParseLong(LPCTSTR lpszText, long* d);
+    static bool ParseLong(LPCTSTR lpszText, long* i);
+    static bool ParseULong(LPCTSTR lpszText, unsigned long* l);
 
     
 private:

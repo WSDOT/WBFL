@@ -39,7 +39,8 @@ cpp_quote("#define BRIDGEGEOMETRY_E_INVALIDSTATION     MAKE_HRESULT(SEVERITY_ERR
 cpp_quote("#define BRIDGEGEOMETRY_E_ID                 MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,514)")
 
 // custom types
-typedef IDType  LineIDType;
+typedef IDType LineIDType;
+typedef IDType PathIDType;
 
 // forward declarations
 interface IBridgeGeometry;
@@ -87,6 +88,13 @@ enum
    etStart = 0,
    etEnd   = 1
 } EndType;
+
+typedef [public,helpstring("enum SideType"),uuid(73C1F1F8-36DE-4042-A9A5-A1CC07F1C323)] 
+enum 
+{
+   stLeft = 0,
+   stRight = 1
+} SideType;
 
 [
 	object,
@@ -456,11 +464,20 @@ interface IDiaphragmLine : IUnknown
 ]
 interface IDeckBoundary : IUnknown
 {
-   [propget,helpstring("property Perimeter")] HRESULT Perimeter([in] CollectionIndexType nPointsPerSide,[out,retval] IPoint2dCollection** points);
-   [propget,helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] CollectionIndexType nPointsPerSide,[in] PierIDType startPierID, [in] PierIDType endPierID,[out,retval] IPoint2dCollection** points);
+   // Returns a collection of points that represents the perimeter of the deck. The perimeter will be approximated with
+   // nMinPointsPerSide. Control points for the elements that make up the edge paths will be included in the perimeter
+   [propget,helpstring("property Perimeter")] HRESULT Perimeter([in] CollectionIndexType nMinPointsPerSide,[out,retval] IPoint2dCollection** points);
+
+   // Returns a collection of points that represents the perimeter of the deck between two piers. The perimeter will be approximated with
+   // nMinPointsPerSide. Control points for the elements that make up the edge paths will be included in the perimeter
+   [propget,helpstring("property PerimeterEx")] HRESULT PerimeterEx([in] CollectionIndexType nMinPointsPerSide,[in] PierIDType startPierID, [in] PierIDType endPierID,[out,retval] IPoint2dCollection** points);
+
+   // Returns the transverse deck edge points
    [propget,helpstring("property TransverseEdgePoints")] HRESULT TransverseEdgePoints([in] EndType endType,[out]IPoint2d** ppLeft,[out]IPoint2d** ppLeftBreak,[out]IPoint2d** ppRightBreak,[out]IPoint2d** ppRight);
-   [propget,helpstring("property LeftEdgePath")] HRESULT LeftEdgePath([in]VARIANT_BOOL vbLayoutLine,[out,retval]IPath** path);
-   [propget,helpstring("property RightEdgePath")] HRESULT RightEdgePath([in]VARIANT_BOOL vbLayoutLine,[out,retval]IPath** path);
+
+   // Returns a deck edge path. If vbLayoutPath is VARIANT_TRUE, the path used to layout the deck is returned (this is basically a construction line)
+   // otherwise the actual edge path is returned.
+   [propget,helpstring("property EdgePath")] HRESULT EdgePath([in]SideType side,[in]VARIANT_BOOL vbLayoutPath,[out,retval]IPath** path);
 };
 
 [
@@ -483,26 +500,18 @@ interface IDeckBoundaryFactory : IUnknown
 ]
 interface ISimpleDeckBoundaryFactory : IDeckBoundaryFactory
 {
-   [propput, helpstring("property BackEdgeID")] HRESULT BackEdgeID([in] LineIDType ID);
-   [propget, helpstring("property BackEdgeID")] HRESULT BackEdgeID([out,retval] LineIDType* ID);
-   [propput, helpstring("property BackEdgeType")] HRESULT BackEdgeType([in] DeckBoundaryEdgeType edgeType);
-   [propget, helpstring("property BackEdgeType")] HRESULT BackEdgeType([out,retval] DeckBoundaryEdgeType* edgeType);
-   [propput, helpstring("property ForwardEdgeID")] HRESULT ForwardEdgeID([in] LineIDType ID);
-   [propget, helpstring("property ForwardEdgeID")] HRESULT ForwardEdgeID([out,retval] LineIDType* ID);
-   [propput, helpstring("property ForwardEdgeType")] HRESULT ForwardEdgeType([in] DeckBoundaryEdgeType edgeType);
-   [propget, helpstring("property ForwardEdgeType")] HRESULT ForwardEdgeType([out,retval] DeckBoundaryEdgeType* edgeType);
-   [propput, helpstring("property LeftEdgeID")] HRESULT LeftEdgeID([in] LineIDType ID);
-   [propget, helpstring("property LeftEdgeID")] HRESULT LeftEdgeID([out,retval] LineIDType* ID);
-   [propput, helpstring("property RightEdgeID")] HRESULT RightEdgeID([in] LineIDType ID);
-   [propget, helpstring("property RightEdgeID")] HRESULT RightEdgeID([out,retval] LineIDType* ID);
-   [propput, helpstring("property LeftEdgeBreakID")] HRESULT LeftEdgeBreakID([in] LineIDType ID);
-   [propget, helpstring("property LeftEdgeBreakID")] HRESULT LeftEdgeBreakID([out,retval] LineIDType* ID);
-   [propput, helpstring("property RightEdgeBreakID")] HRESULT RightEdgeBreakID([in] LineIDType ID);
-   [propget, helpstring("property RightEdgeBreakID")] HRESULT RightEdgeBreakID([out,retval] LineIDType* ID);
-   [propput, helpstring("property BreakLeftEdge")] HRESULT BreakLeftEdge([in] EndType end,[in] VARIANT_BOOL bBreak);
-   [propget, helpstring("property BreakLeftEdge")] HRESULT BreakLeftEdge([in] EndType end,[out,retval] VARIANT_BOOL* bBreak);
-   [propput, helpstring("property BreakRightEdge")] HRESULT BreakRightEdge([in] EndType end,[in] VARIANT_BOOL bBreak);
-   [propget, helpstring("property BreakRightEdge")] HRESULT BreakRightEdge([in] EndType end,[out,retval] VARIANT_BOOL* bBreak);
+   [propput, helpstring("property TransverseEdgeID")] HRESULT TransverseEdgeID([in]EndType end,[in] LineIDType ID);
+   [propget, helpstring("property TransverseEdgeID")] HRESULT TransverseEdgeID([in]EndType end,[out,retval] LineIDType* ID);
+   [propput, helpstring("property TransverseEdgeType")] HRESULT TransverseEdgeType([in]EndType end,[in] DeckBoundaryEdgeType edgeType);
+   [propget, helpstring("property TransverseEdgeType")] HRESULT TransverseEdgeType([in]EndType end,[out,retval] DeckBoundaryEdgeType* edgeType);
+
+   [propput, helpstring("property EdgeID")] HRESULT EdgeID([in]SideType side,[in] PathIDType ID);
+   [propget, helpstring("property EdgeID")] HRESULT EdgeID([in]SideType side,[out,retval] PathIDType* ID);
+   [propput, helpstring("property EdgeBreakID")] HRESULT EdgeBreakID([in]SideType side,[in] PathIDType ID);
+   [propget, helpstring("property EdgeBreakID")] HRESULT EdgeBreakID([in]SideType side,[out,retval] PathIDType* ID);
+
+   [propput, helpstring("property BreakEdge")] HRESULT BreakEdge([in] EndType end,[in]SideType side,[in] VARIANT_BOOL bBreak);
+   [propget, helpstring("property BreakEdge")] HRESULT BreakEdge([in] EndType end,[in]SideType side,[out,retval] VARIANT_BOOL* bBreak);
 };
 
 [

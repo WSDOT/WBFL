@@ -1727,13 +1727,13 @@ STDMETHODIMP CModel::RemoveStage(BSTR stage)
       hr = m_Spans->get_Item(spanIdx, &its);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
       hr = its->RemoveStage(stage);
       if (FAILED(hr))
-         ATLASSERT(0);
+         ATLASSERT(false);
    }
 
    // Supports
@@ -1748,14 +1748,14 @@ STDMETHODIMP CModel::RemoveStage(BSTR stage)
       hr = m_Supports->get_Item(pierIdx, &its);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
       hr = its->RemoveStage(stage);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
    }
@@ -1772,47 +1772,47 @@ STDMETHODIMP CModel::RemoveStage(BSTR stage)
       hr = m_SuperstructureMembers->get_Item(ssmbrIdx, &its);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
       hr = its->RemoveStage(stage);
       if (FAILED(hr))
-         ATLASSERT(0);
+         ATLASSERT(false);
    }
 
    hr = m_PointLoads->RemoveStage(stage);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_DistributedLoads->RemoveStage(stage);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_TemperatureLoads->RemoveStage(stage);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_SettlementLoads->RemoveStage(stage);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_StrainLoads->RemoveStage(stage);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -2098,6 +2098,35 @@ void CModel::LocationCache::Validate()
    m_LocationUpdated = true;
 }
 
+void CModel::LocationCache::ConvertSpanToSuperstructureLocation(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc)
+{
+   // first validate our location cache
+   Validate();
+
+   CHRException hr;
+
+   // get the start of the span
+   Float64 spanStart = m_SpanEnds[spanMbrID];
+
+   // compute the global location we want to map
+   Float64 Xg = spanStart + spanLoc;
+
+   // find the first point in the superstructure members end vector that is less than or equal to the 
+   // location we are looking for
+   std::vector<Float64>::iterator ssmbrStartIter = std::lower_bound(m_SsmEnds.begin(),m_SsmEnds.end(),Xg);
+   if ( Xg <= *ssmbrStartIter && ssmbrStartIter != m_SsmEnds.begin() )
+   {
+      ssmbrStartIter--;
+   }
+   ATLASSERT(ssmbrStartIter != m_SsmEnds.end()); // if this fires spanStart is out of bounds
+
+   // The superstructure member is the index of the location in the m_SsmEnds vector
+   *pSSMbrID = (MemberIDType)std::distance(m_SsmEnds.begin(),ssmbrStartIter);
+
+   // The distance along the superstructure member is the global position minus the start position of the SSMbr
+   *pSSMbrLoc = Xg - (*ssmbrStartIter);
+}
+
 void CModel::LocationCache::ComputeLocation(MemberIDType mbrId, MemberType mbrType, Float64 mbrLocation, Float64 *Xloc, Float64 *Yloc)
 {
    // first validate our location cache
@@ -2318,6 +2347,23 @@ void CModel::LocationCache::ComputeLocation(MemberIDType mbrId, MemberType mbrTy
    default:
       THROW_LBAM(INVALID_MEMBERTYPE);
    }
+}
+
+STDMETHODIMP CModel::ConvertSpanToSuperstructureLocation(MemberIDType spanMbrID,Float64 spanLoc,MemberIDType* pSSMbrID,Float64* pSSMbrLoc)
+{
+   // Converts an absolute span location (spanLoc is absolute and cannot be fractional) to a superstructure member location
+   try
+   {
+      // use utility object to compute
+      m_LocationCache.ConvertSpanToSuperstructureLocation(spanMbrID,spanLoc,pSSMbrID,pSSMbrLoc);
+   }
+   catch(...)
+   {
+      return DealWithExceptions(this, IID_ILBAMModel);
+   }
+
+	return S_OK;
+
 }
 
 STDMETHODIMP CModel::ComputeLocation(MemberIDType mbrID, MemberType mbrType, Float64 mbrLocation, Float64 *Xloc, Float64 *Yloc)

@@ -140,7 +140,7 @@ HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size
 
    if (size<0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_INVALIDARG;
    }
 
@@ -217,14 +217,14 @@ HRESULT CLoadCombinationSectionResults::SumResult(CollectionIndexType index, BST
    hr = rres.m_LeftConfig->AddLoadCaseFactor(loadCase, leftFactor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = rres.m_RightConfig->AddLoadCaseFactor(loadCase, rightFactor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -249,28 +249,28 @@ HRESULT CLoadCombinationSectionResults::SumLLResult(CollectionIndexType index, F
    hr = rres.m_LeftConfig->put_LiveLoadFactor(Factor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = rres.m_RightConfig->put_LiveLoadFactor(Factor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = rres.m_LeftConfig->AddLiveLoadConfiguration(leftConfig);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = rres.m_RightConfig->AddLiveLoadConfiguration(rightConfig);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 

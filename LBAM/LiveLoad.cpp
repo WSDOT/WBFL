@@ -95,7 +95,7 @@ void CLiveLoad::FinalRelease()
          ATLASSERT(SUCCEEDED(hr));
       }
       else
-         ATLASSERT(0); // should always have valid pointers
+         ATLASSERT(false); // should always have valid pointers
    }
 }
 

@@ -181,7 +181,7 @@ void CTestAxle::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 

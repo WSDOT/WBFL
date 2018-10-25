@@ -70,7 +70,8 @@ class ATL_NO_VTABLE CLoadGroupResponse :
 	public IDistributedLoadsEvents,
 	public ITemperatureLoadsEvents,
 	public ISettlementLoadsEvents, 
-	public IStrainLoadsEvents
+	public IStrainLoadsEvents,
+   public IDiagnostics
 {
 
 public:
@@ -122,6 +123,7 @@ BEGIN_COM_MAP(CLoadGroupResponse)
    COM_INTERFACE_ENTRY(ITemperatureLoadsEvents)
    COM_INTERFACE_ENTRY(ISettlementLoadsEvents)
    COM_INTERFACE_ENTRY(IStrainLoadsEvents)
+   COM_INTERFACE_ENTRY(IDiagnostics)
    COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
 END_COM_MAP()
 
@@ -132,6 +134,7 @@ END_CONNECTION_POINT_MAP()
    virtual HRESULT DealWithMyExceptions()=0;
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid);
 
 // ILoadGroupResponse
@@ -144,11 +147,17 @@ public:
    STDMETHOD(ComputeSupportDeflections)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* supportIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ, /*[out,retval]*/IResult3Ds** results);
    STDMETHOD(ComputeStresses)(/*[in]*/BSTR LoadGroup, /*[in]*/IIDArray* poiIDs, /*[in]*/BSTR Stage, /*[in]*/ResultsSummationType summ,  /*[out,retval]*/ISectionStressResults **results);
 
+// IDiagnostics
+public:
+   STDMETHOD(DumpFEMModels)();
+
 // IUnitLoadReponse
-   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs,/*[in]*/PoiIDType ldPoiID,/*[in]*/BSTR bstrStage,/*[in]*/ResultsOrientation orientation, /*[out,retval]*/ISectionResult3Ds** results);
+public:
+   STDMETHOD(ComputeForces)(/*[in]*/IIDArray* poiIDs,/*[in]*/PoiIDType ldPoiID,/*[in]*/BSTR bstrStage,/*[in]*/ForceEffectType forceEffectType,/*[in]*/ResultsOrientation orientation, /*[out,retval]*/ISectionResult3Ds** results);
 
 
 // IInfluenceLineResponse
+public:
    STDMETHOD(ComputeForceInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType forceEffect, /*[in]*/ ResultsOrientation orientation, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);
    STDMETHOD(ComputeDeflectionInfluenceLine)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType deflectionEffect, /*[out]*/IInfluenceLine** leftInfl, /*[out]*/IInfluenceLine** rightInfl);
    STDMETHOD(ComputeReactionInfluenceLine)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR stage, /*[in]*/ForceEffectType ReactionEffect, /*[out,retval]*/ IInfluenceLine** newVal);
@@ -157,19 +166,23 @@ public:
 	STDMETHOD(GetZeroTolerance)(/*[out]*/Float64* forceTolerance, /*[out]*/Float64* deflectionTolerance);
 
 // IContraflexureResponse
+public:
    STDMETHOD(ComputeContraflexureLocations)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations);
    STDMETHOD(ComputeContraflexureResponse)(/*[in]*/BSTR stage,/*[in]*/ForceEffectType effect, /*[out,retval]*/IInfluenceLine** results);
    STDMETHOD(get_IsPOIInContraflexureZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone);
 
 // ILiveLoadNegativeMomentRegion
+public:
    STDMETHOD(get_IsPOIInNegativeLiveLoadMomentZone)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out,retval]*/InZoneType* isInZone);
    STDMETHOD(ComputeNegativeMomentRegions)(/*[in]*/BSTR stage, /*[out,retval]*/IDblArray* *locations);
 
 
 // IGetFemForLoadGroupResponse
+public:
    STDMETHOD(SaveFem2D)(/*[in]*/BSTR Stage, /*[in]*/IStructuredSave2* Save);
 
 // IAnalysisPOIs
+public:
    STDMETHOD(get_SpanPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal);
    STDMETHOD(put_SpanPoiIncrement)(/*[in]*/ PoiIDType newVal);
    STDMETHOD(get_CantileverPoiIncrement)(/*[out,retval]*/ PoiIDType *pVal);
@@ -178,26 +191,33 @@ public:
    STDMETHOD(GetPoiInfo)(/*[in]*/BSTR stage, /*[in]*/PoiIDType poiID, /*[out]*/MemberType* lbamMemberType, /*[out]*/MemberIDType* memberID, /*[out]*/Float64* memberLocation);
 
 // IGetActiveLoadGroups
+public:
    STDMETHOD(GetActiveLoadGroups)(/*[out,retval]*/IBstrArray* *loadGroups);
 
 // IGetDistributionFactors
+public:
    STDMETHOD(GetPOIDistributionFactor)(/*[in]*/PoiIDType POI, /*[in]*/BSTR stage, /*[out]*/IDistributionFactor* *leftFactor, /*[out]*/IDistributionFactor* *rightFactor);
 	STDMETHOD(GetSupportDistributionFactor)(/*[in]*/SupportIDType supportID, /*[in]*/BSTR Stage, /*[out,retval]*/IDistributionFactor* *Factor);
 
 // IGetSegmentCrossSection
+public:
    STDMETHOD(GetSegmentCrossSectionAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/ISegmentCrossSection* *leftCs,  /*[out]*/ISegmentCrossSection* *rightCs);
 
 // IGetStressPoints
+public:
    STDMETHOD(GetStressPointsAtPOI)(/*[in]*/PoiIDType poiID, /*[in]*/BSTR stage, /*[out]*/IStressPoints* *leftCs,  /*[out]*/IStressPoints* *rightCs);
 
 // ISupportProgressMonitor
+public:
 	STDMETHOD(InitializeProgressMonitor)(IProgressMonitor * newVal, LONG cookie);
 
 // Events we are interested in
 // ILBAMModelEvents
+public:
    STDMETHOD(OnModelChanged)(ILBAMModel* me, ChangeType change);
 
 // ISuperstructureMembersEvents
+public:
    STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change);
    STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index);
    STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index);
@@ -207,6 +227,7 @@ public:
 	STDMETHOD(OnSuperstructureMembersOffset)();
 
 // ISupportsEvents
+public:
    STDMETHOD(OnSupportsChanged)(ISupport* item, BSTR stage, ChangeType change);
    STDMETHOD(OnSupportsAdded)(ISupport* item, PierIndexType index);
    STDMETHOD(OnSupportsBeforeRemove)(ISupport* item, PierIndexType index);
@@ -215,6 +236,7 @@ public:
 	STDMETHOD(OnSupportsReverse)();
 
 // ISpansEvents
+public:
    STDMETHOD(OnSpansChanged)(ISpan* item, BSTR stage, ChangeType change);
    STDMETHOD(OnSpansAdded)(ISpan* item, SpanIndexType index);
    STDMETHOD(OnSpansBeforeRemove)(ISpan* item, SpanIndexType index);
@@ -223,12 +245,14 @@ public:
 	STDMETHOD(OnSpansReverse)();
 
 // IPOIsEvents
+public:
    STDMETHOD(OnPOIsChanged)(IPOI* poi, ChangeType change);
    STDMETHOD(OnPOIsRenamed)(PoiIDType oldID, PoiIDType newID);
    STDMETHOD(OnPOIsAdded)(IPOI* poi);
    STDMETHOD(OnPOIsBeforeRemove)(IPOI* poi);
 
 // IStagesEvents
+public:
    STDMETHOD(OnStagesChanged)(IStage* item, ChangeType change);
    STDMETHOD(OnStagesAdded)(IStage* item, StageIndexType index);
    STDMETHOD(OnStagesBeforeRemove)(IStage* item, StageIndexType index);
@@ -237,32 +261,38 @@ public:
 	STDMETHOD(OnStagesReverse)();
 
 // ILoadGroupsEvents
+public:
    STDMETHOD(OnLoadGroupsChanged)(ILoadGroup* item, ChangeType change);
    STDMETHOD(OnLoadGroupsRenamed)(BSTR oldName, BSTR newName);
    STDMETHOD(OnLoadGroupsAdded)(ILoadGroup* item);
    STDMETHOD(OnLoadGroupsBeforeRemove)(ILoadGroup* item);
 
 // IPointLoadsEvents
+public:
    STDMETHOD(OnPointLoadsChanged)(IPointLoadItem* item);
    STDMETHOD(OnPointLoadsAdded)(IPointLoadItem* item);
    STDMETHOD(OnPointLoadsBeforeRemove)(IPointLoadItem* item);
 
 // IDistributedLoadsEvents
+public:
    STDMETHOD(OnDistributedLoadsChanged)(IDistributedLoadItem* item);
    STDMETHOD(OnDistributedLoadsAdded)(IDistributedLoadItem* item);
    STDMETHOD(OnDistributedLoadsBeforeRemove)(IDistributedLoadItem* item);
 
 // ITemperatureLoadsEvents
+public:
    STDMETHOD(OnTemperatureLoadsChanged)(ITemperatureLoadItem* item);
    STDMETHOD(OnTemperatureLoadsAdded)(ITemperatureLoadItem* item);
    STDMETHOD(OnTemperatureLoadsBeforeRemove)(ITemperatureLoadItem* item);
 
 // ISettlementLoadsEvents
+public:
    STDMETHOD(OnSettlementLoadsChanged)(ISettlementLoadItem* item);
    STDMETHOD(OnSettlementLoadsAdded)(ISettlementLoadItem* item);
    STDMETHOD(OnSettlementLoadsBeforeRemove)(ISettlementLoadItem* item);
 
 // IStrainLoadsEvents
+public:
    STDMETHOD(OnStrainLoadsChanged)(IStrainLoadItem* item);
    STDMETHOD(OnStrainLoadsAdded)(IStrainLoadItem* item);
    STDMETHOD(OnStrainLoadsBeforeRemove)(IStrainLoadItem* item);
@@ -313,6 +343,9 @@ public:
       //////////////////////////
       // total number of temporary supports in model
       SupportIndexType TemporarySupportCount();
+
+      // gets the temporary support index for the specified support ID. returns INVALID_INDEX if not found
+      SupportIndexType GetTemporarySupportIndex(SupportIDType tsID);
 
       // id of ith temporary support
       SupportIDType GetTemporarySupportID(SupportIndexType tempSupportIdx);

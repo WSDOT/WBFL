@@ -338,7 +338,7 @@ HRGN CEAFSplashScreen::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 				if ( pRgnData->nCount >= cBlocks * MAXBUF ){
 					LPBYTE pRgnDataNew = new BYTE[ RDHDR + ++cBlocks * MAXBUF * sizeof(RECT) ];
 					memcpy( pRgnDataNew, pRgnData, RDHDR + (cBlocks - 1) * MAXBUF * sizeof(RECT) );
-					delete pRgnData;
+					delete[] pRgnData;
 					pRgnData = (RGNDATAHEADER*)pRgnDataNew;
 				}
 				wasfirst = false;
@@ -364,7 +364,7 @@ HRGN CEAFSplashScreen::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 		ASSERT( hRgn!=NULL );
 		/* } ExtCreateRegion replacement */
 
-		delete pRgnData;
+		delete[] pRgnData;
 		return hRgn;
 }
 

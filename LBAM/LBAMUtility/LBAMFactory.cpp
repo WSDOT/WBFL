@@ -2179,7 +2179,7 @@ STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, PoiID
          }
          else
          {
-            ATLASSERT(0); // length of overhangs exceeds length of ss?
+            ATLASSERT(false); // length of overhangs exceeds length of ss?
          }
       }
 
@@ -2338,7 +2338,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
 
    if (xloc<start_loc)
    {
-      ATLASSERT(0); // location off of left end
+      ATLASSERT(false); // location off of left end
       return;
    }
 
@@ -2368,7 +2368,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
             hr = CreatePOI(id, mtSuperstructureMember, i_ssm, ssm_length, pPoi);
          }
          else
-            ATLASSERT(0); // off of right end
+            ATLASSERT(false); // off of right end
       }
 
       start_loc = end_loc;

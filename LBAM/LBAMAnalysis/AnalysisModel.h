@@ -76,6 +76,8 @@ public:
 	virtual ~CAnalysisModel();
 
    void BuildModel(BSTR bstrName);
+   void DumpFEMModel();
+
    void GetForce(LoadGroupIDType loadGroupID, PoiIDType poiId, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight);
    void GetDeflection(LoadGroupIDType loadGroupID, PoiIDType poiId, Float64* dxLeft, Float64* dyLeft, Float64* rzLeft, Float64* dxRight,  Float64* dyRight, Float64* rzRight);
    void GetReaction(LoadGroupIDType loadGroupID, SupportIDType suptId, Float64* Fx, Float64* Fy, Float64* Mz);
@@ -94,8 +96,7 @@ public:
    void GenerateInternalPOIsAtSuperstructureMembers();
    void GenerateInternalPOIsAtTemporarySupports();
 
-   void GetUnitForceResponse(PoiIDType poiID,PoiIDType loadPoiID, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight);
-
+   void GetUnitLoadResponse(PoiIDType poiID,PoiIDType loadPoiID, ForceEffectType forceEffect, ResultsOrientation orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight,  Float64* fyRight, Float64* mzRight);
 
    // return reaction force between temporary support and superstructure.
    void GetTemporarySupportReaction(LoadGroupIDType loadGroupID, SupportIDType tempSupportID, Float64* Fx, Float64* Fy, Float64* Mz);
@@ -234,7 +235,7 @@ private:
 
    // influence-related private functions
    void GenerateInfluenceLoadLocations();
-   void ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbmbrType, MemberIDType lbmbrID, Float64 lbmbrLoc, InfluenceLoadSet& influenceLoadSet );
+   void ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbmbrType, MemberIDType lbmbrID, Float64 lbmbrLoc);
 
    // cached data for contraflexure computation
    CComPtr<IDblArray> m_ContraflexureLocations;

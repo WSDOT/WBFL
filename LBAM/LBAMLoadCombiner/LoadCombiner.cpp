@@ -78,7 +78,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = CComAggObject<CLoadCaseResponseAgg>::CreateInstance(myiu,&plc);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -88,7 +88,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = plc->QueryInterface(IID_IUnknown, (void**)&m_pLoadCaseResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -96,7 +96,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = plc->QueryInterface(IID_ILoadCaseResponse, (void**)&m_pLoadCaseResponse);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -107,7 +107,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = CComAggObject<CLoadCombinationResponseAgg>::CreateInstance(myiu,&plcb);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -117,7 +117,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = plcb->QueryInterface(IID_IUnknown, (void**)&m_pLoadCombinationResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -126,7 +126,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = CComAggObject<CConcurrentLoadCombinationResponseAgg>::CreateInstance(myiu,&pclcb);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -134,7 +134,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = pclcb->QueryInterface(IID_IConcurrentLoadCombinationResponse, (void**)&m_pConcurrentLoadCombinationResponse);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -146,7 +146,7 @@ HRESULT CLoadCombiner::FinalConstruct()
    hr = pclcb->QueryInterface(IID_IUnknown, (void**)&m_pConcurrentLoadCombinationResponseAgg);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -170,7 +170,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       HRESULT hr = CrAdvise(m_Context, this, IID_ILoadCombinationAnalysisContextEvents, &m_ContextCookie);
       if (FAILED(hr))
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return hr;
       }
 
@@ -182,7 +182,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMC(INVALID_LC_CONTEXT);
       }
 
@@ -193,7 +193,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMC(INVALID_LC_CONTEXT);
       }
 
@@ -204,7 +204,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMC(INVALID_LC_CONTEXT);
       }
 
@@ -215,7 +215,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMC(INVALID_LC_CONTEXT);
       }
 
@@ -226,7 +226,7 @@ STDMETHODIMP CLoadCombiner::Initialize(/*[in]*/IUnknown* context)
       }
       else
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          THROW_LBAMC(INVALID_LC_CONTEXT);
       }
    }
@@ -353,7 +353,7 @@ void CLoadCombiner::ValidateLoadCases()
    CComQIPtr<IGetActiveLoadGroups> palg(m_Context);
    if (palg==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
    }
 
@@ -366,7 +366,7 @@ void CLoadCombiner::ValidateLoadCases()
    CComQIPtr<ILoadCases> load_cases(m_Context);
    if (load_cases==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
    }
 
@@ -419,7 +419,7 @@ void CLoadCombiner::ValidateLoadCombinations()
    CComQIPtr<ILoadCombinations> load_combos(m_Context);
    if (load_combos==NULL)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW_LBAMC(INVALID_LC_CONTEXT);
    }
 

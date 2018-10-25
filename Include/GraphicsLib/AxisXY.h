@@ -37,7 +37,7 @@
 // PROJECT INCLUDES
 //
 #include <GraphicsLib\GraphicsLibExp.h>
-#include <system\INumericFormatToolBase.h>
+#include <System\NumericFormatTool.h>
 
 // LOCAL INCLUDES
 //
@@ -114,12 +114,12 @@ public:
 
    //------------------------------------------------------------------------
    // Default constructor - creates X or Y axis axis
-   grAxisXY(AxisOrientation orientation, const sysINumericFormatToolBase& rFormat);
+   grAxisXY(AxisOrientation orientation, sysNumericFormatTool& rFormat);
 
    //------------------------------------------------------------------------
    // Constructor - defines location in windows logical coord's
    grAxisXY(AxisOrientation orientation, Int32 AxMin, Int32 AxMax, Int32 AyValue,
-            const sysINumericFormatToolBase& rFormat);
+            sysNumericFormatTool& rFormat);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -200,11 +200,11 @@ public:
    //------------------------------------------------------------------------
    // Set numeric formatting. This class does not own the tool, it only borrows
    // it and will not destroy the memory
-   void SetValueFormat(const sysINumericFormatToolBase& format);
+   void SetValueFormat(sysNumericFormatTool& format);
 
    //------------------------------------------------------------------------
    // Get numeric formatting
-   const sysINumericFormatToolBase* GetValueFormat() const;
+   const sysNumericFormatTool* GetValueFormat() const;
 
    //------------------------------------------------------------------------
    // Set the location of the tic marks along the axis. Tic marks can either
@@ -324,7 +324,7 @@ private:
    LONG   m_AxisTitleSize;
    LONG   m_AxisSubtitleSize;
    LONG   m_AxisValueSize;
-   const sysINumericFormatToolBase* m_pValueFormat;
+   sysNumericFormatTool* m_pValueFormat;
 
    // struct to hold private axis metrics
 

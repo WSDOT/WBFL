@@ -72,7 +72,7 @@ HRESULT CPoint3dCollection::OnBeforeAdd ( Point3dVectorImpl::StoredType* pVal)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 
@@ -97,7 +97,7 @@ HRESULT CPoint3dCollection::OnBeforeRemove ( Point3dVectorImpl::StoredType* pVal
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 

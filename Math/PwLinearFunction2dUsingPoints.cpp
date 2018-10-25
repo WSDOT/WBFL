@@ -402,7 +402,7 @@ void mathPwLinearFunction2dUsingPoints::ResetOuterRange( const math1dRange& rang
    // New range must fit at outer edges of function
    if (siz < 2 || xleft>=m_Points[1].X() || xright<=m_Points[siz-2].X())
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       THROW(mathXEvalError, Undefined);
    }
    else

@@ -53,13 +53,13 @@ void CBrokerImp::FinalRelease()
 
 void CBrokerImp::ClearAgents()
 {
-   WATCH("Clearing Agents");
+   WATCH(_T("Clearing Agents"));
    std::vector< IAgent* >::iterator i;
    for ( i = m_Agents.begin(); i != m_Agents.end(); i++ )
    {
       IAgent* pAgent = *i;
       ULONG cRef = pAgent->Release();
-      WATCH("Ref Count = " << cRef);
+      WATCH(_T("Ref Count = ") << cRef);
 
       pAgent = 0;
    }
@@ -68,7 +68,7 @@ void CBrokerImp::ClearAgents()
 
 /////////////////////////////////////////////////////////////////////////////
 // CBrokerImp message handlers
-STDMETHODIMP CBrokerImp::GetInterface( REFIID riid, void** ppv)
+STDMETHODIMP CBrokerImp::GetInterface( REFIID riid, IUnknown** ppUnk)
 {
    HRESULT hr = E_NOINTERFACE;
    Interfaces::iterator found;
@@ -77,7 +77,7 @@ STDMETHODIMP CBrokerImp::GetInterface( REFIID riid, void** ppv)
       return E_NOINTERFACE;
 
    IAgent* pAgent = (*found).second;
-   return pAgent->QueryInterface( riid, ppv );
+   return pAgent->QueryInterface( riid, (void**)ppUnk );
 }
 
 STDMETHODIMP CBrokerImp::Reset()

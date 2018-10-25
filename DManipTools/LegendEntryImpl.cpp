@@ -100,7 +100,7 @@ STDMETHODIMP_(void) CLegendEntryImpl::put_SymbolSize(long size)
    if (size>20)
       m_FontSize = size;
    else
-      ATLASSERT(0); // are you sure you want smaller than a two point font?
+      ATLASSERT(false); // are you sure you want smaller than a two point font?
 }
 
 STDMETHODIMP_(DWORD) CLegendEntryImpl::get_SymbolCharacterCode()

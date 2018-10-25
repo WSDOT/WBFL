@@ -176,7 +176,7 @@ HRESULT CSegments::put_Segment(BSTR bstage, SegmentIndexType relPosition, ISegme
       CSegmentItem* psegi = dynamic_cast<CSegmentItem*>(pisegi.p);
       if (psegi==NULL)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -248,7 +248,7 @@ HRESULT CSegments::Insert(SegmentIndexType relPosition, BSTR bstage, ISegment *p
          res = m_Segments.insert( ContainerType::value_type( stage, VectorType() ));
          if (!res.second)
          {
-            ATLASSERT(0); // insert failed - this should never happen
+            ATLASSERT(false); // insert failed - this should never happen
             return E_FAIL;
          }
          it = res.first;
@@ -870,7 +870,7 @@ void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
       CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->second.m_T.p);
       if (psegi==NULL)
       {
-         ATLASSERT(0); // should never happen since we are eating our own dog food here
+         ATLASSERT(false); // should never happen since we are eating our own dog food here
       }
 
       psegi->m_RelPosition = i;
@@ -890,7 +890,7 @@ HRESULT CSegments::LayoutSegments(Float64 layoutLength, Float64 totalLength, Vec
       hr = psegi->get_Segment(&pseg);
       if (FAILED(hr))
       {
-         ATLASSERT(0); // should never happen
+         ATLASSERT(false); // should never happen
          return hr;
       }
 

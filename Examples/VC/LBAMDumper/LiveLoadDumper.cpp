@@ -49,7 +49,7 @@ CLiveLoadDumper::~CLiveLoadDumper()
 {
 }
 
-void CLiveLoadDumper::DumpEnvelopedVehicularResponse(std::ostream& os, std::ostream& cos)
+void CLiveLoadDumper::DumpEnvelopedVehicularResponse(std::_tostream& os, std::_tostream& cos)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -163,7 +163,7 @@ void CLiveLoadDumper::DumpEnvelopedVehicularResponse(std::ostream& os, std::ostr
    DumpEvrSupportDeflections(os, cos, lltSpecial, llm_special, "Special");
 }
 
-void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpLlmForces(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -179,7 +179,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
       return;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use a parameter stack instead of writing nested loops over force effects
@@ -188,7 +188,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
       const CLlmParameterStack::LlParams& params = *piter;
 
       os<<endl;
-      os<<"   Summary Force Responses for " << params.AsString(true)<<endl;
+      os<<_T("   Summary Force Responses for ") << params.AsString(true)<<endl;
       os<<"    For Enveloped for LiveLoadModel \""<<llName<<"\""<<endl;
       os<<"    ----------------------------------------------------------------------------------------"<<endl;
 
@@ -209,7 +209,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
 
-         double left_res, right_res;
+         Float64 left_res, right_res;
          CComPtr<ILiveLoadConfiguration> left_config, right_config;
          hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -223,7 +223,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
       {
          long curr_key = start_key;
 
-         CComPtr<ILongArray> one_poi;
+         CComPtr<IIDArray> one_poi;
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
@@ -237,7 +237,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
             long left_key  = curr_key++;
             long right_key = curr_key++;
 
-            double left_res, right_res;
+            Float64 left_res, right_res;
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -252,7 +252,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
 
             CComPtr<ISectionResult3D> left_res3d;
             hr = left_res3ds->get_Item(0,&left_res3d);
-            double lfx,lfy,lmz,rfx,rfy,rmz;
+            Float64 lfx,lfy,lmz,rfx,rfy,rmz;
             hr = left_res3d->GetResult(&lfx,&lfy,&lmz,&rfx,&rfy,&rmz);
 
             cos<<"  Optimized <-------- Conc Left -----------> <------- Conc Right ----------->"<<endl;
@@ -260,7 +260,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
             cos<<" ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
             cos<<Ff(left_res)<<Ff(lfx)<<Ff(lfy)<<Ff(lmz)<<Ff(rfx)<<Ff(rfy)<<Ff(rmz)<<endl<<endl;
 
-            long axle_cnt = GetAxleCnt(vloads, left_config);
+            AxleIndexType axle_cnt = GetAxleCnt(vloads, left_config);
             DumpLiveLoadConfiguration(cos, left_config, axle_cnt, m_Util);
 
             cos<<endl;
@@ -288,7 +288,7 @@ void CLiveLoadDumper::DumpLlmForces(std::ostream& os, std::ostream& cos, LiveLoa
    }
 }
 
-void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpLlmDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -304,7 +304,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
       return;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use a parameter stack instead of writing nested loops over force effects
@@ -334,7 +334,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
 
-         double left_res, right_res;
+         Float64 left_res, right_res;
          CComPtr<ILiveLoadConfiguration> left_config, right_config;
          hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -350,13 +350,13 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
       {
          long curr_key = start_key;
 
-         CComPtr<ILongArray> one_poi;
+         CComPtr<IIDArray> one_poi;
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long poi_id;
+            IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
 
             hr = one_poi->put_Item(0, poi_id);
@@ -364,7 +364,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
             long left_key  = curr_key++;
             long right_key = curr_key++;
 
-            double left_res, right_res;
+            Float64 left_res, right_res;
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -379,7 +379,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
 
             CComPtr<ISectionResult3D> left_res3d;
             hr = left_res3ds->get_Item(0,&left_res3d);
-            double lfx,lfy,lmz,rfx,rfy,rmz;
+            Float64 lfx,lfy,lmz,rfx,rfy,rmz;
             hr = left_res3d->GetResult(&lfx,&lfy,&lmz,&rfx,&rfy,&rmz);
 
             cos<<"  Optimized <-------- Conc Left -----------> <------- Conc Right ----------->"<<endl;
@@ -387,7 +387,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
             cos<<" ---------- ---------- ---------- ---------- ---------- ---------- ----------"<<endl;
             cos<<Fd(left_res)<<Fd(lfx)<<Fd(lfy)<<Fd(lmz)<<Fd(rfx)<<Fd(rfy)<<Fd(rmz)<<endl<<endl;
 
-            long axle_cnt = GetAxleCnt(vloads, left_config);
+            AxleIndexType axle_cnt = GetAxleCnt(vloads, left_config);
             DumpLiveLoadConfiguration(cos, left_config, axle_cnt, m_Util);
 
             cos<<endl;
@@ -416,7 +416,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::ostream& os, std::ostream& cos, Li
    }
 }
 
-void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpLlmStresses(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -431,7 +431,7 @@ void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveL
       return;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use a parameter stack instead of writing nested loops over force effects
@@ -465,11 +465,11 @@ void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveL
          CComPtr<ILiveLoadConfiguration> left_config, right_config;
          hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
-         std::string rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
-         std::string lft_sp0, lft_sp1, lft_sp2, lft_sp3;
+         std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
+         std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
          CollectionIndexType cnt;
-         double val;
+         Float64 val;
          hr = left_res->get_Count(&cnt);
          if (cnt>0)
          {
@@ -533,13 +533,13 @@ void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveL
       {
          long curr_key = start_key;
 
-         CComPtr<ILongArray> one_poi;
+         CComPtr<IIDArray> one_poi;
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long poi_id;
+            IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
 
             hr = one_poi->put_Item(0, poi_id);
@@ -556,7 +556,7 @@ void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveL
             cos<<"    At POI "<<poi_id<<" Left Side. Key is K"<<left_key<<endl;
             cos<<"    ----------------------------------------------------------------------------------------"<<endl;
 
-            long axle_cnt = GetAxleCnt(vloads, left_config);
+            AxleIndexType axle_cnt = GetAxleCnt(vloads, left_config);
             DumpLiveLoadConfiguration(cos, left_config, axle_cnt, m_Util);
 
             cos<<endl;
@@ -573,7 +573,7 @@ void CLiveLoadDumper::DumpLlmStresses(std::ostream& os, std::ostream& cos, LiveL
    }
 }
 
-void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpLlmReactions(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -588,7 +588,7 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
       return;
 
    // get all supports
-   CComPtr<ILongArray> spt_ids;
+   CComPtr<IIDArray> spt_ids;
    m_Util->GetSupportIDs(m_StageId, &spt_ids);
 
    // use a parameter stack instead of writing nested loops over force effects
@@ -615,10 +615,10 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
       hr = llsresults->get_Count(&res_cnt);
       for (CollectionIndexType ires=0; ires<res_cnt; ires++)
       {
-         long spt_id;
+         IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
 
-         double res;
+         Float64 res;
          CComPtr<ILiveLoadConfiguration> config;
          hr = llsresults->GetResult(ires, &res, &config);
 
@@ -634,20 +634,20 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
 
          long curr_key = start_key;
 
-         CComPtr<ILongArray> one_spt;
+         CComPtr<IIDArray> one_spt;
          hr = one_spt.CoCreateInstance(CLSID_LongArray);
          hr = one_spt->Add(-1);
 
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long spt_id;
+            IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
 
             hr = one_spt->put_Item(0, spt_id);
 
             long key  = curr_key++;
 
-            double res;
+            Float64 res;
             CComPtr<ILiveLoadConfiguration> config;
             hr = llsresults->GetResult(ires, &res, &config);
 
@@ -662,7 +662,7 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
 
             CComPtr<IResult3D> res3d;
             hr = res3ds->get_Item(0,&res3d);
-            double fx,fy,mz;
+            Float64 fx,fy,mz;
             hr = res3d->GetResult(&fx,&fy,&mz);
 
             cos<<"  Optimized <------Concurrent Values ------>"<<endl;
@@ -670,7 +670,7 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
             cos<<" ---------- ---------- ---------- ----------"<<endl;
             cos<<Fd(res)<<Fd(fx)<<Fd(fy)<<Fd(mz)<<endl<<endl;
 
-            long axle_cnt = GetAxleCnt(vloads, config);
+            AxleIndexType axle_cnt = GetAxleCnt(vloads, config);
             DumpLiveLoadConfiguration(cos, config, axle_cnt, m_Util);
 
             cos<<endl;
@@ -680,7 +680,7 @@ void CLiveLoadDumper::DumpLlmReactions(std::ostream& os, std::ostream& cos, Live
 }
 
 
-void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpLlmSupportDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
@@ -695,7 +695,7 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
       return;
 
    // get all supports
-   CComPtr<ILongArray> spt_ids;
+   CComPtr<IIDArray> spt_ids;
    m_Util->GetSupportIDs(m_StageId, &spt_ids);
 
    // use a parameter stack instead of writing nested loops over force effects
@@ -722,10 +722,10 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
       hr = llsresults->get_Count(&res_cnt);
       for (CollectionIndexType ires=0; ires<res_cnt; ires++)
       {
-         long spt_id;
+         IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
 
-         double res;
+         Float64 res;
          CComPtr<ILiveLoadConfiguration> config;
          hr = llsresults->GetResult(ires, &res, &config);
 
@@ -740,20 +740,20 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
       {
          long curr_key = start_key;
 
-         CComPtr<ILongArray> one_spt;
+         CComPtr<IIDArray> one_spt;
          hr = one_spt.CoCreateInstance(CLSID_LongArray);
          hr = one_spt->Add(-1);
 
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long spt_id;
+            IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
 
             hr = one_spt->put_Item(0, spt_id);
 
             long key  = curr_key++;
 
-            double res;
+            Float64 res;
             CComPtr<ILiveLoadConfiguration> config;
             hr = llsresults->GetResult(ires, &res, &config);
 
@@ -768,7 +768,7 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
 
             CComPtr<IResult3D> res3d;
             hr = res3ds->get_Item(0,&res3d);
-            double fx,fy,mz;
+            Float64 fx,fy,mz;
             hr = res3d->GetResult(&fx,&fy,&mz);
 
             cos<<"  Optimized <------Concurrent Values ------>"<<endl;
@@ -776,7 +776,7 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
             cos<<" ---------- ---------- ---------- ----------"<<endl;
             cos<<Fd(res)<<Fd(fx)<<Fd(fy)<<Fd(mz)<<endl<<endl;
 
-            long axle_cnt = GetAxleCnt(vloads, config);
+            AxleIndexType axle_cnt = GetAxleCnt(vloads, config);
             DumpLiveLoadConfiguration(cos, config, axle_cnt, m_Util);
 
             cos<<endl;
@@ -786,13 +786,13 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::ostream& os, std::ostream& 
 }
 
 
-void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpEvrForces(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use distribution factor type specified by liveloadmodel 
@@ -848,7 +848,7 @@ void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoa
             PoiIDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
 
-            double left_res, right_res;
+            Float64 left_res, right_res;
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -863,13 +863,13 @@ void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoa
 
             long curr_key = start_key;
 
-            CComPtr<ILongArray> one_poi;
+            CComPtr<IIDArray> one_poi;
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
             for (CollectionIndexType ires=0; ires<res_cnt; ires++)
             {
-               long poi_id;
+               IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);
 
                hr = one_poi->put_Item(0, poi_id);
@@ -877,7 +877,7 @@ void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoa
                long left_key  = curr_key++;
                long right_key = curr_key++;
 
-               double left_res, right_res;
+               Float64 left_res, right_res;
                CComPtr<ILiveLoadConfiguration> left_config, right_config;
                hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -892,7 +892,7 @@ void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoa
 
                CComPtr<ISectionResult3D> left_res3d;
                hr = left_res3ds->get_Item(0,&left_res3d);
-               double lfx,lfy,lmz,rfx,rfy,rmz;
+               Float64 lfx,lfy,lmz,rfx,rfy,rmz;
                hr = left_res3d->GetResult(&lfx,&lfy,&lmz,&rfx,&rfy,&rmz);
 
                cos<<"  Optimized <-------- Conc Left -----------> <------- Conc Right ----------->"<<endl;
@@ -927,13 +927,13 @@ void CLiveLoadDumper::DumpEvrForces(std::ostream& os, std::ostream& cos, LiveLoa
    }
 }
 
-void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpEvrDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use distribution factor type specified by liveloadmodel 
@@ -989,7 +989,7 @@ void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, Li
             PoiIDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
 
-            double left_res, right_res;
+            Float64 left_res, right_res;
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -1006,13 +1006,13 @@ void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, Li
 
             long curr_key = start_key;
 
-            CComPtr<ILongArray> one_poi;
+            CComPtr<IIDArray> one_poi;
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
             for (CollectionIndexType ires=0; ires<res_cnt; ires++)
             {
-               long poi_id;
+               IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);
 
                hr = one_poi->put_Item(0, poi_id);
@@ -1020,7 +1020,7 @@ void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, Li
                long left_key  = curr_key++;
                long right_key = curr_key++;
 
-               double left_res, right_res;
+               Float64 left_res, right_res;
                CComPtr<ILiveLoadConfiguration> left_config, right_config;
                hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
@@ -1035,7 +1035,7 @@ void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, Li
 
                CComPtr<ISectionResult3D> left_res3d;
                hr = left_res3ds->get_Item(0,&left_res3d);
-               double lfx,lfy,lmz,rfx,rfy,rmz;
+               Float64 lfx,lfy,lmz,rfx,rfy,rmz;
                hr = left_res3d->GetResult(&lfx,&lfy,&lmz,&rfx,&rfy,&rmz);
 
                cos<<"  Optimized <-------- Conc Left -----------> <------- Conc Right ----------->"<<endl;
@@ -1071,13 +1071,13 @@ void CLiveLoadDumper::DumpEvrDeflections(std::ostream& os, std::ostream& cos, Li
    }
 }
 
-void CLiveLoadDumper::DumpEvrReactions(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpEvrReactions(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all supports
-   CComPtr<ILongArray> spt_ids;
+   CComPtr<IIDArray> spt_ids;
    m_Util->GetSupportIDs(m_StageId, &spt_ids);
 
    // use distribution factor type specified by liveloadmodel 
@@ -1130,10 +1130,10 @@ void CLiveLoadDumper::DumpEvrReactions(std::ostream& os, std::ostream& cos, Live
          hr = llsresults->get_Count(&res_cnt);
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long spt_id;
+            IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
 
-            double res;
+            Float64 res;
             CComPtr<ILiveLoadConfiguration> config;
             hr = llsresults->GetResult(ires, &res, &config);
 
@@ -1149,20 +1149,20 @@ void CLiveLoadDumper::DumpEvrReactions(std::ostream& os, std::ostream& cos, Live
 
             long curr_key = start_key;
 
-            CComPtr<ILongArray> one_spt;
+            CComPtr<IIDArray> one_spt;
             hr = one_spt.CoCreateInstance(CLSID_LongArray);
             hr = one_spt->Add(-1);
 
             for (CollectionIndexType ires=0; ires<res_cnt; ires++)
             {
-               long spt_id;
+               IDType spt_id;
                hr = spt_ids->get_Item(ires, &spt_id);
 
                hr = one_spt->put_Item(0, spt_id);
 
                long key  = curr_key++;
 
-               double res;
+               Float64 res;
                CComPtr<ILiveLoadConfiguration> config;
                hr = llsresults->GetResult(ires, &res, &config);
 
@@ -1177,7 +1177,7 @@ void CLiveLoadDumper::DumpEvrReactions(std::ostream& os, std::ostream& cos, Live
 
                CComPtr<IResult3D> res3d;
                hr = res3ds->get_Item(0,&res3d);
-               double fx,fy,mz;
+               Float64 fx,fy,mz;
                hr = res3d->GetResult(&fx,&fy,&mz);
 
                cos<<"  Optimized <------Concurrent Values ------>"<<endl;
@@ -1194,13 +1194,13 @@ void CLiveLoadDumper::DumpEvrReactions(std::ostream& os, std::ostream& cos, Live
    }
 }
 
-void CLiveLoadDumper::DumpEvrSupportDeflections(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpEvrSupportDeflections(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all supports
-   CComPtr<ILongArray> spt_ids;
+   CComPtr<IIDArray> spt_ids;
    m_Util->GetSupportIDs(m_StageId, &spt_ids);
 
    // use distribution factor type specified by liveloadmodel 
@@ -1253,10 +1253,10 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::ostream& os, std::ostream& 
          hr = llsresults->get_Count(&res_cnt);
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long spt_id;
+            IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
 
-            double res;
+            Float64 res;
             CComPtr<ILiveLoadConfiguration> config;
             hr = llsresults->GetResult(ires, &res, &config);
 
@@ -1272,20 +1272,20 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::ostream& os, std::ostream& 
 
             long curr_key = start_key;
 
-            CComPtr<ILongArray> one_spt;
+            CComPtr<IIDArray> one_spt;
             hr = one_spt.CoCreateInstance(CLSID_LongArray);
             hr = one_spt->Add(-1);
 
             for (CollectionIndexType ires=0; ires<res_cnt; ires++)
             {
-               long spt_id;
+               IDType spt_id;
                hr = spt_ids->get_Item(ires, &spt_id);
 
                hr = one_spt->put_Item(0, spt_id);
 
                long key  = curr_key++;
 
-               double res;
+               Float64 res;
                CComPtr<ILiveLoadConfiguration> config;
                hr = llsresults->GetResult(ires, &res, &config);
 
@@ -1300,7 +1300,7 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::ostream& os, std::ostream& 
 
                CComPtr<IResult3D> res3d;
                hr = res3ds->get_Item(0,&res3d);
-               double fx,fy,mz;
+               Float64 fx,fy,mz;
                hr = res3d->GetResult(&fx,&fy,&mz);
 
                cos<<"  Optimized <------Concurrent Values ------>"<<endl;
@@ -1319,13 +1319,13 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::ostream& os, std::ostream& 
 
 
 
-void CLiveLoadDumper::DumpEvrStresses(std::ostream& os, std::ostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
+void CLiveLoadDumper::DumpEvrStresses(std::_tostream& os, std::_tostream& cos, LiveLoadModelType llmType, ILiveLoadModel* llModel, const char* llName)
 {
    CHRException hr;
    USES_CONVERSION;
 
    // get all pois
-   CComPtr<ILongArray> poi_ids;
+   CComPtr<IIDArray> poi_ids;
    m_Util->GetAllPOIs(m_StageId, rsCumulative, &poi_ids);
 
    // use distribution factor type specified by liveloadmodel 
@@ -1378,18 +1378,18 @@ void CLiveLoadDumper::DumpEvrStresses(std::ostream& os, std::ostream& cos, LiveL
          hr = llsresults->get_Count(&res_cnt);
          for (CollectionIndexType ires=0; ires<res_cnt; ires++)
          {
-            long poi_id;
+            IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
 
             CComPtr<IStressResult> left_res, right_res;
             CComPtr<ILiveLoadConfiguration> left_config, right_config;
             hr = llsresults->GetResult(ires, &left_res, &left_config, &right_res, &right_config);
 
-            std::string rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
-            std::string lft_sp0, lft_sp1, lft_sp2, lft_sp3;
+            std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
+            std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
             CollectionIndexType cnt;
-            double val;
+            Float64 val;
             hr = left_res->get_Count(&cnt);
             if (cnt>0)
             {
@@ -1454,13 +1454,13 @@ void CLiveLoadDumper::DumpEvrStresses(std::ostream& os, std::ostream& cos, LiveL
 
             long curr_key = start_key;
 
-            CComPtr<ILongArray> one_poi;
+            CComPtr<IIDArray> one_poi;
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
             for (CollectionIndexType ires=0; ires<res_cnt; ires++)
             {
-               long poi_id;
+               IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);
 
                hr = one_poi->put_Item(0, poi_id);
@@ -1494,7 +1494,7 @@ void CLiveLoadDumper::DumpEvrStresses(std::ostream& os, std::ostream& cos, LiveL
 }
 
 
-void CLiveLoadDumper::DumpLiveLoadModelResponse(std::ostream& os, std::ostream& cos)
+void CLiveLoadDumper::DumpLiveLoadModelResponse(std::_tostream& os, std::_tostream& cos)
 {
 
 }
@@ -1525,42 +1525,42 @@ void CEvrParameterStack::Init()
    }
 }
 
-std::string CEvrParameterStack::LlParams::AsString(bool isForce) const
+std::_tstring CEvrParameterStack::LlParams::AsString(bool isForce) const
 {
-   std::string msg;
+   std::_tstring msg;
 
    if (Optimization==optMaximize)
-      msg = "Maximized ";
+      msg = _T("Maximized ");
    else
-      msg = "Minimized ";
+      msg = _T("Minimized ");
 
    if (isForce)
    {
       if (ForceEffect==fetFx)
-         msg+="Fx Force, ";
+         msg+=_T("Fx Force, ");
       else if (ForceEffect==fetFy)
-         msg+="Fy Force, ";
+         msg+=_T("Fy Force, ");
       else if (ForceEffect==fetMz)
-         msg+="Mz Moment, ";
+         msg+=_T("Mz Moment, ");
       else
          ATLASSERT(0);
    }
    else
    {
       if (ForceEffect==fetFx)
-         msg+="Dx Deflection, ";
+         msg+=_T("Dx Deflection, ");
       else if (ForceEffect==fetFy)
-         msg+="Dy Deflection,";
+         msg+=_T("Dy Deflection,");
       else if (ForceEffect==fetMz)
-         msg+="Rz Deflection, ";
+         msg+=_T("Rz Deflection, ");
       else
          ATLASSERT(0);
    }
 
    if (DoApplyImpact!=VARIANT_FALSE)
-      msg += "Impact Applied. ";
+      msg += _T("Impact Applied. ");
    else
-      msg += "Impact Not Applied. ";
+      msg += _T("Impact Not Applied. ");
 
    return msg;
 }
@@ -1591,47 +1591,47 @@ void CLlmParameterStack::Init()
    }
 }
 
-std::string CLlmParameterStack::LlParams::AsString(bool isForce) const
+std::_tstring CLlmParameterStack::LlParams::AsString(bool isForce) const
 {
-   std::string msg;
+   std::_tstring msg;
 
    if (Optimization==optMaximize)
-      msg = "Maximized ";
+      msg = _T("Maximized ");
    else
-      msg = "Minimized ";
+      msg = _T("Minimized ");
 
    if (isForce)
    {
       if (ForceEffect==fetFx)
-         msg+="Fx Force, ";
+         msg+=_T("Fx Force, ");
       else if (ForceEffect==fetFy)
-         msg+="Fy Force, ";
+         msg+=_T("Fy Force, ");
       else if (ForceEffect==fetMz)
-         msg+="Mz Moment, ";
+         msg+=_T("Mz Moment, ");
       else
          ATLASSERT(0);
    }
    else
    {
       if (ForceEffect==fetFx)
-         msg+="Dx Deflection, ";
+         msg+=_T("Dx Deflection, ");
       else if (ForceEffect==fetFy)
-         msg+="Dy Deflection,";
+         msg+=_T("Dy Deflection,");
       else if (ForceEffect==fetMz)
-         msg+="Rz Deflection, ";
+         msg+=_T("Rz Deflection, ");
       else
          ATLASSERT(0);
    }
 
    if (DoApplyImpact!=VARIANT_FALSE)
-      msg += "Impact Applied, ";
+      msg += _T("Impact Applied, ");
    else
-      msg += "Impact Not Applied, ";
+      msg += _T("Impact Not Applied, ");
 
    if (DoApplyDistf!=VARIANT_FALSE)
-      msg += "Distribution Factors Applied. ";
+      msg += _T("Distribution Factors Applied. ");
    else
-      msg += "Distribution Factors Not Applied. ";
+      msg += _T("Distribution Factors Not Applied. ");
 
    return msg;
 }

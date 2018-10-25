@@ -39,13 +39,14 @@
 
 struct InterfaceItem
 {
-   IID iid;
-   boost::shared_ptr<Uint64> pUsageCount;
-   IAgentEx* pAgent; // weak reference
+   IID iid; // IID of the interface
+   CComPtr<IUnknown> m_pUnk; // the interface pointer
+   boost::shared_ptr<Uint64> pUsageCount; // count of the number of times the interface has been requested
+   IAgentEx* pAgent; // weak reference.. agent that implements the interface
 
-   InterfaceItem() : pUsageCount(new Uint64) { *pUsageCount = 0; }
-   bool operator<(const InterfaceItem& other) const { return iid < other.iid; }
-   bool operator==(const InterfaceItem& other) const { return (iid == other.iid ? true : false); }
+   InterfaceItem();
+   bool operator<(const InterfaceItem& other) const;
+   bool operator==(const InterfaceItem& other) const;
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -61,13 +62,8 @@ class ATL_NO_VTABLE CBrokerImp2 :
    public IManageAgents
 {
 public:
-   CBrokerImp2() :
-      m_MostFrequentlyUsed(5) // 5 most recently used interfaces
-	{
-      m_DelayInit = false;
-      m_bAgentsInitialized = false;
-      m_bSaveMissingAgentData = VARIANT_TRUE;
-	}
+   CBrokerImp2();
+   ~CBrokerImp2();
 
    HRESULT FinalConstruct();
    void FinalRelease();
@@ -89,7 +85,7 @@ END_COM_MAP()
 
 // IBroker
 public:
-   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ void** ppv);
+   STDMETHOD(GetInterface)(/*[in]*/ REFIID riid, /*[out,iid_is(riid)]*/ IUnknown** ppUnk);
    STDMETHOD(Reset)();
 	STDMETHOD(ShutDown)();
 

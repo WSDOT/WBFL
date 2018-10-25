@@ -61,14 +61,14 @@ HRESULT CGraphXyDataProvider::FinalConstruct()
    hr = m_DataSet.CoCreateInstance(CLSID_DataSet2d);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = m_Factory.CoCreateInstance(CLSID_LegendEntry);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// LBAM Utility - Longitindal Bridge Analysis Model
+// MfcTools - Extension library for MFC
 // Copyright © 1999-2014  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,20 +21,21 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
+#include "StdAfx.h"
+#include <MFCTools\AutoRegistry.h>
 
-#if !defined INCLUDED_UTILITYUTILS_H_
-#define INCLUDED_UTILITYUTILS_H_
-
-#include "ComException.h"
-
-// macros to help error processing
-// short-hand version if consistent naming conventions are used
-#define THROW_LBAMU(errNam) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LBAMU_E_##errNam, IDH_E_##errNam);}
-#define THROW_LBAMU_MSG(errNam, msg) { ATLASSERT(false); throw CComException(_T(__FILE__),__LINE__, msg, LBAMU_E_##errNam, IDH_E_##errNam);}
-
-inline CComBSTR GetHelpFile()
+CAutoRegistry::CAutoRegistry(LPCTSTR lpszProfile)
 {
-   return CComBSTR("WBFLLBAM.chm");
+   CWinApp* pApp = AfxGetApp();
+
+   m_strAppProfileName = pApp->m_pszProfileName;
+   free((void*)pApp->m_pszProfileName);
+   pApp->m_pszProfileName = _tcsdup(lpszProfile);
 }
 
-#endif 
+CAutoRegistry::~CAutoRegistry()
+{
+   CWinApp* pApp = AfxGetApp();
+   free((void*)pApp->m_pszProfileName);
+   pApp->m_pszProfileName = _tcsdup(m_strAppProfileName);
+}

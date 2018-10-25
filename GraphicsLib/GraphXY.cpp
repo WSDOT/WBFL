@@ -57,7 +57,7 @@ bool PointSorter::operator()(const gpPoint2d& p1,const gpPoint2d& p2) const
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-grGraphXY::grGraphXY(const sysINumericFormatToolBase& rXAxisFormat, const sysINumericFormatToolBase& rYAxisFormat) :
+grGraphXY::grGraphXY(sysNumericFormatTool& rXAxisFormat, sysNumericFormatTool& rYAxisFormat) :
 m_WorldRect( DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX ),
 m_XAxis(grAxisXY::X_AXIS, rXAxisFormat),
 m_YAxis(grAxisXY::Y_AXIS, rYAxisFormat),
@@ -74,7 +74,11 @@ m_YAxisNiceRange(true),
 m_PinYAxisAtZero(true),
 m_bIsotropicAxes(false),
 m_MinZoomHeight(DEFAULT_ZOOM),
-m_MinZoomWidth(DEFAULT_ZOOM)
+m_MinZoomWidth(DEFAULT_ZOOM),
+m_Xmin(0),
+m_Xmax(1),
+m_Ymin(0),
+m_Ymax(1)
 {
    // set up the x axis
    m_XAxis.SetNumberOfMinorTics(5);
@@ -89,13 +93,6 @@ m_MinZoomWidth(DEFAULT_ZOOM)
    m_GridPenData.Style = PS_SOLID;
    m_GridPenData.Color = RGB(0,0,0);
    m_GridPenData.Width = 1;
-}
-
-grGraphXY::grGraphXY(const grGraphXY& rOther):
-m_XAxis(grAxisXY::X_AXIS, *rOther.GetXAxisValueFormat()),
-m_YAxis(grAxisXY::Y_AXIS, *rOther.GetYAxisValueFormat())
-{
-   MakeCopy(rOther);
 }
 
 grGraphXY::~grGraphXY()
@@ -401,12 +398,12 @@ void grGraphXY::SetYAxisNumberOfMinorTics(LONG num)
    m_YAxis.SetNumberOfMinorTics(num);
 }
 
-void grGraphXY::SetXAxisValueFormat(const sysINumericFormatToolBase& format)
+void grGraphXY::SetXAxisValueFormat(sysNumericFormatTool& format)
 {
    m_XAxis.SetValueFormat(format);
 }
 
-const sysINumericFormatToolBase* grGraphXY::GetXAxisValueFormat() const
+const sysNumericFormatTool* grGraphXY::GetXAxisValueFormat() const
 {
    return  m_XAxis.GetValueFormat();
 }
@@ -415,7 +412,9 @@ void grGraphXY::SetXAxisScale(grAxisXY::AxisScale scale)
 {
    m_XAxis.SetScale(scale);
    if ( m_XAxis.GetScale() == grAxisXY::INTEGRAL )
+   {
       m_XAxisNiceRange = false; // can't have nice range with INTEGRAL
+   }
 }
 
 grAxisXY::AxisScale grGraphXY::GetXAxisScale() const
@@ -427,7 +426,9 @@ void grGraphXY::SetYAxisScale(grAxisXY::AxisScale scale)
 {
    m_YAxis.SetScale(scale);
    if ( m_YAxis.GetScale() == grAxisXY::INTEGRAL )
+   {
       m_YAxisNiceRange = false; // can't have nice range with INTEGRAL
+   }
 }
 
 grAxisXY::AxisScale grGraphXY::GetYAxisScale() const
@@ -435,12 +436,12 @@ grAxisXY::AxisScale grGraphXY::GetYAxisScale() const
    return m_YAxis.GetScale();
 }
 
-void grGraphXY::SetYAxisValueFormat(const sysINumericFormatToolBase& format)
+void grGraphXY::SetYAxisValueFormat(sysNumericFormatTool& format)
 {
    m_YAxis.SetValueFormat(format);
 }
 
-const sysINumericFormatToolBase* grGraphXY::GetYAxisValueFormat() const
+const sysNumericFormatTool* grGraphXY::GetYAxisValueFormat() const
 {
    return  m_YAxis.GetValueFormat();
 }
@@ -487,6 +488,22 @@ void grGraphXY::SetMinimumZoomBounds(Float64 Height, Float64 Width)
 
    m_MinZoomHeight = Height;
    m_MinZoomWidth  = Width;
+}
+
+void grGraphXY::SetMinimumSize(Float64 Xmin,Float64 Xmax,Float64 Ymin,Float64 Ymax)
+{
+   m_Xmin = Xmin;
+   m_Xmax = Xmax;
+   m_Ymin = Ymin;
+   m_Ymax = Ymax;
+}
+
+void grGraphXY::GetMinimumSize(Float64* pXmin,Float64* pXmax,Float64* pYmin,Float64* pYmax)
+{
+   *pXmin = m_Xmin;
+   *pXmax = m_Xmax;
+   *pYmin = m_Ymin;
+   *pYmax = m_Ymax;
 }
 
 void grGraphXY::SetLegendBoarderStyle(LegendBoarderType type)
@@ -542,6 +559,11 @@ void grGraphXY::MakeCopy(const grGraphXY& rOther)
 
    m_MinZoomHeight = rOther.m_MinZoomHeight;
    m_MinZoomWidth  = rOther.m_MinZoomWidth;
+
+   m_Xmin = rOther.m_Xmin;
+   m_Xmax = rOther.m_Xmax;
+   m_Ymin = rOther.m_Ymin;
+   m_Ymax = rOther.m_Ymax;
 }
 
 void grGraphXY::MakeAssignment(const grGraphXY& rOther)
@@ -563,16 +585,18 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
 
    IndexType nDataPoints = 0;
    IndexType nMaxDataPoints = 0;
-   GraphDataMap::iterator map_iter;
-   for ( map_iter = m_GraphDataMap.begin(); map_iter != m_GraphDataMap.end(); map_iter++ )
+   GraphDataMap::iterator graphDataIter(m_GraphDataMap.begin());
+   GraphDataMap::iterator graphDataIterEnd(m_GraphDataMap.end());
+   for ( ; graphDataIter != graphDataIterEnd; graphDataIter++ )
    {
-      GraphData& gd = (*map_iter).second;
+      GraphData& graphData = graphDataIter->second;
 
-      DataSeries::iterator ds_iter;
       IndexType nDP = 0;
-      for ( ds_iter = gd.Series.begin(); ds_iter != gd.Series.end(); ds_iter++ )
+      DataSeries::iterator dataSeriesIter(graphData.Series.begin());
+      DataSeries::iterator dataSeriesIterEnd(graphData.Series.end());
+      for ( ; dataSeriesIter != dataSeriesIterEnd; dataSeriesIter++ )
       {
-         gpPoint2d& p = *ds_iter;
+         gpPoint2d& p = *dataSeriesIter;
          m_WorldRect.Left()   = min( p.X(), m_WorldRect.Left()  );
          m_WorldRect.Right()  = max( p.X(), m_WorldRect.Right() );
          m_WorldRect.Top()    = max( p.Y(), m_WorldRect.Top() );
@@ -612,6 +636,18 @@ void grGraphXY::UpdateGraphMetrics(HDC hDC)
       Float64 cen = (m_WorldRect.Right() + m_WorldRect.Left())/2.0;
       m_WorldRect.Right() = cen + m_MinZoomWidth/2.0;
       m_WorldRect.Left()  = cen - m_MinZoomWidth/2.0;
+   }
+
+   if ( m_XAxis.GetScale() != grAxisXY::LOGARITHMIC )
+   {
+      m_WorldRect.Left()   = min(m_WorldRect.Left(),  m_Xmin);
+      m_WorldRect.Right()  = max(m_WorldRect.Right(), m_Xmax);
+   }
+
+   if ( m_YAxis.GetScale() != grAxisXY::LOGARITHMIC )
+   {
+      m_WorldRect.Top()    = max(m_WorldRect.Top(),   m_Ymax);
+      m_WorldRect.Bottom() = min(m_WorldRect.Bottom(),m_Ymin);
    }
 
    if ( m_bIsotropicAxes )

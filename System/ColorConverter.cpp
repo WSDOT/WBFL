@@ -36,9 +36,13 @@ void sysColorConverter::HLStoRGB(Float64 hue,Float64 lightness,Float64 saturatio
    ATLASSERT(0. <= saturation && saturation <= 1.);
 
    if (lightness <= 0.5)
+   {
       m2 = lightness*(1 + saturation);
+   }
    else
+   {
       m2 = lightness + saturation - lightness*saturation;
+   }
 
    m1 = 2*lightness - m2;
 
@@ -111,18 +115,28 @@ void sysColorConverter::RGBtoHLS(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pLi
       // Chromatic case
       // First calculate saturation
       if (*pLightness <= 0.5)
+      {
          *pSaturation = (maxColor - minColor)/(maxColor + minColor);
+      }
       else
+      {
          *pSaturation = (maxColor - minColor)/(2 - maxColor - minColor);
+      }
 
       // Now, calculate hue
       delta = maxColor - minColor;
       if (IsZero(red - maxColor))
+      {
          *pHue = (green - blue)/delta; // resulting color is between yellow and magenta
+      }
       else if (IsZero(green - maxColor))
+      {
          *pHue = 2 + (blue - red)/delta; // resulting color is between cyan and yellow
+      }
       else if (IsZero(blue - maxColor))
+      {
          *pHue = 4 + (red - green)/delta; // resulting color is between magenta and cyan
+      }
 
       // convert to degrees
       *pHue *= 60.;
@@ -245,9 +259,13 @@ void sysColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pSa
 
    // calculate saturation
    if (!IsZero(maxColor))
+   {
       *pSaturation = (maxColor - minColor)/maxColor;
+   }
    else
+   {
       *pSaturation = 0.;
+   }
 
    if (IsZero(*pSaturation))
    {
@@ -259,11 +277,17 @@ void sysColorConverter::RGBtoHSV(BYTE r,BYTE g,BYTE b,Float64* pHue,Float64* pSa
       // Chromatic case
       delta = maxColor - minColor;
       if (IsZero(red - maxColor))
+      {
          *pHue = (green - blue)/delta; // Resulting color is between yellow and magenta
+      }
       else if(IsZero(green - maxColor))
+      {
          *pHue = 2 + (blue - red)/delta; // Resulting color is between cyan and yellow
+      }
       else if(IsZero(blue - maxColor))
+      {
          *pHue = 4 + (red - green)/delta; // Resulting color is between magenta and cyan
+      }
 
       *pHue *= 60.;
 
@@ -280,18 +304,30 @@ Float64 sysColorConverter::ComputeValue(Float64 n1,Float64 n2,Float64 hue)
    Float64 value;
 
    if (360. < hue)
+   {
       hue -= 360.;
+   }
    else if (hue < 0.)
+   {
       hue += 360.;
+   }
 
    if (hue < 60.)
+   {
       value = n1 + (n2 - n1)*hue/60.;
+   }
    else if (hue < 180.)
+   {
       value = n2;
+   }
    else if (hue < 240.)
+   {
       value = n1 + (n2 - n1)*(240. - hue)/60.;
+   }
    else
+   {
       value = n1;
+   }
 
    return value;
 }

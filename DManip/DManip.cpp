@@ -188,11 +188,11 @@ int CDManipApp::ExitInstance()
 
 STDAPI DllCanUnloadNow(void)
 {
-   WATCHX(DManip,1,"DManip.DLL - DllCanUnloadNow" );
+   WATCHX(DManip,1,_T("DManip.DLL - DllCanUnloadNow") );
    LONG cLock = _Module.GetLockCount();
-   WATCHX(DManip,1,"Lock Count = " << cLock );
+   WATCHX(DManip,1,_T("Lock Count = ") << cLock );
    bool bCanUnload = ( cLock == 0 );
-   WATCHX(DManip,1,"DManip.DLL - DllCanUnloadNow returning " << (bCanUnload ? "S_OK" : "S_FALSE") );
+   WATCHX(DManip,1,_T("DManip.DLL - DllCanUnloadNow returning ") << (bCanUnload ? _T("S_OK") : _T("S_FALSE")) );
 	return ( bCanUnload ) ? S_OK : S_FALSE;
 }
 

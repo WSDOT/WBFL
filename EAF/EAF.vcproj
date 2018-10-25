@@ -2909,11 +2909,6 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\EAFCustomReportConflictDialog.htm"
-			DeploymentContent="true"
-			>
-		</File>
-		<File
 			RelativePath="ReadMe.txt"
 			>
 		</File>

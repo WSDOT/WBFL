@@ -111,7 +111,7 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::put_Width(long width)
 
    if (width<=0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
    else
    {
@@ -305,7 +305,7 @@ void CPolyLineDisplayObjectImpl::BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint
       pSimple->SetEndType((LineEndType)m_PtType);
    }
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    // Attach connector to the sockets 
    CComPtr<iConnector> connector;

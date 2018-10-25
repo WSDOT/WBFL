@@ -103,12 +103,15 @@ public:
 
    //------------------------------------------------------------------------
    void SetFormat(Format f);
+   Format GetFormat() const;
 
    //------------------------------------------------------------------------
    void SetWidth(Uint16 w);
+   Uint16 GetWidth() const;
 
    //------------------------------------------------------------------------
    void SetPrecision(Uint16 p);
+   Uint16 GetPrecision() const;
 
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -148,14 +151,29 @@ inline void sysNumericFormatTool::SetFormat(Format f)
    m_Format = f;
 }
 
+inline sysNumericFormatTool::Format sysNumericFormatTool::GetFormat() const
+{
+   return m_Format;
+}
+
 inline void sysNumericFormatTool::SetWidth(Uint16 w)
 {
    m_Width = w;
 }
 
+inline Uint16 sysNumericFormatTool::GetWidth() const
+{
+   return m_Width;
+}
+
 inline void sysNumericFormatTool::SetPrecision(Uint16 p)
 {
    m_Precision = p;
+}
+
+inline Uint16 sysNumericFormatTool::GetPrecision() const
+{
+   return m_Precision;
 }
 
 // EXTERNAL REFERENCES

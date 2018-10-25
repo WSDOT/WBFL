@@ -695,7 +695,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
       CComQIPtr<ISupportProgressMonitor> lgispm(m_pLoadGroupResponse);
       if (lgispm==NULL)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -706,7 +706,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
       if (cispm==NULL)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -717,7 +717,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
       if (bvispm==NULL)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -728,7 +728,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
       if (evlispm==NULL)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 
@@ -739,7 +739,7 @@ STDMETHODIMP CLBAMAnalysisEngine::InitializeProgressMonitor4E(IProgressMonitor *
       if (llmispm==NULL)
       {
          // this should never happen since we should know who we have created (eating our own dog food)
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 

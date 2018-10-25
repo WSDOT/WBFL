@@ -289,7 +289,7 @@ static HRESULT TestContainer(TListen* pMe, const CLSID& clsid, const CLSID& cont
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -334,7 +334,7 @@ static HRESULT TestContainer(TListen* pMe, const CLSID& clsid, const CLSID& cont
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 

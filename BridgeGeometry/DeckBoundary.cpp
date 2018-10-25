@@ -27,31 +27,34 @@
 
 #include "stdafx.h"
 #include "DeckBoundary.h"
-
+#include <map>
 
 // CDeckBoundary
 
 HRESULT CDeckBoundary::UpdateGeometry()
 {
-   ATLASSERT( m_BackEdgeID      != m_ForwardEdgeID );
-   ATLASSERT( m_LeftEdgeID      != m_RightEdgeID );
+   ATLASSERT( m_TransverseEdgeID[etStart] != m_TransverseEdgeID[etEnd] );
+   ATLASSERT( m_EdgeID[stLeft]            != m_EdgeID[stRight] );
 
    for ( int i = 0; i < 2; i++ )
    {
-      m_LeftEdgePoint[i].Release();
-      m_LeftEdgeBreakPoint[i].Release();
-      m_RightEdgeBreakPoint[i].Release();
-      m_RightEdgePoint[i].Release();
+      EndType end = (EndType)i;
+
+      m_EdgePoint[end][stLeft].Release();
+      m_EdgeBreakPoint[end][stLeft].Release();
+
+      m_EdgePoint[end][stRight].Release();
+      m_EdgeBreakPoint[end][stRight].Release();
+
+      SideType side = (SideType)i;
+      m_EdgePath[side].Release();
    }
 
-   m_LeftEdgePath.Release();
-   m_RightEdgePath.Release();
+   CreateDeckBoundaryEndPoints(etStart, m_TransverseEdgeID[etStart], m_TransverseEdgeType[etStart], &m_EdgePoint[etStart][stLeft],&m_EdgeBreakPoint[etStart][stLeft],&m_EdgeBreakPoint[etStart][stRight],&m_EdgePoint[etStart][stRight] );
+   CreateDeckBoundaryEndPoints(etEnd,   m_TransverseEdgeID[etEnd],   m_TransverseEdgeType[etEnd],   &m_EdgePoint[etEnd][stLeft],  &m_EdgeBreakPoint[etEnd][stLeft],  &m_EdgeBreakPoint[etEnd][stRight],  &m_EdgePoint[etEnd][stRight]   );
 
-   CreateDeckBoundaryEndPoints(etStart, m_BackEdgeID,    m_BackEdgeType,    &m_LeftEdgePoint[etStart],&m_LeftEdgeBreakPoint[etStart],&m_RightEdgeBreakPoint[etStart],&m_RightEdgePoint[etStart] );
-   CreateDeckBoundaryEndPoints(etEnd,   m_ForwardEdgeID, m_ForwardEdgeType, &m_LeftEdgePoint[etEnd],  &m_LeftEdgeBreakPoint[etEnd],  &m_RightEdgeBreakPoint[etEnd],  &m_RightEdgePoint[etEnd]   );
-
-   CreateEdgePath(m_LeftEdgeID, m_LeftEdgePoint[etStart], m_LeftEdgePoint[etEnd], &m_LeftEdgePath);
-   CreateEdgePath(m_RightEdgeID,m_RightEdgePoint[etStart],m_RightEdgePoint[etEnd],&m_RightEdgePath);
+   CreateEdgePath(m_EdgeID[stLeft], m_EdgePoint[etStart][stLeft], m_EdgePoint[etEnd][stLeft], &m_EdgePath[stLeft]);
+   CreateEdgePath(m_EdgeID[stRight],m_EdgePoint[etStart][stRight],m_EdgePoint[etEnd][stRight],&m_EdgePath[stRight]);
 
    return S_OK;
 }
@@ -121,10 +124,10 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
    }
 
 
-   if ( m_vbBreakLeftEdge[endType] == VARIANT_TRUE )
+   if ( m_vbBreakEdge[endType][stLeft] == VARIANT_TRUE )
    {
       // intersect edge path with left break line
-      m_pBridge->FindLayoutLine(m_LeftEdgeBreakID,&left_edge_break_path);
+      m_pBridge->FindLayoutLine(m_EdgeBreakID[stLeft],&left_edge_break_path);
       left_edge_break_path->Intersect(end_line,alignment_point,&pntEnd2);
 
       // create a line that is normal to the alignment passing through this intersection point
@@ -139,20 +142,20 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       break_line->ThroughPoints(pntOnAlignment,pntEnd2);
 
       // intersect break line with left edge path
-      m_pBridge->FindLayoutLine(m_LeftEdgeID,&left_edge_path);
+      m_pBridge->FindLayoutLine(m_EdgeID[stLeft],&left_edge_path);
       left_edge_path->Intersect(break_line,pntEnd2,&pntEnd1);
    }
    else
    {
       // intersect edge path with left edge path
-      m_pBridge->FindLayoutLine(m_LeftEdgeID,&left_edge_path);
+      m_pBridge->FindLayoutLine(m_EdgeID[stLeft],&left_edge_path);
       left_edge_path->Intersect(end_line,alignment_point,&pntEnd1);
    }
 
-   if ( m_vbBreakRightEdge[endType] == VARIANT_TRUE )
+   if ( m_vbBreakEdge[endType][stRight] == VARIANT_TRUE )
    {
       // intersect edge path with right break line
-      m_pBridge->FindLayoutLine(m_RightEdgeBreakID,&right_edge_break_path);
+      m_pBridge->FindLayoutLine(m_EdgeBreakID[stRight],&right_edge_break_path);
       right_edge_break_path->Intersect(end_line,alignment_point,&pntEnd3);
 
       // create a line that is normal to the alignment passing through this intersection point
@@ -167,13 +170,13 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
       break_line->ThroughPoints(pntOnAlignment,pntEnd3);
 
       // intersect break line with left edge path
-      m_pBridge->FindLayoutLine(m_RightEdgeID,&right_edge_path);
+      m_pBridge->FindLayoutLine(m_EdgeID[stRight],&right_edge_path);
       right_edge_path->Intersect(break_line,pntEnd3,&pntEnd4);
    }
    else
    {
       // intersect edge path with right edge path
-      m_pBridge->FindLayoutLine(m_RightEdgeID,&right_edge_path);
+      m_pBridge->FindLayoutLine(m_EdgeID[stRight],&right_edge_path);
       right_edge_path->Intersect(end_line,alignment_point,&pntEnd4);
    }
 
@@ -182,15 +185,19 @@ HRESULT CDeckBoundary::CreateDeckBoundaryEndPoints(EndType endType,LineIDType en
    pntEnd4.CopyTo(end4);
 
    if ( pntEnd2 )
+   {
       pntEnd2.CopyTo(end2);
+   }
 
    if ( pntEnd3 )
+   {
       pntEnd3.CopyTo(end3);
+   }
    
    return S_OK;
 }
 
-HRESULT CDeckBoundary::CreateEdgePath(LineIDType edgePathID, IPoint2d* pntStart, IPoint2d* pntEnd,IPath** pPath)
+HRESULT CDeckBoundary::CreateEdgePath(PathIDType edgePathID, IPoint2d* pntStart, IPoint2d* pntEnd,IPath** pPath)
 {
    CComPtr<IPath> edge_path;
    m_pBridge->FindLayoutLine(edgePathID,&edge_path);
@@ -207,7 +214,7 @@ HRESULT CDeckBoundary::CreateEdgePath(LineIDType edgePathID, IPoint2d* pntStart,
    return edge_path->CreateSubPath(distStart,distEnd,pPath);
 }
 
-STDMETHODIMP CDeckBoundary::get_Perimeter(CollectionIndexType nPointsPerSide,IPoint2dCollection** pPoints)
+STDMETHODIMP CDeckBoundary::get_Perimeter(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** pPoints)
 {
    CComPtr<IPierLine> firstPier;
    m_pBridge->GetPierLine(0,&firstPier);
@@ -224,21 +231,15 @@ STDMETHODIMP CDeckBoundary::get_Perimeter(CollectionIndexType nPointsPerSide,IPo
    PierIDType lastPierID;
    lastPier->get_ID(&lastPierID);
 
-   return get_PerimeterEx(nPointsPerSide,firstPierID,lastPierID,pPoints);
+   return get_PerimeterEx(nMinPointsPerSide,firstPierID,lastPierID,pPoints);
 }
 
-STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** pPoints)
+STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSide,PierIDType startPierID,PierIDType endPierID,IPoint2dCollection** pPoints)
 {
    CHECK_RETOBJ(pPoints);
 
-   CComPtr<IPoint2dCollection> points;
-   points.CoCreateInstance(CLSID_Point2dCollection);
-
-   CComPtr<ICogoModel> cogoModel;
-   m_pBridge->get_CogoModel(&cogoModel);
-   CComPtr<ICogoEngine> cogoEngine;
-   cogoModel->get_Engine(&cogoEngine);
-   CComQIPtr<IDivide2> divide(cogoEngine);
+   CComPtr<IPoint2dCollection> boundaryPoints;
+   boundaryPoints.CoCreateInstance(CLSID_Point2dCollection);
 
    CComPtr<IPierLine> firstPier;
    m_pBridge->GetPierLine(0,&firstPier);
@@ -266,15 +267,19 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nPointsPerSide,P
    {
       // starting with first pier
       // use the DeckBoundary transverse end points at the start
-      points->Add(m_LeftEdgePoint[etStart]);
+      boundaryPoints->Add(m_EdgePoint[etStart][stLeft]);
       
-      if ( m_vbBreakLeftEdge[etStart] == VARIANT_TRUE )
-         points->Add(m_LeftEdgeBreakPoint[etStart]);
+      if ( m_vbBreakEdge[etStart][stLeft] == VARIANT_TRUE )
+      {
+         boundaryPoints->Add(m_EdgeBreakPoint[etStart][stLeft]);
+      }
 
-      if ( m_vbBreakRightEdge[etStart] == VARIANT_TRUE )
-         points->Add(m_RightEdgeBreakPoint[etStart]);
+      if ( m_vbBreakEdge[etStart][stRight] == VARIANT_TRUE )
+      {
+         boundaryPoints->Add(m_EdgeBreakPoint[etStart][stRight]);
+      }
 
-      points->Add(m_RightEdgePoint[etStart]);
+      boundaryPoints->Add(m_EdgePoint[etStart][stRight]);
 
       left_edge_start  = 0;
       right_edge_start = 0;
@@ -291,23 +296,23 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nPointsPerSide,P
       // intersect centerline of pier with left and right DeckBoundary edges
       // these two points define the start edge of the DeckBoundary
       CComPtr<IPoint2d> pntLeft, pntRight;
-      m_LeftEdgePath->Intersect(centerline,alignment_point,&pntLeft);
-      m_RightEdgePath->Intersect(centerline,alignment_point,&pntRight);
+      m_EdgePath[stLeft]->Intersect(centerline,alignment_point,&pntLeft);
+      m_EdgePath[stRight]->Intersect(centerline,alignment_point,&pntRight);
 
-      points->Add(pntLeft);
-      points->Add(pntRight);
+      boundaryPoints->Add(pntLeft);
+      boundaryPoints->Add(pntRight);
 
       Float64 offset;
-      m_LeftEdgePath->Offset( pntLeft,  &left_edge_start,  &offset);
-      m_RightEdgePath->Offset(pntRight, &right_edge_start, &offset);
+      m_EdgePath[stLeft]->Offset( pntLeft,  &left_edge_start,  &offset);
+      m_EdgePath[stRight]->Offset(pntRight, &right_edge_start, &offset);
    }
 
    // determine where to stop dividing the DeckBoundary edge paths
    CComPtr<IPoint2d> pntLeftEnd, pntRightEnd;
    if ( lastPierID == endPierID )
    {
-      m_LeftEdgePoint[etEnd].CopyTo(&pntLeftEnd);
-      m_RightEdgePoint[etEnd].CopyTo(&pntRightEnd);
+      m_EdgePoint[etEnd][stLeft].CopyTo(&pntLeftEnd);
+      m_EdgePoint[etEnd][stRight].CopyTo(&pntRightEnd);
    }
    else
    {
@@ -320,62 +325,243 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nPointsPerSide,P
 
       // intersect centerline of pier with left and right DeckBoundary edges
       // these two points define the start edge of the DeckBoundary
-      m_LeftEdgePath->Intersect(centerline,alignment_point,&pntLeftEnd);
-      m_RightEdgePath->Intersect(centerline,alignment_point,&pntRightEnd);
+      m_EdgePath[stLeft]->Intersect(centerline,alignment_point,&pntLeftEnd);
+      m_EdgePath[stRight]->Intersect(centerline,alignment_point,&pntRightEnd);
    }
 
    // determine where to stop dividing the edge paths
    Float64 left_edge_end, right_edge_end, offset;
-   m_LeftEdgePath->Offset( pntLeftEnd,  &left_edge_end,  &offset);
-   m_RightEdgePath->Offset(pntRightEnd, &right_edge_end, &offset);
+   m_EdgePath[stLeft]->Offset( pntLeftEnd,  &left_edge_end,  &offset);
+   m_EdgePath[stRight]->Offset(pntRightEnd, &right_edge_end, &offset);
 
-   // divide the right edge path and put the points in the container
-   CComPtr<IPoint2dCollection> right_edge_points;
-   divide->Path(m_RightEdgePath,nPointsPerSide,right_edge_start,right_edge_end,&right_edge_points);
-
-   for ( CollectionIndexType idx = 0; idx < nPointsPerSide; idx++ )
+   std::map<Float64,CComPtr<IPoint2d>> rightPathPoints;
+   CComPtr<IEnumPathElements> enumPathElements;
+   m_EdgePath[stRight]->get__EnumPathElements(&enumPathElements);
+   CComPtr<IPathElement> pathElement;
+   while ( enumPathElements->Next(1,&pathElement,NULL) != S_FALSE )
    {
-      CComPtr<IPoint2d> p;
-      right_edge_points->get_Item(idx,&p);
-      points->Add(p);
+      PathElementType type;
+      pathElement->get_Type(&type);
+      CComPtr<IUnknown> pUnk;
+      pathElement->get_Value(&pUnk);
+      Float64 distance, offset;
+      std::vector<CComPtr<IPoint2d>> points;
+      switch(type)
+      {
+      case petPoint:
+         {
+            CComQIPtr<IPoint2d> point(pUnk);
+            points.push_back(point);
+         }
+         break;
+
+      case petLineSegment:
+         {
+            CComQIPtr<ILineSegment2d> lineSegment(pUnk);
+            CComPtr<IPoint2d> startPoint, endPoint;
+            lineSegment->get_StartPoint(&startPoint);
+            lineSegment->get_EndPoint(&endPoint);
+            points.push_back(startPoint);
+            points.push_back(endPoint);
+         }
+         break;
+
+      case petHorzCurve:
+         {
+            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
+            horzCurve->get_TS(&pntTS);
+            horzCurve->get_SC(&pntSC);
+            horzCurve->get_CS(&pntCS);
+            horzCurve->get_ST(&pntST);
+            points.push_back(pntTS);
+            points.push_back(pntSC);
+            points.push_back(pntCS);
+            points.push_back(pntST);
+         }
+         break;
+
+      case petCubicSpline:
+         {
+            CComQIPtr<ICubicSpline> spline(pUnk);
+            CComPtr<IPoint2dCollection> splinePoints;
+            spline->get_Points(&splinePoints);
+
+            CComPtr<IPoint2d> point;
+            CComPtr<IEnumPoint2d> enumPoints;
+            splinePoints->get__Enum(&enumPoints);
+            while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+            {
+               points.push_back(point);
+               point.Release();
+            }
+         }
+         break;
+
+      default:
+         ATLASSERT(false); // is there a new type?
+      }
+      pathElement.Release();
+
+      std::vector<CComPtr<IPoint2d>>::iterator iter(points.begin());
+      std::vector<CComPtr<IPoint2d>>::iterator end(points.end());
+      for ( ; iter != end; iter++ )
+      {
+         CComPtr<IPoint2d> point(*iter);
+         m_EdgePath[stRight]->Offset(point,&distance,&offset); 
+         if (::InRange(right_edge_start,distance,right_edge_end) )
+         {
+            rightPathPoints.insert(std::make_pair(distance,point));
+         }
+      }
+   }
+
+   Float64 pathLength = right_edge_end - right_edge_start;
+   for ( CollectionIndexType idx = 0; idx < nMinPointsPerSide; idx++ )
+   {
+      Float64 distanceAlongPath = right_edge_start + pathLength*idx/(nMinPointsPerSide-1);
+      CComPtr<IPoint2d> point;
+      m_EdgePath[stRight]->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
+      rightPathPoints.insert(std::make_pair(distanceAlongPath,point));
+   }
+
+   std::map<Float64,CComPtr<IPoint2d>>::iterator rightPathPointIter(rightPathPoints.begin());
+   std::map<Float64,CComPtr<IPoint2d>>::iterator rightPathPointIterEnd(rightPathPoints.end());
+   for ( ; rightPathPointIter != rightPathPointIterEnd; rightPathPointIter++ )
+   {
+      CComPtr<IPoint2d> point = rightPathPointIter->second;
+      boundaryPoints->Add(point);
    }
 
    // define the transverse line at the end of the DeckBoundary
    if ( lastPierID == endPierID )
    {
-      points->Add(m_RightEdgePoint[etEnd]);
+      boundaryPoints->Add(m_EdgePoint[etEnd][stRight]);
 
-      if ( m_vbBreakRightEdge[etEnd] == VARIANT_TRUE )
-         points->Add(m_RightEdgeBreakPoint[etEnd]);
+      if ( m_vbBreakEdge[etEnd][stRight] == VARIANT_TRUE )
+      {
+         boundaryPoints->Add(m_EdgeBreakPoint[etEnd][stRight]);
+      }
       
-      if ( m_vbBreakLeftEdge[etEnd] == VARIANT_TRUE )
-         points->Add(m_LeftEdgeBreakPoint[etEnd]);
+      if ( m_vbBreakEdge[etEnd][stLeft] == VARIANT_TRUE )
+      {
+         boundaryPoints->Add(m_EdgeBreakPoint[etEnd][stLeft]);
+      }
 
-      points->Add(m_LeftEdgePoint[etEnd]);
+      boundaryPoints->Add(m_EdgePoint[etEnd][stLeft]);
    }
    else
    {
-      points->Add(pntRightEnd);
-      points->Add(pntLeftEnd);
+      boundaryPoints->Add(pntRightEnd);
+      boundaryPoints->Add(pntLeftEnd);
    }
 
-   // divide the left edge and put the points in the container
-   CComPtr<IPoint2dCollection> left_edge_points;
-   divide->Path(m_LeftEdgePath,nPointsPerSide,left_edge_start,left_edge_end,&left_edge_points);
+   std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>> leftPathPoints; // sort from greatest to least
 
-   for ( CollectionIndexType idx = nPointsPerSide; 0 < idx; idx-- )
+   enumPathElements.Release();
+   m_EdgePath[stLeft]->get__EnumPathElements(&enumPathElements);
+   pathElement.Release();
+   while ( enumPathElements->Next(1,&pathElement,NULL) != S_FALSE )
    {
-      CComPtr<IPoint2d> p;
-      left_edge_points->get_Item(idx-1,&p);
-      points->Add(p);
+      PathElementType type;
+      pathElement->get_Type(&type);
+      CComPtr<IUnknown> pUnk;
+      pathElement->get_Value(&pUnk);
+      Float64 distance, offset;
+      std::vector<CComPtr<IPoint2d>> points;
+      switch(type)
+      {
+      case petPoint:
+         {
+            CComQIPtr<IPoint2d> point(pUnk);
+            points.push_back(point);
+         }
+         break;
+
+      case petLineSegment:
+         {
+            CComQIPtr<ILineSegment2d> lineSegment(pUnk);
+            CComPtr<IPoint2d> startPoint, endPoint;
+            lineSegment->get_StartPoint(&startPoint);
+            lineSegment->get_EndPoint(&endPoint);
+            points.push_back(startPoint);
+            points.push_back(endPoint);
+         }
+         break;
+
+      case petHorzCurve:
+         {
+            CComQIPtr<IHorzCurve> horzCurve(pUnk);
+            CComPtr<IPoint2d> pntTS, pntSC, pntCS, pntST;
+            horzCurve->get_TS(&pntTS);
+            horzCurve->get_SC(&pntSC);
+            horzCurve->get_CS(&pntCS);
+            horzCurve->get_ST(&pntST);
+            points.push_back(pntTS);
+            points.push_back(pntSC);
+            points.push_back(pntCS);
+            points.push_back(pntST);
+         }
+         break;
+
+      case petCubicSpline:
+         {
+            CComQIPtr<ICubicSpline> spline(pUnk);
+            CComPtr<IPoint2dCollection> splinePoints;
+            spline->get_Points(&splinePoints);
+
+            CComPtr<IPoint2d> point;
+            CComPtr<IEnumPoint2d> enumPoints;
+            splinePoints->get__Enum(&enumPoints);
+            while ( enumPoints->Next(1,&point,NULL) != S_FALSE )
+            {
+               points.push_back(point);
+               point.Release();
+            }
+         }
+         break;
+
+      default:
+         ATLASSERT(false); // is there a new type?
+      }
+      pathElement.Release();
+
+      std::vector<CComPtr<IPoint2d>>::iterator iter(points.begin());
+      std::vector<CComPtr<IPoint2d>>::iterator end(points.end());
+      for ( ; iter != end; iter++ )
+      {
+         CComPtr<IPoint2d> point(*iter);
+         m_EdgePath[stLeft]->Offset(point,&distance,&offset); 
+         if (::InRange(left_edge_start,distance,left_edge_end) )
+         {
+            leftPathPoints.insert(std::make_pair(distance,point));
+         }
+      }
+   }
+
+   pathLength = left_edge_end - left_edge_start;
+   for ( CollectionIndexType idx = 0; idx < nMinPointsPerSide; idx++ )
+   {
+      Float64 distanceAlongPath = left_edge_start + pathLength*idx/(nMinPointsPerSide-1);
+      CComPtr<IPoint2d> point;
+      m_EdgePath[stLeft]->LocatePoint(distanceAlongPath,omtAlongDirection,0.0,CComVariant(0),&point);
+      leftPathPoints.insert(std::make_pair(distanceAlongPath,point));
+   }
+
+   std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>>::iterator leftPathPointIter(leftPathPoints.begin());
+   std::map<Float64,CComPtr<IPoint2d>,std::greater<Float64>>::iterator leftPathPointIterEnd(leftPathPoints.end());
+   for ( ; leftPathPointIter != leftPathPointIterEnd; leftPathPointIter++ )
+   {
+      CComPtr<IPoint2d> point = leftPathPointIter->second;
+      boundaryPoints->Add(point);
    }
 
    // close the perimeter shape
    CComPtr<IPoint2d> pnt;
-   points->get_Item(0,&pnt);
-   points->Add(pnt);
+   boundaryPoints->get_Item(0,&pnt);
+   boundaryPoints->Add(pnt);
 
-   points.CopyTo(pPoints);
+   boundaryPoints.CopyTo(pPoints);
 
    return S_OK;
 }
@@ -387,39 +573,31 @@ STDMETHODIMP CDeckBoundary::get_TransverseEdgePoints(EndType endType,IPoint2d** 
    CHECK_RETOBJ(ppRightBreak);
    CHECK_RETOBJ(ppRight);
 
-   m_LeftEdgePoint[endType]->Clone(ppLeft);
+   m_EdgePoint[endType][stLeft]->Clone(ppLeft);
 
-   if ( m_LeftEdgeBreakPoint[endType] )
-      m_LeftEdgeBreakPoint[endType]->Clone(ppLeftBreak);
+   if ( m_EdgeBreakPoint[endType][stLeft] )
+   {
+      m_EdgeBreakPoint[endType][stLeft]->Clone(ppLeftBreak);
+   }
 
-   if ( m_RightEdgeBreakPoint[endType] )
-      m_RightEdgeBreakPoint[endType]->Clone(ppRightBreak);
+   if ( m_EdgeBreakPoint[endType][stRight] )
+   {
+      m_EdgeBreakPoint[endType][stRight]->Clone(ppRightBreak);
+   }
 
-   m_RightEdgePoint[endType]->Clone(ppRight);
+   m_EdgeBreakPoint[endType][stRight]->Clone(ppRight);
 
    return S_OK;
 }
 
-STDMETHODIMP CDeckBoundary::get_LeftEdgePath(VARIANT_BOOL vbLayoutLine,IPath** path)
+STDMETHODIMP CDeckBoundary::get_EdgePath(SideType side,VARIANT_BOOL vbLayoutPath,IPath** path)
 {
-   if ( vbLayoutLine == VARIANT_TRUE )
+   if ( vbLayoutPath == VARIANT_TRUE )
    {
-      return m_pBridge->FindLayoutLine(m_LeftEdgeID,path);
+      return m_pBridge->FindLayoutLine(m_EdgeID[side] ,path);
    }
    else
    {
-      return m_LeftEdgePath.CopyTo(path);
-   }
-}
- 
-STDMETHODIMP CDeckBoundary::get_RightEdgePath(VARIANT_BOOL vbLayoutLine,IPath** path)
-{
-   if ( vbLayoutLine == VARIANT_TRUE )
-   {
-      return m_pBridge->FindLayoutLine(m_RightEdgeID,path);
-   }
-   else
-   {
-      return m_RightEdgePath.CopyTo(path);
+      return m_EdgePath[side].CopyTo(path);
    }
 }

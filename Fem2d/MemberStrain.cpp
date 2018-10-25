@@ -69,7 +69,9 @@ STDMETHODIMP CMemberStrain::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -81,28 +83,38 @@ STDMETHODIMP CMemberStrain::Load(/*[in]*/ IStructuredLoad2 *pload)
    HRESULT hr;
    hr = pload->BeginUnit(CComBSTR("MemberStrain"));
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    Float64 ver;
    hr = pload->get_Version(&ver);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    if (ver!=MY_VER)
+   {
       return STRLOAD_E_BADVERSION;
+   }
 
    {        
       CComVariant varlong;
       varlong.vt = VT_I4;
       hr = pload->get_Property(CComBSTR("ID"),&varlong);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_ID = varlong.lVal;
 
       hr = pload->get_Property(CComBSTR("MemberID"),&varlong);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_MemberID = varlong.lVal;
 
@@ -111,25 +123,33 @@ STDMETHODIMP CMemberStrain::Load(/*[in]*/ IStructuredLoad2 *pload)
       vardbl.vt = VT_R8;
       hr = pload->get_Property(CComBSTR("AxialStrain"),&vardbl);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_AxialStrain = vardbl.dblVal;
 
       hr = pload->get_Property(CComBSTR("CurvatureStrain"),&vardbl);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_CurvatureStrain = vardbl.dblVal;
 
       hr = pload->get_Property(CComBSTR("StartLocation"),&vardbl);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_StartLocation = vardbl.dblVal;
 
       hr = pload->get_Property(CComBSTR("EndLocation"),&vardbl);
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       m_EndLocation = vardbl.dblVal;
    }
@@ -137,10 +157,14 @@ STDMETHODIMP CMemberStrain::Load(/*[in]*/ IStructuredLoad2 *pload)
    VARIANT_BOOL eb;
    hr = pload->EndUnit(&eb);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    if (eb!=VARIANT_TRUE)
+   {
       return STRLOAD_E_INVALIDFORMAT;
+   }
 
    return S_OK;
 }
@@ -150,37 +174,53 @@ STDMETHODIMP CMemberStrain::Save(/*[in]*/ IStructuredSave2 *psave)
    HRESULT hr;
    hr = psave->BeginUnit(CComBSTR("MemberStrain"), MY_VER);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    {
       hr = psave->put_Property(CComBSTR("ID"),CComVariant(m_ID));
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       hr = psave->put_Property(CComBSTR("MemberID"),CComVariant(m_MemberID));
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       hr = psave->put_Property(CComBSTR("AxialStrain"),CComVariant(m_AxialStrain));
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       hr = psave->put_Property(CComBSTR("CurvatureStrain"),CComVariant(m_CurvatureStrain));
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       hr = psave->put_Property(CComBSTR("StartLocation"),CComVariant(m_StartLocation));
       if (FAILED(hr))
+      {
          return hr;
+      }
 
       hr = psave->put_Property(CComBSTR("EndLocation"),CComVariant(m_EndLocation));
       if (FAILED(hr))
+      {
          return hr;
+      }
    }
 
    hr = psave->EndUnit();
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    return S_OK;
 }

@@ -101,7 +101,7 @@ private:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
       return S_OK;
@@ -125,7 +125,7 @@ private:
       }
       catch(...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
 

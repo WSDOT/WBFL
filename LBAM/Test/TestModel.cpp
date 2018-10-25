@@ -915,7 +915,7 @@ void CTestModel::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -973,7 +973,7 @@ HRESULT CTestModel::OnModelChanged(ILBAMModel* Model, ChangeType change)
    else if (change==cgtDistributionFactor)
       m_csDfDataFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

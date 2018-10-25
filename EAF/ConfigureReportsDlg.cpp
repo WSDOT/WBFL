@@ -168,5 +168,5 @@ void CConfigureReportsDlg::OnHelp()
       pBrokerDoc->OnCustomReportHelp(helpID);
    }
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 }

@@ -34,6 +34,9 @@
 #include <EAF\EAFCustomReport.h>
 #include <comcat.h>
 
+#include <IReportManager.h>
+#include <IGraphManager.h>
+
 
 class CEAFDocProxyAgent;
 class CEAFDocTemplate;
@@ -89,12 +92,16 @@ public:
    void SetDoDisplayFavoriteReports(bool doDisplay);
 
    // Current list of favorite reports
-   std::vector<std::_tstring> GetFavoriteReports() const;
-   void SetFavoriteReports( std::vector<std::_tstring> reports);
+   const std::vector<std::_tstring>& GetFavoriteReports() const;
+   void SetFavoriteReports(const std::vector<std::_tstring>& reports);
 
    // Custom, user-defined reports
-   CEAFCustomReports GetCustomReports() const;
+   const CEAFCustomReports& GetCustomReports() const;
    void SetCustomReports(const CEAFCustomReports& reports);
+
+   // this must still be pure virtual methods... see note in base calss
+   virtual BOOL GetStatusBarMessageString(UINT nID,CString& rMessage) const = 0;
+   virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
 
    // Generated message map functions
 protected:
@@ -167,14 +174,14 @@ protected:
 
    /// populates a menu with the names of the reports
    void PopulateReportMenu(CEAFMenu* pReportMenu);
-   UINT GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport);
-   CollectionIndexType GetReportIndex(UINT nID,bool bQuickReport);
+   UINT GetReportCommand(CollectionIndexType rptIdx,bool bQuickReport) const;
+   CollectionIndexType GetReportIndex(UINT nID,bool bQuickReport) const;
    virtual void CreateReportView(CollectionIndexType rptIdx,bool bPrompt); // does nothing by default
    void OnReport(UINT nID);
    void OnQuickReport(UINT nID);
 
-   // Fire when changed from favorite reports to all reports
-   virtual void OnChangedFavoriteReports(bool isFavorites);
+   // Fire when changed from favorite reports to all reports. Let know if from a menu or other source
+   virtual void OnChangedFavoriteReports(bool isFavorites, bool fromMenu);
 
    // Virtual error handling when custom or favorite report data has gone wrong in some way
    enum custReportErrorType {
@@ -187,8 +194,8 @@ protected:
    void IntegrateCustomReports(bool bFirst);
 
    void PopulateGraphMenu(CEAFMenu* pGraphMenu);
-   UINT GetGraphCommand(CollectionIndexType graphIdx);
-   CollectionIndexType GetGraphIndex(UINT nID);
+   UINT GetGraphCommand(CollectionIndexType graphIdx) const;
+   CollectionIndexType GetGraphIndex(UINT nID) const;
    void OnGraph(UINT nID);
    virtual void CreateGraphView(CollectionIndexType graphIdx); // does nothing by default
 
@@ -215,6 +222,9 @@ private:
    // we need to keep a pointer to the doc proxy agent so it
    // can be initialized for menu and toolbar intergration functionality
    CEAFDocProxyAgent* m_pDocProxyAgent;
+
+   CComPtr<IReportManager> m_pReportManager;
+   CComPtr<IGraphManager> m_pGraphManager;
 
 
    friend CEAFDocProxyAgent;

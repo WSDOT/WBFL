@@ -167,7 +167,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;WBFL_DEBUG"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;xWBFL_DEBUG;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -1325,6 +1325,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath="..\Include\AgentTools.h"
+				>
+			</File>
 			<File
 				RelativePath=".\BrokerImp.h"
 				>

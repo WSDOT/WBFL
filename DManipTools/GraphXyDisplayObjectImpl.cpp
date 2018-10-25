@@ -358,7 +358,7 @@ HRESULT CGraphXyDisplayObject::RebuildDisplayObjects()
    if (gb_top-gb_bottom<=0 || gb_right-gb_left<=0)
    {
       // no canvas on which to draw
-      ATLASSERT(0);
+      ATLASSERT(false);
       return S_OK;
    }
 
@@ -609,7 +609,7 @@ HRESULT CGraphXyDisplayObject::DrawString(std::_tstring& string, Float64 wx, Flo
    hr = ::CoCreateInstance(CLSID_TextBlock,NULL,CLSCTX_ALL,IID_iTextBlock,(void**)&text_block);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 

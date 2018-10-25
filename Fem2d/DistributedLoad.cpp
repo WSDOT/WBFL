@@ -123,7 +123,7 @@ STDMETHODIMP CDistributedLoad::Load(/*[in]*/ IStructuredLoad2 *pload)
 //         m_Orientation = lotGlobalProjected;
 //      else
 //      {
-//         ATLASSERT(0); // invalid orientation was written
+//         ATLASSERT(false); // invalid orientation was written
 //         return STRLOAD_E_INVALIDFORMAT;
 //      }
 
@@ -138,7 +138,7 @@ STDMETHODIMP CDistributedLoad::Load(/*[in]*/ IStructuredLoad2 *pload)
 //         m_Direction = ldFy;
 //      else
 //      {
-//         ATLASSERT(0); // invalid direction was written
+//         ATLASSERT(false); // invalid direction was written
 //         return STRLOAD_E_INVALIDFORMAT;
 //      }
 
@@ -286,7 +286,7 @@ STDMETHODIMP CDistributedLoad::put_Orientation(Fem2dLoadOrientation newVal)
       }
       catch (...)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL;
       }
    }
@@ -545,7 +545,7 @@ void CDistributedLoad::GetInternalForces(Float64 x,Float64 Length,Float64 Angle,
       }
    }
    else
-      ATLASSERT(0); 
+      ATLASSERT(false); 
 }
 
 void CDistributedLoad::GetDeflection(Float64 x,MbrType type,Float64 Length,Float64 Angle,
@@ -679,7 +679,7 @@ void CDistributedLoad::GetLocalData(Float64 Angle, Float64 length, Float64* pSta
            wstart = m_WStart*fabs(ca);
         }
         else
-           ATLASSERT(0); // new direction we don't know about?
+           ATLASSERT(false); // new direction we don't know about?
      }
      else
      {
@@ -703,7 +703,7 @@ void CDistributedLoad::GetLocalData(Float64 Angle, Float64 length, Float64* pSta
         wystart = wstart*ca;
      }
      else
-        ATLASSERT(0); // new direction we don't know about?
+        ATLASSERT(false); // new direction we don't know about?
   }
   else
   {
@@ -722,7 +722,7 @@ void CDistributedLoad::GetLocalData(Float64 Angle, Float64 length, Float64* pSta
         wystart = m_WStart;
      }
      else
-        ATLASSERT(0); // new direction we don't know about?
+        ATLASSERT(false); // new direction we don't know about?
   }
    
   // flip values if user entered start>end

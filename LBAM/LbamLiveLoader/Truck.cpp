@@ -431,14 +431,14 @@ void FixedTruck::SetVariableAxleSpacing(Float64 spacing)
 {
    if (!IsVariableAxle())
    {
-      ATLASSERT(0); // shouldn't be asking if not variable axle
+      ATLASSERT(false); // shouldn't be asking if not variable axle
       return;
    }
 
    Float64 tol = 1.0e-06;
    if (spacing<m_MinVariableAxleSpacing-tol || spacing>m_MaxVariableAxleSpacing+tol)
    {
-      ATLASSERT(0); // shouldn't be asking if not variable axle
+      ATLASSERT(false); // shouldn't be asking if not variable axle
       return;
    }
 
@@ -464,7 +464,7 @@ Float64 FixedTruck::GetMinVariableAxleSpacing()
 {
    if (!IsVariableAxle())
    {
-      ATLASSERT(0); // shouldn't be asking if not variable axle
+      ATLASSERT(false); // shouldn't be asking if not variable axle
       return 0;
    }
    else
@@ -475,7 +475,7 @@ Float64 FixedTruck::GetMaxVariableAxleSpacing()
 {
    if (!IsVariableAxle())
    {
-      ATLASSERT(0); // shouldn't be asking if not variable axle
+      ATLASSERT(false); // shouldn't be asking if not variable axle
       return 0;
    }
    else
@@ -570,24 +570,24 @@ void FixedTruck::DumpAxles(Float64 position)
 
          if ( axleIdx == m_PivotAxleIndex )
          {
-            WATCH("P = " << axle_wgt << " X = " << axle_loc << " *");
+            WATCH(_T("P = ") << axle_wgt << _T(" X = ") << axle_loc << _T(" *"));
          }
          else
          {
-            WATCH("P = " << axle_wgt << " X = " << axle_loc);
+            WATCH(_T("P = ") << axle_wgt << _T(" X = ") << axle_loc);
          }
 
          if ( axleIdx == m_VariableAxleIndex )
          {
-            WATCH("   S = " << m_VariableAxleSpacing << " v");
+            WATCH(_T("   S = ") << m_VariableAxleSpacing << _T(" v"));
          }
          else
          {
-            WATCH("   S = " << iter->m_OriginalSpacing);
+            WATCH(_T("   S = ") << iter->m_OriginalSpacing);
          }
       }
       axleIdx++;
    }
-   WATCH("");
+   WATCH(_T(""));
 }
 #endif

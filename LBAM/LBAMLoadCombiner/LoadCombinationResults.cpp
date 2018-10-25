@@ -125,7 +125,7 @@ HRESULT CLoadCombinationResults::AllocateResults(CollectionIndexType size, bool 
 
    if (size<0)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_INVALIDARG;
    }
 
@@ -186,7 +186,7 @@ HRESULT CLoadCombinationResults::SumResult(CollectionIndexType index, BSTR loadC
    hr = rres.m_Config->AddLoadCaseFactor(loadCase, Factor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
@@ -208,14 +208,14 @@ HRESULT CLoadCombinationResults::SumLLResult(CollectionIndexType index, Float64 
    hr = rres.m_Config->put_LiveLoadFactor(Factor);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 
    hr = rres.m_Config->AddLiveLoadConfiguration(Config);
    if (FAILED(hr))
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return hr;
    }
 

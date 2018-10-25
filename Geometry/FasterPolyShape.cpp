@@ -919,7 +919,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 
    if ( pClipTop == NULL ) // Resulting Shape is Nothing
    {
-      ATLASSERT(0); // should not happen because we have checked clip box above
+      ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
    }
 
@@ -942,7 +942,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 
    if ( pClipRight == 0 ) // Resulting Shape is Nothing
    {
-      ATLASSERT(0); // should not happen because we have checked clip box above
+      ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
    }
 
@@ -964,7 +964,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 
    if ( pClipBottom == 0 ) // Resulting Shape is Nothing
    {
-//      ATLASSERT(0); // should not happen because we have checked clip box above. actually does happen when shapes just touch
+//      ATLASSERT(false); // should not happen because we have checked clip box above. actually does happen when shapes just touch
       return S_OK;
    }
 
@@ -986,7 +986,7 @@ STDMETHODIMP CFasterPolyShape::ClipIn(IRect2d* pRect,IShape** pShape)
 
    if ( pClipLeft == 0 ) // Resulting Shape is Nothing
    {
-      ATLASSERT(0); // should not happen because we have checked clip box above
+      ATLASSERT(false); // should not happen because we have checked clip box above
       return S_OK;
    }
 

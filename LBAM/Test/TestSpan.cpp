@@ -180,7 +180,7 @@ void CTestSpan::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -199,7 +199,7 @@ HRESULT CTestSpan::OnSpanChanged(ISpan* Span, BSTR stage, ChangeType change)
    else if (change==cgtCombination)
       m_csCombinationFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }
@@ -214,7 +214,7 @@ HRESULT CTestSpan::OnSpansChanged(ISpan* Span, BSTR stage, ChangeType change)
    else if (change==cgtCombination)
       m_csCombinationFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

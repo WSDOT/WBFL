@@ -19,22 +19,22 @@ public:
 	CLoadGroupDumper(ILBAMAnalysisEngine* engine, CDumperUtil* util);
 	virtual ~CLoadGroupDumper();
 
-   void DumpAnalysisPOIs(std::ostream& os);
-   void DumpLoadGroupResponse(std::ostream& os);
-   void DumpInfluenceLines(std::ostream& os);
-   void DumpContraflexureResponse(std::ostream& os);
+   void DumpAnalysisPOIs(std::_tostream& os);
+   void DumpLoadGroupResponse(std::_tostream& os);
+   void DumpInfluenceLines(std::_tostream& os);
+   void DumpContraflexureResponse(std::_tostream& os);
 
 private:
-   void DumpAPOIs(std::ostream& os);
-   void DumpPOIDistributionFactors(std::ostream& os);
-   void DumpPOIStressPoints(std::ostream& os);
+   void DumpAPOIs(std::_tostream& os);
+   void DumpPOIDistributionFactors(std::_tostream& os);
+   void DumpPOIStressPoints(std::_tostream& os);
 
-   void DumpLoadGroupForces(std::ostream& os, BSTR lgName, long istage, ResultsSummationType summ);
-   void DumpLoadGroupDeflections(std::ostream& os, BSTR lgName, long istage, ResultsSummationType summ);
-   void DumpLoadGroupStresses(std::ostream& os, BSTR lgName, long istage, ResultsSummationType summ);
+   void DumpLoadGroupForces(std::_tostream& os, BSTR lgName, StageIndexType istage, ResultsSummationType summ);
+   void DumpLoadGroupDeflections(std::_tostream& os, BSTR lgName, StageIndexType istage, ResultsSummationType summ);
+   void DumpLoadGroupStresses(std::_tostream& os, BSTR lgName, StageIndexType istage, ResultsSummationType summ);
 
-   void DumpForceInfluenceLines(std::ostream& os, long ist, ForceEffectType feType);
-   void DumpDeflectionInfluenceLines(std::ostream& os, long ist, ForceEffectType feType);
+   void DumpForceInfluenceLines(std::_tostream& os, StageIndexType ist, ForceEffectType feType);
+   void DumpDeflectionInfluenceLines(std::_tostream& os, StageIndexType ist, ForceEffectType feType);
 
    CComPtr<ILBAMAnalysisEngine> m_Engine;
    CDumperUtil*                 m_Util;

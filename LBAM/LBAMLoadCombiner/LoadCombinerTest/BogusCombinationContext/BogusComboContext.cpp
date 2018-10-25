@@ -69,7 +69,7 @@ STDMETHODIMP CBogusComboContext::Initialize(ILBAMModel *model, ILoadGroupRespons
                                             ILiveLoadModelResponse *liveLoadModelResponse, /*[in]*/IBasicVehicularResponse* basicVres, 
                                             IAnalysisPOIs* pois, IGetStressPoints* stressPoints)
 {
-   ATLASSERT(0);
+   ATLASSERT(false);
    return E_FAIL;
 }
 
@@ -710,7 +710,7 @@ HRESULT CBogusComboContext::FinalConstruct()
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 
@@ -1145,7 +1145,7 @@ STDMETHODIMP CBogusComboContext::get_Item(CollectionIndexType index, ILoadCase *
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 		
 	return E_FAIL;
@@ -1217,7 +1217,7 @@ STDMETHODIMP CBogusComboContext::get_Item(StageIndexType index, IStage * * pVal)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
 	return E_FAIL;
@@ -1283,7 +1283,7 @@ STDMETHODIMP CBogusComboContext::get_Item(CollectionIndexType index, ILoadCombin
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return E_FAIL;
@@ -1945,7 +1945,7 @@ HRESULT ComboBenchMark::GetStressPoints(BSTR stage, IStressPoints** sps)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return E_FAIL;
@@ -1956,7 +1956,7 @@ void ComboBenchMark::SetStressPoints(BSTR stage, IStressPoints* sps)
    StressPointsIterator it = m_StressPoints.find(stage);
    if (it!=m_StressPoints.end())
    {
-      ATLASSERT(0); // test shouldn't replace stress points?
+      ATLASSERT(false); // test shouldn't replace stress points?
    }
    else
    {

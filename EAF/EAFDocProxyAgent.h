@@ -252,7 +252,8 @@ public:
    virtual void Destroy();
 
 protected:
-   DECLARE_AGENT_DATA;
+   DECLARE_EAF_AGENT_DATA;
+
    CEAFBrokerDocument* m_pDoc;
    CEAFMainFrame* m_pMainFrame;
 

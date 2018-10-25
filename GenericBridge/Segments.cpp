@@ -444,7 +444,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
          hr = segment_item->get_Segment(&segment);
          if (FAILED(hr))
          {
-            ATLASSERT(0); // should never happen
+            ATLASSERT(false); // should never happen
             return hr;
          }
 
@@ -551,7 +551,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       CFilteredSegmentCollection* pifcol = static_cast<CFilteredSegmentCollection*>(piifcol);
       if (piifcol==NULL)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          return E_FAIL; // we know our collection so this should never happen
       }
 
@@ -710,7 +710,7 @@ STDMETHODIMP CSegments::Save(IStructuredSave2 * psave)
    }
    catch(...)
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return E_FAIL;
    }
 
@@ -738,7 +738,7 @@ void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
       CSegmentItem* psegi = static_cast<CSegmentItem*>(itv->m_T.p);
       if (psegi==NULL)
       {
-         ATLASSERT(0); // should never happen since we are eating our own dog food here
+         ATLASSERT(false); // should never happen since we are eating our own dog food here
       }
 
       psegi->m_RelPosition = i;

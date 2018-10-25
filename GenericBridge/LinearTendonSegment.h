@@ -90,10 +90,11 @@ public:
 
 // ITendonSegment
 public:
-   STDMETHOD(get_Position)(/*[in]*/ Float64 z,/*[out,retval]*/ IPoint3d** cg);
+   STDMETHOD(get_Position)(/*[in]*/ TendonMeasure measure,/*[in]*/ Float64 z,/*[out,retval]*/ IPoint3d** cg);
 	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[out,retval]*/ IVector3d** slope);
 	STDMETHOD(get_Length)(/*[out,retval]*/ Float64* length);
    STDMETHOD(ProjectedLength)(/*[out]*/ Float64* dx,/*[out]*/ Float64* dy,/*[out]*/ Float64* dz);
+   STDMETHOD(get_Centerline)(/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3dCollection** ppPoints);
    STDMETHOD(putref_Tendon)(/*[in]*/ITendon* pTendon);
    STDMETHOD(get_Tendon)(/*[out,retval]*/ITendon** ppTendon);
 

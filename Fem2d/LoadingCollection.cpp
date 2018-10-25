@@ -88,7 +88,7 @@ STDMETHODIMP CLoadingCollection::Create(/*[in]*/LoadCaseIDType id,IFem2dLoading*
       std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(id, CComVariant(*ppLoading))) );
       if (!st.second)
       {
-         ATLASSERT(0); // insert failed - better check why
+         ATLASSERT(false); // insert failed - better check why
          return E_FAIL;
       }
 

@@ -200,10 +200,30 @@ SYSFUNC sysSectionValue operator*(const sysSectionValue& a,const sysSectionValue
                           a.Right() * b.Right() );
 }
 
+SYSFUNC sysSectionValue operator*(const sysSectionValue& a,Float64 k)
+{
+   return sysSectionValue(a.Left()*k,a.Right()*k);
+}
+
+SYSFUNC sysSectionValue operator*(Float64 k,const sysSectionValue& a)
+{
+   return sysSectionValue(a.Left()*k,a.Right()*k);
+}
+
 SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue& b)
 {
    return sysSectionValue( a.Left()  / b.Left(),
                           a.Right() / b.Right() );
+}
+
+SYSFUNC sysSectionValue operator/(const sysSectionValue& a,Float64 k)
+{
+   return sysSectionValue(a.Left()/k,a.Right()/k);
+}
+
+SYSFUNC sysSectionValue operator/(Float64 k,const sysSectionValue& a)
+{
+   return sysSectionValue(a.Left()/k,a.Right()/k);
 }
 
 SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a)

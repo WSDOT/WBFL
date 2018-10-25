@@ -1045,7 +1045,7 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
 //         CComPtr<iDisplayList> disp_list;
 //         m_ToolTipObject->GetDisplayList(&disp_list);
 //         int list_id = disp_list->GetID();
-//         WATCH("Tool Tip from DO " << id << "in DL " << list_id << " " << m_strToolTipText);
+//         WATCH(_T("Tool Tip from DO ") << id << _T("in DL ") << list_id << _T(" ") << m_strToolTipText);
 //#endif // _DEBUG
       }
    }
@@ -1084,7 +1084,7 @@ STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI
 //      CComPtr<iDisplayList> disp_list;
 //      m_ToolTipObject->GetDisplayList(&disp_list);
 //      int list_id = disp_list->GetID();
-//      WATCH("New Tool Tip Object: DO " << id << " in DL " << list_id);
+//      WATCH(_T("New Tool Tip Object: DO ") << id << _T(" in DL ") << list_id);
 //#endif // _DEBUG
 
       return pTI->uId;
@@ -1345,7 +1345,7 @@ STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(CollectionIndexType
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       *factory = 0;
    }
 }

@@ -35,10 +35,10 @@
 ///////////////////////////////////////
 //// Error Messages and help
 //
-#define THROW_HR(hr) { ATLASSERT(0); throw hr;}
+#define THROW_HR(hr) { ATLASSERT(false); throw hr;}
 // short-hand version if consistent naming conventions are used
-#define THROW_EXCEPTION(errNam) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LOADING_E_##errNam, IDH_E_##errNam);}
-//#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(0);*/ throw CComException(_T(__FILE__),__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
+#define THROW_EXCEPTION(errNam) { /*ATLASSERT(false);*/ throw CComException(_T(__FILE__),__LINE__, IDS_E_##errNam, LOADING_E_##errNam, IDH_E_##errNam);}
+//#define THROW_LBAM_MSG(errNam, msg) { /*ATLASSERT(false);*/ throw CComException(_T(__FILE__),__LINE__, msg, LBAM_E_##errNam, IDH_E_##errNam);}
 //
 /*
 #define CHECK_MEMBERTYPE(mbrType) if (mbrType<mtUndefined || mbrType>mtSuperstructureMember) return E_INVALIDARG;
@@ -143,7 +143,7 @@ inline CComBSTR MemberTypeToString(MemberType type)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return strtype;
@@ -175,7 +175,7 @@ inline HRESULT StringToMemberType(BSTR bstrtype, MemberType* ptype)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return STRLOAD_E_INVALIDFORMAT;
    }
 
@@ -201,7 +201,7 @@ inline CComBSTR LoadOrientationToString(ldLoadOrientation type)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return strtype;
@@ -225,7 +225,7 @@ inline HRESULT StringToLoadOrientation(BSTR bstrtype, ldLoadOrientation* ptype)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return STRLOAD_E_INVALIDFORMAT;
    }
 
@@ -247,7 +247,7 @@ inline CComBSTR LoadDirectionToString(ldLoadDirection type)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
    }
 
    return strtype;
@@ -267,7 +267,7 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
    }
    else
    {
-      ATLASSERT(0);
+      ATLASSERT(false);
       return STRLOAD_E_INVALIDFORMAT;
    }
 
@@ -304,7 +304,7 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
 //         throw frTooSmall;
 //   }
 //
-//   ATLASSERT(0); //can't get here
+//   ATLASSERT(false); //can't get here
 //   return 0.0;
 //}
 //

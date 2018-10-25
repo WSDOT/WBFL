@@ -187,7 +187,7 @@ m_pState(&Start)
 
 void CForeignDragDropFSM::SetState(CForeignDragDropFSMState& state) 
 { 
-   WATCHX(DManip,1,"Entering state " << state.StateName());
+   WATCHX(DManip,1,_T("Entering state ") << state.StateName());
    m_pState = &state; 
 }
 CForeignDragDropFSMState& CForeignDragDropFSM::GetState() const 

@@ -425,41 +425,58 @@ void CEnvelopedVehicularLoadResponseAgg::EnvelopeLiveLoadSectionResults(ILiveLoa
    bool (*lftcmp)(Float64, Float64);
    bool (*rgtcmp)(Float64, Float64);
 
-   if ( doFlip )
+   //if ( doFlip )
+   //{
+   //   if (optimization==optMaximize)
+   //   {
+   //      lftcmp = &MinCmp;
+   //      rgtcmp = &MaxCmp;
+   //   }
+   //   else
+   //   {
+   //      lftcmp = &MaxCmp;
+   //      rgtcmp = &MinCmp;
+   //   }
+   //}
+   //else
+   //{
+   //   if (optimization==optMaximize)
+   //   {
+   //      lftcmp = &MaxCmp;
+
+   //      if (doFlip)
+   //         rgtcmp = &MinCmp;
+   //      else
+   //         rgtcmp = &MaxCmp;
+   //   }
+   //   else
+   //   {
+   //      lftcmp = &MinCmp;
+
+   //      if (doFlip)
+   //         rgtcmp = &MaxCmp;
+   //      else
+   //         rgtcmp = &MinCmp;
+   //   }
+   //}
+   if (optimization==optMaximize)
    {
-      if (optimization==optMaximize)
-      {
-         lftcmp = &MinCmp;
-         rgtcmp = &MaxCmp;
-      }
-      else
-      {
-         lftcmp = &MaxCmp;
+      lftcmp = &MaxCmp;
+
+      if (doFlip)
          rgtcmp = &MinCmp;
-      }
+      else
+         rgtcmp = &MaxCmp;
    }
    else
    {
-      if (optimization==optMaximize)
-      {
-         lftcmp = &MaxCmp;
+      lftcmp = &MinCmp;
 
-         if (doFlip)
-            rgtcmp = &MinCmp;
-         else
-            rgtcmp = &MaxCmp;
-      }
+      if (doFlip)
+         rgtcmp = &MaxCmp;
       else
-      {
-         lftcmp = &MinCmp;
-
-         if (doFlip)
-            rgtcmp = &MaxCmp;
-         else
-            rgtcmp = &MinCmp;
-      }
+         rgtcmp = &MinCmp;
    }
-
    // loop over all pois and replace res1 with optmized results from res2 if needed.
    CollectionIndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);

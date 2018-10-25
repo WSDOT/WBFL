@@ -32,8 +32,8 @@ static char THIS_FILE[] = __FILE__;
 
 
 testUndoableTxn::testUndoableTxn() {}
-bool testUndoableTxn::Execute() { WATCH("testUndoableTxn::Execute()"); return true; }
-void testUndoableTxn::Undo() { WATCH("Undoing testUndoableTxn"); }
+bool testUndoableTxn::Execute() { WATCH(_T("testUndoableTxn::Execute()")); return true; }
+void testUndoableTxn::Undo() { WATCH(_T("Undoing testUndoableTxn")); }
 txnTransaction* testUndoableTxn::CreateClone() const { return new testUndoableTxn; }
 void testUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testUndoableTxn::Name() const { return _T("Undoable Txn"); }
@@ -42,7 +42,7 @@ bool testUndoableTxn::IsRepeatable() { return true; }
 
 
 testNotUndoableTxn::testNotUndoableTxn() : txnTransaction() {}
-bool testNotUndoableTxn::Execute() { WATCH("testNotUndoableTxn::Execute()"); return true;}
+bool testNotUndoableTxn::Execute() { WATCH(_T("testNotUndoableTxn::Execute()")); return true;}
 txnTransaction* testNotUndoableTxn::CreateClone() const { return new testNotUndoableTxn; }
 void testNotUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotUndoableTxn::Name() const { return _T("Not Undoable Txn"); }
@@ -50,8 +50,8 @@ bool testNotUndoableTxn::IsUndoable() { return false; }
 bool testNotUndoableTxn::IsRepeatable() { return true; }
 
 testNotRepeatableTxn::testNotRepeatableTxn() : txnTransaction() {}
-bool testNotRepeatableTxn::Execute() { WATCH("testNotRepeatableTxn::Execute()"); return true; }
-void testNotRepeatableTxn::Undo() { WATCH("Undoing testNotRepeatableTxn"); }
+bool testNotRepeatableTxn::Execute() { WATCH(_T("testNotRepeatableTxn::Execute()")); return true; }
+void testNotRepeatableTxn::Undo() { WATCH(_T("Undoing testNotRepeatableTxn")); }
 txnTransaction* testNotRepeatableTxn::CreateClone() const { return new testNotRepeatableTxn; }
 void testNotRepeatableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotRepeatableTxn::Name() const { return _T("Not Repeatable Txn"); }

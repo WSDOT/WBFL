@@ -3061,6 +3061,8 @@ library WBFLLBAM
 		[helpstring("method ComputeLocation"),helpcontext(IDH_Model_ComputeLocation)] 
 		HRESULT ComputeLocation([in]MemberIDType mbrID, [in]MemberType mbrType, [in]Float64 mbrLocation, [out]Float64* Xloc, [out]Float64* Yloc);
 
+      HRESULT ConvertSpanToSuperstructureLocation([in]MemberIDType spanMbrID,[in]Float64 spanLoc,[out]MemberIDType* pSSMbrID,[out]Float64* pSSMbrLoc);
+
 		[propget, helpstring("property LiveLoad"),helpcontext(IDH_Model_LiveLoad)] 
       HRESULT LiveLoad([out, retval] ILiveLoad* *pVal);
 

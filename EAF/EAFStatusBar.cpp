@@ -101,7 +101,9 @@ BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
 
    BOOL bResult = CStatusBar::Create(pParentWnd, dwStyle, nID);
    if ( !bResult )
+   {
       return bResult;
+   }
 
    const UINT* pIndicators;
    GetStatusIndicators(&pIndicators,&m_nIndicators);
@@ -109,11 +111,15 @@ BOOL CEAFStatusBar::Create(CWnd* pParentWnd, DWORD dwStyle , UINT nID)
 
    int idx = GetStatusPaneIndex();
    if ( 0 <= idx )
+   {
       SetPaneStyle( idx, SBPS_NORMAL | SBT_OWNERDRAW );
+   }
 
    idx = GetModifiedPaneIndex();
    if ( 0 <= idx )
+   {
       SetPaneStyle( idx, SBPS_DISABLED );
+   }
 
    for ( int i = 0; i < m_nIndicators; i++ )
    {
@@ -130,7 +136,9 @@ void CEAFStatusBar::EnableModifiedFlag(BOOL bEnable)
    UINT style = (bEnable ? SBPS_NORMAL : SBPS_DISABLED) | SBPS_NOBORDERS;
    int idx = GetModifiedPaneIndex();
    if ( 0 <= idx )
+   {
       SetPaneStyle(idx, style );
+   }
 }
 
 int CEAFStatusBar::GetPaneCount()
@@ -189,7 +197,9 @@ CEAFDocument* CEAFStatusBar::GetDocument()
       CView* pView = pChild->GetActiveView();
       CDocument* pDoc = NULL;
       if ( pView )
+      {
          pDoc = pView->GetDocument();
+      }
 
       if ( pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
       {

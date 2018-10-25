@@ -33,6 +33,7 @@ CEAFInterfaceCache::CEAFInterfaceCache(void)
 
 CEAFInterfaceCache::~CEAFInterfaceCache(void)
 {
+   ClearCache();
 }
 
 void CEAFInterfaceCache::SetBroker(IBroker* pBroker)
@@ -57,27 +58,27 @@ STDMETHODIMP CEAFInterfaceCache::QueryInterface(REFIID riid,void** ppv)
    return m_pBroker->QueryInterface(riid,ppv);
 }
 
-STDMETHODIMP CEAFInterfaceCache::GetInterface(REFIID riid,void** ppv)
+STDMETHODIMP CEAFInterfaceCache::GetInterface(REFIID riid,IUnknown** ppUnk)
 {
    Interfaces::iterator found = m_Interfaces.find(riid);
    if ( found != m_Interfaces.end() )
    {
-      IUnknown* punk = (*found).second;
-      punk->AddRef();
-      (*ppv) = (void*)punk;
+      IUnknown* pUnk = (*found).second;
+      pUnk->AddRef();
+      (*ppUnk) = pUnk;
 
       return S_OK;
    }
 
    // interface not found... go to the broker
-   HRESULT hr = m_pBroker->GetInterface(riid,ppv); // calls AddRef(), released by caller
+   HRESULT hr = m_pBroker->GetInterface(riid,ppUnk); // calls AddRef(), released by caller
    if ( FAILED(hr) )
       return hr; // interface not found
 
    // interface found, cache it
-   IUnknown* pUnk = (IUnknown*)(*ppv);
+   IUnknown* pUnk = *ppUnk;
    pUnk->AddRef();  // calls AddRef(), released in ClearCache()
-   m_Interfaces.insert( std::make_pair(riid,(IUnknown*)(*ppv)) );
+   m_Interfaces.insert( std::make_pair(riid,*ppUnk) );
 
    return S_OK;
 }
@@ -96,8 +97,9 @@ STDMETHODIMP CEAFInterfaceCache::ShutDown()
 
 void CEAFInterfaceCache::ClearCache()
 {
-   Interfaces::iterator iter;
-   for ( iter = m_Interfaces.begin(); iter != m_Interfaces.end(); iter++ )
+   Interfaces::iterator iter(m_Interfaces.begin());
+   Interfaces::iterator end(m_Interfaces.end());
+   for ( ; iter != end; iter++ )
    {
       (*iter).second->Release();
       (*iter).second = NULL;

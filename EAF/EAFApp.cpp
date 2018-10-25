@@ -1149,7 +1149,7 @@ void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   std::vector<CEAFPluginState> pluginStates = EAFManagePlugins(_T("Project Types"),GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),GetAppPluginCategoryID(),EAFGetMainFrame());
    std::vector<CEAFPluginState>::iterator iter;
    for ( iter = pluginStates.begin(); iter != pluginStates.end(); iter++ )
    {

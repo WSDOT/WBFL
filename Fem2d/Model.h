@@ -223,7 +223,7 @@ private:
    Float64 *m_pForig;
 #endif
 
-#if defined _DEBUG
+#if defined ENABLE_LOGGING
    std::_tofstream logfile;
 #endif
 

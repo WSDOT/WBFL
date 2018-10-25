@@ -90,8 +90,8 @@ public:
    STDMETHOD(get_ID)(GirderIDType* pID);
 	STDMETHOD(AddSegment)(/*[in]*/ ISegment* segment);
 	STDMETHOD(get_Segment)(/*[in]*/ SegmentIndexType idx, /*[out, retval]*/ ISegment* *pVal);
-   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 distFromStartOfSSMbr,Float64* distFromStartOfSegment,SegmentIndexType* pSegIdx,ISegment** ppSeg);
-   STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 distFromStartOfSegment,Float64* pDistFromStartOfSSMbr);
+   STDMETHOD(GetDistanceFromStartOfSegment)(Float64 Xg,Float64* pXs,SegmentIndexType* pSegIdx,ISegment** ppSeg);
+   STDMETHOD(GetDistanceFromStart)(SegmentIndexType segIdx,Float64 Xs,Float64* pXg);
 	STDMETHOD(get_SegmentCount)(/*[out, retval]*/ SegmentIndexType *pVal);
 	STDMETHOD(GetEndRelease)(/*[in]*/ EndType end,/*[out]*/ StageIndexType* pStageIdx,/*[out]*/ ReleaseType* release);
 	STDMETHOD(SetEndRelease)(/*[in]*/ EndType end,/*[in]*/ StageIndexType stageIdx,/*[in]*/ ReleaseType release);

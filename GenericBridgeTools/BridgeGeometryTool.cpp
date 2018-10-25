@@ -66,27 +66,39 @@ HRESULT CBridgeGeometryTool::FinalConstruct()
 {
    HRESULT hr = m_CogoEngine.CoCreateInstance(CLSID_CogoEngine);
    if ( FAILED(hr) ) 
+   {
       return hr;
+   }
 
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_Line1.CoCreateInstance(CLSID_Line2d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_Line2.CoCreateInstance(CLSID_Line2d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_LineSegment1.CoCreateInstance(CLSID_LineSegment2d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    hr = m_LineSegment2.CoCreateInstance(CLSID_LineSegment2d);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -104,23 +116,25 @@ STDMETHODIMP CBridgeGeometryTool::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
 
-STDMETHODIMP CBridgeGeometryTool::PointBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IPoint2d** point)
+STDMETHODIMP CBridgeGeometryTool::PointBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 Xg, IPoint2d** point)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
    CComPtr<ISegment> segment;
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
-   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
    ATLASSERT(segment);
 
-   return PointBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,point);
+   return PointBySegment(bridge,ssMbrID,segIdx,Xs,point);
 }
 
 STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IPoint2d** point)
@@ -145,26 +159,26 @@ STDMETHODIMP CBridgeGeometryTool::PointBySegment(IGenericBridge* bridge,GirderID
    CComPtr<ILocate2> locate;
    m_CogoEngine->get_Locate(&locate);
 
-   Float64 distFromStartOfSegment = Xs - (brgOffset-endDist);
+   Float64 Xsp = Xs - (brgOffset-endDist);
 
-   locate->PointOnLine(p1,p2,distFromStartOfSegment,0.00,point);
+   locate->PointOnLine(p1,p2,Xsp,0.00,point);
 
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 distFromStartOfSSMbr, IStation** station, Float64* offset)
+STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID, Float64 Xg, IStation** station, Float64* offset)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
    CComPtr<ISegment> segment;
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
-   HRESULT hr = ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   HRESULT hr = ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
    ATLASSERT(SUCCEEDED(hr));
    ATLASSERT(segment);
 
-   return StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,station,offset);
+   return StationAndOffsetBySegment(bridge,ssMbrID,segIdx,Xs,station,offset);
 }
 
 STDMETHODIMP CBridgeGeometryTool::StationAndOffsetBySegment(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IStation** station, Float64* offset)
@@ -225,6 +239,8 @@ STDMETHODIMP CBridgeGeometryTool::GirderPathOffset(IGenericBridge* bridge,Girder
 
    return S_OK;
 }
+
+#pragma Reminder("UPDATE: Remove Obsolete Code")
 //
 //STDMETHODIMP CBridgeGeometryTool::GirderLineBearing(IGenericBridge* bridge,SpanIndexType spanIdx,GirderIndexType gdrIdx,IDirection** direction)
 //{
@@ -460,7 +476,9 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoint(IGenericBridge* bridge, Float64 
    CComPtr<IPath> path;
    HRESULT hr = GetDeckEdgePath(bridge,side,&path);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // get the alignment
    CComPtr<IAlignment> alignment;
@@ -556,7 +574,9 @@ STDMETHODIMP CBridgeGeometryTool::DeckEdgePoints(IGenericBridge* bridge,Directio
          DeckEdgePoint(bridge,station,objDirection,side,&p);
 
          if ( p )
+         {
             edge_points->Add(p);
+         }
       }
    }
 
@@ -576,14 +596,20 @@ STDMETHODIMP CBridgeGeometryTool::DeckOffset(IGenericBridge* bridge,Float64 stat
 
    CComPtr<IDirection> objDirection;
    if ( direction == NULL )
+   {
       alignment->Normal(CComVariant(station),&objDirection);
+   }
    else
+   {
       objDirection = direction;
+   }
 
    CComPtr<IPoint2d> pntEdge;
    HRESULT hr = DeckEdgePoint(bridge,station,objDirection,side,&pntEdge);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 offset;
    CComPtr<IStation> objStation;
@@ -605,16 +631,22 @@ STDMETHODIMP CBridgeGeometryTool::CurbOffset(IGenericBridge* bridge,Float64 stat
    Float64 offset;
    HRESULT hr = DeckOffset(bridge,station,direction,side,&offset);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 distFromStartOfBridge = StationToDistance(bridge,station);
 
    // get connection length of barrier
    CComPtr<ISidewalkBarrier> barrier;
    if ( side == qcbLeft )
+   {
       bridge->get_LeftBarrier(&barrier);
+   }
    else
+   {
       bridge->get_RightBarrier(&barrier);
+   }
 
    Float64 connection_width;
    barrier->get_ExteriorCurbWidth(&connection_width);
@@ -630,16 +662,22 @@ STDMETHODIMP CBridgeGeometryTool::InteriorCurbOffset(IGenericBridge* bridge,Floa
    Float64 offset;
    HRESULT hr = DeckOffset(bridge,station,direction,side,&offset);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 distFromStartOfBridge = StationToDistance(bridge,station);
 
    // get interior connection length of barrier
    CComPtr<ISidewalkBarrier> barrier;
    if ( side == qcbLeft )
+   {
       bridge->get_LeftBarrier(&barrier);
+   }
    else
+   {
       bridge->get_RightBarrier(&barrier);
+   }
 
    Float64 connection_width;
    barrier->get_CurbWidth(&connection_width);
@@ -671,7 +709,9 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
 
    // if dir is NULL, use the normal to the alignment
    if ( dir == NULL )
+   {
       alignment->Normal(CComVariant(station),&dir);
+   }
 
    // Get point on alignment at station
    CComPtr<IPoint2d> alignment_point;
@@ -757,7 +797,9 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    CComPtr<IPoint2d> pntEdge;
    HRESULT hr = DeckEdgePoint(bridge,station,dir,side,&pntEdge);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
 
    // offset is distance between girder line point and deck point
@@ -790,36 +832,40 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhang(IGenericBridge* bridge,Float64 st
    n->Dot(v,&dot);
 
    if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
+   {
       dist *= -1;
+   }
 
    *pOverhang = dist;
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,IDirection* dir,DirectionType side,Float64* pOverhang)
+STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,IDirection* dir,DirectionType side,Float64* pOverhang)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
    CComPtr<ISegment> segment;
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
-   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
    ATLASSERT(segment);
 
-   return DeckOverhangBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,dir,side,pOverhang);
+   return DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,dir,side,pOverhang);
 }
 
-STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,IDirection* dir,DirectionType side,Float64* pOverhang)
+STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,IDirection* dir,DirectionType side,Float64* pOverhang)
 {
    // Computes the distance from the centerline of the superstructure member to the edge of deck along a given direction
 
    // Get station and offset of point on segment where deck overhang is to be computed
    CComPtr<IStation> objStation;
    Float64 offset;
-   HRESULT hr = StationAndOffsetBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,&objStation,&offset);
+   HRESULT hr = StationAndOffsetBySegment(bridge,ssMbrID,segIdx,Xs,&objStation,&offset);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 station;
    objStation->get_Value(&station);
@@ -834,13 +880,17 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
 
    // if direction is NULL, use the normal to the alignment
    if ( direction == NULL )
+   {
       alignment->Normal(CComVariant(objStation),&direction);
+   }
 
    // Get point on edge of deck
    CComPtr<IPoint2d> pntDeck;
    hr = DeckEdgePoint(bridge,station,direction,side,&pntDeck);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    // Get point on alignment at station
    CComPtr<IPoint2d> alignment_point;
@@ -906,7 +956,9 @@ STDMETHODIMP CBridgeGeometryTool::DeckOverhangBySegment(IGenericBridge* bridge,G
    n->Dot(v,&dot);
 
    if ( dot < 0 && side == qcbLeft || 0 < dot && side == qcbRight )
+   {
       dist *= -1;
+   }
 
    *pOverhang = dist;
    return S_OK;
@@ -922,9 +974,13 @@ HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionTyp
       // no deck...use the traffic barrier path
       CComPtr<ISidewalkBarrier> barrier;
       if ( side == qcbLeft )
+      {
          bridge->get_LeftBarrier(&barrier);
+      }
       else
+      {
          bridge->get_RightBarrier(&barrier);
+      }
 
       return barrier->get_Path(ppPath);
    }
@@ -936,26 +992,23 @@ HRESULT CBridgeGeometryTool::GetDeckEdgePath(IGenericBridge* bridge,DirectionTyp
 
    // VARIANT_TRUE to get the layout line and not the actual edge path. The actual deck edge path
    // teminates at the ends of the deck.
-   if ( side == qcbLeft )
-      deckBoundary->get_LeftEdgePath(VARIANT_TRUE,ppPath); 
-   else
-      deckBoundary->get_RightEdgePath(VARIANT_TRUE,ppPath);
+   deckBoundary->get_EdgePath((SideType)side,VARIANT_TRUE,ppPath); 
 
    return S_OK;
 }
 
-STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 distFromStartOfSSMbr,GirderIDType otherSSMbrID,Float64* pSpacing)
+STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySSMbr(IGenericBridge* bridge,GirderIDType ssMbrID,Float64 Xg,GirderIDType otherSSMbrID,Float64* pSpacing)
 {
    CComPtr<ISuperstructureMember> ssmbr;
    bridge->get_SuperstructureMember(ssMbrID,&ssmbr);
 
    CComPtr<ISegment> segment;
-   Float64 distFromStartOfSegment;
+   Float64 Xs;
    SegmentIndexType segIdx;
-   ssmbr->GetDistanceFromStartOfSegment(distFromStartOfSSMbr,&distFromStartOfSegment,&segIdx,&segment);
+   ssmbr->GetDistanceFromStartOfSegment(Xg,&Xs,&segIdx,&segment);
    ATLASSERT(segment);
 
-   return GirderSpacingBySegment(bridge,ssMbrID,segIdx,distFromStartOfSegment,otherSSMbrID,pSpacing);
+   return GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,otherSSMbrID,pSpacing);
 }
 
 STDMETHODIMP CBridgeGeometryTool::GirderSpacingBySegment(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 distFromStartOfSegment,GirderIDType otherSSMbrID,Float64* pSpacing)

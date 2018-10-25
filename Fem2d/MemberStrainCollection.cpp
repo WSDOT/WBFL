@@ -86,7 +86,7 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
       std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMemberStrain) )) );
       if (!st.second)
       {
-         ATLASSERT(0); // insert failed - better check why
+         ATLASSERT(false); // insert failed - better check why
          return E_FAIL;
       }
 

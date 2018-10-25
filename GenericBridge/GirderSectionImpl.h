@@ -318,7 +318,7 @@ public:
    STDMETHODIMP get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
    {
       HRESULT hr = S_OK;
-      CHECK_RETVAL(*wd);
+      CHECK_RETVAL(wd);
 
       *wd = 0.0;
 

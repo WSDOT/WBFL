@@ -271,7 +271,7 @@ void CTestCrossSection::Test()
    }
    catch(...)
    {
-      ATLASSERT(0); // big problems
+      ATLASSERT(false); // big problems
       TRY_TEST(0,1); 
    }
 
@@ -287,7 +287,7 @@ HRESULT CTestCrossSection::OnSegmentCrossSectionChanged(ISegmentCrossSection* Cr
    else if (change==cgtStress)
       m_csStressPointsFired = true;
    else
-      ATLASSERT(0);
+      ATLASSERT(false);
 
    return S_OK;
 }

@@ -26,6 +26,9 @@
 #include "stdafx.h"
 #include "CustomReportsPage.h"
 
+#include <EAF\EAFUtilities.h>
+#include <EAF\EAFDocument.h>
+
 #include "EditCustomReportDlg.h"
 #include "ConfigureReportsDlg.h"
 #include "EAFExportCustomReports.h"
@@ -34,7 +37,9 @@
 static bool DoesFileExist(const CString& filename)
 {
    if (filename.IsEmpty())
+   {
       return false;
+   }
    else
    {
       CFileFind finder;
@@ -125,7 +130,7 @@ void CCustomReportsPage::OnBnClickedAddnew()
       std::pair<CEAFCustomReports::ReportIterator, bool> itb = m_pParentDlg->m_CustomReports.m_Reports.insert(dlg.m_CustomReport);
       if (itb.second==false)
       {
-         ATLASSERT(0);
+         ATLASSERT(false);
          AfxMessageBox(_T("An unknown error occurred creating custom report"), MB_ICONEXCLAMATION);
       }
 
@@ -160,10 +165,14 @@ void CCustomReportsPage::OnBnClickedDelete()
          m_CustomReportsList.DeleteItem(nItem);
       }
       else
-         ATLASSERT(0);
+      {
+         ATLASSERT(false);
+      }
    }
    else
-      ATLASSERT(0);
+   {
+      ATLASSERT(false);
+   }
 }
 
 void CCustomReportsPage::InsertData()
@@ -237,7 +246,9 @@ void CCustomReportsPage::EditSelectedReport()
          }
       }
       else
-         ATLASSERT(0);
+      {
+         ATLASSERT(false);
+      }
     
    }
 
@@ -250,11 +261,27 @@ void CCustomReportsPage::OnBnClickedExport()
    dlg.m_pCustomReports = &(m_pParentDlg->m_CustomReports);
    if (dlg.DoModal()==IDOK)
    {
-	   CString default_name = "CustomReports.pgsrpt";
-	   TCHAR	strFilter[] = {_T("PGSuper Custom Report Files (*.pgsrpt)|*.pgsrpt||")};
+      CEAFDocument* pDoc = EAFGetDocument();
+      CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+
+      CString strExtensions;
+      pTemplate->GetDocString(strExtensions,CDocTemplate::filterExt);
+      int pos = 0;
+      CString strExtension = strExtensions.Tokenize(_T(";"),pos);
+      strExtension = strExtension.Mid(1);
+      strExtension += _T("rpt");
+
+      CString strAppName;
+      pTemplate->GetDocString(strAppName,CDocTemplate::docName);
+
+	   CString strDefaultName;
+      strDefaultName.Format(_T("CustomReports.%s"),strExtension);
+
+      CString strFilter;
+      strFilter.Format(_T("%s Custom Report Files (*.%s)|*.%s||"),strAppName,strExtension,strExtension);
 
 	   // Open the SAVEAS dialog box 
-	   CFileDialog  fildlg(FALSE,_T("pgsrpt"),default_name,OFN_HIDEREADONLY, strFilter);
+	   CFileDialog  fildlg(FALSE,strExtension,strDefaultName,OFN_HIDEREADONLY, strFilter);
 	   if (fildlg.DoModal() == IDOK)
 	   {
 		   CString file_path = fildlg.GetPathName();
@@ -267,7 +294,9 @@ void CCustomReportsPage::OnBnClickedExport()
 			   msg += file_path + _T(" exists. Overwrite it?");
 			   int stm = AfxMessageBox(msg,MB_YESNOCANCEL|MB_ICONQUESTION);
 			   if (stm != IDYES) 
+            {
                return;
+            }
 		   }
 
          // Use structured save to save file
@@ -293,7 +322,9 @@ void CCustomReportsPage::OnBnClickedExport()
                return;
             }
 
-            hr = save->BeginUnit(CComBSTR("PGSuperCustomReports"),1.0);
+            CString strUnit;
+            strUnit.Format(_T("%sCustomReports"),strAppName);
+            hr = save->BeginUnit(CComBSTR(strUnit),1.0);
 
             // loop over reports and save
             hr = save->put_Property(CComBSTR("NumReports"), CComVariant(dlg.m_SelectedReports.size()));
@@ -324,7 +355,9 @@ void CCustomReportsPage::OnBnClickedExport()
                   hr = save->EndUnit();
                }
                else
-                  ATLASSERT(0);
+               {
+                  ATLASSERT(false);
+               }
 
                itr++;
             }
@@ -334,7 +367,7 @@ void CCustomReportsPage::OnBnClickedExport()
          }
          catch(...)
          {
-            ATLASSERT(0);
+            ATLASSERT(false);
          }
 
          CString msg;
@@ -349,11 +382,26 @@ void CCustomReportsPage::OnBnClickedImport()
    // Get list of already taken report names
    std::set<std::_tstring> reservedNames = m_pParentDlg->GetReservedReportNames();
 
+   CEAFDocument* pDoc = EAFGetDocument();
+   CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
+
+   CString strExtensions;
+   pTemplate->GetDocString(strExtensions,CDocTemplate::filterExt);
+   int pos = 0;
+   CString strExtension = strExtensions.Tokenize(_T(";"),pos);
+   strExtension = strExtension.Mid(1);
+   strExtension += _T("rpt");
+
+   CString strAppName;
+   pTemplate->GetDocString(strAppName,CDocTemplate::docName);
+
    // start UI dance
    bool doCancel(false);
 
-   CFileDialog  fildlg(TRUE,_T("pgsrpt"),NULL,OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,
-                   _T("PGSuper Custom Report Files (*.pgsrpt)|*.pgsrpt||"));
+   CString strFilter;
+   strFilter.Format(_T("%s Custom Report Files (*.%s)|*.%s||"),strAppName,strExtension,strExtension);
+
+   CFileDialog  fildlg(TRUE,strExtension,NULL,OFN_FILEMUSTEXIST|OFN_HIDEREADONLY,strFilter);
    INT_PTR stf = fildlg.DoModal();
    if (stf==IDOK)
    {
@@ -379,7 +427,9 @@ void CCustomReportsPage::OnBnClickedImport()
          return;
       }
 
-      hr = Load->BeginUnit(CComBSTR("PGSuperCustomReports"));
+      CString strUnit;
+      strUnit.Format(_T("%sCustomReports"),strAppName);
+      hr = Load->BeginUnit(CComBSTR(strUnit));
       if ( FAILED(hr) )
       {
          CString err(_T("Error reading custom report file. - Bad Format"));
@@ -473,7 +523,9 @@ void CCustomReportsPage::OnBnClickedImport()
 
 
             if (doInsert)
+            {
                Reports.m_Reports.insert(Report);
+            }
 
             VARIANT_BOOL bEnd;
             Load->EndUnit(&bEnd);

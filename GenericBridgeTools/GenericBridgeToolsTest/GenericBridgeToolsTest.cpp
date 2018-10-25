@@ -77,7 +77,9 @@ bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions)
    CComQIPtr<IObjectSafety> safety(punk);
 
    if ( safety == NULL )
+   {
       return false;
+   }
 
 
    DWORD dwSupported, dwEnabled;
@@ -362,9 +364,13 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
       deck_material->put_Density(2,0);
 
       if ( bCompositeDeck )
+      {
          deck_material->put_E(3,200000.);
+      }
       else
+      {
          deck_material->put_E(3,0); // not composite, so no stiffness
+      }
 
       deck_material->put_Density(3,160.0);
 
@@ -620,10 +626,15 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
          deck_material->put_E(i,0);
          deck_material->put_Density(i,0);
       }
+
       if ( bCompositeDeck )
+      {
          deck_material->put_E(6,200000.);
+      }
       else
+      {
          deck_material->put_E(6,0);
+      }
 
       deck_material->put_Density(6,160.0);
 
@@ -654,12 +665,12 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    // create the bridge deck boundary
    CComPtr<ISimpleDeckBoundaryFactory> deckBoundaryFactory;
    deckBoundaryFactory.CoCreateInstance(CLSID_SimpleDeckBoundaryFactory);
-   deckBoundaryFactory->put_BackEdgeID( backPierID );
-   deckBoundaryFactory->put_BackEdgeType(setPier);
-   deckBoundaryFactory->put_ForwardEdgeID( forwardPierID ); 
-   deckBoundaryFactory->put_ForwardEdgeType(setPier);
-   deckBoundaryFactory->put_LeftEdgeID(-500); // left edge of slab (layout line 1000)
-   deckBoundaryFactory->put_RightEdgeID(-501); // right edge of slab (layout line 2000)
+   deckBoundaryFactory->put_TransverseEdgeID( etStart, backPierID );
+   deckBoundaryFactory->put_TransverseEdgeType(etStart, setPier);
+   deckBoundaryFactory->put_TransverseEdgeID( etEnd, forwardPierID ); 
+   deckBoundaryFactory->put_TransverseEdgeType(etEnd, setPier);
+   deckBoundaryFactory->put_EdgeID(stLeft,-500); // left edge of slab (layout line 1000)
+   deckBoundaryFactory->put_EdgeID(stRight,-501); // right edge of slab (layout line 2000)
    geometry->CreateDeckBoundary(deckBoundaryFactory); 
 
    // get the deck boundary
@@ -701,7 +712,9 @@ void CreateDeck(int deckType,Float64 maxWidth,Float64 overhang,IBridgeGeometry* 
    }
 
    if ( *deck )
+   {
       (*deck)->putref_DeckBoundary(deckBoundary);
+   }
 }
 
 void DimensionWFG(IFlangedGirderSection* fgs)
