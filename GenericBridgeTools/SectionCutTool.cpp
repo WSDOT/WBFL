@@ -1131,9 +1131,13 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
    CComPtr<ISegment> segment;
    ssmbr->get_Segment(segIdx,&segment);
 
-   Float64 segment_length;
-   segment->get_Length(&segment_length);
-   distFromStartOfSegment = ::ForceIntoRange(0.0,distFromStartOfSegment,segment_length);
+   CComPtr<IGirderLine> girderLine;
+   segment->get_GirderLine(&girderLine);
+
+   Float64 segment_layout_length;
+   girderLine->get_LayoutLength(&segment_layout_length);
+
+   distFromStartOfSegment = ::ForceIntoRange(0.0,distFromStartOfSegment,segment_layout_length);
 
    // this is the primary section (the girder)
    CComPtr<ISection> section;
@@ -1228,8 +1232,6 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
    // need to make sure the location we are looking at is actually
    // on the precast girder or if it is in a closure pour region
-   CComPtr<IGirderLine> girderLine;
-   segment->get_GirderLine(&girderLine);
    Float64 brgOffset,endDistance;
    girderLine->get_BearingOffset(etStart,&brgOffset);
    girderLine->get_EndDistance(etStart,&endDistance);

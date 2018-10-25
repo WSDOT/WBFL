@@ -134,6 +134,8 @@ public:
    // Get Number of columns in table
    ColumnIndexType GetNumberOfColumns() {return m_NumColumns;}
 
+   void SetNumberOfColumns(ColumnIndexType nColumns);
+
    //------------------------------------------------------------------------
    // Set the width (in inches) of a given column
    void SetColumnWidth(ColumnIndexType ColNo, Float64 MyWidth);
