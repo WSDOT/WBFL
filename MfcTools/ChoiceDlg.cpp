@@ -53,6 +53,7 @@ void CChoiceDlg::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CChoiceDlg, CDialog)
+   ON_BN_CLICKED(IDHELP,OnHelp)
 END_MESSAGE_MAP()
 
 
@@ -73,7 +74,6 @@ BOOL CChoiceDlg::OnInitDialog()
       resToken = m_Responses.Tokenize(_T("\n"),curPos);
    }
 
-
    CDialog::OnInitDialog();
 
    m_Icon.SetIcon(::LoadIcon(NULL,IDI_QUESTION));
@@ -92,6 +92,16 @@ BOOL CChoiceDlg::OnInitDialog()
       pCancel->ShowWindow(SW_HIDE);
    }
 
+   if ( m_HelpFile.GetLength() == 0 )
+   {
+      GetDlgItem(IDHELP)->ShowWindow(SW_HIDE);
+   }
+
    return TRUE;  // return TRUE unless you set the focus to a control
    // EXCEPTION: OCX Property Pages should return FALSE
+}
+
+void CChoiceDlg::OnHelp()
+{
+   ::HtmlHelp(*this,m_HelpFile,HH_HELP_CONTEXT,m_HelpID);
 }

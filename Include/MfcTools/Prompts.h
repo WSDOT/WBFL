@@ -31,4 +31,4 @@ CString MFCTOOLSFUNC AfxQuestion(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR 
 // This function prompts the user with a question. The user has to select from a list of
 // responses. lpszResponses is a \n separated list of responses. defChoice is the index of the
 // default choice. The return value is the index of the selected choice or -1 if the Cancel button was pressed
-int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,BOOL bCancelButton=FALSE,int defChoice=0);
+int MFCTOOLSFUNC AfxChoose(LPCTSTR lpszTitle,LPCTSTR lpszQuestion,LPCTSTR lpszResponses,BOOL bCancelButton=FALSE,int defChoice=0,LPCTSTR lpszHelpFile=NULL,UINT helpID=0);

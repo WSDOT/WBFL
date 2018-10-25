@@ -320,7 +320,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
             }
             catch(...)
             {
-               AfxMessageBox("Failed to create load");
+               AfxMessageBox(_T("Failed to create load"));
             }
          }
       }
@@ -382,7 +382,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
       //}
       catch(...)
       {
-         AfxMessageBox("Failed to create load");
+         AfxMessageBox(_T("Failed to create load"));
       }
    }
 }

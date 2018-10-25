@@ -32,7 +32,7 @@ static char THIS_FILE[] = __FILE__;
 
 bool StatusItemCompare::operator()(CEAFStatusItem* a,CEAFStatusItem* b)
 {
-   if ( a->IsEqual(b) )
+   if ( a->IsEqual(b) || b->IsEqual(a) )
       return false;
 
    return a->GetID() < b->GetID();
@@ -101,6 +101,11 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
    {
       NotifyAdded(pItem);
       return pItem->GetID();
+   }
+   else
+   {
+      delete pItem;
+      pItem = NULL;
    }
 
    return -1; // failed

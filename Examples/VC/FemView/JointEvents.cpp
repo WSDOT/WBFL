@@ -17,7 +17,7 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CJointEvents
-UINT CJointEvents::ms_Format = ::RegisterClipboardFormat("Joints");
+UINT CJointEvents::ms_Format = ::RegisterClipboardFormat(_T("Joints"));
 
 CJointEvents::CJointEvents(CFEA2DDoc* pDoc)
 {
@@ -295,6 +295,6 @@ void CJointEvents::DeleteJoint(long jntID)
    }
    else
    {
-      AfxMessageBox("The joint can't be deleted because it has members connected to it");
+      AfxMessageBox(_T("The joint can't be deleted because it has members connected to it"));
    }
 }

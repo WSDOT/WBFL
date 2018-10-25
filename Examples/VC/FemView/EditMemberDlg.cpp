@@ -77,7 +77,7 @@ BOOL CEditMemberDlg::OnInitDialog()
       jnt->get_ID(&ID);
 
       CString strJntID;
-      strJntID.Format("%d",ID);
+      strJntID.Format(_T("%d"),ID);
       pStart->AddString(strJntID);
       pEnd->AddString(strJntID);
    }

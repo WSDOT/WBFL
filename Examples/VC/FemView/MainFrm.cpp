@@ -90,7 +90,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
    CComPtr<iTool> tool;
    ::CoCreateInstance(CLSID_Tool,NULL,CLSCTX_ALL,IID_iTool,(void**)&tool);
    tool->SetID(IDC_CONCLOAD_TOOL);
-   tool->SetToolTipText("Create Point Load");
+   tool->SetToolTipText(_T("Create Point Load"));
    m_wndToolPalette.AddTool(tool);
 
 	return 0;
@@ -130,8 +130,8 @@ void CMainFrame::UpdateWorldPoint(double x,double y)
    CString strMsg;
    CString strX;
    CString strY;
-   strX.Format("%6.3f",x);
-   strY.Format("%6.3f",y);
+   strX.Format(_T("%6.3f"),x);
+   strY.Format(_T("%6.3f"),y);
    AfxFormatString2(strMsg,IDS_INDICATOR_WORLDPOINT,strX,strY);
 
    m_wndStatusBar.GetStatusBarCtrl().SetText(strMsg,3,0);
@@ -142,8 +142,8 @@ void CMainFrame::UpdateDevicePoint(long x,long y)
    CString strMsg;
    CString strX;
    CString strY;
-   strX.Format("%d",x);
-   strY.Format("%d",y);
+   strX.Format(_T("%d"),x);
+   strY.Format(_T("%d"),y);
    AfxFormatString2(strMsg,IDS_INDICATOR_DEVICEPOINT,strX,strY);
 
    m_wndStatusBar.GetStatusBarCtrl().SetText(strMsg,2,0);
@@ -154,8 +154,8 @@ void CMainFrame::UpdateLogicalPoint(long x,long y)
    CString strMsg;
    CString strX;
    CString strY;
-   strX.Format("%d",x);
-   strY.Format("%d",y);
+   strX.Format(_T("%d"),x);
+   strY.Format(_T("%d"),y);
    AfxFormatString2(strMsg,IDS_INDICATOR_LOGICALPOINT,strX,strY);
 
    m_wndStatusBar.GetStatusBarCtrl().SetText(strMsg,1,0);

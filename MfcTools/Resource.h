@@ -1,26 +1,3 @@
-///////////////////////////////////////////////////////////////////////
-// MfcTools - Extension library for MFC
-// Copyright © 1999-2011  Washington State Department of Transportation
-//                        Bridge and Structures Office
-//
-// This library is a part of the Washington Bridge Foundation Libraries
-// and was developed as part of the Alternate Route Project
-//
-// This library is free software; you can redistribute it and/or modify it under
-// the terms of the Alternate Route Library Open Source License as published by 
-// the Washington State Department of Transportation, Bridge and Structures Office.
-//
-// This program is distributed in the hope that it will be useful, but is distributed 
-// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
-// License for more details.
-//
-// You should have received a copy of the Alternate Route Library Open Source License 
-// along with this program; if not, write to the Washington State Department of 
-// Transportation, Bridge and Structures Office, P.O. Box  47340, 
-// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
-///////////////////////////////////////////////////////////////////////
-
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
 // Used by MfcTools.rc
@@ -57,6 +34,7 @@
 #define IDC_QUESTION                    1218
 #define IDC_ANSWER                      1219
 #define IDC_RESPONSE_CHOICES            1222
+#define IDC_BUTTON1                     1224
 #define IDS_E_BEARINGFMT                1301
 #define IDS_E_ANGLEFMT                  1302
 #define IDS_DDXFOLDER_TT_MODIFY         1303
@@ -74,7 +52,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1134
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1224
+#define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
