@@ -45,8 +45,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,6
- PRODUCTVERSION 4,0,0,6
+ FILEVERSION 4,0,0,7
+ PRODUCTVERSION 4,0,0,7
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -64,14 +64,14 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "Engineering Tools\0"
-            VALUE "FileVersion", "4.0.0.6\0"
+            VALUE "FileVersion", "4.0.0.7\0"
             VALUE "InternalName", "Engineering Tools\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2013, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2014, Washington State Department of Transportation, All Rights ReservedPassed(pgsTypes::BottomGirder)"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "EngTools30.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "4.0.0.6\0"
+            VALUE "ProductVersion", "4.0.0.7\0"
             VALUE "SpecialBuild", "\0"
         END
     END
