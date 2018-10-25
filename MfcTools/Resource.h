@@ -15,6 +15,7 @@
 #define IDI_TEMPLATE                    1132
 #define IDD_CHOICE                      1133
 #define IDI_LARGE_ICON                  1134
+#define IDD_CHOICELIST                  1134
 #define IDI_SMALL_ICON                  1135
 #define IDI_LIST_ICON                   1136
 #define IDC_FILE_VIEW_TAB               1203
@@ -34,6 +35,8 @@
 #define IDC_QUESTION                    1218
 #define IDC_ANSWER                      1219
 #define IDC_RESPONSE_CHOICES            1222
+#define IDC_LIST1                       1224
+#define IDC_LIST                        1224
 #define IDS_E_BEARINGFMT                1301
 #define IDS_E_ANGLEFMT                  1302
 #define IDS_DDXFOLDER_TT_MODIFY         1303
@@ -49,9 +52,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1134
+#define _APS_NEXT_RESOURCE_VALUE        1135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1224
+#define _APS_NEXT_CONTROL_VALUE         1225
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

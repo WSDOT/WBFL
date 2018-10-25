@@ -871,10 +871,11 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    CollectionIndexType target_size=target.size();
    if (target_size>2)
    {
-      bool last_matched=false;
-#if defined (_DEBUG)
-      Float64 last_loc;
-#endif
+      // See comment below from RAB
+//#if defined (_DEBUG)
+//      bool last_matched=false;
+//      Float64 last_loc;
+//#endif
       InfluencePointIterator it2( target.begin() );
       InfluencePointIterator it1( it2++ );
       InfluencePointIterator itend( target.end() );
@@ -886,22 +887,29 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
             it2->m_LocationType = iflDualRight;
          }
 
-         // some debug code here to check that we don't have three or more of the same location
-#if defined (_DEBUG)
-         if ( IsEqual(it1->m_Location,it2->m_Location,m_ZeroTolerance) )
-         {
-            if (last_matched)
-            {
-               ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
-            }
-            last_matched = true;
-            last_loc = it2->m_Location;
-         }
-         else
-         {
-            last_matched = false;
-         }
-#endif
+// Commented out by RAB during PGSplice development. The method of virtual work is used To compute 
+// deflections from the time-step analysis. The calculate the deflection at a POI, the
+// moment diagram due to a unit load at that POI is needed. When the LBAM/InfluenceLine code
+// condenses POIs at the same location the mapping between the POI and the influence load case is lost.
+// This cause a lot of problems. Since the duplicates occur at very few POI it is easier and quicker
+// to just allow the inefficiency at a couple locations then it is to a have an elaborate solution
+// to a complex problem.
+//         // some debug code here to check that we don't have three or more of the same location
+//#if defined (_DEBUG)
+//         if ( IsEqual(it1->m_Location,it2->m_Location,m_ZeroTolerance) )
+//         {
+//            if (last_matched)
+//            {
+//               ATLASSERT(0); // have three points at the same location - this is bad form and indicates an inefficient influence line
+//            }
+//            last_matched = true;
+//            last_loc = it2->m_Location;
+//         }
+//         else
+//         {
+//            last_matched = false;
+//         }
+//#endif
          // loop
          it1++;
          it2++;

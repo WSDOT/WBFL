@@ -911,10 +911,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\BridgeGeometry.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Include\BridgeGeometry\BridgeGeometryExp.h"
 				>
 			</File>

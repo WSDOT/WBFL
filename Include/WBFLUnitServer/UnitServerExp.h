@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
-// BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// UnitServer - Unit Conversion and Display Unit Management Library
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -17,24 +17,30 @@
 //
 // You should have received a copy of the Alternate Route Library Open Source License 
 // along with this program; if not, write to the Washington State Department of 
-// Transportation, Bridge and Structures Office, 4500 3rd Ave SE - P.O. Box  47340, 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   BridgeGeometry
+// Define BUILDUNITSERVERLIB when building this library
+// For static builds, define UNITSERVERLIB
+// For static binding, define UNITSERVERLIB
+// For dynamic binding, nothing is required to be defined
 
-   Support library from bridge geometry modeling.
+#if defined (BUILDUNITSERVERLIB) && !defined(UNITSERVERLIB)
+#define UNITSERVERCLASS __declspec(dllexport)
+#define UNITSERVERFUNC  __declspec(dllexport)
+#define UNITSERVERTPL   template class UNITSERVERCLASS
+#elif defined(UNITSERVERLIB)
+#define UNITSERVERCLASS
+#define UNITSERVERFUNC
+#define UNITSERVERTPL
+#else
+#define UNITSERVERCLASS __declspec(dllimport)
+#define UNITSERVERFUNC  __declspec(dllimport)
+#define UNITSERVERTPL   extern template class UNITSERVERCLASS
+#endif
 
-DESCRIPTION
-   This library provides general support classes for bridge geometry modeling.
-
-COPYRIGHT
-   Copyright (c) 2009
-   Washington State Department Of Transportation
-   All Rights Reserved
-*****************************************************************************/
-#include <Private\WbflPackage.h>
+#include <WbflAll.h>
+#include <WBFLUnitServer\AutoLib.h>

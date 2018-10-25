@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright (C) 1999  Washington State Department of Transportation
-//                     Bridge and Structures Office
+// Copyright © 1999-2013  Washington State Department of Transportation
+//                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
@@ -17,30 +17,50 @@
 //
 // You should have received a copy of the Alternate Route Library Open Source License 
 // along with this program; if not, write to the Washington State Department of 
-// Transportation, Bridge and Structures Office, 4500 3rd Ave SE - P.O. Box  47340, 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <BridgeAnalysis\BridgeAnalysisLib.h>
+#include <BridgeAnalysis\LoadCombination.h>
+#include <BridgeAnalysis\BridgeModel.h>
 
-// Define BUILDBRIDGEGEOMETRYLIB when building this library
-// For static builds, define BGLIB
-// For static binding, define BGLIB
-// For dynamic binding, nothing is required to be defined
-
-#if defined (BUILDBRIDGEGEOMETRYLIB) && !defined(BGLIB)
-#define BGCLASS __declspec(dllexport)
-#define BGFUNC  __declspec(dllexport)
-#define BGTPL   template class BGCLASS
-#elif defined(BGLIB)
-#define BGCLASS
-#define BGFUNC
-#define BGTPL
-#else
-#define BGCLASS __declspec(dllimport)
-#define BGFUNC
-#define BGTPL   extern template class BGCLASS
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
-#include <WbflAll.h>
-#include <BridgeGeometry\AutoLib.h>
+bamLoadCombination::bamLoadCombination(IDType id)
+{
+   m_ID = id;
+}
+
+bamLoadCombination::bamLoadCombination(const bamLoadCombination& rOther)
+{
+   m_ID = rOther.m_ID;
+}
+
+bamLoadCombination::~bamLoadCombination()
+{
+}
+
+void bamLoadCombination::SetBridgeModel(bamBridgeModel* pModel)
+{
+   m_pBridgeModel = pModel;
+}
+
+IDType bamLoadCombination::GetID() const
+{
+   return m_ID;
+}
+
+void bamLoadCombination::SetID(IDType id)
+{
+   m_ID = id;
+}
+
+bamBridgeModel& bamLoadCombination::GetBridgeModel() const
+{
+   return *m_pBridgeModel;
+}

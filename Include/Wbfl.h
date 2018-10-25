@@ -40,9 +40,10 @@
 
 #if defined USE_WBFL_DEPRECIATED
 #include <Cogo\Cogo.h>
+#include <BridgeAnalysis\BridgeAnalysis.h>
+#include <BridgeModeling\BridgeModeling.h>
 #endif // USE_WBFL_DEPRECIATED
 
-#include <BridgeModeling\BridgeModeling.h>
 #include <EngTools\EngTools.h>
 #include <GeometricPrimitives\GeometricPrimitives.h>
 #include <GeomModel\GeomModel.h>
