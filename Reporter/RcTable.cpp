@@ -139,7 +139,7 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 
    if ( m_NumColumns <= ColNo )
    {
-      ::MessageBox(NULL,_T("Table Error"),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      ::MessageBox(NULL,m_Label.GetName(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
       ColNo = m_NumColumns-1;
    }
 
@@ -169,6 +169,12 @@ rptParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 const rptParagraph& rptRcTable::operator()(RowIndexType RowNo, ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
+
+   if ( m_NumColumns <= ColNo )
+   {
+      ::MessageBox(NULL,m_Label.GetName(),_T("Table Error"),MB_OK | MB_ICONEXCLAMATION);
+      ColNo = m_NumColumns-1;
+   }
 
    // check if row entry has been allocated. If it has not, then assert out
    // We can't grow the table becase this is a const method
@@ -218,6 +224,11 @@ void rptRcTable::SetColumnWidth(ColumnIndexType ColNo, Float64 MyWidth)
    CHECK(ColNo<m_NumColumns);
    CHECK(MyWidth>0);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
+
    // set new width
    m_ColumnWidths[ColNo] = MyWidth;
 }
@@ -231,7 +242,9 @@ Float64 rptRcTable::GetTableWidth() const
 
    Float64 tmp =0.;
    for (ColumnIndexType i=0; i<m_NumColumns; i++)
+   {
       tmp += GetColumnWidth(i);
+   }
 
    return  tmp;
 }
@@ -242,6 +255,11 @@ Float64 rptRcTable::GetTableWidth() const
 Float64 rptRcTable::GetColumnWidth(ColumnIndexType ColNo) const
 {
    CHECK(ColNo<m_NumColumns);
+
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
 
    return  m_ColumnWidths[ColNo];
 }
@@ -287,16 +305,28 @@ void rptRcTable::SetColumnStyle(ColumnIndexType ColNo, const rptStyleName& MySty
 {
    CHECK(ColNo<m_NumColumns);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
+
    // set the style for the style holder
    (m_pColumnStyles+ColNo)->SetStyleName(MyStyleName);
 
    if ( m_NumberOfHeaderRows == 0 )
+   {
       m_TableData[ColNo][0].SetStyleName(MyStyleName);
+   }
 }
 
 void rptRcTable::SetStripeRowColumnStyle(ColumnIndexType ColNo, const rptStyleName& MyStyleName)
 {
    CHECK(ColNo<m_NumColumns);
+
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
 
    // set the style for the style holder
    (m_pStripeRowColumnStyles+ColNo)->SetStyleName(MyStyleName);
@@ -308,6 +338,11 @@ void rptRcTable::SetStripeRowColumnStyle(ColumnIndexType ColNo, const rptStyleNa
 void rptRcTable::ClearColumnStyle(ColumnIndexType ColNo)
 {
    CHECK(ColNo<m_NumColumns);
+
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
 
    // clear the style for the style holder
    (m_pColumnStyles+ColNo)->ClearStyle();
@@ -323,6 +358,11 @@ void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoRe
 {
    CHECK(ColNo<m_NumColumns);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
+
    // check if header row entry has been allocated.
    CHECK(m_TableData[ColNo].size()>0);
 
@@ -336,9 +376,13 @@ void rptRcTable::PutFloat64Column(ColumnIndexType ColNo, rptRcUnitValue& ProtoRe
       rptParagraph& rploc = m_TableData[ColNo].back();
 
       if ( IsStripedRow(i) )
+      {
          rploc.SetParent(m_pStripeRowColumnStyles+ColNo);
+      }
       else
+      {
          rploc.SetParent(m_pColumnStyles+ColNo);
+      }
 
       // make a new real from the proto type and stream it away
       ProtoReal.SetValue( Float64Vec[i] );
@@ -353,6 +397,11 @@ void rptRcTable::PutSectionValueColumn(ColumnIndexType colNo,
 {
    CHECK( colNo < m_NumColumns );
 
+   if ( m_NumColumns <= colNo )
+   {
+      colNo = m_NumColumns-1;
+   }
+
    // check if header row entry has been allocated.
    CHECK( m_TableData[colNo].size() > 0 );
 
@@ -364,9 +413,13 @@ void rptRcTable::PutSectionValueColumn(ColumnIndexType colNo,
       rptParagraph& rploc = m_TableData[colNo].back();
 
       if ( IsStripedRow(row) )
+      {
          rploc.SetParent(m_pStripeRowColumnStyles+colNo);
+      }
       else
+      {
          rploc.SetParent(m_pColumnStyles+colNo);
+      }
 
       row++;
 
@@ -385,6 +438,11 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
 {
    CHECK(ColNo<m_NumColumns);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
+
    // check if header row entry has been allocated.
    CHECK(m_TableData[ColNo].size()>0);
 
@@ -398,9 +456,13 @@ void rptRcTable::PutLongColumn(ColumnIndexType ColNo, rptRcInt& ProtoInt,
       rptParagraph& rploc = m_TableData[ColNo].back();
       
       if ( IsStripedRow(i) )
+      {
          rploc.SetParent(m_pStripeRowColumnStyles+ColNo);
+      }
       else
+      {
          rploc.SetParent(m_pColumnStyles+ColNo);
+      }
 
       rploc << ( ProtoInt.Sv( LongVec[i] ) );
    }
@@ -415,6 +477,11 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
 {
    CHECK(ColNo<m_NumColumns);
 
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
+
    // check if header row entry has been allocated. 
    CHECK(m_TableData[ColNo].size()>0);
 
@@ -428,9 +495,13 @@ void rptRcTable::PutStringColumn(ColumnIndexType ColNo,
       rptParagraph& rploc = m_TableData[ColNo].back();
 
       if ( IsStripedRow(i) )
+      {
          rploc.SetParent(m_pStripeRowColumnStyles+ColNo);
+      }
       else
+      {
          rploc.SetParent(m_pColumnStyles+ColNo);
+      }
 
       rploc << new rptRcString( StringVec[i] );
    }
@@ -515,7 +586,9 @@ void rptRcTable::SetTableHeaderStyle( const rptStyleName& MyStyleName)
       for (RowIndexType j = 0; j < m_NumberOfHeaderRows; j++ )
       {
          if ( (RowIndexType)m_TableData[i].size() <= j )
+         {
             m_TableData[i].push_back(rptTableCellParagraph());
+         }
 
          m_TableData[i][j].SetStyleName(MyStyleName);
       }
@@ -580,6 +653,11 @@ void rptRcTable::SetRowSpan(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexT
 void rptRcTable::GetCellSpans(RowIndexType RowNo, ColumnIndexType ColNo, RowIndexType* pRowSpan, ColumnIndexType* pColSpan)
 {
    CHECK(ColNo<m_NumColumns);
+
+   if ( m_NumColumns <= ColNo )
+   {
+      ColNo = m_NumColumns-1;
+   }
 
    // check if row entry has been allocated. if not, push default paragraphs
    // on as a placeholder
@@ -806,9 +884,13 @@ void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
       {
          m_TableData[i][j].ClearParent(); 
          if ( IsStripedRow(j) )
+         {
             m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);
+         }
          else
+         {
             m_TableData[i][j].SetParent(m_pColumnStyles+i);
+         }
       }
    }
 
@@ -831,9 +913,13 @@ void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
       {
          m_TableData[i].push_back( rptTableCellParagraph() );
          if ( IsStripedRow(j) )
+         {
             m_TableData[i][j].SetParent(m_pStripeRowColumnStyles+i);
+         }
          else
+         {
             m_TableData[i][j].SetParent(m_pColumnStyles+i);
+         }
       }
    }
 
