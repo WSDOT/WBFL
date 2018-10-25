@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,6 +46,7 @@ CLASS
 //======================== LIFECYCLE  =======================================
 lrfdCreepCoefficient::lrfdCreepCoefficient()
 {
+   m_CuringMethodTimeAdjustmentFactor = 7;
    m_bUpdate = true;
 }
 
@@ -164,6 +165,17 @@ lrfdCreepCoefficient::CuringMethod lrfdCreepCoefficient::GetCuringMethod() const
    return m_CuringMethod;
 }
 
+void lrfdCreepCoefficient::SetCuringMethodTimeAdjustmentFactor(Float64 f)
+{
+   m_CuringMethodTimeAdjustmentFactor = f;
+   m_bUpdate = true;
+}
+
+Float64 lrfdCreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
+{
+   return m_CuringMethodTimeAdjustmentFactor;
+}
+
 Float64 lrfdCreepCoefficient::GetKc() const
 {
    if ( m_bUpdate )
@@ -200,6 +212,7 @@ void lrfdCreepCoefficient::MakeCopy(const lrfdCreepCoefficient& rOther)
    m_Ct           = rOther.m_Ct;
    m_kc           = rOther.m_kc;
    m_kf           = rOther.m_kf;
+   m_CuringMethodTimeAdjustmentFactor = rOther.m_CuringMethodTimeAdjustmentFactor;
    m_bUpdate      = rOther.m_bUpdate;
 }
 
@@ -267,7 +280,7 @@ void lrfdCreepCoefficient::Update() const
    ti = ::ConvertFromSysUnits(m_ti,unitMeasure::Day);
    if ( m_CuringMethod == Accelerated )
    {
-      ti *= 7; // days
+      ti += m_CuringMethodTimeAdjustmentFactor - 1; // days
       m_tiAdjusted = ::ConvertToSysUnits(ti,unitMeasure::Day);
    }
 

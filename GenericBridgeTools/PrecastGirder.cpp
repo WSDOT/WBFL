@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -159,6 +159,27 @@ STDMETHODIMP CPrecastGirder::Initialize(IGenericBridge* bridge,IStrandMover* str
    m_HarpGridHp[etEnd]->put_StrandMover(strandMover);
 
    return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::put_StrandMover(/*[in]*/IStrandMover* strandMover)
+{
+   CHECK_IN(strandMover);
+
+   m_pStrandMover = strandMover;
+
+   m_HarpGridEnd[etStart]->put_StrandMover(strandMover);
+   m_HarpGridEnd[etEnd]->put_StrandMover(strandMover);
+
+   m_HarpGridHp[etStart]->put_StrandMover(strandMover);
+   m_HarpGridHp[etEnd]->put_StrandMover(strandMover);
+
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_StrandMover(/*[out,retval]*/IStrandMover** ppStrandMover)
+{
+   CHECK_RETOBJ(ppStrandMover);
+   return m_pStrandMover.CopyTo(ppStrandMover);
 }
 
 STDMETHODIMP CPrecastGirder::get_StraightStrandGrid(EndType endType,IStrandGrid** grid)

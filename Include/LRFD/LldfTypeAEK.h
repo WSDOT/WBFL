@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -76,7 +76,7 @@ public:
                    Uint32 Nl, Float64 wLane,
                    Float64 L,Float64 ts,Float64 n,
                    Float64 I, Float64 A, Float64 eg,
-                   bool bXFrames,
+                   bool bXFrames, // if true, the statical (rigid) method is used
                    Float64 skewAngle1, Float64 skewAngle2,
                    bool bSkewMoment,
                    bool bSkewShear);

@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "StorageTest Module"
             VALUE "FileVersion", "3.0.1.0"
             VALUE "InternalName", "StorageTest"
-            VALUE "LegalCopyright", "Copyright © 1999-2014, Washington State Department of Transportation, All Rights Reserved\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved\0"
             VALUE "OriginalFilename", "StorageTest.DLL"
             VALUE "ProductName", "StorageTest Module"
             VALUE "ProductVersion", "3.0.1.0"

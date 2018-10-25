@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -387,6 +387,9 @@ library WBFLGenericBridgeTools
 	interface IPrecastGirder : IUnknown
 	{
       [helpstring("method Initialize")] HRESULT Initialize([in]IGenericBridge* bridge, [in]IStrandMover* strandMover, [in]SpanIndexType spanIdx,[in]GirderIndexType gdrIdx);
+
+	   [propput,helpstring("property StrandMover")] HRESULT StrandMover([in]IStrandMover* pStrandMover);
+	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([out,retval]IStrandMover** ppStrandMover);
 
       [propget,helpstring("property StraightStrandGrid")] HRESULT StraightStrandGrid([in]EndType endType,[out,retval]IStrandGrid** ptrn);
       [propget,helpstring("property TemporaryStrandGrid")] HRESULT TemporaryStrandGrid([in]EndType endType,[out,retval]IStrandGrid** ptrn);

@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2014  Washington State Department of Transportation
+// Copyright © 1999-2015  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -150,8 +150,17 @@ Float64 lrfdCreepCoefficient2005::GetInitialAge() const
 Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
-   if ( m_CuringMethod == Accelerated )
-      tiAdjusted *= m_CuringMethodTimeAdjustmentFactor;
+   if ( m_CuringMethod == Normal )
+   {
+      // NCHRP 496...
+      // ti = age of concrete, in days, when load is initially applied
+      // for accelerated curing, or the age minus 6 days for moist (normal) curing
+      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
+      if ( tiAdjusted < 0 )
+      {
+         tiAdjusted = 1;
+      }
+   }
 
    return tiAdjusted;
 }

@@ -284,7 +284,7 @@ STDMETHODIMP_(void) CPointLoadEventsImpl::XDragData::OnDrop(iDisplayObject* pDO,
    pThis->m_Mz = val;
 }
 
-void CPointLoadEventsImpl::EditLoad(long loadingID,long loadID)
+void CPointLoadEventsImpl::EditLoad(LoadIDType loadingID,LoadIDType loadID)
 {
    CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CAddPointLoadDlg dlg(model,TRUE);
@@ -317,7 +317,7 @@ void CPointLoadEventsImpl::EditLoad(long loadingID,long loadID)
    }
 }
 
-void CPointLoadEventsImpl::DeleteLoad(long loadingID,long loadID)
+void CPointLoadEventsImpl::DeleteLoad(LoadIDType loadingID,LoadIDType loadID)
 {
    CComPtr<IFem2dModel>model = m_pDoc->m_Model;
 
