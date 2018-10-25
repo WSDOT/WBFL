@@ -2114,6 +2114,13 @@ void CModel::LocationCache::ConvertSpanToSuperstructureLocation(MemberIDType spa
    // find the first point in the superstructure members end vector that is less than or equal to the 
    // location we are looking for
    std::vector<Float64>::iterator ssmbrStartIter = std::lower_bound(m_SsmEnds.begin(),m_SsmEnds.end(),Xg);
+   if ( ssmbrStartIter == m_SsmEnds.end() && IsEqual(Xg,m_SsmEnds.back()) )
+   {
+      ssmbrStartIter = m_SsmEnds.end();
+      ssmbrStartIter--; // one back from end
+      ssmbrStartIter--; // then back one more member so we are at the start.
+   }
+
    if ( Xg <= *ssmbrStartIter && ssmbrStartIter != m_SsmEnds.begin() )
    {
       ssmbrStartIter--;

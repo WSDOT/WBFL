@@ -40,7 +40,8 @@ static char THIS_FILE[] = __FILE__;
 // COffsetTendon
 HRESULT COffsetTendon::FinalConstruct()
 {
-   m_DuctDiameter = 0.0;
+   m_OD = 0.0;
+   m_ID = 0.0;
    m_StrandCount  = 0;
    m_JackingEnd   = jeLeft;
 
@@ -125,21 +126,39 @@ STDMETHODIMP COffsetTendon::ClearSegments()
    return E_FAIL;
 }
 
-STDMETHODIMP COffsetTendon::get_DuctDiameter(Float64* size)
+STDMETHODIMP COffsetTendon::get_OutsideDiameter(Float64* size)
 {
    CHECK_RETVAL(size);
-   *size = m_DuctDiameter;
+   *size = m_OD;
    return S_OK;
 }
 
-STDMETHODIMP COffsetTendon::put_DuctDiameter(Float64 size)
+STDMETHODIMP COffsetTendon::put_OutsideDiameter(Float64 size)
 {
    if ( size < 0 )
    {
       return E_INVALIDARG;
    }
 
-   m_DuctDiameter = size;
+   m_OD = size;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_InsideDiameter(Float64* size)
+{
+   CHECK_RETVAL(size);
+   *size = m_ID;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::put_InsideDiameter(Float64 size)
+{
+   if ( size < 0 )
+   {
+      return E_INVALIDARG;
+   }
+
+   m_ID = size;
    return S_OK;
 }
 
@@ -184,6 +203,22 @@ STDMETHODIMP COffsetTendon::putref_Material(IPrestressingStrand* psMaterial)
    }
 
    m_Material = psMaterial;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_MinimumRadiusOfCurvature(Float64* pMinRadiusOfCurvature)
+{
+   ATLASSERT(false); // this method isn't done yet
+#pragma Reminder("FINISH: need to maximum radius of curvature for offset tendons")
+   CHECK_RETVAL(pMinRadiusOfCurvature);
+   *pMinRadiusOfCurvature = DBL_MAX;
+   return S_OK;
+}
+
+STDMETHODIMP COffsetTendon::get_InsideDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+   *Aduct = M_PI*m_ID*m_ID/4;
    return S_OK;
 }
 

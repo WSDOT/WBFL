@@ -89,6 +89,7 @@ public:
                   // no interims in 2011
                   SixthEdition2012              = 17,
                   SixthEditionWith2013Interims  = 18,
+                  SeventhEdition2014            = 19,
                   LastVersion
    };
 

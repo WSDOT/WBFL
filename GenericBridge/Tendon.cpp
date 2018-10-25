@@ -39,7 +39,9 @@ static char THIS_FILE[] = __FILE__;
 // CTendon
 HRESULT CTendon::FinalConstruct()
 {
-   m_DuctDiameter   = 0.0;
+   m_ID = 0.0;
+   m_OD = 0.0;
+
    m_StrandCount    = 0;
 
    m_JackingEnd = jeLeft;
@@ -98,21 +100,39 @@ STDMETHODIMP CTendon::ClearSegments()
    return PersistentTendonSegmentCollection::Clear();
 }
 
-STDMETHODIMP CTendon::get_DuctDiameter(Float64* size)
+STDMETHODIMP CTendon::get_OutsideDiameter(Float64* size)
 {
    CHECK_RETVAL(size);
-   *size = m_DuctDiameter;
+   *size = m_OD;
    return S_OK;
 }
 
-STDMETHODIMP CTendon::put_DuctDiameter(Float64 size)
+STDMETHODIMP CTendon::put_OutsideDiameter(Float64 size)
 {
    if ( size < 0 )
    {
       return E_INVALIDARG;
    }
 
-   m_DuctDiameter = size;
+   m_OD = size;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_InsideDiameter(Float64* size)
+{
+   CHECK_RETVAL(size);
+   *size = m_ID;
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::put_InsideDiameter(Float64 size)
+{
+   if ( size < 0 )
+   {
+      return E_INVALIDARG;
+   }
+
+   m_ID = size;
    return S_OK;
 }
 
@@ -160,6 +180,15 @@ STDMETHODIMP CTendon::putref_Material(IPrestressingStrand* psMaterial)
    return S_OK;
 }
 
+STDMETHODIMP CTendon::get_InsideDuctArea(Float64* Aduct)
+{
+   CHECK_RETVAL(Aduct);
+
+   *Aduct = M_PI*m_ID*m_ID/4;
+
+   return S_OK;
+}
+
 STDMETHODIMP CTendon::get_TendonArea(Float64* Apt)
 {
    CHECK_RETVAL(Apt);
@@ -170,6 +199,25 @@ STDMETHODIMP CTendon::get_TendonArea(Float64* Apt)
 
    *Apt = m_StrandCount*apt;
 
+   return S_OK;
+}
+
+STDMETHODIMP CTendon::get_MinimumRadiusOfCurvature(Float64* pMinRadiusOfCurvature)
+{
+   CHECK_RETVAL(pMinRadiusOfCurvature);
+
+   iterator iter;
+   Float64 start = 0;
+   Float64 minRadiusOfCurvature = DBL_MAX;
+   for ( iter = begin(); iter != end(); iter++ )
+   {
+      CComPtr<ITendonSegment> tendonSegment = iter->second;
+      Float64 radiusOfCurvature;
+      tendonSegment->get_MinimumRadiusOfCurvature(&radiusOfCurvature);
+      minRadiusOfCurvature = Min(minRadiusOfCurvature,radiusOfCurvature);
+   }
+
+   *pMinRadiusOfCurvature = minRadiusOfCurvature;
    return S_OK;
 }
 

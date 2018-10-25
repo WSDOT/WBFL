@@ -700,6 +700,9 @@
       <comClass clsid="{9FF81F6A-2D8E-4B59-843B-E138647F222F}"
                 tlbid="{A60E8518-3A65-11D5-AFE5-00105A9AF985}"
                 description="DistributionFactorSegment Class"></comClass>
+      <comClass clsid="{18CF521C-48EF-473d-856B-A7A83135D073}"
+                tlbid="{A60E8518-3A65-11D5-AFE5-00105A9AF985}"
+                description="LinearDistributionFactorSegment Class"></comClass>
       <comClass clsid="{6B54598E-5CBD-4876-A0A3-5F45FEC6FFA4}"
                 tlbid="{A60E8518-3A65-11D5-AFE5-00105A9AF985}"
                 description="FilteredDfSegmentCollection Class"></comClass>

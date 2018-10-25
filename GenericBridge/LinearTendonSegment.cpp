@@ -117,6 +117,32 @@ STDMETHODIMP CLinearTendonSegment::get_End(IPoint3d** end)
    return m_End->Clone(end);
 }
 
+STDMETHODIMP CLinearTendonSegment::putref_PrevTendonSegment(ITendonSegment* pTendonSegment)
+{
+   CHECK_IN(pTendonSegment);
+   m_PrevSegment = pTendonSegment;
+   return S_OK;
+}
+
+STDMETHODIMP CLinearTendonSegment::get_PrevTendonSegment(ITendonSegment** ppTendonSegment)
+{
+   CHECK_RETOBJ(ppTendonSegment);
+   return m_PrevSegment.CopyTo(ppTendonSegment);
+}
+
+STDMETHODIMP CLinearTendonSegment::putref_NextTendonSegment(ITendonSegment* pTendonSegment)
+{
+   CHECK_IN(pTendonSegment);
+   m_NextSegment = pTendonSegment;
+   return S_OK;
+}
+
+STDMETHODIMP CLinearTendonSegment::get_NextTendonSegment(ITendonSegment** ppTendonSegment)
+{
+   CHECK_RETVAL(ppTendonSegment);
+   return m_NextSegment.CopyTo(ppTendonSegment);
+}
+
 /////////////////////////////////////////////////////
 // ITendonSegment
 STDMETHODIMP CLinearTendonSegment::get_Position(TendonMeasure measure,Float64 z,IPoint3d** cg)
@@ -270,6 +296,91 @@ STDMETHODIMP CLinearTendonSegment::get_Tendon(ITendon** ppTendon)
    return S_OK;
 }
 
+STDMETHODIMP CLinearTendonSegment::get_MinimumRadiusOfCurvature(Float64* pMinRadiusOfCurvature)
+{
+   CHECK_RETVAL(pMinRadiusOfCurvature);
+
+   // http://www.intmath.com/applications-differentiation/8-radius-curvature.php
+   // Using Example 1, Method 2 solution
+
+   // Curvature of a straight line is zero so the radius of curvature is infinite. Use
+   // the max value.
+   Float64 minRadius = DBL_MAX; 
+
+   // If this tendon segment is attached to other linear tendon segments, approximate
+   // the radius of curvature using the basic concept of differentiation.
+   // dy/dx = (Delta Y)/(Delta X) = m
+   // d(dy/dx)/dx = dm/dx
+   // r = [(1+m^2)^3/2]/(dm/dx)
+   CComQIPtr<ILinearTendonSegment> prevSegment(m_PrevSegment);
+   if ( prevSegment )
+   {
+      CComPtr<IPoint3d> start, end;
+      prevSegment->get_Start(&start);
+      prevSegment->get_End(&end);
+
+      Float64 x1,y1,z1;
+      start->Location(&x1,&y1,&z1);
+
+      Float64 x2,y2,z2;
+      end->Location(&x2,&y2,&z2);
+
+#if defined _DEBUG
+      Float64 X2, Y2, Z2;
+      m_Start->Location(&X2,&Y2,&Z2);
+      ATLASSERT(IsEqual(x2,X2));
+      ATLASSERT(IsEqual(y2,Y2));
+      ATLASSERT(IsEqual(z2,Z2));
+#endif
+
+      Float64 x3,y3,z3;
+      m_End->Location(&x3,&y3,&z3);
+
+      Float64 m1 = (y2-y1)/(z2-z1);
+      Float64 m2 = (y3-y2)/(z3-z2);
+      Float64 m = (m1 + m2)/2;
+      Float64 dm = fabs((m2 - m1)/(z2-z1));
+
+      Float64 r = IsZero(dm) ? DBL_MAX : pow(1+m*m,1.5)/dm;
+      minRadius = Min(minRadius,r);
+   }
+
+   CComQIPtr<ILinearTendonSegment> nextSegment(m_NextSegment);
+   if ( nextSegment )
+   {
+      Float64 x1,y1,z1;
+      m_Start->Location(&x1,&y1,&z1);
+
+      Float64 x2,y2,z2;
+      m_End->Location(&x2,&y2,&z2);
+
+      CComPtr<IPoint3d> start, end;
+      nextSegment->get_Start(&start);
+      nextSegment->get_End(&end);
+#if defined _DEBUG
+      Float64 X2, Y2, Z2;
+      start->Location(&X2,&Y2,&Z2);
+      ATLASSERT(IsEqual(x2,X2));
+      ATLASSERT(IsEqual(y2,Y2));
+      ATLASSERT(IsEqual(z2,Z2));
+#endif
+
+      Float64 x3,y3,z3;
+      end->Location(&x3,&y3,&z3);
+
+      Float64 m1 = (y2-y1)/(z2-z1);
+      Float64 m2 = (y3-y2)/(z3-z2);
+      Float64 m = (m1 + m2)/2;
+      Float64 dm = fabs((m2 - m1)/(z2-z1));
+
+      Float64 r = pow(1+m*m,1.5)/dm;
+      minRadius = Min(minRadius,r);
+   }
+
+   *pMinRadiusOfCurvature = minRadius;
+
+   return S_OK;
+}
 /////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
 STDMETHODIMP CLinearTendonSegment::Load(IStructuredLoad2* load)

@@ -1607,6 +1607,7 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval] Float64* length);
 	   [helpstring("method ProjectedLength")] HRESULT ProjectedLength([out] Float64* dx,[out] Float64* dy,[out] Float64* dz);
       [propget,helpstring("property Centerline")] HRESULT Centerline([in] TendonMeasure measure,[out,retval]IPoint3dCollection** ppPoints);
+      [propget,helpstring("property MinimumRadiusOfCurvature")] HRESULT MinimumRadiusOfCurvature([out,retval]Float64* pMinRadiusOfCurvature);
 
       [propputref,helpstring("property Tendon")] HRESULT Tendon([in]ITendon* pTendon);
       [propget,helpstring("property Tendon")] HRESULT Tendon([out,retval]ITendon** ppTendon);
@@ -1622,6 +1623,10 @@ library WBFLGenericBridge
 	{
 	   [propput,helpstring("property Start")] HRESULT Start([in] IPoint3d* start);
 	   [propput,helpstring("property End")] HRESULT End([in] IPoint3d* end);
+      [propputref,helpstring("property PrevTendonSegment")] HRESULT PrevTendonSegment([in]ITendonSegment* pTendonSegment);
+      [propget,helpstring("property PrevTendonSegment")] HRESULT PrevTendonSegment([out,retval]ITendonSegment** ppTendonSegment);
+      [propputref,helpstring("property NextTendonSegment")] HRESULT NextTendonSegment([in]ITendonSegment* pTendonSegment);
+      [propget,helpstring("property NextTendonSegment")] HRESULT NextTendonSegment([out,retval]ITendonSegment** ppTendonSegment);
 	};
 
 	[
@@ -1659,8 +1664,11 @@ library WBFLGenericBridge
       [propget,helpstring("property JackingEnd")] HRESULT JackingEnd([out,retval]JackingEndType* type);
       [propput,helpstring("property JackingEnd")] HRESULT JackingEnd([in]JackingEndType type);
 
-	   [propget,helpstring("property DuctDiameter")] HRESULT DuctDiameter([out,retval]Float64* size);
-	   [propput,helpstring("property DuctDiameter")] HRESULT DuctDiameter([in]Float64 size);
+	   [propget,helpstring("property OutsideDiameter")] HRESULT OutsideDiameter([out,retval]Float64* size);
+	   [propput,helpstring("property OutsideDiameter")] HRESULT OutsideDiameter([in]Float64 size);
+
+	   [propget,helpstring("property InsideDiameter")] HRESULT InsideDiameter([out,retval]Float64* size);
+	   [propput,helpstring("property InsideDiameter")] HRESULT InsideDiameter([in]Float64 size);
 
 	   [propget,helpstring("property StrandCount")] HRESULT StrandCount([out,retval]StrandIndexType* count);
 	   [propput,helpstring("property StrandCount")] HRESULT StrandCount([in]StrandIndexType count);
@@ -1668,7 +1676,10 @@ library WBFLGenericBridge
 	   [propget,helpstring("property Material")] HRESULT Material([out,retval]IPrestressingStrand** material);
 	   [propputref,helpstring("property Material")] HRESULT Material([in]IPrestressingStrand* material);
 
+	   [propget,helpstring("property InsideDuctArea")] HRESULT InsideDuctArea([out,retval]Float64* Apt);
 	   [propget,helpstring("property TendonArea")] HRESULT TendonArea([out,retval]Float64* Apt);
+
+      [propget,helpstring("property MinimumRadiusOfCurvature")] HRESULT MinimumRadiusOfCurvature([out,retval]Float64* pMinRadiusOfCurvature);
 
 	   [propget,helpstring("property GC")] HRESULT CG([in] Float64 z,[in] TendonMeasure measure,[out,retval]IPoint3d** cg);
 	   [propget,helpstring("property Slope")] HRESULT Slope([in] Float64 z,[in] TendonMeasure measure,[out,retval]IVector3d** slope);

@@ -62,7 +62,7 @@ BEGIN_CONNECTION_POINT_MAP(COffsetTendon)
 END_CONNECTION_POINT_MAP()
 
 private:
-   Float64 m_DuctDiameter;
+   Float64 m_OD, m_ID;
    StrandIndexType m_StrandCount;
    CComPtr<IPrestressingStrand> m_Material;
    JackingEndType m_JackingEnd;
@@ -106,13 +106,17 @@ public:
 	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count);
 	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType index);
 	STDMETHOD(ClearSegments)();
-	STDMETHOD(get_DuctDiameter)(/*[out,retval]*/Float64* size);
-	STDMETHOD(put_DuctDiameter)(/*[in]*/Float64 size);
+	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size);
+	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size);
+	STDMETHOD(get_InsideDiameter)(/*[out,retval]*/Float64* size);
+	STDMETHOD(put_InsideDiameter)(/*[in]*/Float64 size);
+	STDMETHOD(get_InsideDuctArea)(/*[out,retval]*/Float64* Apt);
 	STDMETHOD(get_TendonArea)(/*[out,retval]*/Float64* Apt);
 	STDMETHOD(get_StrandCount)(/*[out,retval]*/StrandIndexType* count);
 	STDMETHOD(put_StrandCount)(/*[in]*/StrandIndexType count);
 	STDMETHOD(get_Material)(/*[out,retval]*/IPrestressingStrand** material);
 	STDMETHOD(putref_Material)(/*[in]*/IPrestressingStrand* material);
+   STDMETHOD(get_MinimumRadiusOfCurvature)(/*[out,retval]*/Float64* pMinRadiusOfCurvature);
    STDMETHOD(get_CG)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IPoint3d** cg);
 	STDMETHOD(get_Slope)(/*[in]*/ Float64 z,/*[in]*/ TendonMeasure measure,/*[out,retval]*/IVector3d** slope);
 	STDMETHOD(get_Length)(/*[out,retval]*/Float64* length);

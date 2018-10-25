@@ -939,10 +939,12 @@ protected:
             girderLine->get_EndDistance(etStart,&end_distance);
             girderLine->get_BearingOffset(etStart,&bearing_offset);
 
-            segment_length -= (bearing_offset - end_distance);
+            Float64 offset_dist = bearing_offset - end_distance;
+            offset_dist = IsZero(offset_dist) ? 0 : offset_dist;
+            segment_length -= offset_dist;
 
             // start at the face of the segment
-            xSegmentStart = bearing_offset - end_distance;
+            xSegmentStart = offset_dist;
          }
 
          if ( !ns )
@@ -954,8 +956,11 @@ protected:
             girderLine->get_EndDistance(etEnd,&end_distance);
             girderLine->get_BearingOffset(etEnd,&bearing_offset);
 
+            Float64 offset_dist = bearing_offset - end_distance;
+            offset_dist = IsZero(offset_dist) ? 0 : offset_dist;
+
             // adjust the length of the last segment so we end at the end face of the segment
-            segment_length -= (bearing_offset - end_distance);
+            segment_length -= offset_dist;
          }
 
          xStart = xSegmentStart;

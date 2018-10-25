@@ -76,7 +76,8 @@ public:
                   Uint32 Nl, Float64 wLane,
                   Float64 d,Float64 L,
                   Float64 leftDe,Float64 rightDe,
-                  Float64 skewAngle1, Float64 skewAngle2);
+                  Float64 skewAngle1, Float64 skewAngle2,
+                  bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -230,7 +231,8 @@ public:
                        Float64 d,Float64 L,
                        Float64 leftDe,Float64 rightDe,
                        Float64 leftSlabOverhang,Float64 rightSlabOverhang,
-                       Float64 skewAngle1, Float64 skewAngle2);
+                       Float64 skewAngle1, Float64 skewAngle2,
+                       bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -358,7 +360,8 @@ public:
                   Float64 d,Float64 L,
                   Float64 leftDe,Float64 rightDe,
                   Float64 roadwayWidth,
-                  Float64 skewAngle1, Float64 skewAngle2);
+                  Float64 skewAngle1, Float64 skewAngle2,
+                  bool bMomentSkew, bool bShearSkew);
 
    //------------------------------------------------------------------------
    // Copy constructor

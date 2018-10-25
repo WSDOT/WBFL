@@ -57,3 +57,15 @@ void MultiLineTextOut(CDC* pDC,int x,int y,LPCTSTR lpszText)
       line++;
    } while ( 0 < strText.GetLength() );
 }
+
+void ChangeComboBoxString(CComboBox* pCB,int idx,LPCTSTR lpszNewString)
+{
+   int cursel = pCB->GetCurSel();
+   DWORD_PTR itemData = pCB->GetItemData(idx);
+   void* pItemPtr = pCB->GetItemDataPtr(idx);
+   pCB->DeleteString(idx);
+   pCB->InsertString(idx,lpszNewString);
+   pCB->SetItemData(idx,itemData);
+   pCB->SetItemDataPtr(idx,pItemPtr);
+   pCB->SetCurSel(cursel);
+}
