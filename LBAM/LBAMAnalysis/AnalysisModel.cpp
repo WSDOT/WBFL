@@ -2215,7 +2215,8 @@ void CAnalysisModel::GenerateInternalPOIsAtSuperstructureMembers()
 
          // see if poi is covered and create needed poi if it is not
          // left first
-         SortedPoiMapTracker::PoiCoveredRes res = poi_tracker.IsPoiCovered(ssm_start, fem_pois, m_PoiTolerance);
+         PoiIDType coveredID;
+         SortedPoiMapTracker::PoiCoveredRes res = poi_tracker.IsPoiCovered(ssm_start, fem_pois, m_PoiTolerance,&coveredID);
          if (res==SortedPoiMapTracker::Both || res==SortedPoiMapTracker::Right)
          {
             m_LastInternalPoiID--;
@@ -2223,7 +2224,7 @@ void CAnalysisModel::GenerateInternalPOIsAtSuperstructureMembers()
          }
 
          // next add at right end if needed
-         res = poi_tracker.IsPoiCovered(ssm_end, fem_pois, m_PoiTolerance);
+         res = poi_tracker.IsPoiCovered(ssm_end, fem_pois, m_PoiTolerance, &coveredID);
          if (res==SortedPoiMapTracker::Both || res==SortedPoiMapTracker::Left)
          {
             m_LastInternalPoiID--;
@@ -2296,7 +2297,8 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
                   // to the start location because temp supports are not necessarily in sorted order
                   poi_tracker.Reset();
 
-                  SortedPoiMapTracker::PoiCoveredRes res = poi_tracker.IsPoiCovered(ts_global_loc, fem_pois, m_PoiTolerance);
+                  IDType coveringID;
+                  SortedPoiMapTracker::PoiCoveredRes res = poi_tracker.IsPoiCovered(ts_global_loc, fem_pois, m_PoiTolerance,&coveringID);
                   if (res==SortedPoiMapTracker::Both)
                   {
                      m_LastInternalPoiID--;
@@ -2315,6 +2317,16 @@ void CAnalysisModel::GenerateInternalPOIsAtTemporarySupports()
                      m_LastInternalPoiID--;
                      Float64 tol = span_length*LAYOUT_TOLERANCE; // want poi just a smidge to the right
                      CreateSpanPOI(m_LastInternalPoiID, ispan, ts_local_loc+tol); // will map to right
+                  }
+                  else if ( res == SortedPoiMapTracker::None )
+                  {
+                     // there is already a POI at this point. since we want to access POI by ID
+                     // give that POI that already exists and alternate ID so we can find it
+                     ATLASSERT(coveringID != INVALID_ID);
+                     PoiMapIterator found(m_PoiMap.find( &PoiMap(coveringID) ));
+                     ATLASSERT(found != m_PoiMap.end());
+                     PoiMap* poi_map(*found);
+                     poi_map->AddAlternateLBAMPoiID(ts_id);
                   }
                }
             }
@@ -4894,7 +4906,7 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
    if (2 < nInfluenceLoads)
    {
 #if defined (_DEBUG)
-      Float64 last_loc;
+      //Float64 last_loc;
 #endif
       bool last_matched=false;
       InfluenceLoadSetIterator it2(m_InfluenceLoadSet.begin());
@@ -4909,6 +4921,8 @@ void CAnalysisModel::GenerateInfluenceLoadLocations()
          }
 
          // some debug code here to check that we don't have three or more of the same location
+         // commented out by RAB during PGSplice development. sometimes we end up with 3 at the same location
+         // because it is easier overall. we live with this minor inefficiency here to save a bunch of work elsewhere
 #if defined (_DEBUG)
          //if (it1->m_GlobalX == it2->m_GlobalX)
          //{
@@ -5812,11 +5826,10 @@ HRESULT CAnalysisModel::GetPoiInfo(PoiIDType poiID, MemberType* lbamMemberType, 
 
 HRESULT CAnalysisModel::GetPoiInfoPrv(PoiIDType poiID, MemberType* lbamMemberType, MemberIDType* memberID, Float64* memberLoc, Float64* globalLoc)
 {
-   PoiMapIterator itpoi( m_PoiMap.find( &PoiMap(poiID) ));
+   PoiMapIterator itpoi( std::find_if(m_PoiMap.begin(),m_PoiMap.end(),PoiMapIdMatch(poiID)) );
    if (itpoi!= m_PoiMap.end() )
    {
       PoiMap& info = *(*itpoi);
-      ATLASSERT(poiID == info.GetLBAMPoiID());
 
       *lbamMemberType = info.GetLBAMMemberType();
       *memberID       = info.GetLBAMMemberID();

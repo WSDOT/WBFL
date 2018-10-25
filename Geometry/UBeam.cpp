@@ -191,7 +191,22 @@ HRESULT CUBeam::UpdateShape()
       Float64 p5_x =  -m_W2/2;
       Float64 p5_y =  m_D1;
 
-      Float64 p6_x =  -m_W2/2 + m_W4 + m_W5 + T;
+      Float64 p6_x;
+      if ( IsZero(m_D4) && IsZero(m_D5) && !IsZero(m_D6) & !IsZero(m_D7) )
+      {
+         // Flange only on the inside
+         p6_x = -m_W2/2 + m_W4 + T + (IsZero(slope) ? 0 : (m_D6+m_D7)/slope);
+      }
+      else if ( !IsZero(m_D4) && !IsZero(m_D5) && IsZero(m_D6) & IsZero(m_D7) )
+      {
+         // Flange only on the outside
+         p6_x = -m_W2/2 + m_W5 + T - (IsZero(slope) ? 0 : (m_D4+m_D5)/slope);
+      }
+      else
+      {
+         // Flange on both sides or no flange
+         p6_x =  -m_W2/2 + m_W4 + m_W5 + T;
+      }
       Float64 p6_y =  m_D1;
 
       Float64 p7_x =  p6_x;

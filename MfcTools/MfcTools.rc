@@ -64,8 +64,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,4
- PRODUCTVERSION 4,0,0,4
+ FILEVERSION 4,0,0,5
+ PRODUCTVERSION 4,0,0,5
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -83,12 +83,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "MfcTools DLL"
-            VALUE "FileVersion", "4.0.0.4"
+            VALUE "FileVersion", "4.0.0.5"
             VALUE "InternalName", "MfcTools"
             VALUE "LegalCopyright", "Copyright © 1999-2013, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "MfcTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.4"
+            VALUE "ProductVersion", "4.0.0.5"
         END
     END
     BLOCK "VarFileInfo"
@@ -122,13 +122,13 @@ IDD_LOAD_MODIFIER DIALOGEX 0, 0, 217, 99
 STYLE DS_SETFONT | WS_CHILD | WS_CAPTION
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_N_LABEL,"RICHEDIT",TCS_VERTICAL | TCS_RAGGEDRIGHT,13,20,25,14,WS_EX_RIGHT
+    CONTROL         "",IDC_N_LABEL,"RichEdit20W",ES_AUTOHSCROLL | ES_READONLY,13,20,25,14,WS_EX_RIGHT
     EDITTEXT        IDC_N,40,20,40,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_RADIO1,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,83,20,120,10
     CONTROL         "",IDC_RADIO2,"Button",BS_AUTORADIOBUTTON,83,32,120,10
     CONTROL         "",IDC_RADIO3,"Button",BS_AUTORADIOBUTTON,83,44,120,10
     GROUPBOX        "Strength Limit States",IDC_STATIC,7,7,203,54
-    CONTROL         "",IDC_N_SERVICE,"RICHEDIT",TCS_VERTICAL | TCS_RAGGEDRIGHT,14,69,158,14
+    CONTROL         "",IDC_N_SERVICE,"RichEdit20W",ES_AUTOHSCROLL | ES_READONLY,14,69,158,14
 END
 
 IDD_QUESTION DIALOGEX 0, 0, 316, 92
