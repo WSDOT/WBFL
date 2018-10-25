@@ -292,6 +292,22 @@ HRESULT CEAFReportView::UpdateReportBrowser(CReportHint* pHint)
       if ( m_pReportBrowser )
       {
          boost::shared_ptr<CReportBuilder> pBuilder = GetReportBuilder( m_pReportSpec->GetReportName() );
+
+         // It is possible for the report builder to be deleted dynamically (e.g., if it is a custom report)
+         if (!pBuilder)
+         {
+            m_ErrorMsg = _T("The report specified when creating this window no longer exists. Please close this window.");
+            m_bUpdateError = true;
+
+            if ( m_pBtnEdit->GetSafeHwnd() )
+               m_pBtnEdit->ShowWindow(SW_HIDE);
+
+            // delete the report browser because what ever it is displaying is totally invalid
+            // also need to elimintate it so that we can draw the error message on the view window itself
+            m_pReportBrowser = boost::shared_ptr<CReportBrowser>();
+            return E_FAIL;
+         }
+
          if ( pBuilder->NeedsUpdate(pHint,m_pReportSpec) )
          {
             boost::shared_ptr<rptReport> pReport = pBuilder->CreateReport( m_pReportSpec );

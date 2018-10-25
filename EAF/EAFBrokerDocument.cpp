@@ -32,6 +32,8 @@
 #include <AgentTools.h>
 #include <IReportManager.h>
 
+#include "ConfigureReportsDlg.h"
+
 #include <sstream> // for ostringstream
 
 #ifdef _DEBUG
@@ -50,7 +52,6 @@ CEAFBrokerDocument::CEAFBrokerDocument()
 {
    m_pBroker = NULL;
    m_pDocProxyAgent =  NULL;
-   m_bIsReportMenuPopulated = false;
 
    // The base class registers as a unit mode listener
    // However, the DocProxyAgent also registers as a listener
@@ -69,6 +70,10 @@ BEGIN_MESSAGE_MAP(CEAFBrokerDocument, CEAFDocument)
 	//{{AFX_MSG_MAP(CEAFBrokerDocument)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
+	ON_COMMAND(ID_REPORT_MENU_DISPLAY_MODE, OnReportMenuDisplayMode)
+   ON_UPDATE_COMMAND_UI(ID_REPORT_MENU_DISPLAY_MODE, OnUpdateReportMenuDisplayMode)
+	ON_COMMAND(ID_OPTIONS_REPORTING, OnConfigureReports)
+
 END_MESSAGE_MAP()
 
 BOOL CEAFBrokerDocument::OnOpenDocument(LPCTSTR lpszPathName)
@@ -82,6 +87,15 @@ void CEAFBrokerDocument::DeleteContents()
 {
    CEAFDocument::DeleteContents();
    BrokerShutDown();
+}
+
+void CEAFBrokerDocument::OnCreateFinalize()
+{
+   CEAFDocument::OnCreateFinalize();
+
+   // At this point we have loaded all hard-coded reports and read custom
+   // report data from the registry, and broker is loaded. Create custom reports
+   IntegrateCustomReports(true);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -500,9 +514,6 @@ BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHAND
 
 void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
 {
-   if (m_bIsReportMenuPopulated)
-      return;
-
    // remove any old reports and placeholders
    UINT nItems = pReportMenu->GetMenuItemCount();
    for ( UINT idx = 0; idx < nItems; idx++ )
@@ -510,9 +521,12 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
       pReportMenu->RemoveMenu(0,MF_BYPOSITION,NULL);
    }
 
-   BuildReportMenu(pReportMenu,false);
+   // Add favorites option at top
+   CString msg = m_DisplayFavoriteReports==FALSE ? _T("Show only favorites") : _T("Show all reports");
+   pReportMenu->AppendMenu(ID_REPORT_MENU_DISPLAY_MODE,msg,NULL);
+   pReportMenu->AppendSeparator();
 
-   m_bIsReportMenuPopulated = true;
+   BuildReportMenu(pReportMenu,false);
 }
 
 void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
@@ -525,20 +539,43 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,bool bQuickReport)
    ATLASSERT(rptNames.size() < EAF_REPORT_MENU_BASE+EAF_REPORT_MENU_COUNT);
 
    UINT i = 0;
+   bool didlist = false;
    std::vector<std::_tstring>::iterator iter(rptNames.begin());
    std::vector<std::_tstring>::iterator end(rptNames.end());
    for ( ; iter != end; iter++ )
    {
       std::_tstring rptName = *iter;
-      UINT nCmd = GetReportCommand(i,bQuickReport);
-      pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
 
-      const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
-      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL,NULL);
+      // list all or favorites
+      bool dolist = false;
+      if (!bQuickReport && m_DisplayFavoriteReports==FALSE)
+      {
+         dolist = true;
+      }
+      else if( m_FavoriteReports.end() != std::find(m_FavoriteReports.begin(), m_FavoriteReports.end(), rptName))
+      {
+         dolist = true;
+      }
+
+      if (dolist)
+      {
+         UINT nCmd = GetReportCommand(i,bQuickReport);
+         pMenu->AppendMenu(nCmd,rptName.c_str(),NULL);
+
+         const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
+         pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,NULL,NULL);
+
+         didlist = true;
+      }
 
       i++;
-
       ASSERT(i <= EAF_REPORT_MENU_COUNT);
+   }
+
+   // Deal with case where there are no favorites
+   if (!didlist)
+   {
+      pMenu->AppendMenu(ID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."),NULL);
    }
 }
 
@@ -594,4 +631,185 @@ void CEAFBrokerDocument::OnQuickReport(UINT nID)
 void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,bool bPrompt)
 {
    // User must override this method to display the report
+}
+
+
+bool CEAFBrokerDocument::GetDoDisplayFavoriteReports() const
+{
+   return m_DisplayFavoriteReports!=FALSE;
+}
+
+void CEAFBrokerDocument::SetDoDisplayFavoriteReports(bool doDisplay)
+{
+   m_DisplayFavoriteReports = doDisplay ? TRUE : FALSE;
+}
+
+std::vector<std::_tstring> CEAFBrokerDocument::GetFavoriteReports() const
+{
+   return m_FavoriteReports;
+}
+
+void CEAFBrokerDocument::SetFavoriteReports( std::vector<std::_tstring> reports)
+{
+   m_FavoriteReports = reports;
+}
+
+CEAFCustomReports CEAFBrokerDocument::GetCustomReports() const
+{
+   return m_CustomReports;
+}
+
+void CEAFBrokerDocument::SetCustomReports(const CEAFCustomReports& reports)
+{
+   m_CustomReports = reports;
+}
+
+void CEAFBrokerDocument::OnReportMenuDisplayMode()
+{
+   // flip value
+   m_DisplayFavoriteReports = !m_DisplayFavoriteReports;
+
+   OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE);
+}
+
+void CEAFBrokerDocument::OnUpdateReportMenuDisplayMode(CCmdUI* pCmdUI)
+{
+   pCmdUI->SetText( (m_DisplayFavoriteReports ? _T("Show all reports") : _T("Show only favorites") ) );
+}
+
+void CEAFBrokerDocument::OnConfigureReports()
+{
+   GET_IFACE(IReportManager,pReportMgr);
+   std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
+
+   CConfigureReportsDlg dlg(_T("Configure Reports)"));
+
+   dlg.m_pBroker = m_pBroker;
+   dlg.SetFavorites(m_FavoriteReports);
+   dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus = m_DisplayFavoriteReports;
+   dlg.m_CustomReports = m_CustomReports;
+
+   if (dlg.DoModal() == IDOK)
+   {
+      m_FavoriteReports = dlg.GetFavorites();
+      m_DisplayFavoriteReports = dlg.m_FavoriteReportsPage.m_bShowFavoritesInMenus;
+      m_CustomReports = dlg.m_CustomReports;
+
+      IntegrateCustomReports(false);
+      OnChangedFavoriteReports(m_DisplayFavoriteReports!=FALSE);
+   }
+}
+
+void CEAFBrokerDocument::OnChangedFavoriteReports(bool isFavorites)
+{
+   // Do nothing in base class
+}
+
+void CEAFBrokerDocument::OnCustomReportError(custReportErrorType error, const std::_tstring& reportName, const std::_tstring& otherName)
+{
+   // Do nothing in base class. Error handling happens in app
+}
+
+void CEAFBrokerDocument::OnCustomReportHelp(custRepportHelpType helpType)
+{
+   // Do nothing in base class. Magic happens in app
+}
+
+
+void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
+{
+   GET_IFACE(IReportManager,pReportMgr);
+
+   if (bFirst)
+   {
+      // First time through. Store names of built-in reports
+      m_BuiltInReportNames = pReportMgr->GetReportNames();
+   }
+   else
+   {
+      // Subsequent times through we need to remove custom reports before reloading them
+      std::vector<std::_tstring> strNames = pReportMgr->GetReportNames();
+      std::vector<std::_tstring>::const_iterator itn = strNames.begin();
+      while(itn != strNames.end())
+      {
+         const std::_tstring& rName = *itn;
+         std::vector<std::_tstring>::const_iterator itfnd = std::find(m_BuiltInReportNames.begin(), m_BuiltInReportNames.end(), rName);
+         if (itfnd == m_BuiltInReportNames.end())
+         {
+            // Remove report if it's not built in. ptr release should delete it.
+            boost::shared_ptr<CReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
+         }
+
+         itn++;
+      }
+   }
+
+   // Add custom reports
+   CEAFCustomReports::ReportIterator itcr = m_CustomReports.m_Reports.begin();
+   while(itcr != m_CustomReports.m_Reports.end())
+   {
+      CEAFCustomReport& rCustom = *itcr;
+
+      // First check that custom report does not have same name as a built-in. This always be blocked by the UI
+      std::vector<std::_tstring>::const_iterator itfnd = std::find(m_BuiltInReportNames.begin(), m_BuiltInReportNames.end(), rCustom.m_ReportName);
+      if ( itfnd == m_BuiltInReportNames.end() )
+      {
+         // get parent report
+         boost::shared_ptr<CReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
+         if (pParentBuilder)
+         {
+            // found parent. Now we can create new builder for custom
+            boost::shared_ptr<CReportBuilder> newBuilder( new CReportBuilder(rCustom.m_ReportName.c_str()));
+            newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
+            newBuilder->SetMenuBitmap( pParentBuilder->GetMenuBitmap() );
+
+            // Add chapter builders
+            bool didAddChapter(false);
+            std::vector<std::_tstring>::iterator itChapName = rCustom.m_Chapters.begin();
+            while(itChapName != rCustom.m_Chapters.end())
+            {
+               boost::shared_ptr<CChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
+               if ( pChapterB )
+               {
+                  newBuilder->AddChapterBuilder( pChapterB );
+                  didAddChapter = true;
+                  itChapName++;
+               }
+               else
+               {
+                  // Chapter referenced from custom does not exist in parent report. 
+                  OnCustomReportError(bFirst?creChapterMissingAtLoad:creChapterMissingAtImport,rCustom.m_ReportName,*itChapName);
+                  itChapName = rCustom.m_Chapters.erase(itChapName);
+                  ATLASSERT(0);
+               }
+            }
+
+            // 
+            if(didAddChapter)
+            {
+               pReportMgr->AddReportBuilder(newBuilder);
+               itcr++;
+            }
+            else
+            {
+               ATLASSERT(0); // should never have empty reports
+               itcr = m_CustomReports.m_Reports.erase(itcr);
+            }
+         }
+         else
+         {
+            // parent report does not exist for custom report. remove report and post
+            OnCustomReportError(bFirst?creParentMissingAtLoad:creParentMissingAtImport,rCustom.m_ReportName,rCustom.m_ParentReportName);
+            itcr = m_CustomReports.m_Reports.erase(itcr);
+            ATLASSERT(0);
+         }
+      }
+      else
+      {
+         // Custom report has same name as a built-in. This would be a very rare case where a built-in
+         // was added later that matches a custom. Or, there is a bug in the UI checking. Let it go by silently
+         ATLASSERT(0);
+         itcr = m_CustomReports.m_Reports.erase(itcr);
+      }
+   }
 }

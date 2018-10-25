@@ -1116,6 +1116,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ConfigureReportsDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomReportsPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\custsite.cpp"
 				>
 			</File>
@@ -1640,6 +1648,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFCustomReport.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFCustomReportConflictDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFDocManager.cpp"
 				>
 			</File>
@@ -1934,6 +1950,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFExportCustomReports.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFInterfaceCache.cpp"
 				>
 			</File>
@@ -2139,6 +2159,10 @@
 			</File>
 			<File
 				RelativePath=".\EAFPluginState.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFRenameReportDlg.cpp"
 				>
 			</File>
 			<File
@@ -2354,6 +2378,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EditCustomReportDlg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FavoriteReportsPage.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\ManagePluginsDlg.cpp"
 				>
 			</File>
@@ -2515,6 +2547,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ConfigureReportsDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomReportsPage.h"
+				>
+			</File>
+			<File
 				RelativePath=".\custsite.h"
 				>
 			</File>
@@ -2567,6 +2607,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFCustomReport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFCustomReportConflictDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFCustSiteVars.h"
 				>
 			</File>
@@ -2596,6 +2644,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFExp.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EAFExportCustomReports.h"
 				>
 			</File>
 			<File
@@ -2639,6 +2691,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFRenameReportDlg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFReportView.h"
 				>
 			</File>
@@ -2676,6 +2732,14 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFUtilities.h"
+				>
+			</File>
+			<File
+				RelativePath=".\EditCustomReportDlg.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FavoriteReportsPage.h"
 				>
 			</File>
 			<File
@@ -2788,6 +2852,11 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\EAFCustomReportConflictDialog.htm"
+			DeploymentContent="true"
+			>
+		</File>
 		<File
 			RelativePath="ReadMe.txt"
 			>
