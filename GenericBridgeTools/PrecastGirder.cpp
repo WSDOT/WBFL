@@ -76,10 +76,6 @@ HRESULT CPrecastGirder::FinalConstruct()
 
    m_UpdateHarpedMaxFill = true;
 
-   hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
-   if ( FAILED(hr) )
-      return hr;
-
    CComPtr<IGeomUtil> geom_util;
    hr = geom_util.CoCreateInstance(CLSID_GeomUtil);
    if ( FAILED(hr) )
@@ -1663,11 +1659,38 @@ STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(RowIndexType rowIdx,Stran
    return m_HarpGridHp[etStart]->get_NumStrandsInRow(rowIdx, nStrands);
 }
 
-
 STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
    CHECK_RETOBJ(rebarLayout);
+
+   if ( m_RebarLayout == NULL )
+   {
+      HRESULT hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+
    (*rebarLayout) = m_RebarLayout;
+   (*rebarLayout)->AddRef();
+   return S_OK;
+}
+
+STDMETHODIMP CPrecastGirder::get_ClosureJointRebarLayout(IRebarLayout** rebarLayout)
+{
+   CHECK_RETOBJ(rebarLayout);
+
+   if ( m_ClosureJointRebarLayout == NULL )
+   {
+      HRESULT hr = m_ClosureJointRebarLayout.CoCreateInstance(CLSID_RebarLayout);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+
+   (*rebarLayout) = m_ClosureJointRebarLayout;
    (*rebarLayout)->AddRef();
    return S_OK;
 }

@@ -100,6 +100,7 @@ private:
    bool m_UpdateHarpedMaxFill;
 
    CComPtr<IRebarLayout> m_RebarLayout;
+   CComPtr<IRebarLayout> m_ClosureJointRebarLayout;
 
    // If this is true, it is possible that the one-to-one relationship between strand grid fill locations
    // at the girder ends and harping points is broken. i.e., different fills are are needed for each.
@@ -305,6 +306,7 @@ public:
                                                /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
+   STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout);
 };
 
 #endif //__PRECASTGIRDER_H_

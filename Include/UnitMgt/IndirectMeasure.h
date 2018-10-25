@@ -180,6 +180,7 @@ public:
    unitmgtMomentPerAngleData MomentPerAngle;
    unitmgtTimeData           Time;
    unitmgtTimeData           Time2;
+   unitmgtTimeData           Time3;
    unitmgtPerLengthData      PerLength;
    unitmgtPerLengthData      Curvature;
    unitmgtForceLength2Data   ForceLength2;

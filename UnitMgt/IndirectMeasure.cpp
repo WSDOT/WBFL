@@ -65,6 +65,7 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure() :
    MomentPerAngle( unitMeasure::KiloNewtonMeterPerRadian ),
    Time( unitMeasure::Hour ),
    Time2( unitMeasure::Day ),
+   Time3( unitMeasure::Day ),
    PerLength( unitMeasure::PerMillimeter ),
    Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
@@ -102,6 +103,7 @@ unitmgtIndirectMeasure::unitmgtIndirectMeasure(const unitmgtIndirectMeasure& rOt
    MomentPerAngle( unitMeasure::KiloNewtonMeterPerRadian ),
    Time( unitMeasure::Hour ),
    Time2( unitMeasure::Day ),
+   Time3( unitMeasure::Day ),
    PerLength( unitMeasure::PerMillimeter ),
    Curvature( unitMeasure::PerMillimeter ),
    ForceLength2( unitMeasure::KilonewtonMeter2),
@@ -165,6 +167,7 @@ bool unitmgtIndirectMeasure::AssertValid() const
    TEST_MEASURE( MomentPerAngle );
    TEST_MEASURE( Time );
    TEST_MEASURE( Time2 );
+   TEST_MEASURE( Time3 );
    TEST_MEASURE( PerLength );
    TEST_MEASURE( ForceLength2 );
    TEST_MEASURE( SqrtPressure );
@@ -209,6 +212,7 @@ void unitmgtIndirectMeasure::Dump(dbgDumpContext& os) const
    dump_it(os,_T("MomentPerAngle"),  MomentPerAngle);
    dump_it(os,_T("Time"),            Time         );
    dump_it(os,_T("Time2"),           Time2        );
+   dump_it(os,_T("Time3"),           Time3        );
    dump_it(os,_T("PerLength"),       PerLength    );
    dump_it(os,_T("ForceLength2"),    ForceLength2 );
    dump_it(os,_T("SqrtPressure"),    SqrtPressure );
@@ -256,6 +260,7 @@ void unitmgtIndirectMeasure::MakeCopy(const unitmgtIndirectMeasure& rOther)
    MomentPerAngle  = rOther.MomentPerAngle;
    Time            = rOther.Time;
    Time2           = rOther.Time2;
+   Time3           = rOther.Time3;
    PerLength       = rOther.PerLength;
    Curvature       = rOther.Curvature;
    ForceLength2    = rOther.ForceLength2;

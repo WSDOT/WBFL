@@ -206,7 +206,8 @@ public:
    virtual const unitmgtForcePerLengthData& GetForcePerLengthUnit();
    virtual const unitmgtMomentPerAngleData& GetMomentPerAngleUnit();
    virtual const unitmgtTimeData&          GetShortTimeUnit();
-   virtual const unitmgtTimeData&          GetLongTimeUnit();
+   virtual const unitmgtTimeData&          GetWholeDaysUnit();
+   virtual const unitmgtTimeData&          GetFractionalDaysUnit();
    virtual const unitmgtAreaPerLengthData& GetAvOverSUnit();
    virtual const unitmgtForceLength2Data&  GetStiffnessUnit();
    virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit();

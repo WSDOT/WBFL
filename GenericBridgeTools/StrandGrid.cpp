@@ -1189,9 +1189,7 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 
 }
 
-
-
-STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes)
+STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes)
 {
    CHECK_RETOBJ(positionIndexes);
 
@@ -1199,7 +1197,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
    if (FAILED(hr))
       return hr;
 
-   if (distFromStart<0.0 || girderLength < distFromStart)
+   if (Xs < 0.0 || girderLength < Xs)
    {
       return E_INVALIDARG;
    }
@@ -1207,9 +1205,9 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
    CComPtr<IIndexArray> array;
    array.CoCreateInstance(CLSID_IndexArray);
 
-   Float64 gl2 =girderLength/2.0;
+   Float64 gl2 = girderLength/2.0;
 
-   if (distFromStart < gl2)
+   if (Xs < gl2)
    {
       // at left end of girder
       for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
@@ -1224,12 +1222,14 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( distFromStart <= debond_length )
+            if ( Xs <= debond_length )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
                if (nStrandsAtGridPoint == 2)
+               {
                   array->Add(gp.StrandPositionIndex[1]);
+               }
             }
          }
       }
@@ -1237,7 +1237,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
    else
    {
       // at right end of girder
-      Float64 dist_from_end = girderLength-distFromStart;
+      Float64 Xe = girderLength - Xs;
 
       for (GridCollectionIterator iter = m_GridPoints.begin(); iter != m_GridPoints.end(); iter++)
       {
@@ -1251,12 +1251,14 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 dist
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( dist_from_end <= debond_length )
+            if ( ::IsLE(Xe,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
                if (nStrandsAtGridPoint == 2)
+               {
                   array->Add(gp.StrandPositionIndex[1]);
+               }
             }
          }
       }

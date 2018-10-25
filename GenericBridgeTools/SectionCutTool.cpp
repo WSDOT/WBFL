@@ -1288,47 +1288,49 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          {
             CComPtr<IMaterial> material;
             CComPtr<IPrestressingStrand> strandMaterial;
+            CComPtr<IPoint2dCollection> strandLocations;
+            CComPtr<IIndexArray> debondPositions;
 
             if ( i == 0 )
             {
                girder->get_StraightStrandMaterial(&strandMaterial);
+               girder->get_StraightStrandPositions(Xs,&strandLocations);
+               girder->GetStraightStrandsDebondedByPositionIndex(etStart,Xs,&debondPositions);
             }
             else if ( i == 1 )
             {
                girder->get_HarpedStrandMaterial(&strandMaterial);
+               girder->get_HarpedStrandPositions(Xs,&strandLocations);
+               debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
             }
             else
             {
                girder->get_TemporaryStrandMaterial(&strandMaterial);
+               girder->get_TemporaryStrandPositions(Xs,&strandLocations);
+               debondPositions.CoCreateInstance(CLSID_IndexArray); // empty array
             }
 
             strandMaterial.QueryInterface(&material);
             Float64 Estrand, Dstrand;
             material->get_E(stageIdx,&Estrand);
             material->get_Density(stageIdx,&Dstrand);
-            CComPtr<IPoint2dCollection> strandLocations;
-            if ( i == 0 )
-            {
-               girder->get_StraightStrandPositions(Xs,&strandLocations);
-            }
-            else if ( i == 1 )
-            {
-               girder->get_HarpedStrandPositions(Xs,&strandLocations);
-            }
-            else
-            {
-               girder->get_TemporaryStrandPositions(Xs,&strandLocations);
-            }
 
 #if defined LUMP_STRANDS
+            // bonded strands
             Float64 A  = 0;
             Float64 AX = 0;
             Float64 AY = 0;
+
+            // debonded strands
+            Float64 Adb  = 0;
+            Float64 AdbX = 0;
+            Float64 AdbY = 0;
 #endif // LUMP_STRANDS
 
             CComPtr<IPoint2d> point;
             CComPtr<IEnumPoint2d> enum_points;
             strandLocations->get__Enum(&enum_points);
+            StrandIndexType strandIndex = 0;
             while ( enum_points->Next(1,&point,NULL) != S_FALSE )
             {
                // x measured from CL girder
@@ -1339,10 +1341,23 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                Float64 Aps;
                strandMaterial->get_NominalArea(&Aps);
 
+               IndexType foundIndex;
+               HRESULT hr = debondPositions->Find(strandIndex,&foundIndex);
+               bool bIsDebonded = SUCCEEDED(hr) ? true : false;
+
 #if defined LUMP_STRANDS
-               A += Aps;
-               AY += Aps*y;
-               AX += Aps*x;
+               if ( bIsDebonded )
+               {
+                  Adb += Aps;
+                  AdbY += Aps*y;
+                  AdbX += Aps*x;
+               }
+               else
+               {
+                  A += Aps;
+                  AY += Aps*y;
+                  AX += Aps*x;
+               }
 #else
                // models strand as an object with area. Moment of inertia is taken to be zero
                CComPtr<IGenericShape> strandShape;
@@ -1358,21 +1373,15 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
                centroid->Move(xTop + x,yTop + y);
 
-               // If the strand doesn't have strength or density in this stage, then it
-               // doesn't really exist in the section. 
-               // Make the foreground material properties the same as the background
-               // material properties. This will eliminate strand bar from the section
-               // (e.g EA = Aps(Estrand - Econc) = Aps(Econc - Econc) = 0)
                if ( sectionPropMethod == spmTransformed )
                {
-                  if ( IsZero(Estrand) )
+                  if ( bDebonded )
                   {
-                     Estrand = Econc;
-                  }
-
-                  if ( IsZero(Dstrand) )
-                  {
-                     Dstrand = Dconc;
+                     // Strand is debonded so it just creates a hole in the cross section here
+                     // model the hole and not the strand
+                     // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
+                     Estrand = 0;
+                     Dstrand = 0;
                   }
                }
                else if ( sectionPropMethod == spmNet )
@@ -1390,6 +1399,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
 #endif // LUMP_STRANDS
                point.Release();
+               strandIndex++;
             }
 
 #if defined LUMP_STRANDS
@@ -1413,24 +1423,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
 
                centroid->Move(xTop + x,yTop + y);
 
-               // If the strand doesn't have strength or density in this stage, then it
-               // doesn't really exist in the section. 
-               // Make the foreground material properties the same as the background
-               // material properties. This will eliminate strand bar from the section
-               // (e.g EA = Aps(Estrand - Econc) = Aps(Econc - Econc) = 0)
-               if ( sectionPropMethod == spmTransformed )
-               {
-                  if ( IsZero(Estrand) )
-                  {
-                     Estrand = Econc;
-                  }
-
-                  if ( IsZero(Dstrand) )
-                  {
-                     Dstrand = Dconc;
-                  }
-               }
-               else if ( sectionPropMethod == spmNet )
+               if ( sectionPropMethod == spmNet )
                {
                   // If we are computing net properties, we want to
                   // model the hole and not the strand
@@ -1438,6 +1431,38 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                   Estrand = 0;
                   Dstrand = 0;
                }
+
+               // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
+               // models the strand and makes a hole in the concrete for the strand
+               CComQIPtr<IShape> strand_shape(strandShape);
+               compositeSection->AddSection(strand_shape,Estrand,Econc,Dstrand,Dconc,VARIANT_TRUE);
+            }
+
+            if ( !IsZero(Adb) )
+            {
+               Float64 Aps = Adb;
+               Float64 x = AdbX/Adb;
+               Float64 y = AdbY/Adb;
+
+               // models strand as an object with area. Moment of inertia is taken to be zero
+               CComPtr<IGenericShape> strandShape;
+               strandShape.CoCreateInstance(CLSID_GenericShape);
+               strandShape->put_Area(Aps);
+               strandShape->put_Ixx(0);
+               strandShape->put_Iyy(0);
+               strandShape->put_Ixy(0);
+               strandShape->put_Perimeter(0);
+
+               CComPtr<IPoint2d> centroid;
+               strandShape->get_Centroid(&centroid);
+
+               centroid->Move(xTop + x,yTop + y);
+
+               // Debonded strands just create a hole in the cross section
+               // model the hole and not the strand
+               // (e.g. EA = EconcAg + Astrand(0 - Econc) = EconcAg - Astrand(Econc) = (Ag-Astrand)Econc
+               Estrand = 0;
+               Dstrand = 0;
 
                // EA = EgAg + Astrand(Estrand-Eg) = Eg(Ag-Astrand) + (Estrand)(Astrand)
                // models the strand and makes a hole in the concrete for the strand
@@ -1459,10 +1484,10 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
       } // is point on precast girder
       else
       {
-         // beyond the end of this girder so this must be in the closure pour
+         // beyond the end of this girder so this must be in the closure joint
          
          CComPtr<IRebarLayout> rebarLayout;
-         girder->get_RebarLayout(&rebarLayout);
+         girder->get_ClosureJointRebarLayout(&rebarLayout);
 
          CComPtr<IRebarSection> rebarSection;
          rebarLayout->CreateRebarSection(Xs,&rebarSection);
@@ -1626,23 +1651,7 @@ HRESULT CSectionCutTool::LayoutRebar(ICompositeSectionEx* compositeSection,Float
       material->get_E(stageIdx,&Ebar);
       material->get_Density(stageIdx,&Dbar);
 
-      // If the bar doesn't have strength or density, then it isn't in the girder yet.
-      // Make the foreground material properties the same as the background
-      // material properties. This will eliminate the bar from the section
-      // (e.g EA = Ab(Ebar - Econc) = Ab(Econc - Econc) = 0)
-      if ( sectionPropMethod == spmTransformed )
-      {
-         if ( IsZero(Ebar) )
-         {
-            Ebar = Econc;
-         }
-
-         if ( IsZero(Dbar) )
-         {
-            Dbar = Dconc;
-         }
-      }
-      else if ( sectionPropMethod == spmNet )
+      if ( sectionPropMethod == spmNet )
       {
          // If we are computing net properties, we want to
          // model the hole and not the bar

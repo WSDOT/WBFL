@@ -3017,6 +3017,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NUSplicedGirderSegment.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\OffsetTendon.cpp"
 				>
 			</File>
@@ -4726,6 +4730,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NUSplicedGirderSegment.h"
+				>
+			</File>
+			<File
 				RelativePath=".\OffsetTendon.h"
 				>
 			</File>
@@ -5000,6 +5008,10 @@
 			</File>
 			<File
 				RelativePath="NUGirderSection.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\NUSplicedGirderSegment.rgs"
 				>
 			</File>
 			<File

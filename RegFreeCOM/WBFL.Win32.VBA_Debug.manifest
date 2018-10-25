@@ -1178,6 +1178,9 @@
       <comClass clsid="{9DDC341B-E17F-4d54-9A33-F2C4F052650A}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="USplicedGirderSegment"></comClass>
+      <comClass clsid="{464D04E4-0A0D-4295-A8B3-F276EB49CBE3}"
+    tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+    description="NUSplicedGirderSegment"></comClass>
       <comClass clsid="{D3DF465C-E03B-4192-A17E-2DF7BE63CAFB}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="FlangedSplicedGirderSegment"></comClass>
