@@ -976,7 +976,7 @@ void CProfile::Unadvise(long idx)
    InternalAddRef(); // Counteract InternalRelease() in Advise
 
    // Find the connection point and disconnection
-   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IProfileElementEvents, dwCookie );
+   HRESULT hr = AtlUnadvise( var.pdispVal, IID_IProfileElementEvents, (DWORD)dwCookie );
    ATLASSERT(SUCCEEDED(hr));
 
    p.first = 0;

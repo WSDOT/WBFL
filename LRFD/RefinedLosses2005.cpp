@@ -747,7 +747,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td);
+   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -802,7 +802,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td);
+   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -814,7 +814,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
-   m_CreepDeckToFinal.SetMaturity(m_tf);
+   m_CreepDeckToFinal.SetMaturity(m_tf-m_td);
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
@@ -860,7 +860,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeck.SetCuringMethod(lrfdCreepCoefficient2005::Normal);
    m_CreepDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeck.SetFc(0.8*m_FcSlab); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
-   m_CreepDeck.SetInitialAge(0);
+   m_CreepDeck.SetInitialAge(::ConvertToSysUnits(1.0,unitMeasure::Day));
    m_CreepDeck.SetMaturity(m_tf-m_td);
    m_CreepDeck.SetRelHumidity(m_H);
    m_CreepDeck.SetSurfaceArea(m_SSlab);
@@ -877,7 +877,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
 
    // LRFD 2007 has a "-" in 1/Ac - epc*ed/I
    // we use a "+" because ed is < 0 for typical construction per our sign convension
-   m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Ac + (epc*m_ed)/m_Ic)/(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
+   m_DeltaFcdf = m_eddf*m_Ad*m_Ecd*(1/m_Ac + (epc*m_ed)/m_Ic)/(1 + 0.7*m_CreepDeck.GetCreepCoefficient());
 
    // if there aren't any strands, then there can't be losses due to deck shrinkage
    m_dfpSS = IsZero(m_ApsPerm) ? 0.0 : (m_Ep/m_Ec)*m_DeltaFcdf*m_Kdf*(1 + 0.7*m_CreepDeckToFinal.GetCreepCoefficient());
@@ -907,7 +907,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToFinal.SetFc(m_Fci);
    m_CreepInitialToFinal.SetInitialAge(m_ti);
-   m_CreepInitialToFinal.SetMaturity(m_tf);
+   m_CreepInitialToFinal.SetMaturity(m_tf-m_ti);
    m_CreepInitialToFinal.SetRelHumidity(m_H);
    m_CreepInitialToFinal.SetSurfaceArea(m_S);
    m_CreepInitialToFinal.SetVolume(m_V);
@@ -925,7 +925,7 @@ void lrfdRefinedLosses2005::UpdateHaulingLosses() const
    m_CreepInitialToHauling.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToHauling.SetFc(m_Fci);
    m_CreepInitialToHauling.SetInitialAge(m_ti);
-   m_CreepInitialToHauling.SetMaturity(m_th);
+   m_CreepInitialToHauling.SetMaturity(m_th-m_ti);
    m_CreepInitialToHauling.SetRelHumidity(m_H);
    m_CreepInitialToHauling.SetSurfaceArea(m_S);
    m_CreepInitialToHauling.SetVolume(m_V);
