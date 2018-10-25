@@ -42,9 +42,11 @@
 #define ID_EDIT_UNITS                   EAF_RESERVED_COMMAND_BASE+6
 #define ID_TIPOFTHEDAY                  EAF_RESERVED_COMMAND_BASE+7
 #define ID_MANAGE_APP_PLUGINS           EAF_RESERVED_COMMAND_BASE+8
+#define ID_REPORT_MENU_DISPLAY_MODE     EAF_RESERVED_COMMAND_BASE+9
+#define ID_OPTIONS_REPORTING            EAF_RESERVED_COMMAND_BASE+10
 
 // reserve commands IDs for the report popup menus
-#define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE+9 
+#define EAF_REPORT_MENU_BASE EAF_RESERVED_COMMAND_BASE+11
 #define EAF_REPORT_MENU_COUNT 50 // maximum 50 reports
 
 // reserve command IDs for toolbar menu
