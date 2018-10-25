@@ -1652,21 +1652,27 @@ STDMETHODIMP CPrecastGirder::GetStraightStrandBondedLengthByGridIndex(/*[in]*/Gr
    return m_StraightGrid[etStart]->GetBondedLengthByGridIndex(grdIndex, distFromStart, gdr_length, YCoord, leftBond, rightBond);
 }
 
-STDMETHODIMP CPrecastGirder::get_HarpedStrandRowsWithStrand(RowIndexType* nRows)
+
+STDMETHODIMP CPrecastGirder::get_HarpedStrandRowsWithStrand(Float64 distFromStart,RowIndexType* nRows)
 {
-   return m_HarpGridHp[etStart]->get_RowsWithStrand(nRows);
+   CComPtr<IStrandGridFiller> grid;
+   GetHarpedStrandGrid(distFromStart,&grid);
+   return grid->get_RowsWithStrand(nRows);
 }
 
-STDMETHODIMP CPrecastGirder::get_HarpedStrandsInRow(RowIndexType rowIdx,IIndexArray** gridIndexes)
+STDMETHODIMP CPrecastGirder::get_HarpedStrandsInRow(Float64 distFromStart,RowIndexType rowIdx,IIndexArray** gridIndexes)
 {
-   return m_HarpGridHp[etStart]->get_StrandsInRow(rowIdx, gridIndexes);
+   CComPtr<IStrandGridFiller> grid;
+   GetHarpedStrandGrid(distFromStart,&grid);
+   return grid->get_StrandsInRow(rowIdx, gridIndexes);
 }
 
-STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(RowIndexType rowIdx,StrandIndexType* nStrands)
+STDMETHODIMP CPrecastGirder::get_NumHarpedStrandsInRow(Float64 distFromStart,RowIndexType rowIdx,StrandIndexType* nStrands)
 {
-   return m_HarpGridHp[etStart]->get_NumStrandsInRow(rowIdx, nStrands);
+   CComPtr<IStrandGridFiller> grid;
+   GetHarpedStrandGrid(distFromStart,&grid);
+   return grid->get_NumStrandsInRow(rowIdx, nStrands);
 }
-
 
 STDMETHODIMP CPrecastGirder::get_RebarLayout(IRebarLayout** rebarLayout)
 {
@@ -2095,3 +2101,22 @@ void CPrecastGirder::DoUpdateLengths()
    }
 }
 
+
+void CPrecastGirder::GetHarpedStrandGrid(Float64 distFromStart,IStrandGridFiller** ppGrid)
+{
+   Float64 hp1, hp2;
+   GetHarpPointLocations(hp1,hp2);
+
+   if ( distFromStart < hp1 )
+   {
+      m_HarpGridEnd[etStart].CopyTo(ppGrid);
+   }
+   else if ( hp2 < distFromStart )
+   {
+      m_HarpGridEnd[etEnd].CopyTo(ppGrid);
+   }
+   else 
+   {
+      m_HarpGridHp[etStart].CopyTo(ppGrid);
+   }
+}

@@ -259,6 +259,48 @@ inline long Min4Index(const T& a,const T& b, const T& c, const T& d)
 }
 
 template <class T>
+inline T MaxMagnitude(const T& a,const T& b)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? a : b);
+}
+
+template <class T>
+inline T MaxMagnitude(const T& a,const T& b,const T& c)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitude(MaxMagnitude(a,b),c);
+}
+
+template <class T>
+inline T MaxMagnitude(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitude(MaxMagnitude(a,b),MaxMagnitude(c,d));
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? b : a);
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b,const T& c)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitude(MinMagnitude(a,b),c);
+}
+
+template <class T>
+inline T MinMagnitude(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitude(MinMagnitude(a,b),MinMagnitude(c,d));
+}
+
+template <class T>
 inline T PercentChange(const T& a,const T& b)
 {
    if ( a == 0 )

@@ -191,6 +191,7 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() co
       case lrfdLosses::tsPretensioned:
          return m_AfterXfer;
 
+      case lrfdLosses::tsPTBeforeLifting:
       case lrfdLosses::tsPTAfterLifting:
          return 0;
 

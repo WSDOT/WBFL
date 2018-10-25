@@ -525,9 +525,9 @@ library WBFLGenericBridgeTools
       [propget,helpstring("property StraightStrandDebondInRow")] HRESULT StraightStrandDebondInRow([in] RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
       [helpstring("method IsExteriorStraightStrandDebondedInRow")] HRESULT IsExteriorStraightStrandDebondedInRow([in] RowIndexType rowIndex,[out,retval]VARIANT_BOOL* bResult);
 
-      [propget,helpstring("property HarpedStrandRowsWithStrand")] HRESULT HarpedStrandRowsWithStrand([out,retval]RowIndexType* nRows);
-      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
-      [propget,helpstring("property NumHarpedStrandsInRow")] HRESULT NumHarpedStrandsInRow([in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
+      [propget,helpstring("property HarpedStrandRowsWithStrand")] HRESULT HarpedStrandRowsWithStrand([in]Float64 distFromStart,[out,retval]RowIndexType* nRows);
+      [propget,helpstring("property HarpedStrandsInRow")] HRESULT HarpedStrandsInRow([in]Float64 distFromStart,[in]RowIndexType rowIdx,[out,retval]IIndexArray** gridIndexes);
+      [propget,helpstring("property NumHarpedStrandsInRow")] HRESULT NumHarpedStrandsInRow([in]Float64 distFromStart,[in]RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
 
       [helpstring("method GetStraightStrandDebondAtSections")] HRESULT GetStraightStrandDebondAtSections([out]IDblArray** arrLeft,[out]IDblArray** arrRight);
       [helpstring("method GetStraightStrandDebondAtLeftSection")] HRESULT GetStraightStrandDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** pstnIndexes);
