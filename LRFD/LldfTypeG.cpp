@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////
 // LRFD - Utility library to support equations, methods, and procedures
 //        from the AASHTO LRFD Bridge Design Specification
-// Copyright © 1999-2015  Washington State Department of Transportation
+// Copyright © 1999-2016  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -540,50 +540,27 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_1_Streng
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
-      if ( !IandJOutOfRangeRule(bSISpec) )
+      g = GetShearDF_Int_1_Strength(); // will use the moment LLDF if I and J rule is violated
+
+      if (g.ControllingMethod & SPEC_EQN)
       {
-         g = GetShearDF_Int_1_Strength();
+         // only apply e factor to equation method
+         bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+         Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+         Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+         Float64 K = (bSISpec ? 6100 : 20);
 
-         if (g.ControllingMethod & SPEC_EQN)
-         {
-            // only apply e factor to equation method
-            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
-            Float64 K = (bSISpec ? 6100 : 20);
+         Float64 e = 1.25 + de/K;
+         if ( e < 1 )
+            e = 1.0;
 
-            Float64 e = 1.25 + de/K;
-            if ( e < 1 )
-               e = 1.0;
-
-            g.ControllingMethod |= E_OVERRIDE;
-            g.EqnData.e = e;
-            g.mg *= e;
-         }
-         else
-         {
-            assert(0); // should always be using equation unless rules are screwed up.
-         }
+         g.ControllingMethod |= E_OVERRIDE;
+         g.EqnData.e = e;
+         g.mg *= e;
       }
       else
       {
-         // After much discussion with TxDOT and pouring over the spec, we have decided to be
-         // consistant with the interior shear rule and use the moment factor if I/J is out of 
-         // range. Yet another hole in the spec...
-         g = GetMomentDF_Ext_1_Strength();
-         g.ControllingMethod |= MOMENT_OVERRIDE;
-
-         // Need to remove moment skew factor and apply shear skew
-         g.mg /= g.SkewCorrectionFactor;
-         g.SkewCorrectionFactor = 1.0;
-
-         Float64 skew = ShearSkewCorrectionFactor();
-         if ( m_bSkewShear )
-         {
-            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-         }
-         g.SkewCorrectionFactor = skew;
-         g.mg *= skew;
+         assert(0); // should always be using equation unless rules are screwed up.
       }
    }
    else
@@ -613,73 +590,48 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdLldfTypeG::GetShearDF_Ext_2_Streng
 
    if ( ExteriorShearEquationRule(bSISpec) )
    {
+      g = GetShearDF_Int_2_Strength(); // will use the moment LLDF if I and J rule is violated
 
-      if ( !IandJOutOfRangeRule(bSISpec) )
+      if (g.ControllingMethod & SPEC_EQN)
       {
+         // only use e factor for equation methods
+         bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
 
-         g = GetShearDF_Int_2_Strength();
+         Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+         Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
 
-         if (g.ControllingMethod & SPEC_EQN)
-         {
-            // only use e factor for equation methods
-            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+         Float64 b  = ::ConvertFromSysUnits(m_b, bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
 
-            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
-            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+         Float64 K1 = (bSISpec ?  1200 : 48);
+         Float64 K2 = (bSISpec ?     1 : 12);
+         Float64 K3 = (bSISpec ?   610 :  2);
+         Float64 K4 = (bSISpec ? 12200 : 40);
 
-            Float64 b  = ::ConvertFromSysUnits(m_b, bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+         Float64 K5 = K1/b;
+         if ( 1 < K5 )
+            K5 = 1.0;
 
-            Float64 K1 = (bSISpec ?  1200 : 48);
-            Float64 K2 = (bSISpec ?     1 : 12);
-            Float64 K3 = (bSISpec ?   610 :  2);
-            Float64 K4 = (bSISpec ? 12200 : 40);
+         Float64 K6 = (de + b/K2 - K3)/K4;
 
-            Float64 K5 = K1/b;
-            if ( 1 < K5 )
-               K5 = 1.0;
+         if ( K6 < 0 )
+            K6 = 0; // This isn't in AASHTO, but we don't want to take the square root of a negative number
 
-            Float64 K6 = (de + b/K2 - K3)/K4;
+         Float64 e = 1 + pow(K6,0.5);
 
-            if ( K6 < 0 )
-               K6 = 0; // This isn't in AASHTO, but we don't want to take the square root of a negative number
+         if ( e < 1 )
+            e = 1.0;
 
-            Float64 e = 1 + pow(K6,0.5);
+         // HACK: put 48/b factor in e, although it's not technically part in spec
+         g.EqnData.K = K5; // Need for reporting, this is awful, but don't see any better hacks
+         e *= K5;
 
-            if ( e < 1 )
-               e = 1.0;
-
-            // HACK: put 48/b factor in e, although it's not technically part in spec
-            g.EqnData.K = K5; // Need for reporting, this is awful, but don't see any better hacks
-            e *= K5;
-
-            g.EqnData.e = e;
-            g.mg *= e;
-            g.ControllingMethod |= E_OVERRIDE;
-         }
-         else
-         {
-            assert(0); // rules messed up?
-         }
+         g.EqnData.e = e;
+         g.mg *= e;
+         g.ControllingMethod |= E_OVERRIDE;
       }
       else
       {
-         // After much discussion with TxDOT and pouring over the spec, we have decided to be
-         // consistant with the interior shear rule and use the moment factor if I/J is out of 
-         // range. Yet another hole in the spec...
-         g = GetMomentDF_Ext_2_Strength();
-         g.ControllingMethod |= MOMENT_OVERRIDE;
-
-         // Need to remove moment skew factor and apply shear skew
-         g.mg /= g.SkewCorrectionFactor;
-         g.SkewCorrectionFactor = 1.0;
-
-         Float64 skew = ShearSkewCorrectionFactor();
-         if ( m_bSkewShear )
-         {
-            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
-         }
-         g.SkewCorrectionFactor = skew;
-         g.mg *= skew;
+         assert(0); // rules messed up?
       }
    }
    else
@@ -1398,10 +1350,87 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetMomentDF_
    return gext;
 }
 
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShearDF_Ext_1_Strength() const
+{
+   // NOTE: WSDOT changed lrfdLldfTypeG::GetShearDF_Ext_1_Strength() to better match the common interpretation of AASHTO.
+   // This returned a different results than previous versions, as such lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength()
+   // could no longer call that method to get the LLDF. This function is a copy of the old lrfdLldfTypeG::GetShearDF_Ext_1_Strength()
+   // so the TxDOT interpretation does not change
+   lrfdILiveLoadDistributionFactor::DFResult g;
+   
+   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+
+   if ( ExteriorShearEquationRule(bSISpec) )
+   {
+      if ( !IandJOutOfRangeRule(bSISpec) )
+      {
+         g = GetShearDF_Int_1_Strength();
+
+         if (g.ControllingMethod & SPEC_EQN)
+         {
+            // only apply e factor to equation method
+            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+            Float64 K = (bSISpec ? 6100 : 20);
+
+            Float64 e = 1.25 + de/K;
+            if ( e < 1 )
+               e = 1.0;
+
+            g.ControllingMethod |= E_OVERRIDE;
+            g.EqnData.e = e;
+            g.mg *= e;
+         }
+         else
+         {
+            assert(0); // should always be using equation unless rules are screwed up.
+         }
+      }
+      else
+      {
+         // After much discussion with TxDOT and pouring over the spec, we have decided to be
+         // consistant with the interior shear rule and use the moment factor if I/J is out of 
+         // range. Yet another hole in the spec...
+         g = GetMomentDF_Ext_1_Strength();
+         g.ControllingMethod |= MOMENT_OVERRIDE;
+
+         // Need to remove moment skew factor and apply shear skew
+         g.mg /= g.SkewCorrectionFactor;
+         g.SkewCorrectionFactor = 1.0;
+
+         Float64 skew = ShearSkewCorrectionFactor();
+         if ( m_bSkewShear )
+         {
+            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+         }
+         g.SkewCorrectionFactor = skew;
+         g.mg *= skew;
+      }
+   }
+   else
+   {
+      // default to lever rule
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, OneLoadedLane);
+      g.mg = g.LeverRuleData.mg;
+
+      Float64 skew = ShearSkewCorrectionFactor();
+      if ( m_bSkewShear )
+      {
+         g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+      }
+      g.SkewCorrectionFactor = skew;
+      g.mg *= skew;
+   }
+
+   return g;
+}
+
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_1_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = lrfdLldfTypeF::GetShearDF_Ext_1_Strength();
+   lrfdILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_1_Strength();
 
    lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetShearDF_Int_1_Strength();
    if (gext.mg < gint.mg)
@@ -1414,10 +1443,110 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_E
    return gext;
 }
 
+lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetBaseShearDF_Ext_2_Strength() const
+{
+   // NOTE: WSDOT changed lrfdLldfTypeG::GetShearDF_Ext_2_Strength() to better match the common interpretation of AASHTO.
+   // This returned a different results than previous versions, as such lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength()
+   // could no longer call that method to get the LLDF. This function is a copy of the old lrfdLldfTypeG::GetShearDF_Ext_2_Strength()
+   // so the TxDOT interpretation does not change
+   lrfdILiveLoadDistributionFactor::DFResult g;
+   
+   bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+
+   if ( ExteriorShearEquationRule(bSISpec) )
+   {
+
+      if ( !IandJOutOfRangeRule(bSISpec) )
+      {
+
+         g = GetShearDF_Int_2_Strength();
+
+         if (g.ControllingMethod & SPEC_EQN)
+         {
+            // only use e factor for equation methods
+            bool bSISpec = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
+
+            Float64 de_raw = m_Side==LeftSide ? m_LeftDe : m_RightDe;
+            Float64 de = ::ConvertFromSysUnits(de_raw,bSISpec?unitMeasure::Millimeter:unitMeasure::Feet);
+
+            Float64 b  = ::ConvertFromSysUnits(m_b, bSISpec?unitMeasure::Millimeter:unitMeasure::Inch);
+
+            Float64 K1 = (bSISpec ?  1200 : 48);
+            Float64 K2 = (bSISpec ?     1 : 12);
+            Float64 K3 = (bSISpec ?   610 :  2);
+            Float64 K4 = (bSISpec ? 12200 : 40);
+
+            Float64 K5 = K1/b;
+            if ( 1 < K5 )
+               K5 = 1.0;
+
+            Float64 K6 = (de + b/K2 - K3)/K4;
+
+            if ( K6 < 0 )
+               K6 = 0; // This isn't in AASHTO, but we don't want to take the square root of a negative number
+
+            Float64 e = 1 + pow(K6,0.5);
+
+            if ( e < 1 )
+               e = 1.0;
+
+            // HACK: put 48/b factor in e, although it's not technically part in spec
+            g.EqnData.K = K5; // Need for reporting, this is awful, but don't see any better hacks
+            e *= K5;
+
+            g.EqnData.e = e;
+            g.mg *= e;
+            g.ControllingMethod |= E_OVERRIDE;
+         }
+         else
+         {
+            assert(0); // rules messed up?
+         }
+      }
+      else
+      {
+         // After much discussion with TxDOT and pouring over the spec, we have decided to be
+         // consistant with the interior shear rule and use the moment factor if I/J is out of 
+         // range. Yet another hole in the spec...
+         g = GetMomentDF_Ext_2_Strength();
+         g.ControllingMethod |= MOMENT_OVERRIDE;
+
+         // Need to remove moment skew factor and apply shear skew
+         g.mg /= g.SkewCorrectionFactor;
+         g.SkewCorrectionFactor = 1.0;
+
+         Float64 skew = ShearSkewCorrectionFactor();
+         if ( m_bSkewShear )
+         {
+            g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+         }
+         g.SkewCorrectionFactor = skew;
+         g.mg *= skew;
+      }
+   }
+   else
+   {
+      // default to lever rule
+      g.ControllingMethod = LEVER_RULE;
+      g.LeverRuleData = DistributeByLeverRuleEx(ExtGirder, TwoOrMoreLoadedLanes);
+      g.mg = g.LeverRuleData.mg;
+
+      Float64 skew = ShearSkewCorrectionFactor();
+      if ( m_bSkewShear )
+      {
+         g.ControllingMethod |= SHEAR_SKEW_CORRECTION_APPLIED;
+      }
+      g.SkewCorrectionFactor = skew;
+      g.mg *= skew;
+   }
+
+   return g;
+}
+
 lrfdILiveLoadDistributionFactor::DFResult lrfdTxdotLldfAdjacentBox::GetShearDF_Ext_2_Strength() const
 {
    // always connected as unit (type f)
-   lrfdILiveLoadDistributionFactor::DFResult gext = lrfdLldfTypeF::GetShearDF_Ext_2_Strength();
+   lrfdILiveLoadDistributionFactor::DFResult gext = GetBaseShearDF_Ext_2_Strength();
 
    lrfdILiveLoadDistributionFactor::DFResult gint = lrfdLldfTypeF::GetShearDF_Int_2_Strength();
    if (gext.mg < gint.mg)
