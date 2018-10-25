@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1077,6 +1077,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
       srow++;
    }
 
+   LPCTSTR strSlope[2] = { _T("Normal Crown Slope"),_T("Maximum Superelevation") };
    for ( int s = 0; s < 2; s++ )
    {
       stbTypes::HaulingSlope slope = (stbTypes::HaulingSlope)s;
@@ -1118,19 +1119,6 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
    
       bool bLabelImpact = (0 < nImpactCases ? true : false);
 
-
-      pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
-      *pChapter << pPara;
-
-      if ( slope == stbTypes::CrownSlope )
-      {
-         *pPara << _T("Analysis at Normal Crown Slope") << rptNewLine;
-      }
-      else
-      {
-         *pPara << _T("Analysis at Maximum Superelevation") << rptNewLine;
-      }
-
       for ( IndexType impactCase = 0; impactCase <= nImpactCases; impactCase++ )
       {
          stbTypes::ImpactDirection impact = (stbTypes::ImpactDirection)impactCase;
@@ -1143,21 +1131,21 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             if ( bLabelImpact && !bLabelWind )
             {
                // more than one impact case but no wind
-               strTitle.Format(_T("%s"),strImpact[impactCase]);
+               strTitle.Format(_T("Analysis at %s - %s"),strSlope[slope],strImpact[impactCase]);
             }
             else if ( !bLabelImpact && bLabelWind )
             {
                // only one impact case and wind cases
-               strTitle.Format(_T("Wind towards the %s"),strWindDir[wind]);
+               strTitle.Format(_T("Analysis at %s - Wind towards the %s"),strSlope[slope],strWindDir[wind]);
             }
             else if ( bLabelImpact && bLabelWind )
             {
                // more than one impact case and wind cases
-               strTitle.Format(_T("%s, Wind towards the %s"),strImpact[impactCase],strWindDir[wind]);
+               strTitle.Format(_T("Analysis at %s - %s, Wind towards the %s"),strSlope[slope],strImpact[impactCase],strWindDir[wind]);
             }
             else
             {
-               strTitle = _T("");
+               strTitle.Format(_T("Analysis at %s"), strSlope[slope]);
             }
 
             std::_tstring strWindSign(wind == stbTypes::Left ? _T("+") : _T("-"));
@@ -1165,7 +1153,7 @@ void stbHaulingStabilityReporter::BuildDetailsChapter(const stbIGirder* pGirder,
             std::_tstring strCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("+") : _T("-"));
             std::_tstring strOppCFSign(pStabilityProblem->GetCentrifugalForceType() == stbTypes::Adverse ? _T("-") : _T("+"));
 
-            pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
+            pPara = new rptParagraph(rptStyleManager::GetHeadingStyle());
             *pChapter << pPara;
             *pPara << strTitle << rptNewLine;
 

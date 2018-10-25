@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,6 +48,7 @@ public:
    void Increment();
    void UpdateMessage( LPCTSTR msg);
    BOOL Continue();
+   void ResetContinueState();
    void DestroyProgressWindow();
 
    afx_msg void OnKillThread(WPARAM wParam,LPARAM lParam);

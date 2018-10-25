@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1688,7 +1688,8 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
                CComPtr<IPoint2d> centroid;
                tendonShape->get_Centroid(&centroid);
 
-               centroid->Move(x+cg_offset_x,yTop + y + cg_offset_y);
+               centroid->Move(xTop + x + cg_offset_x,
+                              yTop + y + cg_offset_y);
 
                CComQIPtr<IShape> tendon_shape(tendonShape);
 

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2017  Washington State Department of Transportation
+// Copyright © 1999-2018  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -203,7 +203,7 @@ BOOL CDocTemplateDialog::OnInitDialog()
          std::_tstring tmp = tab_helper.GetName();
          _tcscpy_s(buf, MAX_PATH, tmp.c_str());
          TabCtrlItem.pszText = buf;
-         TabCtrlItem.lParam = (long)&((*it).first); // store pointer to key
+         TabCtrlItem.lParam = (LPARAM)&((*it).first); // store pointer to key
          TabCtrlItem.mask = TCIF_TEXT|TCIF_PARAM;
 
 	      m_TabCtrl.InsertItem( i, &TabCtrlItem);
