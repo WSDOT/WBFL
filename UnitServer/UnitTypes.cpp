@@ -161,6 +161,8 @@ HRESULT CUnitTypes::InitDefaultUnits()
       NEWUNIT( CComBSTR("in"),   0.0, 0.0254,   0.0, unitsUS );
       NEWUNIT( CComBSTR("mile"), 0.0, 1609.344, 0.0, unitsUS );
       NEWUNIT( CComBSTR("yd"),   0.0, 0.9144,   0.0, unitsUS );
+      NEWUNIT( CComBSTR("ft(US survey)"),   0.0, 1200./3937.,   0.0, unitsUS );
+      NEWUNIT( CComBSTR("yd(US survey)"),   0.0, 3600./3937.,   0.0, unitsUS );
    END_NEWUNIT();
 
    // Time
