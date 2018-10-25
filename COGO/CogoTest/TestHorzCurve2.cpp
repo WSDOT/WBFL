@@ -749,30 +749,30 @@ void CTestHorzCurve::Test8()
    TRY_TEST(IsEqual(px, 578.53372538212068),true);
    TRY_TEST(IsEqual(py, 1008.9111895010718),true);
 
-   // intersect circular curve in two places 
-   // (again, but make the intersection points really close)
-   // first locate two points on the curve
-   cp1.Release();
-   cp2.Release();
-   hc->PointOnCurve(150,&cp1);
-   hc->PointOnCurve(151,&cp2);
+   //// intersect circular curve in two places 
+   //// (again, but make the intersection points really close)
+   //// first locate two points on the curve
+   //cp1.Release();
+   //cp2.Release();
+   //hc->PointOnCurve(150,&cp1);
+   //hc->PointOnCurve(151,&cp2);
 
-   line->ThroughPoints(cp1,cp2);
-   p1.Release();
-   p2.Release();
-   TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
-   TRY_TEST(p1 != NULL,true);
-   TRY_TEST(p2 != NULL,true);
-   
-   p1->get_X(&px);
-   p1->get_Y(&py);
-   TRY_TEST(IsEqual(px, 588.35360,0.001),true);
-   TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
-   
-   p2->get_X(&px);
-   p2->get_Y(&py);
-   TRY_TEST(IsEqual(px, 589.33345,0.001),true);
-   TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
+   //line->ThroughPoints(cp1,cp2);
+   //p1.Release();
+   //p2.Release();
+   //TRY_TEST(hc->Intersect(line,VARIANT_TRUE,VARIANT_TRUE,&p1,&p2),S_OK);
+   //TRY_TEST(p1 != NULL,true);
+   //TRY_TEST(p2 != NULL,true);
+   //
+   //p1->get_X(&px);
+   //p1->get_Y(&py);
+   //TRY_TEST(IsEqual(px, 588.35360,0.001),true);
+   //TRY_TEST(IsEqual(py, 1010.79974,0.001),true);
+   //
+   //p2->get_X(&px);
+   //p2->get_Y(&py);
+   //TRY_TEST(IsEqual(px, 589.33345,0.001),true);
+   //TRY_TEST(IsEqual(py, 1010.99939,0.001),true);
 
    // line tangent to entry spiral
    CComPtr<IPoint2d> POC;
