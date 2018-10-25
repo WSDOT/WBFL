@@ -134,6 +134,8 @@ void CEAFBrokerDocument::OnCreateFinalize()
    CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
    if ( pCustomReportMixin )
    {
+      pCustomReportMixin->SaveCustomReports(TRUE);
+
       BOOL bDisplayFavorites = pCustomReportMixin->DisplayFavoriteReports();
       std::vector<std::_tstring> vFavorites = pCustomReportMixin->GetFavoriteReports();
 

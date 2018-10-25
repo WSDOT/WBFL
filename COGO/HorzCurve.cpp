@@ -53,9 +53,6 @@ HRESULT CHorzCurve::FinalConstruct()
    m_PointFactory->CreatePoint(&m_PI);
    m_PointFactory->CreatePoint(&m_PFT);
 
-   m_PointFactory->CreatePoint(&m_ST);
-   m_PointFactory->CreatePoint(&m_TS);
-
    m_PBT->Move(-1000,0);
    m_PI->Move(0,0);
    m_PFT->Move(1000,1000);
@@ -524,20 +521,26 @@ STDMETHODIMP CHorzCurve::get_TS(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   CComPtr<IDirection> bkTanBrg;
-   get_BkTangentBrg(&bkTanBrg);
-   bkTanBrg->IncrementBy(CComVariant(M_PI)); // reverse the bearing (PI to PBT)
+   if ( m_TS == NULL )
+   {
+      m_PointFactory->CreatePoint(&m_TS);
 
-   Float64 T;
-   get_BkTangentLength(&T);
+      CComPtr<IDirection> bkTanBrg;
+      get_BkTangentBrg(&bkTanBrg);
+      bkTanBrg->IncrementBy(CComVariant(M_PI)); // reverse the bearing (PI to PBT)
 
-   CComPtr<IPoint2d> pnt;
-   cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,m_PointFactory,&pnt);
+      Float64 T;
+      get_BkTangentLength(&T);
 
-   Float64 x,y;
-   pnt->Location(&x,&y);
-   m_TS->Move(x,y);
-   m_TS.CopyTo(pVal);
+      CComPtr<IPoint2d> pnt;
+      cogoUtil::LocateByDistDir(m_PI,T,bkTanBrg,0.0,m_PointFactory,&pnt);
+
+      Float64 x,y;
+      pnt->Location(&x,&y);
+      m_TS->Move(x,y);
+   }
+
+   m_TS->Clone(pVal);
 
    return S_OK;
 }
@@ -546,19 +549,25 @@ STDMETHODIMP CHorzCurve::get_ST(IPoint2d* *pVal)
 {
    CHECK_RETOBJ(pVal);
 
-   CComPtr<IDirection> fwdTanBrg;
-   get_FwdTangentBrg(&fwdTanBrg);
+   if ( m_ST == NULL )
+   {
+      m_PointFactory->CreatePoint(&m_ST);
 
-   Float64 T;
-   get_FwdTangentLength(&T);
+      CComPtr<IDirection> fwdTanBrg;
+      get_FwdTangentBrg(&fwdTanBrg);
 
-   CComPtr<IPoint2d> pnt;
-   cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,m_PointFactory,&pnt);
+      Float64 T;
+      get_FwdTangentLength(&T);
 
-   Float64 x,y;
-   pnt->Location(&x,&y);
-   m_ST->Move(x,y);
-   m_ST.CopyTo(pVal);
+      CComPtr<IPoint2d> pnt;
+      cogoUtil::LocateByDistDir(m_PI,T,fwdTanBrg,0.0,m_PointFactory,&pnt);
+
+      Float64 x,y;
+      pnt->Location(&x,&y);
+      m_ST->Move(x,y);
+   }
+
+   m_ST->Clone(pVal);
 
    return S_OK;
 }
@@ -1899,6 +1908,9 @@ STDMETHODIMP CHorzCurve::OnPointChanged(IPoint2d* point)
    ATLASSERT( m_PBT.IsEqualObject(point) || 
                m_PI.IsEqualObject(point) ||
               m_PFT.IsEqualObject(point) );
+
+   m_TS.Release();
+   m_ST.Release();
 
 #ifdef _DEBUG
    // Better be listening only to IPoint2d objects

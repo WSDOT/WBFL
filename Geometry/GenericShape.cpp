@@ -37,6 +37,19 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+class CComMHPtr : public CComPtr<IMohrCircle>
+{
+public:
+   CComMHPtr()
+   {
+      CComPtr<IMohrCircle> ms;
+      ms.CoCreateInstance(CLSID_MohrCircle);
+      Attach(ms.Detach());
+   }
+};
+
+static CComMHPtr gs_MohrCircle;
+
 /////////////////////////////////////////////////////////////////////////////
 // CGenericShape
 STDMETHODIMP CGenericShape::InterfaceSupportsErrorInfo(REFIID riid)
@@ -71,19 +84,23 @@ HRESULT CGenericShape::FinalConstruct()
 
    HRESULT hr = CreatePoint(0.00,0.00,NULL,&m_pCG);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    hr = CrAdvise(m_pCG, this, IID_IPoint2dEvents, &m_cgCookie);
    if (FAILED(hr))
+   {
       return hr;
-
-   hr = m_MohrCircle.CoCreateInstance( CLSID_MohrCircle );
-   if (FAILED(hr))
-      return hr;
+   }
 
    hr = m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
    if (FAILED(hr))
+   {
       return hr;
+   }
+
+   ATLASSERT(gs_MohrCircle != NULL);
 
    return S_OK;
 }
@@ -139,7 +156,9 @@ STDMETHODIMP CGenericShape::get_Xleft(Float64 *pVal)
 STDMETHODIMP CGenericShape::put_Xleft(Float64 newVal)
 {
    if ( newVal < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_Xleft = newVal;
    return S_OK;
@@ -155,7 +174,9 @@ STDMETHODIMP CGenericShape::get_Xright(Float64 *pVal)
 STDMETHODIMP CGenericShape::put_Xright(Float64 newVal)
 {
    if ( newVal < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_Xright = newVal;
    return S_OK;
@@ -171,7 +192,9 @@ STDMETHODIMP CGenericShape::get_Ytop(Float64 *pVal)
 STDMETHODIMP CGenericShape::put_Ytop(Float64 newVal)
 {
    if ( newVal < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_Ytop = newVal;
    return S_OK;
@@ -188,7 +211,9 @@ STDMETHODIMP CGenericShape::get_Ybottom(Float64 *pVal)
 STDMETHODIMP CGenericShape::put_Ybottom(Float64 newVal)
 {
    if ( newVal < 0 )
+   {
       return E_INVALIDARG;
+   }
 
    m_Ybottom = newVal;
    return S_OK;
@@ -253,16 +278,18 @@ STDMETHODIMP CGenericShape::get_ShapeProperties(IShapeProperties* *props)
    CHECK_RETOBJ(props);
 
    // rotate properties into correct orientation.
-   m_MohrCircle->put_Sii( m_Ixx );
-   m_MohrCircle->put_Sjj( m_Iyy );
-   m_MohrCircle->put_Sij( m_Ixy );
+   gs_MohrCircle->put_Sii( m_Ixx );
+   gs_MohrCircle->put_Sjj( m_Iyy );
+   gs_MohrCircle->put_Sij( m_Ixy );
 
    Float64 ixx, ixy, iyy;
-   m_MohrCircle->ComputeState( m_Rotation, &ixx, &iyy, &ixy );
+   gs_MohrCircle->ComputeState( m_Rotation, &ixx, &iyy, &ixy );
 
    HRESULT hr = CreateShapeProperties(props);
    if (FAILED(hr))
+   {
       return hr;
+   }
 
    Float64 cx,cy;
    m_pCG->Location(&cx,&cy);
@@ -306,7 +333,9 @@ STDMETHODIMP CGenericShape::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
 
    HRESULT hr = CreatePointCollection(ppPolyPoints);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    (*ppPolyPoints)->Add(cg);
 
@@ -343,7 +372,9 @@ STDMETHODIMP CGenericShape::Clone(IShape** pClone)
    CComObject<CGenericShape>* pTheClone;
    HRESULT hr = CComObject<CGenericShape>::CreateInstance( &pTheClone );
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IGenericShape> pGenericShape(pTheClone); // hang on to a reference
 

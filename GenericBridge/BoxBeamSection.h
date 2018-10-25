@@ -67,10 +67,10 @@ BEGIN_COM_MAP(CBoxBeamSection)
 END_COM_MAP()
 
 private:
-   CComPtr<ICompositeShape> m_CompositeShape;
    CComPtr<IBoxBeam> m_Beam;
    CComPtr<IShape> m_Shape;
    CComPtr<IXYPosition> m_Position;
+   CComPtr<ICompositeShape> m_CompositeShape;
 
    bool ValidateWebIndex(CollectionIndexType idx);
    void GetSplittingZone(Float64* pH,SplittingDirection* pSD);

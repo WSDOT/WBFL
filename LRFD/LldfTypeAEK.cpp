@@ -311,7 +311,8 @@ lrfdWsdotLldfTypeAEK::lrfdWsdotLldfTypeAEK(GirderIndexType gdr,Float64 Savg,cons
                                            bool bXFrames,
                                            Float64 skewAngle1, Float64 skewAngle2,
                                            bool bSkewMoment,
-                                           bool bSkewShear) :
+                                           bool bSkewShear,
+                                           Float64 slabCantileverThreshold) :
 lrfdLldfTypeAEKIJ(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
                   Nl,wLane,leftOverhang,rightOverhang,L,ts,n,
                   I,A,eg, skewAngle1, skewAngle2,bSkewMoment,bSkewShear)
@@ -320,6 +321,9 @@ lrfdLldfTypeAEKIJ(gdr,Savg,gdrSpacings,leftOverhang,rightOverhang,
    m_LeftSlabOverhang  = leftSlabOverhang;
    m_RightSlabOverhang = rightSlabOverhang;
    m_bIgnoreDe = true; // we ignore range of applicability for de and use lever rule.
+
+   // Set the overhang threshold value
+   m_SlabCantileverThreshold = slabCantileverThreshold;
 
    // WSDOT and TxDOT apply a MPF of 1.0 for exterior girders using the lever rule where one lane controls
    this->IgnoreMpfLeverRule(true);
@@ -356,14 +360,18 @@ lrfdWsdotLldfTypeAEK& lrfdWsdotLldfTypeAEK::operator= (const lrfdWsdotLldfTypeAE
 //======================== OPERATORS  =======================================
 //======================== OPERATIONS =======================================
 
+bool lrfdWsdotLldfTypeAEK::SlabCantileverTest() const
+{
+   Float64 slab_cantilever = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
+   return IsGT(0.4*m_Savg,slab_cantilever,0.001);
+}
 
 lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_1_Strength() const
 {
    lrfdILiveLoadDistributionFactor::DFResult gi;
    gi = lrfdLldfTypeAEKIJ::GetMomentDF_Int_1_Strength();
 
-   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(0.4*m_Savg,slab_overhang,0.001) )
+   if (SlabCantileverTest())
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -401,8 +409,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetMomentDF_Ext_
 {
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
-   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(0.4*m_Savg,slab_overhang,0.001) )
+   if (SlabCantileverTest())
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetMomentDF_Ext_2_Strength();
@@ -445,8 +452,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_1
    lrfdILiveLoadDistributionFactor::DFResult gi;
    gi = lrfdLldfTypeAEKIJ::GetShearDF_Int_1_Strength();
 
-   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(0.4*m_Savg,slab_overhang,0.001) )
+   if (SlabCantileverTest())
    {
       // compare with lever rule with mpf=1.0
       lrfdILiveLoadDistributionFactor::DFResult gext;
@@ -483,8 +489,7 @@ lrfdILiveLoadDistributionFactor::DFResult lrfdWsdotLldfTypeAEK::GetShearDF_Ext_2
 {
    lrfdILiveLoadDistributionFactor::DFResult gext;
 
-   Float64 slab_overhang = m_Side==LeftSide ? m_LeftSlabOverhang : m_RightSlabOverhang;
-   if ( IsGT(0.4*m_Savg,slab_overhang,0.001) )
+   if (SlabCantileverTest())
    {
       // subclass will compute using interior with e factor, or lever rule
       gext = lrfdLldfTypeAEKIJ::GetShearDF_Ext_2_Strength();
@@ -525,6 +530,8 @@ void lrfdWsdotLldfTypeAEK::MakeCopy(const lrfdWsdotLldfTypeAEK& rOther)
 {
    m_LeftSlabOverhang  = rOther.m_LeftSlabOverhang;
    m_RightSlabOverhang = rOther.m_RightSlabOverhang;
+
+   m_SlabCantileverThreshold = rOther.m_SlabCantileverThreshold;
 }
 
 void lrfdWsdotLldfTypeAEK::MakeAssignment(const lrfdWsdotLldfTypeAEK& rOther)
@@ -580,7 +587,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdWsdotLldfTypeAEK df(1,S,spacings,de,de,
                            Nl,wLane,L,ts,n,I,A,eg,
                            overhang,overhang,
-                           false,0.0,0.0,false,false);
+                           false,0.0,0.0,false,false,0.5);
 
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );
@@ -606,7 +613,7 @@ bool lrfdWsdotLldfTypeAEK::TestMe(dbgLog& rlog)
    lrfdWsdotLldfTypeAEK df2(1,S,spacings,de,de,
                             Nl,wLane,L,ts,n,I,A,eg,
                             overhang,overhang,
-                            false,0.0,0.0,false,false);
+                            false,0.0,0.0,false,false,0.5);
 
    TRY_TESTME( IsEqual( df2.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::OneLoadedLane,lrfdTypes::StrengthI), 0.480, 0.001) );
    TRY_TESTME( IsEqual( df2.MomentDF(lrfdILiveLoadDistributionFactor::IntGirder,lrfdILiveLoadDistributionFactor::TwoOrMoreLoadedLanes,lrfdTypes::StrengthI), 0.649, 0.001) );

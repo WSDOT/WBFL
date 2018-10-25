@@ -41,16 +41,14 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CUGirderSection2::FinalConstruct()
 {
    m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
-   m_Beam.CoCreateInstance(CLSID_UBeam2);
-
-   CComQIPtr<IShape> beamShape(m_Beam);
-   ATLASSERT(beamShape != NULL); // must implement IShape interface
-
-   m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
-
    m_CompositeShape.QueryInterface(&m_Shape);
    m_CompositeShape.QueryInterface(&m_Position);
  
+   m_Beam.CoCreateInstance(CLSID_UBeam2);
+   CComQIPtr<IShape> beamShape(m_Beam);
+   ATLASSERT(beamShape != NULL); // must implement IShape interface
+   m_CompositeShape->AddShape(beamShape,VARIANT_FALSE); // solid
+
    return S_OK;
 }
 
@@ -71,7 +69,9 @@ STDMETHODIMP CUGirderSection2::InterfaceSupportsErrorInfo(REFIID riid)
 	for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
 		if (InlineIsEqualGUID(*arr[i],riid))
+      {
 			return S_OK;
+      }
 	}
 	return S_FALSE;
 }
@@ -116,11 +116,9 @@ STDMETHODIMP CUGirderSection2::put_Beam(IUBeam2* beam)
 
    m_Beam.Release();
    clone.QueryInterface(&m_Beam);
-
    m_Shape = clone;
 
-   m_Position.Release();
-   m_Shape.QueryInterface(&m_Position);
+   m_CompositeShape->Replace(0,m_Shape);
 
    return S_OK;
 }
@@ -146,7 +144,9 @@ STDMETHODIMP CUGirderSection2::get_WebCount(WebIndexType* nWebs)
 STDMETHODIMP CUGirderSection2::get_WebLocation(WebIndexType idx,Float64* location)
 {
    if ( idx < 0 || NWEBS <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(location);
 
@@ -156,7 +156,9 @@ STDMETHODIMP CUGirderSection2::get_WebLocation(WebIndexType idx,Float64* locatio
 STDMETHODIMP CUGirderSection2::get_WebSpacing(WebIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -166,7 +168,9 @@ STDMETHODIMP CUGirderSection2::get_WebSpacing(WebIndexType idx,Float64* spacing)
 STDMETHODIMP CUGirderSection2::get_WebThickness(WebIndexType idx,Float64* tWeb)
 {
    if ( idx < 0 || NWEBS <= idx )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(tWeb);
 
@@ -201,7 +205,9 @@ STDMETHODIMP CUGirderSection2::get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
    Float64 slope;
    hr = m_Beam->get_Slope(idx,&slope);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Float64 sign = (idx == 0 ? -1.0 : 1.0);
 
@@ -261,7 +267,9 @@ STDMETHODIMP CUGirderSection2::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 STDMETHODIMP CUGirderSection2::get_TopFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    Float64 W2;
    m_Beam->get_W2(&W2);
@@ -272,7 +280,9 @@ STDMETHODIMP CUGirderSection2::get_TopFlangeLocation(FlangeIndexType idx,Float64
    *location = (W2 - top_flange_width)/2;
 
    if ( idx == 0 )
+   {
       (*location) *= -1;  // left of CL beam so make it negative
+   }
 
    return S_OK;
 }
@@ -280,7 +290,9 @@ STDMETHODIMP CUGirderSection2::get_TopFlangeLocation(FlangeIndexType idx,Float64
 STDMETHODIMP CUGirderSection2::get_TopFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_TopFlangeWidth(width);
 }
@@ -288,7 +300,9 @@ STDMETHODIMP CUGirderSection2::get_TopFlangeWidth(FlangeIndexType idx,Float64* w
 STDMETHODIMP CUGirderSection2::get_TopFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx < 0 || NWEBS < idx )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_D5(tFlange);
 }
@@ -296,7 +310,9 @@ STDMETHODIMP CUGirderSection2::get_TopFlangeThickness(FlangeIndexType idx,Float6
 STDMETHODIMP CUGirderSection2::get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -313,7 +329,9 @@ STDMETHODIMP CUGirderSection2::get_BottomFlangeCount(FlangeIndexType* nBottomFla
 STDMETHODIMP CUGirderSection2::get_BottomFlangeLocation(FlangeIndexType idx,Float64* location)
 {
    if ( idx != 0 ) 
+   {
       return E_INVALIDARG;
+   }
 
    *location = 0;
    return S_OK;
@@ -322,7 +340,9 @@ STDMETHODIMP CUGirderSection2::get_BottomFlangeLocation(FlangeIndexType idx,Floa
 STDMETHODIMP CUGirderSection2::get_BottomFlangeWidth(FlangeIndexType idx,Float64* width)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_W1(width);
 }
@@ -330,7 +350,9 @@ STDMETHODIMP CUGirderSection2::get_BottomFlangeWidth(FlangeIndexType idx,Float64
 STDMETHODIMP CUGirderSection2::get_BottomFlangeThickness(FlangeIndexType idx,Float64* tFlange)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    return m_Beam->get_W2(tFlange);
 }
@@ -338,7 +360,9 @@ STDMETHODIMP CUGirderSection2::get_BottomFlangeThickness(FlangeIndexType idx,Flo
 STDMETHODIMP CUGirderSection2::get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing)
 {
    if ( idx != 0 )
+   {
       return E_INVALIDARG;
+   }
 
    CHECK_RETVAL(spacing);
 
@@ -458,27 +482,34 @@ STDMETHODIMP CUGirderSection2::Clone(IShape** pClone)
 
    CComObject<CUGirderSection2>* clone;
    CComObject<CUGirderSection2>::CreateInstance(&clone);
-   clone->m_CompositeShape.Release();
-   clone->m_Shape.Release();
-   clone->m_Position.Release();
-   clone->m_Beam.Release();
 
-   m_Shape->Clone(&clone->m_Shape);
-   clone->m_Shape->QueryInterface(&clone->m_CompositeShape);
-   clone->m_Shape->QueryInterface(&clone->m_Position);
+   CComPtr<IUGirderSection2> section = clone;
 
-   // first item is the beam
-   CComPtr<ICompositeShapeItem> item;
-   clone->m_CompositeShape->get_Item(0,&item);
+   section->put_Beam(m_Beam);
 
-   CComPtr<IShape> s;
-   item->get_Shape(&s);
+   IndexType nShapes;
+   m_CompositeShape->get_Count(&nShapes);
 
-   CComQIPtr<IUBeam2> beam(s);
-   clone->m_Beam = beam;
+   CComQIPtr<ICompositeShape> compShape(section);
+   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
 
+      CComPtr<IShape> shapeItem;
+      compShapeItem->get_Shape(&shapeItem);
 
-   (*pClone) = clone;
+      VARIANT_BOOL bVoid;
+      compShapeItem->get_Void(&bVoid);
+
+      CComPtr<IShape> shapeItemClone;
+      shapeItem->Clone(&shapeItemClone);
+
+      compShape->AddShape(shapeItemClone,bVoid);
+   }
+
+   CComQIPtr<IShape> shape(section);
+   (*pClone) = shape;
    (*pClone)->AddRef();
 
    return S_OK;

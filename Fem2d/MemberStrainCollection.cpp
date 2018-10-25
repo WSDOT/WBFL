@@ -83,7 +83,7 @@ STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/Mem
       pstrn->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, start, end, axialStrain, curvatureStrain);
 
       // insert new load
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, CComVariant(*ppMemberStrain) )) );
+      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppMemberStrain )) );
       if (!st.second)
       {
          ATLASSERT(false); // insert failed - better check why

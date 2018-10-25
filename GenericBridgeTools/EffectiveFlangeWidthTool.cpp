@@ -118,7 +118,14 @@ STDMETHODIMP CEffectiveFlangeWidthTool::TributaryFlangeWidthBySegmentEx(IGeneric
       m_BridgeGeometryTool->GirderSpacingBySegment(bridge,ssMbrID,segIdx,Xs,rightSSMbrID,&rightSpacing);
    }
 
-   if ( leftSSMbrID == INVALID_ID )
+   if ( leftSSMbrID == INVALID_ID && rightSSMbrID == INVALID_ID )
+   {
+      // this is the case for a one girder bridge
+      // spacing in this case is measured as the deck overhang
+      *twLeft  = leftSpacing;
+      *twRight = rightSpacing;
+   }
+   else if ( leftSSMbrID == INVALID_ID )
    {
       if ( leftSpacing < 0 )
       {

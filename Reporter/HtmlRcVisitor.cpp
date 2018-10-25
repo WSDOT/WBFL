@@ -200,7 +200,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    bool bHeading = false;
    for (RowIndexType rowno=0; rowno<num_rows; rowno++)
    {
-      if (rowno == 0 && 0 < num_head_rows)
+      if (rowno == 0)
       {
          bHeading = true;
          *m_pOstream << _T("<THEAD>")<<std::endl; // first row is start of header row
@@ -209,10 +209,7 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       if (num_head_rows == rowno)
       {
          // first row of body
-         if ( 0 < num_head_rows )
-         {
-            *m_pOstream << _T("</THEAD>")<<std::endl;
-         }
+         *m_pOstream << _T("</THEAD>")<<std::endl;
 
          *m_pOstream << _T("<TBODY>")<<std::endl; // first row is start of header row
          bHeading = false;
@@ -325,11 +322,11 @@ void rptHtmlRcVisitor::VisitRcFlowModifier(rptRcFlowModifier* pMyFlow)
    for (Uint16 i=0; i<nt; i++)
    {
       if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_LINE)
-         *m_pOstream << _T("<BR>")<<std::endl;
+         *m_pOstream << _T("<BR/>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::NEW_PAGE)
          *m_pOstream << _T("<DIV STYLE=\"page-break-after: always\"><BR></DIV>")<<std::endl;
       else if(pMyFlow->GetModifierType()==rptRcFlowModifier::TAB)
-         *m_pOstream << _T("&emsp;&emsp;&emsp;") << std::endl;
+         ;
          // TODO: figure out how to implement tabs
          //       It appears that tabs of this sort will not work. Could possibly
          //       add levels of indenting to tables.

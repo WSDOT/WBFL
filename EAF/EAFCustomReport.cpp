@@ -126,10 +126,16 @@ void CEAFCustomReports::SaveToRegistry(CWinApp* theApp) const
 CEAFCustomReportMixin::CEAFCustomReportMixin()
 {
    m_bDisplayFavoriteReports = FALSE; // show all reports by default
+   m_bSaveCustomReports = FALSE; // will get set to true if a document is created
 }
 
 CEAFCustomReportMixin::~CEAFCustomReportMixin()
 {
+}
+
+void CEAFCustomReportMixin::SaveCustomReports(BOOL bSave)
+{
+   m_bSaveCustomReports = bSave;
 }
 
 BOOL CEAFCustomReportMixin::DisplayFavoriteReports() const
@@ -188,6 +194,11 @@ void CEAFCustomReportMixin::LoadCustomReportInformation()
 
 void CEAFCustomReportMixin::SaveCustomReportInformation()
 {
+   if ( !m_bSaveCustomReports )
+   {
+      return;
+   }
+
    // call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
    CWinApp* pApp = AfxGetApp();
 

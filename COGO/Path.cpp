@@ -1481,19 +1481,16 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
       objDir->get_Value(&dir);
 
       // Setup a coordinate system at the start of the line segment
-      CComPtr<ICoordinateXform2d> xfrm;
-      xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
+      m_Xform->putref_NewOrigin(start);
+      m_Xform->put_RotationAngle(dir);
 
-      xfrm->putref_NewOrigin(start);
-      xfrm->put_RotationAngle(dir);
-
-      xfrm->XformEx(point,xfrmOldToNew,&point1);
+      m_Xform->XformEx(point,xfrmOldToNew,&point1);
 
       // Setup a coordinate system at the end of the line segment
-      xfrm->putref_NewOrigin(end);
-      xfrm->put_RotationAngle(dir + M_PI);
+      m_Xform->putref_NewOrigin(end);
+      m_Xform->put_RotationAngle(dir + M_PI);
 
-      xfrm->XformEx(point,xfrmOldToNew,&point2);
+      m_Xform->XformEx(point,xfrmOldToNew,&point2);
    }
    else if ( type == petHorzCurve )
    {
@@ -1512,19 +1509,16 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
       fwdTanBrg->get_Value(&dir2);
 
       // Setup a coordinate system at the start of the curve
-      CComPtr<ICoordinateXform2d> xfrm;
-      xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
+      m_Xform->putref_NewOrigin(ts);
+      m_Xform->put_RotationAngle(dir1);
 
-      xfrm->putref_NewOrigin(ts);
-      xfrm->put_RotationAngle(dir1);
-
-      xfrm->XformEx(point,xfrmOldToNew,&point1);
+      m_Xform->XformEx(point,xfrmOldToNew,&point1);
 
       // Setup a coordinate system at the end of the curve
-      xfrm->putref_NewOrigin(st);
-      xfrm->put_RotationAngle(dir2 + M_PI);
+      m_Xform->putref_NewOrigin(st);
+      m_Xform->put_RotationAngle(dir2 + M_PI);
 
-      xfrm->XformEx(point,xfrmOldToNew,&point2);
+      m_Xform->XformEx(point,xfrmOldToNew,&point2);
    }
    else if ( type == petCubicSpline )
    {
@@ -1543,19 +1537,16 @@ bool CPath::DoesPointProjectOntoElement(IPoint2d* point,IPathElement* element,bo
       fwdTanBrg->get_Value(&dir2);
 
       // Setup a coordinate system at the start of the line segment
-      CComPtr<ICoordinateXform2d> xfrm;
-      xfrm.CoCreateInstance(CLSID_CoordinateXform2d);
+      m_Xform->putref_NewOrigin(pntStart);
+      m_Xform->put_RotationAngle(dir1);
 
-      xfrm->putref_NewOrigin(pntStart);
-      xfrm->put_RotationAngle(dir1);
-
-      xfrm->XformEx(point,xfrmOldToNew,&point1);
+      m_Xform->XformEx(point,xfrmOldToNew,&point1);
 
       // Setup a coordinate system at the end of the line segment
-      xfrm->putref_NewOrigin(pntEnd);
-      xfrm->put_RotationAngle(dir2 + M_PI);
+      m_Xform->putref_NewOrigin(pntEnd);
+      m_Xform->put_RotationAngle(dir2 + M_PI);
 
-      xfrm->XformEx(point,xfrmOldToNew,&point2);
+      m_Xform->XformEx(point,xfrmOldToNew,&point2);
    }
    else
    {

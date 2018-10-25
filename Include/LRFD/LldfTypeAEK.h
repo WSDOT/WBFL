@@ -167,11 +167,11 @@ DESCRIPTION
 
    The WSDOT modifications are:
    1. For exterior girders with a slab cantilever length less than or equal to
-      one-half of the adjacent interior girder spacing,  compute the distribution
+      the overhang threshold of the adjacent interior girder spacing,  compute the distribution
       factor using the equations for an interior girder.  The slab cantilever
       length is defined as the distance from the centerline of the exterior girder
       to the edge of the slab.
-   2. For exterior girders with a slab cantilever length exceeding one-half
+   2. For exterior girders with a slab cantilever length exceeding the overhang threshold
       of the adjacent interior girder spacing, compute the live load distribution
       factor in accordance with the LRFD specification, except use a multiple
       presence factor of 1.0 for one design lane loaded.
@@ -206,7 +206,8 @@ public:
                         bool bXFrames,
                         Float64 skewAngle1, Float64 skewAngle2,
                         bool bSkewMoment,
-                        bool bSkewShear);
+                        bool bSkewShear,
+                        Float64 SlabCantileverThreshold);
 
    //------------------------------------------------------------------------
    // Copy constructor
@@ -230,10 +231,16 @@ protected:
    Float64 m_LeftSlabOverhang;
    Float64 m_RightSlabOverhang;
 
+   Float64 m_SlabCantileverThreshold;
+
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   
+
+   // If test passes,  use the lever rule with the multiple presence factor of 1.0 for single
+   // lane to determine the live load distribution. The live load used to design the exterior 
+   // girder shall not be less than the live load used for the adjacent interior girder. 
+   bool SlabCantileverTest() const;
 
    //------------------------------------------------------------------------
    virtual DFResult GetMomentDF_Ext_1_Strength() const;
@@ -258,6 +265,9 @@ private:
    // GROUP: DATA MEMBERS
 
    // GROUP: LIFECYCLE
+   // No default constructor
+   lrfdWsdotLldfTypeAEK();
+
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
    // GROUP: ACCESS

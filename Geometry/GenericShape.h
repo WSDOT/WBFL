@@ -75,7 +75,6 @@ BEGIN_CONNECTION_POINT_MAP(CGenericShape)
 END_CONNECTION_POINT_MAP()
 
 private:
-   CComPtr<IMohrCircle> m_MohrCircle;
    CComPtr<IGeomUtil2d> m_GeomUtil;
    CComPtr<IPoint2d> m_pCG; // CG of the shape... also the hook point
    unsigned long  m_cgCookie;

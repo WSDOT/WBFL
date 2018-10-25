@@ -672,7 +672,7 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
       {
          Float64 x;
          bxbPoint->get_X(&x);
-         Float64 dy = ::LinInterp(x,h1,h2,L);
+         Float64 dy = ::LinInterp(x+L/2,h1,h2,L);
          bxbPoint->Offset(0,-dy);
          bxbPoint.Release();
       }
@@ -693,21 +693,6 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
 
       TrimLeftToLine(m_BXBProfile,line);
 
-      // Bottom Left Surface - adjust for bottom taper
-      if ( !IsZero(m_H2) && !IsZero(m_X1) )
-      {
-         CComPtr<IPoint2d> bxbBL = pntOnLine; // this is the bottom left point... hang on to it
-         pntOnLine.Release();
-         bxbBL->Clone(&pntOnLine);
-         pntOnLine->Offset(m_X1-m_X2,-m_H2);
-
-         line->ThroughPoints(bxbBL,pntOnLine);
-
-         TrimLeftToLine(m_BXBProfile,line);
-
-         m_BXBProfile->Insert(0,bxbBL);
-      }
-
       // Right Edge - adjust for right edge slope
       IndexType nPoints;
       lxbProfile->get_Count(&nPoints);
@@ -719,10 +704,31 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
       line->ThroughPoints(lxbTR,pntOnLine);
       TrimRightToLine(m_BXBProfile,line);
 
+      // Bottom Left Surface - adjust for bottom taper
+      if ( !IsZero(m_H2) && !IsZero(m_X1) )
+      {
+         CComPtr<IPoint2d> bxbBL;
+         lxbTL->Clone(&bxbBL);
+         bxbBL->Offset(m_X2,-m_H1);
+
+         pntOnLine.Release();
+         bxbBL->Clone(&pntOnLine);
+         pntOnLine->Offset(m_X1-m_X2,-m_H2);
+
+         line->ThroughPoints(bxbBL,pntOnLine);
+
+         TrimLeftToLine(m_BXBProfile,line);
+
+         m_BXBProfile->Insert(0,bxbBL);
+      }
+
       // Bottom Right Surface - adjust for bottom taper
       if ( !IsZero(m_H4) && !IsZero(m_X3) )
       {
-         CComPtr<IPoint2d> bxbBR = pntOnLine; // this is the bottom right point... hang on to in
+         CComPtr<IPoint2d> bxbBR;
+         lxbTR->Clone(&bxbBR);
+         bxbBR->Offset(-m_X4,-m_H3);
+
          pntOnLine.Release();
          bxbBR->Clone(&pntOnLine);
          pntOnLine->Offset(-(m_X3-m_X4),-m_H4);

@@ -679,6 +679,7 @@
 				TurnOffAssemblyGeneration="false"
 				ImportLibrary="$(TargetDir)$(TargetName).lib"
 				TargetMachine="17"
+				Profile="true"
 			/>
 			<Tool
 				Name="VCALinkTool"

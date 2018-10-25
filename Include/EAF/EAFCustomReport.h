@@ -73,6 +73,8 @@ public:
    CEAFCustomReportMixin();
    virtual ~CEAFCustomReportMixin();
 
+   void SaveCustomReports(BOOL bSave);
+
    // Determine whether to display favorite reports or all reports in menu dropdowns
    BOOL DisplayFavoriteReports() const;
    void DisplayFavoriteReports(BOOL doDisplay);
@@ -96,4 +98,6 @@ protected:
    BOOL m_bDisplayFavoriteReports;
    std::vector<std::_tstring> m_FavoriteReports;
    CEAFCustomReports m_CustomReports;
+
+   BOOL m_bSaveCustomReports;
 };

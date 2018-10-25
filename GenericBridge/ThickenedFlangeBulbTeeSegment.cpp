@@ -392,11 +392,35 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
       shape->AddPoint(distAlongSegment,H + D8);
    }
 
-   // Put (0,0) at the top left of the rectangle
+   Float64 brgOffset, endDist;
+   if ( bIncludeClosure == VARIANT_TRUE )
+   {
+      brgOffset = 0;
+      endDist = 0;
+   }
+   else
+   {
+      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_pGirderLine->get_EndDistance(etStart,&endDist);
+   }
+
+   // Shape is to be in girder path coordinates so (0,0) is at the CL Pier and at the elevation of the top of the shape
+   //
+   // CL Pier   Start of segment
+   // |         |       CL Bearing
+   // |(0,0)    |       |
+   // *         +-------+---------------\  
+   // |         |       .               /
+   // |         +-------+---------------\  
+   //
+   //          Elevation View
+
+
+
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
    position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(0,0);
+   topLeft->Move(brgOffset-endDist,0);
    position->put_LocatorPoint(lpTopLeft,topLeft);
 
    shape->QueryInterface(ppShape);

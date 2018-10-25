@@ -29,6 +29,7 @@
 #include <EAF\EAFAutoCalcReportView.h>
 #include <EAF\EAFLicensePlateChildFrame.h>
 #include <EAF\EAFDocTemplate.h>
+#include <EAF\EAFHints.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -126,6 +127,11 @@ void CEAFAutoCalcReportView::Dump(CDumpContext& dc) const
 
 void CEAFAutoCalcReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
+   if ( lHint == EAF_HINT_FAVORITE_REPORTS_CHANGED )
+   {
+      return;
+   }
+
    CEAFAutoCalcViewMixin::OnUpdate(pSender,lHint,pHint); // turns on LP frame if needed
 
    CEAFAutoCalcDocMixin* pAutoCalcDoc = GetAutoCalcDocument();
