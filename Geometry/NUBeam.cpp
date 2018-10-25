@@ -595,7 +595,17 @@ STDMETHODIMP CNUBeam::get_AvgWebWidth(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_T;
+   // if m_EndBlock is zero, it isn't used
+   // if m_EndBlock != m_T then we are in an end block region
+   // m_EndBlock should = m_T if we are not in an end block region
+   if ( !IsZero(m_EndBlock) && !IsEqual(m_EndBlock,m_T) )
+   {
+      *pVal = m_EndBlock;
+   }
+   else
+   {
+      *pVal = m_T;
+   }
 
    return S_OK;
 }
