@@ -200,8 +200,6 @@ library WBFLCore
 		[helpstring("method Increment")] HRESULT Increment();
 		[helpstring("method UpdateMessage")] HRESULT UpdateMessage([in] LPCTSTR msg);
 		[helpstring("method Continue")] HRESULT Continue();
-		[helpstring("proprty EnableCancel"),propget] HRESULT EnableCancel([out,retval]BOOL* pbEnable);
-		[helpstring("proprty EnableCancel"),propput] HRESULT EnableCancel([in]BOOL bEnable);
 		[helpstring("method DestroyProgressWindow")] HRESULT DestroyProgressWindow();
 	};
 

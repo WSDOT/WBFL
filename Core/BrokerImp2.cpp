@@ -759,6 +759,7 @@ STDMETHODIMP CBrokerImp2::Load(IStructuredLoad* pStrLoad)
          if ( FAILED(hr) )
             return hr;
 
+         hrResult = max(hr,hrResult);
          m_MissingAgentData.push_back(OLE2T(bstrRawUnit));
       }
 

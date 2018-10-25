@@ -44,6 +44,7 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CProgressDlg)
 	enum { IDD = IDD_PROGRESSDLG };
+   DWORD m_dwMask;
 	CAnimateCtrl	m_Animate;
 	CStatic	m_MessageCtrl;
 	CButton	m_Cancel;

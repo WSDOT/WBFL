@@ -584,7 +584,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                      }
                   }
 
-                  if ( overhang_taper == dotBottomTopFlange )
+                  if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltLeftExteriorGirder )
                   {
                      slab_shape->AddPoint(x23-dx,el23-dy); // 1,2
                   }
@@ -627,7 +627,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                      }
                   }
 
-                  if ( overhang_taper == dotBottomTopFlange )
+                  if ( overhang_taper == dotBottomTopFlange || xfillet==0.0 || girderPoint.girderLocation == ltRightExteriorGirder)
                   {
                      slab_shape->AddPoint(x45+dx,el45-dy); // 5, 6
                   }

@@ -277,6 +277,11 @@ CString CEAFDocProxyAgent::GetFileTitle()
       finder.Close();
    }
 
+   if ( strResult.IsEmpty() )
+   {
+      strResult = m_pDoc->GetTitle();
+   }
+
    return strResult;
 }
 

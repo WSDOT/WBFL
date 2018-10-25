@@ -271,19 +271,27 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    {
       // starting with first pier
       // use the DeckBoundary transverse end points at the start
-      boundaryPoints->Add(m_EdgePoint[etStart][stLeft]);
+      CComPtr<IPoint2d> pntEdgeStartLeft;
+      m_EdgePoint[etStart][stLeft]->Clone(&pntEdgeStartLeft);
+      boundaryPoints->Add(pntEdgeStartLeft);
       
       if ( m_vbBreakEdge[etStart][stLeft] == VARIANT_TRUE )
       {
-         boundaryPoints->Add(m_EdgeBreakPoint[etStart][stLeft]);
+         CComPtr<IPoint2d> pntEdgeBreakStartLeft;
+         m_EdgeBreakPoint[etStart][stLeft]->Clone(&pntEdgeBreakStartLeft);
+         boundaryPoints->Add(pntEdgeBreakStartLeft);
       }
 
       if ( m_vbBreakEdge[etStart][stRight] == VARIANT_TRUE )
       {
-         boundaryPoints->Add(m_EdgeBreakPoint[etStart][stRight]);
+         CComPtr<IPoint2d> pntEdgeBreakStartRight;
+         m_EdgeBreakPoint[etStart][stRight]->Clone(&pntEdgeBreakStartRight);
+         boundaryPoints->Add(pntEdgeBreakStartRight);
       }
 
-      boundaryPoints->Add(m_EdgePoint[etStart][stRight]);
+      CComPtr<IPoint2d> pntEdgeStartRight;
+      m_EdgePoint[etStart][stRight]->Clone(&pntEdgeStartRight);
+      boundaryPoints->Add(pntEdgeStartRight);
 
       left_edge_start  = 0;
       right_edge_start = 0;
@@ -315,8 +323,8 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    CComPtr<IPoint2d> pntLeftEnd, pntRightEnd;
    if ( lastPierID == endPierID )
    {
-      m_EdgePoint[etEnd][stLeft].CopyTo(&pntLeftEnd);
-      m_EdgePoint[etEnd][stRight].CopyTo(&pntRightEnd);
+      m_EdgePoint[etEnd][stLeft]->Clone(&pntLeftEnd);
+      m_EdgePoint[etEnd][stRight]->Clone(&pntRightEnd);
    }
    else
    {
@@ -429,25 +437,35 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    BOOST_FOREACH(PathPointEntry rightPathPointEntry,rightPathPoints)
    {
       CComPtr<IPoint2d> point = rightPathPointEntry.second;
-      boundaryPoints->Add(point);
+      CComPtr<IPoint2d> clone;
+      point->Clone(&clone);
+      boundaryPoints->Add(clone);
    }
 
    // define the transverse line at the end of the DeckBoundary
    if ( lastPierID == endPierID )
    {
-      boundaryPoints->Add(m_EdgePoint[etEnd][stRight]);
+      CComPtr<IPoint2d> pntEdgeEndRight;
+      m_EdgePoint[etEnd][stRight]->Clone(&pntEdgeEndRight);
+      boundaryPoints->Add(pntEdgeEndRight);
 
       if ( m_vbBreakEdge[etEnd][stRight] == VARIANT_TRUE )
       {
-         boundaryPoints->Add(m_EdgeBreakPoint[etEnd][stRight]);
+         CComPtr<IPoint2d> pntEdgeBreakEndRight;
+         m_EdgeBreakPoint[etEnd][stRight]->Clone(&pntEdgeBreakEndRight);
+         boundaryPoints->Add(pntEdgeBreakEndRight);
       }
       
       if ( m_vbBreakEdge[etEnd][stLeft] == VARIANT_TRUE )
       {
-         boundaryPoints->Add(m_EdgeBreakPoint[etEnd][stLeft]);
+         CComPtr<IPoint2d> pntEdgeBreakEndLeft;
+         m_EdgeBreakPoint[etEnd][stLeft]->Clone(&pntEdgeBreakEndLeft);
+         boundaryPoints->Add(pntEdgeBreakEndLeft);
       }
 
-      boundaryPoints->Add(m_EdgePoint[etEnd][stLeft]);
+      CComPtr<IPoint2d> pntEdgeEndLeft;
+      m_EdgePoint[etEnd][stLeft]->Clone(&pntEdgeEndLeft);
+      boundaryPoints->Add(pntEdgeEndLeft);
    }
    else
    {
@@ -547,13 +565,17 @@ STDMETHODIMP CDeckBoundary::get_PerimeterEx(CollectionIndexType nMinPointsPerSid
    BOOST_FOREACH(PathPointEntry leftPathPointEntry,leftPathPoints)
    {
       CComPtr<IPoint2d> point = leftPathPointEntry.second;
-      boundaryPoints->Add(point);
+      CComPtr<IPoint2d> clone;
+      point->Clone(&clone);
+      boundaryPoints->Add(clone);
    }
 
    // close the perimeter shape
    CComPtr<IPoint2d> pnt;
    boundaryPoints->get_Item(0,&pnt);
-   boundaryPoints->Add(pnt);
+   CComPtr<IPoint2d> clone;
+   pnt->Clone(&clone);
+   boundaryPoints->Add(clone);
 
    boundaryPoints.CopyTo(pPoints);
 

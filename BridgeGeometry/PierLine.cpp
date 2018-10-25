@@ -161,26 +161,22 @@ STDMETHODIMP CPierLine::put_EndDistanceMeasurementLocation(PierFaceType pierFace
 
 STDMETHODIMP CPierLine::get_AlignmentPoint(IPoint2d** ppPoint)
 {
-   CHECK_RETOBJ(ppPoint);
-   return m_pntAlignment.CopyTo(ppPoint);
+   return m_pntAlignment->Clone(ppPoint);
 }
 
 STDMETHODIMP CPierLine::get_BridgePoint(IPoint2d** ppPoint)
 {
-   CHECK_RETOBJ(ppPoint);
-   return m_pntBridge.CopyTo(ppPoint);
+   return m_pntBridge->Clone(ppPoint);
 }
 
 STDMETHODIMP CPierLine::get_LeftPoint(IPoint2d** ppPoint)
 {
-   CHECK_RETOBJ(ppPoint);
-   return m_pntLeft.CopyTo(ppPoint);
+   return m_pntLeft->Clone(ppPoint);
 }
 
 STDMETHODIMP CPierLine::get_RightPoint(IPoint2d** ppPoint)
 {
-   CHECK_RETOBJ(ppPoint);
-   return m_pntRight.CopyTo(ppPoint);
+   return m_pntRight->Clone(ppPoint);
 }
 
 STDMETHODIMP CPierLine::get_Centerline(ILine2d** ppLine)
