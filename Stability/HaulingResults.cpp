@@ -134,7 +134,11 @@ stbHaulingResults::stbHaulingResults()
       FScrWindDirection[slope] = stbTypes::Left;
       FScrCorner[slope] = stbTypes::TopLeft;
 
-      
+      FSfImpactDirection[slope] = stbTypes::NoImpact;
+      FSfWindDirection[slope] = stbTypes::Left;
+      MinFsFailure[slope] = Float64_Max;
+      MinAdjFsFailure[slope] = Float64_Max;
+
       FSroImpactDirection[slope] = stbTypes::NoImpact;
       FSroWindDirection[slope] = stbTypes::Left;
       MinFsRollover[slope] = Float64_Max;
@@ -150,12 +154,11 @@ stbHaulingResults::stbHaulingResults()
       }
    }
 
-   bCrackedAtRollover = false;
-   
-   memset((void*)bLeftRolloverStability, 0, sizeof(bLeftRolloverStability));
-   memset((void*)LeftThetaRollover, 0, sizeof(LeftThetaRollover));
-   memset((void*)bRightRolloverStability, 0, sizeof(bRightRolloverStability));
-   memset((void*)RightThetaRollover, 0, sizeof(RightThetaRollover));
+
+   memset((void*)ThetaMax, 0, sizeof(ThetaMax));
+   memset((void*)FsFailure, 0, sizeof(FsFailure));
+   memset((void*)AdjFsFailure, 0, sizeof(AdjFsFailure));
+
    memset((void*)bRolloverStability, 0, sizeof(bRolloverStability));
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));

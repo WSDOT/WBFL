@@ -1770,6 +1770,22 @@ library WBFLGenericBridge
       [propput,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[in]Float64 clo);
 	};
 
+   [
+      object,
+      uuid(3C141254-A184-432A-AFE0-CE31DD443654),
+      oleautomation,
+      helpstring("IFlangePoints Interface"),
+      pointer_default(unique)
+   ]
+   interface IFlangePoints : IUnknown
+   {
+      [helpstring("property GetTopFlangePoints")]
+      HRESULT GetTopFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppTopCentral, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
+
+      [helpstring("property GetBottomFlangePoints")]
+      HRESULT GetBottomFlangePoints([out]IPoint2d** ppLeftTop, [out]IPoint2d** ppLeftBottom, [out]IPoint2d** ppRightTop, [out]IPoint2d** ppRightBottom);
+   };
+
 	[
 	   object,
 	   uuid(750677B3-DEA8-4e2d-B080-C54E0E948937),
