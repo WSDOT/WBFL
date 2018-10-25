@@ -2351,8 +2351,8 @@ void CPath::CreateParallelHorzCurve(Float64 offset,IHorzCurve* hc,IUnknown** res
    m_GeomUtil->LineLineIntersect(bkTangent,fwdTangent,&newPI);
 
    CComPtr<IPoint2d> newPBT, newPFT;
-   m_GeomUtil->PointOnLineNearest(bkTangent, PBT,&newPBT);
-   m_GeomUtil->PointOnLineNearest(fwdTangent,PFT,&newPFT);
+   m_GeomUtil->PointOnLineNearest(bkTangent, TS,&newPBT);
+   m_GeomUtil->PointOnLineNearest(fwdTangent,ST,&newPFT);
 
    // compute new circular curve radius
    Float64 radius;

@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CEAFChildFrame, CMDIChildWnd)
 	//{{AFX_MSG_MAP(CEAFChildFrame)
 	//}}AFX_MSG_MAP
    ON_WM_CREATE()
+   ON_WM_NCMBUTTONDOWN()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -181,4 +182,12 @@ BOOL CEAFChildFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle , CWnd* pP
    // Don't set the module state for the EAF DLL Module. This function has been made pure-virtual
    // so that base classes must implement and set the module state for their DLL module.
    return CMDIChildWnd::LoadFrame(nIDResource, dwDefaultStyle, pParentWnd, pContext);
+}
+
+void CEAFChildFrame::OnNcMButtonDown(UINT nHitTest, CPoint point)
+{
+   if (nHitTest == HTCAPTION)
+   {
+      PostMessage(WM_CLOSE);
+   }
 }

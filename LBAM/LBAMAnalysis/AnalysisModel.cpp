@@ -4058,7 +4058,7 @@ void CAnalysisModel::LayoutSuperstructure(ISuperstructureMembers* pMembers, ISpa
    // place member hinges
    PlaceHinges(pMembers, m_LeftOverhang, pSuperNodeLocs);
    // make sure nodes are not too close to each other
-   CondenseSuperNodeSections(pSuperNodeLocs, m_LayoutTolerance);
+   //CondenseSuperNodeSections(pSuperNodeLocs, m_LayoutTolerance);
    // insure that that a cross section is assigned to every node 
    AssignSectionsToNodes(pSuperNodeLocs);
 }

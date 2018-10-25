@@ -134,9 +134,9 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       pPara = new rptParagraph;
       *pChapter << pPara;
 
-      *pPara << _T("Maximum allowable concrete compressive stress = -") << criteria.CompressionCoefficient << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression) << rptNewLine;
+      *pPara << _T("Compression stress limit = -") << criteria.CompressionCoefficient << RPT_FC << _T(" = ") << stress.SetValue(criteria.AllowableCompression) << rptNewLine;
 
-      *pPara << _T("Maximum allowable concrete tensile stress = ") << tension_coeff.SetValue(criteria.TensionCoefficient[slope]);
+      *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficient[slope]);
       if ( bLambda )
       {
          *pPara << symbol(lambda);
@@ -150,7 +150,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
 
       if ( segment )
       {
-         *pPara << _T("Maximum allowable concrete tensile stress = ") << tension_coeff.SetValue(criteria.TensionCoefficientWithRebar[slope]);
+         *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(criteria.TensionCoefficientWithRebar[slope]);
          if ( bLambda )
          {
             *pPara << symbol(lambda);
@@ -160,10 +160,10 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       }
       else
       {
-         *pPara << _T("Allowable tensile stress with bonded reinforcement sufficient to resist tension force in concrete was not evaluated") << rptNewLine;
+         *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated") << rptNewLine;
       }
 
-      *pPara << _T("Allowable factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
+      *pPara << _T("Minimum factor of safety against cracking = ") << scalar.SetValue(criteria.MinFScr) << rptNewLine;
       
       Float64 fcReqd = pArtifact->RequiredFcCompression(slope);
       *pPara << RPT_FC << _T(" required for compression stress = ");
@@ -252,7 +252,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
 
       pStressTable->SetRowSpan(0,col1,2);
       pStressTable->SetRowSpan(1,col2++,SKIP_CELL);
-      (*pStressTable)(0,col1++) << COLHDR(RPT_STRESS(_T("Allow")), rptStressUnitTag, pDisplayUnits->Stress );
+      (*pStressTable)(0,col1++) << COLHDR(RPT_STRESS(_T("Limit")), rptStressUnitTag, pDisplayUnits->Stress );
 
       pStressTable->SetRowSpan(0,col1,2);
       pStressTable->SetRowSpan(1,col2++,SKIP_CELL);
@@ -402,7 +402,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       (*pTable)(row,1) << scalar.SetValue(results.MinAdjFsFailure[slope]);
       row++;
 
-      (*pTable)(row,0) << _T("Allowable Factor of Safety Against Failure");
+      (*pTable)(row,0) << _T("Minimum Factor of Safety Against Failure");
       (*pTable)(row,1) << scalar.SetValue(criteria.MinFSf);
       row++;
 
@@ -428,7 +428,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
       (*pTable)(row,1) << scalar.SetValue(results.MinFsRollover[slope]);
       row++;
 
-      (*pTable)(row,0) << _T("Allowable Factor of Safety Against Rollover");
+      (*pTable)(row,0) << _T("Minimum Factor of Safety Against Rollover");
       (*pTable)(row,1) << scalar.SetValue(criteria.MinFSf);
       row++;
 
@@ -506,7 +506,7 @@ void stbHaulingStabilityReporter::BuildSpecCheckChapter(const stbIGirder* pGirde
    pTable->SetStripeRowColumnStyle(1,rptStyleManager::GetTableStripeRowCellStyle(CB_NONE | CJ_RIGHT));
    *pPara << pTable;
    (*pTable)(0,0) << _T("Girder Weight");
-   (*pTable)(1,0) << _T("Maximum Allowable Weight");
+   (*pTable)(1,0) << _T("Maximum Weight");
    (*pTable)(2,0) << _T("Status");
    Float64 wgt  = results.Wg;
    Float64 maxwgt = criteria.MaxGirderWeight;

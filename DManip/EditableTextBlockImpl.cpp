@@ -150,8 +150,6 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::CreateEditControl()
    // Select all of the text and don't scroll it
    pEdit->SetSel(0,strText.GetLength(),FALSE);
 
-   pEdit->UpdateWindow();
-
    dc.SelectObject(pOldFont);
 }
 

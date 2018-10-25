@@ -908,9 +908,11 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
       CComPtr<IPoint2d> lxbTR;
       lxbProfile->get_Item(nPoints - 1, &lxbTR);
 
-      Float64 Xl, Xr;
-      lxbTL->get_X(&Xl);
-      lxbTR->get_X(&Xr);
+      Float64 Xl, Yl;
+      lxbTL->Location(&Xl, &Yl);
+
+      Float64 Xr, Yr;
+      lxbTR->Location(&Xr, &Yr);
 
       // interpolation parameters for depth of lower xbeam between tapers
       Float64 Xs = Xl;
@@ -921,6 +923,9 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
       // horizontal location of left/right tapers
       Float64 Xlt = Xl + m_X1;
       Float64 Xrt = Xr - m_X3;
+
+      Xlt = IsZero(Xlt) ? 0 : Xlt;
+      Xrt = IsZero(Xrt) ? 0 : Xrt;
 
       // horizontal location of left/right end points of bottom of xbeam
       Xl += m_X2;
@@ -936,6 +941,7 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
          pnt->get_X(&X);
          if (InRange(Xlt, X, Xrt))
          {
+            // X is between tapers
             CComPtr<IPoint2d> pntBXB;
             pnt->Clone(&pntBXB);
 
@@ -946,50 +952,53 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
          }
       }
 
-      Float64 Xlcl, Xltcl, Xrtcl, Xrcl;
-      m_pPier->ConvertPierToCurbLineCoordinate(Xl,  &Xlcl);
+      Float64 Xltcl, Xrtcl;
       m_pPier->ConvertPierToCurbLineCoordinate(Xlt, &Xltcl);
       m_pPier->ConvertPierToCurbLineCoordinate(Xrt, &Xrtcl);
-      m_pPier->ConvertPierToCurbLineCoordinate(Xr,  &Xrcl);
 
-      Float64 Yl, Ylt, Yrt, Yr;
-      m_pPier->get_Elevation(Xlcl,  &Yl);
+      Float64 Ylt, Yrt;
       m_pPier->get_Elevation(Xltcl, &Ylt);
       m_pPier->get_Elevation(Xrtcl, &Yrt);
-      m_pPier->get_Elevation(Xrcl,  &Yr);
 
       Float64 tDeck;
       m_pPier->get_DeckThickness(&tDeck);
 
-      Yl -= tDeck;
       Ylt -= tDeck;
       Yrt -= tDeck;
-      Yr -= tDeck;
 
       CComPtr<IPoint2d> bxbL;
       bxbL.CoCreateInstance(CLSID_Point2d);
-      bxbL->Move(Xl, Yl - m_H5 - m_H1);
+      bxbL->Move(Xl, Yl - m_H1);
       m_BXBProfile->Insert(0, bxbL);
 
       if (!IsZero(m_H2) && !IsZero(m_X1))
       {
+         // there is a taper on the left side
          CComPtr<IPoint2d> bxbLT;
          bxbLT.CoCreateInstance(CLSID_Point2d);
-         bxbLT->Move(Xlt, Ylt - m_H5 - m_H1 - m_H2);
+
+         Float64 y;
+         bxbL->get_Y(&y);
+
+         bxbLT->Move(Xlt, y - m_H2);
          m_BXBProfile->Insert(1, bxbLT);
       }
 
       if (!IsZero(m_H4) && !IsZero(m_X3))
       {
+         // there is a taper on the right side
          CComPtr<IPoint2d> bxbRT;
          bxbRT.CoCreateInstance(CLSID_Point2d);
-         bxbRT->Move(Xrt, Yrt - m_H5 - m_H3 - m_H4);
+
+         Float64 y = Yr - m_H3 - m_H4; // this is bxbR->Y - m_H4
+
+         bxbRT->Move(Xrt, y);
          m_BXBProfile->Add(bxbRT);
       }
 
       CComPtr<IPoint2d> bxbR;
       bxbR.CoCreateInstance(CLSID_Point2d);
-      bxbR->Move(Xr, Yr - m_H5 - m_H3);
+      bxbR->Move(Xr, Yr - m_H3);
       m_BXBProfile->Add(bxbR);
 
       m_BXBProfile->RemoveDuplicatePoints();
