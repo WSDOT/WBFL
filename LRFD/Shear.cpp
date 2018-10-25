@@ -1191,20 +1191,26 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    Float64 sx  = pData->sx;
 
    // Setup problem
+   Float64 ex_max = 6e-3;
+   Float64 ex_min = -0.4e-3;
 
    // Compute strain 
    Float64 ex_calc;
    if ( IsZero(Es*As + Eps*Aps + Ept*Apt) )
-      ex_calc = 0.0;
+   {
+      ex_calc = ex_max; // no tension tie so use maximum strain
+   }
    else
+   {
       ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(Es*As + Eps*Aps + Ept*Apt);
+   }
 
    if ( ex_calc < 0 )
    {
       ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - Apt*fpopt)/(Es*As + Eps*Aps + Ept*Apt + Ec*Ac);
    }
 
-   ex_calc = ForceIntoRange(-0.4e-3,ex_calc,6e-3);
+   ex_calc = ForceIntoRange(ex_min,ex_calc,ex_max);
 
 
    // Get Beta/Theta;

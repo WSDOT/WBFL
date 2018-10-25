@@ -1101,6 +1101,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CEBFIPConcrete.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Concrete.cpp"
 				>
 				<FileConfiguration
@@ -2347,6 +2351,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\Material\AutoLib.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\Material\CEBFIPConcrete.h"
 				>
 			</File>
 			<File

@@ -35,7 +35,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMethod cure,matConcreteBase::CementType cement,Float64* pA,Float64* pB)
+void lrfdLRFDTimeDependentConcrete::GetModelParameters(matConcreteBase::CureMethod cure,lrfdLRFDTimeDependentConcrete::CementType cement,Float64* pA,Float64* pB)
 {
    Float64 a[2][2] = { {::ConvertToSysUnits(4.0,unitMeasure::Day),    // Moist, Type I
                         ::ConvertToSysUnits(2.3,unitMeasure::Day)} ,  // Moist, Type III
