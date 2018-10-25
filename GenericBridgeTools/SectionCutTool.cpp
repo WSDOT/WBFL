@@ -2072,26 +2072,92 @@ HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppS
       return S_OK;
    }
 
-   CComPtr<IPoint2dCollection> points;
-   pShape->get_PolyPoints(&points);
-   CComPtr<IPoint2d> pnt;
-   CComPtr<IEnumPoint2d> enumPoints;
-   points->get__Enum(&enumPoints);
-   while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
-   {
-      Float64 x;
-      pnt->get_X(&x);
-      x /= cos(skewAngle);
-      pnt->put_X(x);
+   Float64 cos_angle = cos(skewAngle);
 
-      pnt.Release();
+   CComPtr<IShape> s;
+
+   CComQIPtr<ICompositeShape> compositeShape(pShape);
+   if (compositeShape)
+   {
+      CComPtr<ICompositeShape> skewedCompositeShape;
+      skewedCompositeShape.CoCreateInstance(CLSID_CompositeShape);
+
+      IndexType nShapes;
+      compositeShape->get_Count(&nShapes);
+      for (IndexType i = 0; i < nShapes; i++)
+      {
+         CComPtr<ICompositeShapeItem>  item;
+         compositeShape->get_Item(i, &item);
+
+         CComPtr<IShape> shape;
+         item->get_Shape(&shape);
+
+         VARIANT_BOOL bVoid;
+         item->get_Void(&bVoid);
+
+         CComPtr<IRect2d> bbox;
+         shape->get_BoundingBox(&bbox);
+         CComPtr<IPoint2d> pntTC;
+         bbox->get_TopCenter(&pntTC);
+         Float64 xcl;
+         pntTC->get_X(&xcl);
+
+         CComPtr<IPoint2dCollection> points;
+         shape->get_PolyPoints(&points);
+         CComPtr<IPoint2d> pnt;
+         CComPtr<IEnumPoint2d> enumPoints;
+         points->get__Enum(&enumPoints);
+         while (enumPoints->Next(1, &pnt, nullptr) != S_FALSE)
+         {
+            Float64 x;
+            pnt->get_X(&x);
+            x -= xcl;
+            x /= cos_angle;
+            x += xcl;
+            pnt->put_X(x);
+
+            pnt.Release();
+         }
+         CComPtr<IPolyShape> polyShape;
+         polyShape.CoCreateInstance(CLSID_PolyShape);
+         polyShape->AddPoints(points);
+
+         CComQIPtr<IShape> ps(polyShape);
+         skewedCompositeShape->AddShape(ps, bVoid);
+      }
+      skewedCompositeShape.QueryInterface(&s);
+   }
+   else
+   {
+      CComPtr<IRect2d> bbox;
+      pShape->get_BoundingBox(&bbox);
+      CComPtr<IPoint2d> pntTC;
+      bbox->get_TopCenter(&pntTC);
+      Float64 xcl;
+      pntTC->get_X(&xcl);
+
+      CComPtr<IPoint2dCollection> points;
+      pShape->get_PolyPoints(&points);
+      CComPtr<IPoint2d> pnt;
+      CComPtr<IEnumPoint2d> enumPoints;
+      points->get__Enum(&enumPoints);
+      while (enumPoints->Next(1, &pnt, nullptr) != S_FALSE)
+      {
+         Float64 x;
+         pnt->get_X(&x);
+         x -= xcl;
+         x /= cos_angle;
+         x += xcl;
+         pnt->put_X(x);
+
+         pnt.Release();
+      }
+      CComPtr<IPolyShape> polyShape;
+      polyShape.CoCreateInstance(CLSID_PolyShape);
+      polyShape->AddPoints(points);
+      polyShape.QueryInterface(&s);
    }
 
-   CComPtr<IPolyShape> polyShape;
-   polyShape.CoCreateInstance(CLSID_PolyShape);
-   polyShape->AddPoints(points);
-
-   CComQIPtr<IShape> s(polyShape);
    return s.CopyTo(ppSkewedShape);
 }
 
