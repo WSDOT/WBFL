@@ -151,6 +151,9 @@ END_COM_MAP()
    STDMETHOD_(void,SetAngle)(LONG angle) override;
    STDMETHOD_(LONG,GetAngle)() override;
 
+   STDMETHOD_(void, SetPointSize)(LONG pointSize) override;
+   STDMETHOD_(LONG, GetPointSize)() override;
+
    STDMETHOD_(void,SetText)(LPCTSTR lpszText) override;
    STDMETHOD_(CString,GetText)() override;
 

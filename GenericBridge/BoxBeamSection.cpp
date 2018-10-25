@@ -277,6 +277,11 @@ STDMETHODIMP CBoxBeamSection::get_MatingSurfaceWidth(MatingSurfaceIndexType idx,
    return get_TopFlangeWidth(idx,wMatingSurface);
 }
 
+STDMETHODIMP CBoxBeamSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CBoxBeamSection::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -409,19 +414,19 @@ STDMETHODIMP CBoxBeamSection::get_ShearWidth(Float64* shearwidth)
 
 STDMETHODIMP CBoxBeamSection::get_MinTopFlangeThickness(Float64* tf)
 {
-   CHECK_RETVAL(*tf);
+   CHECK_RETVAL(tf);
    return m_Beam->get_H1(tf);
 }
 
 STDMETHODIMP CBoxBeamSection::get_MinBottomFlangeThickness(Float64* tf)
 {
-   CHECK_RETVAL(*tf);
+   CHECK_RETVAL(tf);
    return m_Beam->get_H3(tf);
 }
 
 STDMETHODIMP CBoxBeamSection::get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
 {
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    Float64 spacing;
    HRESULT hr = get_WebSpacing(0, &spacing);
@@ -429,6 +434,20 @@ STDMETHODIMP CBoxBeamSection::get_CL2ExteriorWebDistance(DirectionType side, Flo
    *wd = spacing/2.0;
 
    return hr;
+}
+
+STDMETHODIMP CBoxBeamSection::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 H1, H4;
+   m_Beam->get_H1(&H1);
+   m_Beam->get_H4(&H4);
+   ATLASSERT(sacDepth < H1);
+   ATLASSERT(sacDepth < H4);
+   H1 -= sacDepth;
+   H4 -= sacDepth;
+   m_Beam->put_H1(H1);
+   m_Beam->put_H4(H4);
+   return S_OK;
 }
 
 STDMETHODIMP CBoxBeamSection::get_SplittingZoneDimension(Float64* pSZD)

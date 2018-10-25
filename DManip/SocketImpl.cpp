@@ -68,33 +68,20 @@ STDMETHODIMP_(IDType) CSocketImpl::GetID()
 
 STDMETHODIMP_(void) CSocketImpl::SetPosition(IPoint2d* pos)
 {
-   Float64 x,y;
-   pos->get_X(&x);
-   pos->get_Y(&y);
+   m_Position->MoveEx(pos);
 
-   m_Position->put_X(x);
-   m_Position->put_Y(y);
-
-   PlugContainer::iterator iter;
-   for ( iter = m_Plugs.begin(); iter != m_Plugs.end(); iter++ )
+   for (auto& item : m_Plugs)
    {
-      iPlug* plug = (*iter).second;
-      plug->Notify(this);
+      item.second->Notify(this);
    }
-   
 }
 
 STDMETHODIMP_(void) CSocketImpl::GetPosition(IPoint2d* *pos)
 {
    CComPtr<IPoint2d> position;
    position.CoCreateInstance(CLSID_Point2d);
-   
-   Float64 x,y;
-   m_Position->get_X(&x);
-   m_Position->get_Y(&y);
 
-   position->put_X(x);
-   position->put_Y(y);
+   position->MoveEx(m_Position);
 
    (*pos) = position;
    (*pos)->AddRef();
@@ -104,11 +91,9 @@ STDMETHODIMP_(void) CSocketImpl::Move(ISize2d* offset)
 {
    m_Position->OffsetEx(offset);
 
-   PlugContainer::iterator iter;
-   for ( iter = m_Plugs.begin(); iter != m_Plugs.end(); iter++ )
+   for (auto& item : m_Plugs)
    {
-      iPlug* plug = (*iter).second;
-      plug->Notify(this);
+      item.second->Notify(this);
    }
 }
 
@@ -132,13 +117,27 @@ STDMETHODIMP_(void) CSocketImpl::Disconnect(DWORD dwCookie)
    }
 }
 
-STDMETHODIMP_(void) CSocketImpl::DisconnectAll()
+STDMETHODIMP_(void) CSocketImpl::Disconnect(iPlug* plug)
 {
-   PlugContainer::iterator iter;
-   for ( iter = m_Plugs.begin(); iter != m_Plugs.end(); iter++ )
+   auto& iter = m_Plugs.begin();
+   const auto& end = m_Plugs.end();
+   for ( ; iter != end; iter++)
    {
       iPlug* pPlug = (*iter).second;
-      pPlug->SetSocket(nullptr);
+      if (pPlug == plug)
+      {
+         pPlug->SetSocket(nullptr);
+         m_Plugs.erase(iter);
+         return;
+      }
+   }
+}
+
+STDMETHODIMP_(void) CSocketImpl::DisconnectAll()
+{
+   for (auto& item : m_Plugs)
+   {
+      item.second->SetSocket(nullptr);
    }
 
    m_Plugs.clear();
@@ -166,6 +165,8 @@ STDMETHODIMP_(void) CSocketImpl::SetConnectable(iConnectable* pConnectable)
 STDMETHODIMP_(void) CSocketImpl::GetConnectable(iConnectable** connectable)
 {
    *connectable = m_pConnectable;
-   if (m_pConnectable!=nullptr)
+   if (m_pConnectable != nullptr)
+   {
       (*connectable)->AddRef();
+   }
 }

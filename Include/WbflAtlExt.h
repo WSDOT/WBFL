@@ -39,21 +39,33 @@ class _CopyVariantToInterface
    public:
       static HRESULT copy(T** iTarget,const VARIANT* vSrc)
       {
-         if ( vSrc == NULL )
+         if (vSrc == nullptr)
+         {
             return E_INVALIDARG;
+         }
 
-         if ( iTarget == NULL )
+         if (iTarget == nullptr)
+         {
             return E_POINTER;
+         }
 
-         if ( *iTarget != NULL )
+         if (*iTarget != nullptr)
+         {
             (*iTarget)->Release();
+         }
 
-         if ( vSrc->vt == VT_DISPATCH )
-            vSrc->pdispVal->QueryInterface( iTarget );
-         else if ( vSrc->vt == VT_UNKNOWN )
-            vSrc->punkVal->QueryInterface( iTarget );
+         if (vSrc->vt == VT_DISPATCH)
+         {
+            vSrc->pdispVal->QueryInterface(iTarget);
+         }
+         else if (vSrc->vt == VT_UNKNOWN)
+         {
+            vSrc->punkVal->QueryInterface(iTarget);
+         }
          else
+         {
             return E_INVALIDARG;
+         }
 
          return S_OK;
       }
@@ -63,10 +75,10 @@ class _CopyVariantToInterface
 };
 
 // Macros for testing function arguements
-#define CHECK_IN(_ptr_)     if ( _ptr_ == NULL ) return E_INVALIDARG
-#define CHECK_INOUT(_ptr_)  if ( _ptr_ == NULL || (*_ptr_) == NULL ) return E_INVALIDARG
-#define CHECK_RETVAL(_ptr_) if ( _ptr_ == NULL ) return E_POINTER
-#define CHECK_RETOBJ(_ptr_) if ( _ptr_ == NULL ) return E_POINTER; if ( *_ptr_ ) (*_ptr_) = 0
+#define CHECK_IN(_ptr_)     if ( _ptr_ == nullptr ) return E_INVALIDARG
+#define CHECK_INOUT(_ptr_)  if ( _ptr_ == nullptr || (*_ptr_) == nullptr ) return E_INVALIDARG
+#define CHECK_RETVAL(_ptr_) if ( _ptr_ == nullptr ) return E_POINTER
+#define CHECK_RETOBJ(_ptr_) if ( _ptr_ == nullptr ) return E_POINTER; if ( *_ptr_ ) (*_ptr_) = 0
 #define CHECK_RETSTRING(_ptr_) CHECK_RETVAL(_ptr_)
 
 // Base class for tracing reference counts
@@ -247,8 +259,8 @@ inline HRESULT CrAssignPointer(ATL::CComPtr<TC>& rpTarget, TC* pNewVal, TL* list
       // Disconnect from old object
       // but only if the target is not a null pointer
       // (This could be called for a first time assignment where the target
-      // has an initial value of NULL)
-      if ( rpTarget.p != NULL )
+      // has an initial value of nullptr)
+      if ( rpTarget.p != nullptr )
       {
          hr = CrUnadvise(rpTarget, listener, iidEvents, *cookie );
          if ( FAILED(hr) )

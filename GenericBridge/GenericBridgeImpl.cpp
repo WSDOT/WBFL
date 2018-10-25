@@ -303,13 +303,13 @@ STDMETHODIMP CGenericBridge::put_SacrificialDepth(Float64 depth)
    return S_OK;
 }
 
-STDMETHODIMP CGenericBridge::CreateSuperstructureMember(GirderIDType id,LocationType locationType,ISuperstructureMember** ppMbr)
+STDMETHODIMP CGenericBridge::CreateSuperstructureMember(GirderIDType id, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr)
 {
    CHECK_RETOBJ(ppMbr);
 
    CComObject<CSuperstructureMember>* pMbr;
    CComObject<CSuperstructureMember>::CreateInstance(&pMbr);
-   pMbr->Init(id,locationType,this);
+   pMbr->Init(id,leftSSMbrID,rightSSMbrID,this);
 
    CComPtr<ISuperstructureMember> mbr = pMbr;
    m_SuperstructureMembers.insert( std::make_pair(id,mbr) );
@@ -321,7 +321,7 @@ STDMETHODIMP CGenericBridge::CreateSuperstructureMember(GirderIDType id,Location
 
 STDMETHODIMP CGenericBridge::get_SuperstructureMember(GirderIDType id,ISuperstructureMember** ppMbr)
 {
-   std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>::iterator found(m_SuperstructureMembers.find(id));
+   auto found(m_SuperstructureMembers.find(id));
    if ( found == m_SuperstructureMembers.end() )
    {
       (*ppMbr) = nullptr;

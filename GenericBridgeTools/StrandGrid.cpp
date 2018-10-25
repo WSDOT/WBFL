@@ -28,6 +28,8 @@
 #include "WBFLGenericBridgeTools.h"
 #include "StrandGrid.h"
 
+#include <algorithm>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -73,7 +75,8 @@ HRESULT CStrandGrid::FinalConstruct()
       return hr;
 
 
-   m_VerticalAdjustment = 0.0;
+   m_Xadj = 0.0;
+   m_Yadj = 0.0;
 
    m_bUpdateGrid = true;
    m_bUpdateFill = true;
@@ -96,7 +99,7 @@ STDMETHODIMP CStrandGrid::AddGridPoint(/*[in]*/IPoint2d* point)
    if ( x < 0 )
       return E_INVALIDARG; // x must be 0.0 or more
 
-   m_GridPoints.push_back( GridPoint2d(x,y) );
+   m_GridPoints.emplace_back(x,y);
 
    InvalidateGrid();
 
@@ -313,19 +316,23 @@ STDMETHODIMP CStrandGrid::GetStrandMover(/*[out]*/StrandGridType* gridType,/*[ou
    return S_OK;
 }
 
-STDMETHODIMP CStrandGrid::get_VerticalStrandAdjustment(/*[out,retval]*/Float64* adjustment)
-{
-   CHECK_RETVAL(adjustment);
-
-   *adjustment = m_VerticalAdjustment;
-   return S_OK;
-}
-
-STDMETHODIMP CStrandGrid::put_VerticalStrandAdjustment(/*[in]*/Float64 adjustment)
+STDMETHODIMP CStrandGrid::SetStrandAdjustment(Float64 dx,Float64 dy)
 {
    // we do not need to invalidate data
 
-   m_VerticalAdjustment = adjustment;
+   m_Xadj = dx;
+   m_Yadj = dy;
+
+   return S_OK;
+}
+
+STDMETHODIMP CStrandGrid::GetStrandAdjustment(Float64* pdx,Float64* pdy)
+{
+   CHECK_RETVAL(pdx);
+   CHECK_RETVAL(pdy);
+
+   *pdx = m_Xadj;
+   *pdy = m_Yadj;
 
    return S_OK;
 }
@@ -347,12 +354,9 @@ STDMETHODIMP CStrandGrid::RemoveAllStrands()
 {
    InvalidateFill();
 
-   GridCollectionIterator begin(m_GridPoints.begin());
-   GridCollectionIterator iter(begin);
-   GridCollectionIterator end(m_GridPoints.end());
-   for ( ; iter != end; iter++ )
+   for ( auto& gridPoint : m_GridPoints )
    {
-      iter->nStrandsAtGridPoint = 0;
+      gridPoint.nStrandsAtGridPoint = 0;
    }
 
    return S_OK;
@@ -378,11 +382,11 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
 
       if (0 < nStrandsAtGridPoint)
       {
-         Float64 old_x = gpoint.dPointX;
+         Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gpoint.dPointX);
          Float64 old_y = gpoint.dPointY;
 
-         Float64 x, y;
-         this->AdjustStrand(old_x,old_y,&x, &y);
+         Float64 xleft, xright, y;
+         AdjustStrand(old_x,old_y,&xleft,&xright, &y);
 
          if (nStrandsAtGridPoint == 1)
          {
@@ -392,7 +396,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
                return hr;
          
             // single strands must always be placed at center
-            point->Move(0.0, y);
+            point->Move(xright, y);
             local_points->Add(point);
          }
          else if (1 < nStrandsAtGridPoint)
@@ -403,7 +407,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
             if ( FAILED(hr) )
                return hr;
          
-            point->Move(x, y);
+            point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
@@ -411,7 +415,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
             if ( FAILED(hr) )
                return hr;
 
-            point2->Move(-x, y);
+            point2->Move(xright, y);
             local_points->Add(point2);
          }
       }
@@ -544,6 +548,7 @@ STDMETHODIMP CStrandGrid::get_CG( /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
    *cgx = 0.0;
    *cgy = 0.0;
 
+   Float64 sumX = 0.0;
    Float64 sumY = 0.0;
    StrandIndexType nStrandsUsed = 0;
    GridCollectionIterator begin(m_GridPoints.begin());
@@ -556,19 +561,21 @@ STDMETHODIMP CStrandGrid::get_CG( /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
 
       if ( 0 < nStrandsAtGridPoint)
       {
-         Float64 old_x = gridPoint.dPointX;
+         Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gridPoint.dPointX);
          Float64 old_y = gridPoint.dPointY;
       
-         Float64 x, y;
-         AdjustStrand(old_x,old_y,&x, &y);
+         Float64 xleft, xright, y;
+         AdjustStrand(old_x,old_y,&xleft,&xright, &y);
 
          if ( nStrandsAtGridPoint == 1)
          {
+            sumX += xright;
             sumY += y;
          }
          else if (nStrandsAtGridPoint == 2)
          {
-            sumY += y+y;
+            sumX += xleft + xright;
+            sumY += y + y;
          }
 
          nStrandsUsed += nStrandsAtGridPoint;
@@ -577,7 +584,7 @@ STDMETHODIMP CStrandGrid::get_CG( /*[out]*/Float64* cgx, /*[out]*/Float64* cgy)
 
    if ( 0 < nStrandsUsed )
    {
-      *cgx = 0.0;
+      *cgx = sumX/(Float64)nStrandsUsed;
       *cgy = sumY/(Float64)nStrandsUsed;
    }
 
@@ -612,26 +619,26 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBox(/*[out,retval]*/IRect2d** box)
 
          if ( 0 < nStrandsAtGridPoint )
          {
-            Float64 old_x = gridPoint.dPointX;
+            Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gridPoint.dPointX);
             Float64 old_y = gridPoint.dPointY;
          
-            Float64 x, y;
-            AdjustStrand(old_x,old_y,&x, &y);
+            Float64 xleft, xright, y;
+            AdjustStrand(old_x,old_y,&xleft,&xright, &y);
 
 
             if ( nStrandsAtGridPoint == 1)
             {
-               left   = min(left,  0.0);
-               right  = max(right, 0.0);
-               bottom = min(bottom, y);
-               top    = max(top, y);
+               left   = Min(left,  xright);
+               right  = Max(right, xright);
+               bottom = Min(bottom, y);
+               top    = Max(top, y);
             }
             else if (nStrandsAtGridPoint == 2)
             {
-               left   = min(left,  -x);
-               right  = max(right,  x);
-               bottom = min(bottom, y);
-               top    = max(top,    y);
+               left   = Min(left,  xleft);
+               right  = Max(right,  xright);
+               bottom = Min(bottom, y);
+               top    = Max(top,    y);
             }
 
          }
@@ -682,10 +689,10 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[o
      
       if (0 < nStrandsAtGridPoint)
       {
-         Float64 yv = m_GridPoints[fillIdx].dPointY + m_VerticalAdjustment;
+         Float64 yv = m_GridPoints[fillIdx].dPointY + m_Yadj;
 
-         the_max = max(the_max,yv);
-         the_min = min(the_min,yv);
+         the_max = Max(the_max,yv);
+         the_min = Min(the_min,yv);
 
          counter++;
       }
@@ -720,7 +727,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,ret
    CollectionIndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
-   GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
+   GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
 
    StrandIndexType nStrands = 0;
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
@@ -729,24 +736,26 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,ret
       fill->get_Item(fillIdx, &nStrandsAtGridPoint);
       ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
-      if (nStrandsAtGridPoint == 1)
-      {
-         nStrands++;
-      }
-      else if (nStrandsAtGridPoint == 2)
-      {
-         if (0.0 < m_GridPoints[fillIdx].dPointX)
-         {
-            // mirror across Y axis = 2 strands
-            nStrands += 2;
-         }
-         else
-         {
-            // strand on Y axis
-            nStrands++;
-         }
-      }
+      nStrands += nStrandsAtGridPoint;
+      //if (nStrandsAtGridPoint == 1)
+      //{
+      //   nStrands++;
+      //}
+      //else if (nStrandsAtGridPoint == 2)
+      //{
+      //   if (0.0 < m_GridPoints[fillIdx].dPointX)
+      //   {
+      //      // mirror across Y axis = 2 strands
+      //      nStrands += 2;
+      //   }
+      //   else
+      //   {
+      //      // strand on Y axis
+      //      nStrands++;
+      //   }
+      //}
    }
+
 
    *count = nStrands;
 
@@ -769,7 +778,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
    CollectionIndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
-   GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
+   GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
 
    for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
    {
@@ -780,11 +789,11 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
 
       if (0 < nStrandsAtGridPoint)
       {
-         Float64 old_x = gpoint.dPointX;
+         Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gpoint.dPointX);
          Float64 old_y = gpoint.dPointY;
 
-         Float64 x, y;
-         this->AdjustStrand(old_x,old_y,&x, &y);
+         Float64 xleft, xright, y;
+         this->AdjustStrand(old_x,old_y,&xleft,&xright, &y);
 
 
          if (nStrandsAtGridPoint == 1)
@@ -795,7 +804,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
                return hr;
          
             // single strands must always be placed at center
-            point->Move(0.0, y);
+            point->Move(xright, y);
             local_points->Add(point);
          }
          else if (1 < nStrandsAtGridPoint)
@@ -806,7 +815,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
             if ( FAILED(hr) )
                return hr;
          
-            point->Move(x, y);
+            point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
@@ -814,7 +823,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
             if ( FAILED(hr) )
                return hr;
 
-            point2->Move(-x, y);
+            point2->Move(xright, y);
             local_points->Add(point2);
          }
       }
@@ -838,6 +847,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
 
    Uint32 nPointsUsed = 0;
+   Float64 x_sum = 0.0;
    Float64 y_sum = 0.0;
 
    *cgx = 0.0;
@@ -852,31 +862,38 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* 
       if (0 < nStrandsAtGridPoint)
       {
          const GridPoint2d& gpoint = m_GridPoints[fillIdx];
-         Float64 old_x = gpoint.dPointX;
+         Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gpoint.dPointX);
          Float64 old_y = gpoint.dPointY;
 
-         Float64 x, y;
-         this->AdjustStrand(old_x,old_y,&x, &y);
+         Float64 xleft,xright, y;
+         AdjustStrand(old_x,old_y,&xleft,&xright, &y);
 
 
          if (nStrandsAtGridPoint == 1)
          {
             nPointsUsed++;
+            x_sum += xright;
             y_sum += y;
          }
          else if (1 < nStrandsAtGridPoint)
          {
             nPointsUsed+=2;
+            x_sum += xleft + xright;
             y_sum += (y+y);
          }
       }
    }
 
-   *cgx = 0.0;
-   if ( nPointsUsed == 0 )
+   if (nPointsUsed == 0)
+   {
+      *cgx = 0.0;
       *cgy = 0.0;
+   }
    else
-      *cgy = y_sum/(Float64)nPointsUsed;
+   {
+      *cgx = x_sum / (Float64)nPointsUsed;
+      *cgy = y_sum / (Float64)nPointsUsed;
+   }
 
    return S_OK;
 }
@@ -897,7 +914,7 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/IIndexArray* fill, /*[
    CollectionIndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
-   GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
+   GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
 //   ATLASSERT(nFillPoints==nGridPoints); // values should match, but will run if not
 
    if (0 < nPoints)
@@ -908,36 +925,37 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/IIndexArray* fill, /*[
       for(GridIndexType fillIdx = 0; fillIdx < nPoints; fillIdx++)
       {
          const GridPoint2d& gpoint = m_GridPoints[fillIdx];
-         Float64 old_x = gpoint.dPointX;
-         Float64 old_y = gpoint.dPointY;
 
          StrandIndexType nStrandsAtGridPoint;
          fill->get_Item(fillIdx, &nStrandsAtGridPoint);
          ATLASSERT(0 <= nStrandsAtGridPoint && nStrandsAtGridPoint <= 2);
 
-         Float64 x, y;
-         this->AdjustStrand(old_x,old_y,&x, &y);
+         Float64 old_x = (nStrandsAtGridPoint == 1 ? 0.0 : gpoint.dPointX);
+         Float64 old_y = gpoint.dPointY;
 
-         if ( nStrandsAtGridPoint == 1 || x == 0.0)
+         Float64 xleft, xright, y;
+         AdjustStrand(old_x,old_y, &xleft, &xright, &y);
+
+         if ( nStrandsAtGridPoint == 1)
          {
-            left   = min(left,  0.0);
-            right  = max(right, 0.0);
-            bottom = min(bottom, y);
-            top    = max(top, y);
+            left   = Min(left,  xright);
+            right  = Max(right, xright);
+            bottom = Min(bottom, y);
+            top    = Max(top, y);
          }
          else if (nStrandsAtGridPoint == 2)
          {
-            left   = min(left,  -x);
-            right  = max(right,  x);
-            bottom = min(bottom, y);
-            top    = max(top,    y);
+            left   = Min(left,  xleft);
+            right  = Max(right,  xright);
+            bottom = Min(bottom, y);
+            top    = Max(top,    y);
          }
-
-         bound_box->put_Left(left);
-         bound_box->put_Right(right);
-         bound_box->put_Bottom(bottom);
-         bound_box->put_Top(top);
       }
+
+      bound_box->put_Left(left);
+      bound_box->put_Right(right);
+      bound_box->put_Bottom(bottom);
+      bound_box->put_Top(top);
    }
 
    return bound_box.CopyTo(box);
@@ -1067,12 +1085,12 @@ STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[in]*/ WDebondLocationType loc,
          GridPoint2d& gridPoint = *iter;
          if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded )
          {
-            if (gridPoint.DebondLength[0] > 0.0 )
+            if (0.0 < gridPoint.DebondLength[etStart])
             {
                ndbleft += gridPoint.nStrandsAtGridPoint;
             }
 
-            if (gridPoint.DebondLength[1] > 0.0 )
+            if (0.0 < gridPoint.DebondLength[etEnd])
             {
                ndbright += gridPoint.nStrandsAtGridPoint;
             }
@@ -1088,7 +1106,9 @@ STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[in]*/ WDebondLocationType loc,
       {
          GridPoint2d& gridPoint = *iter;
          if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded && gridPoint.DebondLength[0] > 0.0 )
+         {
             nDebondedStrands += gridPoint.nStrandsAtGridPoint;
+         }
       }
    }
    else if (wdblRight==loc)
@@ -1097,7 +1117,9 @@ STDMETHODIMP CStrandGrid::GetStrandDebondCount(/*[in]*/ WDebondLocationType loc,
       {
          GridPoint2d& gridPoint = *iter;
          if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded && gridPoint.DebondLength[1] > 0.0 )
+         {
             nDebondedStrands += gridPoint.nStrandsAtGridPoint;
+         }
       }
    }
    else
@@ -1120,8 +1142,8 @@ STDMETHODIMP CStrandGrid::DebondStrandByGridIndex(/*[in]*/GridIndexType grdIndex
 
    GridPoint2d& sp = m_GridPoints[grdIndex];
    sp.bIsDebonded = true;
-   sp.DebondLength[0] = l1;
-   sp.DebondLength[1] = l2;
+   sp.DebondLength[etStart] = l1;
+   sp.DebondLength[etEnd] = l2;
 
    AddDebondSection(grdIndex,l1,l2);
 
@@ -1155,7 +1177,7 @@ STDMETHODIMP CStrandGrid::GetDebondedStrandsByGridIndex(/*[out,retval]*/IIndexAr
    return gridPointIndiciesForDebondedStrands.CopyTo(grdIndexes);
 }
 
-STDMETHODIMP CStrandGrid::GetDebondLengthByGridIndex(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
+STDMETHODIMP CStrandGrid::GetDebondLengthByGridIndex(/*[in]*/GridIndexType grdIndex,/*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
 {
    CHECK_RETVAL(l1);
    CHECK_RETVAL(l2);
@@ -1166,12 +1188,13 @@ STDMETHODIMP CStrandGrid::GetDebondLengthByGridIndex(/*[in]*/GridIndexType grdIn
       return E_INVALIDARG;
 
    GridPoint2d& sp = m_GridPoints[grdIndex];
-   *YCoord = sp.dPointY + m_VerticalAdjustment;
+   *XCoord = sp.dPointX;
+   *YCoord = sp.dPointY;
 
    if (sp.bIsDebonded)
    {
-      *l1 = sp.DebondLength[0];
-      *l2 = sp.DebondLength[1];
+      *l1 = sp.DebondLength[etStart];
+      *l2 = sp.DebondLength[etEnd];
       return S_OK;
    }
    else
@@ -1183,7 +1206,7 @@ STDMETHODIMP CStrandGrid::GetDebondLengthByGridIndex(/*[in]*/GridIndexType grdIn
    return S_FALSE;
 }
 
-STDMETHODIMP CStrandGrid::GetDebondLengthByPositionIndex(/*[in]*/StrandIndexType positionIndex, /*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
+STDMETHODIMP CStrandGrid::GetDebondLengthByPositionIndex(/*[in]*/StrandIndexType positionIndex, /*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2)
 {
    CHECK_RETVAL(l1);
    CHECK_RETVAL(l2);
@@ -1197,11 +1220,26 @@ STDMETHODIMP CStrandGrid::GetDebondLengthByPositionIndex(/*[in]*/StrandIndexType
    if (FAILED(hr))
       return hr;
 
-   return GetDebondLengthByGridIndex(grid_idx, YCoord, l1, l2);
+   hr = GetDebondLengthByGridIndex(grid_idx, XCoord, YCoord, l1, l2);
+   if (FAILED(hr))
+      return hr;
+
+   GridPoint2d& gridPoint = m_GridPoints[grid_idx];
+   if (gridPoint.nStrandsAtGridPoint == 2 && positionIndex % 2 == 0)
+   {
+      *XCoord = -gridPoint.dPointX + m_Xadj;
+   }
+   else
+   {
+      *XCoord = gridPoint.dPointX + m_Xadj;
+   }
+   *YCoord = gridPoint.dPointY + m_Yadj;
+   
+   return hr;
 }
 
 STDMETHODIMP CStrandGrid::GetBondedLengthByPositionIndex(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
-                                              /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond)
+   /*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond)
 {
    HRESULT hr = ValidateFill();
    if (FAILED(hr))
@@ -1212,11 +1250,27 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByPositionIndex(/*[in]*/StrandIndexType
    if (FAILED(hr))
       return hr;
 
-   return GetBondedLengthByGridIndex(grid_idx, distFromStart, girderLength, YCoord, leftBond, rightBond);
+   hr = GetBondedLengthByGridIndex(grid_idx, distFromStart, girderLength, XCoord, YCoord, leftBond, rightBond);
+   if (FAILED(hr))
+      return hr;
+
+
+   GridPoint2d& gridPoint = m_GridPoints[grid_idx];
+   if (gridPoint.nStrandsAtGridPoint == 2 && positionIndex % 2 == 0)
+   {
+      *XCoord = -gridPoint.dPointX + m_Xadj;
+   }
+   else
+   {
+      *XCoord = gridPoint.dPointX + m_Xadj;
+   }
+   *YCoord = gridPoint.dPointY + m_Yadj;
+
+   return hr;
 }
 
 STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
-                                              /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond)
+   /*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond)
 {
    if (girderLength<0.0 || distFromStart<0.0 || girderLength < distFromStart)
    {
@@ -1234,23 +1288,24 @@ STDMETHODIMP CStrandGrid::GetBondedLengthByGridIndex(/*[in]*/GridIndexType grdIn
 
 
    GridPoint2d& gridPoint = m_GridPoints[grdIndex];
-   *YCoord = gridPoint.dPointY + m_VerticalAdjustment;
+   *XCoord = gridPoint.dPointX;
+   *YCoord = gridPoint.dPointY;
 
    if (gridPoint.bIsDebonded)
    {
-      *leftBond = distFromStart - gridPoint.DebondLength[0];
-      if (*leftBond<0.0)
+      *leftBond = distFromStart - gridPoint.DebondLength[etStart];
+      if (*leftBond < 0.0)
       {
-         *leftBond=0.0;
-         *rightBond=0.0;
+         *leftBond  = 0.0;
+         *rightBond = 0.0;
       }
       else
       {
-         *rightBond = girderLength - gridPoint.DebondLength[1] - distFromStart;
-         if (*rightBond<0.0)
+         *rightBond = girderLength - gridPoint.DebondLength[etEnd] - distFromStart;
+         if (*rightBond < 0.0)
          {
-            *leftBond=0.0;
-            *rightBond=0.0;
+            *leftBond  = 0.0;
+            *rightBond = 0.0;
          }
       }
 
@@ -1273,7 +1328,7 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
    if (FAILED(hr))
       return hr;
 
-   if (Xs < 0.0 || girderLength < Xs)
+   if ( !InRange(0.0,Xs,girderLength) )
    {
       return E_INVALIDARG;
    }
@@ -1297,11 +1352,11 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
          if (0 < nStrandsAtGridPoint && gp.bIsDebonded)
          {
-            Float64 debond_length = gp.DebondLength[0];
+            Float64 debond_length = gp.DebondLength[etStart];
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if ( debond_length > 0.0 && Xs <= debond_length )
+            if ( !IsZero(debond_length) && ::IsLE(Xs,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
@@ -1329,11 +1384,11 @@ STDMETHODIMP CStrandGrid::GetStrandsDebondedByPositionIndex(/*[in]*/Float64 Xs,/
 
          if (0 < nStrandsAtGridPoint && gp.bIsDebonded)
          {
-            Float64 debond_length = gp.DebondLength[1];
+            Float64 debond_length = gp.DebondLength[etEnd];
 
             ATLASSERT(debond_length < gl2); // should be blocked in UI
 
-            if (debond_length > 0.0 &&  ::IsLE(Xe,debond_length) )
+            if (!IsZero(debond_length) &&  ::IsLE(Xe,debond_length) )
             {
                array->Add(gp.StrandPositionIndex[0]);
 
@@ -1378,12 +1433,12 @@ STDMETHODIMP CStrandGrid::get_StrandDebondInRow(/*[in]*/ RowIndexType rowIdx,/*[
 
       if ( 0 < gridPoint.nStrandsAtGridPoint && gridPoint.bIsDebonded )
       {
-         if (gridPoint.DebondLength[0] > 0.0 )
+         if (0.0 < gridPoint.DebondLength[etStart] )
          {
             ndbleft += gridPoint.nStrandsAtGridPoint;
          }
 
-         if (gridPoint.DebondLength[1] > 0.0 )
+         if (0.0 < gridPoint.DebondLength[etEnd] )
          {
             ndbright += gridPoint.nStrandsAtGridPoint;
          }
@@ -1513,6 +1568,126 @@ STDMETHODIMP CStrandGrid::GetDebondAtRightSection(/*[in]*/SectionIndexType secti
    return GetDebondAtSection(rsection,strandIndexes);
 }
 
+STDMETHODIMP CStrandGrid::GetDebondedRows(/*[out]*/IIndexArray** ppRowIndexes)
+{
+   // returns the indicies of rows that have debonded strands
+   CHECK_RETOBJ(ppRowIndexes);
+
+   CComPtr<IIndexArray> rowIndices;
+   rowIndices.CoCreateInstance(CLSID_IndexArray);
+
+   // Get Row Count
+   RowIndexType nRows;
+   get_RowsWithStrand(&nRows);
+
+   // Loop over rows... capture row index if the row contains debonded strands
+   for (RowIndexType rowIdx = 0; rowIdx < nRows; rowIdx++)
+   {
+      StrandIndexType nDebondedStrands;
+      get_StrandDebondInRow(rowIdx, &nDebondedStrands);
+      if (0 < nDebondedStrands)
+      {
+         rowIndices->Add(rowIdx);
+      }
+   }
+
+   rowIndices.CopyTo(ppRowIndexes);
+   return S_OK;
+}
+
+struct STRANDDEBONDRECORD
+{
+   Float64 LdbStart;
+   Float64 LdbEnd;
+   StrandIndexType nStrands;
+};
+
+STDMETHODIMP CStrandGrid::GetDebondedConfigurationCountByRow(/*[in]*/RowIndexType rowIdx, /*[out]*/IndexType* pConfigCount)
+{
+   // returns number of different debonding configurations in this row
+   CHECK_RETVAL(pConfigCount);
+
+   std::vector<STRANDDEBONDRECORD> debondConfigs;
+
+   CComPtr<IIndexArray> positionIndexes;
+   get_StrandsInRow(rowIdx, &positionIndexes);
+
+   CComPtr<IEnumIndexArray> enum_array;
+   positionIndexes->get__EnumElements(&enum_array);
+   IndexType positionIdx;
+   while (enum_array->Next(1, &positionIdx, nullptr) != S_FALSE)
+   {
+      Float64 Xcoord, Ycoord, LdbStart, LdbEnd;
+      GetDebondLengthByPositionIndex(positionIdx, &Xcoord, &Ycoord, &LdbStart, &LdbEnd);
+
+      if (!IsZero(LdbStart) || !IsZero(LdbEnd))
+      {
+         STRANDDEBONDRECORD record;
+         record.LdbStart = LdbStart;
+         record.LdbEnd = LdbEnd;
+         record.nStrands = 1;
+
+         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         if (found == debondConfigs.end())
+         {
+            debondConfigs.push_back(record);
+         }
+         else
+         {
+            found->nStrands++;
+         }
+      }
+   }
+
+   *pConfigCount = debondConfigs.size();
+
+   return S_OK;
+}
+
+STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/IndexType* pnStrands)
+{
+   // returns a debonding configuration in this row
+   std::vector<STRANDDEBONDRECORD> debondConfigs;
+
+   CComPtr<IIndexArray> positionIndexes;
+   get_StrandsInRow(rowIdx, &positionIndexes);
+
+   CComPtr<IEnumIndexArray> enum_array;
+   positionIndexes->get__EnumElements(&enum_array);
+   IndexType positionIdx;
+   while (enum_array->Next(1, &positionIdx, nullptr) != S_FALSE)
+   {
+      Float64 Xcoord, Ycoord, LdbStart, LdbEnd;
+      GetDebondLengthByPositionIndex(positionIdx, &Xcoord, &Ycoord, &LdbStart, &LdbEnd);
+
+      if (!IsZero(LdbStart) || !IsZero(LdbEnd))
+      {
+         STRANDDEBONDRECORD record;
+         record.LdbStart = LdbStart;
+         record.LdbEnd = LdbEnd;
+         record.nStrands = 1;
+
+         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         if (found == debondConfigs.end())
+         {
+            debondConfigs.push_back(record);
+         }
+         else
+         {
+            found->nStrands++;
+         }
+      }
+   }
+
+   STRANDDEBONDRECORD& record(debondConfigs[configIdx]);
+
+   *pLdbStart = record.LdbStart;
+   *pLdbEnd   = record.LdbEnd;
+   *pnStrands = record.nStrands;
+
+   return S_OK;
+}
+
 STDMETHODIMP CStrandGrid::ClearDebonding()
 {
    m_LeftSections.clear();
@@ -1526,8 +1701,8 @@ STDMETHODIMP CStrandGrid::ClearDebonding()
    {
       GridPoint2d& gp = *iter;
       gp.bIsDebonded = false;
-      gp.DebondLength[0] = 0;
-      gp.DebondLength[1] = 0;
+      gp.DebondLength[etStart] = 0;
+      gp.DebondLength[etEnd]   = 0;
    };
 
    return S_OK;
@@ -1541,7 +1716,7 @@ void CStrandGrid::AddDebondSection(GridIndexType gridIdx,Float64 left,Float64 ri
    DebondSection target;
 
    // only add debonding if debond length is greater than zero
-   if (left > 0.0)
+   if (0.0 < left)
    {
       target.Location = left;
       std::set<DebondSection>::iterator found = m_LeftSections.find(target);
@@ -1560,7 +1735,7 @@ void CStrandGrid::AddDebondSection(GridIndexType gridIdx,Float64 left,Float64 ri
       }
    }
 
-   if (right > 0.0)
+   if (0.0 < right)
    {
       target.Location = right;
       std::set<DebondSection>::iterator found = m_RightSections.find(target);
@@ -1612,10 +1787,10 @@ void CStrandGrid::ValidateGrid()
          }
 
          // if there is a postive X value, then two strands can be placed.
-         StrandIndexType val = (pnt.dPointX > 0.0) ? 2 : 1;
+         StrandIndexType val = (0.0 < pnt.dPointX) ? 2 : 1;
 
          m_MaxFill->Add(val);
-         m_MaxCount+=val;
+         m_MaxCount += val;
       }
 
       m_bUpdateGrid = false;
@@ -1731,20 +1906,28 @@ HRESULT CStrandGrid::ValidateFill()
    return S_OK;
 }
 
-void CStrandGrid::AdjustStrand(Float64 originalX, Float64 originalY, Float64* newX, Float64* newY )
+void CStrandGrid::AdjustStrand(Float64 originalX, Float64 originalY, Float64* newXleft,Float64* newXright, Float64* newY )
 {
    if (m_pStrandMover)
    {
-      if ( m_StrandGridType == sgtEnd )
-         m_pStrandMover->TranslateEndStrand( m_EndType, originalX, originalY, m_VerticalAdjustment, newX, newY );
+      Float64 x;
+      if (m_StrandGridType == sgtEnd)
+      {
+         m_pStrandMover->TranslateEndStrand(m_EndType, originalX, originalY, m_Yadj, &x, newY);
+      }
       else
-         m_pStrandMover->TranslateHpStrand( m_EndType,originalX, originalY, m_VerticalAdjustment, newX, newY );
+      {
+         m_pStrandMover->TranslateHpStrand(m_EndType, originalX, originalY, m_Yadj, &x, newY);
+      }
+      *newXleft = -x + m_Xadj;
+      *newXright = x + m_Xadj;
    }
    else
    {
       // by default just translate verticaly
-      *newX = originalX;
-      *newY = originalY + m_VerticalAdjustment;
+      *newXleft = -originalX + m_Xadj;
+      *newXright = originalX + m_Xadj;
+      *newY = originalY + m_Yadj;
    }
 }
 

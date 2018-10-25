@@ -470,6 +470,11 @@ UINT CEAFMenu::FindMenuItem(LPCTSTR strTargetMenu)
       CString strMenu;
       pMenu->GetMenuString(menuPos,strMenu,MF_BYPOSITION);
       strMenu.Remove(L'&');
+      int pos = strMenu.Find(_T("\t"));
+      if (pos != -1)
+      {
+         strMenu = strMenu.Mid(0, pos);
+      }
       if ( strMenu.Compare(strTargetMenuItem) == 0 )
       {
          return menuPos - offset;
@@ -548,18 +553,14 @@ void CEAFMenu::CreateSubMenus()
 
 INT CEAFMenu::GetMenuItemOffset()
 {
-   // if the active frame is maximized, the window/system menu for that frame is added to the
-   // the menu bar. This offsets all the menu items by one.
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->InitMDIChildWndEnum();
-   CMDIChildWnd* pActiveFrame = pMainFrame->GetNextMDIChildWnd();
-   //CFrameWnd* pActiveFrame = pMainFrame->GetActiveFrame();
+   CMenu* pMenu = GetMenu();
+
    INT offset = 0;
-   DWORD dwStyle = (pActiveFrame ? pActiveFrame->GetStyle() : 0);
-   if ( pActiveFrame && m_pWnd && (pActiveFrame->IsZoomed() || sysFlags<DWORD>::IsSet(dwStyle,WS_MAXIMIZE)) )
+   CString strMenu;
+   pMenu->GetMenuString(0, strMenu, MF_BYPOSITION);
+   if (strMenu == _T(""))
    {
       offset = 1;
    }
-
    return offset;
 }

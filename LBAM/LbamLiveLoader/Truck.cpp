@@ -120,7 +120,7 @@ void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, IL
          hr = axle->get_Spacing(&spacing);
 
          // Add our axle
-         m_Axles.push_back( FtAxle(spacing, weight) );
+         m_Axles.emplace_back(spacing, weight);
 
          // Apply axle unless it's in current configuration
          m_ActiveAxles.push_back(AxleOn);

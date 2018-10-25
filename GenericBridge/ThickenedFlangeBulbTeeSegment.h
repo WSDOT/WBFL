@@ -29,6 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
+#include "SuperstructureMemberSegmentImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CThickenedFlangeBulbTeeSegment
@@ -38,7 +39,8 @@ class ATL_NO_VTABLE CThickenedFlangeBulbTeeSegment :
 	public CComCoClass<CThickenedFlangeBulbTeeSegment, &CLSID_ThickenedFlangeBulbTeeSegment>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CThickenedFlangeBulbTeeSegment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-   public IThickenedFlangeBulbTeeSegment,
+   public IThickenedFlangeSegment,
+   public ILongitudinalJoints,
    public IItemData,
    public IStructuredStorage2
 {
@@ -46,9 +48,9 @@ class ATL_NO_VTABLE CThickenedFlangeBulbTeeSegment :
 public:
    CThickenedFlangeBulbTeeSegment()
 	{
-      m_pSSMbr       = nullptr;
-      m_pPrevSegment = nullptr;
-      m_pNextSegment = nullptr;
+      //m_pSSMbr       = nullptr;
+      //m_pPrevSegment = nullptr;
+      //m_pNextSegment = nullptr;
 	}
 
    HRESULT FinalConstruct();
@@ -60,7 +62,8 @@ DECLARE_REGISTRY_RESOURCEID(IDR_THICKENEDFLANGEBULBTEESEGMENT)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CThickenedFlangeBulbTeeSegment)
-	COM_INTERFACE_ENTRY(IThickenedFlangeBulbTeeSegment)
+   COM_INTERFACE_ENTRY(IThickenedFlangeSegment)
+   COM_INTERFACE_ENTRY(ILongitudinalJoints)
    COM_INTERFACE_ENTRY(ISuperstructureMemberSegment)
 	COM_INTERFACE_ENTRY(ISegment)
 	COM_INTERFACE_ENTRY(IItemData)
@@ -70,14 +73,10 @@ BEGIN_COM_MAP(CThickenedFlangeBulbTeeSegment)
 END_COM_MAP()
 
 private:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
-   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
+   CSuperstructureMemberSegmentImpl m_Impl;
 
+   ThickeningType m_FlangeThickeningType;
    Float64 m_FlangeThickening;
-
-   Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
    struct ShapeData
    {
@@ -87,8 +86,7 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
-   Float64 m_HaunchDepth[3];
-   Float64 m_Fillet;
+   CComPtr<IMaterial> m_JointMaterial;
 
    CItemDataManager m_ItemDataMgr;
 
@@ -98,34 +96,47 @@ public:
 
 // ISegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override;
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override;
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override;
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override;
-   STDMETHOD(putref_PrevSegment)(ISegment* segment) override;
-   STDMETHOD(get_PrevSegment)(ISegment** segment) override;
-   STDMETHOD(putref_NextSegment)(ISegment* segment) override;
-   STDMETHOD(get_NextSegment)(ISegment** segment) override;
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection) override;
-	STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape) override;
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override;
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override;
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override;
-   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override;
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override;
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal) override;
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal) override;
-   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal) override;
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override { return m_Impl.putref_SuperstructureMember(ssMbr); }
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override { return m_Impl.get_SuperstructureMember(ssMbr); }
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override { return m_Impl.putref_GirderLine(girderLine); }
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override { return m_Impl.get_GirderLine(girderLine); }
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override { return m_Impl.putref_PrevSegment(segment); }
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override { return m_Impl.get_PrevSegment(segment); }
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
+   STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
+   STDMETHOD(get_Section)(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection) override;
+   STDMETHOD(get_PrimaryShape)(Float64 distAlongSegment, IShape** ppShape) override;
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure, IShape** ppShape) override;
+   STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
+   STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
+   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override { return m_Impl.put_Orientation(orientation); }
+   STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override { return m_Impl.get_Orientation(orientation); }
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal) override { return m_Impl.GetHaunchDepth(pStartVal, pMidVal, pEndVal); }
+   STDMETHOD(SetHaunchDepth)(Float64 startVal, Float64 midVal, Float64 endVal) override { return m_Impl.SetHaunchDepth(startVal, midVal, endVal); }
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
+   STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
+   STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
+   STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }
 
-// IThickenedFlangeBulbTeeSegment
+// IThickenedFlangeSegment
 public:
+   STDMETHOD(put_FlangeThickeningType)(ThickeningType type) override;
    STDMETHOD(put_FlangeThickening)(Float64 flangeThickening) override;
-	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial) override;
+   STDMETHOD(get_TopFlangeThickening)(Float64 Xs, Float64* pThickening) override;
+   STDMETHOD(AddShape)(IShape* pShape, IMaterial* pFGMaterial, IMaterial* pBGMaterial) override;
    STDMETHOD(get_ShapeCount)(IndexType* nShapes) override;
-   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material) override;
-   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material) override;
+   STDMETHOD(get_ForegroundMaterial)(IndexType index, IMaterial* *material) override;
+   STDMETHOD(get_BackgroundMaterial)(IndexType index, IMaterial* *material) override;
+   STDMETHOD(get_GirderShape)(Float64 Xs, IShape** ppShape) override;
+
+// ILongitudinalJoints
+public:
+   STDMETHOD(get_HasJoints)(/*[out,retval]*/VARIANT_BOOL* pbHasJoints);
+   STDMETHOD(putref_JointMaterial)(/*[in]*/IMaterial* material);
+   STDMETHOD(get_JointMaterial)(/*[out, retval]*/IMaterial** material);
+   STDMETHOD(get_JointShapes)(/*[in]*/Float64 Xs,/*[out]*/IShape** ppLeftJoint,/*[out]*/IShape** ppRightJoint);
 
 // IItemData
 public:
@@ -141,6 +152,8 @@ public:
 
 private:
    Float64 GetSuperstructureMemberLength();
-   Float64 GetFlangeThickening(Float64 distAlongSegment);
+   Float64 GetFlangeThickening(Float64 Xs);
+   HRESULT AdjustPosition(Float64 Xs, IBulbTeeSection* pSection, IShape* pShape);
+   HRESULT GetJointShapes(Float64 Xs, IBulbTeeSection* pSection, IShape** ppLeftJoint, IShape** ppRightJoint);
 };
 

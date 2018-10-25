@@ -393,7 +393,7 @@ void CPolyShape::UpdateShapeProperties()
       m_ShapeProps.Area = area;
       m_ShapeProps.Ixx = ixx;
       m_ShapeProps.Iyy = iyy;
-      m_ShapeProps.Ixy = ixy;
+      m_ShapeProps.Ixy = IsZero(ixy) ? 0 : ixy;
       m_ShapeProps.Cx = cgx;
       m_ShapeProps.Cy = cgy;
       m_ShapeProps.Xleft = cgx - m_BoundingRect.Left;
@@ -1095,6 +1095,11 @@ STDMETHODIMP CPolyShape::FurthestDistance(ILine2d* line, Float64 *pVal)
 
 STDMETHODIMP CPolyShape::Offset(Float64 dx,Float64 dy)
 {
+   if (IsZero(dx) && IsZero(dy))
+   {
+      return S_OK;
+   }
+
    CollectionIndexType cPoints;
    m_pPoints->get_Count(&cPoints);
 
@@ -1170,6 +1175,11 @@ STDMETHODIMP CPolyShape::RotateEx(IPoint2d* pPoint,Float64 angle)
 
 STDMETHODIMP CPolyShape::Rotate(Float64 cx,Float64 cy,Float64 angle)
 {
+   if (IsZero(angle))
+   {
+      return S_OK;
+   }
+
    CollectionIndexType cPoints;
    m_pPoints->get_Count(&cPoints);
 

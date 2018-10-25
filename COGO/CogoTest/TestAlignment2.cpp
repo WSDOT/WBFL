@@ -96,17 +96,17 @@ void CTestAlignment2::Test1()
 
    // Sta 2+00
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(2.00),&dir),S_OK);
+   TRY_TEST(alignment->Bearing(CComVariant(200.0),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,0.00),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(2.00),&dir),S_OK);
+   TRY_TEST(alignment->Normal(CComVariant(200.0),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(200),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
+   TRY_TEST(alignment->LocatePoint(CComVariant(200.0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 100.0),true);

@@ -96,6 +96,7 @@ public:
    STDMETHOD(get_MatingSurfaceCount)(/*[out,retval]*/MatingSurfaceIndexType* nMatingSurfaces) override;
 	STDMETHOD(get_MatingSurfaceLocation)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* location) override;
 	STDMETHOD(get_MatingSurfaceWidth)(/*[in]*/MatingSurfaceIndexType idx,/*[out,retval]*/Float64* wMatingSurface) override;
+   STDMETHOD(get_MatingSurfaceProfile)(/*[in]*/MatingSurfaceIndexType idx, /*[out, retval]*/IPoint2dCollection** ppProfile) override;
    STDMETHOD(get_TopFlangeCount)(/*[out,retval]*/FlangeIndexType* nTopFlanges) override;
 	STDMETHOD(get_TopFlangeLocation)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* location) override;
 	STDMETHOD(get_TopFlangeWidth)(/*[in]*/FlangeIndexType idx,/*[out,retval]*/Float64* width) override;
@@ -113,6 +114,10 @@ public:
 	STDMETHOD(get_MinTopFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_MinBottomFlangeThickness)(/*[out,retval]*/Float64* tf) override;
 	STDMETHOD(get_CL2ExteriorWebDistance)(/*[in]*/ DirectionType side, /*[out,retval]*/Float64* ww) override;
+
+// IPrestressedGirderSection
+public:
+   STDMETHOD(RemoveSacrificalDepth)(/*[in]*/Float64 sacDepth);
    STDMETHOD(get_SplittingZoneDimension)(/*[out,retval]*/Float64* pSZD) override;
    STDMETHOD(get_SplittingDirection)(/*[out,retval]*/SplittingDirection* pSD) override;
 

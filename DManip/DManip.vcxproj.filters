@@ -157,6 +157,9 @@
     <ClCompile Include="ZoomRectTaskImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AnchoredTextBlockImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\DManip\AutoLib.h">
@@ -465,6 +468,9 @@
     <ClInclude Include="ZoomRectTaskImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnchoredTextBlockImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLDManip.idl" />
@@ -589,6 +595,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ZoomRectTask.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="AnchoredTextBlock.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

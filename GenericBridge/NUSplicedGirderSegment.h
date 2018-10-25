@@ -63,7 +63,7 @@ BEGIN_COM_MAP(CNUSplicedGirderSegment)
 END_COM_MAP()
 
 protected:
-   HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape);
-   void GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWendBlock);
+   HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape);
+   void GetEndBlockWidth(Float64 x,Float64* pWendBlock);
 };
 

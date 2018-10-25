@@ -137,7 +137,7 @@ STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,C
    m_pRebarLayoutItem->get_Start(&start);
 
    Float64 ax = 0;
-   Float64 ay;
+   Float64 ay = 0;
    if ( m_Face == ftTopFace )
    {
       ay = -m_Offset;
@@ -145,14 +145,13 @@ STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,C
    else
    {
       CComPtr<IShape> shape;
-      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,sbRight,&shape);
+      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,&shape);
       CComPtr<IRect2d> box;
       shape->get_BoundingBox(&box);
       Float64 h;
       box->get_Height(&h);
       ay = -h + m_Offset;
    }
-
 
    Float64 x,y;
    switch (m_Orientation)
@@ -222,6 +221,18 @@ STDMETHODIMP CRebarRowFacePattern::get_Profile(/*[in]*/IndexType barIdx,/*[out,r
 
       Float64 X = Xstart + distFromStartOfPattern;
       point->put_X(X);
+
+      CComQIPtr<ISuperstructureMemberSegment> ssmbrSegment(m_pSegment);
+      if (ssmbrSegment)
+      {
+         Float64 precamber;
+         ssmbrSegment->get_Precamber(&precamber);
+         Float64 Ls;
+         m_pSegment->get_Length(&Ls);
+         Float64 precamber_offset = (4 * precamber / Ls)*X*(1 - X / Ls);
+         point->Offset(0, precamber_offset);
+      }
+
       points->Add(point);
    }
 

@@ -33,6 +33,7 @@
 #include <GraphManager\GraphBuilder.h>
 #include <IGraphManager.h>
 
+#include <EAF\EAFViewControllerFactory.h>
 
 #include <map>
 
@@ -40,7 +41,7 @@ class CEAFGraphView;
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFGraphChildFrame
-class EAFCLASS CEAFGraphChildFrame : public CEAFOutputChildFrame
+class EAFCLASS CEAFGraphChildFrame : public CEAFOutputChildFrame, public CEAFViewControllerFactory
 {
 protected:
 	CEAFGraphChildFrame();           // protected constructor used by dynamic creation
@@ -68,6 +69,10 @@ public:
 
 protected:
 	virtual ~CEAFGraphChildFrame();
+
+// CEAFViewControllerFactory
+protected:
+   virtual void CreateViewController(IEAFViewController** ppController) override;
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;

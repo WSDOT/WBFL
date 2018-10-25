@@ -216,7 +216,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::get_NumEntries(CollectionIndexType* co
 
 STDMETHODIMP_(void) CLegendDisplayObject::AddEntry(iLegendEntry* entry)
 {
-   m_Container.push_back(ContainerItem( entry ));
+   m_Container.emplace_back(entry);
 }
 
 STDMETHODIMP_(HRESULT) CLegendDisplayObject::InsertEntry(CollectionIndexType index, iLegendEntry* entry)
@@ -770,7 +770,7 @@ STDMETHODIMP_(void) CLegendDisplayObject::OnDrop(iDragDataSource* pSource)
 
       entry->ReadDragData(pSource, ms_cfFormat);
 
-      m_Container.push_back( ContainerItem(entry) );
+      m_Container.emplace_back(entry);
    }
 
 

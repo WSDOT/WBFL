@@ -75,7 +75,7 @@ void libLibraryEntry::SetName(LPCTSTR name)
    m_Name = name;
 }
 
-std::_tstring libLibraryEntry::GetName() const
+const std::_tstring& libLibraryEntry::GetName() const
 {
    return m_Name;
 }

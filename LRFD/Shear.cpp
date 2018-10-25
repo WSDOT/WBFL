@@ -317,9 +317,10 @@ void lrfdShear::ComputeThetaAndBeta(lrfdShearData* pData, lrfdShear::Method meth
 
 void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007   ||
+        lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::EighthEdition2017)
    {
-      // Vci/Vcw wasn't in LRFD before 4th edition... 
+      // Vci/Vcw wasn't in LRFD before 4th edition, and was removed in the 8th... 
       // set values to zero
       pData->VciMin  = 0;
       pData->VciCalc = 0;

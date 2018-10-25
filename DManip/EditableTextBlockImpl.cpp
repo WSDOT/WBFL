@@ -135,7 +135,7 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::CreateEditControl()
       ly -= extent.cy;
 
    CInplaceEdit* pEdit = GetEditObject();
-   DWORD dwStyle = WS_CHILD | WS_BORDER | WS_VISIBLE | ES_AUTOHSCROLL | ES_NOHIDESEL;
+   DWORD dwStyle = WS_CHILD | WS_BORDER | WS_VISIBLE | ES_AUTOHSCROLL;
    if ( m_Format == etbfNumeric )
       dwStyle |= ES_RIGHT;
    else
@@ -560,6 +560,16 @@ STDMETHODIMP_(void) CEditableTextBlockImpl::SetAngle(LONG angle)
 STDMETHODIMP_(LONG) CEditableTextBlockImpl::GetAngle()
 {
    return m_TextBlock->GetAngle();
+}
+
+STDMETHODIMP_(void) CEditableTextBlockImpl::SetPointSize(LONG pointSize)
+{
+   return m_TextBlock->SetPointSize(pointSize);
+}
+
+STDMETHODIMP_(LONG) CEditableTextBlockImpl::GetPointSize()
+{
+   return m_TextBlock->GetPointSize();
 }
 
 STDMETHODIMP_(void) CEditableTextBlockImpl::SetText(LPCTSTR lpszText)

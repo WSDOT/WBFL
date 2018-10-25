@@ -502,6 +502,16 @@ STDMETHODIMP_(LONG) CEditableUnitValueTextBlockImpl::GetAngle()
    return m_EditableTextBlock->GetAngle();
 }
 
+STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetPointSize(LONG pointSize)
+{
+   return m_EditableTextBlock->SetPointSize(pointSize);
+}
+
+STDMETHODIMP_(LONG) CEditableUnitValueTextBlockImpl::GetPointSize()
+{
+   return m_EditableTextBlock->GetPointSize();
+}
+
 STDMETHODIMP_(void) CEditableUnitValueTextBlockImpl::SetText(LPCTSTR lpszText)
 {
    // Convert the inbound string to a value... inbound value is in base units

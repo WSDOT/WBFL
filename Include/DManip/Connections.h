@@ -56,7 +56,8 @@ public:
    STDMETHOD_(void,Move)(ISize2d* offset) PURE;
 
    STDMETHOD_(void,Connect)(iPlug* plug,DWORD* pdwCookie) PURE;
-   STDMETHOD_(void,Disconnect)(DWORD dwCookie) PURE;
+   STDMETHOD_(void, Disconnect)(iPlug* plug) PURE;
+   STDMETHOD_(void, Disconnect)(DWORD dwCookie) PURE;
    STDMETHOD_(void,DisconnectAll)() PURE;
 
    STDMETHOD_(void,Draw)(CDC* pDC,iCoordinateMap* pMap) PURE;

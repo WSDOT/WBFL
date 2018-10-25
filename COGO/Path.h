@@ -149,11 +149,13 @@ private:
    void UnadviseAll();
 
    std::vector<Element> m_PathElements; // not the same as m_coll. This is a fully connected path of elements
+
    // Returns a vector of Element objects that captures the start and end location
    // along the path of a path element as well as the path element itself.
    // Don't access m_PathElements directly. Use GetPathElements because it
    // initializes m_PathElements on demand.
    std::vector<Element>& GetPathElements();
+
    bool FindElement(IUnknown* pUnk, Element* pElement);
 
    Float64 m_PathLength;

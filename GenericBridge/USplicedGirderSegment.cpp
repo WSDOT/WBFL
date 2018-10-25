@@ -51,7 +51,7 @@ void CUSplicedGirderSegment::FinalRelease()
 ////////////////////////////////////////////////////////////////////
 // ISplicedGirderSegment implementation
 
-HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -70,7 +70,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
    beam->get_Beam(&pcBeam);
 
    Float64 Wt, Wb;
-   GetEndBlockWidth(Xs,sectionBias,&Wt,&Wb);
+   GetEndBlockWidth(Xs,&Wt,&Wb);
 
    Float64 W1, W2, W3, W4, W5;
    Float64 D1, D2, D3, D4, D5, D6, D7;
@@ -167,7 +167,7 @@ HRESULT CUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias sectionB
    return S_OK;
 }
 
-void CUSplicedGirderSegment::GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot)
+void CUSplicedGirderSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64* pWtop,Float64* pWbot)
 {
    // not supporting end blocks
    *pWtop = 0;

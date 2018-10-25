@@ -156,7 +156,7 @@ STDMETHODIMP_(void) CPolyLineDisplayObjectImpl::AddPoint(IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
-   m_Container.push_back(ContainerItem(pVal));
+   m_Container.emplace_back(pVal);
 }
 
 STDMETHODIMP CPolyLineDisplayObjectImpl::InsertPoint(CollectionIndexType index, IPoint2d *pVal)

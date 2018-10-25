@@ -130,7 +130,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       TRY_TEST(IsEqual(length,100.0),true);
 
       CComPtr<ISection> section;
-      segment->get_Section(0,length/2,sbLeft,&section);
+      segment->get_Section(0,length/2,&section);
 
       CComPtr<IElasticProperties> elasticProps;
       section->get_ElasticProperties(&elasticProps);
@@ -248,10 +248,11 @@ void CTestGenericBridge::CreateGirders(IGenericBridge* bridge)
       glFactory->put_EndPierID(1);
       geometry->CreateGirderLines(glFactory);
 
-      LocationType locationType(gdrIdx == 0 ? ltLeftExteriorGirder : (gdrIdx == nGirders-1 ? ltRightExteriorGirder : ltInteriorGirder));
+      GirderIDType leftSSMbrID = (gdrIdx == 0 ? INVALID_ID : (GirderIDType)(gdrIdx - 1));
+      GirderIDType rightSSMbrID = (gdrIdx == nGirders-1 ? INVALID_ID : (GirderIDType)(gdrIdx + 1));
 
       CComPtr<ISuperstructureMember> ssmbr;
-      bridge->CreateSuperstructureMember(gdrID,locationType,&ssmbr);
+      bridge->CreateSuperstructureMember(gdrID,leftSSMbrID,rightSSMbrID,&ssmbr);
 
       GirderIDType id;
       ssmbr->get_ID(&id);

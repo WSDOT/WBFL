@@ -42,8 +42,9 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CSuperstructureMember::FinalConstruct()
 {
    m_ID = INVALID_ID;
+   m_LeftSSMbrID = INVALID_ID;
+   m_RightSSMbrID = INVALID_ID;
    m_pBridge = nullptr;
-   m_LocationType = ltInteriorGirder;
 
    m_Release[etStart] = rtNone;
    m_Release[etEnd]   = rtNone;
@@ -55,10 +56,11 @@ void CSuperstructureMember::FinalRelease()
 {
 }
 
-void CSuperstructureMember::Init(GirderIDType id,LocationType locationType,IGenericBridge* pBridge)
+void CSuperstructureMember::Init(GirderIDType id, GirderIDType leftSSMbrID, GirderIDType rightSSMbrID, IGenericBridge* pBridge)
 {
    m_ID = id;
-   m_LocationType = locationType;
+   m_LeftSSMbrID = leftSSMbrID;
+   m_RightSSMbrID = rightSSMbrID;
    m_pBridge = pBridge;
 }
 
@@ -344,7 +346,37 @@ STDMETHODIMP CSuperstructureMember::GetPlanAngle(Float64 distFromStartOfSSMbr,IA
 STDMETHODIMP CSuperstructureMember::get_LocationType(LocationType* pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_LocationType;
+
+   LocationType locationType;
+   if (m_LeftSSMbrID == INVALID_ID )
+   {
+      locationType = ltLeftExteriorGirder;
+   }
+   else if (m_RightSSMbrID == INVALID_ID)
+   {
+      locationType = ltRightExteriorGirder;
+   }
+   else
+   {
+      locationType = ltInteriorGirder;
+   }
+
+   *pVal = locationType;
+
+   return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMember::get_LeftSSMbrID(GirderIDType* pID)
+{
+   CHECK_RETVAL(pID);
+   *pID = m_LeftSSMbrID;
+   return S_OK;
+}
+
+STDMETHODIMP CSuperstructureMember::get_RightSSMbrID(GirderIDType* pID)
+{
+   CHECK_RETVAL(pID);
+   *pID = m_RightSSMbrID;
    return S_OK;
 }
 

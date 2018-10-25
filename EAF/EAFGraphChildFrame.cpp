@@ -27,6 +27,7 @@
 #include <EAF\EAFGraphChildFrame.h>
 #include <EAF\EAFGraphView.h>
 #include <EAF\EAFHelp.h>
+#include <EAF\EAFGraphBuilderBase.h>
 
 // include files needed to get the RecalcLayout override working
 #include <oleimpl2.h>
@@ -61,6 +62,19 @@ BEGIN_MESSAGE_MAP(CEAFGraphChildFrame, CEAFOutputChildFrame)
 	ON_MESSAGE(WM_HELP, OnCommandHelp)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
+
+void CEAFGraphChildFrame::CreateViewController(IEAFViewController** ppController)
+{
+   if (ppController )
+   {
+      *ppController = nullptr;
+      CEAFGraphBuilderBase* pBuilder = dynamic_cast<CEAFGraphBuilderBase*>(m_pMyGraphBuilder.get());
+      if (pBuilder)
+      {
+         pBuilder->CreateViewController(ppController);
+      }
+   }
+}
 
 LRESULT CEAFGraphChildFrame::OnCommandHelp(WPARAM, LPARAM lParam)
 {

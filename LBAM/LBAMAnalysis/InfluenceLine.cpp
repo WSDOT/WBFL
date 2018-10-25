@@ -132,7 +132,7 @@ STDMETHODIMP CInfluenceLine::Add(InfluenceLocationType locationType, Float64 loc
 
       InfluencePointContainer& container = GetContainer(ilsBoth);
 
-      container.push_back( InflPoint(value,location,locationType) );
+      container.emplace_back(value,location,locationType);
    }
    catch(...)
    {
@@ -613,7 +613,7 @@ STDMETHODIMP CInfluenceLine::Load(IStructuredLoad2 * pload)
             return STRLOAD_E_INVALIDFORMAT;
          }
 
-         container.push_back( InflPoint( value, location, loc_type) );
+         container.emplace_back(value, location, loc_type);
       }
 
    }
@@ -993,7 +993,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // not a vertical drop: need to add an intersection point
                   Float64 xloc = InterpolateZeroLocation(p1.m_Location, p2.m_Location, p1.m_Value, p2.m_Value);
-                  local_infl.push_back( InflPoint(0.0, xloc, iflSingle) );
+                  local_infl.emplace_back(0.0, xloc, iflSingle);
                   local_infl.push_back( p2 );
                }
             }
@@ -1011,7 +1011,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // not a vertical climb: need to add an intersection point
                   Float64 xloc = InterpolateZeroLocation(p1.m_Location, p2.m_Location, p1.m_Value, p2.m_Value);
-                  local_infl.push_back( InflPoint(0.0, xloc, iflSingle) );
+                  local_infl.emplace_back(0.0, xloc, iflSingle);
                   local_infl.push_back( p2.CopyAndZero() );
                }
             }
@@ -1090,7 +1090,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // not a vertical drop: need to add an intersection point
                   Float64 xloc = InterpolateZeroLocation(p1.m_Location, p2.m_Location, p1.m_Value, p2.m_Value);
-                  local_infl.push_back( InflPoint(0.0, xloc, iflSingle) );
+                  local_infl.emplace_back(0.0, xloc, iflSingle);
                   local_infl.push_back( p2.CopyAndZero() );
                }
             }
@@ -1108,7 +1108,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
                {
                   // not a vertical climb: need to add an intersection point
                   Float64 xloc = InterpolateZeroLocation(p1.m_Location, p2.m_Location, p1.m_Value, p2.m_Value);
-                  local_infl.push_back( InflPoint(0.0, xloc, iflSingle) );
+                  local_infl.emplace_back(0.0, xloc, iflSingle);
                   local_infl.push_back( p2 );
                }
             }

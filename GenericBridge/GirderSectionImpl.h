@@ -106,7 +106,7 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IFlangedBeam implementation
-   STDMETHODIMP put_Beam(_IBEAM_* beam)
+   STDMETHODIMP put_Beam(_IBEAM_* beam) override
    {
       CHECK_IN(beam);
 
@@ -125,7 +125,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_Beam(_IBEAM_** beam)
+   STDMETHODIMP get_Beam(_IBEAM_** beam) override
    {
       CHECK_RETOBJ(beam);
       (*beam) = m_Beam;
@@ -135,14 +135,14 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IGirderSection implementation
-   STDMETHODIMP get_WebCount(WebIndexType* nWebs)
+   STDMETHODIMP get_WebCount(WebIndexType* nWebs) override
    {
       CHECK_RETVAL(nWebs);
       *nWebs = 1;
       return S_OK;
    }
 
-   STDMETHODIMP get_WebLocation(WebIndexType idx,Float64* location)
+   STDMETHODIMP get_WebLocation(WebIndexType idx,Float64* location) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -153,7 +153,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebSpacing(WebIndexType idx,Float64* spacing)
+   STDMETHODIMP get_WebSpacing(WebIndexType idx,Float64* spacing) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -164,7 +164,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebThickness(WebIndexType idx,Float64* tWeb)
+   STDMETHODIMP get_WebThickness(WebIndexType idx,Float64* tWeb) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -177,7 +177,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_WebPlane(WebIndexType idx,IPlane3d** ppPlane)
+   STDMETHODIMP get_WebPlane(WebIndexType idx,IPlane3d** ppPlane) override
    {
       CHECK_RETOBJ(ppPlane);
 
@@ -205,29 +205,34 @@ public:
       return plane.CopyTo(ppPlane);
    }
 
-   STDMETHODIMP get_MatingSurfaceCount(MatingSurfaceIndexType* nMatingSurfaces)
+   STDMETHODIMP get_MatingSurfaceCount(MatingSurfaceIndexType* nMatingSurfaces) override
    {
       return get_TopFlangeCount(nMatingSurfaces);
    }
 
-   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location)
+   STDMETHODIMP get_MatingSurfaceLocation(MatingSurfaceIndexType idx,Float64* location) override
    {
       return get_TopFlangeLocation(idx,location);
    }
 
-	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface)
+	STDMETHODIMP get_MatingSurfaceWidth(MatingSurfaceIndexType idx,Float64* wMatingSurface) override
    {
       return get_TopFlangeWidth(idx,wMatingSurface);
    }
 
-   STDMETHODIMP get_TopFlangeCount(FlangeIndexType* nTopFlanges)
+   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile) override
+   {
+      return E_NOTIMPL;
+   }
+
+   STDMETHODIMP get_TopFlangeCount(FlangeIndexType* nTopFlanges) override
    {
       CHECK_RETVAL(nTopFlanges);
       *nTopFlanges = 1;
       return S_OK;
    }
 
-   STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx,Float64* location)
+   STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx,Float64* location) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -236,7 +241,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_TopFlangeWidth(FlangeIndexType idx,Float64* wFlange)
+   STDMETHODIMP get_TopFlangeWidth(FlangeIndexType idx,Float64* wFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -244,7 +249,7 @@ public:
       return m_Beam->get_TopFlangeWidth(wFlange);
    }
 
-   STDMETHODIMP get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing)
+   STDMETHODIMP get_TopFlangeSpacing(FlangeIndexType idx,Float64* spacing) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -255,14 +260,14 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_BottomFlangeCount(FlangeIndexType* nBottomFlanges)
+   STDMETHODIMP get_BottomFlangeCount(FlangeIndexType* nBottomFlanges) override
    {
       CHECK_RETVAL(nBottomFlanges);
       *nBottomFlanges = 1;
       return S_OK;
    }
 
-   STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx,Float64* location)
+   STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx,Float64* location) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -271,7 +276,7 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_BottomFlangeWidth(FlangeIndexType idx,Float64* wFlange)
+   STDMETHODIMP get_BottomFlangeWidth(FlangeIndexType idx,Float64* wFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -279,7 +284,7 @@ public:
       return m_Beam->get_BottomFlangeWidth(wFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing)
+   STDMETHODIMP get_BottomFlangeSpacing(FlangeIndexType idx,Float64* spacing) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -290,32 +295,32 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_GirderHeight(Float64* height)
+   STDMETHODIMP get_GirderHeight(Float64* height) override
    {
       return m_Beam->get_Height(height);
    }
 
-	STDMETHODIMP get_TopWidth(Float64* width)
+	STDMETHODIMP get_TopWidth(Float64* width) override
    {
       return m_Beam->get_TopFlangeWidth(width);
    }
 
-	STDMETHODIMP get_BottomWidth(Float64* width)
+	STDMETHODIMP get_BottomWidth(Float64* width) override
    {
       return m_Beam->get_BottomFlangeWidth(width);
    }
 
-   STDMETHODIMP get_ShearWidth(Float64* shearwidth)
+   STDMETHODIMP get_ShearWidth(Float64* shearwidth) override
    {
       return m_Beam->get_AvgWebWidth(shearwidth);
    }
 
-   STDMETHODIMP get_MinTopFlangeThickness(Float64* tf)
+   STDMETHODIMP get_MinTopFlangeThickness(Float64* tf) override
    {
       return m_Beam->get_D1(tf);
    }
 
-   STDMETHODIMP get_CL2ExteriorWebDistance(DirectionType side, Float64* wd)
+   STDMETHODIMP get_CL2ExteriorWebDistance(DirectionType side, Float64* wd) override
    {
       HRESULT hr = S_OK;
       CHECK_RETVAL(wd);
@@ -327,37 +332,37 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IShape implementation
-   STDMETHODIMP FurthestDistance(ILine2d* line,Float64 *pVal)
-   {
+   STDMETHODIMP FurthestDistance(ILine2d* line,Float64 *pVal) override
+   { 
       return m_Shape->FurthestDistance(line,pVal);
    }
 
-   STDMETHODIMP get_Perimeter(Float64 *pVal)
+   STDMETHODIMP get_Perimeter(Float64 *pVal) override
    {
       return m_Shape->get_Perimeter(pVal);
    }
 
-   STDMETHODIMP get_ShapeProperties(IShapeProperties* *pVal)
+   STDMETHODIMP get_ShapeProperties(IShapeProperties* *pVal) override
    {
       return m_Shape->get_ShapeProperties(pVal);
    }
 
-   STDMETHODIMP get_BoundingBox(IRect2d* *pVal)
-   {
+   STDMETHODIMP get_BoundingBox(IRect2d* *pVal) override
+   { 
       return m_Shape->get_BoundingBox(pVal);
    }
 
-   STDMETHODIMP get_PolyPoints(IPoint2dCollection** ppPolyPoints)
+   STDMETHODIMP get_PolyPoints(IPoint2dCollection** ppPolyPoints) override
    {
       return m_Shape->get_PolyPoints(ppPolyPoints);
    }
 
-   STDMETHODIMP PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
+   STDMETHODIMP PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult) override
    {
       return m_Shape->PointInShape(pPoint,pbResult);
    }
 
-   STDMETHODIMP Clone(IShape** pClone)
+   STDMETHODIMP Clone(IShape** pClone) override
    {
       CHECK_RETOBJ(pClone);
 
@@ -389,103 +394,103 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP ClipWithLine(ILine2d* pLine,IShape** pShape)
+   STDMETHODIMP ClipWithLine(ILine2d* pLine,IShape** pShape) override
    {
       return m_Shape->ClipWithLine(pLine,pShape);
    }
 
-   STDMETHODIMP ClipIn(IRect2d* pRect,IShape** pShape)
+   STDMETHODIMP ClipIn(IRect2d* pRect,IShape** pShape) override
    {
       return m_Shape->ClipIn(pRect,pShape);
    }
 
-   STDMETHODIMP Offset(Float64 dx,Float64 dy)
+   STDMETHODIMP Offset(Float64 dx,Float64 dy) override
    {
       return m_Position->Offset(dx,dy);
    }
 
-   STDMETHODIMP OffsetEx(ISize2d* pSize)
+   STDMETHODIMP OffsetEx(ISize2d* pSize) override
    {
       return m_Position->OffsetEx(pSize);
    }
 
-   STDMETHODIMP get_LocatorPoint(LocatorPointType lp,IPoint2d** point)
+   STDMETHODIMP get_LocatorPoint(LocatorPointType lp,IPoint2d** point) override
    {
       return m_Position->get_LocatorPoint(lp,point);
    }
 
-   STDMETHODIMP put_LocatorPoint(LocatorPointType lp,IPoint2d* point)
+   STDMETHODIMP put_LocatorPoint(LocatorPointType lp,IPoint2d* point) override
    {
       return m_Position->put_LocatorPoint(lp,point);
    }
 
-   STDMETHODIMP MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
+   STDMETHODIMP MoveEx(IPoint2d* pFrom,IPoint2d* pTo) override
    {
       return m_Position->MoveEx(pFrom,pTo);
    }
 
-   STDMETHODIMP RotateEx(IPoint2d* pPoint,Float64 angle)
+   STDMETHODIMP RotateEx(IPoint2d* pPoint,Float64 angle) override
    {
       return m_Position->RotateEx(pPoint,angle);
    }
 
-   STDMETHODIMP Rotate(Float64 cx,Float64 cy,Float64 angle)
+   STDMETHODIMP Rotate(Float64 cx,Float64 cy,Float64 angle) override
    {
       return m_Position->Rotate(cx,cy,angle);
    }
 
    // ICompositeSection
-   STDMETHODIMP get__NewEnum(IUnknown* *pVal)
+   STDMETHODIMP get__NewEnum(IUnknown* *pVal) override
    {
       return m_CompositeShape->get__NewEnum(pVal);
    }
 
-   STDMETHODIMP get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+   STDMETHODIMP get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal) override
    {
       return m_CompositeShape->get_Item(idx,pVal);
    }
 
-   STDMETHODIMP ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+   STDMETHODIMP ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override
    {
       return m_CompositeShape->ReplaceEx(idx,pShapeItem);
    }
 
-   STDMETHODIMP Replace(CollectionIndexType idx,IShape* pShape)
+   STDMETHODIMP Replace(CollectionIndexType idx,IShape* pShape) override
    {
       return m_CompositeShape->Replace(idx,pShape);
    }
 
-   STDMETHODIMP AddShape(IShape* shape,VARIANT_BOOL bVoid)
+   STDMETHODIMP AddShape(IShape* shape,VARIANT_BOOL bVoid) override
    {
       return m_CompositeShape->AddShape(shape,bVoid);
    }
 
-	STDMETHODIMP AddShapeEx(ICompositeShapeItem* shapeItem)
+	STDMETHODIMP AddShapeEx(ICompositeShapeItem* shapeItem) override
    {
       return m_CompositeShape->AddShapeEx(shapeItem);
    }
 
-	STDMETHODIMP Remove(CollectionIndexType idx)
+	STDMETHODIMP Remove(CollectionIndexType idx) override
    {
       return m_CompositeShape->Remove(idx);
    }
 
-	STDMETHODIMP Clear()
+	STDMETHODIMP Clear() override
    {
       return m_CompositeShape->Clear();
    }
 
-   STDMETHODIMP get_Count(CollectionIndexType *pVal)
+   STDMETHODIMP get_Count(CollectionIndexType *pVal) override
    {
       return m_CompositeShape->get_Count(pVal);
    }
 
-	STDMETHODIMP get_Shape(IShape* *pVal)
+	STDMETHODIMP get_Shape(IShape* *pVal) override
    {
       return m_CompositeShape->get_Shape(pVal);
    }
 
-   STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg)
+   STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg) override
    {
       return m_CompositeShape->get_StructuredStorage(pStrStg);
    }

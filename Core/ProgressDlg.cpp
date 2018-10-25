@@ -69,28 +69,12 @@ void CProgressDlg::DoDataExchange(CDataExchange* pDX)
 
 void CProgressDlg::GrabInput()
 {
-   // get the windows that currently have the focus and mosue capture
    m_pwndFocus = GetFocus();
    m_pwndCapture = GetCapture();
-
-   // set the focus and mouse capture the cancel button
-   // if it is being used, otherwise, to this window
-   if (m_Cancel.IsWindowEnabled())
-   {
-      ASSERT(m_Cancel.IsWindowVisible());
-      m_Cancel.SetFocus();
-      m_Cancel.SetCapture();
-   }
-   else
-   {
-      SetFocus();
-      SetCapture();
-   }
 }
 
 void CProgressDlg::ReleaseInput()
 {
-   // restore the focus and mouse capture
    if ( m_pwndFocus )
    {
       m_pwndFocus->SetFocus();

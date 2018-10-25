@@ -316,6 +316,11 @@ STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceWidth(MatingSurfaceIndexType i
    return get_TopWidth(wMatingSurface);
 }
 
+STDMETHODIMP CVoidedSlabSection::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CVoidedSlabSection::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -444,7 +449,7 @@ STDMETHODIMP CVoidedSlabSection::get_MinBottomFlangeThickness(Float64* tf)
 STDMETHODIMP CVoidedSlabSection::get_CL2ExteriorWebDistance( DirectionType side, Float64* wd)
 {
    HRESULT hr;
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    WebIndexType nWebs;
    WebIndexType nVoids;
@@ -483,6 +488,15 @@ STDMETHODIMP CVoidedSlabSection::get_CL2ExteriorWebDistance( DirectionType side,
    }
 
    return S_OK;
+}
+
+STDMETHODIMP CVoidedSlabSection::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   // voids are always centered on beam height. if we reduce
+   // the beam height, we move the voids. We don't want to do this.
+   // Since the top of the slab is always flat, we can do nothing
+   // here and let the external tools use the clipping method
+   return S_FALSE;
 }
 
 STDMETHODIMP CVoidedSlabSection::get_SplittingZoneDimension(Float64* pSZD)

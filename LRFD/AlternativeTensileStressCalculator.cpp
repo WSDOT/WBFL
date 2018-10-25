@@ -32,6 +32,8 @@
 #include <Lrfd\RebarPool.h>
 #include <Lrfd\Rebar.h>
 
+#include <WBFLGenericBridge.h>
+
 /****************************************************************************
 CLASS
    lrfdAlternativeTensileStressCalculator
@@ -293,8 +295,7 @@ void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirement
 
       T = fAvg * AreaTens;
 
-
-      ATLASSERT( !::IsZero(T) );
+      //ATLASSERT( !::IsZero(T) );
    }
 
    // Area of steel required to meet higher tensile stress requirement
@@ -349,7 +350,6 @@ void lrfdAlternativeTensileStressCalculator::ComputeAlternativeStressRequirement
 
          Float64 dev_length_factor;
          Float64 cut_length = Min(start, end);
-         ATLASSERT(!IsZero(cut_length)); // sections shouldn't be cutting bars that don't exist
          Float64 fra = cut_length/devLengthDetails.ldb;
          fra = Min(fra, 1.0);
          dev_length_factor = fra;

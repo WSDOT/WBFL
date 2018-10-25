@@ -32,6 +32,7 @@
 #include <MathEx.h>
 #include "WBFLGenericBridge.h"
 #include "ItemDataManager.h"
+#include "SuperstructureMemberSegmentImpl.h"
 
 template<class T_IBeam>
 class VoidedEndBlock
@@ -70,13 +71,7 @@ class TEndBlockSegmentImpl :
    friend TEndBlockSegmentImpl; // for easy cloning
 
 private:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-
-   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
-   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
-
-   Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
+   CSuperstructureMemberSegmentImpl m_Impl;
 
    struct ShapeData
    {
@@ -86,10 +81,6 @@ private:
    };
    std::vector<ShapeData> m_Shapes;
 
-   Float64 m_HaunchDepth[3];
-
-   Float64 m_Fillet;
-
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
 
@@ -98,9 +89,6 @@ private:
 public:
    TEndBlockSegmentImpl()
 	{
-      m_pSSMbr       = nullptr;
-      m_pPrevSegment = nullptr;
-      m_pNextSegment = nullptr;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(T_IDR)
@@ -120,16 +108,6 @@ END_COM_MAP()
 public:
    HRESULT FinalConstruct()
    {
-      m_pGirderLine = nullptr;
-
-      m_Orientation = 0;
-
-      m_HaunchDepth[0] = 0;
-      m_HaunchDepth[1] = 0;
-      m_HaunchDepth[2] = 0;
-
-      m_Fillet = 0;
-
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
 
@@ -138,13 +116,12 @@ public:
 
    void FinalRelease()
    {
-      m_pGirderLine = nullptr;
       m_Shapes.clear();
    }
 
 // ISupportsErrorInfo
 public:
-   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid)
+   STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override
    {
 	   static const IID* arr[] = 
 	   {
@@ -159,119 +136,18 @@ public:
 	   return S_FALSE;
    }
 
-// ISegment
+// ISuperstructureMemberSegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr)
-   {
-      m_pSSMbr = ssMbr;
-      return S_OK;
-   }
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override { return m_Impl.putref_SuperstructureMember(ssMbr); }
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override { return m_Impl.get_SuperstructureMember(ssMbr); }
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override { return m_Impl.putref_GirderLine(girderLine); }
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override { return m_Impl.get_GirderLine(girderLine); }
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override { return m_Impl.putref_PrevSegment(segment); }
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override { return m_Impl.get_PrevSegment(segment); }
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
+   STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
 
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr)
-   {
-      CHECK_RETVAL(ssMbr);
-      if ( m_pSSMbr )
-      {
-         (*ssMbr) = m_pSSMbr;
-         (*ssMbr)->AddRef();
-      }
-      else
-      {
-         (*ssMbr) = nullptr;
-      }
-      return S_OK;
-   }
-
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine)
-   {
-      m_pGirderLine = girderLine;
-      return S_OK;
-   }
-
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine)
-   {
-      CHECK_RETVAL(girderLine);
-      if ( m_pGirderLine )
-      {
-         (*girderLine) = m_pGirderLine;
-         (*girderLine)->AddRef();
-      }
-      else
-      {
-         (*girderLine) = nullptr;
-      }
-      return S_OK;
-   }
-
-   STDMETHOD(putref_PrevSegment)(ISegment* segment)
-   {
-      CHECK_IN(segment);
-      ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-      m_pPrevSegment = nullptr;
-      HRESULT hr = segment->QueryInterface(&m_pPrevSegment);
-      if ( FAILED(hr) )
-      {
-         m_pPrevSegment = pMySeg;
-      }
-      return hr;
-   }
-
-   STDMETHOD(get_PrevSegment)(ISegment** segment)
-   {
-      CHECK_RETVAL(segment);
-      return m_pPrevSegment->QueryInterface(segment);
-   }
-
-   STDMETHOD(putref_NextSegment)(ISegment* segment)
-   {
-      ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-      m_pNextSegment = nullptr;
-      HRESULT hr = segment->QueryInterface(&m_pNextSegment);
-      if ( FAILED(hr) )
-      {
-         m_pNextSegment = pMySeg;
-      }
-      return hr;
-   }
-
-   STDMETHOD(get_NextSegment)(ISegment** segment)
-   {
-      CHECK_RETVAL(segment);
-      return m_pNextSegment->QueryInterface(segment);
-   }
-
-   STDMETHOD(get_Length)(Float64 *pVal)
-   {
-      ATLASSERT(m_pGirderLine != nullptr);
-      return m_pGirderLine->get_GirderLength(pVal);
-   }
-
-   STDMETHOD(get_LayoutLength)(Float64 *pVal)
-   {
-      ATLASSERT(m_pGirderLine != nullptr);
-      return m_pGirderLine->get_LayoutLength(pVal);
-   }
-
-   bool IsInEndBlock(Float64 Xs, SectionBias sectionBias)
-   {
-      Float64 length;
-      get_Length(&length);
-
-
-      if (
-         (0.0 < m_EndBlockLength[etStart] && (sectionBias == sbLeft ? IsLE(Xs, m_EndBlockLength[etStart]) : IsLT(Xs, m_EndBlockLength[etStart]))) ||
-         (0.0 < m_EndBlockLength[etEnd] && (sectionBias == sbLeft ? IsLT(length - Xs, m_EndBlockLength[etEnd]) : IsLE(length - Xs, m_EndBlockLength[etEnd])))
-         )
-      {
-         return true;
-      }
-      else
-      {
-         return false;
-      }
-   }
-
-   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+   STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection) override
    {
       CHECK_RETOBJ(ppSection);
 
@@ -301,7 +177,8 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if ( IsInEndBlock(Xs,sectionBias) )
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -382,7 +259,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias,IShape** ppShape)
+   STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape) override
    {
       CHECK_RETOBJ(ppShape);
 
@@ -412,7 +289,8 @@ public:
       get_Length(&length);
 
       // Section is in the end block so use the outline of the shape only
-      if (IsInEndBlock(Xs, sectionBias))
+      if ( (0.0 < m_EndBlockLength[etStart] && IsLE(Xs,m_EndBlockLength[etStart])) || 
+           (0.0 < m_EndBlockLength[etEnd]   && IsLE(length - Xs,m_EndBlockLength[etEnd])) )
       {
          T_ENDBLOCK::InEndBlock(newBeam);;
       }
@@ -430,7 +308,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
+   STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape) override
    {
       CHECK_RETOBJ(ppShape);
       CComPtr<IRect2d> rect;
@@ -443,24 +321,66 @@ public:
       rect->get_Height(&h);
 
       Float64 l;
-      Float64 brgOffset,endDist;
-      if ( bIncludeClosure == VARIANT_TRUE )
+      Float64 brgOffset, endDist;
+      if (bIncludeClosure == VARIANT_TRUE)
       {
-         m_pGirderLine->get_LayoutLength(&l);
+         m_Impl.m_pGirderLine->get_LayoutLength(&l);
          brgOffset = 0;
          endDist = 0;
       }
       else
       {
-         m_pGirderLine->get_GirderLength(&l);
-         m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-         m_pGirderLine->get_EndDistance(etStart,&endDist);
+         m_Impl.m_pGirderLine->get_GirderLength(&l);
+         m_Impl.m_pGirderLine->get_BearingOffset(etStart, &brgOffset);
+         m_Impl.m_pGirderLine->get_EndDistance(etStart, &endDist);
       }
 
-      CComPtr<IRectangle> shape;
-      shape.CoCreateInstance(CLSID_Rect);
-      shape->put_Height(h);
-      shape->put_Width(l);
+      CComPtr<IShape> shape;
+      if (IsZero(m_Impl.m_Precamber))
+      {
+         CComPtr<IRectangle> profile;
+         profile.CoCreateInstance(CLSID_Rect);
+         profile->put_Height(h);
+         profile->put_Width(l);
+
+         profile.QueryInterface(&shape);
+      }
+      else
+      {
+         CComPtr<IPolyShape> profile;
+         profile.CoCreateInstance(CLSID_PolyShape);
+         profile->AddPoint(0, 0);
+
+         Float64 Ls;
+         m_Impl.m_pGirderLine->get_GirderLength(&Ls);
+         for (int i = 0; i < 11; i++)
+         {
+            Float64 x = i*Ls / 10;
+            Float64 y = m_Impl.ComputePrecamber(x, Ls);
+            if (bIncludeClosure == VARIANT_TRUE)
+            {
+               x += (brgOffset - endDist);
+            }
+            profile->AddPoint(x, y);
+         }
+
+         profile->AddPoint(l, 0);
+
+         for (int i = 0; i < 11; i++)
+         {
+            Float64 x = Ls - i*Ls / 10;
+            Float64 y = m_Impl.ComputePrecamber(x, Ls) + h;
+            if (bIncludeClosure == VARIANT_TRUE)
+            {
+               x += (brgOffset - endDist);
+            }
+            profile->AddPoint(x, y);
+         }
+
+         profile->AddPoint(0, h);
+
+         profile.QueryInterface(&shape);
+      }
 
       // CL Pier/Top Shape is at (0,0)
       //
@@ -473,80 +393,38 @@ public:
 
       CComQIPtr<IXYPosition> position(shape);
       CComPtr<IPoint2d> topLeft;
-      position->get_LocatorPoint(lpTopLeft,&topLeft);
-      topLeft->Move(brgOffset-endDist,0);
-      position->put_LocatorPoint(lpTopLeft,topLeft);
+      position->get_LocatorPoint(lpTopLeft, &topLeft);
+      if (0 < m_Impl.m_Precamber)
+      {
+         topLeft->Move(brgOffset - endDist, m_Impl.m_Precamber);
+      }
+      else
+      {
+         topLeft->Move(brgOffset - endDist, 0);
+      }
+      position->put_LocatorPoint(lpTopLeft, topLeft);
 
       shape->QueryInterface(ppShape);
 
       return S_OK;
    }
 
-   STDMETHOD(put_Orientation)(Float64 orientation)
-   {
-      if ( IsEqual(m_Orientation,orientation) )
-      {
-         return S_OK;
-      }
-
-      m_Orientation = orientation;
-      return S_OK;
-   }
-
-   STDMETHOD(get_Orientation)(Float64* orientation)
-   {
-      CHECK_RETVAL(orientation);
-      (*orientation) = m_Orientation;
-      return S_OK;
-   }
-
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
-   {
-      CHECK_RETVAL(pStartVal);
-      CHECK_RETVAL(pMidVal);
-      CHECK_RETVAL(pEndVal);
-      *pStartVal = m_HaunchDepth[0];
-      *pMidVal   = m_HaunchDepth[1];
-      *pEndVal   = m_HaunchDepth[2];
-      return S_OK;
-   }
-
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal)
-   {
-      m_HaunchDepth[0] = startVal;
-      m_HaunchDepth[1] = midVal;
-      m_HaunchDepth[2] = endVal;
-      return S_OK;
-   }
-
-   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
-   {
-      CHECK_RETVAL(pVal);
-      *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
-      return S_OK;
-   }
-
-   STDMETHOD(put_Fillet)(Float64 Fillet)
-   {
-      if ( IsEqual(m_Fillet,Fillet) )
-      {
-         return S_OK;
-      }
-
-      m_Fillet = Fillet;
-      return S_OK;
-   }
-
-   STDMETHOD(get_Fillet)(Float64* Fillet)
-   {
-      CHECK_RETVAL(Fillet);
-      (*Fillet) = m_Fillet;
-      return S_OK;
-   }
+   STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
+   STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
+   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override { return m_Impl.put_Orientation(orientation); }
+   STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override { return m_Impl.get_Orientation(orientation); }
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal) override { return m_Impl.GetHaunchDepth(pStartVal, pMidVal, pEndVal); }
+   STDMETHOD(SetHaunchDepth)(Float64 startVal, Float64 midVal, Float64 endVal) override { return m_Impl.SetHaunchDepth(startVal, midVal, endVal); }
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
+   STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
+   STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
+   STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }
 
 // Functions to fulfill local class declaration
 public:
-	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial)
+	STDMETHOD(AddShape)(IShape* pShape,IMaterial* pFGMaterial,IMaterial* pBGMaterial) override
    {
       CHECK_IN(pShape);
       if ( m_Shapes.size() == 0 )
@@ -569,14 +447,14 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_ShapeCount)(IndexType* nShapes)
+   STDMETHOD(get_ShapeCount)(IndexType* nShapes) override
    {
       CHECK_RETVAL(nShapes);
       *nShapes = m_Shapes.size();
       return S_OK;
    }
 
-   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material)
+   STDMETHOD(get_ForegroundMaterial)(IndexType index,IMaterial* *material) override
    {
       if ( m_Shapes.size() <= index || index == INVALID_INDEX )
       {
@@ -594,7 +472,7 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material)
+   STDMETHOD(get_BackgroundMaterial)(IndexType index,IMaterial* *material) override
    {
       if ( m_Shapes.size() <= index || index == INVALID_INDEX )
       {
@@ -612,13 +490,13 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(put_EndBlockLength)(/*[in]*/EndType endType,/*[in]*/ Float64 length)
+   STDMETHOD(put_EndBlockLength)(/*[in]*/EndType endType,/*[in]*/ Float64 length) override
    {
       m_EndBlockLength[endType] = length;
       return S_OK;
    }
 
-   STDMETHOD(get_EndBlockLength)(/*[in]*/EndType endType,/*[out,retval]*/ Float64* pLength)
+   STDMETHOD(get_EndBlockLength)(/*[in]*/EndType endType,/*[out,retval]*/ Float64* pLength) override
    {
       *pLength = m_EndBlockLength[endType];
       return S_OK;
@@ -626,34 +504,34 @@ public:
 
 // IItemData
 public:
-   STDMETHOD(AddItemData)(BSTR name,IUnknown* data)
+   STDMETHOD(AddItemData)(BSTR name,IUnknown* data) override
    {
       return m_ItemDataMgr.AddItemData(name,data);
    }
 
-   STDMETHOD(GetItemData)(BSTR name,IUnknown** data)
+   STDMETHOD(GetItemData)(BSTR name,IUnknown** data) override
    {
       return m_ItemDataMgr.GetItemData(name,data);
    }
 
-   STDMETHOD(RemoveItemData)(BSTR name)
+   STDMETHOD(RemoveItemData)(BSTR name) override
    {
       return m_ItemDataMgr.RemoveItemData(name);
    }
 
-   STDMETHOD(GetItemDataCount)(CollectionIndexType* count)
+   STDMETHOD(GetItemDataCount)(CollectionIndexType* count) override
    {
       return m_ItemDataMgr.GetItemDataCount(count);
    }
 
 // IStructuredStorage2
 public:
-	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load)
+	STDMETHOD(Load)(/*[in]*/ IStructuredLoad2* load) override
    {
       return E_NOTIMPL;
    }
 
-	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save)
+	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override
    {
       return E_NOTIMPL;
    }

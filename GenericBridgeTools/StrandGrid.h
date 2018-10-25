@@ -103,8 +103,8 @@ public:
    STDMETHOD(putref_StrandMover)(/*[in]*/StrandGridType gridType,/*[in]*/EndType endType,/*[in]*/IStrandMover* mover) override;
    STDMETHOD(GetStrandMover)(/*[out]*/StrandGridType* gridType,/*[out]*/EndType* endType,/*[out]*/IStrandMover** mover) override;
 
-   STDMETHOD(get_VerticalStrandAdjustment)(/*[out,retval]*/Float64* adjustment) override;
-   STDMETHOD(put_VerticalStrandAdjustment)(/*[in]*/Float64 adjustment) override;
+   STDMETHOD(GetStrandAdjustment)(Float64* pdx,Float64* pdy) override;
+   STDMETHOD(SetStrandAdjustment)(Float64 dx,Float64 dy) override;
 
    // Return number of currently filled strand locations
 	STDMETHOD(GetStrandCount)(/*[out,retval]*/ StrandIndexType* count) override;
@@ -142,20 +142,20 @@ public:
    // Debonding
 	STDMETHOD(DebondStrandByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[in]*/Float64 l1,/*[in]*/Float64 l2) override;
 	STDMETHOD(GetDebondedStrandsByGridIndex)(/*[out,retval]*/IIndexArray** grdIndexes) override;
-	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
+	STDMETHOD(GetDebondLengthByGridIndex)(/*[in]*/GridIndexType grdIndex,/*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
 
    // rough count of debonded strands for current fill
    STDMETHOD(GetStrandDebondCount)(/*[in]*/ WDebondLocationType loc, /*[out,retval]*/ StrandIndexType* count) override;
 
    // Debonded  strands based on Positions index (i.e., from get_StrandPositions)
-	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
+	STDMETHOD(GetDebondLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex,/*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* l1,/*[out]*/Float64* l2) override;
 	STDMETHOD(GetStrandsDebondedByPositionIndex)(/*[in]*/Float64 distFromStart,/*[in]*/Float64 girderLength, /*[out,retval]*/IIndexArray** positionIndexes) override;
 
    STDMETHOD(GetBondedLengthByPositionIndex)(/*[in]*/StrandIndexType positionIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
-                                  /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
+      /*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
    STDMETHOD(GetBondedLengthByGridIndex)(/*[in]*/GridIndexType grdIndex, /*[in]*/Float64 distFromStart, /*[in]*/Float64 girderLength,
-                                  /*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
+      /*[out*/Float64* XCoord,/*[out]*/Float64* YCoord, /*[out]*/Float64* leftBond, /*[out]*/Float64* rightBond);
 
 	STDMETHOD(get_StrandDebondInRow)(/*[in]*/ RowIndexType rowIdx,/*[out,retval]*/StrandIndexType* nStrands) override;
 	STDMETHOD(IsExteriorStrandDebondedInRow)(/*[in]*/ RowIndexType rowIndex,/*[out,retval]*/VARIANT_BOOL* bResult) override;
@@ -163,6 +163,10 @@ public:
 	STDMETHOD(GetDebondSections)(/*[out]*/IDblArray** arrLeft,/*[out]*/IDblArray** arrRight) override;
 	STDMETHOD(GetDebondAtLeftSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes) override;
 	STDMETHOD(GetDebondAtRightSection)(/*[in]*/SectionIndexType sectionIdx,/*[out,retval]*/IIndexArray** strandIndexes) override;
+
+   STDMETHOD(GetDebondedRows)(/*[out]*/IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
+   STDMETHOD(GetDebondedConfigurationCountByRow)(/*[in]*/RowIndexType rowIdx, /*[out]*/IndexType* pConfigCount); // returns number of different debonding configurations in this row
+   STDMETHOD(GetDebondConfigurationByRow)(/*[in]*/RowIndexType rowIdx, /*[in]*/IndexType configIdx, /*[out]*/Float64* pLdbStart, /*[out]*/Float64* pLdbEnd, /*[out]*/IndexType* pnStrands); // returns a debonding configuration in this row
 
 	STDMETHOD(ClearDebonding)() override;
 
@@ -173,7 +177,7 @@ private: // methods
    void InvalidateFill();
    HRESULT ValidateFill();
 
-   void AdjustStrand(Float64 originalX, Float64 originalY, Float64* newX, Float64* newY );
+   void AdjustStrand(Float64 originalX, Float64 originalY, Float64* newXLeft,Float64* newXRight, Float64* newY );
 
 private:
 
@@ -243,7 +247,10 @@ private:
    bool m_bUpdateFill;
    CComPtr<IIndexArray> m_CurrentFill; // array of strand position indicies for the strands that are actually used
    std::vector<GridIndexType>  m_StrandToGridMap; // index into array is a strand index, value stored in array is corresponding grid point index
-   Float64 m_VerticalAdjustment;
+   
+   // Strand grid adjustments
+   Float64 m_Xadj;
+   Float64 m_Yadj;
 
    StrandIndexType GetStrandCount();
 

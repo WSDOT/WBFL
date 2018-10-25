@@ -39,16 +39,6 @@ static char THIS_FILE[] = __FILE__;
 // CFlangedGirderEndBlockSegment
 HRESULT CFlangedGirderEndBlockSegment::FinalConstruct()
 {
-   m_pGirderLine = nullptr;
-
-   m_Orientation = 0;
-
-   m_HaunchDepth[0] = 0;
-   m_HaunchDepth[1] = 0;
-   m_HaunchDepth[2] = 0;
-
-   m_Fillet = 0;
-
    m_EndBlockLength[etStart]           = 0;
    m_EndBlockLength[etEnd]             = 0;
    m_EndBlockTransitionLength[etStart] = 0;
@@ -61,7 +51,6 @@ HRESULT CFlangedGirderEndBlockSegment::FinalConstruct()
 
 void CFlangedGirderEndBlockSegment::FinalRelease()
 {
-   m_pGirderLine = nullptr;
    m_Shapes.clear();
 }
 
@@ -81,122 +70,8 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::InterfaceSupportsErrorInfo(REFIID ri
 }
 
 ////////////////////////////////////////////////////////////////////////
-// ISegment implementation
-STDMETHODIMP CFlangedGirderEndBlockSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
-{
-   CHECK_IN(ssMbr);
-   m_pSSMbr = ssMbr;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
-{
-   CHECK_RETOBJ(ssMbr);
-   if ( m_pSSMbr )
-   {
-      (*ssMbr) = m_pSSMbr;
-      (*ssMbr)->AddRef();
-   }
-   else
-   {
-      (*ssMbr) = nullptr;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::putref_GirderLine(IGirderLine* girderLine)
-{
-   CHECK_IN(girderLine);
-   m_pGirderLine = girderLine;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_GirderLine(IGirderLine** girderLine)
-{
-   CHECK_RETOBJ(girderLine);
-   if ( m_pGirderLine )
-   {
-      (*girderLine) = m_pGirderLine;
-      (*girderLine)->AddRef();
-   }
-   else
-   {
-      (*girderLine) = nullptr;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::putref_PrevSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pPrevSegment = pMySeg;
-      return hr;
-   }
-   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrevSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pPrevSegment )
-   {
-      return m_pPrevSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::putref_NextSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pNextSegment = pMySeg;
-      return hr;
-   }
-   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_NextSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pNextSegment )
-   {
-      return m_pNextSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Length(Float64 *pVal)
-{
-   return m_pGirderLine->get_GirderLength(pVal);
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_LayoutLength(Float64 *pVal)
-{
-   return m_pGirderLine->get_LayoutLength(pVal);
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+// ISuperstructureMemberSegment implementation
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -207,7 +82,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
+   HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
       return hr;
@@ -225,19 +100,15 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
    m_Shapes.front().FGMaterial->get_E(stageIdx,&Efg);
    
    Float64 Ebg = 0;
-   if (m_Shapes.front().BGMaterial)
-   {
-      m_Shapes.front().BGMaterial->get_E(stageIdx, &Ebg);
-   }
+   if ( m_Shapes.front().BGMaterial )
+      m_Shapes.front().BGMaterial->get_E(stageIdx,&Ebg);
 
    Float64 Dfg = 0;
    m_Shapes.front().FGMaterial->get_Density(stageIdx,&Dfg);
    
    Float64 Dbg = 0;
-   if (m_Shapes.front().BGMaterial)
-   {
-      m_Shapes.front().BGMaterial->get_Density(stageIdx, &Dbg);
-   }
+   if ( m_Shapes.front().BGMaterial )
+      m_Shapes.front().BGMaterial->get_Density(stageIdx,&Dbg);
 
    section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
@@ -251,28 +122,20 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
       ShapeData& shapeData = *iter;
 
       Float64 Efg = 0;
-      if (shapeData.FGMaterial)
-      {
-         shapeData.FGMaterial->get_E(stageIdx, &Efg);
-      }
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_E(stageIdx,&Efg);
 
       Float64 Ebg;
-      if (shapeData.BGMaterial)
-      {
-         shapeData.BGMaterial->get_E(stageIdx, &Ebg);
-      }
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_E(stageIdx,&Ebg);
 
       Float64 Dfg = 0;
-      if (shapeData.FGMaterial)
-      {
-         shapeData.FGMaterial->get_Density(stageIdx, &Dfg);
-      }
+      if ( shapeData.FGMaterial )
+         shapeData.FGMaterial->get_Density(stageIdx,&Dfg);
 
       Float64 Dbg = 0;
-      if (shapeData.BGMaterial)
-      {
-         shapeData.BGMaterial->get_Density(stageIdx, &Dbg);
-      }
+      if ( shapeData.BGMaterial )
+         shapeData.BGMaterial->get_Density(stageIdx,&Dbg);
 
       CComPtr<IShape> shape;
       shapeData.Shape->Clone(&shape);
@@ -284,7 +147,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Section(StageIndexType stageIdx,
 }
 
 
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -304,7 +167,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, Section
 
    // Adsut the shape for the end blocks
    Float64 Wt, Wb;
-   GetEndBlockWidth(Xs,sectionBias,&Wt,&Wb);
+   GetEndBlockWidth(distAlongSegment,&Wt,&Wb);
 
    Float64 W1, W2, W3, W4;
    Float64 D1, D2, D3, D4, D5, D6, D7;
@@ -439,7 +302,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_PrimaryShape(Float64 Xs, Section
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -462,24 +325,66 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Profile(VARIANT_BOOL bIncludeClo
    rect->get_Height(&h);
 
    Float64 l;
-   Float64 brgOffset,endDist;
-   if ( bIncludeClosure == VARIANT_TRUE )
+   Float64 brgOffset, endDist;
+   if (bIncludeClosure == VARIANT_TRUE)
    {
-      m_pGirderLine->get_LayoutLength(&l);
+      m_Impl.m_pGirderLine->get_LayoutLength(&l);
       brgOffset = 0;
       endDist = 0;
    }
    else
    {
-      m_pGirderLine->get_GirderLength(&l);
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
+      m_Impl.m_pGirderLine->get_GirderLength(&l);
+      m_Impl.m_pGirderLine->get_BearingOffset(etStart, &brgOffset);
+      m_Impl.m_pGirderLine->get_EndDistance(etStart, &endDist);
    }
 
-   CComPtr<IRectangle> shape;
-   shape.CoCreateInstance(CLSID_Rect);
-   shape->put_Height(h);
-   shape->put_Width(l);
+   CComPtr<IShape> shape;
+   if (IsZero(m_Impl.m_Precamber))
+   {
+      CComPtr<IRectangle> profile;
+      profile.CoCreateInstance(CLSID_Rect);
+      profile->put_Height(h);
+      profile->put_Width(l);
+
+      profile.QueryInterface(&shape);
+   }
+   else
+   {
+      CComPtr<IPolyShape> profile;
+      profile.CoCreateInstance(CLSID_PolyShape);
+      profile->AddPoint(0, 0);
+
+      Float64 Ls;
+      m_Impl.m_pGirderLine->get_GirderLength(&Ls);
+      for (int i = 0; i < 11; i++)
+      {
+         Float64 x = i*Ls / 10;
+         Float64 y = m_Impl.ComputePrecamber(x,Ls);
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         profile->AddPoint(x, y);
+      }
+
+      profile->AddPoint(l, 0);
+
+      for (int i = 0; i < 11; i++)
+      {
+         Float64 x = Ls - i*Ls / 10;
+         Float64 y = m_Impl.ComputePrecamber(x,Ls) + h;
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         profile->AddPoint(x, y);
+      }
+
+      profile->AddPoint(0, h);
+
+      profile.QueryInterface(&shape);
+   }
 
    // CL Pier/Top Shape is at (0,0)
    //
@@ -493,72 +398,20 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::get_Profile(VARIANT_BOOL bIncludeClo
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
    position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(brgOffset-endDist,0);
+   if (0 < m_Impl.m_Precamber)
+   {
+      topLeft->Move(brgOffset - endDist, m_Impl.m_Precamber);
+   }
+   else
+   {
+      topLeft->Move(brgOffset - endDist, 0);
+   }
    position->put_LocatorPoint(lpTopLeft,topLeft);
 
    shape->QueryInterface(ppShape);
 
    return S_OK;
 }
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::put_Orientation(Float64 orientation)
-{
-   if ( IsEqual(m_Orientation,orientation) )
-      return S_OK;
-
-   m_Orientation = orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Orientation(Float64* orientation)
-{
-   CHECK_RETVAL(orientation);
-   (*orientation) = m_Orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::GetHaunchDepth(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
-{
-   CHECK_RETVAL(pStartVal);
-   CHECK_RETVAL(pMidVal);
-   CHECK_RETVAL(pEndVal);
-   *pStartVal = m_HaunchDepth[0];
-   *pMidVal   = m_HaunchDepth[1];
-   *pEndVal   = m_HaunchDepth[2];
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::SetHaunchDepth(Float64 startVal,Float64 midVal,Float64 endVal)
-{
-   m_HaunchDepth[0] = startVal;
-   m_HaunchDepth[1] = midVal;
-   m_HaunchDepth[2] = endVal;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::ComputeHaunchDepth(Float64 distAlongSegment,Float64* pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::put_Fillet(Float64 Fillet)
-{
-   if ( IsEqual(m_Fillet,Fillet) )
-      return S_OK;
-
-   m_Fillet = Fillet;
-   return S_OK;
-}
-
-STDMETHODIMP CFlangedGirderEndBlockSegment::get_Fillet(Float64* Fillet)
-{
-   CHECK_RETVAL(Fillet);
-   (*Fillet) = m_Fillet;
-   return S_OK;
-}
-
 
 ////////////////////////////////////////////////////////////////////
 // IFlangedGirderEndBlockSegment implementation
@@ -716,7 +569,7 @@ STDMETHODIMP CFlangedGirderEndBlockSegment::Save(IStructuredSave2* save)
    //return S_OK;
 }
 
-void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 Xs, SectionBias sectionBias,Float64* pWtop,Float64* pWbot)
+void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 distAlongSegment,Float64* pWtop,Float64* pWbot)
 {
    Float64 segLength;
    get_Length(&segLength);
@@ -727,11 +580,8 @@ void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 Xs, SectionBias sec
    CComPtr<IPrecastBeam> pcBeam;
    beam->get_Beam(&pcBeam);
 
-   // the end blocks for this girder type of a smooth transitions
-   // so sectionBias doesn't have any impact
-
    EndType endType;
-   if ( Xs < segLength/2 )
+   if ( distAlongSegment < segLength/2 )
    {
       // at the start end...
       endType = etStart;
@@ -739,27 +589,27 @@ void CFlangedGirderEndBlockSegment::GetEndBlockWidth(Float64 Xs, SectionBias sec
    else
    {
       endType = etEnd;
-      Xs = segLength - Xs; // Xs is now measured from the left end
+      distAlongSegment = segLength - distAlongSegment; // distAlongSegment is now measured from the left end
    }
 
    Float64 ebWidth       = m_EndBlockWidth[endType];
    Float64 ebLength      = m_EndBlockLength[endType];
    Float64 ebTransLength = m_EndBlockTransitionLength[endType];
 
-   if ( Xs < ebLength )
+   if ( distAlongSegment < ebLength )
    {
       // in the end block
       *pWtop = ebWidth;
       *pWbot = ebWidth;
    }
-   else if ( ::InRange(ebLength,Xs,ebLength+ebTransLength) )
+   else if ( ::InRange(ebLength,distAlongSegment,ebLength+ebTransLength) )
    {
       // in the end block transition
       Float64 t1, t2;
       pcBeam->get_T1(&t1);
       pcBeam->get_T2(&t2);
-      *pWtop = ::LinInterp(Xs-ebLength,ebWidth,t1,ebTransLength);
-      *pWbot = ::LinInterp(Xs-ebLength,ebWidth,t2,ebTransLength);
+      *pWtop = ::LinInterp(distAlongSegment-ebLength,ebWidth,t1,ebTransLength);
+      *pWbot = ::LinInterp(distAlongSegment-ebLength,ebWidth,t2,ebTransLength);
    }
    else
    {

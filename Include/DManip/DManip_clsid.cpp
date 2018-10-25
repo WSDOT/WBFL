@@ -165,6 +165,10 @@ DEFINE_GUID(IID_iTaskFactory,
 DEFINE_GUID(IID_iTextBlock, 
 0x11408c1, 0xf865, 0x11d4, 0x8b, 0x9c, 0x0, 0x60, 0x97, 0xc6, 0x8a, 0x9c);
 
+// {164EB164-2ADC-4C9D-BECE-A8F8DFB0B713}
+DEFINE_GUID(IID_iAnchoredTextBlock,
+0x164eb164, 0x2adc, 0x4c9d, 0xbe, 0xce, 0xa8, 0xf8, 0xdf, 0xb0, 0xb7, 0x13);
+
 // {011408C2-F865-11d4-8B9C-006097C68A9C}
 DEFINE_GUID(IID_iTool, 
 0x11408c2, 0xf865, 0x11d4, 0x8b, 0x9c, 0x0, 0x60, 0x97, 0xc6, 0x8a, 0x9c);
@@ -410,6 +414,7 @@ struct __declspec(uuid("{011408BE-F865-11d4-8B9C-006097C68A9C}")) iRectSelectTas
 struct __declspec(uuid("{011408BF-F865-11d4-8B9C-006097C68A9C}")) iTask;
 struct __declspec(uuid("{011408C0-F865-11d4-8B9C-006097C68A9C}")) iTaskFactory;
 struct __declspec(uuid("{011408C1-F865-11d4-8B9C-006097C68A9C}")) iTextBlock;
+struct __declspec(uuid("{164EB164-2ADC-4C9D-BECE-A8F8DFB0B713}")) iAnchoredTextBlock;
 struct __declspec(uuid("{011408C2-F865-11d4-8B9C-006097C68A9C}")) iTool;
 struct __declspec(uuid("{011408C3-F865-11d4-8B9C-006097C68A9C}")) iZoomRectTask;
 struct __declspec(uuid("{777A934D-53F9-491b-8245-5C3F39B532FF}")) iGravityWellStrategy;

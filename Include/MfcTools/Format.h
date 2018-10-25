@@ -32,7 +32,11 @@
 template <class T>
 inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncludeUnitTag = true)
 {
-   value = ::ConvertFromSysUnits( IsZero(value,indirectMeasure.Tol) ? 0.00 : value, indirectMeasure.UnitOfMeasure );
+   value = ::ConvertFromSysUnits( value, indirectMeasure.UnitOfMeasure );
+   if (IsZero(value, indirectMeasure.Tol))
+   {
+      value = 0.0;
+   }
    sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( value );
    CString strDimension;

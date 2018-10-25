@@ -120,6 +120,13 @@ library WBFLGenericBridgeTools
       wdblRight    // debonding is at right end
    } WDebondLocationType;
 
+   typedef [public, helpstring("enum StrandProfileType"), uuid(69390986-1709-4F89-A98F-7A016E25D1EF)]
+   enum
+   {
+      Linear, // strands are always straight between strand grids
+      FollowGirder // strands follow the shape of the girder (straight strands maintain constant distance from top face of girder, even when there is precamber)
+   } StrandProfileType;
+
 
 	[
 		object,
@@ -153,20 +160,22 @@ library WBFLGenericBridgeTools
 
       // The "section" methods create a structural section from which stiffness properties can be determined
       // Bridge and Barrier sections are always gross sections
-      [helpstring("method CreateGirderSectionBySSMbr")] HRESULT CreateGirderSectionBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp,[in]SectionBias sectionBias,[in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [in] SectionPropertyMethod sectionPropMethod,[out,retval]ISection** section);
-	   [helpstring("method CreateGirderSectionBySegment")] HRESULT CreateGirderSectionBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]SectionBias sectionBias, [in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [in] SectionPropertyMethod sectionPropMethod,[out,retval]ISection** section);
+      [helpstring("method CreateGirderSectionBySSMbr")] HRESULT CreateGirderSectionBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp,[in] StageIndexType stageIdx, [in] SectionPropertyMethod sectionPropMethod,[out,retval]ISection** section);
+	   [helpstring("method CreateGirderSectionBySegment")] HRESULT CreateGirderSectionBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in] StageIndexType stageIdx, [in] SectionPropertyMethod sectionPropMethod,[out,retval]ISection** section);
 	   [helpstring("method CreateBridgeSection")] HRESULT CreateBridgeSection([in]IGenericBridge* bridge,[in]Float64 distFromStartOfBridge,[in] StageIndexType stageIdx, [in] BarrierSectionCut bsc,[out,retval]ISection** section);
 	   [helpstring("method CreateLeftBarrierSection")] HRESULT CreateLeftBarrierSection([in]IGenericBridge* bridge,[in] Float64 station,[in] VARIANT_BOOL bStructuralOnly,[out,retval]ISection** section);
 	   [helpstring("method CreateRightBarrierSection")] HRESULT CreateRightBarrierSection([in]IGenericBridge* bridge,[in] Float64 station,[in] VARIANT_BOOL bStructuralOnly,[out,retval]ISection** section);
 
-      [helpstring("method CreateNetDeckSection")] HRESULT CreateNetDeckSection([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in]StageIndexType stageIdx,[out,retval]ISection** section);
+      [helpstring("method CreateNetDeckSection")] HRESULT CreateNetDeckSection([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in]StageIndexType stageIdx,[out,retval]ISection** section);
 
       // The "shape" methods create a shape object that is typically used for creating a graphical representations of the girder or bridge
-      [helpstring("method CreateGirderShapeBySSMbr")] HRESULT CreateGirderShapeBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp, [in]SectionBias sectionBias, [in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [out,retval]IShape** ppShape);
-	   [helpstring("method CreateGirderShapeBySegment")] HRESULT CreateGirderShapeBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs, [in]SectionBias sectionBias, [in]GirderIDType leftSSMbrID,[in]GirderIDType rightSSMbrID,[in] StageIndexType stageIdx, [out,retval]IShape** ppShape);
+      [helpstring("method CreateGirderShapeBySSMbr")] HRESULT CreateGirderShapeBySSMbr([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]Float64 Xgp,[in] VARIANT_BOOL bIncludeDeck, [out,retval]IShape** ppShape);
+	   [helpstring("method CreateGirderShapeBySegment")] HRESULT CreateGirderShapeBySegment([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in] VARIANT_BOOL bIncludeDeck, [out,retval]IShape** ppShape);
 	   [helpstring("method CreateLeftBarrierShape")] HRESULT CreateLeftBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
 	   [helpstring("method CreateRightBarrierShape")] HRESULT CreateRightBarrierShape([in]IGenericBridge* bridge,[in] Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
       [helpstring("method CreateSlabShape")] HRESULT CreateSlabShape([in]IGenericBridge* bridge,[in]Float64 station,[in]IDirection* pDirection,[in] VARIANT_BOOL bIncludeHaunch,[out,retval]IShape** shape);
+      [helpstring("method CreateLongitudinalJointShapeBySSMbr")] HRESULT CreateLongitudinalJointShapeBySSMbr([in]IGenericBridge* bridge, [in]GirderIDType ssMbrID, [in]Float64 Xgp, [out]IShape** ppLeftJointShape,[out]IShape** ppRightJointShape);
+      [helpstring("method CreateLongitudinalJointShapeBySegment")] HRESULT CreateLongitudinalJointShapeBySegment([in]IGenericBridge* bridge, [in]GirderIDType ssMbrID, [in]SegmentIndexType segIdx, [in]Float64 Xs, [out]IShape** ppLeftJointShape, [out]IShape** ppRightJointShape);
 
       [helpstring("method GetDeckProperties")] HRESULT GetDeckProperties([in]IGenericBridge* bridge,[in]IndexType nSectionsPerSpan,[out]Float64* pSurfaceArea,[out]Float64* pVolume);
 	};
@@ -199,7 +208,7 @@ library WBFLGenericBridgeTools
 	   [helpstring("method TestEndStrandLocation")] HRESULT TestEndStrandLocation([in]EndType endType,[in]Float64 Hg,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]VARIANT_BOOL* isWithin);
 
       // Based on an original location and a Y offset, compute the new strand location
-	   [helpstring("method TranslateHpStrand")] HRESULT TranslateHpStrand([in]EndType endType,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY );
+      [helpstring("method TranslateHpStrand")] HRESULT TranslateHpStrand([in]EndType endType, [in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY);
 	   [helpstring("method TranslateEndStrand")] HRESULT TranslateEndStrand([in]EndType endType,[in]Float64 originalX, [in]Float64 originalY, [in]Float64 Yoffset, [out]Float64* newX, [out]Float64* newY );
    };
 
@@ -275,9 +284,11 @@ library WBFLGenericBridgeTools
       [propputref, helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType gridType,[in]EndType endType,[in]IStrandMover* mover);
       [helpstring("method StrandMover")] HRESULT GetStrandMover([out]StrandGridType* gridType,[out]EndType* endType,[out]IStrandMover** mover);
 
-      // adjust strands upward or downward (up is positive)
-      [propget, helpstring("property VerticalStrandAdjustment")] HRESULT VerticalStrandAdjustment([out,retval]Float64* adjust);
-      [propput, helpstring("property VerticalStrandAdjustment")] HRESULT VerticalStrandAdjustment([in]Float64 adjust);
+      // adjust strands from the nominal grid locations
+      // dx = horizontal adjustment, positive values shifts the strands to the right
+      // dy = vertical adjustment, postiive values shifts the strands upwards
+      [helpstring("method SetStrandAdjustment")] HRESULT SetStrandAdjustment([in]Float64 dx,[in]Float64 dy);
+      [helpstring("method GetStrandAdjustment")] HRESULT GetStrandAdjustment([out]Float64* pdx,[out]Float64* pdy);
 
       // Return number of currently filled strand locations
 	   [helpstring("method GetStrandCount")] HRESULT GetStrandCount([out,retval] StrandIndexType* count);
@@ -319,19 +330,19 @@ library WBFLGenericBridgeTools
       // Debond  strands based on Grid index
       [helpstring("method DebondStrandByGridIndex")] HRESULT DebondStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
       [helpstring("method GetDebondedStrandsByGridIndex")] HRESULT GetDebondedStrandsByGridIndex([out,retval]IIndexArray** grdIndexes);
-      [helpstring("method GetDebondLengthByGridIndex")] HRESULT GetDebondLengthByGridIndex([in]GridIndexType grdIndex, [out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetDebondLengthByGridIndex")] HRESULT GetDebondLengthByGridIndex([in]GridIndexType grdIndex, [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
 
       // Debonded  strands based on Positions index (i.e., from GetStrandPositions)
-      [helpstring("method GetDebondLengthByPositionIndex")] HRESULT GetDebondLengthByPositionIndex([in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetDebondLengthByPositionIndex")] HRESULT GetDebondLengthByPositionIndex([in]StrandIndexType positionIndex,[out]Float64* XCoord,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
       [helpstring("method GetStrandsDebondedByPositionIndex")] HRESULT GetStrandsDebondedByPositionIndex([in]Float64 distFromStart, [in]Float64 girderLength, [out,retval]IIndexArray** positionIndexes);
 
       // Distance that a strand is bonded (left and right) for a given location. Also returns strand's Y coordinate
       // Note that versions are for position and grid indexing
       [helpstring("method GetBondedLengthByPositionIndex")] HRESULT GetBondedLengthByPositionIndex([in]StrandIndexType positionIndex, [in]Float64 distFromStart, [in]Float64 girderLength,
-                                                                             [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+         [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
 
       [helpstring("method GetBondedLengthByGridIndex")] HRESULT GetBondedLengthByGridIndex([in]GridIndexType grdIndex, [in]Float64 distFromStart, [in]Float64 girderLength,
-                                                                             [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+         [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
 
       [propget,helpstring("property StrandDebondInRow")] HRESULT StrandDebondInRow([in] RowIndexType rowIdx,[out,retval]StrandIndexType* nStrands);
       [helpstring("method IsExteriorStrandDebondedInRow")] HRESULT IsExteriorStrandDebondedInRow([in] RowIndexType rowIndex,[out,retval]VARIANT_BOOL* bResult);
@@ -339,6 +350,10 @@ library WBFLGenericBridgeTools
       [helpstring("method GetDebondSections")] HRESULT GetDebondSections([out]IDblArray** arrLeft,[out]IDblArray** arrRight);
       [helpstring("method GetDebondAtLeftSection")] HRESULT GetDebondAtLeftSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** strandIndexes);
       [helpstring("method GetDebondAtRightSection")] HRESULT GetDebondAtRightSection([in]SectionIndexType sectionIdx,[out,retval]IIndexArray** strandIndexes);
+
+      [helpstring("method GetDebondedRows")] HRESULT GetDebondedRows([out]IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
+      [helpstring("method GetDebondedConfigurationCountByRow")] HRESULT GetDebondedConfigurationCountByRow([in]RowIndexType rowIdx, [out]IndexType* pConfigCount); // returns number of different debonding configurations in this row
+      [helpstring("method GetDebondConfigurationByRow")] HRESULT GetDebondConfigurationByRow([in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pLdbStart, [out]Float64* pLdbEnd,[out]IndexType* pnStrands); // returns a debonding configuration in this row
 
 	  [helpstring("method ClearDebonding")] HRESULT ClearDebonding();
    };
@@ -365,8 +380,8 @@ library WBFLGenericBridgeTools
 	interface IPrecastGirder : IUnknown
 	{
       [helpstring("method Initialize")] HRESULT Initialize([in]ISuperstructureMemberSegment* segment);
-      [helpstring("method SetStrandMovers")] HRESULT SetStrandMovers([in]IStrandMover* pStartStrandMover,[in]IStrandMover* pHp1StrandMover,[in]IStrandMover* pHp2StrandMover,[in]IStrandMover* pEndStrandMover);
 
+      [helpstring("method SetStrandMovers")] HRESULT SetStrandMovers([in]IStrandMover* pStartStrandMover,[in]IStrandMover* pHp1StrandMover,[in]IStrandMover* pHp2StrandMover,[in]IStrandMover* pEndStrandMover);
 	   [propputref,helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType sgType,[in]EndType endType,[in]IStrandMover* pStrandMover);
 	   [propget,helpstring("property StrandMover")] HRESULT StrandMover([in]StrandGridType sgType,[in]EndType endType,[out,retval]IStrandMover** ppStrandMover);
 
@@ -378,6 +393,11 @@ library WBFLGenericBridgeTools
 
       [propputref,helpstring("property TemporaryStrandMaterial")] HRESULT TemporaryStrandMaterial([in]IPrestressingStrand* pMaterial);
       [propget,helpstring("property TemporaryStrandMaterial")] HRESULT TemporaryStrandMaterial([out,retval]IPrestressingStrand** ppMaterial);
+
+      [propput, helpstring("property StraightStrandProfileType")] HRESULT StraightStrandProfileType([in]StrandProfileType profileType);
+      [propget, helpstring("property StraightStrandProfileType")] HRESULT StraightStrandProfileType([out, retval]StrandProfileType* pProfileType);
+      [propput, helpstring("property TemporaryStrandProfileType")] HRESULT TemporaryStrandProfileType([in]StrandProfileType profileType);
+      [propget, helpstring("property TemporaryStrandProfileType")] HRESULT TemporaryStrandProfileType([out, retval]StrandProfileType* pProfileType);
 
       [propget,helpstring("property StraightStrandGrid")] HRESULT StraightStrandGrid([in]EndType endType,[out,retval]IStrandGrid** ptrn);
       [propget,helpstring("property TemporaryStrandGrid")] HRESULT TemporaryStrandGrid([in]EndType endType,[out,retval]IStrandGrid** ptrn);
@@ -395,7 +415,7 @@ library WBFLGenericBridgeTools
       [propget,helpstring("property HarpedEndAdjustmentIncrement")] HRESULT HarpedEndAdjustmentIncrement([out,retval]Float64* increment);
       [propget,helpstring("property HarpedHpAdjustmentIncrement")] HRESULT HarpedHpAdjustmentIncrement([out,retval]Float64* increment);
 
-      // max elevation of girder (girder Top) top is at 0.0
+      // Returns the top elevation of the strand grids, relative to the top of the girder. Max elevation is 0.0 at the top surface of the girder
       [propget,helpstring("property TopElevation")] HRESULT TopElevation([out,retval]Float64* offset);
 
       // Vertical adjustments of harped strands
@@ -442,6 +462,13 @@ library WBFLGenericBridgeTools
       [propputref,helpstring("property HarpedStrandFill")] HRESULT HarpedStrandFill([in]IIndexArray* fill);
       [propget,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([out,retval]IIndexArray** fill);
       [propputref,helpstring("property TemporaryStrandFill")] HRESULT TemporaryStrandFill([in]IIndexArray* fill);
+
+      [propget, helpstring("property StraightStrandCG")] HRESULT StraightStrandCG([in] Float64 distFromStart, [out, retval]IPoint2d** pntCG);
+      [propget, helpstring("property StraightStrandCGEx")] HRESULT StraightStrandCGEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out, retval]IPoint2d** pntCG);
+      [propget, helpstring("property HarpedStrandCG")] HRESULT HarpedStrandCG([in] Float64 distFromStart, [out, retval]IPoint2d** pntCG);
+      [propget, helpstring("property HarpedStrandCGEx")] HRESULT HarpedStrandCGEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out, retval]IPoint2d** pntCG);
+      [propget, helpstring("property TemporaryStrandCG")] HRESULT TemporaryStrandCG([in] Float64 distFromStart, [out, retval]IPoint2d** pntCG);
+      [propget, helpstring("property TemporaryStrandCGEx")] HRESULT TemporaryStrandCGEx([in] Float64 distFromStart, [in]IIndexArray* fill, [out, retval]IPoint2d** pntCG);
 
       // Get all strand locations based on current fill, or input fill. 
       // Debonded strands are not removed
@@ -501,6 +528,11 @@ library WBFLGenericBridgeTools
       [helpstring("method GetHarpedStrandCountEx")] HRESULT GetHarpedStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
       [helpstring("method GetTemporaryStrandCountEx")] HRESULT GetTemporaryStrandCountEx([in]IIndexArray* fill, [out,retval] StrandIndexType* nStrands);
 
+      [helpstring("method GetStraightStrandProfile")] HRESULT GetStraightStrandProfile([in]StrandIndexType strandIdx,[out, retval]IPoint2dCollection** ppProfilePoints);
+      [helpstring("method GetHarpedStrandProfile")] HRESULT GetHarpedStrandProfile([in]StrandIndexType strandIdx, [out, retval]IPoint2dCollection** ppProfilePoints);
+      [helpstring("method GetTemporaryStrandProfile")] HRESULT GetTemporaryStrandProfile([in]StrandIndexType strandIdx, [out, retval]IPoint2dCollection** ppProfilePoints);
+      [helpstring("method GetStrandCGProfile")] HRESULT GetStrandCGProfile([in]VARIANT_BOOL bIncludeTempStrands, [out, retval]IPoint2dCollection** ppProfilePoints);
+
       // rough count of debonded strands at current fill
       [helpstring("method GetStraightStrandDebondCount")] HRESULT GetStraightStrandDebondCount([in]WDebondLocationType loc, [out,retval] StrandIndexType* count);
 
@@ -508,10 +540,10 @@ library WBFLGenericBridgeTools
 	   [helpstring("method ClearStraightStrandDebonding")] HRESULT ClearStraightStrandDebonding();
       [helpstring("method DebondStraightStrandByGridIndex")] HRESULT DebondStraightStrandByGridIndex([in]GridIndexType grdIndex,[in]Float64 l1,[in]Float64 l2);
       [helpstring("method GetDebondedStraightStrandsByGridIndex")] HRESULT GetDebondedStraightStrandsByGridIndex([out,retval]IIndexArray** grdIndexes);
-      [helpstring("method GetStraightStrandDebondLengthByGridIndex")] HRESULT GetStraightStrandDebondLengthByGridIndex([in]EndType endType,[in]GridIndexType grdIndex,[out]Float64* YCoord,[out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetStraightStrandDebondLengthByGridIndex")] HRESULT GetStraightStrandDebondLengthByGridIndex([in]EndType endType,[in]GridIndexType grdIndex, [out]Float64* XCoord, [out]Float64* YCoord,[out]Float64* l1,[out]Float64* l2);
 
       // Debonded straight strands based on Positions index (i.e., from get_StraightStrandPositions)
-      [helpstring("method GetStraightStrandDebondLengthByPositionIndex")] HRESULT GetStraightStrandDebondLengthByPositionIndex([in]EndType endType,[in]StrandIndexType positionIndex,[out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
+      [helpstring("method GetStraightStrandDebondLengthByPositionIndex")] HRESULT GetStraightStrandDebondLengthByPositionIndex([in]EndType endType,[in]StrandIndexType positionIndex, [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* l1,[out]Float64* l2);
       [helpstring("method GetStraightStrandsDebondedByPositionIndex")] HRESULT GetStraightStrandsDebondedByPositionIndex([in]EndType endType,[in]Float64 distFromStart, [out,retval]IIndexArray** positionIndexes);
 
       [propget,helpstring("property StraightStrandRowsWithStrand")] HRESULT StraightStrandRowsWithStrand([out,retval]RowIndexType* nRows);
@@ -530,10 +562,14 @@ library WBFLGenericBridgeTools
 
       // Distance that a strand is bonded (left and right) for a given location. Also returns strand's Y coordinate
       [helpstring("method GetStraightStrandBondedLengthByPositionIndex")] HRESULT GetStraightStrandBondedLengthByPositionIndex([in]StrandIndexType positionIndex, [in]Float64 distFromStart,
-                                                                             [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+         [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
 
       [helpstring("method GetStraightStrandBondedLengthByGridIndex")] HRESULT GetStraightStrandBondedLengthByGridIndex([in]GridIndexType grdIndex, [in]Float64 distFromStart,
-                                                                             [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+         [out]Float64* XCoord, [out]Float64* YCoord, [out]Float64* leftBond, [out]Float64* rightBond);
+
+      [helpstring("method GetStraightStrandDebondedRows")] HRESULT GetStraightStrandDebondedRows([out]IIndexArray** ppRowIndexes); // returns the indicies of rows that have debonded strands
+      [helpstring("method GetStraightStrandDebondedConfigurationCountByRow")] HRESULT GetStraightStrandDebondedConfigurationCountByRow([in]RowIndexType rowIdx, [out]IndexType* pConfigCount); // returns number of different debonding configurations in this row
+      [helpstring("method GetStraightStrandDebondConfigurationByRow")] HRESULT GetStraightStrandDebondConfigurationByRow([in]RowIndexType rowIdx, [in]IndexType configIdx, [out]Float64* pXstart, [out]Float64* pBondedLength, [out]IndexType* pnStrands); // returns a debonding configuration in this row
 
       [propget,helpstring("property SuperstructureMemberSegment")] HRESULT SuperstructureMemberSegment([out,retval]ISuperstructureMemberSegment** segment);
       [propget,helpstring("property RebarLayout")] HRESULT RebarLayout([out,retval]IRebarLayout** rebarLayout);

@@ -159,7 +159,7 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<Float64
       spanDef.spacingOffset.second = offset;
       for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders-1; gdrIdx++ )
       {
-         spanDef.girderSpacing.push_back( std::make_pair(gdrSpacing,gdrSpacing) );
+         spanDef.girderSpacing.emplace_back( gdrSpacing,gdrSpacing );
       }
 
       spanDefs.push_back(spanDef);
@@ -304,10 +304,11 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
       for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++ )
       {
          GirderIDType gdrLineID  = ::GetGirderLineID(spanIdx,gdrIdx);
+         GirderIDType leftSSMbrID = (gdrIdx == 0 ? INVALID_ID : ::GetGirderLineID(spanIdx,(GirderIDType)(gdrIdx - 1)));
+         GirderIDType rightSSMbrID = (gdrIdx == nGirders - 1 ? INVALID_ID : ::GetGirderLineID(spanIdx,(GirderIDType)(gdrIdx + 1)));
 
-         LocationType locationType(gdrIdx == 0 ? ltLeftExteriorGirder : (gdrIdx == nGirders-1 ? ltRightExteriorGirder : ltInteriorGirder));
          CComPtr<ISuperstructureMember> ssmbr;
-         bridge->CreateSuperstructureMember(gdrLineID,locationType,&ssmbr);
+         bridge->CreateSuperstructureMember(gdrLineID, leftSSMbrID, rightSSMbrID, &ssmbr);
 
          CComPtr<IPrismaticSuperstructureMemberSegment> segment;
          segment.CoCreateInstance(CLSID_PrismaticSuperstructureMemberSegment);
@@ -505,13 +506,13 @@ void CreateSplicedGirderBridge(IGenericBridge** ppBridge)
    // Create Superstructure Members
    //
    CComPtr<ISuperstructureMember> ssmbr;
-   bridge->CreateSuperstructureMember(0,ltLeftExteriorGirder,&ssmbr);
+   bridge->CreateSuperstructureMember(0,INVALID_ID,1,&ssmbr);
 
    ssmbr.Release();
-   bridge->CreateSuperstructureMember(1,ltInteriorGirder,&ssmbr);
+   bridge->CreateSuperstructureMember(1,0,2,&ssmbr);
 
    ssmbr.Release();
-   bridge->CreateSuperstructureMember(2,ltRightExteriorGirder,&ssmbr);
+   bridge->CreateSuperstructureMember(2,1,INVALID_ID,&ssmbr);
 
    //
    // Create Segments

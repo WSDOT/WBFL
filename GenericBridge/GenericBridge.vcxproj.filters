@@ -196,6 +196,9 @@
     <ClCompile Include="VoidedSlabSection2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SuperstructureMemberSegmentImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetStrategy.h">
@@ -406,6 +409,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VoidedSlabSection2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SuperstructureMemberSegmentImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

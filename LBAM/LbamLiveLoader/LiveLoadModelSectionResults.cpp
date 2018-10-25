@@ -78,7 +78,7 @@ STDMETHODIMP CLiveLoadModelSectionResults::get_Count(CollectionIndexType *pVal)
 STDMETHODIMP CLiveLoadModelSectionResults::Add(Float64 leftResult, ILiveLoadConfiguration *leftConfig, Float64 rightResult, ILiveLoadConfiguration *rightConfig)
 {
 
-	m_Results.push_back( LlmResults(leftResult, leftConfig, rightResult, rightConfig) );
+	m_Results.emplace_back(leftResult, leftConfig, rightResult, rightConfig);
 
 	return S_OK;
 }

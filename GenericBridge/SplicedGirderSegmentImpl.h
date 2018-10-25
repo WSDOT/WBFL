@@ -29,6 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
+#include "SuperstructureMemberSegmentImpl.h"
 
 #include <Math\CompositeFunction2d.h>
 #include <Math\LinFunc2d.h>
@@ -48,18 +49,19 @@ class ATL_NO_VTABLE ISplicedGirderSegmentImpl :
 public:
    ISplicedGirderSegmentImpl()
    {
-      m_pSSMbr       = nullptr;
-      m_pGirderLine = nullptr;
-      m_pPrevSegment = nullptr;
-      m_pNextSegment = nullptr;
+      //m_pSSMbr       = nullptr;
+      //m_pGirderLine = nullptr;
+      //m_pPrevSegment = nullptr;
+      //m_pNextSegment = nullptr;
 
-      m_Orientation = 0;
+      //m_Orientation = 0;
 
-      m_HaunchDepth[0] = 0;
-      m_HaunchDepth[1] = 0;
-      m_HaunchDepth[2] = 0;
+      //m_HaunchDepth[0] = 0;
+      //m_HaunchDepth[1] = 0;
+      //m_HaunchDepth[2] = 0;
 
-      m_Fillet = 0;
+      //m_Fillet = 0;
+      //m_Precamber = 0;
 
       m_EndBlockLength[etStart]           = 0;
       m_EndBlockLength[etEnd]             = 0;
@@ -86,12 +88,14 @@ public:
    }
 
 protected:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
-   ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
-   ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
-   ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
+   CSuperstructureMemberSegmentImpl m_Impl;
 
-   Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
+   //IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
+   //ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
+   //ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
+   //ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
+
+   //Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
 
    struct ShapeData
    {
@@ -103,10 +107,11 @@ protected:
 
    CItemDataManager m_ItemDataMgr;
 
-   // index is EndType
-   Float64 m_HaunchDepth[3]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
+   //// index is EndType
+   //Float64 m_HaunchDepth[3]; // depth from top of slab to top of girder at CL Bearing at start/end of girder
 
-   Float64 m_Fillet;
+   //Float64 m_Fillet;
+   //Float64 m_Precamber;
 
    // index is EndType
    Float64 m_EndBlockLength[2]; // length of end block from end of girder to transitation
@@ -150,140 +155,25 @@ public:
 	   return S_FALSE;
    }
 
-// ISegment
+// ISuperstructureMemberSegment
 public:
-   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr)
+   STDMETHOD(putref_SuperstructureMember)(ISuperstructureMember* ssMbr) override { return m_Impl.putref_SuperstructureMember(ssMbr); }
+   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr) override { return m_Impl.get_SuperstructureMember(ssMbr); }
+   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine) override { return m_Impl.putref_GirderLine(girderLine); }
+   STDMETHOD(get_GirderLine)(IGirderLine** girderLine) override { return m_Impl.get_GirderLine(girderLine); }
+   STDMETHOD(putref_PrevSegment)(ISegment* segment) override { return m_Impl.putref_PrevSegment(segment); }
+   STDMETHOD(get_PrevSegment)(ISegment** segment) override { return m_Impl.get_PrevSegment(segment); }
+   STDMETHOD(putref_NextSegment)(ISegment* segment) override { return m_Impl.putref_NextSegment(segment); }
+   STDMETHOD(get_NextSegment)(ISegment** segment) override { return m_Impl.get_NextSegment(segment); }
+
+	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
    {
-      CHECK_IN(ssMbr);
-      m_pSSMbr = ssMbr;
-      return S_OK;
+      return GetSection(stageIdx,Xs,ppSection);
    }
 
-   STDMETHOD(get_SuperstructureMember)(ISuperstructureMember** ssMbr)
+	STDMETHOD(get_PrimaryShape)(Float64 Xs,IShape** ppShape)
    {
-      CHECK_RETOBJ(ssMbr);
-      if ( m_pSSMbr )
-      {
-         (*ssMbr) = m_pSSMbr;
-         (*ssMbr)->AddRef();
-      }
-      else
-      {
-         (*ssMbr) = nullptr;
-      }
-
-      return S_OK;
-   }
-
-   STDMETHOD(putref_GirderLine)(IGirderLine* girderLine)
-   {
-      CHECK_IN(girderLine);
-      m_pGirderLine = girderLine;
-      return S_OK;
-   }
-
-   STDMETHOD(get_GirderLine)(IGirderLine** girderLine)
-   {
-      CHECK_RETOBJ(girderLine);
-      if ( m_pGirderLine )
-      {
-         (*girderLine) = m_pGirderLine;
-         (*girderLine)->AddRef();
-      }
-      else
-      {
-         (*girderLine) = nullptr;
-      }
-
-      return S_OK;
-   }
-
-   STDMETHOD(putref_PrevSegment)(ISegment* segment)
-   {
-      CHECK_IN(segment);
-   #if defined _DEBUG
-      CComQIPtr<ISplicedGirderSegment> prevSegment(segment);
-      ATLASSERT(prevSegment); // all segments must be spliced girder segments
-   #endif
-      ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-      m_pPrevSegment = nullptr;
-      HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
-      if ( FAILED(hr) )
-      {
-         m_pPrevSegment = pMySeg;
-         return hr;
-      }
-      m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-      return S_OK;
-   }
-
-   STDMETHOD(get_PrevSegment)(ISegment** segment)
-   {
-      CHECK_RETVAL(segment);
-      if ( m_pPrevSegment )
-      {
-         return m_pPrevSegment->QueryInterface(segment);
-      }
-      else
-      {
-         *segment = nullptr;
-         return E_FAIL;
-      }
-   }
-
-   STDMETHOD(putref_NextSegment)(ISegment* segment)
-   {
-      CHECK_IN(segment);
-
-   #if defined _DEBUG
-      CComQIPtr<ISplicedGirderSegment> nextSegment(segment);
-      ATLASSERT(nextSegment); // all segments must be spliced girder segments
-   #endif
-
-      ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-      m_pNextSegment = nullptr;
-      HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
-      if ( FAILED(hr) )
-      {
-         m_pNextSegment = pMySeg;
-         return hr;
-      }
-      m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-      return S_OK;
-   }
-
-   STDMETHOD(get_NextSegment)(ISegment** segment)
-   {
-      CHECK_RETVAL(segment);
-      if ( m_pNextSegment )
-      {
-         return m_pNextSegment->QueryInterface(segment);
-      }
-      else
-      {
-         *segment = nullptr;
-         return E_FAIL;
-      }
-   }
-
-	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal)
-   {
-      return m_pGirderLine->get_GirderLength(pVal);
-   }
-
-	STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal)
-   {
-      return m_pGirderLine->get_LayoutLength(pVal);
-   }
-
-	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias,ISection** ppSection)
-   {
-      return GetSection(stageIdx,Xs,sectionBias,ppSection);
-   }
-
-	STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
-   {
-      return GetPrimaryShape(Xs,sectionBias,ppShape);
+      return GetPrimaryShape(Xs,ppShape);
    }
 
    STDMETHOD(get_Profile)(VARIANT_BOOL bIncludeClosure,IShape** ppShape)
@@ -384,63 +274,18 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation)
-   {
-      if ( IsEqual(m_Orientation,orientation) )
-         return S_OK;
-
-      m_Orientation = orientation;
-      return S_OK;
-   }
-
-	STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation)
-   {
-      CHECK_RETVAL(orientation);
-      (*orientation) = m_Orientation;
-      return S_OK;
-   }
-
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
-   {
-      CHECK_RETVAL(pStartVal);
-      CHECK_RETVAL(pMidVal);
-      CHECK_RETVAL(pEndVal);
-      *pStartVal = m_HaunchDepth[0];
-      *pMidVal   = m_HaunchDepth[1];
-      *pEndVal   = m_HaunchDepth[2];
-      return S_OK;
-   }
-
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal)
-   {
-      m_HaunchDepth[0] = startVal;
-      m_HaunchDepth[1] = midVal;
-      m_HaunchDepth[2] = endVal;
-      return S_OK;
-   }
-
-   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal)
-   {
-      CHECK_RETVAL(pVal);
-      *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
-      return S_OK;
-   }
-
-   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet)
-   {
-      if ( IsEqual(m_Fillet,Fillet) )
-         return S_OK;
-
-      m_Fillet = Fillet;
-      return S_OK;
-   }
-
-	STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet)
-   {
-      CHECK_RETVAL(Fillet);
-      (*Fillet) = m_Fillet;
-      return S_OK;
-   }
+   STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_Length(pVal); }
+   STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
+   STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override { return m_Impl.put_Orientation(orientation); }
+   STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override { return m_Impl.get_Orientation(orientation); }
+   STDMETHOD(GetHaunchDepth)(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal) override { return m_Impl.GetHaunchDepth(pStartVal, pMidVal, pEndVal); }
+   STDMETHOD(SetHaunchDepth)(Float64 startVal, Float64 midVal, Float64 endVal) override { return m_Impl.SetHaunchDepth(startVal, midVal, endVal); }
+   STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
+   STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
+   STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
+   STDMETHOD(put_Precamber)(/*[in]*/Float64 precamber) override { return m_Impl.put_Precamber(precamber); }
+   STDMETHOD(get_Precamber)(/*[out,retval]*/Float64* pPrecamber) override { return m_Impl.get_Precamber(pPrecamber); }
+   STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber) override { return m_Impl.ComputePrecamber(distAlongSegment, pPrecamber); }
 
 // ISplicedGirderSegment
 public:
@@ -634,7 +479,7 @@ public:
    {
       CHECK_RETVAL(pLength);
 
-      if ( (m_pPrevSegment == nullptr && endType == etStart) || (m_pNextSegment == nullptr && endType == etEnd) )
+      if ( (m_Impl.m_pPrevSegment == nullptr && endType == etStart) || (m_Impl.m_pNextSegment == nullptr && endType == etEnd) )
       {
          // if this the start of the first segment or the end of the last segment there there isn't a closure
          *pLength = 0;
@@ -740,9 +585,9 @@ public:
    }
 
 protected:
-   virtual HRESULT GetPrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape) = 0;
+   virtual HRESULT GetPrimaryShape(Float64 distAlongSegment,IShape** ppShape) = 0;
 
-   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+   virtual HRESULT GetSection(StageIndexType stageIdx,Float64 Xs,ISection** ppSection)
    {
       CHECK_RETOBJ(ppSection);
 
@@ -754,7 +599,7 @@ protected:
 
       HRESULT hr;
       CComPtr<IShape> primaryShape;
-      hr = GetPrimaryShape(Xs,sectionBias,&primaryShape);
+      hr = GetPrimaryShape(Xs,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;
@@ -977,7 +822,7 @@ protected:
 
       // Find the first segment in the girder
       CComPtr<ISuperstructureMemberSegment> segment1;
-      m_pSSMbr->get_Segment(0,&segment1);
+      m_Impl.m_pSSMbr->get_Segment(0,&segment1);
       CComQIPtr<ISplicedGirderSegment> firstSegment(segment1);
 
       // go down each segment and create piece-wise functions for each part of the girder profile

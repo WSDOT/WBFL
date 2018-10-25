@@ -29,7 +29,7 @@
 // "Global" data types for the LRFD package
 // These types aren't really global because they have been
 // scoped in the lrfdTypes struct.
-struct LRFDCLASS lrfdTypes
+struct lrfdTypes
 {
    enum Optimization { Min, Max };
 

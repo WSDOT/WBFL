@@ -72,6 +72,23 @@ HRESULT CConnectorImpl::FinalConstruct()
    return S_OK;
 }
 
+void CConnectorImpl::FinalRelease()
+{
+   CComPtr<iSocket> start_socket;
+   m_pStart->GetSocket(&start_socket);
+   if (start_socket)
+   {
+      start_socket->Disconnect(m_pStart);
+   }
+
+   CComPtr<iSocket> end_socket;
+   m_pEnd->GetSocket(&end_socket);
+   if (end_socket)
+   {
+      end_socket->Disconnect(m_pEnd);
+   }
+}
+
 STDMETHODIMP_(void) CConnectorImpl::GetStartPlug(iPlug** plug)
 {
    *plug = m_pStart;

@@ -28,6 +28,7 @@
 #endif // _MSC_VER > 1000
 // StatusMessageDialog.h : header file
 //
+#include <EAF\EAFTypes.h>
 
 #include "resource.h"
 
@@ -40,12 +41,16 @@ class CStatusMessageDialog : public CDialog
 {
 // Construction
 public:
-	CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent = nullptr);   // standard constructor
+	CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CStatusMessageDialog)
 	enum { IDD = IDD_STATUS_DIALOG };
 	//}}AFX_DATA
+
+// Data
+   // Return value from dialog closure
+   eafTypes::StatusItemDisplayReturn GetReturnValue() const;
 
 
 // Overrides
@@ -62,7 +67,9 @@ protected:
 
    eafTypes::StatusSeverityType m_Severity;
    BOOL m_bRemoveableOnError;
+   BOOL m_bEnableEdit;
 	CString	m_Message;
+   eafTypes::StatusItemDisplayReturn m_StatusItemDisplayReturn;
 
 	// Generated message map functions
 	//{{AFX_MSG(CStatusMessageDialog)
@@ -70,6 +77,10 @@ protected:
 	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+   afx_msg void OnBnClickedEdit();
+   afx_msg void OnBnClickedRemove();
+   afx_msg void OnBnClickedClose();
 };
 
 //{{AFX_INSERT_LOCATION}}

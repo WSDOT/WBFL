@@ -66,6 +66,7 @@ END_COM_MAP()
 // IDirection
 public:
    STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
+   STDMETHOD(IsEqual)(IDirection* pDirection) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IDirection* *clone) override;
 	STDMETHOD(AngleBetween)(/*[in]*/ IDirection* dir,/*[out,retval]*/IAngle** pVal) override;
    STDMETHOD(FromVariant)(/*[in]*/ VARIANT varDirection) override;

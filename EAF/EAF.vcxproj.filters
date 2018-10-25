@@ -217,6 +217,12 @@
     <ClCompile Include="webbrowser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EAFViewController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EAFViewControllerFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\AgentTools.h">
@@ -502,6 +508,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="webbrowser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EAFViewController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFViewController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFViewControllerFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -394,6 +394,11 @@ STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceWidth(MatingSurfaceIndexType 
    return get_TopWidth(wMatingSurface);
 }
 
+STDMETHODIMP CVoidedSlabSection2::get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile)
+{
+   return E_NOTIMPL;
+}
+
 STDMETHODIMP CVoidedSlabSection2::get_TopFlangeCount(FlangeIndexType* nTopFlanges)
 {
    CHECK_RETVAL(nTopFlanges);
@@ -533,7 +538,7 @@ STDMETHODIMP CVoidedSlabSection2::get_MinBottomFlangeThickness(Float64* tf)
 STDMETHODIMP CVoidedSlabSection2::get_CL2ExteriorWebDistance( DirectionType side, Float64* wd)
 {
    HRESULT hr;
-   CHECK_RETVAL(*wd);
+   CHECK_RETVAL(wd);
 
    WebIndexType nWebs;
    WebIndexType nVoids;
@@ -571,6 +576,23 @@ STDMETHODIMP CVoidedSlabSection2::get_CL2ExteriorWebDistance( DirectionType side
       *wd = webwid/2.0;
    }
 
+   return S_OK;
+}
+
+STDMETHODIMP CVoidedSlabSection2::RemoveSacrificalDepth(Float64 sacDepth)
+{
+   Float64 H, C2;
+   m_Beam->get_Height(&H);
+   m_Beam->get_C2(&C2);
+   ATLASSERT(sacDepth < H);
+   H -= sacDepth;
+   C2 -= sacDepth;
+   if (C2 < 0)
+   {
+      C2 = 0;
+   }
+   m_Beam->put_Height(H);
+   m_Beam->put_C2(C2);
    return S_OK;
 }
 

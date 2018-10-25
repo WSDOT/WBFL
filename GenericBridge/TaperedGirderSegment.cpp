@@ -39,18 +39,11 @@ static char THIS_FILE[] = __FILE__;
 // CTaperedGirderSegment
 HRESULT CTaperedGirderSegment::FinalConstruct()
 {
-   m_pGirderLine = nullptr;
-   m_Orientation = 0;
-   m_HaunchDepth[0] = 0;
-   m_HaunchDepth[1] = 0;
-   m_HaunchDepth[2] = 0;
-   m_Fillet = 0;
    return S_OK;
 }
 
 void CTaperedGirderSegment::FinalRelease()
 {
-   m_pGirderLine = nullptr;
    m_Shapes[etStart].clear();
    m_Shapes[etEnd].clear();
 }
@@ -71,121 +64,8 @@ STDMETHODIMP CTaperedGirderSegment::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 ////////////////////////////////////////////////////////////////////////
-// ISegment implementation
-STDMETHODIMP CTaperedGirderSegment::putref_SuperstructureMember(ISuperstructureMember* ssMbr)
-{
-   CHECK_IN(ssMbr);
-   m_pSSMbr = ssMbr;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_SuperstructureMember(ISuperstructureMember** ssMbr)
-{
-   CHECK_RETOBJ(ssMbr);
-   if ( m_pSSMbr )
-   {
-      (*ssMbr) = m_pSSMbr;
-      (*ssMbr)->AddRef();
-   }
-   else
-   {
-      (*ssMbr) = nullptr;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::putref_GirderLine(IGirderLine* girderLine)
-{
-   m_pGirderLine = girderLine;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_GirderLine(IGirderLine** girderLine)
-{
-   CHECK_RETOBJ(girderLine);
-   if ( m_pGirderLine )
-   {
-      (*girderLine) = m_pGirderLine;
-      (*girderLine)->AddRef();
-   }
-   else
-   {
-      (*girderLine) = nullptr;
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::putref_PrevSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pPrevSegment; // weak references so no change in ref count
-   m_pPrevSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pPrevSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pPrevSegment = pMySeg;
-      return hr;
-   }
-   m_pPrevSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_PrevSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pPrevSegment )
-   {
-      return m_pPrevSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CTaperedGirderSegment::putref_NextSegment(ISegment* segment)
-{
-   CHECK_IN(segment);
-   ISuperstructureMemberSegment* pMySeg = m_pNextSegment; // weak references so no change in ref count
-   m_pNextSegment = nullptr;
-   HRESULT hr = segment->QueryInterface(&m_pNextSegment); // causes ref count to increment
-   if ( FAILED(hr) )
-   {
-      m_pNextSegment = pMySeg;
-      return hr;
-   }
-   m_pNextSegment->Release(); // need to decrement ref count causd by QueryInterface to maintain this as a weak reference
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_NextSegment(ISegment** segment)
-{
-   CHECK_RETVAL(segment);
-   if ( m_pNextSegment )
-   {
-      return m_pNextSegment->QueryInterface(segment);
-   }
-   else
-   {
-      *segment = nullptr;
-      return E_FAIL;
-   }
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_Length(Float64 *pVal)
-{
-   return m_pGirderLine->get_GirderLength(pVal);
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_LayoutLength(Float64 *pVal)
-{
-   return m_pGirderLine->get_LayoutLength(pVal);
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 Xs, SectionBias sectionBias,ISection** ppSection)
+// ISuperstructureMemberSegment implementation
+STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 distAlongSegment,ISection** ppSection)
 {
    CHECK_RETOBJ(ppSection);
 
@@ -198,7 +78,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    }
 
    CComPtr<IShape> primaryShape;
-   HRESULT hr = get_PrimaryShape(Xs,sectionBias,&primaryShape);
+   HRESULT hr = get_PrimaryShape(distAlongSegment,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -304,7 +184,7 @@ STDMETHODIMP CTaperedGirderSegment::get_Section(StageIndexType stageIdx,Float64 
    return S_OK;
 }
 
-STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias,IShape** ppShape)
+STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 distAlongSegment,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -361,23 +241,23 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sec
    }
 
    // linear interpolate dimensions
-   Float64 w1 = ::LinInterp(Xs,W1[etStart],W1[etEnd],segLength);
-   Float64 w2 = ::LinInterp(Xs,W2[etStart],W2[etEnd],segLength);
-   Float64 w3 = ::LinInterp(Xs,W3[etStart],W3[etEnd],segLength);
-   Float64 w4 = ::LinInterp(Xs,W4[etStart],W4[etEnd],segLength);
+   Float64 w1 = ::LinInterp(distAlongSegment,W1[etStart],W1[etEnd],segLength);
+   Float64 w2 = ::LinInterp(distAlongSegment,W2[etStart],W2[etEnd],segLength);
+   Float64 w3 = ::LinInterp(distAlongSegment,W3[etStart],W3[etEnd],segLength);
+   Float64 w4 = ::LinInterp(distAlongSegment,W4[etStart],W4[etEnd],segLength);
 
-   Float64 d1 = ::LinInterp(Xs,D1[etStart],D1[etEnd],segLength);
-   Float64 d2 = ::LinInterp(Xs,D2[etStart],D2[etEnd],segLength);
-   Float64 d3 = ::LinInterp(Xs,D3[etStart],D3[etEnd],segLength);
-   Float64 d4 = ::LinInterp(Xs,D4[etStart],D4[etEnd],segLength);
-   Float64 d5 = ::LinInterp(Xs,D5[etStart],D5[etEnd],segLength);
-   Float64 d6 = ::LinInterp(Xs,D6[etStart],D6[etEnd],segLength);
-   Float64 d7 = ::LinInterp(Xs,D7[etStart],D7[etEnd],segLength);
+   Float64 d1 = ::LinInterp(distAlongSegment,D1[etStart],D1[etEnd],segLength);
+   Float64 d2 = ::LinInterp(distAlongSegment,D2[etStart],D2[etEnd],segLength);
+   Float64 d3 = ::LinInterp(distAlongSegment,D3[etStart],D3[etEnd],segLength);
+   Float64 d4 = ::LinInterp(distAlongSegment,D4[etStart],D4[etEnd],segLength);
+   Float64 d5 = ::LinInterp(distAlongSegment,D5[etStart],D5[etEnd],segLength);
+   Float64 d6 = ::LinInterp(distAlongSegment,D6[etStart],D6[etEnd],segLength);
+   Float64 d7 = ::LinInterp(distAlongSegment,D7[etStart],D7[etEnd],segLength);
 
-   Float64 t1 = ::LinInterp(Xs,T1[etStart],T1[etEnd],segLength);
-   Float64 t2 = ::LinInterp(Xs,T2[etStart],T2[etEnd],segLength);
+   Float64 t1 = ::LinInterp(distAlongSegment,T1[etStart],T1[etEnd],segLength);
+   Float64 t2 = ::LinInterp(distAlongSegment,T2[etStart],T2[etEnd],segLength);
 
-   Float64 c1 = ::LinInterp(Xs,C1[etStart],C1[etEnd],segLength);
+   Float64 c1 = ::LinInterp(distAlongSegment,C1[etStart],C1[etEnd],segLength);
 
    // create a new shape that is a clone of the original
    CComQIPtr<IShape> shape(beam[etStart]);
@@ -405,7 +285,7 @@ STDMETHODIMP CTaperedGirderSegment::get_PrimaryShape(Float64 Xs, SectionBias sec
 
    // position the shape
    CComPtr<IPoint2d> pntTopCenter;
-   GB_GetSectionLocation(this,Xs,&pntTopCenter);
+   GB_GetSectionLocation(this,distAlongSegment,&pntTopCenter);
 
    CComQIPtr<IXYPosition> position(newFlangedBeam);
    position->put_LocatorPoint(lpTopCenter,pntTopCenter);
@@ -434,15 +314,15 @@ STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,ISh
    Float64 brgOffset, endDist;
    if ( bIncludeClosure == VARIANT_TRUE )
    {
-      m_pGirderLine->get_LayoutLength(&l);
+      m_Impl.m_pGirderLine->get_LayoutLength(&l);
       brgOffset = 0;
       endDist = 0;
    }
    else
    {
-      m_pGirderLine->get_GirderLength(&l);
-      m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
-      m_pGirderLine->get_EndDistance(etStart,&endDist);
+      m_Impl.m_pGirderLine->get_GirderLength(&l);
+      m_Impl.m_pGirderLine->get_BearingOffset(etStart,&brgOffset);
+      m_Impl.m_pGirderLine->get_EndDistance(etStart,&endDist);
    }
 
    CComPtr<IPolyShape> shape;
@@ -450,6 +330,40 @@ STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,ISh
 
    shape->AddPoint(0,0);
    shape->AddPoint(0,-h1);
+
+   if (!IsZero(m_Impl.m_Precamber))
+   {
+      // work left to right along bottom of segment
+      int nPoints = 11;
+      int nSpaces = nPoints - 1;
+
+      Float64 Ls;
+      m_Impl.m_pGirderLine->get_GirderLength(&Ls);
+      for (int i = 0; i < nPoints; i++)
+      {
+         Float64 x = i*Ls / nSpaces;
+         Float64 y = m_Impl.ComputePrecamber(x, Ls);
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         Float64 dh = ::LinInterp(x, -h1, -h2, Ls);
+         shape->AddPoint(x, y + dh);
+      }
+
+      // work right to left along top of segment
+      for (int i = 0; i < nPoints; i++)
+      {
+         Float64 x = Ls - i*Ls / nSpaces;
+         Float64 y = m_Impl.ComputePrecamber(x, Ls);
+         if (bIncludeClosure == VARIANT_TRUE)
+         {
+            x += (brgOffset - endDist);
+         }
+         shape->AddPoint(x, y);
+      }
+   }
+
    shape->AddPoint(l,-h2);
    shape->AddPoint(l,0);
 
@@ -469,63 +383,19 @@ STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,ISh
    CComQIPtr<IXYPosition> position(shape);
    CComPtr<IPoint2d> topLeft;
    position->get_LocatorPoint(lpTopLeft,&topLeft);
-   topLeft->Move(brgOffset-endDist,0);
+
+   if (0 < m_Impl.m_Precamber)
+   {
+      topLeft->Move(brgOffset - endDist, m_Impl.m_Precamber);
+   }
+   else
+   {
+      topLeft->Move(brgOffset - endDist, 0);
+   }
    position->put_LocatorPoint(lpTopLeft,topLeft);
 
    shape->QueryInterface(ppShape);
 
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::put_Orientation(Float64 orientation)
-{
-   m_Orientation = orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_Orientation(Float64* orientation)
-{
-   CHECK_RETVAL(orientation);
-   (*orientation) = m_Orientation;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::GetHaunchDepth(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal)
-{
-   CHECK_RETVAL(pStartVal);
-   CHECK_RETVAL(pMidVal);
-   CHECK_RETVAL(pEndVal);
-   *pStartVal = m_HaunchDepth[0];
-   *pMidVal   = m_HaunchDepth[1];
-   *pEndVal   = m_HaunchDepth[2];
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::SetHaunchDepth(Float64 startVal,Float64 midVal,Float64 endVal)
-{
-   m_HaunchDepth[0] = startVal;
-   m_HaunchDepth[1] = midVal;
-   m_HaunchDepth[2] = endVal;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::ComputeHaunchDepth(Float64 distAlongSegment,Float64* pVal)
-{
-   CHECK_RETVAL(pVal);
-   *pVal = ::GB_GetHaunchDepth(this,distAlongSegment);
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::put_Fillet(Float64 Fillet)
-{
-   m_Fillet = Fillet;
-   return S_OK;
-}
-
-STDMETHODIMP CTaperedGirderSegment::get_Fillet(Float64* Fillet)
-{
-   CHECK_RETVAL(Fillet);
-   (*Fillet) = m_Fillet;
    return S_OK;
 }
 

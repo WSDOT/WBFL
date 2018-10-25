@@ -3684,11 +3684,11 @@ void CAnalysisModel::GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  I
       pMembers->Create(femMemberID, left_node.m_FemJointID, right_node.m_FemJointID, ea, ei, &pmbr);
 
       // add element number to our lists
-      m_SuperstructureMemberElements[curr_ssm].push_back( ElementLayout(femMemberID, SegmentCrossSection) );
+      m_SuperstructureMemberElements[curr_ssm].emplace_back(femMemberID, SegmentCrossSection);
 
       if ( (curr_span != -1) && (curr_span < long(nSpans)) )
       {
-         m_SpanElements[curr_span].push_back( ElementLayout(femMemberID, SegmentCrossSection) );
+         m_SpanElements[curr_span].emplace_back(femMemberID, SegmentCrossSection);
       }
 
       // deal with end releases
@@ -4024,7 +4024,7 @@ void CAnalysisModel::GenerateSupportFemModel(SubNodeLocs* pSnls,
             pMembers->Create(femMemberID, lefty->m_FemJointID, righty->m_FemJointID, ea, ei, &pmember);
 
             // save element number and section for later use
-            pLayoutVec->push_back( ElementLayout(femMemberID, SegmentCrossSection) );
+            pLayoutVec->emplace_back(femMemberID, SegmentCrossSection);
 
             // Deal with member top release
             if (nSubstructureMembers == nSubstructureNodeLocations)
@@ -5235,7 +5235,7 @@ void CAnalysisModel::ComputeInfluenceLoadLocation(PoiIDType poiID,MemberType lbm
       P = 0;
    }
 
-   m_InfluenceLoadSet.push_back( InfluenceLoadLocation( poiID, xloc, fem_id, fem_loc, P) );
+   m_InfluenceLoadSet.emplace_back(poiID, xloc, fem_id, fem_loc, P);
 }
 
 void CAnalysisModel::GenerateContraflexureLoads()

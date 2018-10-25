@@ -263,8 +263,7 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetBoundingBox(iPointDisplayObject* 
          points->get_Item(i,&point);
 
          Float64 x,y;
-         point->get_X(&x);
-         point->get_Y(&y);
+         point->Location(&x, &y);
 
          left  = Min(left, x);
          right = Max(right,x);
@@ -287,6 +286,50 @@ STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetBoundingBox(iPointDisplayObject* 
 
    (*rect) = m_BoundingBox;
    (*rect)->AddRef();
+}
+
+/////////////////////////////////////////////////////////
+// iGravityWellStrategy Implementation
+STDMETHODIMP_(void) CShapeDrawStrategyImpl::GetGravityWell(iDisplayObject* pDO, CRgn* pRgn)
+{
+   CComPtr<iDisplayList> pDL;
+   pDO->GetDisplayList(&pDL);
+   CComPtr<iDisplayMgr> pDispMgr;
+   pDL->GetDisplayMgr(&pDispMgr);
+
+   CComPtr<iCoordinateMap> map;
+   pDispMgr->GetCoordinateMap(&map);
+
+   CComPtr<IShape> pShape;
+   if (m_CompositeShape)
+   {
+      CComPtr<ICompositeShapeItem> compShapeItem;
+      m_CompositeShape->get_Item(0, &compShapeItem);
+      compShapeItem->get_Shape(&pShape);
+   }
+   else
+   {
+      m_Shape.CopyTo(&pShape);
+   }
+
+   CComPtr<IPoint2dCollection> polypoints;
+   GetPointsInWorldSpace(pDO, pShape, &polypoints);
+
+   CollectionIndexType nPoints;
+   polypoints->get_Count(&nPoints);
+
+   CPoint* points = new CPoint[nPoints];
+   for (CollectionIndexType i = 0; i < nPoints; i++)
+   {
+      CComPtr<IPoint2d> point;
+      polypoints->get_Item(i, &point);
+
+      map->WPtoLP(point, &points[i].x, &points[i].y);
+   }
+
+   VERIFY(pRgn->CreatePolygonRgn(points, (int)nPoints, ALTERNATE));
+
+   delete[] points;
 }
 
 void CShapeDrawStrategyImpl::DrawMe(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
@@ -504,3 +547,4 @@ void CShapeDrawStrategyImpl::CreatePen(LineStyleType lineStyle,UINT width,COLORR
       break;
    }
 }
+

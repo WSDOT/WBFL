@@ -45,8 +45,8 @@ public:
    Float64 Mw;  // transverse moment due to wind
    Float64 Mcf; // transverse moment due to CF
 
-   Float64 fps[2];   // top/bottom stress due to prestressing
-   Float64 fg[2];    // top/bottom stress due to girder weight without impact
+   Float64 fps[4];   // corner stresses due to prestressing
+   Float64 fg[4];    // corner stresses due to girder weight without impact
    Float64 fw[4];    // corner stresses due to wind towards the left
    Float64 fcf[4];   // corner stresses due to CF towards the left
 

@@ -321,16 +321,16 @@ bool gpLineSegment2d::TestMe(dbgLog& rlog)
    std::vector<gpPoint2d> correct_points;
    gpLineSegment2d div_line(gpPoint2d(0,0),gpPoint2d(10,10));
    points = div_line.Divide(2);
-   correct_points.push_back(gpPoint2d(0,0));
-   correct_points.push_back(gpPoint2d(5,5));
-   correct_points.push_back(gpPoint2d(10,10));
+   correct_points.emplace_back(0,0);
+   correct_points.emplace_back(5,5);
+   correct_points.emplace_back(10,10);
    TRY_TESTME ( points == correct_points );
 
    correct_points.clear();
-   correct_points.push_back(gpPoint2d(0,0));
-   correct_points.push_back(gpPoint2d(-5,-5));
-   correct_points.push_back(gpPoint2d(-10,-10));
-   div_line.SetEndPoint( gpPoint2d(-10,-10) );
+   correct_points.emplace_back(0,0);
+   correct_points.emplace_back(-5,-5);
+   correct_points.emplace_back(-10,-10);
+   div_line.SetEndPoint(gpPoint2d( -10,-10 ));
    points = div_line.Divide(2);
    TRY_TESTME ( points == correct_points );
 

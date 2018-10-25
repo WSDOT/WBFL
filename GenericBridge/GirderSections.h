@@ -40,7 +40,7 @@ class CFlangedBeam :
 public:
    DECLARE_REGISTRY_RESOURCEID(IDR_FLANGEDBEAM)
 	   
-   STDMETHODIMP get_MinWebThickness(Float64* tWeb)
+   STDMETHODIMP get_MinWebThickness(Float64* tWeb) override
    {
       CHECK_RETVAL(tWeb);
       Float64 t1,t2;
@@ -50,17 +50,17 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb)
+   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb) override
    {
       return get_MinWebThickness(tWeb);
    }
 
-   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf)
+   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf) override
    {
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -68,7 +68,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -76,12 +76,20 @@ public:
       return m_Beam->get_D4(tFlange);
    }
 
-   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD)
+   // IPrestressedGirderSection
+public:
+   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   {
+      ATLASSERT(false); // should never get here... the top flange is not a riding surface
+      return S_FALSE;
+   }
+
+   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
    {
       return m_Beam->get_Height(pSZD);
    }
 
-   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD)
+   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
    {
       CHECK_RETVAL(pSD);
       *pSD = sdVertical;
@@ -89,16 +97,112 @@ public:
    }
 };
 
-
+class CBulbTeeSection;
+typedef CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2> CBulbTeeSectionBase;
 class CBulbTeeSection : 
-   public CGirderSectionImpl<CBulbTeeSection,&CLSID_BulbTeeSection,
-                             IBulbTeeSection, &IID_IBulbTeeSection,
-                             IBulbTee,&CLSID_BulbTee>
+   public CBulbTeeSectionBase,
+   public IAsymmetricSection
 {
+BEGIN_COM_MAP(CBulbTeeSection)
+   COM_INTERFACE_ENTRY(IAsymmetricSection)
+   COM_INTERFACE_ENTRY_CHAIN(CBulbTeeSectionBase)
+END_COM_MAP()
+
+protected:
+   CComPtr<IShape> m_LeftJoint, m_RightJoint;
+
 public:
    DECLARE_REGISTRY_RESOURCEID(IDR_BULBTEE)
-	   
-   STDMETHODIMP get_MinWebThickness(Float64* tWeb)
+
+// IAsymmetricSection
+   STDMETHODIMP GetTopWidth(Float64* pLeft, Float64* pRight) override
+   {
+      CHECK_RETVAL(pLeft);
+      CHECK_RETVAL(pRight);
+      m_Beam->get_W5(pLeft);
+      m_Beam->get_W6(pRight);
+      return S_OK;
+   }
+   
+   STDMETHODIMP GetStressPoints(StressPointType spType, IPoint2dCollection** ppPoints)
+   {
+      CHECK_RETOBJ(ppPoints);
+      CComPtr<IPoint2dCollection> points;
+      points.CoCreateInstance(CLSID_Point2dCollection);
+
+      if (spType == spTop)
+      {
+         CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
+         m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+         points->Add(leftTop);
+         points->Add(topCentral);
+         points->Add(rightTop);
+      }
+      else
+      {
+         CComPtr<IPoint2d> leftTop, leftBottom, rightTop, rightBottom;
+         m_Beam->GetBottomFlangePoints(&leftTop, &leftBottom, &rightTop, &rightBottom);
+
+         //                |   |
+         //         +------+   +-------+
+         //         |                  |
+         //         |   Bot Flange     |
+         // leftTop |                  | rightTop
+         //         \------------------/  <-------------- chamfer
+         //       leftBottom          rightBottom
+         //         |       Wbf        |
+         //         |<---------------->|
+
+         // we want to use the fictitious corner at the projection of the vertical face
+         // of the bottom flange and the bottom of the bottom flange (engineers will typically
+         // hand check stresses using (+/-Wbf/2,Yb) so the chamfers are ignored
+
+         Float64 x, y, dummy;
+         leftTop->Location(&x, &dummy); // left side at top of chamfer
+         leftBottom->Location(&dummy, &y); // left side, at right edge of chamfer
+
+         CComPtr<IPoint2d> pntLeft(leftTop);
+         pntLeft->Move(x, y);
+         points->Add(pntLeft);
+
+         rightTop->Location(&x, &dummy); // right side at top of chamfer
+         rightBottom->Location(&dummy, &y); // right side at left edge of chamfer
+
+         CComPtr<IPoint2d> pntRight(rightTop);
+         pntRight->Move(x, y);
+         points->Add(pntRight);
+      }
+
+      return points.CopyTo(ppPoints);
+   }
+
+   // 
+   STDMETHODIMP SetJointShapes(IShape* pLeftJoint, IShape* pRightJoint) override
+   {
+      m_LeftJoint = pLeftJoint;
+      m_RightJoint = pRightJoint;
+      return S_OK;
+   }
+   
+   STDMETHODIMP GetJointShapes(IShape** ppLeftJoint, IShape** ppRightJoint) override
+   {
+      CHECK_RETOBJ(ppLeftJoint);
+      CHECK_RETOBJ(ppRightJoint);
+
+      if (m_LeftJoint)
+      {
+         m_LeftJoint.CopyTo(ppLeftJoint);
+      }
+
+      if (m_RightJoint)
+      {
+         m_RightJoint.CopyTo(ppRightJoint);
+      }
+
+      return S_OK;
+   }
+
+   STDMETHODIMP get_MinWebThickness(Float64* tWeb) override
    {
       CHECK_RETVAL(tWeb);
       Float64 t1,t2;
@@ -108,17 +212,49 @@ public:
       return S_OK;
    }
 
-   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb)
+   STDMETHODIMP get_MatingSurfaceProfile(MatingSurfaceIndexType idx, IPoint2dCollection** ppProfile) override
+   {
+      // overide the base class implentation with this
+      CHECK_RETOBJ(ppProfile);
+
+      CComPtr<IPoint2d> leftTop, leftBottom, topCentral, rightTop, rightBottom;
+      m_Beam->GetTopFlangePoints(&leftTop, &leftBottom, &topCentral, &rightTop, &rightBottom);
+
+      if (m_LeftJoint)
+      {
+         leftTop.Release();
+         CComQIPtr<IPolyShape> shape(m_LeftJoint);
+         shape->get_Point(0, &leftTop);
+      }
+
+      if (m_RightJoint)
+      {
+         rightTop.Release();
+         CComQIPtr<IPolyShape> shape(m_RightJoint);
+         shape->get_Point(0, &rightTop);
+      }
+
+      CComPtr<IPoint2dCollection> points;
+      points.CoCreateInstance(CLSID_Point2dCollection);
+
+      points->Add(leftTop);
+      points->Add(topCentral);
+      points->Add(rightTop);
+
+      return points.CopyTo(ppProfile);
+   }
+
+   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb) override
    {
       return get_MinWebThickness(tWeb);
    }
 
-   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf)
+   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf) override
    {
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -126,7 +262,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -134,12 +270,72 @@ public:
       return m_Beam->get_D5(tFlange);
    }
 
-   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD)
+
+   STDMETHODIMP get_TopFlangeLocation(FlangeIndexType idx, Float64* location) override
    {
-      return m_Beam->get_Height(pSZD);
+      if (idx != 0)
+         return E_INVALIDARG;
+
+      Float64 w5, w6;
+      m_Beam->get_W5(&w5);
+      m_Beam->get_W6(&w6);
+      *location = w5 - 0.5*(w5 + w6);
+      return S_OK;
    }
 
-   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD)
+   STDMETHODIMP get_BottomFlangeLocation(FlangeIndexType idx, Float64* location) override
+   {
+      if (idx != 0)
+         return E_INVALIDARG;
+
+      Float64 w5, w6;
+      m_Beam->get_W5(&w5);
+      m_Beam->get_W6(&w6);
+      *location = w5 - 0.5*(w5 + w6);
+      return S_OK;
+   }
+
+   // IPrestressedGirderSection
+public:
+   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   {
+      Float64 D1;
+      m_Beam->get_D1(&D1);
+      ATLASSERT(sacDepth < D1);
+      D1 -= sacDepth;
+      m_Beam->put_D1(D1);
+
+      if (m_LeftJoint)
+      {
+         CComPtr<IPoint2dCollection> points;
+         m_LeftJoint->get_PolyPoints(&points);
+         CComPtr<IPoint2d> pntTopLeft, pntTopRight;
+         points->get_Item(0, &pntTopLeft);
+         points->get_Item(3, &pntTopRight);
+         pntTopLeft->Offset(0, -sacDepth);
+         pntTopRight->Offset(0, -sacDepth);
+      }
+
+      if (m_RightJoint)
+      {
+         CComPtr<IPoint2dCollection> points;
+         m_RightJoint->get_PolyPoints(&points);
+         CComPtr<IPoint2d> pntTopLeft, pntTopRight;
+         points->get_Item(0, &pntTopLeft);
+         points->get_Item(3, &pntTopRight);
+         pntTopLeft->Offset(0, -sacDepth);
+         pntTopRight->Offset(0, -sacDepth);
+      }
+
+      return S_OK;
+   }
+
+   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
+   {
+      return m_Beam->get_CLHeight(pSZD);
+   }
+
+   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
    {
       CHECK_RETVAL(pSD);
       *pSD = sdVertical;
@@ -155,22 +351,22 @@ class CNUGirderSection :
 public:
    DECLARE_REGISTRY_RESOURCEID(IDR_NUGIRDERSECTION)
 	   
-   STDMETHODIMP get_MinWebThickness(Float64* tWeb)
+   STDMETHODIMP get_MinWebThickness(Float64* tWeb) override
    {
       return m_Beam->get_T(tWeb);
    }
 	   
-   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb)
+   STDMETHODIMP get_EffectiveWebThickness(Float64* tWeb) override
    {
       return get_MinWebThickness(tWeb);
    }
 
-   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf)
+   STDMETHODIMP get_MinBottomFlangeThickness(Float64* tf) override
    {
       return m_Beam->get_D5(tf); // NUBeam
    } 
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -178,7 +374,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange)
+   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -186,12 +382,21 @@ public:
       return m_Beam->get_D5(tFlange);
    }
 
-   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD)
+
+// IPrestressedGirderSection
+public:
+   STDMETHODIMP RemoveSacrificalDepth(Float64 sacDepth) override
+   {
+      ATLASSERT(false); // should never get here... the top flange is not a riding surface
+      return S_FALSE;
+   }
+
+   STDMETHODIMP get_SplittingZoneDimension(Float64* pSZD) override
    {
       return m_Beam->get_Height(pSZD);
    }
 
-   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD)
+   STDMETHODIMP get_SplittingDirection(SplittingDirection* pSD) override
    {
       CHECK_RETVAL(pSD);
       *pSD = sdVertical;

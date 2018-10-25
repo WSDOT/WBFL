@@ -125,14 +125,17 @@ CView* EAFGetActiveView()
    return nullptr;
 }
 
-void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,LPCTSTR lpszDocSetName,UINT helpID)
+eafTypes::StatusItemDisplayReturn EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CStatusMessageDialog dlg(pStatusItem,severity,bRemoveableOnError,lpszDocSetName,helpID);
+   CStatusMessageDialog dlg(pStatusItem,severity,bRemoveableOnError,bEnableEdit,lpszDocSetName,helpID);
 
+   eafTypes::StatusItemDisplayReturn retVal(eafTypes::eafsiClose);
    if (dlg.DoModal() == IDOK)
    {
-      if ( bRemoveableOnError || severity != eafTypes::statusError )
+      retVal = dlg.GetReturnValue();
+
+      if ( retVal==eafTypes::eafsiRemove && ( bRemoveableOnError || severity != eafTypes::statusError ))
       {
          pStatusItem->RemoveAfterEdit(TRUE);
       }
@@ -141,6 +144,8 @@ void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityTy
          pStatusItem->RemoveAfterEdit(FALSE);
       }
    }
+
+   return retVal;
 }
 
 BOOL EAFShowUIHints(LPCTSTR lpszText,LPCTSTR lpszTitle)

@@ -112,7 +112,7 @@ public:
    STDMETHOD_(void,SetSelectionLineColor)(COLORREF color) override;
    STDMETHOD_(COLORREF,GetSelectionFillColor)() override;
    STDMETHOD_(COLORREF,GetSelectionLineColor)() override;
-   STDMETHOD_(void,GetBoundingBox)(iCoordinateMap* pMap, bool boundOrigin, IRect2d** ppRect) override;
+   STDMETHOD_(void,GetBoundingBox)(bool boundOrigin, IRect2d** ppRect) override;
    STDMETHOD_(void,InvalidateRect)(LPCRECT lpRect) override;
    STDMETHOD_(void,InvalidateRgn)(CRgn* pRgn) override;
 

@@ -41,6 +41,7 @@ public:
 	virtual ~CConnectorImpl();
 
    HRESULT FinalConstruct();
+   void FinalRelease();
 
    // iConnector
    STDMETHOD_(void,GetStartPlug)(iPlug** plug) override;

@@ -221,14 +221,14 @@ STDMETHODIMP CSuperelevationCollection::AddEx(ISuperelevation* superelevation)
 
    DWORD dwCookie;
    AdviseElement(superelevation,&dwCookie);
-   m_coll.push_back( std::make_pair(dwCookie,CComVariant(superelevation)));
+   m_coll.emplace_back(dwCookie,CComVariant(superelevation));
 
    CComPtr<IProfile> profile;
    if ( m_pSurface )
    {
       m_pSurface->get_Profile(&profile); 
    }
-   std::sort(m_coll.begin(),m_coll.end(),SortSuperelevations(profile));
+   std::sort(std::begin(m_coll),std::end(m_coll),SortSuperelevations(profile));
 
    Fire_OnSuperelevationAdded(superelevation);
    return S_OK;

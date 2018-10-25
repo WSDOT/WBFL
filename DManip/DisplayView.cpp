@@ -520,41 +520,17 @@ void CDisplayView::Zoom(CRect rect, bool reDraw)
    wrect->put_Right(wright);
    wrect->Normalize();
 
-   SetWorldViewRect(wrect);
-
-   CComPtr<IPoint2d> point;
-   wrect->get_CenterCenter(&point);
-
-   CenterOnPoint(point, reDraw);
-//
-//   CComPtr<IRect2d> worldRect;
-//   m_pDispMgr->GetBoundingBox(m_pCoordinateMap,false,&worldRect);
-//
-//   Float64 left, top, right, bottom;
-//   GetRect(worldRect,&left,&top,&right,&bottom);
-//   CPoint pntTL, pntBR;
-//   m_pCoordinateMap->WPtoLP(left,top,    &pntTL.x,&pntTL.y);
-//   m_pCoordinateMap->WPtoLP(right,bottom,&pntBR.x,&pntBR.y);
-//
-//   CRect rWorld(pntTL,pntBR);
-//   CSize szWorld = rWorld.Size();
-//   SetScrollSizes(m_nMapMode,szWorld);
+   Zoom(wrect, reDraw);
 }
 
 void CDisplayView::Zoom(IRect2d* rect, bool reDraw)
 {
-   Float64 left, right, top, bottom;
-   rect->get_Left(&left);
-   rect->get_Right(&right);
-   rect->get_Top(&top);
-   rect->get_Bottom(&bottom);
+   SetWorldViewRect(rect);
 
-   CPoint pntTL, pntBR;
-   m_pCoordinateMap->WPtoLP(left,top,&pntTL.x,&pntTL.y);
-   m_pCoordinateMap->WPtoLP(right,bottom,&pntBR.x,&pntBR.y);
+   CComPtr<IPoint2d> point;
+   rect->get_CenterCenter(&point);
 
-   CRect lRect(pntTL,pntBR);
-   Zoom(lRect,reDraw);
+   CenterOnPoint(point, reDraw);
 }
 
 void CDisplayView::Zoom(Float64 factor, bool reDraw)
@@ -609,7 +585,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    for (CollectionIndexType it = 0; it<max_iter; it++)
    {
       CComPtr<IRect2d> rect;
-      m_pDispMgr->GetBoundingBox(m_pCoordinateMap, false, &rect);
+      m_pDispMgr->GetBoundingBox(false, &rect);
       Zoom(rect,false);
 
       Float64 wid, hgt;
@@ -824,6 +800,9 @@ void CDisplayView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
 
       pDC->DPtoLP(&box);
    }
+
+   m_IsPrinting = true;
+   m_PrintingRect = box;
 
    m_pPrinterMapping->SetLogicalOrg(box.left, box.bottom);
    m_pPrinterMapping->SetLogicalExt(box.right-box.left, 

@@ -150,7 +150,7 @@ Float64 lrfdCreepCoefficient2005::GetInitialAge() const
 Float64 lrfdCreepCoefficient2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
-   if (lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 && m_CuringMethod == Normal)
+   if ( m_CuringMethod == Normal )
    {
       // NCHRP 496...
       // ti = age of concrete, in days, when load is initially applied
@@ -361,7 +361,7 @@ bool lrfdCreepCoefficient2005::TestMe(dbgLog& rlog)
    creep.SetCuringMethod(lrfdCreepCoefficient2005::Accelerated);
    creep.SetFc(::ConvertToSysUnits(8.0,unitMeasure::KSI));
    creep.SetInitialAge(::ConvertToSysUnits(1.0,unitMeasure::Day));
-   creep.SetCuringMethodTimeAdjustmentFactor(::ConvertToSysUnits(7, unitMeasure::Day));
+   creep.SetCuringMethodTimeAdjustmentFactor(7);
    creep.SetMaturity(::ConvertToSysUnits(120,unitMeasure::Day));
    creep.SetRelHumidity(75);
    creep.SetSurfaceArea( ::ConvertToSysUnits(1.0,unitMeasure::Inch2) );

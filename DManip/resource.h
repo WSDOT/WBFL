@@ -40,6 +40,7 @@
 #define IDR_VIEWTITLE			2042
 #define IDR_NORTHARROW			2043
 #define IDR_SHAPEGRAVITYWELLSTRATEGY	2044
+#define IDR_ANCHOREDTEXTBLOCK 2045
 
 // Next default values for new objects
 // 

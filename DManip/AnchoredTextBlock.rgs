@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.AnchoredTextBlock.1 = s 'AnchoredTextBlock Class'
+	{
+		CLSID = s '{7926CB45-FD46-4F0D-84E6-7849AEEEBFB8}'
+	}
+	WBFLDManip.AnchoredTextBlock = s 'AnchoredTextBlock Class'
+	{
+		CLSID = s '{7926CB45-FD46-4F0D-84E6-7849AEEEBFB8}'
+		CurVer = s 'WBFLDManip.AnchoredTextBlock.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {7926CB45-FD46-4F0D-84E6-7849AEEEBFB8} = s 'AnchoredTextBlock Class'
+		{
+			ProgID = s 'WBFLDManip.AnchoredTextBlock.1'
+			VersionIndependentProgID = s 'WBFLDManip.AnchoredTextBlock'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}
