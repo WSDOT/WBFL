@@ -135,7 +135,7 @@ public:
    //------------------------------------------------------------------------
    // Get lower limit of average shear strength Vn/Acv where steel is required by
    // 5.8.4.1-4.
-   static Float64 LowerLimitOfShearStrength(bool isRoughened);
+   static Float64 LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck);
 
    //------------------------------------------------------------------------
    // Get upper limit of bv for 5.8.4.1-4.
