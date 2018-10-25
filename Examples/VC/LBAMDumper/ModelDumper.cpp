@@ -719,8 +719,8 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
 
    if (pl_cnt>0)
    {
-      os<<_T("          Stage                  Load Group          Member Type        Member ID Axial Strain Curve Strain")<<endl;
-      os<<_T(" ------------------------ ------------------------ -------------------- --------- ------------ ------------")<<endl;
+      os<<_T("          Stage                  Load Group          Member Type        Member ID   Start        End      Axial Strain Curve Strain")<<endl;
+      os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- ----------- ------------ ------------")<<endl;
 
       for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
       {
@@ -738,12 +738,15 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
          hr = pl->get_MemberID(&mid);
          MemberType mtype;
          hr = pl->get_MemberType(&mtype);
+         double sloc, eloc;
+         hr = pl->get_StartLocation(&sloc);
+         hr = pl->get_EndLocation(&eloc);
          double as, cs;
          hr = pl->get_AxialStrain(&as);
          hr = pl->get_CurvatureStrain(&cs);
 
          os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<right<<setw(10)<<mid
-                      <<setw(13)<<as<<setw(13)<<cs<<endl;
+                      <<setw(12)<<sloc<<setw(12)<<eloc<<setw(13)<<as<<setw(13)<<cs<<endl;
       }
    }
    else

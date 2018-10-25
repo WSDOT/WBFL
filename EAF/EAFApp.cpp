@@ -1298,8 +1298,8 @@ unitmgtIndirectMeasure init_si_units()
    im.Time3.Update(           unitMeasure::Day,                       0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Scientific);
-   im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 9, 9, sysNumericFormatTool::Scientific);
+   im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Fixed);
+   im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
 
    return im;
@@ -1345,7 +1345,7 @@ unitmgtIndirectMeasure init_english_units()
    im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
    im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
-   im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 10, 8, sysNumericFormatTool::Automatic);
+   im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.SmallStress.Update(          unitMeasure::PSF,             0.001, 8, 3, sysNumericFormatTool::Fixed );
 
    return im;

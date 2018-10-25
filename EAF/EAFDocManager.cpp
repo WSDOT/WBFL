@@ -85,7 +85,7 @@ AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, OPENFILENAME& ofn
 			}
 		} while (iStart != -1);
 
-		filter.SetAt( filter.GetLength()-1, '\0' );;  // Replace the last ';' with a '\0'
+		filter.SetAt( filter.GetLength()-1, (TCHAR)'\0' );;  // Replace the last ';' with a '\0'
 		ofn.nMaxCustFilter++;
 	}
 }

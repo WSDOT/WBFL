@@ -667,9 +667,16 @@ Float64 lrfdRefinedLosses2005::GetAdjustedInitialAge() const
 {
    Float64 tiAdjusted = m_ti;
 
-   if ( m_CuringMethod == lrfdCreepCoefficient2005::Accelerated )
+   if ( m_CuringMethod == lrfdCreepCoefficient2005::Normal )
    {
-      tiAdjusted *= m_CuringMethodTimeAdjustmentFactor;
+      // NCHRP 496...
+      // ti = age of concrete, in days, when load is initially applied
+      // for accelerated curing, or the age minus 6 days for moist (normal) curing
+      tiAdjusted -= (m_CuringMethodTimeAdjustmentFactor-1);
+      if ( tiAdjusted < 0 )
+      {
+         tiAdjusted = 1;
+      }
    }
 
    return tiAdjusted;
@@ -883,7 +890,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
+   m_CreepInitialToDeck.SetMaturity(m_td-m_CreepInitialToDeck.GetAdjustedInitialAge());
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -976,7 +983,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepInitialToDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepInitialToDeck.SetFc(m_Fci);
    m_CreepInitialToDeck.SetInitialAge(m_ti);
-   m_CreepInitialToDeck.SetMaturity(m_td-m_ti);
+   m_CreepInitialToDeck.SetMaturity(m_td-m_CreepInitialToDeck.GetAdjustedInitialAge());
    m_CreepInitialToDeck.SetRelHumidity(m_H);
    m_CreepInitialToDeck.SetSurfaceArea(m_S);
    m_CreepInitialToDeck.SetVolume(m_V);
@@ -988,7 +995,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeckToFinal.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeckToFinal.SetFc(m_Fci);
    m_CreepDeckToFinal.SetInitialAge(m_td);
-   m_CreepDeckToFinal.SetMaturity(m_tf-m_td);
+   m_CreepDeckToFinal.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
    m_CreepDeckToFinal.SetRelHumidity(m_H);
    m_CreepDeckToFinal.SetSurfaceArea(m_S);
    m_CreepDeckToFinal.SetVolume(m_V);
@@ -1039,7 +1046,7 @@ void lrfdRefinedLosses2005::UpdateLongTermLosses() const
    m_CreepDeck.SetCuringMethodTimeAdjustmentFactor(m_CuringMethodTimeAdjustmentFactor);
    m_CreepDeck.SetFc(0.8*m_FcSlab); // deck is non-prestressed. Use 80% of strength. See NCHRP 496 (page 27 and 30)
    m_CreepDeck.SetInitialAge(::ConvertToSysUnits(1.0,unitMeasure::Day));
-   m_CreepDeck.SetMaturity(m_tf-m_td);
+   m_CreepDeck.SetMaturity(m_tf-m_CreepInitialToDeck.GetAdjustedInitialAge());
    m_CreepDeck.SetRelHumidity(m_H);
    m_CreepDeck.SetSurfaceArea(m_SSlab);
    m_CreepDeck.SetVolume(m_VSlab);
