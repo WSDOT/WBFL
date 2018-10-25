@@ -33,7 +33,114 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-IMPLEMENT_DYNCREATE(CDynamicSplitter, CSplitterWnd)
+// http://www.codeproject.com/Articles/256/CUsefulSplitterWnd-an-extension-to-CSplitterWnd
+
+IMPLEMENT_DYNCREATE(CUsefulSplitterWnd, CSplitterWnd)
+
+CUsefulSplitterWnd::CUsefulSplitterWnd()
+{
+	m_bBarLocked=FALSE;
+}
+
+CUsefulSplitterWnd::~CUsefulSplitterWnd()
+{
+}
+
+
+BEGIN_MESSAGE_MAP(CUsefulSplitterWnd, CSplitterWnd)
+	//{{AFX_MSG_MAP(CUsefulSplitterWnd)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+	ON_WM_SETCURSOR()
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+
+/////////////////////////////////////////////////////////////////////////////
+// CUsefulSplitterWnd message handlers
+
+void CUsefulSplitterWnd::OnLButtonDown(UINT nFlags, CPoint point) 
+{
+	// TODO: Add your message handler code here and/or call default
+	if (!m_bBarLocked)
+		CSplitterWnd::OnLButtonDown(nFlags, point);
+}
+
+void CUsefulSplitterWnd::OnMouseMove(UINT nFlags, CPoint point) 
+{
+	// TODO: Add your message handler code here and/or call default
+	if (!m_bBarLocked)
+		CSplitterWnd::OnMouseMove(nFlags, point);
+	else
+		CWnd::OnMouseMove(nFlags, point);
+}
+
+BOOL CUsefulSplitterWnd::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message) 
+{
+	// TODO: Add your message handler code here and/or call default
+	if (!m_bBarLocked)
+		return CWnd::OnSetCursor(pWnd, nHitTest, message);
+
+	return CSplitterWnd::OnSetCursor(pWnd, nHitTest, message);
+}
+
+BOOL CUsefulSplitterWnd::ReplaceView(int row, int col,CRuntimeClass * pViewClass/*,SIZE size*/)
+{
+  CCreateContext context;
+  BOOL bSetActive;
+	       
+   
+  if ((GetPane(row,col)->IsKindOf(pViewClass))==TRUE)
+       return FALSE;
+				    
+   
+   // Get pointer to CDocument object so that it can be used in the creation 
+   // process of the new view
+   CDocument * pDoc= ((CView *)GetPane(row,col))->GetDocument();
+   CView * pActiveView=GetParentFrame()->GetActiveView();
+   if (pActiveView==NULL || pActiveView==GetPane(row,col))
+      bSetActive=TRUE;
+   else
+      bSetActive=FALSE;
+
+    CRect wndRect;
+    ((CView *) GetPane(row,col))->GetWindowRect(&wndRect);
+    CSize size = wndRect.Size();
+
+    // set flag so that document will not be deleted when view is destroyed
+	pDoc->m_bAutoDelete=FALSE;    
+    // Delete existing view 
+   ((CView *) GetPane(row,col))->DestroyWindow();
+    // set flag back to default 
+    pDoc->m_bAutoDelete=TRUE;
+
+ 
+    // Create new view                      
+   
+   context.m_pNewViewClass=pViewClass;
+   context.m_pCurrentDoc=pDoc;
+   context.m_pNewDocTemplate=NULL;
+   context.m_pLastView=NULL;
+   context.m_pCurrentFrame=NULL;
+   
+   CreateView(row,col,pViewClass,size, &context);
+   
+   CView * pNewView= (CView *)GetPane(row,col);
+
+   pNewView->SendMessage(WM_INITIALUPDATE,0,0);
+   
+   if (bSetActive==TRUE)
+      GetParentFrame()->SetActiveView(pNewView);
+   
+   RecalcLayout(); 
+   GetPane(row,col)->SendMessage(WM_PAINT);
+   
+   return TRUE;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+IMPLEMENT_DYNCREATE(CDynamicSplitter, CUsefulSplitterWnd)
 
 CDynamicSplitter::CDynamicSplitter() :
 m_FirstPaneFraction(.50)
@@ -44,7 +151,7 @@ CDynamicSplitter::~CDynamicSplitter()
 {
 }
 
-BEGIN_MESSAGE_MAP(CDynamicSplitter, CSplitterWnd)
+BEGIN_MESSAGE_MAP(CDynamicSplitter, CUsefulSplitterWnd)
 	//{{AFX_MSG_MAP(CDynamicSplitter)
 	ON_WM_SIZE()
 	//}}AFX_MSG_MAP
@@ -92,7 +199,7 @@ void CDynamicSplitter::OnSize(UINT nType, int cx, int cy)
       }
    }
 
-   CSplitterWnd::OnSize(nType, cx, cy);
+   CUsefulSplitterWnd::OnSize(nType, cx, cy);
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -2690,6 +2690,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\RebarMaterialComboBox.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StaticSplitter.cpp"
 				>
 				<FileConfiguration
@@ -3754,6 +3758,10 @@
 			</File>
 			<File
 				RelativePath=".\QuestionDlg.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\MfcTools\RebarMaterialComboBox.h"
 				>
 			</File>
 			<File

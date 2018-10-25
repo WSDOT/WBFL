@@ -22,7 +22,7 @@
 
 #include "stdafx.h"
 #include "WbflUnitServer.h"
-#include <WBFLUnitServer\UnitServerUtils.h>
+#include <WBFLUnitServer\OpenBridgeML.h>
 
 UnitSystemType GetWBFLUnitSystemType(OpenBridgeML::Units::UnitSystemEnum ust)
 {

@@ -52,7 +52,7 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
    // this is a butt-ugly routine that was converted from fortran - excuse
    // the mess, but it works
    Float64 exponent, factor, scale_fac, test_scale, adjusted_min, adjusted_max; 
-   Int32  nmin, nmax, need;
+   CollectionIndexType  nmin, nmax, need;
    bool  is_defseg;
 
    const Float64  tol = 1.0e-09;
@@ -98,7 +98,9 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
       is_defseg = true;
    }
    else
+   {
       is_defseg = false;
+   }
 
 //     get down to business
 
@@ -107,11 +109,11 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
 
 //     test each scale and keep the largest one that works
 
-   for (Int32 i=0; i<nscale; i++)
+   for (CollectionIndexType i=0; i<nscale; i++)
    {
        test_scale = factor*supply[i];
-       nmin = (Int32)floor(niceMin/test_scale);
-       nmax = (Int32)ceil(niceMax/test_scale);
+       nmin = (CollectionIndexType)floor(niceMin/test_scale);
+       nmax = (CollectionIndexType)ceil(niceMax/test_scale);
        need = nmax - nmin;
 
        if (need <= numberOfSegments)
@@ -121,7 +123,9 @@ static void CalculateNiceRange(const Float64 originalMin, const Float64 original
            adjusted_max = nmax*scale_fac;
        }
        else
+       {
           continue;
+       }
    }
 
    // try to 'shrink' the outer bounds if the original max or min only

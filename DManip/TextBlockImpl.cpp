@@ -119,12 +119,18 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
    COLORREF bgColor = pDC->SetBkColor(m_BgColor);
    COLORREF fgColor = pDC->SetTextColor(m_FgColor);
 
+   Float64 textAngle = ::ToRadians(m_Font.lfEscapement/10.0);
    for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
       CSize size = pDC->GetOutputTextExtent(str);
       pDC->TextOut(lx,ly,str);
-      ly += size.cy;
+
+
+      int dx = size.cy*sin( textAngle );
+      int dy = size.cy*cos( textAngle );
+      lx += dx;
+      ly += dy;
    }
 
    pDC->SetBkMode(bkMode);

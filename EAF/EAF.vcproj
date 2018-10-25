@@ -1464,6 +1464,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\EAFBackgroundWnd.cpp"
+				>
+			</File>
+			<File
 				RelativePath="EAFBrokerDocument.cpp"
 				>
 				<FileConfiguration
@@ -2406,6 +2410,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\EAFUnits.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\EAFUtilities.cpp"
 				>
 			</File>
@@ -2635,6 +2643,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Include\EAF\EAFBackgroundWnd.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Include\EAF\EAFBrokerDocument.h"
 				>
 			</File>
@@ -2796,6 +2808,10 @@
 			</File>
 			<File
 				RelativePath="..\Include\EAF\EAFTypes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Include\EAF\EAFUnits.h"
 				>
 			</File>
 			<File

@@ -82,6 +82,7 @@ public:
 
    void SetHelpFileName(LPCTSTR lpszHelpFile);
 
+   CRecentFileList* GetRecentFileList();
    CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
    CEAFAppPluginManager* GetAppPluginManager();
    CEAFPluginCommandManager* GetPluginCommandManager();

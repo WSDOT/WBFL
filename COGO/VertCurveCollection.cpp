@@ -123,8 +123,13 @@ STDMETHODIMP CVertCurveCollection::Add(CogoObjectID id, IProfilePoint* pbg, IPro
    CHECK_IN(pbg);
    CHECK_IN(pvi);
    CHECK_IN(pfg);
-   if ( l1 <= 0.0 || l2 <= 0.0 )
+   if ( l1 < 0.0 || 
+        l2 < 0.0 || 
+        (IsZero(l1) && !IsZero(l2)) // if l1 == 0 then l2 must also == 0
+        )
+   {
       return E_INVALIDARG;
+   }
 
    if ( vc != NULL )
    {

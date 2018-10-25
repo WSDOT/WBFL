@@ -2339,6 +2339,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\LRFDPrestressFormula.cpp"
+				>
+			</File>
+			<File
 				RelativePath="LRFDSolver.cpp"
 				>
 				<FileConfiguration
@@ -2431,6 +2435,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\LRFDSolver2.cpp"
+				>
 			</File>
 			<File
 				RelativePath="ManderModel.cpp"
@@ -4866,7 +4874,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LRFDPrestressFormula.h"
+				>
+			</File>
+			<File
 				RelativePath="LRFDSolver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolver2.h"
 				>
 			</File>
 			<File
@@ -5027,7 +5043,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LRFDPrestressFormula.rgs"
+				>
+			</File>
+			<File
 				RelativePath="LRFDSolver.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolver2.rgs"
 				>
 			</File>
 			<File

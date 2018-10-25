@@ -32,6 +32,8 @@
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 
+#include <WBFLDManipTools.h>
+
 #include <DManipTools\DManipToolsTypes.h>
 
 #include <DManipTools\DataSet2d.h>

@@ -38,7 +38,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define CHECK_CURVE   HRESULT _hr = IsValid(); if ( FAILED(_hr) ) {return _hr;}
+// NOTE: When L1 and L2 are both zero, treat the vertical curve as a profile point at the PVI
+
+#define UPDATE_CURVE   HRESULT _hr = Update(); if ( FAILED(_hr) ) {return _hr;}
 
 /////////////////////////////////////////////////////////////////////////////
 // CVertCurve
@@ -54,18 +56,32 @@ HRESULT CVertCurve::FinalConstruct()
    m_Factory->CreateProfilePoint(&m_PVI);
    m_Factory->CreateProfilePoint(&m_PFG);
 
+   m_Factory->CreateProfilePoint(&m_BVC);
+   m_Factory->CreateProfilePoint(&m_EVC);
+
    MyAdvise(m_PBG,&m_dwPBG);
    MyAdvise(m_PVI,&m_dwPVI);
    MyAdvise(m_PFG,&m_dwPFG);
 
+   m_vbComputeFromGrades = VARIANT_FALSE;
+   m_bIsDirty = true;
+
    m_L1 = 0.0;
    m_L2 = 0.0;
+   m_g1 = 0.0;
+   m_g2 = 0.0;
 
    m_PBG->put_Station(CComVariant(0.00));
    m_PBG->put_Elevation(0.00);
 
+   m_BVC->put_Station(CComVariant(0.00));
+   m_BVC->put_Elevation(0.00);
+
    m_PVI->put_Station(CComVariant(m_L1));
    m_PVI->put_Elevation(0.00);
+
+   m_EVC->put_Station(CComVariant(m_L1 + m_L2));
+   m_EVC->put_Elevation(0.00);
    
    m_PFG->put_Station(CComVariant(m_L1 + m_L2));
    m_PFG->put_Elevation(0.00);
@@ -90,9 +106,29 @@ STDMETHODIMP CVertCurve::InterfaceSupportsErrorInfo(REFIID riid)
    for (int i=0; i < sizeof(arr) / sizeof(arr[0]); i++)
    {
       if (InlineIsEqualGUID(*arr[i],riid))
+      {
          return S_OK;
+      }
    }
    return S_FALSE;
+}
+
+STDMETHODIMP CVertCurve::get_ComputeFromGradePoints(VARIANT_BOOL* pvbCompute)
+{
+   CHECK_RETVAL(pvbCompute);
+   *pvbCompute = m_vbComputeFromGrades;
+   return S_OK;
+}
+
+STDMETHODIMP CVertCurve::put_ComputeFromGradePoints(VARIANT_BOOL vbCompute)
+{
+   if ( m_vbComputeFromGrades != vbCompute )
+   {
+      m_vbComputeFromGrades = vbCompute;
+      MakeDirty();
+      Fire_OnVertCurveChanged(this);
+   }
+   return S_OK;
 }
 
 STDMETHODIMP CVertCurve::get_Profile(IProfile* *pVal)
@@ -112,19 +148,21 @@ STDMETHODIMP CVertCurve::putref_Profile(IProfile* newVal)
    m_pProfile = newVal;
    m_Factory->putref_Profile(m_pProfile);
    m_PBG->putref_Profile(m_pProfile);
+   m_BVC->putref_Profile(m_pProfile);
    m_PVI->putref_Profile(m_pProfile);
+   m_EVC->putref_Profile(m_pProfile);
    m_PFG->putref_Profile(m_pProfile);
+   MakeDirty();
+
+   Fire_OnVertCurveChanged(this);
+
    return S_OK;
 }
 
 STDMETHODIMP CVertCurve::get_PBG(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   (*pVal) = m_PBG;
-   (*pVal)->AddRef();
-
-   return S_OK;
+   return m_PBG.CopyTo(pVal);
 }
 
 STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
@@ -133,13 +171,17 @@ STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
 
    HRESULT hr = ValidateStation(newVal);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    MyUnadvise(m_PBG,m_dwPBG);
    m_PBG->putref_Profile(NULL);
    m_PBG = newVal;
    m_PBG->putref_Profile(m_pProfile);
    MyAdvise(m_PBG,&m_dwPBG);
+
+   MakeDirty();
 
    Fire_OnVertCurveChanged(this);
 
@@ -149,11 +191,11 @@ STDMETHODIMP CVertCurve::putref_PBG(IProfilePoint *newVal)
 STDMETHODIMP CVertCurve::get_PVI(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   (*pVal) = m_PVI;
-   (*pVal)->AddRef();
-
-   return S_OK;
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      UPDATE_CURVE;
+   }
+   return m_PVI.CopyTo(pVal);
 }
 
 STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
@@ -162,7 +204,9 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
 
    HRESULT hr = ValidateStation(newVal);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    MyUnadvise(m_PVI,m_dwPVI);
    m_PVI->putref_Profile(NULL);
@@ -170,6 +214,7 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
    m_PVI->putref_Profile(m_pProfile);
    MyAdvise(m_PVI,&m_dwPVI);
 
+   MakeDirty();
    Fire_OnVertCurveChanged(this);
 
    return S_OK;
@@ -178,11 +223,7 @@ STDMETHODIMP CVertCurve::putref_PVI(IProfilePoint *newVal)
 STDMETHODIMP CVertCurve::get_PFG(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   (*pVal) = m_PFG;
-   (*pVal)->AddRef();
-
-   return S_OK;
+   return m_PFG.CopyTo(pVal);
 }
 
 STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
@@ -191,13 +232,17 @@ STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
 
    HRESULT hr = ValidateStation(newVal);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    MyUnadvise(m_PFG,m_dwPFG);
    m_PFG->putref_Profile(NULL);
    m_PFG = newVal;
    m_PFG->putref_Profile(m_pProfile);
    MyAdvise(m_PFG,&m_dwPFG);
+
+   MakeDirty();
 
    Fire_OnVertCurveChanged(this);
 
@@ -207,6 +252,7 @@ STDMETHODIMP CVertCurve::putref_PFG(IProfilePoint *newVal)
 STDMETHODIMP CVertCurve::get_L1(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
+   UPDATE_CURVE;
    (*pVal) = m_L1;
    return S_OK;
 }
@@ -214,10 +260,17 @@ STDMETHODIMP CVertCurve::get_L1(Float64* pVal)
 STDMETHODIMP CVertCurve::put_L1(Float64 newVal)
 {
    if ( newVal < 0.0 )
+   {
       return E_INVALIDARG;
+   }
 
-   m_L1 = newVal;
-   Fire_OnVertCurveChanged(this);
+   if ( !IsEqual(m_L1,newVal) )
+   {
+      m_L1 = newVal;
+      MakeDirty();
+      Fire_OnVertCurveChanged(this);
+   }
+
    return S_OK;
 }
 
@@ -225,6 +278,7 @@ STDMETHODIMP CVertCurve::put_L1(Float64 newVal)
 STDMETHODIMP CVertCurve::get_L2(Float64* pVal)
 {
    CHECK_RETVAL(pVal);
+   UPDATE_CURVE;
    (*pVal) = m_L2;
    return S_OK;
 }
@@ -232,76 +286,49 @@ STDMETHODIMP CVertCurve::get_L2(Float64* pVal)
 STDMETHODIMP CVertCurve::put_L2(Float64 newVal)
 {
    if ( newVal < 0.0 )
+   {
       return E_INVALIDARG;
+   }
 
-   m_L2 = newVal;
-   Fire_OnVertCurveChanged(this);
+   if ( !IsEqual(m_L2,newVal) )
+   {
+      m_L2 = newVal;
+      MakeDirty();
+      Fire_OnVertCurveChanged(this);
+   }
    return S_OK;
 }
 
 STDMETHODIMP CVertCurve::get_BVC(IProfilePoint* *pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   Float64 g1;
-   get_EntryGrade(&g1);
-
-   CComPtr<IStation> objPVI;
-   Float64 elevPVI;
-   m_PVI->get_Station(&objPVI);
-   m_PVI->get_Elevation(&elevPVI);
-
-   Float64 staPVI = cogoUtil::GetNormalizedStationValue(m_pProfile,objPVI);
-
-   Float64 staBVC;
-   Float64 elevBVC;
-
-   staBVC = staPVI - m_L1;
-   elevBVC = elevPVI - g1*m_L1;
-
-   m_Factory->CreateProfilePoint(pVal);
-   CComPtr<IStation> objBVC;
-   cogoUtil::CreateStation(m_pProfile,staBVC,&objBVC);
-   (*pVal)->put_Station(CComVariant(objBVC));
-   (*pVal)->put_Elevation(elevBVC);
-
-   return S_OK;
+   UPDATE_CURVE;
+   return m_BVC.CopyTo(pVal);
 }
 
 STDMETHODIMP CVertCurve::get_EVC(IProfilePoint* *pVal)
 {
    CHECK_RETOBJ(pVal);
-
-   Float64 g2;
-   get_ExitGrade(&g2);
-
-   CComPtr<IStation> objPVI;
-   Float64 elevPVI;
-   m_PVI->get_Station(&objPVI);
-   m_PVI->get_Elevation(&elevPVI);
-
-   Float64 staPVI = cogoUtil::GetNormalizedStationValue(m_pProfile,objPVI);
-
-   Float64 staEVC, elevEVC;
-
-   staEVC = staPVI + m_L2;
-   elevEVC = elevPVI + g2*m_L2;
-
-   m_Factory->CreateProfilePoint(pVal);
-   CComPtr<IStation> objEVC;
-   cogoUtil::CreateStation(m_pProfile,staEVC,&objEVC);
-   (*pVal)->put_Station(CComVariant(objEVC));
-   (*pVal)->put_Elevation(elevEVC);
-
-   return S_OK;
+   UPDATE_CURVE;
+   return m_EVC.CopyTo(pVal);
 }
 
 STDMETHODIMP CVertCurve::get_Length(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   CHECK_CURVE;
-
+   UPDATE_CURVE;
    (*pVal) = m_L1 + m_L2;
+   return S_OK;
+}
+
+STDMETHODIMP CVertCurve::put_EntryGrade(Float64 newVal)
+{
+   if ( !IsEqual(m_g1,newVal) )
+   {
+      m_g1 = newVal;
+      MakeDirty();
+      Fire_OnVertCurveChanged(this);
+   }
 
    return S_OK;
 }
@@ -309,20 +336,19 @@ STDMETHODIMP CVertCurve::get_Length(Float64 *pVal)
 STDMETHODIMP CVertCurve::get_EntryGrade(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   CHECK_CURVE;
+   UPDATE_CURVE;
+   *pVal = m_g1;
+   return S_OK;
+}
 
-   CComPtr<IStation> staPBG, staPVI;
-   m_PBG->get_Station(&staPBG);
-   m_PVI->get_Station(&staPVI);
-
-   Float64 elePBG, elePVI;
-   m_PBG->get_Elevation(&elePBG);
-   m_PVI->get_Elevation(&elePVI);
-
-   Float64 dx = cogoUtil::Distance(m_pProfile,staPBG,staPVI);
-   Float64 dy = elePVI - elePBG;
-
-   *pVal = dy/dx;
+STDMETHODIMP CVertCurve::put_ExitGrade(Float64 newVal)
+{
+   if ( !IsEqual(m_g2,newVal) )
+   {
+      m_g2 = newVal;
+      MakeDirty();
+      Fire_OnVertCurveChanged(this);
+   }
 
    return S_OK;
 }
@@ -330,28 +356,15 @@ STDMETHODIMP CVertCurve::get_EntryGrade(Float64 *pVal)
 STDMETHODIMP CVertCurve::get_ExitGrade(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   CHECK_CURVE;
-
-   CComPtr<IStation> staPVI, staPFG;
-   m_PVI->get_Station(&staPVI);
-   m_PFG->get_Station(&staPFG);
-
-   Float64 elePVI, elePFG;
-   m_PVI->get_Elevation(&elePVI);
-   m_PFG->get_Elevation(&elePFG);
-
-   Float64 dx = cogoUtil::Distance(m_pProfile,staPVI,staPFG);
-   Float64 dy = elePFG - elePVI;
-
-   *pVal = dy/dx;
-
+   UPDATE_CURVE;
+   *pVal = m_g2;
    return S_OK;
 }
 
 STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
-   CHECK_CURVE;
+   UPDATE_CURVE;
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -452,7 +465,7 @@ STDMETHODIMP CVertCurve::get_LowPoint(IProfilePoint **pVal)
 STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
 {
    CHECK_RETOBJ(pVal);
-   CHECK_CURVE;
+   UPDATE_CURVE;
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -554,12 +567,14 @@ STDMETHODIMP CVertCurve::get_HighPoint(IProfilePoint **pVal)
 STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
 {
    CHECK_RETVAL(elev);
-   CHECK_CURVE;
+   UPDATE_CURVE;
 
    CComPtr<IStation> sta;
    HRESULT hr = ValidateStation(varStation,&sta);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -645,12 +660,14 @@ STDMETHODIMP CVertCurve::Elevation(VARIANT varStation, Float64 *elev)
 STDMETHODIMP CVertCurve::Grade(VARIANT varStation, Float64 *grade)
 {
    CHECK_RETVAL(grade);
-   CHECK_CURVE;
+   UPDATE_CURVE;
 
    CComPtr<IStation> sta;
    HRESULT hr = ValidateStation(varStation,&sta);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CComPtr<IProfilePoint> bvc;
    get_BVC(&bvc);
@@ -811,6 +828,7 @@ STDMETHODIMP CVertCurve::get_E(Float64 t,Float64* e)
 STDMETHODIMP CVertCurve::Clone(IVertCurve* *clone)
 {
    CHECK_RETOBJ(clone);
+   UPDATE_CURVE;
 
    CComObject<CVertCurve>* pClone;
    CComObject<CVertCurve>::CreateInstance(&pClone);
@@ -818,20 +836,37 @@ STDMETHODIMP CVertCurve::Clone(IVertCurve* *clone)
    (*clone) = pClone;
    (*clone)->AddRef();
 
-   CComPtr<IProfilePoint> pfgClone;
-   m_PFG->Clone(&pfgClone);
-   (*clone)->putref_PFG(pfgClone);
+   (*clone)->put_ComputeFromGradePoints(m_vbComputeFromGrades);
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      CComPtr<IProfilePoint> pfgClone;
+      m_PFG->Clone(&pfgClone);
+      (*clone)->putref_PFG(pfgClone);
 
-   CComPtr<IProfilePoint> pviClone;
-   m_PVI->Clone(&pviClone);
-   (*clone)->putref_PVI(pviClone);
+      CComPtr<IProfilePoint> pbgClone;
+      m_PBG->Clone(&pbgClone);
+      (*clone)->putref_PBG(pbgClone);
 
-   CComPtr<IProfilePoint> pbgClone;
-   m_PBG->Clone(&pbgClone);
-   (*clone)->putref_PBG(pbgClone);
+      (*clone)->put_EntryGrade(m_g1);
+      (*clone)->put_ExitGrade(m_g2);
+   }
+   else
+   {
+      CComPtr<IProfilePoint> pfgClone;
+      m_PFG->Clone(&pfgClone);
+      (*clone)->putref_PFG(pfgClone);
 
-   (*clone)->put_L1(m_L1);
-   (*clone)->put_L2(m_L2);
+      CComPtr<IProfilePoint> pviClone;
+      m_PVI->Clone(&pviClone);
+      (*clone)->putref_PVI(pviClone);
+
+      CComPtr<IProfilePoint> pbgClone;
+      m_PBG->Clone(&pbgClone);
+      (*clone)->putref_PBG(pbgClone);
+
+      (*clone)->put_L1(m_L1);
+      (*clone)->put_L2(m_L2);
+   }
 
    // These items aren't cloned
    (*clone)->putref_ProfilePointFactory(m_Factory);
@@ -843,13 +878,26 @@ STDMETHODIMP CVertCurve::Clone(IVertCurve* *clone)
 // IStructuredStorage2
 STDMETHODIMP CVertCurve::Save(IStructuredSave2* pSave)
 {
-   pSave->BeginUnit(CComBSTR("VertCurve"),1.0);
-   pSave->put_Property(CComBSTR("PBG"),CComVariant(m_PBG));
-   pSave->put_Property(CComBSTR("PVI"),CComVariant(m_PVI));
-   pSave->put_Property(CComBSTR("PFG"),CComVariant(m_PFG));
-   pSave->put_Property(CComBSTR("L1"),CComVariant(m_L1));
-   pSave->put_Property(CComBSTR("L2"),CComVariant(m_L2));
+   pSave->BeginUnit(CComBSTR("VertCurve"),2.0);
+   pSave->put_Property(CComBSTR("ComputeFromGrades"),CComVariant(m_vbComputeFromGrades));
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      pSave->put_Property(CComBSTR("PBG"),CComVariant(m_PBG));
+      pSave->put_Property(CComBSTR("PFG"),CComVariant(m_PFG));
+      pSave->put_Property(CComBSTR("G1"),CComVariant(m_g1));
+      pSave->put_Property(CComBSTR("G2"),CComVariant(m_g2));
+   }
+   else
+   {
+      pSave->put_Property(CComBSTR("PBG"),CComVariant(m_PBG));
+      pSave->put_Property(CComBSTR("PVI"),CComVariant(m_PVI));
+      pSave->put_Property(CComBSTR("PFG"),CComVariant(m_PFG));
+      pSave->put_Property(CComBSTR("L1"),CComVariant(m_L1));
+      pSave->put_Property(CComBSTR("L2"),CComVariant(m_L2));
+   }
+
    pSave->put_Property(CComBSTR("ProfilePointFactory"),CComVariant(m_Factory));
+
    pSave->EndUnit();
 
    return S_OK;
@@ -860,26 +908,60 @@ STDMETHODIMP CVertCurve::Load(IStructuredLoad2* pLoad)
    CComVariant var;
    pLoad->BeginUnit(CComBSTR("VertCurve"));
 
-   pLoad->get_Property(CComBSTR("PBG"),&var);
-   CComPtr<IProfilePoint> pbg;
-   _CopyVariantToInterface<IProfilePoint>::copy(&pbg,&var);
-   putref_PBG(pbg);
+   Float64 version;
+   pLoad->get_Version(&version);
 
-   pLoad->get_Property(CComBSTR("PVI"),&var);
-   CComPtr<IProfilePoint> pvi;
-   _CopyVariantToInterface<IProfilePoint>::copy(&pvi,&var);
-   putref_PVI(pvi);
+   if ( version < 2 )
+   {
+      m_vbComputeFromGrades = VARIANT_FALSE;
+   }
+   else
+   {
+      pLoad->get_Property(CComBSTR("ComputeFromGrades"),&var);
+      m_vbComputeFromGrades = var.boolVal;
+   }
 
-   pLoad->get_Property(CComBSTR("PFG"),&var);
-   CComPtr<IProfilePoint> pfg;
-   _CopyVariantToInterface<IProfilePoint>::copy(&pfg,&var);
-   putref_PFG(pfg);
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      pLoad->get_Property(CComBSTR("PBG"),&var);
+      CComPtr<IProfilePoint> pbg;
+      _CopyVariantToInterface<IProfilePoint>::copy(&pbg,&var);
+      putref_PBG(pbg);
 
-   pLoad->get_Property(CComBSTR("L1"),&var);
-   m_L1 = var.dblVal;
+      pLoad->get_Property(CComBSTR("PFG"),&var);
+      CComPtr<IProfilePoint> pfg;
+      _CopyVariantToInterface<IProfilePoint>::copy(&pfg,&var);
+      putref_PFG(pfg);
 
-   pLoad->get_Property(CComBSTR("L2"),&var);
-   m_L2 = var.dblVal;
+      pLoad->get_Property(CComBSTR("G1"),&var);
+      m_g1 = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("G2"),&var);
+      m_g2 = var.dblVal;
+   }
+   else
+   {
+      pLoad->get_Property(CComBSTR("PBG"),&var);
+      CComPtr<IProfilePoint> pbg;
+      _CopyVariantToInterface<IProfilePoint>::copy(&pbg,&var);
+      putref_PBG(pbg);
+
+      pLoad->get_Property(CComBSTR("PVI"),&var);
+      CComPtr<IProfilePoint> pvi;
+      _CopyVariantToInterface<IProfilePoint>::copy(&pvi,&var);
+      putref_PVI(pvi);
+
+      pLoad->get_Property(CComBSTR("PFG"),&var);
+      CComPtr<IProfilePoint> pfg;
+      _CopyVariantToInterface<IProfilePoint>::copy(&pfg,&var);
+      putref_PFG(pfg);
+
+      pLoad->get_Property(CComBSTR("L1"),&var);
+      m_L1 = var.dblVal;
+
+      pLoad->get_Property(CComBSTR("L2"),&var);
+      m_L2 = var.dblVal;
+   }
 
    pLoad->get_Property(CComBSTR("ProfilePointFactory"),&var);
    CComPtr<IProfilePointFactory> factory;
@@ -897,6 +979,7 @@ STDMETHODIMP CVertCurve::Load(IStructuredLoad2* pLoad)
 STDMETHODIMP CVertCurve::OnProfilePointChanged(IProfilePoint* pp)
 {
 //   ::MessageBox(NULL,"CVertCurve::OnProfilePointChanged","Event",MB_OK);
+   MakeDirty();
    Fire_OnVertCurveChanged(this);
    return S_OK;
 }
@@ -907,34 +990,215 @@ void CVertCurve::MyAdvise(IProfilePoint* pp,DWORD* pdwCookie)
 {
    HRESULT hr = AtlAdvise(pp,GetUnknown(),IID_IProfilePointEvents,pdwCookie);
    if ( SUCCEEDED(hr) )
+   {
       InternalRelease();
+   }
    else
+   {
       *pdwCookie = 0;
+   }
 }
 
 void CVertCurve::MyUnadvise(IProfilePoint* pp,DWORD dwCookie)
 {
    if ( dwCookie != 0 )
+   {
       InternalAddRef();
+   }
 
    AtlUnadvise(pp,IID_IProfilePointEvents,dwCookie);
 }
 
+void CVertCurve::MakeDirty()
+{
+   m_bIsDirty = true;
+}
+
+HRESULT CVertCurve::Update()
+{
+   if ( !m_bIsDirty )
+   {
+      return S_OK;
+   }
+
+   HRESULT hr = IsValid();
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      // Need to compute L1, L2, and PVI
+
+      // BVC = PBG and EVC = PFG
+      CComPtr<IStation> staPBG, staPFG;
+      m_PBG->get_Station(&staPBG);
+      m_PFG->get_Station(&staPFG);
+
+      Float64 elevPBG, elevPFG;
+      m_PBG->get_Elevation(&elevPBG);
+      m_PFG->get_Elevation(&elevPFG);
+
+      CComPtr<IStation> bvcStation, evcStation;
+      staPBG->Clone(&bvcStation);
+      staPFG->Clone(&evcStation);
+
+      Float64 elevBVC = elevPBG;
+      Float64 elevEVC = elevPFG;
+
+      m_BVC->put_Station(CComVariant(bvcStation));
+      m_BVC->put_Elevation(elevBVC);
+
+      m_EVC->put_Station(CComVariant(evcStation));
+      m_EVC->put_Elevation(elevEVC);
+
+
+      Float64 staBVC = cogoUtil::GetNormalizedStationValue(m_pProfile,bvcStation);
+      Float64 staEVC = cogoUtil::GetNormalizedStationValue(m_pProfile,evcStation);
+
+      Float64 staPVI;
+      if ( IsZero(m_g2-m_g1) )
+      {
+         // entry and exit grades are the same
+         staPVI = (staBVC + staEVC)/2;
+      }
+      else
+      {
+         staPVI = ((elevBVC - elevEVC) + m_g2*(staEVC - staBVC))/(m_g2-m_g1) + staBVC;
+      }
+      m_L1 = staPVI - staBVC;
+      m_L2 = staEVC - staPVI;
+      
+      // we need to be concerned with station equations so we just can't add m_L1 to
+      // the BVC station... make PVI be a copy of BVC and then use the IncrementStationBy
+      // method to compute the station of the PVI taking into account station equations
+      CComPtr<IStation> station;
+      staPBG->Clone(&station); // staPBG is at BVC
+      cogoUtil::IncrementStationBy(m_pProfile,station,m_L1);
+      m_PVI->put_Station(CComVariant(station));
+
+      // compute the PVI elevation
+      Float64 elevPVI = elevBVC + m_L1*m_g1;
+      m_PVI->put_Elevation(elevPVI);
+
+      if ( IsEqual(m_L1,m_L2) )
+      {
+         // symmetric curve
+         m_L1 = m_L1 + m_L2;
+         m_L2 = 0;
+      }
+   }
+   else
+   {
+      // need to compute BVC, EVC, g1, and g2
+
+      // Compute g1 and g2
+      CComPtr<IStation> staPBG, staPVI, staPFG;
+      m_PBG->get_Station(&staPBG);
+      m_PVI->get_Station(&staPVI);
+      m_PFG->get_Station(&staPFG);
+
+      Float64 elevPBG, elevPVI, elevPFG;
+      m_PBG->get_Elevation(&elevPBG);
+      m_PVI->get_Elevation(&elevPVI);
+      m_PFG->get_Elevation(&elevPFG);
+
+      Float64 dx = cogoUtil::Distance(m_pProfile,staPBG,staPVI);
+      Float64 dy = elevPVI - elevPBG;
+
+      m_g1 = dy/dx;
+
+      dx = cogoUtil::Distance(m_pProfile,staPVI,staPFG);
+      dy = elevPFG - elevPVI;
+
+      m_g2 = dy/dx;
+
+      // Compute BVC and EVC
+      Float64 staPVIValue = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);
+
+      Float64 l1 = m_L1;
+      Float64 l2 = m_L2;
+      if ( IsZero(m_L2) )
+      {
+         // curve is symmetric with m_L1 being the total length
+         l1 /= 2;
+         l2 = l1;
+      }
+
+      Float64 staBVC  = staPVIValue - l1;
+      Float64 elevBVC = elevPVI - m_g1*l1;
+
+      CComPtr<IStation> objBVC;
+      cogoUtil::CreateStation(m_pProfile,staBVC,&objBVC);
+      m_BVC->put_Station(CComVariant(objBVC));
+      m_BVC->put_Elevation(elevBVC);
+
+      Float64 staEVC = staPVIValue + l2;
+      Float64 elevEVC = elevPVI + m_g2*l2;
+
+      CComPtr<IStation> objEVC;
+      cogoUtil::CreateStation(m_pProfile,staEVC,&objEVC);
+      m_EVC->put_Station(CComVariant(objEVC));
+      m_EVC->put_Elevation(elevEVC);
+   }
+
+   m_bIsDirty = false;
+
+   return S_OK;
+}
+
 HRESULT CVertCurve::IsValid()
 {
-   CComPtr<IStation> staPBG, staPVI, staPFG;
-   m_PBG->get_Station(&staPBG);
-   m_PVI->get_Station(&staPVI);
-   m_PFG->get_Station(&staPFG);
+   if ( m_vbComputeFromGrades == VARIANT_TRUE )
+   {
+      if ( IsEqual(m_g1,m_g2) )
+      {
+         CComPtr<IStation> staPBG, staPFG;
+         m_PBG->get_Station(&staPBG);
+         m_PFG->get_Station(&staPFG);
 
-   Float64 pbg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPBG);
-   Float64 pvi = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);
-   Float64 pfg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPFG);
+         Float64 pbg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPBG);
+         Float64 pfg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPFG);
 
-   if ( pbg < pvi && pvi < pfg )
-      return S_OK;
+         Float64 elevPBG, elevPFG;
+         m_PBG->get_Elevation(&elevPBG);
+         m_PFG->get_Elevation(&elevPFG);
 
-   return Error(IDS_E_VERTCURVEPOINTS,IID_IVertCurve,COGO_E_VERTCURVEPOINTS);
+         Float64 elev = elevPBG + m_g1*(pfg-pbg);
+         if ( !IsEqual(elevPFG,elev) )
+         {
+            // Grade lines never intersect... g1 and g2 are the same so the
+            // grades are parallel lines. The line going from PBG must
+            // pass through PFG otherwise the profile is discontinuous and invalid
+            return Error(IDS_E_VERTCURVEPOINTS,IID_IVertCurve,COGO_E_VERTCURVEPOINTS);
+         }
+      }
+   }
+   else
+   {
+      if ( IsZero(m_L1) && !IsZero(m_L2) )
+      {
+         // L2 must be zero if L1 is zero
+         return Error(IDS_E_VERTCURVEPOINTS,IID_IVertCurve,COGO_E_VERTCURVEPOINTS);
+      }
+
+      CComPtr<IStation> staPBG, staPVI, staPFG;
+      m_PBG->get_Station(&staPBG);
+      m_PVI->get_Station(&staPVI);
+      m_PFG->get_Station(&staPFG);
+
+      Float64 pbg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPBG);
+      Float64 pvi = cogoUtil::GetNormalizedStationValue(m_pProfile,staPVI);
+      Float64 pfg = cogoUtil::GetNormalizedStationValue(m_pProfile,staPFG);
+
+      if ( pvi < pbg || pfg < pvi )
+      {
+         return Error(IDS_E_VERTCURVEPOINTS,IID_IVertCurve,COGO_E_VERTCURVEPOINTS);
+      }
+   }
+
+   return S_OK;
 }
 
 void CVertCurve::TransitionPoint(IStation** sta,Float64* elev,Float64* grade)
@@ -967,18 +1231,26 @@ void CVertCurve::TransitionPoint(IStation** sta,Float64* elev,Float64* grade)
 
    Float64 h; // distance from PVI to curve
    if ( IsZero(m_L1+m_L2) )
+   {
       h = 0;
+   }
    else
+   {
       h = m_L1*m_L2*(g2 - g1)/(2*(m_L1+m_L2)); // positive if sag curve
+   }
 
    *elev = elevPVI + h;
    *sta  = staPVI;
    (*sta)->AddRef();
 
    if ( IsZero(m_L1) )
+   {
       *grade = g1;
+   }
    else
+   {
       *grade = (*elev - elevPVI1)*2/m_L1;
+   }
 }
 
 HRESULT CVertCurve::ValidateStation(IProfilePoint* profilePoint)
@@ -993,14 +1265,18 @@ HRESULT CVertCurve::ValidateStation(VARIANT varStation,IStation** station)
 {
    HRESULT hr = cogoUtil::StationFromVariant(varStation,false,station);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    if ( m_pProfile == NULL )
    {
       ZoneIndexType staEqnZoneIdx;
       (*station)->get_StationZoneIndex(&staEqnZoneIdx);
       if ( staEqnZoneIdx != INVALID_INDEX )
+      {
          return E_INVALIDARG; // station must be normalized
+      }
    }
 
    return S_OK;

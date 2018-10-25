@@ -422,18 +422,18 @@ void CTestDirection::Test()
    TRY_TEST(ewDir,ewEast);
 
    // Test FromAzimuth
-   TRY_TEST(dir->FromAzimuth(370,15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(360,15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(-360,15,22.5), COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(-370,15,22.5), COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,60,22.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,90,22.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,-15,22.5),  COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,15,60.0),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,15,90.5),   COGO_E_BADAZIMUTH);
-   TRY_TEST(dir->FromAzimuth(45,15,-22.5),  COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(370,15,22.5),  COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(360,15,22.5),  COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(-360,15,22.5), COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(-370,15,22.5), COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,60,22.5),   COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,90,22.5),   COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,-15,22.5),  COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,15,60.0),   COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,15,90.5),   COGO_E_BADAZIMUTH);
+   TRY_TEST(dir->FromAzimuthEx(45,15,-22.5),  COGO_E_BADAZIMUTH);
 
-   TRY_TEST(dir->FromAzimuth(45,15,22.5),S_OK);
+   TRY_TEST(dir->FromAzimuthEx(45,15,22.5),S_OK);
    dir->get_NSDirection(&nsDir);
    dir->get_Degree(&deg);
    dir->get_Minute(&min);
@@ -445,7 +445,7 @@ void CTestDirection::Test()
    TRY_TEST(IsEqual(sec,22.5,0.1),true);
    TRY_TEST(ewDir,ewEast);
 
-   TRY_TEST(dir->FromAzimuth(-45,15,22.5),S_OK);
+   TRY_TEST(dir->FromAzimuthEx(-45,15,22.5),S_OK);
    dir->get_NSDirection(&nsDir);
    dir->get_Degree(&deg);
    dir->get_Minute(&min);

@@ -167,6 +167,13 @@
 #define IDH_ILFDSolver_UnitMode           851
 #define IDH_ILFDSolver_IsCflangeOverhangOnly 852
 
+#define IDH_ILRFDSolver2                  860
+#define IDH_ILRFDSolver2_Tolerance          861
+#define IDH_ILRFDSolver2_StrandModel        862
+#define IDH_ILRFDSolver2_RebarModel         863
+#define IDH_ILRFDSolver2_UnitMode           864
+#define IDH_ILRFDSolver2_IsCflangeOverhangOnly 865
+
 #define IDH_IStressStrain                 900
 #define IDH_IStressStrain_ComputeStress   901
 #define	IDH_IStressStrain_StrainLimits	  902

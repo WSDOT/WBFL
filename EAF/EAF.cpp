@@ -28,6 +28,7 @@
 #include <afxdllx.h>
 
 #include "BackDoor.h"
+#include <WBFLUnitServer.h>
 
 #include <initguid.h>
 #include <EAF\EAFAppPlugin.h>
@@ -42,6 +43,7 @@
 
 #include <WBFLCore_i.c>
 #include <WBFLTools_i.c>
+#include <WBFLUnitServer_i.c>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

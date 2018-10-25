@@ -134,6 +134,9 @@ public:
    static Float64 GetNormalizedStationValue(IProfile* pProfile,IStation* pSta);
    static Float64 GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSta);
    static Float64 GetNormalizedStationValue(IStationEquationCollection* pEquations,IStation* pSta);
+   static void IncrementStationBy(IProfile* pProfile,IStation* pStation,Float64 dist);
+   static void IncrementStationBy(IAlignment* pAlignment,IStation* pStation,Float64 dist);
+   static void IncrementStationBy(IStationEquationCollection* pEquations,IStation* pStation,Float64 dist);
 
    static void CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta);
    static void CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta);

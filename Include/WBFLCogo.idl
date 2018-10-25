@@ -220,6 +220,7 @@ library WBFLCogo
     ]
     interface IDirection : IUnknown
     {
+        [propget, helpstring("property Azimuth"),helpcontext(IDH_Direction_Azimuth)] HRESULT Azimuth([out, retval] Float64 *pVal);
         [propget, helpstring("property Value"),helpcontext(IDH_Direction_Value)] HRESULT Value([out, retval] Float64 *pVal);
         [propput, helpstring("property Value"),helpcontext(IDH_Direction_Value)] HRESULT Value([in] Float64 newVal);
         [propget, helpstring("property NSDirection"),helpcontext(IDH_Direction_NSDirection)] HRESULT NSDirection([out, retval] NSDirectionType *pVal);
@@ -236,7 +237,8 @@ library WBFLCogo
         [helpstring("method IncrementBy"),helpcontext(IDH_Direction_IncrementBy)] HRESULT IncrementBy([in] VARIANT varAngle);
         [helpstring("method FromString"),helpcontext(IDH_Direction_FromString)] HRESULT FromString([in] BSTR bstrDir);
         [helpstring("method FromDMS"),helpcontext(IDH_Direction_FromDMS)] HRESULT FromDMS([in] NSDirectionType ns,[in] long Degree,[in] long Minute, [in] Float64 Second, [in] EWDirectionType ew);
-        [helpstring("method FromAzimuth"),helpcontext(IDH_Direction_FromAzimuth)] HRESULT FromAzimuth([in] long Degree, [in] long Minute, [in] Float64 Second);
+        [helpstring("method FromAzimuth"),helpcontext(IDH_Direction_FromAzimuth)] HRESULT FromAzimuth([in] Float64 azimuth);
+        [helpstring("method FromAzimuth"),helpcontext(IDH_Direction_FromAzimuth)] HRESULT FromAzimuthEx([in] long Degree, [in] long Minute, [in] Float64 Second);
         [helpstring("method FromVariant")] HRESULT FromVariant([in] VARIANT varDirection);
 		  [helpstring("method AngleBetween"),helpcontext(IDH_Direction_AngleBetween)] HRESULT AngleBetween([in] IDirection* dir,[out,retval]IAngle** pVal);
         [helpstring("method Clone"),helpcontext(IDH_Direction_Clone)] HRESULT Clone([out,retval] IDirection* *clone);
@@ -765,6 +767,8 @@ library WBFLCogo
    ]
    interface IVertCurve : IUnknown
    {
+      [propget, helpstring("property ComputeFromGradePoints")] HRESULT ComputeFromGradePoints([out,retval]VARIANT_BOOL* pvbCompute);
+      [propput, helpstring("property ComputeFromGradePoints")] HRESULT ComputeFromGradePoints([in]VARIANT_BOOL vbCompute);
        [propget, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([out, retval] IProfile* *pVal);
        [propputref, helpstring("property Profile"), helpcontext(IDH_VertCurve_Profile)] HRESULT Profile([in] IProfile* newVal);
        [propget, helpstring("property PBG"), helpcontext(IDH_VertCurve_PBG)] HRESULT PBG([out, retval] IProfilePoint* *pVal);
@@ -780,7 +784,9 @@ library WBFLCogo
        [propget, helpstring("property BVC"), helpcontext(IDH_VertCurve_BVC)] HRESULT BVC([out, retval] IProfilePoint* *pVal);
        [propget, helpstring("property EVC"), helpcontext(IDH_VertCurve_EVC)] HRESULT EVC([out, retval] IProfilePoint* *pVal);
        [propget, helpstring("property Length"), helpcontext(IDH_VertCurve_Length)] HRESULT Length([out, retval] Float64 *pVal);
+       [propput, helpstring("property EntryGrade"), helpcontext(IDH_VertCurve_EntryGrade)] HRESULT EntryGrade([in] Float64 pVal);
        [propget, helpstring("property EntryGrade"), helpcontext(IDH_VertCurve_EntryGrade)] HRESULT EntryGrade([out, retval] Float64 *pVal);
+       [propput, helpstring("property ExitGrade"), helpcontext(IDH_VertCurve_ExitGrade)] HRESULT ExitGrade([in] Float64 pVal);
        [propget, helpstring("property ExitGrade"), helpcontext(IDH_VertCurve_ExitGrade)] HRESULT ExitGrade([out, retval] Float64 *pVal);
        [propget, helpstring("property LowPoint"), helpcontext(IDH_VertCurve_LowPoint)] HRESULT LowPoint([out, retval] IProfilePoint* *pVal);
        [propget, helpstring("property HighPoint"), helpcontext(IDH_VertCurve_HighPoint)] HRESULT HighPoint([out, retval] IProfilePoint* *pVal);

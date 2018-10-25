@@ -95,6 +95,12 @@ private:
    UINT m_nCommands; // number of commands reserved for this command manager
    UINT m_nNextID;
 
+   // returns true if the command id supplied by a plugin is in the
+   // range of the standard command IDs handled by the application.
+   // If this method returns true, the command ID is not mapped and
+   // it will be handled by standard processing
+   bool IsInStandardRange(UINT nPluginCmdID);
+
    struct CCallbackItem 
    {
       UINT nPluginCmdID;

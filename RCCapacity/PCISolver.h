@@ -75,7 +75,7 @@ public:
 
 // IRCSolver2
 public:
-	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolution* *solution);
+	STDMETHOD(Solve)(/*[in]*/ IRCBeam2* beam,/*[out,retval]*/ IRCSolutionEx* *solution);
 
 // IRCSolver2Ex
 public:

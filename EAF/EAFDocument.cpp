@@ -1075,6 +1075,7 @@ void CEAFDocument::OnCloseDocument()
    // put the main frame toolbar back the way it was
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    pMainFrame->ShowMainFrameToolBar();
+   pMainFrame->ShowMainFrameBackGround();
 
    // this has to come last as the document deletes itself
    CDocument::OnCloseDocument();

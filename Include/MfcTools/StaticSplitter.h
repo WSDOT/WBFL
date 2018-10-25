@@ -31,10 +31,44 @@
 //
 #include <MfcTools\MfcToolsExp.h>
 
-/////////////////////////////////////////////////////////////////////////////
-// CStaticSplitter frame with splitter
+class MFCTOOLSCLASS CUsefulSplitterWnd : public CSplitterWnd
+{
+// Construction
+	DECLARE_DYNCREATE(CUsefulSplitterWnd)
+	CUsefulSplitterWnd();
 
-class MFCTOOLSCLASS CDynamicSplitter : public CSplitterWnd
+// Attributes
+public:
+
+private:
+	BOOL m_bBarLocked;
+
+// Operations
+public:
+	BOOL IsBarLocked(){return m_bBarLocked;}
+	void LockBar(BOOL bState=TRUE){m_bBarLocked=bState;}
+	BOOL ReplaceView(int row, int col,CRuntimeClass * pViewClass/*,SIZE size*/);
+
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CUsefulSplitterWnd)
+	//}}AFX_VIRTUAL
+
+// Implementation
+public:
+	virtual ~CUsefulSplitterWnd();
+
+	// Generated message map functions
+protected:
+	//{{AFX_MSG(CUsefulSplitterWnd)
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+	//}}AFX_MSG
+	DECLARE_MESSAGE_MAP()
+};
+
+class MFCTOOLSCLASS CDynamicSplitter : public CUsefulSplitterWnd
 {
 	DECLARE_DYNCREATE(CDynamicSplitter)
 	CDynamicSplitter();           // protected constructor used by dynamic creation

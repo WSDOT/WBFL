@@ -113,7 +113,7 @@ STDAPI DllRegisterServer(void)
    CATEGORYINFO CatInfo;
    CatInfo.catid = CATID_WBFLLibraryMgr;
    CatInfo.lcid = LOCALE_SYSTEM_DEFAULT;
-   _tcscpy_s(CatInfo.szDescription,sizeof(CatInfo.szDescription),L"WBFL Library Manager");
+   _tcscpy_s(CatInfo.szDescription,128/*sizeof(CatInfo.szDescription)*/,_T("WBFL Library Manager"));
 
    // Array of categories
    const int nID = 1;

@@ -38,6 +38,7 @@
 #include <EAF\EAFToolBar.h>
 #include <EAF\EAFStatusBar.h>
 #include <EAF\EAFAcceleratorTable.h>
+#include <EAF\EAFBackgroundWnd.h>
 #include <vector>
 
 // The following control bar id's are reserved by MFC. (see AFXRES.h)
@@ -84,6 +85,9 @@ public:
 
    void HideMainFrameToolBar();
    void ShowMainFrameToolBar();
+
+   void HideMainFrameBackground();
+   void ShowMainFrameBackGround();
 
    UINT CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr);
    CEAFToolBar* GetToolBar(UINT toolbarID);
@@ -153,6 +157,9 @@ protected:
    virtual CEAFStatusBar* CreateStatusBar();
    virtual CToolBar* CreateMainFrameToolBar();
 
+   virtual CEAFBackgroundWnd* CreateBackgroundWindow();
+   CEAFBackgroundWnd* m_pBackgroundWnd;
+
 
 // Generated message map functions
 protected:
@@ -166,6 +173,7 @@ protected:
    afx_msg void OnViewToolBar();
    afx_msg void OnUpdateViewToolBar(CCmdUI* pCmdUI);
    afx_msg void OnToolbarMenuSelected(UINT id);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
    afx_msg BOOL OnToolTipText(UINT nID,NMHDR* pTTTStruct,LRESULT* pResult);
    afx_msg BOOL OnToolbarDropDown(UINT nID,NMHDR* pnmhdr,LRESULT* plr);

@@ -85,12 +85,12 @@ void CTestVertCurveCollection::Test()
    TRY_TEST(pColl->Add(1,pbg,pvi,pfg,-1,400,NULL),E_INVALIDARG);
    TRY_TEST(pColl->Add(1,pbg,pvi,pfg,0,400,NULL),E_INVALIDARG);
    TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,-1,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,0,NULL),E_INVALIDARG);
-   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,400,NULL),S_OK);
+   TRY_TEST(pColl->Add(1,pbg,pvi,pfg,400,0,NULL),S_OK);
+   TRY_TEST(pColl->Add(2,pbg,pvi,pfg,400,400,NULL),S_OK);
    CComPtr<IVertCurve> vc;
    TRY_TEST(pColl->get_Item(1,&vc),S_OK);
    TRY_TEST(pColl->get_Count(&count),S_OK);
-   TRY_TEST(count,1);
+   TRY_TEST(count,2);
 
    //
    // Test AddEx method
@@ -109,6 +109,7 @@ void CTestVertCurveCollection::Test()
    //
    TRY_TEST(pColl->Remove(-1),COGO_E_VERTCURVENOTFOUND);
    TRY_TEST(pColl->Remove(1),S_OK);
+   TRY_TEST(pColl->Clear(),S_OK);
 
    //
    // Test Clear

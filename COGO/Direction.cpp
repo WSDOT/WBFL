@@ -57,6 +57,13 @@ STDMETHODIMP CDirection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
+STDMETHODIMP CDirection::get_Azimuth(Float64 *pVal)
+{
+   CHECK_RETVAL(pVal);
+   *pVal = cogoUtil::NormalizeAngle(PI_OVER_2 - m_Direction);
+   return S_OK;
+}
+
 STDMETHODIMP CDirection::get_Value(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -366,7 +373,17 @@ STDMETHODIMP CDirection::FromDMS(NSDirectionType ns, long Degree, long Minute, F
    return UpdateDirection(ns,Degree,Minute,Second,ew);
 }
 
-STDMETHODIMP CDirection::FromAzimuth(long Degree, long Minute, Float64 Second)
+STDMETHODIMP CDirection::FromAzimuth(Float64 azimuth)
+{
+   if ( ::IsLE(azimuth,-TWO_PI) || ::IsLE(TWO_PI,azimuth) )
+      return BadAzimuth();
+
+   m_Direction = cogoUtil::NormalizeAngle( PI_OVER_2 - azimuth );
+
+   return S_OK;
+}
+
+STDMETHODIMP CDirection::FromAzimuthEx(long Degree, long Minute, Float64 Second)
 {
    if ( Degree <= -360 || 360 <= Degree )
       return BadAzimuth();
@@ -380,9 +397,7 @@ STDMETHODIMP CDirection::FromAzimuth(long Degree, long Minute, Float64 Second)
    Float64 azimuth = cogoUtil::FromDMS( Degree, Minute, Second );
    ATLASSERT( -TWO_PI < azimuth && azimuth < TWO_PI );
 
-   m_Direction = cogoUtil::NormalizeAngle( 5*PI_OVER_2 - azimuth );
-
-   return S_OK;
+   return FromAzimuth(azimuth);
 }
 
 STDMETHODIMP CDirection::FromVariant(VARIANT varDirection)

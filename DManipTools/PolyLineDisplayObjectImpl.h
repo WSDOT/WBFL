@@ -136,6 +136,7 @@ END_CONNECTION_POINT_MAP()
 public:
    STDMETHOD_(void,Commit)();
    STDMETHOD_(CollectionIndexType,get_NumberOfPoints)();
+   STDMETHOD_(void,AddPoints)(IPoint2dCollection* points);
    STDMETHOD_(void,AddPoint)(IPoint2d* point);
    STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point);
    STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point);

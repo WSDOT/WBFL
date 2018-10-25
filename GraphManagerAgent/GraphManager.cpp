@@ -84,14 +84,14 @@ STDMETHODIMP CGraphManagerAgent::GetClassID(CLSID* pCLSID)
 ///////////////////////////////////////////////////////////////////
 // IGraphManager
 ///////////////////////////////////////////////////////////////////
-void CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
+bool CGraphManagerAgent::AddGraphBuilder(CGraphBuilder* pGraphBuilder)
 {
-   m_GraphManager.AddGraphBuilder(pGraphBuilder);
+   return m_GraphManager.AddGraphBuilder(pGraphBuilder);
 }
 
-void CGraphManagerAgent::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
+bool CGraphManagerAgent::AddGraphBuilder(boost::shared_ptr<CGraphBuilder>& pGraphBuilder)
 {
-   m_GraphManager.AddGraphBuilder(pGraphBuilder);
+   return m_GraphManager.AddGraphBuilder(pGraphBuilder);
 }
 
 CollectionIndexType CGraphManagerAgent::GetGraphBuilderCount() const
