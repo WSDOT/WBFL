@@ -162,6 +162,31 @@ STDMETHODIMP CPoint3dCollection::OffsetEx(ISize3d* size)
    return Offset(dx,dy,dz);
 }
 
+STDMETHODIMP CPoint3dCollection::RemoveDuplicatePoints()
+{
+   ContainerIteratorType iter = m_coll.begin();
+   CComPtr<IPoint3d> prevPoint(iter->second);
+   iter++;
+   while ( iter != m_coll.end() )
+   {
+      CComPtr<IPoint3d> currPoint(iter->second);
+      if ( prevPoint->SameLocation(currPoint) == S_OK )
+      {
+         IndexType idx = std::distance(m_coll.begin(),iter);
+         OnBeforeRemove(&(*iter),idx);
+         iter = m_coll.erase(iter);
+         OnAfterRemove(idx);
+      }
+      else
+      {
+         iter++;
+         prevPoint = currPoint;
+      }
+   }
+
+   return S_OK;
+}
+
 STDMETHODIMP CPoint3dCollection::get_StructuredStorage(IStructuredStorage2* *pStg)
 {
    CHECK_RETOBJ(pStg);

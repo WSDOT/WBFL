@@ -54,11 +54,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="NDEBUG;BUILDREPORTMANAGERLIB;WIN32;_WINDOWS;_USRDLL"
 				StringPooling="true"
@@ -165,11 +160,6 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="NDEBUG;BUILDREPORTMANAGERLIB;WIN32;_WINDOWS;_USRDLL"
 				StringPooling="true"

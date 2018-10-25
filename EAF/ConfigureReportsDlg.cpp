@@ -34,16 +34,10 @@
 
 IMPLEMENT_DYNAMIC(CConfigureReportsDlg, CPropertySheet)
 
-CConfigureReportsDlg::CConfigureReportsDlg(UINT nIDCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(nIDCaption, pParentWnd, iSelectPage)
+CConfigureReportsDlg::CConfigureReportsDlg(BOOL bFavoriteReports, CWnd* pParentWnd, UINT iSelectPage)
+	:CPropertySheet(_T("Configure Reports"), pParentWnd, iSelectPage)
 {
-   Init();
-}
-
-CConfigureReportsDlg::CConfigureReportsDlg(LPCTSTR pszCaption, CWnd* pParentWnd, UINT iSelectPage)
-	:CPropertySheet(pszCaption, pParentWnd, iSelectPage)
-{
-   Init();
+   Init(bFavoriteReports);
 }
 
 CConfigureReportsDlg::~CConfigureReportsDlg()
@@ -58,7 +52,7 @@ END_MESSAGE_MAP()
 
 // CConfigureReportsDlg message handlers
 
-void CConfigureReportsDlg::Init()
+void CConfigureReportsDlg::Init(BOOL bFavoriteReports)
 {
    // Turn on help for the property sheet
    m_psh.dwFlags |= PSH_HASHELP | PSH_NOAPPLYNOW;
@@ -69,7 +63,11 @@ void CConfigureReportsDlg::Init()
    m_FavoriteReportsPage.m_pParentDlg = this;
    m_CustomReportsPage.m_pParentDlg = this;
 
-   AddPage(&m_FavoriteReportsPage);
+   if ( bFavoriteReports )
+   {
+      AddPage(&m_FavoriteReportsPage);
+   }
+
    AddPage(&m_CustomReportsPage);
 }
 
@@ -163,9 +161,9 @@ void CConfigureReportsDlg::OnHelp()
    {
       CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
 
-      CEAFBrokerDocument::custRepportHelpType helpID = (0 == this->GetActiveIndex()) ? CEAFBrokerDocument::crhFavoriteReport : CEAFBrokerDocument::crhCustomReport;
+      eafTypes::CustomReportHelp helpType = (0 == GetActiveIndex()) ? eafTypes::crhFavoriteReport : eafTypes::crhCustomReport;
 
-      pBrokerDoc->OnCustomReportHelp(helpID);
+      pBrokerDoc->ShowCustomReportHelp(helpType);
    }
    else
       ATLASSERT(false);

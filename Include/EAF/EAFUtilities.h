@@ -43,7 +43,7 @@ EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component
 // category ID of the type of plugin to be managed.
-EAFFUNC std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent = NULL);
+EAFFUNC std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = NULL);
 
 // Returns the main frame window
 EAFFUNC CEAFMainFrame* EAFGetMainFrame();
@@ -59,3 +59,6 @@ EAFFUNC void EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSe
 
 // Compares IIDs
 EAFFUNC bool operator<(REFIID a,REFIID b);
+
+// Displays the standard Hints dialog. Returns TRUE if the user never wants to see this hint again
+BOOL EAFFUNC EAFShowUIHints(LPCTSTR lpszText,LPCTSTR lpszTitle = _T("Hints"));

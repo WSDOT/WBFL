@@ -40,9 +40,19 @@
 #include <WBFLGeometry.h>
 #include <xutility>
 
-#if defined _DEBUG_
+#include "CrackedSectionSolution.h"
+#include "CrackedSectionSlice.h"
+
+#if defined _DEBUG_LOGGING
 #include <sstream>
-#endif // _DEBUG_
+#include <iomanip>
+#include <Units\Units.h>
+
+#define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
+#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
+#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
+#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
+#endif // _DEBUG_LOGGING
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -52,10 +62,18 @@ static char THIS_FILE[] = __FILE__;
 
 /////////////////////////////////////////////////////////////////////////////
 // CNLSolver
+HRESULT CNLSolver::FinalConstruct()
+{
+   m_ClippingRect.CoCreateInstance(CLSID_Rect2d);
+   return S_OK;
+}
+
 STDMETHODIMP CNLSolver::put_Slices(long nSlices)
 {
    if ( nSlices < 1 )
+   {
       return E_INVALIDARG;
+   }
 
    m_nSlices = nSlices;
    return S_OK;
@@ -103,7 +121,9 @@ STDMETHODIMP CNLSolver::get_SlabConcreteModel(IStressStrain* *model)
    (*model) = m_SlabConcreteModel;
 
    if ( m_SlabConcreteModel )
+   {
       (*model)->AddRef();
+   }
 
    return S_OK;
 }
@@ -129,7 +149,9 @@ STDMETHODIMP CNLSolver::get_BeamConcreteModel(IStressStrain* *model)
    (*model) = m_BeamConcreteModel;
 
    if ( m_BeamConcreteModel )
+   {
       (*model)->AddRef();
+   }
 
    return S_OK;
 }
@@ -155,7 +177,9 @@ STDMETHODIMP CNLSolver::get_StrandModel(IStressStrain* *model)
    (*model) = m_StrandModel;
 
    if ( m_StrandModel )
+   {
       (*model)->AddRef();
+   }
 
    return S_OK;
 }
@@ -181,7 +205,9 @@ STDMETHODIMP CNLSolver::get_RebarModel(IStressStrain* *model)
    (*model) = m_RebarModel;
 
    if ( m_RebarModel )
+   {
       (*model)->AddRef();
+   }
 
    return S_OK;
 }
@@ -189,7 +215,9 @@ STDMETHODIMP CNLSolver::get_RebarModel(IStressStrain* *model)
 STDMETHODIMP CNLSolver::put_RebarDevLengthFactor(Float64 devLengthFactor)
 {
    if ( !InRange(0.0,devLengthFactor,1.0) )
+   {
       return E_INVALIDARG;
+   }
 
    m_RebarDevLengthFactor = devLengthFactor;
    return S_OK;
@@ -205,7 +233,9 @@ STDMETHODIMP CNLSolver::get_RebarDevLengthFactor(Float64* devLengthFactor)
 STDMETHODIMP CNLSolver::put_StrandDevLengthFactor(Float64 devLengthFactor)
 {
    if ( !InRange(0.0,devLengthFactor,1.0) )
+   {
       return E_INVALIDARG;
+   }
 
    m_StrandDevLengthFactor = devLengthFactor;
    return S_OK;
@@ -239,7 +269,7 @@ HRESULT CNLSolver::InitConcreteModel(IStressStrain** model,IUnitServer* unitServ
    return S_OK;
 }
 
-void CNLSolver::InitStrandModel(IStressStrain** model,IUnitServer* unitServer)
+HRESULT CNLSolver::InitStrandModel(IStressStrain** model,IUnitServer* unitServer)
 {
    CComObject<CPSPowerFormula>* pStrandModel;
    CComObject<CPSPowerFormula>::CreateInstance(&pStrandModel);
@@ -249,9 +279,11 @@ void CNLSolver::InitStrandModel(IStressStrain** model,IUnitServer* unitServer)
 
    CComQIPtr<ISupportUnitServer> sus(*model);
    sus->putref_UnitServer(unitServer);
+
+   return S_OK;
 }
 
-void CNLSolver::InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es)
+HRESULT CNLSolver::InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es)
 {
    CComObject<CRebarModel>* pRebarModel;
    CComObject<CRebarModel>::CreateInstance(&pRebarModel);
@@ -262,6 +294,8 @@ void CNLSolver::InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es)
    CComQIPtr<IRebarModel> rebar_model(*model);
 
    rebar_model->Init(fy,Es,0.11);
+
+   return S_OK;
 }
 
 STDMETHODIMP CNLSolver::Solve(IRCBeam *rcbeam, IRCSolution **solution)
@@ -275,7 +309,9 @@ STDMETHODIMP CNLSolver::Solve(IRCBeam *rcbeam, IRCSolution **solution)
    CComPtr<IRCSolutionEx> solution_ex;
 	HRESULT hr = Solve(rcbeam2,&solution_ex);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    CopySolution(solution_ex,solution);
    return S_OK;
@@ -291,7 +327,9 @@ STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,IRCSolutionEx* *solution)
 
 	HRESULT hr = Solve(rcbeam2,solution);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    return S_OK;
 }
@@ -299,6 +337,46 @@ STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,IRCSolutionEx* *solution)
 STDMETHODIMP CNLSolver::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
 {
 //   return SolveBisectionMethod(rcbeam,solution);
+   return SolveFalsePositionMethod(rcbeam,solution);
+}
+
+STDMETHODIMP CNLSolver::Solve(IRCBeam* rcbeam,ICrackedSectionSolution* *solution)
+{
+   CHECK_IN(rcbeam);
+   CHECK_RETOBJ(solution);
+
+   CComPtr<IRCBeam2Ex> rcbeam2;
+   RCBeamToRCBeam2Ex(rcbeam,&rcbeam2);
+
+	HRESULT hr = Solve(rcbeam2,solution);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CNLSolver::Solve(IRCBeam2* rcbeam,ICrackedSectionSolution* *solution)
+{
+   CHECK_IN(rcbeam);
+   CHECK_RETOBJ(solution);
+
+   CComPtr<IRCBeam2Ex> rcbeam2;
+   RCBeam2ToRCBeam2Ex(rcbeam,&rcbeam2);
+
+	HRESULT hr = Solve(rcbeam2,solution);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   return S_OK;
+}
+
+STDMETHODIMP CNLSolver::Solve(IRCBeam2Ex* rcbeam,ICrackedSectionSolution** solution)
+{
+   //return SolveBisectionMethod(rcbeam,solution);
    return SolveFalsePositionMethod(rcbeam,solution);
 }
 
@@ -349,6 +427,11 @@ HRESULT CNLSolver::SliceSection(IRCBeam2Ex* rcbeam)
    Float64 bw; // overall width of beam (assumed to be max at top)
    box->get_Width(&bw);
 
+   box->get_Top(&m_Ytop);
+   box->get_Bottom(&m_Ybottom);
+   m_Ytop += hf;
+
+
    Float64 h;
    h = hbeam + hf; // overall height
 
@@ -361,13 +444,15 @@ HRESULT CNLSolver::SliceSection(IRCBeam2Ex* rcbeam)
    // for this height, how may slices are required for the slab
    Uint32 nMinSlabSlices = (IsZero(hf) ? 0 : 5); // use no fewer than 5 slices in the slab
    Uint32 nSlabSlices = (Uint32)floor(hf / approx_slice_height);
-   nSlabSlices = _cpp_max(nMinSlabSlices,nSlabSlices);
-   Float64 hSlabSlice = hf / nSlabSlices;
+   nSlabSlices = Max(nMinSlabSlices,nSlabSlices);
+   Float64 hSlabSlice = (nSlabSlices == 0 ? 0 : hf/nSlabSlices);
 
    // determine height of beam slices
    Uint32 nBeamSlices = m_nSlices - nSlabSlices;
    if ( nBeamSlices < 0 )
+   {
       nBeamSlices = m_nSlices;
+   }
 
    Float64 hBeamSlice = hbeam/nBeamSlices;
 
@@ -380,17 +465,19 @@ HRESULT CNLSolver::SliceSection(IRCBeam2Ex* rcbeam)
    // no need to do real clipping because it is a rectangle, area and cg are easy to determine
    for ( Uint32 sliceIdx = 0; sliceIdx < nSlabSlices; sliceIdx++ )
    {
-      Float64 top = h - sliceIdx*hSlabSlice;
+      Float64 top = m_Ytop - sliceIdx*hSlabSlice;
       Float64 bot = top - hSlabSlice;
       Float64 y_cg = (top + bot)/2;
       Float64 area = b*hSlabSlice;
 
       SLICEINFO slice_info;
-      slice_info.top = top;
-      slice_info.bot = bot;
-      slice_info.y_cg = y_cg;
-      slice_info.area = area;
+      slice_info.Top = top;
+      slice_info.Bottom = bot;
+      slice_info.Xcg = 0;
+      slice_info.Ycg = y_cg;
+      slice_info.Area = area;
       slice_info.bSlabSlice = true;
+      slice_info.FgMaterial = m_SlabConcreteModel;
 
       m_Slices.push_back(slice_info);
    }
@@ -399,49 +486,47 @@ HRESULT CNLSolver::SliceSection(IRCBeam2Ex* rcbeam)
    // slice beam
    //
 
-   // Create the clipping rectangle (set its size later)
-   CComPtr<IRect2d> clipRect;
-   clipRect.CoCreateInstance( CLSID_Rect2d );
 
    // set width of clipping rectangle (make it 2bw wide)
-   clipRect->put_Left( -bw );
-   clipRect->put_Right( bw );
+   m_ClippingRect->put_Left( -bw );
+   m_ClippingRect->put_Right( bw );
 
    for ( Uint32 sliceIdx = 0; sliceIdx < nBeamSlices; sliceIdx++ )
    {
-      Float64 top = hbeam - sliceIdx*hBeamSlice;
+      Float64 top = m_Ytop - hf - sliceIdx*hBeamSlice;
       Float64 bot = top - hBeamSlice;
 
-      clipRect->put_Top(top);
-      clipRect->put_Bottom(bot);
+      m_ClippingRect->put_Top(top);
+      m_ClippingRect->put_Bottom(bot);
 
       CComPtr<IShape> clipShape;
-      CComQIPtr<IShape> beamShape(beam);
-
-      beamShape->ClipIn(clipRect,&clipShape);
+      beam->ClipIn(m_ClippingRect,&clipShape);
 
       CComPtr<IShapeProperties> props;
 
       SLICEINFO slice_info;
-      slice_info.top = top;
-      slice_info.bot = bot;
+      slice_info.Top = top;
+      slice_info.Bottom = bot;
       slice_info.bSlabSlice = false;
+      slice_info.FgMaterial = m_BeamConcreteModel;
+
       if ( clipShape == NULL )
       {
          // this hapens when the slice is so small that it get's squashed down to nothing
-         slice_info.area = 0;
-         slice_info.y_cg = (top + bot)/2;
+         slice_info.Area = 0;
+         slice_info.Xcg = 0;
+         slice_info.Ycg = (top + bot)/2;
       }
       else
       {
          clipShape->get_ShapeProperties(&props);
-         props->get_Area(&slice_info.area);
+         props->get_Area(&slice_info.Area);
 
          CComPtr<IPoint2d> centroid;
          props->get_Centroid(&centroid);
-         centroid->get_Y(&slice_info.y_cg);
+         centroid->Location(&slice_info.Xcg,&slice_info.Ycg);
 
-         slice_info.slice_shape = clipShape;
+         slice_info.SliceShape = clipShape;
       }
 
       m_Slices.push_back(slice_info);
@@ -508,15 +593,15 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
       SLICEINFO& slice = *slice_iter;
 
       Float64 top, slice_bottom, Y, area;
-      top = slice.top;
-      slice_bottom = slice.bot;
-      Y = slice.y_cg;
-      area = slice.area;
+      top = slice.Top;
+      slice_bottom = slice.Bottom;
+      Y = slice.Ycg;
+      area = slice.Area;
 
       bool bClippingSlab = slice.bSlabSlice;
 
       Float64 na = h - c_guess; // location of neutral axis measured from bottom
-      if ( slice.bot <= na && na < slice.top )
+      if ( slice.Bottom <= na && na < slice.Top )
       {
          // neutral axis is in the middle of this slice
          slice_bottom = na;
@@ -572,9 +657,13 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
       Float64 ec = GetStrain(m_ec,h - Y,c_guess,0,Eps);
       Float64 fc;
       if ( bClippingSlab )
+      {
          m_SlabConcreteModel->ComputeStress(ec,&fc);
+      }
       else
+      {
          m_BeamConcreteModel->ComputeStress(ec,&fc);
+      }
 
       fc *= -1.0;
 
@@ -624,10 +713,10 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
    Ft = 0;
    Mt = 0;
    fs->Clear();
-   for (CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
+   for (CollectionIndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
    {
       Float64 ds, As, devFactor;
-      rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
+      rcbeam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
       Float64 es = GetStrain(m_ec,ds,c_guess,0,Es);
       Float64 stress;
       m_RebarModel->ComputeStress(es,&stress);
@@ -638,7 +727,9 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
          // determine the maximum stress the bar can carry
          Float64 maxRebarStress = devFactor * fy;
          if ( maxRebarStress < stress )
+         {
             stress = maxRebarStress;
+         }
       }
 
       Float64 T = As*stress;
@@ -671,7 +762,9 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
          // determine the maximum stress the strand can carry
          Float64 maxStrandStress = devFactor * fpu;
          if ( maxStrandStress < stress )
+         {
             stress = maxStrandStress;
+         }
       }
 
       Float64 T = Aps*stress;
@@ -739,12 +832,8 @@ HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solut
    rcbeam->get_fy(&fy);
    rcbeam->get_Es(&Es);
 
-   Float64 fcSlab, fcBeam;
    Float64 b,h,hf;
    CComPtr<IShape> beam;
-
-   rcbeam->get_FcSlab(&fcSlab);
-   rcbeam->get_FcBeam(&fcBeam);
 
    rcbeam->get_b(&b);
    rcbeam->get_hf(&hf);
@@ -755,7 +844,9 @@ HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solut
    Float64 Ixy;
    beam_props->get_Ixy(&Ixy);
    if ( !IsZero(Ixy) )
+   {
       return Error(IDS_E_BEAMNOTSYMMETRIC,IID_INLSolver,RC_E_BEAMNOTSYMMETRIC);
+   }
 
    CComPtr<IRect2d> box;
    beam->get_BoundingBox(&box);
@@ -772,36 +863,17 @@ HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solut
    locator_point->Move(0,h-hf);
    position->put_LocatorPoint(lpTopCenter,locator_point);
 
-   if ( !m_bUserSlabConcrete )
+   hr = InitMaterials(rcbeam);
+   if ( FAILED(hr) )
    {
-      m_SlabConcreteModel.Release();
-      hr = InitConcreteModel(&m_SlabConcreteModel,unitServer,fcSlab);
-      if ( FAILED(hr) )
-         return hr;
-   }
-   if ( !m_bUserBeamConcrete )
-   {
-      m_BeamConcreteModel.Release();
-      hr = InitConcreteModel(&m_BeamConcreteModel,unitServer,fcBeam);
-      if ( FAILED(hr) )
-         return hr;
-   }
-
-   if ( !m_bUserStrandModel )
-   {
-      m_StrandModel.Release();
-      InitStrandModel(&m_StrandModel,unitServer);
-   }
-
-   if ( !m_bUserRebarModel )
-   {
-      m_RebarModel.Release();
-      InitRebarModel(&m_RebarModel,fy,Es);
+      return hr;
    }
 
    hr = SliceSection(rcbeam);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Uint32 max_iterations = 100;
    Uint32 current_iteration = 0;
@@ -865,7 +937,9 @@ HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solut
    
    // After max_iterations, a solution could not be found
    if ( max_iterations <= current_iteration )
+   {
       return Error(IDS_E_SOLUTIONNOTFOUND,IID_INLSolver,RC_E_SOLUTIONNOTFOUND);
+   }
 
    c = c_guess;
 
@@ -875,14 +949,22 @@ HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solut
    Float64 Yflange, Ybeam;
 
    if ( IsZero(Cflange) )
+   {
       Yflange = 0;
+   }
    else
+   {
       Yflange = h - Mflange/Cflange;
+   }
 
    if ( IsZero(Cbeam) )
+   {
       Ybeam = 0;
+   }
    else
+   {
       Ybeam   = h - Mbeam/Cbeam;
+   }
 
    CreateSolution(Mn,c,fs,fps,Cflange,Cbeam,Ft,Yflange,Ybeam,solution);
 
@@ -908,27 +990,20 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *s
    fs.CoCreateInstance(CLSID_DblArray);
    fps.CoCreateInstance(CLSID_DblArray);
 
-   Float64 fy, Es;
-   rcbeam->get_fy(&fy);
-   rcbeam->get_Es(&Es);
-
-   Float64 fcSlab, fcBeam;
    Float64 b,h,hf;
    CComPtr<IShape> beam;
-
-   rcbeam->get_FcSlab(&fcSlab);
-   rcbeam->get_FcBeam(&fcBeam);
-
    rcbeam->get_b(&b);
    rcbeam->get_hf(&hf);
-
    rcbeam->get_Beam(&beam);
+
    CComPtr<IShapeProperties> beam_props;
    beam->get_ShapeProperties(&beam_props);
    Float64 Ixy;
    beam_props->get_Ixy(&Ixy);
    if ( !IsZero(Ixy) )
+   {
       return Error(IDS_E_BEAMNOTSYMMETRIC,IID_INLSolver,RC_E_BEAMNOTSYMMETRIC);
+   }
 
    CComPtr<IRect2d> box;
    beam->get_BoundingBox(&box);
@@ -945,36 +1020,17 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *s
    locator_point->Move(0,h-hf);
    position->put_LocatorPoint(lpTopCenter,locator_point);
 
-   if ( !m_bUserSlabConcrete )
+   hr = InitMaterials(rcbeam);
+   if ( FAILED(hr) )
    {
-      m_SlabConcreteModel.Release();
-      hr = InitConcreteModel(&m_SlabConcreteModel,unitServer,fcSlab);
-      if ( FAILED(hr) )
-         return hr;
-   }
-   if ( !m_bUserBeamConcrete )
-   {
-      m_BeamConcreteModel.Release();
-      hr = InitConcreteModel(&m_BeamConcreteModel,unitServer,fcBeam);
-      if ( FAILED(hr) )
-         return hr;
-   }
-
-   if ( !m_bUserStrandModel )
-   {
-      m_StrandModel.Release();
-      InitStrandModel(&m_StrandModel,unitServer);
-   }
-
-   if ( !m_bUserRebarModel )
-   {
-      m_RebarModel.Release();
-      InitRebarModel(&m_RebarModel,fy,Es);
+      return hr;
    }
 
    hr = SliceSection(rcbeam);
    if ( FAILED(hr) )
+   {
       return hr;
+   }
 
    Uint32 max_iterations = 100;
    Uint32 current_iteration = 0;
@@ -1008,7 +1064,9 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *s
    for ( ; current_iteration < max_iterations; current_iteration++ )
    {
       if ( IsZero(fr,m_Tolerance) && IsZero(fa,m_Tolerance) && IsZero(fb,m_Tolerance) )
+      {
          break;
+      }
 
       c_guess = (fa*cmax - fb*cmin)/(fa-fb);
 
@@ -1016,33 +1074,41 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *s
 
       fr = (Cflange+Cbeam-Ft);
 
-      if ( fr*fb > 0 )
+      if ( 0 < fr*fb )
       {
          cmax = c_guess;
          fb = fr;
 
          if (side == -1 )
+         {
             fa /= 2;
+         }
 
          side = -1;
       }
-      else if ( fa*fr > 0 )
+      else if ( 0 < fa*fr )
       {
          cmin = c_guess;
          fa = fr;
 
          if ( side == 1 )
+         {
             fb /= 2;
+         }
 
          side = 1;
       }
       else
+      {
          break;
+      }
    }
 
    // After max_iterations, a solution could not be found
    if ( max_iterations <= current_iteration )
+   {
       return Error(IDS_E_SOLUTIONNOTFOUND,IID_INLSolver,RC_E_SOLUTIONNOTFOUND);
+   }
 
    c = c_guess;
 
@@ -1052,17 +1118,508 @@ HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,IRCSolutionEx* *s
    Float64 Yflange, Ybeam;
 
    if ( IsZero(Cflange) )
+   {
       Yflange = 0;
+   }
    else
+   {
       Yflange = h - Mflange/Cflange;
+   }
 
    if ( IsZero(Cbeam) )
+   {
       Ybeam = 0;
+   }
    else
+   {
       Ybeam   = h - Mbeam/Cbeam;
+   }
 
    CreateSolution(Mn,c,fs,fps,Cflange,Cbeam,Ft,Yflange,Ybeam,solution);
 
 
 	return S_OK;
+}
+
+//////////////////////////////////////////////////////////////////////
+
+HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* beam,Float64 Yguess,IUnkArray* slices,IPoint2d* pntCG)
+{
+   HRESULT hr;
+
+   // Summations for first moment of area
+   Float64 EA = 0;
+   Float64 EAx = 0;
+   Float64 EAy = 0;
+
+#if defined _DEBUG_LOGGING
+   std::_tostringstream os;
+   os << "Yguess: " << LENGTH(Yguess) << std::endl;
+   os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "FG, " << std::setw(20) << "BG" << std::endl;
+#endif // _DEBUG_LOGGING
+
+   std::vector<SLICEINFO>::iterator iter;
+   for ( iter = m_Slices.begin(); iter != m_Slices.end(); iter++ )
+   {
+      SLICEINFO& slice = *iter;
+
+      if ( (slice.Bottom < Yguess) && (Yguess < slice.Top) )
+      {
+         // this slice spans the guess location... 
+         // need to clip again 
+         SHAPEINFO shape_info;
+         shape_info.FgMaterial = slice.FgMaterial;
+         shape_info.BgMaterial = slice.BgMaterial;
+         shape_info.Shape      = slice.SliceShape;
+
+         SLICEINFO top_slice;
+         hr = SliceShape(shape_info,slice.Top,Yguess,top_slice);
+         if ( SUCCEEDED(hr) && hr != S_FALSE )
+         {
+            Float64 ea,eax,eay,Efg,Ebg;
+            hr = AnalyzeSlice(Yguess,top_slice,ea,eax,eay,Efg,Ebg);
+            if ( FAILED(hr) )
+            {
+               return hr;
+            }
+
+            EA  += ea;
+            EAx += eax;
+            EAy += eay;
+
+            CComObject<CCrackedSectionSlice>* pSlice;
+            CComObject<CCrackedSectionSlice>::CreateInstance(&pSlice);
+            pSlice->InitSlice(top_slice.SliceShape,top_slice.Area,top_slice.Xcg,top_slice.Ycg,Efg,Ebg);
+            CComPtr<IUnknown> punk;
+            pSlice->QueryInterface(&punk);
+            slices->Add(punk);
+
+#if defined _DEBUG_LOGGING
+            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(top_slice.Xcg) << ", " << std::setw(20) << LENGTH(top_slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+#endif // _DEBUG_LOGGING
+         }
+
+//         SLICEINFO bottom_slice;
+//         hr = SliceShape(shape_info,Yguess,slice.Bottom,bottom_slice);
+//         if ( SUCCEEDED(hr) && hr != S_FALSE )
+//         {
+//            Float64 ea, eax, eay, Efg, Ebg;
+//            hr = AnalyzeSlice(Yguess,bottom_slice,ea,eax,eay,Efg,Ebg);
+//            if ( FAILED(hr) )
+//            {
+//               return hr;
+//            }
+//
+//            EA  += ea;
+//            EAx += eax;
+//            EAy += eay;
+//
+//            CComObject<CCrackedSectionSlice>* pSlice;
+//            CComObject<CCrackedSectionSlice>::CreateInstance(&pSlice);
+//            pSlice->InitSlice(bottom_slice.SliceShape,bottom_slice.Area,bottom_slice.Xcg,bottom_slice.Ycg,Efg,Ebg);
+//            CComPtr<IUnknown> punk;
+//            pSlice->QueryInterface(&punk);
+//            slices->Add(punk);
+//
+//#if defined _DEBUG_LOGGING
+//            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " << std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.Xcg) << ", " << std::setw(20) << LENGTH(bottom_slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+//#endif // _DEBUG_LOGGING
+//         }
+      }
+      else
+      {
+         Float64 ea, eax, eay, Efg, Ebg;
+         hr = AnalyzeSlice(Yguess,slice,ea,eax,eay,Efg,Ebg);
+         if ( FAILED(hr) )
+         {
+            return hr;
+         }
+
+         if ( slice.Ycg < Yguess )
+         {
+            // slice is on the cracked side so it doesn't contribute
+            continue;
+         }
+
+         EA  += ea;
+         EAx += eax;
+         EAy += eay;
+
+         CComObject<CCrackedSectionSlice>* pSlice;
+         CComObject<CCrackedSectionSlice>::CreateInstance(&pSlice);
+         pSlice->InitSlice(slice.SliceShape,slice.Area,slice.Xcg,slice.Ycg,Efg,Ebg);
+         CComPtr<IUnknown> punk;
+         pSlice->QueryInterface(&punk);
+         slices->Add(punk);
+
+#if defined _DEBUG_LOGGING
+         char cSide = (slice.Ycg > Yguess ? 'C' : 'T');
+         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " << std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(slice.Xcg) << ", " << std::setw(20) << LENGTH(slice.Ycg) << ", " << std::setw(20) << STRESS(Efg) << ", " << std::setw(20) << STRESS(Ebg) << std::endl;
+#endif // _DEBUG_LOGGING
+      }
+   } // next slice
+
+   // Rebar
+   Float64 Es;
+   beam->get_Es(&Es);
+   CollectionIndexType nRebarLayers = 0;
+   beam->get_RebarLayerCount(&nRebarLayers);
+   for ( CollectionIndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
+   {
+      Float64 ds, As, devFactor;
+      beam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
+
+      // ds is measured down from the top... we need it in section coordinates
+      ds = m_Ytop - ds;
+
+      CComPtr<IGenericShape> barShape;
+      barShape.CoCreateInstance(CLSID_GenericShape);
+      barShape->put_Area(devFactor*As);
+      
+      CComPtr<IPoint2d> cg;
+      barShape->get_Centroid(&cg);
+      cg->Move(0,ds);
+
+      CComQIPtr<IShape> shape(barShape);
+
+      CComObject<CCrackedSectionSlice>* pSlice;
+      CComObject<CCrackedSectionSlice>::CreateInstance(&pSlice);
+      pSlice->InitSlice(shape,devFactor*As,0.0,ds,Es,0);
+      CComPtr<IUnknown> punk;
+      pSlice->QueryInterface(&punk);
+      slices->Add(punk);
+
+
+      Float64 ea = devFactor*As*Es;
+      Float64 eay = ea*ds;
+      Float64 eax = ea*0.0;
+      
+      EA  += ea;
+      EAy += eay;
+      EAx += eax;
+   }
+
+   // Strand
+   Float64 Eps;
+   beam->get_Eps(&Eps);
+   CollectionIndexType nStrandLayers;
+   beam->get_StrandLayerCount(&nStrandLayers);
+   for ( CollectionIndexType strandLayerIdx = 0; strandLayerIdx < nStrandLayers; strandLayerIdx++ )
+   {
+      Float64 dps, Aps, devFactor;
+      beam->GetStrandLayer(strandLayerIdx,&dps,&Aps,&devFactor);
+
+      CComPtr<IGenericShape> strandShape;
+      strandShape.CoCreateInstance(CLSID_GenericShape);
+      strandShape->put_Area(devFactor*Aps);
+      
+      CComPtr<IPoint2d> cg;
+      strandShape->get_Centroid(&cg);
+      cg->Move(0,dps);
+
+      CComQIPtr<IShape> shape(strandShape);
+
+      CComObject<CCrackedSectionSlice>* pSlice;
+      CComObject<CCrackedSectionSlice>::CreateInstance(&pSlice);
+      pSlice->InitSlice(shape,devFactor*Aps,0.0,dps,Eps,0);
+      CComPtr<IUnknown> punk;
+      pSlice->QueryInterface(&punk);
+      slices->Add(punk);
+
+      Float64 ea = devFactor*Aps*Eps;
+      Float64 eay = ea*dps;
+      Float64 eax = ea*0.0;
+      
+      EA  += ea;
+      EAy += eay;
+      EAx += eax;
+   }
+
+   // locate centroid of the cracked section
+   Float64 x = IsZero(EA) ? 0 : EAx/EA;
+   Float64 y = IsZero(EA) ? 0 : EAy/EA;
+
+   pntCG->Move(x,y);
+
+#if defined _DEBUG_LOGGING
+   os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "FG, " << std::setw(20) << "BG" << std::endl;
+   os << std::endl;
+   os << "Y = " << LENGTH(y) << std::endl;
+   os << "Yguess - Y = " << LENGTH(Yguess - y) << std::endl;
+   m_Log->LogMessage(m_dwCookie,CComBSTR(os.str().c_str()));
+#endif // _DEBUG_LOGGING
+
+   return S_OK;
+}
+
+HRESULT CNLSolver::AnalyzeSlice(Float64 Yguess,SLICEINFO& slice,Float64& EA,Float64& EAx,Float64& EAy,Float64& Efg,Float64& Ebg)
+{
+   if ( slice.Ycg < Yguess )
+   {
+      // Slice is on the tension side of the assumed neutral axis
+      // Get a realistic tension strain to determine if material has tension capacity
+
+      // assume material doesn't have any tension capacity
+      EA  = 0;
+      EAx = 0;
+      EAy = 0;
+      Efg = 0;
+      Ebg = 0;
+
+      if ( !slice.FgMaterial )
+      {
+         return S_OK;
+      }
+   }
+
+   if ( slice.FgMaterial )
+   {
+      slice.FgMaterial->get_ModulusOfElasticity(&Efg);
+   }
+   else
+   {
+      Efg = 0;
+   }
+
+   if ( slice.BgMaterial )
+   {
+      slice.BgMaterial->get_ModulusOfElasticity(&Ebg);
+   }
+   else
+   {
+      Ebg = 0;
+   }
+
+   Float64 E = (Efg - Ebg);
+
+   EA  = E*slice.Area;
+   EAx = EA*slice.Xcg;
+   EAy = EA*slice.Ycg;
+   return S_OK;
+}
+
+HRESULT CNLSolver::SliceShape(const SHAPEINFO& shapeInfo,Float64 sliceTop,Float64 sliceBottom,SLICEINFO& sliceInfo)
+{
+   HRESULT hr;
+
+   m_ClippingRect->put_Top(sliceTop);
+   m_ClippingRect->put_Bottom(sliceBottom);
+
+   CComPtr<IShape> clipped_shape;
+   hr = shapeInfo.Shape->ClipIn(m_ClippingRect,&clipped_shape);
+
+   // sometimes the shape isn't even in the clipping box so
+   // the result is NULL... go to next slice
+   if ( clipped_shape == NULL )
+   {
+      return S_FALSE;
+   }
+
+   CComPtr<IShapeProperties> props;
+   hr = clipped_shape->get_ShapeProperties(&props);
+
+   sliceInfo.Top = IsZero(sliceTop) ? 0 : sliceTop;
+   sliceInfo.Bottom = IsZero(sliceBottom) ? 0 : sliceBottom;
+   sliceInfo.SliceShape = clipped_shape;
+   props->get_Area(&sliceInfo.Area);
+
+   CComPtr<IPoint2d> cg;
+   props->get_Centroid(&cg);
+   cg->get_X(&sliceInfo.Xcg);
+   cg->get_Y(&sliceInfo.Ycg);
+
+   sliceInfo.FgMaterial = shapeInfo.FgMaterial;
+   sliceInfo.BgMaterial = shapeInfo.BgMaterial;
+
+   return S_OK;
+}
+
+HRESULT CNLSolver::SolveBisectionMethod(IRCBeam2Ex* beam,ICrackedSectionSolution* *solution)
+{
+   ATLASSERT(false);
+   return E_NOTIMPL;
+}
+
+HRESULT CNLSolver::SolveFalsePositionMethod(IRCBeam2Ex* rcbeam,ICrackedSectionSolution* *solution)
+{
+#if defined _DEBUG_LOGGING
+   m_Log.CoCreateInstance(CLSID_WBFLErrorLog);
+   m_Log->Open(CComBSTR("CrackedSectionSolver.log"),&m_dwCookie);
+#endif // _DEBUG_LOGGING
+
+   HRESULT hr;
+
+   // solve with method of false position (aka regula falsi method)
+   // http://en.wikipedia.org/wiki/False_position_method
+   // http://mathworld.wolfram.com/MethodofFalsePosition.html
+
+   if ( rcbeam == NULL )
+   {
+      return E_FAIL;
+   }
+
+   InitMaterials(rcbeam);
+
+   SliceSection(rcbeam);
+
+   Float64 Ylower = m_Ybottom;
+   Float64 Yupper = m_Ytop;
+
+   CComPtr<IPoint2d> pntCG;
+   pntCG.CoCreateInstance(CLSID_Point2d);
+   
+   CComPtr<IUnkArray> slices;
+   slices.CoCreateInstance(CLSID_UnkArray);
+
+
+   Float64 result_lower;
+   hr = AnalyzeSection(rcbeam,Ylower,slices,pntCG);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+   
+   Float64 resultY;
+   pntCG->get_Y(&resultY);
+   result_lower = Ylower - resultY;
+
+   Float64 result_upper;
+   slices->Clear();
+   hr = AnalyzeSection(rcbeam,Yupper,slices,pntCG);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   pntCG->get_Y(&resultY);
+   result_upper = Yupper - resultY;
+
+   Float64 Y = Ylower;
+   Float64 result = result_lower;
+
+   int side = 0;
+   long iter = 0;
+   for ( iter = 0; iter < m_MaxIter; iter++ )
+   {
+      if ( IsZero(result,m_CGTolerance) && IsZero(result_lower,m_CGTolerance) && IsZero(result_upper,m_CGTolerance) )
+      {
+         break; // converged
+      }
+
+      // guess next value
+      Y = (result_upper*Ylower - result_lower*Yupper) / ( result_upper - result_lower );
+
+      slices->Clear();
+      hr = AnalyzeSection(rcbeam,Y,slices,pntCG);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+
+      pntCG->get_Y(&resultY);
+      result = Y - resultY;
+
+      if ( 0 < result*result_upper )
+      {
+         Yupper = Y;
+         result_upper = result;
+         if ( side == -1 )
+         {
+            result_lower /= 2;
+         }
+
+         side = -1;
+      }
+      else if ( 0 < result_lower*result )
+      {
+         Ylower = Y;
+         result_lower = result;
+         if ( side == 1 )
+         {
+            result_upper /= 2;
+         }
+
+         side = 1;
+      }
+      else
+      {
+         break;
+      }
+   }
+
+   if ( m_MaxIter <= iter )
+   {
+      return Error(IDS_E_SOLUTIONNOTFOUND,IID_ICrackedSectionSolver,RC_E_SOLUTIONNOTFOUND);
+   }
+
+   CComObject<CCrackedSectionSolution>* pSolution;
+   CComObject<CCrackedSectionSolution>::CreateInstance(&pSolution);
+
+   (*solution) = pSolution;
+   (*solution)->AddRef();
+
+   (*solution)->InitSolution(pntCG,slices);
+
+#if defined _DEBUG_LOGGING
+   m_Log->Close(m_dwCookie);
+   m_Log.Release();
+#endif // _DEBUG_LOGGING
+
+   return S_OK;
+}
+  
+HRESULT CNLSolver::InitMaterials(IRCBeam2Ex* rcbeam)
+{
+   Float64 fy, Es;
+   rcbeam->get_fy(&fy);
+   rcbeam->get_Es(&Es);
+
+   Float64 fcSlab, fcBeam;
+   rcbeam->get_FcSlab(&fcSlab);
+   rcbeam->get_FcBeam(&fcBeam);
+
+   CComQIPtr<ISupportUnitServer> sus(rcbeam);
+   CComPtr<IUnitServer> unitServer;
+   sus->get_UnitServer(&unitServer);
+
+   if ( !m_bUserSlabConcrete )
+   {
+      m_SlabConcreteModel.Release();
+      HRESULT hr = InitConcreteModel(&m_SlabConcreteModel,unitServer,fcSlab);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+   if ( !m_bUserBeamConcrete )
+   {
+      m_BeamConcreteModel.Release();
+      HRESULT hr = InitConcreteModel(&m_BeamConcreteModel,unitServer,fcBeam);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+
+   if ( !m_bUserStrandModel )
+   {
+      m_StrandModel.Release();
+      HRESULT hr = InitStrandModel(&m_StrandModel,unitServer);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+
+   if ( !m_bUserRebarModel )
+   {
+      m_RebarModel.Release();
+      HRESULT hr = InitRebarModel(&m_RebarModel,fy,Es);
+      if ( FAILED(hr) )
+      {
+         return hr;
+      }
+   }
+
+   return S_OK;
 }

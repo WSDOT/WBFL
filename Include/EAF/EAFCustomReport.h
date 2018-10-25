@@ -64,3 +64,36 @@ public:
    void LoadFromRegistry(CWinApp* theApp);
    void SaveToRegistry(CWinApp* theApp) const;
  };
+
+// A mix-in class to add custom reporting
+// capabilities to an IEAFAppPlugin object
+class EAFCLASS CEAFCustomReportMixin
+{
+public:
+   CEAFCustomReportMixin();
+   virtual ~CEAFCustomReportMixin();
+
+   // Determine whether to display favorite reports or all reports in menu dropdowns
+   BOOL DisplayFavoriteReports() const;
+   void DisplayFavoriteReports(BOOL doDisplay);
+
+   // Current list of favorite reports
+   const std::vector<std::_tstring>& GetFavoriteReports() const;
+   void SetFavoriteReports(const std::vector<std::_tstring>& reports);
+
+   // Custom, user-defined reports
+   const CEAFCustomReports& GetCustomReports() const;
+   void SetCustomReports(const CEAFCustomReports& reports);
+
+   // Loads and saves the custom report information in the registry.
+   // Call these methods from IEAFAppPlugin::Init() and IEAFAppPlugin::Terminate().
+   // Base class must call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before
+   // calling into these methods.
+   virtual void LoadCustomReportInformation() = 0;
+   virtual void SaveCustomReportInformation() = 0;
+
+protected:
+   BOOL m_bDisplayFavoriteReports;
+   std::vector<std::_tstring> m_FavoriteReports;
+   CEAFCustomReports m_CustomReports;
+};

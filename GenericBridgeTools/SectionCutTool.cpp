@@ -1092,6 +1092,15 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
       return hr;
    }
 
+   Float64 trib_flange_width;
+   hr = m_EffFlangeTool->TributaryFlangeWidthBySegment(bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&trib_flange_width);
+   if ( FAILED(hr) )
+   {
+      return hr;
+   }
+
+   Float64 deck_width = Min(eff_flange_width,trib_flange_width);
+
    // get structural thickness of deck
    Float64 structural_depth = 0;
    deck->get_StructuralDepth(&structural_depth);
@@ -1100,7 +1109,7 @@ HRESULT CSectionCutTool::CreateDeckSection(IGenericBridge* bridge,GirderIDType s
    CComPtr<IRectangle> slab;
    slab.CoCreateInstance(CLSID_Rect);
    slab->put_Height(structural_depth);
-   slab->put_Width(eff_flange_width);
+   slab->put_Width(deck_width);
 
    CComQIPtr<IShape> shape(slab);
    cmpSection->AddSection(shape,Econc,0.0,Dconc,0.0,IsZero(Econc) ? VARIANT_FALSE : VARIANT_TRUE );

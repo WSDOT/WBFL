@@ -58,11 +58,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
 				RuntimeLibrary="2"
@@ -176,11 +171,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm200 "
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\Include;..\Include\$(PlatformName);&quot;..\Include\$(ConfigurationName)&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_AFXDLL"
 				RuntimeLibrary="2"
@@ -2340,6 +2330,14 @@
 			</File>
 			<File
 				RelativePath=".\LRFDPrestressFormula.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolution.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolutionEx.cpp"
 				>
 			</File>
 			<File
@@ -4878,6 +4876,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\LRFDSolution.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolutionEx.h"
+				>
+			</File>
+			<File
 				RelativePath="LRFDSolver.h"
 				>
 			</File>
@@ -5044,6 +5050,14 @@
 			</File>
 			<File
 				RelativePath=".\LRFDPrestressFormula.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolution.rgs"
+				>
+			</File>
+			<File
+				RelativePath=".\LRFDSolutionEx.rgs"
 				>
 			</File>
 			<File

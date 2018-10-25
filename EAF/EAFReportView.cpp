@@ -168,7 +168,7 @@ bool CEAFReportView::InitReport(boost::shared_ptr<CReportSpecification>& pSpec,b
    return true;
 }
 
-bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,bool bPromptForSpec)
+bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec)
 {
    CreateReportSpecification(rptIdx,bPromptForSpec);
    return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
@@ -185,7 +185,7 @@ bool CEAFReportView::CreateReport(CollectionIndexType rptIdx,boost::shared_ptr<C
    return false;
 }
 
-void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,bool bPromptForSpec)
+void CEAFReportView::CreateReportSpecification(CollectionIndexType rptIdx,BOOL bPromptForSpec)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    std::vector<std::_tstring> rptNames = GetReportNames();
@@ -559,7 +559,7 @@ void CEAFReportView::OnInitialUpdate()
       }
       else
       {
-         bool bPromptForSpec = pCreateData->m_bPromptForSpec;
+         BOOL bPromptForSpec = pCreateData->m_bPromptForSpec;
          CreateReport(rptIdx,bPromptForSpec);
       }
 

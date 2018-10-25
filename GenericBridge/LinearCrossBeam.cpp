@@ -496,7 +496,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints)
    m_pPier->ConvertCrossBeamToPierCoordinate(XxbStart,&XpStart);
    m_pPier->ConvertCrossBeamToPierCoordinate(XxbEnd,  &XpEnd);
 
-   // Stard and end in curb line coordinates so we can get deck elevations
+   // Start and end in curb line coordinates so we can get deck elevations
    Float64 XclStart, XclEnd;
    m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbStart,&XclStart);
    m_pPier->ConvertCrossBeamToCurbLineCoordinate(XxbEnd,  &XclEnd);
@@ -620,16 +620,21 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
    TrimLeftToLine(bxbProfile,line);
 
    // Bottom Left Surface - adjust for bottom taper
-   CComPtr<IPoint2d> bxbBL = pntOnLine; // this is the bottom left point... hang on to it
-   pntOnLine.Release();
-   bxbBL->Clone(&pntOnLine);
-   pntOnLine->Offset(m_X1-m_X2,-m_H2);
+   if ( !IsZero(m_H2) && !IsZero(m_X1) )
+   {
+      CComPtr<IPoint2d> bxbBL = pntOnLine; // this is the bottom left point... hang on to it
+      pntOnLine.Release();
+      bxbBL->Clone(&pntOnLine);
+      pntOnLine->Offset(m_X1-m_X2,-m_H2);
 
-   line->ThroughPoints(bxbBL,pntOnLine);
+      line->ThroughPoints(bxbBL,pntOnLine);
 
-   TrimLeftToLine(bxbProfile,line);
+      TrimLeftToLine(bxbProfile,line);
 
-   // Right Edge - adjsut for right edge slope
+      bxbProfile->Insert(0,bxbBL);
+   }
+
+   // Right Edge - adjust for right edge slope
    IndexType nPoints;
    lxbProfile->get_Count(&nPoints);
    CComPtr<IPoint2d> lxbTR;
@@ -641,16 +646,17 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints)
    TrimRightToLine(bxbProfile,line);
 
    // Bottom Right Surface - adjust for bottom taper
-   CComPtr<IPoint2d> bxbBR = pntOnLine; // this is the bottom right point... hang on to in
-   pntOnLine.Release();
-   bxbBR->Clone(&pntOnLine);
-   pntOnLine->Offset(-(m_X3-m_X4),-m_H4);
-   line->ThroughPoints(bxbBR,pntOnLine);
-   TrimRightToLine(bxbProfile,line);
+   if ( !IsZero(m_H4) && !IsZero(m_X3) )
+   {
+      CComPtr<IPoint2d> bxbBR = pntOnLine; // this is the bottom right point... hang on to in
+      pntOnLine.Release();
+      bxbBR->Clone(&pntOnLine);
+      pntOnLine->Offset(-(m_X3-m_X4),-m_H4);
+      line->ThroughPoints(bxbBR,pntOnLine);
+      TrimRightToLine(bxbProfile,line);
 
-   // add the bottom left and right points
-   bxbProfile->Insert(0,bxbBL);
-   bxbProfile->Add(bxbBR);
+      bxbProfile->Add(bxbBR);
+   }
 
    return bxbProfile.CopyTo(ppPoints);
 }

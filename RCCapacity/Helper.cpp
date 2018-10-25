@@ -28,6 +28,8 @@
 #include "Helper.h"
 #include "RCBeam2Ex.h"
 #include "PCISolutionEx.h"
+#include "LRFDSolution.h"
+#include "LRFDSolutionEx.h"
 #include <MathEx.h>
 #include <xutility>
 
@@ -102,12 +104,34 @@ void CreateSolution(Float64 Mn,Float64 c,Float64 fps,Float64 Cflange,Float64 Cwe
    (*solution)->AddRef();
 }
 
+void CreateSolution(Float64 alpha1,Float64 beta1,Float64 Mn,Float64 c,Float64 fps,Float64 Cflange,Float64 Cweb,Float64 T,Float64 Yflange,Float64 Yweb,VARIANT_BOOL bIsOverReinforced,IRCSolution** solution)
+{
+   CComObject<CLRFDSolution>* pSolution;
+   CComObject<CLRFDSolution>::CreateInstance(&pSolution);
+
+   pSolution->InitLRFDSolution(alpha1,beta1,Mn,c,fps,Cflange,Cweb,T,Yflange,Yweb,bIsOverReinforced);
+
+   (*solution) = pSolution;
+   (*solution)->AddRef();
+}
+
 void CreateSolution(Float64 Mn,Float64 c,IDblArray* fs,IDblArray* fps,Float64 Cflange,Float64 Cbeam,Float64 T,Float64 Yflange,Float64 Yweb,IRCSolutionEx** solution)
 {
    CComObject<CRCSolutionEx>* pSolution;
    CComObject<CRCSolutionEx>::CreateInstance(&pSolution);
 
    pSolution->InitSolution(Mn,c,fs,fps,Cflange,Cbeam,T,Yflange,Yweb);
+   
+   (*solution) = pSolution;
+   (*solution)->AddRef();
+}
+
+void CreateSolution(Float64 alpha1,Float64 beta1,Float64 Mn,Float64 c,IDblArray* fs,IDblArray* fps,Float64 Cflange,Float64 Cbeam,Float64 T,Float64 Yflange,Float64 Yweb,IRCSolutionEx** solution)
+{
+   CComObject<CLRFDSolutionEx>* pSolution;
+   CComObject<CLRFDSolutionEx>::CreateInstance(&pSolution);
+
+   pSolution->InitLRFDSolution(alpha1,beta1,Mn,c,fs,fps,Cflange,Cbeam,T,Yflange,Yweb);
    
    (*solution) = pSolution;
    (*solution)->AddRef();

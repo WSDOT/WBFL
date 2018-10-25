@@ -52,6 +52,9 @@ interface IEAFViewRegistrar : IUnknown
 
    // Calls OnUpdate for a registered view
    virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) = 0;
+
+   // Returns all instances of a registered view
+   virtual std::vector<CView*> GetRegisteredView(long key) = 0;
 };
 
 ///////////////////////////////////////////////////////////////
@@ -159,6 +162,7 @@ interface IEAFDocument : IUnknown
 
    // Causes the document to be saved
    virtual void Save() = 0;
+   virtual void SaveAs(LPCTSTR strPathName,BOOL bReplace = TRUE) = 0;
 
    // example: c:\my documents\myfile.txt
    virtual CString GetFileName() = 0; // returns myfile.txt

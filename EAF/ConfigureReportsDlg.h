@@ -35,8 +35,7 @@ class CConfigureReportsDlg : public CPropertySheet
    friend CCustomReportsPage;
 
 public:
-	CConfigureReportsDlg(UINT nIDCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
-	CConfigureReportsDlg(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
+	CConfigureReportsDlg(BOOL bFavoriteReports, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~CConfigureReportsDlg();
 
 protected:
@@ -44,7 +43,7 @@ protected:
 
    virtual BOOL OnInitDialog();
 
-   void Init();
+   void Init(BOOL bFavoriteReports);
 
 public:
    void SetFavorites(const std::vector<std::_tstring>& favoriteReports);

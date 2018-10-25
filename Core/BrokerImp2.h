@@ -148,7 +148,6 @@ private:
    HRESULT AddAgent(IAgentEx* pAgent,Agents& agents);
    HRESULT FindConnectionPoint( REFIID riid, Agents::iterator begin,Agents::iterator end,IConnectionPoint** ppCP);
    HRESULT InitAgents(Agents::iterator begin,Agents::iterator end);
-   HRESULT Integrate(BOOL bIntegrating,Agents::iterator begin,Agents::iterator end);
    HRESULT SaveAgentData(IStructuredSave* pStrSave,Agents::iterator begin,Agents::iterator end);
    HRESULT FindAgent(const CLSID& clsid,IAgentEx** ppAgent);
 

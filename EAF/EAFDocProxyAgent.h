@@ -147,6 +147,7 @@ public:
    virtual void RemoveView(long key);
    virtual CView* CreateView(long key,LPVOID pData=0);
    virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint);
+   virtual std::vector<CView*> GetRegisteredView(long key);
 
 // IEAFMainMenu
 public:
@@ -173,6 +174,7 @@ public:
    virtual BOOL IsModified();
    virtual void SetModified(BOOL bModified);
    virtual void Save();
+   virtual void SaveAs(LPCTSTR strPathName,BOOL bReplace);
    virtual CString GetFileName();
    virtual CString GetFileTitle();
    virtual CString GetFilePath();

@@ -23,6 +23,7 @@
 
 #include "StdAfx.h"
 #include <EAF\EAFStatusItem.h>
+#include <EAF\EAFUtilities.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,3 +78,18 @@ void CEAFStatusItem::RemoveAfterEdit(BOOL bRemoveAfterEdit)
    m_bRemoveAfterEdit = bRemoveAfterEdit;
 }
 
+//////////////////////////////////////////////////////////////////////////////
+CEAFStatusItemCallback::CEAFStatusItemCallback(eafTypes::StatusSeverityType severity,UINT helpID):
+m_Severity(severity), m_HelpID(helpID)
+{
+}
+
+eafTypes::StatusSeverityType CEAFStatusItemCallback::GetSeverity()
+{
+   return m_Severity;
+}
+
+void CEAFStatusItemCallback::Execute(CEAFStatusItem* pItem)
+{
+   EAFShowStatusMessage(pItem,m_Severity,FALSE,m_HelpID);
+}

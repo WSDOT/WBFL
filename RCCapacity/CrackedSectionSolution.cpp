@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLRCCapacity.h"
 #include "CrackedSectionSolution.h"
+#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -95,4 +96,44 @@ STDMETHODIMP CCrackedSectionSolution::get_Slice(CollectionIndexType sliceIdx,ICr
    m_Slices->get_Item(sliceIdx,&punk);
    punk.QueryInterface(pSlice);
    return S_OK;
+}
+
+STDMETHODIMP CCrackedSectionSolution::get_ElasticProperties(IElasticProperties** ppProps)
+{
+   CHECK_RETOBJ(ppProps);
+
+   CComPtr<ICompositeSection> composite_section;
+   composite_section.CoCreateInstance(CLSID_CompositeSection);
+
+   // add each slice into a composite section object
+   CollectionIndexType nSlices;
+   get_SliceCount(&nSlices);
+   for ( CollectionIndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++ )
+   {
+      CComPtr<ICrackedSectionSlice> slice;
+      get_Slice(sliceIdx,&slice);
+
+      CComPtr<IShape> shape;
+      slice->get_Shape(&shape);
+
+      Float64 Efg, Ebg;
+      slice->get_Efg(&Efg);
+      slice->get_Ebg(&Ebg);
+
+      if ( !IsZero(Efg) )
+      {
+         // only add slices that aren't cracked
+         composite_section->AddSection(shape,Efg,1,VARIANT_FALSE,VARIANT_TRUE);
+
+         if ( !IsZero(Ebg) )
+         {
+            // add the void
+            composite_section->AddSection(shape,Ebg,1,VARIANT_TRUE,VARIANT_TRUE);
+         }
+      }
+   }
+
+   // get the elastic properties
+   CComQIPtr<ISection> section(composite_section);
+   return section->get_ElasticProperties(ppProps);
 }

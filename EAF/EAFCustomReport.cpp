@@ -121,3 +121,96 @@ void CEAFCustomReports::SaveToRegistry(CWinApp* theApp) const
       theApp->WriteProfileString(_T("CustomReports"), key, reportString);
    }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+CEAFCustomReportMixin::CEAFCustomReportMixin()
+{
+   m_bDisplayFavoriteReports = FALSE; // show all reports by default
+}
+
+CEAFCustomReportMixin::~CEAFCustomReportMixin()
+{
+}
+
+BOOL CEAFCustomReportMixin::DisplayFavoriteReports() const
+{
+   return m_bDisplayFavoriteReports;
+}
+
+void CEAFCustomReportMixin::DisplayFavoriteReports(BOOL doDisplay)
+{
+   m_bDisplayFavoriteReports = doDisplay;
+}
+
+const std::vector<std::_tstring>& CEAFCustomReportMixin::GetFavoriteReports() const
+{
+   return m_FavoriteReports;
+}
+
+void CEAFCustomReportMixin::SetFavoriteReports(const std::vector<std::_tstring>& reports)
+{
+   m_FavoriteReports = reports;
+}
+
+const CEAFCustomReports& CEAFCustomReportMixin::GetCustomReports() const
+{
+   return m_CustomReports;
+}
+
+void CEAFCustomReportMixin::SetCustomReports(const CEAFCustomReports& reports)
+{
+   m_CustomReports = reports;
+}
+
+void CEAFCustomReportMixin::LoadCustomReportInformation()
+{
+   // call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   CWinApp* pApp = AfxGetApp();
+
+   // Favorite reports
+   m_bDisplayFavoriteReports = pApp->GetProfileInt(_T("Options"),_T("DisplayFavoriteReports"),FALSE);
+
+   // Favorite report names are stored as Tab separated values
+   CString ReportList = pApp->GetProfileString(_T("Options"),_T("FavoriteReportsList"),_T(""));
+   m_FavoriteReports.clear();
+   sysTokenizer tokenizer(_T("\t"));
+   tokenizer.push_back(ReportList);
+   sysTokenizer::iterator it = tokenizer.begin();
+   while( it != tokenizer.end() )
+   {
+      m_FavoriteReports.push_back( *it );
+      it++;
+   }
+
+   // Custom Reports
+   m_CustomReports.LoadFromRegistry(pApp);
+}
+
+void CEAFCustomReportMixin::SaveCustomReportInformation()
+{
+   // call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
+   CWinApp* pApp = AfxGetApp();
+
+   // Favorite reports
+   pApp->WriteProfileInt(_T("Options"),_T("DisplayFavoriteReports"),m_bDisplayFavoriteReports);
+
+   // report names are stored as Tab separated values
+   CString Favorites;
+   std::vector<std::_tstring>::const_iterator it = m_FavoriteReports.begin();
+   while (it != m_FavoriteReports.end())
+   {
+      if (it!= m_FavoriteReports.begin())
+      {
+         Favorites += _T("\t");
+      }
+
+      Favorites += it->c_str();
+
+      it++;
+   }
+
+   pApp->WriteProfileString(_T("Options"),_T("FavoriteReportsList"),Favorites);
+
+   // Custom Reports
+   m_CustomReports.SaveToRegistry(pApp);
+}

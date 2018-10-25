@@ -135,12 +135,12 @@ STDMETHODIMP CBridgePier::get_DeckProfile(/*[out,retval]*/IPoint2dCollection** p
 
 STDMETHODIMP CBridgePier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
 {
-#pragma Reminder("IMPLEMENT")
-   ATLASSERT(false);
-   return E_NOTIMPL;
+   CComPtr<IBridgeDeck> deck;
+   m_pBridge->get_Deck(&deck);
+   return deck->get_GrossDepth(pTDeck);
 }
 
-STDMETHODIMP CBridgePier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO)
+STDMETHODIMP CBridgePier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
 {
 #pragma Reminder("IMPLEMENT")
    ATLASSERT(false);

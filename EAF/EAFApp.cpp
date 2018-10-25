@@ -62,6 +62,8 @@ void log_error(CDocument* pDoc,void* pStuff);
 unitmgtIndirectMeasure init_si_units();
 unitmgtIndirectMeasure init_english_units();
 
+#define ID_REPLACE_FILE (WM_USER+1)
+
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp
 
@@ -437,6 +439,8 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	// Standard print setup command
 	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
    ON_COMMAND(ID_APP_ABOUT, &CEAFApp::OnAppAbout)
+
+   ON_COMMAND(ID_REPLACE_FILE,&CEAFApp::OnReplaceFile)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -597,6 +601,21 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    }
 
    return pDoc;
+}
+
+void CEAFApp::ReplaceDocumentFile(LPCTSTR lpszFileName)
+{
+   // Call this method, instead of OpenDocumentFile when you want to close the current file
+   // and open a new file. This command posts a message and returns so that the calling
+   // function can finish. Once, finished, the ID_REPLACE_FILE command notification is
+   // then processed by OnReplaceFile. 
+   m_ReplacementFileName = lpszFileName;
+   EAFGetMainFrame()->PostMessage(WM_COMMAND,ID_REPLACE_FILE,0);
+}
+
+void CEAFApp::OnReplaceFile()
+{
+   OpenDocumentFile(m_ReplacementFileName);
 }
 
 void CEAFApp::SetHelpFileName(LPCTSTR lpszHelpFile)
@@ -1263,7 +1282,7 @@ void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),NULL,GetAppPluginCategoryID(),EAFGetMainFrame());
    BOOST_FOREACH(CEAFPluginState& state,pluginStates)
    {
       CEAFAppPluginManager* pPluginMgr = GetAppPluginManager();
@@ -1417,7 +1436,7 @@ unitmgtIndirectMeasure init_si_units()
    im.Time3.Update(           unitMeasure::Day,                       0.001, 9, 3, sysNumericFormatTool::Fixed );
    im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
    im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerMillimeter, 1.0e-7, 9, 3, sysNumericFormatTool::Fixed);
+   im.PerLength.Update( unitMeasure::PerMeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
    im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
 

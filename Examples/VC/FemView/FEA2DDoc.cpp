@@ -16,7 +16,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define ID(_id_) (_id_+1)
+#define ID(_id_) _T("'") << (_id_+1) << _T("'")
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc
@@ -400,6 +400,7 @@ void CFEA2DDoc::OnGTStrudl()
       loading->get_ID(&lcID);
 
       ofile << _T("LOADING ") << ID(abs((int)lcID)) << std::endl;
+      ofile << _T("MEMBER LOADS") << std::endl;
 
       CComPtr<IFem2dDistributedLoadCollection> distLoads;
       loading->get_DistributedLoads(&distLoads);
@@ -407,7 +408,6 @@ void CFEA2DDoc::OnGTStrudl()
       CollectionIndexType nLoads;
       distLoads->get_Count(&nLoads);
 
-      ofile << _T("MEMBER LOADS") << std::endl;
       for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
       {
          CComPtr<IFem2dDistributedLoad> load;
@@ -432,6 +432,36 @@ void CFEA2DDoc::OnGTStrudl()
          }
       }
 
+
+      CComPtr<IFem2dPointLoadCollection> pointLoads;
+      loading->get_PointLoads(&pointLoads);
+
+      pointLoads->get_Count(&nLoads);
+
+      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      {
+         CComPtr<IFem2dPointLoad> load;
+         pointLoads->get_Item(idx,&load);
+
+         MemberIDType mbrID;
+         load->get_MemberID(&mbrID);
+
+         Float64 Fx, Fy, Mz, X;
+         load->GetForce(&Fx,&Fy,&Mz);
+         load->get_Location(&X);
+
+         if ( !IsZero(Fy) )
+         {
+            if ( X < 0 )
+            {
+               ofile << ID(mbrID) << _T(" FORCE Y CONC FRA P ") << Fy << _T(" L ") << X << std::endl;
+            }
+            else
+            {
+               ofile << ID(mbrID) << _T(" FORCE Y CONC P ") << Fy << _T(" L ") << X << std::endl;
+            }
+         }
+      }
    }
 
    ofile.close();

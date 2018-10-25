@@ -88,7 +88,9 @@ lrfdLumpSumLosses::~lrfdLumpSumLosses()
 lrfdLumpSumLosses& lrfdLumpSumLosses::operator=(const lrfdLumpSumLosses& rOther)
 {
    if ( this != &rOther )
+   {
       MakeAssignment( rOther );
+   }
 
    return *this;
 }
@@ -147,34 +149,50 @@ Float64 lrfdLumpSumLosses::PermanentStrand_Final() const
 Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTransfer() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
+   {
       return (m_TempStrandUsage == lrfdLosses::tsPretensioned ? m_BeforeXfer : 0);
+   }
    else
+   {
       return 0;
+   }
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTransfer() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
+   {
       return (m_TempStrandUsage == lrfdLosses::tsPretensioned ? m_AfterXfer : 0);
+   }
    else
+   {
       return 0;
+   }
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AtLifting() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
+   {
       return (m_TempStrandUsage == lrfdLosses::tsPTAfterLifting ||
               m_TempStrandUsage == lrfdLosses::tsPTBeforeShipping ) ? 0 : m_AtLifting;
+   }
    else
+   {
       return 0;
+   }
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AtShipping() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
+   {
       return m_AtShipping;
+   }
    else
+   {
       return 0;
+   }
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
@@ -186,6 +204,7 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() co
       case lrfdLosses::tsPretensioned:
          return m_AfterXfer;
 
+      case lrfdLosses::tsPTBeforeLifting:
       case lrfdLosses::tsPTAfterLifting:
          return 0;
 
@@ -204,9 +223,13 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() co
 Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
+   {
       return m_BeforeTempStrandRemoval;
+   }
    else
+   {
       return 0;
+   }
 }
 
 Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const

@@ -132,6 +132,7 @@ public:
 public:
 	STDMETHOD(OnPathElementChanged)(IPathElement * element)
 	{
+      m_PathElements.clear();
       Fire_OnPathChanged(this);
 		return S_OK;
 	}

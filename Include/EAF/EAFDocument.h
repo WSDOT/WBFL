@@ -123,11 +123,17 @@ public:
    /// called when a document is created (New or Open)
    virtual BOOL Init(); 
 
-   // Called by the framework during document creation. Load any registry settings
-   virtual void LoadDocumentSettings();
+   // Called by the framework during document creation. Load any registry settings.
+   // Default implementation saves the UIHints settings
+   // This method is pure because you must override it and call AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   // before calling into this method
+   virtual void LoadDocumentSettings() = 0;
    
    // Called by the framework during document creation. Save any registry settings
-   virtual void SaveDocumentSettings();
+   // Default implementation saves the UIHints settings
+   // This method is pure because you must override it and call AFX_MANAGE_STATE(AfxGetStaticModuleState())
+   // before calling into this method
+   virtual void SaveDocumentSettings() = 0;
 
    // Use this method to log a message
    // during application start-up.
@@ -186,6 +192,8 @@ public:
    virtual CView* CreateView(long key,LPVOID pData=0);
 
    virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint);
+
+   virtual std::vector<CView*> GetRegisteredView(long key);
 
    //////////////////////////////////////////////////////////////
    // Document Initialization
@@ -251,6 +259,15 @@ public:
    // To keep them separate, each document type must supply a name for the toolbar section
    virtual CString GetToolbarSectionName() = 0;
 
+   /////////////////////////////////////
+   // UIHints
+   void UIHints(BOOL bEnable);
+   BOOL UIHints() const;
+   UINT GetUIHintSettings() const;
+   void SetUIHintSettings(UINT settings);
+   virtual void ResetUIHints(); // called when all hints are reset/enabled
+
+
 protected:
    //{{AFX_MSG(CEAFDocument)
 	afx_msg void OnUpdateViewStatusCenter(CCmdUI* pCmdUI);
@@ -259,6 +276,7 @@ protected:
 	afx_msg void OnUpdateUndo(CCmdUI* pCmdUI);
 	afx_msg void OnRedo();
 	afx_msg void OnUpdateRedo(CCmdUI* pCmdUI);
+   afx_msg void OnOptionsHints();
    //}}AFX_MSG
 
    virtual HINSTANCE GetResourceInstance();
@@ -291,6 +309,10 @@ protected:
    virtual void UnloadDocumentPlugins(); 
 
    DECLARE_MESSAGE_MAP()
+
+protected:
+   BOOL m_bUIHints;
+   UINT m_UIHintSettings;
 
 private:
    CEAFMenu* m_pMainMenu;

@@ -34,11 +34,12 @@
 
 IMPLEMENT_DYNAMIC(CManagePluginsDlg, CDialog)
 
-CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,const CATID& catid,CWnd* pParent /*=NULL*/)
+CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent /*=NULL*/)
 	: CDialog(CManagePluginsDlg::IDD, pParent),
    m_strSection("Plugins")
 {
    m_Title = lpszTitle;
+   m_Text = lpszText;
    m_CATID = catid;
 }
 
@@ -66,6 +67,11 @@ BOOL CManagePluginsDlg::OnInitDialog()
 
    if ( !m_Title.IsEmpty() )
       SetWindowText(m_Title);
+
+   if ( !m_Text.IsEmpty() )
+   {
+      GetDlgItem(IDC_TEXT)->SetWindowText(m_Text);
+   }
 
    m_PluginList.SetCheckStyle( BS_AUTOCHECKBOX );
 

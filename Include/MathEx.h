@@ -317,6 +317,28 @@ inline T MaxMagnitude(const T& a,const T& b,const T& c,const T& d)
    return MaxMagnitude(MaxMagnitude(a,b),MaxMagnitude(c,d));
 }
 
+
+template <class T>
+inline IndexType MaxMagnitudeIndex(const T& a,const T& b)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? 0 : 1);
+}
+
+template <class T>
+inline IndexType MaxMagnitudeIndex(const T& a,const T& b,const T& c)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitudeIndex((T)MaxMagnitudeIndex(a,b),c);
+}
+
+template <class T>
+inline IndexType MaxMagnitudeIndex(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the greatest magnitude, but we want to retain the sign
+   return MaxMagnitudeIndex((T)MaxMagnitudeIndex(a,b),(T)MaxMagnitudeIndex(c,d));
+}
+
 template <class T>
 inline T MinMagnitude(const T& a,const T& b)
 {
@@ -336,6 +358,28 @@ inline T MinMagnitude(const T& a,const T& b,const T& c,const T& d)
 {
    // want the value with the smallest magnitude, but we want to retain the sign
    return MinMagnitude(MinMagnitude(a,b),MinMagnitude(c,d));
+}
+
+
+template <class T>
+inline IndexType MinMagnitudeIndex(const T& a,const T& b)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return (fabs(b) < fabs(a) ? 1 : 0);
+}
+
+template <class T>
+inline IndexType MinMagnitudeIndex(const T& a,const T& b,const T& c)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitudeIndex((T)MinMagnitudeIndex(a,b),c);
+}
+
+template <class T>
+inline IndexType MinMagnitudeIndex(const T& a,const T& b,const T& c,const T& d)
+{
+   // want the value with the smallest magnitude, but we want to retain the sign
+   return MinMagnitudeIndex((T)MinMagnitudeIndex(a,b),(T)MinMagnitudeIndex(c,d));
 }
 
 // Difference between an approximate value and an exact value

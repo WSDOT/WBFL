@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 4,0,0,36
- PRODUCTVERSION 4,0,0,36
+ FILEVERSION 4,0,0,37
+ PRODUCTVERSION 4,0,0,37
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +72,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFLTools Module"
-            VALUE "FileVersion", "4.0.0.36"
+            VALUE "FileVersion", "4.0.0.37"
             VALUE "InternalName", "WBFLTools"
             VALUE "LegalCopyright", "Copyright © 1999-2015, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLTools.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "4.0.0.36"
+            VALUE "ProductVersion", "4.0.0.37"
         END
     END
     BLOCK "VarFileInfo"

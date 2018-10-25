@@ -67,7 +67,8 @@ public:
    CReportDescription GetReportDescription();
    void SetReportSpecificationBuilder(boost::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
    boost::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder();
-   boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);
+   
+   virtual boost::shared_ptr<rptReport> CreateReport(boost::shared_ptr<CReportSpecification>& pRptSpec);
 
    void SetMenuBitmap(const CBitmap* pBmp);
    const CBitmap* GetMenuBitmap();

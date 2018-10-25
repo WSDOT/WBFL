@@ -50,6 +50,8 @@
 
 #include <afxcmn.h> // for Animation control
 
+#include <afxmt.h> // for multi-threading
+
 #include <Private\WBFLPackage.h>
 
 

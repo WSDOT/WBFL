@@ -327,6 +327,13 @@ library WBFLGenericBridge
       ptExpansion
    } PierType;
 
+   typedef [public,helpstring("enum CurbLineMeasurementType"),uuid(CC8AAA13-06C0-4bcc-9183-2EF8B145EB65)]
+   enum
+   {
+      clmNormalToAlignment,
+      clmPlaneOfPier
+   } CurbLineMeasurementType;
+
 // Interface definitions
 
    [
@@ -1566,8 +1573,11 @@ library WBFLGenericBridge
       // Gross deck thickness at CL Pier.
       [propget,helpstring("property DeckThickness")] HRESULT DeckThickness([out,retval]Float64* pTDeck);
 
-      // Curb line offset (left/right offset from alignment to curb line), measured in the plane of the pier
-      [propget,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[out,retval]Float64* pCLO);
+      // Curb line offset (left/right offset from alignment to curb line)
+      [propget,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[in]CurbLineMeasurementType clMeasure,[out,retval]Float64* pCLO);
+
+      // Curb-to-curb width
+      [propget,helpstring("property CurbToCurbWidth")] HRESULT CurbToCurbWidth([in]CurbLineMeasurementType clMeasure,[out,retval]Float64* pWcc);
 
       [propputref,helpstring("property SkewAngle")] HRESULT SkewAngle([in]IAngle* pSkew);
       [propget,helpstring("property SkewAngle")] HRESULT SkewAngle([out,retval]IAngle** ppSkew);
@@ -1620,6 +1630,8 @@ library WBFLGenericBridge
 	{
       [propputref,helpstring("property DeckProfile")] HRESULT DeckProfile([in]IPoint2dCollection* pPoints);
       [propput,helpstring("property DeckThickness")] HRESULT DeckThickness([in]Float64 tDeck);
+
+      // Sets the curb line offsets, measured normal to the alignment
       [propput,helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side,[in]Float64 clo);
 	};
 

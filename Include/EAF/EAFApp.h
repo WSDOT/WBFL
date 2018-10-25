@@ -78,6 +78,7 @@ public:
 	virtual LRESULT ProcessWndProcException(CException* e, const MSG* pMsg);
 	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
    virtual CDocument* OpenDocumentFile(LPCTSTR lpszFileName);
+   virtual void ReplaceDocumentFile(LPCTSTR lpszFileName);
 	//}}AFX_VIRTUAL
 
    void SetHelpFileName(LPCTSTR lpszHelpFile);
@@ -150,6 +151,8 @@ protected:
    afx_msg void OnUSUnits();
    afx_msg void OnUpdateUSUnits(CCmdUI* pCmdUI);
 	//}}AFX_MSG
+   afx_msg void OnReplaceFile();
+   CString m_ReplacementFileName;
 
    virtual void OnAbout();
 

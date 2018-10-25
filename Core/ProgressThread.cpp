@@ -69,6 +69,7 @@ END_MESSAGE_MAP()
 HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT nDelay)
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
+   m_CriticalSection.Lock();
 
    BOOL bCreated;
    bCreated = m_ProgressDlg.Create( CProgressDlg::IDD, pParentWnd );
@@ -96,6 +97,8 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
    g_pTimerWnd = &(m_ProgressDlg);
    m_ProgressDlg.SetTimer( g_TimerID, nDelay, &TimerProc );
    m_ProgressDlg.PumpMessage();
+   
+   m_CriticalSection.Unlock();
 
    return S_OK;
 }
@@ -104,28 +107,46 @@ HRESULT CProgressThread::CreateProgressWindow(CWnd* pParentWnd,DWORD dwMask,UINT
 // CProgressThread message handlers
 void CProgressThread::Init(short begin, short end, short inc)
 {
+   m_CriticalSection.Lock();
+   
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_ProgressBar.SetRange( begin, end );
    m_ProgressDlg.m_ProgressBar.SetStep( inc );
    m_ProgressDlg.m_ProgressBar.SetPos( begin );
+   
+   m_CriticalSection.Unlock();
 }
 
 void CProgressThread::Increment()
 {
+   m_CriticalSection.Lock();
+   
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_ProgressBar.StepIt();
+   
+   m_CriticalSection.Unlock();
 }
 
 void CProgressThread::UpdateMessage( LPCTSTR msg)
 {
+   m_CriticalSection.Lock();
+   
    m_ProgressDlg.PumpMessage();
    m_ProgressDlg.m_Message = msg;
    m_ProgressDlg.UpdateMessage(msg);
+   
+   m_CriticalSection.Unlock();
 }
 
 BOOL CProgressThread::Continue()
 {
-   return m_ProgressDlg.Continue();
+   m_CriticalSection.Lock();
+   
+   BOOL bResult = m_ProgressDlg.Continue();
+   
+   m_CriticalSection.Unlock();
+   
+   return bResult;
 }
 
 BOOL CProgressThread::EnableCancel()
@@ -135,15 +156,22 @@ BOOL CProgressThread::EnableCancel()
 
 void CProgressThread::EnableCancel(BOOL bEnable)
 {
+   m_CriticalSection.Lock();
+   
    m_bCancelEnabled = bEnable;
    m_ProgressDlg.m_Cancel.ShowWindow( bEnable ? SW_SHOW : SW_HIDE );
    m_ProgressDlg.m_Cancel.EnableWindow(bEnable);
+
+   m_CriticalSection.Unlock();
 }
 
 void CProgressThread::DestroyProgressWindow()
 {
+   m_CriticalSection.Lock();
+   
    m_ProgressDlg.KillTimer( g_TimerID );
    g_pTimerWnd = 0;
-
    m_ProgressDlg.DestroyWindow();
+
+   m_CriticalSection.Unlock();
 }

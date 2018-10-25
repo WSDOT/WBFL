@@ -153,9 +153,18 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
    (*section)->AddRef();
 
    // The reinforcing in this section is the amount of reinforcing within
-   // the effective flange width
-   Float64 effectiveFlangeWidth;
-   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&effectiveFlangeWidth);
+   // the rebar section width. The rebar section width is the lessor of
+   // the effective flange width and the tributary width.
+   // Effective flange width can be greater than the tributary flange width
+   // when the traffic barrier is structurally continuous and additional
+   // width, based on barrier stiffness, is added to the effective flange width
+   Float64 effFlangeWidth;
+   m_EffFlangeTool->EffectiveFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&effFlangeWidth);
+
+   Float64 tribFlangeWidth;
+   m_EffFlangeTool->TributaryFlangeWidthBySegment(m_Bridge,ssMbrID,segIdx,Xs,leftSSMbrID,rightSSMbrID,&tribFlangeWidth);
+
+   Float64 rebarSectionWidth = Min(effFlangeWidth,tribFlangeWidth);
 
    // Get the distance from the start of the bridge to the point under consideration
    // What we really want is the distance projected onto the alignment because
@@ -252,14 +261,14 @@ STDMETHODIMP CBridgeDeckRebarLayout::CreateRebarSection(IDType ssMbrID,SegmentIn
 
                Float64 Aps;
                clone->get_NominalArea(&Aps);
-               Aps *= effectiveFlangeWidth;
+               Aps *= rebarSectionWidth;
                clone->put_NominalArea(Aps);
                rebar.Release();
                rebar = clone;
             }
             else
             {
-               nBars = IsZero(spacing) ? 1 : CollectionIndexType(effectiveFlangeWidth/spacing) + 1;
+               nBars = IsZero(spacing) ? 1 : CollectionIndexType(rebarSectionWidth/spacing) + 1;
                X = -1.0*nBars*spacing/2.0;
             }
 

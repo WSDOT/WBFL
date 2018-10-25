@@ -85,10 +85,28 @@ STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
    return S_OK;
 }
 
-STDMETHODIMP CPier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pCLO)
+STDMETHODIMP CPier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
 {
    CHECK_RETVAL(pCLO);
    *pCLO = m_CurbLineOffset[side];
+   if ( clMeasure == clmPlaneOfPier )
+   {
+      CComPtr<IAngle> objSkew;
+      get_SkewAngle(&objSkew);
+      Float64 skew;
+      objSkew->get_Value(&skew);
+      *pCLO /= cos(skew);
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CPier::get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc)
+{
+   CHECK_RETVAL(pWcc);
+   Float64 LCO, RCO;
+   get_CurbLineOffset(qcbLeft,clMeasure,&LCO);
+   get_CurbLineOffset(qcbRight,clMeasure,&RCO);
+   *pWcc = fabs(LCO) + fabs(RCO); // curb-curb width is unsigned, but offsets are signed... uses absolute value
    return S_OK;
 }
 
